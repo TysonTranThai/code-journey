@@ -22,10 +22,10 @@ See: .planning/PROJECT.md (updated 2026-09-02)
 
 ## Current Position
 
-Phase: 3 of 6 (Challenge Loop & Sandbox Execution) — EXECUTION COMPLETE
-Plan: 4 of 4 in current phase (03-01…03-04 all executed + verified)
-Status: Phase complete — all 7 phase requirements implemented; 5 success criteria verified incl. the malicious-sample hard gate
-Last activity: 2026-09-02 — Phase 3 executed end-to-end: Postgres queue (SKIP LOCKED), hardened sandbox (fork bomb/egress/fs-escape/infinite-loop/memory-bomb all contained), challenge content + run/verdict APIs, responsive challenge workspace. Live E2E: correct solution → passed (583ms), failing solution → educational per-test hints. 59/59 tests.
+Phase: 4 of 6 (Progress & Achievements) — PLANNING COMPLETE
+Plan: 0 of 2 in current phase (04-01…04-02 planned)
+Status: Phase 4 planned (CONTEXT + 2 PLANs) — ready for execution
+Last activity: 2026-09-02 — Phase 3 complete (queue, hardened sandbox with green isolation gate, challenge loop E2E-verified); Phase 4 planned: append-only progress_events, verdict-derived challenge completion, server-verified lesson completion, derived streaks, content-as-data achievement defs, no-index dashboard.
 
 Progress: [████░░░░░░] 57% (12 of 23 plans across Phases 1–3)
 
@@ -36,16 +36,12 @@ Progress: [████░░░░░░] 57% (12 of 23 plans across Phases 1�
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- Auth.js v5 pinned (next-auth@5.0.0-beta.32 + @auth/drizzle-adapter@1.11.3), JWT sessions, bcrypt 12, env-gated GitHub — live-verified (login/session/signout via curl)
-- DB stores identity only; curriculum is content-as-data (JSON+MDX under src/content, zod build-time validation, invalid content fails build — proven by fixture tests)
-- MDX via @next/mdx with serializable config (Turbopack constraint); lesson bodies resolved through a static import map
-- Execution isolation locked: hardened Docker (node:22-alpine pinned, no-network, read-only rootfs, cap-drop ALL, non-root, wall-clock timeout); Judge0/Firecracker remain production-evolution paths; malicious-sample suite is the phase gate
-- Execution queue locked: Postgres-backed execution_jobs, FOR UPDATE SKIP LOCKED claims, separate runner worker process (`pnpm worker`) — web tier never spawns interpreters
-- Challenge content extends content-as-data: challengeSchema with per-test educational failure hints; submissions are immutable snapshots
-- Draft persistence = localStorage keyed by challenge id (client-only)
-- Monaco editor via @monaco-editor/react@4.7.0 + monaco-editor@0.54.0 (CDN loader, React 19 peers verified)
-- Anonymous users can RUN challenges (submissions with null userId); attributed submits arrive with Phase 4 progress
-- AUTH_SECRET required in prod mode (live 500 caught) — dev secret generated into .env.local
+- Auth.js v5 pinned (next-auth@5.0.0-beta.32 + @auth/drizzle-adapter@1.11.3), JWT sessions, bcrypt 12, env-gated GitHub — live-verified
+- DB stores identity + execution/progress state; curriculum content-as-data (zod, build-time validation); submissions immutable snapshots
+- Progress representation locked: append-only progress_events, unique (user, contentType, contentId); challenge completion derives from sandbox verdicts (D-05 Phase 4); lesson completion server-verifies challenge passes; streaks derived at read time; achievement defs as content-as-data with idempotent server awards
+- Execution isolation locked: hardened Docker sandbox, malicious-sample suite green; Judge0/Firecracker remain production paths
+- Monaco via @monaco-editor/react (CDN loader); drafts in localStorage
+- AUTH_SECRET required in prod mode; dev secret in .env.local
 
 ### Pending Todos
 
@@ -54,13 +50,13 @@ None yet.
 ### Blockers/Concerns
 
 - GitHub OAuth (AUTH-03) needs a real OAuth app from the user — provider is env-gated; platform works without it
-- remark-gfm/rehype-slug installed but not wired (Turbopack serializable-options constraint) — GFM tables in MDX render as plain tables; programmatic compile is the documented fallback
-- Pages render dynamically due to session read in root layout — SSG/PPR split deferred to Phase 6 performance work
-- Sandbox isolation verified against the phase's attack classes on Docker Desktop; production-grade claim still requires external review (docs/SECURITY.md)
-- Monaco loads via CDN loader — local bundling deferred to Phase 6 (offline/privacy hardening)
+- remark-gfm/rehype-slug installed but not wired (Turbopack serializable-options constraint) — GFM tables render plain; programmatic compile is the fallback
+- Pages render dynamically due to session read in root layout — SSG/PPR split deferred to Phase 6
+- Sandbox isolation verified against phase attack classes on Docker Desktop; production-grade claim requires external review (docs/SECURITY.md)
+- Monaco CDN loader — local bundling deferred to Phase 6
 
 ## Session Continuity
 
 Last session: 2026-09-02
-Stopped at: Phase 3 execution complete — all 4 plans committed (03-01…03-04); isolation hard gate green; live E2E loop verified. Next: Phase 4 discuss→plan (progress & achievements, progress_events representation already locked).
+Stopped at: Phase 4 planning complete (04-CONTEXT + 2 PLANs). Next: execute 04-01 (progress backbone) then 04-02 (dashboard).
 Resume file: None
