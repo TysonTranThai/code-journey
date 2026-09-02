@@ -36,9 +36,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Scaffold Next.js 16 + TypeScript + Tailwind 4 app with pnpm
-- [ ] 01-02: Quality gates (ESLint flat config, Prettier, Vitest with a first real test) and verified package scripts
-- [ ] 01-03: Git hygiene (.gitignore, .env.example), README/CONTRIBUTING/docs skeleton, environment audit doc
+- [x] 01-01: Scaffold Next.js 16 + TypeScript + Tailwind 4 app with pnpm
+- [x] 01-02: Quality gates (ESLint flat config, Prettier, Vitest with a first real test) and verified package scripts
+- [x] 01-03: Git hygiene (.gitignore, .env.example), README/CONTRIBUTING/docs skeleton, environment audit doc
 
 ### Phase 2: Data, Auth & Content Pipeline
 **Goal**: Working identity and data layer plus the curriculum content pipeline; visitors can browse real structured lessons
@@ -54,10 +54,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 02-01: PostgreSQL via Docker Compose + Drizzle schema (users, sessions, curriculum core) + db scripts
-- [ ] 02-02: Auth.js integration (email/password + GitHub OAuth, dev-mode email transport)
-- [ ] 02-03: Content-as-data pipeline (MDX/JSON + zod schema + loaders with build-time validation)
-- [ ] 02-04: Curriculum browsing UI (track/course/lesson pages, linear navigation; responsive layouts, SEO metadata on public pages, no-index on authed pages)
+- [x] 02-01: PostgreSQL via Docker Compose + Drizzle schema (users, sessions, curriculum core) + db scripts
+- [x] 02-02: Auth.js integration (email/password + GitHub OAuth, dev-mode email transport)
+- [x] 02-03: Content-as-data pipeline (MDX/JSON + zod schema + loaders with build-time validation)
+- [x] 02-04: Curriculum browsing UI (track/course/lesson pages, linear navigation; responsive layouts, SEO metadata on public pages, no-index on authed pages)
 
 ### Phase 3: Challenge Loop & Sandbox Execution
 **Goal**: The core product loop — a student writes code in the browser, submits, and gets test-by-test verdicts from an isolated sandbox
@@ -135,8 +135,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Development Foundation & Verification | 0/3 | In progress (Phase 0 work) | - |
-| 2. Data, Auth & Content Pipeline | 0/4 | Not started | - |
+| 1. Development Foundation & Verification | 3/3 | Complete (executed during Phase 0 init) | 2026-09-02 |
+| 2. Data, Auth & Content Pipeline | 4/4 | Complete (executed + live-verified) | 2026-09-02 |
 | 3. Challenge Loop & Sandbox Execution | 0/4 | Not started | - |
 | 4. Progress & Achievements | 0/2 | Not started | - |
 | 5. Community & AI Mentor | 0/3 | Not started | - |
