@@ -11,7 +11,10 @@ interface SiteHeaderClientProps {
   userName: string | null;
 }
 
-const NAV_LINKS = [{ href: "/learn", label: "Learn" }] as const;
+const NAV_LINKS: readonly { href: string; label: string; signedInOnly?: boolean }[] = [
+  { href: "/learn", label: "Learn" },
+  { href: "/dashboard", label: "Dashboard", signedInOnly: true },
+];
 
 export function SiteHeaderClient({ signedIn, userName }: SiteHeaderClientProps) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -31,7 +34,7 @@ export function SiteHeaderClient({ signedIn, userName }: SiteHeaderClientProps) 
             Code Journey
           </Link>
           <div className="hidden items-center gap-1 sm:flex">
-            {NAV_LINKS.map((link) => (
+            {NAV_LINKS.filter((link) => !link.signedInOnly || signedIn).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -99,7 +102,7 @@ export function SiteHeaderClient({ signedIn, userName }: SiteHeaderClientProps) 
       {menuOpen ? (
         <div id="mobile-menu" className="border-t border-zinc-800 px-4 pb-4 sm:hidden">
           <div className="flex flex-col gap-1 pt-2">
-            {NAV_LINKS.map((link) => (
+            {NAV_LINKS.filter((link) => !link.signedInOnly || signedIn).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

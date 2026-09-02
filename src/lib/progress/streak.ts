@@ -17,13 +17,7 @@ export function computeStreak(dates: Date[], now: Date): number {
   if (days.size === 0) return 0;
 
   // Walk back from the anchor (today; if no event today, yesterday).
-  const cursor = new Date(
-    Date.UTC(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      now.getUTCDate(),
-    ),
-  );
+  const cursor = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
   const DAY_MS = 24 * 60 * 60 * 1000;
 
   const todayKey = dayKey(cursor);

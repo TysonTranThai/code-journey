@@ -8,9 +8,7 @@ import { z } from "zod";
  * with zod at load; lives in git like the curriculum, no DB seeding.
  */
 export const achievementDefSchema = z.object({
-  id: z
-    .string()
-    .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "must be a lowercase slug"),
+  id: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "must be a lowercase slug"),
   title: z.string().min(1).max(120),
   description: z.string().min(1).max(400),
   icon: z.string().min(1).max(8),

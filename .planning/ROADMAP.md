@@ -91,8 +91,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: Progress events model + server-verified completion recording
-- [ ] 04-02: Dashboard UI (progress, streak, achievements)
+- [x] 04-01: Progress events model + server-verified completion recording
+- [x] 04-02: Dashboard UI (progress, streak, achievements)
 
 ### Phase 5: Community & AI Mentor
 **Goal**: Social learning and guarded AI help layered onto the core loop
@@ -138,6 +138,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Development Foundation & Verification | 3/3 | Complete (executed during Phase 0 init) | 2026-09-02 |
 | 2. Data, Auth & Content Pipeline | 4/4 | Complete (executed + live-verified) | 2026-09-02 |
 | 3. Challenge Loop & Sandbox Execution | 4/4 | Complete (executed + E2E verified; isolation hard gate green) | 2026-09-02 |
-| 4. Progress & Achievements | 0/2 | Not started | - |
+| 4. Progress & Achievements | 2/2 | Complete (executed + live-verified: verdict→event→award→dashboard) | 2026-09-02 |
 | 5. Community & AI Mentor | 0/3 | Not started | - |
 | 6. Hardening, Accessibility & Launch Readiness | 0/3 | Not started | - |

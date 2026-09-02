@@ -26,11 +26,7 @@ describe("computeStreak (pure)", () => {
   });
 
   it("counts consecutive days ending today", () => {
-    const dates = [
-      NOW,
-      new Date(NOW.getTime() - DAY),
-      new Date(NOW.getTime() - 2 * DAY),
-    ];
+    const dates = [NOW, new Date(NOW.getTime() - DAY), new Date(NOW.getTime() - 2 * DAY)];
     expect(computeStreak(dates, NOW)).toBe(3);
   });
 

@@ -3,12 +3,7 @@ import "server-only";
 import { and, eq, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
-import {
-  achievements,
-  progressEvents,
-  submissions,
-  type StoredVerdict,
-} from "@/lib/db/schema";
+import { achievements, progressEvents, submissions, type StoredVerdict } from "@/lib/db/schema";
 import { getLesson, getLessonChallenges } from "@/lib/curriculum/loaders";
 import { getAchievementDefs } from "./achievement-defs";
 
@@ -83,10 +78,7 @@ export async function recordChallengeCompletion(
     .onConflictDoNothing();
   // Best-effort award evaluation; a later event re-triggers it (D-08).
   await maybeAwardAchievements(userId).catch((err: unknown) => {
-    console.error(
-      "[progress] award evaluation failed:",
-      err instanceof Error ? err.message : err,
-    );
+    console.error("[progress] award evaluation failed:", err instanceof Error ? err.message : err);
   });
 }
 
@@ -109,17 +101,13 @@ export async function maybeAwardAchievements(userId: string): Promise<string[]> 
   const [passingCount] = await db
     .select({ count: sql<number>`count(*)::int` })
     .from(submissions)
-    .where(
-      and(eq(submissions.userId, userId), eq(submissions.verdict, "passed")),
-    );
+    .where(and(eq(submissions.userId, userId), eq(submissions.verdict, "passed")));
 
   const lessonsCompleted = events.filter((e) => e.contentType === "lesson");
   const challengesCompleted = events.filter((e) => e.contentType === "challenge");
 
   // Streak days: distinct calendar days with any event.
-  const dayKeys = new Set(
-    events.map((e) => e.createdAt.toISOString().slice(0, 10)),
-  );
+  const dayKeys = new Set(events.map((e) => e.createdAt.toISOString().slice(0, 10)));
 
   const earned: string[] = [];
   const has = (id: string) => earned.includes(id);

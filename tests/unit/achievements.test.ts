@@ -67,10 +67,7 @@ describe.skipIf(!dbUp)("achievement awarding (DB-gated)", () => {
   it("is idempotent: re-evaluation does not duplicate awards", async () => {
     const again = await maybeAwardAchievements(userId);
     expect(again).not.toContain("first-lesson");
-    const rows = await db
-      .select()
-      .from(achievements)
-      .where(eq(achievements.userId, userId));
+    const rows = await db.select().from(achievements).where(eq(achievements.userId, userId));
     expect(rows.filter((r) => r.achievementId === "first-lesson")).toHaveLength(1);
   });
 
@@ -88,20 +85,12 @@ describe.skipIf(!dbUp)("achievement awarding (DB-gated)", () => {
 
   it("awards first-challenge from a recorded challenge completion", async () => {
     await recordChallengeCompletion(userId, "fix-the-heading");
-    const rows = await db
-      .select()
-      .from(achievements)
-      .where(eq(achievements.userId, userId));
+    const rows = await db.select().from(achievements).where(eq(achievements.userId, userId));
     expect(rows.some((r) => r.achievementId === "first-challenge")).toBe(true);
     // And the event exists exactly once.
-    const events = await db
-      .select()
-      .from(progressEvents)
-      .where(eq(progressEvents.userId, userId));
+    const events = await db.select().from(progressEvents).where(eq(progressEvents.userId, userId));
     expect(
-      events.filter(
-        (e) => e.contentType === "challenge" && e.contentId === "fix-the-heading",
-      ),
+      events.filter((e) => e.contentType === "challenge" && e.contentId === "fix-the-heading"),
     ).toHaveLength(1);
   });
 });

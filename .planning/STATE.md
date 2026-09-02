@@ -16,18 +16,18 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-02)
 
 **Core value:** A student can learn to code for free through structured lessons, auto-graded sandboxed challenges, and verified progress — with an AI mentor that teaches instead of solving.
-**Current focus:** Phase 4 — Progress & Achievements
+**Current focus:** Phase 5 — Community & AI Mentor
 
 **Standing product constraint (2026-09-02):** Code Journey is WEB-ONLY — the website is the product; the browser is the platform. No native/shell/mobile targets (Tauri/Electron/Swift/React Native/Flutter barred); responsive web UI required (intentionally designed mobile, not shrunken desktop); student-code execution and AI are server-side web APIs only; SEO for public content, no-index for private data; deployment is normal web infra, provider unselected (avoid vendor lock-in). Recorded in PROJECT.md, REQUIREMENTS.md (PLAT-06/07/08), ROADMAP.md.
 
 ## Current Position
 
-Phase: 4 of 6 (Progress & Achievements) — PLANNING COMPLETE
-Plan: 0 of 2 in current phase (04-01…04-02 planned)
-Status: Phase 4 planned (CONTEXT + 2 PLANs) — ready for execution
-Last activity: 2026-09-02 — Phase 3 complete (queue, hardened sandbox with green isolation gate, challenge loop E2E-verified); Phase 4 planned: append-only progress_events, verdict-derived challenge completion, server-verified lesson completion, derived streaks, content-as-data achievement defs, no-index dashboard.
+Phase: 4 of 6 (Progress & Achievements) — EXECUTION COMPLETE
+Plan: 2 of 2 in current phase (04-01…04-02 executed + verified)
+Status: Phase complete — all 4 PROG requirements implemented and live-verified (forged writes 401, verdict→event→award chain, dashboard 200 + no-index)
+Last activity: 2026-09-02 — Phase 4 executed: progress_events/achievements schema, verdict-derived challenge completion, server-verified lesson completion API, derived streaks, content-as-data achievement defs, responsive no-index dashboard. FIXED live auth bug: session.user.id was never persisted (blocked all progress attribution). 78/78 tests.
 
-Progress: [████░░░░░░] 57% (12 of 23 plans across Phases 1–3)
+Progress: [█████░░░░░] 70% (14 of 23 plans across Phases 1–4)
 
 ## Accumulated Context
 
@@ -41,6 +41,7 @@ Recent decisions affecting current work:
 - Progress representation locked: append-only progress_events, unique (user, contentType, contentId); challenge completion derives from sandbox verdicts (D-05 Phase 4); lesson completion server-verifies challenge passes; streaks derived at read time; achievement defs as content-as-data with idempotent server awards
 - Execution isolation locked: hardened Docker sandbox, malicious-sample suite green; Judge0/Firecracker remain production paths
 - Monaco via @monaco-editor/react (CDN loader); drafts in localStorage
+- Progress backbone live: append-only progress_events (unique per user+content), achievements idempotent, streak derived at read; challenge completion derives from sandbox verdicts; lesson completion requires DB-verified challenge passes; session.user.id persistence fixed (JWT callback)
 - AUTH_SECRET required in prod mode; dev secret in .env.local
 
 ### Pending Todos
@@ -58,5 +59,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-09-02
-Stopped at: Phase 4 planning complete (04-CONTEXT + 2 PLANs). Next: execute 04-01 (progress backbone) then 04-02 (dashboard).
+Stopped at: Phase 4 execution complete — all plans committed; verdict→event→award→dashboard chain live-verified. Next: Phase 5 discuss→plan (discussions + pedagogy-first AI mentor with refusal tests).
 Resume file: None

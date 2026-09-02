@@ -218,10 +218,7 @@ export type NewSubmission = typeof submissions.$inferInsert;
  * No updatedAt: events are never edited. contentId references the
  * content-as-data id (lesson or challenge), not a DB row.
  */
-export const progressContentType = pgEnum("progress_content_type", [
-  "lesson",
-  "challenge",
-]);
+export const progressContentType = pgEnum("progress_content_type", ["lesson", "challenge"]);
 
 export const progressEvents = pgTable(
   "progress_events",
@@ -234,9 +231,7 @@ export const progressEvents = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
     contentType: progressContentType("content_type").notNull(),
     contentId: text("content_id").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true, precision: 3 })
-      .notNull()
-      .defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true, precision: 3 }).notNull().defaultNow(),
   },
   (t) => [
     // Idempotency: one completion per (user, content). Drizzle composite unique.
@@ -263,9 +258,7 @@ export const achievements = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     achievementId: text("achievement_id").notNull(),
-    awardedAt: timestamp("awarded_at", { withTimezone: true, precision: 3 })
-      .notNull()
-      .defaultNow(),
+    awardedAt: timestamp("awarded_at", { withTimezone: true, precision: 3 }).notNull().defaultNow(),
   },
   (t) => [
     primaryKey({

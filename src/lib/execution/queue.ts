@@ -106,7 +106,11 @@ export async function completeJob(jobId: string, verdict: StoredVerdict): Promis
 
   if (job.submissionId) {
     const [submission] = await db
-      .select({ id: submissions.id, userId: submissions.userId, challengeId: submissions.challengeId })
+      .select({
+        id: submissions.id,
+        userId: submissions.userId,
+        challengeId: submissions.challengeId,
+      })
       .from(submissions)
       .where(eq(submissions.id, job.submissionId))
       .limit(1);
@@ -124,11 +128,7 @@ export async function completeJob(jobId: string, verdict: StoredVerdict): Promis
     // submission is a server-verified challenge completion. Anonymous runs
     // (userId null) never record progress. Best-effort: an award failure
     // must not fail the verdict write (04-CONTEXT D-08).
-    if (
-      submission?.userId &&
-      verdict.verdict === "passed" &&
-      submission.challengeId
-    ) {
+    if (submission?.userId && verdict.verdict === "passed" && submission.challengeId) {
       try {
         const { recordChallengeCompletion } = await import("@/lib/progress/recording");
         await recordChallengeCompletion(submission.userId, submission.challengeId);

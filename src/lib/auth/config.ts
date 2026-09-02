@@ -74,18 +74,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   callbacks: {
     jwt({ token, user }) {
+      if (user?.id) {
+        // Persist the user id — progress/authz checks key off session.user.id.
+        token.id = user.id;
+      }
       if (user?.role) {
         token.role = user.role;
       }
       return token;
     },
     session({ session, token }) {
-      if (
-        typeof token.role === "string" &&
-        (token.role === "student" || token.role === "admin") &&
-        session.user
-      ) {
-        session.user.role = token.role;
+      if (session.user) {
+        if (typeof token.id === "string") {
+          session.user.id = token.id;
+        }
+        if (
+          typeof token.role === "string" &&
+          (token.role === "student" || token.role === "admin")
+        ) {
+          session.user.role = token.role;
+        }
       }
       return session;
     },
