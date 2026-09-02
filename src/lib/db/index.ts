@@ -36,3 +36,11 @@ if (process.env.NODE_ENV !== "production") {
 export const db = drizzle(client, { schema });
 export { schema };
 export type Db = typeof db;
+
+/**
+ * Close the connection pool — used by the runner worker on shutdown so the
+ * process exits cleanly instead of hanging on open handles.
+ */
+export async function closeDb(): Promise<void> {
+  await client.end({ timeout: 5 });
+}

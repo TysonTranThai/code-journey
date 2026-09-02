@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import * as schema from "@/lib/db/schema";
 
 // Pure schema assertions — no database required.
-describe("db schema (phase 2 identity tables)", () => {
+describe("db schema (identity + execution tables)", () => {
   it("defines all six identity tables", () => {
     expect(schema.users).toBeDefined();
     expect(schema.accounts).toBeDefined();
@@ -28,11 +28,15 @@ describe("db schema (phase 2 identity tables)", () => {
     expect(columnNames).not.toContain("token");
   });
 
-  it("does not contain later-phase tables (curriculum/progress/submissions)", () => {
-    // Guardrail for the "DB stores user-generated state only" decision.
+  it("submissions are immutable snapshots — no updatedAt column", () => {
+    expect(schema.submissions).toBeDefined();
+    expect(Object.keys(schema.submissions)).not.toContain("updatedAt");
+  });
+
+  it("does not contain later-phase tables (progress/discussions)", () => {
+    // Guardrail for phase sequencing (progress = Phase 4, discussions = Phase 5).
     const exported = Object.keys(schema);
     expect(exported).not.toContain("progressEvents");
-    expect(exported).not.toContain("submissions");
     expect(exported).not.toContain("discussionThreads");
   });
 });

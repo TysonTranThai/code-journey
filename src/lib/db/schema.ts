@@ -1,13 +1,35 @@
-import { index, integer, pgEnum, pgTable, primaryKey, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  index,
+  integer,
+  jsonb,
+  pgEnum,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { randomUUID } from "node:crypto";
+
+/**
+ * Verdict written once by the runner worker (shape of
+ * src/lib/execution/types.ts VerdictPayload). Typed on both execution_jobs
+ * and submissions so queue/verdict code gets end-to-end types.
+ */
+export type StoredVerdict = {
+  verdict: "passed" | "failed" | "timeout" | "error";
+  perTestResults: { name: string; passed: boolean; message: string }[];
+  runtimeMs: number | null;
+  output: string;
+};
 
 /**
  * Phase 2 identity schema.
  *
  * The database stores USER-GENERATED STATE ONLY (docs/DATA-MODEL.md principle 2):
  * auth tables + profiles. Curriculum is content-as-data under src/content/ —
- * deliberately NOT database rows. Progress/submissions/discussions tables land
- * in Phases 3–5.
+ * deliberately NOT database rows. Execution/submission tables (Phase 3) store
+ * grading state; progress/discussions land in Phases 4–5.
  *
  * users/accounts/sessions/verification_tokens follow the Auth.js Drizzle
  * adapter's expected shape (https://authjs.dev/getting-started/adapters/drizzle).
@@ -118,6 +140,74 @@ export const profiles = pgTable("profiles", {
   avatarUrl: text("avatar_url"),
 });
 
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
-export type Profile = typeof profiles.$inferSelect;
+/**
+ * Immutable submission snapshots (03-CONTEXT D-07, DATA-MODEL principle 3).
+ * No updatedAt — verdict fields are written once by the worker, never edited.
+ * Anonymous runs record userId = null (CHAL-03: only logged-in submits count).
+ */
+export const submissions = pgTable(
+  "submissions",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => randomUUID()),
+    /** Null for anonymous runs. */
+    userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
+    challengeId: text("challenge_id").notNull(),
+    code: text("code").notNull(),
+    verdict: text("verdict"),
+    perTestResults: jsonb("per_test_results").$type<StoredVerdict["perTestResults"]>(),
+    runtimeMs: integer("runtime_ms"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("submissions_user_challenge_idx").on(t.userId, t.challengeId)],
+);
+
+/**
+ * Execution lifecycle (03-CONTEXT D-03). One row per sandbox run request.
+ * Workers claim via SELECT … FOR UPDATE SKIP LOCKED so multiple runner
+ * processes can share the queue safely. Payload carries ONLY code + tests +
+ * limits — never env vars or secrets.
+ */
+export const executionStatus = pgEnum("execution_status", [
+  "queued",
+  "claimed",
+  "running",
+  "completed",
+  "failed",
+]);
+
+export const executionJobs = pgTable(
+  "execution_jobs",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => randomUUID()),
+    submissionId: text("submission_id").references(() => submissions.id, {
+      onDelete: "cascade",
+    }),
+    status: executionStatus("status").notNull().default("queued"),
+    /** JobPayload — code + tests + limits only. */
+    payload: jsonb("payload").notNull(),
+    /** Final verdict, written once by the runner worker. */
+    verdictPayload: jsonb("verdict_payload").$type<StoredVerdict>(),
+    claimedBy: text("claimed_by"),
+    claimedAt: timestamp("claimed_at", { withTimezone: true }),
+    startedAt: timestamp("started_at", { withTimezone: true }),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+    attempts: integer("attempts").notNull().default(0),
+    error: text("error"),
+    /** True once a worker wrote a final verdict into verdictPayload. */
+    hasVerdict: boolean("has_verdict").notNull().default(false),
+    // Millisecond precision: claimJob orders by created_at, so same-second
+    // inserts must not collide (default clock_timestamp() is µs in PG16, but
+    // be explicit for portability).
+    createdAt: timestamp("created_at", { withTimezone: true, precision: 3 }).notNull().defaultNow(),
+  },
+  (t) => [index("execution_jobs_status_idx").on(t.status, t.createdAt)],
+);
+
+export type ExecutionJob = typeof executionJobs.$inferSelect;
+export type NewExecutionJob = typeof executionJobs.$inferInsert;
+export type Submission = typeof submissions.$inferSelect;
+export type NewSubmission = typeof submissions.$inferInsert;

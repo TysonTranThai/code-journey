@@ -26,6 +26,10 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      // The real `server-only` package throws outside RSC — vitest runs in
+      // plain Node, so alias it to an empty stub. Next's production build
+      // still enforces the real guard.
+      "server-only": path.resolve(__dirname, "tests/stubs/server-only.ts"),
     },
   },
 });

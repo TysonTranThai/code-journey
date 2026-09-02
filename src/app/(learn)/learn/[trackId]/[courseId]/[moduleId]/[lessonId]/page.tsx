@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { createElement } from "react";
 
 import { Breadcrumbs } from "@/components/learn/Breadcrumbs";
 import { LessonPager } from "@/components/learn/LessonPager";
@@ -100,7 +101,10 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
       {MdxBody ? (
         <div className="lesson-body flex flex-col gap-4 text-zinc-300">
-          <MdxBody />
+          {/* createElement (not JSX) — the component comes from the static
+              MDX import map; a PascalCase JSX variable here trips the
+              react-compiler "create components during render" rule. */}
+          {createElement(MdxBody)}
         </div>
       ) : (
         <p className="rounded-lg bg-amber-950/60 px-4 py-3 text-sm text-amber-300">
