@@ -112,7 +112,7 @@ function loadLesson(lessonsDir: string, lessonId: string, moduleDir: string): Lo
   return { lesson, filePath, bodyPath };
 }
 
-function loadModule(modulesDir: string, moduleId: string, courseDir: string): LoadedModule {
+function loadModule(modulesDir: string, moduleId: string): LoadedModule {
   const dir = path.join(modulesDir, moduleId);
   const filePath = path.join(dir, "module.json");
   if (!existsSync(filePath)) {
@@ -135,7 +135,7 @@ function loadModule(modulesDir: string, moduleId: string, courseDir: string): Lo
   return { module: moduleData, filePath, dir, lessons };
 }
 
-function loadCourse(coursesDir: string, courseId: string, trackDir: string): LoadedCourse {
+function loadCourse(coursesDir: string, courseId: string): LoadedCourse {
   const dir = path.join(coursesDir, courseId);
   const filePath = path.join(dir, "course.json");
   if (!existsSync(filePath)) {
@@ -153,7 +153,7 @@ function loadCourse(coursesDir: string, courseId: string, trackDir: string): Loa
         `Invalid curriculum content at ${filePath}: duplicate module reference "${moduleId}"`,
       );
     }
-    modules.set(moduleId, loadModule(modulesDir, moduleId, dir));
+    modules.set(moduleId, loadModule(modulesDir, moduleId));
   }
   return { course, filePath, dir, modules };
 }
@@ -170,7 +170,7 @@ function loadTrack(trackDir: string): LoadedTrack {
         `Invalid curriculum content at ${filePath}: duplicate course reference "${courseId}"`,
       );
     }
-    courses.set(courseId, loadCourse(coursesDir, courseId, trackDir));
+    courses.set(courseId, loadCourse(coursesDir, courseId));
   }
   return { track, filePath, dir: trackDir, courses };
 }

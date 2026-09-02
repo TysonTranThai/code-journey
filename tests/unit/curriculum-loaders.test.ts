@@ -84,8 +84,6 @@ describe("curriculum loaders (invalid content fails loudly)", () => {
   });
 
   it("empty-lessons-array: module with no lessons throws", () => {
-    expect(() => getTracks(fixtureRoot("empty-lessons-array"))).toThrow(
-      /at least one lesson/,
-    );
+    expect(() => getTracks(fixtureRoot("empty-lessons-array"))).toThrow(/at least one lesson/);
   });
 });
