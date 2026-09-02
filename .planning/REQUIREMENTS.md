@@ -98,13 +98,43 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (populated by roadmap) | | |
+| PLAT-01 | Phase 1 | Pending |
+| PLAT-02 | Phase 1 | Pending |
+| PLAT-04 | Phase 1 | Pending |
+| AUTH-01 | Phase 2 | Pending |
+| AUTH-02 | Phase 2 | Pending |
+| AUTH-03 | Phase 2 | Pending |
+| AUTH-04 | Phase 2 | Pending |
+| AUTH-05 | Phase 2 | Pending |
+| CURR-01 | Phase 2 | Pending |
+| CURR-02 | Phase 2 | Pending |
+| CURR-03 | Phase 2 | Pending |
+| CURR-04 | Phase 2 | Pending |
+| CHAL-01 | Phase 3 | Pending |
+| CHAL-02 | Phase 3 | Pending |
+| CHAL-03 | Phase 3 | Pending |
+| CHAL-04 | Phase 3 | Pending |
+| CHAL-05 | Phase 3 | Pending |
+| CHAL-06 | Phase 3 | Pending |
+| PROG-01 | Phase 4 | Pending |
+| PROG-02 | Phase 4 | Pending |
+| PROG-03 | Phase 4 | Pending |
+| PROG-04 | Phase 4 | Pending |
+| COMM-01 | Phase 5 | Pending |
+| COMM-02 | Phase 5 | Pending |
+| COMM-03 | Phase 5 | Pending |
+| AI-01 | Phase 5 | Pending |
+| AI-02 | Phase 5 | Pending |
+| AI-03 | Phase 5 | Pending |
+| AI-04 | Phase 5 | Pending |
+| PLAT-03 | Phase 6 | Pending |
+| PLAT-05 | Phase 6 | Pending |
 
 **Coverage:**
 - v1 requirements: 31 total
-- Mapped to phases: 0
-- Unmapped: 31 ⚠️
+- Mapped to phases: 31
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-09-02*
-*Last updated: 2026-09-02 after initial definition*
+*Last updated: 2026-09-02 after roadmap creation — all 31 v1 requirements mapped to phases*
