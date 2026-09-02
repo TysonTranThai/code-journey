@@ -27,6 +27,19 @@ let executeFn: (payload: {
   output: "runner not implemented (03-02 pending)",
 });
 
+// 03-02: the real hardened-container execution is the default when the
+// sandbox module loads successfully. Tests can still override via
+// setExecuteFn.
+try {
+  const { executeJob } = await import("./execute");
+  executeFn = executeJob;
+} catch (err) {
+  console.warn(
+    "[runner] real executor unavailable, using stub:",
+    err instanceof Error ? err.message : err,
+  );
+}
+
 /** Test/ops hook: replace the execute implementation. */
 export function setExecuteFn(fn: typeof executeFn): void {
   executeFn = fn;
