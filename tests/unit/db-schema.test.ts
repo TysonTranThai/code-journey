@@ -33,10 +33,15 @@ describe("db schema (identity + execution tables)", () => {
     expect(Object.keys(schema.submissions)).not.toContain("updatedAt");
   });
 
-  it("does not contain later-phase tables (progress/discussions)", () => {
-    // Guardrail for phase sequencing (progress = Phase 4, discussions = Phase 5).
+  it("progress_events is append-only — no updatedAt column", () => {
+    expect(schema.progressEvents).toBeDefined();
+    expect(Object.keys(schema.progressEvents)).not.toContain("updatedAt");
+  });
+
+  it("does not contain later-phase tables (discussions/mentor)", () => {
+    // Guardrail for phase sequencing (discussions/mentor = Phase 5).
     const exported = Object.keys(schema);
-    expect(exported).not.toContain("progressEvents");
     expect(exported).not.toContain("discussionThreads");
+    expect(exported).not.toContain("mentorSessions");
   });
 });
