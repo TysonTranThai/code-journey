@@ -22,10 +22,10 @@ See: .planning/PROJECT.md (updated 2026-09-02)
 
 ## Current Position
 
-Phase: 1 of 6 (Development Foundation & Verification)
-Plan: 1 of 3 in current phase
-Status: In progress (Phase 0 environment setup executed as part of initialization)
-Last activity: 2026-09-02 — WEB-ONLY product correction applied to planning artifacts (PROJECT/REQUIREMENTS/ROADMAP/STATE); no architecture conflict found; Phase 2 cleared to start
+Phase: 2 of 6 (Data, Auth & Content Pipeline)
+Plan: 0 of 4 in current phase (02-01…02-04 planned; waves 1–2)
+Status: Planned — 02-CONTEXT.md + 4 PLAN files ready for `$gsd-execute-phase 2`
+Last activity: 2026-09-02 — Phase 2 discussed and planned: auth stack pinned (next-auth@5.0.0-beta.32 + @auth/drizzle-adapter@1.11.3, registry-verified), content-as-data pipeline designed, DB-only-identity schema confirmed
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -49,12 +49,13 @@ None yet.
 
 ### Blockers/Concerns
 
-- Ports 3001 and 5173 are occupied by other processes on the dev machine — dev server must use an alternate port (documented in README)
-- Docker daemon was not running at audit time; Docker Desktop is installed — `pnpm db:up` (Phase 2) should surface a clear error if the daemon is down
+- **Docker daemon is not running on this machine (verified 2026-09-02)** — plan 02-01 requires Docker Desktop started before `pnpm db:up`; db scripts must fail loudly with guidance, and integration tests skip when the DB is unreachable
+- Ports 3001 and 5173 are occupied by other processes on the dev machine — dev server must use an alternate port (documented in README); port 3000 and 5433 verified free
 - No global git `user.name` was configured on this machine; repo-local identity was set during init
+- GitHub OAuth (AUTH-03) needs a real OAuth app from the user — recorded as user_setup in plan 02-02; platform works without it (env-gated provider)
 
 ## Session Continuity
 
 Last session: 2026-09-02
-Stopped at: Project initialization complete (PROJECT.md, config, research, REQUIREMENTS.md, ROADMAP.md, STATE.md); Phase 1 foundation work in progress
+Stopped at: Phase 2 planning complete (discuss → plan executed; no implementation). Next: `$gsd-execute-phase 2` — start with plan 02-01 (Docker Compose Postgres + Drizzle) and 02-03 (content pipeline), both Wave 1.
 Resume file: None
