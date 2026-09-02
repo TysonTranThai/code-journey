@@ -16,18 +16,18 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-02)
 
 **Core value:** A student can learn to code for free through structured lessons, auto-graded sandboxed challenges, and verified progress — with an AI mentor that teaches instead of solving.
-**Current focus:** Phase 5 — Community & AI Mentor
+**Current focus:** Phase 6 — Hardening, Accessibility & Launch Readiness
 
 **Standing product constraint (2026-09-02):** Code Journey is WEB-ONLY — the website is the product; the browser is the platform. No native/shell/mobile targets (Tauri/Electron/Swift/React Native/Flutter barred); responsive web UI required (intentionally designed mobile, not shrunken desktop); student-code execution and AI are server-side web APIs only; SEO for public content, no-index for private data; deployment is normal web infra, provider unselected (avoid vendor lock-in). Recorded in PROJECT.md, REQUIREMENTS.md (PLAT-06/07/08), ROADMAP.md.
 
 ## Current Position
 
-Phase: 4 of 6 (Progress & Achievements) — EXECUTION COMPLETE
-Plan: 2 of 2 in current phase (04-01…04-02 executed + verified)
-Status: Phase complete — all 4 PROG requirements implemented and live-verified (forged writes 401, verdict→event→award chain, dashboard 200 + no-index)
-Last activity: 2026-09-02 — Phase 4 executed: progress_events/achievements schema, verdict-derived challenge completion, server-verified lesson completion API, derived streaks, content-as-data achievement defs, responsive no-index dashboard. FIXED live auth bug: session.user.id was never persisted (blocked all progress attribution). 78/78 tests.
+Phase: 5 of 6 (Community & AI Mentor) — EXECUTION COMPLETE
+Plan: 3 of 3 in current phase (05-01…05-03; 05-03 merged into 05-02 as UI+degradation)
+Status: Phase complete — COMM-01…03 + AI-01…04 implemented; refusal suite green; platform fully functional without AI key
+Last activity: 2026-09-02 — Phase 5 executed: lesson discussions (public read, authenticated writes, cascades), MentorAdapter seam + NullMentor content-hint degradation, server-side refusal filter + hint ladder, per-user daily quotas (mentor_requests), MentorPanel on challenge pages. 94/94 tests.
 
-Progress: [█████░░░░░] 70% (14 of 23 plans across Phases 1–4)
+Progress: [███████░░░] 83% (17 of 23 plans across Phases 1–5)
 
 ## Accumulated Context
 
@@ -41,7 +41,8 @@ Recent decisions affecting current work:
 - Progress representation locked: append-only progress_events, unique (user, contentType, contentId); challenge completion derives from sandbox verdicts (D-05 Phase 4); lesson completion server-verifies challenge passes; streaks derived at read time; achievement defs as content-as-data with idempotent server awards
 - Execution isolation locked: hardened Docker sandbox, malicious-sample suite green; Judge0/Firecracker remain production paths
 - Monaco via @monaco-editor/react (CDN loader); drafts in localStorage
-- Progress backbone live: append-only progress_events (unique per user+content), achievements idempotent, streak derived at read; challenge completion derives from sandbox verdicts; lesson completion requires DB-verified challenge passes; session.user.id persistence fixed (JWT callback)
+- Mentor: provider-agnostic MentorAdapter seam; NullMentor degrades to content-hint hints (AI-04); refusal filter + hint ladder server-side (refusal suite green); mentor_requests per-user daily quotas (10 hints / 20 explains); real provider arrives only with MENTOR_API_KEY + a chosen provider
+- Discussions: threads anchored to content lesson ids; public read, session-derived authorship; plain-text comments (React-escaped)
 - AUTH_SECRET required in prod mode; dev secret in .env.local
 
 ### Pending Todos
@@ -59,5 +60,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-09-02
-Stopped at: Phase 4 execution complete — all plans committed; verdict→event→award→dashboard chain live-verified. Next: Phase 5 discuss→plan (discussions + pedagogy-first AI mentor with refusal tests).
+Stopped at: Phase 5 execution complete — discussions + mentor committed. Next: Phase 6 discuss→plan (E2E suite, a11y pass, security review + observability) then milestone audit.
 Resume file: None

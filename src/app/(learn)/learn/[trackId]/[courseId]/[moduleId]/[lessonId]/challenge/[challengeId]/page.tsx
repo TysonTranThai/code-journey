@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 
 import { ChallengeWorkspace } from "@/components/challenge/ChallengeWorkspace";
 import { Breadcrumbs } from "@/components/learn/Breadcrumbs";
+import { auth } from "@/lib/auth/config";
 import { getChallenge, getLesson, getTracks } from "@/lib/curriculum/loaders";
+import { mentorAvailable } from "@/lib/mentor/types";
 import { siteConfig } from "@/lib/site-config";
 
 interface ChallengePageProps {
@@ -53,6 +55,7 @@ export default async function ChallengePage({ params }: ChallengePageProps) {
     notFound();
   }
   const track = getTracks().find((t) => t.id === trackId);
+  const [session] = await Promise.all([auth()]);
 
   return (
     <article className="mx-auto flex w-full max-w-6xl flex-col gap-6">
@@ -85,6 +88,9 @@ export default async function ChallengePage({ params }: ChallengePageProps) {
         lessonTitle={lesson.title}
         lessonHref={`/learn/${trackId}/${courseId}/${moduleId}/${lessonId}`}
         location={{ trackId, courseId, moduleId, lessonId }}
+        mentorAvailable={mentorAvailable()}
+        signedIn={Boolean(session?.user)}
+        testHints={challenge.tests.map((t) => t.hint)}
       />
     </article>
   );

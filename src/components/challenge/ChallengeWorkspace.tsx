@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { PerTestResult, Verdict } from "@/lib/execution/types";
 import { useDraft } from "@/lib/challenges/use-draft";
+import { MentorPanel } from "./MentorPanel";
 import { CodeEditor } from "./CodeEditor";
 import { MobileTabs } from "./MobileTabs";
 import { VerdictPanel, type RunState } from "./VerdictPanel";
@@ -28,6 +29,9 @@ export function ChallengeWorkspace({
   lessonTitle,
   lessonHref,
   location,
+  mentorAvailable,
+  signedIn,
+  testHints,
 }: {
   challengeId: string;
   title: string;
@@ -42,6 +46,9 @@ export function ChallengeWorkspace({
     moduleId: string;
     lessonId: string;
   };
+  mentorAvailable: boolean;
+  signedIn: boolean;
+  testHints: string[];
 }) {
   const { code, setCode, clearDraft, hasDraft } = useDraft(challengeId, boilerplate);
   const [runState, setRunState] = useState<RunState>({ phase: "idle" });
@@ -132,10 +139,25 @@ export function ChallengeWorkspace({
     }
   }, [code, challengeId, location, startPolling]);
 
+  // The latest failing test (if the verdict is done + failed) feeds "explain my error".
+  const failedTest =
+    runState.phase === "done" && runState.verdict === "failed"
+      ? (runState.perTestResults.find((r) => !r.passed) ?? null)
+      : null;
+
   const instructions = (
     <div className="flex flex-col gap-4 text-sm leading-relaxed text-zinc-300">
       <p className="whitespace-pre-wrap">{prompt}</p>
       <p className="text-xs uppercase tracking-wide text-zinc-500">Difficulty: {difficulty}</p>
+      <MentorPanel
+        mentorAvailable={mentorAvailable}
+        signedIn={signedIn}
+        testHints={testHints}
+        challengeId={challengeId}
+        challengeTitle={title}
+        prompt={prompt}
+        failedTest={failedTest}
+      />
       {hasDraft && (
         <p className="text-xs text-zinc-500">
           Draft restored from your last session.{" "}

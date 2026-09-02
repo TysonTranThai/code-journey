@@ -272,3 +272,68 @@ export type ProgressEvent = typeof progressEvents.$inferSelect;
 export type NewProgressEvent = typeof progressEvents.$inferInsert;
 export type Achievement = typeof achievements.$inferSelect;
 export type NewAchievement = typeof achievements.$inferInsert;
+
+/**
+ * Discussion threads (COMM-01…03): anchored to a content-as-data lesson id.
+ * Public read; authenticated write (enforced in server actions).
+ */
+export const discussionThreads = pgTable(
+  "discussion_threads",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => randomUUID()),
+    lessonId: text("lesson_id").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, precision: 3 }).notNull().defaultNow(),
+  },
+  (t) => [index("discussion_threads_lesson_idx").on(t.lessonId, t.createdAt)],
+);
+
+export const comments = pgTable(
+  "comments",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => randomUUID()),
+    threadId: text("thread_id")
+      .notNull()
+      .references(() => discussionThreads.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    body: text("body").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, precision: 3 }).notNull().defaultNow(),
+  },
+  (t) => [index("comments_thread_idx").on(t.threadId, t.createdAt)],
+);
+
+export type DiscussionThread = typeof discussionThreads.$inferSelect;
+export type NewDiscussionThread = typeof discussionThreads.$inferInsert;
+export type Comment = typeof comments.$inferSelect;
+export type NewComment = typeof comments.$inferInsert;
+
+/**
+ * Mentor request log (AI-03): per-user daily quotas counted server-side.
+ * Doubles as the audit trail for mentor usage (DATA-MODEL principle 5).
+ */
+export const mentorRequests = pgTable(
+  "mentor_requests",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    kind: text("kind").notNull(), // 'hintsPerDay' | 'explainsPerDay'
+    createdAt: timestamp("created_at", { withTimezone: true, precision: 3 }).notNull().defaultNow(),
+  },
+  (t) => [index("mentor_requests_user_idx").on(t.userId, t.createdAt)],
+);
+
+export type MentorRequest = typeof mentorRequests.$inferSelect;
+export type NewMentorRequest = typeof mentorRequests.$inferInsert;

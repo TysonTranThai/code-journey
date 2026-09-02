@@ -38,10 +38,14 @@ describe("db schema (identity + execution tables)", () => {
     expect(Object.keys(schema.progressEvents)).not.toContain("updatedAt");
   });
 
-  it("does not contain later-phase tables (discussions/mentor)", () => {
-    // Guardrail for phase sequencing (discussions/mentor = Phase 5).
-    const exported = Object.keys(schema);
-    expect(exported).not.toContain("discussionThreads");
-    expect(exported).not.toContain("mentorSessions");
+  it("comments are append-only — no updatedAt column", () => {
+    expect(schema.comments).toBeDefined();
+    expect(Object.keys(schema.comments)).not.toContain("updatedAt");
+  });
+
+  it("does not contain later-phase tables (mentor sessions)", () => {
+    // Mentor conversation persistence arrives with a real provider (Phase 5+
+    // decision documented in 05-CONTEXT deferred).
+    expect(Object.keys(schema)).not.toContain("mentorSessions");
   });
 });

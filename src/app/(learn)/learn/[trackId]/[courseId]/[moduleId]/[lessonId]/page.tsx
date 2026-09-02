@@ -14,6 +14,7 @@ import {
   getLinearNeighbors,
   getTracks,
 } from "@/lib/curriculum/loaders";
+import { countLessonThreads } from "@/lib/discussions/threads";
 import { getLessonMdx } from "@/lib/curriculum/mdx-map";
 import { siteConfig } from "@/lib/site-config";
 
@@ -70,6 +71,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const { prev, next } = getLinearNeighbors(trackId, lessonId);
   const track = getTracks().find((t) => t.id === trackId);
   const challenges = getLessonChallenges(trackId, courseId, moduleId, lessonId);
+  const threadCount = await countLessonThreads(lessonId);
 
   const MdxBody = getLessonMdx(lesson.contentPath);
 
@@ -114,6 +116,23 @@ export default async function LessonPage({ params }: LessonPageProps) {
           it.
         </p>
       )}
+
+      <nav
+        aria-label="Lesson discussion"
+        className="flex items-center justify-between gap-3 rounded-lg border border-zinc-800 bg-zinc-900/60 px-4 py-3 text-sm transition-colors hover:border-sky-500/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+      >
+        <a
+          href={`/learn/${trackId}/${courseId}/${moduleId}/${lessonId}/discussion`}
+          className="flex w-full items-center justify-between"
+        >
+          <span className="font-medium text-zinc-200">Questions & discussion</span>
+          <span className="text-xs text-zinc-500">
+            {threadCount === 0
+              ? "Be the first to ask"
+              : `${threadCount} ${threadCount === 1 ? "thread" : "threads"}`}
+          </span>
+        </a>
+      </nav>
 
       {challenges.length > 0 && (
         <nav aria-label="Practice challenges" className="flex flex-col gap-3">

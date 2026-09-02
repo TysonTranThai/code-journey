@@ -107,9 +107,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 05-01: Discussions (threads anchored to lessons, reply, read access for visitors)
-- [ ] 05-02: MentorAdapter interface + guardrails (hint ladders, refusal tests, rate limiting)
-- [ ] 05-03: Mentor UI (hint/error-explain actions on challenge pages, graceful no-key degradation)
+- [x] 05-01: Discussions (threads anchored to lessons, reply, read access for visitors)
+- [x] 05-02: MentorAdapter interface + guardrails (hint ladders, refusal tests, rate limiting)
+- [x] 05-03: Mentor UI (hint/error-explain actions on challenge pages, graceful no-key degradation) — executed within 05-02 (UI + degradation delivered together)
 
 ### Phase 6: Hardening, Accessibility & Launch Readiness
 **Goal**: Public-quality bar: accessibility, security review, observability, and E2E coverage
@@ -139,5 +139,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Data, Auth & Content Pipeline | 4/4 | Complete (executed + live-verified) | 2026-09-02 |
 | 3. Challenge Loop & Sandbox Execution | 4/4 | Complete (executed + E2E verified; isolation hard gate green) | 2026-09-02 |
 | 4. Progress & Achievements | 2/2 | Complete (executed + live-verified: verdict→event→award→dashboard) | 2026-09-02 |
-| 5. Community & AI Mentor | 0/3 | Not started | - |
+| 5. Community & AI Mentor | 3/3 | Complete (refusal suite green; no-key degradation verified; rate-limited) | 2026-09-02 |
 | 6. Hardening, Accessibility & Launch Readiness | 0/3 | Not started | - |
