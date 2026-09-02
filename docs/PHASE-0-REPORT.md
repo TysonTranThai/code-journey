@@ -107,3 +107,18 @@ transport, content-as-data pipeline (MDX/JSON + zod build-time validation), and 
 curriculum browsing UI. Requirements covered: AUTH-01…05, CURR-01…04.
 
 Start it with: `$gsd-plan-phase 2` (or `$gsd-discuss-phase 2` to clarify approach first).
+
+## POST-REPORT UPDATE (2026-09-02): WEB-ONLY PRODUCT CORRECTION
+
+After this report was written, the project owner established a permanent constraint:
+**Code Journey is a WEB-ONLY product** — the website is the product, the browser is the
+platform. No native/shell/mobile targets (Tauri, Electron, Swift, React Native, Flutter
+are barred); the UI must be responsive (desktop → tablet → intentionally designed
+mobile); student-code execution and AI are server-side web APIs only; public content is
+SEO-indexable while private user data is never exposed to search engines; deployment is
+normal web infrastructure with the provider unselected (avoid avoidable vendor lock-in).
+
+**No architecture conflict was found** — the Phase 0 scaffold (Next.js modular monolith,
+server-side execution and AI by design) was already fully consistent with the constraint.
+The constraint is now recorded in `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`
+(PLAT-06/07/08), `.planning/ROADMAP.md`, `.planning/STATE.md`, and `AGENTS.md`.
