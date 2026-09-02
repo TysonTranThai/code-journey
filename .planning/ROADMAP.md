@@ -44,7 +44,7 @@ Plans:
 **Goal**: Working identity and data layer plus the curriculum content pipeline; visitors can browse real structured lessons
 **Mode:** mvp
 **Depends on**: Phase 1
-**Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, CURR-01, CURR-02, CURR-03, CURR-04
+**Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, CURR-01, CURR-02, CURR-03, CURR-04, PLAT-07
 **Success Criteria** (what must be TRUE):
   1. A visitor can browse tracks → courses → lessons and read a rendered lesson without an account
   2. A user can sign up with email/password, log in via GitHub, and stay logged in across refreshes; logout works everywhere
@@ -63,7 +63,7 @@ Plans:
 **Goal**: The core product loop — a student writes code in the browser, submits, and gets test-by-test verdicts from an isolated sandbox
 **Mode:** mvp
 **Depends on**: Phase 2
-**Requirements**: CHAL-01, CHAL-02, CHAL-03, CHAL-04, CHAL-05, CHAL-06
+**Requirements**: CHAL-01, CHAL-02, CHAL-03, CHAL-04, CHAL-05, CHAL-06, PLAT-08
 **Success Criteria** (what must be TRUE):
   1. A user can write code in the browser editor, run it against challenge tests, and see pass/fail per test
   2. Passing submissions are recorded server-side and linked to the user and challenge
@@ -115,7 +115,7 @@ Plans:
 **Goal**: Public-quality bar: accessibility, security review, observability, and E2E coverage
 **Mode:** mvp
 **Depends on**: Phase 5
-**Requirements**: PLAT-03, PLAT-05
+**Requirements**: PLAT-03, PLAT-05, PLAT-06
 **Success Criteria** (what must be TRUE):
   1. Critical-path E2E suite (signup → lesson → challenge → pass → progress) passes in CI-equivalent runs
   2. Keyboard navigation and WCAG 2.1 AA contrast verified on core flows (lessons, challenges, dashboard, auth)
