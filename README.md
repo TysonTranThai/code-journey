@@ -48,8 +48,25 @@ All commands verified working as of 2026-09-02:
 | `pnpm test`         | Run unit tests (Vitest)                                    |
 | `pnpm test:watch`   | Vitest in watch mode                                       |
 
-Planned (added in their roadmap phases, not before): `pnpm db:up`, `pnpm db:migrate`,
-`pnpm db:seed`, `pnpm test:e2e`.
+## Database (Phase 2)
+
+PostgreSQL 16 runs via Docker Compose (no native install needed):
+
+```bash
+pnpm db:up         # start Postgres on localhost:5433 (requires Docker Desktop)
+pnpm db:migrate    # apply Drizzle migrations
+pnpm db:seed       # insert dev identity fixtures (dev-student / dev-admin)
+pnpm db:reset      # drop volume, recreate, migrate, seed (clean slate)
+pnpm db:down       # stop the container (data volume kept)
+pnpm db:studio     # Drizzle Studio (browse data)
+```
+
+Copy `.env.example` to `.env.local` first — `DATABASE_URL` points at
+`localhost:5433`. The seed creates **local development fixtures only**
+(password `dev-password-123`), never real accounts. `pnpm test` includes
+DB integration tests that **skip automatically** when the database is down.
+
+Planned (added in their roadmap phases, not before): `pnpm test:e2e`.
 
 ## Architecture (summary)
 

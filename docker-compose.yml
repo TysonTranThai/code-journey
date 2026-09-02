@@ -1,0 +1,23 @@
+# Code Journey local development database.
+# Start: pnpm db:up — Stop: pnpm db:down — Clean slate: pnpm db:reset
+# Port 5433 on purpose: 5432 is commonly taken by a local Homebrew Postgres.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: codejourney-db
+    environment:
+      POSTGRES_USER: codejourney
+      POSTGRES_PASSWORD: codejourney
+      POSTGRES_DB: codejourney
+    ports:
+      - "5433:5432"
+    volumes:
+      - codejourney_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U codejourney -d codejourney"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  codejourney_pgdata:

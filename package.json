@@ -17,10 +17,20 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down",
+    "db:reset": "docker compose down -v && pnpm db:up && pnpm db:migrate && pnpm db:seed",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed": "tsx src/lib/db/seed.ts",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "bcryptjs": "3.0.3",
+    "drizzle-orm": "0.45.2",
     "next": "^16.3.4",
+    "postgres": "3.4.9",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "zod": "^4.5.4"
@@ -30,10 +40,12 @@
     "@types/node": "^22",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
+    "drizzle-kit": "0.31.10",
     "eslint": "~9.39.5",
     "eslint-config-next": "^16.3.4",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.3.3",
+    "tsx": "4.23.13",
     "typescript": "~6.0.3",
     "vitest": "^4.1.11"
   }
