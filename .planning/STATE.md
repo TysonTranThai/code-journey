@@ -16,16 +16,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-02)
 
 **Core value:** A student can learn to code for free through structured lessons, auto-graded sandboxed challenges, and verified progress — with an AI mentor that teaches instead of solving.
-**Current focus:** Phase 1 — Development Foundation & Verification
+**Current focus:** Phase 3 — Challenge Loop & Sandbox Execution
 
 **Standing product constraint (2026-09-02):** Code Journey is WEB-ONLY — the website is the product; the browser is the platform. No native/shell/mobile targets (Tauri/Electron/Swift/React Native/Flutter barred); responsive web UI required (intentionally designed mobile, not shrunken desktop); student-code execution and AI are server-side web APIs only; SEO for public content, no-index for private data; deployment is normal web infra, provider unselected (avoid vendor lock-in). Recorded in PROJECT.md, REQUIREMENTS.md (PLAT-06/07/08), ROADMAP.md.
 
 ## Current Position
 
-Phase: 2 of 6 (Data, Auth & Content Pipeline) — EXECUTION COMPLETE
-Plan: 4 of 4 in current phase (02-01…02-04 all executed + verified)
-Status: Phase complete pending `$gsd-transition` review — all 10 phase requirements implemented, 5 success criteria verified
-Last activity: 2026-09-02 — Phase 2 executed end-to-end: DB (Docker+Drizzle), auth (Auth.js v5, live-verified), content pipeline (zod-validated, build-failing on invalid), curriculum UI + SEO. 41/41 tests.
+Phase: 3 of 6 (Challenge Loop & Sandbox Execution) — PLANNING COMPLETE
+Plan: 0 of 4 in current phase (03-01…03-04 planned)
+Status: Phase 3 planned (1 CONTEXT + 4 PLANs) — ready for execution
+Last activity: 2026-09-02 — Phase 2 complete (all plans verified); Phase 3 discussed + planned: Postgres-backed execution queue, hardened node:22-alpine sandbox (isolation suite = hard gate), challenge content model, submissions API, responsive challenge workspace UI.
 
 Progress: [██░░░░░░░░] 33% (8 of 23 plans across Phases 1–2)
 
@@ -39,7 +39,10 @@ Recent decisions affecting current work:
 - Auth.js v5 pinned (next-auth@5.0.0-beta.32 + @auth/drizzle-adapter@1.11.3), JWT sessions, bcrypt 12, env-gated GitHub — live-verified (login/session/signout via curl)
 - DB stores identity only; curriculum is content-as-data (JSON+MDX under src/content, zod build-time validation, invalid content fails build — proven by fixture tests)
 - MDX via @next/mdx with serializable config (Turbopack constraint); lesson bodies resolved through a static import map
-- Progress representation locked for Phase 4: append-only progress_events, server-verified writes only
+- Execution isolation locked: hardened Docker (node:22-alpine pinned, no-network, read-only rootfs, cap-drop ALL, non-root, wall-clock timeout); Judge0/Firecracker remain production-evolution paths; malicious-sample suite is the phase gate
+- Execution queue locked: Postgres-backed execution_jobs, FOR UPDATE SKIP LOCKED claims, separate runner worker process (`pnpm worker`) — web tier never spawns interpreters
+- Challenge content extends content-as-data: challengeSchema with per-test educational failure hints; submissions are immutable snapshots
+- Draft persistence = localStorage keyed by challenge id (client-only)
 - AUTH_SECRET required in prod mode (live 500 caught) — dev secret generated into .env.local
 
 ### Pending Todos
@@ -55,5 +58,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-09-02
-Stopped at: Phase 2 execution complete — all 4 plans committed (94dec56, 05d5823, 6a5aebb, e8e9dfd); live auth + SEO verification passed. Next: `$gsd-transition 2` (mark complete) then Phase 3 discuss→plan (challenge loop & sandbox).
+Stopped at: Phase 3 planning complete (03-CONTEXT + 4 PLANs committed). Next: execute 03-01 + 03-03 (wave 1), then 03-02 + 03-04 (wave 2).
 Resume file: None
