@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-09-02)
 
 ## Current Position
 
-Phase: 2 of 6 (Data, Auth & Content Pipeline)
-Plan: 0 of 4 in current phase (02-01…02-04 planned; waves 1–2)
-Status: Planned — 02-CONTEXT.md + 4 PLAN files ready for `$gsd-execute-phase 2`
-Last activity: 2026-09-02 — Phase 2 discussed and planned: auth stack pinned (next-auth@5.0.0-beta.32 + @auth/drizzle-adapter@1.11.3, registry-verified), content-as-data pipeline designed, DB-only-identity schema confirmed
+Phase: 2 of 6 (Data, Auth & Content Pipeline) — EXECUTION COMPLETE
+Plan: 4 of 4 in current phase (02-01…02-04 all executed + verified)
+Status: Phase complete pending `$gsd-transition` review — all 10 phase requirements implemented, 5 success criteria verified
+Last activity: 2026-09-02 — Phase 2 executed end-to-end: DB (Docker+Drizzle), auth (Auth.js v5, live-verified), content pipeline (zod-validated, build-failing on invalid), curriculum UI + SEO. 41/41 tests.
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 33% (8 of 23 plans across Phases 1–2)
 
 ## Accumulated Context
 
@@ -36,12 +36,11 @@ Progress: [░░░░░░░░░░] 0%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- Stack locked: Next.js 16 + TypeScript 7 + Tailwind 4, Drizzle ORM + PostgreSQL 16, pnpm, Vitest + Playwright
-- Modular monolith with execution isolation as the one hard security boundary
-- Content-as-data curriculum with build-time zod validation
-- AI mentor: provider-agnostic adapter, pedagogy-first guardrails, platform fully functional without a key
-- Prisma excluded for now: npm `latest` is an RC (8.0.0-rc.12); stable 7.10.0 kept as documented alternative
-- WEB-ONLY product constraint (2026-09-02, user directive): website is the product; responsive web UI across breakpoints; execution/AI server-side behind web APIs; no native app targets; SEO on public pages, no-index on private data
+- Auth.js v5 pinned (next-auth@5.0.0-beta.32 + @auth/drizzle-adapter@1.11.3), JWT sessions, bcrypt 12, env-gated GitHub — live-verified (login/session/signout via curl)
+- DB stores identity only; curriculum is content-as-data (JSON+MDX under src/content, zod build-time validation, invalid content fails build — proven by fixture tests)
+- MDX via @next/mdx with serializable config (Turbopack constraint); lesson bodies resolved through a static import map
+- Progress representation locked for Phase 4: append-only progress_events, server-verified writes only
+- AUTH_SECRET required in prod mode (live 500 caught) — dev secret generated into .env.local
 
 ### Pending Todos
 
@@ -49,13 +48,12 @@ None yet.
 
 ### Blockers/Concerns
 
-- **Docker daemon is not running on this machine (verified 2026-09-02)** — plan 02-01 requires Docker Desktop started before `pnpm db:up`; db scripts must fail loudly with guidance, and integration tests skip when the DB is unreachable
-- Ports 3001 and 5173 are occupied by other processes on the dev machine — dev server must use an alternate port (documented in README); port 3000 and 5433 verified free
-- No global git `user.name` was configured on this machine; repo-local identity was set during init
-- GitHub OAuth (AUTH-03) needs a real OAuth app from the user — recorded as user_setup in plan 02-02; platform works without it (env-gated provider)
+- GitHub OAuth (AUTH-03) needs a real OAuth app from the user — provider is env-gated; platform works without it
+-remark-gfm/rehype-slug installed but not wired (Turbopack serializable-options constraint) — GFM tables in MDX render as plain tables; programmatic compile is the documented fallback
+- Pages render dynamically due to session read in root layout — SSG/PPR split deferred to Phase 6 performance work
 
 ## Session Continuity
 
 Last session: 2026-09-02
-Stopped at: Phase 2 planning complete (discuss → plan executed; no implementation). Next: `$gsd-execute-phase 2` — start with plan 02-01 (Docker Compose Postgres + Drizzle) and 02-03 (content pipeline), both Wave 1.
+Stopped at: Phase 2 execution complete — all 4 plans committed (94dec56, 05d5823, 6a5aebb, e8e9dfd); live auth + SEO verification passed. Next: `$gsd-transition 2` (mark complete) then Phase 3 discuss→plan (challenge loop & sandbox).
 Resume file: None
