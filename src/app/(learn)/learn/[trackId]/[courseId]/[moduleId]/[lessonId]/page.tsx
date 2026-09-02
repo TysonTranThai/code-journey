@@ -9,6 +9,7 @@ import {
   getCourse,
   getCurriculumModule,
   getLesson,
+  getLessonChallenges,
   getLinearLessons,
   getLinearNeighbors,
   getTracks,
@@ -68,6 +69,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const moduleData = getCurriculumModule(trackId, courseId, moduleId);
   const { prev, next } = getLinearNeighbors(trackId, lessonId);
   const track = getTracks().find((t) => t.id === trackId);
+  const challenges = getLessonChallenges(trackId, courseId, moduleId, lessonId);
 
   const MdxBody = getLessonMdx(lesson.contentPath);
 
@@ -111,6 +113,32 @@ export default async function LessonPage({ params }: LessonPageProps) {
           Lesson body is missing from the build map. This is a content pipeline bug — please report
           it.
         </p>
+      )}
+
+      {challenges.length > 0 && (
+        <nav aria-label="Practice challenges" className="flex flex-col gap-3">
+          <h2 className="text-lg font-semibold text-zinc-100">Practice</h2>
+          <ul className="flex flex-col gap-2">
+            {challenges.map((challenge) => (
+              <li key={challenge.id}>
+                <a
+                  href={`/learn/${trackId}/${courseId}/${moduleId}/${lessonId}/challenge/${challenge.id}`}
+                  className="flex items-center justify-between gap-3 rounded-lg border border-zinc-800 bg-zinc-900/60 px-4 py-3 text-sm text-zinc-200 transition-colors hover:border-sky-500/60 hover:bg-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+                >
+                  <span>
+                    <span className="font-medium">{challenge.title}</span>
+                    <span className="ml-2 text-xs uppercase tracking-wide text-zinc-500">
+                      {challenge.difficulty}
+                    </span>
+                  </span>
+                  <span aria-hidden="true" className="text-zinc-500">
+                    →
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       )}
 
       <LessonPager trackId={trackId} prev={prev} next={next} />

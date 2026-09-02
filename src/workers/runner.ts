@@ -27,18 +27,28 @@ let executeFn: (payload: {
   output: "runner not implemented (03-02 pending)",
 });
 
-// 03-02: the real hardened-container execution is the default when the
-// sandbox module loads successfully. Tests can still override via
-// setExecuteFn.
+// 03-02: the real hardened-container execution is the default. Loaded via
+// .then (not top-level await — tsx compiles this file to CJS where TLA is
+// unsupported); tests can still override via setExecuteFn.
+let executeReady: Promise<void>; // assigned right below
 try {
-  const { executeJob } = await import("./execute");
-  executeFn = executeJob;
+  executeReady = import("./execute").then((mod) => {
+    executeFn = mod.executeJob;
+  });
 } catch (err) {
+  executeReady = Promise.resolve();
   console.warn(
     "[runner] real executor unavailable, using stub:",
     err instanceof Error ? err.message : err,
   );
 }
+// If the dynamic import itself rejects, fall back to the stub.
+executeReady = executeReady.catch((err: unknown) => {
+  console.warn(
+    "[runner] executor load failed, using stub:",
+    err instanceof Error ? err.message : err,
+  );
+});
 
 /** Test/ops hook: replace the execute implementation. */
 export function setExecuteFn(fn: typeof executeFn): void {
@@ -79,6 +89,7 @@ async function processOneJob(): Promise<boolean> {
 }
 
 async function main() {
+  await executeReady; // executor resolved (or stubbed) before first claim
   console.log(`[runner] worker ${WORKER_ID} polling every ${POLL_INTERVAL_MS}ms`);
   while (running) {
     try {
