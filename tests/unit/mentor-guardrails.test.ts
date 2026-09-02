@@ -62,9 +62,7 @@ describe("mentor guardrails: hint ladder", () => {
 describe("NullMentor (AI-04 degradation)", () => {
   it("graduates hints by level without emitting full solutions", async () => {
     const levels: HintLevel[] = [1, 2, 3];
-    const responses = await Promise.all(
-      levels.map((level) => nullMentor.hint(CONTEXT, level)),
-    );
+    const responses = await Promise.all(levels.map((level) => nullMentor.hint(CONTEXT, level)));
     for (const response of responses) {
       expect(response.text.length).toBeGreaterThan(0);
       expect(refuseIfSolution(response.text).refused).toBe(false);
