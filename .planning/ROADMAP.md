@@ -6,6 +6,8 @@ Code Journey ships as a vertical MVP: each phase delivers a working, end-to-end 
 
 ## Phases
 
+**Standing Product Constraint (all phases):** Code Journey is a WEB-ONLY product — the website is the product. Every phase delivers responsive web UI (desktop/tablet/ intentionally-designed mobile); public content is SEO-indexable while private user pages are no-index; all student-code execution and AI calls go through server-side web APIs (the browser never executes student code with platform privileges). Native targets (Tauri/Electron/Swift/React Native/Flutter) are barred unless requirements explicitly change.
+
 **Phase Numbering:**
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
@@ -55,7 +57,7 @@ Plans:
 - [ ] 02-01: PostgreSQL via Docker Compose + Drizzle schema (users, sessions, curriculum core) + db scripts
 - [ ] 02-02: Auth.js integration (email/password + GitHub OAuth, dev-mode email transport)
 - [ ] 02-03: Content-as-data pipeline (MDX/JSON + zod schema + loaders with build-time validation)
-- [ ] 02-04: Curriculum browsing UI (track/course/lesson pages, linear navigation)
+- [ ] 02-04: Curriculum browsing UI (track/course/lesson pages, linear navigation; responsive layouts, SEO metadata on public pages, no-index on authed pages)
 
 ### Phase 3: Challenge Loop & Sandbox Execution
 **Goal**: The core product loop — a student writes code in the browser, submits, and gets test-by-test verdicts from an isolated sandbox
@@ -74,7 +76,7 @@ Plans:
 - [ ] 03-01: Execution job queue (Postgres-backed) + runner worker architecture
 - [ ] 03-02: Containerized Node sandbox (no-network, resource limits, timeouts) + isolation test suite
 - [ ] 03-03: Submissions API + verdict flow (queue → run → verdict persistence)
-- [ ] 03-04: Challenge page UI (Monaco editor, run/submit actions, educational failure output, draft persistence)
+- [ ] 03-04: Challenge page UI (Monaco editor, run/submit actions, educational failure output, draft persistence; responsive workspace — desktop panels reflow to tabs/drawers/stacked sections on tablet/mobile)
 
 ### Phase 4: Progress & Achievements
 **Goal**: Real, server-verified progress a learner can see and trust

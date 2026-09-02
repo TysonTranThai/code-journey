@@ -53,6 +53,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Platform Foundation
 
+- [ ] **PLAT-06**: Every user-facing feature is usable as responsive web UI — desktop, laptop, tablet, and an intentionally designed mobile layout (not a shrunken desktop); panels may reflow into tabs/drawers/stacked sections
+- [ ] **PLAT-07**: Public educational pages are indexable (SEO) and private user data is never exposed to search engines (no-index on authed pages)
+- [ ] **PLAT-08**: All student-code execution and AI calls go through server-side web APIs; the browser never executes student code with platform privileges
 - [ ] **PLAT-01**: A developer can clone the repo, install dependencies, and start the full dev environment using only documented commands
 - [ ] **PLAT-02**: `pnpm typecheck`, `pnpm lint`, and `pnpm test` pass and are wired as required checks
 - [ ] **PLAT-03**: All interactive UI is keyboard-navigable and meets WCAG 2.1 AA contrast requirements
@@ -60,6 +63,12 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **PLAT-05**: Core behavior is covered by automated tests (unit tests for libraries, E2E for the critical path)
 
 ## v2 Requirements
+
+### Platform Expansion
+
+- **NATIVE-01 (BARRED)**: Native desktop/mobile apps — permanently excluded by the web-only product constraint unless requirements explicitly change
+
+### Delivery Expansion
 
 Deferred to future release. Tracked but not in current roadmap.
 
@@ -89,7 +98,8 @@ Explicitly excluded. Documented to prevent scope creep.
 | Real-time collaborative coding rooms | High complexity, low v1 value |
 | User-created courses (UGC) | Moderation burden and trust risk; curated content only |
 | Global leaderboards | Toxic competition and cheating incentive at launch |
-| Native mobile apps | Responsive web first; revisit after product-market fit |
+| Native desktop apps (Tauri/Electron) | Web-only product constraint (2026-09-02): the website is the product; no shell wrapper |
+| Native mobile apps (React Native/Flutter) | Web-only product constraint (2026-09-02): responsive web first; no native targets |
 | Kubernetes production deployment | Premature at current scale; Docker Compose until load demands more |
 
 ## Traceability
@@ -101,6 +111,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PLAT-01 | Phase 1 | Pending |
 | PLAT-02 | Phase 1 | Pending |
 | PLAT-04 | Phase 1 | Pending |
+| PLAT-07 | Phase 2 | Pending |
 | AUTH-01 | Phase 2 | Pending |
 | AUTH-02 | Phase 2 | Pending |
 | AUTH-03 | Phase 2 | Pending |
@@ -111,6 +122,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CURR-03 | Phase 2 | Pending |
 | CURR-04 | Phase 2 | Pending |
 | CHAL-01 | Phase 3 | Pending |
+| PLAT-08 | Phase 3 | Pending |
 | CHAL-02 | Phase 3 | Pending |
 | CHAL-03 | Phase 3 | Pending |
 | CHAL-04 | Phase 3 | Pending |
@@ -129,12 +141,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AI-04 | Phase 5 | Pending |
 | PLAT-03 | Phase 6 | Pending |
 | PLAT-05 | Phase 6 | Pending |
+| PLAT-06 | Phase 6 | Pending |
 
 **Coverage:**
-- v1 requirements: 31 total
-- Mapped to phases: 31
+- v1 requirements: 34 total
+- Mapped to phases: 34
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-09-02*
-*Last updated: 2026-09-02 after roadmap creation — all 31 v1 requirements mapped to phases*
+*Last updated: 2026-09-02 — web-only product correction applied (PLAT-06/07/08 added)*

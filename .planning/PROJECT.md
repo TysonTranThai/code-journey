@@ -4,6 +4,8 @@
 
 Code Journey is a free, next-generation coding education platform — a modern alternative to FreeCodeCamp. It will combine a structured curriculum, interactive coding challenges, a browser-based development environment, automatic test-verified submissions, progress tracking, community features, and an optional AI coding mentor that helps students learn rather than doing the work for them.
 
+**Product type — WEB ONLY (permanent constraint, set 2026-09-02):** Code Journey is a website / web platform accessed through modern browsers. The website *is* the product; the browser is the platform. It is not — and must not become — a desktop app, native macOS/Windows app, Tauri/Electron shell, or mobile app (Tauri, Electron, Swift, React Native, Flutter are all barred unless requirements explicitly change). The coding environment (browser-based editor, run/test/feedback flow) is a feature inside the website, and the UI must be responsively designed (desktop → tablet → intentionally designed mobile, not a shrunken desktop). Code execution and AI remain server-side web services behind APIs; browser code never executes student code with platform privileges. Production is normal web deployment (provider not yet selected; avoid avoidable vendor lock-in), with SEO for public content and no indexing of private user data.
+
 ## Core Value
 
 A student can go from zero to job-ready developer skills entirely for free: learn a concept in structured lessons, practice it in interactive challenges, have their code automatically executed and verified in a sandbox, and see real progress — with an AI mentor that teaches instead of just giving answers.
@@ -30,7 +32,7 @@ A student can go from zero to job-ready developer skills entirely for free: lear
 ### Out of Scope
 
 - Paid tiers / paywalled content — the mission is free education for everyone
-- Mobile native apps — responsive web first
+- Native applications of any kind — desktop (Tauri/Electron), native macOS/Windows, mobile (React Native/Flutter); Code Journey is web-only, responsive web first
 - Live 1:1 tutoring marketplace — different product category
 - Production Kubernetes deployment at this stage — scale infrastructure only when needed
 
@@ -60,6 +62,7 @@ A student can go from zero to job-ready developer skills entirely for free: lear
 | PostgreSQL as primary database | Relational data (users, progress, submissions) fits it well; installed locally via Homebrew | — Pending |
 | Docker for local infra + sandbox prototyping | Docker Desktop installed; sandbox isolation is a hard requirement later | — Pending |
 | AI mentor is provider-agnostic, pedagogy-first | Educational value > convenience; interface defined before provider choice | — Pending |
+| **Web-only product** (2026-09-02) | Website is the product; responsive web UI, server-side execution/AI behind APIs, SEO for public content; no native/shell/mobile targets | — Locked (user directive) |
 
 ## Evolution
 
