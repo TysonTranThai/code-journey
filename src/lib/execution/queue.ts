@@ -105,6 +105,12 @@ export async function completeJob(jobId: string, verdict: StoredVerdict): Promis
     .where(eq(executionJobs.id, jobId));
 
   if (job.submissionId) {
+    const [submission] = await db
+      .select({ id: submissions.id, userId: submissions.userId, challengeId: submissions.challengeId })
+      .from(submissions)
+      .where(eq(submissions.id, job.submissionId))
+      .limit(1);
+
     await db
       .update(submissions)
       .set({
@@ -113,6 +119,26 @@ export async function completeJob(jobId: string, verdict: StoredVerdict): Promis
         runtimeMs: verdict.runtimeMs,
       })
       .where(eq(submissions.id, job.submissionId));
+
+    // Progress hook (Phase 4, PROG-02): a PASSED verdict on an attributed
+    // submission is a server-verified challenge completion. Anonymous runs
+    // (userId null) never record progress. Best-effort: an award failure
+    // must not fail the verdict write (04-CONTEXT D-08).
+    if (
+      submission?.userId &&
+      verdict.verdict === "passed" &&
+      submission.challengeId
+    ) {
+      try {
+        const { recordChallengeCompletion } = await import("@/lib/progress/recording");
+        await recordChallengeCompletion(submission.userId, submission.challengeId);
+      } catch (err) {
+        console.error(
+          "[queue] progress recording failed:",
+          err instanceof Error ? err.message : err,
+        );
+      }
+    }
   }
 }
 

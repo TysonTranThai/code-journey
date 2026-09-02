@@ -211,3 +211,71 @@ export type ExecutionJob = typeof executionJobs.$inferSelect;
 export type NewExecutionJob = typeof executionJobs.$inferInsert;
 export type Submission = typeof submissions.$inferSelect;
 export type NewSubmission = typeof submissions.$inferInsert;
+
+/**
+ * Progress events (PROG-01/02): append-only, server-verified completions.
+ * The UNIQUE constraint IS the completion flag — re-completing is a no-op.
+ * No updatedAt: events are never edited. contentId references the
+ * content-as-data id (lesson or challenge), not a DB row.
+ */
+export const progressContentType = pgEnum("progress_content_type", [
+  "lesson",
+  "challenge",
+]);
+
+export const progressEvents = pgTable(
+  "progress_events",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    contentType: progressContentType("content_type").notNull(),
+    contentId: text("content_id").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, precision: 3 })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    // Idempotency: one completion per (user, content). Drizzle composite unique.
+    primaryKey({
+      name: "progress_events_user_content_unique",
+      columns: [t.userId, t.contentType, t.contentId],
+    }),
+    index("progress_events_user_created_idx").on(t.userId, t.createdAt),
+  ],
+);
+
+/**
+ * Achievement awards (PROG-04): rows are written ONLY by server-side award
+ * evaluation (never client claims). Definitions live as content-as-data
+ * (src/content/achievements.json); this table stores who earned what.
+ */
+export const achievements = pgTable(
+  "achievements",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    achievementId: text("achievement_id").notNull(),
+    awardedAt: timestamp("awarded_at", { withTimezone: true, precision: 3 })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    primaryKey({
+      name: "achievements_user_achievement_unique",
+      columns: [t.userId, t.achievementId],
+    }),
+  ],
+);
+
+export type ProgressEvent = typeof progressEvents.$inferSelect;
+export type NewProgressEvent = typeof progressEvents.$inferInsert;
+export type Achievement = typeof achievements.$inferSelect;
+export type NewAchievement = typeof achievements.$inferInsert;
