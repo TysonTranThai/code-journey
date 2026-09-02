@@ -2,13 +2,16 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 
 import {
+  challengeSchema,
   courseSchema,
   lessonSchema,
   moduleSchema,
   trackSchema,
+  type Challenge,
   type Course,
   type CurriculumModule,
   type Lesson,
+  type ResolvedChallenge,
   type ResolvedLesson,
   type Track,
 } from "./schema";
@@ -60,6 +63,12 @@ interface LoadedLesson {
   lesson: Lesson;
   filePath: string;
   bodyPath: string;
+  challenges: Map<string, LoadedChallenge>;
+}
+
+interface LoadedChallenge {
+  challenge: Challenge;
+  filePath: string;
 }
 
 interface LoadedCurriculum {
@@ -89,6 +98,20 @@ interface LoadedModule {
   lessons: Map<string, LoadedLesson>;
 }
 
+function loadChallenge(
+  challengesDir: string,
+  challengeId: string,
+  lessonFilePath: string,
+): LoadedChallenge {
+  const filePath = path.join(challengesDir, `${challengeId}.json`);
+  if (!existsSync(filePath)) {
+    throw new Error(
+      `Invalid curriculum content at ${lessonFilePath}: challenge reference "${challengeId}" has no file at ${filePath}`,
+    );
+  }
+  return { challenge: parseOrThrow(challengeSchema, loadJson(filePath), filePath), filePath };
+}
+
 function loadLesson(lessonsDir: string, lessonId: string, moduleDir: string): LoadedLesson {
   const filePath = path.join(lessonsDir, `${lessonId}.json`);
   if (!existsSync(filePath)) {
@@ -109,7 +132,19 @@ function loadLesson(lessonsDir: string, lessonId: string, moduleDir: string): Lo
       `Invalid curriculum content at ${filePath}: contentPath "${lesson.contentPath}" escapes the lesson directory`,
     );
   }
-  return { lesson, filePath, bodyPath };
+  // Challenges (Phase 3): every referenced challenge id must resolve to a
+  // challenge JSON next to the lesson (…/lessons/<lessonId>/challenges/).
+  const challengesDir = path.join(path.dirname(filePath), lessonId, "challenges");
+  const challenges = new Map<string, LoadedChallenge>();
+  for (const challengeId of lesson.challenges) {
+    if (challenges.has(challengeId)) {
+      throw new Error(
+        `Invalid curriculum content at ${filePath}: duplicate challenge reference "${challengeId}"`,
+      );
+    }
+    challenges.set(challengeId, loadChallenge(challengesDir, challengeId, filePath));
+  }
+  return { lesson, filePath, bodyPath, challenges };
 }
 
 function loadModule(modulesDir: string, moduleId: string): LoadedModule {
@@ -196,6 +231,9 @@ function assertUniqueIds(curriculum: LoadedCurriculum): void {
         check(loadedModule.module.id, "module", loadedModule.filePath);
         for (const loadedLesson of loadedModule.lessons.values()) {
           check(loadedLesson.lesson.id, "lesson", loadedLesson.filePath);
+          for (const loadedChallenge of loadedLesson.challenges.values()) {
+            check(loadedChallenge.challenge.id, "challenge", loadedChallenge.filePath);
+          }
         }
       }
     }
@@ -328,6 +366,67 @@ export function getLinearNeighbors(
   return {
     prev: index > 0 ? (linear[index - 1] ?? null) : null,
     next: index < linear.length - 1 ? (linear[index + 1] ?? null) : null,
+  };
+}
+
+/**
+ * All challenges attached to a lesson, in declared order.
+ * Throws CurriculumNotFoundError when the lesson doesn't exist.
+ */
+export function getLessonChallenges(
+  trackId: string,
+  courseId: string,
+  moduleId: string,
+  lessonId: string,
+  root?: string,
+): Challenge[] {
+  const loaded = getCurriculum(root)
+    .tracks.get(trackId)
+    ?.courses.get(courseId)
+    ?.modules.get(moduleId)
+    ?.lessons.get(lessonId);
+  if (!loaded) {
+    throw new CurriculumNotFoundError(
+      `Lesson not found: ${lessonId} (in ${trackId}/${courseId}/${moduleId})`,
+    );
+  }
+  // Preserve declared order from lesson.challenges.
+  return loaded.lesson.challenges.map((id) => {
+    const challenge = loaded.challenges.get(id);
+    if (!challenge) {
+      throw new CurriculumNotFoundError(`Challenge not found: ${id} (on lesson ${lessonId})`);
+    }
+    return challenge.challenge;
+  });
+}
+
+/** One challenge with its full curriculum location. */
+export function getChallenge(
+  trackId: string,
+  courseId: string,
+  moduleId: string,
+  lessonId: string,
+  challengeId: string,
+  root?: string,
+): ResolvedChallenge {
+  const lesson = getLesson(trackId, courseId, moduleId, lessonId, root);
+  const loaded = getCurriculum(root)
+    .tracks.get(trackId)
+    ?.courses.get(courseId)
+    ?.modules.get(moduleId)
+    ?.lessons.get(lessonId);
+  const challenge = loaded?.challenges.get(challengeId);
+  if (!loaded || !challenge) {
+    throw new CurriculumNotFoundError(
+      `Challenge not found: ${challengeId} (on lesson ${lessonId} in ${trackId}/${courseId}/${moduleId})`,
+    );
+  }
+  return {
+    ...challenge.challenge,
+    trackId: lesson.trackId,
+    courseId: lesson.courseId,
+    moduleId: lesson.moduleId,
+    lessonId: lesson.id,
   };
 }
 

@@ -2,6 +2,8 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import {
+  getChallenge,
+  getLessonChallenges,
   getLinearLessons,
   getLinearNeighbors,
   getTracks,
@@ -62,6 +64,41 @@ describe("curriculum loaders (real content)", () => {
     );
     expect(body).toContain("HyperText Markup Language");
   });
+
+  it("loads lesson challenges in declared order with resolved location", () => {
+    const challenges = getLessonChallenges(
+      "web-development",
+      "web-development-foundations",
+      "html-foundations",
+      "introduction-to-html",
+    );
+    expect(challenges.map((c) => c.id)).toEqual(["fix-the-heading"]);
+    expect(challenges[0]?.tests.length).toBeGreaterThan(0);
+    expect(challenges[0]?.tests[0]?.hint).toBeTruthy();
+
+    const resolved = getChallenge(
+      "web-development",
+      "web-development-foundations",
+      "html-foundations",
+      "html-links",
+      "add-the-missing-link",
+    );
+    expect(resolved.lessonId).toBe("html-links");
+    expect(resolved.trackId).toBe("web-development");
+    expect(resolved.tests).toHaveLength(3);
+  });
+
+  it("throws for an unknown challenge id", () => {
+    expect(() =>
+      getChallenge(
+        "web-development",
+        "web-development-foundations",
+        "html-foundations",
+        "introduction-to-html",
+        "no-such-challenge",
+      ),
+    ).toThrow(/Challenge not found/);
+  });
 });
 
 describe("curriculum loaders (invalid content fails loudly)", () => {
@@ -85,5 +122,11 @@ describe("curriculum loaders (invalid content fails loudly)", () => {
 
   it("empty-lessons-array: module with no lessons throws", () => {
     expect(() => getTracks(fixtureRoot("empty-lessons-array"))).toThrow(/at least one lesson/);
+  });
+
+  it("challenge-unknown-lesson: dangling challenge reference throws naming the lesson file", () => {
+    expect(() => getTracks(fixtureRoot("challenge-unknown-lesson"))).toThrow(
+      /challenge reference "no-such-challenge" has no file/,
+    );
   });
 });

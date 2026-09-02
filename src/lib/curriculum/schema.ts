@@ -23,6 +23,28 @@ const referenceSchema = z.object({ reference: slugSchema });
 
 export const difficultySchema = z.enum(["beginner", "intermediate", "advanced"]);
 
+/**
+ * One challenge test: an assertion snippet executed in the sandbox against
+ * the student's code. `hint` is the educational failure message (CHAL-05) —
+ * shown when the test fails, never a bare boolean.
+ */
+export const challengeTestSchema = z.object({
+  name: z.string().min(1).max(120),
+  /** JavaScript assertion code; has access to `code` (student source). */
+  code: z.string().min(1),
+  hint: z.string().min(1).max(400),
+});
+
+export const challengeSchema = z.object({
+  id: slugSchema,
+  title: titleSchema,
+  prompt: z.string().min(1).max(4000),
+  difficulty: difficultySchema,
+  /** Starter code pre-filled in the editor. */
+  boilerplate: z.string().max(20_000),
+  tests: z.array(challengeTestSchema).min(1, "challenge must define at least one test"),
+});
+
 export const lessonSchema = z.object({
   id: slugSchema,
   title: titleSchema,
@@ -61,6 +83,8 @@ export type Track = z.infer<typeof trackSchema>;
 export type Course = z.infer<typeof courseSchema>;
 export type CurriculumModule = z.infer<typeof moduleSchema>;
 export type Lesson = z.infer<typeof lessonSchema>;
+export type Challenge = z.infer<typeof challengeSchema>;
+export type ChallengeTest = z.infer<typeof challengeTestSchema>;
 export type Difficulty = z.infer<typeof difficultySchema>;
 
 /** A lesson joined with its resolved position in the track. */
@@ -70,4 +94,12 @@ export interface ResolvedLesson extends Lesson {
   moduleId: string;
   /** Zero-based position in the track's linear lesson order. */
   linearIndex: number;
+}
+
+/** A challenge joined with its fully-resolved curriculum location. */
+export interface ResolvedChallenge extends Challenge {
+  trackId: string;
+  courseId: string;
+  moduleId: string;
+  lessonId: string;
 }
