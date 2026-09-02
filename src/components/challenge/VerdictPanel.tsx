@@ -38,7 +38,7 @@ export type RunState =
 
 export function VerdictPanel({ state }: { state: RunState }) {
   if (state.phase === "idle") {
-    return <p className="text-sm text-zinc-500">Run your code to see test results here.</p>;
+    return <p className="text-sm text-zinc-400">Run your code to see test results here.</p>;
   }
 
   if (state.phase === "running") {

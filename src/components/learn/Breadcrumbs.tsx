@@ -15,7 +15,7 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
           return (
             <li key={`${item.label}-${index}`} className="flex items-center gap-1">
               {index > 0 ? (
-                <span aria-hidden="true" className="text-zinc-600">
+                <span aria-hidden="true" className="text-zinc-400">
                   /
                 </span>
               ) : null}

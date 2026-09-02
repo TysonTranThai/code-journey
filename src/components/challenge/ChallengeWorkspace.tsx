@@ -148,7 +148,7 @@ export function ChallengeWorkspace({
   const instructions = (
     <div className="flex flex-col gap-4 text-sm leading-relaxed text-zinc-300">
       <p className="whitespace-pre-wrap">{prompt}</p>
-      <p className="text-xs uppercase tracking-wide text-zinc-500">Difficulty: {difficulty}</p>
+      <p className="text-xs uppercase tracking-wide text-zinc-400">Difficulty: {difficulty}</p>
       <MentorPanel
         mentorAvailable={mentorAvailable}
         signedIn={signedIn}
@@ -159,7 +159,7 @@ export function ChallengeWorkspace({
         failedTest={failedTest}
       />
       {hasDraft && (
-        <p className="text-xs text-zinc-500">
+        <p className="text-xs text-zinc-400">
           Draft restored from your last session.{" "}
           <button
             type="button"
@@ -235,7 +235,7 @@ export function ChallengeWorkspace({
         />
       </div>
 
-      <p className="text-xs text-zinc-500">
+      <p className="text-xs text-zinc-400">
         Back to lesson:{" "}
         <Link href={lessonHref} className="underline underline-offset-2 hover:text-zinc-300">
           {lessonTitle}

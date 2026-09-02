@@ -126,7 +126,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
           className="flex w-full items-center justify-between"
         >
           <span className="font-medium text-zinc-200">Questions & discussion</span>
-          <span className="text-xs text-zinc-500">
+          <span className="text-xs text-zinc-400">
             {threadCount === 0
               ? "Be the first to ask"
               : `${threadCount} ${threadCount === 1 ? "thread" : "threads"}`}
@@ -146,11 +146,11 @@ export default async function LessonPage({ params }: LessonPageProps) {
                 >
                   <span>
                     <span className="font-medium">{challenge.title}</span>
-                    <span className="ml-2 text-xs uppercase tracking-wide text-zinc-500">
+                    <span className="ml-2 text-xs uppercase tracking-wide text-zinc-400">
                       {challenge.difficulty}
                     </span>
                   </span>
-                  <span aria-hidden="true" className="text-zinc-500">
+                  <span aria-hidden="true" className="text-zinc-400">
                     →
                   </span>
                 </a>

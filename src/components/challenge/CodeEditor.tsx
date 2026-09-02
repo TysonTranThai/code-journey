@@ -49,7 +49,7 @@ export function CodeEditor({
           padding: { top: 12, bottom: 12 },
         }}
         loading={
-          <div className="flex h-full items-center justify-center text-sm text-zinc-500">
+          <div className="flex h-full items-center justify-center text-sm text-zinc-400">
             Loading editor…
           </div>
         }

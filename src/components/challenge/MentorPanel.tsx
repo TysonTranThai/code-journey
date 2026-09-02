@@ -114,7 +114,7 @@ export function MentorPanel(props: MentorPanelProps) {
         )}
       </div>
 
-      {!signedIn && <p className="text-xs text-zinc-500">Sign in to use the mentor.</p>}
+      {!signedIn && <p className="text-xs text-zinc-400">Sign in to use the mentor.</p>}
       {error && (
         <p role="alert" className="text-xs text-amber-300">
           {error}
@@ -131,7 +131,7 @@ export function MentorPanel(props: MentorPanelProps) {
         </p>
       )}
       {hint?.refused && (
-        <p className="text-xs text-zinc-500">
+        <p className="text-xs text-zinc-400">
           (The mentor is designed to guide you, not finish the challenge for you.)
         </p>
       )}

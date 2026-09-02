@@ -35,7 +35,7 @@ export default function RootLayout({
         <SiteHeader />
         <div className="flex flex-1 flex-col">{children}</div>
         <footer className="border-t border-zinc-800">
-          <div className="mx-auto max-w-6xl px-6 py-6 text-sm text-zinc-500">
+          <div className="mx-auto max-w-6xl px-6 py-6 text-sm text-zinc-400">
             Free and open education. Built in the open.
           </div>
         </footer>

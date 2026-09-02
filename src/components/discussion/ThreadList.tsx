@@ -6,7 +6,7 @@ import type { ThreadSummary } from "@/lib/discussions/threads";
 export function ThreadList({ threads, hrefBase }: { threads: ThreadSummary[]; hrefBase: string }) {
   if (threads.length === 0) {
     return (
-      <p className="rounded-lg border border-zinc-800 bg-zinc-900/40 px-4 py-3 text-sm text-zinc-500">
+      <p className="rounded-lg border border-zinc-800 bg-zinc-900/40 px-4 py-3 text-sm text-zinc-400">
         No questions yet — be the first to ask.
       </p>
     );
@@ -21,7 +21,7 @@ export function ThreadList({ threads, hrefBase }: { threads: ThreadSummary[]; hr
           >
             <span className="flex flex-col">
               <span className="font-medium text-zinc-100">{thread.title}</span>
-              <span className="text-xs text-zinc-500">
+              <span className="text-xs text-zinc-400">
                 by {thread.authorName ?? "a learner"} ·{" "}
                 {thread.createdAt.toLocaleDateString("en-US", {
                   month: "short",

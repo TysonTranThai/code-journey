@@ -26,7 +26,7 @@ export default function HomePage() {
           Jump into HTML Foundations
         </Link>
       </div>
-      <p className="text-sm text-zinc-500">
+      <p className="text-sm text-zinc-400">
         Curriculum browsing is live. Auto-graded challenges, progress tracking, and the AI mentor
         ship in upcoming phases.
       </p>

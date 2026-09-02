@@ -28,7 +28,7 @@ export function LessonPager({
           href={href(prev)}
           className="group flex-1 rounded-lg border border-zinc-800 px-4 py-3 hover:border-zinc-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
         >
-          <span className="block text-xs uppercase tracking-wider text-zinc-500">← Previous</span>
+          <span className="block text-xs uppercase tracking-wider text-zinc-400">← Previous</span>
           <span className="mt-1 block font-medium text-zinc-200 group-hover:text-white">
             {prev.title}
           </span>
@@ -41,13 +41,13 @@ export function LessonPager({
           href={href(next)}
           className="group flex-1 rounded-lg border border-zinc-800 px-4 py-3 text-right hover:border-zinc-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
         >
-          <span className="block text-xs uppercase tracking-wider text-zinc-500">Next →</span>
+          <span className="block text-xs uppercase tracking-wider text-zinc-400">Next →</span>
           <span className="mt-1 block font-medium text-zinc-200 group-hover:text-white">
             {next.title}
           </span>
         </Link>
       ) : (
-        <span className="flex-1 text-right text-sm text-zinc-500 self-center">
+        <span className="flex-1 text-right text-sm text-zinc-400 self-center">
           Course complete 🎉
         </span>
       )}

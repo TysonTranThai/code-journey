@@ -101,7 +101,7 @@ export default async function DashboardPage() {
                 style={{ width: `${track.percent}%` }}
               />
             </div>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-zinc-400">
               {track.completed}/{track.total} items · {track.percent}%
             </p>
             <Link

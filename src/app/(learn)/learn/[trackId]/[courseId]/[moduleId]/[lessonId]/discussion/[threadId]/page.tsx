@@ -52,7 +52,7 @@ export default async function ThreadPage({ params }: ThreadPageProps) {
 
       <header className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold tracking-tight text-zinc-100">{thread.title}</h1>
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-zinc-400">
           {thread.replies[0]?.authorName ?? thread.authorName ?? "A learner"} ·{" "}
           {thread.createdAt.toLocaleDateString("en-US", { month: "long", day: "numeric" })}
         </p>
@@ -69,7 +69,7 @@ export default async function ThreadPage({ params }: ThreadPageProps) {
             <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-200">
               {reply.body}
             </p>
-            <p className="mt-2 text-xs text-zinc-500">
+            <p className="mt-2 text-xs text-zinc-400">
               {reply.authorName ?? "A learner"} ·{" "}
               {reply.createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
             </p>
