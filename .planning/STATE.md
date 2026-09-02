@@ -16,18 +16,18 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-02)
 
 **Core value:** A student can learn to code for free through structured lessons, auto-graded sandboxed challenges, and verified progress — with an AI mentor that teaches instead of solving.
-**Current focus:** Phase 3 — Challenge Loop & Sandbox Execution
+**Current focus:** Phase 4 — Progress & Achievements
 
 **Standing product constraint (2026-09-02):** Code Journey is WEB-ONLY — the website is the product; the browser is the platform. No native/shell/mobile targets (Tauri/Electron/Swift/React Native/Flutter barred); responsive web UI required (intentionally designed mobile, not shrunken desktop); student-code execution and AI are server-side web APIs only; SEO for public content, no-index for private data; deployment is normal web infra, provider unselected (avoid vendor lock-in). Recorded in PROJECT.md, REQUIREMENTS.md (PLAT-06/07/08), ROADMAP.md.
 
 ## Current Position
 
-Phase: 3 of 6 (Challenge Loop & Sandbox Execution) — PLANNING COMPLETE
-Plan: 0 of 4 in current phase (03-01…03-04 planned)
-Status: Phase 3 planned (1 CONTEXT + 4 PLANs) — ready for execution
-Last activity: 2026-09-02 — Phase 2 complete (all plans verified); Phase 3 discussed + planned: Postgres-backed execution queue, hardened node:22-alpine sandbox (isolation suite = hard gate), challenge content model, submissions API, responsive challenge workspace UI.
+Phase: 3 of 6 (Challenge Loop & Sandbox Execution) — EXECUTION COMPLETE
+Plan: 4 of 4 in current phase (03-01…03-04 all executed + verified)
+Status: Phase complete — all 7 phase requirements implemented; 5 success criteria verified incl. the malicious-sample hard gate
+Last activity: 2026-09-02 — Phase 3 executed end-to-end: Postgres queue (SKIP LOCKED), hardened sandbox (fork bomb/egress/fs-escape/infinite-loop/memory-bomb all contained), challenge content + run/verdict APIs, responsive challenge workspace. Live E2E: correct solution → passed (583ms), failing solution → educational per-test hints. 59/59 tests.
 
-Progress: [██░░░░░░░░] 33% (8 of 23 plans across Phases 1–2)
+Progress: [████░░░░░░] 57% (12 of 23 plans across Phases 1–3)
 
 ## Accumulated Context
 
@@ -43,6 +43,8 @@ Recent decisions affecting current work:
 - Execution queue locked: Postgres-backed execution_jobs, FOR UPDATE SKIP LOCKED claims, separate runner worker process (`pnpm worker`) — web tier never spawns interpreters
 - Challenge content extends content-as-data: challengeSchema with per-test educational failure hints; submissions are immutable snapshots
 - Draft persistence = localStorage keyed by challenge id (client-only)
+- Monaco editor via @monaco-editor/react@4.7.0 + monaco-editor@0.54.0 (CDN loader, React 19 peers verified)
+- Anonymous users can RUN challenges (submissions with null userId); attributed submits arrive with Phase 4 progress
 - AUTH_SECRET required in prod mode (live 500 caught) — dev secret generated into .env.local
 
 ### Pending Todos
@@ -52,11 +54,13 @@ None yet.
 ### Blockers/Concerns
 
 - GitHub OAuth (AUTH-03) needs a real OAuth app from the user — provider is env-gated; platform works without it
--remark-gfm/rehype-slug installed but not wired (Turbopack serializable-options constraint) — GFM tables in MDX render as plain tables; programmatic compile is the documented fallback
+- remark-gfm/rehype-slug installed but not wired (Turbopack serializable-options constraint) — GFM tables in MDX render as plain tables; programmatic compile is the documented fallback
 - Pages render dynamically due to session read in root layout — SSG/PPR split deferred to Phase 6 performance work
+- Sandbox isolation verified against the phase's attack classes on Docker Desktop; production-grade claim still requires external review (docs/SECURITY.md)
+- Monaco loads via CDN loader — local bundling deferred to Phase 6 (offline/privacy hardening)
 
 ## Session Continuity
 
 Last session: 2026-09-02
-Stopped at: Phase 3 planning complete (03-CONTEXT + 4 PLANs committed). Next: execute 03-01 + 03-03 (wave 1), then 03-02 + 03-04 (wave 2).
+Stopped at: Phase 3 execution complete — all 4 plans committed (03-01…03-04); isolation hard gate green; live E2E loop verified. Next: Phase 4 discuss→plan (progress & achievements, progress_events representation already locked).
 Resume file: None

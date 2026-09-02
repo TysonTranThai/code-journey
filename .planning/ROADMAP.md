@@ -73,10 +73,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 03-01: Execution job queue (Postgres-backed) + runner worker architecture
-- [ ] 03-02: Containerized Node sandbox (no-network, resource limits, timeouts) + isolation test suite
-- [ ] 03-03: Submissions API + verdict flow (queue → run → verdict persistence)
-- [ ] 03-04: Challenge page UI (Monaco editor, run/submit actions, educational failure output, draft persistence; responsive workspace — desktop panels reflow to tabs/drawers/stacked sections on tablet/mobile)
+- [x] 03-01: Execution job queue (Postgres-backed) + runner worker architecture
+- [x] 03-02: Containerized Node sandbox (no-network, resource limits, timeouts) + isolation test suite
+- [x] 03-03: Submissions API + verdict flow (queue → run → verdict persistence)
+- [x] 03-04: Challenge page UI (Monaco editor, run/submit actions, educational failure output, draft persistence; responsive workspace — desktop panels reflow to tabs/drawers/stacked sections on tablet/mobile)
 
 ### Phase 4: Progress & Achievements
 **Goal**: Real, server-verified progress a learner can see and trust
@@ -137,7 +137,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Development Foundation & Verification | 3/3 | Complete (executed during Phase 0 init) | 2026-09-02 |
 | 2. Data, Auth & Content Pipeline | 4/4 | Complete (executed + live-verified) | 2026-09-02 |
-| 3. Challenge Loop & Sandbox Execution | 0/4 | Not started | - |
+| 3. Challenge Loop & Sandbox Execution | 4/4 | Complete (executed + E2E verified; isolation hard gate green) | 2026-09-02 |
 | 4. Progress & Achievements | 0/2 | Not started | - |
 | 5. Community & AI Mentor | 0/3 | Not started | - |
 | 6. Hardening, Accessibility & Launch Readiness | 0/3 | Not started | - |
