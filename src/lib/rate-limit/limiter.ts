@@ -1,6 +1,6 @@
 import "server-only";
 
-import { eq, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { headers } from "next/headers";
 
 import { db } from "@/lib/db";

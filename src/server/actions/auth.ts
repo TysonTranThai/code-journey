@@ -12,6 +12,7 @@ import {
 } from "@/lib/auth/reset-token";
 import { hashPassword } from "@/lib/auth/password";
 import { signIn } from "@/lib/auth/config";
+import { sendPasswordResetEmail } from "@/lib/email/send-password-reset";
 import { db } from "@/lib/db";
 import { passwordResetTokens, profiles, sessions, users } from "@/lib/db/schema";
 import { clientIp, consume, HOUR_MS, MINUTE_MS, retryMessage } from "@/lib/rate-limit/limiter";
@@ -166,11 +167,10 @@ export async function requestPasswordReset(
       userId: user.id,
       expiresAt: resetTokenExpiry(),
     });
-    // Dev transport (decision D-05): log instead of sending email.
-    // nodemailer + a real transport land when production email is chosen.
-    console.log(
-      `[dev-email] Password reset link for ${email}: http://localhost:3000/reset/${rawToken}`,
-    );
+    // 07-04: send via the EmailSender seam (console sender today; a real
+    // provider is a single adapter change). The token stays hashed, expiring,
+    // and single-use; we only ever hand out the raw link through the transport.
+    await sendPasswordResetEmail(email, rawToken);
   }
 
   // Identical response whether or not the account exists (D-06).
