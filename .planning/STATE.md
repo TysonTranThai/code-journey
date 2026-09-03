@@ -26,15 +26,15 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-02)
 
 **Core value:** A student can learn to code for free through structured lessons, auto-graded sandboxed challenges, and verified progress — with an AI mentor that teaches instead of solving.
-**Current focus:** Milestone complete — launch-ready MVP
+**Current focus:** v1.1-beta — Phase 7 (beta readiness & hardening) complete
 
 **Standing product constraint (2026-09-02):** Code Journey is WEB-ONLY — the website is the product; the browser is the platform. No native/shell/mobile targets (Tauri/Electron/Swift/React Native/Flutter barred); responsive web UI required (intentionally designed mobile, not shrunken desktop); student-code execution and AI are server-side web APIs only; SEO for public content, no-index for private data; deployment is normal web infra, provider unselected (avoid vendor lock-in). Recorded in PROJECT.md, REQUIREMENTS.md (PLAT-06/07/08), ROADMAP.md.
 
 ## Current Position
 
-Phase: 6 of 6 — ALL PHASES COMPLETE
-Plan: 19 of 19 plans executed across Phases 1–6
-Status: Milestone v1 complete — launch-ready MVP with E2E critical path, WCAG 2.1 AA audits, clean dependency audit, observability seam
+Phase: 7 of 7 — ALL PHASES COMPLETE (Phase 7 executed 2026-09-03)
+Plan: 30 of 30 plans executed across Phases 1–7
+Status: v1.1-beta ready — all audit P0/P1 fixes implemented and regression-covered; private-beta appropriate (production Judge0 migration + curriculum growth remain)
 Last activity: 2026-09-03 — Phase 6 executed: Playwright E2E (6/6 green incl. register→lesson→challenge→verdict→dashboard against real infra), axe-core AA audits + contrast fix (docs/A11Y.md), evidence-based docs/SECURITY.md (pnpm audit clean via overrides), vendor-neutral observability seam (src/lib/observability.ts), README/CONTRIBUTING verified-commands refresh.
 
 Progress: [██████████] 100% (19 of 19 plans across Phases 1–6)
@@ -63,12 +63,13 @@ None yet.
 
 - GitHub OAuth (AUTH-03) needs a real OAuth app from the user — provider is env-gated; platform works without it
 - remark-gfm/rehype-slug installed but not wired (Turbopack serializable-options constraint) — GFM tables render plain; programmatic compile is the fallback
-- Pages render dynamically due to session read in root layout — SSG/PPR split deferred to Phase 6
-- Sandbox isolation verified against phase attack classes on Docker Desktop; production-grade claim requires external review (docs/SECURITY.md)
-- Monaco CDN loader — local bundling deferred to Phase 6
+- ~~Pages render dynamically due to session read in root layout~~ RESOLVED 07-08: root layout static; public routes pre-render (SSG); challenge page derives session client-side
+- Sandbox isolation verified against phase attack classes on Docker Desktop; production-grade claim requires external review (docs/SECURITY.md); beta = dedicated sandbox host (SANDBOX_DOCKER_HOST), public = self-hosted Judge0 (docs/PRODUCTION.md)
+- ~~Monaco CDN loader — local bundling deferred~~ RESOLVED Wave 2: Monaco self-hosted in public/monaco-vs via `pnpm monaco:sync`
+- E2E determinism: pause `pnpm worker` while running unit/integration suites — the live worker steals queue jobs from tests sharing the dev DB (observed 2026-09-03)
 
 ## Session Continuity
 
 Last session: 2026-09-03
-Stopped at: Milestone v1 complete; **Phase 7 (V1.1 Beta Readiness & Hardening) PLANNED** — audit-driven plan in `.planning/phases/07-beta-readiness-hardening/` (11 plans across 3 waves). Next: implement Phase 7 (planning only was requested; no code changed).
+Stopped at: **Phase 7 (V1.1 Beta Readiness & Hardening) COMPLETE** — all 11 plans implemented and committed (5 commits: 07-01 grade integrity; 07-02 submission authz + auth-to-run; 07-03 atomic rate limiting + migration 0006; 07-04 email seam; Wave 2 mobile editor/run flow + stale copy + self-hosted Monaco; 07-08/09 static public pages + breadcrumb/prompt; 07-10 sandbox host scoping + docs/PRODUCTION.md). Final gate: lint ✓, typecheck 0 errors, 115/115 unit/integration, 30/30 E2E, pnpm audit clean, build clean (public routes now pre-render).
 Resume file: None

@@ -6,10 +6,14 @@ A free, next-generation coding education platform: structured curriculum, intera
 auto-graded challenges executed in an isolated sandbox, progress tracking, community,
 and an AI coding mentor that teaches instead of solving.
 
-**Development status:** v0.1.0 — curriculum browsing, accounts (email), auto-graded
-challenge loop with sandbox execution, learner dashboard with verified progress +
-achievements, lesson discussions, and the mentor foundation (hints + guardrails, no
-provider selected) are implemented. See [`.planning/ROADMAP.md`](.planning/ROADMAP.md)
+**Development status:** v1.1-beta — everything in v0.1.0 (curriculum browsing, accounts,
+auto-graded challenge loop with sandbox execution, verified progress + achievements,
+discussions, mentor foundation) plus Phase 7 beta hardening: grade-integrity hardening,
+auth-required runs with ownership-checked results, rate limiting (auth + runs + mentor),
+a password-reset email seam, a fully usable mobile challenge workspace (editor + run
+flow), statically rendered public curriculum, and honest production-execution docs
+([`docs/PRODUCTION.md`](docs/PRODUCTION.md)). Running code requires an account; reading
+curriculum is open to everyone. See [`.planning/ROADMAP.md`](.planning/ROADMAP.md)
 for what ships next.
 
 ## Prerequisites
@@ -55,6 +59,7 @@ All commands verified working as of 2026-09-02:
 | `pnpm test:e2e`      | Playwright E2E incl. axe-core AA audits (needs Docker for the loop) |
 | `pnpm worker`        | Challenge runner worker — the only process that executes code       |
 | `pnpm sandbox:build` | Build the hardened sandbox image (required for the challenge loop)  |
+| `pnpm monaco:sync`   | Copy the self-hosted Monaco editor into `public/monaco-vs` (runs via predev/prestart) |
 | `pnpm db:up`         | Start Postgres via Docker Compose                                   |
 | `pnpm db:down`       | Stop the Postgres container (data volume kept)                      |
 | `pnpm db:migrate`    | Apply Drizzle migrations                                            |
@@ -106,9 +111,12 @@ queue, driven by a separate worker process.
 
 Copy `.env.example` to `.env.local` and fill values as needed. Required today:
 `DATABASE_URL` (Docker Postgres) and `AUTH_SECRET` (generate with
-`openssl rand -base64 32`). OAuth/AI-provider keys stay placeholders until those
-integrations are selected. Never commit real secrets (`.env*` is git-ignored except
-`.env.example`).
+`openssl rand -base64 32`). `SANDBOX_DOCKER_HOST` stays unset for local dev; in private
+beta it points the worker at the dedicated sandbox host (see
+[`docs/PRODUCTION.md`](docs/PRODUCTION.md)). `EMAIL_FROM`/`SMTP_URL` enable real
+password-reset email; unset, the dev transport logs the link to the worker console.
+OAuth/AI-provider keys stay placeholders until those integrations are selected. Never
+commit real secrets (`.env*` is git-ignored except `.env.example`).
 
 ## Project Structure
 

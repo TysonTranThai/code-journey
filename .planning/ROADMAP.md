@@ -141,4 +141,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Progress & Achievements | 2/2 | Complete (executed + live-verified: verdict→event→award→dashboard) | 2026-09-02 |
 | 5. Community & AI Mentor | 3/3 | Complete (refusal suite green; no-key degradation verified; rate-limited) | 2026-09-02 |
 | 6. Hardening, Accessibility & Launch Readiness | 3/3 | Complete (6/6 E2E green incl. critical path; axe AA audits green; pnpm audit clean; observability seam) | 2026-09-03 |
-| 7. Beta Readiness & Hardening | 11/11 planned | PLANNED (audit-driven: P0 fixes + hardening) | - |
+| 7. Beta Readiness & Hardening | 11/11 | **Complete (2026-09-03)** — grade integrity, auth-to-run + submission authz, atomic rate limits, reset email seam, mobile editor + run flow fixed (E2E at 7 viewports), static public curriculum (SSG), breadcrumb/prompt polish, sandbox host scoping + Judge0 production doc | 2026-09-03 |
