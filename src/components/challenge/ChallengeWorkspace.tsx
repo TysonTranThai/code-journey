@@ -131,6 +131,11 @@ export function ChallengeWorkspace({
         return;
       }
       setRunState({ phase: "idle" });
+      if (res.status === 401) {
+        // DECIDED (07-02): code execution requires a session.
+        setError("log_in_to_run");
+        return;
+      }
       const data = (await res.json().catch(() => null)) as { error?: string } | null;
       setError(data?.error ?? "Could not start the run. Try again.");
     } catch {
@@ -182,11 +187,19 @@ export function ChallengeWorkspace({
   const output = (
     <div className="flex flex-col gap-3">
       <VerdictPanel state={runState} />
-      {error && (
+      {error === "log_in_to_run" ? (
+        <p className="rounded-lg border border-rose-800 bg-rose-950/60 px-4 py-3 text-sm text-rose-300">
+          You need to be logged in to run code.{" "}
+          <Link href="/login" className="font-semibold underline underline-offset-2">
+            Log in
+          </Link>{" "}
+          to submit and check your solution.
+        </p>
+      ) : error ? (
         <p className="rounded-lg border border-rose-800 bg-rose-950/60 px-4 py-3 text-sm text-rose-300">
           {error}
         </p>
-      )}
+      ) : null}
     </div>
   );
 

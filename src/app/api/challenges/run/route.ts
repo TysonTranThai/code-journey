@@ -65,13 +65,18 @@ export async function POST(request: Request) {
   };
 
   const session = await auth();
+  if (!session?.user?.id) {
+    // DECIDED (07-02): code execution requires an authenticated account.
+    return NextResponse.json({ error: "authentication required" }, { status: 401 });
+  }
+
   const db = (await import("@/lib/db")).db;
   const { submissions } = await import("@/lib/db/schema");
 
   const [submission] = await db
     .insert(submissions)
     .values({
-      userId: session?.user?.id ?? null,
+      userId: session.user.id,
       challengeId,
       code,
     })

@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
+import { auth } from "@/lib/auth/config";
 import { db } from "@/lib/db";
 import { submissions } from "@/lib/db/schema";
 import { getLatestJobForSubmission } from "@/lib/execution/queue";
@@ -17,13 +18,20 @@ export async function GET(
 ) {
   const { submissionId } = await params;
 
+  // DECIDED (07-02): only the owner may read a submission's verdict/output.
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "authentication required" }, { status: 401 });
+  }
+
   const [submission] = await db
     .select()
     .from(submissions)
     .where(eq(submissions.id, submissionId))
     .limit(1);
 
-  if (!submission) {
+  // Hide existence: non-owners (and unknown ids) get the same 404.
+  if (!submission || submission.userId !== session.user.id) {
     return NextResponse.json({ error: "submission not found" }, { status: 404 });
   }
 
