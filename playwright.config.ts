@@ -15,6 +15,7 @@ export default defineConfig({
   workers: 1,
   retries: 0,
   timeout: 120_000, // register + browse + sandbox cold start + verdict
+  globalSetup: "./tests/e2e/global-setup.ts",
   reporter: [["list"]],
   use: {
     baseURL: "http://localhost:3456",

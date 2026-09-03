@@ -5,16 +5,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { PerTestResult, Verdict } from "@/lib/execution/types";
 import { useDraft } from "@/lib/challenges/use-draft";
+import { useIsDesktop } from "@/lib/hooks/use-is-desktop";
 import { MentorPanel } from "./MentorPanel";
 import { CodeEditor } from "./CodeEditor";
 import { MobileTabs } from "./MobileTabs";
-import { VerdictPanel, type RunState } from "./VerdictPanel";
+import { VerdictPanel, verdictLabel, type RunState } from "./VerdictPanel";
 
 /**
  * Challenge workspace (03-CONTEXT D-10):
  *  - desktop: side-by-side editor | instructions+output
  *  - tablet/mobile: Instructions / Code / Output tabs (accessible tablist)
- *  - Run posts to /api/challenges/run (anonymous allowed, CHAL-03), polls
+ *  - Run posts to /api/challenges/run (auth required, DECIDED 07-02), polls
  *    the verdict endpoint, shows per-test educational results (CHAL-05)
  *  - code drafts persist in localStorage per challenge (CHAL-06)
  *
@@ -53,6 +54,8 @@ export function ChallengeWorkspace({
   const { code, setCode, clearDraft, hasDraft } = useDraft(challengeId, boilerplate);
   const [runState, setRunState] = useState<RunState>({ phase: "idle" });
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("instructions");
+  const isDesktop = useIsDesktop();
   const pollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const stopPolling = useCallback(() => {
@@ -214,38 +217,87 @@ export function ChallengeWorkspace({
     </button>
   );
 
+  if (isDesktop) {
+    // Desktop (≥1024px): side-by-side. A single branch renders — no hidden
+    // duplicate editor (07-06).
+    return (
+      <section aria-label={`Challenge: ${title}`} className="flex flex-col gap-4">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div className="flex flex-col gap-4">
+            {instructions}
+            {runButton}
+          </div>
+          <div className="flex min-h-[28rem] flex-col gap-4">
+            {editor}
+            {output}
+          </div>
+        </div>
+        <p className="text-xs text-zinc-400">
+          Back to lesson:{" "}
+          <Link href={lessonHref} className="underline underline-offset-2 hover:text-zinc-300">
+            {lessonTitle}
+          </Link>
+        </p>
+      </section>
+    );
+  }
+
   return (
     <section aria-label={`Challenge: ${title}`} className="flex flex-col gap-4">
-      {/* Desktop: side-by-side */}
-      <div className="hidden gap-6 lg:grid lg:grid-cols-2">
-        <div className="flex flex-col gap-4">
-          {instructions}
-          {runButton}
-        </div>
-        <div className="flex min-h-[28rem] flex-col gap-4">
-          {editor}
-          {output}
-        </div>
-      </div>
-
-      {/* Tablet/mobile: tabs (Instructions / Code / Output) */}
-      <div className="lg:hidden">
+      {/* Tablet/mobile: tabs (Instructions / Code / Output) + sticky action bar.
+          07-06: single-branch render (no hidden duplicate editor), definite
+          height so lazy-mounted Monaco resolves non-zero dimensions; 07-07:
+          persistent bottom action bar keeps Run reachable from every tab. */}
+      <div className="flex h-[70vh] min-h-[28rem] flex-col">
         <MobileTabs
+          active={activeTab}
+          onChange={setActiveTab}
           tabs={[
             {
               id: "instructions",
               label: "Instructions",
-              content: (
-                <>
-                  {instructions}
-                  {runButton}
-                </>
-              ),
+              content: instructions,
             },
             { id: "code", label: "Code", content: editor },
             { id: "output", label: "Output", content: output },
           ]}
         />
+        <div
+          aria-label="Challenge actions"
+          className="sticky bottom-0 mt-2 flex shrink-0 items-center gap-3 border-t border-zinc-800 bg-zinc-950/95 px-1 py-3"
+        >
+          {runButton}
+          <div
+            role="status"
+            aria-live="polite"
+            className="min-w-0 flex-1 text-sm text-zinc-400"
+          >
+            {runState.phase === "running" ? (
+              "Running…"
+            ) : runState.phase === "done" ? (
+              <span className="inline-flex items-center gap-3">
+                <span
+                  className={
+                    runState.verdict === "passed" ? "text-emerald-400" : "text-rose-400"
+                  }
+                >
+                  {verdictLabel(runState.verdict)}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("output")}
+                  className="underline underline-offset-2 hover:text-zinc-300"
+                >
+                  View results
+                </button>
+              </span>
+            ) : error ? (
+              <span className="text-rose-400">Run failed — see details</span>
+            ) : (
+              <span className="hidden sm:inline">Run your code to check each test.</span>
+            )}
+          </div>
+        </div>
       </div>
 
       <p className="text-xs text-zinc-400">

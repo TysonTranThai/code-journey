@@ -70,5 +70,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-09-03
-Stopped at: Milestone v1 complete — all 6 phases executed and committed. Next: milestone audit, then v1.x backlog (auth hardening: email verification/reset + GitHub OAuth; rate limiting on challenge/auth endpoints; production sandbox evaluation: Judge0/Firecracker; deployment provider selection).
+Stopped at: Milestone v1 complete; **Phase 7 (V1.1 Beta Readiness & Hardening) PLANNED** — audit-driven plan in `.planning/phases/07-beta-readiness-hardening/` (11 plans across 3 waves). Next: implement Phase 7 (planning only was requested; no code changed).
 Resume file: None

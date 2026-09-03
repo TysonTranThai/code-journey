@@ -9,6 +9,8 @@ export default defineConfig([
     "coverage/**",
     "playwright-report/**",
     "test-results/**",
+    // Self-hosted third-party editor bundle (07-06): minified, not our code.
+    "public/monaco-vs/**",
   ]),
   ...coreWebVitals,
   ...typescript,

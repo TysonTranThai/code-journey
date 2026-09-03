@@ -42,7 +42,10 @@ async function makeRequest(params: { submissionId: string }): Promise<Response> 
 
 describe.skipIf(!process.env.DATABASE_URL)("submission authorization (07-02)", () => {
   afterAll(async () => {
-    await db.delete(submissions).where(eq(submissions.id, SUBMISSION_A)).catch(() => {});
+    await db
+      .delete(submissions)
+      .where(eq(submissions.id, SUBMISSION_A))
+      .catch(() => {});
   });
 
   it("requires authentication to read a submission", async () => {
@@ -53,7 +56,10 @@ describe.skipIf(!process.env.DATABASE_URL)("submission authorization (07-02)", (
 
   it("denies an authenticated non-owner (404, existence hidden)", async () => {
     // Ensure A's submission exists in the DB.
-    await db.insert(users).values({ id: ID_A, name: "A", email: `${ID_A}@test.local` }).onConflictDoNothing();
+    await db
+      .insert(users)
+      .values({ id: ID_A, name: "A", email: `${ID_A}@test.local` })
+      .onConflictDoNothing();
     await db
       .insert(submissions)
       .values({ id: SUBMISSION_A, userId: ID_A, challengeId: "fix-the-heading", code: "<p>x</p>" })

@@ -25,6 +25,11 @@ const VERDICT_STYLES: Record<Verdict, { label: string; className: string }> = {
   },
 };
 
+/** Shared with the mobile action bar so its live region can announce the verdict. */
+export function verdictLabel(verdict: Verdict): string {
+  return VERDICT_STYLES[verdict].label;
+}
+
 export type RunState =
   | { phase: "idle" }
   | { phase: "running" }

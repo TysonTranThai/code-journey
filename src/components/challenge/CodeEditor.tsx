@@ -1,6 +1,17 @@
 "use client";
 
-import Editor, { type OnMount } from "@monaco-editor/react";
+import Editor, { loader, type OnMount } from "@monaco-editor/react";
+
+/**
+ * Self-host Monaco from our own origin (07-06): the jsDelivr CDN proved to be
+ * a third-party availability dependency for the CORE challenge editor (slow
+ * or blocked CDN → editor stuck at "Loading editor…" forever). `pnpm
+ * monaco:sync` copies the installed monaco-editor into public/monaco-vs
+ * (gitignored build artifact, run via predev/prestart); this loader config
+ * points the AMD loader there so the browser never touches a third-party
+ * origin.
+ */
+loader.config({ paths: { vs: "/monaco-vs" } });
 
 /**
  * Monaco wrapper for challenge code. Loads the HTML language mode by
@@ -21,6 +32,11 @@ export function CodeEditor({
 }) {
   const onMount: OnMount = (editor) => {
     editor.focus();
+    // 07-06 belt-and-suspenders: with automaticLayout enabled the ResizeObserver
+    // normally handles sizing, but an explicit layout pass on mount guarantees
+    // Monaco resolves real dimensions even if the container settled late
+    // (e.g. lazy-mounted tab panel).
+    requestAnimationFrame(() => editor.layout());
   };
 
   return (

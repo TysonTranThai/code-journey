@@ -7,7 +7,7 @@ import { siteConfig } from "@/lib/site-config";
 export const metadata: Metadata = {
   title: "Learn to code — free curriculum",
   description:
-    "Browse free, structured coding courses: web development foundations, HTML, CSS, JavaScript, and more. No account needed to start learning.",
+    "Browse free, structured coding courses with auto-graded challenges and an AI mentor. Web development foundations available now — no account needed to start learning.",
   alternates: { canonical: `${siteConfig.url}/learn` },
 };
 
@@ -20,8 +20,8 @@ export default function LearnIndexPage() {
           Start learning
         </h1>
         <p className="max-w-2xl text-zinc-400">
-          Free, structured courses — read every lesson without an account. Create one when you want
-          to save progress (arriving in a later phase).
+          Free, structured courses — read every lesson without an account. Create a free account
+          when you&apos;re ready to save progress, earn achievements, and ask the mentor.
         </p>
       </header>
 

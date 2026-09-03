@@ -93,8 +93,10 @@ export async function register(
   formData: FormData,
 ): Promise<AuthFormState> {
   // Rate limit (07-03): per-IP; bcrypt cost-12 hashing is CPU-expensive, so limit it.
+  // 20/h still blunts bulk abuse while tolerating NAT'd classrooms / shared IPs
+  // (school labs legitimately create many accounts from one address).
   const ip = await clientIp();
-  const lim = await consume("register", ip, 5, HOUR_MS);
+  const lim = await consume("register", ip, 20, HOUR_MS);
   if (!lim.allowed) return { error: retryMessage(lim.resetMs).message };
 
   const parsed = registerSchema.safeParse({
