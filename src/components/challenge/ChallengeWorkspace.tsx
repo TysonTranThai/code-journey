@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useSession } from "next-auth/react";
 
 import type { PerTestResult, Verdict } from "@/lib/execution/types";
 import { useDraft } from "@/lib/challenges/use-draft";
@@ -10,6 +11,31 @@ import { MentorPanel } from "./MentorPanel";
 import { CodeEditor } from "./CodeEditor";
 import { MobileTabs } from "./MobileTabs";
 import { VerdictPanel, verdictLabel, type RunState } from "./VerdictPanel";
+
+/**
+ * Renders an authored prompt with `inline code` spans (07-09). Text is split
+ * on backtick runs; React escapes everything (no raw HTML), so authored
+ * angle brackets/ampersands stay literal and safe.
+ */
+function PromptText({ text }: { text: string }) {
+  const parts = text.split(/`([^`]+)`/);
+  return (
+    <p className="whitespace-pre-wrap">
+      {parts.map((part, i) =>
+        i % 2 === 1 ? (
+          <code
+            key={i}
+            className="rounded bg-zinc-800 px-1.5 py-0.5 font-mono text-[0.85em] text-zinc-200"
+          >
+            {part}
+          </code>
+        ) : (
+          part
+        ),
+      )}
+    </p>
+  );
+}
 
 /**
  * Challenge workspace (03-CONTEXT D-10):
@@ -48,10 +74,15 @@ export function ChallengeWorkspace({
     lessonId: string;
   };
   mentorAvailable: boolean;
-  signedIn: boolean;
+  /** Optional (07-08): when omitted, derived client-side from the session. */
+  signedIn?: boolean;
   testHints: string[];
 }) {
   const { code, setCode, clearDraft, hasDraft } = useDraft(challengeId, boilerplate);
+  const { status: sessionStatus } = useSession();
+  // 07-08: pages render statically, so the session flag (mentor panel only)
+  // hydrates client-side. Never a trust boundary — the run API enforces auth.
+  const resolvedSignedIn = signedIn ?? sessionStatus === "authenticated";
   const [runState, setRunState] = useState<RunState>({ phase: "idle" });
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("instructions");
@@ -155,11 +186,11 @@ export function ChallengeWorkspace({
 
   const instructions = (
     <div className="flex flex-col gap-4 text-sm leading-relaxed text-zinc-300">
-      <p className="whitespace-pre-wrap">{prompt}</p>
+      <PromptText text={prompt} />
       <p className="text-xs uppercase tracking-wide text-zinc-400">Difficulty: {difficulty}</p>
       <MentorPanel
         mentorAvailable={mentorAvailable}
-        signedIn={signedIn}
+        signedIn={resolvedSignedIn}
         testHints={testHints}
         challengeId={challengeId}
         challengeTitle={title}

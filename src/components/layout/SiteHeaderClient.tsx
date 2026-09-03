@@ -9,6 +9,8 @@ import { logoutAction } from "@/server/actions/logout";
 interface SiteHeaderClientProps {
   signedIn: boolean;
   userName: string | null;
+  /** True while session state is hydrating client-side (07-08). */
+  ariaBusy?: boolean;
 }
 
 const NAV_LINKS: readonly { href: string; label: string; signedInOnly?: boolean }[] = [
@@ -16,12 +18,12 @@ const NAV_LINKS: readonly { href: string; label: string; signedInOnly?: boolean 
   { href: "/dashboard", label: "Dashboard", signedInOnly: true },
 ];
 
-export function SiteHeaderClient({ signedIn, userName }: SiteHeaderClientProps) {
+export function SiteHeaderClient({ signedIn, userName, ariaBusy = false }: SiteHeaderClientProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
   return (
-    <header className="border-b border-zinc-800 bg-zinc-950/95">
+    <header className="border-b border-zinc-800 bg-zinc-950/95" aria-busy={ariaBusy || undefined}>
       <nav
         aria-label="Main"
         className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 sm:py-4"

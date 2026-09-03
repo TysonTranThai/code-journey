@@ -3,8 +3,15 @@ import { notFound } from "next/navigation";
 
 import { ChallengeWorkspace } from "@/components/challenge/ChallengeWorkspace";
 import { Breadcrumbs } from "@/components/learn/Breadcrumbs";
-import { auth } from "@/lib/auth/config";
-import { getChallenge, getLesson, getTracks } from "@/lib/curriculum/loaders";
+import {
+  getChallenge,
+  getCourse,
+  getCurriculumModule,
+  getLesson,
+  getLessonChallenges,
+  getLinearLessons,
+  getTracks,
+} from "@/lib/curriculum/loaders";
 import { mentorAvailable } from "@/lib/mentor/types";
 import { siteConfig } from "@/lib/site-config";
 
@@ -37,8 +44,22 @@ export async function generateMetadata({ params }: ChallengePageProps): Promise<
 /**
  * Challenge page (03-CONTEXT D-09): lives under its lesson so breadcrumbs
  * and curriculum context are preserved. Public educational content →
- * indexable (PLAT-07).
+ * indexable (PLAT-07). Static (07-08): params enumerate every challenge.
  */
+export function generateStaticParams() {
+  return getTracks().flatMap((track) =>
+    getLinearLessons(track.id).flatMap((lesson) =>
+      getLessonChallenges(track.id, lesson.courseId, lesson.moduleId, lesson.id).map((challenge) => ({
+        trackId: track.id,
+        courseId: lesson.courseId,
+        moduleId: lesson.moduleId,
+        lessonId: lesson.id,
+        challengeId: challenge.id,
+      })),
+    ),
+  );
+}
+
 export default async function ChallengePage({ params }: ChallengePageProps) {
   const { trackId, courseId, moduleId, lessonId, challengeId } = await params;
 
@@ -55,7 +76,12 @@ export default async function ChallengePage({ params }: ChallengePageProps) {
     notFound();
   }
   const track = getTracks().find((t) => t.id === trackId);
-  const [session] = await Promise.all([auth()]);
+  const course = getCourse(trackId, courseId);
+  const moduleData = getCurriculumModule(trackId, courseId, moduleId);
+
+  // 07-08: the page renders statically; auth state for the mentor panel is
+  // derived client-side in the workspace. Real authorization happens server-
+  // side in the run API (requireUser + ownership), never in the page tree.
 
   return (
     <article className="mx-auto flex w-full max-w-6xl flex-col gap-6">
@@ -63,7 +89,11 @@ export default async function ChallengePage({ params }: ChallengePageProps) {
         items={[
           { label: "Learn", href: "/learn" },
           { label: track?.title ?? trackId, href: `/learn/${trackId}` },
-          { label: courseId, href: `/learn/${trackId}/${courseId}` },
+          { label: course.title, href: `/learn/${trackId}/${courseId}` },
+          {
+            label: moduleData.title,
+            href: `/learn/${trackId}/${courseId}#${moduleData.id}`,
+          },
           {
             label: lesson.title,
             href: `/learn/${trackId}/${courseId}/${moduleId}/${lessonId}`,
@@ -89,7 +119,7 @@ export default async function ChallengePage({ params }: ChallengePageProps) {
         lessonHref={`/learn/${trackId}/${courseId}/${moduleId}/${lessonId}`}
         location={{ trackId, courseId, moduleId, lessonId }}
         mentorAvailable={mentorAvailable()}
-        signedIn={Boolean(session?.user)}
+        signedIn={undefined}
         testHints={challenge.tests.map((t) => t.hint)}
       />
     </article>

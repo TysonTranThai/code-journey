@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 
+import { SessionProvider } from "@/components/providers/SessionProvider";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
@@ -26,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex min-h-screen flex-col bg-zinc-950 text-zinc-100">
+        <SessionProvider>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-zinc-900 focus:px-4 focus:py-2 focus:text-white"
@@ -39,6 +41,7 @@ export default function RootLayout({
             Free and open education. Built in the open.
           </div>
         </footer>
+        </SessionProvider>
       </body>
     </html>
   );
