@@ -12,6 +12,7 @@
 import { closeDb } from "@/lib/db";
 import { claimJob, completeJob, failJob, markRunning, requeueStale } from "@/lib/execution/queue";
 import { truncateOutput, type VerdictPayload } from "@/lib/execution/types";
+import { captureError, logEvent, logWarn } from "@/lib/observability";
 
 // Injected execute hook: real container execution lands in 03-02; tests can
 // pass their own. Default = stub that returns an error verdict.
@@ -35,19 +36,14 @@ try {
   executeReady = import("./execute").then((mod) => {
     executeFn = mod.executeJob;
   });
-} catch (err) {
+} catch {
   executeReady = Promise.resolve();
-  console.warn(
-    "[runner] real executor unavailable, using stub:",
-    err instanceof Error ? err.message : err,
-  );
+  logWarn("runner", "real executor unavailable, using stub");
 }
 // If the dynamic import itself rejects, fall back to the stub.
 executeReady = executeReady.catch((err: unknown) => {
-  console.warn(
-    "[runner] executor load failed, using stub:",
-    err instanceof Error ? err.message : err,
-  );
+  logWarn("runner", "executor load failed, using stub");
+  captureError("runner.executor-load", err);
 });
 
 /** Test/ops hook: replace the execute implementation. */
@@ -61,7 +57,9 @@ const WORKER_ID = `runner-${process.pid}`;
 let running = true;
 
 function shutdown(signal: string) {
-  console.log(`[runner] received ${signal} — finishing current job, then exiting`);
+  logEvent("runner", "shutdown signal received — finishing current job, then exiting", {
+    signal,
+  });
   running = false;
 }
 
@@ -79,18 +77,18 @@ async function processOneJob(): Promise<boolean> {
       ...verdict,
       output: truncateOutput(verdict.output),
     });
-    console.log(`[runner] job ${job.id} completed: ${verdict.verdict}`);
+    logEvent("runner", "job completed", { jobId: job.id, verdict: verdict.verdict });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     await failJob(job.id, message.slice(0, 500));
-    console.error(`[runner] job ${job.id} failed: ${message}`);
+    captureError("runner.job", err, { jobId: job.id });
   }
   return true;
 }
 
 async function main() {
   await executeReady; // executor resolved (or stubbed) before first claim
-  console.log(`[runner] worker ${WORKER_ID} polling every ${POLL_INTERVAL_MS}ms`);
+  logEvent("runner", "worker polling", { workerId: WORKER_ID, pollIntervalMs: POLL_INTERVAL_MS });
   while (running) {
     try {
       await requeueStale();
@@ -101,12 +99,12 @@ async function main() {
       } while (processed && running);
     } catch (err) {
       // Keep the worker alive on transient DB errors; log job-id-free.
-      console.error("[runner] loop error:", err instanceof Error ? err.message : err);
+      captureError("runner.loop", err);
     }
     if (!running) break;
     await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
   }
-  console.log("[runner] exiting cleanly");
+  logEvent("runner", "exiting cleanly");
 }
 
 main()
@@ -115,7 +113,7 @@ main()
     process.exit(0);
   })
   .catch(async (err) => {
-    console.error("[runner] fatal:", err);
+    captureError("runner.fatal", err);
     await closeDb().catch(() => undefined);
     process.exit(1);
   });

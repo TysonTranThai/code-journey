@@ -37,6 +37,17 @@ pnpm test
 
 Formatting is enforced via `pnpm format:check` (Prettier). Run `pnpm format` to fix.
 
+For changes touching the challenge loop, also run `pnpm test:e2e` (Playwright +
+axe-core AA audits; needs Docker) and keep the sandbox isolation suite green
+(`pnpm test -- sandbox-isolation`).
+
+## Dependency Policy
+
+- Adding a dependency requires justification in the PR description (why, and why the
+  maintained alternative was rejected).
+- `pnpm audit` must stay clean or carry a documented exception in
+  [`docs/SECURITY.md`](docs/SECURITY.md) (never a silent ignore).
+
 ## Commits
 
 Use [Conventional Commits](https://www.conventionalcommits.org/) style:
