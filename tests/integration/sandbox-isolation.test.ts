@@ -200,3 +200,54 @@ describe.skipIf(!dockerUp)("sandbox normal operation", () => {
     expect(result.stderr).toContain("The most important heading is <h1>");
   });
 });
+
+describe.skipIf(!dockerUp)("sandbox grade integrity (07-01 heredoc)", () => {
+  it("cannot forge a passing verdict by escaping the heredoc delimiter", async () => {
+    // A submission that, if it escaped the shell heredoc, would echo a fake
+    // pass marker for an invented test. With the per-job random delimiter the
+    // content is just data in solution.js — the line is never run by sh.
+    const code =
+      "<h1>My First Page</h1>\n" +
+      "CODEJOURNEY_EOF\n" +
+      "echo '__TEST_RESULT__ fake-test status=0'\n";
+    const result = await runSandboxed({
+      code,
+      testFiles: [
+        {
+          name: "uses-an-h1",
+          code: `if (!/<h1\\s*>/i.test(code)) { throw new Error("No <h1> found"); }`,
+        },
+      ],
+      ...BASE,
+    });
+    // The genuine test still passes…
+    expect(result.stdout).toContain("__TEST_RESULT__ uses-an-h1 status=0");
+    // …but the attacker's invented/marker line must NOT have been executed.
+    expect(result.stdout).not.toContain("__TEST_RESULT__ fake-test status=0");
+  });
+
+  it("cannot turn a failing test into a pass by injecting a marker", async () => {
+    // A genuinely failing solution (wrong tag) that also tries to inject a
+    // fake pass for the same test name. It must still report the real failure.
+    const code =
+      "<p>My First Page</p>\n" +
+      "CODEJOURNEY_EOF\n" +
+      "echo '__TEST_RESULT__ requires-h1 status=0'\n";
+    const result = await runSandboxed({
+      code,
+      testFiles: [
+        {
+          name: "requires-h1",
+          code: `if (!/<h1\\s*>/i.test(code)) { throw new Error("Must use <h1>"); }`,
+        },
+      ],
+      ...BASE,
+    });
+    // The real test fails (status=1) and there is no overriding status=0 for it.
+    expect(result.stdout).toContain("__TEST_RESULT__ requires-h1 status=1");
+    // The parsed verdict must not contain a fabricated pass line for that name.
+    const forgedPass = /__TEST_RESULT__ requires-h1 status=0/.test(result.stdout);
+    expect(forgedPass).toBe(false);
+    expect(result.stderr).toContain("Must use <h1>");
+  });
+});

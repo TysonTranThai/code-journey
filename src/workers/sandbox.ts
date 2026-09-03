@@ -1,5 +1,6 @@
 import "server-only";
 
+import { randomBytes } from "node:crypto";
 import { spawn } from "node:child_process";
 
 /**
@@ -37,6 +38,19 @@ export interface SandboxResult {
   stderr: string;
 }
 
+/**
+ * Per-job heredoc delimiter (07-01 grade integrity). The submitted code and
+ * test snippets are written into the job script as heredoc data. A FIXED
+ * delimiter lets a submission containing it terminate the heredoc early and
+ * inject shell commands — which could echo forged ``__TEST_RESULT__`` markers
+ * and produce a false passing verdict. A fresh 96-bit random delimiter per
+ * job makes that impossible (the attacker cannot predict it), and we also
+ * reject any content that collides with the chosen delimiter before running.
+ */
+function randomDelimiter(): string {
+  return "CJ_EOF_" + randomBytes(12).toString("hex");
+}
+
 export function runSandboxed(options: {
   code: string;
   testFiles: { name: string; code: string }[];
@@ -44,12 +58,26 @@ export function runSandboxed(options: {
   memoryMb: number;
 }): Promise<SandboxResult> {
   const timeoutMs = Math.min(Math.max(options.timeoutMs, 1000), MAX_TIMEOUT_MS);
+  const delim = randomDelimiter();
+  // Defensive: if the submitted code/tests happen to contain the delimiter,
+  // fail closed rather than risk the heredoc being terminated inside sh.
+  const collides = [options.code, ...options.testFiles.map((t) => t.code)].some((s) =>
+    s.includes(delim),
+  );
+  if (collides) {
+    return Promise.resolve({
+      timedOut: false,
+      exitCode: 1,
+      stdout: "",
+      stderr: "Rejected: submitted code collides with the per-job delimiter.",
+    });
+  }
   return new Promise((resolve, reject) => {
     // Materialize files into a docker-build-compatible context via stdin:
     // we create the job dir in-container through a shell script passed as
     // the command. Files are written to tmpfs (world-writable, ephemeral);
     // code and tests are passed as argv-safe heredoc content via stdin.
-    const script = buildJobScript(options.code, options.testFiles);
+    const script = buildJobScript(options.code, options.testFiles, delim);
 
     const args = [
       "run",
@@ -130,14 +158,19 @@ export function runSandboxed(options: {
 
 /**
  * POSIX sh script that writes the student code + test harness into /job
- * (tmpfs) and runs them with node. Heredocs with quoted delimiters mean
- * NO shell expansion — student code is data, never interpreted by sh.
+ * (tmpfs) and runs them with node. Heredocs with a per-job random quoted
+ * delimiter mean NO shell expansion AND no predictable escape — student code
+ * is data, never interpreted by sh.
  */
-function buildJobScript(code: string, testFiles: { name: string; code: string }[]): string {
+function buildJobScript(
+  code: string,
+  testFiles: { name: string; code: string }[],
+  delim: string,
+): string {
   const parts: string[] = ["set -u", "cd /job"];
-  parts.push(heredoc("solution.js", code));
+  parts.push(heredoc("solution.js", code, delim));
   for (const test of testFiles) {
-    parts.push(heredoc(`test-${sanitizeName(test.name)}.mjs`, buildTestFile(test)));
+    parts.push(heredoc(`test-${sanitizeName(test.name)}.mjs`, buildTestFile(test), delim));
   }
   // Run each test file; each exits 0 (pass) or non-zero (fail). Tests run
   // sequentially and all report (no early stop) — the marker line AFTER each
@@ -167,8 +200,8 @@ function buildTestFile(test: { name: string; code: string }): string {
 }
 
 /** Quoted-delimiter heredoc: no interpolation of $ or backticks. */
-function heredoc(name: string, content: string): string {
-  return `cat > "${name}" << 'CODEJOURNEY_EOF'\n${content}\nCODEJOURNEY_EOF`;
+function heredoc(name: string, content: string, delim: string): string {
+  return `cat > "${name}" << '${delim}'\n${content}\n${delim}`;
 }
 
 function sanitizeName(name: string): string {
