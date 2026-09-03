@@ -108,40 +108,40 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PLAT-01 | Phase 1 | Pending |
-| PLAT-02 | Phase 1 | Pending |
-| PLAT-04 | Phase 1 | Pending |
-| PLAT-07 | Phase 2 | Pending |
-| AUTH-01 | Phase 2 | Pending |
-| AUTH-02 | Phase 2 | Pending |
-| AUTH-03 | Phase 2 | Pending |
-| AUTH-04 | Phase 2 | Pending |
-| AUTH-05 | Phase 2 | Pending |
-| CURR-01 | Phase 2 | Pending |
-| CURR-02 | Phase 2 | Pending |
-| CURR-03 | Phase 2 | Pending |
-| CURR-04 | Phase 2 | Pending |
-| CHAL-01 | Phase 3 | Pending |
-| PLAT-08 | Phase 3 | Pending |
-| CHAL-02 | Phase 3 | Pending |
-| CHAL-03 | Phase 3 | Pending |
-| CHAL-04 | Phase 3 | Pending |
-| CHAL-05 | Phase 3 | Pending |
-| CHAL-06 | Phase 3 | Pending |
-| PROG-01 | Phase 4 | Pending |
-| PROG-02 | Phase 4 | Pending |
-| PROG-03 | Phase 4 | Pending |
-| PROG-04 | Phase 4 | Pending |
-| COMM-01 | Phase 5 | Pending |
-| COMM-02 | Phase 5 | Pending |
-| COMM-03 | Phase 5 | Pending |
-| AI-01 | Phase 5 | Pending |
-| AI-02 | Phase 5 | Pending |
-| AI-03 | Phase 5 | Pending |
-| AI-04 | Phase 5 | Pending |
-| PLAT-03 | Phase 6 | Pending |
-| PLAT-05 | Phase 6 | Pending |
-| PLAT-06 | Phase 6 | Pending |
+| PLAT-01 | Phase 1 | Complete |
+| PLAT-02 | Phase 1 | Complete |
+| PLAT-04 | Phase 1 | Complete |
+| PLAT-07 | Phase 2 | Complete |
+| AUTH-01 | Phase 2 | Complete |
+| AUTH-02 | Phase 2 | Complete |
+| AUTH-03 | Phase 2 | Complete (env-gated — needs real OAuth app from user) |
+| AUTH-04 | Phase 2 | Complete |
+| AUTH-05 | Phase 2 | Complete |
+| CURR-01 | Phase 2 | Complete |
+| CURR-02 | Phase 2 | Complete |
+| CURR-03 | Phase 2 | Complete |
+| CURR-04 | Phase 2 | Complete |
+| CHAL-01 | Phase 3 | Complete |
+| PLAT-08 | Phase 3 | Complete |
+| CHAL-02 | Phase 3 | Complete |
+| CHAL-03 | Phase 3 | Complete |
+| CHAL-04 | Phase 3 | Complete |
+| CHAL-05 | Phase 3 | Complete |
+| CHAL-06 | Phase 3 | Complete |
+| PROG-01 | Phase 4 | Complete |
+| PROG-02 | Phase 4 | Complete |
+| PROG-03 | Phase 4 | Complete |
+| PROG-04 | Phase 4 | Complete |
+| COMM-01 | Phase 5 | Complete |
+| COMM-02 | Phase 5 | Complete |
+| COMM-03 | Phase 5 | Complete |
+| AI-01 | Phase 5 | Complete (provider-agnostic seam; real provider pending key) |
+| AI-02 | Phase 5 | Complete (NullMentor verified) |
+| AI-03 | Phase 5 | Complete |
+| AI-04 | Phase 5 | Complete |
+| PLAT-03 | Phase 6 | Complete |
+| PLAT-05 | Phase 6 | Complete |
+| PLAT-06 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 34 total
@@ -150,4 +150,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-09-02*
-*Last updated: 2026-09-02 — web-only product correction applied (PLAT-06/07/08 added)*
+*Last updated: 2026-09-03 — milestone v1 audit: all 34 v1 requirements executed and verified (AUTH-03 env-gated; AI-01 awaiting provider key)*

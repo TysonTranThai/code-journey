@@ -1,6 +1,16 @@
 ---
 gsd_state_version: '1.0'
-status: executing
+status: milestone_complete
+
+milestone_audit:
+  date: 2026-09-03
+  v1_requirements: 34
+  requirements_complete: 34
+  notes:
+    - AUTH-03 (GitHub OAuth) code-complete and env-gated; activates with real OAuth app credentials
+    - AI-01 provider seam complete; real mentor provider activates with MENTOR_API_KEY
+    - Unit/integration 94/94; E2E 13/13 (incl. critical path + keyboard-only journey); pnpm audit clean; build clean
+    - Known v1.x gaps documented in docs/SECURITY.md (rate limiting on challenge/auth endpoints, outbound allow-list) and .planning/STATE.md blockers
 progress:
   total_phases: 6
   completed_phases: 6
