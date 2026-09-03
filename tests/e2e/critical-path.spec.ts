@@ -22,7 +22,10 @@ async function register(page: import("@playwright/test").Page, name: string) {
   await page.goto("/register");
   await page.getByLabel(/name/i).fill(name);
   await page.getByLabel(/email/i).fill(email);
-  await page.getByLabel(/^password/i, { exact: false }).first().fill("e2e-password-123");
+  await page
+    .getByLabel(/^password/i, { exact: false })
+    .first()
+    .fill("e2e-password-123");
   await page.getByRole("button", { name: /sign up|create/i }).click();
   await page.waitForTimeout(2000);
   return email;
@@ -58,7 +61,10 @@ test("critical path: register → browse → run challenge → verdict → dashb
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 
   // Challenge from the Practice section.
-  await page.getByRole("link", { name: /fix the broken heading/i }).first().click();
+  await page
+    .getByRole("link", { name: /fix the broken heading/i })
+    .first()
+    .click();
   await expect(page).toHaveURL(/challenge\/fix-the-heading/);
 
   await solveChallenge(page);

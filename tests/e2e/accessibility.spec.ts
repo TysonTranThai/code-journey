@@ -27,9 +27,7 @@ test.describe("axe-core WCAG 2.1 AA", () => {
   for (const { path, name } of PAGES) {
     test(`AA audit passes: ${name}`, async ({ page }) => {
       await page.goto(path);
-      const results = await new AxeBuilder({ page })
-        .withTags(["wcag2a", "wcag2aa"])
-        .analyze();
+      const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
 
       const seriousAndCritical = results.violations.filter((v) =>
         ["critical", "serious"].includes(v.impact ?? ""),
