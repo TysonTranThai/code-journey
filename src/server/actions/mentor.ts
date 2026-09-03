@@ -59,7 +59,7 @@ export async function requestHint(
     ok: true,
     text: framed,
     refused: filtered.refused,
-    remaining: quota.remaining - 1,
+    remaining: quota.remaining,
   };
 }
 
@@ -89,6 +89,6 @@ export async function explainError(
     ok: true,
     text: filtered.text,
     refused: filtered.refused,
-    remaining: quota.remaining - 1,
+    remaining: quota.remaining,
   };
 }

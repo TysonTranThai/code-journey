@@ -337,3 +337,19 @@ export const mentorRequests = pgTable(
 
 export type MentorRequest = typeof mentorRequests.$inferSelect;
 export type NewMentorRequest = typeof mentorRequests.$inferInsert;
+
+/**
+ * Generic rate-limit counter (07-03). One row per (scope:key:window-bucket).
+ * The count is incremented atomically via INSERT ... ON CONFLICT DO UPDATE, so
+ * a check-and-increment is a single statement (no TOCTOU race). `expiresAt`
+ * bounds the row so stale windows can be pruned.
+ */
+export const rateLimitEvents = pgTable("rate_limit_events", {
+  key: text("key").primaryKey(),
+  count: integer("count").notNull().default(1),
+  windowStart: timestamp("window_start", { withTimezone: true }).notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+});
+
+export type RateLimitEvent = typeof rateLimitEvents.$inferSelect;
+export type NewRateLimitEvent = typeof rateLimitEvents.$inferInsert;

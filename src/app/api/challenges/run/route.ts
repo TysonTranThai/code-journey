@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth/config";
 import { enqueueExecution } from "@/lib/execution/queue";
 import type { JobPayload } from "@/lib/execution/types";
 import { getChallenge } from "@/lib/curriculum/loaders";
+import { clientIp, consume, DAY_MS, MINUTE_MS } from "@/lib/rate-limit/limiter";
 
 /**
  * Code-run endpoint (CHAL-02, PLAT-08).
@@ -68,6 +69,24 @@ export async function POST(request: Request) {
   if (!session?.user?.id) {
     // DECIDED (07-02): code execution requires an authenticated account.
     return NextResponse.json({ error: "authentication required" }, { status: 401 });
+  }
+
+  // Rate limit (07-03): each run spawns an isolated execution workload, so
+  // limit per user+IP with a daily cap and a short per-minute burst.
+  const ip = await clientIp();
+  const daily = await consume("run", `${session.user.id}:${ip}`, 20, DAY_MS);
+  if (!daily.allowed) {
+    return NextResponse.json(
+      { error: "You've reached today's run limit. Try again tomorrow." },
+      { status: 429 },
+    );
+  }
+  const burst = await consume("run-burst", `${session.user.id}:${ip}`, 5, MINUTE_MS);
+  if (!burst.allowed) {
+    return NextResponse.json(
+      { error: "You're running too fast — wait a moment and try again." },
+      { status: 429 },
+    );
   }
 
   const db = (await import("@/lib/db")).db;

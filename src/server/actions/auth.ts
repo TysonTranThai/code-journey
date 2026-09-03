@@ -14,6 +14,7 @@ import { hashPassword } from "@/lib/auth/password";
 import { signIn } from "@/lib/auth/config";
 import { db } from "@/lib/db";
 import { passwordResetTokens, profiles, sessions, users } from "@/lib/db/schema";
+import { clientIp, consume, HOUR_MS, MINUTE_MS, retryMessage } from "@/lib/rate-limit/limiter";
 
 /**
  * Auth server actions (AUTH-01, AUTH-05). All input is zod-validated at this
@@ -60,6 +61,13 @@ export async function loginAction(
   _prevState: AuthFormState,
   formData: FormData,
 ): Promise<AuthFormState> {
+  // Rate limit (07-03): per-IP, plus a short per-minute burst to blunt credential stuffing.
+  const ip = await clientIp();
+  const lim = await consume("login", ip, 10, HOUR_MS);
+  if (!lim.allowed) return { error: retryMessage(lim.resetMs).message };
+  const burst = await consume("login-burst", ip, 5, MINUTE_MS);
+  if (!burst.allowed) return { error: retryMessage(burst.resetMs).message };
+
   const email = formData.get("email");
   const password = formData.get("password");
   if (typeof email !== "string" || typeof password !== "string" || !email || !password) {
@@ -83,6 +91,11 @@ export async function register(
   _prevState: AuthFormState,
   formData: FormData,
 ): Promise<AuthFormState> {
+  // Rate limit (07-03): per-IP; bcrypt cost-12 hashing is CPU-expensive, so limit it.
+  const ip = await clientIp();
+  const lim = await consume("register", ip, 5, HOUR_MS);
+  if (!lim.allowed) return { error: retryMessage(lim.resetMs).message };
+
   const parsed = registerSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -129,6 +142,11 @@ export async function requestPasswordReset(
   _prevState: AuthFormState,
   formData: FormData,
 ): Promise<AuthFormState> {
+  // Rate limit (07-03): per-IP; also prevents reset-token DB flooding.
+  const ip = await clientIp();
+  const lim = await consume("reset", ip, 5, HOUR_MS);
+  if (!lim.allowed) return { error: retryMessage(lim.resetMs).message };
+
   const parsed = emailSchema.safeParse({ email: formData.get("email") });
   if (!parsed.success) {
     return { fieldErrors: fieldErrorsFrom(parsed.error) };
