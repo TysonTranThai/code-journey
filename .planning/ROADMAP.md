@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 3: Challenge Loop & Sandbox Execution** - Students write code in the browser and get auto-graded in an isolated sandbox
 - [ ] **Phase 4: Progress & Achievements** - Server-verified progress, streaks, and achievements
 - [ ] **Phase 5: Community & AI Mentor** - Discussions anchored to content plus guarded AI hints
-- [ ] **Phase 6: Hardening, Accessibility & Launch Readiness** - WCAG 2.1 AA, security review, observability, E2E coverage
+- [x] **Phase 6: Hardening, Accessibility & Launch Readiness** - WCAG 2.1 AA, security review, observability, E2E coverage
 
 ## Phase Details
 
@@ -124,9 +124,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 06-01: E2E suite (Playwright) for the critical path
-- [ ] 06-02: Accessibility pass (keyboard, contrast, focus states, reduced motion) + a11y tests
-- [ ] 06-03: Security review + observability (logging, error tracking hook, health endpoint) + docs refresh
+- [x] 06-01: E2E suite (Playwright) for the critical path
+- [x] 06-02: Accessibility pass (keyboard, contrast, focus states, reduced motion) + a11y tests
+- [x] 06-03: Security review + observability (logging, error tracking hook, health endpoint) + docs refresh
 
 ## Progress
 
@@ -140,4 +140,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Challenge Loop & Sandbox Execution | 4/4 | Complete (executed + E2E verified; isolation hard gate green) | 2026-09-02 |
 | 4. Progress & Achievements | 2/2 | Complete (executed + live-verified: verdict→event→award→dashboard) | 2026-09-02 |
 | 5. Community & AI Mentor | 3/3 | Complete (refusal suite green; no-key degradation verified; rate-limited) | 2026-09-02 |
-| 6. Hardening, Accessibility & Launch Readiness | 0/3 | Not started | - |
+| 6. Hardening, Accessibility & Launch Readiness | 3/3 | Complete (6/6 E2E green incl. critical path; axe AA audits green; pnpm audit clean; observability seam) | 2026-09-03 |

@@ -3,10 +3,10 @@ gsd_state_version: '1.0'
 status: executing
 progress:
   total_phases: 6
-  completed_phases: 0
+  completed_phases: 6
   total_plans: 19
-  completed_plans: 0
-  percent: 0
+  completed_plans: 19
+  percent: 100
 ---
 
 # Project State
@@ -16,18 +16,18 @@ progress:
 See: .planning/PROJECT.md (updated 2026-09-02)
 
 **Core value:** A student can learn to code for free through structured lessons, auto-graded sandboxed challenges, and verified progress — with an AI mentor that teaches instead of solving.
-**Current focus:** Phase 6 — Hardening, Accessibility & Launch Readiness
+**Current focus:** Milestone complete — launch-ready MVP
 
 **Standing product constraint (2026-09-02):** Code Journey is WEB-ONLY — the website is the product; the browser is the platform. No native/shell/mobile targets (Tauri/Electron/Swift/React Native/Flutter barred); responsive web UI required (intentionally designed mobile, not shrunken desktop); student-code execution and AI are server-side web APIs only; SEO for public content, no-index for private data; deployment is normal web infra, provider unselected (avoid vendor lock-in). Recorded in PROJECT.md, REQUIREMENTS.md (PLAT-06/07/08), ROADMAP.md.
 
 ## Current Position
 
-Phase: 5 of 6 (Community & AI Mentor) — EXECUTION COMPLETE
-Plan: 3 of 3 in current phase (05-01…05-03; 05-03 merged into 05-02 as UI+degradation)
-Status: Phase complete — COMM-01…03 + AI-01…04 implemented; refusal suite green; platform fully functional without AI key
-Last activity: 2026-09-02 — Phase 5 executed: lesson discussions (public read, authenticated writes, cascades), MentorAdapter seam + NullMentor content-hint degradation, server-side refusal filter + hint ladder, per-user daily quotas (mentor_requests), MentorPanel on challenge pages. 94/94 tests.
+Phase: 6 of 6 — ALL PHASES COMPLETE
+Plan: 19 of 19 plans executed across Phases 1–6
+Status: Milestone v1 complete — launch-ready MVP with E2E critical path, WCAG 2.1 AA audits, clean dependency audit, observability seam
+Last activity: 2026-09-03 — Phase 6 executed: Playwright E2E (6/6 green incl. register→lesson→challenge→verdict→dashboard against real infra), axe-core AA audits + contrast fix (docs/A11Y.md), evidence-based docs/SECURITY.md (pnpm audit clean via overrides), vendor-neutral observability seam (src/lib/observability.ts), README/CONTRIBUTING verified-commands refresh.
 
-Progress: [███████░░░] 83% (17 of 23 plans across Phases 1–5)
+Progress: [██████████] 100% (19 of 19 plans across Phases 1–6)
 
 ## Accumulated Context
 
@@ -59,6 +59,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-02
-Stopped at: Phase 5 execution complete — discussions + mentor committed. Next: Phase 6 discuss→plan (E2E suite, a11y pass, security review + observability) then milestone audit.
+Last session: 2026-09-03
+Stopped at: Milestone v1 complete — all 6 phases executed and committed. Next: milestone audit, then v1.x backlog (auth hardening: email verification/reset + GitHub OAuth; rate limiting on challenge/auth endpoints; production sandbox evaluation: Judge0/Firecracker; deployment provider selection).
 Resume file: None
