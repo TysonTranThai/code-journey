@@ -20,12 +20,23 @@ import { spawn } from "node:child_process";
  * Wall-clock timeout is enforced HERE (docker kill after `timeoutMs`) —
  * the container itself cannot be trusted to self-terminate.
  *
- * SECURITY STATUS: hardened per baseline; NOT claimed production-grade
- * until the malicious-sample isolation suite passes AND an external
- * security review happens (docs/SECURITY.md honesty rule).
+ * SECURITY STATUS: hardened per baseline; explicitly scoped to LOCAL and
+ * PRIVATE BETA (beta: dedicated sandbox host via SANDBOX_DOCKER_HOST, never
+ * the web-tier daemon). NOT claimed production-grade — public production
+ * migrates to self-hosted Judge0 per docs/PRODUCTION.md (docs/SECURITY.md
+ * honesty rule).
  */
 
 const SANDBOX_IMAGE = process.env.SANDBOX_IMAGE ?? "codejourney-sandbox:latest";
+/**
+ * Sandbox host (07-10 environment split): unset → the local Docker daemon
+ * (development/tests). In private beta this points at a DEDICATED sandbox
+ * worker host (e.g. tcp://sandbox-host:2375) so the web tier never holds a
+ * Docker socket — socket access is host-level privilege. The worker must be
+ * the only client of that endpoint and must carry no user-data credentials.
+ * Public production migrates execution to self-hosted Judge0 (docs/PRODUCTION.md).
+ */
+const SANDBOX_DOCKER_HOST = process.env.SANDBOX_DOCKER_HOST?.trim() || null;
 /** Hard ceiling on wall-clock time regardless of requested timeout. */
 const MAX_TIMEOUT_MS = 30_000;
 /** Output caps: a runaway process cannot flood memory/verdicts. */
@@ -36,6 +47,52 @@ export interface SandboxResult {
   exitCode: number | null;
   stdout: string;
   stderr: string;
+}
+
+/**
+ * The full docker argument vector for a sandboxed run. Exported pure (07-10)
+ * so tests can assert the hardening set and host isolation without Docker.
+ */
+export function buildDockerArgs(options: {
+  memoryMb: number;
+  image: string;
+  dockerHost: string | null;
+}): string[] {
+  const args: string[] = [];
+  if (options.dockerHost) {
+    // Global daemon flag: target the dedicated sandbox host, not the
+    // web-tier daemon (07-10). Never a public endpoint.
+    args.push("-H", options.dockerHost);
+  }
+  args.push(
+    "run",
+    "--rm", // ephemeral
+    "--network",
+    "none", // no egress
+    "--read-only", // immutable rootfs
+    "--tmpfs",
+    "/tmp:size=16m,noexec,nosuid,nodev", // scratch space only
+    "--tmpfs",
+    "/job:size=16m,noexec,nosuid,nodev,uid=100,gid=101", // job files
+    "--memory",
+    `${options.memoryMb}m`,
+    "--memory-swap",
+    `${options.memoryMb}m`, // no swap — hard ceiling
+    "--cpus",
+    "0.5",
+    "--pids-limit",
+    "64", // fork-bomb containment
+    "--cap-drop",
+    "ALL",
+    "--security-opt",
+    "no-new-privileges",
+    "--user",
+    "sandbox", // non-root
+    "-i", // stdin for the job script
+    options.image,
+    "sh", // reads the script from stdin
+  );
+  return args;
 }
 
 /**
@@ -79,34 +136,11 @@ export function runSandboxed(options: {
     // code and tests are passed as argv-safe heredoc content via stdin.
     const script = buildJobScript(options.code, options.testFiles, delim);
 
-    const args = [
-      "run",
-      "--rm", // ephemeral
-      "--network",
-      "none", // no egress
-      "--read-only", // immutable rootfs
-      "--tmpfs",
-      "/tmp:size=16m,noexec,nosuid,nodev", // scratch space only
-      "--tmpfs",
-      "/job:size=16m,noexec,nosuid,nodev,uid=100,gid=101", // job files
-      "--memory",
-      `${options.memoryMb}m`,
-      "--memory-swap",
-      `${options.memoryMb}m`, // no swap — hard ceiling
-      "--cpus",
-      "0.5",
-      "--pids-limit",
-      "64", // fork-bomb containment
-      "--cap-drop",
-      "ALL",
-      "--security-opt",
-      "no-new-privileges",
-      "--user",
-      "sandbox", // non-root
-      "-i", // stdin for the job script
-      SANDBOX_IMAGE,
-      "sh", // reads the script from stdin
-    ];
+    const args = buildDockerArgs({
+      memoryMb: options.memoryMb,
+      image: SANDBOX_IMAGE,
+      dockerHost: SANDBOX_DOCKER_HOST,
+    });
 
     const child = spawn("docker", args, {
       stdio: ["pipe", "pipe", "pipe"],
