@@ -11,7 +11,6 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
 const T = String.fromCharCode(96);
-const D = String.fromCharCode(36);
 
 const DIR =
   "src/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons";
@@ -270,7 +269,8 @@ writeChallenge("js-async", {
   prompt:
     'A fake API is provided: `api.loadUser()` returns a promise resolving to { name: "Ada" }, and `api.loadGreeting(name)` returns a promise resolving to "Hello, <name>".\n\n1. Write an async function `run()` that awaits loadUser, then awaits loadGreeting with the user\'s name, and logs the final greeting.\n2. Call run().',
   difficulty: "intermediate",
-  boilerplate: "// api.loadUser() and api.loadGreeting(name) return promises\n\n// 1) async function run()\n\n// 2) call run()\n",
+  boilerplate:
+    "// api.loadUser() and api.loadGreeting(name) return promises\n\n// 1) async function run()\n\n// 2) call run()\n",
   tests: [
     {
       name: "logs the awaited greeting",
@@ -396,7 +396,7 @@ writeChallenge("js-fetch-and-apis", {
     'A fake `fetch` is provided that returns a promise resolving to a response object with `.ok` (true) and `.json()` (resolves to { name: "Ada", role: "learner" }).\n\n1. Write an async function `loadUser()` that awaits fetch("https://api.example.com/me"), checks response.ok (throw on failure), awaits response.json(), and RETURNS the parsed user object.\n2. Call loadUser() and log the returned user\'s name — should print Ada.',
   difficulty: "intermediate",
   boilerplate:
-    "// fetch(url) resolves to { ok: true, json: async () => ({ name: \"Ada\", role: \"learner\" }) }\n\n// 1) async function loadUser()\n\n// 2) call it and log the name\n",
+    '// fetch(url) resolves to { ok: true, json: async () => ({ name: "Ada", role: "learner" }) }\n\n// 1) async function loadUser()\n\n// 2) call it and log the name\n',
   tests: [
     {
       name: "returns the parsed user object",
@@ -476,7 +476,8 @@ writeChallenge("js-checkpoint", {
   prompt:
     'Build a small analytics helper — each step uses a different foundation:\n\n1. Write `average(numbers)` that RETURNS the mean of an array of numbers (empty array returns 0).\n2. Write `formatScore(name, score)` that RETURNS a template-literal sentence like "Ada scored 91".\n3. Write `bestLearner(learners)` that takes an array of { name, score } objects and RETURNS the whole object with the highest score.\n4. `checkReady()` is provided — it returns a promise resolving to true. Write an async function `announce()` that awaits it and returns the string "ready" when true.',
   difficulty: "intermediate",
-  boilerplate: "// checkReady() is provided: returns a promise resolving to true\n\n// 1) average(numbers)\n\n// 2) formatScore(name, score)\n\n// 3) bestLearner(learners)\n\n// 4) async announce()\n",
+  boilerplate:
+    "// checkReady() is provided: returns a promise resolving to true\n\n// 1) average(numbers)\n\n// 2) formatScore(name, score)\n\n// 3) bestLearner(learners)\n\n// 4) async announce()\n",
   tests: [
     {
       name: "average handles normal and empty arrays",
@@ -517,7 +518,7 @@ const out = await announce();
 if (out !== "ready") {
   throw new Error('announce() should await checkReady() and return "ready".');
 }`,
-      hint: "async function announce() { const ok = await checkReady(); return ok ? \"ready\" : \"not ready\"; }",
+      hint: 'async function announce() { const ok = await checkReady(); return ok ? "ready" : "not ready"; }',
     },
   ],
 });
@@ -580,10 +581,10 @@ writeChallenge("js-project-interactive-app", {
   id: "task-tracker-app",
   title: "Capstone: Task Tracker",
   prompt:
-    "Build the task tracker. `storage` (localStorage-like) and `document` (records your DOM calls) are provided.\n\nRequirements:\n1. tasks load from storage key \"tasks\" as JSON (default: []).\n2. addTask(title) appends { title, done: false }, saves to storage, re-renders.\n3. toggleTask(index) flips done, saves, re-renders.\n4. render() creates one <li> per task inside the element with id \"task-list\": \"[x] title\" when done, \"[ ] title\" when not.\n5. Demonstrate: add \"learn state\", add \"build tracker\", toggle index 0.",
+    'Build the task tracker. `storage` (localStorage-like) and `document` (records your DOM calls) are provided.\n\nRequirements:\n1. tasks load from storage key "tasks" as JSON (default: []).\n2. addTask(title) appends { title, done: false }, saves to storage, re-renders.\n3. toggleTask(index) flips done, saves, re-renders.\n4. render() creates one <li> per task inside the element with id "task-list": "[x] title" when done, "[ ] title" when not.\n5. Demonstrate: add "learn state", add "build tracker", toggle index 0.',
   difficulty: "intermediate",
   boilerplate:
-    '// storage: setItem/getItem — document: createElement/querySelector/appendChild\n\n// load state\n\n// save()\n\n// render()\n\n// addTask(title)\n\n// toggleTask(index)\n\n// demo: two adds + one toggle\n',
+    "// storage: setItem/getItem — document: createElement/querySelector/appendChild\n\n// load state\n\n// save()\n\n// render()\n\n// addTask(title)\n\n// toggleTask(index)\n\n// demo: two adds + one toggle\n",
   tests: [
     {
       name: "adds persist into storage as JSON",
@@ -608,7 +609,7 @@ const tasks = JSON.parse(rawTasks);
 if (tasks.length !== 2) throw new Error("Expected 2 saved tasks — got " + tasks.length + ".");
 if (tasks[0].title !== "learn state" || tasks[0].done !== true) throw new Error('Task 0 should be { title: "learn state", done: true } after the toggle.');
 if (tasks[1].title !== "build tracker" || tasks[1].done !== false) throw new Error('Task 1 should be { title: "build tracker", done: false }.');`,
-      hint: "const tasks = JSON.parse(storage.getItem(\"tasks\")) ?? [];  and  function save() { storage.setItem(\"tasks\", JSON.stringify(tasks)); }",
+      hint: 'const tasks = JSON.parse(storage.getItem("tasks")) ?? [];  and  function save() { storage.setItem("tasks", JSON.stringify(tasks)); }',
     },
     {
       name: "render reflects state in the list",
@@ -631,7 +632,7 @@ const texts = env.list.children.filter((c) => c.tagName === "LI").map((c) => c.t
 if (texts.length !== 2) throw new Error("render() should create one <li> per task — got " + texts.length + ".");
 if (texts[0] !== "[x] learn state") throw new Error('The toggled task should render "[x] learn state" — got "' + texts[0] + '".');
 if (texts[1] !== "[ ] build tracker") throw new Error('The open task should render "[ ] build tracker" — got "' + texts[1] + '".');`,
-      hint: "for (const t of tasks) { const li = document.createElement(\"li\"); li.textContent = (t.done ? \"[x] \" : \"[ ] \") + t.title; list.appendChild(li); }",
+      hint: 'for (const t of tasks) { const li = document.createElement("li"); li.textContent = (t.done ? "[x] " : "[ ] ") + t.title; list.appendChild(li); }',
     },
   ],
 });

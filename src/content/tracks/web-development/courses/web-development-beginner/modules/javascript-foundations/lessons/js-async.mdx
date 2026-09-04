@@ -6,10 +6,10 @@ starts now, and its result arrives **later**.
 
 The oldest style passes a function to run when the work finishes:
 
-~~~js
+```js
 setTimeout(() => console.log("two seconds later"), 2000);
-console.log("printed first");       // the timer's callback runs LATER
-~~~
+console.log("printed first"); // the timer's callback runs LATER
+```
 
 Fine for one step — but step A needing step B needing step C nests callbacks into an
 unreadable pyramid. That pain is exactly what promises fix.
@@ -19,25 +19,25 @@ unreadable pyramid. That pain is exactly what promises fix.
 A **promise** is an object representing work in progress. It is either
 **pending**, **fulfilled** (with a value), or **rejected** (with an error):
 
-~~~js
-const p = fetchSomething();     // a promise — the value is not here yet
+```js
+const p = fetchSomething(); // a promise — the value is not here yet
 
-p.then((value) => console.log("got:", value));    // on success
-p.catch((err) => console.log("failed:", err));    // on failure
-~~~
+p.then((value) => console.log("got:", value)); // on success
+p.catch((err) => console.log("failed:", err)); // on failure
+```
 
 ## async/await — promises that read like normal code
 
 Mark a function `async` and you may `await` promises inside it:
 
-~~~js
+```js
 async function showUser() {
-  const response = await fetchUser();     // pause THIS function, not the page
+  const response = await fetchUser(); // pause THIS function, not the page
   console.log(response.name);
 }
 
 showUser();
-~~~
+```
 
 `await` suspends only the async function — the browser keeps rendering,
 responding, scrolling. To the reader, async code now runs top to bottom.
@@ -46,7 +46,7 @@ responding, scrolling. To the reader, async code now runs top to bottom.
 
 When an awaited promise rejects, the error surfaces as a thrown error — catch it:
 
-~~~js
+```js
 async function showUser() {
   try {
     const response = await fetchUser();
@@ -55,18 +55,18 @@ async function showUser() {
     console.log("Could not load the user:", err.message);
   }
 }
-~~~
+```
 
 ## Sequential vs parallel
 
-~~~js
+```js
 // one after another (when each step needs the previous):
 const user = await getUser();
 const posts = await getPosts(user.id);
 
 // independent work can overlap — start all, await all:
 const [a, b] = await Promise.all([getA(), getB()]);
-~~~
+```
 
 ## What you learned
 
@@ -77,4 +77,3 @@ const [a, b] = await Promise.all([getA(), getB()]);
 - `Promise.all` overlaps independent work
 
 **Next:** the most common async work of all — talking to servers.
-

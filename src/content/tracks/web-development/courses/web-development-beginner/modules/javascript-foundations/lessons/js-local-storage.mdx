@@ -3,40 +3,40 @@ private key–value store that survives reloads and restarts.
 
 ## The API — four methods
 
-~~~js
-localStorage.setItem("theme", "dark");      // save a string
-localStorage.getItem("theme");               // "dark" — or null if absent
-localStorage.removeItem("theme");            // delete one key
-localStorage.clear();                        // delete everything for this site
-~~~
+```js
+localStorage.setItem("theme", "dark"); // save a string
+localStorage.getItem("theme"); // "dark" — or null if absent
+localStorage.removeItem("theme"); // delete one key
+localStorage.clear(); // delete everything for this site
+```
 
 Only **strings** are stored. Numbers, booleans, arrays, and objects must travel as
 text — that is JSON's job:
 
-~~~js
+```js
 const settings = { theme: "dark", fontSize: 16 };
 
-localStorage.setItem("settings", JSON.stringify(settings));     // object → string
+localStorage.setItem("settings", JSON.stringify(settings)); // object → string
 
 const raw = localStorage.getItem("settings");
-const parsed = JSON.parse(raw);                                  // string → object
-parsed.fontSize;   // 16
-~~~
+const parsed = JSON.parse(raw); // string → object
+parsed.fontSize; // 16
+```
 
 ## Guarding against corrupted data
 
 `JSON.parse` throws on invalid text. Anything in storage could be old or
 corrupted — wrap the read:
 
-~~~js
+```js
 function loadSettings() {
   try {
     return JSON.parse(localStorage.getItem("settings")) ?? { theme: "light" };
   } catch {
-    return { theme: "light" };      // corrupted → fall back to defaults
+    return { theme: "light" }; // corrupted → fall back to defaults
   }
 }
-~~~
+```
 
 `?? ` (nullish coalescing) supplies a default when the left side is
 `null`/`undefined` — perfect with `getItem`, which returns
@@ -52,11 +52,11 @@ is the browser's notebook, not the database.
 
 ## A tiny state machine
 
-~~~js
+```js
 const visits = Number(localStorage.getItem("visits") ?? "0") + 1;
 localStorage.setItem("visits", String(visits));
 console.log("Visit number " + visits);
-~~~
+```
 
 Read → update → write back — the same state-and-render loop as the counter, now
 durable across visits.
@@ -69,4 +69,3 @@ durable across visits.
 - Right tool for preferences and drafts — never for secrets
 
 **Next:** programs that wait — asynchronous JavaScript.
-

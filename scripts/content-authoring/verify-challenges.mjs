@@ -11,8 +11,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 
-const TRACK =
-  "src/content/tracks/web-development/courses/web-development-beginner/modules";
+const TRACK = "src/content/tracks/web-development/courses/web-development-beginner/modules";
 
 /** Mirrors buildTestFile(): author snippet inside try/catch with `code` bound. */
 function runTestSnippet(testCode, studentCode, sandboxArgs) {
@@ -513,7 +512,7 @@ R["variables-practice"] =
   'const learner = "Ada";\nlet lessonsDone = 0;\nlessonsDone = 3;\nconst remaining = 15 - lessonsDone;\nconsole.log(`${learner} has ${remaining} lessons left.`);';
 // The editor's boilerplate (which the learner keeps) declares price/quantity.
 R["types-and-operators"] =
-  'const price = 19.99;\nconst quantity = 3;\nconst total = price * quantity;\nconsole.log(`${quantity} items cost ${total}`);\nconsole.log(total > 50);\nconsole.log(total > 10 && total < 100);';
+  "const price = 19.99;\nconst quantity = 3;\nconst total = price * quantity;\nconsole.log(`${quantity} items cost ${total}`);\nconsole.log(total > 50);\nconsole.log(total > 10 && total < 100);";
 R["grade-classifier"] = `function grade(score) {
   if (score >= 90) return "A";
   else if (score >= 80) return "B";
@@ -593,7 +592,8 @@ usernameInput.value = "ada"; emailInput.value = "not-an-email";
 form.listeners.submit({ preventDefault() {} });
 usernameInput.value = "ada"; emailInput.value = "ada@example.com";
 form.listeners.submit({ preventDefault() {} });`;
-R["persist-a-preference"] = `function saveSettings(settings) { storage.setItem("settings", JSON.stringify(settings)); }
+R["persist-a-preference"] =
+  `function saveSettings(settings) { storage.setItem("settings", JSON.stringify(settings)); }
 function loadSettings() {
   const raw = storage.getItem("settings");
   if (raw === null) return { theme: "light" };
@@ -644,7 +644,8 @@ addTask("build tracker");
 toggleTask(0);`;
 
 // M5/M6/M7 (knowledge checks — answers ARE the solution)
-R["terminal-commands"] = `const answers = { where: "pwd", list: "ls", enter: "cd my-project", up: "cd ..", makeFolder: "mkdir notes" };`;
+R["terminal-commands"] =
+  `const answers = { where: "pwd", list: "ls", enter: "cd my-project", up: "cd ..", makeFolder: "mkdir notes" };`;
 R["git-init-and-commit"] = `function commitSequence() {
   return ["git init", "git status", "git add .", 'git commit -m "First page"'];
 }`;
@@ -664,9 +665,12 @@ R["deploy-checklist"] = `const fix = () => ({
   problem: "paths",
   fix: '<link rel="stylesheet" href="./styles.css">',
 });`;
-R["workflow-checkpoint"] = `const answers = { undoTarget: "revert", safeShare: "pull request", stage: "add" };`;
-R["architecture-sort"] = `const answers = { passwordCheck: "backend", buttonText: "frontend", priceCalculation: "backend", themeToggle: "frontend", databaseQuery: "backend" };`;
-R["http-status-code-check"] = `const answers = { anonymousRun: 401, missingPage: 404, tooManyRequests: 429, allGood: 200 };`;
+R["workflow-checkpoint"] =
+  `const answers = { undoTarget: "revert", safeShare: "pull request", stage: "add" };`;
+R["architecture-sort"] =
+  `const answers = { passwordCheck: "backend", buttonText: "frontend", priceCalculation: "backend", themeToggle: "frontend", databaseQuery: "backend" };`;
+R["http-status-code-check"] =
+  `const answers = { anonymousRun: 401, missingPage: 404, tooManyRequests: 429, allGood: 200 };`;
 R["capstone-verification"] = `const capstone = {
   layout: "both",
   nav: "hamburger",
@@ -733,8 +737,7 @@ const W = {
   "render-a-list": "const list = document.querySelector('#todo-list');",
   "click-counter": "let count = 0;",
   "signup-validator": "form.addEventListener('submit', () => {});",
-  "persist-a-preference":
-    'function saveSettings(s) { storage.setItem("settings", s); }',
+  "persist-a-preference": 'function saveSettings(s) { storage.setItem("settings", s); }',
   "sequence-with-await": "async function run() { console.log(api.loadUser()); }",
   "load-and-display-user": "async function loadUser() { return { name: 'Ada' }; }",
   "js-fundamentals-checkpoint": "function average(n) { return 0; }",
@@ -785,18 +788,10 @@ for (const mod of modules) {
       }
 
       // 1. reference solution must pass every test (fresh stubs)
-      const refResults = await runChallengeTests(
-        challenge,
-        ref,
-        buildStubs(challenge.id),
-      );
+      const refResults = await runChallengeTests(challenge, ref, buildStubs(challenge.id));
       const refOk = refResults.every((r) => r.result === "PASS");
       // 2. wrong solution must fail at least one test (fresh stubs)
-      const wrongResults = await runChallengeTests(
-        challenge,
-        wrong,
-        buildStubs(challenge.id),
-      );
+      const wrongResults = await runChallengeTests(challenge, wrong, buildStubs(challenge.id));
       const wrongOk = wrongResults.some((r) => r.result !== "PASS");
 
       if (refOk && wrongOk) {

@@ -7,11 +7,11 @@
 
 ## Environment split
 
-| Environment      | Execution                                    | Host placement                                                                 |
-| ---------------- | -------------------------------------------- | ------------------------------------------------------------------------------ |
-| **Local dev**    | Hardened Docker runner (`src/workers/sandbox.ts`) | Developer machine; local Docker daemon (default `SANDBOX_DOCKER_HOST` unset)   |
-| **Private beta** | Hardened Docker runner (same code)           | **Dedicated sandbox worker host** via `SANDBOX_DOCKER_HOST` — never the web-tier daemon |
-| **Public prod**  | **Self-hosted Judge0** behind the execution queue | Dedicated Judge0 host, isolated from web app, primary DB, and all secrets       |
+| Environment      | Execution                                         | Host placement                                                                          |
+| ---------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| **Local dev**    | Hardened Docker runner (`src/workers/sandbox.ts`) | Developer machine; local Docker daemon (default `SANDBOX_DOCKER_HOST` unset)            |
+| **Private beta** | Hardened Docker runner (same code)                | **Dedicated sandbox worker host** via `SANDBOX_DOCKER_HOST` — never the web-tier daemon |
+| **Public prod**  | **Self-hosted Judge0** behind the execution queue | Dedicated Judge0 host, isolated from web app, primary DB, and all secrets               |
 
 ## Why the web tier must never hold the Docker socket
 

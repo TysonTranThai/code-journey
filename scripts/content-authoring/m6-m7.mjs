@@ -9,10 +9,8 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
 const T = String.fromCharCode(96);
-const D = String.fromCharCode(36);
 
-const BASE =
-  "src/content/tracks/web-development/courses/web-development-beginner/modules";
+const BASE = "src/content/tracks/web-development/courses/web-development-beginner/modules";
 
 function writer(modDir) {
   return {
@@ -305,7 +303,7 @@ M6.writeChallenge("frontend-backend", {
   id: "architecture-sort",
   title: "Sort the Architecture",
   prompt:
-    "For each concern, name where it belongs — \"frontend\" or \"backend\":\n\nanswers = { passwordCheck: \"?\", buttonText: \"?\", priceCalculation: \"?\", themeToggle: \"?\", databaseQuery: \"?\" }",
+    'For each concern, name where it belongs — "frontend" or "backend":\n\nanswers = { passwordCheck: "?", buttonText: "?", priceCalculation: "?", themeToggle: "?", databaseQuery: "?" }',
   difficulty: "intermediate",
   boilerplate:
     'const answers = {\n  passwordCheck: "",\n  buttonText: "",\n  priceCalculation: "",\n  themeToggle: "",\n  databaseQuery: "",\n};\n',
@@ -331,7 +329,7 @@ M6.writeChallenge("http-json-apis", {
     'Match each situation to its HTTP status code:\n\nanswers = { anonymousRun: "?", missingPage: "?", tooManyRequests: "?", allGood: "?" }\n\n- anonymousRun: an anonymous user tries to execute code (the server refuses; not signed in)\n- missingPage: the requested page does not exist\n- tooManyRequests: the client exceeded the rate limit\n- allGood: the request succeeded',
   difficulty: "intermediate",
   boilerplate:
-    'const answers = {\n  anonymousRun: 0,\n  missingPage: 0,\n  tooManyRequests: 0,\n  allGood: 0,\n};\n',
+    "const answers = {\n  anonymousRun: 0,\n  missingPage: 0,\n  tooManyRequests: 0,\n  allGood: 0,\n};\n",
   tests: [
     {
       name: "the four everyday codes",
@@ -450,7 +448,7 @@ M7.writeChallenge("capstone-build-and-ship", {
   id: "capstone-verification",
   title: "Capstone Verification",
   prompt:
-    "Verify the decisions your final project encodes. Write one object `capstone` with:\n\n- layout: which CSS layout system(s) your site uses — \"flexbox\", \"grid\", or \"both\"\n- nav: how your navigation adapts on small screens — \"hamburger\", \"stacked\", or \"horizontal\"\n- storageKey: the localStorage key your stateful feature persists under (a string)\n- contrastChecked and keyboardNavigable and formLabeled: booleans confirming you audited each",
+    'Verify the decisions your final project encodes. Write one object `capstone` with:\n\n- layout: which CSS layout system(s) your site uses — "flexbox", "grid", or "both"\n- nav: how your navigation adapts on small screens — "hamburger", "stacked", or "horizontal"\n- storageKey: the localStorage key your stateful feature persists under (a string)\n- contrastChecked and keyboardNavigable and formLabeled: booleans confirming you audited each',
   difficulty: "advanced",
   boilerplate:
     'const capstone = {\n  layout: "",\n  nav: "",\n  storageKey: "",\n  contrastChecked: false,\n  keyboardNavigable: false,\n  formLabeled: false,\n};\n',
@@ -474,7 +472,7 @@ const { capstone } = fn();
 if (typeof capstone.storageKey !== "string" || capstone.storageKey.length < 3) {
   throw new Error("storageKey must be the real localStorage key your feature uses (at least 3 characters).");
 }`,
-      hint: "Whatever you call JSON.stringify(localStorage.getItem(...)) with — e.g. \"tasks\" or \"theme\".",
+      hint: 'Whatever you call JSON.stringify(localStorage.getItem(...)) with — e.g. "tasks" or "theme".',
     },
     {
       name: "the accessibility audit was real",

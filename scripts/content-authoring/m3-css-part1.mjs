@@ -117,9 +117,11 @@ From here on, every example assumes an external \`styles.css\`.
 writeChallenge("what-css-is", {
   id: "style-the-page",
   title: "First Stylesheet",
-  prompt: 'Write your first external-stylesheet pattern, inline in one file:\n\n- A `<style>` block containing a rule for `h1` that sets `color` (any color you like).\n- A second rule for `p` that sets `font-size` to a value with units (e.g. `18px`).\n- Every declaration must end with a semicolon.',
+  prompt:
+    "Write your first external-stylesheet pattern, inline in one file:\n\n- A `<style>` block containing a rule for `h1` that sets `color` (any color you like).\n- A second rule for `p` that sets `font-size` to a value with units (e.g. `18px`).\n- Every declaration must end with a semicolon.",
   difficulty: "beginner",
-  boilerplate: "<style>\n  /* your rules here */\n</style>\n\n<h1>My styled page</h1>\n<p>Paragraphs deserve nice type too.</p>\n",
+  boilerplate:
+    "<style>\n  /* your rules here */\n</style>\n\n<h1>My styled page</h1>\n<p>Paragraphs deserve nice type too.</p>\n",
   tests: [
     {
       name: "has a style block",
@@ -248,9 +250,11 @@ is why global typography lives on \`body\`. Layout properties like \`margin\` an
 writeChallenge("selectors-and-cascade", {
   id: "selector-scavenger-hunt",
   title: "Selector Scavenger Hunt",
-  prompt: "The boilerplate has a small page. Without touching the HTML, write CSS that:\n\n- Sets `color` on every `<h2>` (element selector).\n- Sets a `background-color` on elements of class `card`.\n- Sets `color` on links *only inside* the nav (descendant selector).\n- Sets `font-family` on the single element with id `tagline`.",
+  prompt:
+    "The boilerplate has a small page. Without touching the HTML, write CSS that:\n\n- Sets `color` on every `<h2>` (element selector).\n- Sets a `background-color` on elements of class `card`.\n- Sets `color` on links *only inside* the nav (descendant selector).\n- Sets `font-family` on the single element with id `tagline`.",
   difficulty: "beginner",
-  boilerplate: "<nav>\n  <a href=\"#top\">Home</a>\n  <a href=\"#posts\">Posts</a>\n</nav>\n\n<h2>Latest posts</h2>\n\n<p id=\"tagline\">Notes from a beginner who ships.</p>\n\n<div class=\"card\">First post</div>\n<div class=\"card\">Second post</div>\n\n<a href=\"https://example.com\">An outside link</a>\n\n<style>\n  /* write your rules here */\n</style>\n",
+  boilerplate:
+    '<nav>\n  <a href="#top">Home</a>\n  <a href="#posts">Posts</a>\n</nav>\n\n<h2>Latest posts</h2>\n\n<p id="tagline">Notes from a beginner who ships.</p>\n\n<div class="card">First post</div>\n<div class="card">Second post</div>\n\n<a href="https://example.com">An outside link</a>\n\n<style>\n  /* write your rules here */\n</style>\n',
   tests: [
     {
       name: "h2 colored via element selector",
@@ -305,9 +309,11 @@ if (!/font-family\\s*:\\s*[^;]+;/i.test(rule[1])) {
 writeChallenge("selectors-and-cascade", {
   id: "fix-the-cascade-bug",
   title: "Debug: The Losing Rule",
-  prompt: "A developer complains: 'my `.price` color rule is ignored!'. The stylesheet has a more specific rule that also sets color on the same element. Find the fight and fix it the *right* way — make the class rule win by lowering the other rule's specificity or scoping it, NOT with !important.",
+  prompt:
+    "A developer complains: 'my `.price` color rule is ignored!'. The stylesheet has a more specific rule that also sets color on the same element. Find the fight and fix it the *right* way — make the class rule win by lowering the other rule's specificity or scoping it, NOT with !important.",
   difficulty: "beginner",
-  boilerplate: "<div class=\"product\">\n  <p class=\"price\">$49</p>\n</div>\n\n<style>\n  #main div p {\n    color: gray;\n  }\n\n  .price {\n    color: crimson;\n  }\n</style>\n",
+  boilerplate:
+    '<div class="product">\n  <p class="price">$49</p>\n</div>\n\n<style>\n  #main div p {\n    color: gray;\n  }\n\n  .price {\n    color: crimson;\n  }\n</style>\n',
   tests: [
     {
       name: "price displays crimson",
@@ -427,9 +433,11 @@ purples — and you will meet it again as the backbone of theming.
 writeChallenge("units-colors-values", {
   id: "theme-with-custom-properties",
   title: "Build a Mini Theme",
-  prompt: "Create a small theme with custom properties:\n\n- On `:root`, declare `--brand` (any color) and `--space` (a rem value).\n- Style `.button` using `var(--brand)` as its background-color and `var(--space)` as its padding.\n- Style `p` with a `font-size` in `rem` (no px).",
+  prompt:
+    "Create a small theme with custom properties:\n\n- On `:root`, declare `--brand` (any color) and `--space` (a rem value).\n- Style `.button` using `var(--brand)` as its background-color and `var(--space)` as its padding.\n- Style `p` with a `font-size` in `rem` (no px).",
   difficulty: "beginner",
-  boilerplate: "<style>\n  /* your theme here */\n</style>\n\n<p>Modern type scales with the reader.</p>\n<button class=\"button\">Join now</button>\n",
+  boilerplate:
+    '<style>\n  /* your theme here */\n</style>\n\n<p>Modern type scales with the reader.</p>\n<button class="button">Join now</button>\n',
   tests: [
     {
       name: "custom properties declared on :root",
@@ -557,9 +565,11 @@ that punish dyslexic readers hardest. Centered text is for headings and short li
 writeChallenge("css-typography", {
   id: "make-it-readable",
   title: "Make It Readable",
-  prompt: "Fix a deliberately uncomfortable page of text. Set:\n\n- A `font-family` stack on `body` that ends with a generic family (`sans-serif` or `serif`).\n- `line-height` on `body` as a bare number between 1.4 and 2.\n- `h1` with a `font-size` in `rem`.\n- Link color that is not the default (your choice) — keep the underline present (do not set text-decoration: none on links).",
+  prompt:
+    "Fix a deliberately uncomfortable page of text. Set:\n\n- A `font-family` stack on `body` that ends with a generic family (`sans-serif` or `serif`).\n- `line-height` on `body` as a bare number between 1.4 and 2.\n- `h1` with a `font-size` in `rem`.\n- Link color that is not the default (your choice) — keep the underline present (do not set text-decoration: none on links).",
   difficulty: "beginner",
-  boilerplate: "<style>\n  body {\n    line-height: 1;\n  }\n\n  a {\n    text-decoration: none;\n  }\n</style>\n\n<h1>A very dense article</h1>\n<p>This paragraph is cramped, single-spaced, and hard to track line by line. Readers abandon dense pages quickly, and low-vision readers abandon them faster.</p>\n<p><a href=\"https://example.com\">A link that lost its affordance</a></p>\n",
+  boilerplate:
+    '<style>\n  body {\n    line-height: 1;\n  }\n\n  a {\n    text-decoration: none;\n  }\n</style>\n\n<h1>A very dense article</h1>\n<p>This paragraph is cramped, single-spaced, and hard to track line by line. Readers abandon dense pages quickly, and low-vision readers abandon them faster.</p>\n<p><a href="https://example.com">A link that lost its affordance</a></p>\n',
   tests: [
     {
       name: "body font stack ends generic",
@@ -567,7 +577,7 @@ writeChallenge("css-typography", {
 if (!body || !/font-family\\s*:[^;]+(sans-serif|serif|monospace)\\s*;/i.test(body[1])) {
   throw new Error("Set font-family on body, ending with a generic family like sans-serif;");
 }`,
-      hint: 'font-family: system-ui, sans-serif; — the generic family is the safety net.',
+      hint: "font-family: system-ui, sans-serif; — the generic family is the safety net.",
     },
     {
       name: "healthy line-height",
@@ -700,9 +710,11 @@ work with. Practical rule: space sections with one consistent direction of margi
 writeChallenge("css-box-model", {
   id: "box-model-prediction",
   title: "Prediction: Box Math",
-  prompt: "A challenge in two parts.\n\nPART 1 — fix the sizing: the `.box` in the boilerplate has width: 200px but renders 248px wide. Add the universal border-box rule at the top of the stylesheet so width means what it says. Keep the .box rule exactly as it is.\n\nPART 2 — space it out: give `.box` a margin of `1rem` on all sides.",
+  prompt:
+    "A challenge in two parts.\n\nPART 1 — fix the sizing: the `.box` in the boilerplate has width: 200px but renders 248px wide. Add the universal border-box rule at the top of the stylesheet so width means what it says. Keep the .box rule exactly as it is.\n\nPART 2 — space it out: give `.box` a margin of `1rem` on all sides.",
   difficulty: "beginner",
-  boilerplate: "<style>\n  .box {\n    width: 200px;\n    padding: 20px;\n    border: 4px solid dimgray;\n  }\n</style>\n\n<div class=\"box\">200 means 200</div>\n",
+  boilerplate:
+    '<style>\n  .box {\n    width: 200px;\n    padding: 20px;\n    border: 4px solid dimgray;\n  }\n</style>\n\n<div class="box">200 means 200</div>\n',
   tests: [
     {
       name: "universal border-box applied",
@@ -739,9 +751,11 @@ if (!box || !/margin\\s*:\\s*1rem\\s*;/i.test(box[1])) {
 writeChallenge("css-box-model", {
   id: "space-the-card",
   title: "Modify: Space the Card",
-  prompt: "The `.card` is cramped. Without changing its width or border:\n\n- Give the card `padding: 1.5rem` (breathing room *inside*).\n- Give it `margin: 0 auto 1.5rem` — centered horizontally (the `auto` does it), with bottom margin for the next section.\n- Give it a `border-radius` of `8px`.",
+  prompt:
+    "The `.card` is cramped. Without changing its width or border:\n\n- Give the card `padding: 1.5rem` (breathing room *inside*).\n- Give it `margin: 0 auto 1.5rem` — centered horizontally (the `auto` does it), with bottom margin for the next section.\n- Give it a `border-radius` of `8px`.",
   difficulty: "beginner",
-  boilerplate: "<style>\n  *, *::before, *::after { box-sizing: border-box; }\n\n  .card {\n    width: 400px;\n    border: 1px solid silver;\n  }\n</style>\n\n<div class=\"card\">\n  <h3>Club membership</h3>\n  <p>Everything a member needs, one flat rate.</p>\n</div>\n",
+  boilerplate:
+    '<style>\n  *, *::before, *::after { box-sizing: border-box; }\n\n  .card {\n    width: 400px;\n    border: 1px solid silver;\n  }\n</style>\n\n<div class="card">\n  <h3>Club membership</h3>\n  <p>Everything a member needs, one flat rate.</p>\n</div>\n',
   tests: [
     {
       name: "padding added",

@@ -29,11 +29,7 @@ export function MobileTabs({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div
-        role="tablist"
-        aria-label={label}
-        className="flex shrink-0 border-b border-zinc-800"
-      >
+      <div role="tablist" aria-label={label} className="flex shrink-0 border-b border-zinc-800">
         {tabs.map((tab) => {
           const selected = tab.id === active;
           return (

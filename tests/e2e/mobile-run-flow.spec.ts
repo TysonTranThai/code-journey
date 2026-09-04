@@ -49,9 +49,7 @@ test("run is reachable from the Code tab without switching", async ({ page }) =>
   expect(barBox!.y + barBox!.height).toBeLessThanOrEqual(viewportHeight + 1);
 });
 
-test("run from Code tab reaches the verdict and View results jumps to Output", async ({
-  page,
-}) => {
+test("run from Code tab reaches the verdict and View results jumps to Output", async ({ page }) => {
   await register(page);
   await page.goto(CHALLENGE_URL);
 
@@ -68,10 +66,7 @@ test("run from Code tab reaches the verdict and View results jumps to Output", a
   });
   // …and the bar's View results action switches to the Output tab.
   await page.getByRole("button", { name: /view results/i }).click();
-  await expect(page.getByRole("tab", { name: "Output" })).toHaveAttribute(
-    "aria-selected",
-    "true",
-  );
+  await expect(page.getByRole("tab", { name: "Output" })).toHaveAttribute("aria-selected", "true");
   await expect(page.getByText(/all tests passed/i).first()).toBeVisible();
 });
 

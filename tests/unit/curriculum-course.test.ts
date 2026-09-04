@@ -69,10 +69,9 @@ describe("course structure (Phase 8: web-development-beginner)", () => {
     for (const lesson of linear) {
       const body = readLessonBody(TRACK, lesson.courseId, lesson.moduleId, lesson.id);
       // A real lesson explains; placeholder bodies would be far shorter.
-      expect(
-        body.length,
-        `lesson body too short: ${lesson.moduleId}/${lesson.id}`,
-      ).toBeGreaterThan(1200);
+      expect(body.length, `lesson body too short: ${lesson.moduleId}/${lesson.id}`).toBeGreaterThan(
+        1200,
+      );
     }
   });
 
@@ -80,12 +79,7 @@ describe("course structure (Phase 8: web-development-beginner)", () => {
     const linear = getLinearLessons(TRACK);
     let challengeCount = 0;
     for (const lesson of linear) {
-      const challenges = getLessonChallenges(
-        TRACK,
-        lesson.courseId,
-        lesson.moduleId,
-        lesson.id,
-      );
+      const challenges = getLessonChallenges(TRACK, lesson.courseId, lesson.moduleId, lesson.id);
       for (const challenge of challenges) {
         challengeCount += 1;
         expect(challenge.prompt.length).toBeGreaterThan(0);

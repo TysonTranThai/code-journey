@@ -3,16 +3,19 @@ CSS is only as precise as its selectors. This lesson is the targeting system.
 ## Element, class, ID
 
 ```css
-p { }          /* every <p> */
-.note { }      /* every element with class="note" */
-#signup { }    /* the one element with id="signup" */
+p {
+} /* every <p> */
+.note {
+} /* every element with class="note" */
+#signup {
+} /* the one element with id="signup" */
 ```
 
 - **Element selectors** paint with a roller — good for base typography.
 - **Classes** are the workhorse: reusable, multiple per element
-  (`class="card highlight"`), and they carry *no* built-in meaning, so you name them by
+  (`class="card highlight"`), and they carry _no_ built-in meaning, so you name them by
   purpose (`.site-nav`, `.price`), not by looks (`.big-red` — renames hurt).
-- **IDs** select one element. They are *more specific* than classes (see the cascade
+- **IDs** select one element. They are _more specific_ than classes (see the cascade
   below), which makes them dangerous to style with — a single ID rule can quietly beat
   any number of class rules. Use IDs for anchors and JS hooks; style with classes.
 
@@ -27,7 +30,7 @@ nav a {
 ```
 
 Read it right-to-left: "any `a` inside a `nav`". Links elsewhere are untouched. This
-is how you style *regions*: `nav a`, `article p`, `footer a`.
+is how you style _regions_: `nav a`, `article p`, `footer a`.
 
 ## Grouping
 
@@ -43,7 +46,7 @@ One declaration block shared by several selectors — commas, not repetition.
 
 ## The cascade: who wins?
 
-"CSS" literally contains *cascading*: when several rules target the same element, the
+"CSS" literally contains _cascading_: when several rules target the same element, the
 browser resolves conflicts in a definite order. For beginner purposes:
 
 1. **Later beats earlier** — at equal specificity, the last rule written wins.
@@ -52,9 +55,15 @@ browser resolves conflicts in a definite order. For beginner purposes:
 3. **Inline styles beat both** (style="…" counts as (1,0,0,0) — avoid them).
 
 ```css
-p { color: gray; }      /* (0,0,1) */
-.note { color: blue; }  /* (0,1,0) — wins over p for .note elements */
-#hero { color: teal; }  /* (1,0,0) — wins over everything above */
+p {
+  color: gray;
+} /* (0,0,1) */
+.note {
+  color: blue;
+} /* (0,1,0) — wins over p for .note elements */
+#hero {
+  color: teal;
+} /* (1,0,0) — wins over everything above */
 ```
 
 One important exception — `!important` forces a declaration to win regardless. It
@@ -67,7 +76,7 @@ other — fix the specificity, not the symptom.
 Some properties flow down the tree automatically: `color`, `font-family`,
 `line-height`. Set `font-family` once on `body`, and every child inherits it — that
 is why global typography lives on `body`. Layout properties like `margin` and
-`border` do *not* inherit: each box gets its own.
+`border` do _not_ inherit: each box gets its own.
 
 ## What you learned
 
@@ -77,4 +86,3 @@ is why global typography lives on `body`. Layout properties like `margin` and
 - `!important` is a smell; inheritance explains body-level typography
 
 **Next:** units and colors — how CSS measures and paints.
-

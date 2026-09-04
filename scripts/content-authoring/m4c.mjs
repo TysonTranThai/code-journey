@@ -12,7 +12,6 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
 const T = String.fromCharCode(96);
-const D = String.fromCharCode(36);
 
 const DIR =
   "src/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons";
@@ -130,9 +129,10 @@ writeChallenge("js-dom-select", {
   id: "dom-update-practice",
   title: "Update the Page",
   prompt:
-    "A page is loaded for you: a heading with id \"status\", a paragraph with class \"intro\", and an image with id \"hero\". JavaScript received the real element objects as `heading`, `intro`, and `hero` — do NOT call document.querySelector; use these variables directly.\n\n1. Set the heading's text to exactly: Pipeline running\n2. Add the class \"is-active\" to the intro paragraph.\n3. Set the hero image's src to \"/photos/dawn.jpg\" and give its alt text a meaningful description.",
+    'A page is loaded for you: a heading with id "status", a paragraph with class "intro", and an image with id "hero". JavaScript received the real element objects as `heading`, `intro`, and `hero` — do NOT call document.querySelector; use these variables directly.\n\n1. Set the heading\'s text to exactly: Pipeline running\n2. Add the class "is-active" to the intro paragraph.\n3. Set the hero image\'s src to "/photos/dawn.jpg" and give its alt text a meaningful description.',
   difficulty: "intermediate",
-  boilerplate: "// heading, intro, hero are the real element objects\n\n// 1) heading text\n\n// 2) intro class\n\n// 3) hero image\n",
+  boilerplate:
+    "// heading, intro, hero are the real element objects\n\n// 1) heading text\n\n// 2) intro class\n\n// 3) hero image\n",
   tests: [
     {
       name: "heading text set to Pipeline running",
@@ -142,7 +142,7 @@ new Function("heading", "intro", "hero", code)(heading, intro, hero);
 if (heading.textContent !== "Pipeline running") {
   throw new Error('heading.textContent should be exactly "Pipeline running" — got "' + heading.textContent + '".');
 }`,
-      hint: "heading.textContent = \"Pipeline running\";",
+      hint: 'heading.textContent = "Pipeline running";',
     },
     {
       name: "intro gets is-active via classList.add",
@@ -263,7 +263,7 @@ writeChallenge("js-dom-create", {
   id: "render-a-list",
   title: "Render a List from Data",
   prompt:
-    "The `document` object in this challenge records what you build — use it exactly like the real one: document.createElement(tag), document.querySelector(selector), and parent.appendChild(child).\n\n1. Select the list with id \"todo-list\".\n2. Loop over the given `todos` array (it is provided in the boilerplate) and for each item: create an <li>, set its text to the todo, and append it to the list.",
+    'The `document` object in this challenge records what you build — use it exactly like the real one: document.createElement(tag), document.querySelector(selector), and parent.appendChild(child).\n\n1. Select the list with id "todo-list".\n2. Loop over the given `todos` array (it is provided in the boilerplate) and for each item: create an <li>, set its text to the todo, and append it to the list.',
   difficulty: "intermediate",
   boilerplate:
     'const todos = ["learn the DOM", "build a list", "render from data"];\n\n// 1) select #todo-list\n\n// 2) create + fill + append one <li> per todo\n',
@@ -298,7 +298,7 @@ const lis = list.children.filter((c) => c.tagName === "LI");
 if (lis.length !== 3) {
   throw new Error("Expected 3 <li> elements appended — got " + lis.length + ". Create one per todo and append it.");
 }`,
-      hint: "for (const todo of todos) { const li = document.createElement(\"li\"); li.textContent = todo; list.appendChild(li); }",
+      hint: 'for (const todo of todos) { const li = document.createElement("li"); li.textContent = todo; list.appendChild(li); }',
     },
     {
       name: "items contain the right text, in order",
@@ -417,9 +417,10 @@ writeChallenge("js-dom-events", {
   id: "click-counter",
   title: "Build a Click Counter",
   prompt:
-    "Elements `button` (a \"increment\" button) and `display` (shows the count) are provided as variables.\n\n1. Add a click listener to `button` that increases `count` (starting at 0) and updates `display.textContent` with the new count.\n2. To prove it works, simulate two clicks by CALLING the handler logic twice, then log `display.textContent` — it should print 2.\n\nTip: keep the handler in a variable or use a named function so you can call it yourself.",
+    'Elements `button` (a "increment" button) and `display` (shows the count) are provided as variables.\n\n1. Add a click listener to `button` that increases `count` (starting at 0) and updates `display.textContent` with the new count.\n2. To prove it works, simulate two clicks by CALLING the handler logic twice, then log `display.textContent` — it should print 2.\n\nTip: keep the handler in a variable or use a named function so you can call it yourself.',
   difficulty: "intermediate",
-  boilerplate: "let count = 0;\n\n// 1) wire button's click listener to update count + display\n\n// 2) trigger it twice, then log display.textContent\n",
+  boilerplate:
+    "let count = 0;\n\n// 1) wire button's click listener to update count + display\n\n// 2) trigger it twice, then log display.textContent\n",
   tests: [
     {
       name: "a click listener is registered",
@@ -436,7 +437,7 @@ new Function("button", "display", code)(button, display);
 if (typeof button.listeners.click !== "function") {
   throw new Error('Register a click handler: button.addEventListener("click", ...)');
 }`,
-      hint: "button.addEventListener(\"click\", () => { count++; display.textContent = count; });",
+      hint: 'button.addEventListener("click", () => { count++; display.textContent = count; });',
     },
     {
       name: "two clicks lead to display showing 2",
@@ -563,7 +564,7 @@ writeChallenge("js-dom-events", {
   id: "signup-validator",
   title: "Validate a Signup Form",
   prompt:
-    "Elements are provided: `form`, `usernameInput` (a text field), `emailInput`, and `errorBox`. Build the submit flow:\n\n1. Add a submit listener to `form` that calls event.preventDefault() first.\n2. Read the username; if its trimmed length is under 3, set `errorBox.textContent` to a helpful message and stop.\n3. Read the email; if it does not include \"@\", show an error the same way.\n4. Otherwise clear `errorBox.textContent` and log `Welcome, <username>`.\n\nThen simulate: submit with username \"ab\" (too short), then submit with a valid username and email — and log after each.",
+    'Elements are provided: `form`, `usernameInput` (a text field), `emailInput`, and `errorBox`. Build the submit flow:\n\n1. Add a submit listener to `form` that calls event.preventDefault() first.\n2. Read the username; if its trimmed length is under 3, set `errorBox.textContent` to a helpful message and stop.\n3. Read the email; if it does not include "@", show an error the same way.\n4. Otherwise clear `errorBox.textContent` and log `Welcome, <username>`.\n\nThen simulate: submit with username "ab" (too short), then submit with a valid username and email — and log after each.',
   difficulty: "intermediate",
   boilerplate:
     "// form, usernameInput, emailInput, errorBox are provided element objects\n\n// wire the submit listener with validation\n\n// simulate the two submissions\n",
@@ -593,7 +594,7 @@ const prevented = form.dispatch("submit");
 if (!prevented.flag) {
   throw new Error("Call event.preventDefault() inside the submit handler.");
 }`,
-      hint: "form.addEventListener(\"submit\", (event) => { event.preventDefault(); ... });",
+      hint: 'form.addEventListener("submit", (event) => { event.preventDefault(); ... });',
     },
     {
       name: "short username shows an error and stops",
@@ -621,7 +622,7 @@ if (!errorBox.textContent || errorBox.textContent.length < 5) {
 if (logs.some((l) => l.startsWith("Welcome"))) {
   throw new Error("Invalid input must stop the flow — no Welcome log for a 2-character username.");
 }`,
-      hint: "const username = usernameInput.value.trim(); if (username.length < 3) { errorBox.textContent = \"...\"; return; }",
+      hint: 'const username = usernameInput.value.trim(); if (username.length < 3) { errorBox.textContent = "..."; return; }',
     },
     {
       name: "valid input clears errors and welcomes",
@@ -649,7 +650,7 @@ if (errorBox.textContent !== "") {
 if (!logs.some((l) => l === "Welcome, ada")) {
   throw new Error('Log "Welcome, " + username for valid input — expected "Welcome, ada".');
 }`,
-      hint: "errorBox.textContent = \"\"; console.log(\"Welcome, \" + username);",
+      hint: 'errorBox.textContent = ""; console.log("Welcome, " + username);',
     },
   ],
 });

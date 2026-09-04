@@ -111,9 +111,11 @@ nav-bar trick. You will see both again.
 writeChallenge("css-display-flow", {
   id: "display-sorting",
   title: "Prediction: Block or Inline?",
-  prompt: "Predict, then prove. The boilerplate has three elements and empty predictions in CSS comments. Replace each prediction comment with the property that makes the statement true:\n\n1. Make the `.badge` keep its padding AND width while flowing beside the text → set `display` on `.badge`.\n2. Make the span-sized `.spacer` disappear entirely → set `display` on `.spacer`.\n3. Keep `.para` as a block — but prove it by setting `display` explicitly on `.para`.",
+  prompt:
+    "Predict, then prove. The boilerplate has three elements and empty predictions in CSS comments. Replace each prediction comment with the property that makes the statement true:\n\n1. Make the `.badge` keep its padding AND width while flowing beside the text → set `display` on `.badge`.\n2. Make the span-sized `.spacer` disappear entirely → set `display` on `.spacer`.\n3. Keep `.para` as a block — but prove it by setting `display` explicitly on `.para`.",
   difficulty: "beginner",
-  boilerplate: "<style>\n  .badge {\n    /* display value here */\n    padding: 2px 8px;\n    width: 80px;\n  }\n\n  .spacer {\n    /* display value here */\n  }\n\n  .para {\n    /* display value here */\n  }\n</style>\n\n<p>Score: <span class=\"badge\">99 points</span> and counting.</p>\n<p class=\"para\">Blocks claim their own line.</p>\n",
+  boilerplate:
+    '<style>\n  .badge {\n    /* display value here */\n    padding: 2px 8px;\n    width: 80px;\n  }\n\n  .spacer {\n    /* display value here */\n  }\n\n  .para {\n    /* display value here */\n  }\n</style>\n\n<p>Score: <span class="badge">99 points</span> and counting.</p>\n<p class="para">Blocks claim their own line.</p>\n',
   tests: [
     {
       name: "badge is inline-block",
@@ -221,9 +223,11 @@ table headers; a bonus, not a requirement today.
 writeChallenge("css-positioning", {
   id: "badge-the-card",
   title: "Badge the Card",
-  prompt: "Put a 'NEW' badge over the offer card's top-right corner:\n\n- Give `.card` the position value that makes it an anchor for absolutely-positioned children.\n- Give `.badge` absolute positioning, 8px from the top and right of the card.\n- The badge must be positioned against the CARD — not the page.",
+  prompt:
+    "Put a 'NEW' badge over the offer card's top-right corner:\n\n- Give `.card` the position value that makes it an anchor for absolutely-positioned children.\n- Give `.badge` absolute positioning, 8px from the top and right of the card.\n- The badge must be positioned against the CARD — not the page.",
   difficulty: "beginner",
-  boilerplate: "<style>\n  .card {\n    width: 280px;\n    padding: 24px;\n    border: 1px solid silver;\n    margin: 48px;\n  }\n\n  .badge {\n    padding: 2px 8px;\n    background: gold;\n  }\n</style>\n\n<div class=\"card\">\n  <span class=\"badge\">NEW</span>\n  <h3>Spring offer</h3>\n  <p>Three months half price.</p>\n</div>\n",
+  boilerplate:
+    '<style>\n  .card {\n    width: 280px;\n    padding: 24px;\n    border: 1px solid silver;\n    margin: 48px;\n  }\n\n  .badge {\n    padding: 2px 8px;\n    background: gold;\n  }\n</style>\n\n<div class="card">\n  <span class="badge">NEW</span>\n  <h3>Spring offer</h3>\n  <p>Three months half price.</p>\n</div>\n',
   tests: [
     {
       name: "card is the anchor",
@@ -375,9 +379,11 @@ You now know the skeleton of every navigation bar on the web.
 writeChallenge("css-flexbox", {
   id: "flex-the-navbar",
   title: "Flex the Navbar",
-  prompt: "Turn the boilerplate's nav into a flex navbar:\n\n- `.nav` becomes a flex container with `space-between` (brand left, links right) and vertically centered items.\n- `.nav ul` also becomes flex, with a `1rem` gap between links and no list bullets.\n- Style links without underline on `.nav a` (in a nav, color+weight carry the affordance) — and set `color` explicitly.",
+  prompt:
+    "Turn the boilerplate's nav into a flex navbar:\n\n- `.nav` becomes a flex container with `space-between` (brand left, links right) and vertically centered items.\n- `.nav ul` also becomes flex, with a `1rem` gap between links and no list bullets.\n- Style links without underline on `.nav a` (in a nav, color+weight carry the affordance) — and set `color` explicitly.",
   difficulty: "beginner",
-  boilerplate: "<nav class=\"nav\">\n  <strong>MySite</strong>\n  <ul>\n    <li><a href=\"#\">Home</a></li>\n    <li><a href=\"#\">About</a></li>\n    <li><a href=\"#\">Contact</a></li>\n  </ul>\n</nav>\n\n<style>\n  /* flex it */\n</style>\n",
+  boilerplate:
+    '<nav class="nav">\n  <strong>MySite</strong>\n  <ul>\n    <li><a href="#">Home</a></li>\n    <li><a href="#">About</a></li>\n    <li><a href="#">Contact</a></li>\n  </ul>\n</nav>\n\n<style>\n  /* flex it */\n</style>\n',
   tests: [
     {
       name: "nav is flex with space-between",
@@ -433,9 +439,11 @@ if (!/text-decoration\\s*:\\s*none/i.test(a[1])) {
 writeChallenge("css-flexbox", {
   id: "flex-the-card-row",
   title: "Independent: Card Row",
-  prompt: "Build a responsive-ish card row with flex:\n\n- `.row` is a flex container whose items wrap when space runs out, with a `1rem` gap.\n- Each `.card` has `flex: 1` and a minimum width of `200px` (hint: flex-basis or min-width) so cards can't shrink into slivers.\n- All three cards end up the same width on wide screens (flex handles it).",
+  prompt:
+    "Build a responsive-ish card row with flex:\n\n- `.row` is a flex container whose items wrap when space runs out, with a `1rem` gap.\n- Each `.card` has `flex: 1` and a minimum width of `200px` (hint: flex-basis or min-width) so cards can't shrink into slivers.\n- All three cards end up the same width on wide screens (flex handles it).",
   difficulty: "beginner",
-  boilerplate: "<div class=\"row\">\n  <div class=\"card\">One</div>\n  <div class=\"card\">Two</div>\n  <div class=\"card\">Three</div>\n</div>\n\n<style>\n  /* your layout */\n</style>\n",
+  boilerplate:
+    '<div class="row">\n  <div class="card">One</div>\n  <div class="card">Two</div>\n  <div class="card">Three</div>\n</div>\n\n<style>\n  /* your layout */\n</style>\n',
   tests: [
     {
       name: "row wraps with gap",
@@ -570,9 +578,11 @@ container. That combination is how modern pages are built.
 writeChallenge("css-grid", {
   id: "grid-the-gallery",
   title: "Grid the Gallery",
-  prompt: "Build a photo gallery board:\n\n- `.gallery` is a grid with **three equal columns** and a `1rem` gap between all cells.\n- The `.featured` tile spans the full width of the first row.\n- The remaining tiles flow into the grid automatically (no per-tile placement needed).",
+  prompt:
+    "Build a photo gallery board:\n\n- `.gallery` is a grid with **three equal columns** and a `1rem` gap between all cells.\n- The `.featured` tile spans the full width of the first row.\n- The remaining tiles flow into the grid automatically (no per-tile placement needed).",
   difficulty: "beginner",
-  boilerplate: "<div class=\"gallery\">\n  <div class=\"featured\">Hero photo</div>\n  <div>Photo 2</div>\n  <div>Photo 3</div>\n  <div>Photo 4</div>\n  <div>Photo 5</div>\n  <div>Photo 6</div>\n</div>\n\n<style>\n  /* grid it */\n</style>\n",
+  boilerplate:
+    '<div class="gallery">\n  <div class="featured">Hero photo</div>\n  <div>Photo 2</div>\n  <div>Photo 3</div>\n  <div>Photo 4</div>\n  <div>Photo 5</div>\n  <div>Photo 6</div>\n</div>\n\n<style>\n  /* grid it */\n</style>\n',
   tests: [
     {
       name: "gallery is a 3-column grid with gap",
@@ -717,9 +727,11 @@ build one in the final project.)
 writeChallenge("css-responsive", {
   id: "make-it-responsive",
   title: "Make It Responsive",
-  prompt: "Turn a desktop-only page responsive:\n\n- Base (mobile): `.cards` stacks as a single-column grid.\n- At `min-width: 640px`: two columns. At `min-width: 1024px`: three columns.\n- Give `img` (or the `.cards img`) fluid behavior: `max-width: 100%` and `height: auto`.",
+  prompt:
+    "Turn a desktop-only page responsive:\n\n- Base (mobile): `.cards` stacks as a single-column grid.\n- At `min-width: 640px`: two columns. At `min-width: 1024px`: three columns.\n- Give `img` (or the `.cards img`) fluid behavior: `max-width: 100%` and `height: auto`.",
   difficulty: "beginner",
-  boilerplate: "<div class=\"cards\">\n  <div class=\"card\"><img src=\"https://example.com/a.jpg\" alt=\"Red Ferrari on a coastal road\">Red car</div>\n  <div class=\"card\"><img src=\"https://example.com/b.jpg\" alt=\"Blue sailboat at anchor\">Blue boat</div>\n  <div class=\"card\"><img src=\"https://example.com/c.jpg\" alt=\"Green train crossing a viaduct\">Green train</div>\n</div>\n\n<style>\n  /* mobile-first responsive rules */\n</style>\n",
+  boilerplate:
+    '<div class="cards">\n  <div class="card"><img src="https://example.com/a.jpg" alt="Red Ferrari on a coastal road">Red car</div>\n  <div class="card"><img src="https://example.com/b.jpg" alt="Blue sailboat at anchor">Blue boat</div>\n  <div class="card"><img src="https://example.com/c.jpg" alt="Green train crossing a viaduct">Green train</div>\n</div>\n\n<style>\n  /* mobile-first responsive rules */\n</style>\n',
   tests: [
     {
       name: "single column by default",
@@ -857,9 +869,11 @@ animations covered. This is the courtesy that marks professional CSS.
 writeChallenge("css-transitions", {
   id: "polish-the-button",
   title: "Polish the Button",
-  prompt: "Give a plain button professional interaction states:\n\n- A `transition` on `.button` covering background-color (0.2s).\n- A `:hover` state that changes the background-color.\n- A matching `:focus-visible` state (same selector list or separate rule) so keyboard users see it too.\n- A `prefers-reduced-motion` media block that neutralizes transitions.",
+  prompt:
+    "Give a plain button professional interaction states:\n\n- A `transition` on `.button` covering background-color (0.2s).\n- A `:hover` state that changes the background-color.\n- A matching `:focus-visible` state (same selector list or separate rule) so keyboard users see it too.\n- A `prefers-reduced-motion` media block that neutralizes transitions.",
   difficulty: "beginner",
-  boilerplate: "<style>\n  .button {\n    padding: 10px 20px;\n    background-color: #4b2e83;\n    color: white;\n    border: none;\n  }\n</style>\n\n<button class=\"button\">Sign up</button>\n",
+  boilerplate:
+    '<style>\n  .button {\n    padding: 10px 20px;\n    background-color: #4b2e83;\n    color: white;\n    border: none;\n  }\n</style>\n\n<button class="button">Sign up</button>\n',
   tests: [
     {
       name: "transition declared on base",
@@ -941,9 +955,11 @@ responds to keyboard; the palette is consistent because it comes from variables.
 writeChallenge("css-project-portfolio", {
   id: "style-the-portfolio",
   title: "Style Your Portfolio",
-  prompt: "Deliver the module project: a themed, responsive, motion-polished portfolio stylesheet meeting the six brief requirements (foundation, theme variables, flex/grid layout, mobile-first media queries, polish, reduced motion).",
+  prompt:
+    "Deliver the module project: a themed, responsive, motion-polished portfolio stylesheet meeting the six brief requirements (foundation, theme variables, flex/grid layout, mobile-first media queries, polish, reduced motion).",
   difficulty: "beginner",
-  boilerplate: "<!-- Page structure (style these or your own equivalents) -->\n<nav class=\"site-nav\">\n  <strong>My Portfolio</strong>\n  <ul><li><a href=\"#work\">Work</a></li><li><a href=\"#contact\">Contact</a></li></ul>\n</nav>\n<main>\n  <section class=\"card\"><h2>Work</h2><p>Things I have built.</p></section>\n  <section class=\"card\" id=\"contact\"><h2>Contact</h2><p>Say hello.</p></section>\n</main>\n\n<style>\n  /* your portfolio stylesheet */\n</style>\n",
+  boilerplate:
+    '<!-- Page structure (style these or your own equivalents) -->\n<nav class="site-nav">\n  <strong>My Portfolio</strong>\n  <ul><li><a href="#work">Work</a></li><li><a href="#contact">Contact</a></li></ul>\n</nav>\n<main>\n  <section class="card"><h2>Work</h2><p>Things I have built.</p></section>\n  <section class="card" id="contact"><h2>Contact</h2><p>Say hello.</p></section>\n</main>\n\n<style>\n  /* your portfolio stylesheet */\n</style>\n',
   tests: [
     {
       name: "foundation: border-box, font stack, line-height",

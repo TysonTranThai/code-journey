@@ -76,7 +76,7 @@ if (opts < 2) {
 if (!sel) {
   throw new Error("Give the select an id first.");
 }
-${labelForRe('sel[1]')}
+${labelForRe("sel[1]")}
 if (!labelRe.test(code)) {
   throw new Error("The select needs a <label for=\\"" + sel[1] + "\\"> too.");
 }`,
@@ -88,7 +88,7 @@ if (!labelRe.test(code)) {
 if (!ta) {
   throw new Error("Add a <textarea> for the message.");
 }
-${labelForRe('ta[1]')}
+${labelForRe("ta[1]")}
 if (!labelRe.test(code)) {
   throw new Error('Label the textarea with <label for="' + ta[1] + '">.');
 }`,
@@ -109,5 +109,8 @@ if (!text) {
   ],
 };
 
-writeFileSync(path.join(dir, "build-a-contact-form.json"), JSON.stringify(challenge, null, 2) + "\n");
+writeFileSync(
+  path.join(dir, "build-a-contact-form.json"),
+  JSON.stringify(challenge, null, 2) + "\n",
+);
 console.log("wrote build-a-contact-form.json");

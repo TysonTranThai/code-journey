@@ -4,7 +4,7 @@ A server can restart any moment; its memory is wiped. Durable data lives in a
 **database**. The dominant kind is **relational** — data in **tables** of rows and
 columns, linked by ids:
 
-~~~text
+```text
 users
 id | email           | password_hash
 1  | ada@example.com | $2b$12$KIX...
@@ -12,7 +12,7 @@ id | email           | password_hash
 submissions
 id | user_id | challenge_id | verdict
 7  | 1       | render-a-list | passed
-~~~
+```
 
 That `user_id` column is the link: one user, many submissions. You query with
 **SQL**: `SELECT * FROM submissions WHERE user_id = 1;`. When Code Journey
@@ -22,8 +22,8 @@ shows your submission history, a query exactly like that ran.
 
 Two different questions:
 
-- **Authentication** — *who are you?* (login)
-- **Authorization** — *what may this account do?* (permissions)
+- **Authentication** — _who are you?_ (login)
+- **Authorization** — _what may this account do?_ (permissions)
 
 ## How login actually works
 
@@ -40,8 +40,8 @@ emails you your actual password in plain text, run.
 ## Authorization you have already experienced
 
 Code Journey checks authorization on every submission read: user A requesting user
-B's result gets `404`, even with the right id. The server asked not *does
-this submission exist* but *does this submission belong to the requester* — and it
+B's result gets `404`, even with the right id. The server asked not _does
+this submission exist_ but _does this submission belong to the requester_ — and it
 checks on the server, where the answer cannot be forged.
 
 ## What you learned
@@ -52,4 +52,3 @@ checks on the server, where the answer cannot be forged.
 - Ownership checks happen server-side — you lived this with the 404s
 
 **Next:** how sites reach the world — DNS, HTTPS, and deployment.
-

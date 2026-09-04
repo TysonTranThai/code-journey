@@ -133,5 +133,8 @@ for (const level of levels) {
   ],
 };
 
-writeFileSync(path.join(dir, "personal-profile-page.json"), JSON.stringify(challenge, null, 2) + "\n");
+writeFileSync(
+  path.join(dir, "personal-profile-page.json"),
+  JSON.stringify(challenge, null, 2) + "\n",
+);
 console.log("wrote personal-profile-page.json");

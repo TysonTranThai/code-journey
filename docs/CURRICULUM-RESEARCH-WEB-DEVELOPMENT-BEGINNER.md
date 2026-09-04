@@ -6,14 +6,14 @@ structure and pedagogy; **no lesson text is copied** — all Code Journey conten
 
 ## 1. Sources researched
 
-| Source | What was examined | Use |
-|---|---|---|
-| freeCodeCamp — Responsive Web Design (v9) curriculum + legacy (2022) | Module ordering, project cadence, semantic-HTML/forms emphasis | Structure & scope |
-| The Odin Project — Foundations course | Section order (Intro → Git Basics → HTML → CSS → Flexbox → JS Basics), project-per-section cadence, "set up real tools early" philosophy | Structure & ordering |
-| MDN Learn Web Development / MDN Curriculum | "Getting started with the web" → HTML → CSS ("first steps, styling the box, styling text, layout") → JS ("first steps, building blocks, DOM…") progression; depth calibration per topic | Ordering & depth |
-| W3C WAI — Introduction to Web Accessibility; WCAG 2.1 (perceivable/operable/understandable/robust); Easy Checks | A11y framing as fundamentals-not-bonus; the beginner-teachable core: alt text, labels, headings, contrast, keyboard | A11y thread design |
-| web.dev (Learn) | Responsive/modern-CSS presentation, mobile-first framing | Responsive thread |
-| Learner retrospectives surfaced in search (fCC forum, r/webdev, r/FreeCodeCamp) | Where beginners report getting stuck | Friction avoidance |
+| Source                                                                                                          | What was examined                                                                                                                                                                       | Use                  |
+| --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| freeCodeCamp — Responsive Web Design (v9) curriculum + legacy (2022)                                            | Module ordering, project cadence, semantic-HTML/forms emphasis                                                                                                                          | Structure & scope    |
+| The Odin Project — Foundations course                                                                           | Section order (Intro → Git Basics → HTML → CSS → Flexbox → JS Basics), project-per-section cadence, "set up real tools early" philosophy                                                | Structure & ordering |
+| MDN Learn Web Development / MDN Curriculum                                                                      | "Getting started with the web" → HTML → CSS ("first steps, styling the box, styling text, layout") → JS ("first steps, building blocks, DOM…") progression; depth calibration per topic | Ordering & depth     |
+| W3C WAI — Introduction to Web Accessibility; WCAG 2.1 (perceivable/operable/understandable/robust); Easy Checks | A11y framing as fundamentals-not-bonus; the beginner-teachable core: alt text, labels, headings, contrast, keyboard                                                                     | A11y thread design   |
+| web.dev (Learn)                                                                                                 | Responsive/modern-CSS presentation, mobile-first framing                                                                                                                                | Responsive thread    |
+| Learner retrospectives surfaced in search (fCC forum, r/webdev, r/FreeCodeCamp)                                 | Where beginners report getting stuck                                                                                                                                                    | Friction avoidance   |
 
 ## 2. Major curriculum patterns discovered
 
@@ -26,7 +26,7 @@ structure and pedagogy; **no lesson text is copied** — all Code Journey conten
    project is where knowledge consolidates. Odin places projects at the end of each section.
 4. **Git/tooling appears early (Odin) or late (fCC/MDN).** Evidence from beginner
    retrospectives: terminal + Git on day one is a common abandonment point. **Decision:** teach
-   terminal + Git *after* the learner has built real pages (they now have something worth
+   terminal + Git _after_ the learner has built real pages (they now have something worth
    version-controlling), before the final project.
 5. **Semantic HTML and accessibility are core, not appendix** (fCC v9 makes semantic HTML,
    forms, and a11y explicit; WAI treats them as fundamentals).
@@ -39,15 +39,15 @@ structure and pedagogy; **no lesson text is copied** — all Code Journey conten
 
 ## 3. Common beginner problems (and our mitigations)
 
-| Problem | Mitigation in this course |
-|---|---|
+| Problem                                           | Mitigation in this course                                                                                |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | Tutorial hell — following along without retention | Short lessons (5–15 min), 1–2 graded challenges per lesson, challenges verify behavior not exact strings |
-| Cascade/specificity confusion | Dedicated lesson + a debugging challenge where a rule silently loses |
-| Box-model size surprises | Dedicated lesson with a prediction challenge (content-box math) |
-| Positioning confusion | One lesson, honest guidance (use layout systems; reserve absolute for overlays/tooltips) |
-| `this`/scope in JS | Scope taught with functions early; arrow functions deferred until after named functions |
-| Event-object overwhelm | Only the events learners need first (click/input/submit/keydown), `preventDefault` introduced at forms |
-| Regex/framework shortcuts in graders | Challenge tests accept any valid implementation of the requirement |
+| Cascade/specificity confusion                     | Dedicated lesson + a debugging challenge where a rule silently loses                                     |
+| Box-model size surprises                          | Dedicated lesson with a prediction challenge (content-box math)                                          |
+| Positioning confusion                             | One lesson, honest guidance (use layout systems; reserve absolute for overlays/tooltips)                 |
+| `this`/scope in JS                                | Scope taught with functions early; arrow functions deferred until after named functions                  |
+| Event-object overwhelm                            | Only the events learners need first (click/input/submit/keydown), `preventDefault` introduced at forms   |
+| Regex/framework shortcuts in graders              | Challenge tests accept any valid implementation of the requirement                                       |
 
 ## 4. Recommended topic ordering (and why)
 
@@ -59,7 +59,7 @@ structure and pedagogy; **no lesson text is copied** — all Code Journey conten
   to "understanding checks"; on Code Journey these are graded challenge-lessons.
 - Terminal/Git after real pages exist: preserves early momentum while still landing tooling
   before the capstone (splits the Odin-early/fCC-late disagreement using learner evidence).
-- Modern-web-architecture as a *conceptual* module before the final project: the learner deploys
+- Modern-web-architecture as a _conceptual_ module before the final project: the learner deploys
   via GitHub Pages in the tooling module and can then name the moving parts they just used.
 
 ## 5. Topics intentionally excluded (beginner scope)
@@ -77,8 +77,8 @@ structure and pedagogy; **no lesson text is copied** — all Code Journey conten
    → 1–2 auto-graded challenges (guided, independent, modification, prediction, or debug types).
 2. **Challenge variety mandated** (phase directive §10): every module mixes guided,
    independent, modification, prediction, and debugging challenges.
-3. **Accept any valid implementation.** Tests verify the *behavior/structure of the
-   requirement*, never one exact authored string — with deliberately generous assertions on
+3. **Accept any valid implementation.** Tests verify the _behavior/structure of the
+   requirement_, never one exact authored string — with deliberately generous assertions on
    freeform content.
 4. **A11y woven in, checkpointed once.** Alt text at images, link text at links, labels at
    forms, heading hierarchy at structure, contrast in CSS, then an a11y-focused challenge set at
@@ -88,7 +88,7 @@ structure and pedagogy; **no lesson text is copied** — all Code Journey conten
    server-verified progress path (challenge verdict → progress event) with zero platform changes.
 7. **Difficulty progression L1→L5** (§14): `beginner` tags through Module 4's midpoint,
    `intermediate` from functions/data-structures through the capstone.
-8. **Real-world context rule** (§16): every construct is introduced with its *purpose* — labels
+8. **Real-world context rule** (§16): every construct is introduced with its _purpose_ — labels
    exist for assistive tech, flexbox exists for nav bars, etc.
 
 ## 7. Code Journey differentiation

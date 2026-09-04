@@ -111,7 +111,9 @@ export function getLessonMdx(contentPath: string): MdxComponent | undefined {
 `;
 
   writeFileSync(OUT_FILE, file);
-  console.log(`[generate-mdx-map] wrote ${lessons.length} lesson imports -> src/lib/curriculum/mdx-map.ts`);
+  console.log(
+    `[generate-mdx-map] wrote ${lessons.length} lesson imports -> src/lib/curriculum/mdx-map.ts`,
+  );
 }
 
 main();

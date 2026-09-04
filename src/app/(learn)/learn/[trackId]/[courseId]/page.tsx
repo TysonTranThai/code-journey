@@ -53,7 +53,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
   const totalMinutes = courseLessons.reduce((sum, l) => sum + l.minutes, 0);
   const hoursText =
     totalMinutes >= 90
-      ? `${Math.round(totalMinutes / 15) * 15 / 60} hours`
+      ? `${(Math.round(totalMinutes / 15) * 15) / 60} hours`
       : `${totalMinutes} minutes`;
   const challengeCount = courseLessons.reduce((sum, l) => {
     try {

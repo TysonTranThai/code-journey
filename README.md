@@ -44,29 +44,29 @@ Health check: open <http://localhost:3000/health> — expect `{"status":"ok","db
 
 All commands verified working as of 2026-09-02:
 
-| Command              | What it does                                                        |
-| -------------------- | ------------------------------------------------------------------- |
-| `pnpm dev`           | Start the Next.js dev server on port 3000                           |
-| `pnpm build`         | Production build (includes type checking)                           |
-| `pnpm start`         | Serve the production build                                          |
-| `pnpm lint`          | ESLint (flat config, Next.js core-web-vitals + TypeScript)          |
-| `pnpm lint:fix`      | ESLint with auto-fix                                                |
-| `pnpm format`        | Format all files with Prettier                                      |
-| `pnpm format:check`  | Verify formatting without writing                                   |
-| `pnpm typecheck`     | TypeScript strict check (`tsc --noEmit`)                            |
-| `pnpm test`          | Unit + integration tests (Vitest; DB-dependent suites auto-skip)    |
-| `pnpm test:watch`    | Vitest in watch mode                                                |
-| `pnpm test:e2e`      | Playwright E2E incl. axe-core AA audits (needs Docker for the loop) |
-| `pnpm worker`        | Challenge runner worker — the only process that executes code       |
-| `pnpm sandbox:build` | Build the hardened sandbox image (required for the challenge loop)  |
+| Command              | What it does                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------- |
+| `pnpm dev`           | Start the Next.js dev server on port 3000                                             |
+| `pnpm build`         | Production build (includes type checking)                                             |
+| `pnpm start`         | Serve the production build                                                            |
+| `pnpm lint`          | ESLint (flat config, Next.js core-web-vitals + TypeScript)                            |
+| `pnpm lint:fix`      | ESLint with auto-fix                                                                  |
+| `pnpm format`        | Format all files with Prettier                                                        |
+| `pnpm format:check`  | Verify formatting without writing                                                     |
+| `pnpm typecheck`     | TypeScript strict check (`tsc --noEmit`)                                              |
+| `pnpm test`          | Unit + integration tests (Vitest; DB-dependent suites auto-skip)                      |
+| `pnpm test:watch`    | Vitest in watch mode                                                                  |
+| `pnpm test:e2e`      | Playwright E2E incl. axe-core AA audits (needs Docker for the loop)                   |
+| `pnpm worker`        | Challenge runner worker — the only process that executes code                         |
+| `pnpm sandbox:build` | Build the hardened sandbox image (required for the challenge loop)                    |
 | `pnpm monaco:sync`   | Copy the self-hosted Monaco editor into `public/monaco-vs` (runs via predev/prestart) |
-| `pnpm db:up`         | Start Postgres via Docker Compose                                   |
-| `pnpm db:down`       | Stop the Postgres container (data volume kept)                      |
-| `pnpm db:migrate`    | Apply Drizzle migrations                                            |
-| `pnpm db:seed`       | Insert dev identity fixtures (local passwords only)                 |
-| `pnpm db:reset`      | Drop volume, recreate, migrate, seed (clean slate)                  |
-| `pnpm db:generate`   | Generate a migration from schema changes (drizzle-kit)              |
-| `pnpm db:studio`     | Drizzle Studio (browse data)                                        |
+| `pnpm db:up`         | Start Postgres via Docker Compose                                                     |
+| `pnpm db:down`       | Stop the Postgres container (data volume kept)                                        |
+| `pnpm db:migrate`    | Apply Drizzle migrations                                                              |
+| `pnpm db:seed`       | Insert dev identity fixtures (local passwords only)                                   |
+| `pnpm db:reset`      | Drop volume, recreate, migrate, seed (clean slate)                                    |
+| `pnpm db:generate`   | Generate a migration from schema changes (drizzle-kit)                                |
+| `pnpm db:studio`     | Drizzle Studio (browse data)                                                          |
 
 ## Running the Challenge Loop Locally
 

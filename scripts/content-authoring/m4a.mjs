@@ -232,7 +232,8 @@ writeChallenge("js-variables", {
   prompt:
     "Practice variables and template literals:\n\n1. Declare a `const` called `learner` holding your name (a string).\n2. Declare a `let` called `lessonsDone` starting at 0, then reassign it to 3.\n3. Compute `const remaining = 15 - lessonsDone;`\n4. Log one sentence using a template literal that includes both the name and the remaining count — e.g. `Ada has 12 lessons left.`",
   difficulty: "beginner",
-  boilerplate: "// 1) learner (const)\n\n// 2) lessonsDone (let), then reassign\n\n// 3) remaining\n\n// 4) template-literal sentence\n",
+  boilerplate:
+    "// 1) learner (const)\n\n// 2) lessonsDone (let), then reassign\n\n// 3) remaining\n\n// 4) template-literal sentence\n",
   tests: [
     {
       name: "learner is a const string",
@@ -508,7 +509,7 @@ writeChallenge("js-conditionals", {
   id: "grade-classifier",
   title: "Write a Grader",
   prompt:
-    "Write a function `grade(score)` that returns a letter grade string:\n\n- 90 or above returns \"A\"\n- 80–89 returns \"B\"\n- 70–79 returns \"C\"\n- anything below returns \"Keep practicing\"\n\nThen log the result of `grade(85)` and `grade(92)`.",
+    'Write a function `grade(score)` that returns a letter grade string:\n\n- 90 or above returns "A"\n- 80–89 returns "B"\n- 70–79 returns "C"\n- anything below returns "Keep practicing"\n\nThen log the result of `grade(85)` and `grade(92)`.',
   difficulty: "beginner",
   boilerplate: "// grade(score) returns the letter as a STRING\n\n\n// log two examples\n",
   tests: [
@@ -533,7 +534,7 @@ const direct = grade(100);
 if (direct !== "A") {
   throw new Error("grade must RETURN the letter — a return value, not just a console.log.");
 }`,
-      hint: "Return the string from inside each branch: return \"A\"; — logging is not returning.",
+      hint: 'Return the string from inside each branch: return "A"; — logging is not returning.',
     },
     {
       name: "logs two examples",
@@ -635,7 +636,8 @@ writeChallenge("js-loops", {
   prompt:
     "Two loops:\n\n1. Write a function `countdown(start)` that logs each number from `start` down to 1 (one per line) using a loop.\n2. Write a function `sumUpTo(n)` that RETURNS the sum of all whole numbers from 1 to n (use an accumulator loop, not a hard-coded answer).\n\nLog `sumUpTo(10)` — it should print 55.",
   difficulty: "intermediate",
-  boilerplate: "// 1) countdown(start) — logs start..1\n\n\n// 2) sumUpTo(n) — returns 1+2+...+n\n\n\n// log sumUpTo(10)\n",
+  boilerplate:
+    "// 1) countdown(start) — logs start..1\n\n\n// 2) sumUpTo(n) — returns 1+2+...+n\n\n\n// log sumUpTo(10)\n",
   tests: [
     {
       name: "countdown logs start down to 1",

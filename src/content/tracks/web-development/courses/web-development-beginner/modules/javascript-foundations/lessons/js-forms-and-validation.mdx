@@ -1,13 +1,13 @@
-Forms are how your site *listens*. You know the HTML (Module 2) and events (last
+Forms are how your site _listens_. You know the HTML (Module 2) and events (last
 lesson) — now you read what the user typed and check it.
 
 ## Reading values
 
-~~~js
+```js
 const emailField = document.querySelector("#email");
 
-emailField.value        // the current text — a string, always
-~~~
+emailField.value; // the current text — a string, always
+```
 
 `.value` works on inputs, textareas, and selects. It is **always a string**:
 `"25"` is not a number — convert with `Number(...)` when you do math.
@@ -21,7 +21,7 @@ invalid data and shows a message. Always start here.
 **Layer 2 — your JavaScript:** the browser can't know your business rules ("name
 taken", "username must not contain spaces"). Handle the submit and check yourself:
 
-~~~js
+```js
 const form = document.querySelector("#signup");
 const errorBox = document.querySelector("#error");
 
@@ -32,20 +32,20 @@ form.addEventListener("submit", (event) => {
 
   if (username.length < 3) {
     errorBox.textContent = "Username must be at least 3 characters.";
-    return;                       // stop — don't accept the bad input
+    return; // stop — don't accept the bad input
   }
 
-  errorBox.textContent = "";      // clear old errors
+  errorBox.textContent = ""; // clear old errors
   console.log("Welcome, " + username);
 });
-~~~
+```
 
 ## Feedback that includes everyone
 
 - Show errors in **text on the page** (color alone fails ~8% of men — colorblind
   users can't see "the red border").
 - Put the message near the field it belongs to.
-- `.trim()` before checking: "  " is not a real name even though it is not
+- `.trim()` before checking: " " is not a real name even though it is not
   empty.
 
 ## The pattern, generalized
@@ -65,4 +65,3 @@ This read → validate → feedback loop is unchanged in every framework.
 - Intercept, read, check, feedback — in that order
 
 **Next:** remembering data between visits — storage.
-

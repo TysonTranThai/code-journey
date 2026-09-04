@@ -11,7 +11,6 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
 const T = String.fromCharCode(96);
-const D = String.fromCharCode(36);
 
 const DIR =
   "src/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons";
@@ -123,9 +122,10 @@ writeChallenge("js-functions", {
   id: "temperature-converter",
   title: "Temperature Converter",
   prompt:
-    'Write a function `celsiusToFahrenheit(c)` that RETURNS the Fahrenheit equivalent — the formula is c * 9/5 + 32.\n\nThen log `celsiusToFahrenheit(0)` (should print 32) and `celsiusToFahrenheit(100)` (should print 212).',
+    "Write a function `celsiusToFahrenheit(c)` that RETURNS the Fahrenheit equivalent — the formula is c * 9/5 + 32.\n\nThen log `celsiusToFahrenheit(0)` (should print 32) and `celsiusToFahrenheit(100)` (should print 212).",
   difficulty: "beginner",
-  boilerplate: "// celsiusToFahrenheit(c) returns the converted temperature\n\n\n// log two conversions\n",
+  boilerplate:
+    "// celsiusToFahrenheit(c) returns the converted temperature\n\n\n// log two conversions\n",
   tests: [
     {
       name: "converts correctly",
@@ -190,7 +190,7 @@ if (!logs.some((l) => l === "7")) {
 if (!logs.some((l) => l.includes("Ada"))) {
   throw new Error('Log greet("Ada") so the name appears in the console.');
 }`,
-      hint: "console.log(greet(\"Ada\")); console.log(maxOfTwo(7, 3));",
+      hint: 'console.log(greet("Ada")); console.log(maxOfTwo(7, 3));',
     },
   ],
 });
@@ -278,9 +278,10 @@ writeChallenge("js-scope-and-arrows", {
   id: "counter-factory",
   title: "Build a Counter",
   prompt:
-    '1. Write a function `makeCounter()` that returns an object with two methods: `increment()` (adds 1) and `value()` (returns the current count). The count must start at 0 and be remembered between calls — a local variable inside makeCounter is the right home for it.\n2. Create `const counter = makeCounter();`, call `counter.increment()` twice, then log `counter.value()` — it should print 2.',
+    "1. Write a function `makeCounter()` that returns an object with two methods: `increment()` (adds 1) and `value()` (returns the current count). The count must start at 0 and be remembered between calls — a local variable inside makeCounter is the right home for it.\n2. Create `const counter = makeCounter();`, call `counter.increment()` twice, then log `counter.value()` — it should print 2.",
   difficulty: "intermediate",
-  boilerplate: "// makeCounter() returns { increment, value }\n\n\n// create counter, increment twice, log the value\n",
+  boilerplate:
+    "// makeCounter() returns { increment, value }\n\n\n// create counter, increment twice, log the value\n",
   tests: [
     {
       name: "counter remembers state between calls",
@@ -404,7 +405,7 @@ writeChallenge("js-arrays", {
   id: "array-workout",
   title: "Array Workout",
   prompt:
-    'Given `const scores = [45, 92, 67, 88, 30];` (declare it yourself):\n\n1. Write `passing(scoresArr)` that RETURNS a new array of only the scores >= 60.\n2. Write `toPercent(scoresArr)` that RETURNS a new array with each score doubled.\n3. Log how many scores are passing (use passing + .length).\n4. Log whether the list contains a 100 (use .includes).',
+    "Given `const scores = [45, 92, 67, 88, 30];` (declare it yourself):\n\n1. Write `passing(scoresArr)` that RETURNS a new array of only the scores >= 60.\n2. Write `toPercent(scoresArr)` that RETURNS a new array with each score doubled.\n3. Log how many scores are passing (use passing + .length).\n4. Log whether the list contains a 100 (use .includes).",
   difficulty: "intermediate",
   boilerplate:
     "const scores = [45, 92, 67, 88, 30];\n\n// 1) passing(scoresArr)\n\n\n// 2) toPercent(scoresArr)\n\n\n// 3) log the passing count\n\n// 4) log whether a 100 exists\n",

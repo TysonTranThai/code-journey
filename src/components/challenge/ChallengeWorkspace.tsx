@@ -298,19 +298,13 @@ export function ChallengeWorkspace({
           className="sticky bottom-0 mt-2 flex shrink-0 items-center gap-3 border-t border-zinc-800 bg-zinc-950/95 px-1 py-3"
         >
           {runButton}
-          <div
-            role="status"
-            aria-live="polite"
-            className="min-w-0 flex-1 text-sm text-zinc-400"
-          >
+          <div role="status" aria-live="polite" className="min-w-0 flex-1 text-sm text-zinc-400">
             {runState.phase === "running" ? (
               "Running…"
             ) : runState.phase === "done" ? (
               <span className="inline-flex items-center gap-3">
                 <span
-                  className={
-                    runState.verdict === "passed" ? "text-emerald-400" : "text-rose-400"
-                  }
+                  className={runState.verdict === "passed" ? "text-emerald-400" : "text-rose-400"}
                 >
                   {verdictLabel(runState.verdict)}
                 </span>

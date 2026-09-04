@@ -3,50 +3,50 @@ tree of objects, one per element. Change an object, and the page updates instant
 
 ## document — the entry point
 
-~~~js
+```js
 // by id (fastest, most precise) — ONE element or null
 const title = document.getElementById("page-title");
 
 // by CSS selector — first match / all matches
 const firstCard = document.querySelector(".card");
-const allCards  = document.querySelectorAll(".card");   // a NodeList (array-like)
-~~~
+const allCards = document.querySelectorAll(".card"); // a NodeList (array-like)
+```
 
 `querySelector`/`querySelectorAll` take any CSS selector you already
 know: `"#save-btn"`, `".nav-link"`, `"form input[type=email]"`.
 
 ## Changing text
 
-~~~js
+```js
 title.textContent = "My new heading";
-~~~
+```
 
 `textContent` sets the element's text safely. (You may also see
 `innerHTML` — it parses HTML and can run injected code; avoid it for text.)
 
 ## Changing attributes
 
-~~~js
+```js
 const img = document.querySelector("img");
 img.src = "/new-photo.jpg";
 img.alt = "A mountain lake at dawn";
 const link = document.querySelector("a");
 link.href = "https://developer.mozilla.org";
 link.target = "_blank";
-~~~
+```
 
 Element objects have a property per HTML attribute — read them too:
 `img.src` returns the current value.
 
 ## Changing styles and classes
 
-~~~js
+```js
 const box = document.querySelector(".box");
-box.style.color = "crimson";          // inline style (camelCase properties)
-box.classList.add("is-open");         // the better way: toggle CSS classes
+box.style.color = "crimson"; // inline style (camelCase properties)
+box.classList.add("is-open"); // the better way: toggle CSS classes
 box.classList.remove("hidden");
-box.classList.toggle("dark");         // adds if missing, removes if present
-~~~
+box.classList.toggle("dark"); // adds if missing, removes if present
+```
 
 Prefer `classList` over `style` — put the appearance in CSS where it
 belongs, and let JavaScript only flip the switch.
@@ -57,12 +57,12 @@ belongs, and let JavaScript only flip the switch.
 `title.textContent = ...` throws `TypeError: null` — check what you
 actually selected:
 
-~~~js
+```js
 const btn = document.querySelector("#save");
 if (btn) {
   btn.textContent = "Saving…";
 }
-~~~
+```
 
 ## What you learned
 
@@ -72,4 +72,3 @@ if (btn) {
 - Missing elements return `null` — check before you set
 
 **Next:** creating brand-new elements, not just editing existing ones.
-

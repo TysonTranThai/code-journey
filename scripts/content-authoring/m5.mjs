@@ -12,7 +12,6 @@ import { writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
 const T = String.fromCharCode(96);
-const D = String.fromCharCode(36);
 
 const DIR =
   "src/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons";
@@ -110,7 +109,7 @@ writeChallenge("terminal-basics", {
   id: "terminal-commands",
   title: "Command the Terminal",
   prompt:
-    "Match each task to its command — write your answers as a single object assigned to `answers`:\n\nanswers = { where: \"?\", list: \"?\", enter: \"?\", up: \"?\", makeFolder: \"?\" }\n\n- where: show the current directory\n- list: list the files here\n- enter: move into a folder called my-project\n- up: move back up one level\n- makeFolder: create a folder called notes",
+    'Match each task to its command — write your answers as a single object assigned to `answers`:\n\nanswers = { where: "?", list: "?", enter: "?", up: "?", makeFolder: "?" }\n\n- where: show the current directory\n- list: list the files here\n- enter: move into a folder called my-project\n- up: move back up one level\n- makeFolder: create a folder called notes',
   difficulty: "beginner",
   boilerplate:
     'const answers = {\n  where: "",\n  list: "",\n  enter: "",\n  up: "",\n  makeFolder: "",\n};\n',
@@ -205,7 +204,7 @@ writeChallenge("git-git-version-control", {
   id: "git-init-and-commit",
   title: "The Everyday Git Rhythm",
   prompt:
-    "Write a function `commitSequence()` that RETURNS an array of git commands — in order — for this situation: you just created a new project folder, and you have finished your first page and want to record it.\n\nInclude exactly: initializing the repo, checking the state, staging everything, and committing with the message \"First page\".",
+    'Write a function `commitSequence()` that RETURNS an array of git commands — in order — for this situation: you just created a new project folder, and you have finished your first page and want to record it.\n\nInclude exactly: initializing the repo, checking the state, staging everything, and committing with the message "First page".',
   difficulty: "beginner",
   boilerplate: "// commitSequence() returns the 4 git commands in order\n",
   tests: [
@@ -293,10 +292,9 @@ writeChallenge("git-branches", {
   id: "branch-workflow",
   title: "Feature Branch Workflow",
   prompt:
-    "Write `branchWorkflow()` returning an object describing this flow: create a branch named \"feature/faq\", switch to it, then — after finishing work — bring it into main.\n\nShape: { create: \"?\", switch: \"?\", merge: \"?\" } (run from main, merge into main).",
+    'Write `branchWorkflow()` returning an object describing this flow: create a branch named "feature/faq", switch to it, then — after finishing work — bring it into main.\n\nShape: { create: "?", switch: "?", merge: "?" } (run from main, merge into main).',
   difficulty: "beginner",
-  boilerplate:
-    'const branchWorkflow = () => ({\n  create: "",\n  switch: "",\n  merge: "",\n});\n',
+  boilerplate: 'const branchWorkflow = () => ({\n  create: "",\n  switch: "",\n  merge: "",\n});\n',
   tests: [
     {
       name: "create, switch, merge — with the right branch name",
@@ -372,7 +370,7 @@ writeChallenge("github-remote", {
   id: "push-to-github",
   title: "Publish to a Remote",
   prompt:
-    'Your local repo is ready. Write `publishCommands()` returning an array with, in order: the command that connects a remote at https://github.com/ada/my-site.git, the command that uploads main and remembers the pairing, and the command your teammate uses to download the whole repo fresh.',
+    "Your local repo is ready. Write `publishCommands()` returning an array with, in order: the command that connects a remote at https://github.com/ada/my-site.git, the command that uploads main and remembers the pairing, and the command your teammate uses to download the whole repo fresh.",
   difficulty: "beginner",
   boilerplate: "// publishCommands() returns the 3 commands in order\n",
   tests: [
@@ -453,8 +451,7 @@ writeChallenge("deploy-github-pages", {
   prompt:
     'A learner pushed their site but visitors see a broken layout with no styles. The site is at github.io/my-site/ and the HTML contains <link rel="stylesheet" href="/Users/ada/site/styles.css">.\n\nWrite `fix()` returning an object: { problem: "paths" | "case" | "server", fix: "<the corrected link tag>" }.',
   difficulty: "intermediate",
-  boilerplate:
-    'const fix = () => ({\n  problem: "",\n  fix: "",\n});\n',
+  boilerplate: 'const fix = () => ({\n  problem: "",\n  fix: "",\n});\n',
   tests: [
     {
       name: "diagnosis and the corrected tag",
@@ -494,10 +491,9 @@ writeChallenge("git-checkpoint", {
   id: "workflow-checkpoint",
   title: "Developer Workflow Check",
   prompt:
-    "Answer three scenario questions in one object `answers`:\n\n1. undoTarget: You committed a bug and want to return the project to the previous commit's state. Which command family restores a past commit? Answer \"checkout\", \"revert\", or \"log\".\n2. safeShare: You want to propose a change to a teammate's repo through review. Answer \"push\", \"pull request\", or \"issue\".\n3. stage: Which command moves your edits into the staging area (one word, no arguments)?",
+    'Answer three scenario questions in one object `answers`:\n\n1. undoTarget: You committed a bug and want to return the project to the previous commit\'s state. Which command family restores a past commit? Answer "checkout", "revert", or "log".\n2. safeShare: You want to propose a change to a teammate\'s repo through review. Answer "push", "pull request", or "issue".\n3. stage: Which command moves your edits into the staging area (one word, no arguments)?',
   difficulty: "intermediate",
-  boilerplate:
-    'const answers = {\n  undoTarget: "",\n  safeShare: "",\n  stage: "",\n};\n',
+  boilerplate: 'const answers = {\n  undoTarget: "",\n  safeShare: "",\n  stage: "",\n};\n',
   tests: [
     {
       name: "concept answers",
@@ -506,7 +502,7 @@ const { answers } = fn();
 if (answers.undoTarget !== "revert") throw new Error('undoTarget: "revert" creates a commit that undoes a past one — the safe history-respecting choice.');
 if (answers.safeShare !== "pull request") throw new Error('safeShare: a "pull request" opens your branch for review and merge.');
 if (answers.stage !== "add") throw new Error('stage: "git add" moves edits into the staging area.');`,
-      hint: 'revert · pull request · add',
+      hint: "revert · pull request · add",
     },
   ],
 });

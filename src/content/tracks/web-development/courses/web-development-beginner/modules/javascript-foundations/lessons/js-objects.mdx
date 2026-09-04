@@ -1,39 +1,39 @@
 Arrays are numbered lists. **Objects** are labeled collections:
 
-~~~js
+```js
 const learner = {
   name: "Ada",
   streak: 12,
   level: "beginner",
 };
-~~~
+```
 
 Each `key: value` pair is a **property**.
 
 ## Reading and writing properties
 
-~~~js
-learner.name          // "Ada"   — dot access (the default)
-learner.streak        // 12
-learner["name"]       // "Ada"   — bracket access (needed for dynamic keys)
+```js
+learner.name; // "Ada"   — dot access (the default)
+learner.streak; // 12
+learner["name"]; // "Ada"   — bracket access (needed for dynamic keys)
 
-learner.level = "confident beginner";   // update
-learner.badges = ["first-run"];         // add a new property
-~~~
+learner.level = "confident beginner"; // update
+learner.badges = ["first-run"]; // add a new property
+```
 
 ## Methods — functions as properties
 
-~~~js
+```js
 const counter = {
   count: 0,
   increment() {
-    this.count++;       // this = the object itself
+    this.count++; // this = the object itself
   },
 };
 
 counter.increment();
-counter.count;   // 1
-~~~
+counter.count; // 1
+```
 
 A property whose value is a function is a **method**. Inside a method written this
 way, `this` refers to the object itself. Deep-dive later; recognize the shape
@@ -43,17 +43,17 @@ now.
 
 Real page data is the combination:
 
-~~~js
+```js
 const lessons = [
   { title: "Variables", minutes: 10, done: true },
   { title: "Functions", minutes: 14, done: false },
   { title: "Arrays", minutes: 14, done: false },
 ];
 
-lessons[1].title                  // "Functions" — index, then property
-lessons.filter((l) => !l.done)    // the unfinished ones
-lessons.find((l) => l.title === "Arrays")  // the whole object
-~~~
+lessons[1].title; // "Functions" — index, then property
+lessons.filter((l) => !l.done); // the unfinished ones
+lessons.find((l) => l.title === "Arrays"); // the whole object
+```
 
 Read compound expressions from the outside in. `lessons[1].title`: the array →
 item 1 → its title. This array-of-objects shape is what APIs return (Module 4's
@@ -61,11 +61,11 @@ final lessons) and what you will render into pages.
 
 ## JSON — the same shape as text
 
-~~~js
+```js
 const text = '{"name":"Ada","streak":12}';
-const parsed = JSON.parse(text);   // string → object
-JSON.stringify(learner);           // object → string
-~~~
+const parsed = JSON.parse(text); // string → object
+JSON.stringify(learner); // object → string
+```
 
 **JSON** (JavaScript Object Notation) is this data shape serialized as a string —
 the lingua franca of web APIs. `JSON.parse`/`stringify` convert both
@@ -79,4 +79,3 @@ ways; they return in the storage lesson too.
 - `JSON.parse`/`stringify` bridge objects and strings
 
 **Next:** the payoff — touching the actual page.
-

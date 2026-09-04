@@ -2,60 +2,60 @@
 
 Variables declared inside a function exist **only inside it**:
 
-~~~js
+```js
 function calc() {
-  const result = 42;    // born inside, dies inside
+  const result = 42; // born inside, dies inside
   return result;
 }
 
-console.log(result);    // ReferenceError — result is not visible out here
-~~~
+console.log(result); // ReferenceError — result is not visible out here
+```
 
-But the reverse works: a function can *read* variables declared **outside** it:
+But the reverse works: a function can _read_ variables declared **outside** it:
 
-~~~js
-const rate = 0.2;               // outer scope
+```js
+const rate = 0.2; // outer scope
 
 function tax(amount) {
-  return amount * rate;         // reads the outer variable
+  return amount * rate; // reads the outer variable
 }
-~~~
+```
 
 This is **scope**: inner sees outer, outer never sees inner. Keep most variables as
 local as possible — a variable only one function needs belongs inside that function.
 
 ## Arrow functions — the shorter syntax
 
-~~~js
+```js
 const double = function (n) {
   return n * 2;
 };
 
-const doubleArrow = (n) => n * 2;     // identical behavior
-~~~
+const doubleArrow = (n) => n * 2; // identical behavior
+```
 
 An arrow function is an expression assigned to a variable. With **one expression**
 after `=>`, the value is returned automatically and the braces disappear.
 With a **block body**, write `return` yourself:
 
-~~~js
-const shout = (text) => text.toUpperCase() + "!";     // implicit return
+```js
+const shout = (text) => text.toUpperCase() + "!"; // implicit return
 
 const compare = (a, b) => {
   if (a === b) return 0;
   return a > b ? 1 : -1;
-};                                                     // block body → explicit return
-~~~
+}; // block body → explicit return
+```
 
 You will see both constantly. `function` declarations are still perfect —
 use whichever reads better; recognize both.
 
 ## Arrows in loops-over-data (a preview)
 
-~~~js
+```js
 const scores = [90, 72, 88];
-scores.map((s) => s * 2);        // arrows are the natural fit here — arrays lesson next
-~~~
+scores.map((s) => s * 2); // arrows are the natural fit here — arrays lesson next
+```
 
 ## What you learned
 
@@ -64,4 +64,3 @@ scores.map((s) => s * 2);        // arrows are the natural fit here — arrays l
 - Arrow: `(params) => expression` (implicit return) or a block with `return`
 
 **Next:** arrays — working with lists of data.
-

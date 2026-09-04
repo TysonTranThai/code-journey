@@ -4,11 +4,7 @@ import { and, eq, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { achievements, progressEvents, submissions, type StoredVerdict } from "@/lib/db/schema";
-import {
-  getCurriculumModule,
-  getLesson,
-  getLessonChallenges,
-} from "@/lib/curriculum/loaders";
+import { getCurriculumModule, getLesson, getLessonChallenges } from "@/lib/curriculum/loaders";
 import { getAchievementDefs } from "./achievement-defs";
 
 /**

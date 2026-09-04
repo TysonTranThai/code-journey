@@ -4,46 +4,46 @@ a keypress, a form submit.
 
 ## addEventListener
 
-~~~js
+```js
 const btn = document.querySelector("#save");
 
 btn.addEventListener("click", () => {
   console.log("Clicked!");
 });
-~~~
+```
 
-Read it as: *on `btn`, whenever a `click` happens, run this function.*
+Read it as: _on `btn`, whenever a `click` happens, run this function._
 The function is the **handler** — the browser calls it, not you. Nothing happens
 until the user acts.
 
 ## The common events
 
-| Event | Fires when |
-|---|---|
-| `click` | an element is clicked or tapped |
-| `input` | a text field's value changes, per keystroke |
-| `submit` | a form is submitted (on the **form**, not the button) |
-| `keydown` | a key is pressed |
+| Event     | Fires when                                            |
+| --------- | ----------------------------------------------------- |
+| `click`   | an element is clicked or tapped                       |
+| `input`   | a text field's value changes, per keystroke           |
+| `submit`  | a form is submitted (on the **form**, not the button) |
+| `keydown` | a key is pressed                                      |
 
-~~~js
+```js
 const field = document.querySelector("#search");
 field.addEventListener("input", () => {
   console.log("Now contains:", field.value);
 });
-~~~
+```
 
 ## The event object and preventDefault
 
 Handlers receive an **event object** with details of what happened:
 
-~~~js
+```js
 const form = document.querySelector("#signup");
 
 form.addEventListener("submit", (event) => {
-  event.preventDefault();        // stop the browser's full-page reload
+  event.preventDefault(); // stop the browser's full-page reload
   console.log("Handling the submit ourselves");
 });
-~~~
+```
 
 `event.preventDefault()` cancels the default browser behavior. For forms that
 is essential: without it, submitting reloads the page and your JavaScript never gets
@@ -52,16 +52,16 @@ in place.
 
 ## Buttons: click handlers with real work
 
-~~~js
+```js
 const counterBtn = document.querySelector("#increment");
 const display = document.querySelector("#count");
 let count = 0;
 
 counterBtn.addEventListener("click", () => {
-  count++;                       // update state first…
-  display.textContent = count;   // …then reflect it in the page
+  count++; // update state first…
+  display.textContent = count; // …then reflect it in the page
 });
-~~~
+```
 
 State first, render second — this two-step dance is the core of every interactive
 app you will build.
@@ -74,4 +74,3 @@ app you will build.
 - Update state, then render it
 
 **Next:** forms — collecting and validating user input.
-

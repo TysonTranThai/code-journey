@@ -49,13 +49,15 @@ export async function generateMetadata({ params }: ChallengePageProps): Promise<
 export function generateStaticParams() {
   return getTracks().flatMap((track) =>
     getLinearLessons(track.id).flatMap((lesson) =>
-      getLessonChallenges(track.id, lesson.courseId, lesson.moduleId, lesson.id).map((challenge) => ({
-        trackId: track.id,
-        courseId: lesson.courseId,
-        moduleId: lesson.moduleId,
-        lessonId: lesson.id,
-        challengeId: challenge.id,
-      })),
+      getLessonChallenges(track.id, lesson.courseId, lesson.moduleId, lesson.id).map(
+        (challenge) => ({
+          trackId: track.id,
+          courseId: lesson.courseId,
+          moduleId: lesson.moduleId,
+          lessonId: lesson.id,
+          challengeId: challenge.id,
+        }),
+      ),
     ),
   );
 }

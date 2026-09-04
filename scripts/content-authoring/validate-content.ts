@@ -31,4 +31,6 @@ for (const ref of course.modules) {
 }
 
 console.log(`\nLinear path: ${linear.length} lessons across the track`);
-console.log(`TOTAL: ${course.modules.length} modules, ${lessons} lessons, ${challenges} challenges`);
+console.log(
+  `TOTAL: ${course.modules.length} modules, ${lessons} lessons, ${challenges} challenges`,
+);
