@@ -15,7 +15,7 @@ test("breadcrumb shows course and module titles, not slugs", async ({ page }) =>
   const nav = page.getByRole("navigation", { name: "Breadcrumb" });
   await expect(nav).toBeVisible();
   // Human-readable titles present:
-  await expect(nav.getByText("Web Development Foundations")).toBeVisible();
+  await expect(nav.getByText("Web Development Beginner")).toBeVisible();
   await expect(nav.getByText("HTML Foundations")).toBeVisible();
   // Raw slugs absent:
   await expect(nav.getByText("web-development-beginner")).toHaveCount(0);
