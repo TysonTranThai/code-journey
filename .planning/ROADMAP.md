@@ -20,6 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 4: Progress & Achievements** - Server-verified progress, streaks, and achievements
 - [ ] **Phase 5: Community & AI Mentor** - Discussions anchored to content plus guarded AI hints
 - [x] **Phase 6: Hardening, Accessibility & Launch Readiness** - WCAG 2.1 AA, security review, observability, E2E coverage
+- [x] **Phase 8: Course 1 — Web Development Beginner** - First full production course: research → curriculum → 56 lessons / 51 challenges across 7 modules, all test-verified
 
 ## Phase Details
 
@@ -131,7 +132,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -142,3 +143,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 5. Community & AI Mentor | 3/3 | Complete (refusal suite green; no-key degradation verified; rate-limited) | 2026-09-02 |
 | 6. Hardening, Accessibility & Launch Readiness | 3/3 | Complete (6/6 E2E green incl. critical path; axe AA audits green; pnpm audit clean; observability seam) | 2026-09-03 |
 | 7. Beta Readiness & Hardening | 11/11 | **Complete (2026-09-03)** — grade integrity, auth-to-run + submission authz, atomic rate limits, reset email seam, mobile editor + run flow fixed (E2E at 7 viewports), static public curriculum (SSG), breadcrumb/prompt polish, sandbox host scoping + Judge0 production doc | 2026-09-03 |
+| 8. Course 1 — Web Development Beginner | 8 waves | **Complete (2026-09-04)** — research + spec docs; 7 modules, 56 lessons, 51 challenges (every challenge ref-verified pass/fail by harness); course landing metadata + outcomes; data-driven module achievement; curriculum integrity suite (34 checks); QA found and fixed 7 grading defects; full gate green (124 unit/integration, 33 E2E, lint/typecheck/format/build) | 2026-09-04 |

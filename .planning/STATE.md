@@ -12,11 +12,28 @@ milestone_audit:
     - Unit/integration 94/94; E2E 13/13 (incl. critical path + keyboard-only journey); pnpm audit clean; build clean
     - Known v1.x gaps documented in docs/SECURITY.md (rate limiting on challenge/auth endpoints, outbound allow-list) and .planning/STATE.md blockers
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 19
-  completed_plans: 19
+  total_phases: 8
+  completed_phases: 8
+  total_plans: 30
+  completed_plans: 30
   percent: 100
+
+phase_8:
+  date: 2026-09-04
+  status: complete
+  course: web-development-beginner (Course 1)
+  modules: 7
+  lessons: 56
+  challenges: 51
+  delivered:
+    - Research: docs/CURRICULUM-RESEARCH-WEB-DEVELOPMENT-BEGINNER.md (freeCodeCamp, MDN, Odin, W3C/WAI, web.dev patterns analyzed; original content only)
+    - Spec: docs/COURSE-1-WEB-DEVELOPMENT-BEGINNER.md reconciled to shipped reality
+    - Content-as-data: 7 modules (web intro, HTML, CSS, JavaScript, Git/GitHub, web architecture, capstone) with projects, checkpoints, mixed challenge types (guided/independent/debug/prediction/real-world)
+    - Infra: scripts/generate-mdx-map.mjs wired into prebuild/predev; course dir renamed web-development-foundations → web-development-beginner
+    - QA: scripts/content-authoring/verify-challenges.mjs executes every challenge test against reference (must pass) and wrong solutions (must fail) — 51/51 verified; fixed 7 grading defects it found
+    - Landing: course.json landing fields (outcomes/audience/time), landing page renders stats + outcomes; achievements data-driven from curriculum loaders
+    - Tests: tests/unit/curriculum-course.test.ts (34 integrity checks); updated 3 stale unit tests + breadcrumb E2E
+  gate: typecheck ✓ lint ✓ prettier ✓ 124/124 unit+integration ✓ 33/33 E2E (a11y + mobile included) ✓ build 121 pages ✓
 ---
 
 # Project State
@@ -35,7 +52,7 @@ See: .planning/PROJECT.md (updated 2026-09-02)
 Phase: 7 of 7 — ALL PHASES COMPLETE (Phase 7 executed 2026-09-03)
 Plan: 30 of 30 plans executed across Phases 1–7
 Status: v1.1-beta ready — all audit P0/P1 fixes implemented and regression-covered; private-beta appropriate (production Judge0 migration + curriculum growth remain)
-Last activity: 2026-09-03 — Phase 6 executed: Playwright E2E (6/6 green incl. register→lesson→challenge→verdict→dashboard against real infra), axe-core AA audits + contrast fix (docs/A11Y.md), evidence-based docs/SECURITY.md (pnpm audit clean via overrides), vendor-neutral observability seam (src/lib/observability.ts), README/CONTRIBUTING verified-commands refresh.
+Last activity: 2026-09-04 — Phase 8 executed: Course 1 "Web Development Beginner" shipped end-to-end (research → curriculum → 56 lessons / 51 challenges in 7 modules → challenge QA harness with 51/51 ref-verified → landing/outcomes/achievements → 34-check integrity suite → full gate green).
 
 Progress: [██████████] 100% (19 of 19 plans across Phases 1–6)
 
@@ -70,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-03
-Stopped at: **Phase 7 (V1.1 Beta Readiness & Hardening) COMPLETE** — all 11 plans implemented and committed (5 commits: 07-01 grade integrity; 07-02 submission authz + auth-to-run; 07-03 atomic rate limiting + migration 0006; 07-04 email seam; Wave 2 mobile editor/run flow + stale copy + self-hosted Monaco; 07-08/09 static public pages + breadcrumb/prompt; 07-10 sandbox host scoping + docs/PRODUCTION.md). Final gate: lint ✓, typecheck 0 errors, 115/115 unit/integration, 30/30 E2E, pnpm audit clean, build clean (public routes now pre-render).
+Last session: 2026-09-04
+Stopped at: **Phase 8 (Course 1 — Web Development Beginner) COMPLETE** — 8 commits: 68beae3 research + Modules 1–2; a1127d5 Module 3; 4f7ce40 Module 4; fefd6bf Modules 5–7; 0ba1873 challenge QA harness + 5 grading-defect fixes; 9ad8fa5 landing metadata + data-driven achievement + integrity suite; c6d8386 repo-wide Prettier; 8eae08a breadcrumb E2E rename. Final gate: typecheck ✓ lint ✓ format ✓ 124/124 unit/integration ✓ 33/33 E2E (a11y + mobile included) ✓ build (121 pages) ✓.
 Resume file: None
