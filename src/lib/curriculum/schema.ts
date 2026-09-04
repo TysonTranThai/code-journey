@@ -70,6 +70,10 @@ export const courseSchema = z.object({
   title: titleSchema,
   description: descriptionSchema,
   modules: z.array(referenceSchema).min(1, "course must contain at least one module"),
+  /** Who this course is for, in learner-facing language (course landing). */
+  audience: z.string().max(400).optional(),
+  /** Concrete, verifiable completion outcomes — must match what is taught. */
+  outcomes: z.array(z.string().min(1).max(200)).max(12).optional(),
 });
 
 export const trackSchema = z.object({

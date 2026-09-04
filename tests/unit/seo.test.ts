@@ -28,7 +28,7 @@ describe("SEO: sitemap generated from curriculum loaders", () => {
       "http://localhost:3000/learn/web-development/web-development-beginner",
     );
     const lessons = getLinearLessons("web-development");
-    expect(lessons).toHaveLength(5);
+    expect(lessons).toHaveLength(56);
     for (const lesson of lessons) {
       expect(urls).toContain(
         `http://localhost:3000/learn/web-development/${lesson.courseId}/${lesson.moduleId}/${lesson.id}`,

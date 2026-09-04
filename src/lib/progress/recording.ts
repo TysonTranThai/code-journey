@@ -4,7 +4,11 @@ import { and, eq, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { achievements, progressEvents, submissions, type StoredVerdict } from "@/lib/db/schema";
-import { getLesson, getLessonChallenges } from "@/lib/curriculum/loaders";
+import {
+  getCurriculumModule,
+  getLesson,
+  getLessonChallenges,
+} from "@/lib/curriculum/loaders";
 import { getAchievementDefs } from "./achievement-defs";
 
 /**
@@ -119,14 +123,14 @@ export async function maybeAwardAchievements(userId: string): Promise<string[]> 
   }
   if (hasStreakOf3(dayKeys)) earned.push("first-streak-3");
 
-  // Module completion: every lesson in html-foundations has a lesson event.
-  const moduleLessonIds = [
-    "introduction-to-html",
-    "html-elements",
-    "html-attributes",
-    "html-links",
-    "html-images",
-  ];
+  // Module completion: every lesson in the html-foundations module has a
+  // lesson event. Lesson ids come from the curriculum (content-as-data), so
+  // the achievement follows the module as it grows.
+  const moduleLessonIds = getCurriculumModule(
+    "web-development",
+    "web-development-beginner",
+    "html-foundations",
+  ).lessons.map((l) => l.reference);
   const completedIds = new Set(lessonsCompleted.map((e) => e.contentId));
   if (moduleLessonIds.every((id) => completedIds.has(id))) {
     earned.push("html-foundations-complete");

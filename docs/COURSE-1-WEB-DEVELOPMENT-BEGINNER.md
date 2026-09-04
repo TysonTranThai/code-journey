@@ -15,7 +15,7 @@ existing progress events, achievements, discussions, and E2E anchors keep workin
 | Audience | Complete beginners — no coding, no Git, no terminal experience assumed |
 | Outcome | Build and deploy a responsive, interactive, accessible website; explain how the web works; independently continue learning |
 | Prerequisites | None. A computer with a modern browser. (Node.js/Git needed only for Module 5+, with install links provided.) |
-| Estimated time | ~25–30 hours (54 lessons × 8–12 min + practice + projects) |
+| Estimated time | ~25–30 hours (56 lessons × 8–12 min + practice + projects) |
 | Difficulty | beginner → intermediate (functions/data-structures onward) |
 
 ## Modules
@@ -23,14 +23,14 @@ existing progress events, achievements, discussions, and E2E anchors keep workin
 | # | Module | Lessons | Checkpoint/Project | Level |
 |---|---|---|---|---|
 | 1 | `the-web-and-your-first-website` — internet vs web, browser/server, URLs, HTML/CSS/JS roles, DevTools, first page | 4 | Project: First Personal Web Page | L1 |
-| 2 | `html-foundations` — elements, attributes, links, images, lists/tables, semantics, forms, a11y | 9 (5 ported) | Checkpoint: HTML Understanding Check | L1–2 |
+| 2 | `html-foundations` — elements, attributes, links, images, lists/tables, semantics, forms, a11y | 10 (5 ported) | Project: Personal Profile; Checkpoint: HTML Understanding Check | L1–2 |
 | 3 | `css-foundations` — syntax, selectors/cascade, units, typography, box model, display, positioning, Flexbox, Grid, responsive, transitions | 12 | Checkpoint: CSS Understanding Check | L2 |
-| 4 | `javascript-foundations` — variables, control flow, functions, arrays, objects, DOM, events, forms+validation, localStorage, async, fetch/APIs | 17 | Checkpoints: JS Fundamentals; Project: Interactive Web App | L2–3 |
+| 4 | `javascript-foundations` — variables, control flow, functions, arrays, objects, DOM, events, forms+validation, localStorage, async, fetch/APIs | 18 | Checkpoints: JS Fundamentals; Project: Interactive Web App | L2–3 |
 | 5 | `developer-tools-git-and-github` — terminal, Git, branching, GitHub, Pages deploy | 6 | Checkpoint: Git; Project: Publish a Website | L3–4 |
 | 6 | `how-modern-websites-work` — frontend/backend, HTTP, databases/auth concepts, deployment/DNS/HTTPS | 4 | — (conceptual) | L4 |
 | 7 | `final-project` — planning + capstone | 2 | Project: Portfolio/Business Website | L5 |
 
-**Totals: 7 modules · 54 lessons · ~70 challenges · 6 projects · 4 checkpoints.**
+**Totals: 7 modules · 56 lessons · 51 challenges · 6 projects · 4 checkpoints.**
 
 ## Progression model (L1→L5)
 

@@ -18,35 +18,36 @@ function fixtureRoot(name: string): string {
 }
 
 describe("curriculum loaders (real content)", () => {
-  it("loads the seed curriculum: 1 track, 5 linear lessons", () => {
+  it("loads the course curriculum: 1 track, 56 linear lessons in spec order", () => {
     const tracks = getTracks();
     expect(tracks).toHaveLength(1);
     expect(tracks[0]?.id).toBe("web-development");
 
     const linear = getLinearLessons("web-development");
-    expect(linear).toHaveLength(5);
-    expect(linear.map((l) => l.id)).toEqual([
-      "introduction-to-html",
-      "html-elements",
-      "html-attributes",
-      "html-links",
-      "html-images",
-    ]);
+    expect(linear).toHaveLength(56);
+    // Anchors at the seams between modules (the spec's teaching order).
+    expect(linear[0]?.id).toBe("how-the-web-works");
+    expect(linear[4]?.id).toBe("introduction-to-html");
+    expect(linear[14]?.id).toBe("what-css-is");
+    expect(linear[26]?.id).toBe("what-javascript-does");
+    expect(linear[44]?.id).toBe("terminal-basics");
+    expect(linear[54]?.id).toBe("capstone-planning");
+    expect(linear[55]?.id).toBe("capstone-build-and-ship");
   });
 
-  it("assigns linear indexes and resolves neighbors across the module", () => {
+  it("assigns linear indexes and resolves neighbors across the whole course", () => {
     const linear = getLinearLessons("web-development");
     expect(linear[0]?.linearIndex).toBe(0);
-    expect(linear[4]?.linearIndex).toBe(4);
+    expect(linear[55]?.linearIndex).toBe(55);
 
     const mid = getLinearNeighbors("web-development", "html-elements");
     expect(mid.prev?.id).toBe("introduction-to-html");
     expect(mid.next?.id).toBe("html-attributes");
 
-    const first = getLinearNeighbors("web-development", "introduction-to-html");
+    const first = getLinearNeighbors("web-development", "how-the-web-works");
     expect(first.prev).toBeNull();
 
-    const last = getLinearNeighbors("web-development", "html-images");
+    const last = getLinearNeighbors("web-development", "capstone-build-and-ship");
     expect(last.next).toBeNull();
   });
 
