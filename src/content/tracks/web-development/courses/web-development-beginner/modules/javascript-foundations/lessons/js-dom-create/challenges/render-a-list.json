@@ -1,0 +1,19 @@
+{
+  "id": "render-a-list",
+  "title": "Render a List from Data",
+  "prompt": "The `document` object in this challenge records what you build — use it exactly like the real one: document.createElement(tag), document.querySelector(selector), and parent.appendChild(child).\n\n1. Select the list with id \"todo-list\".\n2. Loop over the given `todos` array (it is provided in the boilerplate) and for each item: create an <li>, set its text to the todo, and append it to the list.",
+  "difficulty": "intermediate",
+  "boilerplate": "const todos = [\"learn the DOM\", \"build a list\", \"render from data\"];\n\n// 1) select #todo-list\n\n// 2) create + fill + append one <li> per todo\n",
+  "tests": [
+    {
+      "name": "three list items appended",
+      "code": "function makeDoc() {\n  const elements = [];\n  const byId = {};\n  function make(tag) {\n    const e = { tagName: String(tag).toUpperCase(), textContent: \"\", className: \"\", children: [], parent: null };\n    e.appendChild = (c) => { c.parent = e; e.children.push(c); };\n    e.remove = () => {};\n    elements.push(e);\n    return e;\n  }\n  const list = make(\"ul\");\n  byId[\"todo-list\"] = list;\n  return {\n    elements,\n    doc: {\n      createElement: (t) => make(t),\n      querySelector: (sel) => (String(sel).includes(\"todo-list\") ? list : null),\n      getElementById: (id) => byId[id] ?? null,\n    },\n    list,\n  };\n}\nconst { elements, doc, list } = makeDoc();\nnew Function(\"document\", code + \";return undefined;\")(doc);\nconst lis = list.children.filter((c) => c.tagName === \"LI\");\nif (lis.length !== 3) {\n  throw new Error(\"Expected 3 <li> elements appended — got \" + lis.length + \". Create one per todo and append it.\");\n}",
+      "hint": "for (const todo of todos) { const li = document.createElement(\"li\"); li.textContent = todo; list.appendChild(li); }"
+    },
+    {
+      "name": "items contain the right text, in order",
+      "code": "function makeDoc() {\n  function make(tag) {\n    const e = { tagName: String(tag).toUpperCase(), textContent: \"\", className: \"\", children: [], parent: null };\n    e.appendChild = (c) => { c.parent = e; e.children.push(c); };\n    e.remove = () => {};\n    return e;\n  }\n  const list = make(\"ul\");\n  return { doc: { createElement: (t) => make(t), querySelector: () => list, getElementById: () => list }, list };\n}\nconst { doc, list } = makeDoc();\nnew Function(\"document\", code + \";return undefined;\")(doc);\nconst texts = list.children.filter((c) => c.tagName === \"LI\").map((c) => c.textContent);\nconst want = [\"learn the DOM\", \"build a list\", \"render from data\"];\nif (JSON.stringify(texts) !== JSON.stringify(want)) {\n  throw new Error(\"The list items should carry the todo texts in order — got \" + JSON.stringify(texts) + \".\");\n}",
+      "hint": "Set li.textContent = todo (the loop variable) — not a fixed string."
+    }
+  ]
+}

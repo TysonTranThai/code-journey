@@ -1,0 +1,75 @@
+The browser reads your HTML and builds the **DOM** (Document Object Model) — a live
+tree of objects, one per element. Change an object, and the page updates instantly.
+
+## document — the entry point
+
+~~~js
+// by id (fastest, most precise) — ONE element or null
+const title = document.getElementById("page-title");
+
+// by CSS selector — first match / all matches
+const firstCard = document.querySelector(".card");
+const allCards  = document.querySelectorAll(".card");   // a NodeList (array-like)
+~~~
+
+`querySelector`/`querySelectorAll` take any CSS selector you already
+know: `"#save-btn"`, `".nav-link"`, `"form input[type=email]"`.
+
+## Changing text
+
+~~~js
+title.textContent = "My new heading";
+~~~
+
+`textContent` sets the element's text safely. (You may also see
+`innerHTML` — it parses HTML and can run injected code; avoid it for text.)
+
+## Changing attributes
+
+~~~js
+const img = document.querySelector("img");
+img.src = "/new-photo.jpg";
+img.alt = "A mountain lake at dawn";
+const link = document.querySelector("a");
+link.href = "https://developer.mozilla.org";
+link.target = "_blank";
+~~~
+
+Element objects have a property per HTML attribute — read them too:
+`img.src` returns the current value.
+
+## Changing styles and classes
+
+~~~js
+const box = document.querySelector(".box");
+box.style.color = "crimson";          // inline style (camelCase properties)
+box.classList.add("is-open");         // the better way: toggle CSS classes
+box.classList.remove("hidden");
+box.classList.toggle("dark");         // adds if missing, removes if present
+~~~
+
+Prefer `classList` over `style` — put the appearance in CSS where it
+belongs, and let JavaScript only flip the switch.
+
+## The null check habit
+
+`querySelector` returns `null` when nothing matches. Then
+`title.textContent = ...` throws `TypeError: null` — check what you
+actually selected:
+
+~~~js
+const btn = document.querySelector("#save");
+if (btn) {
+  btn.textContent = "Saving…";
+}
+~~~
+
+## What you learned
+
+- The DOM is the page as a live object tree; `document` is the entry point
+- `getElementById`, `querySelector`, `querySelectorAll`
+- `textContent`, attribute properties, `style`, and `classList`
+- Missing elements return `null` — check before you set
+
+**Next:** creating brand-new elements, not just editing existing ones.
+

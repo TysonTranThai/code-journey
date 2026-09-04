@@ -11,6 +11,15 @@ import type { ComponentType } from "react";
 export type MdxComponent = ComponentType<Record<string, unknown>>;
 
 import AnatomyOfAWebsite from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/anatomy-of-a-website.mdx";
+import CssBoxModel from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-box-model.mdx";
+import CssDisplayFlow from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-display-flow.mdx";
+import CssFlexbox from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-flexbox.mdx";
+import CssGrid from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-grid.mdx";
+import CssPositioning from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-positioning.mdx";
+import CssProjectPortfolio from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-project-portfolio.mdx";
+import CssResponsive from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-responsive.mdx";
+import CssTransitions from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-transitions.mdx";
+import CssTypography from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-typography.mdx";
 import HowTheWebWorks from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/how-the-web-works.mdx";
 import HtmlAttributes from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-attributes.mdx";
 import HtmlCheckpoint from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-checkpoint.mdx";
@@ -22,9 +31,43 @@ import HtmlListsAndTables from "@/content/tracks/web-development/courses/web-dev
 import HtmlSemantics from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-semantics.mdx";
 import InspectingWithDevtools from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/inspecting-with-devtools.mdx";
 import IntroductionToHtml from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/introduction-to-html.mdx";
+import JsArrays from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-arrays.mdx";
+import JsAsync from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-async.mdx";
+import JsCheckpoint from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-checkpoint.mdx";
+import JsConditionals from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-conditionals.mdx";
+import JsDomCreate from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-dom-create.mdx";
+import JsDomEvents from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-dom-events.mdx";
+import JsDomSelect from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-dom-select.mdx";
+import JsFetchAndApis from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-fetch-and-apis.mdx";
+import JsFormsAndValidation from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-forms-and-validation.mdx";
+import JsFunctions from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-functions.mdx";
+import JsLocalStorage from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-local-storage.mdx";
+import JsLoops from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-loops.mdx";
+import JsObjects from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-objects.mdx";
+import JsProjectInteractiveApp from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-project-interactive-app.mdx";
+import JsScopeAndArrows from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-scope-and-arrows.mdx";
+import JsTypesAndOperators from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-types-and-operators.mdx";
+import JsVariables from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-variables.mdx";
+import PersonalProfileProject from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/personal-profile-project.mdx";
+import SelectorsAndCascade from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/selectors-and-cascade.mdx";
+import UnitsColorsValues from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/units-colors-values.mdx";
+import WhatCssIs from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/what-css-is.mdx";
+import WhatJavascriptDoes from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/what-javascript-does.mdx";
 import YourFirstHtmlPage from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/your-first-html-page.mdx";
 
 export const mdxMap: Record<string, MdxComponent> = {
+  ["css-foundations/what-css-is.mdx"]: WhatCssIs,
+  ["css-foundations/selectors-and-cascade.mdx"]: SelectorsAndCascade,
+  ["css-foundations/units-colors-values.mdx"]: UnitsColorsValues,
+  ["css-foundations/css-typography.mdx"]: CssTypography,
+  ["css-foundations/css-box-model.mdx"]: CssBoxModel,
+  ["css-foundations/css-display-flow.mdx"]: CssDisplayFlow,
+  ["css-foundations/css-positioning.mdx"]: CssPositioning,
+  ["css-foundations/css-flexbox.mdx"]: CssFlexbox,
+  ["css-foundations/css-grid.mdx"]: CssGrid,
+  ["css-foundations/css-responsive.mdx"]: CssResponsive,
+  ["css-foundations/css-transitions.mdx"]: CssTransitions,
+  ["css-foundations/css-project-portfolio.mdx"]: CssProjectPortfolio,
   ["html-foundations/introduction-to-html.mdx"]: IntroductionToHtml,
   ["html-foundations/html-elements.mdx"]: HtmlElements,
   ["html-foundations/html-attributes.mdx"]: HtmlAttributes,
@@ -33,7 +76,26 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["html-foundations/html-lists-and-tables.mdx"]: HtmlListsAndTables,
   ["html-foundations/html-semantics.mdx"]: HtmlSemantics,
   ["html-foundations/html-forms.mdx"]: HtmlForms,
+  ["html-foundations/personal-profile-project.mdx"]: PersonalProfileProject,
   ["html-foundations/html-checkpoint.mdx"]: HtmlCheckpoint,
+  ["javascript-foundations/what-javascript-does.mdx"]: WhatJavascriptDoes,
+  ["javascript-foundations/js-variables.mdx"]: JsVariables,
+  ["javascript-foundations/js-types-and-operators.mdx"]: JsTypesAndOperators,
+  ["javascript-foundations/js-conditionals.mdx"]: JsConditionals,
+  ["javascript-foundations/js-loops.mdx"]: JsLoops,
+  ["javascript-foundations/js-functions.mdx"]: JsFunctions,
+  ["javascript-foundations/js-scope-and-arrows.mdx"]: JsScopeAndArrows,
+  ["javascript-foundations/js-arrays.mdx"]: JsArrays,
+  ["javascript-foundations/js-objects.mdx"]: JsObjects,
+  ["javascript-foundations/js-dom-select.mdx"]: JsDomSelect,
+  ["javascript-foundations/js-dom-create.mdx"]: JsDomCreate,
+  ["javascript-foundations/js-dom-events.mdx"]: JsDomEvents,
+  ["javascript-foundations/js-forms-and-validation.mdx"]: JsFormsAndValidation,
+  ["javascript-foundations/js-local-storage.mdx"]: JsLocalStorage,
+  ["javascript-foundations/js-async.mdx"]: JsAsync,
+  ["javascript-foundations/js-fetch-and-apis.mdx"]: JsFetchAndApis,
+  ["javascript-foundations/js-checkpoint.mdx"]: JsCheckpoint,
+  ["javascript-foundations/js-project-interactive-app.mdx"]: JsProjectInteractiveApp,
   ["the-web-and-your-first-website/how-the-web-works.mdx"]: HowTheWebWorks,
   ["the-web-and-your-first-website/anatomy-of-a-website.mdx"]: AnatomyOfAWebsite,
   ["the-web-and-your-first-website/your-first-html-page.mdx"]: YourFirstHtmlPage,

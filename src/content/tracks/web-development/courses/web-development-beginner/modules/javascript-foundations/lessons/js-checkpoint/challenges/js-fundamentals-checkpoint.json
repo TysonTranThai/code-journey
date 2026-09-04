@@ -1,0 +1,29 @@
+{
+  "id": "js-fundamentals-checkpoint",
+  "title": "JavaScript Fundamentals Check",
+  "prompt": "Build a small analytics helper — each step uses a different foundation:\n\n1. Write `average(numbers)` that RETURNS the mean of an array of numbers (empty array returns 0).\n2. Write `formatScore(name, score)` that RETURNS a template-literal sentence like \"Ada scored 91\".\n3. Write `bestLearner(learners)` that takes an array of { name, score } objects and RETURNS the whole object with the highest score.\n4. `checkReady()` is provided — it returns a promise resolving to true. Write an async function `announce()` that awaits it and returns the string \"ready\" when true.",
+  "difficulty": "intermediate",
+  "boilerplate": "// checkReady() is provided: returns a promise resolving to true\n\n// 1) average(numbers)\n\n// 2) formatScore(name, score)\n\n// 3) bestLearner(learners)\n\n// 4) async announce()\n",
+  "tests": [
+    {
+      "name": "average handles normal and empty arrays",
+      "code": "const fn = new Function(\"checkReady\", code + \"\\nreturn { average, formatScore, bestLearner, announce };\");\nconst { average } = fn();\nif (average([2, 4, 6]) !== 4) throw new Error(\"average([2, 4, 6]) should be 4.\");\nif (average([5]) !== 5) throw new Error(\"average([5]) should be 5.\");\nif (average([]) !== 0) throw new Error(\"average([]) should return 0 — guard the empty case.\");",
+      "hint": "if (numbers.length === 0) return 0; then sum with a loop (or reduce) and divide by numbers.length."
+    },
+    {
+      "name": "formatScore builds a template-literal sentence",
+      "code": "const fn = new Function(\"checkReady\", code + \"\\nreturn { average, formatScore, bestLearner, announce };\");\nconst { formatScore } = fn();\nconst out = formatScore(\"Ada\", 91);\nif (out !== \"Ada scored 91\") {\n  throw new Error('formatScore(\"Ada\", 91) should return \"Ada scored 91\".');\n}",
+      "hint": "return `${name} scored ${score}`; — a template literal with both slots."
+    },
+    {
+      "name": "bestLearner returns the highest-scoring object",
+      "code": "const fn = new Function(\"checkReady\", code + \"\\nreturn { average, formatScore, bestLearner, announce };\");\nconst { bestLearner } = fn();\nconst data = [{ name: \"Ada\", score: 91 }, { name: \"Grace\", score: 97 }, { name: \"Linus\", score: 84 }];\nconst out = bestLearner(data);\nif (!out || out.name !== \"Grace\" || out.score !== 97) {\n  throw new Error(\"bestLearner should return the WHOLE object of the top scorer — { name: \\\"Grace\\\", score: 97 }.\");\n}",
+      "hint": "Track the best-so-far in a loop, or sort a copy and return [0]."
+    },
+    {
+      "name": "announce awaits and returns the verdict",
+      "code": "const checkReady = () => new Promise((res) => setTimeout(() => res(true), 5));\nconst fn = new Function(\"checkReady\", code + \"\\nreturn { average, formatScore, bestLearner, announce };\");\nconst { announce } = fn(checkReady);\nconst out = await announce();\nif (out !== \"ready\") {\n  throw new Error('announce() should await checkReady() and return \"ready\".');\n}",
+      "hint": "async function announce() { const ok = await checkReady(); return ok ? \"ready\" : \"not ready\"; }"
+    }
+  ]
+}

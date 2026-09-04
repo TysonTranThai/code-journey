@@ -1,0 +1,72 @@
+Variables vanish when the page closes. **localStorage** gives every site a small,
+private key–value store that survives reloads and restarts.
+
+## The API — four methods
+
+~~~js
+localStorage.setItem("theme", "dark");      // save a string
+localStorage.getItem("theme");               // "dark" — or null if absent
+localStorage.removeItem("theme");            // delete one key
+localStorage.clear();                        // delete everything for this site
+~~~
+
+Only **strings** are stored. Numbers, booleans, arrays, and objects must travel as
+text — that is JSON's job:
+
+~~~js
+const settings = { theme: "dark", fontSize: 16 };
+
+localStorage.setItem("settings", JSON.stringify(settings));     // object → string
+
+const raw = localStorage.getItem("settings");
+const parsed = JSON.parse(raw);                                  // string → object
+parsed.fontSize;   // 16
+~~~
+
+## Guarding against corrupted data
+
+`JSON.parse` throws on invalid text. Anything in storage could be old or
+corrupted — wrap the read:
+
+~~~js
+function loadSettings() {
+  try {
+    return JSON.parse(localStorage.getItem("settings")) ?? { theme: "light" };
+  } catch {
+    return { theme: "light" };      // corrupted → fall back to defaults
+  }
+}
+~~~
+
+`?? ` (nullish coalescing) supplies a default when the left side is
+`null`/`undefined` — perfect with `getItem`, which returns
+`null` for missing keys.
+
+## What it is for — and what it is not
+
+Great for: preferences, theme, drafts, "remember me" UI state, small game progress.
+
+Not for: passwords or anything sensitive (any code on the page can read it), and not
+for large data (a few MB at most). Real user accounts live on a server — localStorage
+is the browser's notebook, not the database.
+
+## A tiny state machine
+
+~~~js
+const visits = Number(localStorage.getItem("visits") ?? "0") + 1;
+localStorage.setItem("visits", String(visits));
+console.log("Visit number " + visits);
+~~~
+
+Read → update → write back — the same state-and-render loop as the counter, now
+durable across visits.
+
+## What you learned
+
+- `setItem`/`getItem`/`removeItem`/`clear`
+- Storage holds strings: `JSON.stringify` in, `JSON.parse` out
+- Wrap parses in try/catch; default missing values with `??`
+- Right tool for preferences and drafts — never for secrets
+
+**Next:** programs that wait — asynchronous JavaScript.
+

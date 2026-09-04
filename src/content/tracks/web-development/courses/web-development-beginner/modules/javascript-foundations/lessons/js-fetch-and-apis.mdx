@@ -1,0 +1,78 @@
+## What an API is
+
+An **API** (Application Programming Interface) is a service's front door: a set of
+URLs you can ask for data. A **web API** answers HTTP requests and replies —
+usually in JSON. The weather number in your phone's app came from exactly this kind
+of request.
+
+## The request/response cycle
+
+Your page (the **client**) sends an HTTP **request** to a URL; the server sends back
+a **response** with a status code and a body:
+
+- `200` OK · `201` Created · `404` Not Found ·
+  `401` Unauthorized · `500` Server error
+
+`2xx` = success, `4xx` = your request's fault, `5xx` = the
+server's fault. Learning to glance at status codes is a superpower — the network
+tab in DevTools shows every request your page makes.
+
+## fetch — the browser's request function
+
+~~~js
+const response = await fetch("https://api.example.com/users/1");
+
+if (!response.ok) {          // ok is false for 4xx/5xx
+  throw new Error("Request failed: " + response.status);
+}
+
+const user = await response.json();    // parse the JSON body
+console.log(user.name);
+~~~
+
+Two awaits, two jobs: the first waits for the **headers** (status codes live here),
+the second waits for and parses the **body** as JSON.
+
+## The three outcomes every UI must handle
+
+~~~js
+async function loadUser() {
+  try {
+    const response = await fetch("/api/user");
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const user = await response.json();
+    return user;                       // 1. success
+  } catch (err) {
+    return null;                       // 2. network/parse failure
+  }
+}
+// 3. slow: show "Loading…" first, replace it when data lands
+~~~
+
+Real apps show a loading state, a useful error message, and only then the data.
+Code Journey's own challenge runner does exactly this dance — you watch it every
+time you press Run.
+
+## GET and POST
+
+`fetch` defaults to **GET** (get me data). To send data — a form submission,
+a new record — add options:
+
+~~~js
+await fetch("/api/signup", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ username: "ada" }),
+});
+~~~
+
+## What you learned
+
+- APIs are URLs that answer with data; JSON is the language
+- `fetch`: await headers, check `response.ok`, await
+  `.json()`
+- Handle success, failure, and slow — every time
+- GET reads; POST sends (method + headers + body)
+
+**Next:** the checkpoint — prove your JavaScript foundations.
+

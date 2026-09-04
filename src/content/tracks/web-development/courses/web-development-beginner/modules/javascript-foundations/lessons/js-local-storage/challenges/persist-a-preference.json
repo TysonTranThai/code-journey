@@ -1,0 +1,24 @@
+{
+  "id": "persist-a-preference",
+  "title": "Remember the Theme",
+  "prompt": "A `storage` object is provided that works like localStorage (setItem/getItem/removeItem).\n\n1. Write `saveSettings(settings)` that stores the settings object as JSON under the key \"settings\".\n2. Write `loadSettings()` that reads the key and RETURNS the parsed object — or the default { theme: \"light\" } when nothing is stored.\n3. Save { theme: \"dark\", fontSize: 16 }, then load it and log the theme — should print dark.",
+  "difficulty": "intermediate",
+  "boilerplate": "// storage works like localStorage: storage.setItem(k, v), storage.getItem(k)\n\n// 1) saveSettings(settings)\n\n// 2) loadSettings() — parsed object or { theme: \"light\" }\n\n// 3) save, load, log the theme\n",
+  "tests": [
+    {
+      "name": "empty storage returns the default",
+      "code": "function makeStorage() { const m = new Map(); return { setItem: (k, v) => m.set(String(k), String(v)), getItem: (k) => (m.has(String(k)) ? m.get(String(k)) : null), removeItem: (k) => m.delete(String(k)) }; }\nconst storage = makeStorage();\nconst fn = new Function(\"storage\", code + \"\\nreturn { saveSettings, loadSettings };\");\nconst { loadSettings } = fn(storage);\nconst out = loadSettings();\nif (!out || out.theme !== \"light\") {\n  throw new Error('loadSettings() with empty storage should return { theme: \"light\" }.');\n}",
+      "hint": "const raw = storage.getItem(\"settings\"); if (!raw) return { theme: \"light\" }; return JSON.parse(raw);"
+    },
+    {
+      "name": "save then load round-trips the object",
+      "code": "function makeStorage() { const m = new Map(); return { setItem: (k, v) => m.set(String(k), String(v)), getItem: (k) => (m.has(String(k)) ? m.get(String(k)) : null), removeItem: (k) => m.delete(String(k)) }; }\nconst storage = makeStorage();\nconst fn = new Function(\"storage\", code + \"\\nreturn { saveSettings, loadSettings };\");\nconst { saveSettings, loadSettings } = fn(storage);\nsaveSettings({ theme: \"dark\", fontSize: 16 });\nconst out = loadSettings();\nif (!out || out.theme !== \"dark\" || out.fontSize !== 16) {\n  throw new Error(\"save then load should return { theme: \\\"dark\\\", fontSize: 16 } — JSON.stringify on save, JSON.parse on load.\");\n}",
+      "hint": "saveSettings: storage.setItem(\"settings\", JSON.stringify(settings)); loadSettings: JSON.parse(storage.getItem(\"settings\"))"
+    },
+    {
+      "name": "values are stored as JSON strings",
+      "code": "function makeStorage() { const m = new Map(); return { setItem: (k, v) => m.set(String(k), String(v)), getItem: (k) => (m.has(String(k)) ? m.get(String(k)) : null), removeItem: (k) => m.delete(String(k)) }; }\nconst storage = makeStorage();\nconst fn = new Function(\"storage\", code + \"\\nreturn { saveSettings, loadSettings };\");\nconst { saveSettings } = fn(storage);\nsaveSettings({ theme: \"dark\" });\nconst raw = storage.getItem(\"settings\");\nif (typeof raw !== \"string\" || raw.indexOf(\"dark\") === -1) {\n  throw new Error(\"Objects must be stored via JSON.stringify — the raw value should be a JSON string.\");\n}",
+      "hint": "storage.setItem(key, JSON.stringify(settings)); — storage only holds strings."
+    }
+  ]
+}

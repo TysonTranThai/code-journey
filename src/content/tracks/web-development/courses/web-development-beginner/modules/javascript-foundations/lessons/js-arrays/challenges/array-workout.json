@@ -1,0 +1,24 @@
+{
+  "id": "array-workout",
+  "title": "Array Workout",
+  "prompt": "Given `const scores = [45, 92, 67, 88, 30];` (declare it yourself):\n\n1. Write `passing(scoresArr)` that RETURNS a new array of only the scores >= 60.\n2. Write `toPercent(scoresArr)` that RETURNS a new array with each score doubled.\n3. Log how many scores are passing (use passing + .length).\n4. Log whether the list contains a 100 (use .includes).",
+  "difficulty": "intermediate",
+  "boilerplate": "const scores = [45, 92, 67, 88, 30];\n\n// 1) passing(scoresArr)\n\n\n// 2) toPercent(scoresArr)\n\n\n// 3) log the passing count\n\n// 4) log whether a 100 exists\n",
+  "tests": [
+    {
+      "name": "passing filters to >= 60",
+      "code": "const fn = new Function(code + \"\\nreturn { scores, passing, toPercent };\");\nconst { passing } = fn();\nconst out = passing([45, 92, 67, 88, 30]);\nconst want = [92, 67, 88];\nif (!Array.isArray(out) || out.length !== 3) throw new Error(\"passing should return 3 scores (92, 67, 88).\");\nif (JSON.stringify(out) !== JSON.stringify(want)) throw new Error(\"passing should return [92, 67, 88] in order.\");",
+      "hint": "const passing = (arr) => arr.filter((s) => s >= 60);"
+    },
+    {
+      "name": "toPercent doubles each score",
+      "code": "const fn = new Function(code + \"\\nreturn { scores, passing, toPercent };\");\nconst { toPercent } = fn();\nconst out = toPercent([2, 5]);\nif (JSON.stringify(out) !== JSON.stringify([4, 10])) {\n  throw new Error(\"toPercent([2, 5]) should be [4, 10] — transform each item with map.\");\n}",
+      "hint": "const toPercent = (arr) => arr.map((s) => s * 2);"
+    },
+    {
+      "name": "count and includes logged",
+      "code": "const logs = [];\nconst fakeConsole = { log: (...a) => logs.push(a.map(String).join(\" \")) };\nnew Function(\"console\", code)(fakeConsole);\nif (!logs.some((l) => l === \"3\")) {\n  throw new Error(\"Log the passing count — the console should show 3.\");\n}\nif (!logs.some((l) => l === \"false\")) {\n  throw new Error(\"Log whether a 100 exists — the console should show false.\");\n}\nif (!/.includes\\(/.test(code)) {\n  throw new Error(\"Use .includes() to check for the 100.\");\n}",
+      "hint": "console.log(passing(scores).length); console.log(scores.includes(100));"
+    }
+  ]
+}

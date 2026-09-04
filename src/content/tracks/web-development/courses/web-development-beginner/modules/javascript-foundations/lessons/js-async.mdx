@@ -1,0 +1,80 @@
+Some work takes time — network requests, timers. If JavaScript simply paused while
+waiting, the whole page would freeze. Instead it is **asynchronous**: slow work
+starts now, and its result arrives **later**.
+
+## Callbacks and the problem
+
+The oldest style passes a function to run when the work finishes:
+
+~~~js
+setTimeout(() => console.log("two seconds later"), 2000);
+console.log("printed first");       // the timer's callback runs LATER
+~~~
+
+Fine for one step — but step A needing step B needing step C nests callbacks into an
+unreadable pyramid. That pain is exactly what promises fix.
+
+## Promises — a value that arrives later
+
+A **promise** is an object representing work in progress. It is either
+**pending**, **fulfilled** (with a value), or **rejected** (with an error):
+
+~~~js
+const p = fetchSomething();     // a promise — the value is not here yet
+
+p.then((value) => console.log("got:", value));    // on success
+p.catch((err) => console.log("failed:", err));    // on failure
+~~~
+
+## async/await — promises that read like normal code
+
+Mark a function `async` and you may `await` promises inside it:
+
+~~~js
+async function showUser() {
+  const response = await fetchUser();     // pause THIS function, not the page
+  console.log(response.name);
+}
+
+showUser();
+~~~
+
+`await` suspends only the async function — the browser keeps rendering,
+responding, scrolling. To the reader, async code now runs top to bottom.
+
+## Error handling: try/catch
+
+When an awaited promise rejects, the error surfaces as a thrown error — catch it:
+
+~~~js
+async function showUser() {
+  try {
+    const response = await fetchUser();
+    console.log(response.name);
+  } catch (err) {
+    console.log("Could not load the user:", err.message);
+  }
+}
+~~~
+
+## Sequential vs parallel
+
+~~~js
+// one after another (when each step needs the previous):
+const user = await getUser();
+const posts = await getPosts(user.id);
+
+// independent work can overlap — start all, await all:
+const [a, b] = await Promise.all([getA(), getB()]);
+~~~
+
+## What you learned
+
+- Slow work is asynchronous so the page never freezes
+- Promises: pending → fulfilled/rejected; `.then`/`.catch`
+- `async` functions can `await`; rejections are caught with
+  `try/catch`
+- `Promise.all` overlaps independent work
+
+**Next:** the most common async work of all — talking to servers.
+

@@ -1,0 +1,19 @@
+{
+  "id": "sequence-with-await",
+  "title": "Await a Sequence",
+  "prompt": "A fake API is provided: `api.loadUser()` returns a promise resolving to { name: \"Ada\" }, and `api.loadGreeting(name)` returns a promise resolving to \"Hello, <name>\".\n\n1. Write an async function `run()` that awaits loadUser, then awaits loadGreeting with the user's name, and logs the final greeting.\n2. Call run().",
+  "difficulty": "intermediate",
+  "boilerplate": "// api.loadUser() and api.loadGreeting(name) return promises\n\n// 1) async function run()\n\n// 2) call run()\n",
+  "tests": [
+    {
+      "name": "logs the awaited greeting",
+      "code": "const api = {\n  loadUser: () => new Promise((res) => setTimeout(() => res({ name: \"Ada\" }), 5)),\n  loadGreeting: (n) => new Promise((res) => setTimeout(() => res(\"Hello, \" + n), 5)),\n};\nconst logs = [];\nconst fakeConsole = { log: (...a) => logs.push(a.map(String).join(\" \")) };\nconst fn = new Function(\"api\", \"console\", code + \"\\nreturn { run };\");\nconst { run } = fn(api, fakeConsole);\nawait run();\nawait new Promise((r) => setTimeout(r, 20));\nif (!logs.some((l) => l === \"Hello, Ada\")) {\n  throw new Error('run() should await the user, await the greeting, and log \"Hello, Ada\" — got ' + JSON.stringify(logs) + \".\");\n}",
+      "hint": "async function run() { const user = await api.loadUser(); const greeting = await api.loadGreeting(user.name); console.log(greeting); }"
+    },
+    {
+      "name": "uses await (not .then chains or raw promises)",
+      "code": "if (!/await\\s+api\\.loadUser|await\\s+\\w*\\.*loadUser/.test(code) && !/await\\s/.test(code)) {\n  throw new Error(\"Use await inside your async function — that is the lesson.\");\n}",
+      "hint": "The await keyword is the point of this exercise — no .then chains."
+    }
+  ]
+}

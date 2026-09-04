@@ -1,0 +1,24 @@
+{
+  "id": "countdown-and-sum",
+  "title": "Countdown and Total",
+  "prompt": "Two loops:\n\n1. Write a function `countdown(start)` that logs each number from `start` down to 1 (one per line) using a loop.\n2. Write a function `sumUpTo(n)` that RETURNS the sum of all whole numbers from 1 to n (use an accumulator loop, not a hard-coded answer).\n\nLog `sumUpTo(10)` — it should print 55.",
+  "difficulty": "intermediate",
+  "boilerplate": "// 1) countdown(start) — logs start..1\n\n\n// 2) sumUpTo(n) — returns 1+2+...+n\n\n\n// log sumUpTo(10)\n",
+  "tests": [
+    {
+      "name": "countdown logs start down to 1",
+      "code": "const logs = [];\nconst fakeConsole = { log: (...a) => logs.push(a.map(String).join(\" \")) };\nconst fn = new Function(\"console\", code + \"\\nreturn { countdown, sumUpTo };\");\nconst { countdown } = fn(fakeConsole);\nlogs.length = 0;\ncountdown(3);\nconst seq = logs.join(\",\");\nif (seq !== \"3,2,1\") {\n  throw new Error('countdown(3) should log 3, 2, 1 in that order — got \"' + seq + '\".');\n}",
+      "hint": "for (let i = start; i >= 1; i--) { console.log(i); }"
+    },
+    {
+      "name": "sumUpTo returns the real sum",
+      "code": "const fn = new Function(code + \"\\nreturn { countdown, sumUpTo };\");\nconst { sumUpTo } = fn();\nif (sumUpTo(10) !== 55) throw new Error(\"sumUpTo(10) should be 55.\");\nif (sumUpTo(4) !== 10) throw new Error(\"sumUpTo(4) should be 10 — not a hard-coded value.\");\nif (sumUpTo(1) !== 1) throw new Error(\"sumUpTo(1) should be 1.\");\nif (sumUpTo(100) !== 5050) throw new Error(\"sumUpTo(100) should be 5050 — use a loop.\");",
+      "hint": "let total = 0; for (let n = 1; n <= max; n++) { total = total + n; } return total;"
+    },
+    {
+      "name": "sumUpTo actually loops",
+      "code": "if (!/for\\s*\\(|while\\s*\\(/.test(code)) {\n  throw new Error(\"Use a for or while loop to compute the sum.\");\n}",
+      "hint": "The accumulator pattern needs a loop — no shortcuts like n*(n+1)/2 for this one."
+    }
+  ]
+}

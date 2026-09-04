@@ -1,0 +1,44 @@
+Time to build something real. The **task tracker** is small but complete: real state,
+real events, real persistence — the same architecture as production apps, at
+beginner scale.
+
+## Requirements
+
+Build it inside one JavaScript program (the grader runs it with stubbed DOM and
+storage — the logic is identical to the browser's):
+
+1. **State:** a `tasks` array of `{ title, done }` objects, loaded
+   from storage key `"tasks"` (default: empty array).
+2. **Add:** an `addTask(title)` function that appends
+   `{ title, done: false }`, saves, and re-renders.
+3. **Toggle:** a `toggleTask(index)` function that flips
+   `done`, saves, and re-renders.
+4. **Render:** a `render()` function that empties the list element and
+   creates one `<li>` per task — text
+   `"[x] title"` for done tasks, `"[ ] title"` otherwise.
+5. **Flow:** add two tasks, toggle the first, and log each rendered item.
+
+## Why each piece matters
+
+- **State first:** `tasks` is the single source of truth. Rendering is a
+  pure projection of it — never edit list items by hand.
+- **Persistence:** every state change calls save. Crash-proof by construction.
+- **Render-after-change:** one render function, called everywhere. This is the
+  exact pattern React later automates.
+
+## Starting point
+
+~~~js
+const tasks = load();          // from storage (your loadSettings-style helper)
+
+function save() { /* JSON.stringify into storage */ }
+function render() { /* one li per task */ }
+function addTask(title) { /* push, save, render */ }
+function toggleTask(index) { /* flip, save, render */ }
+~~~
+
+Work through the functions in that order and test as you go — a working add before
+you start on toggle.
+
+**After this project:** how developers manage and share code — Git.
+
