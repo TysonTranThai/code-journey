@@ -20,7 +20,7 @@ const validModule = {
 };
 
 const validCourse = {
-  id: "web-development-foundations",
+  id: "web-development-beginner",
   title: "Web Development Foundations",
   description: "Your first course on real web pages.",
   modules: [{ reference: "html-foundations" }],
@@ -30,7 +30,7 @@ const validTrack = {
   id: "web-development",
   title: "Web Development",
   description: "Start your journey from zero.",
-  courses: [{ reference: "web-development-foundations" }],
+  courses: [{ reference: "web-development-beginner" }],
 };
 
 describe("curriculum schema (valid content)", () => {
@@ -38,7 +38,7 @@ describe("curriculum schema (valid content)", () => {
     expect(lessonSchema.parse(validLesson)).toMatchObject({ id: "introduction-to-html" });
     expect(moduleSchema.parse(validModule)).toMatchObject({ id: "html-foundations" });
     expect(courseSchema.parse(validCourse)).toMatchObject({
-      id: "web-development-foundations",
+      id: "web-development-beginner",
     });
     expect(trackSchema.parse(validTrack)).toMatchObject({ id: "web-development" });
   });

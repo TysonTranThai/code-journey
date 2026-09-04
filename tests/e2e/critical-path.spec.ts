@@ -56,7 +56,7 @@ test("critical path: register → browse → run challenge → verdict → dashb
   await page.goto("/learn");
   await expect(page.getByText(/web development/i).first()).toBeVisible();
   await page.goto(
-    "/learn/web-development/web-development-foundations/html-foundations/introduction-to-html",
+    "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html",
   );
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 
@@ -80,7 +80,7 @@ test("critical path: keyboard-only run reaches the verdict panel", async ({ page
   await register(page, `Kbd ${id}`);
 
   await page.goto(
-    "/learn/web-development/web-development-foundations/html-foundations/introduction-to-html/challenge/fix-the-heading",
+    "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html/challenge/fix-the-heading",
   );
   await page.locator(".monaco-editor .view-line").first().click();
   await page.keyboard.press("ControlOrMeta+a");

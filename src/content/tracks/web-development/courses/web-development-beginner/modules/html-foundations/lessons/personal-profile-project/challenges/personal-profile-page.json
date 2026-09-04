@@ -1,0 +1,44 @@
+{
+  "id": "personal-profile-page",
+  "title": "Build Your Profile Page",
+  "prompt": "Build your personal profile page from the project brief: complete document, header with one <h1> (your name), nav with fragment links, main with About / Hobbies / Gallery / Contact sections, labeled email form, and a footer. Content is yours — structure is graded.",
+  "difficulty": "beginner",
+  "boilerplate": "<!-- Your profile page -->\n\n",
+  "tests": [
+    {
+      "name": "complete document skeleton",
+      "code": "if (!/<!DOCTYPE\\s+html>/i.test(code)) {\n  throw new Error(\"Start with <!DOCTYPE html>.\");\n}\nif (!/<html[^>]*\\slang\\s*=/i.test(code)) {\n  throw new Error(\"<html> needs a lang attribute.\");\n}\nif (!/<meta[^>]*charset/i.test(code)) {\n  throw new Error('The head needs <meta charset=\"UTF-8\">.');\n}\nconst t = code.match(/<title>([\\s\\S]*?)<\\/title>/i);\nif (!t || !t[1].trim()) {\n  throw new Error(\"Add a non-empty <title>.\");\n}",
+      "hint": "Same skeleton as your first page: doctype, html lang, head (charset + title), body."
+    },
+    {
+      "name": "header with exactly one h1",
+      "code": "const h1s = (code.match(/<h1[\\s>]/gi) || []).length;\nif (h1s !== 1) {\n  throw new Error(\"Exactly one <h1> — your name (found \" + h1s + \").\");\n}\nconst header = code.match(/<header[\\s>][\\s\\S]*?<\\/header>/i);\nif (!header || !/<h1/i.test(header[0])) {\n  throw new Error(\"Put your name's <h1> inside a <header>.\");\n}",
+      "hint": "<header> opens the page; your name is the one <h1>."
+    },
+    {
+      "name": "nav with fragment links",
+      "code": "const nav = code.match(/<nav[\\s>][\\s\\S]*?<\\/nav>/i);\nif (!nav) {\n  throw new Error(\"Add a <nav>.\");\n}\nconst fragLinks = nav[0].match(/href\\s*=\\s*[\"']#[^\"']+[\"']/gi) || [];\nif (fragLinks.length < 2) {\n  throw new Error('The nav needs at least two fragment links (href=\"#about\" style).');\n}\nconst ids = [...code.matchAll(/id\\s*=\\s*[\"']([^\"']+)[\"']/gi)].map((m) => m[1]);\nfor (const href of fragLinks) {\n  const target = href.replace(/href\\s*=\\s*[\"']#/, \"\").replace(/[\"']/g, \"\");\n  if (!ids.includes(target)) {\n    throw new Error(\"Nav link #\" + target + \" has no element with that id.\");\n  }\n}",
+      "hint": "Each nav link points at an id on the page: <a href=\"#about\"> needs id=\"about\" somewhere."
+    },
+    {
+      "name": "main with About, Hobbies, Gallery sections",
+      "code": "const main = code.match(/<main[\\s>][\\s\\S]*?<\\/main>/i);\nif (!main) {\n  throw new Error(\"Wrap the content sections in a <main>.\");\n}\nconst lower = main[0].toLowerCase();\nif (!/<section[\\s>][\\s\\S]*?<h2[\\s\\S]*?<\\/section>/i.test(main[0])) {\n  throw new Error(\"Sections must each carry an <h2> heading.\");\n}\nif (!lower.includes(\"about\")) throw new Error(\"Add an About section (an id or heading containing 'about').\");\nif (!lower.includes(\"hobb\")) throw new Error(\"Add a Hobbies section (an id or heading containing 'hobbies').\");\nif (!lower.includes(\"galler\")) throw new Error(\"Add a Gallery section (an id or heading containing 'gallery').\");",
+      "hint": "Three sections with h2 headings and ids: about, hobbies, gallery."
+    },
+    {
+      "name": "image with meaningful alt",
+      "code": "const main = code.match(/<main[\\s>][\\s\\S]*?<\\/main>/i) ?? code;\nconst imgs = main.match(/<img[^>]*>/gi) || [];\nif (imgs.length === 0) {\n  throw new Error(\"The gallery needs at least one <img>.\");\n}\nfor (const img of imgs) {\n  const alt = (img.match(/alt\\s*=\\s*[\"']([^\"']*)[\"']/i) || [])[1];\n  if (alt === undefined || alt.trim().length < 4) {\n    throw new Error(\"Every image needs meaningful alt text (4+ characters describing the picture).\");\n  }\n}",
+      "hint": "alt describes the picture's content — what would a visitor miss if it did not load?"
+    },
+    {
+      "name": "contact form with labeled email",
+      "code": "const form = code.match(/<form[\\s>][\\s\\S]*?<\\/form>/i);\nif (!form) {\n  throw new Error(\"Add a <form> in the contact section.\");\n}\nif (!/<input[^>]*type\\s*=\\s*[\"']email[\"']/i.test(form[0])) {\n  throw new Error(\"The form needs an email input.\");\n}\nconst input =\n  form[0].match(/<input[^>]*type\\s*=\\s*[\"']email[\"'][^>]*id\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>/i) ??\n  form[0].match(/<input[^>]*id\\s*=\\s*[\"']([^\"']+)[\"'][^>]*type\\s*=\\s*[\"']email[\"'][^>]*>/i);\nif (!input) {\n  throw new Error(\"Give the email input an id.\");\n}\nconst labelRe = new RegExp(\"<label[^>]*for\\\\s*=\\\\s*[\\\"']\" + input[1] + \"[\\\"']\", \"i\");\nif (!labelRe.test(code)) {\n  throw new Error('Label the email input with <label for=\"' + input[1] + '\">.');\n}\nif (!/<button[^>]*type\\s*=\\s*[\"']submit[\"'][^>]*>[^<]*\\S/i.test(form[0])) {\n  throw new Error(\"Add a submit button with visible text.\");\n}",
+      "hint": "From the forms lesson: input type=email + id, <label for>, button type=submit."
+    },
+    {
+      "name": "footer and clean heading levels",
+      "code": "if (!/<footer[\\s>][\\s\\S]*?<\\/footer>/i.test(code)) {\n  throw new Error(\"Add a <footer> with a copyright line.\");\n}\nconst levels = [...code.matchAll(/<h([1-6])[\\s>]/gi)].map((m) => Number(m[1]));\nlet prev = 0;\nfor (const level of levels) {\n  if (level > prev + 1) {\n    throw new Error(\"Heading levels must not skip (h\" + prev + \" followed by h\" + level + \").\");\n  }\n  prev = level;\n}",
+      "hint": "The outline rule: each heading steps down at most one level from the one before."
+    }
+  ]
+}

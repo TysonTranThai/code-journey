@@ -20,7 +20,7 @@ export default function HomePage() {
           Start learning →
         </Link>
         <Link
-          href="/learn/web-development/web-development-foundations"
+          href="/learn/web-development/web-development-beginner"
           className="rounded-lg border border-zinc-700 px-6 py-3 font-medium text-zinc-200 transition-colors hover:border-zinc-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
         >
           Jump into HTML Foundations

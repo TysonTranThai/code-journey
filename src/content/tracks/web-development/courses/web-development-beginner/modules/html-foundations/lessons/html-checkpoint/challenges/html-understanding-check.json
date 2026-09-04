@@ -1,0 +1,39 @@
+{
+  "id": "html-understanding-check",
+  "title": "HTML Understanding Check",
+  "prompt": "One page, four tasks. The boilerplate contains markup with three deliberate defects.\n\nTask 1 — FIX the defects:\n- The image has no alt text: add a short, meaningful one (what does the picture show?).\n- The `<a>` says \"click here\": replace that text with text that describes the destination.\n- The second `<h2>` skips a level (it follows an `<h1>` — it should not be an `<h4>`): fix it to `<h2>…</h2>`.\n\nTask 2 — PREDICT & PROVE: the boilerplate lists three ingredients inside `<ol>`. Ingredients have no meaningful order — move them into a `<ul>`.\n\nTask 3 — BUILD: after the existing content, add a `<section>` that contains:\n- an `<h2>` heading with the text `Opening hours`\n- a `<ul>` with at least two `<li>` entries\n\nTask 4 — ACCESSIBILITY JUDGMENT: at the end, add a `<button type=\"button\">` (not a link) whose visible text is `Book a table`. Actions are buttons; destinations are links.",
+  "difficulty": "beginner",
+  "boilerplate": "<h1>Trattoria Verde</h1>\n\n<img src=\"https://example.com/pasta.jpg\">\n<p>Homemade pasta since 1998.</p>\n\n<h4>Our menu</h4>\n\n<ol>\n  <li>Tomatoes</li>\n  <li>Basil</li>\n  <li>Olive oil</li>\n</ol>\n\n<a href=\"https://example.com/menu\">click here</a>\n",
+  "tests": [
+    {
+      "name": "fix: image has meaningful alt",
+      "code": "const img = code.match(/<img[^>]*>/i);\nif (!img) {\n  throw new Error(\"The image element went missing — it should stay.\");\n}\nif (!/alt\\s*=\\s*[\"'][^\"']+[\"']/i.test(img[0])) {\n  throw new Error(\"The <img> has no alt attribute — every meaningful image needs one.\");\n}\nconst alt = (img[0].match(/alt\\s*=\\s*[\"']([^\"']*)[\"']/i) || [])[1] ?? \"\";\nconst worthless = [\"image\", \"photo\", \"picture\", \"img\", \"jpg\", \"png\"];\nif (alt.trim().length < 4 || worthless.includes(alt.trim().toLowerCase())) {\n  throw new Error(\"The alt text should describe what the image shows (e.g. 'A bowl of handmade pasta').\");\n}",
+      "hint": "alt answers: 'what would someone miss if they could not see this?' — describe the content, not the file type."
+    },
+    {
+      "name": "fix: link text describes destination",
+      "code": "const link = code.match(/<a\\s[^>]*href\\s*=\\s*[\"']https:\\/\\/example\\.com\\/menu[\"'][^>]*>([\\s\\S]*?)<\\/a>/i);\nif (!link) {\n  throw new Error(\"Keep the link to https://example.com/menu.\");\n}\nconst text = link[1].replace(/<[^>]+>/g, \"\").trim().toLowerCase();\nif (!text || /click here|here|this link|more/.test(text)) {\n  throw new Error(\"'click here' tells screen-reader users nothing — describe the destination (e.g. 'View the full menu').\");\n}",
+      "hint": "Screen readers jump link-to-link out of context: each link's text must make sense alone."
+    },
+    {
+      "name": "fix: heading levels step down",
+      "code": "const headings = [...code.matchAll(/<h([1-6])[\\s>]/gi)].map((m) => Number(m[1]));\nif (headings.some((l) => l === 4 || l === 5 || l === 6)) {\n  throw new Error(\"Still skipping heading levels — the section after <h1> should be <h2>, not <h4>.\");\n}\nif (!(headings.includes(1) && headings.includes(2))) {\n  throw new Error(\"Use <h1> for the page title and <h2> for the next section heading.\");\n}",
+      "hint": "Headings are an outline: 1, then 2, then 3 — never jump from 1 to 4."
+    },
+    {
+      "name": "predict & prove: ingredients in a ul",
+      "code": "if (!/<ul[\\s>][\\s\\S]*?<\\/ul>/i.test(code)) {\n  throw new Error(\"No <ul> found — the unordered ingredient list is missing.\");\n}\nconst ulBlock = code.match(/<ul[\\s>][\\s\\S]*?<\\/ul>/i)[0];\nconst ulItems = (ulBlock.match(/<li[\\s>]/gi) || []).length;\nif (ulItems < 3) {\n  throw new Error(\"The <ul> should hold the three ingredients as <li> items.\");\n}\nif (/tomatoes[\\s\\S]*basil[\\s\\S]*olive oil/i.test(code.match(/<ol[\\s>][\\s\\S]*?<\\/ol>/i)?.[0] ?? \"\")) {\n  throw new Error(\"The three ingredients are still inside the <ol> — move them into the <ul>.\");\n}",
+      "hint": "Shuffling ingredients changes nothing, so <ul> is the meaningful choice; steps would be <ol>."
+    },
+    {
+      "name": "build: opening-hours section",
+      "code": "const sections = code.match(/<section[\\s>][\\s\\S]*?<\\/section>/gi) || [];\nconst target = sections.find((s) => /opening hours/i.test(s));\nif (!target) {\n  throw new Error(\"Add a <section> containing an <h2> that says 'Opening hours'.\");\n}\nif (!/<h2[^>]*>\\s*opening hours\\s*<\\/h2>/i.test(target)) {\n  throw new Error(\"The section's heading must be <h2>Opening hours</h2>.\");\n}\nconst ul = target.match(/<ul[\\s>][\\s\\S]*?<\\/ul>/i);\nif (!ul || (ul[0].match(/<li[\\s>]/gi) || []).length < 2) {\n  throw new Error(\"Inside the section, add a <ul> with at least two <li> entries.\");\n}",
+      "hint": "Build from requirements: <section> → <h2> → <ul> with real entries."
+    },
+    {
+      "name": "judge: action is a button",
+      "code": "const btn = code.match(/<button[^>]*type\\s*=\\s*[\"']button[\"'][^>]*>[\\s\\S]*?<\\/button>/i);\nif (!btn) {\n  throw new Error(\"Add <button type=\\\"button\\\">Book a table</button>.\");\n}\nif (!/book a table/i.test(btn[0])) {\n  throw new Error(\"The button's visible text must be 'Book a table'.\");\n}",
+      "hint": "Buttons perform actions; links navigate. 'Book a table' triggers an action → <button>."
+    }
+  ]
+}

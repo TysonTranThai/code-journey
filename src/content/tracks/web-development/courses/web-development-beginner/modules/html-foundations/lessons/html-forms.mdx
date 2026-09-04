@@ -1,0 +1,105 @@
+Forms are how a website stops being a poster and starts being a conversation: sign-ups,
+search boxes, checkout, comments. They are also the place where inaccessible HTML hurts
+real people most — so the accessibility rules here are not optional extras.
+
+## The form element
+
+```html
+<form action="/signup" method="post">
+  …controls…
+</form>
+```
+
+`action` says where the data goes; `method` says how (`get` appends data to the URL,
+`post` sends it in the request body). In Module 4, JavaScript will intercept this
+submission and handle it in the page — but the HTML structure stays the same.
+
+## The input element and its types
+
+`<input>` is a void element (no closing tag) and its `type` decides everything about it:
+
+```html
+<input type="text" name="email" />
+<input type="email" name="email" />
+<input type="password" name="password" />
+<input type="checkbox" name="newsletter" />
+<input type="radio" name="size" value="m" />
+<input type="date" name="start" />
+<input type="number" name="quantity" />
+```
+
+`type="email"` is not cosmetic: mobile keyboards show the @ key, and browsers refuse to
+submit obviously invalid addresses. `name` is the field's identifier — the key under
+which its value is sent. No `name`, no data.
+
+## Every input needs a label
+
+```html
+<label for="email">Email address</label>
+<input type="email" id="email" name="email" />
+```
+
+The `for` attribute points at the input's `id`, and this connection is functional:
+
+- Clicking the label focuses the input (a bigger tap target — good on touch screens).
+- A screen reader announces "Email address, edit text" instead of just "edit text".
+  Without a label, a blind user has no idea what to type.
+
+Never rely on `placeholder` as a label: it vanishes the moment typing starts, usually
+fails contrast requirements, and is not announced as a name by many assistive tools.
+Placeholders are for *examples*, labels are for *names*.
+
+## Other controls
+
+**Textarea** for multi-line text:
+
+```html
+<label for="message">Message</label>
+<textarea id="message" name="message" rows="4"></textarea>
+```
+
+**Select** for a choice from options:
+
+```html
+<label for="topic">Topic</label>
+<select id="topic" name="topic">
+  <option value="">Choose…</option>
+  <option value="order">An order</option>
+  <option value="other">Something else</option>
+</select>
+```
+
+**Button** to submit — the accessible default:
+
+```html
+<button type="submit">Send message</button>
+```
+
+Use `<button>` rather than `<a href>` for actions: buttons are focusable, keyboard-
+activatable, and announced as buttons. A link goes *somewhere*; a button *does*
+something. (`<input type="submit">` also works, but `<button>` can contain richer text
+and is the modern default.)
+
+## Helping users get it right
+
+Two attributes cover the beginner basics:
+
+- `required` — the browser blocks submission of an empty field and explains why.
+- `minlength` / `maxlength` (and `min`/`max` on numbers) — length and range limits.
+
+```html
+<input type="password" id="pw" name="password" required minlength="8" />
+```
+
+Deep validation logic arrives in Module 4 with JavaScript; the browser's built-in checks
+are the free first line of defense.
+
+## What you learned
+
+- `<form action method>`; `name` is how a control's value is identified
+- `type` specializes `<input>` — email, password, checkbox, radio, date, number
+- Every control pairs with a `<label for>` — click target + screen-reader name
+- `<textarea>`, `<select>`/`<option>`, `<button type="submit">`
+- `required` and length limits give free, native validation
+
+**Next:** the HTML checkpoint — prove what you know.

@@ -1,0 +1,34 @@
+{
+  "id": "structure-the-page",
+  "title": "Structure the Bakery Page",
+  "prompt": "The boilerplate has content dumped in plain `div`s. Restructure it using semantic elements — do not change the visible text.\n\nRequirements:\n- Wrap the site name in a `<header>`.\n- Put the two links in a `<nav>`.\n- Wrap ALL page content in exactly one `<main>` (it should contain the sections).\n- Turn the two content blocks into `<section>` elements, each keeping its own heading.\n- Add a `<footer>` containing the copyright paragraph.",
+  "difficulty": "beginner",
+  "boilerplate": "<h1>Ada's Bakery</h1>\n\n<div>\n  <a href=\"#bread\">Bread</a>\n  <a href=\"#cakes\">Cakes</a>\n</div>\n\n<div>\n  <h2 id=\"bread\">Bread</h2>\n  <p>Sourdough baked daily.</p>\n</div>\n\n<div>\n  <h2 id=\"cakes\">Cakes</h2>\n  <p>To order on Fridays.</p>\n</div>\n\n<div>\n  <p>© 2026 Ada's Bakery</p>\n</div>\n",
+  "tests": [
+    {
+      "name": "has a header",
+      "code": "if (!/<header[\\s>][\\s\\S]*?<\\/header>/i.test(code)) {\n  throw new Error(\"Wrap the site name in a <header> element.\");\n}",
+      "hint": "<header> holds introductory content like the site name."
+    },
+    {
+      "name": "has a nav containing the links",
+      "code": "const nav = code.match(/<nav[\\s>][\\s\\S]*?<\\/nav>/i);\nif (!nav) {\n  throw new Error(\"Put the navigation links in a <nav> element.\");\n}\nif (!/<nav[^>]*>[\\s\\S]*?<a\\s[^>]*href=/i.test(nav[0])) {\n  throw new Error(\"The <nav> must contain the two <a> links.\");\n}",
+      "hint": "<nav> is for major navigation — move both <a> links inside it."
+    },
+    {
+      "name": "exactly one main",
+      "code": "const mains = (code.match(/<main[\\s>]/gi) || []).length;\nif (mains !== 1) {\n  throw new Error(\"A page has exactly one <main> element (found \" + mains + \").\");\n}\nconst mainEl = code.match(/<main[\\s>][\\s\\S]*?<\\/main>/i);\nif (!mainEl || !/<h2/i.test(mainEl[0])) {\n  throw new Error(\"The page content (the sections with their <h2>s) must live inside <main>.\");\n}",
+      "hint": "Wrap the two sections in one <main> — screen readers jump straight to it."
+    },
+    {
+      "name": "sections kept with headings",
+      "code": "const sections = code.match(/<section[\\s>][\\s\\S]*?<\\/section>/gi) || [];\nif (sections.length < 2) {\n  throw new Error(\"Turn both content blocks into <section> elements.\");\n}\nfor (const s of sections) {\n  if (!/<h2/i.test(s)) {\n    throw new Error(\"Each <section> must keep its own heading.\");\n  }\n}",
+      "hint": "A section is a thematic grouping *with a heading* — keep the <h2> inside each."
+    },
+    {
+      "name": "footer with copyright",
+      "code": "const footer = code.match(/<footer[\\s>][\\s\\S]*?<\\/footer>/i);\nif (!footer || !/©|copyright/i.test(footer[0])) {\n  throw new Error(\"Add a <footer> containing the copyright paragraph.\");\n}",
+      "hint": "Closing content like © belongs in a <footer>."
+    }
+  ]
+}

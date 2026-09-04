@@ -124,7 +124,7 @@ describe.skipIf(!dbUp)("lesson completion verification (PROG-02)", () => {
       recordLessonCompletion(
         userId,
         "web-development",
-        "web-development-foundations",
+        "web-development-beginner",
         "html-foundations",
         "introduction-to-html",
       ),
@@ -141,7 +141,7 @@ describe.skipIf(!dbUp)("lesson completion verification (PROG-02)", () => {
     const first = await recordLessonCompletion(
       userId,
       "web-development",
-      "web-development-foundations",
+      "web-development-beginner",
       "html-foundations",
       "introduction-to-html",
     );
@@ -150,7 +150,7 @@ describe.skipIf(!dbUp)("lesson completion verification (PROG-02)", () => {
     const second = await recordLessonCompletion(
       userId,
       "web-development",
-      "web-development-foundations",
+      "web-development-beginner",
       "html-foundations",
       "introduction-to-html",
     );
@@ -169,7 +169,7 @@ describe.skipIf(!dbUp)("lesson completion verification (PROG-02)", () => {
     const result = await recordLessonCompletion(
       userId,
       "web-development",
-      "web-development-foundations",
+      "web-development-beginner",
       "html-foundations",
       "html-elements",
     );

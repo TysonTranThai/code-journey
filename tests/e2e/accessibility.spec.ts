@@ -12,11 +12,11 @@ const PAGES = [
   { path: "/", name: "home" },
   { path: "/learn", name: "learn index" },
   {
-    path: "/learn/web-development/web-development-foundations/html-foundations/introduction-to-html",
+    path: "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html",
     name: "lesson",
   },
   {
-    path: "/learn/web-development/web-development-foundations/html-foundations/introduction-to-html/challenge/fix-the-heading",
+    path: "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html/challenge/fix-the-heading",
     name: "challenge",
   },
   { path: "/login", name: "login" },
@@ -54,7 +54,7 @@ test.describe("keyboard navigation", () => {
     page,
   }) => {
     await page.goto(
-      "/learn/web-development/web-development-foundations/html-foundations/introduction-to-html",
+      "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html",
     );
 
     // Skip link is the first tab stop.

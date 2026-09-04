@@ -99,7 +99,7 @@ describe.skipIf(!process.env.DATABASE_URL)("submission authorization (07-02)", (
         body: JSON.stringify({
           code: "<h1>Hi</h1>",
           trackId: "web-development",
-          courseId: "web-development-foundations",
+          courseId: "web-development-beginner",
           moduleId: "html-foundations",
           lessonId: "introduction-to-html",
           challengeId: "fix-the-heading",
@@ -123,7 +123,7 @@ describe.skipIf(!process.env.DATABASE_URL)("submission authorization (07-02)", (
         body: JSON.stringify({
           code: "<h1>Hi</h1>",
           trackId: "web-development",
-          courseId: "web-development-foundations",
+          courseId: "web-development-beginner",
           moduleId: "html-foundations",
           lessonId: "introduction-to-html",
           challengeId: "fix-the-heading",

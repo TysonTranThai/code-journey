@@ -1,0 +1,29 @@
+{
+  "id": "build-a-recipe-list",
+  "title": "Recipe Card: Lists in Action",
+  "prompt": "Build the content section of a recipe page.\n\nRequirements:\n- An `<h2>` with the recipe name.\n- An *unordered* list with the ingredients (at least 3 `<li>`).\n- An *ordered* list with the steps (at least 3 `<li>`).\n- The right list type for each — the tests check which one you used.",
+  "difficulty": "beginner",
+  "boilerplate": "<!-- Recipe content below -->\n\n",
+  "tests": [
+    {
+      "name": "has a heading",
+      "code": "if (!/<h2[\\s>][^<]*<\\/h2>/i.test(code)) {\n  throw new Error(\"Add an <h2> with the recipe name.\");\n}",
+      "hint": "Sub-headings use <h2>; write a real recipe name between the tags."
+    },
+    {
+      "name": "unordered list with at least 3 ingredients",
+      "code": "const ulMatch = code.match(/<ul[\\s\\S]*?<\\/ul>/i);\nif (!ulMatch) {\n  throw new Error(\"No <ul> found — ingredients go in an unordered list.\");\n}\nconst items = (ulMatch[0].match(/<li[\\s>]/gi) || []).length;\nif (items < 3) {\n  throw new Error(\"The ingredient <ul> needs at least 3 <li> items.\");\n}",
+      "hint": "Ingredients have no order, so wrap them in <ul>…</ul> with one <li> each."
+    },
+    {
+      "name": "ordered list with at least 3 steps",
+      "code": "const olMatch = code.match(/<ol[\\s\\S]*?<\\/ol>/i);\nif (!olMatch) {\n  throw new Error(\"No <ol> found — steps go in an ordered list.\");\n}\nconst items = (olMatch[0].match(/<li[\\s>]/gi) || []).length;\nif (items < 3) {\n  throw new Error(\"The steps <ol> needs at least 3 <li> items.\");\n}",
+      "hint": "Steps happen in sequence, so use <ol>…</ol> — the browser numbers them."
+    },
+    {
+      "name": "did not use ol for ingredients",
+      "code": "const ul = code.match(/<ul[\\s\\S]*?<\\/ul>/i);\nconst ol = code.match(/<ol[\\s\\S]*?<\\/ol>/i);\nif (ul && ol && ul.index < ol.index && /<ol[\\s\\S]*<\\/ul>/i.test(code)) {\n  throw new Error(\"It looks like the ingredient list uses <ol> — use <ul> when order does not matter.\");\n}",
+      "hint": "Choosing <ul> vs <ol> is a meaning decision: shuffled order must not change the meaning of ingredients."
+    }
+  ]
+}

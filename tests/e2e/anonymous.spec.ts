@@ -11,20 +11,20 @@ test("anonymous visitors can read curriculum and challenges", async ({ page }) =
   await expect(page.getByText(/web development/i).first()).toBeVisible();
 
   await page.goto(
-    "/learn/web-development/web-development-foundations/html-foundations/introduction-to-html",
+    "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html",
   );
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(page.getByText(/practice/i).first()).toBeVisible();
 
   await page.goto(
-    "/learn/web-development/web-development-foundations/html-foundations/introduction-to-html/challenge/fix-the-heading",
+    "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html/challenge/fix-the-heading",
   );
   await expect(page.getByRole("button", { name: /run code/i })).toBeVisible();
 });
 
 test("anonymous users can open a lesson discussion and read", async ({ page }) => {
   await page.goto(
-    "/learn/web-development/web-development-foundations/html-foundations/introduction-to-html/discussion",
+    "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html/discussion",
   );
   await expect(page.getByText(/ask a question|sign in/i).first()).toBeVisible();
 });

@@ -58,7 +58,7 @@ describe("curriculum loaders (real content)", () => {
   it("reads a lesson body that exists on disk", () => {
     const body = readLessonBody(
       "web-development",
-      "web-development-foundations",
+      "web-development-beginner",
       "html-foundations",
       "introduction-to-html",
     );
@@ -68,7 +68,7 @@ describe("curriculum loaders (real content)", () => {
   it("loads lesson challenges in declared order with resolved location", () => {
     const challenges = getLessonChallenges(
       "web-development",
-      "web-development-foundations",
+      "web-development-beginner",
       "html-foundations",
       "introduction-to-html",
     );
@@ -78,7 +78,7 @@ describe("curriculum loaders (real content)", () => {
 
     const resolved = getChallenge(
       "web-development",
-      "web-development-foundations",
+      "web-development-beginner",
       "html-foundations",
       "html-links",
       "add-the-missing-link",
@@ -92,7 +92,7 @@ describe("curriculum loaders (real content)", () => {
     expect(() =>
       getChallenge(
         "web-development",
-        "web-development-foundations",
+        "web-development-beginner",
         "html-foundations",
         "introduction-to-html",
         "no-such-challenge",

@@ -25,7 +25,7 @@ describe("SEO: sitemap generated from curriculum loaders", () => {
   it("includes the track, course, and every lesson page", () => {
     expect(urls).toContain("http://localhost:3000/learn/web-development");
     expect(urls).toContain(
-      "http://localhost:3000/learn/web-development/web-development-foundations",
+      "http://localhost:3000/learn/web-development/web-development-beginner",
     );
     const lessons = getLinearLessons("web-development");
     expect(lessons).toHaveLength(5);
@@ -59,6 +59,6 @@ describe("SEO: curriculum is loaders-driven (structure sanity)", () => {
   it("track exposes exactly the seed course", () => {
     const tracks = getTracks();
     expect(tracks).toHaveLength(1);
-    expect(tracks[0]?.courses[0]?.reference).toBe("web-development-foundations");
+    expect(tracks[0]?.courses[0]?.reference).toBe("web-development-beginner");
   });
 });

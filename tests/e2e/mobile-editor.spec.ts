@@ -27,7 +27,7 @@ test.beforeAll(async ({ request }) => {
 });
 
 const CHALLENGE_URL =
-  "/learn/web-development/web-development-foundations/html-foundations/introduction-to-html/challenge/fix-the-heading";
+  "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html/challenge/fix-the-heading";
 
 async function register(page: import("@playwright/test").Page) {
   const id = `e2e-m-${Date.now()}-${Math.floor(Math.random() * 10_000)}`;

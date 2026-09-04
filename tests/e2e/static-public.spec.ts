@@ -8,7 +8,7 @@ import { expect, test } from "@playwright/test";
 test.skip(process.env.CJ_SKIP_E2E === "1", "E2E explicitly skipped");
 
 const LESSON =
-  "/learn/web-development/web-development-foundations/html-foundations/introduction-to-html";
+  "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html";
 
 test("public pages render full content for anonymous visitors", async ({ page }) => {
   await page.goto("/");

@@ -1,0 +1,34 @@
+{
+  "id": "build-a-complete-page",
+  "title": "Project: Your First Personal Page",
+  "prompt": "Write a complete HTML page about a topic you care about — a hobby, a place, a pet, anything.\n\nRequirements:\n- Start with `<!DOCTYPE html>` and use `<html>` with a `lang` attribute.\n- Include a `<head>` with a `<meta charset>` and a non-empty `<title>`.\n- In the `<body>`: exactly one `<h1>` with the topic, and at least two `<p>` paragraphs saying something about it.\n- Your own words — the content is yours; the tests only check the structure.",
+  "difficulty": "beginner",
+  "boilerplate": "<!-- Write your page below this line -->\n\n",
+  "tests": [
+    {
+      "name": "has a document type declaration",
+      "code": "if (!/<!DOCTYPE\\s+html>/i.test(code)) {\n  throw new Error(\"The page must start with <!DOCTYPE html> (all on one line).\");\n}",
+      "hint": "The very first line of every modern HTML page is <!DOCTYPE html>."
+    },
+    {
+      "name": "has an html element with a lang attribute",
+      "code": "if (!/<html[^>]*\\slang\\s*=\\s*[\"'][a-zA-Z-]+[\"'][^>]*>/i.test(code)) {\n  throw new Error(\"<html> needs a lang attribute, e.g. <html lang=\\\"en\\\">.\");\n}",
+      "hint": "Add lang=\"en\" (or your language) to the opening <html> tag — assistive tech uses it."
+    },
+    {
+      "name": "has a head with charset and a title",
+      "code": "if (!/<head[\\s\\S]*<\\/head>/i.test(code)) {\n  throw new Error(\"No <head> section found.\");\n}\nif (!/<meta[^>]*charset/i.test(code)) {\n  throw new Error(\"The <head> needs <meta charset=\\\"UTF-8\\\">.\");\n}\nconst titleMatch = code.match(/<title>([\\s\\S]*?)<\\/title>/i);\nif (!titleMatch || !titleMatch[1].trim()) {\n  throw new Error(\"Add a non-empty <title>...</title> in the head.\");\n}",
+      "hint": "Inside <head>, add <meta charset=\"UTF-8\" /> and a <title> with real text."
+    },
+    {
+      "name": "body has exactly one h1",
+      "code": "const h1s = code.match(/<h1[\\s>]/gi) || [];\nif (h1s.length === 0) {\n  throw new Error(\"Add an <h1> heading with your topic.\");\n}\nif (h1s.length > 1) {\n  throw new Error(\"Use exactly one <h1> per page — it is the main topic.\");\n}",
+      "hint": "One <h1> states the page's main topic; use <h2> for sub-headings later."
+    },
+    {
+      "name": "body has at least two paragraphs",
+      "code": "const paragraphs = (code.match(/<p[\\s>][\\s\\S]*?<\\/p>/gi) || [])\n  .filter((p) => p.replace(/<\\/?p[^>]*>/gi, \"\").trim().length > 0);\nif (paragraphs.length < 2) {\n  throw new Error(\"Write at least two non-empty <p> paragraphs.\");\n}",
+      "hint": "Use <p>...</p> for each paragraph; write real sentences about your topic."
+    }
+  ]
+}

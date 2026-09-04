@@ -28,7 +28,10 @@
     "db:seed": "tsx src/lib/db/seed.ts",
     "db:studio": "drizzle-kit studio",
     "worker": "node --import tsx --import ./scripts/worker-imports.mjs src/workers/runner.ts",
-    "sandbox:build": "docker build -f docker/Dockerfile.sandbox -t codejourney-sandbox:latest docker/"
+    "sandbox:build": "docker build -f docker/Dockerfile.sandbox -t codejourney-sandbox:latest docker/",
+    "content:map": "node scripts/generate-mdx-map.mjs",
+    "prebuild": "pnpm content:map",
+    "predev": "pnpm content:map"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "1.11.3",

@@ -1,0 +1,89 @@
+So far your pages have been a heading and some paragraphs. Real pages have regions — a
+banner, navigation, the main content, a footer — and HTML has an element for each. These
+are **semantic elements**: their names describe their *role*.
+
+## Why semantics matter
+
+Compare two ways to mark up a page:
+
+```html
+<!-- meaningless: a browser knows nothing -->
+<div class="top">…</div>
+<div class="menu">…</div>
+<div class="content">…</div>
+
+<!-- meaningful: a browser knows the roles -->
+<header>…</header>
+<nav>…</nav>
+<main>…</main>
+```
+
+To the browser — and to screen readers, search engines, and reader modes — these are not
+the same. With semantics, a screen-reader user can jump straight to `<main>` and skip
+the navigation; a search engine understands what the page's primary content is. `<div>`
+is the honest choice when *no meaning applies* — but it is the last resort, not the
+default.
+
+## The structural elements
+
+- `<header>` — introductory content for the page or a section: logo, site name, tagline.
+- `<nav>` — major navigation: a group of links for moving around the site. Not every
+  group of links is a nav — footers with legal links usually are not.
+- `<main>` — the page's primary content. **Exactly one per page**, and it must not be
+  nested inside other structural elements. Screen readers jump here first.
+- `<section>` — a thematic grouping with its own heading ("Courses", "Testimonials").
+  If you cannot give it a heading, it probably is not a section.
+- `<article>` — content that is complete and independently meaningful: a blog post, a
+  product card, a single review.
+- `<aside>` — tangential content: related links, a pull quote, a sidebar.
+- `<footer>` — closing content: copyright, contact, small print.
+
+A typical page skeleton:
+
+```html
+<body>
+  <header>
+    <h1>Ada's Bakery</h1>
+  </header>
+  <nav>
+    <ul>
+      <li><a href="#bread">Bread</a></li>
+      <li><a href="#cakes">Cakes</a></li>
+    </ul>
+  </nav>
+  <main>
+    <section id="bread">
+      <h2>Bread</h2>
+      <p>Sourdough daily.</p>
+    </section>
+    <section id="cakes">
+      <h2>Cakes</h2>
+      <p>To order on Fridays.</p>
+    </section>
+  </main>
+  <footer>
+    <p>© 2026 Ada's Bakery</p>
+  </footer>
+</body>
+```
+
+Note the `id` attributes on the sections — combined with the `#bread` links in the nav,
+clicking a nav link scrolls to that section. (This is the fragment-URL idea from the
+links lesson, and it is how real single-page navigation works.)
+
+## Heading hierarchy inside semantics
+
+Sections and articles have their own headings. Keep the levels consistent: the page has
+one `<h1>`; each `<section>` starts at `<h2>`; a sub-part uses `<h3>`. Screen-reader
+users navigate by headings like flipping through a book's chapters — skipped levels
+make that navigation feel like missing pages.
+
+## What you learned
+
+- Semantic elements name a region's *role*; `<div>` means "no role"
+- `<header>`, `<nav>`, `<main>` (exactly one), `<section>`, `<article>`, `<aside>`,
+  `<footer>` — and what belongs in each
+- `id` + `#fragment` links power in-page navigation
+- Headings step down without skipping levels
+
+**Next:** forms — how pages collect input.
