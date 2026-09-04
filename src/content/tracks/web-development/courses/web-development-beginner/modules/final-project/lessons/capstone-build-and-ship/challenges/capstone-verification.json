@@ -1,0 +1,24 @@
+{
+  "id": "capstone-verification",
+  "title": "Capstone Verification",
+  "prompt": "Verify the decisions your final project encodes. Write one object `capstone` with:\n\n- layout: which CSS layout system(s) your site uses — \"flexbox\", \"grid\", or \"both\"\n- nav: how your navigation adapts on small screens — \"hamburger\", \"stacked\", or \"horizontal\"\n- storageKey: the localStorage key your stateful feature persists under (a string)\n- contrastChecked and keyboardNavigable and formLabeled: booleans confirming you audited each",
+  "difficulty": "advanced",
+  "boilerplate": "const capstone = {\n  layout: \"\",\n  nav: \"\",\n  storageKey: \"\",\n  contrastChecked: false,\n  keyboardNavigable: false,\n  formLabeled: false,\n};\n",
+  "tests": [
+    {
+      "name": "a deliberate layout and responsive nav decision",
+      "code": "const fn = new Function(code + \"\\nreturn { capstone };\");\nconst { capstone } = fn();\nif (![\"flexbox\", \"grid\", \"both\"].includes(capstone.layout)) {\n  throw new Error('layout must be \"flexbox\", \"grid\", or \"both\" — your site must use one of them.');\n}\nif (![\"hamburger\", \"stacked\", \"horizontal\"].includes(capstone.nav)) {\n  throw new Error('nav must be \"hamburger\", \"stacked\", or \"horizontal\" — name your real approach.');\n}",
+      "hint": "Layout: what did you actually build with? Nav: what actually happens under 768px?"
+    },
+    {
+      "name": "stateful feature persists under a named key",
+      "code": "const fn = new Function(code + \"\\nreturn { capstone };\");\nconst { capstone } = fn();\nif (typeof capstone.storageKey !== \"string\" || capstone.storageKey.length < 3) {\n  throw new Error(\"storageKey must be the real localStorage key your feature uses (at least 3 characters).\");\n}",
+      "hint": "Whatever you call JSON.stringify(localStorage.getItem(...)) with — e.g. \"tasks\" or \"theme\"."
+    },
+    {
+      "name": "the accessibility audit was real",
+      "code": "const fn = new Function(code + \"\\nreturn { capstone };\");\nconst { capstone } = fn();\nfor (const key of [\"contrastChecked\", \"keyboardNavigable\", \"formLabeled\"]) {\n  if (capstone[key] !== true) {\n    throw new Error(key + \" must be true — do the audit first: contrast pairs, keyboard-only pass, labels on every control.\");\n  }\n}",
+      "hint": "Tab through the site, submit the empty form, check contrast — then set all three to true."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "architecture-sort",
+  "title": "Sort the Architecture",
+  "prompt": "For each concern, name where it belongs — \"frontend\" or \"backend\":\n\nanswers = { passwordCheck: \"?\", buttonText: \"?\", priceCalculation: \"?\", themeToggle: \"?\", databaseQuery: \"?\" }",
+  "difficulty": "intermediate",
+  "boilerplate": "const answers = {\n  passwordCheck: \"\",\n  buttonText: \"\",\n  priceCalculation: \"\",\n  themeToggle: \"\",\n  databaseQuery: \"\",\n};\n",
+  "tests": [
+    {
+      "name": "trust lives on the server; presentation in the browser",
+      "code": "const fn = new Function(code + \"\\nreturn { answers };\");\nconst { answers } = fn();\nif (answers.passwordCheck !== \"backend\") throw new Error('passwordCheck: \"backend\" — the browser can be modified by anyone.');\nif (answers.buttonText !== \"frontend\") throw new Error('buttonText: \"frontend\" — pure presentation.');\nif (answers.priceCalculation !== \"backend\") throw new Error('priceCalculation: \"backend\" — never trust prices computed in the browser.');\nif (answers.themeToggle !== \"frontend\") throw new Error('themeToggle: \"frontend\" — a pure UI concern.');\nif (answers.databaseQuery !== \"backend\") throw new Error('databaseQuery: \"backend\" — the database is never reachable from the browser.');",
+      "hint": "If it involves trust, money, identity, or data — backend. If it is what the user sees and clicks — frontend."
+    }
+  ]
+}

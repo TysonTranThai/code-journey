@@ -1,0 +1,14 @@
+{
+  "id": "workflow-checkpoint",
+  "title": "Developer Workflow Check",
+  "prompt": "Answer three scenario questions in one object `answers`:\n\n1. undoTarget: You committed a bug and want to return the project to the previous commit's state. Which command family restores a past commit? Answer \"checkout\", \"revert\", or \"log\".\n2. safeShare: You want to propose a change to a teammate's repo through review. Answer \"push\", \"pull request\", or \"issue\".\n3. stage: Which command moves your edits into the staging area (one word, no arguments)?",
+  "difficulty": "intermediate",
+  "boilerplate": "const answers = {\n  undoTarget: \"\",\n  safeShare: \"\",\n  stage: \"\",\n};\n",
+  "tests": [
+    {
+      "name": "concept answers",
+      "code": "const fn = new Function(code + \"\\nreturn { answers };\");\nconst { answers } = fn();\nif (answers.undoTarget !== \"revert\") throw new Error('undoTarget: \"revert\" creates a commit that undoes a past one — the safe history-respecting choice.');\nif (answers.safeShare !== \"pull request\") throw new Error('safeShare: a \"pull request\" opens your branch for review and merge.');\nif (answers.stage !== \"add\") throw new Error('stage: \"git add\" moves edits into the staging area.');",
+      "hint": "revert · pull request · add"
+    }
+  ]
+}

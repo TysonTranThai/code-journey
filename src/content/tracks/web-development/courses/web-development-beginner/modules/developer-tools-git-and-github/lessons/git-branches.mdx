@@ -1,0 +1,48 @@
+A **branch** is a parallel line of history. The default branch — usually
+`main` — is the stable version. A new branch is a safe sandbox: experiment
+freely; `main` never notices until you merge.
+
+## The workflow
+
+~~~text
+git branch about-page        # create a branch named about-page
+git switch about-page        # move onto it (git switch -c about-page = both steps)
+...edit files, add, commit...
+git switch main              # back to the stable line
+git merge about-page         # bring the branch's work into main
+~~~
+
+While on `about-page`, commits land on that branch. `main` stays
+untouched — that is the entire point.
+
+## Resolving a basic conflict
+
+A **conflict** happens when two branches change the same lines. Git marks the
+collision in the file itself:
+
+~~~text
+<<<<<<< HEAD
+Welcome to my site
+=======
+Welcome — come on in
+>>>>>>> about-page
+~~~
+
+You resolve it by editing the file to the version you want (or a blend), removing
+the `<<<<<<<` markers, then `git add` + `git commit`. Conflicts
+are not errors — they are Git asking you to make a decision it refuses to guess.
+
+## Real habits
+
+- One branch per idea or feature; short-lived branches merge cleanly
+- Never commit straight to main in a team repo — branch, even alone, for practice
+- `git branch` lists branches; `git log --oneline --all` shows every line
+
+## What you learned
+
+- `git branch`/`git switch` create and enter sandboxes
+- Merge brings completed work back into main
+- Conflicts are decisions, not failures — edit, add, commit
+
+**Next:** taking your repositories online — GitHub.
+

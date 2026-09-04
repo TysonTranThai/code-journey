@@ -1,0 +1,55 @@
+## The database — the memory
+
+A server can restart any moment; its memory is wiped. Durable data lives in a
+**database**. The dominant kind is **relational** — data in **tables** of rows and
+columns, linked by ids:
+
+~~~text
+users
+id | email           | password_hash
+1  | ada@example.com | $2b$12$KIX...
+
+submissions
+id | user_id | challenge_id | verdict
+7  | 1       | render-a-list | passed
+~~~
+
+That `user_id` column is the link: one user, many submissions. You query with
+**SQL**: `SELECT * FROM submissions WHERE user_id = 1;`. When Code Journey
+shows your submission history, a query exactly like that ran.
+
+## Authentication vs authorization
+
+Two different questions:
+
+- **Authentication** — *who are you?* (login)
+- **Authorization** — *what may this account do?* (permissions)
+
+## How login actually works
+
+1. You submit email + password.
+2. The server looks up the user and **hashes** the submitted password — a one-way
+   mathematical transformation.
+3. Hashes match → you are authenticated. The server issues a **session** (often a
+   cookie with a random, unguessable id).
+
+**Passwords are never stored** — only their hashes. A one-way hash cannot be
+reversed; if the database leaks, attackers get hashes, not passwords. When a site
+emails you your actual password in plain text, run.
+
+## Authorization you have already experienced
+
+Code Journey checks authorization on every submission read: user A requesting user
+B's result gets `404`, even with the right id. The server asked not *does
+this submission exist* but *does this submission belong to the requester* — and it
+checks on the server, where the answer cannot be forged.
+
+## What you learned
+
+- Relational databases: tables, rows, id links, SQL queries
+- Authentication (who) vs authorization (what may they do)
+- Passwords are hashed, never stored; sessions keep you logged in
+- Ownership checks happen server-side — you lived this with the 404s
+
+**Next:** how sites reach the world — DNS, HTTPS, and deployment.
+

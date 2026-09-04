@@ -1,0 +1,14 @@
+{
+  "id": "terminal-commands",
+  "title": "Command the Terminal",
+  "prompt": "Match each task to its command — write your answers as a single object assigned to `answers`:\n\nanswers = { where: \"?\", list: \"?\", enter: \"?\", up: \"?\", makeFolder: \"?\" }\n\n- where: show the current directory\n- list: list the files here\n- enter: move into a folder called my-project\n- up: move back up one level\n- makeFolder: create a folder called notes",
+  "difficulty": "beginner",
+  "boilerplate": "const answers = {\n  where: \"\",\n  list: \"\",\n  enter: \"\",\n  up: \"\",\n  makeFolder: \"\",\n};\n",
+  "tests": [
+    {
+      "name": "the five core commands",
+      "code": "const fn = new Function(code + \"\\nreturn { answers };\");\nconst { answers } = fn();\nif (answers.where !== \"pwd\") throw new Error('where: \"pwd\" prints the working directory.');\nif (answers.list !== \"ls\") throw new Error('list: \"ls\" lists files (dir on Windows CMD).');\nif (answers.enter !== \"cd my-project\") throw new Error('enter: \"cd my-project\" moves into the folder.');\nif (answers.up !== \"cd ..\") throw new Error('up: \"cd ..\" climbs one level.');\nif (answers.makeFolder !== \"mkdir notes\") throw new Error('makeFolder: \"mkdir notes\" creates the folder.');",
+      "hint": "pwd · ls · cd my-project · cd .. · mkdir notes"
+    }
+  ]
+}

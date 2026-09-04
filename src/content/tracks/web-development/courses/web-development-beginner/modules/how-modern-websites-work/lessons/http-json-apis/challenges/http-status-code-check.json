@@ -1,0 +1,14 @@
+{
+  "id": "http-status-code-check",
+  "title": "Read the Status Codes",
+  "prompt": "Match each situation to its HTTP status code:\n\nanswers = { anonymousRun: \"?\", missingPage: \"?\", tooManyRequests: \"?\", allGood: \"?\" }\n\n- anonymousRun: an anonymous user tries to execute code (the server refuses; not signed in)\n- missingPage: the requested page does not exist\n- tooManyRequests: the client exceeded the rate limit\n- allGood: the request succeeded",
+  "difficulty": "intermediate",
+  "boilerplate": "const answers = {\n  anonymousRun: 0,\n  missingPage: 0,\n  tooManyRequests: 0,\n  allGood: 0,\n};\n",
+  "tests": [
+    {
+      "name": "the four everyday codes",
+      "code": "const fn = new Function(code + \"\\nreturn { answers };\");\nconst { answers } = fn();\nif (answers.anonymousRun !== 401) throw new Error(\"anonymousRun: 401 Unauthorized — authentication required.\");\nif (answers.missingPage !== 404) throw new Error(\"missingPage: 404 Not Found.\");\nif (answers.tooManyRequests !== 429) throw new Error(\"tooManyRequests: 429 Too Many Requests.\");\nif (answers.allGood !== 200) throw new Error(\"allGood: 200 OK.\");",
+      "hint": "401 · 404 · 429 · 200 — you have met every one of these on Code Journey itself."
+    }
+  ]
+}

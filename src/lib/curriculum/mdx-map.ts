@@ -11,6 +11,8 @@ import type { ComponentType } from "react";
 export type MdxComponent = ComponentType<Record<string, unknown>>;
 
 import AnatomyOfAWebsite from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/anatomy-of-a-website.mdx";
+import CapstoneBuildAndShip from "@/content/tracks/web-development/courses/web-development-beginner/modules/final-project/lessons/capstone-build-and-ship.mdx";
+import CapstonePlanning from "@/content/tracks/web-development/courses/web-development-beginner/modules/final-project/lessons/capstone-planning.mdx";
 import CssBoxModel from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-box-model.mdx";
 import CssDisplayFlow from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-display-flow.mdx";
 import CssFlexbox from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-flexbox.mdx";
@@ -20,6 +22,14 @@ import CssProjectPortfolio from "@/content/tracks/web-development/courses/web-de
 import CssResponsive from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-responsive.mdx";
 import CssTransitions from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-transitions.mdx";
 import CssTypography from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-typography.mdx";
+import DatabasesAndAuth from "@/content/tracks/web-development/courses/web-development-beginner/modules/how-modern-websites-work/lessons/databases-and-auth.mdx";
+import DeployGithubPages from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/deploy-github-pages.mdx";
+import DeploymentDnsHttps from "@/content/tracks/web-development/courses/web-development-beginner/modules/how-modern-websites-work/lessons/deployment-dns-https.mdx";
+import FrontendBackend from "@/content/tracks/web-development/courses/web-development-beginner/modules/how-modern-websites-work/lessons/frontend-backend.mdx";
+import GitBranches from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/git-branches.mdx";
+import GitCheckpoint from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/git-checkpoint.mdx";
+import GitVersionControl from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/git-version-control.mdx";
+import GithubRemote from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/github-remote.mdx";
 import HowTheWebWorks from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/how-the-web-works.mdx";
 import HtmlAttributes from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-attributes.mdx";
 import HtmlCheckpoint from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-checkpoint.mdx";
@@ -29,6 +39,7 @@ import HtmlImages from "@/content/tracks/web-development/courses/web-development
 import HtmlLinks from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-links.mdx";
 import HtmlListsAndTables from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-lists-and-tables.mdx";
 import HtmlSemantics from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-semantics.mdx";
+import HttpJsonApis from "@/content/tracks/web-development/courses/web-development-beginner/modules/how-modern-websites-work/lessons/http-json-apis.mdx";
 import InspectingWithDevtools from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/inspecting-with-devtools.mdx";
 import IntroductionToHtml from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/introduction-to-html.mdx";
 import JsArrays from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-arrays.mdx";
@@ -50,6 +61,7 @@ import JsTypesAndOperators from "@/content/tracks/web-development/courses/web-de
 import JsVariables from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-variables.mdx";
 import PersonalProfileProject from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/personal-profile-project.mdx";
 import SelectorsAndCascade from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/selectors-and-cascade.mdx";
+import TerminalBasics from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/terminal-basics.mdx";
 import UnitsColorsValues from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/units-colors-values.mdx";
 import WhatCssIs from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/what-css-is.mdx";
 import WhatJavascriptDoes from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/what-javascript-does.mdx";
@@ -68,6 +80,18 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["css-foundations/css-responsive.mdx"]: CssResponsive,
   ["css-foundations/css-transitions.mdx"]: CssTransitions,
   ["css-foundations/css-project-portfolio.mdx"]: CssProjectPortfolio,
+  ["developer-tools-git-and-github/terminal-basics.mdx"]: TerminalBasics,
+  ["developer-tools-git-and-github/git-version-control.mdx"]: GitVersionControl,
+  ["developer-tools-git-and-github/git-branches.mdx"]: GitBranches,
+  ["developer-tools-git-and-github/github-remote.mdx"]: GithubRemote,
+  ["developer-tools-git-and-github/deploy-github-pages.mdx"]: DeployGithubPages,
+  ["developer-tools-git-and-github/git-checkpoint.mdx"]: GitCheckpoint,
+  ["final-project/capstone-planning.mdx"]: CapstonePlanning,
+  ["final-project/capstone-build-and-ship.mdx"]: CapstoneBuildAndShip,
+  ["how-modern-websites-work/frontend-backend.mdx"]: FrontendBackend,
+  ["how-modern-websites-work/http-json-apis.mdx"]: HttpJsonApis,
+  ["how-modern-websites-work/databases-and-auth.mdx"]: DatabasesAndAuth,
+  ["how-modern-websites-work/deployment-dns-https.mdx"]: DeploymentDnsHttps,
   ["html-foundations/introduction-to-html.mdx"]: IntroductionToHtml,
   ["html-foundations/html-elements.mdx"]: HtmlElements,
   ["html-foundations/html-attributes.mdx"]: HtmlAttributes,

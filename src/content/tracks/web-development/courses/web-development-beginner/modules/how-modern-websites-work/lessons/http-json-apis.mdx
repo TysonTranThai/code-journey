@@ -1,0 +1,64 @@
+## The request, dissected
+
+~~~text
+GET /courses/web-development-beginner HTTP/1.1
+Host: codejourney.example
+Accept: application/json
+~~~
+
+- **Method** — the verb: `GET` (read), `POST` (create/submit),
+  `PUT/PATCH` (update), `DELETE` (remove)
+- **Path** — which resource
+- **Headers** — metadata (what formats are accepted, who is calling)
+
+## The response, dissected
+
+~~~text
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"id": "web-development-beginner", "lessons": 62}
+~~~
+
+A **status code**, headers, and a body. The families:
+
+- **1xx** informational · **2xx** success · **3xx** redirect
+- **4xx** the client's mistake (`404` not found, `401` unauthenticated,
+  `403` forbidden, `429` too many requests)
+- **5xx** the server's mistake
+
+You have met several already: Code Journey's run API answers `401` when you
+are signed out and `429` when you exceed the rate limit — now you can read
+those like a professional.
+
+## JSON: the data format of the web
+
+**JSON** (JavaScript Object Notation) is text shaped like JavaScript objects —
+objects, arrays, strings, numbers, booleans, null. Every language reads it, which
+is why APIs everywhere speak it:
+
+~~~js
+const text = '{"user":{"name":"Ada","roles":["learner"]}}';
+const data = JSON.parse(text);       // string → object
+data.user.roles[0];                  // "learner" — navigate like any object
+
+JSON.stringify(data);                // object → string (for sending)
+~~~
+
+## Stateless — and why cookies exist
+
+HTTP is **stateless**: every request arrives alone, remembering nothing. So how do
+sites keep you logged in? **Cookies** — small pieces of data the browser attaches to
+every request to that site. The server reads the cookie, recognizes your
+**session**, and treats the request as yours. That single mechanism is how
+"stay signed in" works everywhere.
+
+## What you learned
+
+- Requests: method + path + headers; responses: status + headers + body
+- Status families; the everyday ones (`401`, `403`, `404`, `429`)
+- JSON is the web's data format; `JSON.parse`/`stringify` convert
+- Statelessness → cookies → sessions
+
+**Next:** where the data lives — databases.
+

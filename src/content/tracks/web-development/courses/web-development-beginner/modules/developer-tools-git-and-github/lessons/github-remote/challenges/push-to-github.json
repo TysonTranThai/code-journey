@@ -1,0 +1,14 @@
+{
+  "id": "push-to-github",
+  "title": "Publish to a Remote",
+  "prompt": "Your local repo is ready. Write `publishCommands()` returning an array with, in order: the command that connects a remote at https://github.com/ada/my-site.git, the command that uploads main and remembers the pairing, and the command your teammate uses to download the whole repo fresh.",
+  "difficulty": "beginner",
+  "boilerplate": "// publishCommands() returns the 3 commands in order\n",
+  "tests": [
+    {
+      "name": "remote add, push -u, clone",
+      "code": "const fn = new Function(code + \"\\nreturn { publishCommands };\");\nconst { publishCommands } = fn();\nconst cmds = publishCommands().map((s) => String(s).trim());\nif (cmds.length !== 3) throw new Error(\"Return exactly 3 commands.\");\nif (!cmds[0].startsWith(\"git remote add origin https://github.com/ada/my-site.git\")) {\n  throw new Error(\"First: git remote add origin <url>.\");\n}\nif (!cmds[1].startsWith(\"git push -u origin main\")) {\n  throw new Error(\"Second: git push -u origin main.\");\n}\nif (!cmds[2].startsWith(\"git clone https://github.com/ada/my-site.git\")) {\n  throw new Error(\"Third: your teammate clones the same URL with git clone.\");\n}",
+      "hint": "git remote add origin <url> · git push -u origin main · git clone <url>"
+    }
+  ]
+}

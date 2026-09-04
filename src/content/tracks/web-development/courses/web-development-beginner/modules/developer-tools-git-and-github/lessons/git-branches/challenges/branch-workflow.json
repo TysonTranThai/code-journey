@@ -1,0 +1,14 @@
+{
+  "id": "branch-workflow",
+  "title": "Feature Branch Workflow",
+  "prompt": "Write `branchWorkflow()` returning an object describing this flow: create a branch named \"feature/faq\", switch to it, then — after finishing work — bring it into main.\n\nShape: { create: \"?\", switch: \"?\", merge: \"?\" } (run from main, merge into main).",
+  "difficulty": "beginner",
+  "boilerplate": "const branchWorkflow = () => ({\n  create: \"\",\n  switch: \"\",\n  merge: \"\",\n});\n",
+  "tests": [
+    {
+      "name": "create, switch, merge — with the right branch name",
+      "code": "const fn = new Function(code + \"\\nreturn { branchWorkflow };\");\nconst { branchWorkflow } = fn();\nconst w = branchWorkflow();\nif (w.create !== \"git branch feature/faq\") throw new Error(\"create: git branch feature/faq\");\nif (w.switch !== \"git switch feature/faq\") throw new Error(\"switch: git switch feature/faq\");\nif (w.merge !== \"git merge feature/faq\") throw new Error(\"merge (from main): git merge feature/faq\");",
+      "hint": "git branch feature/faq · git switch feature/faq · git merge feature/faq"
+    }
+  ]
+}
