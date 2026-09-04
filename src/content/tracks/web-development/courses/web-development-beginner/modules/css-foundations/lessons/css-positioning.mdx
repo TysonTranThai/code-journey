@@ -1,0 +1,64 @@
+Honest framing first: **layout is the job of Flexbox and Grid** (next lessons).
+`position` solves a different, smaller problem: *placing a box relative to something*.
+Beginners who reach for position first produce brittle pages; here is the right-sized
+dose.
+
+## The values
+
+**static** — the default. The box sits in normal flow; offset properties are ignored.
+
+**relative** — the box stays in flow, and `top`/`right`/`bottom`/`left` nudge it
+*visually* from where it would have been (the original space is preserved):
+
+```css
+.callout {
+  position: relative;
+  top: 4px;      /* drawn 4px lower than its flow position */
+}
+```
+
+**absolute** — the box is removed from flow and positioned against its nearest
+**positioned ancestor** (one with position other than static). If none exists, the
+page itself. This is *the* pattern:
+
+```css
+.card {
+  position: relative;   /* anchor — now a containing block */
+}
+.card .badge {
+  position: absolute;   /* placed against .card */
+  top: 8px;
+  right: 8px;
+}
+```
+
+The badge floats over the card's top-right corner regardless of the card's size —
+because the card is `relative`, it is the coordinate system. **Forget the
+`position: relative` on the parent and the badge positions against the page** — the
+most common positioning bug, and now you know its name.
+
+**fixed** — removed from flow, positioned against the *viewport*: stays put while the
+page scrolls. Sticky headers and cookie banners use it — and so do the popups everyone
+hates. Use sparingly.
+
+**sticky** — a hybrid: flows normally until a scroll threshold, then sticks. Great for
+table headers; a bonus, not a requirement today.
+
+## When to reach for position
+
+- Overlay a badge, tooltip, or close button on a component → absolute + relative parent.
+- Persistent header/footer chrome → fixed/sticky (with a11y care).
+- Anything else — especially multi-column or stacked layouts → Flexbox/Grid, not
+  absolute. Absolute-positioned layouts do not reflow and cannot respond to content
+  size: the opposite of responsive.
+
+## What you learned
+
+- static default; relative nudges and (crucially) anchors children
+- absolute positions against the nearest positioned ancestor — always pair it with a
+  relative parent
+- fixed pins to the viewport; sticky sticks on scroll
+- Position is for overlays; layout belongs to flex/grid
+
+**Next:** Flexbox — the one-dimensional layout system.
+

@@ -1,0 +1,71 @@
+Your HTML pages work — every element has a sensible default look. But "sensible default"
+is not "yours". CSS is the language that takes over appearance.
+
+## What CSS does
+
+CSS (*Cascading Style Sheets*) is a list of **rules**. Each rule says: *when an element
+matches this selector, apply these declarations.*
+
+```css
+h1 {
+  color: seagreen;
+}
+```
+
+The anatomy, named:
+
+- `h1` — the **selector**: which elements the rule targets.
+- `color: seagreen;` — a **declaration**: a *property* (`color`), a colon, a *value*
+  (`seagreen`), a semicolon.
+- Everything between `{ }` is the **declaration block**.
+
+Declarations always end with a semicolon. Forgetting one is the classic first CSS bug —
+the rule silently stops making sense at that point. When your style "doesn't work",
+check the semicolon and the braces before anything else.
+
+## Three ways to attach CSS
+
+**1. Inline styles** — a `style` attribute on one element:
+
+```html
+<p style="color: seagreen">Green text</p>
+```
+
+**2. Internal stylesheet** — a `<style>` block in the `<head>`:
+
+```html
+<head>
+  <style>
+    p { color: seagreen; }
+  </style>
+</head>
+```
+
+**3. External stylesheet** — a separate `.css` file, linked from the `<head>`:
+
+```html
+<head>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+```
+
+## Why external wins
+
+Inline styles fight everything you will learn: they cannot be reused, they override
+your stylesheet in ways that cause confusion, and they bury appearance inside content.
+Internal styles are fine for quick experiments but live trapped in one file.
+
+An external stylesheet is cached by the browser and shared by every page of your site:
+write `h1 { ... }` once, and every page that links the file follows. It also enforces
+the separation this course keeps returning to — content in HTML, appearance in CSS.
+
+From here on, every example assumes an external `styles.css`.
+
+## What you learned
+
+- Rules: selector + declaration block; property: value; semicolons matter
+- Inline, internal, and external CSS — and why external is the professional default
+- The `<link rel="stylesheet">` pattern you will use for the rest of the course
+
+**Next:** the selector zoo — how to target *exactly* the elements you mean.
+

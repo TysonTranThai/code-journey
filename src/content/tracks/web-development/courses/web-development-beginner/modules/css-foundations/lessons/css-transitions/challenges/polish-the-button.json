@@ -1,0 +1,29 @@
+{
+  "id": "polish-the-button",
+  "title": "Polish the Button",
+  "prompt": "Give a plain button professional interaction states:\n\n- A `transition` on `.button` covering background-color (0.2s).\n- A `:hover` state that changes the background-color.\n- A matching `:focus-visible` state (same selector list or separate rule) so keyboard users see it too.\n- A `prefers-reduced-motion` media block that neutralizes transitions.",
+  "difficulty": "beginner",
+  "boilerplate": "<style>\n  .button {\n    padding: 10px 20px;\n    background-color: #4b2e83;\n    color: white;\n    border: none;\n  }\n</style>\n\n<button class=\"button\">Sign up</button>\n",
+  "tests": [
+    {
+      "name": "transition declared on base",
+      "code": "const b = code.match(/\\.button\\s*{([^}]*)}/i);\nif (!b || !/transition[^;]*background-color[^;]*0\\.2s/i.test(b[1])) {\n  throw new Error(\"Add transition: background-color 0.2s ease; to .button.\");\n}",
+      "hint": "The transition belongs on the base state: transition: background-color 0.2s ease;"
+    },
+    {
+      "name": "hover changes color",
+      "code": "if (!/\\.button\\s*:\\s*hover\\s*{[^}]*background-color\\s*:\\s*[^;]+;/i.test(code)) {\n  throw new Error(\"Add .button:hover { background-color: …; }\");\n}",
+      "hint": ".button:hover { background-color: …; } — the state change the transition animates."
+    },
+    {
+      "name": "focus-visible gets parity",
+      "code": "if (!/\\.button\\s*:\\s*focus-visible\\s*{[^}]*background-color\\s*:\\s*[^;]+;/i.test(code) && !/\\.button\\s*:\\s*hover\\s*,\\s*\\.button\\s*:\\s*focus-visible\\s*{[^}]*background-color/i.test(code)) {\n  throw new Error(\"Keyboard users need the same visual feedback: add :focus-visible to the hover rule.\");\n}",
+      "hint": ".button:hover, .button:focus-visible { … } — one rule, both input methods."
+    },
+    {
+      "name": "reduced motion respected",
+      "code": "if (!/@media\\s*\\(\\s*prefers-reduced-motion\\s*:\\s*reduce\\s*\\)\\s*{[\\s\\S]*transition/i.test(code)) {\n  throw new Error(\"Add a prefers-reduced-motion: reduce block that neutralizes transitions.\");\n}",
+      "hint": "@media (prefers-reduced-motion: reduce) { * { transition-duration: 0.01ms; } }"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+Motion is communication: a button that brightens on hover says "I am clickable". CSS
+transitions make that response smooth — cheaply, correctly.
+
+## The transition property
+
+```css
+.button {
+  background-color: #4b2e83;
+  transition: background-color 0.2s ease;
+}
+.button:hover {
+  background-color: #6a4bb0;
+}
+```
+
+`transition` names: *which property* animates, *how long*, and the *timing function*
+(`ease` is the friendly default; `linear` is the robot). The transition lives on the
+**base state** — then any change (hover, focus, class change) animates.
+
+Multiple properties, comma-separated:
+
+```css
+transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+```
+
+## The hover + focus duo
+
+```css
+.button:hover,
+.button:focus-visible {
+  background-color: #6a4bb0;
+}
+```
+
+Two rules from the accessibility playbook:
+
+1. **Focus must be as visible as hover.** Keyboard users get no hover — if hover
+   changes appearance, focus must too. (`:focus-visible` shows the ring for keyboard
+   users without shouting at mouse users.)
+2. **Never remove the focus outline without a replacement** (`outline: none` alone
+   breaks keyboard navigation). Style the ring if you dislike it; do not delete it.
+
+## transform: the cheap animators
+
+```css
+.card:hover {
+  transform: translateY(-4px);
+}
+```
+
+`translateY/X`, `scale`, `rotate` — transforms are GPU-accelerated and do not
+distort layout. Animating `top`/`left`/`width` re-layouts the page every frame;
+animating `transform` composites. Prefer transform for movement.
+
+## prefers-reduced-motion
+
+For some users — vestibular disorders, motion sickness — animation is not decoration,
+it is nausea. CSS listens:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+```
+
+Motion still *works* (states still change) but without movement. Two lines, all your
+animations covered. This is the courtesy that marks professional CSS.
+
+## What you learned
+
+- `transition: property duration timing;` on the base state
+- Pair `:hover` with `:focus-visible`; never naked `outline: none`
+- Animate `transform`, not layout properties
+- `prefers-reduced-motion: reduce` is the accessibility default for motion
+
+**Next module project:** assemble it all into a responsive portfolio.
+

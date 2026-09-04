@@ -1,0 +1,64 @@
+Why does a `<p>` claim its own line while a `<strong>` shares one with its neighbors?
+The answer is the `display` property — the most consequential property in CSS.
+
+## The two defaults
+
+**display: block** — paragraphs, headings, divs, sections. A block box:
+- takes the **full width** available by default,
+- starts on a **new line**,
+- respects all box-model properties (width, height, margin, padding).
+
+**display: inline** — strong, em, a, span, img (mostly). An inline box:
+- flows **within the text line**, taking only the space it needs,
+- ignores `width`/`height`,
+- accepts horizontal padding/margin; vertical padding paints but does not push lines
+  apart (a classic confusion).
+
+```html
+<p>HTML is <strong>content</strong>, CSS is <em>style</em>.</p>
+```
+
+Both `strong` and `em` flow inside the paragraph's line — that is inline.
+
+## The useful hybrid: inline-block
+
+```css
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  width: auto;
+}
+```
+
+`inline-block` boxes flow like words *and* accept `width`, `height`, full padding —
+badges, tags, buttons-in-a-row. Flexbox (soon) supersedes most layout uses, but
+`inline-block` remains the honest answer for "make this little box sit in the flow".
+
+## none — and why it beats visibility hacks
+
+```css
+.mobile-only {
+  display: none;
+}
+```
+
+`display: none` removes the box entirely: no space, not rendered, **not read by screen
+readers, not focusable**. (Its cousin `visibility: hidden` keeps the space but blanks
+it — and also hides from assistive tech. Choose deliberately: are you *removing*
+content or *blinding* it? For responsive show/hide, `display: none` is correct.)
+
+## Changing nature
+
+CSS can reassign display: `a { display: block; }` makes a link fill its own line (a
+whole-card link in a nav); `li { display: inline; }` lines up list items — the old
+nav-bar trick. You will see both again.
+
+## What you learned
+
+- Block: full width, own line, full box-model control
+- Inline: flows in text, no width/height, partial box-model
+- inline-block: flows like text, sizes like a box
+- display: none removes fully — a semantic decision, not just visual
+
+**Next:** positioning — when layout systems are not the tool.
+

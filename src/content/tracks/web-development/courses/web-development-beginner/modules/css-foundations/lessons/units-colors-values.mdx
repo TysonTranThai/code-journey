@@ -1,0 +1,75 @@
+CSS values look simple — and then `62.5%` of a font renders differently than you
+expected. The unit system is worth ten careful minutes.
+
+## Lengths: absolute and relative
+
+- `px` — pixels. Predictable, but *rigid*: it does not respect a user's browser font
+  settings.
+- `rem` — "root em": a multiple of the **root element's font size** (browsers default
+  to 16px, but users can change it). `1.5rem` = 1.5 × that size.
+- `em` — a multiple of the *current element's* font size. Powerful, compounding —
+  subtle. Beginners: prefer `rem`.
+- `%` — relative to the parent (commonly widths).
+
+**Why rem matters:** a low-vision user who raises their default font size to 24px sees
+an all-`rem` site scale gracefully — text, padding, everything. An all-`px` site
+stays frozen. Modern guidance: font sizes in `rem`, fine-grained visual details may
+use `px`.
+
+```css
+body {
+  font-size: 1rem;      /* 16px at default settings */
+}
+h1 {
+  font-size: 2rem;      /* twice the root size — scales with user settings */
+}
+```
+
+## Colors
+
+Three notations cover everything:
+
+```css
+a { color: rebeccapurple; }              /* named */
+a { color: #4b2e83; }                    /* hex: RR GG BB */
+a { color: rgb(75 46 131); }             /* rgb() — same thing, decimal */
+a { color: rgb(75 46 131 / 0.6); }       /* with alpha transparency */
+```
+
+Hex is the everyday workhorse (`#fff` = white, `#000` = black). Modern syntax omits
+the commas. Alpha — the last value, 0–1 — controls transparency.
+
+One rule this course holds you to: **color contrast**. Text you can barely read is a
+design failure, not a style choice. Light gray on white fails; WCAG 2.1 AA (the
+standard Code Journey itself meets) wants roughly 4.5:1 for body text. Check yours.
+
+## Custom properties: CSS variables
+
+```css
+:root {
+  --brand: #4b2e83;
+  --space: 1rem;
+}
+
+a {
+  color: var(--brand);
+}
+.button {
+  background-color: var(--brand);
+  padding: var(--space);
+}
+```
+
+Declare on `:root` (the root element), use with `var()`. Change `--brand` once and
+every usage follows. This is how real stylesheets avoid fifteen slightly-different
+purples — and you will meet it again as the backbone of theming.
+
+## What you learned
+
+- `px` is rigid; `rem` scales with user font settings — prefer it for type
+- Named, hex, and `rgb()` colors, plus alpha transparency
+- Contrast is a requirement, not a preference
+- Custom properties (`--name`, `var(--name)`) centralize design decisions
+
+**Next:** typography — fonts, line length, and readable text.
+

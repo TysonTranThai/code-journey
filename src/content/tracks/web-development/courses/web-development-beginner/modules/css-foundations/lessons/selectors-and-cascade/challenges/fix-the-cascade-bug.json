@@ -1,0 +1,19 @@
+{
+  "id": "fix-the-cascade-bug",
+  "title": "Debug: The Losing Rule",
+  "prompt": "A developer complains: 'my `.price` color rule is ignored!'. The stylesheet has a more specific rule that also sets color on the same element. Find the fight and fix it the *right* way — make the class rule win by lowering the other rule's specificity or scoping it, NOT with !important.",
+  "difficulty": "beginner",
+  "boilerplate": "<div class=\"product\">\n  <p class=\"price\">$49</p>\n</div>\n\n<style>\n  #main div p {\n    color: gray;\n  }\n\n  .price {\n    color: crimson;\n  }\n</style>\n",
+  "tests": [
+    {
+      "name": "price displays crimson",
+      "code": "const price = code.match(/\\.price\\s*{([^}]*)}/i);\nif (!price) {\n  throw new Error(\"Keep the .price rule.\");\n}\nif (!/crimson/i.test(price[1])) {\n  throw new Error(\"Keep .price's color crimson.\");\n}\nconst idFight = code.match(/#[\\w-]+[^{]*{[^}]*color\\s*:/i);\nif (idFight) {\n  throw new Error(\"The ID rule still out-specifies .price — lower its specificity (e.g. drop the ID from the selector) or scope it so it no longer hits .price.\");\n}\nif (/!important/i.test(code)) {\n  throw new Error(\"No !important — fix the specificity, not the symptom.\");\n}",
+      "hint": "An ID in the selector (1,0,x) beats any class (0,1,0). Weaken the fighting selector until the meaningful .price rule wins."
+    },
+    {
+      "name": "no important flag",
+      "code": "if (/!important/i.test(code)) {\n  throw new Error(\"!important is banned here — resolve the conflict properly.\");\n}",
+      "hint": "Real fixes reorder or rescope rules; !important hides the design problem."
+    }
+  ]
+}

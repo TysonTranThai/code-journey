@@ -1,0 +1,24 @@
+{
+  "id": "flex-the-navbar",
+  "title": "Flex the Navbar",
+  "prompt": "Turn the boilerplate's nav into a flex navbar:\n\n- `.nav` becomes a flex container with `space-between` (brand left, links right) and vertically centered items.\n- `.nav ul` also becomes flex, with a `1rem` gap between links and no list bullets.\n- Style links without underline on `.nav a` (in a nav, color+weight carry the affordance) — and set `color` explicitly.",
+  "difficulty": "beginner",
+  "boilerplate": "<nav class=\"nav\">\n  <strong>MySite</strong>\n  <ul>\n    <li><a href=\"#\">Home</a></li>\n    <li><a href=\"#\">About</a></li>\n    <li><a href=\"#\">Contact</a></li>\n  </ul>\n</nav>\n\n<style>\n  /* flex it */\n</style>\n",
+  "tests": [
+    {
+      "name": "nav is flex with space-between",
+      "code": "const nav = code.match(/\\.nav\\s*{([^}]*)}/i);\nif (!nav) {\n  throw new Error(\"Add a .nav rule.\");\n}\nif (!/display\\s*:\\s*flex/i.test(nav[1])) {\n  throw new Error(\".nav needs display: flex;\");\n}\nif (!/justify-content\\s*:\\s*space-between/i.test(nav[1])) {\n  throw new Error(\"Use justify-content: space-between to push brand and links apart.\");\n}\nif (!/align-items\\s*:\\s*center/i.test(nav[1])) {\n  throw new Error(\"Center the items vertically with align-items: center;\");\n}",
+      "hint": "display: flex; justify-content: space-between; align-items: center; — the navbar trio."
+    },
+    {
+      "name": "ul is flex with gap and no bullets",
+      "code": "const ul = code.match(/\\.nav\\s+ul\\s*{([^}]*)}/i);\nif (!ul) {\n  throw new Error(\"Add a .nav ul rule.\");\n}\nif (!/display\\s*:\\s*flex/i.test(ul[1])) {\n  throw new Error(\"The ul must also be a flex container.\");\n}\nif (!/gap\\s*:\\s*1rem\\s*;/i.test(ul[1])) {\n  throw new Error(\"Space the links with gap: 1rem;\");\n}\nif (!/list-style\\s*:\\s*none/i.test(ul[1])) {\n  throw new Error(\"Remove the bullets with list-style: none;\");\n}",
+      "hint": "Flex containers nest: .nav ul { display: flex; gap: 1rem; list-style: none; }"
+    },
+    {
+      "name": "links styled, underline dropped deliberately",
+      "code": "const a = code.match(/\\.nav\\s+a\\s*{([^}]*)}/i);\nif (!a) {\n  throw new Error(\"Add a .nav a rule.\");\n}\nif (!/color\\s*:\\s*[^;]+;/i.test(a[1])) {\n  throw new Error(\"Set an explicit color on nav links.\");\n}\nif (!/text-decoration\\s*:\\s*none/i.test(a[1])) {\n  throw new Error(\"Set text-decoration: none on .nav a — inside the nav, color carries the affordance.\");\n}",
+      "hint": ".nav a { color: …; text-decoration: none; } — scoped to the nav, not all links."
+    }
+  ]
+}

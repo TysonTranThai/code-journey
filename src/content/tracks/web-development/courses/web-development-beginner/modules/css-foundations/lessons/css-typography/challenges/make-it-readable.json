@@ -1,0 +1,29 @@
+{
+  "id": "make-it-readable",
+  "title": "Make It Readable",
+  "prompt": "Fix a deliberately uncomfortable page of text. Set:\n\n- A `font-family` stack on `body` that ends with a generic family (`sans-serif` or `serif`).\n- `line-height` on `body` as a bare number between 1.4 and 2.\n- `h1` with a `font-size` in `rem`.\n- Link color that is not the default (your choice) — keep the underline present (do not set text-decoration: none on links).",
+  "difficulty": "beginner",
+  "boilerplate": "<style>\n  body {\n    line-height: 1;\n  }\n\n  a {\n    text-decoration: none;\n  }\n</style>\n\n<h1>A very dense article</h1>\n<p>This paragraph is cramped, single-spaced, and hard to track line by line. Readers abandon dense pages quickly, and low-vision readers abandon them faster.</p>\n<p><a href=\"https://example.com\">A link that lost its affordance</a></p>\n",
+  "tests": [
+    {
+      "name": "body font stack ends generic",
+      "code": "const body = code.match(/body\\s*{([^}]*)}/i);\nif (!body || !/font-family\\s*:[^;]+(sans-serif|serif|monospace)\\s*;/i.test(body[1])) {\n  throw new Error(\"Set font-family on body, ending with a generic family like sans-serif;\");\n}",
+      "hint": "font-family: system-ui, sans-serif; — the generic family is the safety net."
+    },
+    {
+      "name": "healthy line-height",
+      "code": "const body = code.match(/body\\s*{([^}]*)}/i);\nconst m = body && body[1].match(/line-height\\s*:\\s*([\\d.]+)/i);\nif (!m) {\n  throw new Error(\"Set line-height on body.\");\n}\nconst n = Number(m[1]);\nif (!(n >= 1.4 && n <= 2)) {\n  throw new Error(\"line-height should be a number between 1.4 and 2 (got \" + m[1] + \").\");\n}",
+      "hint": "line-height: 1.6; — a unitless number multiplies the font size."
+    },
+    {
+      "name": "rem heading size",
+      "code": "const h1 = code.match(/h1\\s*{([^}]*)}/i);\nif (!h1 || !/font-size\\s*:\\s*[\\d.]+rem\\s*;/i.test(h1[1])) {\n  throw new Error(\"Give h1 a font-size in rem.\");\n}",
+      "hint": "font-size: 2rem; scales with the reader's settings."
+    },
+    {
+      "name": "links keep their affordance",
+      "code": "const link = code.match(/a\\s*{([^}]*)}/i);\nif (link && /text-decoration\\s*:\\s*none/i.test(link[1])) {\n  throw new Error(\"Links must keep their underline — restore it (or omit text-decoration entirely).\");\n}\nif (!link || !/color\\s*:\\s*[^;]+;/i.test(link[1])) {\n  throw new Error(\"Give links a color of your choice.\");\n}",
+      "hint": "Underlines are how everyone recognizes links at a glance — style color, keep the affordance."
+    }
+  ]
+}

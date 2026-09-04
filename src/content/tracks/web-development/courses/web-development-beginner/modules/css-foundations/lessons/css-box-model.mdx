@@ -1,0 +1,81 @@
+Layout bugs are usually box-model bugs. This lesson removes the surprise permanently.
+
+## Every element is four boxes nested together
+
+```
+┌─────────────────────────────────┐
+│  margin (transparent, outside)  │
+│  ┌───────────────────────────┐  │
+│  │  border                   │  │
+│  │  ┌─────────────────────┐  │  │
+│  │  │  padding            │  │  │
+│  │  │  ┌───────────────┐  │  │  │
+│  │  │  │  content      │  │  │  │
+│  │  │  └───────────────┘  │  │  │
+│  │  └─────────────────────┘  │  │
+│  └───────────────────────────┘  │
+└─────────────────────────────────┘
+```
+
+- **content** — the text/image itself; sized by `width`/`height`.
+- **padding** — space *inside* the border, between content and edge. Padding carries
+  the element's background.
+- **border** — the line. `border: 2px solid`.
+- **margin** — transparent space *outside* the border, pushing neighbors away.
+
+```css
+.card {
+  padding: 1rem;
+  border: 2px solid gray;
+  margin: 1rem;
+}
+```
+
+Padding and margin each take 1–4 values (top/right/bottom/left, clockwise): `padding:
+4px 8px` = 4 top & bottom, 8 left & right. There are also single sides: `margin-top`,
+`padding-left`, ….
+
+## The prediction every beginner gets wrong
+
+With default `box-sizing: content-box`, `width` sizes only the *content* box:
+
+```css
+.box {
+  width: 200px;
+  padding: 20px;   /* both sides */
+  border: 4px solid;
+}
+```
+
+Real rendered width = 200 + 20 + 20 + 4 + 4 = **248px**. Not 200. Set two of these
+side by side and they wrap when you were sure they would fit.
+
+## The universal fix
+
+```css
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+```
+
+With `border-box`, `width` includes padding and border — `width: 200px` means the
+whole box is 200px. This single rule (at the top of every stylesheet on earth) removes
+the entire class of surprise. You will put it in every project stylesheet from now on.
+
+## Margin collapse (know it exists)
+
+Vertical margins between siblings *merge* instead of adding: a `margin-bottom: 32px`
+above a `margin-top: 16px` yields 32px of gap, not 48. Not a bug — a feature you
+work with. Practical rule: space sections with one consistent direction of margin.
+
+## What you learned
+
+- content → padding → border → margin, and which carry background
+- `width` excludes padding/border under default sizing — the 200px ≠ 200px trap
+- `box-sizing: border-box` on everything is the professional default
+- Adjacent vertical margins collapse to the larger
+
+**Next:** `display` — how elements decide to stack or flow.
+

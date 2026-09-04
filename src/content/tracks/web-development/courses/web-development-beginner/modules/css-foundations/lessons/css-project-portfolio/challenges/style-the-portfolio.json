@@ -1,0 +1,39 @@
+{
+  "id": "style-the-portfolio",
+  "title": "Style Your Portfolio",
+  "prompt": "Deliver the module project: a themed, responsive, motion-polished portfolio stylesheet meeting the six brief requirements (foundation, theme variables, flex/grid layout, mobile-first media queries, polish, reduced motion).",
+  "difficulty": "beginner",
+  "boilerplate": "<!-- Page structure (style these or your own equivalents) -->\n<nav class=\"site-nav\">\n  <strong>My Portfolio</strong>\n  <ul><li><a href=\"#work\">Work</a></li><li><a href=\"#contact\">Contact</a></li></ul>\n</nav>\n<main>\n  <section class=\"card\"><h2>Work</h2><p>Things I have built.</p></section>\n  <section class=\"card\" id=\"contact\"><h2>Contact</h2><p>Say hello.</p></section>\n</main>\n\n<style>\n  /* your portfolio stylesheet */\n</style>\n",
+  "tests": [
+    {
+      "name": "foundation: border-box, font stack, line-height",
+      "code": "if (!/box-sizing\\s*:\\s*border-box/i.test(code)) {\n  throw new Error(\"Universal box-sizing: border-box is missing.\");\n}\nconst body = code.match(/body\\s*{([^}]*)}/i);\nif (!body || !/font-family\\s*:[^;]+(sans-serif|serif|monospace)/i.test(body[1])) {\n  throw new Error(\"Set font-family (ending in a generic family) on body.\");\n}\nconst lh = body && body[1].match(/line-height\\s*:\\s*([\\d.]+)/i);\nif (!lh || Number(lh[1]) < 1.5) {\n  throw new Error(\"body line-height must be ≥ 1.5 (unitless).\");\n}",
+      "hint": "The foundation trio from the box model and typography lessons."
+    },
+    {
+      "name": "theme: custom properties used in 3+ rules",
+      "code": "if (!/:root\\s*{[^}]*--brand\\s*:/i.test(code)) {\n  throw new Error(\"Declare --brand (and friends) on :root.\");\n}\nconst varUses = (code.match(/var\\(--[\\w-]+\\)/gi) || []).length;\nif (varUses < 3) {\n  throw new Error(\"Use var(--…) in at least three rules (found \" + varUses + \").\");\n}",
+      "hint": "Define on :root, consume with var() — consistency comes free."
+    },
+    {
+      "name": "layout: flex nav and grid/flex main",
+      "code": "if (!/\\.site-nav\\s*{[^}]*display\\s*:\\s*flex/i.test(code)) {\n  throw new Error(\"The nav (.site-nav) must be a flex container.\");\n}\nif (!/(main|\\.cards|\\.gallery|\\.layout)[^{]*{[^}]*display\\s*:\\s*(grid|flex)/i.test(code)) {\n  throw new Error(\"Lay out the page structure with display: grid or flex on main (or a wrapper).\");\n}",
+      "hint": "nav → flex; page sections → grid (or flex). The layout lessons, applied."
+    },
+    {
+      "name": "responsive: mobile-first media query",
+      "code": "if (!/@media\\s*\\(\\s*min-width\\s*:\\s*\\d+px\\s*\\)\\s*{/i.test(code)) {\n  throw new Error(\"Add a mobile-first @media (min-width: …) query.\");\n}\nif (/@media[^{]*max-width/i.test(code)) {\n  throw new Error(\"Use min-width (mobile-first) queries — not desktop-first max-width.\");\n}",
+      "hint": "min-width queries layer the phone layout upward."
+    },
+    {
+      "name": "motion: transition + reduced motion",
+      "code": "if (!/transition\\s*:[^;]+;/i.test(code)) {\n  throw new Error(\"Add a transition to an interactive element.\");\n}\nif (!/@media\\s*\\(\\s*prefers-reduced-motion\\s*:\\s*reduce\\s*\\)/i.test(code)) {\n  throw new Error(\"Add the prefers-reduced-motion block.\");\n}",
+      "hint": "transition + prefers-reduced-motion — polish with a conscience."
+    },
+    {
+      "name": "polish: rounded cards and link affordance",
+      "code": "if (!/border-radius\\s*:\\s*[\\d.]+px/i.test(code)) {\n  throw new Error(\"Round something — border-radius on .card or buttons.\");\n}\nif (/a\\s*{[^}]*text-decoration\\s*:\\s*none/i.test(code)) {\n  throw new Error(\"Links keep their underline (or gain another strong affordance) — no naked text-decoration: none on all links.\");\n}",
+      "hint": "Cards round; links stay recognizable."
+    }
+  ]
+}

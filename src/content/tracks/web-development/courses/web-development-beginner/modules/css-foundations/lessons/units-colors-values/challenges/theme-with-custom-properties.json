@@ -1,0 +1,24 @@
+{
+  "id": "theme-with-custom-properties",
+  "title": "Build a Mini Theme",
+  "prompt": "Create a small theme with custom properties:\n\n- On `:root`, declare `--brand` (any color) and `--space` (a rem value).\n- Style `.button` using `var(--brand)` as its background-color and `var(--space)` as its padding.\n- Style `p` with a `font-size` in `rem` (no px).",
+  "difficulty": "beginner",
+  "boilerplate": "<style>\n  /* your theme here */\n</style>\n\n<p>Modern type scales with the reader.</p>\n<button class=\"button\">Join now</button>\n",
+  "tests": [
+    {
+      "name": "custom properties declared on :root",
+      "code": "const root = code.match(/:root\\s*{([^}]*)}/i);\nif (!root) {\n  throw new Error(\"Declare your variables on :root { ... }.\");\n}\nif (!/--brand\\s*:/i.test(root[1])) {\n  throw new Error(\"Declare --brand on :root.\");\n}\nif (!/--space\\s*:/i.test(root[1])) {\n  throw new Error(\"Declare --space on :root.\");\n}",
+      "hint": ":root { --brand: #4b2e83; --space: 1rem; }"
+    },
+    {
+      "name": "button uses both variables",
+      "code": "const btn = code.match(/\\.button\\s*{([^}]*)}/i);\nif (!btn) {\n  throw new Error(\"Add a .button rule.\");\n}\nif (!/background(-color)?\\s*:\\s*var\\(--brand\\)/i.test(btn[1])) {\n  throw new Error(\"The .button background must come from var(--brand).\");\n}\nif (!/padding\\s*:\\s*var\\(--space\\)/i.test(btn[1])) {\n  throw new Error(\"The .button padding must come from var(--space).\");\n}",
+      "hint": "var(--name) reads a custom property — .button { background-color: var(--brand); padding: var(--space); }"
+    },
+    {
+      "name": "rem font size",
+      "code": "const p = code.match(/(?:^|[\\s,])(p)\\s*{([^}]*)}/im);\nif (!p || !/font-size\\s*:\\s*[\\d.]+rem\\s*;/i.test(p[2])) {\n  throw new Error(\"Give p a rem font-size, e.g. font-size: 1rem;\");\n}",
+      "hint": "font-size: 1rem; — rem scales with the reader's settings, px does not."
+    }
+  ]
+}

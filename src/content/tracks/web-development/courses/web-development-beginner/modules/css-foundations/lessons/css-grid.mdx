@@ -1,0 +1,84 @@
+Flexbox arranges a line; **Grid** arranges the whole board — rows *and* columns at
+once. Page scaffolds, galleries, dashboards: any place two dimensions matter.
+
+## The mental model
+
+```css
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+```
+
+- `grid-template-columns` defines the columns: here, three tracks, each `1fr`
+  ("one fraction of the free space" — equal thirds).
+- `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr`.
+- `gap` works exactly as in flex — between rows and columns.
+- Items flow into cells automatically, left-to-right, top-to-bottom.
+
+## Fractions and friends
+
+```css
+grid-template-columns: 200px 1fr;   /* fixed sidebar, flexible main */
+grid-template-columns: 1fr 2fr;     /* one part, two parts */
+grid-template-columns: auto 1fr;    /* content-sized, then the rest */
+```
+
+`fr` distributes *leftover* space after fixed sizes — the "sidebar + main" layout is
+one line, no floats, no hacks.
+
+## Explicit placement
+
+```css
+.featured {
+  grid-column: 1 / -1;  /* span from first to last line: full width */
+}
+```
+
+Grid lines, not cells: column line 1 to line -1 (the end). `span 2` also works:
+`grid-column: span 2`. This is how one tile swallows a row in a gallery.
+
+## The page scaffold
+
+```css
+.page {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+header  { grid-column: 1 / -1; }
+aside   { grid-column: 1; }
+main    { grid-column: 2; }
+footer  { grid-column: 1 / -1; }
+```
+
+```html
+<div class="page">
+  <header>…</header>
+  <aside>…</aside>
+  <main>…</main>
+  <footer>…</footer>
+</div>
+```
+
+Named areas (`grid-template-areas`) are the next step — when you need it, it reads
+like ASCII art of the page. For now, line-based placement covers real needs.
+
+## Flex or Grid?
+
+Ask: **one dimension or two?** A row of buttons, a nav, a toolbar → flex (content
+drives, items flow). A page scaffold, a gallery, a form grid → grid (the *container*
+defines the structure, items slot in). They compose: a grid cell can be a flex
+container. That combination is how modern pages are built.
+
+## What you learned
+
+- `display: grid` + `grid-template-columns`; `fr` fractions; `repeat()`
+- `gap` for the whole board; items auto-flow into cells
+- `grid-column: 1 / -1` spans the full width
+- Flex = one dimension (content-driven); Grid = two dimensions (structure-driven)
+
+**Next:** responsive design — the same layouts, adapting to every screen.
+

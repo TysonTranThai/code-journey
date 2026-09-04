@@ -1,0 +1,110 @@
+Flexbox answers the question block layout never could: *how do I arrange these boxes
+in a line and control the space between them?* Nav bars, toolbars, card rows, centering
+— flex is the tool.
+
+## Container and items
+
+```css
+.nav {
+  display: flex;
+}
+```
+
+The element with `display: flex` is a **flex container**; its direct children become
+**flex items** laid out along a **main axis** (a row by default).
+
+## The core properties
+
+On the container:
+
+```css
+.container {
+  display: flex;
+  flex-direction: row;        /* row | column */
+  justify-content: space-between; /* along the MAIN axis */
+  align-items: center;        /* along the CROSS axis */
+  gap: 1rem;                  /* space BETWEEN items — no margin hacks */
+  flex-wrap: wrap;            /* allow a second line when space runs out */
+}
+```
+
+`justify-content` is the one to internalize: `flex-start` (default), `center`,
+`space-between` (first/last flush, even gaps), `space-around`, `space-evenly`.
+
+`gap` is the modern answer to spacing. Before `gap`, people used child margins —
+then spent careers fixing the edges. `gap` only spaces *between* items. Use it.
+
+On the items:
+
+```css
+.item {
+  flex: 1;          /* grow to share free space equally */
+}
+.sidebar {
+  flex: 0 0 200px;  /* don't grow, don't shrink, fixed 200px */
+}
+```
+
+`flex: 1` is the workhorse: "share the leftover space equally". A sidebar with
+`flex: 0 0 200px` stays exactly 200px while the main column flexes.
+
+## The two alignments, memorized
+
+Main axis = the direction items flow in. Cross axis = the other one.
+
+- `justify-content` → main axis
+- `align-items` → cross axis
+
+Flip `flex-direction` to `column` and the two swap *meanings* — this is why
+"why is align-items left-right now?!" happens. Always ask: which way do the items flow?
+
+## Vertical centering, finally trivial
+
+```css
+.hero {
+  display: flex;
+  align-items: center;     /* cross axis */
+  justify-content: center; /* main axis */
+  min-height: 200px;
+}
+```
+
+The pattern that used to require hacks is now three honest lines.
+
+## A nav bar, assembled
+
+```css
+.nav {
+  display: flex;
+  justify-content: space-between; /* brand left, links right */
+  align-items: center;
+  gap: 1rem;
+}
+.nav ul {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+}
+```
+
+```html
+<nav class="nav">
+  <strong>MySite</strong>
+  <ul>
+    <li><a href="#">Home</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+</nav>
+```
+
+You now know the skeleton of every navigation bar on the web.
+
+## What you learned
+
+- Container: `display: flex`; children become flex items
+- `justify-content` (main) vs `align-items` (cross) — and direction flips meanings
+- `gap` for spacing; `flex: 1` to share space; `flex-wrap: wrap` to overflow gracefully
+- The space-between navbar and the double-centering hero patterns
+
+**Next:** Grid — two-dimensional layout.
+
