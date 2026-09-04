@@ -17,7 +17,7 @@
     },
     {
       "name": "nav links via descendant selector",
-      "code": "const rule = code.match(/nav\\s+a\\s*{([^}]*)}/i);\nif (!rule) {\n  throw new Error(\"Add a descendant selector: nav a { ... }.\");\n}\nif (!/color\\s*:\\s*[^;]+;/i.test(rule[1])) {\n  throw new Error(\"The nav a rule must set color.\");\n}\nif (/(^|[\\s,])a\\s*{[^}]*color\\s*:/im.test(code)) {\n  throw new Error(\"You styled ALL links — scope it to nav a so the outside link keeps its color.\");\n}",
+      "code": "const rule = code.match(/nav\\s+a\\s*{([^}]*)}/i);\nif (!rule) {\n  throw new Error(\"Add a descendant selector: nav a { ... }.\");\n}\nif (!/color\\s*:\\s*[^;]+;/i.test(rule[1])) {\n  throw new Error(\"The nav a rule must set color.\");\n}\nif (/(^|\\n)\\s*a\\s*{[^}]*color\\s*:/im.test(code)) {\n  throw new Error(\"You styled ALL links — scope it to nav a so the outside link keeps its color.\");\n}",
       "hint": "nav a { … } reads 'any <a> inside <nav>' — the outside link is untouched."
     },
     {

@@ -434,7 +434,7 @@ writeChallenge("js-dom-events", {
 const button = makeEl(), display = makeEl();
 new Function("button", "display", code)(button, display);
 if (typeof button.listeners.click !== "function") {
-  throw new Error("Register a click handler: button.addEventListener(\"click\", ...)");
+  throw new Error('Register a click handler: button.addEventListener("click", ...)');
 }`,
       hint: "button.addEventListener(\"click\", () => { count++; display.textContent = count; });",
     },

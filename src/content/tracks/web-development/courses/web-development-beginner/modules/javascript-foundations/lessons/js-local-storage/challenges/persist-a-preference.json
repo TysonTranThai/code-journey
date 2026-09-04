@@ -7,7 +7,7 @@
   "tests": [
     {
       "name": "empty storage returns the default",
-      "code": "function makeStorage() { const m = new Map(); return { setItem: (k, v) => m.set(String(k), String(v)), getItem: (k) => (m.has(String(k)) ? m.get(String(k)) : null), removeItem: (k) => m.delete(String(k)) }; }\nconst storage = makeStorage();\nconst fn = new Function(\"storage\", code + \"\\nreturn { saveSettings, loadSettings };\");\nconst { loadSettings } = fn(storage);\nconst out = loadSettings();\nif (!out || out.theme !== \"light\") {\n  throw new Error('loadSettings() with empty storage should return { theme: \"light\" }.');\n}",
+      "code": "function makeStorage() { const m = new Map(); return { setItem: (k, v) => m.set(String(k), String(v)), getItem: (k) => (m.has(String(k)) ? m.get(String(k)) : null), removeItem: (k) => m.delete(String(k)) }; }\nconst storage = makeStorage();\nconst fn = new Function(\"storage\", code + \"\\nreturn { saveSettings, loadSettings };\");\nconst { loadSettings } = fn(storage);\nstorage.removeItem(\"settings\"); // the learner's own step-3 save may have run — restore the empty precondition\nconst out = loadSettings();\nif (!out || out.theme !== \"light\") {\n  throw new Error('loadSettings() with empty storage should return { theme: \"light\" }.');\n}",
       "hint": "const raw = storage.getItem(\"settings\"); if (!raw) return { theme: \"light\" }; return JSON.parse(raw);"
     },
     {

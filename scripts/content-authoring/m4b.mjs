@@ -188,7 +188,7 @@ if (!logs.some((l) => l === "7")) {
   throw new Error("Log maxOfTwo(7, 3) — the console should show 7.");
 }
 if (!logs.some((l) => l.includes("Ada"))) {
-  throw new Error("Log greet(\"Ada\") so the name appears in the console.");
+  throw new Error('Log greet("Ada") so the name appears in the console.');
 }`,
       hint: "console.log(greet(\"Ada\")); console.log(maxOfTwo(7, 3));",
     },

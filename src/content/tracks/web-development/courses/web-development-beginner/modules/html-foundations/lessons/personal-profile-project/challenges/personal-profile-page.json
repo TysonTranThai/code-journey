@@ -27,7 +27,7 @@
     },
     {
       "name": "image with meaningful alt",
-      "code": "const main = code.match(/<main[\\s>][\\s\\S]*?<\\/main>/i) ?? code;\nconst imgs = main.match(/<img[^>]*>/gi) || [];\nif (imgs.length === 0) {\n  throw new Error(\"The gallery needs at least one <img>.\");\n}\nfor (const img of imgs) {\n  const alt = (img.match(/alt\\s*=\\s*[\"']([^\"']*)[\"']/i) || [])[1];\n  if (alt === undefined || alt.trim().length < 4) {\n    throw new Error(\"Every image needs meaningful alt text (4+ characters describing the picture).\");\n  }\n}",
+      "code": "const mainMatch = code.match(/<main[\\s>][\\s\\S]*?<\\/main>/i);\nconst main = mainMatch ? mainMatch[0] : code;\nconst imgs = main.match(/<img[^>]*>/gi) || [];\nif (imgs.length === 0) {\n  throw new Error(\"The gallery needs at least one <img>.\");\n}\nfor (const img of imgs) {\n  const alt = (img.match(/alt\\s*=\\s*[\"']([^\"']*)[\"']/i) || [])[1];\n  if (alt === undefined || alt.trim().length < 4) {\n    throw new Error(\"Every image needs meaningful alt text (4+ characters describing the picture).\");\n  }\n}",
       "hint": "alt describes the picture's content — what would a visitor miss if it did not load?"
     },
     {
