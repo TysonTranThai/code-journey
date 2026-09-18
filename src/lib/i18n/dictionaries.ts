@@ -256,13 +256,14 @@ const en = {
     idle: "Press {submit} to check your solution against the tests. The output pane updates live while you code.",
     running: "Checking your code in the sandbox…",
     timeoutHint: "Check for infinite loops or operations that never complete, then submit again.",
-    errorHint: "Fix the syntax or runtime error shown in the console above, then submit again.",
+    errorHint: "Fix the syntax or runtime error shown in the output pane above, then submit again.",
     consoleOutput: "Console output",
     sandboxOutput: "Sandbox output",
     xpEarned: "+XP EARNED",
     backendIdleCaption: "Your {lang} code will be compiled and graded in an isolated container sandbox.",
     expectedTests: "Target tests to pass",
     backendSandboxTitle: "Sandbox Grader",
+    idleBackend: "Press {submit} to compile your code and run the test suite in the sandbox.",
   },
   preview: {
     heading: "Live preview",
@@ -273,6 +274,9 @@ const en = {
   },
   console: {
     heading: "Live output",
+    headingBackend: "Execution output",
+    compilingBadge: "Compiling...",
+    runningBadge: "Running...",
     aria: "Live output of your code",
     stopped: "stopped",
     emptyStart: "Run your code (edit it or press Submit) to see console.log output here.",
@@ -321,8 +325,8 @@ const en = {
       "Security Policy Notice: In-browser code evaluation was restricted by Content Security Policy.",
     explainCspErrorHint:
       "Click the 'Submit' button above to compile and run your code safely inside the isolated container sandbox.",
-    emptyBackend: "Click 'Submit' to compile and run your code in the sandbox.",
-    captionBackend: "Compiled and executed in an isolated container sandbox.",
+    emptyBackend: "Click 'Submit' (or ⌘/Ctrl+Enter) to compile and run your code in the sandbox.",
+    captionBackend: "Compiled and executed in an isolated container sandbox upon submission.",
     runningBackend: "Compiling and running code in sandbox...",
     explainMissingSemicolon:
       "Compilation Error: Missing semicolon ';' at the end of statement.",
@@ -786,13 +790,14 @@ const vi: Dictionary = {
     idle: "Nhấn {submit} để kiểm tra lời giải với bộ kiểm tra. Kết quả cập nhật trực tiếp khi bạn viết mã.",
     running: "Đang chạy mã của bạn trong sandbox…",
     timeoutHint: "Kiểm tra vòng lặp vô hạn hoặc thao tác không bao giờ kết thúc, rồi nộp lại.",
-    errorHint: "Sửa lỗi cú pháp hoặc lỗi thực thi hiển thị ở kết quả trực tiếp phía trên, sau đó nộp lại bài.",
+    errorHint: "Sửa lỗi cú pháp hoặc lỗi thực thi hiển thị ở bảng kết quả phía trên, sau đó nộp lại bài.",
     consoleOutput: "Kết quả console",
     sandboxOutput: "Kết quả sandbox",
     xpEarned: "+ĐÃ NHẬN XP",
     backendIdleCaption: "Mã nguồn {lang} của bạn sẽ được biên dịch và chấm điểm trong container sandbox cô lập.",
     expectedTests: "Các ca kiểm thử cần vượt qua",
     backendSandboxTitle: "Bộ Chấm Sandbox",
+    idleBackend: "Nhấn {submit} để biên dịch mã nguồn và chạy các bài kiểm tra trong sandbox.",
   },
   preview: {
     heading: "Xem trước trực tiếp",
@@ -803,6 +808,9 @@ const vi: Dictionary = {
   },
   console: {
     heading: "Kết quả trực tiếp",
+    headingBackend: "Kết quả thực thi",
+    compilingBadge: "Đang biên dịch...",
+    runningBadge: "Đang chạy...",
     aria: "Kết quả trực tiếp của mã của bạn",
     stopped: "đã dừng",
     emptyStart: "Chạy mã của bạn (sửa mã hoặc nhấn Nộp bài) để thấy console.log tại đây.",
@@ -851,8 +859,8 @@ const vi: Dictionary = {
       "Thông báo chính sách bảo mật: Việc chạy mã trực tiếp trong trình duyệt bị hạn chế bởi CSP.",
     explainCspErrorHint:
       "Nhấn nút 'Nộp bài' ở trên để biên dịch và chạy mã an toàn trong container sandbox cô lập.",
-    emptyBackend: "Nhấn 'Nộp bài' để biên dịch và chạy mã nguồn của bạn trong sandbox.",
-    captionBackend: "Được biên dịch và thực thi trong container sandbox cô lập.",
+    emptyBackend: "Nhấn 'Nộp bài' (hoặc ⌘/Ctrl+Enter) để biên dịch và chạy mã nguồn của bạn trong sandbox.",
+    captionBackend: "Được biên dịch và thực thi trong container sandbox cô lập khi nộp bài.",
     runningBackend: "Đang biên dịch và chạy mã nguồn trong sandbox...",
     explainMissingSemicolon:
       "Lỗi biên dịch: Thiếu dấu chấm phẩy ';' ở cuối câu lệnh.",

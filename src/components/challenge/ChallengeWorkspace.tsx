@@ -288,6 +288,18 @@ export function ChallengeWorkspace({
     };
   }, [code, canAutoCheck, run]);
 
+  // Keyboard shortcut: Cmd+Enter / Ctrl+Enter triggers run
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        void run();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [run]);
+
   // The latest failing test (if the verdict is done + failed) feeds "explain my error".
   const failedTest =
     runState.phase === "done" && runState.verdict === "failed"
@@ -352,6 +364,7 @@ export function ChallengeWorkspace({
         <CodeEditor
           value={code}
           onChange={setCode}
+          onRun={() => void run()}
           language={language}
           ariaLabel={t(d.workspace.editorAria, { title })}
         />
@@ -399,10 +412,13 @@ export function ChallengeWorkspace({
       type="button"
       onClick={() => void run()}
       disabled={runState.phase === "running"}
-      className="btn-conductor-primary px-7 py-3 text-sm font-bold min-h-11 disabled:cursor-not-allowed disabled:opacity-60 shadow-[0_0_20px_rgba(34,197,94,0.4)]"
+      className="btn-conductor-primary px-7 py-3 text-sm font-bold min-h-11 disabled:cursor-not-allowed disabled:opacity-60 shadow-[0_0_20px_rgba(34,197,94,0.4)] flex items-center justify-center gap-2"
     >
-      <span className="mr-2 font-mono" aria-hidden="true">{runState.phase === "running" ? "⏳" : "▶"}</span>
+      <span className="font-mono" aria-hidden="true">{runState.phase === "running" ? "⏳" : "▶"}</span>
       <span>{runState.phase === "running" ? d.workspace.checking : d.workspace.submit}</span>
+      <kbd className="hidden sm:inline-block ml-1 rounded bg-black/40 px-1.5 py-0.5 font-mono text-[10px] text-emerald-300/80 border border-emerald-500/20">
+        ⌘↵
+      </kbd>
     </button>
   );
 

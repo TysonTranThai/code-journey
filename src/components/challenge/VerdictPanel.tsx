@@ -62,7 +62,7 @@ export function VerdictPanel({
   testNames?: string[];
   language?: string;
 }) {
-  const { d, t } = useI18n();
+  const { d } = useI18n();
   const isBackend =
     Boolean(language) &&
     language !== "javascript" &&
@@ -70,7 +70,7 @@ export function VerdictPanel({
     language !== "html";
 
   if (state.phase === "idle") {
-    const [before, after] = d.verdict.idle.split("{submit}");
+    const [before, after] = (isBackend ? d.verdict.idleBackend : d.verdict.idle).split("{submit}");
 
     return (
       <section

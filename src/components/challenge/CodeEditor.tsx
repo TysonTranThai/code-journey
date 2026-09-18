@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Editor, { loader, type OnMount } from "@monaco-editor/react";
 
 /**
@@ -22,16 +23,26 @@ loader.config({ paths: { vs: "/monaco-vs" } });
 export function CodeEditor({
   value,
   onChange,
+  onRun,
   language = "html",
   ariaLabel,
 }: {
   value: string;
   onChange: (next: string) => void;
+  onRun?: () => void;
   language?: string;
   ariaLabel: string;
 }) {
-  const onMount: OnMount = (editor) => {
+  const onRunRef = useRef(onRun);
+  useEffect(() => {
+    onRunRef.current = onRun;
+  }, [onRun]);
+
+  const onMount: OnMount = (editor, monaco) => {
     editor.focus();
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+      onRunRef.current?.();
+    });
     // 07-06 belt-and-suspenders: with automaticLayout enabled the ResizeObserver
     // normally handles sizing, but an explicit layout pass on mount guarantees
     // Monaco resolves real dimensions even if the container settled late

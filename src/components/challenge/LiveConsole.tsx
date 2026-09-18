@@ -249,16 +249,21 @@ export function LiveConsole({
           <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80 inline-block" aria-hidden="true" />
           <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80 inline-block" aria-hidden="true" />
           <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-300 ml-1">
-            {d.console.heading}
+            {isJs ? d.console.heading : d.console.headingBackend}
           </h3>
         </div>
         <div className="flex items-center gap-2">
           {effectiveStatus === "stopped" && (
             <span className="badge-pixel badge-pixel-streak text-[10px]">{d.console.stopped}</span>
           )}
+          {isJs && (
+            <span className="badge-pixel badge-pixel-level text-[10px] uppercase font-mono text-emerald-400">
+              ● LIVE
+            </span>
+          )}
           {!isJs && (
             <span className="badge-pixel badge-pixel-level text-[10px] uppercase font-mono">
-              {(language ?? "").toUpperCase()} OUTPUT
+              {(language ?? "SANDBOX").toUpperCase()} {effectiveStatus === "running" ? d.console.runningBadge : "OUTPUT"}
             </span>
           )}
         </div>
