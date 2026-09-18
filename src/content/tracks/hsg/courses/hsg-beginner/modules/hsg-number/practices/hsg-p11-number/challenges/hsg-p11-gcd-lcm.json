@@ -1,0 +1,36 @@
+{
+  "id": "hsg-p11-gcd-lcm",
+  "title": "GCD and LCM",
+  "prompt": "**Description:** For each pair (a, b), print gcd(a, b) and lcm(a, b) on one line,\nspace-separated.\n\n**Input:** Line 1: t (1 <= t <= 10^5). Each of the next t lines: a b\n(1 <= a, b <= 10^12; guaranteed lcm(a, b) <= 10^18).\n**Output:** t lines: `g l`.\n\n**Example:** `12 18` -> `6 36`.\n",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"1\\n12 18\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"6 36\\n\"));",
+      "hint": "gcd 6; lcm = 12/6*18 = 36."
+    },
+    {
+      "name": "equal",
+      "code": "std::istringstream in(\"1\\n7 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7 7\\n\"));",
+      "hint": "gcd = lcm = the number itself."
+    },
+    {
+      "name": "coprime",
+      "code": "std::istringstream in(\"1\\n9 10\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1 90\\n\"));",
+      "hint": "gcd 1, lcm is the product — fits easily in long long."
+    },
+    {
+      "name": "one divides other",
+      "code": "std::istringstream in(\"1\\n1000000000000 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4 1000000000000\\n\"));",
+      "hint": "12*10^11 scale: int is impossible here."
+    },
+    {
+      "name": "equal huge",
+      "code": "std::istringstream in(\"1\\n1000000000000 1000000000000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1000000000000 1000000000000\\n\"));",
+      "hint": "a*b is 10^24 — a multiply-first lcm overflows here; divide-first stays exact."
+    }
+  ],
+  "level": "imitation"
+}

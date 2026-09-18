@@ -1,0 +1,39 @@
+## A string is an array of chars with extras
+
+```cpp
+string s = "loi choi";     // s[0] == 'l', s.size() == 8
+for (char c : s) ...       // read-only traversal
+for (char& c : s) c = toupper(c);   // in-place edit
+```
+
+`char` is a small integer: 'a' is 97, '0' is 48. So `c - '0'` converts a
+digit character to its value, and `c - 'a'` maps lowercase letters to
+0..25 — the bridge into marking arrays for letters.
+
+### Building strings
+
+```cpp
+string t;
+t += c;          // amortized O(1) per char
+t += "abc";      // append a literal
+t.push_back('x'); // same as += for a single char
+```
+
+Repeated `t = t + c` in a loop is the classic slow version — each
+iteration copies the whole string, making the loop O(n^2). With n at
+10^5 that is a TLE. Use `+=`.
+
+### Reading input
+
+`cin >> s` reads one whitespace-delimited token. `getline(cin, s)` reads
+a whole line including spaces (and strips the newline). Mixing them is
+the classic beginner trap: after `cin >> n`, the newline stays in the
+buffer, so the next `getline` returns an empty string. Either use
+`cin.ignore()` after `>>` or read everything with getline.
+
+### Character categories
+
+`isdigit`, `isalpha`, `islower`, `isupper`, `tolower`, `toupper` from
+`<cctype>`: they take an int (pass the char, cast if your warnings are
+pedantic) and return the classified/converted result. In contests these
+replace a hand-rolled if-chain, nothing more.

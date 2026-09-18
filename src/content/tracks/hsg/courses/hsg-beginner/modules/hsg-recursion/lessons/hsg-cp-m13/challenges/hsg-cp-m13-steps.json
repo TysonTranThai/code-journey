@@ -1,0 +1,31 @@
+{
+  "id": "hsg-cp-m13-steps",
+  "title": "Digit Chains",
+  "prompt": "**Description:** Define f(n): the number of steps to reduce n to a single digit,\nwhere one step replaces n by the sum of its digits (a single-digit n needs\n0 steps). Answer q queries: f(n) for each.\n\n**Input:** Line 1: q (1 <= q <= 10^5). Next q lines: n (0 <= n <= 10^18).\n**Output:** q lines — f(n) for each query.\n\n**Example:** `9875` -> `3` (9875 -> 29 -> 11 -> 2).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"3\\n9875\\n5\\n0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n0\\n0\\n\"));",
+      "hint": "9875 needs 3 sums; 5 and 0 are single digits already."
+    },
+    {
+      "name": "two rounds",
+      "code": "std::istringstream in(\"1\\n99\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "99 -> 18 -> 9."
+    },
+    {
+      "name": "big",
+      "code": "std::istringstream in(\"1\\n999999999999999999\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "18 nines -> 162 -> 9."
+    },
+    {
+      "name": "many queries",
+      "code": "std::istringstream in(\"2\\n10\\n19\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n2\\n\"));",
+      "hint": "10 -> 1; 19 -> 10 -> 1."
+    }
+  ],
+  "level": "combination"
+}

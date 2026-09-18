@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p12-word-count",
+  "title": "Word Census",
+  "prompt": "**Description:** Read n words. Print each distinct word once, in **alphabetical**\norder, followed by its count: `word count` per line.\n\n**Input:** Line 1: n (1 <= n <= 10^5). Next n lines: one word each (lowercase\nletters, <= 20 chars).\n**Output:** One line per distinct word: `word count`.\n\n**Example:** `4` / `banana` / `apple` / `banana` / `cherry` -> `apple 1` / `banana 2` / `cherry 1`.\n",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"4\\nbanana\\napple\\nbanana\\ncherry\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"apple 1\\nbanana 2\\ncherry 1\\n\"));",
+      "hint": "map iterates in key order — alphabetical here."
+    },
+    {
+      "name": "single word",
+      "code": "std::istringstream in(\"2\\nhi\\nhi\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"hi 2\\n\"));",
+      "hint": "One word twice."
+    },
+    {
+      "name": "prefix words",
+      "code": "std::istringstream in(\"3\\nab\\na\\nabc\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"a 1\\nab 1\\nabc 1\\n\"));",
+      "hint": "Shorter prefixes sort first."
+    },
+    {
+      "name": "all distinct",
+      "code": "std::istringstream in(\"3\\nx\\ny\\nz\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"x 1\\ny 1\\nz 1\\n\"));",
+      "hint": "Counts are all 1."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,37 @@
+## gcd bằng Euclid
+
+```cpp
+long long gcd(long long a, long long b) {
+    while (b) { long long t = a % b; a = b; b = t; }
+    return a;
+}
+```
+
+Mỗi bước thay (a, b) bằng (b, a mod b); gcd bất biến vì mọi ước chung
+của a và b đều chia hết a mod b = a - (a/b)*b. Dừng: b giảm ngặt và luôn
+>= 0. Độ phức tạp O(log min(a, b)) — trường hợp xấu là Fibonacci.
+gcd(a, 0) = a khép vòng lặp.
+
+### lcm — với thứ tự an toàn
+
+```cpp
+long long lcm(long long a, long long b) {
+    return a / gcd(a, b) * b;   // chia TRƯỚC
+}
+```
+
+Thứ tự rất quan trọng: `a * b / gcd` có thể tràn số dù lcm đúng vẫn vừa
+long long. Chia trước giữ mọi giá trị trung gian trong cỡ độ lớn của
+kết quả cuối.
+
+### Nhiều số
+
+gcd(a, b, c) = gcd(gcd(a, b), c) — gộp dần. LCM cũng vậy, canh tràn số
+từng bước.
+
+### gcd xuất hiện ở đâu trong thi đấu
+
+- "Rút gọn phân số" — chia cả tử mẫu cho gcd.
+- "Hai bước dài khác nhau có gặp nhau không?" — các vị trí tới được là
+  bội của gcd.
+- Đếm điểm nguyên trên đoạn thẳng: gcd của hiệu tọa độ.

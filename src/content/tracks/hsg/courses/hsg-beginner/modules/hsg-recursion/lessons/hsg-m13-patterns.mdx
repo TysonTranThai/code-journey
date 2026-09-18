@@ -1,0 +1,45 @@
+## C(n, k) by Pascal's identity
+
+```cpp
+long long C(int n, int k) {
+    if (k == 0 || k == n) return 1;          // base cases
+    return C(n - 1, k - 1) + C(n - 1, k);    // Pascal: with/without item n
+}
+```
+
+`C(n-1, k-1)`: choose the n-th item; `C(n-1, k)`: skip it. Termination
+is real: both n and k shrink. The plain version recomputes wildly
+(O(2^n)) — fine for `n <= 25`, fatal beyond; a memo table makes it
+O(n*k). Beginner rule: state the growth honestly, then memoize if the
+constraints demand it.
+
+## Digit recursion
+
+```cpp
+long long rev(long long n, long long acc = 0) {
+    if (n == 0) return acc;
+    return rev(n / 10, acc * 10 + n % 10);
+}
+```
+
+The accumulator carries the result built so far; the argument shrinks
+by a factor of 10 per call — depth is only the digit count. Same shape
+works for digit sums, counting zeros, "is the number a palindrome?".
+
+## gcd is recursion you already know
+
+```cpp
+long long gcd(long long a, long long b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
+```
+
+Euclid in recursive form: the base case is b == 0, the shrink is a % b.
+Many loops are recursive calls wearing different syntax.
+
+## Thinking in contracts
+
+Write a one-line comment: "fact(n) returns n! for n >= 0." Then trust
+the recursive call to satisfy the contract on the smaller input — that
+is the induction mindset, and it is the only way recursive code stays
+readable at depth.

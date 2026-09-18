@@ -1,0 +1,43 @@
+## C(n, k) theo hằng thức Pascal
+
+```cpp
+long long C(int n, int k) {
+    if (k == 0 || k == n) return 1;          // trường hợp cơ sở
+    return C(n - 1, k - 1) + C(n - 1, k);    // Pascal: chọn/không chọn phần tử n
+}
+```
+
+`C(n-1, k-1)`: chọn phần tử thứ n; `C(n-1, k)`: bỏ qua nó. Dừng là có
+thật: cả n và k đều thu nhỏ. Bản thuần tính lại đi tính lại (O(2^n)) —
+ổn với `n <= 25`, chết ngoài đó; bảng memo hóa đưa về O(n*k). Quy tắc
+người mới: nêu rõ tốc độ tăng trưởng, rồi memo nếu giới hạn đòi hỏi.
+
+## Đệ quy chữ số
+
+```cpp
+long long rev(long long n, long long acc = 0) {
+    if (n == 0) return acc;
+    return rev(n / 10, acc * 10 + n % 10);
+}
+```
+
+Biến tích lũy mang kết quả đã dựng; tham số thu nhỏ 10 lần mỗi lời gọi —
+độ sâu chỉ bằng số chữ số. Cùng hình dạng cho tổng chữ số, đếm số 0,
+"số có đối xứng không?".
+
+## gcd chính là đệ quy bạn đã biết
+
+```cpp
+long long gcd(long long a, long long b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
+```
+
+Euclid dạng đệ quy: cơ sở là b == 0, phần thu nhỏ là a % b. Nhiều vòng
+lặp là các lời gọi đệ quy đội lốt cú pháp khác.
+
+## Tư duy theo hợp đồng
+
+Viết chú thích một dòng: "fact(n) trả n! với n >= 0." Rồi tin lời gọi
+đệ quy sẽ thỏa hợp đồng trên input nhỏ hơn — đó là tư duy quy nạp, và
+là cách duy nhất giữ code đệ quy dễ đọc khi sâu.

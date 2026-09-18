@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p12-lowest",
+  "title": "Replacement Search",
+  "prompt": "**Description:** Maintain a multiset of n initial values. Process q operations:\n`+ x` inserts x; `- x` erases **one** occurrence of x (guaranteed present);\n`? x` prints the smallest stored value **>= x**, or `-1` if none exists.\n\n**Input:** Line 1: n q (1 <= n, q <= 2*10^5). Line 2: n initial values\n(|a_i| <= 10^9). Next q lines: an operation as described (|x| <= 10^9).\n**Output:** One line per `?` operation.\n\n**Example:** `3 3` / `2 5 8` / `? 6` / `+ 6` / `? 6` -> `8` / `6`.\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"3 3\\n2 5 8\\n? 6\\n+ 6\\n? 6\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"8\\n6\\n\"));",
+      "hint": "6 missing -> 8; after inserting 6, lower_bound finds it."
+    },
+    {
+      "name": "exact hit",
+      "code": "std::istringstream in(\"1 1\\n7\\n? 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n\"));",
+      "hint": "lower_bound returns the element itself."
+    },
+    {
+      "name": "below all",
+      "code": "std::istringstream in(\"2 1\\n10 20\\n? 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"10\\n\"));",
+      "hint": "Everything qualifies; smallest wins."
+    },
+    {
+      "name": "above all",
+      "code": "std::istringstream in(\"2 1\\n10 20\\n? 21\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-1\\n\"));",
+      "hint": "No value >= 21."
+    }
+  ],
+  "level": "independent"
+}

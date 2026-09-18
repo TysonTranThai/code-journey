@@ -1,0 +1,40 @@
+## Phần bổ đôi của mảng cộng dồn
+
+Cộng dồn: đọc mảng một lần, trả q truy vấn đoạn. Mảng hiệu: áp q cập
+nhật đoạn, rồi đọc mảng một lần. Cùng một công cụ, chạy ngược chiều.
+
+### Mẹo cốt lõi
+
+Để cộng v vào mọi a[l..r], làm hai cập nhật điểm:
+
+```cpp
+d[l] += v;
+d[r + 1] -= v;   // "mốc dừng" đứng ngay sau đoạn
+```
+
+Sau mọi cập nhật, mảng thật là cộng dồn của d:
+
+```cpp
+for (int i = 1; i <= n; ++i) d[i] += d[i-1];
+// lúc này d[i] là giá trị cuối của vị trí i
+```
+
+Vì sao: tổng chạy tăng thêm v khi đi qua mốc `d[l]` và trở lại khi đi
+qua `d[r+1]`. Giữa hai mốc nó mang đúng +v.
+
+Ví dụ: cộng 5 vào a[2..4] của mảng 5 phần tử. d = [0,0,5,0,0,-5,0]
+(mốc dừng ở chỉ số 5). Cộng dồn: 0 5 5 5 5 0 — vị trí 2,3,4 được +5,
+vị trí 5 được +5-5 = 0.
+
+### Hai bug kinh điển
+
+- Viết `d[r] -= v` thay vì `d[r+1]`: mọi đoạn mất phần tử cuối. Test có
+  r = n thường làm nó crash (mảng phải size n+2, và không bao giờ đọc
+  chỉ số n+1 lúc cuối).
+- Quên hẳn mốc `d[r+1]`: mọi vị trí bên phải l bị ô nhiễm vĩnh viễn.
+
+### Mô hình chi phí
+
+Mỗi cập nhật O(1), dựng lại O(n), bộ nhớ O(n). Nếu cập nhật và truy vấn
+đan xen (cập nhật, hỏi, cập nhật, hỏi) thì mảng hiệu không giúp gì —
+phải dựng lại liên tục. Đó là tín hiệu cho cây đoạn (về sau).

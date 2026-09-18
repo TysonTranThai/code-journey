@@ -1,0 +1,42 @@
+## vector — truy cập ngẫu nhiên, push_back khấu hao
+
+```cpp
+vector<int> a(n);            // n số 0
+a.push_back(x);              // khấu hao O(1)
+a.erase(a.begin() + i);      // O(n) — dồn mọi phần tử sau i
+sort(a.begin(), a.end());    // O(n log n)
+```
+
+`erase` trong vòng lặp là bẫy O(n^2) kinh điển; nếu thứ tự không quan
+trọng, erase-swap (`a[i] = a.back(); a.pop_back();`) là O(1).
+
+## stack — vào sau ra trước
+
+`push/pop/top/empty`, hết O(1). Dạng bài: khớp ngoặc, thao tác hoàn tác,
+"phần tử nhỏ hơn gần nhất bên trái", DFS khử đệ quy.
+
+## queue — vào trước ra trước
+
+`push/pop/front/empty`. Dạng bài: BFS (module sau), xử lý khách theo
+thứ tự đến, loại trừ vòng tròn.
+
+## deque — hai đầu, O(1)
+
+```cpp
+deque<int> d;
+d.push_back(x); d.push_front(y);
+d.pop_back();    d.pop_front();
+d[i];            // vẫn truy cập ngẫu nhiên
+```
+
+Cửa sổ trượt lớn nhất (deque đơn điệu, module sau) là ứng dụng nổi
+tiếng; thêm các mô phỏng "làm gì đó ở cả hai đầu".
+
+### Cách chọn
+
+- Cần truy cập theo chỉ số? vector.
+- Chỉ cần phần tử mới nhất? stack.
+- Cần công bằng FIFO? queue.
+- Cần cả hai đầu? deque.
+- Chọn sai hiếm khi gây WA — nó gây TLE, hoặc mảng-tự-làm-40-dòng đầy
+  bug.

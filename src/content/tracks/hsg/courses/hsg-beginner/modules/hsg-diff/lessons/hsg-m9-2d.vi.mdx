@@ -1,0 +1,29 @@
+## Bốn góc cho mỗi hình chữ nhật
+
+Để cộng v vào mọi ô của hình chữ nhật (r1, c1) - (r2, c2):
+
+```cpp
+D[r1][c1]     += v;
+D[r1][c2+1]   -= v;
+D[r2+1][c1]   -= v;
+D[r2+1][c2+1] += v;   // góc bị cắt đôi được trả lại
+```
+
+Sau đó một cộng dồn 2D trên D dựng lại lưới đã tô. Góc
+`D[r2+1][c2+1] += v` chính là số hạng bao hàm - loại trừ: thiếu nó, mọi
+ô vừa bên phải c2 VỪA dưới r2 bị trừ v hai lần.
+
+Ví dụ: tô (1,1)-(2,2) trên lưới 3x3 với v = 1. Lưới cuối là
+1 1 0 / 1 1 0 / 0 0 0. Nếu quên góc `+= v`, khối 2x2 dưới-phải (hàng
+2-3, cột 2-3) thành 0 -1 / -1 0 — phép trừ đôi lộ diện.
+
+### Biên
+
+Size D là (n+2) x (m+2) để các chỉ số r2+1/c2+1 không bao giờ vượt mảng,
+và chỉ đọc n x m ô đầu sau khi dựng lại.
+
+### Cùng một sự đánh đổi như 1D
+
+Tất cả hình chữ nhật trước, một lần dựng O(nm), rồi trả lời tuỳ ý (ô
+lớn nhất, đếm ô >= k, phủ đúng k lần). Tô-hỏi-đan-xen cần cấu trúc thật
+— không phải công cụ này.

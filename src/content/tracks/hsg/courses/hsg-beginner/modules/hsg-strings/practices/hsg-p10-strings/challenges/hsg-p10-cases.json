@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p10-cases",
+  "title": "Case Statistics",
+  "prompt": "**Description:** Given a line of text, count uppercase letters, lowercase letters,\nand digits. Print them on one line in that order, space-separated.\n\n**Input:** One line (1 <= length <= 10^6, letters, digits, and spaces).\n**Output:** Three integers separated by single spaces.\n\n**Example:** `Hoc Sinh Gioi 2026` -> `3 10 4`.\n",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"Hoc Sinh Gioi 2026\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3 8 4\\n\"));",
+      "hint": "H S G upper; o,c,i,n,h,i,o,i lower (8); four digits."
+    },
+    {
+      "name": "empty of letters",
+      "code": "std::istringstream in(\"123 456\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0 0 6\\n\"));",
+      "hint": "Only digits and a space."
+    },
+    {
+      "name": "all upper",
+      "code": "std::istringstream in(\"ABC\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3 0 0\\n\"));",
+      "hint": "Three uppercase, nothing else."
+    },
+    {
+      "name": "spaces only",
+      "code": "std::istringstream in(\"   \\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0 0 0\\n\"));",
+      "hint": "Spaces are neither letters nor digits — reading the line matters here."
+    }
+  ],
+  "level": "guided"
+}

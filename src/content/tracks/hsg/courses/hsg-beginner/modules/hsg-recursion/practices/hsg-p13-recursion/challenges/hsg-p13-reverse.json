@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p13-reverse",
+  "title": "Recursive Reverse",
+  "prompt": "**Description:** Print the decimal digits of n reversed (leading zeros of the result\ndisappear: 1200 -> 21). Solve it **recursively**: no while/for over the digits.\n\n**Input:** One line: n (0 <= n <= 10^15).\n**Output:** One integer — n with its digits reversed.\n\n**Example:** `1200` -> `21`.\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"1200\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"21\\n\"));",
+      "hint": "Trailing zeros of the input become leading zeros — dropped."
+    },
+    {
+      "name": "single digit",
+      "code": "std::istringstream in(\"7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n\"));",
+      "hint": "Base case: nothing to reverse."
+    },
+    {
+      "name": "zero",
+      "code": "std::istringstream in(\"0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Zero is its own reversal."
+    },
+    {
+      "name": "big",
+      "code": "std::istringstream in(\"987654321012345\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"543210123456789\\n\"));",
+      "hint": "Fits in long long — but only just; use 64-bit."
+    }
+  ],
+  "level": "independent"
+}

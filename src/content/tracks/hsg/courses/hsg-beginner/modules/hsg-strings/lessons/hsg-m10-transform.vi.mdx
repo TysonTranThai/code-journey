@@ -1,0 +1,49 @@
+## Đối xứng: hai con trỏ trên xâu
+
+```cpp
+bool pal(const string& s) {
+    int i = 0, j = (int)s.size() - 1;
+    while (i < j)
+        if (s[i++] != s[j--]) return false;
+    return true;
+}
+```
+
+O(n), bộ nhớ phụ O(1). Các biến thể: bỏ qua hoa/thường (chuẩn hóa trước),
+bỏ qua ký tự không phải chữ (lọc trước), xâu con đối xứng **dài nhất**
+bằng cách nở quanh mỗi tâm — O(n^2), ổn với n tới vài nghìn.
+
+## Mã hóa chạy dài
+
+```cpp
+string rle(const string& s) {
+    string out;
+    for (int i = 0; i < (int)s.size(); ) {
+        int j = i;
+        while (j < (int)s.size() && s[j] == s[i]) ++j;
+        out += s[i];
+        out += to_string(j - i);
+        i = j;
+    }
+    return out;
+}
+```
+
+"aaabbc" thành "a3b2c1". Vòng ngoài nhảy cả đoạn qua `i = j` — một mẫu
+đáng nhớ cho mọi bài "gộp phần tử liên tiếp".
+
+## Chữ ký hoán vị
+
+Hai xâu là hoán vị của nhau khi và chỉ khi sắp xếp chúng bằng nhau:
+`sort(a); sort(b); a == b`. O(n log n) và gọn. Phương án khác — 26 ô
+tần suất — là O(n) và tổng quát lên "có bao nhiêu hoán vị của x trong s"
+(cửa sổ trượt trên 26 bộ đếm). Chọn theo dạng bài, không theo thói quen.
+
+## Đếm xâu con phân biệt — trần honestly
+
+Xâu dài n có n(n+1)/2 xâu con. Đưa tất cả vào `set<string>` tốn
+O(n^2) xâu, mỗi xâu dài trung bình O(n): O(n^3) thời gian và bộ nhớ
+trường hợp xấu. n = 100 thì ổn (~5000 xâu con, ngắn). n = 1000 đã nguy
+hiểm; n = 10^5 bất khả thi. Bài level beginner hỏi cái này sẽ cho n rất
+nhỏ — đọc giới hạn rồi mới chọn công cụ. (Suffix automaton tới rất,
+rất sau.)

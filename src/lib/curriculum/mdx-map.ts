@@ -1152,12 +1152,18 @@ import CsiAsyncBasics from "@/content/tracks/csharp/courses/csharp-intermediate/
 import CsiAsyncBasicsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-async-basics.vi.mdx";
 import CsiAsyncStreams from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-async-streams.mdx";
 import CsiAsyncStreamsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-async-streams.vi.mdx";
+import CsiAuthnAuthz from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-security/lessons/csi-authn-authz.mdx";
+import CsiAuthnAuthzVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-security/lessons/csi-authn-authz.vi.mdx";
 import CsiBoundaries from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-architecture/lessons/csi-boundaries.mdx";
 import CsiBoundariesVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-architecture/lessons/csi-boundaries.vi.mdx";
 import CsiBuildingAContainer from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-di/lessons/csi-building-a-container.mdx";
 import CsiBuildingAContainerVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-di/lessons/csi-building-a-container.vi.mdx";
 import CsiCancellationTimeouts from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-cancellation-timeouts.mdx";
 import CsiCancellationTimeoutsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-cancellation-timeouts.vi.mdx";
+import CsiCapstoneDomain from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-capstone/lessons/csi-capstone-domain.mdx";
+import CsiCapstoneDomainVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-capstone/lessons/csi-capstone-domain.vi.mdx";
+import CsiCapstoneService from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-capstone/lessons/csi-capstone-service.mdx";
+import CsiCapstoneServiceVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-capstone/lessons/csi-capstone-service.vi.mdx";
 import CsiCheckpointM1 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-checkpoint-m1.mdx";
 import CsiCheckpointM10 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-concurrency/lessons/csi-checkpoint-m10.mdx";
 import CsiCheckpointM10Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-concurrency/lessons/csi-checkpoint-m10.vi.mdx";
@@ -1183,6 +1189,10 @@ import CsiCheckpointM1Vi from "@/content/tracks/csharp/courses/csharp-intermedia
 import CsiCheckpointM2 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-checkpoint-m2.mdx";
 import CsiCheckpointM20 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-performance/lessons/csi-checkpoint-m20.mdx";
 import CsiCheckpointM20Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-performance/lessons/csi-checkpoint-m20.vi.mdx";
+import CsiCheckpointM21 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-security/lessons/csi-checkpoint-m21.mdx";
+import CsiCheckpointM21Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-security/lessons/csi-checkpoint-m21.vi.mdx";
+import CsiCheckpointM22 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-capstone/lessons/csi-checkpoint-m22.mdx";
+import CsiCheckpointM22Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-capstone/lessons/csi-checkpoint-m22.vi.mdx";
 import CsiCheckpointM2Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-checkpoint-m2.vi.mdx";
 import CsiCheckpointM3 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-checkpoint-m3.mdx";
 import CsiCheckpointM3Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-checkpoint-m3.vi.mdx";
@@ -1226,6 +1236,8 @@ import CsiExecutionModel from "@/content/tracks/csharp/courses/csharp-intermedia
 import CsiExecutionModelVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-linq/lessons/csi-execution-model.vi.mdx";
 import CsiHttpAnatomy from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-http/lessons/csi-http-anatomy.mdx";
 import CsiHttpAnatomyVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-http/lessons/csi-http-anatomy.vi.mdx";
+import CsiInjectionDefense from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-security/lessons/csi-injection-defense.mdx";
+import CsiInjectionDefenseVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-security/lessons/csi-injection-defense.vi.mdx";
 import CsiLayers from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-architecture/lessons/csi-layers.mdx";
 import CsiLayersVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-architecture/lessons/csi-layers.vi.mdx";
 import CsiLazyPipelines from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-iterators/lessons/csi-lazy-pipelines.mdx";
@@ -1527,6 +1539,16 @@ import HotPathOptimizationVi from "@/content/tracks/cpp/courses/cpp-advanced/mod
 import HowTheWebWorks from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/how-the-web-works.mdx";
 import HowTheWebWorksVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/how-the-web-works.vi.mdx";
 import HsgCpM1 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-cp-m1.mdx";
+import HsgCpM10 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-strings/lessons/hsg-cp-m10.mdx";
+import HsgCpM10Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-strings/lessons/hsg-cp-m10.vi.mdx";
+import HsgCpM11 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-number/lessons/hsg-cp-m11.mdx";
+import HsgCpM11Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-number/lessons/hsg-cp-m11.vi.mdx";
+import HsgCpM12 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-stl/lessons/hsg-cp-m12.mdx";
+import HsgCpM12Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-stl/lessons/hsg-cp-m12.vi.mdx";
+import HsgCpM13 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-recursion/lessons/hsg-cp-m13.mdx";
+import HsgCpM13Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-recursion/lessons/hsg-cp-m13.vi.mdx";
+import HsgCpM14 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-backtrack/lessons/hsg-cp-m14.mdx";
+import HsgCpM14Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-backtrack/lessons/hsg-cp-m14.vi.mdx";
 import HsgCpM1Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-cp-m1.vi.mdx";
 import HsgCpM2 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-cp-m2.mdx";
 import HsgCpM2Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-cp-m2.vi.mdx";
@@ -1540,6 +1562,30 @@ import HsgCpM6 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-sorti
 import HsgCpM6Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-sorting/lessons/hsg-cp-m6.vi.mdx";
 import HsgCpM7 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-search/lessons/hsg-cp-m7.mdx";
 import HsgCpM7Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-search/lessons/hsg-cp-m7.vi.mdx";
+import HsgCpM8 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-prefix/lessons/hsg-cp-m8.mdx";
+import HsgCpM8Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-prefix/lessons/hsg-cp-m8.vi.mdx";
+import HsgCpM9 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-diff/lessons/hsg-cp-m9.mdx";
+import HsgCpM9Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-diff/lessons/hsg-cp-m9.vi.mdx";
+import HsgM10Basics from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-strings/lessons/hsg-m10-basics.mdx";
+import HsgM10BasicsVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-strings/lessons/hsg-m10-basics.vi.mdx";
+import HsgM10Transform from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-strings/lessons/hsg-m10-transform.mdx";
+import HsgM10TransformVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-strings/lessons/hsg-m10-transform.vi.mdx";
+import HsgM11Divisors from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-number/lessons/hsg-m11-divisors.mdx";
+import HsgM11DivisorsVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-number/lessons/hsg-m11-divisors.vi.mdx";
+import HsgM11Gcd from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-number/lessons/hsg-m11-gcd.mdx";
+import HsgM11GcdVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-number/lessons/hsg-m11-gcd.vi.mdx";
+import HsgM12Associative from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-stl/lessons/hsg-m12-associative.mdx";
+import HsgM12AssociativeVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-stl/lessons/hsg-m12-associative.vi.mdx";
+import HsgM12Sequence from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-stl/lessons/hsg-m12-sequence.mdx";
+import HsgM12SequenceVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-stl/lessons/hsg-m12-sequence.vi.mdx";
+import HsgM13Basics from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-recursion/lessons/hsg-m13-basics.mdx";
+import HsgM13BasicsVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-recursion/lessons/hsg-m13-basics.vi.mdx";
+import HsgM13Patterns from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-recursion/lessons/hsg-m13-patterns.mdx";
+import HsgM13PatternsVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-recursion/lessons/hsg-m13-patterns.vi.mdx";
+import HsgM14Idea from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-backtrack/lessons/hsg-m14-idea.mdx";
+import HsgM14IdeaVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-backtrack/lessons/hsg-m14-idea.vi.mdx";
+import HsgM14Prune from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-backtrack/lessons/hsg-m14-prune.mdx";
+import HsgM14PruneVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-backtrack/lessons/hsg-m14-prune.vi.mdx";
 import HsgM1Bridge from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-bridge.mdx";
 import HsgM1BridgeVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-bridge.vi.mdx";
 import HsgM1Reading from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-reading.mdx";
@@ -1568,6 +1614,14 @@ import HsgM7Answer from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-s
 import HsgM7AnswerVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-search/lessons/hsg-m7-answer.vi.mdx";
 import HsgM7Basics from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-search/lessons/hsg-m7-basics.mdx";
 import HsgM7BasicsVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-search/lessons/hsg-m7-basics.vi.mdx";
+import HsgM82d from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-prefix/lessons/hsg-m8-2d.mdx";
+import HsgM82dVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-prefix/lessons/hsg-m8-2d.vi.mdx";
+import HsgM8Basics from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-prefix/lessons/hsg-m8-basics.mdx";
+import HsgM8BasicsVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-prefix/lessons/hsg-m8-basics.vi.mdx";
+import HsgM92d from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-diff/lessons/hsg-m9-2d.mdx";
+import HsgM92dVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-diff/lessons/hsg-m9-2d.vi.mdx";
+import HsgM9Basics from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-diff/lessons/hsg-m9-basics.mdx";
+import HsgM9BasicsVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-diff/lessons/hsg-m9-basics.vi.mdx";
 import HtmlArchitecture from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/html-architecture.mdx";
 import HtmlArchitectureVi from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/html-architecture.vi.mdx";
 import HtmlAttributes from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-attributes.mdx";
@@ -3676,6 +3730,12 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["csi-async/csi-async-streams.vi.mdx"]: CsiAsyncStreamsVi,
   ["csi-async/csi-checkpoint-m9.mdx"]: CsiCheckpointM9,
   ["csi-async/csi-checkpoint-m9.vi.mdx"]: CsiCheckpointM9Vi,
+  ["csi-capstone/csi-capstone-domain.mdx"]: CsiCapstoneDomain,
+  ["csi-capstone/csi-capstone-domain.vi.mdx"]: CsiCapstoneDomainVi,
+  ["csi-capstone/csi-capstone-service.mdx"]: CsiCapstoneService,
+  ["csi-capstone/csi-capstone-service.vi.mdx"]: CsiCapstoneServiceVi,
+  ["csi-capstone/csi-checkpoint-m22.mdx"]: CsiCheckpointM22,
+  ["csi-capstone/csi-checkpoint-m22.vi.mdx"]: CsiCheckpointM22Vi,
   ["csi-clean-code/csi-code-smells.mdx"]: CsiCodeSmells,
   ["csi-clean-code/csi-code-smells.vi.mdx"]: CsiCodeSmellsVi,
   ["csi-clean-code/csi-refactoring.mdx"]: CsiRefactoring,
@@ -3784,6 +3844,12 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["csi-performance/csi-linq-cost.vi.mdx"]: CsiLinqCostVi,
   ["csi-performance/csi-checkpoint-m20.mdx"]: CsiCheckpointM20,
   ["csi-performance/csi-checkpoint-m20.vi.mdx"]: CsiCheckpointM20Vi,
+  ["csi-security/csi-injection-defense.mdx"]: CsiInjectionDefense,
+  ["csi-security/csi-injection-defense.vi.mdx"]: CsiInjectionDefenseVi,
+  ["csi-security/csi-authn-authz.mdx"]: CsiAuthnAuthz,
+  ["csi-security/csi-authn-authz.vi.mdx"]: CsiAuthnAuthzVi,
+  ["csi-security/csi-checkpoint-m21.mdx"]: CsiCheckpointM21,
+  ["csi-security/csi-checkpoint-m21.vi.mdx"]: CsiCheckpointM21Vi,
   ["csi-testing/csi-mini-framework.mdx"]: CsiMiniFramework,
   ["csi-testing/csi-mini-framework.vi.mdx"]: CsiMiniFrameworkVi,
   ["csi-testing/csi-test-doubles.mdx"]: CsiTestDoubles,
@@ -3796,6 +3862,18 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["hsg-arrays/hsg-m3-classic.vi.mdx"]: HsgM3ClassicVi,
   ["hsg-arrays/hsg-cp-m3.mdx"]: HsgCpM3,
   ["hsg-arrays/hsg-cp-m3.vi.mdx"]: HsgCpM3Vi,
+  ["hsg-backtrack/hsg-m14-idea.mdx"]: HsgM14Idea,
+  ["hsg-backtrack/hsg-m14-idea.vi.mdx"]: HsgM14IdeaVi,
+  ["hsg-backtrack/hsg-m14-prune.mdx"]: HsgM14Prune,
+  ["hsg-backtrack/hsg-m14-prune.vi.mdx"]: HsgM14PruneVi,
+  ["hsg-backtrack/hsg-cp-m14.mdx"]: HsgCpM14,
+  ["hsg-backtrack/hsg-cp-m14.vi.mdx"]: HsgCpM14Vi,
+  ["hsg-diff/hsg-m9-basics.mdx"]: HsgM9Basics,
+  ["hsg-diff/hsg-m9-basics.vi.mdx"]: HsgM9BasicsVi,
+  ["hsg-diff/hsg-m9-2d.mdx"]: HsgM92d,
+  ["hsg-diff/hsg-m9-2d.vi.mdx"]: HsgM92dVi,
+  ["hsg-diff/hsg-cp-m9.mdx"]: HsgCpM9,
+  ["hsg-diff/hsg-cp-m9.vi.mdx"]: HsgCpM9Vi,
   ["hsg-greedy/hsg-m5-choice.mdx"]: HsgM5Choice,
   ["hsg-greedy/hsg-m5-choice.vi.mdx"]: HsgM5ChoiceVi,
   ["hsg-greedy/hsg-m5-proof.mdx"]: HsgM5Proof,
@@ -3814,6 +3892,24 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["hsg-marking/hsg-m4-range.vi.mdx"]: HsgM4RangeVi,
   ["hsg-marking/hsg-cp-m4.mdx"]: HsgCpM4,
   ["hsg-marking/hsg-cp-m4.vi.mdx"]: HsgCpM4Vi,
+  ["hsg-number/hsg-m11-gcd.mdx"]: HsgM11Gcd,
+  ["hsg-number/hsg-m11-gcd.vi.mdx"]: HsgM11GcdVi,
+  ["hsg-number/hsg-m11-divisors.mdx"]: HsgM11Divisors,
+  ["hsg-number/hsg-m11-divisors.vi.mdx"]: HsgM11DivisorsVi,
+  ["hsg-number/hsg-cp-m11.mdx"]: HsgCpM11,
+  ["hsg-number/hsg-cp-m11.vi.mdx"]: HsgCpM11Vi,
+  ["hsg-prefix/hsg-m8-basics.mdx"]: HsgM8Basics,
+  ["hsg-prefix/hsg-m8-basics.vi.mdx"]: HsgM8BasicsVi,
+  ["hsg-prefix/hsg-m8-2d.mdx"]: HsgM82d,
+  ["hsg-prefix/hsg-m8-2d.vi.mdx"]: HsgM82dVi,
+  ["hsg-prefix/hsg-cp-m8.mdx"]: HsgCpM8,
+  ["hsg-prefix/hsg-cp-m8.vi.mdx"]: HsgCpM8Vi,
+  ["hsg-recursion/hsg-m13-basics.mdx"]: HsgM13Basics,
+  ["hsg-recursion/hsg-m13-basics.vi.mdx"]: HsgM13BasicsVi,
+  ["hsg-recursion/hsg-m13-patterns.mdx"]: HsgM13Patterns,
+  ["hsg-recursion/hsg-m13-patterns.vi.mdx"]: HsgM13PatternsVi,
+  ["hsg-recursion/hsg-cp-m13.mdx"]: HsgCpM13,
+  ["hsg-recursion/hsg-cp-m13.vi.mdx"]: HsgCpM13Vi,
   ["hsg-search/hsg-m7-basics.mdx"]: HsgM7Basics,
   ["hsg-search/hsg-m7-basics.vi.mdx"]: HsgM7BasicsVi,
   ["hsg-search/hsg-m7-answer.mdx"]: HsgM7Answer,
@@ -3826,6 +3922,18 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["hsg-sorting/hsg-m6-sweep.vi.mdx"]: HsgM6SweepVi,
   ["hsg-sorting/hsg-cp-m6.mdx"]: HsgCpM6,
   ["hsg-sorting/hsg-cp-m6.vi.mdx"]: HsgCpM6Vi,
+  ["hsg-stl/hsg-m12-sequence.mdx"]: HsgM12Sequence,
+  ["hsg-stl/hsg-m12-sequence.vi.mdx"]: HsgM12SequenceVi,
+  ["hsg-stl/hsg-m12-associative.mdx"]: HsgM12Associative,
+  ["hsg-stl/hsg-m12-associative.vi.mdx"]: HsgM12AssociativeVi,
+  ["hsg-stl/hsg-cp-m12.mdx"]: HsgCpM12,
+  ["hsg-stl/hsg-cp-m12.vi.mdx"]: HsgCpM12Vi,
+  ["hsg-strings/hsg-m10-basics.mdx"]: HsgM10Basics,
+  ["hsg-strings/hsg-m10-basics.vi.mdx"]: HsgM10BasicsVi,
+  ["hsg-strings/hsg-m10-transform.mdx"]: HsgM10Transform,
+  ["hsg-strings/hsg-m10-transform.vi.mdx"]: HsgM10TransformVi,
+  ["hsg-strings/hsg-cp-m10.mdx"]: HsgCpM10,
+  ["hsg-strings/hsg-cp-m10.vi.mdx"]: HsgCpM10Vi,
   ["hsg-vao-mon/hsg-m1-reading.mdx"]: HsgM1Reading,
   ["hsg-vao-mon/hsg-m1-reading.vi.mdx"]: HsgM1ReadingVi,
   ["hsg-vao-mon/hsg-m1-bridge.mdx"]: HsgM1Bridge,

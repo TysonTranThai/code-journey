@@ -1,0 +1,30 @@
+## Four corners per rectangle
+
+To add v to every cell of the rectangle (r1, c1) - (r2, c2):
+
+```cpp
+D[r1][c1]     += v;
+D[r1][c2+1]   -= v;
+D[r2+1][c1]   -= v;
+D[r2+1][c2+1] += v;   // the double-cut corner goes back
+```
+
+Then a 2D prefix sum over D reconstructs the painted grid. The corner
+`D[r2+1][c2+1] += v` is the inclusion-exclusion term: without it, every
+cell right of c2 AND below r2 loses v twice.
+
+Worked example: paint (1,1)-(2,2) on a 3x3 grid with v = 1. The final
+grid is 1 1 0 / 1 1 0 / 0 0 0. If you forget the `+= v` corner, the
+bottom-right 2x2 block (rows 2-3, cols 2-3) becomes 0 -1 / -1 0 — the
+double subtraction is visible.
+
+### Boundaries
+
+Size D as (n+2) x (m+2) so the r2+1/c2+1 indices never go out of range,
+and only read the first n x m cells after reconstruction.
+
+### Same trade-off as 1D
+
+All rectangles first, then one O(nm) rebuild, then answer whatever you
+need (max cell, count of cells >= k, exact-k coverage). Interleaved
+paint-then-ask needs a real structure — not this tool.

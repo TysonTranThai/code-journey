@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p10-anagram",
+  "title": "Anagram Verdict",
+  "prompt": "**Description:** Two lines. Print `YES` if the second is an anagram of the first\n(same characters with the same multiplicities), otherwise `NO`.\n\n**Input:** Two lines: s and t (1 <= |s|, |t| <= 10^6, lowercase letters).\n**Output:** `YES` or `NO`.\n\n**Example:** `listen` / `silent` -> `YES`; `listen` / `tense` -> `NO`.\n",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample yes",
+      "code": "std::istringstream in(\"listen\\nsilent\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"YES\\n\"));",
+      "hint": "Same letters, same counts."
+    },
+    {
+      "name": "sample no",
+      "code": "std::istringstream in(\"listen\\ntense\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NO\\n\"));",
+      "hint": "Different letters entirely."
+    },
+    {
+      "name": "length mismatch",
+      "code": "std::istringstream in(\"ab\\nabb\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NO\\n\"));",
+      "hint": "Same letters available, but counts differ."
+    },
+    {
+      "name": "identical",
+      "code": "std::istringstream in(\"abc\\nabc\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"YES\\n\"));",
+      "hint": "A string is an anagram of itself."
+    }
+  ],
+  "level": "guided"
+}

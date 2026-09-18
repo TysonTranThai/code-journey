@@ -1,0 +1,39 @@
+## Hai nửa của mọi hàm đệ quy
+
+```cpp
+long long fact(int n) {
+    if (n <= 1) return 1;        // trường hợp cơ sở: DỪNG
+    return n * fact(n - 1);      // trường hợp đệ quy: THU NHỎ về nó
+}
+```
+
+- Trường hợp cơ sở trả lời input nhỏ nhất trực tiếp, không tự gọi.
+- Trường hợp đệ quy phải tiến bộ: mỗi lời gọi đưa tham số gần một
+  trường hợp cơ sở hơn. `fact(n)` gọi `fact(n)` là đệ quy vô hạn —
+  tràn ngăn xếp.
+
+### Vết fact(4)
+
+```
+fact(4) = 4 * fact(3)
+        = 4 * (3 * fact(2))
+        = 4 * (3 * (2 * fact(1)))
+        = 4 * (3 * (2 * 1)) = 24
+```
+
+Các lời gọi xếp chồng tới khi cơ sở kích hoạt, rồi **tan xuống** nhân
+ngược. Mỗi khung giữ `n` riêng — đó là nơi bộ nhớ đi: sâu d nghĩa là d
+khung đang sống.
+
+### Giới hạn ngăn xếp
+
+Mỗi lời gọi đẩy một khung (biến cục bộ, địa chỉ trả về). Ngăn xếp mặc
+định chứa cỡ 10^5 - 10^6 khung; đệ quy trên n = 10^6 dễ tràn (crash =
+runtime error, không phải TLE). Câu trả lời cho người mới: đệ quy trên
+giá trị chia đôi hoặc giảm 1 với n nhỏ, hoặc chuyển thành vòng lặp.
+
+### Đệ quy vs vòng lặp
+
+`fact` là vòng lặp đội lốt đệ quy — đệ quy mua sự rõ ràng cho bài dạng
+cây (tập con, quay lui, chia để trị) và không mua gì cho một đường thẳng
+số học. Cả hai đều đúng; chọn theo dạng.

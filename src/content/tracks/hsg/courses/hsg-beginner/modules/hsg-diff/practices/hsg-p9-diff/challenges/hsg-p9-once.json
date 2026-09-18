@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p9-once",
+  "title": "Painted Exactly Once",
+  "prompt": "**Description:** A fence of n planks gets q paint jobs, each covering [l, r]. Count\nthe planks painted **exactly once**.\n\n**Input:** Line 1: n q (1 <= n, q <= 2*10^5). Next q lines: l r (1 <= l <= r <= n).\n**Output:** One integer — planks with exactly one coat.\n\n**Example:** `5 2` / `1 2` / `2 3` -> `2` (planks 1 and 3; plank 2 got two coats).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"5 2\\n1 2\\n2 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Coverage 1 2 1 0 0 — two planks with exactly one coat."
+    },
+    {
+      "name": "no paint",
+      "code": "std::istringstream in(\"3 0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "q = 0: every plank has zero coats — zero is not one."
+    },
+    {
+      "name": "all twice",
+      "code": "std::istringstream in(\"2 2\\n1 2\\n1 2\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Everything double-coated."
+    },
+    {
+      "name": "full once",
+      "code": "std::istringstream in(\"4 1\\n1 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\n\"));",
+      "hint": "One coat everywhere."
+    }
+  ],
+  "level": "independent"
+}

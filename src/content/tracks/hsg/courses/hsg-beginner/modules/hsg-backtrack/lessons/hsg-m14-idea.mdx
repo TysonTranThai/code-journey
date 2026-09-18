@@ -1,0 +1,32 @@
+## Choose — explore — uncommit
+
+```cpp
+void search(vector<int>& state) {
+    if (goal(state)) { record(state); return; }
+    for (int choice : options(state)) {
+        apply(state, choice);      // choose
+        search(state);             // explore
+        undo(state, choice);       // UNCOMMIT — the whole trick
+    }
+}
+```
+
+The `undo` restores the state exactly as it was, so the next loop
+iteration starts clean. Forget it once and every branch after the first
+runs on polluted state — the classic symptom is "the answer is correct
+for the first test then garbage".
+
+### Where the recursion ends
+
+Two exits: a **base case** that records/fails, or the natural end of
+the options loop (often `if (i == n)` style depth checks). Depth equals
+problem size for subsets/permutations — with n = 20, the stack holds 20
+frames, nothing. Backtracking's cost is not stack depth, it is the
+**number of nodes in the search tree**.
+
+### Counting that tree
+
+n independent binary choices -> 2^n leaves. n distinct choices per
+level -> n! leaves. Backtracking is honest brute force; it wins over
+plain nested loops when n is small (`<= ~20`) *or* pruning kills whole
+subtrees early (next lesson).

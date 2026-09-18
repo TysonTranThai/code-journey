@@ -1,0 +1,43 @@
+## Vì sao cộng dồn từng truy vấn là thất bại
+
+q truy vấn, mỗi truy vấn cộng tối đa n phần tử, là O(nq). Với n, q bằng
+10^5 thì là 10^10 phép tính — vượt xa giới hạn. Cách sửa: trả giá một
+lần, trả lời miễn phí.
+
+### Mảng cộng dồn (chỉ số từ 1)
+
+```cpp
+P[0] = 0;
+for (int i = 1; i <= n; ++i) P[i] = P[i-1] + a[i];
+// P[i] = a[1] + a[2] + ... + a[i]
+```
+
+Khi đó tổng a[l..r] gọn thành một phép trừ:
+
+```cpp
+long long sum = P[r] - P[l-1];
+```
+
+Ví dụ: a = [3, -1, 4, 1, -5] cho P = [0, 3, 2, 6, 7, 2].
+sum(2..5) = P[5] - P[1] = 2 - 3 = -1. Kiểm tra tay: -1 + 4 + 1 - 5 = -1.
+
+### Hai bẫy lệch một
+
+- `P[r] - P[l]` **bỏ sót** a[l] — một trong những WA phổ biến nhất của
+  người mới.
+- Nếu dùng tổng chạy kiểu 0-based (sau mỗi phần tử), đáp án là
+  `s_sau_r - s_trước_l`. Trộn hai quy ước trong một lời giải là nhà máy
+  lỗi. Chọn một, ghi rõ thành chú thích.
+
+### Tràn số
+
+n tới 10^5 phần tử |a_i| tới 10^9 đưa cộng dồn tới 10^14 — vượt int.
+Dùng `long long` cho P và đáp án. Không phải chuyện phong cách; `int` ở
+đây là WA chắc chắn trên test lớn.
+
+## Khi nào mảng cộng dồn áp dụng được
+
+Mọi đại lượng cộng tích lũy được từ trái sang phải và **trừ được**:
+tổng, số lượng (bao nhiêu phần tử chẵn trong đoạn), số lần xuất hiện.
+Đại lượng như max/min **không trừ được** — max cộng dồn không trả lời
+được max trên đoạn. Cần cấu trúc khác (module sau).

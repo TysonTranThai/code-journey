@@ -1,0 +1,37 @@
+## From line to grid
+
+Given an n x m grid, build P where `P[i][j]` = sum of the rectangle from
+(1,1) to (i,j):
+
+```cpp
+for (int i = 1; i <= n; ++i)
+    for (int j = 1; j <= m; ++j) {
+        long long x; cin >> x;
+        P[i][j] = x + P[i-1][j] + P[i][j-1] - P[i-1][j-1];
+    }
+```
+
+The `- P[i-1][j-1]` corrects the top-left quadrant being added twice.
+
+### Rectangle sum by inclusion-exclusion
+
+Sum of rows r1..r2, columns c1..c2:
+
+```cpp
+long long s = P[r2][c2] - P[r1-1][c2] - P[r2][c1-1] + P[r1-1][c1-1];
+```
+
+Read it as: big rectangle, cut off the strip above, cut off the strip on
+the left, put the double-cut corner back. A wrong sign on the last term
+passes every query with r1 = c1 = 1 and fails the rest — exactly the
+kind of bug hidden tests are built to catch.
+
+Worked example: grid [[1,2,3],[4,5,6]]. P[2][3] = 21. Region
+(1,1)-(1,2): P[1][2] - P[0][2] - P[1][0] + P[0][0] = 3. Single cell
+(2,2) in [[1,2],[3,4]]: P[2][2] - P[1][2] - P[2][1] + P[1][1]
+= 10 - 3 - 4 + 1 = 4.
+
+### Costs
+
+Build O(nm), each query O(1), memory O(nm) longs. For n = m = 1000 that
+is 8 MB — usually fine, but state it when the memory limit is tight.

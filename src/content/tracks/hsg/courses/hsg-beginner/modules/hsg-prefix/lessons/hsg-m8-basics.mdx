@@ -1,0 +1,43 @@
+## Why naive range sums fail
+
+q queries, each summing up to n elements, is O(nq). With n, q at 10^5 that
+is 10^10 operations — far beyond the limit. The fix: pay once, answer free.
+
+### The prefix array (1-based)
+
+```cpp
+P[0] = 0;
+for (int i = 1; i <= n; ++i) P[i] = P[i-1] + a[i];
+// P[i] = a[1] + a[2] + ... + a[i]
+```
+
+Then the sum of a[l..r] collapses to a single subtraction:
+
+```cpp
+long long sum = P[r] - P[l-1];
+```
+
+Worked example: a = [3, -1, 4, 1, -5] gives
+P = [0, 3, 2, 6, 7, 2]. sum(2..5) = P[5] - P[1] = 2 - 3 = -1. Check by
+hand: -1 + 4 + 1 - 5 = -1.
+
+### The two off-by-one traps
+
+- `P[r] - P[l]` **excludes** a[l] — one of the most common Wrong Answers
+  in beginner contests.
+- If you build a 0-based running sum `s` and push it after each element,
+  the answer is `s_after_r - s_before_l`. Mixing the two conventions in
+  one solution is a bug factory. Pick one, write it as a comment.
+
+### Overflow
+
+n up to 10^5 values of |a_i| up to 10^9 make prefix sums reach 10^14 —
+beyond int. Use `long long` for P and for the answers. This is not a
+style choice; `int` here is a guaranteed WA on big tests.
+
+## When prefix sums apply
+
+Any quantity that can be accumulated left to right and **subtracted**:
+sums, counts (how many elements in range are even), occurrences of a
+value. Quantities like max/min do **not** subtract — prefix max cannot
+answer range max. That needs a different structure (later modules).

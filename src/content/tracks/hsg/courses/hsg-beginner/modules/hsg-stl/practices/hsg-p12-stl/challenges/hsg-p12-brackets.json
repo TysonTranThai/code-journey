@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p12-brackets",
+  "title": "Bracket Balance",
+  "prompt": "**Description:** Given a string of '(' and ')' plus q queries, each query replaces one\ncharacter (given as position and new character). After **each** query print `YES` if\nthe whole string is balanced, else `NO`.\n\n**Input:** Line 1: the string s (2 <= |s| <= 10^5, even length). Line 2: q\n(1 <= q <= 10^5). Next q lines: pos c (1 <= pos <= |s|, c is '(' or ')').\n**Output:** q lines: `YES` or `NO`.\n\n**Example:** `()` / `2` / `1 (` / `1 )` -> `NO` / `YES`.\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"()\\n2\\n2 (\\n2 )\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NO\\nYES\\n\"));",
+      "hint": "Flip to (( : unbalanced; flip back to () : balanced."
+    },
+    {
+      "name": "hidden negative",
+      "code": "std::istringstream in(\"()((\\n1\\n3 )\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NO\\n\"));",
+      "hint": "State is ())(: total 0 but the prefix dips negative — a total-only check wrongly says YES."
+    },
+    {
+      "name": "restore",
+      "code": "std::istringstream in(\"()()\\n2\\n2 (\\n2 )\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NO\\nYES\\n\"));",
+      "hint": "Flipping position 2 to ( breaks it; flipping back restores."
+    },
+    {
+      "name": "swap head",
+      "code": "std::istringstream in(\"()\\n1\\n1 )\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NO\\n\"));",
+      "hint": ") ( has total 0 but starts negative — still unbalanced."
+    }
+  ],
+  "level": "independent"
+}

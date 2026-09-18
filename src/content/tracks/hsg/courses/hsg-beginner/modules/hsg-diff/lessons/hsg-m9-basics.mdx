@@ -1,0 +1,44 @@
+## The complement of prefix sums
+
+Prefix sums: read the array once, answer q range queries. Difference
+arrays: apply q range updates, then read the array once. Same tool, run
+backwards.
+
+### The trick
+
+To add v to every a[l..r], do two point updates:
+
+```cpp
+d[l] += v;
+d[r + 1] -= v;   // the "stop" marker sits one past the range
+```
+
+After all updates, the real array is the prefix sum of d:
+
+```cpp
+for (int i = 1; i <= n; ++i) d[i] += d[i-1];
+// now d[i] holds the final value of position i
+```
+
+Why: the running sum rises by v when it passes the `d[l]` marker and
+falls back when it passes `d[r+1]`. Between them it carries exactly +v.
+
+Worked example: add 5 to a[2..4] of a 5-array. d = [0,0,5,0,0,-5,0] (the
+stop at index 5). Prefix: 0 5 5 5 5 0 — positions 2,3,4 got +5, position
+5 got +5-5 = 0.
+
+### The two classic bugs
+
+- Writing `d[r] -= v` instead of `d[r+1]`: every range loses its last
+  element. Tests with r = n often crash it (index n+1 exists in a sized
+  n+2 array — remember to size it n+2 and never touch index n+1 in the
+  final read).
+- Forgetting the `d[r+1]` stop entirely: everything right of l is
+  polluted forever.
+
+### Cost model
+
+Each update O(1), reconstruction O(n), memory O(n). If updates and
+queries interleave (update, ask, update, ask), a difference array does
+not help — you would rebuild each time. That is the signal for a segment
+tree (much later).

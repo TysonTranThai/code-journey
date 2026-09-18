@@ -1,0 +1,47 @@
+## set — sorted unique elements
+
+```cpp
+set<int> s;
+s.insert(x);              // O(log n), silently ignored if present
+s.erase(x);               // by value or by iterator
+if (s.count(x)) ...       // O(log n) membership
+auto it = s.lower_bound(x); // first element >= x
+```
+
+Problem shapes: "distinct count", "has this been seen?", "smallest
+element >= x" (replacement searching), ordered deduplication. `multiset`
+allows duplicates and its `erase(x)` removes **one** occurrence (the
+find-iterator version is the precise one to reach for).
+
+## map — sorted key -> value
+
+```cpp
+map<string, int> cnt;
+++cnt[name];                  // default 0 then increment
+for (auto& [k, v] : cnt) ...  // ordered iteration
+```
+
+Frequency tables with ordered output ("print words alphabetically with
+counts"), coordinate compression bookkeeping, "which key is next after
+k" (upper_bound). If you need no ordering, `unordered_map` is faster on
+average (hash) but can be hacked/adversarially slow — in HSG settings
+`map` is the safe default.
+
+## priority_queue — the heap
+
+```cpp
+priority_queue<int> pq;                    // max-heap by default
+pq.push(x); pq.pop(); int m = pq.top();    // O(log n), O(log n), O(1)
+priority_queue<int, vector<int>, greater<int>> minpq;  // min-heap
+```
+
+Problem shapes: "repeatedly take the largest/smallest" (greedy
+simulations, merging), top-k streaming, Dijkstra (later module). No
+decrease-key, no iteration in order — it is not a sorted container.
+
+### The complexity contract
+
+insert/erase/query: set & map & pq — O(log n); vector push_back —
+amortized O(1); anything sorted by sort() — pay O(n log n) once. When a
+problem's constraints imply ~10^6+ operations, O(n^2) brute force is
+dead on arrival and one of these containers is usually the intended fix.

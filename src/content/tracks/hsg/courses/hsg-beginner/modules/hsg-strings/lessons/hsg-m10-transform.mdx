@@ -1,0 +1,50 @@
+## Palindrome: two pointers on a string
+
+```cpp
+bool pal(const string& s) {
+    int i = 0, j = (int)s.size() - 1;
+    while (i < j)
+        if (s[i++] != s[j--]) return false;
+    return true;
+}
+```
+
+O(n), O(1) extra space. Variant drills: ignore case (normalize first),
+ignore non-letters (filter first), longest palindromic **substring** by
+expanding around each center — O(n^2), fine for n at a few thousand.
+
+## Run-length encoding
+
+```cpp
+string rle(const string& s) {
+    string out;
+    for (int i = 0; i < (int)s.size(); ) {
+        int j = i;
+        while (j < (int)s.size() && s[j] == s[i]) ++j;
+        out += s[i];
+        out += to_string(j - i);
+        i = j;
+    }
+    return out;
+}
+```
+
+"aaabbc" becomes "a3b2c1". The outer loop jumps whole runs via `i = j` —
+a template worth memorizing for all "group consecutive elements" problems.
+
+## Anagram signature
+
+Two strings are anagrams iff sorting them is equal: `sort(a); sort(b);
+a == b`. O(n log n) and short. The alternative — 26-slot frequency
+arrays — is O(n) and generalizes to "how many anagrams of x are in s"
+(sliding window over 26 counts). Choose by problem shape, not by habit.
+
+## Counting distinct substrings — an honest ceiling
+
+For a string of length n there are n(n+1)/2 substrings. Inserting every
+one into a `set<string>` costs O(n^2) strings of average length O(n):
+O(n^3) time and memory in the worst case. For n = 100 that is fine
+(~5000 substrings, short). For n = 1000 it is already dangerous; for
+n = 10^5 impossible. Beginner problems that ask this will give tiny n —
+read the constraint, then pick the tool. (Suffix automaton arrives much,
+much later.)

@@ -1,0 +1,30 @@
+## Chọn — khám phá — hoàn tác
+
+```cpp
+void search(vector<int>& state) {
+    if (goal(state)) { record(state); return; }
+    for (int choice : options(state)) {
+        apply(state, choice);      // chọn
+        search(state);             // khám phá
+        undo(state, choice);       // HOÀN TÁC — toàn bộ cái trò
+    }
+}
+```
+
+Phần `undo` khôi phục trạng thái y như trước, để vòng lặp kế tiếp bắt
+đầu sạch. Quên nó một chỗ và mọi nhánh sau nhánh đầu chạy trên trạng
+thái bẩn — triệu chứng kinh điển là "test đầu đúng, test sau ra rác".
+
+### Đệ quy kết thúc ở đâu
+
+Hai lối ra: một **trường hợp cơ sở** ghi nhận/thất bại, hoặc tự nhiên
+hết vòng lựa chọn (thường là kiểm tra độ sâu kiểu `if (i == n)`). Độ
+sâu bằng kích thước bài với tập con/hoán vị — n = 20 thì ngăn xếp chứa
+20 khung, chẳng mấy. Chi phí của quay lui không nằm ở độ sâu ngăn xếp
+mà ở **số nút của cây tìm kiếm**.
+
+### Đếm cây đó
+
+n lựa chọn nhị phân độc lập -> 2^n lá. n lựa chọn mỗi mức -> n! lá.
+Quay lui là vét cạn trung thực; nó thắng vòng lặp lồng thuần khi n nhỏ
+(`<= ~20`) *hoặc* cắt tỉa tiêu diệt cả cây con sớm (bài sau).

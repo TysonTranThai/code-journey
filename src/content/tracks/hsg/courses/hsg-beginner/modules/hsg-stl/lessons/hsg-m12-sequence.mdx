@@ -1,0 +1,42 @@
+## vector — random access, amortized push_back
+
+```cpp
+vector<int> a(n);            // n zeros
+a.push_back(x);              // amortized O(1)
+a.erase(a.begin() + i);      // O(n) — shifts everything after i
+sort(a.begin(), a.end());    // O(n log n)
+```
+
+`erase` in a loop is the classic O(n^2) trap; if order does not matter,
+erase-swap (`a[i] = a.back(); a.pop_back();`) is O(1).
+
+## stack — last in, first out
+
+`push/pop/top/empty`, all O(1). Problem shapes: matching brackets,
+undo operations, "nearest smaller element to the left", iterative DFS.
+
+## queue — first in, first out
+
+`push/pop/front/empty`. Problem shapes: BFS (module later), processing
+arrivals in order, round-robin elimination.
+
+## deque — both ends, O(1)
+
+```cpp
+deque<int> d;
+d.push_back(x); d.push_front(y);
+d.pop_back();    d.pop_front();
+d[i];            // random access too
+```
+
+Sliding-window maximum (the monotonic deque, module later) is the
+famous application; also "do something to both ends" simulations.
+
+### Choosing
+
+- Need index access? vector.
+- Need only the latest? stack.
+- Need FIFO fairness? queue.
+- Need both ends? deque.
+- The wrong choice is rarely a WA — it is the TLE or the 40-line
+  hand-rolled array-with-head-and-tail that introduces bugs.

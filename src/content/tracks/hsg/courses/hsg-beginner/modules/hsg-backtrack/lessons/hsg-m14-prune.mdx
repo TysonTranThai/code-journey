@@ -1,0 +1,43 @@
+## Permutations, two flavors
+
+Distinct items — build position by position, skip used:
+
+```cpp
+bool used[N]; int perm[N];
+void gen(int i, int n) {
+    if (i == n) { /* record perm */ return; }
+    for (int v = 1; v <= n; ++v) {
+        if (used[v]) continue;
+        used[v] = true; perm[i] = v;
+        gen(i + 1, n);
+        used[v] = false;              // uncommit
+    }
+}
+```
+
+Duplicate items — sort first, and skip a value at this depth if it
+equals the previous value at the same depth (`if (v > 0 && a[v] == a[v-1] && !used[v-1]) continue;`).
+Sorting + that one line is the standard duplicate-killing trick.
+
+## N-queens counting
+
+Place queens row by row; a candidate column must not conflict with any
+previous row's column or diagonal. With "any" checks the search is
+still exponential but the constant collapses — a full 8-queens count
+runs in milliseconds. Track columns and both diagonal families in three
+boolean arrays for O(1) conflict tests.
+
+## The pruning habits
+
+1. **Fail fast**: check feasibility the moment a choice is made, not
+   after the subtree finishes.
+2. **Order choices**: trying likely candidates first does not change
+   the worst case but changes the average enormously.
+3. **Symmetry**: if the answer is unchanged under swapping two identical
+   items, only explore one ordering.
+4. **Bounds**: if even the best completion of the current partial state
+   cannot beat a known answer, cut the branch (branch and bound, later).
+
+Honest complexity note: pruning changes constants and average cases;
+it does not turn an exponential algorithm into a polynomial one. State
+n limits in your solution, then verify they match the problem.

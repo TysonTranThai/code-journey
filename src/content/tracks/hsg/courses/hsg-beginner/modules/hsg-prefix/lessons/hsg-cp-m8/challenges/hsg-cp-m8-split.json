@@ -1,0 +1,36 @@
+{
+  "id": "hsg-cp-m8-split",
+  "title": "Three Equal Parts",
+  "prompt": "**Description:** Count the ways to cut the array a[1..n] into three contiguous,\nnon-empty parts with equal sums. Cuts are after position i and after position j\n(1 <= i < j <= n-1... precisely: part 1 is a[1..i], part 2 is a[i+1..j], part 3 is\na[j+1..n]). Print the number of valid (i, j) pairs. The answer fits in 64 bits.\n\n**Input:** Line 1: n (3 <= n <= 2*10^5). Line 2: n integers (-10^9 <= a_i <= 10^9).\n**Output:** One integer — the number of ways.\n\n**Example:** `5` / `1 2 3 0 3` -> `2` (cuts after 2 and 3; after 2 and 4).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"5\\n1 2 3 0 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "need = 3; j = 3 and j = 4 have P_j = 6; each sees one earlier P = 3."
+    },
+    {
+      "name": "zeros three",
+      "code": "std::istringstream in(\"3\\n0 0 0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Only cuts (1, 2) work — the classic zero-counting trap."
+    },
+    {
+      "name": "zeros four",
+      "code": "std::istringstream in(\"4\\n0 0 0 0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "C(3,2) = 3 pairs of cuts."
+    },
+    {
+      "name": "not divisible",
+      "code": "std::istringstream in(\"3\\n1 1 2\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Total 4 is not divisible by 3."
+    },
+    {
+      "name": "negatives",
+      "code": "std::istringstream in(\"6\\n-1 -1 -1 -1 -1 -1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Parts of two elements each."
+    }
+  ],
+  "level": "combination"
+}

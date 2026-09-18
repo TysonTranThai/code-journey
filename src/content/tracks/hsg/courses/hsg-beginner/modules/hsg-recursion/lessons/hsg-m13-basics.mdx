@@ -1,0 +1,39 @@
+## The two halves of every recursive function
+
+```cpp
+long long fact(int n) {
+    if (n <= 1) return 1;        // base case: STOP
+    return n * fact(n - 1);      // recursive case: SHRINK toward it
+}
+```
+
+- The base case answers the smallest input directly, no self-call.
+- The recursive case must make progress: every call moves the argument
+  closer to a base case. `fact(n)` calling `fact(n)` is infinite
+  recursion — stack overflow.
+
+### Tracing fact(4)
+
+```
+fact(4) = 4 * fact(3)
+        = 4 * (3 * fact(2))
+        = 4 * (3 * (2 * fact(1)))
+        = 4 * (3 * (2 * 1)) = 24
+```
+
+The calls stack up until the base case, then **unwind** multiplying.
+Each frame holds its own `n` — that is where the memory goes: depth d
+means d live frames.
+
+### The stack limit
+
+Every call pushes a frame (locals, return address). Default stacks hold
+roughly 10^5 - 10^6 frames; a recursion on n = 10^6 risks stack
+overflow (crash = runtime error, not TLE). Beginner answers: recurse on
+values that halve or shrink by 1 with small n, or convert to a loop.
+
+### Recursion vs iteration
+
+`fact` is a loop in disguise — recursion buys clarity for tree-shaped
+problems (subsets, backtracking, divide and conquer) and buys nothing
+for a straight line of arithmetic. Both are correct; choose by shape.

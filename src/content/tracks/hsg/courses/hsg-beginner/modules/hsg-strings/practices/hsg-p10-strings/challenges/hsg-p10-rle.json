@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p10-rle",
+  "title": "Run-Length Encode",
+  "prompt": "**Description:** Compress a string by replacing each maximal run of equal characters with\nthe character followed by the run length.\n\n**Input:** One line: s (1 <= |s| <= 10^6, lowercase letters).\n**Output:** The RLE string.\n\n**Example:** `aaabbc` -> `a3b2c1`.\n",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"aaabbc\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"a3b2c1\\n\"));",
+      "hint": "Runs: a x3, b x2, c x1."
+    },
+    {
+      "name": "single run",
+      "code": "std::istringstream in(\"zzzz\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"z4\\n\"));",
+      "hint": "One run covers everything."
+    },
+    {
+      "name": "no repeats",
+      "code": "std::istringstream in(\"abc\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"a1b1c1\\n\"));",
+      "hint": "Every run has length 1."
+    },
+    {
+      "name": "long run",
+      "code": "std::istringstream in(\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"b40\\n\"));",
+      "hint": "Counts can exceed 9 — to_string handles it."
+    }
+  ],
+  "level": "guided"
+}

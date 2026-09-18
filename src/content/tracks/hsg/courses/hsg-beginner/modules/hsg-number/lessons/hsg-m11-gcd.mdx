@@ -1,0 +1,39 @@
+## gcd by Euclid
+
+```cpp
+long long gcd(long long a, long long b) {
+    while (b) { long long t = a % b; a = b; b = t; }
+    return a;
+}
+```
+
+Every step replaces (a, b) with (b, a mod b); the gcd is invariant because
+any common divisor of a and b divides a mod b = a - (a/b)*b. Termination:
+b strictly decreases and stays >= 0. Complexity O(log min(a, b)) — the
+Fibonacci worst case. gcd(a, 0) = a closes the loop.
+
+### lcm — with a safety order
+
+```cpp
+long long lcm(long long a, long long b) {
+    return a / gcd(a, b) * b;   // divide FIRST
+}
+```
+
+The order matters: `a * b / gcd` can overflow even when the true lcm
+fits in long long (a = b = 10^9: a*b is 10^18, near the 9.2*10^18
+limit — fine — but a = 2*10^9 impossible for int inputs; the general
+rule stands). Dividing first keeps every intermediate value inside the
+final result's magnitude.
+
+### Multiple numbers
+
+gcd(a, b, c) = gcd(gcd(a, b), c) — fold it. LCM chains the same way,
+watching overflow at every step.
+
+### Where gcd appears in contests
+
+- "Reduce the fraction" — divide both parts by gcd.
+- "Can the two step sizes meet?" — reachable positions are multiples of
+  gcd.
+- Counting lattice points on a segment: gcd of the deltas.

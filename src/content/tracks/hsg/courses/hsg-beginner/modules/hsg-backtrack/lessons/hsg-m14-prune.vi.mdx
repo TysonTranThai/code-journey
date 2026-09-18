@@ -1,0 +1,43 @@
+## Hoán vị, hai hương
+
+Phần tử phân biệt — dựng theo vị trí, bỏ qua cái đã dùng:
+
+```cpp
+bool used[N]; int perm[N];
+void gen(int i, int n) {
+    if (i == n) { /* ghi nhận perm */ return; }
+    for (int v = 1; v <= n; ++v) {
+        if (used[v]) continue;
+        used[v] = true; perm[i] = v;
+        gen(i + 1, n);
+        used[v] = false;              // hoàn tác
+    }
+}
+```
+
+Phần tử trùng — sắp xếp trước, và bỏ qua một giá trị tại độ sâu này nếu
+nó bằng giá trị trước đó cùng độ sâu (`if (v > 0 && a[v] == a[v-1] && !used[v-1]) continue;`).
+Sắp xếp + một dòng đó là mẹo diệt trùng chuẩn.
+
+## Đếm N-queens
+
+Đặt hậu theo từng hàng; cột ứng viên không được xung đột cột hay đường
+chéo với các hàng trước. Vẫn là cấp số nhân nhưng hằng số sập xuống —
+đếm đủ 8-queens chạy trong vài mili giây. Theo dõi cột và hai họ đường
+chéo trong ba mảng boolean để kiểm tra xung đột O(1).
+
+## Các thói quen cắt tỉa
+
+1. **Thất bại nhanh**: kiểm tra khả thi ngay khi chọn, không chờ cây
+   con chạy xong.
+2. **Thứ tự lựa chọn**: thử ứng viên khả dĩ trước không đổi trường hợp
+   xấu nhất nhưng đổi mạnh trường hợp trung bình.
+3. **Đối xứng**: nếu đáp án không đổi khi hoán hai phần tử giống nhau,
+   chỉ khám phá một thứ tự.
+4. **Chặn trên**: nếu ngay cả phần hoàn thành tốt nhất của trạng thái
+   hiện tại cũng không vượt đáp án đã biết, cắt nhánh (nhánh và cận,
+   về sau).
+
+Ghi chú độ phức tạp trung thực: cắt tỉa đổi hằng số và trường hợp trung
+bình; nó không biến thuật toán cấp số nhân thành đa thức. Nêu rõ giới
+hạn n trong lời giải, rồi kiểm tra khớp với đề.

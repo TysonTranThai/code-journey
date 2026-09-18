@@ -1,0 +1,31 @@
+{
+  "id": "hsg-cp-m10-pal-count",
+  "title": "Palindromic Substrings",
+  "prompt": "**Description:** Count the substrings of s that are palindromes. Occurrences at\ndifferent positions count separately: `aaa` has 6 (three `a`, two `aa`, one `aaa`).\n\n**Input:** One line: s (1 <= |s| <= 1000, lowercase letters).\n**Output:** One integer — the number of palindromic substrings.\n\n**Example:** `abba` -> `6` (a, b, b, a, bb, abba).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "even palindrome",
+      "code": "std::istringstream in(\"abba\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"6\\n\"));",
+      "hint": "Singles a,b,b,a plus bb plus abba — an even-length center must be checked."
+    },
+    {
+      "name": "all same",
+      "code": "std::istringstream in(\"aaa\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"6\\n\"));",
+      "hint": "n*(n+1)/2 when every substring is a palindrome."
+    },
+    {
+      "name": "none even",
+      "code": "std::istringstream in(\"abc\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "Only the three single characters."
+    },
+    {
+      "name": "middle mirror",
+      "code": "std::istringstream in(\"aba\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\n\"));",
+      "hint": "a, b, a, and the full aba."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,35 @@
+## Từ đường thẳng tới lưới
+
+Cho lưới n x m, dựng P với `P[i][j]` = tổng hình chữ nhật từ (1,1) tới
+(i,j):
+
+```cpp
+for (int i = 1; i <= n; ++i)
+    for (int j = 1; j <= m; ++j) {
+        long long x; cin >> x;
+        P[i][j] = x + P[i-1][j] + P[i][j-1] - P[i-1][j-1];
+    }
+```
+
+Số `- P[i-1][j-1]` sửa chỗ góc trên-trái bị cộng hai lần.
+
+### Tổng hình chữ nhật bằng bao hàm - loại trừ
+
+Tổng hàng r1..r2, cột c1..c2:
+
+```cpp
+long long s = P[r2][c2] - P[r1-1][c2] - P[r2][c1-1] + P[r1-1][c1-1];
+```
+
+Đọc là: hình lớn, cắt dải phía trên, cắt dải bên trái, trả lại góc bị
+cắt hai lần. Sai dấu ở số hạng cuối vẫn pass mọi truy vấn có r1 = c1 = 1
+và fail phần còn lại — đúng kiểu bug mà test ẩn được thiết kế để bắt.
+
+Ví dụ: lưới [[1,2,3],[4,5,6]]. P[2][3] = 21. Vùng (1,1)-(1,2):
+P[1][2] - P[0][2] - P[1][0] + P[0][0] = 3. Ô đơn (2,2) trong
+[[1,2],[3,4]]: P[2][2] - P[1][2] - P[2][1] + P[1][1] = 10 - 3 - 4 + 1 = 4.
+
+### Chi phí
+
+Dựng O(nm), mỗi truy vấn O(1), bộ nhớ O(nm) số long. Với n = m = 1000
+là 8 MB — thường ổn, nhưng hãy nêu ra khi giới hạn bộ nhớ chật.

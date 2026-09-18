@@ -1,0 +1,36 @@
+{
+  "id": "hsg-p11-prime",
+  "title": "Prime Verdict",
+  "prompt": "**Description:** For each query n, print `PRIME` if n is prime, `COMPOSITE` if it has\na divisor other than 1 and itself, and `NEITHER` for n < 2.\n\n**Input:** Line 1: t (1 <= t <= 10^5). Each of the next t lines: n (0 <= n <= 10^12).\n**Output:** t lines: `PRIME`, `COMPOSITE`, or `NEITHER`.\n\n**Example:** `7` -> `PRIME`; `9` -> `COMPOSITE`; `1` -> `NEITHER`.\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"3\\n7\\n9\\n1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"PRIME\\nCOMPOSITE\\nNEITHER\\n\"));",
+      "hint": "7 prime; 9 = 3*3; 1 is neither."
+    },
+    {
+      "name": "zero",
+      "code": "std::istringstream in(\"1\\n0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NEITHER\\n\"));",
+      "hint": "0 is not prime by definition."
+    },
+    {
+      "name": "two",
+      "code": "std::istringstream in(\"1\\n2\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"PRIME\\n\"));",
+      "hint": "The only even prime — a d = 2, then odd-only loop handles it."
+    },
+    {
+      "name": "even composite",
+      "code": "std::istringstream in(\"1\\n4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"COMPOSITE\\n\"));",
+      "hint": "Divisible by 2 — a solver starting at d = 3 calls this PRIME."
+    },
+    {
+      "name": "big prime",
+      "code": "std::istringstream in(\"1\\n1000000007\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"PRIME\\n\"));",
+      "hint": "The classic contest modulus — trial division reaches sqrt ~ 31623."
+    }
+  ],
+  "level": "guided"
+}

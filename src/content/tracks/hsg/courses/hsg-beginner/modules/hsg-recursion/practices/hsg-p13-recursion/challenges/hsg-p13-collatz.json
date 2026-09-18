@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p13-collatz",
+  "title": "Collatz Steps",
+  "prompt": "**Description:** Starting from n, repeatedly: if n is even, n -> n/2; if odd,\nn -> 3n + 1. The sequence reaches 1 for every tested input. Count the steps\n**recursively** to reach 1 (a starting n of 1 is 0 steps).\n\n**Input:** One line: n (1 <= n <= 10^6).\n**Output:** One integer — the number of steps to reach 1.\n\n**Example:** `6` -> `8` (6 3 10 5 16 8 4 2 1).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"6\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"8\\n\"));",
+      "hint": "6 -> 3 -> 10 -> 5 -> 16 -> 8 -> 4 -> 2 -> 1."
+    },
+    {
+      "name": "one",
+      "code": "std::istringstream in(\"1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Already at the base case."
+    },
+    {
+      "name": "power of two",
+      "code": "std::istringstream in(\"32\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n\"));",
+      "hint": "Five halvings."
+    },
+    {
+      "name": "odd start",
+      "code": "std::istringstream in(\"27\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"111\\n\"));",
+      "hint": "The famous long climb — recursion depth stays modest."
+    }
+  ],
+  "level": "independent"
+}

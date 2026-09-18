@@ -1,0 +1,66 @@
+## Divisor pairs
+
+If d divides n, then n/d also divides n. One of the pair is at most
+sqrt(n) — so enumerate the small partner only:
+
+```cpp
+vector<long long> divisors(long long n) {
+    vector<long long> small, big;
+    for (long long d = 1; d * d <= n; ++d)
+        if (n % d == 0) {
+            small.push_back(d);
+            if (d != n / d) big.push_back(n / d);
+        }
+    // merge small (ascending) with big (reversed): sorted divisors
+    return small;
+}
+```
+
+Loop condition `d * d <= n` (not `d <= sqrt(n)`) avoids floating point
+entirely. The `d != n/d` check keeps perfect squares from listing sqrt(n)
+twice.
+
+### Primality
+
+A prime has no divisor pair except (1, n):
+
+```cpp
+bool isPrime(long long n) {
+    if (n < 2) return false;
+    for (long long d = 2; d * d <= n; ++d)
+        if (n % d == 0) return false;
+    return true;
+}
+```
+
+O(sqrt n). n = 10^12 needs 10^6 iterations — fine. Trial division by
+every number up to n is O(n) and fails the same test. Do not "optimize"
+by checking only odd d and forgetting 2.
+
+### Counting divisors without listing
+
+Iterate the same pairs and add 1 (or 2, or 1 for the square root):
+
+```cpp
+long long countDivisors(long long n) {
+    long long cnt = 0;
+    for (long long d = 1; d * d <= n; ++d)
+        if (n % d == 0) cnt += (d == n / d) ? 1 : 2;
+    return cnt;
+}
+```
+
+### Digit sum
+
+```cpp
+long long digitSum(long long n) {
+    long long s = 0;
+    while (n) { s += n % 10; n /= 10; }
+    return s;
+}
+```
+
+Note: n % 10 and n /= 10 work on the absolute value — for negatives,
+take abs first (C++ division truncates toward zero, so the sign survives
+in n until n becomes 0; the digits come out positive anyway, but the
+cleanest is n = llabs(n) at the top).

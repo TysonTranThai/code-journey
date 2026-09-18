@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p8-max-window",
+  "title": "Maximum Window",
+  "prompt": "**Description:** Given n integers and a window length k, find the maximum possible\nsum of k consecutive elements.\n\n**Input:** Line 1: n k (1 <= k <= n <= 2*10^5). Line 2: n integers (-10^9 <= a_i <= 10^9).\n**Output:** One integer — the maximum window sum.\n\n**Example:** `6 3` / `2 -1 4 3 -2 5` -> `6` (window -1 4 3 or 3 -2 5...\ncompute: -1+4+3 = 6).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"6 3\\n2 -1 4 3 -2 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"6\\n\"));",
+      "hint": "Windows: 5, 6, 5, 6."
+    },
+    {
+      "name": "all negative",
+      "code": "std::istringstream in(\"4 2\\n-5 -3 -8 -1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-8\\n\"));",
+      "hint": "Best window is -5 -3 = -8; a solution defaulting best to 0 fails here."
+    },
+    {
+      "name": "whole array",
+      "code": "std::istringstream in(\"3 3\\n1 2 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"6\\n\"));",
+      "hint": "k = n: one window."
+    },
+    {
+      "name": "k equals 1",
+      "code": "std::istringstream in(\"5 1\\n4 -2 7 -9 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n\"));",
+      "hint": "Window of one — just the maximum element."
+    }
+  ],
+  "level": "independent"
+}

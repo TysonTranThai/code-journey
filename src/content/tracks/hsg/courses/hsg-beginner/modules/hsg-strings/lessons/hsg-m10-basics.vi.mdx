@@ -1,0 +1,38 @@
+## Xâu là mảng char kèm tiện ích
+
+```cpp
+string s = "loi choi";     // s[0] == 'l', s.size() == 8
+for (char c : s) ...       // duyệt chỉ đọc
+for (char& c : s) c = toupper(c);   // sửa tại chỗ
+```
+
+`char` là số nguyên nhỏ: 'a' là 97, '0' là 48. Nên `c - '0'` đổi ký tự
+số thành giá trị, và `c - 'a'` ánh xạ chữ thường về 0..25 — cây cầu vào
+mảng đánh dấu cho chữ cái.
+
+### Dựng xâu
+
+```cpp
+string t;
+t += c;          // khấu hao O(1) mỗi ký tự
+t += "abc";      // nối một literal
+t.push_back('x'); // với một ký tự thì giống +=
+```
+
+Kiểu `t = t + c` trong vòng lặp là phiên bản chậm kinh điển — mỗi vòng
+chép toàn bộ xâu, cả vòng là O(n^2). Với n bằng 10^5 là TLE. Dùng `+=`.
+
+### Đọc input
+
+`cin >> s` đọc một token cách nhau bởi khoảng trắng. `getline(cin, s)`
+đọc cả dòng kể cả dấu cách (và bỏ dấu xuống dòng). Trộn hai kiểu là bẫy
+kinh điển: sau `cin >> n`, dấu xuống dòng còn nằm trong buffer, nên
+`getline` kế tiếp trả về xâu rỗng. Hoặc `cin.ignore()` sau `>>`, hoặc
+đọc toàn bộ bằng getline.
+
+### Nhóm ký tự
+
+`isdigit`, `isalpha`, `islower`, `isupper`, `tolower`, `toupper` từ
+`<cctype>`: nhận int (truyền char, ép kiểu nếu warning gắt) và trả kết
+quả phân loại/chuyển đổi. Trong thi đấu chúng thay chuỗi if thủ công,
+không hơn.

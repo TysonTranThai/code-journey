@@ -1,0 +1,46 @@
+## set — phần tử phân biệt, có thứ tự
+
+```cpp
+set<int> s;
+s.insert(x);              // O(log n), bỏ qua nếu đã có
+s.erase(x);               // theo giá trị hoặc theo iterator
+if (s.count(x)) ...       // O(log n) kiểm tra thuộc
+auto it = s.lower_bound(x); // phần tử đầu >= x
+```
+
+Dạng bài: "đếm phân biệt", "đã gặp chưa?", "phần tử nhỏ nhất >= x"
+(tìm thay thế), khử trùng lặp có thứ tự. `multiset` cho phép trùng và
+`erase(x)` của nó xóa **một** lần xuất hiện (bản theo iterator là cách
+chính xác).
+
+## map — khóa -> giá trị, có thứ tự
+
+```cpp
+map<string, int> cnt;
+++cnt[name];                  // mặc định 0 rồi tăng
+for (auto& [k, v] : cnt) ...  // duyệt có thứ tự
+```
+
+Bảng tần suất kèm xuất có thứ tự ("in từ theo alphabet kèm số đếm"),
+sổ sách nén tọa độ, "khóa kế sau k" (upper_bound). Nếu không cần thứ tự,
+`unordered_map` nhanh hơn trung bình (hash) nhưng có thể bị làm chậm
+chủ động — trong bối cảnh HSG, `map` là mặc định an toàn.
+
+## priority_queue — heap
+
+```cpp
+priority_queue<int> pq;                    // max-heap mặc định
+pq.push(x); pq.pop(); int m = pq.top();    // O(log n), O(log n), O(1)
+priority_queue<int, vector<int>, greater<int>> minpq;  // min-heap
+```
+
+Dạng bài: "lặp đi lặp lại lấy lớn nhất/nhỏ nhất" (mô phỏng tham lam,
+trộn), top-k trực tuyến, Dijkstra (module sau). Không có decrease-key,
+không duyệt theo thứ tự — nó không phải container có thứ tự.
+
+### Bản hợp đồng độ phức tạp
+
+insert/erase/truy vấn: set & map & pq — O(log n); vector push_back —
+khấu hao O(1); sắp xếp bằng sort() — trả O(n log n) một lần. Khi giới
+hạn của bài ngụ ý ~10^6+ phép toán, vét cạn O(n^2) chết ngay khi sinh
+ra và một trong các container này thường là hướng giải định sẵn.

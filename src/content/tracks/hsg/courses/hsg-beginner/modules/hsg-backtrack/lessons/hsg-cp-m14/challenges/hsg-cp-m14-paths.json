@@ -1,0 +1,36 @@
+{
+  "id": "hsg-cp-m14-paths",
+  "title": "Grid Paths",
+  "prompt": "**Description:** Count the paths from the top-left cell (1,1) to the bottom-right\ncell (n,m) of a grid, moving only right or down. Some cells are blocked ('#');\npaths may not pass through them. Count modulo 10^9 + 7.\n\n**Input:** Line 1: n m (1 <= n, m <= 8). Next n lines: m characters each\n('.' or '#').\n**Output:** One integer — the number of valid paths mod 10^9 + 7.\n\n**Example:** `2 2` / `..` / `#.` -> `1` (only right-then-down).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"2 2\\n..\\n#.\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "The blocked cell kills the down-then-right path."
+    },
+    {
+      "name": "open grid",
+      "code": "std::istringstream in(\"2 2\\n..\\n..\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Right-down and down-right."
+    },
+    {
+      "name": "start blocked",
+      "code": "std::istringstream in(\"1 1\\n#\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "No path exists if the start itself is blocked."
+    },
+    {
+      "name": "single open",
+      "code": "std::istringstream in(\"1 1\\n.\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Standing still is the one path."
+    },
+    {
+      "name": "wall",
+      "code": "std::istringstream in(\"3 3\\n...\\n###\\n...\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "The full wall disconnects the two corners."
+    }
+  ],
+  "level": "combination"
+}

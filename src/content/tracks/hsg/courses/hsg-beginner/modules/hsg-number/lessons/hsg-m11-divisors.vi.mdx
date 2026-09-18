@@ -1,0 +1,57 @@
+## Cặp ước
+
+Nếu d chia hết n thì n/d cũng chia hết n. Một trong hai không vượt
+sqrt(n) — nên chỉ cần vét các ước nhỏ:
+
+```cpp
+for (long long d = 1; d * d <= n; ++d)
+    if (n % d == 0) {
+        // d và n/d là hai ước; d == n/d khi n là số chính phương
+    }
+```
+
+Điều kiện vòng `d * d <= n` (không phải `d <= sqrt(n)`) tránh hoàn toàn
+số thực. Kiểm tra `d != n/d` tránh liệt kê sqrt(n) hai lần với số chính
+phương.
+
+### Nguyên tố
+
+Số nguyên tố không có cặp ước nào ngoài (1, n):
+
+```cpp
+bool isPrime(long long n) {
+    if (n < 2) return false;
+    for (long long d = 2; d * d <= n; ++d)
+        if (n % d == 0) return false;
+    return true;
+}
+```
+
+O(sqrt n). n = 10^12 cần 10^6 vòng — ổn. Thử chia tới n là O(n) và fail
+cùng test đó. Đừng "tối ưu" chỉ thử d lẻ rồi quên số 2.
+
+### Đếm ước không cần liệt kê
+
+Cùng vòng lặp, cộng 1 (hoặc 2, hoặc 1 cho căn):
+
+```cpp
+long long countDivisors(long long n) {
+    long long cnt = 0;
+    for (long long d = 1; d * d <= n; ++d)
+        if (n % d == 0) cnt += (d == n / d) ? 1 : 2;
+    return cnt;
+}
+```
+
+### Tổng chữ số
+
+```cpp
+long long digitSum(long long n) {
+    long long s = 0;
+    while (n) { s += n % 10; n /= 10; }
+    return s;
+}
+```
+
+Lưu ý: với số âm, lấy abs trước — phép chia của C++ cắt về 0 nên chữ số
+rút ra vẫn đúng, nhưng viết `n = llabs(n)` ngay từ đầu cho sạch.
