@@ -1,0 +1,14 @@
+{
+  "title": "Sao chép bằng con trỏ với pinning có giới hạn",
+  "prompt": "Hiện thực `static void CopyBytes(byte[] src, int srcOffset, byte[] dst, int dstOffset, int count)` bằng con trỏ unsafe với `fixed` — pin CẢ HAI mảng cho lần sao chép. Test đúng đắn thực hiện các bản sao không chồng lấn tại các offset; bài học: pin hẹp (chỉ trong khối fixed), không bao giờ lưu con trỏ, không bao giờ để chúng thoát ra ngoài.",
+  "tests": [
+    {
+      "name": "copy-correct",
+      "hint": "fixed (byte* ps = src) fixed (byte* pd = dst) { for (int i = 0; i < count; i++) pd[dstOffset + i] = ps[srcOffset + i]; }"
+    },
+    {
+      "name": "empty-count",
+      "hint": "Điều kiện vòng for tự xử lý; fixed trên đoạn rỗng là hợp lệ."
+    }
+  ]
+}

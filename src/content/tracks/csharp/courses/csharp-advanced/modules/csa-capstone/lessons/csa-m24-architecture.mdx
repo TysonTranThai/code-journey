@@ -1,0 +1,21 @@
+## Modular monoliths and dependency direction
+
+Every architecture decision here reduces to one question: **which way do the
+arrows point?** A modular monolith is one deployable with *enforced* internal
+boundaries: modules communicate through interfaces, and the dependency arrows
+point from feature code toward abstractions — never sideways into another
+module's internals, never from domain logic toward infrastructure details.
+
+The cost ladder of distribution (module 20's lesson, restated
+architecturally): a method call is nanoseconds and always works; a network
+call is milliseconds, fails in new ways, and needs a version story. **Do not
+pay the network's tax until a boundary genuinely demands it** — independent
+scaling, independent deployment, or organizational ownership. "Microservices"
+chosen for resume reasons are a modular monolith with a distributed-systems
+incident generator bolted on.
+
+Enforcement beats aspiration: compiler-visible boundaries (separate projects,
+`internal` types, dependency-checking analyzers) survive deadlines; comments
+on an architecture diagram do not. The capstone keeps everything in one
+process but demands the *discipline* — one `JobPlatform` seam through which
+all work enters, exactly like one API gateway in a real system.

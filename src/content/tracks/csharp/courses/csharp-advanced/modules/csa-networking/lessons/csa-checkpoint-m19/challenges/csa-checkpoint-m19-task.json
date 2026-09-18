@@ -1,0 +1,25 @@
+{
+  "id": "csa-checkpoint-m19-task",
+  "title": "Networking checkpoint",
+  "prompt": "Implement length-prefix framing on in-memory buffers (loopback-independent, deterministic): `static byte[] EncodeFrame(string payload)` — 4-byte little-endian length prefix followed by UTF-8 bytes; `static string DecodeFrame(ReadOnlySpan<byte> data)` — reads the prefix, validates that data.Length >= 4 + length (throw ArgumentException otherwise), decodes exactly `length` bytes. Then implement `static async Task<string> EchoProtocol(string message)`: start a TcpListener on an ephemeral loopback port, accept one client, read one frame, echo the payload back framed, and return what the client received. The sandbox's loopback TCP is verified working.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "frame-roundtrip",
+      "code": "var frame = Solution.EncodeFrame(\"hello\");\nCj.Eq(frame.Length, 4 + 5, \"prefix + payload\");\nCj.Eq(frame[0], 5, \"LE length low byte\");\nCj.Eq(Solution.DecodeFrame(frame), \"hello\", \"decodes exactly\");",
+      "hint": "BinaryPrimitives.WriteInt32LittleEndian(prefix, Encoding.UTF8.GetByteCount(payload)); then write bytes."
+    },
+    {
+      "name": "truncated-frame-rejected",
+      "code": "var frame = Solution.EncodeFrame(\"truncate me please\");\nvar bad = frame[..^3];   // cut the last 3 payload bytes\nvar ex = await Cj.ThrowsAsync<ArgumentException>(() => Task.Run(() => Solution.DecodeFrame(bad)));\nCj.True(ex is not null, \"truncated frame must throw, not decode garbage\");",
+      "hint": "If data.Length < 4 + length, throw ArgumentException — partial frames are the #1 TCP bug."
+    },
+    {
+      "name": "loopback-echo",
+      "code": "var echoed = await Solution.EchoProtocol(\"ping-42\");\nCj.Eq(echoed, \"ping-42\", \"full client/server roundtrip on loopback\");",
+      "hint": "TcpListener(IPAddress.Loopback, 0) picks an ephemeral port; read frame, write same payload framed back; client reads and decodes."
+    }
+  ]
+}

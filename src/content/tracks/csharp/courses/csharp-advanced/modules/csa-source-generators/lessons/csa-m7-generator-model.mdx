@@ -1,0 +1,38 @@
+## The source generator model
+
+A source generator is a Roslyn extension that runs DURING compilation: it
+reads the code being compiled and adds new syntax trees to the same
+compilation. The generated code compiles alongside yours — one assembly,
+no runtime reflection, no code after build.
+
+```csharp
+[Generator]
+public sealed class HelloGen : IIncrementalGenerator
+{
+    public void Initialize(IncrementalGeneratorInitializationContext ctx)
+    {
+        ctx.RegisterPostInitializationOutput(static init =>
+            init.AddSource("Marker.g.cs",
+                "public sealed class HelloAttribute : System.Attribute { }"));
+
+        var targets = ctx.SyntaxProvider.ForAttributeWithMetadataName(
+            "HelloAttribute",
+            static (node, _) => node is Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax,
+            static (ctx2, _) => ctx2.TargetSymbol.Name);
+
+        ctx.RegisterSourceOutput(targets, static (spc, name) =>
+            spc.AddSource($"{name}.g.cs",
+                $"public static class Hello_{name} {{ public const string Who = \"{name}\"; }}"));
+    }
+}
+```
+
+What this changes architecturally: anything built with runtime reflection
+(DI registries, serializers, mappers, enum-to-string tables) can instead be
+*computed once at compile time*. That removes startup cost, becomes
+trim/AOT-safe (Module 19), and surfaces errors at build time.
+
+What generators CANNOT do: modify existing user code (they only ADD
+sources), run arbitrary per-user logic from configuration files at dev
+time, or replace the build. They see the same compilation the compiler
+sees — nothing more.

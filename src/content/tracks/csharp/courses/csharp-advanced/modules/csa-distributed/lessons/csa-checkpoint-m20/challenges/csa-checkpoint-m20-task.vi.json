@@ -1,0 +1,14 @@
+{
+  "title": "Checkpoint hệ phân tán",
+  "prompt": "Message bus mô phỏng, tất định: hiện thực lớp `IdempotentProcessor` với `int Process(string messageId, Func<int> work)` — xử lý work đúng một lần cho mỗi messageId, cache kết quả, trả lại khi lặp lại mà KHÔNG chạy lại work (work có bộ đếm tác dụng phụ mà test theo dõi). Rồi hiện thực `static int[] DeliverAll(List<string> messageIds, Func<string, int> handler, int duplicates)` giao mỗi tin nhắn `duplicates` lần (lộn xộn, xáo trộn tất định theo chỉ số) và trả về chênh lệch bộ đếm work — phải đúng bằng messageIds.Count vì các bản trùng bị hấp thụ nhờ idempotency.",
+  "tests": [
+    {
+      "name": "process-once",
+      "hint": "Dictionary<string,int> cache: TryGetValue → trả; ngược lại tính, lưu, trả."
+    },
+    {
+      "name": "duplicates-absorbed",
+      "hint": "DeliverAll: một IdempotentProcessor dùng chung; giao mỗi id `duplicates` lần; đếm số lần chạy trước/sau."
+    }
+  ]
+}

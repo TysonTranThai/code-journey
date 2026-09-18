@@ -1,0 +1,48 @@
+## Vòng lặp tối ưu
+
+Toàn bộ chu trình, minh họa trên workload thật (xác minh được trong
+sandbox) — dựng chuỗi:
+
+**1. ĐO.** Baseline bản cài hiển nhiên:
+
+```csharp
+static string SlowBuild(int n)
+{
+    var s = "";
+    for (int i = 0; i < n; i++) s += i;   // bậc hai: cấp phát lại mỗi lần nối
+    return s;
+}
+// n=10_000: ~150M+ byte bị cấp phát, nhiều lần thu Gen2
+```
+
+**2. PROFILE.** Delta cấp phát báo ~2×n² byte — mỗi `+=` sao chép cả chuỗi.
+Nút cổ chai là số lần cấp phát × kích thước bản sao, không phải parsing,
+không phải I/O.
+
+**3. SỬA — cách sửa nhỏ nhất trước.** StringBuilder (tăng trưởng tính
+kỳ):
+
+```csharp
+static string BetterBuild(int n)
+{
+    var sb = new StringBuilder(n * 5);   // định kích thước trước: không nhân đôi mảng nội bộ
+    for (int i = 0; i < n; i++) sb.Append(i);
+    return sb.ToString();                 // một chuỗi cuối duy nhất
+}
+// ~n*5 byte + chuỗi cuối: giảm ~50 lần cấp phát
+```
+
+**4. ĐO LẠI.** Delta sụp đổ; thời gian theo sau. Rồi hỏi: StringBuilder có
+phải là sàn không? Chỉ khi đo thêm: `string.Create` khi nội dung đồng đều
+về char, hoặc ghi thẳng vào output stream, bỏ qua chuỗi trung gian.
+
+**5. QUYẾT ĐỊNH.** Có đáng vì độ phức tạp thêm vào so với phần thắng đo
+được, ở tần suất đo được không? Gấp 50 lần trên đường chạy 1 lần/giây là
+nhiễu; gấp 2 lần trên đường chạy 1 triệu lần/giây là cả sự nghiệp. Vòng
+lặp tối ưu không kết thúc khi code nhanh — nó kết thúc khi bằng chứng nói
+dừng.
+
+Các anti-pattern mà vòng lặp này tiêu diệt: tối ưu không có baseline
+("cảm giác chậm"), dừng ở ý tưởng thông minh đầu tiên (StringBuilder mọi
+nơi — kể cả đường lạnh), và không bao giờ đo lại sau khi sửa ("tối ưu"
+khiến nó chậm hơn).

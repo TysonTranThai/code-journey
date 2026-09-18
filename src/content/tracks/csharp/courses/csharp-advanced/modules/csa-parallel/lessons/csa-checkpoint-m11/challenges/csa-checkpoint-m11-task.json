@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m11-task",
+  "title": "Parallel checkpoint",
+  "prompt": "Implement `static long SumSquaresParallel(int[] data, int threshold)` that sums squares of elements — sequentially when data.Length <= threshold, in parallel otherwise, using Parallel.For with a thread-local sum (interlocked-locked final combine). Then implement `static int[] SquaresParallel(int[] data)` returning squares IN ORIGINAL ORDER via PLINQ (AsOrdered). The test compares both against sequential results and asserts the parallel version of a 10M-element array beats a deliberately slow sequential baseline (a fake per-item cost).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "sum-correct",
+      "code": "var data = Enumerable.Range(1, 1000).ToArray();\nlong seq = 0; foreach (var x in data) seq += (long)x * x;\nCj.Eq(Solution.SumSquaresParallel(data, 100), seq, \"parallel sum matches sequential\");\nCj.Eq(Solution.SumSquaresParallel(data, 10000), seq, \"below threshold runs sequentially and still sums\");",
+      "hint": "Parallel.For with localInit: () => 0L, body: (i, state, local) => local + (long)data[i]*data[i], localFinally: local => Interlocked.Add(ref total, local)."
+    },
+    {
+      "name": "plinq-ordered",
+      "code": "var data = Enumerable.Range(1, 100).ToArray();\nvar r = Solution.SquaresParallel(data);\nCj.Eq(string.Join(\",\", r.Take(5)), \"1,4,9,16,25\", \"AsOrdered preserves index order\");\nCj.Eq(r.Length, 100, \"all present\");",
+      "hint": "data.AsParallel().AsOrdered().Select(x => x * x).ToArray() — without AsOrdered, PLINQ merges out of order."
+    }
+  ]
+}

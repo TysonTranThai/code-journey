@@ -1,0 +1,31 @@
+## Concurrent collections under the hood
+
+`ConcurrentDictionary<K,V>` replaces the global lock with fine-grained
+synchronization — and its API encodes the difference between atomic and
+non-atomic operations:
+
+```csharp
+// ATOMIC — always safe:
+d.TryAdd(k, v); d.TryGetValue(k, out var v); d[k] = v;
+d.GetOrAdd(k, factory); d.AddOrUpdate(k, add, update);
+
+// NOT ATOMIC — check-then-act across calls races:
+if (!d.ContainsKey(k)) d[k] = Compute();     // two racers can both miss
+```
+
+The famous subtlety: `GetOrAdd`'s value **factory can run more than once**
+under race — two threads may both compute, one wins the publish. If the
+factory has side effects (logging, HTTP calls), you feel it. The standard
+remedy is `GetOrAdd(k, _ => new Lazy<T>(factory))` — Lazy makes duplicate
+compute harmless (one Lazy wins; the loser's value is discarded uncreated).
+
+`ConcurrentQueue<T>` uses linked segments — a head/tail pair of array
+segments — giving near-lock-free enqueue/dequeue. `ConcurrentBag<T>` keeps
+a per-thread deque (work-stealing flavor): cheap for the same thread,
+expensive cross-thread, which makes it right for thread-local accumulation
+and wrong as a general shared queue.
+
+The honest tradeoff table: at low contention a plain `Dictionary` behind a
+`lock` often OUTPERFORMS `ConcurrentDictionary` (no per-op atomic overhead);
+the concurrent collections shine when contention is real or the key space
+is partitioned. Measure — never assume the concurrent version is faster.

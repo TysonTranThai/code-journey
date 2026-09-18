@@ -1,0 +1,36 @@
+## Unsafe pointers, fixed, and pinning
+
+The GC moves objects during compaction. A raw pointer into a managed
+object would dangle after a move — so `fixed` creates a contract: within
+this block, the object will not move. That is **pinning**, and pinning is
+not free:
+
+- Pinned objects fragment the heap (the GC must route compaction around
+  them).
+- Long pins across Gen0/1 collections degrade every collection.
+- The danger window is exactly the `fixed` body — which is why the rule
+  "pin narrowly" is also a performance rule, not just a safety rule.
+
+```csharp
+byte[] buffer = ...;
+fixed (byte* p = buffer)          // pin: GC avoids relocating buffer
+{
+    NativeWrite(p, buffer.Length);   // native code reads/writes it
+}   // scope ends: GC may move buffer again
+```
+
+Pointer arithmetic rules worth internalizing:
+
+- `p[i]` on `int*` advances by 4 bytes per index — pointer arithmetic is
+  element-typed, not byte-typed.
+- `void*` has no element size — cast to a typed pointer before indexing.
+- `&arr[0]`, `&local`, `&struct.Field` are all legal on unmanaged types.
+- `stackalloc int[64]` yields an `int*` (or `Span<int>`) — stack memory, no
+  pinning needed, freed on frame exit.
+
+The modern hierarchy: spans first (`buffer.AsSpan()` — safe, optimizes to
+the same code), then pointers where spans are awkward (interleaved
+multi-array indexing, native interop edges). Measure before assuming the
+pointer version is faster: tier-1 JIT usually compiles span code to
+identical machine code — the bounds checks get eliminated by range
+analysis the same way your manual checks replace them.

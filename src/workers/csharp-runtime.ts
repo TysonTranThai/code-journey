@@ -55,11 +55,80 @@ import { sanitizeTestName } from "./sanitize-name";
 export const CS_TEST_HARNESS = String.raw`// Code Journey C# test harness (injected; do not modify).
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Net;
+using System.Net.Sockets;
+using System.Numerics;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using System.Threading.Channels;
+using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+// Runs when the test assembly loads — before any JIT token resolution, so
+// compiler-API tests can bind the SDK's Roslyn assemblies at runtime.
+internal static class CjModuleInit
+{
+    [System.Runtime.CompilerServices.ModuleInitializer]
+    internal static void Run() => Cj.InitRoslynResolver();
+}
 
 static class Cj
 {
+    // Roslyn-at-runtime resolver: compiler-API challenges compile against the
+    // SDK's Roslyn assemblies but execute outside that directory, so the
+    // framework resolver cannot find them. Probe the SDK layout once and
+    // satisfy unresolved Roslyn loads from it. Additive for Beginner: never
+    // fires unless a test actually binds Microsoft.CodeAnalysis.*.
+    static Cj()
+    {
+        InitRoslynResolver();
+    }
+
+    // Registered via [ModuleInitializer] below — assembly-load time, BEFORE
+    // Main or any test method is JIT-compiled (JIT resolves referenced
+    // assemblies up front, so a static ctor alone fires too late for tests
+    // whose bodies use Roslyn types). Idempotent.
+    internal static bool _roslynResolverReady;
+    internal static void InitRoslynResolver()
+    {
+        if (_roslynResolverReady) return;
+        _roslynResolverReady = true;
+        try
+        {
+            string? roslyn = null;
+            foreach (var sdk in Directory.GetDirectories("/usr/share/dotnet/sdk"))
+            {
+                var cand = Path.Combine(sdk, "Roslyn", "bincore");
+                if (Directory.Exists(cand) && File.Exists(Path.Combine(cand, "Microsoft.CodeAnalysis.dll")))
+                {
+                    roslyn = cand;
+                    break;
+                }
+            }
+            if (roslyn is not null)
+            {
+                System.Runtime.Loader.AssemblyLoadContext.Default.Resolving += (_, name) =>
+                {
+                    var p = Path.Combine(roslyn, name.Name + ".dll");
+                    return File.Exists(p)
+                        ? System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(p)
+                        : null;
+                };
+            }
+        }
+        catch { }
+    }
     public sealed class CjFail : Exception
     {
         public CjFail(string message) : base(message) { }
@@ -112,6 +181,45 @@ static class Cj
         finally { Console.SetOut(original); }
         return buffer.ToString();
     }
+
+    // ── Async/exception helpers (C# — Advanced; additive for Beginner) ────
+
+    public static void Throws(Action action, string label)
+    {
+        try { action(); }
+        catch (Exception) { return; }
+        Fail(label, "expected an exception, but none was thrown");
+    }
+
+    public static async Task ThrowsAsync(Task task, string label)
+    {
+        try { await task.ConfigureAwait(false); }
+        catch (Exception) { return; }
+        Fail(label, "expected an exception, but none was thrown");
+    }
+
+    // Generic forms: return the thrown exception (typed) or the result so a
+    // test can assert on both the throw and surrounding values in one await.
+    public static async Task<Exception?> ThrowsAsync<TEx>(Func<Task> action) where TEx : Exception
+    {
+        try { await action().ConfigureAwait(false); return null; }
+        catch (TEx ex) { return ex; }
+    }
+
+    public static async Task<T?> ThrowsAsync<TEx, T>(Func<Task<T>> action) where TEx : Exception
+    {
+        try { return await action().ConfigureAwait(false); }
+        catch (TEx) { return default; }
+    }
+
+    public static async Task NoThrowAsync(Task task, string label)
+    {
+        try { await task.ConfigureAwait(false); }
+        catch (Exception ex)
+        {
+            Fail(label, "expected no exception, got " + ex.GetType().Name);
+        }
+    }
 }
 `;
 
@@ -158,20 +266,27 @@ export function buildCSharpTestFile(test: { name: string; code: string }): strin
     .split("\n")
     .map((line) => (line.trim().length > 0 ? `        ${line}` : line))
     .join("\n");
+  // Tests that await need an async entry point. async Task<int> Main is valid
+  // C#; sync tests keep the original signature so existing courses are
+  // byte-for-byte unaffected.
+  const isAsync = /\bawait\b/.test(test.code);
+  const bodySig = isAsync ? "static async Task<int> Body()" : "static void Body()";
+  const bodyCall = isAsync ? "await Body();" : "Body();";
+  const bodyClose = isAsync ? "        return 0;\n    }" : "    }";
   return [
     CS_TEST_HARNESS,
     "static class CjTest",
     "{",
-    "    static void Body()",
+    `    ${bodySig}`,
     "    {",
     indented,
-    "    }",
+    bodyClose,
     "",
-    "    static int Main()",
+    "    static async Task<int> Main()",
     "    {",
     "        try",
     "        {",
-    "            Body();",
+    `            ${bodyCall}`,
     '            Console.Out.WriteLine("PASS");',
     "            return 0;",
     "        }",

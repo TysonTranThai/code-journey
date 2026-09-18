@@ -1,0 +1,35 @@
+## Variance: co, contra, in
+
+Variance answers one question: **when is `C<Derived>` usable as `C<Base>`?**
+The direction follows data flow, and the compiler enforces safety:
+
+- **Covariant** (`out T`): T only *exits*. `IEnumerable<out T>`,
+  `IReadOnlyList<out T>`. A sequence of cats is a sequence of animals.
+- **Contravariant** (`in T`): T only *enters*. `Action<in T>`,
+  `IComparer<in T>`, `Predicate<in T>`. A consumer of animals can consume
+  cats.
+- **Invariant** (plain `T`): T both enters and exits. `IList<T>`,
+  `Dictionary<TKey,TValue>` (keys enter, values exit). Variance would be
+  unsound the moment a value could flow both ways through the same slot.
+
+```csharp
+IEnumerable<object> animals = new List<Cat>();     // OK: out
+Action<Cat> feedCat = c => c.Eat();
+Action<Animal> feedAny = a => a.Eat();
+feedCat = feedAny;                                  // OK: in — an Animal-consumer handles Cats
+// feedAny = feedCat;                               // compile error — would feed a Dog to Cat code
+```
+
+Two habits worth keeping forever:
+
+1. **Design your own interfaces with variance in mind.** A read-only
+   repository `IRead<out T>` composes with base-type handlers; an invariant
+   one forces casts at every boundary.
+2. **Variance is interface/delegate only.** Classes are invariant — wrap a
+   covariant view over internal storage instead of fighting it.
+
+The trap that survives review: `IEnumerable<object> xs = strings` is fine,
+but `xs.Add`-style mutation doesn't exist there — the moment you need
+*write* access you need an invariant type, and pretending otherwise is how
+`InvalidCastException` at a distance happens (arrays are the legacy
+exception — covariant but checked at write time, at runtime cost).

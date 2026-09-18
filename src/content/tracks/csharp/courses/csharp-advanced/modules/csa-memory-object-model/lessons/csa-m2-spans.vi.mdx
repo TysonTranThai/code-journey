@@ -1,0 +1,47 @@
+## `Span<T>`, `ReadOnlySpan<T>`, và `stackalloc`
+
+`Span<T>` là một cửa sổ chỉ-đứng-trên-stack vào vùng nhớ: (ref T, int
+length). Nó có thể slice một mảng, một string, một buffer thuê từ pool, hay
+bộ nhớ native — mà không sao chép bất kỳ thứ gì:
+
+```csharp
+int[] data = { 10, 20, 30, 40 };
+Span<int> mid = data.AsSpan(1, 2);   // nhìn các phần tử 1..2
+mid[0] = 21;                          // ghi vào data[1]
+
+ReadOnlySpan<char> tail = "hello world".AsSpan(6);  // không cấp phát substring
+```
+
+Các luật `ref struct` không phải giấy phép lái xe; chúng là thứ làm span
+**an toàn** dù có thể trỏ vào stack:
+
+- Span không thể là field của class, không thể bị box, không thể bị closure
+  có thể sống lâu hơn khung hiện tại bắt giữ.
+- Nó không thể vượt qua `await` — khung có thể không tồn tại sau lần treo.
+- Nó không thể là thành phần của mutable struct bị truy cập readonly
+  (bản sao phòng vệ của ref struct là bất khả thi).
+
+`stackalloc` cấp phát một buffer nhỏ trong khung hiện tại:
+
+```csharp
+Span<byte> scratch = stackalloc byte[256];   // tất định, không qua GC
+```
+
+Đặt ngân sách: vài trăm byte tới vài KB là hợp lý; stackalloc lớn có nguy
+cơ tràn stack (stack mặc định ~1MB). Với cấp phát có điều kiện, dùng pattern
+stackalloc + dự phòng:
+
+```csharp
+char[]? rented = null;
+ReadOnlySpan<char> buf = input.Length <= 128
+    ? stackalloc char[128]      // đường nhanh trên stack (CÓ CHẶN!)
+    : (rented = ArrayPool<char>.Shared.Rent(input.Length)).AsSpan();
+// ... dùng buf ...
+if (rented is not null) ArrayPool<char>.Shared.Return(rented);
+```
+
+Số `128` trong nhánh stackalloc là gánh kết cấu: compiler sinh khung stack
+theo HẰNG SỐ đó, không phải theo `input.Length` — stackalloc kích thước
+biến đổi chính là lệnh tràn stack. `ReadOnlySpan<char>` trên string literal
+kết hợp `int.Parse(span)` là đường parse không-cấp-phát chuẩn — các test
+trong checkpoint ép điều này bằng thăm dò cấp phát.

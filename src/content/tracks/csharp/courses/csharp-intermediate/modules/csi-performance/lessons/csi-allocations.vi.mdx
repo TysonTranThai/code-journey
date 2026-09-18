@@ -1,0 +1,39 @@
+## Đo trước — luôn luôn
+
+Trước bất kỳ tối ưu nào: **đo**. Trong .NET nghĩa là `Stopwatch` (hoặc profiler
+thật). Trực giác về "code chậm" sai liên tục; vòng lặp trông đắt có thể miễn
+phí, và một call vô tội có thể chi phối mọi thứ. Quy tắc của module này và về
+sau:
+
+1. Đo hình dạng hiện tại (`Stopwatch` tối thiểu).
+2. Thay đổi MỘT thứ.
+3. Đo lại; chỉ giữ thắng lợi thật.
+
+Mọi thứ dưới đây là các hình dạng có chi phí *dự đoán được từ chính code* —
+những chỗ đáng sửa ngay — nhưng dù vậy vẫn phải xác nhận bằng số.
+
+## String bất biến — nối chuỗi là O(n²)
+
+Mỗi `+=` trên string cấp phát một string hoàn toàn mới và chép mọi thứ có
+trước. Tạo báo cáo 10.000 phần bằng `+=` chép ~50 triệu ký tự.
+`StringBuilder` khấu trừ còn O(n) (xem cặp ví dụ trước/sau trong bản tiếng
+Anh).
+
+Vài phép `+=` trên chuỗi ngắn là ổn. Vấn đề nằm ở *vòng lặp không biên*.
+
+## Chọn collection là thắng lợi lớn rẻ nhất
+
+Kiểu truy cập quyết định loại — theo độ phức tạp, không theo mốt: lookup theo
+khóa dùng `Dictionary<K,V>` (~O(1)); kiểm tra tồn tại dùng `HashSet<T>`
+(~O(1)); truy cập theo chỉ số / quét có thứ tự dùng `List<T>`/`T[]`; FIFO dùng
+`Queue<T>`; LIFO dùng `Stack<T>` (bảng đầy đủ trong bản tiếng Anh).
+
+Ẩn số kinh điển: trong vòng lặp N phần tử, gọi `list.Contains(x)` (hay
+`Remove`) — O(n) mỗi lần — biến tổng thể thành O(n²). Một `HashSet` biến phép
+kiểm tra trong thành ~O(1) và cả vòng thành O(n).
+
+## Một thói quen allocation nữa
+
+`List<T>` tăng trưởng bằng cách nhân đôi — ổn. Nhưng nếu biết trước kích
+thước cuối, constructor `new List<T>(capacity)` tránh hẳn việc cấp phát lại.
+Chỉ dành cho khối lượng lớn đã biết kích thước; tinh chỉnh list nhỏ là nhiễu.

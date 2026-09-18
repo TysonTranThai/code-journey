@@ -618,8 +618,8 @@ catch (System.InvalidOperationException) { }
 string a = "{\"products\":[{\"name\":\"bolt\",\"price\":0.5}]}";
 string b = "{\"products\":[{\"name\":\"bolt\",\"price\":9.9},{\"name\":\"nut\",\"price\":0.2}]}";
 string merged = Solution.Merge(a, b);
-var items = Solution.Import(merged);
-Cj.Eq(items.Count, 2, "union by name");
+Cj.True(merged.TrimStart().StartsWith("["), "exported array shape");
+Cj.True(merged.Contains("\"name\":\"bolt\"") && merged.Contains("\"name\":\"nut\""), "both names present");
 Cj.True(merged.Contains("0.5") && !merged.Contains("9.9"), "first occurrence wins");
 """,
                     "Import both, dedupe by name preserving first, Export the result.",

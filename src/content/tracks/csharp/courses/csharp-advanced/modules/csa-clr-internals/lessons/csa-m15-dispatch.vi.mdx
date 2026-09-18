@@ -1,0 +1,32 @@
+## Dispatch ảo và lời gọi interface
+
+Mọi object reference-type mang một **method table** ("type handle" mà
+header trỏ tới). Dispatch phương thức instance trên phân cấp lớp đi qua
+bảng đó:
+
+- **Lời gọi instance non-virtual**: phân giải lúc compile thành phương thức
+  chính xác — tối đa một hướng dẫn gián tiếp.
+- **Lời gọi `virtual`**: nạp method table của receiver, lấy slot, gọi qua
+  con trỏ. Vài chỉ thị — rẻ, nhưng mờ với bộ tối ưu (khó inline hơn).
+- **Lời gọi interface**: cái khó. Slot interface không có vị trí cố định
+  qua các phân cấp lớp không liên quan, nên runtime phân giải qua interface
+  map — từng là dispatch chậm nhất, dù runtime hiện đại cache phân giải
+  (virtual-stub dispatch) và tiered PGO có thể monomorphize hoàn toàn các
+  điểm gọi nóng.
+
+```csharp
+sealed class Fast : IFoo { ... }   // sealed: JIT có thể devirtualize lời gọi IFoo
+class Slow : IFoo { ... }          // mở: subclass nào cũng có thể tồn tại, lời gọi vẫn ảo
+```
+
+**Vì sao `sealed` là tối ưu thật**: đóng phân cấp chứng minh không còn
+override nào, cho phép JIT thay virtual dispatch bằng lời gọi trực tiếp
+(và có thể inline). Hiệu quả đo được tùy workload — vài nano giây trên
+đường lạnh, phần trăm thật trên vòng đa hình nóng — và profiler thường chỉ
+hiện "indirect call overhead" một cách tổng hợp.
+
+**Struct bỏ qua tất cả.** Lời gọi struct qua kiểu struct cụ thể là trực
+tiếp; qua interface thì bị box. Ràng buộc generic (Module 3, `where T :
+IFoo` với T : struct) giữ lời gọi trực tiếp — vì sao generic math và code
+dựa trên span đạt được trừu tượng hóa mà không tốn dispatch. Nghệ thuật:
+trả tiền đa hình nơi thiết kế cần, và giữ vòng trong nóng đơn hình.

@@ -1,0 +1,32 @@
+## Assembly, metadata, và IL
+
+Một assembly .NET là file PE kiểu Windows (ngay cả trên Linux — cùng định
+dạng container) với ba phần nội dung:
+
+1. **Bảng metadata** — mọi kiểu, phương thức, field, attribute cùng chữ ký
+   của chúng, ở định dạng bảng nhị phân. Đây là thứ reflection đọc và là
+   thứ compiler đã tiêu thụ khi tham chiếu bạn. Đầy đủ trung thực: các tính
+   năng C# là metadata, không phải cú pháp.
+2. **IL** — bytecode dạng stack cho mỗi thân phương thức. Dựa trên stack:
+   `ldc.i4.5; ldc.i4.3; add` đẩy 5, đẩy 3, cộng. Được xác minh khi nạp (tính
+   an toàn kiểu của stack là kiểm chứng được).
+3. **Tài nguyên / manifest** — dữ liệu nhúng và định danh phiên bản/
+   culture/strong-name của assembly.
+
+Loader phân giải các entry `AssemblyRef` qua runtime đang host: app-local
+trước, rồi framework, rồi luật của `AssemblyLoadContext`. Sự cố production
+kinh điển — FileLoadException hay "could not load type" — là chuyện của
+resolver: hai phiên bản của một định danh, hoặc một phụ thuộc có ở dev
+nhưng bị trim khỏi publish.
+
+**Xem IL không cần ildasm**: reflection cho bạn chữ ký biến cục bộ của thân
+phương thức, và `MethodBody.GetILAsByteArray()` cho các byte IL thô — đủ để
+*thấy* rằng `async`, closure, và `lock` đều viết lại code của bạn thành
+các pattern khác. Cái nhìn cấp decompiler (ILSpy) là công cụ desktop, nhưng
+mọi thứ nó hiển thị đều suy ra từ chính các bảng metadata này — không có
+phép thuật, tất cả đều có tài liệu.
+
+Điều này mua được gì trong thực tế: đọc stack trace của exception nghĩa là
+đọc sự tương ứng IL-to-source; hiểu trimming nghĩa là biết metadata nào
+linker chứng minh được là không dùng; chẩn đoán phiên bản nghĩa là soi
+manifest, không phải đoán mò.

@@ -13,9 +13,10 @@ import csa  # noqa: E402
 
 def main() -> None:
     # Content modules (order does not matter; ids are validated globally).
-    import csa_m1  # noqa: F401
-
-    csa_m1.build()
+    mods = [f"csa_m{i}" for i in range(1, 23)] + ["csa_m24"]  # 23 modules (m5 = reflection+attributes)
+    for name in mods:
+        mod = __import__(name)
+        mod.build()
 
     csa.emit()
 

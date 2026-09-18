@@ -1,0 +1,73 @@
+## Smells are symptoms, not sins
+
+A *code smell* is a surface sign that something deeper is wrong. You cannot
+memorize them into irrelevance — you train your eye on the classics:
+
+| Smell | Looks like | Usually means |
+|---|---|---|
+| Long method | 60 lines, blank-line "chapters" | doing 3 jobs; extract methods |
+| Magic numbers | `if (age > 18 && level > 4)` | unnamed policy; name it |
+| Duplication | same 6 lines in 3 places | one rule, copied; extract once |
+| Deep nesting | 5 levels of `if`/`foreach` | missing guard clauses |
+| God class | `OrderManager` also sends email | many responsibilities (SRP) |
+| Flag arguments | `Save(order, true)` | two behaviors in one method |
+
+The single highest-value habit: **when you cannot name a block, you do not
+understand it yet** — and neither will the next reader.
+
+## Naming rules that earn their keep
+
+- **Names state intent, not type**: `remainingBalance`, not `remainingDec`.
+- **Booleans read as predicates**: `isSuspended`, `hasItems`, `canRefund`.
+- **Methods are verbs**; the name says what it *does*: `CalculateTax`, not
+  `TaxData`.
+- **One vocabulary per concept**. `customer`, `client`, `buyer` in the same
+  file means three words for one thing — pick one.
+- **Misleading names are worse than bad names**: a method named `GetTotal`
+  that also writes to the database will be called in the wrong place, by
+  someone who trusted you.
+
+## Guard clauses: flatten the pyramid
+
+Deep nesting accumulates edge-case handling and business logic in one pile.
+Guard clauses invert it — handle the degenerate cases *first*, exit early,
+and leave the happy path unindented and readable:
+
+```csharp
+// before: the pyramid
+public string Label(Order? order)
+{
+    if (order != null)
+    {
+        if (order.Items.Count > 0)
+        {
+            return order.Customer + " x" + order.Items.Count;
+        }
+        else { return "empty"; }
+    }
+    else { return "none"; }
+}
+
+// after: guards first, happy path last
+public string Label(Order? order)
+{
+    if (order is null) return "none";
+    if (order.Items.Count == 0) return "empty";
+    return order.Customer + " x" + order.Items.Count;
+}
+```
+
+Same behavior, one indent level, and every edge case is greppable on its own
+line.
+
+## Cohesion, coupling, SRP
+
+- **Cohesion** — how much a type's members belong to one job. High cohesion:
+  every method of `InvoiceCalculator` computes something about invoices.
+- **Coupling** — how much a type needs to know about other types. `Invoice`
+  knowing about `SmtpClient` is coupling you do not need.
+- **Single Responsibility Principle** — one reason to change per type. The
+  test: "why would this class change?" If the answer has "and" in it
+  ("when tax rules change *and* when the email template changes"), split it.
+
+You will exercise all of these by refactoring, next lesson.

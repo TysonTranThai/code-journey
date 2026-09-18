@@ -1,0 +1,38 @@
+## Tư duy AOT: các dịch vụ runtime, theo kiểu tĩnh
+
+NativeAOT không phải "JIT nhưng sớm hơn" — nó loại bỏ các dịch vụ runtime:
+
+- **Không JIT**: không tiering, không dynamic PGO, không sinh mã lúc chạy.
+  Hệ quả: không `Reflection.Emit`, không
+  `System.Linq.Expressions.Compile()`, không thực thi assembly nạp động.
+- **Không interpreter dự phòng**: reflection vẫn HOẠT ĐỘNG với việc đọc
+  metadata, nhưng đường truy thành phần là precompiled — thành phần không
+  thể với tới sẽ không tồn tại.
+- **Tĩnh mọi thứ**: mọi kiểu chương trình có thể dùng phải reachable lúc
+  compile, hoặc được giữ tường minh (cùng các annotation như trimming,
+  cộng thêm các warning riêng của AOT).
+
+Bạn đổi được gì: khởi động micro giây, binary tự chủ nhỏ, không bộ nhớ
+JIT, độ trễ request-đầu tiên dự đoán được, và triển khai khó can thiệp
+(không IL trên đĩa để thay thế).
+
+**Source generator là cây cầu.** Pattern toàn ngành làm AOT khả thi:
+chuyển việc SINH MÃ từ reflection lúc runtime sang compile time. Source
+generator của System.Text.Json, generator route/tham số của ASP.NET Core,
+đăng ký DI, regex — mỗi cái thay một cơ chế phản chiếu bằng code tĩnh được
+phát sinh:
+
+```csharp
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(Order))]
+partial class OrderJsonContext : JsonSerializerContext { }
+
+JsonSerializer.Serialize(order, OrderJsonContext.Default.Order);
+// metadata sinh lúc compile; không reflection lúc chạy
+```
+
+Tư duy chuyển đổi: mỗi lần code hỏi "có những kiểu nào?" hay "khởi tạo
+cái này theo tên," hãy viết lại thành bảng đăng ký tường minh — thường do
+source generator của chính bạn sinh từ attribute (kỹ năng Module 8). Ràng
+buộc AOT là hàm ép cho kiến trúc mà khóa học luôn ủng hộ: biên tường
+minh, tri thức tĩnh, reflection chỉ ở rìa.

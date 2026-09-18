@@ -1,0 +1,42 @@
+## Các tầng, tối giản và trung thực
+
+Với app vừa, ba tầng thắng mọi "sở thú" doanh nghiệp:
+
+- **Domain** — các type và quy tắc làm nên app: `Order`, `OrderLine`, logic
+  định giá. Không biết *gì* về IO.
+- **Application** — các use-case: `PlaceOrderHandler` điều phối domain type
+  và port. Biết domain; biết port (interface), không biết adapter.
+- **Infrastructure** — nói chuyện với thế giới ngoài: HTTP client, database,
+  file, các hiện thực thật của port. Biết tất cả — nhưng *mọi thứ trỏ tới nó*,
+  không bao giờ ngược lại.
+
+## Quy tắc phụ thuộc
+
+> Phụ thuộc source-code trỏ vào trong; không gì ở tầng trong được nhắc tới
+> type của tầng ngoài.
+
+`Order` (domain) không được nhắc `HttpClient` hay SQL. `PlaceOrderHandler`
+được phụ thuộc `IOrderRepository` (port nó sở hữu) nhưng không được phụ thuộc
+`SqlOrderRepository` (adapter). Adapter cụ thể được chọn ở *rìa hệ thống* —
+trong composition root.
+
+Đây không phải nghi lễ: đây chính là thứ làm `PlaceOrderHandler` test được
+bằng fake — thứ bạn làm bằng tay ở M16. Đường ranh interface CHÍNH LÀ kiến
+trúc.
+
+## Ports và adapters (phần lõi thực dụng của Clean/Hexagonal)
+
+- **Port** là interface tầng trong định nghĩa vì nó *cần* một năng lực:
+  `IOrderRepository`, `IEmailSender`, `IClock`.
+- **Adapter** là type infrastructure hiện thực port: `SqlOrderRepository`,
+  `SmtpEmailSender`.
+- Code domain/application chỉ thấy port. Test thay fake vào đúng các port đó.
+  Wiring production xảy ra một lần, ở rìa.
+
+Nhớ một câu: **domain định nghĩa nó cần gì; infrastructure đáp ứng.**
+
+## Composition root
+
+Một nơi duy nhất (thường là `Program.cs`) chọn type cụ thể và inject. Nó được
+phép biết tất cả — đó là công việc của nó. Khi wiring nằm ở đó, đổi hiện thực
+là thay một file, và mọi tầng khác vẫn không biết gì.

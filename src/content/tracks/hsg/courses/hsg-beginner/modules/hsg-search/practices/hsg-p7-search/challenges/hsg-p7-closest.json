@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p7-closest",
+  "title": "Closest Value",
+  "prompt": "**Description:** Given a sorted array of n integers and q queries, for\neach query x print the array value closest to x. If two values are\nequally close, print the **smaller** one.\n\n**Input:** Line 1: n q (1 <= n, q <= 10^5). Line 2: n distinct sorted\nintegers (|a_i| <= 10^9). Next q lines: x (|x| <= 10^9).\n**Output:** q lines — the closest value.\n\n**Example:** `4 2` / `1 4 8 12` / `5` / `10` -> `4`, `8`\n(5 is 1 away from 4 and 3 from 8 -> 4; 10 ties 8 and 12 -> smaller, 8).",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"4 2\\\\n1 4 8 12\\\\n5\\\\n10\\\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\\\n8\\\\n\"));",
+      "hint": "5 ties 4 vs 8 -> smaller (4); 10 is closer to 8."
+    },
+    {
+      "name": "below all",
+      "code": "std::istringstream in(\"3 1\\\\n10 20 30\\\\n1\\\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"10\\\\n\"));",
+      "hint": "Everything is above; nearest is the first."
+    },
+    {
+      "name": "above all",
+      "code": "std::istringstream in(\"3 1\\\\n10 20 30\\\\n99\\\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"30\\\\n\"));",
+      "hint": "Everything is below; nearest is the last."
+    },
+    {
+      "name": "exact hit",
+      "code": "std::istringstream in(\"4 1\\\\n2 6 7 20\\\\n7\\\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\\\n\"));",
+      "hint": "Distance 0 wins outright."
+    }
+  ],
+  "level": "guided"
+}

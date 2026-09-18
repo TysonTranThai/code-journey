@@ -1,0 +1,32 @@
+## Building and compiling expressions
+
+Beyond parsing lambdas, you build trees node by node — this is how rule
+engines turn configuration into executable predicates:
+
+```csharp
+var x = Expression.Parameter(typeof(int), "x");
+var body = Expression.AndAlso(
+    Expression.GreaterThanOrEqual(x, Expression.Constant(5)),
+    Expression.LessThan(x, Expression.Constant(100)));
+var lambda = Expression.Lambda<Func<int, bool>>(body, x);
+Func<int, bool> f = lambda.Compile();
+```
+
+Rules that prevent the classic failures:
+
+- **Reuse `ParameterExpression` nodes.** Two different `Parameter` objects
+  with the same name are DIFFERENT variables; `Compile()` throws
+  "variable 'x' references itself"... actually it throws on unbound or
+  mismatched parameters. Build the parameter once and pass the same node
+  everywhere, including to `Lambda`.
+- **`Expression.Constant` captures the value at build time** — dynamic
+  predicates need either rebuild-per-change or
+  `Expression.Field`/`Expression.Closure` over a captured object.
+- **`Compile()` is expensive** (ms) and the compiled delegate is GC-heavy
+  to produce — cache compiled delegates keyed by the semantic input.
+
+When trees are the WRONG tool: hot per-item logic (trees add indirection
+the JIT cannot fully remove), anything needing statements or `async`, and
+one-shot scripts where a plain delegate is simpler. Trees shine exactly
+where you must *look at* the logic: providers, rules, serialization of
+queries.

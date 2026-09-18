@@ -1,0 +1,27 @@
+## The gate (mini-build)
+
+One file, three seams, composing patterns you built this module:
+
+1. **Strategy** — `IRule { string? Check(Solution.Order o); }` returning an
+   error message or null. Implement `MinQty` (fails when total qty < 2, msg
+   `"qty"`) and `PaidSku` (fails when any sku is empty, msg `"sku"`).
+2. **Composite/Strategy pipeline** — `Solution.Validate(order, IRule[] rules)`
+   returns the first non-null error, or null when all pass. Null rules in the
+   array are skipped (tolerant pipeline).
+3. **Repository + audit Decorator** — `IRepo { void Save(Solution.Order o); int Saved; }`;
+   `AuditedRepo` wraps any `IRepo`, counts accepted saves in `Saves`, and the
+   test flow decides what gets saved.
+
+Flow under test: validate first; save only when valid; `AuditedRepo.Saves`
+must equal the number of *valid* orders.
+
+```csharp
+public static class Solution
+{
+    public sealed class Order { public string Sku = ""; public int Qty; }
+    public interface IRule { string? Check(Order o); }
+    public static string? Validate(Order o, IRule[] rules);
+    public interface IRepo { void Save(Order o); int Saved { get; } }
+    public sealed class AuditedRepo : IRepo { public int Saves; /* wraps IRepo */ }
+}
+```

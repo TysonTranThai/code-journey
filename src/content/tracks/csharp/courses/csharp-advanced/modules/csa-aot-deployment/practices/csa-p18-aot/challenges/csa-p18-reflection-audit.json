@@ -1,0 +1,16 @@
+{
+  "id": "csa-p18-reflection-audit",
+  "title": "Reflection audit",
+  "prompt": "Given a type, list which reflection operations would break under aggressive trimming: implement `static List<string> Audit(Type t)` returning descriptions for each operation that survives trimming statically: include \"gettype-of-t\" if t is a compile-time visible type (always true here), \"declared-fields\" if it has fields (GetFields always works on kept types), \"attribute-read\" if it has attributes, \"constructor-invoke\" if it has a parameterless ctor — but NEVER include \"scan-all-types\" (never survives). The test verifies both the includes and the absent scan entry.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "audit-kept-type",
+      "code": "var ops = Solution.Audit(typeof(Sample));\nCj.True(ops.Contains(\"gettype-of-t\"), \"kept type introspects fine\");\nCj.True(ops.Contains(\"declared-fields\"), \"fields readable\");\nCj.False(ops.Contains(\"scan-all-types\"), \"assembly scanning never survives\");",
+      "hint": "typeof(Sample) is a direct reference → the type (and its members) is kept; scanning is never provable."
+    }
+  ],
+  "level": "independent"
+}

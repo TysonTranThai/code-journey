@@ -1,0 +1,28 @@
+## Giao dịch và mức isolation
+
+Một transaction gom các thao tác để chúng commit cùng nhau hoặc không gì cả.
+Phần thú vị là **mức isolation** — những gì các transaction đồng thời được
+phép nhìn thấy của nhau. SQL Server mặc định `READ COMMITTED`; các异常 mà mỗi
+mức ngăn chặn là một *bậc thang*, và mỗi bậc bạn leo trả giá bằng tính đồng
+thời:
+
+| Mức | Dirty read | Non-repeatable read | Phantom |
+| --- | --- | --- | --- |
+| READ UNCOMMITTED | có thể | có thể | có thể |
+| READ COMMITTED | ngăn chặn | có thể | có thể |
+| REPEATABLE READ | ngăn chặn | ngăn chặn | có thể |
+| SERIALIZABLE | ngăn chặn | ngăn chặn | ngăn chặn |
+
+(Cộng thêm các biến thể snapshot — `READ COMMITTED SNAPSHOT`, `SNAPSHOT` —
+cho bạn các phiên bản hàng thay vì khóa; cùng bậc thang anomaly, trả giá bằng
+tempdb và xung đột ghi thay vì chặn.)
+
+**Kỹ năng production** là khớp mức với bất biến: báo cáo cộng tổng các hàng
+thường chịu được non-repeatable read; "chuyển khoản không được chi đôi" thì
+không. Nâng mọi thứ lên SERIALIZABLE là cách bạn xây một cây cầu một làn rồi
+gọi nó là database.
+
+Hai bất biến nữa đáng nhớ: transaction chỉ *đọc* không nên giữ khóa ghi lâu;
+và **transaction càng ngắn, mọi thứ ở trên càng đỡ đau** — commit trước khi
+gọi dịch vụ từ xa, không bao giờ await bên trong (quy tắc module 10, nói lại
+bằng thuật ngữ dữ liệu).

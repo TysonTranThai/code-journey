@@ -1,0 +1,14 @@
+{
+  "title": "Thi hành deadline",
+  "prompt": "Hiện thực `static async Task<string> ReadWithDeadline(Func<Task<string>> read, TimeSpan deadline)`: await phép đọc; nếu quá deadline, ném TimeoutException và NGỪNG CHỜ (task đọc vẫn chạy nhưng caller thì không). Dùng Task.WhenAny(read, Task.Delay(deadline)) — mẫu abandon-the-wait kinh điển. Test dùng phép đọc ngủ 500ms với deadline 50ms và mong có lỗi ném trong khoảng thấp hơn xa 500ms.",
+  "tests": [
+    {
+      "name": "fast-read-passes",
+      "hint": "WhenAny trả về task hoàn thành đầu tiên; nếu là task đọc, trả kết quả của nó."
+    },
+    {
+      "name": "slow-read-times-out",
+      "hint": "var completed = await Task.WhenAny(readTask, Task.Delay(deadline)); if (completed != readTask) throw new TimeoutException();"
+    }
+  ]
+}

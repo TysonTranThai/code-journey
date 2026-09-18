@@ -1,0 +1,32 @@
+## Exception ở mức runtime
+
+Exception .NET dùng **unwinding hai lượt**, mô phỏng theo Itanium C++ ABI:
+
+1. **Lượt 1 (tìm kiếm):** đi dọc stack tìm khung nào có `catch` khớp. Không
+   có user code nào chạy.
+2. **Lượt 2 (unwind):** đi lại, chạy các handler `finally`/`fault` của từng
+   khung cho tới (và gồm cả) khung catch thắng. Các khung stack bị tháo
+   dỡ khi handler hoàn tất.
+
+Điều này giải thích các hành vi quan sát được: thay đổi trạng thái trong
+`finally` được đảm bảo trên đường unwind; filter (`catch when`) chạy trong
+lượt 1 và có thể *từ chối* một exception để handler ngoài nhận nó mà
+không phải unwind các khung trung gian.
+
+**Mô hình chi phí** — những gì nên nói khi ai đó bảo "exception chậm":
+
+- Đường **throw** (khởi tạo, lượt 1+2, đi stack) tốn micro giây — thường
+  100–1000× một phép kiểm tra kiểu return. Ném exception mỗi vòng lặp là
+  bug hiệu năng thật sự (checkpoint đo nó một cách trung thực).
+- Đường **không ném** gần như miễn phí: một khối try chỉ thêm một mục
+  jump-table, không phải một nhánh. "Bọc try/catch quanh vòng nóng" tốn
+  gần đúng bằng không cho đến khi exception thật sự bay ra.
+
+**Hệ quả thiết kế**: pattern `TryX` (`int.TryParse`) tồn tại cho các lỗi
+*dự đoán được*; exception dành cho thứ *ngoại lệ*. Xác thực request từ
+chối 30% input nên dùng pattern Try — không phải vì exception "xấu", mà
+vì micro giây mỗi lỗi nhân lên. Runtime tự nó theo quy tắc này: tra từ
+điển, parse span, đọc channel đều có biến thể không ném.
+
+`ExceptionDispatchInfo.Capture(ex).Throw()` giữ nguyên stack gốc — cách
+đúng để ném lại sau các biên async, nơi `throw ex;` sẽ viết lại trace.

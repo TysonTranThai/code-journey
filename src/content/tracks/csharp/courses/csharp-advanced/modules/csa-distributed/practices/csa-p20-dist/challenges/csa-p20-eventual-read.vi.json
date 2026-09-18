@@ -1,0 +1,10 @@
+{
+  "title": "Đọc-sau-ghi dưới tính nhất quán cuối cùng",
+  "prompt": "Hiện thực lớp `EventualStore(int replicationDelayMs)` với `void Write(string key, int value)` (primary ngay tức thì; replica sau khoảng trễ qua Task.Run) và `int? ReadStale(string key)` (đọc replica, có thể trượt các ghi mới) cộng `int? ReadPrimary(string key)` (luôn cập nhật). Hiện thực `static async Task<bool> ReadAfterWriteHolds(EventualStore store, string key)` ghi 42, đọc replica NGAY LẬP TỨC — và trả về việc lần đọc có thấy bản ghi hay không (với trễ thật thì KHÔNG được thấy; test sau đó chờ quá khoảng trễ và đòi replica hội tụ).",
+  "tests": [
+    {
+      "name": "stale-then-converged",
+      "hint": "Write: dict[key]=v trên primary; Task.Run(async { await Task.Delay(replicationDelayMs); replica[key]=v; }). ReadAfterWriteHolds: Write, rồi ReadStale != null."
+    }
+  ]
+}

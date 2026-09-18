@@ -1,0 +1,29 @@
+## Type, MemberInfo, và discovery
+
+Reflection là lập trình trên **metadata**: các bảng mà compiler ghi vào
+assembly. `typeof(T)`, `obj.GetType()`, và `assembly.GetTypes()` đưa cho
+bạn object `Type`; từ đó, `GetProperties`, `GetMethods`, `GetFields`,
+`GetConstructors` đi qua các bảng member.
+
+```csharp
+var t = typeof(Order);
+foreach (var p in t.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+    Console.WriteLine($"{p.Name}: {p.PropertyType.Name}");
+```
+
+Mô hình chi phí (đã đo lặp lại qua các phiên bản .NET): lần đầu giải quyết
+metadata sẽ đổ cache — `GetProperty`/`GetMethod` là phần đắt, không phải
+`GetValue` trên member đã resolve. Hệ quả:
+
+- **Resolve một lần.** Lưu `MethodInfo`/`PropertyInfo` trong
+  `ConcurrentDictionary` tĩnh có key `(Type, MemberName)` và tái sử dụng.
+- **`BindingFlags` là bộ điều khiển hiệu năng**, không phải trang trí: ít
+  ứng viên = ít việc hơn.
+- `assembly.GetTypes()` có thể THROW (`ReflectionTypeLoadException`) khi
+  thiếu dependency — trong code plugin, dùng `GetExportedTypes` hoặc xử lý
+  mảng `Types` trong exception của loader, mảng chứa các null.
+
+Generics tương tác với discovery theo cách gây bất ngờ: `typeof(List<>)` là
+generic type **mở** (chưa có tham số kiểu); bạn đóng nó bằng
+`MakeGenericType(typeof(int))`. Tra attribute trên open generic đọc attribute
+của định nghĩa generic, không phải của bản đóng.

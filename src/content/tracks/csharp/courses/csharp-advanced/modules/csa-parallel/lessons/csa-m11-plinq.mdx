@@ -1,0 +1,35 @@
+## PLINQ: parallel query, real costs
+
+`.AsParallel()` turns a LINQ query into a parallel pipeline; PLINQ
+partitions the source, runs operators concurrently, and merges results:
+
+```csharp
+var heavy = urls.AsParallel()
+                .Select(ParseAndScore)      // CPU-bound, expensive per item
+                .Where(s => s > threshold)
+                .ToArray();
+```
+
+The merge behavior is the first surprise: **PLINQ reorders by default.**
+It buffers results to yield them faster, sacrificing order for throughput.
+`.AsOrdered()` restores source order at a real buffering cost — pay it only
+when order is part of the answer.
+
+What PLINQ is good at: CPU-bound element-wise work over large inputs
+(`Select` with expensive transforms), `Aggregate` with seeded overloads.
+What it is bad at:
+
+- **Tiny per-item work** — partition overhead eats the win (the same rule
+  as Parallel.For).
+- **Order-dependent operators** — `Take`, `First`, `Skip` need sequence
+  semantics that fight partitioning.
+- **Side-effecting lambdas** — they now run on many threads; your closure
+  had better be thread-safe.
+- **I/O-bound work** — PLINQ parallelizes THREADS, not waiting. Awaiting a
+  network call inside PLINQ blocks pool threads. That job belongs to
+  `Task.WhenAll`/async streams.
+
+`WithDegreeOfParallelism(n)` caps the worker count — essential when several
+PLINQ queries share a process, or when the box is shared. `AsSequential()`
+drops back to sequential mid-query when a later operator cannot be
+parallelized.

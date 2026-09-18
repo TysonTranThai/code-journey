@@ -1,0 +1,21 @@
+{
+  "id": "csa-p15-exception-cost",
+  "title": "Exception cost, measured",
+  "prompt": "Implement `static long ThrowCatchCost(int iterations)`: capture Stopwatch ticks for `iterations` throw+catch cycles of a pre-created exception instance (throw ex; inside try, catch { }) and return the elapsed milliseconds. Then implement `static long ErrorCodeCost(int iterations)` doing the same work but returning -1 instead of throwing (checked, same loop shape). Implement `static int Divide(int a, int b)` that throws DivideByZeroException on b==0 — used by the test once to verify the exception path works.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "divide-throws",
+      "code": "var ex = await Cj.ThrowsAsync<DivideByZeroException>(() => Task.Run(() => Solution.Divide(1, 0)));\nCj.True(ex is not null, \"b==0 throws\");\nCj.Eq(Solution.Divide(10, 2), 5, \"normal path\");",
+      "hint": "if (b == 0) throw new DivideByZeroException(); return a / b."
+    },
+    {
+      "name": "costs-measured",
+      "code": "var tc = Solution.ThrowCatchCost(1000);\nvar ec = Solution.ErrorCodeCost(1000);\nCj.True(tc >= 0 && ec >= 0, \"both measurable\");\n// No assertion that tc > ec: absolute costs vary by hardware/JIT. The lesson is the\n// measurement exists and throw+catch is usually orders of magnitude slower.",
+      "hint": "Pre-create the exception ONCE (new Exception() outside the loop); Stopwatch.StartNew() → loop → .ElapsedMilliseconds."
+    }
+  ],
+  "level": "guided"
+}

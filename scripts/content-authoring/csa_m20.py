@@ -69,7 +69,7 @@ def build() -> None:
                     "var ids = Enumerable.Range(0, 20).Select(i => $\"msg-{i}\").ToList();\n"
                     "int runs = 0;\n"
                     "var delta = IdempotentProcessor.DeliverAll(ids, id => IdempotentProcessor.RunTracked(id, () => ++runs), 3);\n"
-                    'Cj.Eq(delta, 20, "20 unique messages = 20 runs despite 60 deliveries");'
+                    'Cj.Eq(delta[0], 20, "20 unique messages = 20 runs despite 60 deliveries");'
                 ),
                 "hint": "DeliverAll: one shared IdempotentProcessor; deliver each id `duplicates` times; count runs before/after.",
             },

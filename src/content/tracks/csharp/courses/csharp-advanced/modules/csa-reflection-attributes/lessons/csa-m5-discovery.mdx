@@ -1,0 +1,30 @@
+## Type, MemberInfo, and discovery
+
+Reflection is programming against **metadata**: the tables the compiler
+wrote into the assembly. `typeof(T)`, `obj.GetType()`, and
+`assembly.GetTypes()` hand you `Type` objects; from there,
+`GetProperties`, `GetMethods`, `GetFields`, `GetConstructors` walk the
+member tables.
+
+```csharp
+var t = typeof(Order);
+foreach (var p in t.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+    Console.WriteLine($"{p.Name}: {p.PropertyType.Name}");
+```
+
+The cost model (measured repeatedly across .NET versions): first-time
+metadata resolution populates caches — `GetProperty`/`GetMethod` are the
+expensive part, not `GetValue` on an already-resolved member. Consequences:
+
+- **Resolve once.** Store the `MethodInfo`/`PropertyInfo` in a static
+  `ConcurrentDictionary` keyed by `(Type, MemberName)` and reuse.
+- **`BindingFlags` are a performance control**, not decoration: fewer
+  candidates = less work.
+- `assembly.GetTypes()` can THROW (`ReflectionTypeLoadException`) when
+  dependencies are missing — in plugin code, use `GetExportedTypes` or
+  handle the loader exception's `Types` array, which contains nulls.
+
+Generics interact with discovery in a way that surprises people:
+`typeof(List<>)` is an **open** generic type (no type arguments); you close
+it with `MakeGenericType(typeof(int))`. Attribute lookup on open generics
+reads the generic type definition's attributes, not the closed one's.

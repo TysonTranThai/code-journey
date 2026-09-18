@@ -52,11 +52,11 @@ def build() -> None:
             {
                 "name": "deployment-desc",
                 "code": (
-                    'Cj.Eq(Solution.DeploymentDescription(false, false, false), "framework-dependent");\n'
-                    'Cj.Eq(Solution.DeploymentDescription(true, false, false), "self-contained");\n'
-                    'Cj.Eq(Solution.DeploymentDescription(true, true, false), "trimmed");\n'
-                    'Cj.Eq(Solution.DeploymentDescription(true, true, true), "aot");\n'
-                    'Cj.Eq(Solution.DeploymentDescription(true, false, true), "aot");'
+                    'Cj.Eq(Solution.DeploymentDescription(false, false, false), "framework-dependent", "no runtime bundled");\n'
+                    'Cj.Eq(Solution.DeploymentDescription(true, false, false), "self-contained", "runtime bundled");\n'
+                    'Cj.Eq(Solution.DeploymentDescription(true, true, false), "trimmed", "trimmed IL");\n'
+                    'Cj.Eq(Solution.DeploymentDescription(true, true, true), "aot", "AOT wins");\n'
+                    'Cj.Eq(Solution.DeploymentDescription(true, false, true), "aot", "AOT implies trimmed");'
                 ),
                 "hint": "Check aot first, then selfContained, then trimmed.",
             },

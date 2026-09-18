@@ -1,0 +1,33 @@
+## Stack trace như bằng chứng
+
+Stack trace là bản ghi đường gọi tại thời điểm thất bại. Đọc nó như bằng
+chứng (không phải nhiễu) là một siêu năng lực chẩn đoán:
+
+```
+System.InvalidOperationException: queue is empty
+   at Solution.PumpAsync(ChannelReader`1 source, ...)
+   at Program.<Main>$(String[] args)
+   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder.Start[TStateMachine](...)
+```
+
+- **Khung đầu = nơi ném.** Đọc XUỐNG để thấy đường dẫn dẫn đến đó. Các khung
+  `MoveNext` nghĩa là một máy trạng thái async — tên phương thức gốc nằm
+  trong pattern `<>c__DisplayClass`/`<Method>` (hoặc hiện tên thật trên
+  runtime hiện đại).
+- **`End of stack trace from previous location`** đánh dấu biên async — phía
+  trên là bên đang await, phía dưới là nơi công việc async chạy.
+- **`throw;` giữ nguyên trace; `throw ex;` reset nó** về nơi ném lại. Một
+  trace "bắt đầu" trong middleware log-lỗi của bạn là chữ ký của `throw ex`
+  thượng nguồn.
+- **InnerException là một nửa câu chuyện.** `GetBaseException()` đi tới gốc;
+  `Describe`/`Analyze` trong chính checkpoint mã hóa phép đi đó.
+
+**AggregateException** mang nhiều thất bại (công việc song song). Luôn
+`Flatten()` trước khi phân tích — aggregate lồng nhau là mê cung. Và catch
+filter (`catch when (e is TimeoutException)`) giữ trace nguyên vẹn trong
+khi định tuyến việc xử lý — tốt hơn catch-rồi-ném-lại.
+
+Cắt xén và PII trong trace: trace production thường bị cắt (nhiễu
+`<Module>.<PrivateImplementationDetails>` đó) hoặc xóa dữ liệu nhạy cảm.
+Nếu chẩn đoán của bạn phụ thuộc vào việc thấy tham số, structured logging
+(bài kế tiếp) là đường bền — trace chứng minh Ở ĐÂU, log chứng minh CÁI GÌ.

@@ -1,0 +1,21 @@
+{
+  "id": "csa-p19-frame-stream",
+  "title": "Frame a continuous stream",
+  "prompt": "Real TCP delivers frames glued together and split apart. Implement `static List<string> DecodeStream(byte[] streamBytes)` that decodes ALL frames concatenated in one buffer (the common localhost reality: two writes arrive in one read), throwing ArgumentException if the stream ends mid-frame. The test concatenates three encoded frames into one buffer plus a truncated fourth, and expects two clean decodes then a throw... implement `static List<string> DecodeStreamSafe(byte[] streamBytes)` that returns all COMPLETE frames and ignores a trailing partial frame (the tolerant reader every real protocol needs).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "glued-frames",
+      "code": "var buf = Solution.EncodeFrame(\"a\").Concat(Solution.EncodeFrame(\"bb\")).Concat(Solution.EncodeFrame(\"ccc\")).ToArray();\nvar r = Solution.DecodeStream(buf);\nCj.Eq(string.Join(\"|\", r), \"a|bb|ccc\", \"three glued frames decode\");",
+      "hint": "Loop: read prefix, validate remaining, slice payload, advance offset."
+    },
+    {
+      "name": "trailing-partial-tolerated",
+      "code": "var buf = Solution.EncodeFrame(\"x\").Concat(Solution.EncodeFrame(\"yy\")).ToArray();\nvar partial = buf.Concat(new byte[] { 0, 0, 0 }).ToArray();   // truncated third frame\nvar r = Solution.DecodeStreamSafe(partial);\nCj.Eq(string.Join(\"|\", r), \"x|yy\", \"complete frames only; partial ignored\");",
+      "hint": "Same loop, but if 4 + len > remaining: stop (return what you have) instead of throwing."
+    }
+  ],
+  "level": "real-world"
+}

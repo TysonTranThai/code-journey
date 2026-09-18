@@ -1,0 +1,21 @@
+{
+  "id": "csa-p14-boxing-hunt",
+  "title": "Hunt the hidden boxing",
+  "prompt": "Implement `static long SumInterface(IEnumerable<int> values)` (sums via foreach over the interface — allocates an enumerator + boxes if you use a struct enumerator through IEnumerable) and `static long SumSpan(int[] values)` (sums via Span<int> — zero allocations). The test proves the allocation gap: SumSpan must allocate 0 over 100 runs; SumInterface's cost is printed for comparison. Implement both, correctly, and the numbers teach the lesson.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "values-match",
+      "code": "var vals = Enumerable.Range(0, 100).ToArray();\nCj.Eq(Solution.SumInterface(vals), Solution.SumSpan(vals), \"same sum\");\nCj.Eq(Solution.SumSpan(vals), 4950, \"known total\");",
+      "hint": "foreach over array via IEnumerable boxes an IEnumerator<int>; span foreach uses ref iteration."
+    },
+    {
+      "name": "span-zero-alloc",
+      "code": "var vals = new int[100];\n_ = Solution.SumSpan(vals);\nvar before = GC.GetAllocatedBytesForCurrentThread();\nfor (int i = 0; i < 100; i++) Solution.SumSpan(vals);\nvar delta = GC.GetAllocatedBytesForCurrentThread() - before;\nCj.Eq(delta, 0L, $\"SumSpan allocated {delta} bytes over 100 calls\");",
+      "hint": "foreach (var v in values.AsSpan()) — no enumerator object exists at all."
+    }
+  ],
+  "level": "guided"
+}

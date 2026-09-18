@@ -1,0 +1,51 @@
+## Row mapping: keo dán nhàm chán
+
+Reader đưa bạn các hàng; nghiệp vụ muốn đối tượng. Hàm mapping là nơi null
+trở thành mặc định, tên cột được viết đúng một lần, và các kiểu được chuyển:
+
+```csharp
+private static User Map(System.Collections.Generic.Dictionary<string, object?> row)
+    => new User(
+        Name: (string)row["name"]!,
+        Balance: Convert.ToDecimal(row["balance"] ?? 0m));
+```
+
+Giữ mapping ở MỘT nơi — một hàm mapper hoặc chính repository — để thay đổi
+schema chỉ chạm một file.
+
+## Repository: mặt tiền hình tập hợp
+
+Repository phơi bày quan điểm của nghiệp vụ về lưu trữ — Add, Get, Find —
+trong khi giấu SQL bên trong:
+
+```csharp
+public interface IUserRepository
+{
+    void Add(User user);
+    User? FindByName(string name);
+    System.Collections.Generic.IReadOnlyList<User> All();
+}
+
+public sealed class SqlUserRepository : IUserRepository
+{
+    private readonly CjDb _db;
+    public SqlUserRepository(CjDb db) => _db = db;   // injected (Module 11)
+    // ... mọi chuỗi SQL sống ở đây, đã tham số hóa, không nơi nào khác ...
+}
+```
+
+Lợi ích: code nghiệp vụ đọc như nghiệp vụ; backend khác chỉ là thay đổi
+hiện thực; và test chỉ cần fake repository (không cần database).
+
+## Cái gì nằm ở đâu
+
+- Chuỗi SQL: chỉ trong các hiện thực repository.
+- Logic nghiệp vụ: các service — không bao giờ trong repository.
+- Mapping: giữa hai tầng, trong repository.
+- Repository trả IQueryable mời rò rỉ ranh giới; giữ biên giới cụ thể
+  (danh sách, đối tượng đơn).
+
+## Kiểm tra hiểu biết
+
+- Mệnh đề WHERE mới nằm ở đâu? (Trong đúng một hiện thực repository sở hữu SQL của bảng đó.)
+- Vì sao service nhận IUserRepository chứ không phải SqlUserRepository? (Phụ thuộc abstraction; hoán đổi hiện thực; test bằng fake.)

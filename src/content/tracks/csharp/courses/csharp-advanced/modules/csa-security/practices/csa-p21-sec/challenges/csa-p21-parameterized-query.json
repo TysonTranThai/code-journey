@@ -1,0 +1,21 @@
+{
+  "id": "csa-p21-parameterized-query",
+  "title": "Parameterize or fail",
+  "prompt": "SQL injection is string concatenation meeting user input. Implement `static string BuildQuery(string tableName, string userInput)` that returns a SAFE parameterized-style SQL text: \"SELECT * FROM \" + validated table + \" WHERE name = @name\" — validating the table against an allow-list {\"orders\", \"customers\"} (throw ArgumentException otherwise) and NEVER embedding userInput into the string (@name stays a placeholder). Implement `static bool IsSafeQuery(string sql)` that returns false if the sql contains a quote character (proof that user data was interpolated).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "placeholder-not-interpolated",
+      "code": "var q = Solution.BuildQuery(\"orders\", \"O'Brien; DROP TABLE orders--\");\nCj.True(q.Contains(\"@name\"), \"placeholder preserved\");\nCj.False(q.Contains(\"O'Brien\"), \"user input never interpolated\");\nCj.True(Solution.IsSafeQuery(q), \"no quotes = no interpolation\");",
+      "hint": "Validate table against allow-list; return $\"SELECT * FROM {table} WHERE name = @name\" — user input never enters the string."
+    },
+    {
+      "name": "table-allowlist",
+      "code": "var ex = await Cj.ThrowsAsync<ArgumentException>(() => Task.Run(() => Solution.BuildQuery(\"users; DROP TABLE orders\", \"x\")));\nCj.True(ex is not null, \"non-allow-listed table rejected\");",
+      "hint": "Table names cannot be parameters — allow-list them."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Checkpoint hiệu năng",
+  "prompt": "Hai hiện thực được cung cấp trong harness: SlowPath nối chuỗi trong vòng lặp; FastPath dùng string.Create. Hiện thực `static string RepeatChar(char c, int n)` dựng một chuỗi n ký tự `c` bằng string.Create (không cấp phát trung gian), và `static long Measure(Func<int> work, int iterations)` trả về tổng byte cấp phát qua `iterations` lần gọi với MỘT lần warmup trước (warmup được chấm điểm: thiếu nó, cấp phát lần gọi đầu của JIT làm hỏng kết quả).",
+  "tests": [
+    {
+      "name": "repeat-correct",
+      "hint": "string.Create(n, c, static (span, state) => span.Fill(state));"
+    },
+    {
+      "name": "zero-intermediates",
+      "hint": "string.Create chỉ cấp phát buffer CUỐI. Nối bằng += hoặc StringBuilder tạo nhiều tầng trung gian."
+    },
+    {
+      "name": "measure-warms-up",
+      "hint": "Gọi work() một lần trước khi chụp baseline cấp phát."
+    }
+  ]
+}

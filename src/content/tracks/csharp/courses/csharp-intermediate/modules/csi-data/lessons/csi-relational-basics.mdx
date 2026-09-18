@@ -1,0 +1,45 @@
+## The relational object model
+
+Every data access stack shares this shape (ADO.NET, EF Core underneath, and
+every other runtime):
+
+- **Connection** — the session to the database. Open late, close early; pool
+  them (like HttpClient).
+- **Command** — SQL text plus parameters. `ExecuteReader` for queries,
+  `ExecuteNonQuery` for mutations.
+- **Reader** — a forward-only cursor over result rows; each row maps to
+  your object (reading columns by name, converting types).
+
+```csharp
+var cmd = db.CreateCommand("SELECT * FROM users WHERE name = @name");
+cmd.AddParameter("@name", userName);
+var rows = db.ExecuteReader(cmd);
+foreach (var row in rows)
+    Console.WriteLine(row["name"]);
+```
+
+## SQL injection: the one rule that saves you
+
+Never build SQL by concatenating values:
+
+```csharp
+// FATAL: a name like '; DROP TABLE users; -- becomes part of the program
+var sql = "SELECT * FROM users WHERE name = '" + input + "'";
+```
+
+Parameters keep DATA as data — the engine sends the query text and the
+values separately, so a value can never change the query's meaning. This is
+structural, not optional; string-built queries with user input are a
+vulnerability even when you "know" the input is clean.
+
+## Transactions: all or nothing
+
+Multiple related writes must succeed or fail together — a transfer that
+debits but never credits is a corrupted ledger. `Begin` marks the unit,
+`Commit` makes it permanent, and any failure (or abort) rolls back
+everything since Begin.
+
+## Check your understanding
+
+- Why can't an attacker inject through a parameter? (Values travel separately from the SQL text — they're never parsed as code.)
+- When does a transaction help? (Multiple related writes that must be atomic.)

@@ -1,0 +1,35 @@
+## Dynamic invocation và hóa đơn của nó
+
+Ba cách gọi một phương thức phát hiện lúc chạy, theo thứ tự chi phí thiết
+lập tăng dần và chi phí mỗi lần gọi giảm dần:
+
+1. `methodInfo.Invoke(obj, args)` — chậm nhất mỗi lần gọi: boxing tham số,
+   cấp phát mảng, kiểm tra security/registrar.
+2. Delegate được cache: `(Func<Order, decimal>)methodInfo.CreateDelegate(...)`
+   — dựng một lần, sau đó gần tốc độ gọi trực tiếp.
+3. Compiled expression: `Expression.Lambda<Func<...>>(...).Compile()` —
+   thiết lập nhiều nhất, thân chạy nhanh nhất; còn inline được cả truy cập
+   field.
+
+```csharp
+// Resolve một lần:
+static readonly ConcurrentDictionary<(Type, string), Func<object, object?>> Getters = new();
+
+static object? Get(object obj, string name) => Getters.GetOrAdd(
+    (obj.GetType(), name),
+    static key =>
+    {
+        var p = key.Item1.GetProperty(key.Item2)!;
+        return target => p.GetValue(target);   // bắt PropertyInfo đã resolve
+    });
+```
+
+Con số cần thuộc (bậc độ lớn, tùy máy — luôn tự đo): gọi trực tiếp 1x;
+delegate cache ~2–5x; compiled expression ~2–3x; `Invoke` thô ~30–100x.
+Khoảng cách từ 1 đến 30 là lý do mọi serializer nghiêm túc (System.Text.Json,
+EF materializer) cache hoặc code-gen thay vì reflect mỗi lần gọi.
+
+`CreateDelegate` có một cái bẫy: nó xác thực chữ ký delegate với phương thức
+NGAY LÚC TẠO — không khớp thì throw ngay (tốt), còn delegate sai được cache
+thì throw mỗi lần gọi (tệ). Hãy ưu tiên fail lúc startup: dựng toàn bộ
+delegate trong một pha warm-up, không phải lười theo yêu cầu đầu tiên.

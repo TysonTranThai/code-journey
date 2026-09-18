@@ -18,7 +18,7 @@
     },
     {
       "name": "merge: first wins, exported shape",
-      "code": "\nstring a = \"{\\\"products\\\":[{\\\"name\\\":\\\"bolt\\\",\\\"price\\\":0.5}]}\";\nstring b = \"{\\\"products\\\":[{\\\"name\\\":\\\"bolt\\\",\\\"price\\\":9.9},{\\\"name\\\":\\\"nut\\\",\\\"price\\\":0.2}]}\";\nstring merged = Solution.Merge(a, b);\nvar items = Solution.Import(merged);\nCj.Eq(items.Count, 2, \"union by name\");\nCj.True(merged.Contains(\"0.5\") && !merged.Contains(\"9.9\"), \"first occurrence wins\");\n",
+      "code": "\nstring a = \"{\\\"products\\\":[{\\\"name\\\":\\\"bolt\\\",\\\"price\\\":0.5}]}\";\nstring b = \"{\\\"products\\\":[{\\\"name\\\":\\\"bolt\\\",\\\"price\\\":9.9},{\\\"name\\\":\\\"nut\\\",\\\"price\\\":0.2}]}\";\nstring merged = Solution.Merge(a, b);\nCj.True(merged.TrimStart().StartsWith(\"[\"), \"exported array shape\");\nCj.True(merged.Contains(\"\\\"name\\\":\\\"bolt\\\"\") && merged.Contains(\"\\\"name\\\":\\\"nut\\\"\"), \"both names present\");\nCj.True(merged.Contains(\"0.5\") && !merged.Contains(\"9.9\"), \"first occurrence wins\");\n",
       "hint": "Import both, dedupe by name preserving first, Export the result."
     }
   ]

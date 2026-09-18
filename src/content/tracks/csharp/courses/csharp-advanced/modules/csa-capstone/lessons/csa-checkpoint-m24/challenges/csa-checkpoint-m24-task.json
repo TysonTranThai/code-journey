@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m24-task",
+  "title": "Capstone checkpoint",
+  "prompt": "Assemble the platform core as `class JobPlatform`. Constructor: `JobPlatform(int capacity)`. Methods: `(bool accepted) Submit(string jobId, Func<int> work)` — accepts only if the jobId was never seen ANDin-flight count < capacity (idempotency + backpressure; duplicates and over-capacity return false and count as rejected); `int RunAll()` — executes every accepted job exactly once (chronologically), returns the work-counter delta (equals accepted count — proving each job ran once); `int Pending` property. Then `static (int accepted, int rejected, int executed) SubmitSchedule(JobPlatform p, List<string> jobIds, int duplicatesPerJob)` — submits each id (1 + duplicatesPerJob) times, returns accepted/rejected counts and executed = RunAll().",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "idempotent-and-bounded",
+      "code": "var p = new JobPlatform(2);\nCj.Eq(p.Submit(\"a\", () => 1), true, \"first submit accepted\");\nCj.Eq(p.Submit(\"a\", () => 1), false, \"duplicate rejected\");\nCj.Eq(p.Submit(\"b\", () => 1), true, \"second slot used\");\nCj.Eq(p.Submit(\"c\", () => 1), false, \"capacity exceeded\");\nCj.Eq(p.Pending, 2, \"two jobs pending\");",
+      "hint": "HashSet<string> seen + a pending list; accept when !seen.Contains && pending.Count < capacity."
+    },
+    {
+      "name": "schedule-runs-once",
+      "code": "var p = new JobPlatform(20);\nvar ids = Enumerable.Range(0, 12).Select(i => $\"job-{i}\").ToList();\nvar (accepted, rejected, executed) = JobPlatform.SubmitSchedule(p, ids, 2);\nCj.Eq(accepted, 12, \"12 unique ids accepted\");\nCj.Eq(rejected, 24, \"36 deliveries − 12 uniques rejected as duplicates\");\nCj.Eq(executed, 12, \"each job executed exactly once\");",
+      "hint": "SubmitSchedule: deliver each id (1+duplicates) times; executed = p.RunAll(); work counter shared."
+    }
+  ]
+}

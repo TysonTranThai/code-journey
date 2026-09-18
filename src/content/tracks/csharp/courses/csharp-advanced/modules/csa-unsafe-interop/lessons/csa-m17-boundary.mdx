@@ -1,0 +1,38 @@
+## Managed, unmanaged, unsafe: the boundary
+
+Three adjectives, three different things:
+
+- **Managed**: memory the GC owns and can move; code the runtime verifies.
+  All ordinary C#.
+- **Unmanaged**: memory the GC does not control (native malloc, OS
+  handles, file mappings). Reached via interop APIs.
+- **Unsafe**: code regions where the compiler permits *pointer*
+  operations — required only when you want C-style access INSIDE the
+  managed world (or at its edge). Unsafe does not mean unmanaged: most
+  unsafe code operates on perfectly managed arrays.
+
+```csharp
+unsafe int Sum(int[] values)
+{
+    fixed (int* p = values)   // pin: promise the GC not to move it while scoped
+    {
+        int s = 0;
+        for (int i = 0; i < values.Length; i++) s += p[i];
+        return s;
+    }   // unpin here — the pointer is invalid after this line
+}
+```
+
+What `unsafe` lifts: pointer types (`int*`), `&address-of`, `->` member
+access, `stackalloc` into pointers, direct indexing through pointers.
+What it NEVER lifts: memory safety of the GC's contract (you can corrupt
+anything you can address — that is the price), type-system guarantees
+(pointer reinterpretation is on you), or sandbox rules (Code Journey
+allows unsafe code INSIDE its hardened container; the container is the
+boundary that matters).
+
+The discipline this course demands: unsafe blocks are *small, scoped, and
+non-escaping*. Pointers never become fields, never cross `await`, never
+outlive their `fixed`. If you cannot draw the box around the unsafe region,
+the design is wrong. `Span<T>` (Module 2) covers most of what unsafe used to
+be needed for — reach for `unsafe` when spans genuinely cannot express it.

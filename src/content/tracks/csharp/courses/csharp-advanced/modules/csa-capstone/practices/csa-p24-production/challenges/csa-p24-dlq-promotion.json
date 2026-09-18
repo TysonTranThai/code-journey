@@ -1,0 +1,16 @@
+{
+  "id": "csa-p24-dlq-promotion",
+  "title": "DLQ promotion rule",
+  "prompt": "A job lands in the dead-letter queue when failures reach the threshold. Implement `static (bool dead, int failures) OnFailure(int currentFailures, int threshold, int maxAttempts)` — increments failures; dead = failures ≥ threshold OR attempts exhausted (maxAttempts), and failures saturate at threshold (never grow past it once dead).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "promotion-rules",
+      "code": "var r1 = Dlq.OnFailure(0, 3, 5);\nCj.Eq(r1.failures, 1, \"one failure\");\nCj.Eq(r1.dead, false, \"below threshold\");\nvar r2 = Dlq.OnFailure(2, 3, 5);\nCj.Eq(r2.dead, true, \"threshold reached\");\nCj.Eq(r2.failures, 3, \"saturated at threshold\");\nvar r3 = Dlq.OnFailure(1, 10, 5);\nCj.Eq(r3.dead, false, \"attempts not yet exhausted\");\nvar r4 = Dlq.OnFailure(1, 10, 1);\nCj.Eq(r4.dead, true, \"attempts exhausted promotes\");",
+      "hint": "failures = min(current+1, threshold); dead = failures ≥ threshold || maxAttempts ≤ current+1... decide your exact exhaustion semantics and match the tests."
+    }
+  ],
+  "level": "real-world"
+}

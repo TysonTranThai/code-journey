@@ -1,0 +1,43 @@
+## Dùng đúng API mật mã
+
+An toàn ứng dụng là 95% dùng primitive mật mã của platform với tham số
+đúng — và 5% tránh tự chế thuật toán mã hóa (thực ra 5% đó nằm trong 95%:
+không bao giờ tự viết crypto).
+
+**Số ngẫu nhiên.** `Random` được seed theo thời gian và đoán được — ổn cho
+game, chết người cho token. `RandomNumberGenerator.GetBytes(n)` (hoặc
+`GetItems` cho ký tự) là nguồn duy nhất cho mật mã: session ID, salt,
+nonce, key.
+
+**Hash mật khẩu** cố ý chậm và có muối — ngược với mọi cách dùng hash khác:
+
+```csharp
+// PBKDF2 qua Rfc2898DeriveBytes (KDF có work-factor của .NET):
+var hash = Rfc2898DeriveBytes.Pbkdf2(
+    password, salt, iterations: 100_000,
+    HashAlgorithmName.SHA256, outputLength: 32);
+```
+
+Salt ngẫu nhiên cho từng user (lưu cạnh hash) tiêu diệt rainbow table và
+việc liên kết mật khẩu giống nhau. Số vòng lặp là work factor: nâng dần
+khi phần cứng tiến bộ; 100k+ là sàn hiện tại (bảng của OWASP là tham
+chiếu). Các lựa chọn chuyên cho mật khẩu — bcrypt, scrypt, Argon2 — đến từ
+package; kỷ luật (salt, chậm, tham số hóa) thì giống hệt.
+
+**Hash vs mã hóa vs AEAD:**
+
+| Nhu cầu | Primitive | Ví dụ |
+|---|---|---|
+| Chỉ toàn vẹn (không bí mật) | SHA-256 | checksum file |
+| Lưu mật khẩu | PBKDF2/bcrypt/Argon2 | thông tin đăng nhập |
+| Bảo mật + toàn vẹn | AEAD (AES-GCM, ChaCha20-Poly1305) | mã hóa payload |
+| MAC với key dùng chung | HMAC | chữ ký API |
+
+`AesGcm` (AEAD có sẵn trong .NET) mã hóa VÀ xác thực: can thiệp sẽ fail ở
+phần kiểm tra tag. AES-CBC thuần không có MAC là bug padding-oracle kinh
+điển — nếu bạn không gọi được tên lý do, dùng AesGcm và đi tiếp.
+
+**So sánh**: `CryptographicOperations.FixedTimeEquals` so sánh bí mật trong
+thời gian không đổi. `==` trên mảng byte thoát sớm ở byte khác đầu tiên —
+một kênh phụ timing làm lộ bao nhiêu phần trăm của một MAC là đúng.
+Checkpoint ép kỷ luật này.

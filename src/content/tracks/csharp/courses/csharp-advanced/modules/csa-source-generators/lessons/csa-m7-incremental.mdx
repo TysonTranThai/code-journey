@@ -1,0 +1,30 @@
+## Incremental generators
+
+The classic `ISourceGenerator` re-runs everything on every change — fine
+for tiny tools, brutal for IDEs. `IIncrementalGenerator` instead builds a
+**pipeline** of transformations the compiler tracks by value equality: a
+keystroke re-runs only the steps whose inputs actually changed.
+
+```csharp
+var provider = ctx.SyntaxProvider.ForAttributeWithMetadataName(...)
+    .Select(static (name, _) => name.ToUpperInvariant())   // pure transform
+    .Collect();                                            // gather into ImmutableArray
+
+ctx.RegisterSourceOutput(provider, static (spc, names) => { /* emit once */ });
+```
+
+The performance contract, from the Roslyn team's own guidance:
+
+1. **Transformations must be pure and cheap** — they may run many times;
+   their results are cached by equality.
+2. **`ForAttributeWithMetadataName` first.** It is a heavily-optimized
+   provider for the dominant pattern (find types with attribute X); hand-
+   rolled `CreateSyntaxProvider` predicates run more often and do more work.
+3. **`Collect()` deliberately** — collecting defeats incrementalism for the
+   steps after it; do per-item work before collecting, then emit once.
+4. **Lambda hygiene**: all pipeline lambdas must be `static` (no captured
+   variables) — capturing silently breaks the caching contract.
+
+When generators go wrong in production, it is almost always a pipeline
+that recomputes a whole-project model per keystroke — the fix is always
+"push work later, make steps cheap, cache by value".

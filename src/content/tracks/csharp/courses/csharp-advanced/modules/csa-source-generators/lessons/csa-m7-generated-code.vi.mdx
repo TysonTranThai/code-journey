@@ -1,0 +1,24 @@
+## Luật của generated code
+
+Generated source có một người đọc không bao giờ thứ thứ: compiler. Những
+hợp đồng giữ generator đáng ship:
+
+- **Fully qualify mọi thứ.** Generated code không thể dựa vào `using` của
+  người dùng — `System.DateTime`, không phải `DateTime`; hoặc phát khối
+  `using` tường minh trong namespace. Thất bại kinh điển: một DTO sinh ra
+  dùng `DateTime` biên dịch ổn trong dự án test của bạn nhưng hỏng trong
+  namespace của người dùng, nơi `DateTime` là thứ khác.
+- **Phát diagnostic, không phải exception.** Generator ném exception phá
+  build với lỗi khó hiểu; generator báo diagnostic đúng cách trỏ vào lỗi
+  thật của người dùng.
+- **Namespace cho output** — kiểu sinh ra va chạm với kiểu của người dùng là
+  bug phân giải tên mà người dùng không thể debug.
+- **Đánh dấu partial, không mở rộng gì**: sinh lớp `partial` mà người dùng
+  chủ động chọn để mở rộng, không bao giờ sửa member họ khai báo.
+- **Khả năng debug**: directive `#line` hoặc output sạch, có format để file
+  sinh ra đọc được khi stack trace trỏ vào đó.
+
+Kiểm thử generator diễn ra đúng như checkpoint làm: chạy
+`CSharpGeneratorDriver`, soi các tree sinh ra, biên dịch OUTPUT, và khẳng
+định không có diagnostic lỗi. Đó cũng là cách CI bảo vệ generator trước các
+bản nâng cấp Roslyn.

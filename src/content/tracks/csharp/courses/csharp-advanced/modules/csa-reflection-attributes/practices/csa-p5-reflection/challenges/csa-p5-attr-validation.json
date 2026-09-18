@@ -1,0 +1,16 @@
+{
+  "id": "csa-p5-attr-validation",
+  "title": "Attribute-driven validation",
+  "prompt": "Define `attribute RangeAttribute : Attribute` with `int Min; int Max;` (usage: properties). Implement `static List<string> Validate(object obj)`: for each instance property with a RangeAttribute whose value is an int outside [Min,Max], add \"Name\" of the property to the result. Return failures in declaration order. Classes to support: `Account { [Range(1,120)] public int Age; [Range(0,100)] public int Score; }` (fields, not properties — support both fields and properties).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "validation",
+      "code": "var bad = new Account { Age = 150, Score = 99 };\nvar r = Solution.Validate(bad);\nCj.Eq(r.Count, 1, \"one failure\");\nCj.Eq(r[0], \"Age\", \"Age out of range\");\nvar ok = new Account { Age = 30, Score = 50 };\nCj.Eq(Solution.Validate(ok).Count, 0, \"clean object\");",
+      "hint": "type.GetMembers(BindingFlags.Public | BindingFlags.Instance); check MemberInfo.GetCustomAttribute<RangeAttribute>() — handle FieldInfo and PropertyInfo."
+    }
+  ],
+  "level": "independent"
+}

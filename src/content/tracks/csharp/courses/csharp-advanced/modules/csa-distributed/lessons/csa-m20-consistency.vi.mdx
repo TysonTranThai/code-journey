@@ -1,0 +1,31 @@
+## Mô hình nhất quán và trạng thái hiện tại dần
+
+Khi trạng thái nhân bản, phép đọc trở nên thú vị. Các mô hình, theo từ
+vựng mà người thiết kế hệ thống thực sự dùng:
+
+- **Strong / linearizable**: mọi phép đọc thấy mọi phép ghi đã hoàn thành,
+  như thể chỉ có một bản sao. Chi phí: phối hợp cho mọi đọc/ghi, availability
+  giảm dưới phân vùng.
+- **Read-your-writes (session)**: một client thấy chính phép ghi của mình;
+  người khác có thể trễ. Mặc định web thực dụng ("tôi sửa profile và thấy
+  sự sửa của mình").
+- **Eventual**: các bản sao hội tụ nếu có thời gian và không có ghi mới.
+  Phép đọc có thể cũ; ĐỘ CŨ chính là hợp đồng cần suy luận.
+- **Causal**: phép đọc thấy mọi phép ghi mà nó nhân quả phụ thuộc — bình
+  luận thấy bài viết mà nó trả lời.
+
+**Cái bẫy read-after-write** (drill practice, bản thu nhỏ): ghi vào
+primary, đọc ngay từ replica, phép đọc không thấy phép ghi. Hệ thống thật
+dính lỗi này khi load-balancer điều route một phép đọc tới replica sau một
+POST. Cách sửa, theo thứ tự chi phí: ghim session (route phép đọc của user
+đó về primary trong N giây sau ghi), kiểm tra phiên bản (client gửi phiên
+bản nó ghi; replica chặn/báo-cũ), hoặc chấp nhận và thiết kế cho nó (hiển
+thị trạng thái "vừa lưu" một cách lạc quan).
+
+Hội tụ là nửa còn lại: hệ eventual cần quy tắc hội tụ được định nghĩa rõ
+(last-write-wins theo timestamp — với các mối nguy lệch đồng hồ — hoặc
+CRDT cho trạng thái gộp được). `EventualStore` trong checkpoint làm độ trễ
+trở nên tường minh và quan sát được: primary ngay lập tức, replica sau một
+độ trễ bạn kiểm soát. Bài học không phải món đồ chơi; đó là thói quen thiết
+kế — mọi quyết định đọc/ghi phân tán phải gọi được tên mô hình nhất quán
+và biên độ cũ của nó. Nếu không ai gọi được, đó chính là phát hiện.

@@ -1,0 +1,16 @@
+{
+  "id": "csa-p5-member-scan",
+  "title": "Assembly scan with flags",
+  "prompt": "Implement `static List<string> StaticStringMembers(Type type)`: return the names of all public static fields AND properties of type string, sorted. Also implement `static int CountMethods(Type type, string namePrefix)` counting public instance methods whose name starts with the prefix (exclude property accessors and constructors).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "scan",
+      "code": "var names = Solution.StaticStringMembers(typeof(Library));\nCj.True(names.Contains(\"Version\"), \"static string field\");\nCj.True(names.Contains(\"Publisher\"), \"static string property\");\nCj.False(names.Contains(\"Count\"), \"int member excluded\");\nCj.Eq(Solution.CountMethods(typeof(Worker), \"Run\"), 2, \"Run and RunAsync\");",
+      "hint": "GetFields/GetProperties with BindingFlags.Public | BindingFlags.Static; for methods use BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly."
+    }
+  ],
+  "level": "imitation"
+}

@@ -1,0 +1,36 @@
+## Service boundaries and distributed state
+
+A service boundary is where your process ends and someone else's begins —
+different deployment, different failure domain, different upgrade
+schedule. Once a call crosses one, every assumption changes:
+
+| In-process call | Cross-network call |
+|---|---|
+| failure = exception | failure = exception OR timeout OR partial result OR silence |
+| latency = ns | latency = ms, variable, occasionally seconds |
+| memory is coherent | the remote state moved on without you |
+| transactions work | distributed transactions are a research paper |
+
+The **eight fallacies of distributed computing** remain the best debugging
+checklist: the network is reliable; latency is zero; bandwidth is
+infinite; the network is secure; topology doesn't change; there is one
+administrator; transport cost is zero; the network is homogeneous. Every
+production outage story includes at least one fallacy being violated.
+
+The boundary design rules that follow:
+
+1. **A boundary needs a contract** — versioned, explicit, with failure
+   semantics documented ("this endpoint may return 503; treat 503 as
+   retry-safe").
+2. **Remote state is only a hypothesis.** Your cache, your read model, the
+   response you got 200ms ago — all may be stale. Design reads that can
+   tolerate staleness or declare that they cannot.
+3. **No synchronous chains.** A→B→C→D synchronous calls compound latencies
+   and failure rates multiplicatively (0.99⁴ ≈ 0.96). Async messaging or
+   pre-computation beats deep chains.
+4. **The boundary owns its failures.** Callers get domain errors, not
+   stack traces from your database.
+
+This module simulates boundaries deterministically in-process — but the
+failures simulated (duplicate delivery, stale reads, retry amplification)
+are the real ones, miniaturized until they are testable in milliseconds.

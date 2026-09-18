@@ -1,0 +1,38 @@
+## Completion and graceful shutdown
+
+Completion is the channel's way of saying "no more items, ever":
+`ch.Writer.Complete()` (or `TryComplete`, or `Complete(exception)` to fault
+it). After completion:
+
+- `WriteAsync` throws `ChannelClosedException` — the producer's signal to
+  stop accepting.
+- `ReadAllAsync` drains remaining buffered items, THEN ends. This drain
+  semantics is what makes graceful shutdown almost free.
+- `ReadAsync` throws `ChannelClosedException` once empty.
+
+```csharp
+// Producer side
+ch.Writer.TryComplete();                       // stop accepting, keep delivering
+
+// Consumer side — drains then exits
+await foreach (var item in ch.Reader.ReadAllAsync())
+    Process(item);
+```
+
+Graceful shutdown of a multi-stage pipeline has a strict order — reverse
+of the data flow:
+
+1. Stop the ingest (stop writing to stage 1's input, or close the source).
+2. Stage 1 drains its input, finishes, completes its OUTPUT channel.
+3. Stage 2's `ReadAllAsync` ends because its input completed; it drains,
+   completes its output... and so on down the chain.
+
+Each stage needs the same skeleton: `try { drain } finally { complete
+output }`. Forgetting the finally orphans the next stage (its reader
+waits forever) — the classic hung-shutdown bug.
+
+Error propagation: `Complete(new SomeException(...))` makes readers throw
+that exception after draining — the pipeline equivalent of a fault. And
+cancellation is NOT completion: cancelling the token aborts readers/writers
+mid-flight (a rude stop), while completion is a clean stop. Production
+systems usually want: cancel-then-drain with a deadline.

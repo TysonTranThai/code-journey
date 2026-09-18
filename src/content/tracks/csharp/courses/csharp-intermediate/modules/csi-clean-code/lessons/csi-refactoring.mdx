@@ -1,0 +1,50 @@
+## Refactoring has one definition
+
+> To refactor is to change the *structure* of code without changing its
+> *behavior*.
+
+Not cleanup. Not "improvements while I'm in here". If behavior changes, it is
+a bug fix or a feature — a different activity with different review needs.
+Mixing the two in one change is how regressions hide.
+
+## The harness: tests first, always
+
+You cannot safely refactor unverified code, so the workflow is:
+
+1. **Freeze behavior with tests.** Run the code as-is, pin the interesting
+   inputs and outputs in tests (including edge cases — they are where
+   refactors bleed).
+2. **One move at a time.** Extract a method, run the tests. Rename, run.
+   Each step compiles and stays green.
+3. **Commit-sized steps.** Small green steps compose; one big-bang rewrite
+   does not.
+
+If you cannot write a failing-then-passing test around the behavior you are
+about to restructure, you are not refactoring — you are gambling.
+
+## The starter catalog
+
+| Move | When |
+|---|---|
+| Extract method | block has a nameable single purpose |
+| Replace magic number with constant | `0.20m` → `GoldDiscount` |
+| Guard clause | nested `if` only guards a degenerate case |
+| Decompose conditional | a long condition gets a well-named method |
+| Introduce parameter object | the same 4 values travel together everywhere |
+
+```csharp
+// decompose conditional
+public bool CanBulkDiscount(Order o) =>
+    o.Qty >= BulkThreshold && o.Tier != Tier.Vip;   // named, testable
+```
+
+## When NOT to refactor
+
+- The code is about to be deleted — refactoring it is negative work.
+- You have no tests and no time to write them — do the smallest safe change;
+  schedule the refactor.
+- The behavior itself is wrong — fix the bug first, *then* clean the shape.
+  Refactoring a wrong behavior just makes the wrong thing prettier.
+
+Refactoring is how a codebase stays maintainable while it grows — the next
+modules (patterns, architecture) assume you can restructure safely.

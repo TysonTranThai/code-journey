@@ -1,0 +1,16 @@
+{
+  "id": "csa-p22-nplus-one-count",
+  "title": "N+1 query counter",
+  "prompt": "Given `orders` (List<string> ids) each needing one query for its lines: a naive loop issues 1 + N queries. Implement `static int NaiveQueries(int orderCount)` = orderCount + 1, and `static int BatchedQueries(int orderCount, int batchSize)` = ceil(orderCount / batchSize) + 1 (batch IN-queries). Then implement `static (int naive, int batched, double saved) Compare(int orderCount, int batchSize)` returning all three with saved = round((naive − batched) / naive × 100, 2).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "query-math",
+      "code": "Cj.Eq(Queries.NaiveQueries(100), 101, \"1 + N\");\nCj.Eq(Queries.BatchedQueries(100, 20), 6, \"ceil(100/20)=5 IN-queries + 1\");\nvar (n, b, saved) = Queries.Compare(100, 20);\nCj.Eq(n, 101, \"naive\");\nCj.Eq(b, 6, \"batched\");\nCj.Eq(saved, 94.06, \"(101−6)/101×100\");",
+      "hint": "(int)Math.Ceiling(orderCount / (double)batchSize); saved via Math.Round to 2 decimals."
+    }
+  ],
+  "level": "debugging"
+}

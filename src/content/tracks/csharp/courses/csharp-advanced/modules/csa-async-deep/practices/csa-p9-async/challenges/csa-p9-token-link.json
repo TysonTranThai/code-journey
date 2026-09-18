@@ -1,0 +1,21 @@
+{
+  "id": "csa-p9-token-link",
+  "title": "Linked cancellation",
+  "prompt": "Implement `static async Task<int> RaceTask(Task<int> a, Task<int> b, CancellationToken external)` returning whichever of a/b finishes first — and it must stop waiting when external cancels, throwing OperationCanceledException. Use CancellationTokenSource.CreateLinkedTokenSource and Task.WhenAny with cancellation registration.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "race-external-cancel",
+      "code": "using var cts = new CancellationTokenSource(50);\nvar slow1 = Task.Delay(60_000).ContinueWith(_ => 1);\nvar slow2 = Task.Delay(60_000).ContinueWith(_ => 2);\nvar ex = await Cj.ThrowsAsync<OperationCanceledException>(() => Solution.RaceTask(slow1, slow2, cts.Token));\nCj.True(ex is not null, \"external cancellation wins the race\");",
+      "hint": "Link the token; register a callback that completes a TaskCompletionSource, WhenAny over both tasks plus that TCS task."
+    },
+    {
+      "name": "race-fast-wins",
+      "code": "var fast = Task.FromResult(7);\nvar slow = new TaskCompletionSource<int>().Task;\nCj.Eq(await Solution.RaceTask(slow, fast, CancellationToken.None), 7, \"completed task wins\");",
+      "hint": "WhenAny returns the first completed; return its result."
+    }
+  ],
+  "level": "real-world"
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Đóng khung luồng liên tục",
+  "prompt": "TCP thật giao các frame dính nhau và bị xẻ. Hiện thực `static List<string> DecodeStream(byte[] streamBytes)` giải mã TẤT CẢ frame nối trong một buffer (thực tế localhost: hai lần ghi đến trong một lần đọc), ném ArgumentException nếu stream kết thúc giữa frame. Test nối ba frame vào một buffer cộng thêm frame thứ tư bị cắt, mong hai lần giải mã sạch rồi một lần ném... hãy hiện thực `static List<string> DecodeStreamSafe(byte[] streamBytes)` trả về mọi frame HOÀN CHỈNH và bỏ qua frame cuối bị cắt (mẫu reader khoan dung mà mọi giao thức thật cần).",
+  "tests": [
+    {
+      "name": "glued-frames",
+      "hint": "Vòng lặp: đọc tiền tố, xác thực phần còn lại, cắt payload, tăng offset."
+    },
+    {
+      "name": "trailing-partial-tolerated",
+      "hint": "Cùng vòng lặp, nhưng nếu 4 + len > phần còn lại: dừng (trả những gì có) thay vì ném."
+    }
+  ]
+}

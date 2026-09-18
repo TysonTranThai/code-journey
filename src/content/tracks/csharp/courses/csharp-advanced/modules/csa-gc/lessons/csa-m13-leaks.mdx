@@ -1,0 +1,31 @@
+## Managed memory leaks
+
+A tracing GC frees what is unreachable. "Leak" in managed code therefore
+means **unreachable-when-you-thought**: something reachable holds a root
+to something you considered dead. The catalog:
+
+1. **Event subscriptions.** `publisher.Event += handler` stores the
+   subscriber in the publisher's invocation list. Long-lived publisher +
+   short-lived subscriber = every subscriber leaks. Fix: IDisposable
+   unsubscribe, weak-event patterns, or `IObserver` with explicit
+   disposal.
+2. **Static caches without eviction.** `static Dictionary<string, T>`
+   grows forever; every entry is rooted by the type. Fix: `MemoryCache`
+   with size/time limits, `ConditionalWeakTable` for metadata, or
+   bounded LRU.
+3. **Timers.** A live `System.Threading.Timer` roots its callback target.
+   Fire-and-forget timers in components that forget to dispose them keep
+   whole object graphs alive. (The callback's TARGET, and everything it
+   references.)
+4. **Closures and lambdas.** A lambda capturing `this` registered into a
+   long-lived service roots the whole object. Task runners holding
+   closures beyond their useful life do the same.
+5. **Thread-statics and captured contexts** (SynchronizationContext,
+   ExecutionContext held by parked threads).
+
+Diagnosis workflow without fancy tooling (the sandbox has no dotnet-dump):
+count instances over time (a loop that allocates a probe object each
+iteration and a WeakReference you can poll), force collections, and watch
+`GC.GetTotalMemory` climb — climbing memory across forced full collections
+is the leak signature. The checkpoint's weak-reference test IS this probe,
+miniaturized.

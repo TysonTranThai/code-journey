@@ -1,0 +1,46 @@
+## The async state machine
+
+An `async` method is rewritten by the compiler into a **struct state
+machine** implementing `IAsyncStateMachine`: your locals become fields,
+each `await` becomes a state number, and the whole body lives inside one
+big `MoveNext()` switch. The async method builder (`AsyncTaskMethodBuilder`)
+owns a `Task` that the machine completes.
+
+```csharp
+// What you write:
+async Task<int> LoadAsync() { var a = await A(); var b = await B(); return a + b; }
+
+// What the compiler writes (conceptually):
+struct LoadMachine : IAsyncStateMachine
+{
+    public int State;          // -1 start; 0 after first await...
+    public TaskAwaiter<int> Awaitee;
+    int a;                     // hoisted local
+    public void MoveNext()
+    {
+        switch (State)
+        {
+            case -1: goto FIRST;
+            case 0: a = Awaitee.GetResult(); goto SECOND;
+        }
+        FIRST: Awaitee = A().GetAwaiter();
+        if (!Awaitee.IsCompleted) { State = 0; return; }   // park, resume later
+        a = Awaitee.GetResult();
+        SECOND: /* await B, same pattern, then builder.SetResult(a + b) */
+    }
+}
+```
+
+Two consequences worth internalizing:
+
+1. **The synchronous fast path is real.** If every awaitable is already
+   complete, the machine runs through all states in the original call — no
+   thread switch, and with `ValueTask` no allocation either.
+2. **`await` is cooperative**, not preemptive: code between awaits runs
+   synchronously on the caller's thread. Long CPU loops between awaits ARE
+   blocking, whatever the method says.
+
+What you get from knowing this: you can read an async stack trace (`MoveNext`
+frames), predict where an exception surfaces (the builder rethrows at the
+await that failed), and understand why async methods cannot have `out`
+parameters (the machine struct must survive across suspension).

@@ -1,0 +1,34 @@
+## Retries, timeouts, and failure budgets
+
+The resilience stack composes — and each layer changes the others'
+behavior. Getting the composition right is the skill:
+
+```
+call ──> [retry: 3 attempts, backoff 100/200/400ms]
+              └──> each attempt ──> [timeout: 2s, via cancellation]
+                                         └──> the real dependency
+[breaker: opens after 5 consecutive failures, half-open after 30s]
+```
+
+The interaction rules:
+
+1. **Timeout ⊂ Retry.** Each retry attempt carries its own deadline; a
+   retry without a timeout can outlive the total request budget.
+2. **Retry ⊂ Breaker.** The breaker counts a failed *attempt sequence* as
+   one failure. Without the breaker, 1000 clients × 3 retries = 3000
+   requests against a dying dependency — the amplification the practice
+   drill computes.
+3. **Budget = total latency.** If the caller's SLA is 3s and each attempt
+   can take 2s, three retries cannot fit — cap attempts by remaining
+   budget, not by policy count.
+4. **Idempotency or bust.** Retrying a non-idempotent operation (charge,
+   insert) duplicates effects. Idempotency keys (previous lesson) make the
+   retry safe.
+
+Backoff details that matter under load: exponential (each wait doubles)
+plus **jitter** (random ±50%) so thousands of clients don't synchronize
+their retries into waves — the thundering herd that turns one dependency's
+hiccup into a platform-wide outage. The failure budget framing: define how
+much failure your SLO absorbs (say, 0.1% of requests may fail), spend it
+deliberately (fail fast when the budget is spent rather than queueing
+requests nobody will wait for) — resilience is a budget, not a virtue.

@@ -1,0 +1,45 @@
+## Mô hình đối tượng quan hệ
+
+Mọi stack truy cập dữ liệu đều chia sẻ hình dạng này (ADO.NET, EF Core ở
+dưới, và mọi runtime khác):
+
+- **Connection** — phiên kết nối tới database. Mở muộn, đóng sớm; hãy pool
+  (như HttpClient).
+- **Command** — văn bản SQL kèm tham số. `ExecuteReader` cho truy vấn,
+  `ExecuteNonQuery` cho biến đổi.
+- **Reader** — con trỏ chỉ-đi-tới trên các hàng kết quả; mỗi hàng map thành
+  đối tượng của bạn (đọc cột theo tên, chuyển kiểu).
+
+```csharp
+var cmd = db.CreateCommand("SELECT * FROM users WHERE name = @name");
+cmd.AddParameter("@name", userName);
+var rows = db.ExecuteReader(cmd);
+foreach (var row in rows)
+    Console.WriteLine(row["name"]);
+```
+
+## SQL injection: quy tắc duy nhất cứu bạn
+
+Không bao giờ ghép SQL bằng cách nối giá trị:
+
+```csharp
+// CHẾT NGƯỜI: một name như '; DROP TABLE users; -- trở thành một phần của chương trình
+var sql = "SELECT * FROM users WHERE name = '" + input + "'";
+```
+
+Tham số giữ cho DỮ LIỆU là dữ liệu — engine gửi văn bản query và các giá trị
+tách biệt, nên giá trị không thể thay đổi ý nghĩa của query. Điều này mang
+tính cấu trúc, không tùy chọn; query nối chuỗi với đầu vào người dùng là lỗ
+hổng kể cả khi bạn "biết" đầu vào sạch.
+
+## Transaction: tất cả hoặc không có gì
+
+Nhiều lần ghi liên quan phải thành công hay thất bại cùng nhau — một lệnh
+chuyển tiền ghi nợ nhưng không ghi có là sổ cái hỏng. `Begin` đánh dấu đơn
+vị, `Commit` làm vĩnh viễn, và bất kỳ thất bại (hoặc hủy) nào sẽ hoàn tác
+mọi thứ từ Begin.
+
+## Kiểm tra hiểu biết
+
+- Vì sao kẻ tấn công không thể inject qua tham số? (Giá trị đi tách biệt văn bản SQL — không bao giờ bị parse thành code.)
+- Khi nào transaction có ích? (Nhiều lần ghi liên quan cần nguyên tử.)

@@ -1,0 +1,16 @@
+{
+  "id": "csa-p18-size-math",
+  "title": "Startup and size arithmetic",
+  "prompt": "Implement `static (long bytes, double startupMs) DeployCost(string model, int appBytes, double jitMs)` describing deployment costs conceptually: \"framework-dependent\" → bytes = appBytes + 60_000_000 runtime is NOT bundled (return appBytes, jitMs + 120 for first-call JIT); \"self-contained\" → bytes = appBytes + 65_000_000, startupMs = jitMs + 120; \"trimmed\" → bytes = appBytes + 25_000_000, startupMs = jitMs + 120; \"aot\" → bytes = appBytes + 18_000_000, startupMs = 2.0 (no JIT). The graded point: AOT pays no JIT tax; the others all carry it.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "cost-table",
+      "code": "var (b1, s1) = Solution.DeployCost(\"framework-dependent\", 1_000_000, 80);\nCj.Eq(b1, 1_000_000, \"runtime not bundled\");\nCj.True(Math.Abs(s1 - 200) < 0.001, \"JIT tax applies\");\nvar (b2, s2) = Solution.DeployCost(\"aot\", 1_000_000, 80);\nCj.Eq(b2, 19_000_000, \"compact runtime baked in\");\nCj.True(Math.Abs(s2 - 2.0) < 0.001, \"no JIT tax\");",
+      "hint": "Switch on model; return the tuple per the table. AOT ignores jitMs entirely."
+    }
+  ],
+  "level": "independent"
+}

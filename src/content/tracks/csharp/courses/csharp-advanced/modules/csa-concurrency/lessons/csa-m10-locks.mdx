@@ -1,0 +1,34 @@
+## Locks, Monitor, and their costs
+
+`lock (obj)` compiles to `Monitor.Enter`/`Monitor.Exit` in a try/finally.
+The monitor lives in the object header — no allocation, but every object
+can be a lock, which is exactly why locking on `this`, on a `Type`, or on a
+string is dangerous (anything else might lock the same object: deadlock by
+stranger). Private final lock objects are the discipline.
+
+```csharp
+private readonly object _gate = new();   // never lock(this), lock(Type), or a string
+lock (_gate) { /* invariant region */ }
+```
+
+Contention is the tax: at zero contention a lock is a couple of
+interlocked instructions; under contention threads park and unpark —
+microseconds become milliseconds, and context switches burn CPU. The
+escalation ladder, cheapest first:
+
+1. **Do nothing shared.** Immutable data needs no locking at all.
+2. **`Interlocked`** for single-variable updates — no parking.
+3. **`SemaphoreSlim`** when the critical section awaits (a `lock` cannot
+   contain `await` — the compiler forbids it, because a parked thread must
+   not hold a thread-affine lock across suspension).
+4. **`ReaderWriterLockSlim`** for read-mostly structures — many readers or
+   one writer. Note its own overhead: for tiny critical sections it is
+   slower than a plain lock.
+5. **Lock-free data structures** — only from well-tested primitives
+   (concurrent collections); hand-rolling with `CompareExchange` loops is
+   where ABA bugs are born.
+
+The deadlock recipe is always the same: two locks, two threads, opposite
+orders. Fix = global lock ordering (by id, as the checkpoint does) or
+`TryEnter` with timeout + rollback. Livelock: threads keep retrying and
+starving each other — backoff (Thread.Sleep with jitter) is the cure.

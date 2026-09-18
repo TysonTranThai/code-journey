@@ -1,0 +1,45 @@
+## Interop không cần thư viện native: Unsafe, MemoryMarshal
+
+Phần lớn công việc "hương unsafe" diễn ra hoàn toàn bên trong bộ nhớ
+managed, với hai thư viện không cần P/Invoke:
+
+**`Unsafe`** — lớp trừu tượng mỏng trên con trỏ:
+
+```csharp
+// Diễn giải lại mà không sao chép, không thấy con trỏ:
+int i = 42;
+ref float f = ref Unsafe.As<int, float>(ref i);   // cùng bit, kiểu mới
+```
+
+`Unsafe.As<TFrom, TTo>` diễn giải lại một ref — không tốn kém, không kiểm
+tra. Đó là công cụ chuyên gia: sai kiểu = rác thầm lặng. Chỉ dùng với
+layout đã được chứng minh.
+
+**`MemoryMarshal`** — gương mặt an toàn hơn của cùng những thủ thuật:
+
+```csharp
+var shorts = MemoryMarshal.Cast<long, ushort>(span);   // diễn giải lại span
+var bytes  = MemoryMarshal.AsBytes(span);              // T bất kỳ thành byte thô
+var packet = MemoryMarshal.Read<Packet>(bytes);        // struct từ byte
+```
+
+`Cast<TFrom, TTo>` nhìn một span dưới kiểu phần tử khác (cùng buffer, kiếng
+mới); `Read<T>/Write<T>` phủ một struct lên các byte; `GetReference` cho
+một ref managed tới phần tử 0 của buffer. Tất cả có kiểm tra biên trừ các
+biến thể tường minh không kiểm tra.
+
+Ứng dụng kinh điển mà khóa học luyện: **parse giao thức không sao chép**.
+Định dạng dây đến dưới dạng byte; thay vì cấp phát object cho từng field,
+bạn diễn giải lại các đoạn layout cố định — các struct khai báo với
+`[StructLayout(LayoutKind.Sequential)]`. Những nguy hiểm của kỹ thuật này
+chính là bài học: layout phụ thuộc nền tảng (endianness cho field nhiều
+byte là layout của máy ĐANG CHẠY — test cho thấy little-endian), padding
+phải khớp (`Sequential` tôn trọng packing khai báo), và lệch phiên bản giữa
+người ghi và người đọc sẽ âm thầm diễn giải nhầm byte. Giao thức thật vận
+chuyển phần parse field tường minh; thủ thuật diễn giải dành cho đường nóng
+đã đo và định dạng đã chứng minh ổn định.
+
+**`GCHandle`/pinned handle** khép bức tranh: `GCHandle.Alloc(obj,
+GCHandleType.Pinned)` pin vượt ra ngoài khối fixed (để đưa buffer cho công
+việc native bất đồng bộ) — và phải được `Free()`, nếu không object bị pin
+suốt đời process. Cùng kỷ luật rò rỉ như mọi thứ khác.

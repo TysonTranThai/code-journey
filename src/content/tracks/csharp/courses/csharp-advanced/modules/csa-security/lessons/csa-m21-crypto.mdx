@@ -1,0 +1,45 @@
+## Cryptographic APIs used correctly
+
+Application security is 95% using the platform's crypto primitives with
+the right parameters — and 5% avoiding homemade ciphers (which is really
+part of the 95%: never write crypto).
+
+**Randomness.** `Random` is seeded by time and predictable — fine for
+games, fatal for tokens. `RandomNumberGenerator.GetBytes(n)` (or
+`GetItems` for chars) is the only source for secrets: session IDs, salts,
+nonces, keys.
+
+**Password hashing** is deliberately slow and salted — the opposite of
+every other hash use:
+
+```csharp
+// PBKDF2 via Rfc2898DeriveBytes (.NET's built-in work-factor KDF):
+var hash = Rfc2898DeriveBytes.Pbkdf2(
+    password, salt, iterations: 100_000,
+    HashAlgorithmName.SHA256, outputLength: 32);
+```
+
+Per-user random salt (stored alongside the hash) kills rainbow tables and
+identical-password correlation. The iteration count is the work factor:
+raise it as hardware improves; 100k+ is the current floor (OWASP's table
+is the reference). Password-specific alternatives — bcrypt, scrypt,
+Argon2 — come from packages; the discipline (salt, slow, parameterized)
+identical.
+
+**Hashing vs encryption vs AEAD:**
+
+| Need | Primitive | Example |
+|---|---|---|
+| Integrity only (no secret) | SHA-256 | file checksums |
+| Password storage | PBKDF2/bcrypt/Argon2 | login credentials |
+| Confidentiality + integrity | AEAD (AES-GCM, ChaCha20-Poly1305) | payload encryption |
+| MAC with shared key | HMAC | API signatures |
+
+`AesGcm` (.NET's built-in AEAD) encrypts AND authenticates: tampering
+fails the tag check. Plain AES-CBC without a MAC is the classic
+padding-oracle bug — if you cannot name why, use AesGcm and move on.
+
+**Comparison**: `CryptographicOperations.FixedTimeEquals` compares
+secrets in constant time. `==` on byte arrays short-circuits at the first
+differing byte — a timing side channel that leaks how much of a MAC is
+correct. The checkpoint enforces the discipline.

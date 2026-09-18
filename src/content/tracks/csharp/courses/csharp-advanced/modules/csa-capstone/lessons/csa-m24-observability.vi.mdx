@@ -1,0 +1,24 @@
+## Khả năng quan sát: log, metric, trace
+
+Ba tín hiệu, ba câu hỏi:
+
+- **Structured log** trả lời *chuyện gì xảy ra* — sự kiện có trường, không
+  phải chuỗi. `Log.Information("Job {JobId} failed after {Attempts}", jobId,
+  attempts)` truy vấn được; string interpolation thì không. Một correlation id
+  cho mỗi request, truyền khắp nơi (module 17), biến log thành một câu chuyện.
+- **Metric** trả lời *bao nhiêu / nhanh cỡ nào* — những con số rẻ để bật cảnh
+  báo: tốc độ request, tỉ lệ lỗi, histogram thời lượng, độ sâu hàng đợi, số
+  đếm GC (các bộ đếm module 14 thành dashboard production).
+- **Trace** trả lời *thời gian đi đâu* — các span nối bằng id chung qua các
+  service. Cây trace là câu trả lời trung thực duy nhất cho "trong bốn lời
+  gọi này cái nào chậm?"
+
+Kỷ luật khiến mọi thứ hữu ích: định nghĩa **SLO** trước. Một SLO ("99,9% lần
+gửi job được chấp nhận trong < 200 ms") cộng cửa sổ đo cho ra một **ngân sách
+lỗi** — phép tính bài tập mã hóa. Ngân sách còn → ship tính năng; ngân sách
+cháy → việc độ tin cậy ưu tiên. Không có SLO, "observability" chỉ là ghi log
+đắt tiền.
+
+Anti-pattern cần từ chối: log PII (email, token) vào hệ thống mà bạn không
+kiểm soát quyền truy cập. Dữ liệu observability là một bề mặt bảo mật
+(module 23) — redact ngay tại biên.

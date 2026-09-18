@@ -1,0 +1,35 @@
+## Measuring allocations honestly
+
+The probe that answers "did this allocate?":
+
+```csharp
+long before = GC.GetAllocatedBytesForCurrentThread();
+Work();
+long delta = GC.GetAllocatedBytesForCurrentThread() - before;
+```
+
+Per-thread is the point: background GC activity, other threads' noise, all
+excluded. But two honest-measurement rules survive any probe:
+
+1. **Warm up first.** First calls pay JIT compilation, generic dictionaries
+   populate, delegates allocate. Measure call #2 onward, or loop N times
+   and divide — a single cold measurement lies by orders of magnitude.
+2. **Delta is the truth, not the absolute.** Absolute bytes include the
+   harness. The number that matters is the DIFFERENCE between two code
+   paths doing the same work.
+
+Reading results like a performance engineer:
+
+- **Exactly 0** — the fast path is allocation-free. Verify with a loop of
+  100 iterations: a hidden 24-byte allocation per call shows up as 2400.
+- **Small constant** — one fixed allocation; find and question it (a tuple?
+  a boxed value? a delegate cache miss?).
+- **Linear in N** — the loop allocates per iteration. Span/for-loop instead
+  of LINQ is the usual fix.
+
+What this probe CANNOT tell you: total memory pressure (other threads),
+retained size (leaks — that is GC.GetTotalMemory over time), or latency
+(that is a benchmark, and a dishonest one unless you follow Module 15's
+rules). Allocation measurement is one instrument of several; the habit of
+REACHING FOR IT before arguing is what distinguishes engineers who ship
+performance from engineers who ship vibes.

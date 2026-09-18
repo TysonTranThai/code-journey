@@ -1,0 +1,35 @@
+## Con trỏ unsafe, fixed, và pinning
+
+GC di chuyển object khi nén. Con trỏ thô trỏ vào managed object sẽ lơ lửng
+sau một lần di chuyển — nên `fixed` tạo ra hợp đồng: trong khối này, object
+sẽ không bị di chuyển. Đó là **pinning**, và pinning không miễn phí:
+
+- Object bị pin gây phân mảnh heap (GC phải luồn nén quanh chúng).
+- Pin lâu xuyên qua các lần thu Gen0/1 làm xấu mọi lần thu.
+- Cửa sổ nguy hiểm đúng bằng thân `fixed` — vì thế luật "pin hẹp" cũng là
+  luật hiệu năng, không chỉ luật an toàn.
+
+```csharp
+byte[] buffer = ...;
+fixed (byte* p = buffer)          // pin: GC tránh dời buffer
+{
+    NativeWrite(p, buffer.Length);   // code native đọc/ghi nó
+}   // phạm vi kết thúc: GC có thể dời buffer trở lại
+```
+
+Các luật số học con trỏ đáng thuộc:
+
+- `p[i]` trên `int*` tiến 4 byte mỗi chỉ mục — số học con trỏ theo kiểu
+  phần tử, không phải theo byte.
+- `void*` không có kích thước phần tử — cast sang con trỏ có kiểu trước khi
+  đánh chỉ mục.
+- `&arr[0]`, `&local`, `&struct.Field` đều hợp lệ trên kiểu unmanaged.
+- `stackalloc int[64]` cho một `int*` (hoặc `Span<int>`) — bộ nhớ stack,
+  không cần pin, giải phóng khi thoát khung.
+
+Phân cấp hiện đại: span trước (`buffer.AsSpan()` — an toàn, tối ưu thành
+cùng code), rồi con trỏ nơi span lúng túng (đánh chỉ mục nhiều mảng xen
+kẽ, rìa interop native). Hãy đo trước khi cho rằng bản con trỏ nhanh hơn:
+JIT tier-1 thường compile code span thành mã máy giống hệt — việc kiểm tra
+biên bị loại bởi phân tích phạm vi theo cùng cách mà các kiểm tra thủ công
+của bạn thay thế nó.

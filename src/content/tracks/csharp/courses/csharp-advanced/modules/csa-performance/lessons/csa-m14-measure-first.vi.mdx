@@ -1,0 +1,35 @@
+## Đo trước: kỷ luật benchmark
+
+Giới luật: không tối ưu khi chưa có baseline đo được. Kỷ luật làm phép đo
+có ý nghĩa:
+
+```csharp
+// Bộ harness trung thực tối thiểu (đúng những gì checkpoint chấm):
+var work = (Func<int>)(() => SumTo(1000));
+_ = work();                                     // 1. LÀM NÓNG — JIT, cache
+var before = GC.GetAllocatedBytesForCurrentThread();   // 2. baseline
+var sw = Stopwatch.StartNew();                  // 3. CỬA SỔ ĐO
+for (int i = 0; i < N; i++) _ = work();
+sw.Stop();
+var allocDelta = GC.GetAllocatedBytesForCurrentThread() - before;
+Console.WriteLine($"{sw.Elapsed.TotalMicroseconds / N} us/op, {allocDelta / N} B/op");
+```
+
+Các luật và lời nói dối mà mỗi luật chặn:
+
+| Luật | Chặn điều gì |
+|---|---|
+| Làm nóng | Chi phí JIT lần đầu + cache áp đảo các lần chạy N=1 |
+| Nhiều lần lặp (100–10k) | Nhiễu độ phân giải timer (Stopwatch ≈ chục ns, nhưng lập lịch là µs) |
+| Delta cấp phát, không chỉ thời gian | CPU đổi tần số, nhiễu máy giả lập tăng tốc |
+| Lặp lại với min/median | Một cục lập lịch xui rủi làm hỏng cả lần chạy |
+| Cùng trạng thái máy (không build debug!) | So debug với release, hay laptop tiết kiệm pin vs cắm sạc |
+
+Benchmark cấp production dùng **BenchmarkDotNet**, cách ly từng benchmark
+trong process riêng, tự xác định số lần lặp bằng pilot-phase, và báo cáo
+thống kê đầy đủ — nhưng TRIẾT LÝ của nó là bảng trên, và sandbox (không có
+NuGet restore) có thể chạy bộ harness tối thiểu thay thế.
+
+Kiểu thất bại ngang hàng: đo SAI THỨ. Tối ưu parsing khi request dành 90%
+thời gian chờ DB round-trip là chuyện kinh điển. Hãy profile đường END-TO-END
+trước khi tối ưu vi mô bất kỳ component nào.

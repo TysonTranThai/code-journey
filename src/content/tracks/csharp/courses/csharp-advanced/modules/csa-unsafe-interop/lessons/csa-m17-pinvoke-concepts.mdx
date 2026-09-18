@@ -1,0 +1,47 @@
+## P/Invoke concepts and the security bill
+
+P/Invoke declares native functions for managed callers:
+
+```csharp
+[LibraryImport("libc", SetLastError = true)]   // modern source-generated interop
+private static partial int chmod(string path, uint mode);
+```
+
+The mechanics worth knowing even where the sandbox forbids native calls:
+
+- **Marshaling**: the runtime converts managed arguments to native
+  representations — strings to UTF-8/UTF-16 pointers, delegates to
+  function pointers, structs by value/reference per layout. Blittable
+  types (int, double, fixed-layout structs of those) need NO conversion —
+  they pass through unchanged, which is why blittable-heavy signatures
+  are the fast ones.
+- **Function pointers**: `delegate* unmanaged<int, int>` (C# 9+) gives
+  C-level function pointers for callbacks; `unmanaged` callers cannot
+  throw into managed code — the boundary rules work both directions.
+- **Lifetime**: every native handle you receive must have exactly one
+  owner. `SafeHandle` wraps the handle, increments a reference count
+  across the call, and finalizes to release if you forget — the pattern
+  that prevents double-free and handle-leak bugs.
+- **Calling conventions and ABI**: sizes, alignment, and struct passing
+  differ by platform. Cross-platform interop code declares per-platform
+  signatures (`LibraryImport` + partial methods) rather than assuming.
+
+**The security bill** — what unsafe/interop code owes the rest of the
+system:
+
+1. **Input validation moves INTO native**: a C function with a buffer
+   length trusts you; the classic overflow becomes YOUR bug the moment
+   you pass unchecked lengths.
+2. **No sandbox inside unsafe**: the Code Journey container isolates at
+   the OS level; within it, unsafe code can corrupt the process. The
+   boundary is the container, not the type system — never confuse the
+   two.
+3. **Attack surface**: every native entry point is un-auditable by the
+   C# compiler — dependency/supply-chain review (Module 23) applies
+   double to native dependencies.
+4. **Trimming/AOT**: dynamic P/Invoke resolves at runtime; AOT-friendly
+   interop declares everything statically so the linker can see it.
+
+The professional default: managed, spans, source-generated interop when
+native is unavoidable, and a wrapper type (`SafeHandle`-shaped) owning
+every handle. Unsafe code is a measured, reviewed, documented exception.

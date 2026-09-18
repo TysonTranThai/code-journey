@@ -1,0 +1,39 @@
+## Backpressure as a design tool
+
+Unbounded queues are the silent killer of services under load. The
+sequence is always the same: producer outpaces consumer → queue grows →
+memory grows → GC pressure rises → latency rises → timeouts → retries →
+MORE load. The queue did not cause the failure; the *absence of
+backpressure* did.
+
+A bounded channel turns overload into an explicit, survivable signal:
+
+```csharp
+var ch = Channel.CreateBounded<Job>(new BoundedChannelOptions(1_000)
+{
+    FullMode = BoundedChannelFullMode.Wait,   // writers feel the load
+    SingleReader = false,
+});
+
+// Producer:
+try { await ch.Writer.WriteAsync(job, ct); }
+catch (ChannelClosedException) { /* shutting down: shed */ }
+```
+
+With `Wait`, the producer's latency rises as the queue fills — the system
+degrades toward the consumer's true throughput instead of dying. The
+callers upstream (HTTP handlers, message pumps) experience the pressure
+and can shed, return 503, or slow down — the correct system behavior.
+
+Design decisions bounded channels force you to make (all good questions):
+
+1. **Capacity** = maximum tolerated burst. 0 = pure rendezvous; small =
+   latency-sensitive; large = burst-absorbing (and memory-hungry).
+2. **Drop or wait?** Dropping is correct for metrics/logs (stale data is
+   worthless); waiting is correct for work items (data loss is a bug).
+3. **Who observes the wait?** If nobody upstream can react to backpressure,
+   you have only moved the cliff.
+
+The measurement that matters: producer wait time distribution. A healthy
+bounded pipeline shows near-zero waits at normal load and graceful growth
+under stress — the channel is your load gauge.

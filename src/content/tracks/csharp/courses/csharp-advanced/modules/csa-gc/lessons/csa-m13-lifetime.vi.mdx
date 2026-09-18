@@ -1,0 +1,39 @@
+## Vòng đời: finalizer, disposal, weak ref
+
+**Finalizer là trạm thu phí.** Object có `~Finalizer()` không được thu ngay
+tại lần đầu mất khả năng tiếp cận — nó được đăng ký vào finalizer queue,
+thăng cấp ít nhất một thế hệ, finalizer chạy sau trên thread riêng, và CHỈ
+RỒI mới có thể thu. Mỗi object finalizable tốn thêm một chu kỳ GC và giữ
+một slot queue. Quy tắc: bạn hầu như không bao giờ tự viết finalizer — bạn
+viết `IDisposable`, chỉ thêm finalizer khi sở hữu handle thô của OS, và
+ngay cả khi vậy cũng qua `SafeHandle` vốn finalizer hộ bạn rồi.
+
+```csharp
+public class NativeThing : IDisposable
+{
+    private readonly SafeFileHandle _handle;      // SafeHandle CHÍNH LÀ finalizer
+    public void Dispose() { _handle.Dispose(); GC.SuppressFinalize(this); }
+}
+```
+
+**Kỷ luật Dispose**: `using` (hoặc `await using`) khắp nơi, try/finally khi
+đường ngọt không vừa, `GC.SuppressFinalize` sau khi dispose tường minh.
+**Pattern Finalize-Dispose** dành cho chủ handle; code ứng dụng nên đi
+xe `SafeHandle`.
+
+**WeakReference** quan sát một object mà không giữ nó sống:
+
+```csharp
+var wr = new WeakReference(obj);
+wr.IsAlive; wr.Target;              // Target có thể null tại mọi thời điểm
+```
+
+Công dụng kinh điển là cache/bảng tra sidebar (`ConditionalWeakTable<K,V>`
+gắn trạng thái vào object theo đúng vòng đời của nó). Cạm bẫy liveness mà
+khóa học probe: object của biến cục bộ có thể vẫn tiếp cận được qua thanh
+ghi JIT cho đến lần dùng cuối của phương thức — demo "GC.Collect chứng
+minh cái chết" phải chạy phần cấp phát trong một phương thức helper riêng,
+đúng như checkpoint làm.
+
+**Rò rỉ event** là bug production phổ biến nhất của vòng đời — task practice
+sẽ đi từng bước.

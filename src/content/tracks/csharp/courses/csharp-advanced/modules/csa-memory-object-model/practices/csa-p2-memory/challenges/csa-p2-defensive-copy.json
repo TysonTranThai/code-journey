@@ -1,0 +1,16 @@
+{
+  "id": "csa-p2-defensive-copy",
+  "title": "Defensive copies in readonly members",
+  "prompt": "A mutable struct stored in a readonly field is copied on every member access. Implement struct `Container` with `private readonly Mut _m;` and a `public int Get()` that reads `_m.Value` twice and returns their sum. Implement struct `Mut { public int Value; }`. The lesson: each `_m.Value` read copies first — implement it so the TEST (which checks the sum) passes; you cannot observe the copies from outside, which is exactly the point: they are invisible but real.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "sum",
+      "code": "var c = new Container();\nCj.Eq(c.Get(), 0, \"default Mut.Value is 0, sum 0+0\");",
+      "hint": "Return _m.Value + _m.Value."
+    }
+  ],
+  "level": "imitation"
+}

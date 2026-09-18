@@ -1,0 +1,54 @@
+## Đoán, kiểm tra, thu hẹp
+
+Một số bài không hỏi "tìm giá trị này trong mảng" — chúng hỏi giá trị tốt
+nhất khả thi của một đại lượng. Nếu tính khả thi **đơn điệu** (một khi khả
+thi tại giá trị v thì khả thi ở mọi giá trị dễ hơn), bạn có thể tìm kiếm
+nhị phân chính đáp án:
+
+```
+lo = đáp án nhỏ nhất có thể, hi = đáp án lớn nhất có thể
+while (lo < hi) {
+    mid = lo + (hi - lo + 1) / 2;      // làm tròn LÊN cho dạng last-true
+    if (feasible(mid)) lo = mid;       // mid ổn — thử lớn hơn
+    else hi = mid - 1;                 // mid hỏng — về nhỏ hơn
+}
+// lo là giá trị khả thi lớn nhất
+```
+
+`feasible(v)` là hàm kiểm tra bạn tự viết — thường O(n). Tổng: O(n log(miền)).
+
+### Ví dụ mẫu — khoảng cách tối thiểu lớn nhất
+
+n vị trí trên một đường thẳng, đặt k con bò sao cho **khoảng cách nhỏ
+nhất** càng lớn càng tốt. Khả thi với khoảng cách d: tham lam đặt con bò
+mỗi khi khoảng cách từ lần đặt trước chạm d.
+
+```cpp
+bool feasible(const vector<long long>& pos, int k, long long d) {
+    int used = 1;
+    long long last = pos[0];
+    for (int i = 1; i < (int)pos.size(); ++i)
+        if (pos[i] - last >= d) { ++used; last = pos[i]; }
+    return used >= k;
+}
+// tìm kiếm nhị phân d trong [1, pos.back() - pos.front()]
+```
+
+Vì sao tham lam đúng trong hàm kiểm tra: đặt mỗi con sớm nhất có thể
+không bao giờ gây hại — mọi cách đặt hợp lệ đều dịch được sang trái.
+
+### Hướng làm tròn là tất cả
+
+- Tìm **first true** (khả thi nhỏ nhất): `mid = lo + (hi-lo)/2`,
+  `if feasible: hi = mid else lo = mid + 1`.
+- Tìm **last true** (khả thi lớn nhất): `mid = lo + (hi-lo+1)/2`,
+  `if feasible: lo = mid else hi = mid - 1`.
+
+Trộn hai hướng là cách phổ biến nhất để tìm kiếm nhị phân im lặng trả về
+một đáp án láng giềng. Khi không chắc, mô phỏng tay đoạn kích thước 2 và 3.
+
+### Tín hiệu đề bài thật
+
+Nếu đề nói "tối thiểu hóa giá trị lớn nhất ..." hoặc "tối đa hóa giá trị
+nhỏ nhất ...", đó là gợi ý rất lớn: các mục tiêu đó đơn điệu theo đáp án —
+tìm kiếm nhị phân trên đáp án là hướng tấn công chuẩn.

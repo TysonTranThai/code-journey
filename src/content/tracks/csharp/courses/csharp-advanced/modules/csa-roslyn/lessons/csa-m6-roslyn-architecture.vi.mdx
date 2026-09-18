@@ -1,0 +1,30 @@
+## Hai góc nhìn của Roslyn về mã nguồn
+
+Roslyn là compiler-as-a-service: chính engine biên dịch code của bạn là một
+thư viện bạn tham chiếu. Nó phơi hai tầng phối hợp:
+
+- **Tầng syntax** (`SyntaxTree`, `CSharpSyntaxWalker`): chính xác văn bản
+  dưới dạng cây — từng ngoặc, từng keyword, kể cả trivia (comment,
+  whitespace). Thuần từ vựng: một lỗi chính tả không resolve được vẫn parse
+  bình thường.
+- **Tầng semantic** (`SemanticModel`, `ISymbol`): định danh NGHĨA là gì —
+  kiểu đã resolve, overload, khả năng truy cập, nullable flow. Cần một
+  `Compilation` với các tham chiếu.
+
+```csharp
+var tree = CSharpSyntaxTree.ParseText("int x = 1;");
+var comp = CSharpCompilation.Create("scratch", new[] { tree },
+    new[] { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) });
+var model = comp.GetSemanticModel(tree);
+```
+
+Hai quyết định thiết kế làm nên thế giới IDE: syntax tree **bất biến**
+(chia sẻ và cache tự do) và **repirseparable** (cây nhớ cách tái tạo chính
+xác văn bản của nó, nên round-trip không mất dữ liệu). Cây đỏ/xanh của
+Roslyn giúp chỉnh sửa tăng dần rẻ — bạn chủ yếu thấy điều đó ở chỗ "analyzer
+không phân tích lại cả file cho mỗi phím gõ".
+
+Khi nào dùng tầng nào: linting hình dạng (đặt tên, cấu trúc, pattern bị cấm)
+là syntax; luật đúng-sai (null-ability, sai kiểu, dùng symbol sai) là
+semantic. Analyzer cần thông tin semantic sẽ lấy lười — API đăng ký nhận một
+predicate quyết định node có đáng resolve hay không.

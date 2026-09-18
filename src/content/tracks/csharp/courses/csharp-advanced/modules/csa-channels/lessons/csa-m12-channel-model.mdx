@@ -1,0 +1,36 @@
+## The `Channel<T>` model
+
+`Channel<T>` splits into two halves with deliberately different
+capabilities: `ChannelWriter<T>` can write and complete; `ChannelReader<T>`
+can read, count, and observe completion. The split is the design: consumers
+cannot sneak writes, producers cannot complete the channel out from under
+a reader's contract.
+
+```csharp
+var ch = Channel.CreateBounded<int>(capacity: 100);
+// or Channel.CreateUnbounded<int>();
+
+await ch.Writer.WriteAsync(item, ct);        // async write; WAITS when full
+if (ch.Reader.TryRead(out var v)) { }        // sync poll
+await ch.Reader.ReadAsync(ct);               // async read; WAITS when empty
+await foreach (var v in ch.Reader.ReadAllAsync(ct)) { }   // drain to completion
+```
+
+Two options shape everything else:
+
+- **Bounded vs unbounded.** An unbounded channel accepts every write
+  instantly — memory grows without limit under producer>consumer load. A
+  bounded channel makes `WriteAsync` WAIT when full. That wait is
+  backpressure, and it is a feature, not a bug.
+- **Full modes** (`BoundedChannelFullMode`): `Wait` (default — writers
+  wait), `DropOldest`/`DropNewest` (ring-buffer semantics, lose data but
+  never stall), `DropWrite`. Telemetry pipelines love DropOldest; order
+  processing must never use it.
+
+`SingleReader`/`SingleWriter` options let the implementation skip
+synchronization — a measurable speedup for the single-pump case.
+
+Channels exist because `Queue<T>` + `lock` + `SemaphoreSlim` hand-rolled
+poorly: no async waiting, no completion, no backpressure. `Task` collections
+have no flow control at all. Channel is the standard library's answer to
+"go-like pipelines in C#".

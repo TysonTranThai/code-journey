@@ -1,0 +1,34 @@
+## Virtual dispatch and interface calls
+
+Every reference-type object carries a **method table** (the "type handle"
+the header points at). Instance method dispatch on a class hierarchy walks
+that table:
+
+- **Non-virtual instance call**: resolved at compile time to the exact
+  method — one indirection at most.
+- **`virtual` call**: load the receiver's method table, fetch the slot,
+  call through the pointer. A couple of instructions — cheap, but opaque
+  to the optimizer (harder to inline).
+- **Interface call**: the hard one. An interface slot has no fixed place
+  across unrelated class hierarchies, so the runtime resolves via
+  interface maps — historically the slowest dispatch, though modern
+  runtimes cache the resolution (virtual-stub dispatch) and tiered PGO can
+  monomorphize hot sites entirely.
+
+```csharp
+sealed class Fast : IFoo { ... }   // sealed: the JIT may devirtualize IFoo calls
+class Slow : IFoo { ... }          // open: any subclass could exist, calls stay virtual
+```
+
+**Why `sealed` is a real optimization**: closing the hierarchy proves no
+further overrides exist, letting the JIT replace virtual dispatch with
+direct calls (and possibly inline). Measured effects are workload-dependent
+— nanoseconds on cold paths, real percentages on hot polymorphic loops —
+and the profiler usually shows "indirect call overhead" only in aggregate.
+
+**Structs skip all of it.** A struct call through a concrete struct type is
+direct; through an interface it boxes. Generic constraints (Module 3,
+`where T : IFoo` with T : struct) preserve the direct call — this is why
+generic math and span-based code achieve abstraction without dispatch
+cost. The art: pay for polymorphism where the design needs it, and keep
+hot inner loops monomorphic.

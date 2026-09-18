@@ -1,0 +1,60 @@
+## Vì sao cần double
+
+Unit test không được cần mạng, database hay file system. Nó cần *hành vi*
+của những thứ đó, do test kiểm soát. **Test double** là đối tượng thay thế
+cung cấp điều đó. Đảo ngược phụ thuộc bạn xây ở Module 11 — service phụ thuộc
+interface — chính là thứ làm double khả thi: test đưa cho service một hiện
+thực khác.
+
+## Phổ double, làm bằng tay
+
+- **Stub** — trả câu trả lời cứng. "Cổng thanh toán chấp nhận." Không có
+  trạng thái đáng kiểm tra.
+- **Fake** — hiện thực nhẹ hoạt động thật. Repository lưng `Dictionary` đứng
+  chỗ repository SQL. Service không phân biệt được, và test quan sát được
+  hành vi thật.
+- **Mock** — ghi lại *tương tác* để kiểm chứng sau: "Reserve được gọi đúng
+  một lần với sku=tea". Dùng khi chính tương tác là yêu cầu (tác dụng phụ),
+  không phải dữ liệu.
+
+```csharp
+public interface IPaymentGateway { bool Charge(decimal amount); }
+
+public sealed class StubGateway : IPaymentGateway          // stub
+{
+    public bool Result = true;
+    public bool Charge(decimal amount) => Result;
+}
+
+public sealed class MockGateway : IPaymentGateway          // mock
+{
+    public int Calls;
+    public decimal LastAmount;
+    public bool Charge(decimal amount) { Calls++; LastAmount = amount; return true; }
+}
+```
+
+Fake là lao động chính; mock đáng giá khi *cuộc gọi* là kết quả. Lời dùng
+thư viện mocking trước khi viết hai cái bằng tay là cách người ta quay ra
+test cái mock thay vì test code.
+
+## Cô lập: mỗi test một thế giới mới
+
+Sự mục rữa kinh điển: test chạy một mình thì pass, chạy trong bộ thì fail —
+hoặc ngược lại. Nguyên nhân gần như luôn là trạng thái có thể thay đổi dùng
+chung:
+
+- một trường `static` hoặc cache trên service;
+- một singleton mà service thay đổi;
+- thứ tự: test B phụ thuộc thứ test A tạo ra.
+
+Các luật phòng ngừa: instance mới mỗi test (khối Arrange tự dựng thế giới
+của nó), không static giữ trạng thái, không test nào phụ thuộc test khác đã
+chạy. Trong framework thật, *thứ tự* test là không xác định — bất kỳ thứ gì
+cần thứ tự đều là lỗi.
+
+## Kiểm tra hiểu biết
+
+- Stub khác fake? (Stub trả giá trị đóng sẵn; fake là hiện thực nhẹ hoạt động thật.)
+- Khi nào mock là lựa chọn đúng? (Khi chính tương tác — có được gọi không, với gì — là yêu cầu.)
+- Test pass một mình, fail khi chơi cùng. Nghi phạm đầu tiên? (Static dùng chung, singleton, thứ tự ngầm.)

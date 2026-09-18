@@ -1,0 +1,24 @@
+## Observability: logs, metrics, traces
+
+Three signals, three questions:
+
+- **Structured logs** answer *what happened* — events with fields, not
+  strings. `Log.Information("Job {JobId} failed after {Attempts}", jobId,
+  attempts)` is queryable; string interpolation is not. One correlation id per
+  request, propagated everywhere (module 17), turns logs into a story.
+- **Metrics** answer *how much / how fast* — cheap numbers you can alert on:
+  request rate, error rate, duration histograms, queue depth, GC counts
+  (module 14's counters become production dashboards).
+- **Traces** answer *where did the time go* — spans stitched by shared ids
+  across services. The trace tree is the only honest answer to "which of
+  these four calls is slow?"
+
+The discipline that makes any of it useful: define **SLOs** first. An SLO
+("99.9% of job submissions accepted in < 200 ms") plus a measured window gives
+an **error budget** — the arithmetic the drill encodes. Budget remaining →
+ship features; budget burned → reliability work takes priority. Without an
+SLO, "observability" is just expensive logging.
+
+Anti-pattern to reject: logging PII (emails, tokens) into systems whose
+access you do not control. Observability data is a security surface (module
+23) — redact at the boundary.

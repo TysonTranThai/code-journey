@@ -1,0 +1,43 @@
+## Attribute như metadata khả thi
+
+Attribute là một object nhỏ được serialize vào metadata của assembly. Bản
+thân nó không làm gì cả — nó là *dữ liệu về mã* mà bạn (hoặc framework)
+đọc và hành động:
+
+```csharp
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+sealed class RetryAttribute : Attribute
+{
+    public int Times { get; }
+    public RetryAttribute(int times) => Times = times;
+}
+
+class Job
+{
+    [Retry(3)]
+    public void Run() { }
+}
+
+// Đọc lại:
+var attr = typeof(Job).GetMethod("Run")!.GetCustomAttribute<RetryAttribute>();
+// attr.Times == 3
+```
+
+Ba thuộc tính quyết định hành vi:
+
+- **AttributeUsage**: nơi nó được phép xuất hiện. Hãy ép điều này —
+  attribute gắn sai đích là design smell đáng lẽ compiler phải bắt.
+- **AllowMultiple**: việc chồng `[Retry(3)][Retry(5)]` là hợp lệ hay lỗi
+  biên dịch.
+- **Inherited**: lớp dẫn xuất có thấy attribute của lớp cơ sở không?
+
+Tham số attribute bị giới hạn ở hằng số lúc biên dịch, object `Type`, và
+mảng của những thứ đó — ràng buộc này khiến attribute an toàn khi serialize
+vào metadata. Mọi thứ động (giá trị cấu hình, service sống) thuộc về code
+*phản ứng* với attribute, không nằm trong attribute.
+
+Ranh giới thiết kế giữ hệ thống lành mạnh: attribute tuyên bố **ý định**
+("cái này cần retry", "cái này là job"), một engine duy nhất diễn giải chúng
+một lần lúc startup, và đường nóng không bao giờ đọc lại attribute. Đọc
+attribute mỗi request là bug hiệu năng reflection kinh điển — và là dấu hiệu
+ranh giới framework đã bị rò rỉ.

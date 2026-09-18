@@ -1,0 +1,35 @@
+## Pooling: ArrayPool and friends
+
+`ArrayPool<T>.Shared` rents byte/T arrays from size-classed buckets
+(powers of two; you may get a LARGER array than requested — always use
+your logical length, never `rented.Length`). Rent/Return are cheap
+interlocked ops; the win shows on hot paths allocating big buffers per
+request.
+
+```csharp
+byte[] buf = ArrayPool<byte>.Shared.Rent(minLength: 4096);
+try { Use(buf.AsSpan(0, logical)); }
+finally { ArrayPool<byte>.Shared.Return(buf); }   // clearArray: true only for secrets
+```
+
+The four bugs pooling introduces (why it is opt-in, not default):
+
+1. **Forgetting Return** — the buffer leaks from the pool (not the GC);
+   the pool grows, memory balloons.
+2. **Use-after-return** — a Span held past Return reads another renter's
+   data. Correctness bug, possibly a security bug (cross-request data
+   bleed).
+3. **Wrong length assumptions** — rented.Length ≥ your need; slicing is
+   mandatory.
+4. **Returning dirty buffers with secrets** — `clearArray: true` when the
+   content was sensitive.
+
+When pooling PAYS: large (≥KBs) buffers on request-rate hot paths.
+When it does not: small short-lived allocations (Gen0 is cheaper than
+the API ceremony), anything rent/return dominated by work smaller than
+the allocation itself. Measure with `GC.GetAllocatedBytesForCurrentThread`
+before and after — the checkpoint's second test enforces this.
+
+`ObjectPool<T>` (Microsoft.Extensions.ObjectPool) does the same for
+polymorphic objects — same rules apply: rent, use, return, no leaks past
+return.

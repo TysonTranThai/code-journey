@@ -1,0 +1,35 @@
+## Measure first: the benchmark discipline
+
+The commandment: no optimization without a measured baseline. The
+discipline that makes the measurement mean something:
+
+```csharp
+// The minimal honest harness (what the checkpoint grades):
+var work = (Func<int>)(() => SumTo(1000));
+_ = work();                                     // 1. WARMUP — JIT, caches
+var before = GC.GetAllocatedBytesForCurrentThread();   // 2. BASELINE
+var sw = Stopwatch.StartNew();                  // 3. TIMED WINDOW
+for (int i = 0; i < N; i++) _ = work();
+sw.Stop();
+var allocDelta = GC.GetAllocatedBytesForCurrentThread() - before;
+Console.WriteLine($"{sw.Elapsed.TotalMicroseconds / N} us/op, {allocDelta / N} B/op");
+```
+
+The rules and the lies each prevents:
+
+| Rule | Prevents |
+|---|---|
+| Warmup calls | First-call JIT + cache costs dominating N=1 runs |
+| Many iterations (100–10k) | Timer resolution noise (Stopwatch ≈ tens of ns, but scheduling is µs) |
+| Allocation delta, not wall time alone | CPU frequency scaling, machine noise faking speedups |
+| Repeats with min/median | One unlucky scheduling blob poisoning the run |
+| Same machine state (no debug build!) | Comparing debug vs release, or throttled laptop vs plugged |
+
+Production-grade benchmarking uses **BenchmarkDotNet**, which isolates each
+benchmark in its own process, does pilot-phase iteration sizing, and
+reports statistical summaries — but its PHILOSOPHY is the table above, and
+the sandbox (no NuGet restore) can run the minimal harness instead.
+
+The equal-opportunity failure: measuring the WRONG THING. Optimizing
+parsing when the request spends 90% of its time in DB round-trips is the
+classic. Profile the END-TO-END path before micro-optimizing any component.

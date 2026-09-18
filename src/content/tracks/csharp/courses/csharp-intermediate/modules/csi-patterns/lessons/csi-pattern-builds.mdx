@@ -1,0 +1,50 @@
+## Minimal skeletons (you build them for real next)
+
+```csharp
+// Strategy: variants behind one interface; the context never changes
+interface IShipping { decimal Cost(Order o); }
+sealed class FlatShipping : IShipping { ... }
+sealed class WeightShipping : IShipping { ... }
+// context takes IShipping — adding a variant touches no existing file
+
+// Factory Method: the switch lives in exactly one place
+static IShipping Create(string kind) => kind switch { ... };
+
+// Builder: stepwise construction, invalid states unrepresentable
+var req = new RequestBuilder().WithUrl(u).WithHeader("k", "v").Build();
+
+// Adapter: wrap what exists, expose what's needed
+sealed class LegacyTaxAdapter : ITaxCalculator { readonly LegacyTax _l; ... }
+
+// Decorator: same interface, wraps one, adds one behavior
+sealed class RetryingClient : IApiClient { readonly IApiClient _inner; ... }
+
+// Repository: persistence behind an interface the domain owns
+interface IOrderRepository { Order? Find(int id); void Save(Order o); }
+
+// Observer: publisher knows only EventHandler<TArgs>
+sealed class EventBus { public event EventHandler<OrderArgs>? Placed; }
+```
+
+## Tradeoffs, honestly
+
+- **Strategy/Factory** cost one extra type per variant; buy uniformity and
+  open/closed growth. Skip them for exactly two variants that never change.
+- **Builder** costs a fluent class per built type; buys readable construction
+  and invariant enforcement in `Build()`. Skip it for ≤ 3 constructor params.
+- **Adapter** costs one wrapper; buys a stable seam against code you do not
+  own. Skip when you own both sides — fix the interface instead.
+- **Decorator** costs a class per behavior; buys stacking behaviors without
+  flag explosions. Skip when behaviors never compose.
+- **Repository** costs an interface + implementation; buys testability and
+  the right to change storage. Skip in tiny apps with one storage call.
+- **Observer** costs event hygiene (unsubscription!); buys publishers that
+  know nothing about subscribers. You met its failure modes in M4.
+
+## Composition is the real skill
+
+The capstone composes them: a Factory picks a Strategy, the Builder assembles
+a request, a Decorator wraps the HTTP client, a Repository persists, Observer
+fires side effects. None of these patterns is impressive alone — *knowing
+which seam each one guards* is the skill, and the checkpoint grades exactly
+that.

@@ -1,0 +1,22 @@
+{
+  "title": "Checkpoint: Bộ Bắt Được Lỗi",
+  "prompt": "Hiện thực các mảnh trong checkpoint: IInventory; FakeInventory (Stock mặc định 0, móc lỗi LyingStock +1000 và BrokenReserve bỏ qua ghi); OrderService(IInventory) — PlaceOrder trả \"ok\"/\"outofstock\", chỉ Reserve khi thành công; CheckAll(FakeInventory) — bộ test ≥ 3 ca xác minh Reserve đúng, hết hàng không Reserve, ranh giới qty == stock vẫn ok, trả danh sách lỗi (rỗng = xanh). Bộ test phải bắt được fake nói dối hoặc hỏng.",
+  "tests": [
+    {
+      "name": "suite passes a correct fake",
+      "hint": "Mọi test của bộ phải đúng trên fake hoạt động chuẩn."
+    },
+    {
+      "name": "suite catches a lying stock report",
+      "hint": "LyingStock báo 1000 cho sku rỗng — ít nhất một test phải nhận ra."
+    },
+    {
+      "name": "suite catches a broken reservation",
+      "hint": "BrokenReserve làm biến mất Reserve của đường ok — bộ phải kiểm tra Reservations, không chỉ chuỗi trả về."
+    },
+    {
+      "name": "service honors the injected interface",
+      "hint": "Ranh giới: qty == stock thành công; qty == stock + 1 thất bại và không Reserve."
+    }
+  ]
+}

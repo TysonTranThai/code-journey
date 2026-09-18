@@ -1,0 +1,51 @@
+## DTOs: the boundary's own language
+
+A **DTO** (Data Transfer Object) is a boundary type with no behavior: the
+shape an API or storage layer speaks. Why not expose domain types directly?
+
+- **Stability** — an internal refactor must not break external consumers.
+- **Security** — you choose every field that crosses; nothing leaks by
+  accident.
+- **Intent** — the wire shape says what a use-case means: `PlaceOrderRequest`
+  with only the fields that matter.
+
+```csharp
+// domain owns this
+public sealed class Order { public int Id; public string Customer = ""; }
+
+// boundary speaks this
+public sealed record OrderDto(int Id, string Customer);
+
+// mapping is explicit, one direction per use-case
+public static OrderDto ToDto(Order o) => new(o.Id, o.Customer);
+```
+
+Mapping feels like boilerplate until the first time a public contract survives
+an internal rewrite — then it is insurance.
+
+## The N+1 shape (now, before a real ORM)
+
+Fetch 20 orders, then per order fetch its customer: 1 + 20 queries. In code,
+the tell is a loop whose body does a lookup that could have been batched:
+
+```csharp
+// N+1: one query per order
+foreach (var o in orders)
+    o.CustomerName = _names.Find(o.CustomerId);   // 20 round trips
+
+// fixed: batch, then join in memory
+var ids = orders.Select(o => o.CustomerId).Distinct();
+var byId = _names.FindMany(ids);
+foreach (var o in orders)
+    o.CustomerName = byId[o.CustomerId];          // 2 round trips
+```
+
+You will fix this shape against a counting fake — the same way you will later
+recognize it under EF Core's lazy loading.
+
+## What "wrong direction" looks like
+
+The classic violation: a domain type (or its method signature) referencing an
+infrastructure name — `Order.LoadFrom(SqlConnection)`. The seam collapses:
+no fake can replace the connection, so no test can run without a database.
+The graded refactor, next practice, is restoring exactly that seam.

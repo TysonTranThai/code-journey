@@ -1,0 +1,21 @@
+{
+  "id": "csa-p19-timeout-enforce",
+  "title": "Deadline enforcement",
+  "prompt": "Implement `static async Task<string> ReadWithDeadline(Func<Task<string>> read, TimeSpan deadline)`: await the read; if it exceeds the deadline, throw TimeoutException and STOP WAITING (the read task continues but the caller does not). Use Task.WhenAny(read, Task.Delay(deadline)) — the classic abandon-the-wait pattern. The test uses a read that sleeps 500ms with a 50ms deadline and expects a throw in well under 500ms.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "fast-read-passes",
+      "code": "var r = await Solution.ReadWithDeadline(() => Task.FromResult(\"ok\"), TimeSpan.FromMilliseconds(500));\nCj.Eq(r, \"ok\", \"fast read completes\");",
+      "hint": "WhenAny returns the first completed task; if it is the read, return its result."
+    },
+    {
+      "name": "slow-read-times-out",
+      "code": "var sw = Stopwatch.StartNew();\nvar ex = await Cj.ThrowsAsync<TimeoutException>(() => Solution.ReadWithDeadline(\n    async () => { await Task.Delay(500); return \"late\"; },\n    TimeSpan.FromMilliseconds(50)));\nsw.Stop();\nCj.True(ex is not null, \"deadline throws\");\nCj.True(sw.ElapsedMilliseconds < 400, $\"abandoned the wait quickly (took {sw.ElapsedMilliseconds}ms)\");",
+      "hint": "var completed = await Task.WhenAny(readTask, Task.Delay(deadline)); if (completed != readTask) throw new TimeoutException();"
+    }
+  ],
+  "level": "real-world"
+}

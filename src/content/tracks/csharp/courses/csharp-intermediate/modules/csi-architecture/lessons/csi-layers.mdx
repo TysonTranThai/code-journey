@@ -1,0 +1,44 @@
+## The layers, minimal and honest
+
+For a medium-sized app, three layers beat an enterprise zoo:
+
+- **Domain** — the types and rules that make the app what it is: `Order`,
+  `OrderLine`, the pricing logic. Knows *nothing* about IO.
+- **Application** — use-cases: `PlaceOrderHandler` orchestrates domain types
+  and ports. Knows the domain; knows ports (interfaces), not adapters.
+- **Infrastructure** — talks to the world: HTTP clients, databases, file
+  systems, real implementations of the ports. Knows everything — but
+  *everything points at it*, never the reverse.
+
+## The dependency rule
+
+> Source-code dependencies point inward; nothing in an inner layer names a
+> type from an outer one.
+
+`Order` (domain) must not mention `HttpClient` or SQL. `PlaceOrderHandler`
+may depend on `IOrderRepository` (a port it owns) but not on
+`SqlOrderRepository` (an adapter). The concrete adapter is chosen at the
+*edge of the system* — in the composition root.
+
+This is not ceremony: it is exactly what makes `PlaceOrderHandler` testable
+with a fake, what you did by hand in M16. The interface seam IS the
+architecture.
+
+## Ports and adapters (the practical core of Clean/Hexagonal)
+
+- A **port** is an interface the inner layer defines because it *needs* a
+  capability: `IOrderRepository`, `IEmailSender`, `IClock`.
+- An **adapter** is an infrastructure type that implements a port:
+  `SqlOrderRepository`, `SmtpEmailSender`.
+- Domain/application code sees only ports. Tests substitute fakes for the
+  same ports. Production wiring happens once, at the edge.
+
+If you remember one sentence: **the domain defines what it needs;
+infrastructure fulfills it.**
+
+## Composition root
+
+The single place (usually `Program.cs`) where concrete types are picked and
+injected. It is allowed to know everything — that is its job. When wiring
+lives there, changing implementations is a one-file change, and every other
+layer stays ignorant.

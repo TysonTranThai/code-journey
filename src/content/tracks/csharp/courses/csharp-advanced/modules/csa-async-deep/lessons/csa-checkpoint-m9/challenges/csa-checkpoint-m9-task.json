@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m9-task",
+  "title": "Async checkpoint",
+  "prompt": "Implement `static async ValueTask<int> ReadCachedAsync(int key, Func<int, Task<int>> slowFetch)`: a static ConcurrentDictionary<int,int> cache; on hit return synchronously WITHOUT awaiting (ValueTask fast path); on miss await slowFetch and store the result. Then implement `static async Task<string> WithTimeout(Task<string> work, TimeSpan timeout)` returning the work's result or throwing TimeoutException — using CancellationTokenSource with a timeout, and cancelling the linked token.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "cache-fast-path",
+      "code": "await Solution.ReadCachedAsync(1, async k => { await Task.Yield(); return k * 10; });\nvar r2 = await Solution.ReadCachedAsync(1, async k => { await Task.Yield(); return -1; });\nCj.Eq(r2, 10, \"second read served from cache, fetcher not called again\");",
+      "hint": "TryGetValue first — return new ValueTask<int>(value) without touching the fetcher."
+    },
+    {
+      "name": "timeout-fires",
+      "code": "var slow = Task.Delay(60_000);\nvar ex = await Cj.ThrowsAsync<TimeoutException>(() => Solution.WithTimeout(slow, TimeSpan.FromMilliseconds(50)));\nCj.True(ex is not null, \"timeout throws\");",
+      "hint": "cts.CancelAfter(timeout); await task.WaitAsync(cts.Token) then translate OperationCanceledException to TimeoutException."
+    }
+  ]
+}

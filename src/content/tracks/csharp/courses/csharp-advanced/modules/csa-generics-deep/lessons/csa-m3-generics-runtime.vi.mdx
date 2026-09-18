@@ -1,0 +1,33 @@
+## Generics tốn gì lúc chạy
+
+CLR cài đặt generics bằng hai chiến lược khác nhau, và biết chiến lược nào
+đang chạy sẽ giải thích hiệu năng thật:
+
+- **Kiểu tham chiếu dùng chung mã.** `List<string>`, `List<object>`,
+  `List<YourClass>` đều chạy MỘT thân hàm chuyên biệt cho reference. Runtime
+  tạo nó một lần cho mỗi generic type. Không tốn thêm gì cho mỗi lần khởi
+  tạo — vì thế collection generic của class gần như miễn phí.
+- **Value type được chuyên biệt hóa.** `List<int>` biên dịch phiên bản riêng
+  với phần tử nhúng sẵn — không boxing, đánh chỉ mục trực tiếp, cache locality
+  tốt hơn. Chi phí: nhiều mã máy hơn cho mỗi T khác nhau (code bloat) —
+  thường là sự đánh đổi hợp lý.
+
+Ý nghĩa thực hành:
+
+```csharp
+// Cùng mã nguồn, câu chuyện runtime khác nhau:
+var a = new List<string>();   // thân dùng chung cho ref-type
+var b = new List<int>();      // chuyên biệt: không boxing, layout chặt
+var c = new List<MyStruct>(); // chuyên biệt: copy cả struct khi add
+```
+
+Phần tử càng lớn = càng nhiều byte copy khi insert/remove — struct lớn
+trong `List<T>` sao chép từng byte; nếu điều đó đau, lưu tham chiếu
+(`List<Ref>`), hoặc tái cấu trúc thành mảng primitive (data-oriented
+layout, Module 15).
+
+Ràng buộc ảnh hưởng thế nào tới chi phí: `where T : class` giữ đường dùng
+chung ref-type; `T` không ràng buộc với value type nghĩa là chuyên biệt hóa.
+`default(T)` trong mã dùng chung, lời gọi interface qua generic `T`, và
+reflection trên open generics (`typeof(List<>).MakeGenericType(...)`) mỗi
+cái có câu chuyện riêng — hãy đo trước khi tin điều nào đó.

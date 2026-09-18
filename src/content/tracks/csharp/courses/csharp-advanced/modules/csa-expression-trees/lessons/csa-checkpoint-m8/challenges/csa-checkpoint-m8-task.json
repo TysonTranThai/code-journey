@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m8-task",
+  "title": "Expression tree checkpoint",
+  "prompt": "Implement `static Expression<Func<int, bool>> BuildPredicate(int threshold)` returning an expression equivalent to `x => x >= threshold && x % 2 == 0` (built programmatically, capturing threshold). Then implement `static string Describe(Expression<Func<int, bool>> e)` that returns the expression's NodeType of its body (e.g. \"AndAlso\").",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "built-predicate",
+      "code": "var e = Solution.BuildPredicate(10);\nvar f = e.Compile();\nCj.True(f(12), \"12 passes\");\nCj.False(f(9), \"9 fails threshold\");\nCj.False(f(15), \"15 not even\");",
+      "hint": "Expression.Parameter(typeof(int), \"x\"), then GreaterThanOrEqual, Modulo, Equal, AndAlso; wrap in Lambda<Func<int,bool>>."
+    },
+    {
+      "name": "inspection",
+      "code": "Cj.Eq(Solution.Describe(Solution.BuildPredicate(3)), \"AndAlso\", \"body node type\");",
+      "hint": "e.Body.NodeType.ToString()."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "csa-checkpoint-m7-task",
+  "title": "Source generator checkpoint",
+  "prompt": "Implement `static (int trees, bool symbolResolved) RunGenerator(string userSource)`: build a generator that reads classes marked `[Gen]` (an attribute the generator itself creates via RegisterPostInitializationOutput) and emits a static class `GenCatalog` with one method per marked class: `public static string Name_X() => \"X\";`. Parse userSource, add the attribute source, run CSharpGeneratorDriver, and return (generated tree count including the init output, whether symbol `GenCatalog` resolves in the output compilation).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "generation",
+      "code": "var (trees, ok) = Solution.RunGenerator(\"[Gen] public class Widget { }\");\nCj.True(ok, \"GenCatalog resolves\");\nCj.True(trees >= 2, $\"expected init + generated trees, got {trees}\");",
+      "hint": "CSharpGeneratorDriver.Create(gen).RunGeneratorsAndUpdateCompilation(comp, out var output, out _); check output.GetTypeByMetadataName(\"GenCatalog\")."
+    }
+  ]
+}

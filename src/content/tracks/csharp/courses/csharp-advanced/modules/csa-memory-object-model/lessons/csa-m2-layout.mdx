@@ -1,0 +1,38 @@
+## Stack, heap, and object layout
+
+Every value lives somewhere, and "somewhere" decides its lifetime:
+
+- **Stack** (execution context): locals of value types, method frames.
+  Lifetime = the scope. Gone when the method returns.
+- **Managed heap**: every `class` instance, array, delegate, boxed value.
+  Lifetime = reachability, decided later by the GC.
+- **Registers / enregistration**: the JIT often keeps small structs entirely
+  in registers — the "stack" is already an abstraction.
+
+A heap object carries a fixed **header** (sync block index + method table
+pointer) before its fields. You cannot see it in C#, but it is why 1000
+tiny objects cost more than their field bytes, and why structs used only
+inside a method may cost nothing at all.
+
+| Kind | Lives | Copied on assignment | Lifetime |
+|---|---|---|---|
+| `struct` local | stack/registers | yes, whole value | scope |
+| `class` instance | heap | reference only | GC |
+| `T[]` array | heap | reference | GC |
+| `ref struct` (Span) | stack only | yes | scope — by rule |
+| boxed value | heap | reference | GC |
+
+What is **guarantee vs implementation detail**: the C# spec guarantees
+assignment copies value-type values and ref-structs stay on the stack. The
+*exact* header size, whether a local is enregistered, and object field
+ordering (`LayoutKind.Auto` default) are runtime details — you may observe
+them, never rely on them.
+
+```csharp
+// Observable, but NOT contract: layout internals
+Console.WriteLine(object.Header...);   // does not exist — by design
+```
+
+The professional habit: reason about **categories** (scope vs GC, copy vs
+alias), measure quantities when it matters, and never hard-code observed
+sizes into logic.

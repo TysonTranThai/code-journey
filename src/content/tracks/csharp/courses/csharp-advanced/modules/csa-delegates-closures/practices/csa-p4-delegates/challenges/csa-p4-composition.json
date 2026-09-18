@@ -1,0 +1,16 @@
+{
+  "id": "csa-p4-composition",
+  "title": "Delegate composition pipeline",
+  "prompt": "Implement `static Func<string, string> Pipeline(params Func<string, string>[] steps)` returning one delegate applying steps left to right (step 1 first). Also implement `static Func<int> Memoize(Func<int> f)` — no, simpler: implement `static int InvokeThrice(Func<int> f)` that calls f exactly three times and returns the last result (tests that delegates are first-class values).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "pipeline-order",
+      "code": "var p = Solution.Pipeline(s => s + \"-1\", s => s + \"-2\");\nCj.Eq(p(\"x\"), \"x-1-2\", \"left to right\");\nint calls = 0;\nvar last = Solution.InvokeThrice(() => ++calls);\nCj.Eq(last, 3, \"third call result\");\nCj.Eq(calls, 3, \"exactly three invocations\");",
+      "hint": "Fold the array: acc = acc + step for each step in order."
+    }
+  ],
+  "level": "independent"
+}

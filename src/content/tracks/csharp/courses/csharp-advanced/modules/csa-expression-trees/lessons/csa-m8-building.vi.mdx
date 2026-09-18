@@ -1,0 +1,31 @@
+## Dựng và biên dịch biểu thức
+
+Ngoài việc phân tích lambda, bạn dựng cây theo từng node — đây là cách rule
+engine biến cấu hình thành predicate chạy được:
+
+```csharp
+var x = Expression.Parameter(typeof(int), "x");
+var body = Expression.AndAlso(
+    Expression.GreaterThanOrEqual(x, Expression.Constant(5)),
+    Expression.LessThan(x, Expression.Constant(100)));
+var lambda = Expression.Lambda<Func<int, bool>>(body, x);
+Func<int, bool> f = lambda.Compile();
+```
+
+Các luật ngăn thất bại kinh điển:
+
+- **Tái sử dụng node `ParameterExpression`.** Hai object `Parameter` khác
+  nhau cùng tên là HAI biến khác nhau; `Compile()` ném lỗi "variable 'x'
+  references itself" hoặc lỗi tham số chưa bind. Dựng parameter một lần và
+  truyền cùng node đó đi khắp nơi, kể cả cho `Lambda`.
+- **`Expression.Constant` chụp giá trị lúc dựng** — predicate động cần hoặc
+  dựng lại khi thay đổi, hoặc `Expression.Field`/`Expression.Closure` trên
+  một object bị capture.
+- **`Compile()` đắt** (ms) và delegate biên dịch tốn GC để tạo — cache
+  delegate đã compile theo key là input ngữ nghĩa.
+
+Khi nào cây là công cụ SAI: logic chạy mỗi phần tử trên đường nóng (cây
+thêm lớp gián tiếp mà JIT không xóa được hết), mọi thứ cần câu lệnh hoặc
+`async`, và script dùng một lần nơi delegate thường đơn giản hơn. Cây tỏa
+sáng đúng nơi bạn phải *nhìn vào* logic: provider, rule, serialization của
+query.

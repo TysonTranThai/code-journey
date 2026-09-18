@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m4-task",
+  "title": "Closures checkpoint",
+  "prompt": "Implement `static List<Func<int>> Counters(int n)` returning n functions; function i returns i-th value 0,1,...,n-1 — each counter must return ITS OWN index (proving you captured per-iteration values correctly, not one shared variable). Then implement `static Func<int,int> Adder(int start)` returning a function that adds its argument to `start` and returns the RUNNING total (state must persist across calls — a captured mutable local).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "per-iteration-capture",
+      "code": "var fs = Solution.Counters(3);\nCj.Eq(fs[0](), 0, \"first counter\");\nCj.Eq(fs[1](), 1, \"second counter\");\nCj.Eq(fs[2](), 2, \"third counter\");\nCj.Eq(fs[0](), 0, \"stable across calls\");",
+      "hint": "Capture a per-iteration copy (or the foreach/loop variable under C# 5+ semantics)."
+    },
+    {
+      "name": "persistent-state",
+      "code": "var add = Solution.Adder(10);\nCj.Eq(add(5), 15, \"first call\");\nCj.Eq(add(1), 16, \"state persisted\");\nCj.Eq(add(4), 20, \"still accumulating\");",
+      "hint": "A captured local mutates across invocations — that is the closure's display class field."
+    }
+  ]
+}

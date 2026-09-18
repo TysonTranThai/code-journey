@@ -1,0 +1,31 @@
+## The JIT and tiered compilation
+
+Execution starts with IL and ends with machine code, in tiers:
+
+| Tier | When | Quality | Cost |
+|---|---|---|---|
+| Quick JIT (tier 0) | first call | minimal optimization | fast compile |
+| Tier 1 | after call-count threshold (~30) + background recompile | full optimization | slower compile |
+| OSR | loop detected hot in tier-0 frame | re-optimize mid-method | rare |
+
+Consequences you can measure (and the course does, in Module 14):
+
+- **First call is slow, then faster.** Warmup before benchmarking; the
+  threshold is per-method.
+- **Dynamic PGO** (default on .NET 8+): the tier-0 instrumented counters
+  feed the tier-1 optimizer — real branch frequencies drive inlining and
+  devirtualization decisions that static analysis cannot make.
+- **Tiered PGO can devirtualize** based on observed receiver types: an
+  interface call that always sees one concrete type becomes a direct call.
+  This is why measured interface-dispatch cost varies with call history.
+
+**Startup vs steady state.** ReadyToRun (R2R) precompiles tier-1-ish code
+at publish — faster startup, bigger binaries, slightly less optimal (no
+PGO). NativeAOT (Module 19) compiles fully ahead-of-time. The spectrum:
+Quick JIT (fast start, slow code) → R2R (balanced) → AOT (no JIT, fastest
+start, reflection-limited).
+
+GC, thread pool, and JIT are runtime services the host manages — the same
+IL runs against different runtime configs (Server GC vs Workstation,
+`DOTNET_TieredPGO=0`) with different performance. Production tuning is
+runtime configuration as much as code.

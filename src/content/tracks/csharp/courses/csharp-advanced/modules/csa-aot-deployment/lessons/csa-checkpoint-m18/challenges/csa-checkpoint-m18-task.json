@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m18-task",
+  "title": "Deployment/AOT checkpoint",
+  "prompt": "Implement `static string DeploymentDescription(bool selfContained, bool trimmed, bool aot)`: return \"framework-dependent\" when selfContained=false; \"self-contained\" when selfContained && !trimmed && !aot; \"trimmed\" when selfContained && trimmed && !aot; \"aot\" when aot (regardless of trimmed — AOT implies it). Then implement `static bool IsTrimCompatible(string reflectionPattern)` returning false for patterns the linker cannot prove: \"assembly scanning\", \"activator by name\", \"json by string type name\"; true for \"source generated serializer\", \"generic constraint\", \"explicit registration\".",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "deployment-desc",
+      "code": "Cj.Eq(Solution.DeploymentDescription(false, false, false), \"framework-dependent\", \"no runtime bundled\");\nCj.Eq(Solution.DeploymentDescription(true, false, false), \"self-contained\", \"runtime bundled\");\nCj.Eq(Solution.DeploymentDescription(true, true, false), \"trimmed\", \"trimmed IL\");\nCj.Eq(Solution.DeploymentDescription(true, true, true), \"aot\", \"AOT wins\");\nCj.Eq(Solution.DeploymentDescription(true, false, true), \"aot\", \"AOT implies trimmed\");",
+      "hint": "Check aot first, then selfContained, then trimmed."
+    },
+    {
+      "name": "trim-compat",
+      "code": "Cj.False(Solution.IsTrimCompatible(\"assembly scanning\"), \"linker cannot prove dynamic discovery\");\nCj.False(Solution.IsTrimCompatible(\"activator by name\"), \"no type survives without a reference\");\nCj.True(Solution.IsTrimCompatible(\"source generated serializer\"), \"generated code is static\");\nCj.True(Solution.IsTrimCompatible(\"explicit registration\"), \"referenced = kept\");",
+      "hint": "A set of safe patterns vs known-dynamic patterns; everything dynamic loses."
+    }
+  ]
+}

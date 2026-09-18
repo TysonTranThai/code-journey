@@ -1,0 +1,46 @@
+## Viết analyzer và diagnostic
+
+Analyzer là một `DiagnosticAnalyzer` của Roslyn: đăng ký callback theo loại
+syntax node, kiểm tra, và báo `Diagnostic` dựa trên `DiagnosticDescriptor`
+(id, mức nghiêm trọng, template thông báo). Pattern runtime giúp analyzer
+nhanh:
+
+```csharp
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public sealed class EmptyCatchAnalyzer : DiagnosticAnalyzer
+{
+    static readonly DiagnosticDescriptor Rule = new(
+        "CJ0001", "Empty catch block", "Catch of '{0}' swallows everything",
+        "Reliability", DiagnosticSeverity.Warning, isEnabledByDefault: true);
+
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
+        => [Rule];
+
+    public override void Initialize(AnalysisContext ctx)
+    {
+        ctx.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+        ctx.EnableConcurrentExecution();
+        ctx.RegisterSyntaxNodeAction(Analyze, SyntaxKind.CatchClause);
+    }
+
+    static void Analyze(SyntaxNodeAnalysisContext c)
+    {
+        var node = (CatchClauseSyntax)c.Node;
+        if (node.Block?.Statements.Count == 0)
+            c.ReportDiagnostic(Diagnostic.Create(Rule, node.CatchKeyword.GetLocation(), node.Declaration));
+    }
+}
+```
+
+Kỷ luật phân biệt analyzer hữu ích với analyzer nhiễu:
+
+1. **Đăng ký hẹp** — theo loại node hoặc symbol, không bao giờ đi cả cây
+   cho mỗi lần biên dịch.
+2. **Bỏ qua generated code** — `GeneratedCodeAnalysisFlags.None` tránh đánh
+   nhau với output của compiler.
+3. **Báo kèm vị trí và tham số** — template thông báo được điền; IDE có thể
+   đề nghị code fix ngay đúng span đó.
+
+Analyzer được đóng gói thành package NuGet và chạy bên trong compiler — luật
+của bạn thực thi lúc build, không phải script CI chạy sau. Code fix là tầng
+riêng (`CodeFixProvider`) đề nghị thay thế; analyzer chỉ báo cáo.

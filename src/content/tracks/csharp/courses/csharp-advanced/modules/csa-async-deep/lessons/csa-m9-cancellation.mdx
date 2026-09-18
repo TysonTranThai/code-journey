@@ -1,0 +1,39 @@
+## Cancellation that actually works
+
+Cancellation in .NET is **cooperative**: `CancellationToken` carries the
+request, your code must CHECK it. The failure mode that eats production:
+operations that keep running because nobody looks at the token.
+
+```csharp
+// The four integration points:
+async Task Work(CancellationToken ct)
+{
+    ct.ThrowIfCancellationRequested();          // 1. explicit check
+    await Task.Delay(100, ct);                  // 2. async APIs honor it
+    using var reg = ct.Register(() => { });     // 3. callback on cancel
+    var other = otherCts.Token;                 // 4. linking:
+}
+
+using var linked = CancellationTokenSource.CreateLinkedTokenSource(a, b);
+// linked.Token cancels when EITHER a or b cancels
+```
+
+Timeouts are just cancellation with a clock:
+`new CancellationTokenSource(TimeSpan.FromSeconds(5))`, or on .NET 8+,
+`task.WaitAsync(TimeSpan)` — which leaves the underlying work running
+(WaitAsync abandons the wait, it does not stop the work; only the token
+passed INTO the work does that).
+
+The discipline that separates real cancellation from theater:
+
+- **Pass the token everywhere** — an API that takes a token and ignores it
+  is worse than one that doesn't pretend. Parameter order: token last.
+- **Propagate into every layer** — a DB call without a token cannot be
+  cancelled, whatever the HTTP handler did.
+- **Distinguish outcomes**: `OperationCanceledException` (expected) vs
+  timeouts (diagnose) vs faults (bug). Swallowing OCE hides shutdown bugs.
+- **Dispose your CTS** — timers inside un-disposed sources leak.
+
+Linked sources compose shutdown trees: request-scoped token linked to
+server shutdown, linked to upstream cancels — the standard ASP.NET Core
+pattern.

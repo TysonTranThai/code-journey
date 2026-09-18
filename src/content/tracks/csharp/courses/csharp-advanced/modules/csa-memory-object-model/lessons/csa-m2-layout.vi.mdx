@@ -1,0 +1,38 @@
+## Ngăn xếp, heap, và layout đối tượng
+
+Mọi giá trị đều nằm ở đâu đó, và "ở đâu" quyết định vòng đời của nó:
+
+- **Ngăn xếp** (bối cảnh thực thi): biến cục bộ kiểu value, khung hàm.
+  Vòng đời = phạm vi. Mất khi hàm trả về.
+- **Managed heap**: mọi thể hiện `class`, mảng, delegate, boxed value.
+  Vòng đời = khả năng truy cập, do GC quyết định sau.
+- **Thanh ghi**: JIT thường giữ struct nhỏ nguyên vẹn trong thanh ghi —
+  "ngăn xếp" vốn đã là một trừu tượng hóa.
+
+Một object trên heap mang **header** cố định (sync block index + method
+table pointer) trước các field. Bạn không nhìn thấy nó trong C#, nhưng đó
+là lý do 1000 object nhỏ tốn hơn tổng byte field của chúng, và vì sao
+struct chỉ dùng trong một hàm có thể không tốn gì cả.
+
+| Loại | Nằm ở | Sao chép khi gán | Vòng đời |
+|---|---|---|---|
+| `struct` cục bộ | stack/thanh ghi | có, toàn bộ giá trị | phạm vi |
+| `class` | heap | chỉ tham chiếu | GC |
+| mảng `T[]` | heap | tham chiếu | GC |
+| `ref struct` (Span) | chỉ stack | có | phạm vi — theo luật |
+| value đã box | heap | tham chiếu | GC |
+
+Điều gì là **cam kết vs chi tiết triển khai**: spec C# đảm bảo phép gán sao
+chép giá trị value-type và ref-struct chỉ nằm trên stack. Kích thước header
+*chính xác*, việc một biến cục bộ được đưa vào thanh ghi, thứ tự field
+(`LayoutKind.Auto` là mặc định) là chi tiết runtime — có thể quan sát,
+không được phép dựa vào.
+
+```csharp
+// Quan sát được, NHƯNG không phải hợp đồng: nội bộ layout
+Console.WriteLine(object.Header...);   // không tồn tại — vì một lý do
+```
+
+Thói quen nghề nghiệp: suy luận theo **danh mục** (phạm vi vs GC, bản sao vs
+alias), đo lường khi cần, và không bao giờ hard-code kích thước quan sát
+được vào logic.

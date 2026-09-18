@@ -1,0 +1,21 @@
+{
+  "id": "csa-p22-pool-budget",
+  "title": "Connection pool budget",
+  "prompt": "A pool of size P serving concurrent requests: requests hold a connection for `holdMs` milliseconds. Implement `static int MaxConcurrentWithin(int poolSize, int requests, int holdMs, int windowMs)` = how many of `requests` can be in-flight simultaneously given poolSize connections (min(poolSize, requests)), and `static double Utilization(int poolSize, int requests, int holdMs, int windowMs)` = MaxConcurrentWithin × holdMs / windowMs × 100, rounded to 2 decimals. Then `static bool WillStarve(int poolSize, int requests, int holdMs, int windowMs)` = true when requests > poolSize.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "pool-limits-concurrency",
+      "code": "Cj.Eq(ConnBudget.MaxConcurrentWithin(8, 100, 10, 1000), 8, \"pool caps in-flight\");\nCj.Eq(ConnBudget.MaxConcurrentWithin(8, 3, 10, 1000), 3, \"fewer requests than pool\");\nCj.Eq(ConnBudget.WillStarve(8, 100, 10, 1000), true, \"more requests than pool starves\");\nCj.Eq(ConnBudget.WillStarve(8, 3, 10, 1000), false, \"no starvation under capacity\");",
+      "hint": "Pure arithmetic: cap = min(poolSize, requests); starve = requests > poolSize."
+    },
+    {
+      "name": "utilization-formula",
+      "code": "Cj.Eq(ConnBudget.Utilization(8, 100, 50, 1000), 40.0, \"8×50/1000×100\");\nCj.Eq(ConnBudget.Utilization(4, 2, 250, 1000), 50.0, \"2×250/1000×100\");",
+      "hint": "cap × holdMs ÷ windowMs × 100, Math.Round to 2 decimals."
+    }
+  ],
+  "level": "real-world"
+}

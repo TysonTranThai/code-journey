@@ -1,0 +1,10 @@
+{
+  "title": "Chứng minh bug khả kiến",
+  "prompt": "Hiện thực `static int SpinUntilFlag(int ms)` busy-wait (vòng lặp Thread.Sleep(1), giới hạn trong ms) cho đến khi static bool `Flag` — do `static void SetFlag()` đặt — thành true, trả về 1 nếu thấy, 0 khi hết giờ — nhưng đọc Flag qua `Volatile.Read` để JIT không thể cache nó trong thanh ghi. Test đặt cờ từ luồng khác giữa chừng và mong thành công.",
+  "tests": [
+    {
+      "name": "cross-thread-flag",
+      "hint": "while (!Volatile.Read(ref Flag) && Stopwatch chưa hết ngân sách) Thread.Sleep(1); static bool Flag là trường tĩnh — Volatile.Read(ref Flag) cần dạng ref: khai báo `private static bool _flag;` cùng bộ API Volatile, hoặc để SetFlag/Spin dùng private static bool qua các API Volatile."
+    }
+  ]
+}

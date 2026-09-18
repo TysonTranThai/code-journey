@@ -1,0 +1,18 @@
+{
+  "title": "Khôi phục Đường ranh",
+  "prompt": "`OrderService` dưới đây không thể test — nó tự giữ kho lưu trữ cứng, nên không fake nào đứng vào được. Tái cấu trúc *hình dạng* mà test nhìn thấy: 1) `IStore { int Get(int id); void Put(int id, int v); }` (trong `Solution`); 2) `Solution.Service` nhận `IStore` qua constructor; 3) `Service.Bump(id)` cộng `Delta` (const = 5) vào giá trị đang lưu và trả giá trị mới; 4) cung cấp hai adapter `DictStore` (bọc dictionary do caller cấp) và `DoubleStore` (kho riêng độc lập) — chứng minh mọi hiện thực đều khớp port. Test inject lần lượt từng store — phụ thuộc trỏ vào port chứ không phải hiện thực.",
+  "tests": [
+    {
+      "name": "bump goes through the port",
+      "hint": "Bump đọc qua Get, cộng Delta, ghi qua Put, trả giá trị mới."
+    },
+    {
+      "name": "any implementation fits",
+      "hint": "Một hiện thực IStore thứ hai phải chạy không đổi — đó mới là đường ranh."
+    },
+    {
+      "name": "delta applied once per bump",
+      "hint": "Mỗi Bump áp đúng Delta — không trôi, không nhân đôi."
+    }
+  ]
+}

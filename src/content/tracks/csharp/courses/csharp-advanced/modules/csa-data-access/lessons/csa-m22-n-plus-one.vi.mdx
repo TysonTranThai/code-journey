@@ -1,0 +1,25 @@
+## N+1 và bài toán hình dạng đọc
+
+Mẫu N+1: một truy vấn cho danh sách cha, rồi **một truy vấn cho mỗi cha** để
+lấy con. 100 đơn hàng = 101 lượt đi-về-lại. Nó sống sót qua giai đoạn phát
+triển vì mỗi truy vấn đều nhanh và độ trễ localhost gần bằng 0; nó phát nổ
+trong production khi mỗi round-trip tốn thời gian mạng thật.
+
+ORM làm nó quyến rũ một cách dễ dãi: một `order.Lines` lazy bên trong vòng
+lặp chính là N+1 mà không thấy dòng SQL nào. Vì vậy việc phát hiện là một kỷ
+luật *đếm* — log số truy vấn cho mỗi request và báo động khi nó tăng tỉ lệ
+với độ dài danh sách.
+
+Các cách sửa, theo thứ tự ưu tiên:
+
+1. **Join** — lấy cha kèm con trong một tập kết quả (projection thành đúng
+   hình dạng).
+2. **Batch** — `WHERE id IN (...)` theo từng khối: ceil(N/batch) truy vấn thay
+   vì N. Chia khối giữ danh sách IN trong giới hạn tham số.
+3. **Nạp tường minh** — `Include`/`ThenInclude` (EF Core) hoặc prefetch tường
+   minh, khi ORM hỗ trợ.
+
+Phép tính trong bài tập chính là toàn bộ kỹ năng: với 100 đơn hàng và batch
+size 20, 101 truy vấn sụp còn 6 — mức cắt 94% mà không phép tinh chỉnh index
+nào bên trong các truy vấn ấy mua nổi. Sửa *hình dạng* trước, rồi mới tinh
+chỉnh phần còn lại.

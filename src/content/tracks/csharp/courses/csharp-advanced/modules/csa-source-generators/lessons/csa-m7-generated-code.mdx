@@ -1,0 +1,24 @@
+## Rules of generated code
+
+Generated source has one reader that never forgives: the compiler. The
+contracts that keep generators shippable:
+
+- **Fully qualify everything.** Generated code cannot rely on the user's
+  `using` directives — `System.DateTime`, not `DateTime`; or emit explicit
+  `using` blocks scoped in a namespace. The classic failure: a generated
+  DTO using `DateTime` compiles in your test project and fails in the
+  user's namespace where `DateTime` means something else.
+- **Emit diagnostics, not exceptions.** A generator that throws breaks the
+  build with an incomprehensible error; a generator that reports a proper
+  diagnostic points at the user's actual mistake.
+- **Namespace your output** — generated types colliding with user types is
+  a name-resolution bug users cannot debug.
+- **Mark partial, extend nothing**: generate `partial` classes the user
+  opts into extending, never edit their declared members.
+- **Debuggability**: `#line` directives or clean, formatted output so the
+  generated file reads sanely when a stack trace points into it.
+
+Testing generators happens exactly like the checkpoint does it: drive
+`CSharpGeneratorDriver`, inspect the generated trees, compile the OUTPUT,
+and assert zero error diagnostics. That is also how CI guards a generator
+against Roslyn version upgrades.

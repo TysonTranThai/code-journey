@@ -1,0 +1,31 @@
+## Visiting and rewriting trees
+
+`ExpressionVisitor` walks a tree and rebuilds it, calling `VisitXxx` per
+node kind. Override only what you change; `Visit` handles recursion and
+reconstruction:
+
+```csharp
+class TenantFilter : ExpressionVisitor
+{
+    protected override Expression VisitBinary(BinaryExpression node)
+    {
+        var left = Visit(node.Left);
+        var right = Visit(node.Right);
+        return node.Update(left, node.Conversion, right);
+    }
+    protected override Expression VisitConstant(ConstantExpression node)
+        => node.Value is int v && v == 42 ? Expression.Constant(43) : node;
+}
+```
+
+This is precisely what EF Core does: your `Where(o => o.Tenant == "a")`
+is visited, the member access becomes a column, the constant becomes a
+parameter, and the tree is re-emitted as SQL. Visitors are also how you
+implement optimization passes (constant folding, predicate pushdown) and
+safety passes (rejecting unsupported constructs with a clear message).
+
+Two patterns worth knowing: **bottom-up transforms** (fold children first —
+constant folding) and **top-down guards** (validate before descending —
+provider translation). Returning the ORIGINAL node (via `node.Update(...)`)
+when nothing changed lets the visitor skip rebuilding untouched subtrees —
+cheap immutability in action.

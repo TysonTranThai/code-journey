@@ -1,0 +1,25 @@
+{
+  "id": "csa-checkpoint-m14-task",
+  "title": "Performance checkpoint",
+  "prompt": "Two implementations are provided in the harness: SlowPath concatenates strings in a loop; FastPath uses string.Create. Implement `static string RepeatChar(char c, int n)` that builds an n-char string of `c` using string.Create (zero intermediate allocations), and `static long Measure(Func<int> work, int iterations)` that returns total allocated bytes across `iterations` invocations with ONE warmup call first (the warmup is graded: without it the JIT's first-call allocations corrupt the result).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "repeat-correct",
+      "code": "var s = Solution.RepeatChar('x', 5);\nCj.Eq(s, \"xxxxx\", \"5 chars\");\nCj.Eq(Solution.RepeatChar('a', 0), \"\", \"empty for 0\");",
+      "hint": "string.Create(n, c, static (span, state) => span.Fill(state));"
+    },
+    {
+      "name": "zero-intermediates",
+      "code": "// Probe first (calibrated on this runtime: a tier-0 string.Create call\n// allocates ~312 B even when the payload is 200 B — the lambda + engine\n// overhead). The bound must allow that overhead but explode on ANY\n// intermediate string: one O(n) concat chain allocates >= 400*152.\nvar probe = GC.GetAllocatedBytesForCurrentThread();\nfor (int i = 0; i < 100; i++) Solution.RepeatChar('y', 100);\nvar fast = GC.GetAllocatedBytesForCurrentThread() - probe;\nCj.True(fast <= 100 * 400, $\"string.Create path within budget (got {fast}; an intermediate-building path exceeds 6,080,000)\");",
+      "hint": "string.Create allocates ONLY the final buffer. + vs StringBuilder or 'a += c' allocates many intermediates."
+    },
+    {
+      "name": "measure-warms-up",
+      "code": "int f() => 42;\nvar d = Solution.Measure(f, 10);\nCj.True(d >= 0, \"delegates measured after warmup; no negative/first-call noise\");",
+      "hint": "Call work() once before capturing the allocation baseline."
+    }
+  ]
+}

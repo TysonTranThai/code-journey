@@ -1,0 +1,31 @@
+## Giải phẫu expression tree
+
+Expression tree là một đồ thị object bất biến mô tả mã: mỗi node có
+`NodeType`, `Type` tĩnh, và các con. `x => x >= 5 && x < 100` trở thành:
+
+```
+Lambda (Func<int, bool>)
+└── AndAlso
+    ├── GreaterThanOrEqual
+    │   ├── Parameter "x"
+    │   └── Constant 5
+    └── LessThan
+        ├── Parameter "x"
+        └── Constant 100
+```
+
+Ba thuộc tính làm cây thành xương sống của LINQ provider:
+
+1. **Kiểm tra được** — bạn có thể đi và đọc logic (đó là cách EF biến
+   predicate của bạn thành SQL).
+2. **Viết lại được** — `ExpressionVisitor` tạo bản sao đã sửa (đó là cách
+   provider thay thế hằng, inline tham số, thêm bộ lọc tenant).
+3. **Biên dịch được** — `Compile()` phát ra một delegate thật (đó là cách
+   cây đã viết lại thành khả thi trở lại).
+
+Quy tắc C# quyết định: lambda gán cho `Expression<TDelegate>` được compiler
+PHÂN TÍCH thành cây; cùng lambda đó gán cho delegate `Func<TDelegate>` thì
+biên dịch thẳng thành IL. Một cú pháp, hai thế giới — kiểu đích quyết định
+bạn nhận được gì. Lưu ý ranh giới: chỉ *biểu thức* mới khớp; câu lệnh,
+async, và nhiều toán tử (`??=`, thân `=>` có khối) nằm ngoài tập con của
+cây.

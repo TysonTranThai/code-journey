@@ -757,7 +757,129 @@ import CrashForensicsVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/
 import CreatingModulesName from "@/content/tracks/python/courses/python-beginner/modules/modules-and-standard-library/lessons/creating-modules-name.mdx";
 import CreatingModulesNameVi from "@/content/tracks/python/courses/python-beginner/modules/modules-and-standard-library/lessons/creating-modules-name.vi.mdx";
 import CsaCheckpointM1 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-checkpoint-m1.mdx";
+import CsaCheckpointM10 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-concurrency/lessons/csa-checkpoint-m10.mdx";
+import CsaCheckpointM10Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-concurrency/lessons/csa-checkpoint-m10.vi.mdx";
+import CsaCheckpointM11 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-parallel/lessons/csa-checkpoint-m11.mdx";
+import CsaCheckpointM11Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-parallel/lessons/csa-checkpoint-m11.vi.mdx";
+import CsaCheckpointM12 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-channels/lessons/csa-checkpoint-m12.mdx";
+import CsaCheckpointM12Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-channels/lessons/csa-checkpoint-m12.vi.mdx";
+import CsaCheckpointM13 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-gc/lessons/csa-checkpoint-m13.mdx";
+import CsaCheckpointM13Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-gc/lessons/csa-checkpoint-m13.vi.mdx";
+import CsaCheckpointM14 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-performance/lessons/csa-checkpoint-m14.mdx";
+import CsaCheckpointM14Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-performance/lessons/csa-checkpoint-m14.vi.mdx";
+import CsaCheckpointM15 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-clr-internals/lessons/csa-checkpoint-m15.mdx";
+import CsaCheckpointM15Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-clr-internals/lessons/csa-checkpoint-m15.vi.mdx";
+import CsaCheckpointM17 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-unsafe-interop/lessons/csa-checkpoint-m17.mdx";
+import CsaCheckpointM17Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-unsafe-interop/lessons/csa-checkpoint-m17.vi.mdx";
+import CsaCheckpointM18 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-aot-deployment/lessons/csa-checkpoint-m18.mdx";
+import CsaCheckpointM18Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-aot-deployment/lessons/csa-checkpoint-m18.vi.mdx";
+import CsaCheckpointM19 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-networking/lessons/csa-checkpoint-m19.mdx";
+import CsaCheckpointM19Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-networking/lessons/csa-checkpoint-m19.vi.mdx";
 import CsaCheckpointM1Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-checkpoint-m1.vi.mdx";
+import CsaCheckpointM2 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-memory-object-model/lessons/csa-checkpoint-m2.mdx";
+import CsaCheckpointM20 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-distributed/lessons/csa-checkpoint-m20.mdx";
+import CsaCheckpointM20Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-distributed/lessons/csa-checkpoint-m20.vi.mdx";
+import CsaCheckpointM21 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-security/lessons/csa-checkpoint-m21.mdx";
+import CsaCheckpointM21Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-security/lessons/csa-checkpoint-m21.vi.mdx";
+import CsaCheckpointM22 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-data-access/lessons/csa-checkpoint-m22.mdx";
+import CsaCheckpointM22Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-data-access/lessons/csa-checkpoint-m22.vi.mdx";
+import CsaCheckpointM24 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-capstone/lessons/csa-checkpoint-m24.mdx";
+import CsaCheckpointM24Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-capstone/lessons/csa-checkpoint-m24.vi.mdx";
+import CsaCheckpointM2Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-memory-object-model/lessons/csa-checkpoint-m2.vi.mdx";
+import CsaCheckpointM3 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-generics-deep/lessons/csa-checkpoint-m3.mdx";
+import CsaCheckpointM3Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-generics-deep/lessons/csa-checkpoint-m3.vi.mdx";
+import CsaCheckpointM4 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-delegates-closures/lessons/csa-checkpoint-m4.mdx";
+import CsaCheckpointM4Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-delegates-closures/lessons/csa-checkpoint-m4.vi.mdx";
+import CsaCheckpointM5 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-reflection-attributes/lessons/csa-checkpoint-m5.mdx";
+import CsaCheckpointM5Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-reflection-attributes/lessons/csa-checkpoint-m5.vi.mdx";
+import CsaCheckpointM6 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-roslyn/lessons/csa-checkpoint-m6.mdx";
+import CsaCheckpointM6Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-roslyn/lessons/csa-checkpoint-m6.vi.mdx";
+import CsaCheckpointM7 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-source-generators/lessons/csa-checkpoint-m7.mdx";
+import CsaCheckpointM7Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-source-generators/lessons/csa-checkpoint-m7.vi.mdx";
+import CsaCheckpointM8 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-expression-trees/lessons/csa-checkpoint-m8.mdx";
+import CsaCheckpointM8Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-expression-trees/lessons/csa-checkpoint-m8.vi.mdx";
+import CsaCheckpointM9 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-async-deep/lessons/csa-checkpoint-m9.mdx";
+import CsaCheckpointM9Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-async-deep/lessons/csa-checkpoint-m9.vi.mdx";
+import CsaM10ConcurrentCollections from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-concurrency/lessons/csa-m10-concurrent-collections.mdx";
+import CsaM10ConcurrentCollectionsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-concurrency/lessons/csa-m10-concurrent-collections.vi.mdx";
+import CsaM10FailureModes from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-concurrency/lessons/csa-m10-failure-modes.mdx";
+import CsaM10FailureModesVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-concurrency/lessons/csa-m10-failure-modes.vi.mdx";
+import CsaM10Locks from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-concurrency/lessons/csa-m10-locks.mdx";
+import CsaM10LocksVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-concurrency/lessons/csa-m10-locks.vi.mdx";
+import CsaM10Visibility from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-concurrency/lessons/csa-m10-visibility.mdx";
+import CsaM10VisibilityVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-concurrency/lessons/csa-m10-visibility.vi.mdx";
+import CsaM11DataParallel from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-parallel/lessons/csa-m11-data-parallel.mdx";
+import CsaM11DataParallelVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-parallel/lessons/csa-m11-data-parallel.vi.mdx";
+import CsaM11ParallelPitfalls from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-parallel/lessons/csa-m11-parallel-pitfalls.mdx";
+import CsaM11ParallelPitfallsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-parallel/lessons/csa-m11-parallel-pitfalls.vi.mdx";
+import CsaM11Plinq from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-parallel/lessons/csa-m11-plinq.mdx";
+import CsaM11PlinqVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-parallel/lessons/csa-m11-plinq.vi.mdx";
+import CsaM11WhenParallel from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-parallel/lessons/csa-m11-when-parallel.mdx";
+import CsaM11WhenParallelVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-parallel/lessons/csa-m11-when-parallel.vi.mdx";
+import CsaM12Backpressure from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-channels/lessons/csa-m12-backpressure.mdx";
+import CsaM12BackpressureVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-channels/lessons/csa-m12-backpressure.vi.mdx";
+import CsaM12ChannelModel from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-channels/lessons/csa-m12-channel-model.mdx";
+import CsaM12ChannelModelVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-channels/lessons/csa-m12-channel-model.vi.mdx";
+import CsaM12Completion from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-channels/lessons/csa-m12-completion.mdx";
+import CsaM12CompletionVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-channels/lessons/csa-m12-completion.vi.mdx";
+import CsaM12Pipelines from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-channels/lessons/csa-m12-pipelines.mdx";
+import CsaM12PipelinesVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-channels/lessons/csa-m12-pipelines.vi.mdx";
+import CsaM13Generations from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-gc/lessons/csa-m13-generations.mdx";
+import CsaM13GenerationsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-gc/lessons/csa-m13-generations.vi.mdx";
+import CsaM13Leaks from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-gc/lessons/csa-m13-leaks.mdx";
+import CsaM13LeaksVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-gc/lessons/csa-m13-leaks.vi.mdx";
+import CsaM13Lifetime from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-gc/lessons/csa-m13-lifetime.mdx";
+import CsaM13LifetimeVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-gc/lessons/csa-m13-lifetime.vi.mdx";
+import CsaM13Pooling from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-gc/lessons/csa-m13-pooling.mdx";
+import CsaM13PoolingVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-gc/lessons/csa-m13-pooling.vi.mdx";
+import CsaM14JitEffects from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-performance/lessons/csa-m14-jit-effects.mdx";
+import CsaM14JitEffectsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-performance/lessons/csa-m14-jit-effects.vi.mdx";
+import CsaM14MeasureFirst from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-performance/lessons/csa-m14-measure-first.mdx";
+import CsaM14MeasureFirstVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-performance/lessons/csa-m14-measure-first.vi.mdx";
+import CsaM14OptimizationLoop from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-performance/lessons/csa-m14-optimization-loop.mdx";
+import CsaM14OptimizationLoopVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-performance/lessons/csa-m14-optimization-loop.vi.mdx";
+import CsaM14Profiling from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-performance/lessons/csa-m14-profiling.mdx";
+import CsaM14ProfilingVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-performance/lessons/csa-m14-profiling.vi.mdx";
+import CsaM15Assemblies from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-clr-internals/lessons/csa-m15-assemblies.mdx";
+import CsaM15AssembliesVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-clr-internals/lessons/csa-m15-assemblies.vi.mdx";
+import CsaM15Dispatch from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-clr-internals/lessons/csa-m15-dispatch.mdx";
+import CsaM15DispatchVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-clr-internals/lessons/csa-m15-dispatch.vi.mdx";
+import CsaM15Exceptions from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-clr-internals/lessons/csa-m15-exceptions.mdx";
+import CsaM15ExceptionsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-clr-internals/lessons/csa-m15-exceptions.vi.mdx";
+import CsaM15Jit from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-clr-internals/lessons/csa-m15-jit.mdx";
+import CsaM15JitVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-clr-internals/lessons/csa-m15-jit.vi.mdx";
+import CsaM16CheckpointLesson from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-diagnostics/lessons/csa-m16-checkpoint-lesson.mdx";
+import CsaM16CheckpointLessonVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-diagnostics/lessons/csa-m16-checkpoint-lesson.vi.mdx";
+import CsaM16FailureForensics from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-diagnostics/lessons/csa-m16-failure-forensics.mdx";
+import CsaM16FailureForensicsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-diagnostics/lessons/csa-m16-failure-forensics.vi.mdx";
+import CsaM16HealthResilience from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-diagnostics/lessons/csa-m16-health-resilience.mdx";
+import CsaM16HealthResilienceVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-diagnostics/lessons/csa-m16-health-resilience.vi.mdx";
+import CsaM16StackTraces from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-diagnostics/lessons/csa-m16-stack-traces.mdx";
+import CsaM16StackTracesVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-diagnostics/lessons/csa-m16-stack-traces.vi.mdx";
+import CsaM17Boundary from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-unsafe-interop/lessons/csa-m17-boundary.mdx";
+import CsaM17BoundaryVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-unsafe-interop/lessons/csa-m17-boundary.vi.mdx";
+import CsaM17PinStories from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-unsafe-interop/lessons/csa-m17-pin-stories.mdx";
+import CsaM17PinStoriesVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-unsafe-interop/lessons/csa-m17-pin-stories.vi.mdx";
+import CsaM17PinvokeConcepts from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-unsafe-interop/lessons/csa-m17-pinvoke-concepts.mdx";
+import CsaM17PinvokeConceptsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-unsafe-interop/lessons/csa-m17-pinvoke-concepts.vi.mdx";
+import CsaM17Pointers from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-unsafe-interop/lessons/csa-m17-pointers.mdx";
+import CsaM17PointersVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-unsafe-interop/lessons/csa-m17-pointers.vi.mdx";
+import CsaM18AotMindset from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-aot-deployment/lessons/csa-m18-aot-mindset.mdx";
+import CsaM18AotMindsetVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-aot-deployment/lessons/csa-m18-aot-mindset.vi.mdx";
+import CsaM18ConfigConcepts from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-aot-deployment/lessons/csa-m18-config-concepts.mdx";
+import CsaM18ConfigConceptsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-aot-deployment/lessons/csa-m18-config-concepts.vi.mdx";
+import CsaM18DeploymentModels from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-aot-deployment/lessons/csa-m18-deployment-models.mdx";
+import CsaM18DeploymentModelsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-aot-deployment/lessons/csa-m18-deployment-models.vi.mdx";
+import CsaM18Trimming from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-aot-deployment/lessons/csa-m18-trimming.mdx";
+import CsaM18TrimmingVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-aot-deployment/lessons/csa-m18-trimming.vi.mdx";
+import CsaM19Failures from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-networking/lessons/csa-m19-failures.mdx";
+import CsaM19FailuresVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-networking/lessons/csa-m19-failures.vi.mdx";
+import CsaM19Framing from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-networking/lessons/csa-m19-framing.mdx";
+import CsaM19FramingVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-networking/lessons/csa-m19-framing.vi.mdx";
+import CsaM19Protocols from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-networking/lessons/csa-m19-protocols.mdx";
+import CsaM19ProtocolsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-networking/lessons/csa-m19-protocols.vi.mdx";
+import CsaM19Sockets from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-networking/lessons/csa-m19-sockets.mdx";
+import CsaM19SocketsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-networking/lessons/csa-m19-sockets.vi.mdx";
 import CsaM1Boxing from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-boxing.mdx";
 import CsaM1BoxingVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-boxing.vi.mdx";
 import CsaM1ExecutionModel from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-execution-model.mdx";
@@ -768,6 +890,92 @@ import CsaM1Resolution from "@/content/tracks/csharp/courses/csharp-advanced/mod
 import CsaM1ResolutionVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-resolution.vi.mdx";
 import CsaM1ValueReference from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-value-reference.mdx";
 import CsaM1ValueReferenceVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-value-reference.vi.mdx";
+import CsaM20Boundaries from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-distributed/lessons/csa-m20-boundaries.mdx";
+import CsaM20BoundariesVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-distributed/lessons/csa-m20-boundaries.vi.mdx";
+import CsaM20Consistency from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-distributed/lessons/csa-m20-consistency.mdx";
+import CsaM20ConsistencyVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-distributed/lessons/csa-m20-consistency.vi.mdx";
+import CsaM20Idempotency from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-distributed/lessons/csa-m20-idempotency.mdx";
+import CsaM20IdempotencyVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-distributed/lessons/csa-m20-idempotency.vi.mdx";
+import CsaM20Resilience from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-distributed/lessons/csa-m20-resilience.mdx";
+import CsaM20ResilienceVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-distributed/lessons/csa-m20-resilience.vi.mdx";
+import CsaM21Crypto from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-security/lessons/csa-m21-crypto.mdx";
+import CsaM21CryptoVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-security/lessons/csa-m21-crypto.vi.mdx";
+import CsaM21Injection from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-security/lessons/csa-m21-injection.mdx";
+import CsaM21InjectionVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-security/lessons/csa-m21-injection.vi.mdx";
+import CsaM21Secrets from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-security/lessons/csa-m21-secrets.mdx";
+import CsaM21SecretsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-security/lessons/csa-m21-secrets.vi.mdx";
+import CsaM21ThreatModel from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-security/lessons/csa-m21-threat-model.mdx";
+import CsaM21ThreatModelVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-security/lessons/csa-m21-threat-model.vi.mdx";
+import CsaM22Concurrency from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-data-access/lessons/csa-m22-concurrency.mdx";
+import CsaM22ConcurrencyVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-data-access/lessons/csa-m22-concurrency.vi.mdx";
+import CsaM22ConnectionLifecycle from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-data-access/lessons/csa-m22-connection-lifecycle.mdx";
+import CsaM22ConnectionLifecycleVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-data-access/lessons/csa-m22-connection-lifecycle.vi.mdx";
+import CsaM22NPlusOne from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-data-access/lessons/csa-m22-n-plus-one.mdx";
+import CsaM22NPlusOneVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-data-access/lessons/csa-m22-n-plus-one.vi.mdx";
+import CsaM22Transactions from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-data-access/lessons/csa-m22-transactions.mdx";
+import CsaM22TransactionsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-data-access/lessons/csa-m22-transactions.vi.mdx";
+import CsaM24Architecture from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-capstone/lessons/csa-m24-architecture.mdx";
+import CsaM24ArchitectureVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-capstone/lessons/csa-m24-architecture.vi.mdx";
+import CsaM24CapstoneBrief from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-capstone/lessons/csa-m24-capstone-brief.mdx";
+import CsaM24CapstoneBriefVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-capstone/lessons/csa-m24-capstone-brief.vi.mdx";
+import CsaM24Observability from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-capstone/lessons/csa-m24-observability.mdx";
+import CsaM24ObservabilityVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-capstone/lessons/csa-m24-observability.vi.mdx";
+import CsaM24Reliability from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-capstone/lessons/csa-m24-reliability.mdx";
+import CsaM24ReliabilityVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-capstone/lessons/csa-m24-reliability.vi.mdx";
+import CsaM2AllocationMeasure from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-memory-object-model/lessons/csa-m2-allocation-measure.mdx";
+import CsaM2AllocationMeasureVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-memory-object-model/lessons/csa-m2-allocation-measure.vi.mdx";
+import CsaM2Layout from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-memory-object-model/lessons/csa-m2-layout.mdx";
+import CsaM2LayoutVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-memory-object-model/lessons/csa-m2-layout.vi.mdx";
+import CsaM2RefReturns from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-memory-object-model/lessons/csa-m2-ref-returns.mdx";
+import CsaM2RefReturnsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-memory-object-model/lessons/csa-m2-ref-returns.vi.mdx";
+import CsaM2Spans from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-memory-object-model/lessons/csa-m2-spans.mdx";
+import CsaM2SpansVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-memory-object-model/lessons/csa-m2-spans.vi.mdx";
+import CsaM3GenericsRuntime from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-generics-deep/lessons/csa-m3-generics-runtime.mdx";
+import CsaM3GenericsRuntimeVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-generics-deep/lessons/csa-m3-generics-runtime.vi.mdx";
+import CsaM3StaticAbstracts from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-generics-deep/lessons/csa-m3-static-abstracts.mdx";
+import CsaM3StaticAbstractsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-generics-deep/lessons/csa-m3-static-abstracts.vi.mdx";
+import CsaM3Variance from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-generics-deep/lessons/csa-m3-variance.mdx";
+import CsaM3VarianceVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-generics-deep/lessons/csa-m3-variance.vi.mdx";
+import CsaM4Closures from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-delegates-closures/lessons/csa-m4-closures.mdx";
+import CsaM4ClosuresVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-delegates-closures/lessons/csa-m4-closures.vi.mdx";
+import CsaM4DelegateMachine from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-delegates-closures/lessons/csa-m4-delegate-machine.mdx";
+import CsaM4DelegateMachineVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-delegates-closures/lessons/csa-m4-delegate-machine.vi.mdx";
+import CsaM4ExprVsDelegate from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-delegates-closures/lessons/csa-m4-expr-vs-delegate.mdx";
+import CsaM4ExprVsDelegateVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-delegates-closures/lessons/csa-m4-expr-vs-delegate.vi.mdx";
+import CsaM5Attributes from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-reflection-attributes/lessons/csa-m5-attributes.mdx";
+import CsaM5AttributesVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-reflection-attributes/lessons/csa-m5-attributes.vi.mdx";
+import CsaM5Discovery from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-reflection-attributes/lessons/csa-m5-discovery.mdx";
+import CsaM5DiscoveryVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-reflection-attributes/lessons/csa-m5-discovery.vi.mdx";
+import CsaM5Invocation from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-reflection-attributes/lessons/csa-m5-invocation.mdx";
+import CsaM5InvocationVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-reflection-attributes/lessons/csa-m5-invocation.vi.mdx";
+import CsaM5Security from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-reflection-attributes/lessons/csa-m5-security.mdx";
+import CsaM5SecurityVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-reflection-attributes/lessons/csa-m5-security.vi.mdx";
+import CsaM6Analyzers from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-roslyn/lessons/csa-m6-analyzers.mdx";
+import CsaM6AnalyzersVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-roslyn/lessons/csa-m6-analyzers.vi.mdx";
+import CsaM6CompilationApi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-roslyn/lessons/csa-m6-compilation-api.mdx";
+import CsaM6CompilationApiVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-roslyn/lessons/csa-m6-compilation-api.vi.mdx";
+import CsaM6RoslynArchitecture from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-roslyn/lessons/csa-m6-roslyn-architecture.mdx";
+import CsaM6RoslynArchitectureVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-roslyn/lessons/csa-m6-roslyn-architecture.vi.mdx";
+import CsaM7GeneratedCode from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-source-generators/lessons/csa-m7-generated-code.mdx";
+import CsaM7GeneratedCodeVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-source-generators/lessons/csa-m7-generated-code.vi.mdx";
+import CsaM7GeneratorModel from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-source-generators/lessons/csa-m7-generator-model.mdx";
+import CsaM7GeneratorModelVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-source-generators/lessons/csa-m7-generator-model.vi.mdx";
+import CsaM7Incremental from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-source-generators/lessons/csa-m7-incremental.mdx";
+import CsaM7IncrementalVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-source-generators/lessons/csa-m7-incremental.vi.mdx";
+import CsaM8Building from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-expression-trees/lessons/csa-m8-building.mdx";
+import CsaM8BuildingVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-expression-trees/lessons/csa-m8-building.vi.mdx";
+import CsaM8TreeAnatomy from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-expression-trees/lessons/csa-m8-tree-anatomy.mdx";
+import CsaM8TreeAnatomyVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-expression-trees/lessons/csa-m8-tree-anatomy.vi.mdx";
+import CsaM8Visitors from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-expression-trees/lessons/csa-m8-visitors.mdx";
+import CsaM8VisitorsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-expression-trees/lessons/csa-m8-visitors.vi.mdx";
+import CsaM9AsyncStreams from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-async-deep/lessons/csa-m9-async-streams.mdx";
+import CsaM9AsyncStreamsVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-async-deep/lessons/csa-m9-async-streams.vi.mdx";
+import CsaM9Cancellation from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-async-deep/lessons/csa-m9-cancellation.mdx";
+import CsaM9CancellationVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-async-deep/lessons/csa-m9-cancellation.vi.mdx";
+import CsaM9StateMachine from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-async-deep/lessons/csa-m9-state-machine.mdx";
+import CsaM9StateMachineVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-async-deep/lessons/csa-m9-state-machine.vi.mdx";
+import CsaM9Valuetask from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-async-deep/lessons/csa-m9-valuetask.mdx";
+import CsaM9ValuetaskVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-async-deep/lessons/csa-m9-valuetask.vi.mdx";
 import CsbCheckpointM1 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-welcome/lessons/csb-checkpoint-m1.mdx";
 import CsbCheckpointM10 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-oop/lessons/csb-checkpoint-m10.mdx";
 import CsbCheckpointM10Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-oop/lessons/csb-checkpoint-m10.vi.mdx";
@@ -938,10 +1146,14 @@ import CsbM9Constructors from "@/content/tracks/csharp/courses/csharp-beginner/m
 import CsbM9ConstructorsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-classes/lessons/csb-m9-constructors.vi.mdx";
 import CsbM9Properties from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-classes/lessons/csb-m9-properties.mdx";
 import CsbM9PropertiesVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-classes/lessons/csb-m9-properties.vi.mdx";
+import CsiAllocations from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-performance/lessons/csi-allocations.mdx";
+import CsiAllocationsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-performance/lessons/csi-allocations.vi.mdx";
 import CsiAsyncBasics from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-async-basics.mdx";
 import CsiAsyncBasicsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-async-basics.vi.mdx";
 import CsiAsyncStreams from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-async-streams.mdx";
 import CsiAsyncStreamsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-async-streams.vi.mdx";
+import CsiBoundaries from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-architecture/lessons/csi-boundaries.mdx";
+import CsiBoundariesVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-architecture/lessons/csi-boundaries.vi.mdx";
 import CsiBuildingAContainer from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-di/lessons/csi-building-a-container.mdx";
 import CsiBuildingAContainerVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-di/lessons/csi-building-a-container.vi.mdx";
 import CsiCancellationTimeouts from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-cancellation-timeouts.mdx";
@@ -951,8 +1163,26 @@ import CsiCheckpointM10 from "@/content/tracks/csharp/courses/csharp-intermediat
 import CsiCheckpointM10Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-concurrency/lessons/csi-checkpoint-m10.vi.mdx";
 import CsiCheckpointM11 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-di/lessons/csi-checkpoint-m11.mdx";
 import CsiCheckpointM11Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-di/lessons/csi-checkpoint-m11.vi.mdx";
+import CsiCheckpointM12 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-config/lessons/csi-checkpoint-m12.mdx";
+import CsiCheckpointM12Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-config/lessons/csi-checkpoint-m12.vi.mdx";
+import CsiCheckpointM13 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-http/lessons/csi-checkpoint-m13.mdx";
+import CsiCheckpointM13Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-http/lessons/csi-checkpoint-m13.vi.mdx";
+import CsiCheckpointM14 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-json/lessons/csi-checkpoint-m14.mdx";
+import CsiCheckpointM14Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-json/lessons/csi-checkpoint-m14.vi.mdx";
+import CsiCheckpointM15 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-data/lessons/csi-checkpoint-m15.mdx";
+import CsiCheckpointM15Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-data/lessons/csi-checkpoint-m15.vi.mdx";
+import CsiCheckpointM16 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-testing/lessons/csi-checkpoint-m16.mdx";
+import CsiCheckpointM16Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-testing/lessons/csi-checkpoint-m16.vi.mdx";
+import CsiCheckpointM17 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-clean-code/lessons/csi-checkpoint-m17.mdx";
+import CsiCheckpointM17Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-clean-code/lessons/csi-checkpoint-m17.vi.mdx";
+import CsiCheckpointM18 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-patterns/lessons/csi-checkpoint-m18.mdx";
+import CsiCheckpointM18Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-patterns/lessons/csi-checkpoint-m18.vi.mdx";
+import CsiCheckpointM19 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-architecture/lessons/csi-checkpoint-m19.mdx";
+import CsiCheckpointM19Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-architecture/lessons/csi-checkpoint-m19.vi.mdx";
 import CsiCheckpointM1Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-checkpoint-m1.vi.mdx";
 import CsiCheckpointM2 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-checkpoint-m2.mdx";
+import CsiCheckpointM20 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-performance/lessons/csi-checkpoint-m20.mdx";
+import CsiCheckpointM20Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-performance/lessons/csi-checkpoint-m20.vi.mdx";
 import CsiCheckpointM2Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-checkpoint-m2.vi.mdx";
 import CsiCheckpointM3 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-checkpoint-m3.mdx";
 import CsiCheckpointM3Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-checkpoint-m3.vi.mdx";
@@ -972,38 +1202,70 @@ import CsiChoosingStructures from "@/content/tracks/csharp/courses/csharp-interm
 import CsiChoosingStructuresVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-collections/lessons/csi-choosing-structures.vi.mdx";
 import CsiClosuresCapture from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-closures-capture.mdx";
 import CsiClosuresCaptureVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-closures-capture.vi.mdx";
+import CsiCodeSmells from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-clean-code/lessons/csi-code-smells.mdx";
+import CsiCodeSmellsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-clean-code/lessons/csi-code-smells.vi.mdx";
 import CsiCollectionCosts from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-collections/lessons/csi-collection-costs.mdx";
 import CsiCollectionCostsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-collections/lessons/csi-collection-costs.vi.mdx";
 import CsiCompositionPipelines from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-composition-pipelines.mdx";
 import CsiCompositionPipelinesVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-composition-pipelines.vi.mdx";
 import CsiConstraints from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-generics/lessons/csi-constraints.mdx";
 import CsiConstraintsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-generics/lessons/csi-constraints.vi.mdx";
+import CsiConvertersAndRobustness from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-json/lessons/csi-converters-and-robustness.mdx";
+import CsiConvertersAndRobustnessVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-json/lessons/csi-converters-and-robustness.vi.mdx";
 import CsiDelegatesShapes from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-delegates-shapes.mdx";
 import CsiDelegatesShapesVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-delegates-shapes.vi.mdx";
 import CsiDependencyInversion from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-di/lessons/csi-dependency-inversion.mdx";
 import CsiDependencyInversionVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-di/lessons/csi-dependency-inversion.vi.mdx";
+import CsiEnvironmentsAndSecrets from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-config/lessons/csi-environments-and-secrets.mdx";
+import CsiEnvironmentsAndSecretsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-config/lessons/csi-environments-and-secrets.vi.mdx";
 import CsiEventargsAndLifetime from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-events/lessons/csi-eventargs-and-lifetime.mdx";
 import CsiEventargsAndLifetimeVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-events/lessons/csi-eventargs-and-lifetime.vi.mdx";
 import CsiEventsEncapsulation from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-events/lessons/csi-events-encapsulation.mdx";
 import CsiEventsEncapsulationVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-events/lessons/csi-events-encapsulation.vi.mdx";
 import CsiExecutionModel from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-linq/lessons/csi-execution-model.mdx";
 import CsiExecutionModelVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-linq/lessons/csi-execution-model.vi.mdx";
+import CsiHttpAnatomy from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-http/lessons/csi-http-anatomy.mdx";
+import CsiHttpAnatomyVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-http/lessons/csi-http-anatomy.vi.mdx";
+import CsiLayers from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-architecture/lessons/csi-layers.mdx";
+import CsiLayersVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-architecture/lessons/csi-layers.vi.mdx";
 import CsiLazyPipelines from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-iterators/lessons/csi-lazy-pipelines.mdx";
 import CsiLazyPipelinesVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-iterators/lessons/csi-lazy-pipelines.vi.mdx";
+import CsiLinqCost from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-performance/lessons/csi-linq-cost.mdx";
+import CsiLinqCostVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-performance/lessons/csi-linq-cost.vi.mdx";
+import CsiMiniFramework from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-testing/lessons/csi-mini-framework.mdx";
+import CsiMiniFrameworkVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-testing/lessons/csi-mini-framework.vi.mdx";
 import CsiNullability from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-nullability.mdx";
 import CsiNullabilityVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-nullability.vi.mdx";
 import CsiOperatorFamilies from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-linq/lessons/csi-operator-families.mdx";
 import CsiOperatorFamiliesVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-linq/lessons/csi-operator-families.vi.mdx";
+import CsiOptionsPattern from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-config/lessons/csi-options-pattern.mdx";
+import CsiOptionsPatternVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-config/lessons/csi-options-pattern.vi.mdx";
 import CsiOverloadsAndMembers from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-overloads-and-members.mdx";
 import CsiOverloadsAndMembersVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-overloads-and-members.vi.mdx";
 import CsiParameterPassing from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-parameter-passing.mdx";
 import CsiParameterPassingVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-parameter-passing.vi.mdx";
+import CsiPatternBuilds from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-patterns/lessons/csi-pattern-builds.mdx";
+import CsiPatternBuildsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-patterns/lessons/csi-pattern-builds.vi.mdx";
+import CsiPatternCatalog from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-patterns/lessons/csi-pattern-catalog.mdx";
+import CsiPatternCatalogVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-patterns/lessons/csi-pattern-catalog.vi.mdx";
 import CsiPatternMatching from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-pattern-matching.mdx";
 import CsiPatternMatchingVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-pattern-matching.vi.mdx";
 import CsiRecursionDesign from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-recursion-design.mdx";
 import CsiRecursionDesignVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-recursion-design.vi.mdx";
+import CsiRefactoring from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-clean-code/lessons/csi-refactoring.mdx";
+import CsiRefactoringVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-clean-code/lessons/csi-refactoring.vi.mdx";
+import CsiRelationalBasics from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-data/lessons/csi-relational-basics.mdx";
+import CsiRelationalBasicsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-data/lessons/csi-relational-basics.vi.mdx";
+import CsiRepositories from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-data/lessons/csi-repositories.mdx";
+import CsiRepositoriesVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-data/lessons/csi-repositories.vi.mdx";
+import CsiResilientClients from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-http/lessons/csi-resilient-clients.mdx";
+import CsiResilientClientsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-http/lessons/csi-resilient-clients.vi.mdx";
+import CsiStjOptions from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-json/lessons/csi-stj-options.mdx";
+import CsiStjOptionsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-json/lessons/csi-stj-options.vi.mdx";
 import CsiSynchronizationPatterns from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-concurrency/lessons/csi-synchronization-patterns.mdx";
 import CsiSynchronizationPatternsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-concurrency/lessons/csi-synchronization-patterns.vi.mdx";
+import CsiTestDoubles from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-testing/lessons/csi-test-doubles.mdx";
+import CsiTestDoublesVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-testing/lessons/csi-test-doubles.vi.mdx";
 import CsiThreadsAndLocks from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-concurrency/lessons/csi-threads-and-locks.mdx";
 import CsiThreadsAndLocksVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-concurrency/lessons/csi-threads-and-locks.vi.mdx";
 import CsiTypeSemantics from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-type-semantics.mdx";
@@ -1266,10 +1528,44 @@ import HowTheWebWorks from "@/content/tracks/web-development/courses/web-develop
 import HowTheWebWorksVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/how-the-web-works.vi.mdx";
 import HsgCpM1 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-cp-m1.mdx";
 import HsgCpM1Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-cp-m1.vi.mdx";
+import HsgCpM2 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-cp-m2.mdx";
+import HsgCpM2Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-cp-m2.vi.mdx";
+import HsgCpM3 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-arrays/lessons/hsg-cp-m3.mdx";
+import HsgCpM3Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-arrays/lessons/hsg-cp-m3.vi.mdx";
+import HsgCpM4 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-marking/lessons/hsg-cp-m4.mdx";
+import HsgCpM4Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-marking/lessons/hsg-cp-m4.vi.mdx";
+import HsgCpM5 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-greedy/lessons/hsg-cp-m5.mdx";
+import HsgCpM5Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-greedy/lessons/hsg-cp-m5.vi.mdx";
+import HsgCpM6 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-sorting/lessons/hsg-cp-m6.mdx";
+import HsgCpM6Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-sorting/lessons/hsg-cp-m6.vi.mdx";
 import HsgM1Bridge from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-bridge.mdx";
 import HsgM1BridgeVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-bridge.vi.mdx";
 import HsgM1Reading from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-reading.mdx";
 import HsgM1ReadingVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-reading.vi.mdx";
+import HsgM2DigitWork from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-m2-digit-work.mdx";
+import HsgM2DigitWorkVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-m2-digit-work.vi.mdx";
+import HsgM2Patterns from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-m2-patterns.mdx";
+import HsgM2PatternsVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-m2-patterns.vi.mdx";
+import HsgM3Basics from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-arrays/lessons/hsg-m3-basics.mdx";
+import HsgM3BasicsVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-arrays/lessons/hsg-m3-basics.vi.mdx";
+import HsgM3Classic from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-arrays/lessons/hsg-m3-classic.mdx";
+import HsgM3ClassicVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-arrays/lessons/hsg-m3-classic.vi.mdx";
+import HsgM4Idea from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-marking/lessons/hsg-m4-idea.mdx";
+import HsgM4IdeaVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-marking/lessons/hsg-m4-idea.vi.mdx";
+import HsgM4Range from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-marking/lessons/hsg-m4-range.mdx";
+import HsgM4RangeVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-marking/lessons/hsg-m4-range.vi.mdx";
+import HsgM5Choice from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-greedy/lessons/hsg-m5-choice.mdx";
+import HsgM5ChoiceVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-greedy/lessons/hsg-m5-choice.vi.mdx";
+import HsgM5Proof from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-greedy/lessons/hsg-m5-proof.mdx";
+import HsgM5ProofVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-greedy/lessons/hsg-m5-proof.vi.mdx";
+import HsgM6Sort from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-sorting/lessons/hsg-m6-sort.mdx";
+import HsgM6SortVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-sorting/lessons/hsg-m6-sort.vi.mdx";
+import HsgM6Sweep from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-sorting/lessons/hsg-m6-sweep.mdx";
+import HsgM6SweepVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-sorting/lessons/hsg-m6-sweep.vi.mdx";
+import HsgM7Answer from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-search/lessons/hsg-m7-answer.mdx";
+import HsgM7AnswerVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-search/lessons/hsg-m7-answer.vi.mdx";
+import HsgM7Basics from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-search/lessons/hsg-m7-basics.mdx";
+import HsgM7BasicsVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-search/lessons/hsg-m7-basics.vi.mdx";
 import HtmlArchitecture from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/html-architecture.mdx";
 import HtmlArchitectureVi from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/html-architecture.vi.mdx";
 import HtmlAttributes from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-attributes.mdx";
@@ -2974,6 +3270,128 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["templates/generic-design.vi.mdx"]: GenericDesignVi,
   ["templates/advanced-checkpoint-templates.mdx"]: AdvancedCheckpointTemplates,
   ["templates/advanced-checkpoint-templates.vi.mdx"]: AdvancedCheckpointTemplatesVi,
+  ["csa-aot-deployment/csa-m18-deployment-models.mdx"]: CsaM18DeploymentModels,
+  ["csa-aot-deployment/csa-m18-deployment-models.vi.mdx"]: CsaM18DeploymentModelsVi,
+  ["csa-aot-deployment/csa-m18-trimming.mdx"]: CsaM18Trimming,
+  ["csa-aot-deployment/csa-m18-trimming.vi.mdx"]: CsaM18TrimmingVi,
+  ["csa-aot-deployment/csa-m18-aot-mindset.mdx"]: CsaM18AotMindset,
+  ["csa-aot-deployment/csa-m18-aot-mindset.vi.mdx"]: CsaM18AotMindsetVi,
+  ["csa-aot-deployment/csa-m18-config-concepts.mdx"]: CsaM18ConfigConcepts,
+  ["csa-aot-deployment/csa-m18-config-concepts.vi.mdx"]: CsaM18ConfigConceptsVi,
+  ["csa-aot-deployment/csa-checkpoint-m18.mdx"]: CsaCheckpointM18,
+  ["csa-aot-deployment/csa-checkpoint-m18.vi.mdx"]: CsaCheckpointM18Vi,
+  ["csa-async-deep/csa-m9-state-machine.mdx"]: CsaM9StateMachine,
+  ["csa-async-deep/csa-m9-state-machine.vi.mdx"]: CsaM9StateMachineVi,
+  ["csa-async-deep/csa-m9-valuetask.mdx"]: CsaM9Valuetask,
+  ["csa-async-deep/csa-m9-valuetask.vi.mdx"]: CsaM9ValuetaskVi,
+  ["csa-async-deep/csa-m9-cancellation.mdx"]: CsaM9Cancellation,
+  ["csa-async-deep/csa-m9-cancellation.vi.mdx"]: CsaM9CancellationVi,
+  ["csa-async-deep/csa-m9-async-streams.mdx"]: CsaM9AsyncStreams,
+  ["csa-async-deep/csa-m9-async-streams.vi.mdx"]: CsaM9AsyncStreamsVi,
+  ["csa-async-deep/csa-checkpoint-m9.mdx"]: CsaCheckpointM9,
+  ["csa-async-deep/csa-checkpoint-m9.vi.mdx"]: CsaCheckpointM9Vi,
+  ["csa-capstone/csa-m24-architecture.mdx"]: CsaM24Architecture,
+  ["csa-capstone/csa-m24-architecture.vi.mdx"]: CsaM24ArchitectureVi,
+  ["csa-capstone/csa-m24-observability.mdx"]: CsaM24Observability,
+  ["csa-capstone/csa-m24-observability.vi.mdx"]: CsaM24ObservabilityVi,
+  ["csa-capstone/csa-m24-reliability.mdx"]: CsaM24Reliability,
+  ["csa-capstone/csa-m24-reliability.vi.mdx"]: CsaM24ReliabilityVi,
+  ["csa-capstone/csa-m24-capstone-brief.mdx"]: CsaM24CapstoneBrief,
+  ["csa-capstone/csa-m24-capstone-brief.vi.mdx"]: CsaM24CapstoneBriefVi,
+  ["csa-capstone/csa-checkpoint-m24.mdx"]: CsaCheckpointM24,
+  ["csa-capstone/csa-checkpoint-m24.vi.mdx"]: CsaCheckpointM24Vi,
+  ["csa-channels/csa-m12-channel-model.mdx"]: CsaM12ChannelModel,
+  ["csa-channels/csa-m12-channel-model.vi.mdx"]: CsaM12ChannelModelVi,
+  ["csa-channels/csa-m12-backpressure.mdx"]: CsaM12Backpressure,
+  ["csa-channels/csa-m12-backpressure.vi.mdx"]: CsaM12BackpressureVi,
+  ["csa-channels/csa-m12-completion.mdx"]: CsaM12Completion,
+  ["csa-channels/csa-m12-completion.vi.mdx"]: CsaM12CompletionVi,
+  ["csa-channels/csa-m12-pipelines.mdx"]: CsaM12Pipelines,
+  ["csa-channels/csa-m12-pipelines.vi.mdx"]: CsaM12PipelinesVi,
+  ["csa-channels/csa-checkpoint-m12.mdx"]: CsaCheckpointM12,
+  ["csa-channels/csa-checkpoint-m12.vi.mdx"]: CsaCheckpointM12Vi,
+  ["csa-clr-internals/csa-m15-assemblies.mdx"]: CsaM15Assemblies,
+  ["csa-clr-internals/csa-m15-assemblies.vi.mdx"]: CsaM15AssembliesVi,
+  ["csa-clr-internals/csa-m15-jit.mdx"]: CsaM15Jit,
+  ["csa-clr-internals/csa-m15-jit.vi.mdx"]: CsaM15JitVi,
+  ["csa-clr-internals/csa-m15-dispatch.mdx"]: CsaM15Dispatch,
+  ["csa-clr-internals/csa-m15-dispatch.vi.mdx"]: CsaM15DispatchVi,
+  ["csa-clr-internals/csa-m15-exceptions.mdx"]: CsaM15Exceptions,
+  ["csa-clr-internals/csa-m15-exceptions.vi.mdx"]: CsaM15ExceptionsVi,
+  ["csa-clr-internals/csa-checkpoint-m15.mdx"]: CsaCheckpointM15,
+  ["csa-clr-internals/csa-checkpoint-m15.vi.mdx"]: CsaCheckpointM15Vi,
+  ["csa-concurrency/csa-m10-visibility.mdx"]: CsaM10Visibility,
+  ["csa-concurrency/csa-m10-visibility.vi.mdx"]: CsaM10VisibilityVi,
+  ["csa-concurrency/csa-m10-locks.mdx"]: CsaM10Locks,
+  ["csa-concurrency/csa-m10-locks.vi.mdx"]: CsaM10LocksVi,
+  ["csa-concurrency/csa-m10-concurrent-collections.mdx"]: CsaM10ConcurrentCollections,
+  ["csa-concurrency/csa-m10-concurrent-collections.vi.mdx"]: CsaM10ConcurrentCollectionsVi,
+  ["csa-concurrency/csa-m10-failure-modes.mdx"]: CsaM10FailureModes,
+  ["csa-concurrency/csa-m10-failure-modes.vi.mdx"]: CsaM10FailureModesVi,
+  ["csa-concurrency/csa-checkpoint-m10.mdx"]: CsaCheckpointM10,
+  ["csa-concurrency/csa-checkpoint-m10.vi.mdx"]: CsaCheckpointM10Vi,
+  ["csa-data-access/csa-m22-connection-lifecycle.mdx"]: CsaM22ConnectionLifecycle,
+  ["csa-data-access/csa-m22-connection-lifecycle.vi.mdx"]: CsaM22ConnectionLifecycleVi,
+  ["csa-data-access/csa-m22-transactions.mdx"]: CsaM22Transactions,
+  ["csa-data-access/csa-m22-transactions.vi.mdx"]: CsaM22TransactionsVi,
+  ["csa-data-access/csa-m22-concurrency.mdx"]: CsaM22Concurrency,
+  ["csa-data-access/csa-m22-concurrency.vi.mdx"]: CsaM22ConcurrencyVi,
+  ["csa-data-access/csa-m22-n-plus-one.mdx"]: CsaM22NPlusOne,
+  ["csa-data-access/csa-m22-n-plus-one.vi.mdx"]: CsaM22NPlusOneVi,
+  ["csa-data-access/csa-checkpoint-m22.mdx"]: CsaCheckpointM22,
+  ["csa-data-access/csa-checkpoint-m22.vi.mdx"]: CsaCheckpointM22Vi,
+  ["csa-delegates-closures/csa-m4-delegate-machine.mdx"]: CsaM4DelegateMachine,
+  ["csa-delegates-closures/csa-m4-delegate-machine.vi.mdx"]: CsaM4DelegateMachineVi,
+  ["csa-delegates-closures/csa-m4-closures.mdx"]: CsaM4Closures,
+  ["csa-delegates-closures/csa-m4-closures.vi.mdx"]: CsaM4ClosuresVi,
+  ["csa-delegates-closures/csa-m4-expr-vs-delegate.mdx"]: CsaM4ExprVsDelegate,
+  ["csa-delegates-closures/csa-m4-expr-vs-delegate.vi.mdx"]: CsaM4ExprVsDelegateVi,
+  ["csa-delegates-closures/csa-checkpoint-m4.mdx"]: CsaCheckpointM4,
+  ["csa-delegates-closures/csa-checkpoint-m4.vi.mdx"]: CsaCheckpointM4Vi,
+  ["csa-diagnostics/csa-m16-stack-traces.mdx"]: CsaM16StackTraces,
+  ["csa-diagnostics/csa-m16-stack-traces.vi.mdx"]: CsaM16StackTracesVi,
+  ["csa-diagnostics/csa-m16-failure-forensics.mdx"]: CsaM16FailureForensics,
+  ["csa-diagnostics/csa-m16-failure-forensics.vi.mdx"]: CsaM16FailureForensicsVi,
+  ["csa-diagnostics/csa-m16-health-resilience.mdx"]: CsaM16HealthResilience,
+  ["csa-diagnostics/csa-m16-health-resilience.vi.mdx"]: CsaM16HealthResilienceVi,
+  ["csa-diagnostics/csa-m16-checkpoint-lesson.mdx"]: CsaM16CheckpointLesson,
+  ["csa-diagnostics/csa-m16-checkpoint-lesson.vi.mdx"]: CsaM16CheckpointLessonVi,
+  ["csa-distributed/csa-m20-boundaries.mdx"]: CsaM20Boundaries,
+  ["csa-distributed/csa-m20-boundaries.vi.mdx"]: CsaM20BoundariesVi,
+  ["csa-distributed/csa-m20-idempotency.mdx"]: CsaM20Idempotency,
+  ["csa-distributed/csa-m20-idempotency.vi.mdx"]: CsaM20IdempotencyVi,
+  ["csa-distributed/csa-m20-resilience.mdx"]: CsaM20Resilience,
+  ["csa-distributed/csa-m20-resilience.vi.mdx"]: CsaM20ResilienceVi,
+  ["csa-distributed/csa-m20-consistency.mdx"]: CsaM20Consistency,
+  ["csa-distributed/csa-m20-consistency.vi.mdx"]: CsaM20ConsistencyVi,
+  ["csa-distributed/csa-checkpoint-m20.mdx"]: CsaCheckpointM20,
+  ["csa-distributed/csa-checkpoint-m20.vi.mdx"]: CsaCheckpointM20Vi,
+  ["csa-expression-trees/csa-m8-tree-anatomy.mdx"]: CsaM8TreeAnatomy,
+  ["csa-expression-trees/csa-m8-tree-anatomy.vi.mdx"]: CsaM8TreeAnatomyVi,
+  ["csa-expression-trees/csa-m8-building.mdx"]: CsaM8Building,
+  ["csa-expression-trees/csa-m8-building.vi.mdx"]: CsaM8BuildingVi,
+  ["csa-expression-trees/csa-m8-visitors.mdx"]: CsaM8Visitors,
+  ["csa-expression-trees/csa-m8-visitors.vi.mdx"]: CsaM8VisitorsVi,
+  ["csa-expression-trees/csa-checkpoint-m8.mdx"]: CsaCheckpointM8,
+  ["csa-expression-trees/csa-checkpoint-m8.vi.mdx"]: CsaCheckpointM8Vi,
+  ["csa-gc/csa-m13-generations.mdx"]: CsaM13Generations,
+  ["csa-gc/csa-m13-generations.vi.mdx"]: CsaM13GenerationsVi,
+  ["csa-gc/csa-m13-lifetime.mdx"]: CsaM13Lifetime,
+  ["csa-gc/csa-m13-lifetime.vi.mdx"]: CsaM13LifetimeVi,
+  ["csa-gc/csa-m13-pooling.mdx"]: CsaM13Pooling,
+  ["csa-gc/csa-m13-pooling.vi.mdx"]: CsaM13PoolingVi,
+  ["csa-gc/csa-m13-leaks.mdx"]: CsaM13Leaks,
+  ["csa-gc/csa-m13-leaks.vi.mdx"]: CsaM13LeaksVi,
+  ["csa-gc/csa-checkpoint-m13.mdx"]: CsaCheckpointM13,
+  ["csa-gc/csa-checkpoint-m13.vi.mdx"]: CsaCheckpointM13Vi,
+  ["csa-generics-deep/csa-m3-variance.mdx"]: CsaM3Variance,
+  ["csa-generics-deep/csa-m3-variance.vi.mdx"]: CsaM3VarianceVi,
+  ["csa-generics-deep/csa-m3-static-abstracts.mdx"]: CsaM3StaticAbstracts,
+  ["csa-generics-deep/csa-m3-static-abstracts.vi.mdx"]: CsaM3StaticAbstractsVi,
+  ["csa-generics-deep/csa-m3-generics-runtime.mdx"]: CsaM3GenericsRuntime,
+  ["csa-generics-deep/csa-m3-generics-runtime.vi.mdx"]: CsaM3GenericsRuntimeVi,
+  ["csa-generics-deep/csa-checkpoint-m3.mdx"]: CsaCheckpointM3,
+  ["csa-generics-deep/csa-checkpoint-m3.vi.mdx"]: CsaCheckpointM3Vi,
   ["csa-language-semantics/csa-m1-execution-model.mdx"]: CsaM1ExecutionModel,
   ["csa-language-semantics/csa-m1-execution-model.vi.mdx"]: CsaM1ExecutionModelVi,
   ["csa-language-semantics/csa-m1-value-reference.mdx"]: CsaM1ValueReference,
@@ -2986,6 +3404,92 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["csa-language-semantics/csa-m1-resolution.vi.mdx"]: CsaM1ResolutionVi,
   ["csa-language-semantics/csa-checkpoint-m1.mdx"]: CsaCheckpointM1,
   ["csa-language-semantics/csa-checkpoint-m1.vi.mdx"]: CsaCheckpointM1Vi,
+  ["csa-memory-object-model/csa-m2-layout.mdx"]: CsaM2Layout,
+  ["csa-memory-object-model/csa-m2-layout.vi.mdx"]: CsaM2LayoutVi,
+  ["csa-memory-object-model/csa-m2-ref-returns.mdx"]: CsaM2RefReturns,
+  ["csa-memory-object-model/csa-m2-ref-returns.vi.mdx"]: CsaM2RefReturnsVi,
+  ["csa-memory-object-model/csa-m2-spans.mdx"]: CsaM2Spans,
+  ["csa-memory-object-model/csa-m2-spans.vi.mdx"]: CsaM2SpansVi,
+  ["csa-memory-object-model/csa-m2-allocation-measure.mdx"]: CsaM2AllocationMeasure,
+  ["csa-memory-object-model/csa-m2-allocation-measure.vi.mdx"]: CsaM2AllocationMeasureVi,
+  ["csa-memory-object-model/csa-checkpoint-m2.mdx"]: CsaCheckpointM2,
+  ["csa-memory-object-model/csa-checkpoint-m2.vi.mdx"]: CsaCheckpointM2Vi,
+  ["csa-networking/csa-m19-sockets.mdx"]: CsaM19Sockets,
+  ["csa-networking/csa-m19-sockets.vi.mdx"]: CsaM19SocketsVi,
+  ["csa-networking/csa-m19-framing.mdx"]: CsaM19Framing,
+  ["csa-networking/csa-m19-framing.vi.mdx"]: CsaM19FramingVi,
+  ["csa-networking/csa-m19-protocols.mdx"]: CsaM19Protocols,
+  ["csa-networking/csa-m19-protocols.vi.mdx"]: CsaM19ProtocolsVi,
+  ["csa-networking/csa-m19-failures.mdx"]: CsaM19Failures,
+  ["csa-networking/csa-m19-failures.vi.mdx"]: CsaM19FailuresVi,
+  ["csa-networking/csa-checkpoint-m19.mdx"]: CsaCheckpointM19,
+  ["csa-networking/csa-checkpoint-m19.vi.mdx"]: CsaCheckpointM19Vi,
+  ["csa-parallel/csa-m11-data-parallel.mdx"]: CsaM11DataParallel,
+  ["csa-parallel/csa-m11-data-parallel.vi.mdx"]: CsaM11DataParallelVi,
+  ["csa-parallel/csa-m11-plinq.mdx"]: CsaM11Plinq,
+  ["csa-parallel/csa-m11-plinq.vi.mdx"]: CsaM11PlinqVi,
+  ["csa-parallel/csa-m11-when-parallel.mdx"]: CsaM11WhenParallel,
+  ["csa-parallel/csa-m11-when-parallel.vi.mdx"]: CsaM11WhenParallelVi,
+  ["csa-parallel/csa-m11-parallel-pitfalls.mdx"]: CsaM11ParallelPitfalls,
+  ["csa-parallel/csa-m11-parallel-pitfalls.vi.mdx"]: CsaM11ParallelPitfallsVi,
+  ["csa-parallel/csa-checkpoint-m11.mdx"]: CsaCheckpointM11,
+  ["csa-parallel/csa-checkpoint-m11.vi.mdx"]: CsaCheckpointM11Vi,
+  ["csa-performance/csa-m14-measure-first.mdx"]: CsaM14MeasureFirst,
+  ["csa-performance/csa-m14-measure-first.vi.mdx"]: CsaM14MeasureFirstVi,
+  ["csa-performance/csa-m14-profiling.mdx"]: CsaM14Profiling,
+  ["csa-performance/csa-m14-profiling.vi.mdx"]: CsaM14ProfilingVi,
+  ["csa-performance/csa-m14-jit-effects.mdx"]: CsaM14JitEffects,
+  ["csa-performance/csa-m14-jit-effects.vi.mdx"]: CsaM14JitEffectsVi,
+  ["csa-performance/csa-m14-optimization-loop.mdx"]: CsaM14OptimizationLoop,
+  ["csa-performance/csa-m14-optimization-loop.vi.mdx"]: CsaM14OptimizationLoopVi,
+  ["csa-performance/csa-checkpoint-m14.mdx"]: CsaCheckpointM14,
+  ["csa-performance/csa-checkpoint-m14.vi.mdx"]: CsaCheckpointM14Vi,
+  ["csa-reflection-attributes/csa-m5-discovery.mdx"]: CsaM5Discovery,
+  ["csa-reflection-attributes/csa-m5-discovery.vi.mdx"]: CsaM5DiscoveryVi,
+  ["csa-reflection-attributes/csa-m5-invocation.mdx"]: CsaM5Invocation,
+  ["csa-reflection-attributes/csa-m5-invocation.vi.mdx"]: CsaM5InvocationVi,
+  ["csa-reflection-attributes/csa-m5-attributes.mdx"]: CsaM5Attributes,
+  ["csa-reflection-attributes/csa-m5-attributes.vi.mdx"]: CsaM5AttributesVi,
+  ["csa-reflection-attributes/csa-m5-security.mdx"]: CsaM5Security,
+  ["csa-reflection-attributes/csa-m5-security.vi.mdx"]: CsaM5SecurityVi,
+  ["csa-reflection-attributes/csa-checkpoint-m5.mdx"]: CsaCheckpointM5,
+  ["csa-reflection-attributes/csa-checkpoint-m5.vi.mdx"]: CsaCheckpointM5Vi,
+  ["csa-roslyn/csa-m6-roslyn-architecture.mdx"]: CsaM6RoslynArchitecture,
+  ["csa-roslyn/csa-m6-roslyn-architecture.vi.mdx"]: CsaM6RoslynArchitectureVi,
+  ["csa-roslyn/csa-m6-analyzers.mdx"]: CsaM6Analyzers,
+  ["csa-roslyn/csa-m6-analyzers.vi.mdx"]: CsaM6AnalyzersVi,
+  ["csa-roslyn/csa-m6-compilation-api.mdx"]: CsaM6CompilationApi,
+  ["csa-roslyn/csa-m6-compilation-api.vi.mdx"]: CsaM6CompilationApiVi,
+  ["csa-roslyn/csa-checkpoint-m6.mdx"]: CsaCheckpointM6,
+  ["csa-roslyn/csa-checkpoint-m6.vi.mdx"]: CsaCheckpointM6Vi,
+  ["csa-security/csa-m21-crypto.mdx"]: CsaM21Crypto,
+  ["csa-security/csa-m21-crypto.vi.mdx"]: CsaM21CryptoVi,
+  ["csa-security/csa-m21-secrets.mdx"]: CsaM21Secrets,
+  ["csa-security/csa-m21-secrets.vi.mdx"]: CsaM21SecretsVi,
+  ["csa-security/csa-m21-injection.mdx"]: CsaM21Injection,
+  ["csa-security/csa-m21-injection.vi.mdx"]: CsaM21InjectionVi,
+  ["csa-security/csa-m21-threat-model.mdx"]: CsaM21ThreatModel,
+  ["csa-security/csa-m21-threat-model.vi.mdx"]: CsaM21ThreatModelVi,
+  ["csa-security/csa-checkpoint-m21.mdx"]: CsaCheckpointM21,
+  ["csa-security/csa-checkpoint-m21.vi.mdx"]: CsaCheckpointM21Vi,
+  ["csa-source-generators/csa-m7-generator-model.mdx"]: CsaM7GeneratorModel,
+  ["csa-source-generators/csa-m7-generator-model.vi.mdx"]: CsaM7GeneratorModelVi,
+  ["csa-source-generators/csa-m7-incremental.mdx"]: CsaM7Incremental,
+  ["csa-source-generators/csa-m7-incremental.vi.mdx"]: CsaM7IncrementalVi,
+  ["csa-source-generators/csa-m7-generated-code.mdx"]: CsaM7GeneratedCode,
+  ["csa-source-generators/csa-m7-generated-code.vi.mdx"]: CsaM7GeneratedCodeVi,
+  ["csa-source-generators/csa-checkpoint-m7.mdx"]: CsaCheckpointM7,
+  ["csa-source-generators/csa-checkpoint-m7.vi.mdx"]: CsaCheckpointM7Vi,
+  ["csa-unsafe-interop/csa-m17-boundary.mdx"]: CsaM17Boundary,
+  ["csa-unsafe-interop/csa-m17-boundary.vi.mdx"]: CsaM17BoundaryVi,
+  ["csa-unsafe-interop/csa-m17-pointers.mdx"]: CsaM17Pointers,
+  ["csa-unsafe-interop/csa-m17-pointers.vi.mdx"]: CsaM17PointersVi,
+  ["csa-unsafe-interop/csa-m17-pin-stories.mdx"]: CsaM17PinStories,
+  ["csa-unsafe-interop/csa-m17-pin-stories.vi.mdx"]: CsaM17PinStoriesVi,
+  ["csa-unsafe-interop/csa-m17-pinvoke-concepts.mdx"]: CsaM17PinvokeConcepts,
+  ["csa-unsafe-interop/csa-m17-pinvoke-concepts.vi.mdx"]: CsaM17PinvokeConceptsVi,
+  ["csa-unsafe-interop/csa-checkpoint-m17.mdx"]: CsaCheckpointM17,
+  ["csa-unsafe-interop/csa-checkpoint-m17.vi.mdx"]: CsaCheckpointM17Vi,
   ["csb-algorithms/csb-m20-big-o.mdx"]: CsbM20BigO,
   ["csb-algorithms/csb-m20-big-o.vi.mdx"]: CsbM20BigOVi,
   ["csb-algorithms/csb-m20-searching.mdx"]: CsbM20Searching,
@@ -3156,6 +3660,12 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["csb-welcome/csb-m1-how-grading-works.vi.mdx"]: CsbM1HowGradingWorksVi,
   ["csb-welcome/csb-checkpoint-m1.mdx"]: CsbCheckpointM1,
   ["csb-welcome/csb-checkpoint-m1.vi.mdx"]: CsbCheckpointM1Vi,
+  ["csi-architecture/csi-layers.mdx"]: CsiLayers,
+  ["csi-architecture/csi-layers.vi.mdx"]: CsiLayersVi,
+  ["csi-architecture/csi-boundaries.mdx"]: CsiBoundaries,
+  ["csi-architecture/csi-boundaries.vi.mdx"]: CsiBoundariesVi,
+  ["csi-architecture/csi-checkpoint-m19.mdx"]: CsiCheckpointM19,
+  ["csi-architecture/csi-checkpoint-m19.vi.mdx"]: CsiCheckpointM19Vi,
   ["csi-async/csi-async-basics.mdx"]: CsiAsyncBasics,
   ["csi-async/csi-async-basics.vi.mdx"]: CsiAsyncBasicsVi,
   ["csi-async/csi-cancellation-timeouts.mdx"]: CsiCancellationTimeouts,
@@ -3164,6 +3674,12 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["csi-async/csi-async-streams.vi.mdx"]: CsiAsyncStreamsVi,
   ["csi-async/csi-checkpoint-m9.mdx"]: CsiCheckpointM9,
   ["csi-async/csi-checkpoint-m9.vi.mdx"]: CsiCheckpointM9Vi,
+  ["csi-clean-code/csi-code-smells.mdx"]: CsiCodeSmells,
+  ["csi-clean-code/csi-code-smells.vi.mdx"]: CsiCodeSmellsVi,
+  ["csi-clean-code/csi-refactoring.mdx"]: CsiRefactoring,
+  ["csi-clean-code/csi-refactoring.vi.mdx"]: CsiRefactoringVi,
+  ["csi-clean-code/csi-checkpoint-m17.mdx"]: CsiCheckpointM17,
+  ["csi-clean-code/csi-checkpoint-m17.vi.mdx"]: CsiCheckpointM17Vi,
   ["csi-collections/csi-collection-costs.mdx"]: CsiCollectionCosts,
   ["csi-collections/csi-collection-costs.vi.mdx"]: CsiCollectionCostsVi,
   ["csi-collections/csi-choosing-structures.mdx"]: CsiChoosingStructures,
@@ -3176,6 +3692,18 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["csi-concurrency/csi-synchronization-patterns.vi.mdx"]: CsiSynchronizationPatternsVi,
   ["csi-concurrency/csi-checkpoint-m10.mdx"]: CsiCheckpointM10,
   ["csi-concurrency/csi-checkpoint-m10.vi.mdx"]: CsiCheckpointM10Vi,
+  ["csi-config/csi-options-pattern.mdx"]: CsiOptionsPattern,
+  ["csi-config/csi-options-pattern.vi.mdx"]: CsiOptionsPatternVi,
+  ["csi-config/csi-environments-and-secrets.mdx"]: CsiEnvironmentsAndSecrets,
+  ["csi-config/csi-environments-and-secrets.vi.mdx"]: CsiEnvironmentsAndSecretsVi,
+  ["csi-config/csi-checkpoint-m12.mdx"]: CsiCheckpointM12,
+  ["csi-config/csi-checkpoint-m12.vi.mdx"]: CsiCheckpointM12Vi,
+  ["csi-data/csi-relational-basics.mdx"]: CsiRelationalBasics,
+  ["csi-data/csi-relational-basics.vi.mdx"]: CsiRelationalBasicsVi,
+  ["csi-data/csi-repositories.mdx"]: CsiRepositories,
+  ["csi-data/csi-repositories.vi.mdx"]: CsiRepositoriesVi,
+  ["csi-data/csi-checkpoint-m15.mdx"]: CsiCheckpointM15,
+  ["csi-data/csi-checkpoint-m15.vi.mdx"]: CsiCheckpointM15Vi,
   ["csi-delegates/csi-delegates-shapes.mdx"]: CsiDelegatesShapes,
   ["csi-delegates/csi-delegates-shapes.vi.mdx"]: CsiDelegatesShapesVi,
   ["csi-delegates/csi-closures-capture.mdx"]: CsiClosuresCapture,
@@ -3202,12 +3730,24 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["csi-generics/csi-variance.vi.mdx"]: CsiVarianceVi,
   ["csi-generics/csi-checkpoint-m5.mdx"]: CsiCheckpointM5,
   ["csi-generics/csi-checkpoint-m5.vi.mdx"]: CsiCheckpointM5Vi,
+  ["csi-http/csi-http-anatomy.mdx"]: CsiHttpAnatomy,
+  ["csi-http/csi-http-anatomy.vi.mdx"]: CsiHttpAnatomyVi,
+  ["csi-http/csi-resilient-clients.mdx"]: CsiResilientClients,
+  ["csi-http/csi-resilient-clients.vi.mdx"]: CsiResilientClientsVi,
+  ["csi-http/csi-checkpoint-m13.mdx"]: CsiCheckpointM13,
+  ["csi-http/csi-checkpoint-m13.vi.mdx"]: CsiCheckpointM13Vi,
   ["csi-iterators/csi-yield-semantics.mdx"]: CsiYieldSemantics,
   ["csi-iterators/csi-yield-semantics.vi.mdx"]: CsiYieldSemanticsVi,
   ["csi-iterators/csi-lazy-pipelines.mdx"]: CsiLazyPipelines,
   ["csi-iterators/csi-lazy-pipelines.vi.mdx"]: CsiLazyPipelinesVi,
   ["csi-iterators/csi-checkpoint-m7.mdx"]: CsiCheckpointM7,
   ["csi-iterators/csi-checkpoint-m7.vi.mdx"]: CsiCheckpointM7Vi,
+  ["csi-json/csi-stj-options.mdx"]: CsiStjOptions,
+  ["csi-json/csi-stj-options.vi.mdx"]: CsiStjOptionsVi,
+  ["csi-json/csi-converters-and-robustness.mdx"]: CsiConvertersAndRobustness,
+  ["csi-json/csi-converters-and-robustness.vi.mdx"]: CsiConvertersAndRobustnessVi,
+  ["csi-json/csi-checkpoint-m14.mdx"]: CsiCheckpointM14,
+  ["csi-json/csi-checkpoint-m14.vi.mdx"]: CsiCheckpointM14Vi,
   ["csi-linq/csi-operator-families.mdx"]: CsiOperatorFamilies,
   ["csi-linq/csi-operator-families.vi.mdx"]: CsiOperatorFamiliesVi,
   ["csi-linq/csi-execution-model.mdx"]: CsiExecutionModel,
@@ -3230,6 +3770,58 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["csi-modern-types/csi-pattern-matching.vi.mdx"]: CsiPatternMatchingVi,
   ["csi-modern-types/csi-checkpoint-m1.mdx"]: CsiCheckpointM1,
   ["csi-modern-types/csi-checkpoint-m1.vi.mdx"]: CsiCheckpointM1Vi,
+  ["csi-patterns/csi-pattern-catalog.mdx"]: CsiPatternCatalog,
+  ["csi-patterns/csi-pattern-catalog.vi.mdx"]: CsiPatternCatalogVi,
+  ["csi-patterns/csi-pattern-builds.mdx"]: CsiPatternBuilds,
+  ["csi-patterns/csi-pattern-builds.vi.mdx"]: CsiPatternBuildsVi,
+  ["csi-patterns/csi-checkpoint-m18.mdx"]: CsiCheckpointM18,
+  ["csi-patterns/csi-checkpoint-m18.vi.mdx"]: CsiCheckpointM18Vi,
+  ["csi-performance/csi-allocations.mdx"]: CsiAllocations,
+  ["csi-performance/csi-allocations.vi.mdx"]: CsiAllocationsVi,
+  ["csi-performance/csi-linq-cost.mdx"]: CsiLinqCost,
+  ["csi-performance/csi-linq-cost.vi.mdx"]: CsiLinqCostVi,
+  ["csi-performance/csi-checkpoint-m20.mdx"]: CsiCheckpointM20,
+  ["csi-performance/csi-checkpoint-m20.vi.mdx"]: CsiCheckpointM20Vi,
+  ["csi-testing/csi-mini-framework.mdx"]: CsiMiniFramework,
+  ["csi-testing/csi-mini-framework.vi.mdx"]: CsiMiniFrameworkVi,
+  ["csi-testing/csi-test-doubles.mdx"]: CsiTestDoubles,
+  ["csi-testing/csi-test-doubles.vi.mdx"]: CsiTestDoublesVi,
+  ["csi-testing/csi-checkpoint-m16.mdx"]: CsiCheckpointM16,
+  ["csi-testing/csi-checkpoint-m16.vi.mdx"]: CsiCheckpointM16Vi,
+  ["hsg-arrays/hsg-m3-basics.mdx"]: HsgM3Basics,
+  ["hsg-arrays/hsg-m3-basics.vi.mdx"]: HsgM3BasicsVi,
+  ["hsg-arrays/hsg-m3-classic.mdx"]: HsgM3Classic,
+  ["hsg-arrays/hsg-m3-classic.vi.mdx"]: HsgM3ClassicVi,
+  ["hsg-arrays/hsg-cp-m3.mdx"]: HsgCpM3,
+  ["hsg-arrays/hsg-cp-m3.vi.mdx"]: HsgCpM3Vi,
+  ["hsg-greedy/hsg-m5-choice.mdx"]: HsgM5Choice,
+  ["hsg-greedy/hsg-m5-choice.vi.mdx"]: HsgM5ChoiceVi,
+  ["hsg-greedy/hsg-m5-proof.mdx"]: HsgM5Proof,
+  ["hsg-greedy/hsg-m5-proof.vi.mdx"]: HsgM5ProofVi,
+  ["hsg-greedy/hsg-cp-m5.mdx"]: HsgCpM5,
+  ["hsg-greedy/hsg-cp-m5.vi.mdx"]: HsgCpM5Vi,
+  ["hsg-loops/hsg-m2-patterns.mdx"]: HsgM2Patterns,
+  ["hsg-loops/hsg-m2-patterns.vi.mdx"]: HsgM2PatternsVi,
+  ["hsg-loops/hsg-m2-digit-work.mdx"]: HsgM2DigitWork,
+  ["hsg-loops/hsg-m2-digit-work.vi.mdx"]: HsgM2DigitWorkVi,
+  ["hsg-loops/hsg-cp-m2.mdx"]: HsgCpM2,
+  ["hsg-loops/hsg-cp-m2.vi.mdx"]: HsgCpM2Vi,
+  ["hsg-marking/hsg-m4-idea.mdx"]: HsgM4Idea,
+  ["hsg-marking/hsg-m4-idea.vi.mdx"]: HsgM4IdeaVi,
+  ["hsg-marking/hsg-m4-range.mdx"]: HsgM4Range,
+  ["hsg-marking/hsg-m4-range.vi.mdx"]: HsgM4RangeVi,
+  ["hsg-marking/hsg-cp-m4.mdx"]: HsgCpM4,
+  ["hsg-marking/hsg-cp-m4.vi.mdx"]: HsgCpM4Vi,
+  ["hsg-search/hsg-m7-basics.mdx"]: HsgM7Basics,
+  ["hsg-search/hsg-m7-basics.vi.mdx"]: HsgM7BasicsVi,
+  ["hsg-search/hsg-m7-answer.mdx"]: HsgM7Answer,
+  ["hsg-search/hsg-m7-answer.vi.mdx"]: HsgM7AnswerVi,
+  ["hsg-sorting/hsg-m6-sort.mdx"]: HsgM6Sort,
+  ["hsg-sorting/hsg-m6-sort.vi.mdx"]: HsgM6SortVi,
+  ["hsg-sorting/hsg-m6-sweep.mdx"]: HsgM6Sweep,
+  ["hsg-sorting/hsg-m6-sweep.vi.mdx"]: HsgM6SweepVi,
+  ["hsg-sorting/hsg-cp-m6.mdx"]: HsgCpM6,
+  ["hsg-sorting/hsg-cp-m6.vi.mdx"]: HsgCpM6Vi,
   ["hsg-vao-mon/hsg-m1-reading.mdx"]: HsgM1Reading,
   ["hsg-vao-mon/hsg-m1-reading.vi.mdx"]: HsgM1ReadingVi,
   ["hsg-vao-mon/hsg-m1-bridge.mdx"]: HsgM1Bridge,

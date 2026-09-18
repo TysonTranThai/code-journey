@@ -1,0 +1,33 @@
+## Stack traces as evidence
+
+A stack trace is a recording of the call path at failure time. Reading it
+like evidence (not like noise) is a diagnostic superpower:
+
+```
+System.InvalidOperationException: queue is empty
+   at Solution.PumpAsync(ChannelReader`1 source, ...)
+   at Program.<Main>$(String[] args)
+   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder.Start[TStateMachine](...)
+```
+
+- **Top frame = throw site.** Read DOWN for the path that led there.
+  `MoveNext` frames mean an async state machine — the original method name
+  is in the `<>c__DisplayClass`/`<Method>` pattern (or shows the real name
+  on modern runtimes).
+- **`End of stack trace from previous location`** marks an async boundary —
+  above it is the awaiting side, below is where the async work ran.
+- **`throw;` preserves the trace; `throw ex;` resets it** to the rethrow
+  site. A trace that "starts" in your error-logging middleware is the
+  signature of `throw ex` upstream.
+- **InnerException is half the story.** `GetBaseException()` walks to the
+  root; the checkpoint's `Describe`/`Analyze` encode that walk.
+
+**AggregateException** carries multiple failures (parallel work). Always
+`Flatten()` before analysis — nested aggregates are a maze. And catch
+filters (`catch when (e is TimeoutException)`) keep the trace intact while
+routing handling — preferable to catch-and-rethrow.
+
+Trace truncation and PII: production traces are often trimmed (that
+`<Module>.<PrivateImplementationDetails>` noise) or redacted. If your
+diagnosis depends on seeing arguments, structured logging (next lesson) is
+the durable path — the trace proves WHERE, logs prove WHAT.

@@ -1,0 +1,10 @@
+{
+  "title": "Chuyên biệt hóa generic lúc chạy",
+  "prompt": "Generic trên value type được chuyên biệt hóa theo từng kiểu; trên reference type dùng chung một instantiation. Chứng minh phần quan sát được: hiện thực `static int OpenGenericCount()` trả về số open generic type definition tiếp cận được qua typeof(Dictionary<,>) (0 nếu đã constructed, 1 nếu open) — hiện thực là: `typeof(Dictionary<,>).IsGenericTypeDefinition ? 1 : 0`. Rồi hiện thực `static bool SameRuntimeType<A, B>() => typeof(A) == typeof(B)` và test kiểm tra SameRuntimeType<List<int>, List<int>>() là true còn SameRuntimeType<List<int>, List<string>>() là false.",
+  "tests": [
+    {
+      "name": "open-generic",
+      "hint": "IsGenericTypeDefinition trên typeof(Dictionary<,>) chưa gắn; typeof(A) == typeof(B) là so sánh tham chiếu trên runtime type."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "csa-p13-arraypool",
+  "title": "ArrayPool discipline",
+  "prompt": "Implement `static byte[] RentedSum(int[] values, out byte[] rented)` — NO. Simpler and testable: implement `static long PooledSum(int[] values)` that copies `values` through a rented ArrayPool<byte[]> buffer (rent a byte[] at least 4*values.Length, sum the first values.Length ints from it as 4-byte little-endian groups, return the sum, RETURN the array to the pool in a finally). Then implement `static long DirectSum(int[] values)` that just sums. Both must return identical results; the pooled one must not allocate a new array per call (the test calls it 100x and checks GC delta is tiny).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "sums-match",
+      "code": "var vals = Enumerable.Range(0, 100).ToArray();\nCj.Eq(Solution.PooledSum(vals), Solution.DirectSum(vals), \"identical results\");",
+      "hint": "Buffer.BlockCopy(vals, 0, rented, 0, vals.Length * 4); then sum ints at strides of 4 bytes via BitConverter or an int[] view."
+    },
+    {
+      "name": "pooled-no-alloc",
+      "code": "var vals = new int[100];\nSolution.PooledSum(vals);   // warm the pool\nvar before = GC.GetAllocatedBytesForCurrentThread();\nfor (int i = 0; i < 100; i++) Solution.PooledSum(vals);\nvar delta = GC.GetAllocatedBytesForCurrentThread() - before;\nCj.True(delta < 10_000, $\"pooled path should not allocate arrays per call (got {delta} bytes)\");",
+      "hint": "ArrayPool<byte>.Shared.Rent/Return inside try/finally — rent the MINIMUM bucket, return without clearing unless the pool requires it."
+    }
+  ],
+  "level": "real-world"
+}

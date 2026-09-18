@@ -1,0 +1,33 @@
+## Phổ triển khai
+
+Một app .NET, năm mô hình vận chuyển — mỗi mô hình trả lời "runtime đến từ
+đâu, và code được compile khi nào?":
+
+| Mô hình | Kèm runtime? | Thời điểm compile | Kích thước | Khởi động | Phù hợp |
+|---|---|---|---|---|---|
+| Framework-dependent | không (dùng host đã cài) | JIT lúc chạy | ~app | thuế JIT | server dùng chung runtime |
+| Self-contained | có, đầy đủ | JIT lúc chạy | ~65MB+ | thuế JIT | triển khai ghim phiên bản |
+| Trimmed self-contained | có, cắt tỉa | JIT lúc chạy | ~25MB | thuế JIT | CLI, container |
+| ReadyToRun | có, precompiled | publish (kiểu tier-1) | +30% | thấp | service nhạy khởi động |
+| NativeAOT | có, linked | publish (hoàn toàn) | ~18MB | ~ms | serverless, container nhỏ |
+
+Hai trục — việc gộp runtime và thời điểm compile — độc lập nhưng định hình
+nhau: AOT tất yếu gộp một runtime (nhỏ hơn, khác biệt) vì nó không thể dựa
+vào host JIT.
+
+Các yếu tố quyết định trong thực tế:
+
+1. **Ai kiểm soát host?** Runtime dùng chung = framework-dependent (diff
+   nhỏ, vá dùng chung). Container khoá chặt = self-contained (ghim, tái
+   lập được).
+2. **Nhạy khởi động?** Serverless/CLI = AOT hoặc R2R. Service chạy dài
+   phần lớn khấu trừ warmup JIT.
+3. **Đang dùng tính năng động?** Reflection nặng (plugin, kích hoạt theo
+   config) đối đầu trimming và AOT — mối đánh đổi lõi của Module 18.
+4. **Ma trận nền tảng?** AOT compile cho từng OS/kiến trúc; binary JIT
+   (và cả R2R) là bundle theo-rid bạn chọn lúc publish.
+
+Phép tính container làm cho nó cụ thể: image ASP.NET Core trimmed
+self-contained chạy ~110MB so với ~220MB chưa trim; NativeAOT minimal API
+dưới 40MB với khởi động dưới 20ms. Với nền tảng scale-to-zero, con số
+khởi động đó CHÍNH LÀ mô hình chi phí.

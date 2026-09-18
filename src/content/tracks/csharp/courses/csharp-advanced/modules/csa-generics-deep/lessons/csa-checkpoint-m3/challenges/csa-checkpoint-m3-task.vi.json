@@ -1,0 +1,14 @@
+{
+  "title": "Checkpoint generics",
+  "prompt": "Định nghĩa `interface IShape<TSelf> where TSelf : IShape<TSelf>` với `static abstract string Name { get; }` và `static abstract double Area(double side);`. Hiện thực `struct Square : IShape<Square>` (Area = side*side) và `struct Circle : IShape<Circle>` (Area = π·side² dùng Math.PI). Rồi hiện thực `static double AreaOf<T>(double side) where T : IShape<T> => T.Area(side);` trong lớp `Solution`.",
+  "tests": [
+    {
+      "name": "static-dispatch",
+      "hint": "Tham số kiểu cung cấp các thành viên tĩnh — không instance, không reflection."
+    },
+    {
+      "name": "no-instantiation",
+      "hint": "Dispatch static-abstract diễn ra lúc biên dịch — không cấp phát, không instance."
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+## Measurement first — always
+
+Before any optimization: **measure**. In .NET that means `Stopwatch` (or a
+real profiler). Intuition about "slow code" is wrong constantly; a loop that
+looks expensive may be free, and one innocent-looking call may dominate.
+The rule for this module and beyond:
+
+1. Measure the current shape (`Stopwatch` at minimum).
+2. Change ONE thing.
+3. Measure again; keep only real wins.
+
+Everything below is about shapes whose cost is *predictable from the code* —
+the ones worth fixing on sight — but even then, confirm with numbers.
+
+## Strings are immutable — concatenation is O(n²)
+
+Each `+=` on a string allocates a brand-new string and copies everything
+so far. Building a 10,000-part report with `+=` copies ~50 million
+characters. `StringBuilder` amortizes to O(n):
+
+```csharp
+// O(n^2): every += copies the whole string so far
+var s = "";
+foreach (var line in lines) s += line + "\n";
+
+// O(n): one growing buffer, flushed once
+var sb = new System.Text.StringBuilder();
+foreach (var line in lines) sb.AppendLine(line);
+var s2 = sb.ToString();
+```
+
+A few `+=` on short strings is fine. The problem is *unbounded loops*.
+
+## Collection choice is the cheapest big win
+
+The access pattern dictates the type — complexity, not fashion:
+
+| You need                     | Use            | Cost            |
+|------------------------------|----------------|-----------------|
+| lookup by key                | `Dictionary<K,V>` | ~O(1)       |
+| membership test ("have I seen X?") | `HashSet<T>` | ~O(1)     |
+| index access / ordered scan  | `List<T>` / `T[]` | O(1) / O(n) scan |
+| first-in-first-out           | `Queue<T>`     | O(1) both ends  |
+| last-in-first-out            | `Stack<T>`     | O(1)            |
+
+The classic hidden quadratic: inside a loop over N items, doing
+`list.Contains(x)` (or `Remove`) — O(n) each — makes the whole thing O(n²).
+A `HashSet` turns the inner test into ~O(1) and the loop into O(n).
+
+```csharp
+// O(n^2): Contains is a linear scan per element
+foreach (var id in incoming)
+    if (!seen.Contains(id)) seen.Add(id);   // seen is a List
+
+// O(n): membership test on a HashSet
+foreach (var id in incoming)
+    if (seen.Add(id)) /* first occurrence */;
+```
+
+## One more allocation habit
+
+`List<T>` grows by doubling — fine. But if you know the final size, the
+constructor `new List<T>(capacity)` avoids re-allocations entirely. Reserve
+this for large, known-size builds; micro-tuning small lists is noise.

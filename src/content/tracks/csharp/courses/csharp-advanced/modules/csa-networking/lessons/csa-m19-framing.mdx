@@ -1,0 +1,41 @@
+## Framing: the first protocol bug
+
+TCP gives you a **byte stream**. Every protocol you build on it must
+re-introduce messages. The bug that ends junior protocols: assuming
+one write = one read.
+
+```csharp
+// Writer sends two frames:
+await stream.WriteAsync(EncodeFrame("first"));
+await stream.WriteAsync(EncodeFrame("second"));
+
+// Reader gets ONE read containing BOTH frames glued — or three reads
+// splitting the second frame across boundaries. TCP owes you nothing.
+```
+
+**Length-prefix framing** is the standard fix: every message is
+`[4-byte length][payload]`. The reader maintains a buffer and a state
+machine:
+
+1. Have 4+ bytes? Read the prefix → this frame's length.
+2. Have 4+len bytes? Extract the payload, advance, repeat.
+3. Not enough? Wait for more bytes (append incoming data to the buffer).
+
+This is exactly what the checkpoint implements on a buffer — and what
+`DecodeStreamSafe` extends to the tolerant-reader form real protocols
+need: complete frames process, trailing partials wait.
+
+Design decisions in every framing scheme:
+
+- **Prefix size**: 4 bytes caps frames at 2GB — and demands a MAX-FRAME
+  check (a malicious/corrupt prefix of 0x7FFFFFFF should not allocate 2GB;
+  the reader rejects frames over a policy cap).
+- **Endianness**: little-endian (BinaryPrimitives) or big-endian (network
+  order) — either is fine, but it must be WRITTEN DOWN and never changed.
+- **In-band vs out-of-band**: control messages inside the stream (like
+  HTTP headers) vs a second channel. In-band is simpler; out-of-band
+  avoids head-of-line blocking for mixed traffic.
+
+When you cannot trust framing to carry semantics, upgrade to a real
+wire protocol (HTTP, gRPC, MessagePack) — they solved framing, versions,
+and types; your job is the payload.

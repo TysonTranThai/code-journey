@@ -1,0 +1,14 @@
+{
+  "title": "Checkpoint Channels",
+  "prompt": "Hiện thực `static async Task<int> PumpAsync(ChannelReader<int> source, ChannelWriter<int> sink, int factor, CancellationToken ct)` đọc mọi phần tử từ source, ghi item*factor vào sink, và hoàn thành sink khi xong — lan truyền hủy. Rồi hiện thực `static async Task<List<int>> RunBounded(int count)`: tạo bounded channel (sức chứa 8), một producer ghi 0..count-1 rồi hoàn thành, và một consumer duy nhất gom qua ReadAllAsync. Test xác minh dòng chảy end-to-end và output của consumer là đầy đủ.",
+  "tests": [
+    {
+      "name": "pump",
+      "hint": "await foreach (var item in source.ReadAllAsync(ct)) await sink.WriteAsync(item * factor, ct); finally sink.Complete()."
+    },
+    {
+      "name": "bounded-drain",
+      "hint": "Bounded(capacity: 8); producer: for-loop WriteAsync rồi TryComplete; consumer: await foreach ReadAllAsync vào list."
+    }
+  ]
+}

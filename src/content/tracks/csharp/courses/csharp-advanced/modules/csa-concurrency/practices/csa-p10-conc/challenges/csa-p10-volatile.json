@@ -1,0 +1,16 @@
+{
+  "id": "csa-p10-volatile",
+  "title": "Prove the visibility bug",
+  "prompt": "Implement `static int SpinUntilFlag(int ms)` that busy-waits (Thread.Sleep(1) loop, bounded by ms) until a static bool `Flag` set by `static void SetFlag()` becomes true, returning 1 if seen, 0 on timeout — but read Flag through `Volatile.Read` so the JIT cannot cache it in a register. The test sets the flag from another thread mid-spin and expects success.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "cross-thread-flag",
+      "code": "Solution.Flag = false;\nvar setter = Task.Run(async () => { await Task.Delay(50); Solution.SetFlag(); });\nvar r = Solution.SpinUntilFlag(5_000);\nCj.Eq(r, 1, \"volatile read saw the other thread's write\");\nawait setter;",
+      "hint": "while (!Volatile.Read(ref Flag) && Stopwatch less than budget) Thread.Sleep(1); static bool Flag is a static field — Volatile.Read(ref Flag) needs the ref form: declare `private static bool _flag;` + `public static ref bool FlagRef` OR make SetFlag/Spin use a private static bool via Volatile APIs."
+    }
+  ],
+  "level": "debugging"
+}

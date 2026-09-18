@@ -1,0 +1,31 @@
+## Connection lifecycle and pooling
+
+Opening a real database connection costs a TCP handshake, auth, and session
+setup — milliseconds you pay per *logical* operation if you are careless. So
+ADO.NET (and every driver above it) keeps a **pool**: `Close()` returns the
+connection to the pool; the physical socket stays warm. Two rules follow.
+
+**Open late, close early.** Hold a connection only while a query is running —
+not while you compute, not while you call another service. A connection held
+across a remote HTTP call is the classic "site slows to a crawl at 3 p.m."
+bug: the pool is finite (default max 100), and once every connection is
+checked out, the next caller **blocks** waiting for one until
+`Connection Timeout` (default 15 s) expires with
+`InvalidOperationException: Timeout expired... The connection pool has been
+exhausted`.
+
+**The leak patterns** that exhaust pools:
+
+- No `using`/`await using` around the connection (exception path skips Close).
+- Returning a connection-holding object (reader, command) from a method.
+- Holding the connection while awaiting unrelated I/O.
+- Dynamic connection strings — the pool keys on the exact string, so
+  per-tenant connection strings silently create per-tenant pools.
+
+Pool exhaustion is a *concurrency* symptom: a single-user test never sees it.
+That is why the challenge models occupancy arithmetic instead of real
+connections — the reasoning transfers unchanged.
+
+*Language note:* connection strings are configuration, not code. Secrets
+therefore belong in configuration/secrets management (module 23), never in
+source. (EN content; VI translation ships alongside per the loader contract.)

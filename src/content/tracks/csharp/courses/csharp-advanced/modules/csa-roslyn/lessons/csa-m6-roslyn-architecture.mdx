@@ -1,0 +1,30 @@
+## Roslyn's two views of code
+
+Roslyn is the compiler-as-a-service: the same engine that builds your code
+is a library you reference. It exposes two cooperating layers:
+
+- **Syntax layer** (`SyntaxTree`, `CSharpSyntaxWalker`): the exact text as
+  a tree — every brace, every keyword, including trivia (comments,
+  whitespace). Purely lexical: an unresolvable typo still parses.
+- **Semantic layer** (`SemanticModel`, `ISymbol`): what the identifiers
+  MEAN — resolved types, method overloads, accessibility, nullable flow.
+  Needs a `Compilation` with references.
+
+```csharp
+var tree = CSharpSyntaxTree.ParseText("int x = 1;");
+var comp = CSharpCompilation.Create("scratch", new[] { tree },
+    new[] { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) });
+var model = comp.GetSemanticModel(tree);
+```
+
+Two design decisions make the IDE world possible: syntax trees are
+**immutable** (share and cache freely) and **repirseparable** (a tree
+remembers how to re-create its exact text, so round-tripping is lossless).
+Roslyn's red/green tree makes incremental edits cheap — you mostly notice
+this as "analyzers don't reanalyze the whole file per keystroke".
+
+When to use which: linting shape (naming, structure, forbidden patterns) is
+syntax; correctness rules (null-ability, type mismatches, symbol misuse)
+are semantic. Analyzers that need semantic info get it lazily — the
+registration API takes a predicate deciding whether a node is worth
+resolving at all.

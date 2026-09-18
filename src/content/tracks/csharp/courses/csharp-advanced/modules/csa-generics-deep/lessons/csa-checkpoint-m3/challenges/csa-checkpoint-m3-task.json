@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m3-task",
+  "title": "Generics checkpoint",
+  "prompt": "Define `interface IShape<TSelf> where TSelf : IShape<TSelf>` with `static abstract string Name { get; }` and `static abstract double Area(double side);`. Implement `struct Square : IShape<Square>` (Area = side*side) and `struct Circle : IShape<Circle>` (Area = π·side² using Math.PI). Then implement `static double AreaOf<T>(double side) where T : IShape<T> => T.Area(side);` in class `Solution`.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "static-dispatch",
+      "code": "Cj.Eq(Solution.AreaOf<Square>(5), 25.0, \"Square\");\nCj.True(Math.Abs(Solution.AreaOf<Circle>(2) - 4 * Math.PI) < 1e-9, \"Circle\");",
+      "hint": "The type argument supplies the static members — no instance, no reflection."
+    },
+    {
+      "name": "no-instantiation",
+      "code": "// AreaOf<T> must not create anything:\nlong b0 = GC.GetAllocatedBytesForCurrentThread();\ndouble d = Solution.AreaOf<Square>(3);\nlong b1 = GC.GetAllocatedBytesForCurrentThread();\nCj.True(b1 - b0 == 0, $\"allocated {b1 - b0}\");",
+      "hint": "Static abstract dispatch is compile-time — zero allocations, zero instances."
+    }
+  ]
+}

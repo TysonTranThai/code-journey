@@ -1,0 +1,18 @@
+{
+  "title": "StringBuilder, không phải nối chuỗi",
+  "prompt": "`ConcatReport` dựng một string lớn bằng `+=` trong vòng lặp — hình dạng bình phương. Viết lại thành `Solution.Report(string[] lines)` dùng `System.Text.StringBuilder` để vòng lặp không cấp phát string trung gian: mỗi dòng một dòng đầu vào, kết thúc bằng `\\n` (`[\"a\",\"b\"]` -> `\"a\\nb\\n\"`); input rỗng -> `\"\"`; `StringOps.Allocations` phải bằng 0 suốt lần gọi (helper đếm được cấp sẵn).",
+  "tests": [
+    {
+      "name": "output shape is exact",
+      "hint": "Append từng dòng + '\\n'; input rỗng không append gì."
+    },
+    {
+      "name": "no intermediate string allocations",
+      "hint": "StringBuilder giữ buffer; chỉ một ToString cuối (harness không đếm)."
+    },
+    {
+      "name": "long input finishes",
+      "hint": "500 dòng 'line-NNN' (7 ký tự) + '\\n' = 8 mỗi dòng, tổng 4000 — chứng minh vòng lặp tuyến tính bằng cách sống sót qua nó."
+    }
+  ]
+}

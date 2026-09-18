@@ -1,0 +1,33 @@
+## Threat modeling a service
+
+Threat modeling is deciding where you are worth attacking and what you
+owe each attacker. The lite version that fits in a design doc:
+
+**1. Diagram the trust boundaries.** Internet → API gateway → service →
+database. Cache, queue, secret store are actors too. Every arrow is a
+place data crosses authority.
+
+**2. Enumerate per boundary (STRIDE-lite):**
+
+| Threat | Question | Typical defense |
+|---|---|---|
+| Spoofing | can someone claim an identity? | authn (tokens, mTLS) |
+| Tampering | can data be modified in transit/at rest? | TLS, AEAD, signatures |
+| Repudiation | can actions be denied? | audit logs, correlation IDs |
+| Information disclosure | can data leak? | authz, encryption, log scrubbing |
+| Denial of service | can resources be exhausted? | rate limits, timeouts, quotas |
+| Elevation of privilege | can a user become more? | least privilege, allow-lists |
+
+**3. Rank by (impact, likelihood)** and spend engineering where the
+product implies exposure. An internal analytics tool and a payment API
+have different top-three lists — modeling is per system, not per industry.
+
+**4. Write the invariants down.** "No unauthenticated request reaches the
+database." "Every secret rotates in under 15 minutes." "PII never appears
+in logs." Invariants are testable — the good ones become automated checks
+(this course's challenges are exactly that, miniaturized).
+
+The failure mode of threat modeling is the exercise that happens once and
+expires. The working version: a living diagram, a top-risks list reviewed
+per feature, and invariants expressed as tests. Security is then a property
+the build verifies — which is the only kind that survives team turnover.

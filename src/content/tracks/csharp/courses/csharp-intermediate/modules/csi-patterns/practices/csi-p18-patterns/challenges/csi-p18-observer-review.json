@@ -1,0 +1,26 @@
+{
+  "id": "csi-p18-observer-review",
+  "title": "Debug: The Bus That Never Lets Go",
+  "prompt": "This `EventBus` leaks: subscribers it has \"forgotten\" still fire, and\ncounts drift. Diagnose and write a correct version.\n\nProvided (broken) shape — the bug is that `Unsubscribe` does nothing:\n\n```csharp\npublic sealed class EventBus            // BROKEN — do not ship this\n{\n    public event EventHandler<string>? Ping;\n    public void Unsubscribe(EventHandler<string> h) { /* silently does nothing */ }\n    public void PingAll(string msg) => Ping?.Invoke(this, msg);\n}\n```\n\nWrite a correct `EventBus`: `Subscribe` returns the handler for later\nunsubscribing, `Unsubscribe` actually detaches, `PingAll` invokes current\nsubscribers in subscription order.\n\n```csharp\npublic static class Solution\n{\n    public sealed class EventBus\n    {\n        public void Subscribe(EventHandler<string> h);\n        public void Unsubscribe(EventHandler<string> h);\n        public void PingAll(string msg);\n        public int FiredCount;                     // total handler invocations\n    }\n}\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "subscribe fires, in order",
+      "code": "\nvar bus = new Solution.EventBus();\nvar got = new List<string>();\nbus.Subscribe((s, e) => got.Add(\"a:\" + e));\nbus.Subscribe((s, e) => got.Add(\"b:\" + e));\nbus.PingAll(\"x\");\nCj.Eq(string.Join(\"|\", got), \"a:x|b:x\", \"subscription order preserved\");\n",
+      "hint": "Two subscribers: first registered, first invoked."
+    },
+    {
+      "name": "unsubscribe detaches",
+      "code": "\nvar bus = new Solution.EventBus();\nvar got = new List<string>();\nEventHandler<string> h = (s, e) => got.Add(\"a:\" + e);\nbus.Subscribe(h);\nbus.Subscribe((s, e) => got.Add(\"b:\" + e));\nbus.Unsubscribe(h);\nbus.PingAll(\"x\");\nCj.Eq(string.Join(\"|\", got), \"b:x\", \"unsubscribed handler never fires\");\n",
+      "hint": "After Unsubscribe(h), h must not run — this is the leak the broken version has."
+    },
+    {
+      "name": "invocation counting is exact",
+      "code": "\nvar bus = new Solution.EventBus();\nEventHandler<string> h1 = (s, e) => { };\nEventHandler<string> h2 = (s, e) => { };\nbus.Subscribe(h1);\nbus.PingAll(\"1\"); bus.PingAll(\"2\");\nbus.Subscribe(h2);\nbus.PingAll(\"3\");\nbus.Unsubscribe(h1);\nbus.PingAll(\"4\");\nCj.Eq(bus.FiredCount, 5, \"2+1+1+1 handler invocations\");\n",
+      "hint": "FiredCount counts every handler invocation: 2 (h1 alone) + 1 (both) + 1 (h2 after h1 left) = 5."
+    }
+  ],
+  "level": "debugging"
+}

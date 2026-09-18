@@ -1,0 +1,14 @@
+{
+  "title": "Checkpoint truy cập dữ liệu",
+  "prompt": "Dựng `class OptimisticStore<T> where T : notnull` với `void Put(string key, T value, int expectedVersion)` và `(bool ok, T? value) TryGet(string key)` cộng `int VersionOf(string key)`. Put chỉ lưu khi expectedVersion khớp phiên bản hiện tại (key vắng mặt = phiên bản 0), tăng phiên bản, và ném `InvalidOperationException` với thông báo bắt đầu bằng \\\"version conflict\\\" nếu không. Rồi hiện thực `static int SaveAll(OptimisticStore<string> store, List<(string Key, string Value, int Expected)> writes, int maxRounds)` áp các ghi theo vòng — mỗi vòng thử mọi ghi chưa lưu với phiên bản hiện tại, đếm xung đột — và trả về số vòng cần thiết (ném InvalidOperationException nếu chưa xong trong maxRounds).",
+  "tests": [
+    {
+      "name": "conflict-detected",
+      "hint": "Theo dõi Dictionary<string,(T value,int version)>; trong Put so expected với phiên bản hiện tại trước khi ghi."
+    },
+    {
+      "name": "conflict-retry-converges",
+      "hint": "Giữ danh sách chờ; mỗi vòng thử lại mục nào expectedVersion mới khớp; đếm số vòng."
+    }
+  ]
+}

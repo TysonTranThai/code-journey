@@ -1,0 +1,51 @@
+## Deferred by default
+
+`Where`, `Select`, `Take`... return a *view* over the source. No work happens
+until something enumerates (`foreach`, `ToList`, `Count`, `First`...). Two
+consequences matter for performance:
+
+**Multiple enumeration.** Every enumeration re-runs the whole pipeline —
+and re-runs the *source*:
+
+```csharp
+var query = orders.Where(o => o.Total > 100);   // nothing runs yet
+if (query.Count() > 0)          // enumerates: filter runs once
+    Render(query);              // enumerates AGAIN: filter runs twice
+```
+
+If the pipeline is consumed more than once, materialize once:
+`var list = query.ToList();`. If it is consumed exactly once, adding
+`ToList()` only spends an allocation for nothing.
+
+**Enumeration is not free per-element either.** A pipeline of three stages
+does three delegate calls per element. For most app code this is irrelevant;
+inside a hot loop over millions of items it can show up. The fix is not
+"ditch LINQ" — it is "don't build pipelines in loops":
+
+```csharp
+// pipeline rebuilt (and re-run) per iteration
+foreach (var o in orders)
+    if (orders.Where(x => x.Id > o.Id).Any()) ...   // O(n^2)
+
+// compute the view once, then use it
+var later = orders.Where(x => x.Id > threshold).ToList();
+```
+
+## Materialization choices
+
+- `ToList()` / `ToArray()` — snapshot; needed for repeated use or when the
+  source mutates later.
+- `Count()` on a pipeline — enumerates the whole thing; `Count` property on
+  a `List` is free. Knowing which you're touching matters.
+- `First` vs `FirstOrDefault` vs `Single` — same laziness, different
+  expectations; `Single` may scan past the match to prove uniqueness.
+
+## The performance review lens
+
+Reading someone's code for cost, the checklist that catches 90%:
+
+1. Any string `+=` inside a loop? → `StringBuilder`.
+2. Any `Contains`/`Remove` on a list inside a loop? → `HashSet`/`Dictionary`.
+3. Any LINQ pipeline enumerated more than once? → materialize once.
+4. Any query built *inside* another loop? → hoist and run once.
+5. And above all: was any of it measured before being called slow?

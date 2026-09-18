@@ -1,0 +1,30 @@
+{
+  "id": "csi-checkpoint-m16-task",
+  "title": "Checkpoint: Suite That Catches",
+  "prompt": "Implement the pieces described in the checkpoint:\n\n```csharp\npublic interface IInventory { int GetStock(string sku); void Reserve(string sku, int qty); }\npublic static class Solution\n{\n    public sealed class FakeInventory : IInventory\n    {\n        public System.Collections.Generic.Dictionary<string, int> Stock = new();\n        public System.Collections.Generic.List<string> Reservations = new();\n        public bool LyingStock;    // GetStock returns true value + 1000\n        public bool BrokenReserve; // Reserve records nothing\n    }\n    public sealed class OrderService { public OrderService(IInventory inv); public string PlaceOrder(string sku, int qty); }\n    public static System.Collections.Generic.List<string> CheckAll(FakeInventory inv);\n}\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "suite passes a correct fake",
+      "code": "\nvar inv = new Solution.FakeInventory();\ninv.Stock[\"sku\"] = 10;\nvar failures = Solution.CheckAll(inv);\nCj.Eq(failures.Count, 0, \"correct inventory -> suite green\");\n",
+      "hint": "Your suite's tests must all hold on a well-behaved fake."
+    },
+    {
+      "name": "suite catches a lying stock report",
+      "code": "\nvar inv = new Solution.FakeInventory();\ninv.Stock[\"sku\"] = 0;\ninv.LyingStock = true;\nvar failures = Solution.CheckAll(inv);\nCj.True(failures.Count > 0, \"lying stock must be detected\");\n",
+      "hint": "With LyingStock, GetStock reports 1000 for an empty sku — at least one suite test must notice."
+    },
+    {
+      "name": "suite catches a broken reservation",
+      "code": "\nvar inv = new Solution.FakeInventory();\ninv.Stock[\"sku\"] = 10;\ninv.BrokenReserve = true;\nvar failures = Solution.CheckAll(inv);\nCj.True(failures.Count > 0, \"lost reservation must be detected\");\n",
+      "hint": "With BrokenReserve, the ok-path reservation vanishes — the suite must check Reservations, not just the returned string."
+    },
+    {
+      "name": "service honors the injected interface",
+      "code": "\nvar inv = new Solution.FakeInventory();\ninv.Stock[\"sku\"] = 4;\nvar svc = new Solution.OrderService(inv);\nCj.Eq(svc.PlaceOrder(\"sku\", 4), \"ok\", \"exact stock still succeeds\");\nCj.Eq(inv.Reservations.Count, 1, \"reserved once\");\nCj.Eq(svc.PlaceOrder(\"sku\", 5), \"outofstock\", \"one over the top\");\nCj.Eq(inv.Reservations.Count, 1, \"no reservation on failure\");\n",
+      "hint": "Boundary: qty == stock succeeds; qty == stock + 1 fails without reserving."
+    }
+  ]
+}

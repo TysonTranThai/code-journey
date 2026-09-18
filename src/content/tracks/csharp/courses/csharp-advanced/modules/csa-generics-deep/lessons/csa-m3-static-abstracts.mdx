@@ -1,0 +1,34 @@
+## Static abstract members and generic math
+
+Since C# 11 / .NET 7, interface members can be **static abstract**. The
+consequence is bigger than the syntax: the *type argument itself* becomes
+the dispatch target. No instances, no reflection, no boxing:
+
+```csharp
+public interface IShape<TSelf> where TSelf : IShape<TSelf>
+{
+    static abstract double Area(double side);
+}
+
+public struct Square : IShape<Square>
+{
+    public static double Area(double side) => side * side;
+}
+
+static double AreaOf<T>(double side) where T : IShape<T> => T.Area(side);
+// AreaOf<Square>(5) → 25, resolved at compile time per T
+```
+
+This is the machinery under **generic math**: `INumber<T>`,
+`IAdditionOperators<T,T,T>`, `IParsable<T>` — so one algorithm serves
+`int`, `double`, `decimal`, and any numeric type anyone defines later,
+with operators resolved statically. The JIT specializes per value type,
+so the arithmetic compiles down to the same machine code as hand-written
+`double` math.
+
+The self-constraining pattern (`TSelf : IShape<TSelf>`) is the CRTP of C#:
+it lets instance/static members refer to "my own type". When to reach for
+it: abstraction over *kinds* (shapes, numeric types, parsers) where the
+operations belong to the type, not to instances. When NOT: anything that
+needs runtime-chosen behavior — that is what normal virtual dispatch is
+for. Static abstracts are compile-time structure, not a performance button.

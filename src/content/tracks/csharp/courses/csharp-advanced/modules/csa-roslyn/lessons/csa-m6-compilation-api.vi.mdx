@@ -1,0 +1,35 @@
+## Compilation API
+
+`CSharpCompilation` là quá trình build của Roslyn trong một lần gọi hàm:
+tree + reference + option → diagnostic + pe-stream có thể emit. Mọi thứ
+trong module này chạy **ngay trong sandbox** — không cần dotnet CLI:
+
+```csharp
+var comp = CSharpCompilation.Create(
+    "policy",
+    new[] { CSharpSyntaxTree.ParseText(policySource) },
+    references,   // MetadataReference.CreateFromFile(assembly.Location)
+    new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+var diags = comp.GetDiagnostics()
+    .Where(d => d.Severity == DiagnosticSeverity.Error);
+
+using var pe = new MemoryStream();
+var result = comp.Emit(pe);
+// result.Success, result.Diagnostics — phán quyết của compiler thật
+```
+
+Điều mà grader của chính nền tảng này làm cho mỗi challenge bạn nộp: stage
+code của bạn, tham chiếu các assembly framework, biên dịch, chạy harness
+test — đúng hình dạng API này, thực thi trong container được gia cố.
+
+Ba ghi chú thực dụng từ việc dùng thật:
+
+- **Reference đến từ các assembly đã nạp**: lọc
+  `AppDomain.CurrentDomain.GetAssemblies()` lấy assembly không động và có
+  `Location` trên đĩa. Bản thân các dll Roslyn cần ref tường minh khi bạn
+  biên dịch code *sử dụng* Roslyn (như harness của khóa này đã làm).
+- `GetDiagnostics()` vs `Emit()`: emit cũng xác thực — một số lỗi (thiếu
+  kiểu lúc link) chỉ xuất hiện khi emit.
+- Biên dịch đắt (cỡ chục ms mỗi chương trình nhỏ); gom việc hoặc giữ
+  compilation sống lâu thay vì dựng lại cho mỗi request.

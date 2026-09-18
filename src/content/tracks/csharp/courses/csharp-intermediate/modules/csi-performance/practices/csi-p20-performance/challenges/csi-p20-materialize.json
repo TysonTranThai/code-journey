@@ -1,0 +1,26 @@
+{
+  "id": "csi-p20-materialize",
+  "title": "Enumerate Once",
+  "prompt": "`FilterTwice` enumerates its pipeline two times (a `Count()` gate,\nthen the render loop) — the filter (and the source!) runs twice. Write\n`Solution.Heavy(int[] source)` that:\n\n- filters to even numbers (in order),\n- enumerates the pipeline **exactly once** in total,\n- returns the count and the joined values in one object:\n\n```csharp\npublic static class Solution\n{\n    public sealed class Stats { public int Count; public string Joined = \"\"; }\n    public static Stats Heavy(int[] source);   // e.g. [1,2,3,4] -> Count=2, Joined=\"2|4\"\n}\n```\n\nCountingProbe (provided) records how many times a source is enumerated: wrap\nit via `probe.Src()` so the tests can see the true enumeration count.\n\n```csharp\n// provided: public sealed class CountingProbe { public int Hits; public IEnumerable<int> Src(params int[] xs); }\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "values and counts are right",
+      "code": "\nvar st = Solution.Heavy(new[] { 1, 2, 3, 4, 5, 6 });\nCj.Eq(st.Count, 3, \"three evens\");\nCj.Eq(st.Joined, \"2|4|6\", \"in order\");\n",
+      "hint": "Filter to evens; count and join from one materialized snapshot."
+    },
+    {
+      "name": "the source is enumerated exactly once",
+      "code": "\nvar probe = new CountingProbe();\nvar st = Solution.Heavy(probe.Src(1, 2, 3, 4));\nCj.Eq(st.Joined, \"2|4\", \"still correct\");\nCj.Eq(probe.Hits, 1, \"one enumeration, not two\");\n",
+      "hint": "Materialize once (ToList), then derive Count and Joined from the snapshot."
+    },
+    {
+      "name": "no match is also one pass",
+      "code": "\nvar probe = new CountingProbe();\nvar st = Solution.Heavy(probe.Src(1, 3, 5));\nCj.Eq(st.Count, 0, \"no evens\");\nCj.Eq(st.Joined, \"\", \"nothing joined\");\nCj.Eq(probe.Hits, 1, \"empty result still costs one pass\");\n",
+      "hint": "Even the empty outcome must come from a single enumeration."
+    }
+  ],
+  "level": "independent"
+}

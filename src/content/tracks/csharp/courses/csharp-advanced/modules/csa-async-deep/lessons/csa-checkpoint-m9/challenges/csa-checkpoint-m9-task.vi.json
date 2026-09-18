@@ -1,0 +1,14 @@
+{
+  "title": "Checkpoint async",
+  "prompt": "Hiện thực `static async ValueTask<int> ReadCachedAsync(int key, Func<int, Task<int>> slowFetch)`: static ConcurrentDictionary<int,int> cache; khi trúng trả về đồng bộ mà KHÔNG await (fast path của ValueTask); khi trượt thì await slowFetch và lưu kết quả. Rồi hiện thực `static async Task<string> WithTimeout(Task<string> work, TimeSpan timeout)` trả về kết quả của work hoặc ném TimeoutException — dùng CancellationTokenSource với timeout, và hủy token đã link.",
+  "tests": [
+    {
+      "name": "cache-fast-path",
+      "hint": "TryGetValue trước — trả về new ValueTask<int>(value) mà không đụng fetcher."
+    },
+    {
+      "name": "timeout-fires",
+      "hint": "cts.CancelAfter(timeout); await task.WaitAsync(cts.Token) rồi chuyển OperationCanceledException thành TimeoutException."
+    }
+  ]
+}

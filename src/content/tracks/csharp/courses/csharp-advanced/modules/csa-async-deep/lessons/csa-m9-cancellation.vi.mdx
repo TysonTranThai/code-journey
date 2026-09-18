@@ -1,0 +1,37 @@
+## Cancellation hoạt động thật
+
+Cancellation trong .NET là **hợp tác**: `CancellationToken` mang yêu cầu,
+code của bạn phải TỰ kiểm tra. Chế độ lỗi ăn mòn production: các thao tác
+vẫn chạy vì không ai nhìn token.
+
+```csharp
+// Bốn điểm tích hợp:
+async Task Work(CancellationToken ct)
+{
+    ct.ThrowIfCancellationRequested();          // 1. kiểm tra tường minh
+    await Task.Delay(100, ct);                  // 2. async API tôn trọng nó
+    using var reg = ct.Register(() => { });     // 3. callback khi cancel
+    var other = otherCts.Token;                 // 4. linking:
+}
+
+using var linked = CancellationTokenSource.CreateLinkedTokenSource(a, b);
+// linked.Token bị cancel khi HOẶC a hoặc b cancel
+```
+
+Timeout chỉ là cancellation có đồng hồ:
+`new CancellationTokenSource(TimeSpan.FromSeconds(5))`, hoặc trên .NET 8+,
+`task.WaitAsync(TimeSpan)` — cái này bỏ cuộc chờ chứ không dừng công việc
+chạy; chỉ token truyền VÀO công việc mới dừng được nó.
+
+Kỷ luật phân biệt cancellation thật với cancellation diễn:
+
+- **Truyền token đi khắp nơi** — API nhận token mà bỏ qua thì tệ hơn API
+  không giả vờ nhận. Thứ tự tham số: token cuối.
+- **Lan truyền tới mọi tầng** — lời gọi DB không có token thì không thể bị
+  cancel, dù HTTP handler có làm gì.
+- **Phân biệt kết cục**: `OperationCanceledException` (đúng dự kiến) vs
+  timeout (cần chẩn đoán) vs fault (bug). Nuốt OCE giấu bug shutdown.
+- **Dispose CTS của bạn** — timer trong source chưa dispose bị rò rỉ.
+
+Linked source ghép cây shutdown: token theo request linked với shutdown của
+server, linked với cancel thượng nguồn — pattern chuẩn của ASP.NET Core.

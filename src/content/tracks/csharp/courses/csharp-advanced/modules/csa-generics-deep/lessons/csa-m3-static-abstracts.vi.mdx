@@ -1,0 +1,33 @@
+## Static abstract members và generic math
+
+Từ C# 11 / .NET 7, member của interface có thể là **static abstract**. Hệ
+quả lớn hơn cú pháp: *tham số kiểu* trở thành đích dispatch. Không cần thể
+hiện, không reflection, không boxing:
+
+```csharp
+public interface IShape<TSelf> where TSelf : IShape<TSelf>
+{
+    static abstract double Area(double side);
+}
+
+public struct Square : IShape<Square>
+{
+    public static double Area(double side) => side * side;
+}
+
+static double AreaOf<T>(double side) where T : IShape<T> => T.Area(side);
+// AreaOf<Square>(5) → 25, resolved lúc biên dịch theo từng T
+```
+
+Đây chính là cơ khí đằng sau **generic math**: `INumber<T>`,
+`IAdditionOperators<T,T,T>`, `IParsable<T>` — một thuật toán phục vụ
+`int`, `double`, `decimal`, và bất kỳ kiểu số nào định nghĩa sau này, với
+toán tử được resolve tĩnh. JIT chuyên biệt hóa theo từng value type, nên
+phép toán biên dịch xuống cùng mã máy như toán `double` viết tay.
+
+Pattern tự-ràng-buộc (`TSelf : IShape<TSelf>`) là CRTP của C#: nó cho phép
+member tĩnh/thể hiện tham chiếu "kiểu của chính mình". Khi nào dùng: trừu
+tượng hóa trên *loại* (shape, kiểu số, parser) nơi phép toán thuộc về kiểu,
+không thuộc về thể hiện. Khi nào KHÔNG: mọi thứ cần hành vi chọn lúc chạy —
+đó là việc của virtual dispatch thông thường. Static abstract là cấu trúc
+lúc biên dịch, không phải nút tăng hiệu năng.

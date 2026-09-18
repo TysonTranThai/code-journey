@@ -1,0 +1,47 @@
+## `Span<T>`, `ReadOnlySpan<T>`, and `stackalloc`
+
+`Span<T>` is a stack-only window over memory: (ref T, int length). It can
+slice an array, a string, a rented pool buffer, or native memory — without
+copying any of it:
+
+```csharp
+int[] data = { 10, 20, 30, 40 };
+Span<int> mid = data.AsSpan(1, 2);   // view of elements 1..2
+mid[0] = 21;                          // writes data[1]
+
+ReadOnlySpan<char> tail = "hello world".AsSpan(6);  // no substring allocated
+```
+
+The `ref struct` rules are not bureaucracy; they are what makes span
+**safe** while pointing at the stack:
+
+- A span cannot be a field of a class, cannot be boxed, cannot be captured
+  by a closure that might outlive the frame.
+- It cannot cross `await` — the frame may not exist after suspension.
+- It cannot be a `readonly`-accessed mutable struct's member (defensive
+  copy of a ref struct is impossible).
+
+`stackalloc` allocates a small buffer in the current frame:
+
+```csharp
+Span<byte> scratch = stackalloc byte[256];   // deterministic, no GC
+```
+
+Budget it: a few hundred bytes to low KBs is sane; large stackallocs risk
+stack overflow (default stack ~1MB). For conditional allocation, the
+`stackalloc` + fallback pattern:
+
+```csharp
+char[]? rented = null;
+ReadOnlySpan<char> buf = input.Length <= 128
+    ? stackalloc char[128]      // stack fast path (bounded!)
+    : (rented = ArrayPool<char>.Shared.Rent(input.Length)).AsSpan();
+// ... use buf ...
+if (rented is not null) ArrayPool<char>.Shared.Return(rented);
+```
+
+The `128` bound in the stackalloc arm is load-bearing: the compiler emits a
+stack frame sized by that CONSTANT, not by `input.Length` — a variable-size
+stackalloc would be the overflow. `ReadOnlySpan<char>` over a string literal
+plus `int.Parse(span)` is the standard zero-allocation parse path — the
+checkpoint's tests enforce it with the allocation probe.

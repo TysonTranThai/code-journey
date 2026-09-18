@@ -1,0 +1,28 @@
+## The gate (mini-build)
+
+A tiny analytics service, cost-graded:
+
+1. `PriceBook` — built once from `int[] prices` (sku i costs `prices[i]`).
+   Exposes `Total(int[] skus)` — sum via a prebuilt array, **no LINQ, no
+   allocations** per call — and `LookupCount` recording how many single-sku
+   lookups callers performed through `Lookup(int sku)`.
+2. `TopSkus(int[] skus, int take)` — distinct skus by descending frequency,
+   ties broken by smaller sku first, at most `take` results.
+3. `Summary(int[] skus)` — built on `TopSkus`' materialized snapshot (one
+   pass over the data), returning `"{count}:{joined}"` where count is the
+   number of distinct skus and joined is comma-joined sku list.
+
+```csharp
+public static class Solution
+{
+    public sealed class PriceBook
+    {
+        public PriceBook(int[] prices);
+        public int Total(int[] skus);        // no LINQ / no allocs per call
+        public int LookupCount { get; }
+        public int Lookup(int sku);          // counted single-sku access
+    }
+    public static int[] TopSkus(int[] skus, int take);
+    public static string Summary(int[] skus);
+}
+```

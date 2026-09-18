@@ -1,0 +1,35 @@
+## JIT effects on your measurements
+
+The JIT is your co-author, and it edits aggressively. Four edits that fake
+or mask performance:
+
+**Tiered compilation** (default since .NET Core 3): methods first compile
+fast-and-rough (tier 0), then recompile optimized after ~30 calls. A
+benchmark that includes tier-0 execution measures the WRONG code. Warmup
+is not optional; it is the difference between two compilers.
+
+**Inlining.** Small methods vanish into their callers — the call overhead
+you measured disappears. A micro-benchmark of "tiny method call overhead"
+often measures nothing: the call was never made.
+
+**Devirtualization + guarded devirtualization.** When the JIT can see the
+exact type, virtual calls become direct calls (and sometimes inline).
+Sealed classes/interfaces with single implementations get this for free.
+
+**Dead-code elimination.** Compute a result and never use it? The JIT may
+delete the entire computation. The classic broken micro-benchmark:
+
+```csharp
+sw.Start();
+for (int i = 0; i < N; i++) ExpensivePure(i);   // result discarded — may be eliminated!
+sw.Stop();
+```
+
+Fix: accumulate into a field/local and print or assert it after the loop
+— the standard harness does this. BenchmarkDotNet's `[Benchmark]` handles
+all four automatically (its `Consumer` keeps results alive).
+
+The behavioral takeaway is symmetric: the same optimizations mean *real
+code* also gets faster than source inspection suggests — hot paths with
+small methods, sealed types, and loop-friendly data are not just style,
+they are JIT-friendliness measured in nanoseconds.

@@ -1,0 +1,31 @@
+## The delegate machine
+
+A delegate is an object: it holds a **method** (or, for virtual/interface
+calls, a function pointer plus the receiver object) and an optional
+**invocation list**. `Foo` as an expression ("method group") converts to a
+delegate instance; a lambda compiles to a compiler-generated method wrapped
+in a delegate:
+
+```csharp
+Func<int, int> f = x => x + 1;   // compiler generates: static int <>M0(int x)
+Func<int, int> g = doubleIt;     // method group → existing method, no new code
+Func<int, int> h = f + g;        // MulticastDelegate: invocation list [f, g]
+```
+
+Allocation profile you can predict:
+
+| Construct | Compiles to | Allocates |
+|---|---|---|
+| static lambda, no capture | static method + delegate | 1 delegate |
+| lambda capturing a local | display class + method + delegate | 1 class + 1 delegate |
+| method group (instance) | delegate to that instance's method | 1 delegate |
+| `static` lambda modifier | guarantees no capture | 1 delegate |
+
+The `static` lambda modifier is a *contract*: `static x => x + 1` refuses to
+compile if it captures anything — a cheap way to make "no hidden closure"
+an enforced property, not a code-review promise.
+
+Invocation order in a multicast delegate is defined (first added first
+invoked); the return value you keep is the LAST handler's. Caching delegate
+instances (`static readonly Func<...>`) avoids re-allocating per call —
+this is the single biggest avoidable allocation in lambda-heavy code.

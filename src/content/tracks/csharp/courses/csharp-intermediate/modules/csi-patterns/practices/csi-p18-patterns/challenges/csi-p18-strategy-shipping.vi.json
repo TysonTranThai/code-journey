@@ -1,0 +1,14 @@
+{
+  "title": "Strategy: Diệt Switch Vận chuyển",
+  "prompt": "Thay switch của `LegacyCheckout.Cost` bằng **Strategy**: 1) `IShippingCost { decimal Cost(Solution.Parcel p); }` (nằm trong `Solution`); 2) hai hiện thực `Flat` (luôn 3.5m) và `Weight` (0.8m/kg, tối thiểu 4m); 3) `Solution.Cost(Parcel p, IShippingCost strategy)` chỉ ủy quyền — không có điều kiện nào về cân nặng/mode trong thân hàm. Giá trị nằm ở phía caller: test truyền strategy bằng tay, chứng minh context chỉ phụ thuộc abstraction.",
+  "tests": [
+    {
+      "name": "flat and weight strategies",
+      "hint": "Weight: giá = kg * 0.8m, nhưng không dưới 4m. Flat: hằng 3.5m."
+    },
+    {
+      "name": "context delegates, callers compose",
+      "hint": "Solution.Cost không được có nhánh rẽ — chỉ chuyển tiếp sang strategy được inject."
+    }
+  ]
+}

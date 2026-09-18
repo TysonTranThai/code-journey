@@ -1,0 +1,40 @@
+## Framing: bug giao thức đầu tiên
+
+TCP đưa cho bạn một **dòng byte**. Mọi giao thức bạn xây trên đó phải tự
+tái giới thiệu khái niệm tin nhắn. Bug kết liễu các giao thức nghiệp dư:
+giả định một lần ghi = một lần đọc.
+
+```csharp
+// Writer gửi hai khung:
+await stream.WriteAsync(EncodeFrame("first"));
+await stream.WriteAsync(EncodeFrame("second"));
+
+// Reader nhận MỘT lần đọc chứa CẢ HAI khung dính nhau — hoặc ba lần đọc
+// tách khung thứ hai ra giữa chừng. TCP không nợ bạn gì cả.
+```
+
+**Framing tiền tố độ dài** là cách sửa chuẩn: mọi tin nhắn là
+`[4 byte độ dài][payload]`. Reader duy trì một buffer và một máy trạng thái:
+
+1. Có 4+ byte? Đọc tiền tố → độ dài khung này.
+2. Có 4+len byte? Trích payload, tăng offset, lặp lại.
+3. Chưa đủ? Chờ thêm byte (nối dữ liệu đến vào buffer).
+
+Đây chính xác là những gì checkpoint cài trên một buffer — và những gì
+`DecodeStreamSafe` mở rộng thành dạng tolerant-reader mà giao thức thật
+cần: khung hoàn chỉnh được xử lý, phần thừa dở dang được chờ.
+
+Các quyết định thiết kế trong mọi lược đồ framing:
+
+- **Kích thước tiền tố**: 4 byte cho phép khung tới 2GB — và đòi hỏi một
+  kiểm tra MAX-FRAME (tiền tố độc/hỏng 0x7FFFFFFF không được phép cấp phát
+  2GB; reader từ chối khung vượt trần chính sách).
+- **Endianness**: little-endian (BinaryPrimitives) hay big-endian (thứ tự
+  mạng) — cái nào cũng được, nhưng phải được GHI RA và không bao giờ đổi.
+- **In-band vs out-of-band**: tin nhắn điều khiển bên trong dòng (như
+  header HTTP) vs một kênh thứ hai. In-band đơn giản hơn; out-of-band tránh
+  head-of-line blocking cho traffic lẫn lộn.
+
+Khi không thể tin framing mang ngữ nghĩa, hãy nâng cấp lên giao thức dây
+thật (HTTP, gRPC, MessagePack) — chúng đã giải quyết framing, phiên bản,
+và kiểu; việc của bạn là payload.

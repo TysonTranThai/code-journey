@@ -1,0 +1,35 @@
+## Pooling: ArrayPool và bạn bè
+
+`ArrayPool<T>.Shared` cho thuê mảng byte/T theo các bucket phân lớp kích
+thước (lũy thừa hai; bạn có thể nhận mảng LỚN HƠN yêu cầu — luôn dùng độ
+dài logic của bạn, không phải `rented.Length`). Rent/Return là các phép
+interlocked rẻ; phần thắng hiện ra trên đường nóng cấp phát buffer lớn mỗi
+request.
+
+```csharp
+byte[] buf = ArrayPool<byte>.Shared.Rent(minLength: 4096);
+try { Use(buf.AsSpan(0, logical)); }
+finally { ArrayPool<byte>.Shared.Return(buf); }   // clearArray: true chỉ cho dữ liệu nhạy cảm
+```
+
+Bốn bug mà pooling giới thiệu (vì sao nó là opt-in, không phải mặc định):
+
+1. **Quên Return** — buffer rò rỉ khỏi pool (không phải khỏi GC); pool
+   phình to, bộ nhớ bay màu.
+2. **Dùng sau khi return** — một Span giữ quá thời điểm Return đọc dữ liệu
+   của bên thuê khác. Bug tính đúng đắn, có thể là bug bảo mật (rò dữ liệu
+   chéo request).
+3. **Giả định độ dài sai** — rented.Length ≥ nhu cầu của bạn; slicing là
+   bắt buộc.
+4. **Trả buffer bẩn chứa mật mã** — `clearArray: true` khi nội dung nhạy
+   cảm.
+
+Khi nào pooling CÓ LỢI: buffer lớn (≥ vài KB) trên đường nóng tần suất
+request cao. Khi nào không: cấp phát nhỏ, sống ngắn (Gen0 rẻ hơn cả các
+nghi thức API), bất cứ đâu công việc nhỏ hơn chính phép cấp phát. Đo bằng
+`GC.GetAllocatedBytesForCurrentThread` trước và sau — test thứ hai của
+checkpoint ép điều này.
+
+`ObjectPool<T>` (Microsoft.Extensions.ObjectPool) làm điều tương tự cho
+object đa hình — cùng các quy tắc: thuê, dùng, trả, không rò rỉ sau khi
+trả.

@@ -1,0 +1,40 @@
+## Lifetime: finalizers, disposal, weak refs
+
+**Finalizers are a toll booth.** An object with `~Finalizer()` is not
+collected at first reachability — it is registered with the finalizer
+queue, promoted at least one generation, its finalizer runs later on a
+dedicated thread, and only THEN is it collectible. Every finalizable
+object costs an extra GC cycle and pins a queue slot. Rule: you almost
+never write a finalizer — you write `IDisposable`, and add a finalizer
+only when you own a raw OS handle, and even then via `SafeHandle` which
+already finalizes for you.
+
+```csharp
+public class NativeThing : IDisposable
+{
+    private readonly SafeFileHandle _handle;      // SafeHandle IS the finalizer
+    public void Dispose() { _handle.Dispose(); GC.SuppressFinalize(this); }
+}
+```
+
+**Dispose discipline**: `using` (or `await using`) everywhere, try/finally
+when the sugar does not fit, `GC.SuppressFinalize` after explicit disposal.
+**Finalize-Dispose pattern** is for handle owners; app code should ride
+`SafeHandle`.
+
+**WeakReference** observes an object without keeping it alive:
+
+```csharp
+var wr = new WeakReference(obj);
+wr.IsAlive; wr.Target;              // Target may be null at any moment
+```
+
+The canonical use is caches/lookaside tables (`ConditionalWeakTable<K,V>`
+attaches state to an object keyed by its lifetime). The liveness gotcha
+this course probes: a local variable's object may stay reachable through a
+JIT register until the method's last use — the "GC.Collect proves death"
+demo must run the allocation in a separate helper method, exactly what the
+checkpoint does.
+
+**Event leaks** are lifetime's most common production bug — the practice
+task walks it.

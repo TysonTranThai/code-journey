@@ -1,0 +1,36 @@
+## Closures and captured variables
+
+When a lambda captures a local, the compiler hoists that local into a
+compiler-generated **display class**; both the method and the lambda share
+one instance. Consequences that decide bugs:
+
+```csharp
+var actions = new List<Action>();
+for (int i = 0; i < 3; i++)
+    actions.Add(() => Console.Write(i));
+// C# 5+: prints 012 — foreach loops capture per-iteration
+// but `for` loop variables are ONE variable shared by all iterations
+```
+
+Since C# 5, `foreach` iteration variables are captured per-iteration (the
+historical footgun is fixed there); a `for` loop's index is still a single
+variable — every closure sees its final value unless you copy it into a
+local inside the loop.
+
+Captured variables live as long as the delegate: a lambda holding a large
+object keeps the whole object reachable — this is the **managed memory
+leak** shape in event-handler code (Module 14). Capture deliberately:
+
+```csharp
+// capture a snapshot, not the variable:
+for (int i = 0; i < 3; i++)
+{
+    var copy = i;
+    actions.Add(() => Use(copy));   // 0, 1, 2
+}
+```
+
+And prefer capturing *small, long-lived* things (a service, a formatter)
+over loop locals. Each capture that differs per iteration is one display
+class allocation — for hot paths, restructure so one closure serves many
+calls (parameterize instead of capturing).

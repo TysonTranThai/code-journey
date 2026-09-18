@@ -1,0 +1,28 @@
+## ValueTask: when and why
+
+`Task<T>` always allocates (and boxes `T` when it is a value type).
+`ValueTask<T>` is a struct that holds EITHER a `T` or a `Task<T>` — the
+synchronous/hot path allocates nothing:
+
+```csharp
+// Cache-first accessor: the ideal ValueTask citizen
+ValueTask<int> GetAsync(int key) =>
+    _cache.TryGetValue(key, out var v)
+        ? new ValueTask<int>(v)          // no allocation
+        : new ValueTask<int>(FetchAsync(key));  // falls back to Task
+```
+
+The contract that keeps ValueTask safe (violating it is undefined
+behavior, not just a bug):
+
+1. **Await exactly once.** No double-await, no `.Result` after await.
+2. **Never await concurrently.**
+3. **Do not store it** — await before the next await point, or call
+   `.AsTask()` if you must keep it.
+4. Do not compose it directly (`WhenAll`) — convert with `.AsTask()` first.
+
+When ValueTask is RIGHT: methods whose results are usually available
+synchronously (caches, buffered reads, validation), or allocation-sensitive
+hot paths measured to allocate. When it is WRONG: public library APIs
+where callers will store/compose/await-twice — the ergonomics trap eats the
+performance win. Default to `Task`, escalate to `ValueTask` with evidence.

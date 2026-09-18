@@ -1,0 +1,37 @@
+## Mô hình source generator
+
+Source generator là một extension Roslyn chạy TRONG lúc biên dịch: nó đọc
+code đang được biên dịch và thêm các syntax tree mới vào cùng compilation.
+Code sinh ra biên dịch cùng code của bạn — một assembly, không reflection
+lúc chạy, không code sau build.
+
+```csharp
+[Generator]
+public sealed class HelloGen : IIncrementalGenerator
+{
+    public void Initialize(IncrementalGeneratorInitializationContext ctx)
+    {
+        ctx.RegisterPostInitializationOutput(static init =>
+            init.AddSource("Marker.g.cs",
+                "public sealed class HelloAttribute : System.Attribute { }"));
+
+        var targets = ctx.SyntaxProvider.ForAttributeWithMetadataName(
+            "HelloAttribute",
+            static (node, _) => node is Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax,
+            static (ctx2, _) => ctx2.TargetSymbol.Name);
+
+        ctx.RegisterSourceOutput(targets, static (spc, name) =>
+            spc.AddSource($"{name}.g.cs",
+                $"public static class Hello_{name} {{ public const string Who = \"{name}\"; }}"));
+    }
+}
+```
+
+Điều này thay đổi kiến trúc thế nào: mọi thứ từng xây bằng runtime reflection
+(registry DI, serializer, mapper, bảng enum-to-string) giờ có thể được *tính
+một lần lúc biên dịch*. Điều đó xóa chi phí startup, trở nên thân thiện
+trim/AOT (Module 19), và đẩy lỗi về lúc build.
+
+Generator KHÔNG làm được gì: sửa code hiện có của người dùng (chỉ THÊM
+source), chạy logic tùy ý từ file cấu hình lúc dev, hay thay thế build. Nó
+nhìn thấy cùng compilation mà compiler thấy — không hơn.

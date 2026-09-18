@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m6-task",
+  "title": "Roslyn checkpoint",
+  "prompt": "Implement `static string[] PublicMethodNames(string source)`: parse `source` with CSharpSyntaxTree.ParseText, find all MethodDeclarationSyntax nodes, and return their identifiers sorted. Then implement `static bool Compiles(string source)`: build a CSharpCompilation (OutputKind.DynamicallyLinkedLibrary) over that source with the references from AppDomain.CurrentDomain.GetAssemblies() filtered to IsDynamic == false && Location != string.Empty, and return it has zero error diagnostics.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "syntax-walk",
+      "code": "var src = \"public class A { public void Run() { } public void Stop() { } private void X() { } }\";\nvar names = Solution.PublicMethodNames(src);\nCj.True(names.Contains(\"Run\") && names.Contains(\"Stop\"), \"public methods found\");\n// Syntax-only view sees ALL methods regardless of accessibility:\nCj.True(names.SequenceEqual(names.OrderBy(n => n)), \"sorted\");",
+      "hint": "tree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>() — collect Identifier.ValueText."
+    },
+    {
+      "name": "semantic-verify",
+      "code": "Cj.True(Solution.Compiles(\"public class A { public int X { get; set; } }\"), \"valid compiles\");\nCj.False(Solution.Compiles(\"public class A { void M() { this is not valid } }\"), \"garbage fails\");",
+      "hint": "CSharpCompilation.Create with syntax trees + references; check diags where Severity == DiagnosticSeverity.Error."
+    }
+  ]
+}

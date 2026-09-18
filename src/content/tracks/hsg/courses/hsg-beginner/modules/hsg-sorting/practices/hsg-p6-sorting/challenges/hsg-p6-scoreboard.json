@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p6-scoreboard",
+  "title": "Scoreboard",
+  "prompt": "**Description:** A contest has n participants, each with a score. Print\nparticipants in **descending score order; ties keep input order** — and\nfor each, print `name score`.\n\n**Input:** Line 1: n (1 <= n <= 10^5). Next n lines: name (single word,\n<= 20 chars) and score s (0 <= s <= 10^9).\n**Output:** n lines: `name score`, scoreboard order.\n\n**Example:** `3` / `trang 50` / `binh 80` / `an 50` -> `binh 80` /\n`trang 50` / `an 50` (trang before an: input order).",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"3\\ntrang 50\\nbinh 80\\nan 50\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"binh 80\\ntrang 50\\nan 50\\n\"));",
+      "hint": "Tie 50: trang entered first."
+    },
+    {
+      "name": "reverse input",
+      "code": "std::istringstream in(\"3\\nzz 10\\nyy 20\\nxx 30\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"xx 30\\nyy 20\\nzz 10\\n\"));",
+      "hint": "Distinct scores, sorted descending."
+    },
+    {
+      "name": "all tie",
+      "code": "std::istringstream in(\"3\\nnam 5\\nanh 5\\nbinh 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"nam 5\\nanh 5\\nbinh 5\\n\"));",
+      "hint": "Full tie keeps input order exactly."
+    },
+    {
+      "name": "max score ties",
+      "code": "std::istringstream in(\"2\\nhai 1000000000\\nduc 1000000000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"hai 1000000000\\nduc 1000000000\\n\"));",
+      "hint": "Max scores tie — input order."
+    }
+  ],
+  "level": "combination"
+}

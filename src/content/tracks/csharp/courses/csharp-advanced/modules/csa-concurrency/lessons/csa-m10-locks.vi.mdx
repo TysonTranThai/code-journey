@@ -1,0 +1,32 @@
+## Locks, Monitor, và cái giá của chúng
+
+`lock (obj)` biên dịch thành `Monitor.Enter`/`Monitor.Exit` trong
+try/finally. Monitor nằm trong object header — không cấp phát, nhưng mọi
+object đều có thể làm khóa, và đó chính là lý do khóa trên `this`, trên
+`Type`, hay trên string là nguy hiểm (ai đó khác cũng có thể khóa cùng object
+đó: deadlock bởi người lạ). Private final lock object là kỷ luật.
+
+```csharp
+private readonly object _gate = new();   // không bao giờ lock(this), lock(Type), hay string
+lock (_gate) { /* vùng bất biến */ }
+```
+
+Contention là cái thuế: không contention thì một lock chỉ là vài chỉ thị
+interlocked; dưới contention, thread bị đỗ và đánh thức — micro giây thành
+mili giây, context switch đốt CPU. Thang leo, rẻ nhất trước:
+
+1. **Không chia sẻ gì cả.** Dữ liệu bất biến không cần khóa.
+2. **`Interlocked`** cho cập nhật một biến — không đỗ xe.
+3. **`SemaphoreSlim`** khi vùng găng có `await` (một `lock` không được chứa
+   `await` — compiler cấm, vì thread đang đỗ không được giữ lock gắn thread
+   qua lần treo).
+4. **`ReaderWriterLockSlim`** cho cấu trúc đọc-nhiều — nhiều reader hoặc một
+   writer. Lưu ý chi phí của nó: với vùng găng nhỏ nó còn chậm hơn lock
+   thường.
+5. **Cấu trúc lock-free** — chỉ dùng primitive đã kiểm thử (concurrent
+   collections); tự tay viết vòng `CompareExchange` là nơi sinh ra bug ABA.
+
+Công thức deadlock luôn như nhau: hai khóa, hai thread, hai thứ tự ngược
+nhau. Cách sửa = thứ tự khóa toàn cục (theo id, như checkpoint làm) hoặc
+`TryEnter` với timeout + rollback. Livelock: các thread cứ thử lại và đói
+lẫn nhau — thuốc chữa là backoff (Thread.Sleep có jitter).

@@ -1,0 +1,16 @@
+{
+  "id": "csa-p9-value-task-bug",
+  "title": "Diagnose the ValueTask bug",
+  "prompt": "ValueTask has strict rules: await it exactly once, never await after consuming, never await concurrently. Implement `static async ValueTask<int> SafeDouble(ValueTask<int> source)` CORRECTLY: await the source once and return the result times 2. Then implement `static async Task<int> BrokenDouble(ValueTask<int> source)` that demonstrates the forbidden pattern — await it twice (`var a = await source; var b = await source; return a + b;`). The test runs the BROKEN one against a ValueTask backed by an IValueTaskSource created via ManualResetValueTaskSourceCore to prove it throws/misbehaves.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "safe-works",
+      "code": "var vt = new ValueTask<int>(21);\nCj.Eq(await Solution.SafeDouble(vt), 42, \"safe double\");",
+      "hint": "var v = await source; return v * 2."
+    }
+  ],
+  "level": "debugging"
+}

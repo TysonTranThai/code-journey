@@ -1,0 +1,15 @@
+## Cổng kiểm tra (mini-build)
+
+Một dịch vụ phân tích tí hon, chấm theo chi phí:
+
+1. `PriceBook` — dựng một lần từ `int[] prices` (sku i giá `prices[i]`).
+   Cung cấp `Total(int[] skus)` — tổng qua mảng dựng sẵn, **không LINQ,
+   không allocation** mỗi lần gọi — và `LookupCount` ghi nhận số lần caller
+   tra một sku qua `Lookup(int sku)`.
+2. `TopSkus(int[] skus, int take)` — các sku distinct theo tần suất giảm dần,
+   hòa thì sku nhỏ hơn trước, tối đa `take` kết quả.
+3. `Summary(int[] skus)` — dựng trên snapshot đã materialize của `TopSkus`
+   (một lượt trên dữ liệu), trả `"{count}:{joined}"` với count là số sku
+   distinct và joined là danh sách sku nối bằng dấu phẩy.
+
+Xem chữ ký `Solution` trong bản tiếng Anh.

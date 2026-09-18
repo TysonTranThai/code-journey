@@ -1,0 +1,39 @@
+## Managed, unmanaged, unsafe: biên giới
+
+Ba tính từ, ba thứ khác nhau:
+
+- **Managed**: bộ nhớ GC sở hữu và có thể di chuyển; code runtime xác minh.
+  Toàn bộ C# thông thường.
+- **Unmanaged**: bộ nhớ GC không kiểm soát (native malloc, handle OS, file
+  mapping). Tiếp cận qua các API interop.
+- **Unsafe**: vùng code nơi compiler cho phép thao tác *con trỏ* — chỉ cần
+  khi bạn muốn truy cập kiểu C BÊN TRONG thế giới managed (hoặc tại rìa
+  của nó). Unsafe không có nghĩa là unmanaged: phần lớn unsafe code thao
+  tác trên mảng managed chính hiệu.
+
+```csharp
+unsafe int Sum(int[] values)
+{
+    fixed (int* p = values)   // pin: hứa với GC đừng di chuyển nó trong phạm vi này
+    {
+        int s = 0;
+        for (int i = 0; i < values.Length; i++) s += p[i];
+        return s;
+    }   // unpin tại đây — con trỏ vô hiệu sau dòng này
+}
+```
+
+`unsafe` nới lỏng gì: các kiểu con trỏ (`int*`), `&lấy-địa-chỉ`, truy cập
+thành phần `->`, `stackalloc` vào con trỏ, đánh chỉ mục trực tiếp qua con
+trỏ. Nó KHÔNG BAO GIỜ nới lỏng: tính an toàn bộ nhớ của hợp đồng GC (bạn
+có thể làm hỏng bất cứ gì bạn đánh địa chỉ được — đó là cái giá), đảm bảo
+hệ thống kiểu (việc diễn giải lại con trỏ là trách nhiệm của bạn), hay luật
+sandbox (Code Journey cho phép unsafe code BÊN TRONG container đã gia cố
+của nó; container là biên giới quan trọng).
+
+Kỷ luật khóa học yêu cầu: khối unsafe phải *nhỏ, có phạm vi, không thoát
+ra ngoài*. Con trỏ không bao giờ thành field, không bao giờ vượt `await`,
+không bao giờ sống lâu hơn `fixed` của nó. Nếu bạn không vẽ được cái hộp
+quanh vùng unsafe, thiết kế đã sai. `Span<T>` (Module 2) phủ được phần lớn
+những gì unsafe từng cần — hãy dùng `unsafe` khi span thật sự không diễn
+đạt nổi.

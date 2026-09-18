@@ -1,0 +1,35 @@
+## Sockets and the loopback world
+
+A socket is a file handle to a network endpoint. The managed API surface:
+
+```csharp
+var listener = new TcpListener(IPAddress.Loopback, 0);   // port 0 = ephemeral
+listener.Start();
+var client = await listener.AcceptTcpClientAsync();      // one per connection
+var stream = client.GetStream();                          // NetworkStream: duplex, unbuffered-ish
+
+var outbound = new TcpClient();
+await outbound.ConnectAsync(IPAddress.Loopback, port);
+```
+
+Code Journey's sandbox permits **loopback TCP and UDP with no external
+network** — which is precisely the honest lab for protocol engineering:
+all the hard parts (framing, buffering, lifecycle, timeouts, partial
+transfers) happen on localhost, while the uncontrollable variables
+(packet loss, routing, firewalls) are absent. Protocol bugs found here
+are the same bugs that eat production services.
+
+The facts that surprise newcomers:
+
+- **NetworkStream has no message concept.** `WriteAsync(frame)` does not
+  produce `ReadAsync(buf) == frame`. It produces *bytes available sometime,
+  possibly glued with other writes, possibly split*.
+- **Read returns 0 only on clean close.** A half-open connection (peer
+  died, cable pulled) surfaces as an INFINITE read or a timeout — never as
+  a zero. That is why deadlines (next lesson) are not optional.
+- **Accept is not authentication.** Anyone who can reach the port can
+  connect; protocol-level auth (or none, if loopback-only) is your design.
+
+The lifecycle rules: dispose clients (finally / using), shut down
+gracefully (`Shutdown(Both)` then dispose), and bound every listener with
+an accept loop that cannot die from one bad connection.

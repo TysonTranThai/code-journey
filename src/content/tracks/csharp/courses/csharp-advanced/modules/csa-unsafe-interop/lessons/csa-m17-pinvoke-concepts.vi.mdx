@@ -1,0 +1,44 @@
+## Khái niệm P/Invoke và hóa đơn bảo mật
+
+P/Invoke khai báo các hàm native cho bên gọi managed:
+
+```csharp
+[LibraryImport("libc", SetLastError = true)]   // interop sinh mã hiện đại
+private static partial int chmod(string path, uint mode);
+```
+
+Cơ chế đáng biết dù sandbox cấm gọi native:
+
+- **Marshaling**: runtime chuyển tham số managed sang biểu diễn native —
+  string thành con trỏ UTF-8/UTF-16, delegate thành function pointer,
+  struct theo giá trị/tham chiếu tùy layout. Kiểu blittable (int, double,
+  struct layout-cố định của những kiểu đó) KHÔNG cần chuyển đổi — chúng đi
+  qua nguyên vẹn, vì sao chữ ký nhiều blittable là những chữ ký nhanh.
+- **Function pointer**: `delegate* unmanaged<int, int>` (C# 9+) cho con
+  trỏ hàm cấp C cho callback; caller `unmanaged` không được ném exception
+  vào managed code — luật biên giới hoạt động cả hai chiều.
+- **Vòng đời**: mọi handle native bạn nhận phải có đúng một chủ sở hữu.
+  `SafeHandle` bọc handle, tăng ref count trong suốt lời gọi, và finalize
+  để giải phóng nếu bạn quên — pattern ngăn bug double-free và rò handle.
+- **Quy ước gọi và ABI**: kích thước, căn chỉnh, và cách truyền struct khác
+  nhau theo nền tảng. Code interop đa nền tảng khai báo chữ ký riêng từng
+  nền tảng (`LibraryImport` + partial method) thay vì giả định.
+
+**Hóa đơn bảo mật** — những gì code unsafe/interop nợ phần còn lại của hệ
+thống:
+
+1. **Xác thực input chuyển VÀO native**: một hàm C nhận độ dài buffer sẽ
+   tin bạn; lỗi tràn bộ nhớ kinh điển trở thành bug CỦA BẠN ngay khi bạn
+   truyền độ dài chưa kiểm tra.
+2. **Không sandbox bên trong unsafe**: container Code Journey cách ly ở
+   cấp OS; trong đó, unsafe code có thể làm hỏng process. Biên giới là
+   container, không phải hệ thống kiểu — đừng bao giờ nhầm lẫn.
+3. **Bề mặt tấn công**: mọi điểm vào native là thứ compiler C# không kiểm
+   soát được — rà soát phụ thuộc/chuỗi cung ứng (Module 23) áp dụng gấp
+   đôi cho phụ thuộc native.
+4. **Trimming/AOT**: P/Invoke động phân giải lúc runtime; interop thân
+   thiện AOT khai báo mọi thứ tĩnh để linker nhìn thấy.
+
+Mặc định nghề nghiệp: managed, span, interop sinh mã khi native là bất khả
+kháng, và một kiểu wrapper (hình dạng `SafeHandle`) sở hữu mọi handle. Code
+unsafe là một ngoại lệ đã đo, đã rà, đã ghi tài liệu.

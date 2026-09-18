@@ -1,0 +1,29 @@
+## When parallelism pays — the arithmetic
+
+Before writing a parallel loop, do this arithmetic. It predicts success
+better than any benchmark's vibes:
+
+**Amdahl's law.** With serial fraction S, speedup S(n) = 1/(S + (1-S)/n).
+Ten percent serial work caps you below 10x no matter how many cores. The
+serial fraction is not just loops — it is contention points, shared
+queues, the final combine. This is why the checkpoint makes you compute
+break-even cores: most real workloads stop scaling at 4–8x.
+
+**Per-item overhead.** Parallel.For's coordination costs ~hundreds of
+nanoseconds to microseconds per chunk. Rule of thumb: each item's body
+should cost ≥ a microsecond (or the data set ≥ millions of items) before
+parallelism pays. Below that, the parallel version is SLOWER — a measured
+fact, not an opinion.
+
+**False sharing.** Two workers writing adjacent array elements (or
+adjacent fields in one cache line) ping-pong the line between cores.
+Symptom: parallel version scales to 2 cores, then flattens — while CPU
+shows 100%. Fix: pad/shard accumulators (thread-local aggregation does
+this naturally).
+
+**Memory bandwidth ceilings.** Summing an int[] is compute-trivial and
+memory-bound; beyond a few cores the bus saturates and speedup plateaus.
+Parallelize compute-heavy work, not memcpy-shaped work.
+
+The habit: model first (S, per-item cost, data size), then measure, then
+keep or discard. The checkpoint's `BreakEvenCores` encodes the model.

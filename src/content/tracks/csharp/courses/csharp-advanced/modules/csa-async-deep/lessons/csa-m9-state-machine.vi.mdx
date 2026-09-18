@@ -1,0 +1,46 @@
+## Máy trạng thái async
+
+Một phương thức `async` được compiler viết lại thành **máy trạng thái
+struct** cài đặt `IAsyncStateMachine`: biến cục bộ của bạn thành field, mỗi
+`await` thành một số trạng thái, và toàn bộ thân nằm trong một khối `MoveNext()`
+switch lớn. Async method builder (`AsyncTaskMethodBuilder`) sở hữu một `Task`
+mà máy hoàn thành.
+
+```csharp
+// Bạn viết:
+async Task<int> LoadAsync() { var a = await A(); var b = await B(); return a + b; }
+
+// Compiler viết lại (khái niệm):
+struct LoadMachine : IAsyncStateMachine
+{
+    public int State;          // -1 bắt đầu; 0 sau await đầu tiên...
+    public TaskAwaiter<int> Awaitee;
+    int a;                     // biến cục bộ được nâng lên
+    public void MoveNext()
+    {
+        switch (State)
+        {
+            case -1: goto FIRST;
+            case 0: a = Awaitee.GetResult(); goto SECOND;
+        }
+        FIRST: Awaitee = A().GetAwaiter();
+        if (!Awaitee.IsCompleted) { State = 0; return; }   // đỗ xe, tiếp sau
+        a = Awaitee.GetResult();
+        SECOND: /* await B, cùng pattern, rồi builder.SetResult(a + b) */
+    }
+}
+```
+
+Hai hệ quả đáng thuộc:
+
+1. **Đường nhanh đồng bộ là thật.** Nếu mọi awaitable đã hoàn thành, máy
+   chạy qua mọi trạng thái ngay trong lần gọi — không đổi thread, và với
+   `ValueTask` còn không cấp phát.
+2. **`await` là hợp tác**, không phải chiếm quyền: code giữa các await chạy
+   đồng bộ trên thread của caller. Vòng CPU dài giữa các await LÀ blocking,
+   dù phương thức có chữ async.
+
+Hiểu điều này bạn được gì: đọc được async stack trace (khung `MoveNext`),
+dự đoán được exception xuất hiện ở đâu (builder rethrow tại await bị lỗi),
+và hiểu vì sao async method không có được `out` (struct máy phải sống qua
+mọi lần treo).

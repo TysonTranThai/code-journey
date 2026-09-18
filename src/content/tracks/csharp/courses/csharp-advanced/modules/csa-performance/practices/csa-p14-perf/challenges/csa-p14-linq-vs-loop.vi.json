@@ -1,0 +1,14 @@
+{
+  "title": "LINQ vs vòng lặp: phán quyết đo được",
+  "prompt": "Hiện thực `static int CountEvenLinq(int[] values)` (values.Count(x => x % 2 == 0)) và `static int CountEvenLoop(int[] values)` (vòng for thuần). Cả hai phải trả cùng một số đếm. Rồi hiện thực `static long AllocDelta(Func<int[]> work, int iterations)` — warmup + chênh lệch cấp phát theo luồng — và dùng nó trong test để so sánh cấp phát của CẢ HAI bộ đếm. Insight được chấm điểm: với workload này vòng lặp cấp phát 0; ghi chú chi phí LINQ trong comment hiện thực.",
+  "tests": [
+    {
+      "name": "same-count",
+      "hint": "Cả hai đếm x % 2 == 0; bản vòng lặp dùng for và một biến đếm."
+    },
+    {
+      "name": "loop-zero-alloc",
+      "hint": "for theo chỉ số; không enumerator, không closure."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+## Race conditions, deadlocks, starvation
+
+The failure catalog every engineer should be able to triage on sight:
+
+**Race condition** — correctness depends on timing. Symptom: works in dev,
+fails randomly in prod, never under a debugger. The cause is always a
+check-then-act or read-modify-write sequence not protected by atomics or a
+lock. `Count++` on a shared field is the smallest complete example.
+
+**Deadlock (ABBA)** — thread A holds lock 1, wants lock 2; thread B holds
+lock 2, wants lock 1. Everything stops; no CPU is burned (that is the
+diagnostic signature: threads parked, zero usage). Prevention: global lock
+order, or `TryEnter` with timeout. In async code the classic variant is
+**sync-over-async deadlock**: `.Result` on a Task whose continuation needs
+the context that the blocked thread occupies.
+
+**Starvation** — a thread never gets scheduled because others always win:
+a writer starving under `ReaderWriterLockSlim` with continuous readers, or
+a long-running task monopolizing the thread pool (fix: `TaskCreationOptions.LongRunning`
+or dedicated threads, not `Task.Run` for minute-long CPU loops).
+
+**Livelock** — threads respond to each other forever without progress
+(two polite walkers in a corridor). Retry loops without backoff are the
+usual accidental cause.
+
+**Convoy** — a hot lock becomes a queue; throughput collapses as threads
+serialize. Symptom: high CPU in context switches, `Monitor.Enter` dominating
+samples. Cure: shorten critical sections, shard the lock, or go atomic.
+
+Triage order in production: capture the state (thread dump / dump file),
+classify (parked = deadlock, spinning = livelock, churning = convoy/race),
+then fix the *protocol*, not the timing. Adding `Thread.Sleep` until the
+symptom disappears is how races survive to the next quarter.

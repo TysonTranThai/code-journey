@@ -1,0 +1,32 @@
+## Health probes and resilience primitives
+
+A debuggable system exposes its own state. The signals orchestrators and
+on-call engineers consume:
+
+**Liveness vs readiness.** Liveness = "the process is not wedged" (restart
+me if false). Readiness = "I can serve traffic" (route requests to me only
+when true). Collapsing them causes the classic outage loop: a service that
+reports not-ready because a dependency is down gets restarted — and
+restarts make it worse. Readiness checks dependencies; liveness checks
+self.
+
+**Circuit breakers** (the checkpoint implements one): stop hammering a
+failing dependency; fail fast while it recovers; probe before reopening.
+The three states — closed, open, half-open — and their transitions are a
+design pattern with a state machine you can unit-test. The knob that
+matters is the OPEN DURATION: too short and you half-open into a still-
+burning dependency; too long and you shed traffic you could serve.
+
+**Retries with backoff** (the practice implements exponential): retry only
+idempotent operations, cap attempts, and back off exponentially — flat
+delays create synchronized retry storms. Add jitter in production (spread
+retries across clients): the thundering-herd failure is retries aligned to
+the dependency's recovery moment.
+
+**Timeouts everywhere.** An operation without a timeout is a resource leak
+with extra steps. Every dependency call gets a deadline; every deadline is
+enforced via cancellation (Module 9), not polling.
+
+The resilience stack composes: timeout inside retry inside breaker — but
+compose them CONSCIOUSLY: retries extend effective timeouts, breakers
+change retry behavior, and the combined semantics need a test, not a hope.

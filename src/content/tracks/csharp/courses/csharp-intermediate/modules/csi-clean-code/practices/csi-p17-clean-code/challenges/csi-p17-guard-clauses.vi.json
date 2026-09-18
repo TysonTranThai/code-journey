@@ -1,0 +1,18 @@
+{
+  "title": "Guard Clause Tích lũy",
+  "prompt": "Hiện thực `Validate` bằng guard clause. Khác với fail-fast, hàm này **tích lũy mọi vi phạm theo thứ tự cố định**: 1) order null → \"order\"; 2) Customer null/rỗng → \"customer\"; 3) không có item → \"items\"; 4) mỗi item qty âm, theo thứ tự → \"qty:\" + index (tính từ 0). Input hợp lệ → danh sách rỗng.",
+  "tests": [
+    {
+      "name": "short-circuit precedence",
+      "hint": "Kiểm tra theo thứ tự cố định: order, customer, items. Quy tắc 1–3 là chuỗi ưu tiên — quy tắc đầu tiên kích hoạt thì trả ngay."
+    },
+    {
+      "name": "negative quantities accumulate",
+      "hint": "KHÔNG dừng ở item âm đầu tiên — quét tiếp và thêm một dòng cho mỗi vi phạm."
+    },
+    {
+      "name": "valid order is empty",
+      "hint": "Số 0 hợp lệ — chỉ qty âm là vi phạm."
+    }
+  ]
+}

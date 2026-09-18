@@ -35,6 +35,7 @@ const COURSE_TRACKS: Array<{ track: string; course: string }> = [
   { track: "c", course: "c-intermediate" },
   { track: "c", course: "c-advanced" },
   { track: "csharp", course: "csharp-beginner" },
+  { track: "csharp", course: "csharp-advanced" },
 ];
 const baseDir = path.join("src/content/tracks");
 
@@ -211,8 +212,10 @@ for (const { track: TRACK, course: courseId } of COURSE_TRACKS) {
   }
 }
 
-const tracks = COURSE_TRACKS.map((c) => c.track).filter((t, i, a) => a.indexOf(t) === i);
-for (const track of tracks) {
-  console.log(`Linear path (${track}): ${getLinearLessons(track).length} lessons`);
+if (process.env.SWEEP_LINEAR === "1") {
+  const tracks = COURSE_TRACKS.map((c) => c.track).filter((t, i, a) => a.indexOf(t) === i);
+  for (const track of tracks) {
+    console.log(`Linear path (${track}): ${getLinearLessons(track).length} lessons`);
+  }
 }
 if (failed) process.exit(1);

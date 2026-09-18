@@ -1,0 +1,33 @@
+## The deployment spectrum
+
+One .NET app, five shipping models — each answering "where does the
+runtime come from, and when is code compiled?":
+
+| Model | Ships runtime? | Compile moment | Size | Startup | Fits |
+|---|---|---|---|---|---|
+| Framework-dependent | no (uses installed/host) | JIT at run | ~app | JIT tax | servers with shared runtimes |
+| Self-contained | yes, full | JIT at run | ~65MB+ | JIT tax | version-pinned deployments |
+| Trimmed self-contained | yes, pruned | JIT at run | ~25MB | JIT tax | CLIs, containers |
+| ReadyToRun | yes, precompiled | publish (tier-1-ish) | +30%ish | low | server startup-sensitive |
+| NativeAOT | yes, linked | publish (fully) | ~18MB | ~ms | serverless, small containers |
+
+The two axes — runtime bundling and compile timing — are independent-ish
+but shape each other: AOT necessarily bundles a (smaller, different)
+runtime because it cannot rely on the JIT host.
+
+Deciding factors in practice:
+
+1. **Who controls the host?** Shared runtime = framework-dependent (tiny
+   diffs, shared patching). Locked-down containers = self-contained
+   (pinned, reproducible).
+2. **Startup sensitivity?** Serverless/CLI = AOT or R2R. Long-running
+   services mostly amortize JIT warmup.
+3. **Dynamic features in use?** Heavy reflection (plugins, config-driven
+   activation) fights trimming and AOT — Module 18's core tradeoff.
+4. **Platform matrix?** AOT compiles per-OS/architecture; JIT binaries
+   (R2R too) are per-rid bundles you select at publish.
+
+Container math makes this concrete: a trimmed self-contained ASP.NET Core
+image runs ~110MB vs ~220MB untrimmed; NativeAOT minimal APIs land under
+40MB with sub-20ms startup. For scale-to-zero platforms, that startup
+number IS the cost model.

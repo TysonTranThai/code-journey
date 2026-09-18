@@ -1,0 +1,32 @@
+## Assemblies, metadata, and IL
+
+A .NET assembly is a Windows PE file (even on Linux — same container
+format) with three payloads:
+
+1. **Metadata tables** — every type, method, field, attribute, and their
+   signatures, in a binary table format. This is what reflection reads and
+   what the compiler consumed when referencing you. Full fidelity: C#
+   features are metadata, not syntax.
+2. **IL** — the stack-based bytecode per method body. Stack-based: `ldc.i4.5;
+   ldc.i4.3; add` pushes 5, pushes 3, adds. Verified at load time (type
+   safety of the stack is checkable).
+3. **Resources / manifest** — embedded data and the assembly version/
+   culture/strong-name identity.
+
+The loader resolves `AssemblyRef` entries through the hosting runtime:
+app-local first, then the framework, then `AssemblyLoadContext` rules.
+The classic production failure — FileLoadException or "could not load
+type" — is a resolver story: two versions of one identity, or a dependency
+present in dev but trimmed from publish.
+
+**IL inspection without ildasm**: reflection gives you the method body's
+local signatures, and `MethodBody.GetILAsByteArray()` gives raw IL bytes —
+enough to *see* that `async`, closures, and `lock` all rewrite your code
+into other patterns. The decompiler-grade view (ILSpy) is a desktop tool,
+but everything it shows is derived from exactly these metadata tables —
+nothing magic, all documented.
+
+What this buys you in practice: reading an exception's stack trace means
+reading IL-to-source correspondence; understanding trimming means knowing
+what metadata the linker can prove unused; and diagnosting versioning
+means inspecting the manifest, not guessing.

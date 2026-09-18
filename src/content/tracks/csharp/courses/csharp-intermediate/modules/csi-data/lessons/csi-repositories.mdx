@@ -1,0 +1,53 @@
+## Row mapping: the boring glue
+
+Readers hand you rows; the domain wants objects. The mapping function is
+where nulls become defaults, column names are spelled once, and types are
+converted:
+
+```csharp
+private static User Map(System.Collections.Generic.Dictionary<string, object?> row)
+    => new User(
+        Name: (string)row["name"]!,
+        Balance: Convert.ToDecimal(row["balance"] ?? 0m));
+```
+
+Keep mapping in ONE place — a mapper method or the repository itself — so a
+schema change touches one file.
+
+## The repository: a collection-shaped façade
+
+A repository exposes the domain's idea of persistence — Add, Get, Find —
+while hiding SQL inside:
+
+```csharp
+public interface IUserRepository
+{
+    void Add(User user);
+    User? FindByName(string name);
+    System.Collections.Generic.IReadOnlyList<User> All();
+}
+
+public sealed class SqlUserRepository : IUserRepository
+{
+    private readonly CjDb _db;
+    public SqlUserRepository(CjDb db) => _db = db;   // injected (Module 11)
+    // ... every SQL string lives here, parameterized, nowhere else ...
+}
+```
+
+Benefits: business code reads like the domain; a different backend is an
+implementation swap; and testing needs only a fake repository (no database
+at all).
+
+## What belongs where
+
+- SQL strings: repository implementations only.
+- Domain logic: services — never inside repositories.
+- Mapping: between the two, in the repository.
+- A repository that returns IQueryable invites leaks; keep the boundary
+  concrete (lists, single objects).
+
+## Check your understanding
+
+- Where does a new WHERE clause go? (The one repository implementation that owns that table's SQL.)
+- Why does the service take IUserRepository, not SqlUserRepository? (Depend on the abstraction; swap implementations; test with fakes.)

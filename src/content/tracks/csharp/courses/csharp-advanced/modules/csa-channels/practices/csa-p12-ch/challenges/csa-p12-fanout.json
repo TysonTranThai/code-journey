@@ -1,0 +1,16 @@
+{
+  "id": "csa-p12-fanout",
+  "title": "Fan-out workers",
+  "prompt": "Implement `static async Task<int[]> FanOut(int itemCount, int workers)` where itemCount jobs (value = index) flow through a channel and `workers` concurrent consumer tasks each pull items and compute index * 2, writing results into a shared thread-safe list. All items must be processed exactly once (competing consumers on one channel), and the method returns the sorted results. The test runs workers=4 over 1000 items and asserts completeness and uniqueness.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "exactly-once",
+      "code": "var r = await Solution.FanOut(1000, 4);\nCj.Eq(r.Length, 1000, \"every item processed\");\nCj.Eq(r.Distinct().Count(), 1000, \"no item processed twice\");\nCj.Eq(r[500], 1000, \"value = index * 2\");",
+      "hint": "One channel, N consumers each doing `await foreach (var i in reader.ReadAllAsync())` — the channel guarantees each item goes to exactly one reader."
+    }
+  ],
+  "level": "real-world"
+}

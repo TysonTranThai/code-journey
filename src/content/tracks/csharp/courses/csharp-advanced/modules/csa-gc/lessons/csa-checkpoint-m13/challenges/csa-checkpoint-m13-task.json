@@ -1,0 +1,25 @@
+{
+  "id": "csa-checkpoint-m13-task",
+  "title": "GC checkpoint",
+  "prompt": "Implement `static long MeasureAlloc<T>(Func<T> factory, int iterations)` returning GC.GetAllocatedBytesForCurrentThread() delta across `iterations` calls of factory — the standard micro-allocation probe. Then implement `static int Gen0Collections()` returning GC.CollectionCount(0), and `static WeakReference MakeWeak()` returning a WeakReference to a freshly allocated object(). The test: 1000 iterations of `new byte[64]` must allocate MORE than 1000*64 bytes; a weak reference's Target must become null after GC.Collect + WaitForPendingFinalizers + GC.Collect (the helper-method liveness pattern the lesson teaches).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "allocation-probe",
+      "code": "var before = GC.GetAllocatedBytesForCurrentThread();\nfor (int i = 0; i < 1000; i++) _ = new byte[64];\nvar delta = GC.GetAllocatedBytesForCurrentThread() - before;\nCj.True(delta >= 64_000, $\"1000x64-byte arrays allocate at least 64000 bytes (got {delta})\");",
+      "hint": "GC.GetAllocatedBytesForCurrentThread() is precise for the current thread — capture before/after, no other allocations between."
+    },
+    {
+      "name": "weak-ref-death",
+      "code": "var wr = Solution.MakeWeak();\nGC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();\nCj.False(wr.IsAlive, \"unreferenced object was collected\");",
+      "hint": "MakeWeak must return the WeakReference WITHOUT keeping a local alive: `var o = new object(); var wr = new WeakReference(o); return wr;` — the object must NOT be in a register when the caller collects (helper method + return is the pattern)."
+    },
+    {
+      "name": "gc-counts-exposed",
+      "code": "var c0 = Solution.Gen0Collections();\nfor (int i = 0; i < 2_000_000; i++) _ = new byte[64];\nCj.True(Solution.Gen0Collections() >= c0, \"collection counts never decrease\");",
+      "hint": "return GC.CollectionCount(0) — monotonic by definition; the loop just forces pressure."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "csa-p3-variance-legality",
+  "title": "Variance legality",
+  "prompt": "Implement `static string Variance(IEnumerable<object> xs)` returning \"ok\", and prove contravariance: implement `static Action<string> AsObjectAction(Action<object> a) => a;` (assigning Action<object> to Action<string> is legal because T is contravariant in Action<in T>). Also implement `static string First(IReadOnlyList<string> list)` returning list[0] — IReadOnlyList<out T> is covariant.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "variance-works",
+      "code": "Action<object> print = o => { };\nAction<string> ps = Solution.AsObjectAction(print);\nps(\"hello\");   // must compile and run\nCj.Eq(Solution.Variance(new[] { \"a\", \"b\" }), \"ok\", \"covariant read\");",
+      "hint": "Action<in T>: an object-consumer can consume strings. IReadOnlyList<out T>: reads widen."
+    }
+  ],
+  "level": "imitation"
+}

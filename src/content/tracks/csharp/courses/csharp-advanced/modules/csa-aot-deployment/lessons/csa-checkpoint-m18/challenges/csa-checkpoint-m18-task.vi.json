@@ -1,0 +1,14 @@
+{
+  "title": "Checkpoint triển khai/AOT",
+  "prompt": "Hiện thực `static string DeploymentDescription(bool selfContained, bool trimmed, bool aot)`: trả về \\\"framework-dependent\\\" khi selfContained=false; \\\"self-contained\\\" khi selfContained && !trimmed && !aot; \\\"trimmed\\\" khi selfContained && trimmed && !aot; \\\"aot\\\" khi aot (bất kể trimmed — AOT hàm ý nó). Rồi hiện thực `static bool IsTrimCompatible(string reflectionPattern)` trả về false với các mẫu linker không chứng minh được: \\\"assembly scanning\\\", \\\"activator by name\\\", \\\"json by string type name\\\"; true với \\\"source generated serializer\\\", \\\"generic constraint\\\", \\\"explicit registration\\\".",
+  "tests": [
+    {
+      "name": "deployment-desc",
+      "hint": "Kiểm tra aot trước, rồi selfContained, rồi trimmed."
+    },
+    {
+      "name": "trim-compat",
+      "hint": "Một tập mẫu an toàn vs các mẫu động đã biết; mọi thứ động đều thua."
+    }
+  ]
+}

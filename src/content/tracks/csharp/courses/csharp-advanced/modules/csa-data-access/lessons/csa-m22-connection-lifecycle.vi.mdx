@@ -1,0 +1,30 @@
+## Vòng đời kết nối và connection pool
+
+Mở một kết nối database thật tốn TCP handshake, xác thực và thiết lập session
+— những mili-giây bạn trả cho *mỗi* thao tác nếu bất cẩn. Vì vậy ADO.NET (và
+mọi driver phía trên) giữ một **pool**: `Close()` trả kết nối về pool; socket
+vật lý vẫn ấm. Hai quy tắc tuân theo.
+
+**Mở muộn, đóng sớm.** Chỉ giữ kết nối khi truy vấn đang chạy — không phải
+khi tính toán, không phải khi gọi service khác. Một kết nối bị giữ qua một
+lần gọi HTTP từ xa là bug kinh điển khiến site "chậm như rùa lúc 3 giờ chiều":
+pool có hạn (mặc định tối đa 100), và khi mọi kết nối đều được mượn, caller
+kế tiếp sẽ **chặn** chờ cho đến khi `Connection Timeout` (mặc định 15 giây)
+hết với `InvalidOperationException: Timeout expired... The connection pool
+has been exhausted`.
+
+**Các mẫu rò rỉ** làm cạn pool:
+
+- Không có `using`/`await using` quanh kết nối (đường exception bỏ qua Close).
+- Trả về một đối tượng đang giữ kết nối (reader, command) từ một phương thức.
+- Giữ kết nối trong lúc await I/O không liên quan.
+- Chuỗi kết nối động — pool đánh khóa theo chuỗi chính xác, nên connection
+  string theo từng tenant âm thầm tạo pool theo từng tenant.
+
+Cạn pool là triệu chứng *đồng thời*: bài kiểm thử một người dùng không bao giờ
+thấy. Đó là lý do challenge mô hình hóa phép tính chiếm dụng thay cho kết nối
+thật — lập luận vẫn chuyển giao nguyên vẹn.
+
+*Ghi chú ngôn ngữ:* connection string là cấu hình, không phải code. Vì vậy
+secret thuộc về cấu hình/quản lý secret (module 23), không bao giờ nằm trong
+source.

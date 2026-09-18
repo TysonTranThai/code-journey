@@ -1,0 +1,16 @@
+{
+  "id": "csa-p3-comparer-contravariance",
+  "title": "A comparer for anything smaller",
+  "prompt": "Implement `class Box { public int Weight; }` and a contravariant comparer adapter: `static IComparer<Box> ByWeight() => Comparer<Box>.Create((x, y) => x.Weight.CompareTo(y.Weight));` in class `Solution`. Then use it: `static void Sort(List<Box> boxes)` sorts by Weight ascending in place using the comparer.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "sort",
+      "code": "var boxes = new List<Box> { new Box { Weight = 3 }, new Box { Weight = 1 }, new Box { Weight = 2 } };\nSolution.Sort(boxes);\nCj.Eq(boxes[0].Weight, 1, \"first\");\nCj.Eq(boxes[2].Weight, 3, \"last\");",
+      "hint": "Comparer<T>.Create builds an IComparer<T> from a lambda; List<T>.Sort(comparer) sorts in place."
+    }
+  ],
+  "level": "guided"
+}

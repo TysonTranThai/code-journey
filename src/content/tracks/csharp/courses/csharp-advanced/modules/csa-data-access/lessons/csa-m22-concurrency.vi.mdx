@@ -1,0 +1,25 @@
+## Đồng thời tối ưu (optimistic) và bi quan (pessimistic)
+
+Hai chiến lược khi hai writer chạm cùng một hàng:
+
+**Bi quan (pessimistic)**: khóa trước (`SELECT ... WITH (UPDLOCK)`,
+`SELECT ... FOR UPDATE`). Writer thứ hai *chờ* trước khi đọc. An toàn khi xung
+đột cao, dễ deadlock, và nó giữ khóa suốt đơn vị công việc của bạn — kể cả các
+lời gọi từ xa (đừng bao giờ làm vậy; xem module 20).
+
+**Tối ưu (optimistic)**: đọc tự do; khi ghi, xác minh hàng chưa đổi qua một
+**cột phiên bản** (`UPDATE ... WHERE id = @id AND version = @expected`) và coi
+`rows affected = 0` là xung đột cần thử lại. Database làm trọng tài một cách
+nguyên tử — không giữ khóa trong thời gian người dùng suy nghĩ. Vì vậy gần
+như mọi web API nên optimistic: cửa sổ xung đột tính bằng mili-giây, thời gian
+suy nghĩ của người dùng tính bằng giây, và giữ khóa suốt quãng thời gian đó là
+cách bạn xây cạn pool trên nền hàng chờ khóa.
+
+Vòng retry là phần tinh tế: khi xung đột bạn phải **đọc lại** phiên bản hiện
+tại và áp dụng lại thay đổi — không phải mù quáng chạy lại với expected version
+cũ, điều đó hoặc lặp vô hạn hoặc ghi đè. Checkpoint hiện thực đúng state
+machine này, một cách deterministic.
+
+**Khi pessimistic thắng**: các hàng thực sự nóng (trừ kho lúc flash-sale) nơi
+retry sẽ xoay trôn, hoặc các bất biến đa bảng mà cột phiên bản không diễn đạt
+được. Dù vậy, vẫn ưu tiên phạm vi khóa ngắn nhất có thể.

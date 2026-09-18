@@ -1,0 +1,31 @@
+## Máy delegate
+
+Delegate là một object: nó giữ một **phương thức** (hoặc, với gọi
+virtual/interface, con trỏ hàm cộng object receiver) và một **invocation
+list** tùy chọn. `Foo` như một biểu thức ("method group") chuyển đổi thành
+thể hiện delegate; lambda biên dịch thành phương thức do compiler sinh ra,
+được bọc trong delegate:
+
+```csharp
+Func<int, int> f = x => x + 1;   // compiler sinh: static int <>M0(int x)
+Func<int, int> g = doubleIt;     // method group → phương thức có sẵn, không sinh mã mới
+Func<int, int> h = f + g;        // MulticastDelegate: invocation list [f, g]
+```
+
+Hồ sơ cấp phát bạn dự đoán được:
+
+| Cấu trúc | Biên dịch thành | Cấp phát |
+|---|---|---|
+| lambda tĩnh, không capture | phương thức tĩnh + delegate | 1 delegate |
+| lambda bắt biến cục bộ | display class + phương thức + delegate | 1 class + 1 delegate |
+| method group (thể hiện) | delegate tới phương thức của thể hiện đó | 1 delegate |
+| bổ từ `static` lambda | cam kết không capture | 1 delegate |
+
+Bổ từ `static` cho lambda là một *hợp đồng*: `static x => x + 1` từ chối
+biên dịch nếu nó capture bất cứ thứ gì — cách rẻ để biến "không closure ẩn"
+thành thuộc tính bị kiểm tra, không phải lời hứa trong code review.
+
+Thứ tự gọi trong multicast delegate được định nghĩa (thêm trước gọi trước);
+giá trị trả về bạn giữ lại là của handler CUỐI. Cache thể hiện delegate
+(`static readonly Func<...>`) tránh cấp phát lại mỗi lần gọi — đây là cấp
+phát tránh được lớn nhất trong code nhiều lambda.

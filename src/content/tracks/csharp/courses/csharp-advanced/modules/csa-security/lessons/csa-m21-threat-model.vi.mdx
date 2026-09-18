@@ -1,0 +1,36 @@
+## Threat modeling cho một service
+
+Threat modeling là quyết định bạn đáng bị tấn công ở đâu và bạn nợ mỗi kẻ
+tấn công điều gì. Bản lite vừa đủ trong một tài liệu thiết kế:
+
+**1. Vẽ các biên tin cậy.** Internet → API gateway → service → database.
+Cache, queue, secret store cũng là tác nhân. Mọi mũi tên là một nơi dữ liệu
+vượt qua thẩm quyền.
+
+**2. Kể tên theo từng biên (STRIDE-lite):**
+
+| Mối đe dọa | Câu hỏi | Phòng thủ điển hình |
+|---|---|---|
+| Spoofing | ai đó có thể nhận danh tính? | authn (token, mTLS) |
+| Tampering | dữ liệu có thể bị sửa khi truyền/khi lưu? | TLS, AEAD, chữ ký |
+| Repudiation | hành động có thể bị chối bỏ? | audit log, correlation ID |
+| Information disclosure | dữ liệu có thể rò rỉ? | authz, mã hóa, scrub log |
+| Denial of service | tài nguyên có thể bị cạn? | rate limit, timeout, quota |
+| Elevation of privilege | user có thể thành người lớn hơn? | đặc quyền tối thiểu, allow-list |
+
+**3. Xếp hạng theo (tác động, khả năng)** và tiêu engineering nơi sản phẩm
+ngụ ý mức phơi bày. Một công cụ phân tích nội bộ và một API thanh toán có
+hai danh sách top-3 khác nhau — modeling là theo hệ thống, không phải theo
+ngành.
+
+**4. Ghi các bất biến ra giấy.** "Không request chưa xác thực tới được
+database." "Mọi secret xoay vòng trong 15 phút." "PII không bao giờ xuất
+hiện trong log." Bất biến là thứ test được — những cái tốt trở thành kiểm
+tra tự động (các thử thách của khóa học chính xác là điều đó, ở bản thu
+nhỏ).
+
+Kiểu thất bại của threat modeling là bài tập diễn ra một lần rồi hết hạn.
+Bản đang hoạt động: sơ đồ sống, danh sách rủi ro hàng đầu được rà mỗi
+feature, và bất biến được diễn đạt thành test. Khi đó an toàn là một tính
+chất mà build xác minh — loại duy nhất sống sót qua các lần thay đổi nhân
+sự.

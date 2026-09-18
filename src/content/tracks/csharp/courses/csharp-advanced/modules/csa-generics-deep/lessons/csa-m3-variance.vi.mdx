@@ -1,0 +1,36 @@
+## Variance: co, contra, in
+
+Variance trả lời một câu hỏi: **khi nào `C<Derived>` dùng được như
+`C<Base>`?** Chiều variance đi theo dòng dữ liệu, và compiler bắt buộc an
+toàn:
+
+- **Covariant** (`out T`): T chỉ *đi ra*. `IEnumerable<out T>`,
+  `IReadOnlyList<out T>`. Một dãy mèo là một dãy động vật.
+- **Contravariant** (`in T`): T chỉ *đi vào*. `Action<in T>`,
+  `IComparer<in T>`, `Predicate<in T>`. Bộ tiêu thụ Animal tiêu thụ được
+  Cat.
+- **Invariant** (`T` thường): T vừa vào vừa ra. `IList<T>`,
+  `Dictionary<TKey,TValue>` (key vào, value ra). Variance sẽ mất an toàn
+  ngay khi một giá trị có thể chảy cả hai chiều qua cùng một chỗ.
+
+```csharp
+IEnumerable<object> animals = new List<Cat>();     // OK: out
+Action<Cat> feedCat = c => c.Eat();
+Action<Animal> feedAny = a => a.Eat();
+feedCat = feedAny;                                  // OK: in — bộ tiêu thụ Animal xử lý được Cat
+// feedAny = feedCat;                               // lỗi biên dịch — sẽ cho Dog vào code của Cat
+```
+
+Hai thói quen đáng giữ mãi mãi:
+
+1. **Thiết kế interface của riêng mình có chủ đích về variance.** Một
+   repository chỉ đọc `IRead<out T>` kết hợp tự nhiên với handler của kiểu
+   cơ sở; bản invariant buộc cast ở mọi ranh giới.
+2. **Variance chỉ có ở interface/delegate.** Class luôn invariant — hãy bọc
+   một view covariant trên kho lưu trữ nội bộ thay vì chống lại nó.
+
+Cái bẫy sống sót qua review: `IEnumerable<object> xs = strings` ổn, nhưng
+mutation kiểu `xs.Add` không tồn tại ở đó — kho cần quyền *ghi* là lúc bạn
+cần kiểu invariant, và pretend ngược lại chính là cách `InvalidCastException`
+xảy ra ở xa (mảng là ngoại lệ lịch sử — covariant nhưng bị kiểm tra lúc ghi,
+với chi phí runtime).

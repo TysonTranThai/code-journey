@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m17-task",
+  "title": "Unsafe checkpoint",
+  "prompt": "Implement `static int UnsafeSum(ReadOnlySpan<int> values)` that sums an int span using unsafe pointer arithmetic: `fixed (int* p = values)` (or inside an unsafe method on a span via GetPinnableReference), walk with p[i], accumulate. The test verifies correctness AND that it compiles only because the harness adds -unsafe (the same flag real projects configure). Also implement `static byte[] Reinterpret(long value)` that reinterprets a long's bytes as a 4-element ushort array copy using Unsafe/MemoryMarshal — demonstrating reinterpretation without pointers.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "unsafe-sum",
+      "code": "int[] vals = { 1, 2, 3, 4, 5 };\nCj.Eq(Solution.UnsafeSum(vals.AsSpan()), 15, \"pointer walk sums correctly\");\nCj.Eq(Solution.UnsafeSum(ReadOnlySpan<int>.Empty), 0, \"empty span\");",
+      "hint": "unsafe { fixed (int* p = values) { for (int i = 0; i < values.Length; i++) sum += p[i]; } }"
+    },
+    {
+      "name": "reinterpret",
+      "code": "long v = 0x0001_0002_0003_0004;   // little-endian bytes: 04 03 02 01\nvar us = Solution.Reinterpret(v);\nCj.Eq(us.Length, 4, \"long = 4 ushorts\");\nCj.Eq(us[0], 2, \"low ushort first (LE)\");\nCj.Eq(us[3], 1, \"high ushort last\");",
+      "hint": "var src = MemoryMarshal.CreateReadOnlySpan(ref value, 1); var dst = MemoryMarshal.AsBytes(src); then two ushort reads — or simpler: MemoryMarshal.Cast<long, ushort>(new Span<long>(ref value, 1)).ToArray()"
+    }
+  ]
+}

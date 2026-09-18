@@ -1,0 +1,19 @@
+## Độ tin cậy: retry, idempotency, backpressure
+
+Ngăn xếp từ module 20 quay lại, được lắp ráp: **timeout** bên trong **retry**
+(với exponential backoff và jitter) bên trong một **circuit breaker**, tất cả
+bao quanh các thao tác **idempotent** — vì một retry sau một thất bại mơ hồ
+không thể phân biệt với một lần gửi trùng, và handler phải làm cho bản trùng
+vô hại (checkpoint module 20, giờ chịu lực).
+
+Backpressure khép vòng: một hàng đợi không giới hạn là một vụ sập trong slow
+motion — nó biến "chúng ta quá tải" thành "chúng ta quá tải *và* hết bộ nhớ,
+*và* mọi SLO độ trễ đã chết". Một hàng đợi có giới hạn với quyết định tiếp
+nhận tường minh (từ chối nhanh, trả phản hồi kiểu `429`, để caller tự quyết)
+giữ cho hệ thống trung thực. `Submit` của capstone trả `false` khi vượt quá
+sức chứa: đó là toàn bộ tư thế production trong một boolean.
+
+Fault injection là phương pháp dạy ở đây: nền tảng được chấm điểm bằng một
+*lịch* deterministic gồm các lần gửi trùng và vượt sức chứa, nên mọi con số
+chấp nhận/từ chối/thực-thi đều là một hợp đồng bạn có thể suy luận — giống
+hệt cách bạn suy luận về một bài load test trước black Friday.

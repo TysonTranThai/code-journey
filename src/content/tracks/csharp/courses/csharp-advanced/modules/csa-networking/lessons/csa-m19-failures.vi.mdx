@@ -1,0 +1,33 @@
+## Các chế độ lỗi mạng trên localhost
+
+Mọi thất bại của hệ phân tán đều có một bản thu nhỏ tái hiện được trên
+loopback — vì sao module này tồn tại:
+
+**Truyền một phần.** Reader nhận nửa khung. Nguyên nhân: ngữ nghĩa stream
+(framing, phía trên). Cách sửa: máy trạng thái buffer. Đây là 90% báo cáo
+"bug giao thức ngẫu nhiên".
+
+**Slowloris / cạn kiệt tài nguyên.** Client mở nhiều kết nối và gửi byte
+rất chậm; thread/buffer của server dồn lại. Cách sửa: deadline khi đọc +
+trần kết nối + cách ly vòng accept (một client xấu không thể giết
+listener).
+
+**Cơn bão kết nối.** Client retry các kết nối hỏng trong vòng kín; accept
+queue của listener tràn; client thấy bão connection-refused. Cách sửa:
+retry có backoff (Module 16) và coi refusal là tín hiệu, không phải lời
+khiêu khích.
+
+**Head-of-line blocking.** Một response chậm trì hoãn mọi response sau đó
+trên cùng kết nối. Cách sửa: multiplexing (correlation ID + request đồng
+thời) hoặc connection pool. Đánh đổi này — một kết nối, có thứ tự, đơn
+giản vs nhiều kết nối, đồng thời, phức tạp — là câu chuyện HTTP/1.1 →
+HTTP/2, tái hiện được trong 20 dòng trên loopback.
+
+**Vấn đề nửa mở.** Peer chết giữa request. Lệnh đọc của bạn chặn vĩnh viễn
+— TCP sẽ không báo bạn trong vài phút. Cách sửa: deadline, chấm hết.
+Practice `ReadWithDeadline` chính là trí nhớ cơ bắp đó.
+
+Thói quen mà các drill này xây nên: khi một lỗi phân tán xuất hiện trong
+production, hãy thu nó về bản thu nhỏ trên loopback, sửa bản thu nhỏ kèm
+test, rồi xác minh lại hệ thống thật. Danh mục lỗi chuyển giao được; chỉ
+thang thời gian là khác nhau.

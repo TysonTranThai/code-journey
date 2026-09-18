@@ -1,0 +1,26 @@
+{
+  "id": "csi-p20-set-membership",
+  "title": "HashSet Against the Quadratic",
+  "prompt": "`DuplicateFinder.HasAny(List<int>, List<int>)` scans the whole\n`List` per candidate — O(n·m). Rewrite as\n`Solution.HasAny(List<int> haystack, List<int> needles)` that puts the\nhaystack in a `System.Collections.Generic.HashSet<int>` once and tests each\nneedle in ~O(1):\n\n- true iff at least one needle is present,\n- empty needles → false, empty haystack → false,\n- duplicates in either side are irrelevant.\n\n```csharp\npublic static class Solution\n{\n    public static bool HasAny(System.Collections.Generic.List<int> haystack,\n                              System.Collections.Generic.List<int> needles);\n}\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "membership semantics",
+      "code": "\nvar hay = new System.Collections.Generic.List<int> { 1, 2, 3 };\nCj.True(Solution.HasAny(hay, new System.Collections.Generic.List<int> { 9, 2 }), \"2 is present\");\nCj.False(Solution.HasAny(hay, new System.Collections.Generic.List<int> { 9, 10 }), \"none present\");\n",
+      "hint": "Build the set once, test each needle against it."
+    },
+    {
+      "name": "degenerate inputs",
+      "code": "\nvar hay = new System.Collections.Generic.List<int> { 1 };\nvar empty = new System.Collections.Generic.List<int>();\nCj.False(Solution.HasAny(hay, empty), \"no needles -> false\");\nCj.False(Solution.HasAny(empty, hay), \"no haystack -> false\");\n",
+      "hint": "Empty side means no match can exist."
+    },
+    {
+      "name": "duplicates do not matter",
+      "code": "\nvar hay = new System.Collections.Generic.List<int> { 5, 5, 5 };\nCj.True(Solution.HasAny(hay, new System.Collections.Generic.List<int> { 5, 5 }), \"dup on both sides still matches\");\n",
+      "hint": "A set collapses duplicates; presence is all that counts."
+    }
+  ],
+  "level": "debugging"
+}

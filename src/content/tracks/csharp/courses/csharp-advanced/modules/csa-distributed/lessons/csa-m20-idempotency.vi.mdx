@@ -1,0 +1,41 @@
+## Idempotency và exactly-once
+
+Bảng sự thật messaging mà mọi người sớm muộn cũng học: mạng cung cấp
+**at-most-once** (mất khi lỗi) và **at-least-once** (retry đến khi được xác
+nhận — mà điều đó tạo ra bản sao). **Exactly-once** trên mạng không phải là
+tính chất vận chuyển khả thi; nó khả thi như một *hiệu ứng* — xử lý
+exactly-once — và idempotency là cách.
+
+```csharp
+// Pattern mà checkpoint cài:
+public int Process(string messageId, Func<int> work)
+{
+    if (_results.TryGetValue(messageId, out var cached)) return cached;   // bản sao bị hấp thụ
+    var result = work();
+    _results[messageId] = result;    // ghi nhớ — TRƯỚC khi xác nhận!
+    return result;
+}
+```
+
+Bản production lưu key và kết quả **nguyên tử với tác dụng phụ** (cùng
+transaction DB, hoặc bảng dedupe mà phép ghi kiểm tra). Bản gãy: cache
+trong bộ nhớ còn tác dụng phụ trong database — sập giữa hai cái = tác dụng
+phụ trùng lặp khi giao lại.
+
+Idempotency key đến từ đâu: producer đóng dấu mọi tin nhắn một ID duy nhất
+tại lúc tạo; consumer dedupe. Các API thanh toán (Stripe v.v.) làm pattern
+này nổi tiếng — key do client sinh khiến double-click không thể sinh
+double-charge.
+
+Từ vựng giữ các cuộc thảo luận thiết kế trung thực:
+
+- **At-least-once + consumer idempotent = effectively exactly-once.** Kiến
+  trúc chuẩn.
+- **Cửa sổ khử trùng lặp**: trạng thái dedupe là hữu hạn; key hết hạn.
+  "At least once trong cửa sổ 24h" mới là hợp đồng thật — hãy ghi tài liệu.
+- **Thứ tự giao**: at-least-once + retry còn làm mất thứ tự. Nếu thứ tự
+  quan trọng, gắn số trình tự và buffer/giữ ở consumer.
+
+`DeliverAll` trong checkpoint chứng minh phép tính: 20 tin nhắn giao 3 lần
+mỗi cái = 60 lần giao, 20 tác dụng phụ. Drill practice cho thấy điều gì xảy
+ra khi một đội quên: cơn bão retry không phải vận xui, nó là phép tính.

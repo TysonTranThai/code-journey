@@ -1,0 +1,16 @@
+## Cổng kiểm tra (mini-build)
+
+Ba mảnh, một file:
+
+1. `IInventory` — `int GetStock(string sku)`, `void Reserve(string sku, int qty)`.
+2. `FakeInventory : IInventory` — fake: `Dictionary<string,int> Stock`
+   (sku thiếu = 0), `List<string> Reservations`, cùng hai móc lỗi:
+   `LyingStock` (true → `GetStock` trả giá trị thật **+ 1000**) và
+   `BrokenReserve` (true → `Reserve` không ghi gì).
+3. `OrderService(IInventory)` — `PlaceOrder(sku, qty)` → "ok" | "outofstock";
+   chỉ Reserve khi thành công.
+4. `CheckAll(FakeInventory inv)` — một bộ test nhỏ (≥ 3 test) xác minh: đường
+   ok có Reserve, đường hết hàng không Reserve, và qty đúng bằng stock vẫn
+   thành công. Trả danh sách thông điệp lỗi — **rỗng nghĩa là mọi test pass**.
+   Bộ test phải thật sự kiểm tra inventory được inject: đưa fake nói dối hoặc
+   hỏng, nó phải báo lỗi, không được vui vẻ trả danh sách rỗng.

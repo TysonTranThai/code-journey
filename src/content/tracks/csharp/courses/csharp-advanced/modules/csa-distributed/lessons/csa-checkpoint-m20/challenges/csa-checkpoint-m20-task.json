@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m20-task",
+  "title": "Distributed checkpoint",
+  "prompt": "Simulated message bus, deterministic: implement class `IdempotentProcessor` with `int Process(string messageId, Func<int> work)` — processes work once per messageId, caches the result, returns it on repeats WITHOUT re-running work (work has a side-effect counter the test watches). Then implement `static int[] DeliverAll(List<string> messageIds, Func<string, int> handler, int duplicates)` that delivers every message `duplicates` times (out of order, shuffled deterministically by index) and returns the work-counter delta — which must be exactly messageIds.Count because duplicates are absorbed idempotently.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "process-once",
+      "code": "var p = new IdempotentProcessor();\nint runs = 0;\nint r1 = p.Process(\"m1\", () => ++runs);\nint r2 = p.Process(\"m1\", () => ++runs);   // duplicate delivery\nCj.Eq(r1, 1, \"first run\");\nCj.Eq(r2, 1, \"repeat returns cached result\");\nCj.Eq(runs, 1, \"work executed exactly once\");",
+      "hint": "Dictionary<string,int> cache: TryGetValue → return; else compute, store, return."
+    },
+    {
+      "name": "duplicates-absorbed",
+      "code": "var ids = Enumerable.Range(0, 20).Select(i => $\"msg-{i}\").ToList();\nint runs = 0;\nvar delta = IdempotentProcessor.DeliverAll(ids, id => IdempotentProcessor.RunTracked(id, () => ++runs), 3);\nCj.Eq(delta[0], 20, \"20 unique messages = 20 runs despite 60 deliveries\");",
+      "hint": "DeliverAll: one shared IdempotentProcessor; deliver each id `duplicates` times; count runs before/after."
+    }
+  ]
+}

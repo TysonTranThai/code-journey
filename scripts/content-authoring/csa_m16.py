@@ -32,7 +32,7 @@ def build() -> None:
         14, "advanced", _m16_diag, _m16_diag_vi,
     )
     csa.register_challenge(
-        "csa-checkpoint-m16-task", MID,
+        "csa-m16-checkpoint-lesson-task", MID,
         title="Diagnostics checkpoint",
         prompt=(
             "Implement `static string Describe(Exception ex)` producing a one-line diagnostic: "
@@ -60,9 +60,9 @@ def build() -> None:
                 "name": "analyze-depth",
                 "code": (
                     "var root = new InvalidOperationException(\"r\");\n"
-                    "var nested = new Exception(\"a\", new Exception(\"b\", root));\n"
+                    "var nested = new Exception(\"a\", new Exception(\"b\", new Exception(\"c\", root)));\n"
                     "var (d, rootType) = Solution.Analyze(nested);\n"
-                    'Cj.Eq(d, 3, "three levels deep");\n'
+                    'Cj.Eq(d, 4, "four levels deep");\n'
                     'Cj.Eq(rootType, "InvalidOperationException", "root type found");'
                 ),
                 "hint": "Count hops to InnerException == null; record the last exception's GetType().Name.",
@@ -141,7 +141,7 @@ def build() -> None:
                     "var cb = new CircuitBreaker(1, TimeSpan.FromMilliseconds(60));\n"
                     "var ok = false;\n"
                     'cb.TryExecute(() => { if (!ok) throw new InvalidOperationException(); });\n'
-                    'Cj.Eq(cb.State, "open");\n'
+                    'Cj.Eq(cb.State, "open", "after threshold failure");\n'
                     "await Task.Delay(100);\n"
                     "ok = false;\n"
                     'Cj.False(cb.TryExecute(() => { if (!ok) throw new InvalidOperationException(); }), "half-open probe fails");\n'

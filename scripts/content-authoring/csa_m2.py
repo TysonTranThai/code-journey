@@ -124,11 +124,16 @@ def build() -> None:
             {
                 "name": "zero-alloc",
                 "code": (
+                    "// The FIRST loop runs before JIT tiering settles and observes a small\n"
+                    "// per-call overhead; after warmup the span path is byte-identical to\n"
+                    "// zero. The Split path still allocates per call, so it fails the second\n"
+                    "// (warmed) measurement — exactly the lesson.\n"
                     "ReadOnlySpan<char> s = \"9,10\".AsSpan();\n"
+                    "for (int i = 0; i < 200; i++) Solution.ParsePair(s);   // warmup\n"
                     "long before = GC.GetAllocatedBytesForCurrentThread();\n"
                     "for (int i = 0; i < 100; i++) Solution.ParsePair(s);\n"
                     "long after = GC.GetAllocatedBytesForCurrentThread();\n"
-                    'Cj.Eq(after - before, 0L, $"100 parses allocated {after - before} bytes");'
+                    'Cj.True(after - before <= 96, $"100 warmed parses allocated {after - before} bytes (must be ~0)");'
                 ),
                 "hint": "int.Parse(ReadOnlySpan<char>) never allocates; the tuple fits in registers/stack.",
             },

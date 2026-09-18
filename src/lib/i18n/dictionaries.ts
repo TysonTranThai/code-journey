@@ -259,6 +259,9 @@ const en = {
     consoleOutput: "Console output",
     sandboxOutput: "Sandbox output",
     xpEarned: "+XP EARNED",
+    backendIdleCaption: "Your {lang} code will be compiled and graded in an isolated container sandbox.",
+    expectedTests: "Target tests to pass",
+    backendSandboxTitle: "Sandbox Grader",
   },
   preview: {
     heading: "Live preview",
@@ -313,6 +316,10 @@ const en = {
       "Runtime Error: An error occurred while executing the code.",
     explainGenericErrorHint:
       "Read the error message details above to locate and fix the issue in your code.",
+    explainCspError:
+      "Security Policy Notice: In-browser code evaluation was restricted by Content Security Policy.",
+    explainCspErrorHint:
+      "Click the 'Submit' button above to compile and run your code safely inside the isolated container sandbox.",
   },
   mentor: {
     aria: "Mentor",
@@ -770,6 +777,9 @@ const vi: Dictionary = {
     consoleOutput: "Kết quả console",
     sandboxOutput: "Kết quả sandbox",
     xpEarned: "+ĐÃ NHẬN XP",
+    backendIdleCaption: "Mã nguồn {lang} của bạn sẽ được biên dịch và chấm điểm trong container sandbox cô lập.",
+    expectedTests: "Các ca kiểm thử cần vượt qua",
+    backendSandboxTitle: "Bộ Chấm Sandbox",
   },
   preview: {
     heading: "Xem trước trực tiếp",
@@ -824,6 +834,10 @@ const vi: Dictionary = {
       "Lỗi thực thi: Đã phát hiện lỗi trong quá trình chạy mã.",
     explainGenericErrorHint:
       "Đọc kỹ thông báo lỗi ở trên để xác định vị trí và nguyên nhân gây lỗi trong mã của bạn.",
+    explainCspError:
+      "Thông báo chính sách bảo mật: Việc chạy mã trực tiếp trong trình duyệt bị hạn chế bởi CSP.",
+    explainCspErrorHint:
+      "Nhấn nút 'Nộp bài' ở trên để biên dịch và chạy mã an toàn trong container sandbox cô lập.",
   },
   mentor: {
     aria: "Người hướng dẫn",

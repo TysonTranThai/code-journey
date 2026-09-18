@@ -139,10 +139,13 @@ def build() -> None:
                 "code": (
                     "var p = new Publisher();\n"
                     "var subs = Enumerable.Range(0, 10).Select(_ => new Subscriber(p)).ToList();\n"
-                    "var wr = new WeakReference(subs[0]);\n"
+                    "var wr = MakeWeak(subs[0]);\n"
                     "Solution.UnsubscribeAll(p, subs);\n"
+                    "subs.Clear();\n"
                     "GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();\n"
                     'Cj.False(wr.IsAlive, "disposed subscriber is collectible");'
+                    "\n"
+                    "static WeakReference MakeWeak(object o) => new(o);   // helper: nothing keeps `o` alive here"
                 ),
                 "hint": "Subscriber.Dispose must do p.Tick -= OnTick; the -= is what breaks the publisher→subscriber root.",
             },

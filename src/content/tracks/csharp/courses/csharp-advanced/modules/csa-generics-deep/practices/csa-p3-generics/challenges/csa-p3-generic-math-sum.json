@@ -1,0 +1,21 @@
+{
+  "id": "csa-p3-generic-math-sum",
+  "title": "Sum any numeric type",
+  "prompt": "Implement `static T Sum<T>(T[] values) where T : INumber<T>` summing all elements starting from T.Zero, and `static T Average<T>(T[] values) where T : INumber<T>` returning Sum / count (use T.CreateTruncating for the count). Works for int, double, decimal — one implementation.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "int",
+      "code": "Cj.Eq(Solution.Sum(new[] { 1, 2, 3 }), 6, \"int sum\");\nCj.Eq(Solution.Average(new[] { 1, 2, 3, 4 }), 2, \"int avg (truncated)\");",
+      "hint": "T.Zero starts the fold; use += via operators on INumber<T>."
+    },
+    {
+      "name": "double",
+      "code": "var d = Solution.Sum(new[] { 0.5, 0.25 });\nCj.True(Math.Abs(d - 0.75) < 1e-9, \"double sum\");\nvar a = Solution.Average(new[] { 1.0, 2.0 });\nCj.True(Math.Abs(a - 1.5) < 1e-9, \"double avg\");",
+      "hint": "Same generic code; the type argument brings its own arithmetic."
+    }
+  ],
+  "level": "independent"
+}

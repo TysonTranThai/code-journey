@@ -1,0 +1,33 @@
+## Anatomy of an expression tree
+
+An expression tree is an immutable object graph describing code: every
+node has a `NodeType`, a static `Type`, and children. `x => x >= 5 && x <
+100` becomes:
+
+```
+Lambda (Func<int, bool>)
+└── AndAlso
+    ├── GreaterThanOrEqual
+    │   ├── Parameter "x"
+    │   └── Constant 5
+    └── LessThan
+        ├── Parameter "x"
+        └── Constant 100
+```
+
+Three properties make trees the backbone of LINQ providers:
+
+1. **Inspectable** — you can walk and read the logic (that is how EF turns
+   your predicate into SQL).
+2. **Rewritable** — `ExpressionVisitor` produces modified copies (that is
+   how providers substitute constants, inline parameters, add tenant
+   filters).
+3. **Compilable** — `Compile()` emits a real delegate (that is how the
+   rewritten tree becomes executable again).
+
+The decisive C# rule: a lambda assigned to `Expression<TDelegate>` is
+parsed into a tree by the COMPILER; the same lambda assigned to
+`Func<TDelegate>`-shaped delegate types is compiled to IL directly. One
+syntax, two worlds — the target type decides which you get. Note the
+boundary: only *expressions* fit; statements, async, and many operators
+(`??=`, `=>` bodies with blocks) are outside the tree subset.

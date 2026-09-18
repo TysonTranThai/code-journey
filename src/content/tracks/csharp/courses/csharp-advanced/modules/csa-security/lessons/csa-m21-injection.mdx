@@ -1,0 +1,39 @@
+## Injection and unsafe deserialization
+
+Injection is the bug class where data becomes code. Three families this
+course drills:
+
+**SQL injection.** User input concatenated into SQL text changes its
+meaning (`' OR '1'='1`, `'; DROP TABLE x--`). The defense is structural,
+not string-shaped: **parameterized queries** — the driver ships values
+out-of-band, so data can never re-enter the SQL grammar. The practice
+drill shows the shape: the user input lives in `@name`, never in the
+string. Table/column names cannot be parameters (they are identifiers) —
+so they come from allow-lists, never from users. ORMs (EF Core) parameterize
+by default; the risk resurfaces in raw-SQL escape hatches.
+
+**Path traversal.** `Path.Combine(base, "../../etc/passwd")` escapes the
+base. The defense is *normalize-then-verify*: GetFullPath the combined
+path and require it to start with the (normalized) base — the checkpoint's
+`SafeJoin`. Blacklisting `..` misses URL-encoded, double-encoded, and
+absolute-path forms; the prefix check does not.
+
+**Unsafe deserialization.** Deserializing attacker-controlled data into
+types that EXECUTE (`BinaryFormatter` — the canonical .NET disaster,
+removed from the platform for a reason) hands over control. The posture:
+
+1. Never deserialize untrusted data with type-autonomous formatters.
+2. JSON (System.Text.Json) to POCOs is safe by default — data becomes
+   data. Configure limits: max depth, max content.
+3. Deserialization still needs validation: a 2GB string field is a DoS
+   without a size cap.
+
+**Command injection** rounds the family out: `Process.Start("sh", "-c "
++ userInput)` is SQL injection with a shell. Argument arrays (no shell)
+and allow-lists are the fix.
+
+The unifying principle: **the grammar boundary is the defense.** Keep data
+on its side of the grammar — parameters for values, allow-lists for
+identifiers, validators for paths — and no payload can cross it. Defense
+in depth (least-privilege DB users, WAFs) buys time, but the boundary is
+the fix.

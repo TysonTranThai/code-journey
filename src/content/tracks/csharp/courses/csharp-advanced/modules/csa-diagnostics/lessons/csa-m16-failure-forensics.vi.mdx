@@ -1,0 +1,34 @@
+## Pháp y lỗi mà không cần debugger
+
+Thất bại production hiếm khi đi kèm debugger. Kỷ luật thay thế nó:
+
+**1. Structured logging thay log dạng chuỗi.** Phát các sự kiện với thuộc
+tính có kiểu, không phải văn xuôi:
+
+```csharp
+logger.LogInformation("Order {OrderId} processed in {ElapsedMs}ms items={Count}",
+    order.Id, sw.ElapsedMilliseconds, order.Items.Count);
+```
+
+Có thể truy vấn sau đó (OrderId=... xuyên qua các service), và chuỗi tương
+quan — request ID → order ID → ID của các lời gọi thượng nguồn — là thứ
+biến "nó lỗi đâu đó" thành một dòng thời gian.
+
+**2. Tái hiện tất định.** Bug có thể kích hoạt theo yêu cầu là bug đã chết;
+bug "thi thoảng xảy ra" thì đắt đỏ. Các kỹ thuật ép tái hiện: seed mọi
+nguồn random; thu gọn đồng thời (chạy kịch bản chen ngang nghi vấn
+single-threaded trước); thu nhỏ input (tìm trường hợp lỗi tối thiểu); kiểm
+soát thời gian (inject đồng hồ). Test lỗi bạn commit là hiện vật ngăn hồi
+quy mãi mãi.
+
+**3. Kỷ luật giả thuyết.** Vòng debug tệ nhất: sửa gì đó, chạy tất cả,
+hy vọng. Vòng kỷ luật: viết giả thuyết ra giấy ("timeout bốc cháy vì
+token bị link với nguồn sống lâu"), dự đoán một thứ quan sát được ("log
+thấy cancel đúng giây thứ 30 dù công việc chỉ 2s"), rồi chạy THÍ NGHIỆM
+NHỎ NHẤT xác nhận hoặc tiêu diệt nó. Tìm kiếm nhị phân không gian nghi
+phạm — không bao giờ bắn tán loạn.
+
+**4. Bảo toàn bằng chứng.** Khi sự cố production đang diễn ra: chụp log và
+metrics TRƯỚC (chúng bị xoay vòng), trạng thái heap/thread thứ hai, rồi
+sửa. Sau sự cố, bản viết quan trọng nhất nêu gốc rễ, khoảng trống phát
+hiện, và thay đổi phòng ngừa — không đổ lỗi, đầy bằng chứng.

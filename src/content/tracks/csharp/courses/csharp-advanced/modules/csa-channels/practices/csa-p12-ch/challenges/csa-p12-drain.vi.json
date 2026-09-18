@@ -1,0 +1,10 @@
+{
+  "title": "Xả dữ liệu khi tắt lịch sự",
+  "prompt": "Worker phải NGỪNG NHẬN công việc mới ngay khi tắt, nhưng làm nốt những gì đã nhận. Hiện thực `static async Task<List<int>> ShutdownDrain(int feedCount, int shutdownAfter)`: producer ghi các số nguyên 0..feedCount-1; sau khi `shutdownAfter` phần tử đã được GHI, producer gọi TryComplete (không nhận thêm) — nhưng mọi phần tử đã ghi trước khi hoàn thành vẫn phải được tiêu thụ bởi reader nền gom qua ReadAllAsync. Trả về danh sách đã gom. Test khẳng định đúng shutdownAfter phần tử đến, không hơn.",
+  "tests": [
+    {
+      "name": "drain-exact",
+      "hint": "Trong vòng producer: nếu (i == shutdownAfter - 1) thì sau khi WriteAsync(i) gọi TryComplete. Các phần tử đã vào buffer vẫn được ReadAllAsync giao sau khi hoàn thành."
+    }
+  ]
+}

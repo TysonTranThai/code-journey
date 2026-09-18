@@ -1,0 +1,23 @@
+## N+1 and the read-shape problem
+
+The N+1 pattern: one query for the parent list, then **one query per parent**
+for children. 100 orders = 101 round-trips. It survives development because
+each query is fast and localhost latency is ~0; it detonates in production
+where every round-trip costs real network time.
+
+ORMs make it seductively easy: a lazy `order.Lines` inside a loop is N+1 with
+no SQL in sight. Detection is therefore a *counting* discipline — log query
+counts per request and alarm on growth proportional to list length.
+
+The fixes, in order of preference:
+
+1. **Join** — fetch parents with children in one result set (projection into
+   the right shape).
+2. **Batch** — `WHERE id IN (...)` in chunks: ceil(N/batch) queries instead
+   of N. Chunks keep IN-lists within parameter limits.
+3. **Explicit loading** — `Include`/`ThenInclude` (EF Core) or explicit
+   prefetch, when the ORM supports it.
+
+The arithmetic in the drill is the whole skill: at 100 orders and batch size
+20, 101 queries collapse to 6 — a 94% cut that no amount of index tuning
+inside the queries would buy. First fix the *shape*, then tune what remains.

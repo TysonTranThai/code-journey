@@ -1,0 +1,15 @@
+## Cổng kiểm tra (mini-build)
+
+Dịch vụ danh bạ người dùng trên engine trong bộ nhớ:
+
+1. `IUserRepository` — `Register(string name)`, `FindByName(string name)`
+   (trả `User?`), `Count()`.
+2. `SqlUserRepository(CjDb db) : IUserRepository` — mọi SQL tham số hóa;
+   `Register` bọc kiểm tra-trước-tính-duy-nhất và insert trong MỘT
+   transaction (begin → check → insert → commit), trả "ok" hoặc "duplicate".
+3. `Map(row)` → `User(Name, Balance)` — balance mặc định 0 khi cột null.
+4. `UserService(IUserRepository)` — `Invite(string name)` trả
+   `"invited:<name>"` khi thành công, `"exists:<name>"` khi tên đã có
+   (Module 11: service chỉ biết interface).
+
+User: `record User(string Name, decimal Balance)`.

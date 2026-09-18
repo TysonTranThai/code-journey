@@ -1,0 +1,25 @@
+{
+  "id": "csi-checkpoint-m17-task",
+  "title": "Refactor Legacy.Price",
+  "prompt": "Implement Solution.Price with identical behavior to Legacy.Price plus the vip tier, structured cleanly.",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n\n// Provided infrastructure — do not modify.\n// Legacy.Price IS the behavior you must preserve, then extend with \"vip\".\n// It is deliberately smelly: magic numbers, nested conditionals, duplication.\npublic static class Legacy\n{\n    public static decimal Price(int qty, decimal unit, string tier)\n    {\n        decimal total = qty * unit;\n        decimal d = 0m;\n        if (tier == \"gold\")\n        {\n            if (qty >= 10) d = 0.20m; else d = 0.10m;\n        }\n        else if (tier == \"silver\")\n        {\n            if (qty >= 10) d = 0.10m; else d = 0.05m;\n        }\n        if (qty > 100) d += 0.02m;\n        return total * (1m - d);\n    }\n}\n",
+  "tests": [
+    {
+      "name": "matrix matches legacy",
+      "code": "\nint[] qties = { 1, 5, 12, 50, 150 };\nstring[] tiers = { \"gold\", \"silver\", \"none\" };\nforeach (int q in qties)\n    foreach (string t in tiers)\n    {\n        decimal a = Solution.Price(q, 1.5m, t);\n        decimal e = Legacy.Price(q, 1.5m, t);\n        Cj.True(a == e, \"matrix qty=\" + q + \" tier=\" + t + \" expected \" + e + \" got \" + a);\n    }\n",
+      "hint": "Your Price must agree with Legacy on every non-boundary input — that is the definition of behavior-preserving."
+    },
+    {
+      "name": "vip tier",
+      "code": "\nCj.Eq(Solution.Price(4, 10m, \"vip\"), 30m, \"40 at 25pct off\");\nCj.Eq(Solution.Price(120, 10m, \"vip\"), 876m, \"1200 at 27pct total (25 + bulk 2)\");\n",
+      "hint": "vip is a flat 25%; the >100 bulk extra (2%) stacks on top."
+    },
+    {
+      "name": "boundaries hold",
+      "code": "\nCj.Eq(Solution.Price(10, 1m, \"gold\"), 8m, \"qty 10 gold -> 20pct\");\nCj.Eq(Solution.Price(10, 1m, \"silver\"), 9m, \"qty 10 silver -> 10pct\");\nCj.Eq(Solution.Price(100, 1m, \"silver\"), 90m, \"qty 100: no bulk extra yet\");\nCj.Eq(Solution.Price(101, 1m, \"silver\"), 88.88m, \"qty 101: bulk extra applies\");\nCj.Eq(Legacy.Price(101, 1m, \"silver\"), 88.88m, \"legacy agrees on 101\");\n",
+      "hint": "The >= 10 tier threshold and the > 100 bulk threshold are where sloppy refactors bleed."
+    }
+  ]
+}

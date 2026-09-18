@@ -1,0 +1,14 @@
+{
+  "title": "Kỷ luật ArrayPool",
+  "prompt": "Hiện thực `static long PooledSum(int[] values)` sao chép `values` qua buffer thuê từ ArrayPool (thuê byte[] ít nhất 4*values.Length, cộng các int đầu tiên theo nhóm 4 byte little-endian, trả về tổng, TRẢ mảng về pool trong finally). Rồi hiện thực `static long DirectSum(int[] values)` chỉ cộng trực tiếp. Cả hai phải trả kết quả giống nhau; bản pooled không được cấp phát mảng mới mỗi lần gọi (test gọi 100 lần và kiểm tra chênh lệch GC rất nhỏ).",
+  "tests": [
+    {
+      "name": "sums-match",
+      "hint": "Buffer.BlockCopy(vals, 0, rented, 0, vals.Length * 4); rồi cộng các int theo bước 4 byte qua BitConverter hoặc view int[]."
+    },
+    {
+      "name": "pooled-no-alloc",
+      "hint": "ArrayPool<byte>.Shared.Rent/Return trong try/finally — thuê bucket TỐI THIỂU, trả về mà không clear trừ khi pool yêu cầu."
+    }
+  ]
+}

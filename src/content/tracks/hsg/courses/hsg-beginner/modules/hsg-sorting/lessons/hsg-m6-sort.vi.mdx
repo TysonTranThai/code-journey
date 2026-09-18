@@ -1,0 +1,38 @@
+## Sort mặc định
+
+```cpp
+int n; in >> n;
+vector<long long> a(n);
+for (long long& x : a) in >> x;
+sort(a.begin(), a.end());           // tăng dần, O(n log n)
+```
+
+`std::sort` là **introsort**: quicksort lùi về heapsort khi đệ quy quá sâu,
+kết thúc bằng insertion sort trên đoạn ngắn — đảm bảo O(n log n), không có
+trường hợp xấu cố tình phá. Sắp tay kiểu bubble/selection với n = 10^5 là
+~10^10 phép toán: TLE chắc chắn. Khi thi, dùng `std::sort`.
+
+### Giảm dần và biến thể ổn định
+
+```cpp
+sort(a.begin(), a.end(), greater<long long>());   // giảm dần
+stable_sort(a.begin(), a.end());                  // giữ thứ tự nhập của phần tử bằng nhau
+```
+
+`stable_sort` quan trọng khi bạn sắp theo một khóa mà thứ tự trước đó theo
+khóa khác phải được giữ — kiểu yêu cầu "sắp theo điểm, hòa giữ thứ tự nhập".
+
+### Comparator tùy chỉnh — quy tắc sắp thứ tự yếu ngặt
+
+```cpp
+sort(v.begin(), v.end(), [](const pair<int,int>& x, const pair<int,int>& y) {
+    if (x.first != y.first) return x.first < y.first;    // khóa chính
+    return x.second > y.second;                          // khóa phụ
+});
+```
+
+Comparator phải là **sắp thứ tự yếu ngặt**: `cmp(x, x)` phải là false và
+phải nhất quán. Lỗi kinh điển — `return a <= b;` — vi phạm quy tắc đó
+(`cmp(x,x)` đúng) và là **hành vi không xác định**: thực tế nó gây crash
+hoặc hỏng mảng dưới `-std=c++20`. Không bao giờ dùng `<=` hay `>=` trong
+comparator.

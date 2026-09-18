@@ -1,0 +1,34 @@
+## Mô hình `Channel<T>`
+
+`Channel<T>` tách thành hai nửa với năng lực khác nhau một cách cố ý:
+`ChannelWriter<T>` có thể ghi và complete; `ChannelReader<T>` có thể đọc,
+đếm, và quan sát completion. Sự tách là thiết kế: consumer không thể lén
+ghi, producer không thể complete phá hợp đồng của reader.
+
+```csharp
+var ch = Channel.CreateBounded<int>(capacity: 100);
+// hoặc Channel.CreateUnbounded<int>();
+
+await ch.Writer.WriteAsync(item, ct);        // ghi bất đồng bộ; CHỜ khi đầy
+if (ch.Reader.TryRead(out var v)) { }        // poll đồng bộ
+await ch.Reader.ReadAsync(ct);               // đọc bất đồng bộ; CHỜ khi rỗng
+await foreach (var v in ch.Reader.ReadAllAsync(ct)) { }   // rút cạn tới khi hoàn thành
+```
+
+Hai tùy chọn định hình mọi thứ còn lại:
+
+- **Bounded vs unbounded.** Unbounded nhận mọi write ngay lập tức — bộ nhớ
+  tăng không giới hạn khi producer nhanh hơn consumer. Bounded làm `WriteAsync`
+  CHỜ khi đầy. Sự chờ đó là backpressure, và nó là tính năng, không phải lỗi.
+- **Full modes** (`BoundedChannelFullMode`): `Wait` (mặc định — writer chờ),
+  `DropOldest`/`DropNewest` (ngữ nghĩa ring-buffer, mất dữ liệu nhưng không
+  bao giờ ùn tắc), `DropWrite`. Pipeline telemetry mê DropOldest; xử lý đơn
+  hàng tuyệt đối không dùng nó.
+
+Các tùy chọn `SingleReader`/`SingleWriter` cho phép implementation bỏ qua
+đồng bộ hóa — tăng tốc đo đếm được cho trường hợp một-pump.
+
+Channels tồn tại vì `Queue<T>` + `lock` + `SemaphoreSlim` tự viết thì kém:
+không chờ bất đồng bộ, không completion, không backpressure. Bộ sưu tập
+`Task` không có kiểm soát luồng gì cả. Channel là câu trả lời chuẩn của thư
+viện chuẩn cho "pipeline kiểu go trong C#".

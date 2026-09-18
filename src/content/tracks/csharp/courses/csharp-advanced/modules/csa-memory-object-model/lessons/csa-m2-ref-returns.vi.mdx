@@ -1,0 +1,38 @@
+## Ref local, ref return, và bản sao phòng vệ
+
+`ref` tạo ra một alias: một tên khác cho cùng vùng nhớ. Phép sao chép vốn
+xảy ra khi gán không xảy ra nữa:
+
+```csharp
+int[] xs = { 1, 2, 3 };
+ref int slot = ref xs[1];   // slot CHÍNH LÀ xs[1] — cùng một vùng nhớ
+slot = 99;                  // xs[1] == 99 ngay lập tức
+
+// ref return để lộ vùng nhớ từ hàm:
+static ref int At(int[] a, int i) => ref a[i];
+At(xs, 0) = 42;             // gán QUA ref được trả về
+```
+
+Các luật an toàn rất nghiêm, và tất cả đều nhằm chặn việc "chui" vùng nhớ
+stack ra ngoài: ref return không được trả ref trỏ vào biến cục bộ; ref local
+phải khởi tạo từ thứ sống lâu hơn nó; ref struct (Span — sẽ gặp trong module
+này) không được vượt biên `await` hay bị closure thường bắt giữ.
+
+**Ref readonly và bản sao phòng vệ.** `ref readonly int` hứa rằng bên gọi
+sẽ không ghi. Nhưng đọc một *struct khả biến* qua field/thành phần
+`readonly` buộc compiler chèn một **bản sao phòng vệ** cho mỗi lần truy
+cập — một chi phí vô hình. Sự thật hình dạng bug kinh điển: gọi phương thức
+hai lần trên một readonly mutable struct là đọc hai bản sao khác nhau,
+và mỗi bản sao tốn một lần sao chép toàn bộ struct. Cách sửa: hoặc
+`readonly struct` (mọi thành phần readonly, không bao giờ có bản sao phòng
+vệ) hoặc tham số `in` được truyền như readonly ref.
+
+```csharp
+readonly struct Vec { public double X; public double Y; }   // không sao chép
+struct Bad   { public double X; }                            // sao chép khi truy cập readonly
+```
+
+Vì sao quan tâm: các bản sao vô hình mỗi lần truy cập trên struct lớn
+(ví dụ ma trận 256 byte) là bug hiệu năng kinh điển mà không tạo cấp phát —
+profiler chỉ thấy CPU, không thấy allocation, vì không có gì được cấp phát;
+các byte chỉ di chuyển.

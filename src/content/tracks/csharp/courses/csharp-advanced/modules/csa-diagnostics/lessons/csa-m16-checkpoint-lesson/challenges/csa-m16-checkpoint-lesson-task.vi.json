@@ -1,0 +1,14 @@
+{
+  "title": "Checkpoint chẩn đoán",
+  "prompt": "Hiện thực `static string Describe(Exception ex)` sinh một dòng chẩn đoán: \\\"<TypeName>: <Message> | caused by: <TypeName>: <Message> | ...\\\" đi theo chuỗi InnerException tới gốc, nối bằng \\\" | caused by: \\\". Rồi hiện thực `static (int depth, string rootType) Analyze(Exception ex)` trả về độ sâu chuỗi inner-exception (0 khi không có inner) và tên kiểu của exception gốc. Kỹ năng được chấm điểm: không bao giờ làm mất nguyên nhân gốc chôn trong chuỗi AggregateException/InnerException.",
+  "tests": [
+    {
+      "name": "describe-chain",
+      "hint": "Đi ex → ex.InnerException → null, nối mỗi \\\"type: message\\\" bằng \\\" | caused by: \\\"."
+    },
+    {
+      "name": "analyze-depth",
+      "hint": "Đếm bước tới khi InnerException == null; ghi GetType().Name của exception cuối."
+    }
+  ]
+}

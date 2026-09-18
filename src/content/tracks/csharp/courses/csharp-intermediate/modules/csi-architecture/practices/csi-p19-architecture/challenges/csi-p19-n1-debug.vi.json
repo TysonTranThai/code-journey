@@ -1,0 +1,18 @@
+{
+  "title": "Debug: Loader gọi quá nhiều",
+  "prompt": "Một bạn junior \"sửa\" N+1 bằng cách cache — nhưng `CachedLoader` vẫn gọi store mỗi customer VÀ chạy thêm một lượt \"làm ấm\" vô nghĩa. Fake đếm truy vấn phơi bày cả hai. Viết `Solution.Load(ILookup store, int[] ids)` đúng: mỗi lần gọi Load thực hiện đúng MỘT `FetchMany` (dedup id), trả tên theo thứ tự input (kể cả lặp), và input rỗng thì không gọi store.",
+  "tests": [
+    {
+      "name": "exactly one call, order preserved",
+      "hint": "Dedup id [1,2,3], một lần gọi, map ngược theo vị trí xuất hiện đầu của mỗi id."
+    },
+    {
+      "name": "no warm-up second pass",
+      "hint": "Bản hỏng gọi 4 lần ở đây; đúng là 1 lần với ids [2,1]."
+    },
+    {
+      "name": "empty input is safe",
+      "hint": "Ids rỗng: không gọi store, kết quả rỗng."
+    }
+  ]
+}

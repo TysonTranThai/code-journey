@@ -1,0 +1,20 @@
+## The gate (mini-build)
+
+`Legacy.Price` (provided, do not modify) is the behavior contract:
+
+| tier | qty ≥ 10 | qty < 10 |
+|---|---|---|
+| gold | 20% off | 10% off |
+| silver | 10% off | 5% off |
+| anything else | no discount | no discount |
+
+Any tier with `qty > 100` gains an extra 2% off, stacked.
+
+Implement `Solution.Price(qty, unit, tier)` with **identical behavior**, plus
+one new requirement: tier `"vip"` gets a flat **25% off** (the >100 bulk
+extra still stacks on top). Structure it the clean way — named constants or a
+switch expression over the tier, one rule per line, no magic numbers.
+
+Your safety net is the legacy code itself: the tests compare your `Solution`
+against `Legacy` across a matrix, then pin the boundaries and the new vip
+behavior exactly.

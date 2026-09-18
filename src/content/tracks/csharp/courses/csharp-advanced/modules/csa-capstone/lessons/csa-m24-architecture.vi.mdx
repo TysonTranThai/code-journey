@@ -1,0 +1,20 @@
+## Modular monolith và hướng phụ thuộc
+
+Mọi quyết định kiến trúc ở đây quy về một câu hỏi: **các mũi tên chỉ về đâu?**
+Một modular monolith là một deployable với ranh giới nội bộ *được thi hành*:
+các module giao tiếp qua interface, và các mũi tên phụ thuộc chỉ từ code tính
+năng hướng về trừu tượng — không bao giờ ngang sang nội bộ module khác, không
+bao giờ từ logic miền hướng về chi tiết hạ tầng.
+
+Bậc thang chi phí của việc phân tán (bài học module 20, nói lại theo kiến
+trúc): một lời gọi phương thức là nano-giây và luôn hoạt động; một lời gọi
+mạng là mili-giây, thất bại theo những cách mới, và cần câu chuyện phiên bản.
+**Đừng trả thuế của mạng cho đến khi một ranh giới thật sự đòi hỏi** — scale
+độc lập, deploy độc lập, hoặc quyền sở hữu theo tổ chức. "Microservice" chọn
+vì lý do CV là một modular monolith gắn thêm một máy phát sự cố hệ phân tán.
+
+Thi hành thắng khát vọng: ranh giới nhìn thấy được bởi compiler (project
+riêng, kiểu `internal`, analyzer kiểm tra phụ thuộc) sống sót qua deadline;
+chú thích trên sơ đồ kiến trúc thì không. Capstone giữ mọi thứ trong một tiến
+trình nhưng đòi hỏi *kỷ luật* — một đường seam `JobPlatform` mà mọi công việc
+đi qua, đúng như một API gateway trong hệ thống thật.

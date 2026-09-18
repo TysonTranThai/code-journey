@@ -1,0 +1,34 @@
+## Hiển thị bộ nhớ và thứ tự
+
+Khi hai thread cùng chạm một biến, phần cứng và JIT cùng phối hợp để làm
+mọi thứ nhanh hơn — cache hấp thụ ghi, compiler nâng phép đọc ra khỏi vòng
+lặp vào thanh ghi. Một cờ `bool` có thể quay mãi `true` vì vòng đọc đã cache
+nó. Cách sửa không phải vỗ tay gọi là "thread safety"; đó là một mô hình
+bộ nhớ cụ thể:
+
+```csharp
+// Thread ghi                              // Thread đọc
+_flag = true;                              while (!_flag) { }        // có thể không bao giờ thấy!
+
+Volatile.Write(ref _flag, true);           while (Volatile.Read(ref _flag) == false) { }
+// Volatile.Write = release: các ghi trước đó trở nên hiển thị trước nó
+// Volatile.Read  = acquire: các đọc sau đó thấy mọi thứ trước nó
+```
+
+Các đảm bảo, từ yếu đến mạnh:
+
+- **Field thường**: không đảm bảo gì giữa các thread. JIT có thể cache; CPU
+  có thể sắp xếp lại.
+- **Field `volatile`**: ngữ nghĩa acquire/release — không cache, không sắp
+  xếp lại các truy cập quanh nó. Nhưng `volatile` KHÔNG làm phép ghép trở
+  nên nguyên tử: `volatile int x; x++;` vẫn mất cập nhật (đọc-sửa-ghi là ba
+  bước).
+- **`Interlocked`**: nguyên tử đầy đủ cho đọc-sửa-ghi (`Add`, `Increment`,
+  `CompareExchange`) — công cụ đúng duy nhất cho bộ đếm dùng chung.
+- **`lock`**: loại trừ lẫn nhau VÀ các hàng rào acquire/release — một lock
+  làm mọi thứ bên trong hiển thị, vì vậy khóa một biến cũng sửa được tính
+  hiển thị của mọi ghi trước nó.
+
+Quy tắc dạy học: `Interlocked` cho bộ đếm, `lock` cho bất biến trải trên
+nhiều biến, `Volatile` cho cờ. Chỉ dùng thứ yếu hơn khi có phép đo chứng
+minh bạn cần tốc độ đó.

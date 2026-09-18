@@ -200,6 +200,7 @@ def build() -> None:
             },
         ],
         reference=(
+            "using System.Numerics;\n\n"
             "public class Solution\n{\n"
             "    public static T Sum<T>(T[] values) where T : INumber<T>\n    {\n"
             "        T total = T.Zero;\n"
@@ -210,6 +211,7 @@ def build() -> None:
             "        => Sum(values) / T.CreateTruncating(values.Length);\n}"
         ),
         wrong=(
+            "using System.Numerics;\n\n"
             "public class Solution\n{\n"
             "    public static T Sum<T>(T[] values) where T : INumber<T>\n    {\n"
             "        T total = T.Zero;\n"

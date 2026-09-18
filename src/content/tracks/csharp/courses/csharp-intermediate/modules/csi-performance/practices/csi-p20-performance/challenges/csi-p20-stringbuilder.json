@@ -1,0 +1,26 @@
+{
+  "id": "csi-p20-stringbuilder",
+  "title": "StringBuilder, Not Concatenation",
+  "prompt": "`ConcatReport` builds one big string with `+=` inside the loop —\nthe quadratic shape. Rewrite it as `Solution.Report(string[] lines)` using a\n`System.Text.StringBuilder` so the loop allocates no intermediate strings:\n\n- one line per input, each terminated with `'\\n'` (so `lines = [\"a\",\"b\"]`\n  produces `\"a\\nb\\n\"`),\n- empty input produces `\"\"`,\n- and `StringOps.Allocations` must stay at 0 across the whole call (the\n  counting helper is provided; call `StringOps.Bump()` never).\n\n```csharp\npublic static class Solution\n{\n    public static string Report(string[] lines);   // one line per input, '\\n'-terminated\n}\n// provided: public static class StringOps { int Allocations; Reset(); Bump(); }\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n\n// Provided infrastructure — do not modify. A string-op counter wired into\n// the workload helpers: Concat loops through solution code still count.\npublic static class StringOps\n{\n    public static int Allocations { get; private set; }\n    public static void Reset() => Allocations = 0;\n    public static void Bump() => Allocations++;\n}\n",
+  "tests": [
+    {
+      "name": "output shape is exact",
+      "code": "\nvar outp = Solution.Report(new[] { \"a\", \"b\", \"c\" });\nCj.Eq(outp, \"a\\nb\\nc\\n\", \"each line terminated\");\nCj.Eq(Solution.Report(new string[] { }), \"\", \"empty in, empty out\");\n",
+      "hint": "Append each line + '\n'; empty input appends nothing."
+    },
+    {
+      "name": "no intermediate string allocations",
+      "code": "\nStringOps.Reset();\nvar s = Solution.Report(new[] { \"x\", \"y\", \"z\" });\nCj.Eq(StringOps.Allocations, 0, \"the loop must not build intermediate strings\");\nCj.Eq(s, \"x\\ny\\nz\\n\", \"output unchanged\");\n",
+      "hint": "StringBuilder holds the buffer; one ToString at the end (which the harness does not count)."
+    },
+    {
+      "name": "long input finishes",
+      "code": "\nStringOps.Reset();\nvar lines = new string[500];\nfor (int i = 0; i < 500; i++) lines[i] = \"line-\" + i;\nCj.Eq(Solution.Report(lines).Length, 500 * 10, \"6 chars + newline per line\");\n",
+      "hint": "500 lines of 'line-NNN' (7 chars) + '\n' = 8 per line, 4000 total — prove the loop is linear by surviving it."
+    }
+  ],
+  "level": "debugging"
+}

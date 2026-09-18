@@ -1,0 +1,26 @@
+## Capstone: nền tảng xử lý job
+
+Mọi thứ từ 21 module hội tụ vào một bản thiết kế:
+
+- **API tiếp nhận** — idempotency key (seen-set `jobId`), kiểm soát tiếp nhận
+  theo giới hạn sức chứa (backpressure), từ chối nhanh.
+- **Kho công việc** — tập pending, được `RunAll` rút cạn exactly-once (bản
+  thay thế deterministic cho pipeline Channels của module 13).
+- **Worker retry** — theo dõi số lần thử theo từng job với ngưỡng thất bại và
+  thăng hạng DLQ (bảng quy tắc của bài tập, giờ là code thật trong exercise).
+- **Hook quan sát** — bộ đếm công việc, metric bị từ chối/được chấp nhận, và
+  một lớp số học SLO (bài tập 1).
+- **Kỷ luật kiến trúc** — một seam, mũi tên phụ thuộc hướng về trừu tượng,
+  không tự ý giắc vào nội bộ của khái niệm khác.
+
+Phần được chấm điểm trong sandbox (checkpoint) xác minh ba hợp đồng quan
+trọng nhất và thường bị vi phạm nhất trong production: *bản trùng được hấp
+thụ* (idempotency), *quá tải bị từ chối* (backpressure), và *công việc đã
+chấp nhận thực thi đúng một lần* (exactly-once, đạt được qua intake
+idempotent + thực thi có theo dõi). Phần mở rộng tự học: nối nền tảng vào một
+`Channel<T>` thật có giới hạn, thêm pipeline policy kiểu `Polly` quanh
+`Submit`, và viết các truy vấn dashboard SLO bạn sẽ chạy.
+
+Trả bài với kỷ luật module 14: đo cấp phát và bộ đếm cho bản hiện thực của
+bạn, và có thể nói *vì sao* với từng quyết định thiết kế — chứ không chỉ
+"nó chạy".

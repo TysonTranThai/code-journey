@@ -1,0 +1,21 @@
+{
+  "id": "csi-p19-dto-boundary",
+  "title": "DTO: Hide the Internals",
+  "prompt": "`Employee` (domain) carries `Salary` — which must never cross the\npublic boundary. Implement:\n\n- `Solution.ToPublic(Employee e)` returning a `PublicDto` with only safe\n  fields (`Name`, `Dept`) — the DTO type must not even declare a `Salary`\n  member.\n- `Solution.TeamReport(Employee[] staff)` returning public rows in input\n  order — the report is built from boundary types, not domain ones.\n\n```csharp\npublic static class Solution\n{\n    public sealed class Employee { public string Name = \"\"; public string Dept = \"\"; public decimal Salary; }\n    public sealed class PublicDto { public string Name = \"\"; public string Dept = \"\"; }\n    public static PublicDto ToPublic(Employee e);\n    public static PublicDto[] TeamReport(Employee[] staff);\n    public static bool DtoHasSalaryMember();   // reflection probe used by the tests\n}\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "salary never crosses",
+      "code": "\nvar e = new Solution.Employee { Name = \"ann\", Dept = \"eng\", Salary = 120000m };\nvar dto = Solution.ToPublic(e);\nCj.Eq(dto.Name, \"ann\", \"name mapped\");\nCj.Eq(dto.Dept, \"eng\", \"dept mapped\");\nCj.False(Solution.DtoHasSalaryMember(), \"PublicDto must not declare Salary\");\n",
+      "hint": "Map only the safe fields; the DTO type itself must not have a Salary member."
+    },
+    {
+      "name": "report maps through the dto",
+      "code": "\nvar staff = new[] {\n    new Solution.Employee { Name = \"a\", Dept = \"eng\" },\n    new Solution.Employee { Name = \"b\", Dept = \"ops\" },\n};\nvar rows = Solution.TeamReport(staff);\nCj.Eq(rows.Length, 2, \"one row per employee\");\nCj.Eq(rows[0].Name + \":\" + rows[1].Dept, \"a:ops\", \"order and fields preserved\");\n",
+      "hint": "TeamReport is built from PublicDto rows in input order."
+    }
+  ],
+  "level": "independent"
+}

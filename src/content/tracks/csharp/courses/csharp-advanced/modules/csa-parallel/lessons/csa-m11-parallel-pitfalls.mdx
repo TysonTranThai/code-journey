@@ -1,0 +1,39 @@
+## Parallel pitfalls and exception handling
+
+**Exceptions aggregate.** A parallel loop may throw on several workers
+simultaneously; you receive `AggregateException` carrying them all:
+
+```csharp
+try { Parallel.ForEach(files, f => Process(f)); }
+catch (AggregateException ag)
+{
+    foreach (var ex in ag.Flatten().InnerExceptions) Log(ex);
+}
+```
+
+Catching inside the body and swallowing is how partial failures hide —
+process half the files, report success.
+
+**Closure capture is a classic trap.** `Parallel.For` gives you the index
+as a parameter, so the old `for`-loop closure bug does not apply — but
+`Parallel.ForEach` over a collection whose enumerator is not thread-safe,
+or shared mutable state in the lambda, will bite. Anything written by two
+iterations needs atomics or local aggregation.
+
+**Oversubscription.** Launching 100 `Task.Run` CPU jobs on 8 cores just
+multiplies context switches. Bound with `MaxDegreeOfParallelism`, or
+partition explicitly. The thread pool's hill-climbing also resents CPU
+storms — long-running work belongs in `LongRunning` tasks or dedicated
+workers, not `Task.Run` floods.
+
+**Cancellation** of a parallel loop is cooperative like everything else:
+pass a token via `ParallelOptions`, and the loop stops *launching* new
+iterations when it fires; bodies must check `loopState.ShouldExitCurrentIteration`
+or the token themselves for prompt exit. An unobserved token cancels
+scheduling only — a common production misunderstanding ("we cancelled it,
+why is it still eating CPU?").
+
+**UI-thread deadlock** is an async smell, but Parallel + UI fails too:
+`Parallel.For(...).Wait()` on the UI thread is fine, but blocking the UI
+thread inside a body that itself awaits deadlocks the loop. Keep bodies
+CPU-only; orchestrate async at the boundary.

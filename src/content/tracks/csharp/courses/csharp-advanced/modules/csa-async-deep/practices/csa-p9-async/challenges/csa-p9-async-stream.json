@@ -1,0 +1,16 @@
+{
+  "id": "csa-p9-async-stream",
+  "title": "Async stream pipeline",
+  "prompt": "Implement `static async IAsyncEnumerable<int> MultiplyAsync(IAsyncEnumerable<int> source, int factor)` yielding each element times factor, and `static async Task<List<int>> Collect(IAsyncEnumerable<int> source)` materializing a stream to a list. Build the source with an async iterator that yields 1,2,3 with `await Task.Yield()` between items.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "pipeline",
+      "code": "static async IAsyncEnumerable<int> Source()\n{\n    foreach (var n in new[] { 1, 2, 3 }) { await Task.Yield(); yield return n; }\n}\nvar r = await Solution.Collect(Solution.MultiplyAsync(Source(), 10));\nCj.Eq(string.Join(\",\", r), \"10,20,30\", \"multiplied stream\");",
+      "hint": "await foreach (var item in source.ConfigureAwait(false)) — multiply and yield return."
+    }
+  ],
+  "level": "imitation"
+}

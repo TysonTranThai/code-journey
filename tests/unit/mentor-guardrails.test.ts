@@ -195,4 +195,18 @@ describe("getErrorExplanation (bilingual error explainer and Socratic hints)", (
     const exp = getErrorExplanation("SyntaxError: Unexpected identifier 'main'", dVi, "c");
     expect(exp?.message).toContain("C/C++");
   });
+
+  it("explains CSP unsafe-eval restriction in Vietnamese and English", () => {
+    const raw =
+      "Error: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self' 'unsafe-inline'.";
+    const expVi = getErrorExplanation(raw, dVi);
+    expect(expVi).not.toBeNull();
+    expect(expVi?.message).toContain("CSP");
+    expect(expVi?.hint).toContain("Nộp bài");
+
+    const expEn = getErrorExplanation(raw, dEn);
+    expect(expEn).not.toBeNull();
+    expect(expEn?.message).toContain("Content Security Policy");
+    expect(expEn?.hint).toContain("Submit");
+  });
 });

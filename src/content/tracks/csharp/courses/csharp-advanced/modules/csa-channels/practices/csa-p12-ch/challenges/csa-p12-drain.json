@@ -1,0 +1,16 @@
+{
+  "id": "csa-p12-drain",
+  "title": "Graceful shutdown drain",
+  "prompt": "A worker must stop ACCEPTING new work immediately on shutdown, but finish what it already accepted. Implement `static async Task<List<int>> ShutdownDrain(int feedCount, int shutdownAfter)`: a producer writes integers 0..feedCount-1; after `shutdownAfter` items have been WRITTEN, the producer calls TryComplete (no more accepts) — but every item written before completion must still be consumed by a background reader collecting them via ReadAllAsync. Return the collected list. The test asserts shutdownAfter items arrive, nothing more.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "drain-exact",
+      "code": "var r = await Solution.ShutdownDrain(100, 30);\nCj.Eq(r.Count, 30, \"exactly the accepted items processed\");\nCj.Eq(r.Min(), 0, \"every item present\"); Cj.Eq(r.Max(), 29, \"the first 30, in order\");",
+      "hint": "In the producer loop: if (i == shutdownAfter) writer.TryComplete(); then WriteAsync(i) — but TryComplete BEFORE the writes you want accepted... order: write i, then when i == shutdownAfter-1, TryComplete after the write. Items already buffered are still delivered to ReadAllAsync after completion."
+    }
+  ],
+  "level": "real-world"
+}

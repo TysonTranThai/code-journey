@@ -1,0 +1,21 @@
+{
+  "id": "csi-p18-strategy-shipping",
+  "title": "Strategy: Kill the Shipping Switch",
+  "prompt": "`LegacyCheckout.Cost` prices shipping by a mode string, and every new\ncarrier means another `else if`. Replace the switch with **Strategy**:\n\n1. `IShippingCost { decimal Cost(Solution.Parcel p); }` (inside `Solution`)\n2. Two implementations: `Flat` (always `3.5m`) and `Weight` (`0.8m` per kg,\n   minimum `4m`)\n3. `Solution.Cost(Parcel p, IShippingCost strategy)` delegates entirely —\n   zero conditionals on weight/mode in `Solution.Cost` itself.\n\nThe value is *composition by the caller*: the tests pass strategies by hand,\nproving the context depends only on the abstraction.\n\n```csharp\npublic static class Solution\n{\n    public sealed class Parcel { public decimal WeightKg; }\n    public interface IShippingCost { decimal Cost(Parcel p); }\n    public static decimal Cost(Parcel p, IShippingCost strategy);\n}\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "flat and weight strategies",
+      "code": "\nvar p = new Solution.Parcel(); p.WeightKg = 2m;\nCj.Eq(new Solution.Flat().Cost(p), 3.5m, \"flat is flat\");\nCj.Eq(new Solution.Weight().Cost(p), 4m, \"2kg * 0.8 = 1.6 -> min 4 applies\");\nvar heavy = new Solution.Parcel(); heavy.WeightKg = 10m;\nCj.Eq(new Solution.Weight().Cost(heavy), 8m, \"10kg * 0.8\");\n",
+      "hint": "Weight: cost = kg * 0.8m, but never below 4m. Flat: constant 3.5m."
+    },
+    {
+      "name": "context delegates, callers compose",
+      "code": "\nvar p = new Solution.Parcel(); p.WeightKg = 10m;\nCj.Eq(Solution.Cost(p, new Solution.Flat()), 3.5m, \"context respects injected strategy\");\nCj.Eq(Solution.Cost(p, new Solution.Weight()), 8m, \"same parcel, other strategy\");\nvar light = new Solution.Parcel(); light.WeightKg = 2m;\nCj.Eq(Solution.Cost(light, new Solution.Weight()), 4m, \"min applies through context too\");\n",
+      "hint": "Solution.Cost must contain no branching — it only forwards to the injected strategy."
+    }
+  ],
+  "level": "independent"
+}

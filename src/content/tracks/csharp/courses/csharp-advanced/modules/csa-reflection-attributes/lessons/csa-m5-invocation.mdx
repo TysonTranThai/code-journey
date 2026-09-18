@@ -1,0 +1,36 @@
+## Dynamic invocation and its bill
+
+Three ways to call a method you discovered at runtime, in ascending
+setup cost and descending per-call cost:
+
+1. `methodInfo.Invoke(obj, args)` — slowest per call: argument boxing,
+   array allocation, security/registrar checks.
+2. Cached delegate: `(Func<Order, decimal>)methodInfo.CreateDelegate(...)` —
+   build once, then near-direct call speed.
+3. Compiled expression: `Expression.Lambda<Func<...>>(...).Compile()` —
+   most setup, fastest body; can also inline field access.
+
+```csharp
+// Resolve once:
+static readonly ConcurrentDictionary<(Type, string), Func<object, object?>> Getters = new();
+
+static object? Get(object obj, string name) => Getters.GetOrAdd(
+    (obj.GetType(), name),
+    static key =>
+    {
+        var p = key.Item1.GetProperty(key.Item2)!;
+        return target => p.GetValue(target);   // captures resolved PropertyInfo
+    });
+```
+
+Numbers to internalize (order-of-magnitude, machine-dependent — always
+measure your own): direct call 1x; cached delegate ~2–5x; compiled
+expression ~2–3x; raw `Invoke` ~30–100x. The jump from 1 to 30 is the
+reason every serious serializer (System.Text.Json, EF materializers)
+caches or code-gens instead of reflecting per call.
+
+`CreateDelegate` has one trap: it validates the delegate signature against
+the method at creation — a mismatch throws immediately (good), while a
+cached-wrong delegate throws on every call (bad). Prefer failing during
+startup: build all delegates in a warm-up phase, not lazily on first
+request.

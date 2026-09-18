@@ -1,0 +1,16 @@
+## Cổng kiểm tra (mini-build)
+
+Một file, ba đường ranh, ghép các pattern bạn đã xây trong module:
+
+1. **Strategy** — `IRule { string? Check(Solution.Order o); }` trả thông báo
+   lỗi hoặc null. Hiện thực `MinQty` (fail khi tổng qty < 2, msg `"qty"`) và
+   `PaidSku` (fail khi có sku rỗng, msg `"sku"`).
+2. **Đường ống Strategy** — `Solution.Validate(order, IRule[] rules)` trả lỗi
+   không-null đầu tiên, hoặc null khi tất cả đạt. Rule null trong mảng được bỏ
+   qua (đường ống khoan dung).
+3. **Repository + Decorator audit** — `IRepo { void Save(Solution.Order o); int Saved { get; } }`;
+   `AuditedRepo` bọc bất kỳ `IRepo` nào, đếm số lần lưu được chấp nhận trong
+   `Saves`.
+
+Luồng dưới test: validate trước; chỉ lưu khi hợp lệ; `AuditedRepo.Saves` phải
+bằng số order *hợp lệ*.

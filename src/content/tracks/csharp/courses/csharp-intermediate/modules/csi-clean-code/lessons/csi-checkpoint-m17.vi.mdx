@@ -1,0 +1,19 @@
+## Cổng kiểm tra (mini-build)
+
+`Legacy.Price` (đã cấp, không sửa) là hợp đồng hành vi:
+
+| tier | qty ≥ 10 | qty < 10 |
+|---|---|---|
+| gold | giảm 20% | giảm 10% |
+| silver | giảm 10% | giảm 5% |
+| khác | không giảm | không giảm |
+
+Tier nào có `qty > 100` được thêm 2% giảm giá chồng lên.
+
+Hiện thực `Solution.Price(qty, unit, tier)` với **hành vi giống hệt**, cộng
+một yêu cầu mới: tier `"vip"` giảm thẳng **25%** (mức >100 vẫn chồng lên).
+Cấu trúc theo cách sạch — hằng số có tên hoặc switch expression theo tier,
+mỗi quy tắc một dòng, không magic number.
+
+Lưới an toàn là chính code legacy: test so sánh `Solution` của bạn với
+`Legacy` trên một ma trận, rồi ghim các biên và hành vi vip mới.

@@ -1,0 +1,35 @@
+## Socket và thế giới loopback
+
+Socket là file handle tới một điểm cuối mạng. Bề mặt API managed:
+
+```csharp
+var listener = new TcpListener(IPAddress.Loopback, 0);   // cổng 0 = ephemeral
+listener.Start();
+var client = await listener.AcceptTcpClientAsync();      // một cái cho mỗi kết nối
+var stream = client.GetStream();                          // NetworkStream: duplex, gần như không buffer
+
+var outbound = new TcpClient();
+await outbound.ConnectAsync(IPAddress.Loopback, port);
+```
+
+Sandbox của Code Journey cho phép **TCP và UDP loopback, không mạng bên
+ngoài** — và đó chính là phòng thí nghiệm trung thực cho kỹ nghệ giao thức:
+mọi phần khó (framing, buffer, vòng đời, timeout, truyền một phần) đều xảy
+ra trên localhost, trong khi các biến không kiểm soát được (mất gói, định
+tuyến, firewall) vắng mặt. Bug giao thức tìm thấy ở đây chính là những bug
+ăn mòn service production.
+
+Những sự thật khiến người mới bất ngờ:
+
+- **NetworkStream không có khái niệm tin nhắn.** `WriteAsync(frame)` không
+  sinh ra `ReadAsync(buf) == frame`. Nó sinh ra *các byte có sẵn lúc nào
+  đó, có thể dính với các write khác, có thể bị tách*.
+- **Read trả 0 chỉ khi đóng sạch.** Kết nối nửa mở (peer chết, cáp bị rút)
+  lộ diện dưới dạng một lệnh đọc VÔ HẠN hoặc timeout — không bao giờ là số
+  không. Vì vậy deadline (bài kế tiếp) không phải tùy chọn.
+- **Accept không phải xác thực.** Ai tới được cổng đều kết nối được; xác
+  thực mức giao thức (hoặc không, nếu chỉ loopback) là thiết kế của bạn.
+
+Luật vòng đời: dispose client (finally / using), đóng duyên dáng
+(`Shutdown(Both)` rồi dispose), và giới hạn mọi listener bằng một vòng
+accept không thể chết vì một kết nối xấu.

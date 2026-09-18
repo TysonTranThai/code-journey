@@ -1,0 +1,85 @@
+## What a test framework actually is
+
+Strip away the attributes and the runner UI, and a test framework is a
+`foreach` with a `try/catch`:
+
+```csharp
+public sealed record TestResult(string Name, bool Passed, string Message);
+
+public sealed class TestSummary
+{
+    public int Passed;
+    public int Failed;
+    public List<string> Failures = new();   // "name: message"
+}
+
+public static TestSummary Run(IEnumerable<(string Name, Action Body)> tests)
+{
+    var summary = new TestSummary();
+    foreach (var (name, body) in tests)
+    {
+        try { body(); summary.Passed++; }
+        catch (Exception ex)
+        {
+            summary.Failed++;
+            summary.Failures.Add(name + ": " + ex.Message);
+        }
+    }
+    return summary;
+}
+```
+
+Two design decisions matter more than the rest:
+
+1. **Keep going after a failure.** A runner that stops at the first red test
+   hides everything behind it. Real frameworks run every test and report all
+   failures — that is what makes a failed CI run useful.
+2. **A test "fails" by throwing.** Assertions are just small methods that
+   throw on mismatch. `xUnit`'s `Assert.Equal` and the `Cj` helper this
+   platform grades with are the same idea.
+
+## AAA — the shape of every test
+
+Arrange the world, act once, assert on the outcome:
+
+```csharp
+// Arrange
+var cart = new Cart();
+cart.Add("tea", price: 3m, qty: 2);
+// Act
+var total = cart.Total();
+// Assert
+// total == 6m
+```
+
+If you cannot see the three blocks, the test is doing too much — split it.
+
+## Naming: the test name is the specification
+
+Prefer sentence names that state the expected behavior:
+`Total_sums_price_times_quantity`, `PlaceOrder_rejects_when_out_of_stock`.
+When the name is right, the failure list reads like a to-do list; when it is
+wrong ("Test1", "works now"), every future reader re-derives the intent.
+
+## Parameterized tests: one body, many cases
+
+Same behavior over many inputs → loop a table, don't copy the test:
+
+```csharp
+var cases = new (string Input, int Expected)[]
+{
+    ("", 0), ("a", 1), ("ab", 2),
+};
+foreach (var (input, expected) in cases)
+{
+    // assert Count(input) == expected, labeling with input
+}
+```
+
+Each iteration should carry its inputs in the failure message — a bare
+"expected 2, got 3" over a table of 40 rows is unusable.
+
+## Check your understanding
+
+- Why must the runner continue after a failure? (One red test should not hide ten others — CI reports all.)
+- What makes a test fail in every framework? (An exception escaping the test body.)

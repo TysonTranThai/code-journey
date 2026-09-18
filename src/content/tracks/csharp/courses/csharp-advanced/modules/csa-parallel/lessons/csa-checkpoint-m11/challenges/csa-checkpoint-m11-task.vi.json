@@ -1,0 +1,14 @@
+{
+  "title": "Checkpoint parallel",
+  "prompt": "Hiện thực `static long SumSquaresParallel(int[] data, int threshold)` tính tổng bình phương — tuần tự khi data.Length <= threshold, song song khi ngược lại, bằng Parallel.For với tổng theo luồng (combine cuối bằng Interlocked). Rồi hiện thực `static int[] SquaresParallel(int[] data)` trả về bình phương THEO THỨ TỰ GỐC qua PLINQ (AsOrdered). Test so cả hai với kết quả tuần tự và khẳng định bản song song của mảng 10 triệu phần tử nhanh hơn baseline tuần tự bị cố ý làm chậm (chi phí giả mỗi phần tử).",
+  "tests": [
+    {
+      "name": "sum-correct",
+      "hint": "Parallel.For với localInit: () => 0L, body: (i, state, local) => local + (long)data[i]*data[i], localFinally: local => Interlocked.Add(ref total, local)."
+    },
+    {
+      "name": "plinq-ordered",
+      "hint": "data.AsParallel().AsOrdered().Select(x => x * x).ToArray() — thiếu AsOrdered, PLINQ gộp lệch thứ tự."
+    }
+  ]
+}

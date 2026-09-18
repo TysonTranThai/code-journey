@@ -1,0 +1,31 @@
+## Bài checkpoint: chẩn đoán service hỏng
+
+Một chẩn đoán mẫu trong năm bước — pattern mà khóa học liên tục quay lại:
+
+**Triệu chứng:** "Pipeline job bị treo sau vài giờ; restart là hết."
+
+**Bước 1 — định dạng.** Treo ≠ sập: thread đang đỗ, CPU ~0. Bộ nhớ ổn định
+hoặc leo chậm. Profile đó đã loại livelock gắn CPU và OOM thuần túy.
+
+**Bước 2 — dòng thời gian.** Log có cấu trúc: gì vừa thay đổi ngay trước
+lần treo đầu? Correlation ID cho thấy job hoàn thành cuối và job chưa xong
+đầu tiên. Ranh giới đó là cửa sổ bằng chứng.
+
+**Bước 3 — giả thuyết.** Thread đỗ + bounded channel: kinh điển là một
+tầng mà consumer chết trong khi writer vẫn nhận — backpressure của channel
+khiến mọi writer thượng nguồn kẹt theo. Dự đoán: log thấy entry cuối của
+producer, entry cuối của consumer sớm hơn vài tiếng; thread dump sẽ thấy
+các continuation `ReadAsync`/`WriteAsync` đang đỗ.
+
+**Bước 4 — thí nghiệm nhỏ nhất.** Tái hiện ở quy mô nhỏ: một consumer gặp
+lỗi giữa chừng (thử thách channel-drain trong checkpoint đúng hình dạng
+này) và quan sát writer có kẹt không. Xác nhận cơ chế, không phải sự cố.
+
+**Bước 5 — sửa giao thức.** Bug không phải "consumer crashed" — mà là
+"pipeline không có luật cho consumer chết." Cách sửa: fault channel khi
+consumer chết (`Complete(ex)`) để producer fail fast, cộng một tín hiệu
+liveness mỗi tầng. Sự cố là một thể hiện của khoảng trống thiết kế; bản
+sửa đóng khoảng trống, không phải thể hiện.
+
+Mỗi bước là những gì các thử thách của khóa học buộc bạn luyện: đọc bằng
+chứng, hình thành dự đoán, chạy test nhỏ nhất, sửa giao thức.

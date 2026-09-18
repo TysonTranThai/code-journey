@@ -1,0 +1,21 @@
+{
+  "id": "csa-p14-linq-vs-loop",
+  "title": "LINQ vs loop: measured verdict",
+  "prompt": "Implement `static int CountEvenLinq(int[] values)` (values.Count(x => x % 2 == 0)) and `static int CountEvenLoop(int[] values)` (plain for-loop). Both must return the same count. Then implement `static long AllocDelta(Func<int[]> work, int iterations)` — warmup + per-thread allocation delta — and use it in the test to compare BOTH counters' allocations. The graded insight: for this workload the loop allocates 0; document the LINQ cost in the implementation comment.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "same-count",
+      "code": "var vals = Enumerable.Range(0, 1000).ToArray();\nCj.Eq(Solution.CountEvenLinq(vals), Solution.CountEvenLoop(vals), \"identical counts\");\nCj.Eq(Solution.CountEvenLoop(vals), 500, \"known count\");",
+      "hint": "Both count x % 2 == 0; the loop version uses a for and a counter."
+    },
+    {
+      "name": "loop-zero-alloc",
+      "code": "var vals = new int[1000];\n_ = Solution.CountEvenLoop(vals);\nvar before = GC.GetAllocatedBytesForCurrentThread();\nfor (int i = 0; i < 50; i++) Solution.CountEvenLoop(vals);\nvar delta = GC.GetAllocatedBytesForCurrentThread() - before;\nCj.Eq(delta, 0L, $\"loop allocated {delta}\");",
+      "hint": "for-loop over indices; no enumerator, no closure."
+    }
+  ],
+  "level": "real-world"
+}

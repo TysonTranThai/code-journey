@@ -1,0 +1,18 @@
+{
+  "title": "Debug: Bộ sinh Báo cáo hay Nhớ",
+  "prompt": "ReportGenerator này hỏng ở bước code review — báo cáo rỉ giữa các instance và dữ liệu mới không xuất hiện. Hai tội: trạng thái static dùng chung cho MỌI instance, và cache dữ liệu đầu vào mà caller kỳ vọng đọc lại. Viết `ReportGenerator` đúng: ngoài IFetcher được inject không giữ trạng thái nào; `Generate()` phản ánh dòng HIỆN TẠI của fetcher mỗi lần gọi, định dạng \"1. dòng\", \"2. dòng\" (từ 1).",
+  "tests": [
+    {
+      "name": "two instances, independent",
+      "hint": "Không static, không chia sẻ. Mỗi generator đọc fetcher của chính nó."
+    },
+    {
+      "name": "mutation is reflected",
+      "hint": "Generate không phải cache: gọi Fetch mỗi lần và định dạng mới."
+    },
+    {
+      "name": "stable for unchanged data",
+      "hint": "Hành vi đúng là tất định — cùng input, cùng output, không cần cache."
+    }
+  ]
+}

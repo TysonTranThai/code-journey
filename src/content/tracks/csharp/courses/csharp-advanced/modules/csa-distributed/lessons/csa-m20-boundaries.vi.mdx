@@ -1,0 +1,35 @@
+## Ranh giới service và trạng thái phân tán
+
+Ranh giới service là nơi process của bạn kết thúc và của người khác bắt
+đầu — triển khai khác, miền lỗi khác, lịch nâng cấp khác. Một khi lời gọi
+vượt qua nó, mọi giả định đổi thay:
+
+| Lời gọi trong process | Lời gọi qua mạng |
+|---|---|
+| lỗi = exception | lỗi = exception HOẶC timeout HOẶC kết quả một phần HOẶC im lặng |
+| độ trễ = ns | độ trễ = ms, biến động, thi thoảng cả giây |
+| bộ nhớ nhất quán | trạng thái xa đã đi tiếp mà không có bạn |
+| transaction hoạt động | transaction phân tán là một bài báo nghiên cứu |
+
+**Tám ảo tưởng của điện toán phân tán** vẫn là checklist debug tốt nhất:
+mạng tin cậy; độ trễ bằng không; băng thông vô hạn; mạng an toàn; topo
+không đổi; chỉ có một quản trị viên; chi phí vận chuyển bằng không; mạng
+đồng nhất. Mọi câu chuyện sự cố production đều có ít nhất một ảo tưởng bị
+vi phạm.
+
+Các luật thiết kế ranh giới hệ quả của nó:
+
+1. **Ranh giới cần hợp đồng** — có phiên bản, tường minh, ghi rõ ngữ nghĩa
+   lỗi ("endpoint này có thể trả 503; coi 503 là an-toàn-để-retry").
+2. **Trạng thái xa chỉ là giả thuyết.** Cache của bạn, read model của bạn,
+   response nhận được cách đây 200ms — tất cả có thể đã cũ. Thiết kế phép
+   đọc chịu được độ cũ, hoặc tuyên bố không chịu được.
+3. **Không chuỗi đồng bộ.** Lời gọi đồng bộ A→B→C→D nhân chồng độ trễ và
+   tỷ lệ lỗi theo cấp số nhân (0.99⁴ ≈ 0.96). Messaging bất đồng bộ hoặc
+   tiền tính toán đánh bại chuỗi sâu.
+4. **Ranh giới sở hữu lỗi của nó.** Caller nhận lỗi domain, không phải
+   stack trace từ database của bạn.
+
+Module này mô phỏng ranh giới một cách tất định trong process — nhưng các
+lỗi được mô phỏng (giao trùng lặp, đọc cũ, khuếch đại retry) là những lỗi
+thật, thu nhỏ đến mức test được bằng mili giây.

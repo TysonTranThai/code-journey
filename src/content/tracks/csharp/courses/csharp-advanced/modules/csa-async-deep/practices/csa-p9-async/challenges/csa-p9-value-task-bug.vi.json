@@ -1,0 +1,10 @@
+{
+  "title": "Chẩn đoán lỗi ValueTask",
+  "prompt": "ValueTask có luật nghiêm ngặt: await đúng một lần, không bao giờ await sau khi đã tiêu thụ, không bao giờ await đồng thời. Hiện thực `static async ValueTask<int> SafeDouble(ValueTask<int> source)` ĐÚNG: await source một lần và trả kết quả nhân 2. Rồi hiện thực `static async Task<int> BrokenDouble(ValueTask<int> source)` minh họa mẫu bị cấm — await hai lần (`var a = await source; var b = await source; return a + b;`). Test chạy bản SAI trên ValueTask được nâng bởi IValueTaskSource tạo qua ManualResetValueTaskSourceCore để chứng minh nó ném lỗi/hành xử sai.",
+  "tests": [
+    {
+      "name": "safe-works",
+      "hint": "var v = await source; return v * 2."
+    }
+  ]
+}

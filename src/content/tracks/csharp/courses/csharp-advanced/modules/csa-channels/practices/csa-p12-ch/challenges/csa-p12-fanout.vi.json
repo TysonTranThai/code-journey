@@ -1,0 +1,10 @@
+{
+  "title": "Fan-out worker",
+  "prompt": "Hiện thực `static async Task<int[]> FanOut(int itemCount, int workers)` nơi itemCount công việc (giá trị = chỉ số) chảy qua một channel và `workers` task tiêu thụ đồng thời mỗi cái kéo phần tử và tính index * 2, ghi kết quả vào list an-toàn-luồng dùng chung. Mọi phần tử phải được xử lý đúng một lần (consumer cạnh tranh trên một channel), và phương thức trả về kết quả đã sắp. Test chạy workers=4 trên 1000 phần tử và khẳng định tính đầy đủ lẫn duy nhất.",
+  "tests": [
+    {
+      "name": "exactly-once",
+      "hint": "Một channel, N consumer mỗi cái `await foreach (var i in reader.ReadAllAsync())` — channel bảo đảm mỗi phần tử đến đúng một reader."
+    }
+  ]
+}

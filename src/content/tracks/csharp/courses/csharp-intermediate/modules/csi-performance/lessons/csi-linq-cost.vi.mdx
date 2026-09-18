@@ -1,0 +1,38 @@
+## Trễ theo mặc định
+
+`Where`, `Select`, `Take`... trả về một *view* trên nguồn. Không có công việc
+nào xảy ra cho đến khi có thứ gì enumerate (`foreach`, `ToList`, `Count`,
+`First`...). Hai hệ quả quan trọng cho hiệu năng:
+
+**Enumeration nhiều lần.** Mỗi lần enumerate chạy lại toàn bộ pipeline — và
+chạy lại cả *nguồn* (ví dụ `query.Count()` rồi `Render(query)` trong bản tiếng
+Anh: filter chạy hai lần).
+
+Nếu pipeline được tiêu thụ nhiều lần, materialize một lần:
+`var list = query.ToList();`. Nếu tiêu thụ đúng một lần, thêm `ToList()` chỉ
+tốn một allocation vô ích.
+
+**Từng phần tử cũng không miễn phí.** Pipeline ba stage gọi ba delegate mỗi
+phần tử. Với phần lớn app code điều này không đáng kể; trong vòng nóng trên
+hàng triệu phần tử nó hiện hình. Cách sửa không phải "bỏ LINQ" — mà là
+"đừng dựng pipeline trong vòng lặp" (ví dụ O(n²) trước/sau trong bản tiếng
+Anh).
+
+## Lựa chọn materialization
+
+- `ToList()`/`ToArray()` — snapshot; cần khi dùng lặp lại hoặc nguồn sẽ đổi
+  sau đó.
+- `Count()` trên pipeline — enumerate toàn bộ; property `Count` trên `List`
+  miễn phí. Phân biệt bạn đang chạm vào cái nào.
+- `First`/`FirstOrDefault`/`Single` — cùng độ trễ, kỳ vọng khác nhau;
+  `Single` có thể quét tiếp sau match để chứng minh tính duy nhất.
+
+## Đôi mắt review hiệu năng
+
+Đọc code người khác theo chi phí, checklist bắt được 90%:
+
+1. Có `+=` string trong vòng lặp? → `StringBuilder`.
+2. Có `Contains`/`Remove` trên list trong vòng lặp? → `HashSet`/`Dictionary`.
+3. Có pipeline LINQ bị enumerate nhiều hơn một lần? → materialize một lần.
+4. Có query được dựng *bên trong* vòng lặp khác? → kéo lên, chạy một lần.
+5. Và trên hết: có thứ gì được đo trước khi bị gắn nhãn chậm?

@@ -1,0 +1,16 @@
+## Cổng kiểm tra (mini-build)
+
+Ba đường ranh trong một file, được test kiểm tra chỉ qua các port:
+
+1. **Port** — `ICatalog { int Price(string sku); }` và
+   `IBasket { void Add(string sku, int qty); int Count { get; } string FirstSku { get; } }`
+   (Count = tổng số lượng đã thêm; FirstSku = sku đầu tiên được thêm).
+2. **Service** — `Checkout(ICatalog, IBasket)`: `Quote()` trả
+   `"Total:" + giá-của-FirstSku + " x " + Count`; throw
+   `InvalidOperationException` khi giỏ rỗng (Count == 0). Quote phải chạy chỉ
+   qua interface — không được cast sang kiểu cụ thể.
+3. **Đường ranh batch** — `QuoteMany(string[] skus, ICatalog catalog)` trả một
+   giá cho mỗi sku (theo thứ tự input), định giá mỗi sku distinct đúng một lần
+   — dedup, rồi map.
+
+Xem chữ ký `Solution` trong bản tiếng Anh.

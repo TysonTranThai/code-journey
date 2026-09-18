@@ -1,0 +1,34 @@
+## Checkpoint lesson: diagnose the broken service
+
+A worked diagnosis in five moves — the pattern this course keeps returning
+to:
+
+**Symptom:** "The job pipeline hangs after a few hours; restart fixes it."
+
+**Move 1 — characterize.** Hang ≠ crash: threads parked, CPU ~0. Memory
+steady or climbing slowly. That profile already excludes CPU-bound
+ livelock and pure OOM.
+
+**Move 2 — timeline.** Structured logs: what changed just before the first
+hang? Correlation IDs show the last completed job and the first incomplete
+one. The boundary is the evidence window.
+
+**Move 3 — hypothesis.** Parked threads + bounded channels: the classic is
+a stage whose consumer died while its writer still accepts — the channel's
+backpressure then wedges every upstream writer. Prediction: logs show
+producers' last entry, consumers' last entry hours earlier; thread dumps
+would show `ReadAsync`/`WriteAsync` continuations parked.
+
+**Move 4 — smallest experiment.** Reproduce at small scale: a consumer
+that faults mid-run (the checkpoint's channel-drain challenge is exactly
+this shape) and observe whether writers wedge. Confirm the mechanism, not
+the incident.
+
+**Move 5 — fix the protocol.** The bug is not "a consumer crashed" — it is
+"the pipeline has no rule for a dead consumer." The fix: fault the channel
+on consumer death (`Complete(ex)`) so producers fail fast, plus a liveness
+signal per stage. The incident was one instance of a design gap; the fix
+closes the gap, not the instance.
+
+Every step is what the course's challenges force you to practice: read
+evidence, form a prediction, run the smallest test, fix the protocol.

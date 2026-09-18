@@ -1,0 +1,16 @@
+{
+  "id": "csa-p20-eventual-read",
+  "title": "Read-after-write under eventual consistency",
+  "prompt": "Implement class `EventualStore(int replicationDelayMs)` with `void Write(string key, int value)` (primary immediately; replica after the delay via Task.Run) and `int? ReadStale(string key)` (reads the replica, may miss recent writes) plus `int? ReadPrimary(string key)` (always current). Implement `static async Task<bool> ReadAfterWriteHolds(EventualStore store, string key)` that writes 42, reads the replica IMMEDIATELY — and returns whether the read saw the write (it must NOT, with a real delay; the test then waits past the delay and requires the replica to converge).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "stale-then-converged",
+      "code": "var store = new EventualStore(60);\nvar holdsImmediately = await EventualStore.ReadAfterWriteHolds(store, \"k\");\nCj.False(holdsImmediately, \"immediate replica read misses the write (eventual consistency)\");\nawait Task.Delay(120);\nCj.Eq(store.ReadStale(\"k\"), 42, \"replica converged after the delay\");\nCj.Eq(store.ReadPrimary(\"k\"), 42, \"primary always current\");",
+      "hint": "Write: dict[key]=v on primary; Task.Run(async { await Task.Delay(replicationDelayMs); replica[key]=v; }). ReadAfterWriteHolds: Write, then ReadStale != null."
+    }
+  ],
+  "level": "real-world"
+}

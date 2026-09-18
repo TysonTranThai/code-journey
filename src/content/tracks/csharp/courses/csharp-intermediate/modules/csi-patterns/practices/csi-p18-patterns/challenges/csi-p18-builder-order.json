@@ -1,0 +1,26 @@
+{
+  "id": "csi-p18-builder-order",
+  "title": "Builder: Valid Orders Only",
+  "prompt": "`OrderReq` has required fields and derived invariants that are too\neasy to get wrong by hand. Build a **Builder** whose `Build()` enforces them\nor throws:\n\n- `WithCustomer(string)` — required, non-empty; `Build()` throws if missing\n- `WithItem(string sku, int qty, decimal price)` — repeatable; `qty` must be\n  ≥ 1 (throw `ArgumentException` in `WithItem` itself)\n- `WithRush()` — flags rush delivery\n- `Build()` throws when: no customer, no items, or a rush order with more\n  than 10 total items (business rule)\n\nExpose the built fields the tests read: `Customer`, `TotalQty`, `Items`\n(count), `Rush`.\n\n```csharp\npublic static class Solution\n{\n    public sealed class OrderReq { public string Customer = \"\"; public int TotalQty; public int Items; public bool Rush; }\n    public sealed class OrderBuilder\n    {\n        public OrderBuilder WithCustomer(string c);\n        public OrderBuilder WithItem(string sku, int qty, decimal price);   // qty >= 1\n        public OrderBuilder WithRush();\n        public OrderReq Build();                                            // enforces invariants\n    }\n}\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "happy path builds",
+      "code": "\nvar o = new Solution.OrderBuilder()\n    .WithCustomer(\"ann\")\n    .WithItem(\"sku\", 2, 3m)\n    .WithItem(\"sku2\", 3, 1m)\n    .Build();\nCj.Eq(o.Customer, \"ann\", \"customer kept\");\nCj.Eq(o.TotalQty, 5, \"quantities summed\");\nCj.Eq(o.Items, 2, \"two lines\");\nCj.Eq(o.Rush, false, \"not rushed by default\");\n",
+      "hint": "Straight accumulation: sum qtys, count lines, default Rush to false."
+    },
+    {
+      "name": "invariants throw in Build",
+      "code": "\nCj.True(Solution.Threw(() => new Solution.OrderBuilder().Build()), \"no customer throws\");\nCj.True(Solution.Threw(() => new Solution.OrderBuilder().WithCustomer(\"ann\").Build()), \"no items throws\");\nCj.True(Solution.Threw(() => new Solution.OrderBuilder().WithItem(\"s\", 0, 1m)), \"qty 0 rejected in WithItem\");\n",
+      "hint": "Two enforcement points: WithItem validates qty immediately; Build validates completeness."
+    },
+    {
+      "name": "rush rule boundary",
+      "code": "\nvar b = new Solution.OrderBuilder().WithCustomer(\"ann\").WithRush();\nfor (int i = 0; i < 10; i++) b.WithItem(\"s\" + i, 1, 1m);\nb.Build();                                  // exactly 10: legal\nCj.True(Solution.RushThrew(11), \"11 items rush throws\");\n",
+      "hint": "Rush with MORE than 10 total items throws in Build; exactly 10 is fine."
+    }
+  ],
+  "level": "mini-build"
+}

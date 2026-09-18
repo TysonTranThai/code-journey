@@ -1,0 +1,25 @@
+{
+  "id": "csi-p19-port-seam",
+  "title": "Restore the Seam",
+  "prompt": "`OrderService` below is untestable — it news up its storage directly,\nso no fake can stand in:\n\n```csharp\npublic sealed class OrderService          // BROKEN — do not ship this\n{\n    private readonly Dictionary<int, int> _d = new();   // hard-wired storage\n    public int Bump(int id) { ... }\n}\n```\n\nRefactor the *shape* the tests can see:\n\n1. `IStore { int Get(int id); void Put(int id, int v); }` (inside `Solution`)\n2. `Solution.Service` takes an `IStore` via constructor.\n3. `Service.Bump(id)` adds `Delta` (a `const int` = 5) to the stored value\n   and returns the new value.\n4. Provide two adapters: `DictStore` (wraps a caller-supplied dictionary)\n   and `DoubleStore` (its own private dictionary) — proving any\n   implementation fits the same port.\n\nThe tests inject each store in turn — the dependency points at a port, not\nan implementation.\n\n```csharp\npublic static class Solution\n{\n    public interface IStore { int Get(int id); void Put(int id, int v); }\n    public sealed class DictStore : IStore;      // wraps a supplied Dictionary<int,int>\n    public sealed class DoubleStore : IStore;    // independent private storage\n    public sealed class Service                  // ctor(IStore); int Bump(int id)\n}\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "bump goes through the port",
+      "code": "\nvar store = new System.Collections.Generic.Dictionary<int, int>();\nstore[7] = 10;\nvar svc = new Solution.Service(new Solution.DictStore(store));\nCj.Eq(svc.Bump(7), 15, \"10 + Delta(5)\");\nCj.Eq(store[7], 15, \"write reached the caller's dictionary\");\n",
+      "hint": "Bump reads via Get, adds Delta, writes via Put, returns the new value."
+    },
+    {
+      "name": "any implementation fits",
+      "code": "\nvar svc = new Solution.Service(new Solution.DoubleStore());\nCj.Eq(svc.Bump(1), 5, \"empty store -> 0 + 5\");\n",
+      "hint": "A second IStore implementation must work unchanged — that is the seam."
+    },
+    {
+      "name": "delta applied once per bump",
+      "code": "\nvar probe = new Solution.DoubleStore();\nvar one = new Solution.Service(probe);\none.Bump(3);\nCj.Eq(probe.Get(3), 5, \"delta applied once\");\none.Bump(3);\nCj.Eq(probe.Get(3), 10, \"and again on the next bump\");\n",
+      "hint": "Each Bump applies exactly Delta — no drift, no doubling."
+    }
+  ]
+}

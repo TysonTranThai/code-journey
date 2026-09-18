@@ -1,0 +1,31 @@
+{
+  "id": "hsg-cp-m6-tower",
+  "title": "Tower Heights",
+  "prompt": "**Description:** A skyline has n towers with heights h_1..h_n. In one\nsecond you may pick any tower and change its height by 1. Find the\n**minimum total seconds** to make all towers equal, and print the common\nheight achieving it. If several heights achieve the same minimum, print\nthe smallest one.\n\n**Input:** Line 1: n (1 <= n <= 10^5). Line 2: n heights (0 <= h_i <= 10^9).\n**Output:** Line 1: minimum total change. Line 2: the optimal height\n(smallest if several tie).\n\n**Example:** `3` / `1 2 4` -> the median 2 gives 1+0+2 = 3 seconds;\nheight 3 also gives 3, so print the smaller: `2`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"3\\n1 2 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n2\\n\"));",
+      "hint": "Median minimizes sum of absolute differences; tie 2 vs 3, smaller wins."
+    },
+    {
+      "name": "single",
+      "code": "std::istringstream in(\"1\\n999999999\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n999999999\\n\"));",
+      "hint": "Already equal — zero moves."
+    },
+    {
+      "name": "even tie",
+      "code": "std::istringstream in(\"4\\n1 2 100 101\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"198\\n2\\n\"));",
+      "hint": "Every height in [2, 100] ties at 198; the smallest is 2."
+    },
+    {
+      "name": "equal towers",
+      "code": "std::istringstream in(\"3\\n7 7 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n7\\n\"));",
+      "hint": "No change needed."
+    }
+  ],
+  "level": "guided"
+}

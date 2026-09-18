@@ -85,6 +85,10 @@ const lines = [
   "export DOTNET_ROOT=/usr/share/dotnet DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1 DOTNET_CLI_HOME=/tmp HOME=/tmp",
   `CSC="dotnet /usr/share/dotnet/sdk/*/Roslyn/bincore/csc.dll"`,
   `REFS=""; for f in ${CS_REF_GLOB}; do REFS="$REFS -r:$f"; done`,
+  // Mirror the production job script: the (shared) test harness may reference
+  // Roslyn assemblies (C# — Advanced), so their refs must be on the compile
+  // line. Referencing changes nothing unless a type from them is used.
+  `for r in ${rt.CS_ADV_EXTRA_REFS_GLOB}; do REFS="$REFS -r:$r"; done`,
   `echo '${CS_RUNTIMECONFIG_JSON}' > rc.json`,
 ];
 for (const job of jobs) {

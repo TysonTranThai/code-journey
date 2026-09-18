@@ -99,7 +99,19 @@ export function getErrorExplanation(
     };
   }
 
-  // 8. General runtime error
+  // 8. Content Security Policy (CSP) restriction on eval
+  if (
+    text.includes("Content Security Policy") ||
+    text.includes("unsafe-eval") ||
+    text.includes("Evaluating a string as JavaScript violates")
+  ) {
+    return {
+      message: d.console.explainCspError,
+      hint: d.console.explainCspErrorHint,
+    };
+  }
+
+  // 9. General runtime error
   if (text.startsWith("Error:") || text.includes("Error:") || text.startsWith("Lỗi:")) {
     return {
       message: d.console.explainGenericError,

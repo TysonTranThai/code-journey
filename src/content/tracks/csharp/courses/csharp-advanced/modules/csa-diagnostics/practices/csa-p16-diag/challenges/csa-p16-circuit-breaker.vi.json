@@ -1,0 +1,14 @@
+{
+  "title": "Máy trạng thái circuit breaker",
+  "prompt": "Hiện thực lớp `CircuitBreaker(int failureThreshold, TimeSpan openDuration)` với phương thức `bool TryExecute(Action action)`: CLOSED thì thực thi và đếm lỗi liên tiếp (reset khi thành công); chạm ngưỡng thì mở trong openDuration (TryExecute trả false ngay lập tức khi đang mở); hết thời gian thì chuyển HALF-OPEN, cho một lần thử — thành công thì đóng lại, thất bại thì mở lại. Hiện thực `string State` trả về \\\"closed\\\", \\\"open\\\", hoặc \\\"half-open\\\".",
+  "tests": [
+    {
+      "name": "opens-and-resets",
+      "hint": "Theo dõi _state, _consecutiveFailures, _openedAt. Trong TryExecute: nếu open và now < openedAt+duration → false; nếu open và đã hết hạn → state=half-open, cho một lần thử."
+    },
+    {
+      "name": "half-open-fails-reopens",
+      "hint": "Lần dò half-open thất bại: reset _openedAt, state=open."
+    }
+  ]
+}

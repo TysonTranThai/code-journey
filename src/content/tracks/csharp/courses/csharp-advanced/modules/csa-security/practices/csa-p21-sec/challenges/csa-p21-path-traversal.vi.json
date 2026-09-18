@@ -1,0 +1,14 @@
+{
+  "title": "Chặn path traversal",
+  "prompt": "Hiện thực `static string SafeJoin(string baseDir, string userInput)` nối tên tệp tương đối do người dùng cung cấp vào thư mục gốc nhưng TỪ CHỐI traversal: chuẩn hóa đường dẫn kết hợp (Path.GetFullPath) và ném UnauthorizedAccessException nếu kết quả không bắt đầu bằng base đã chuẩn hóa (cho phép base kết thúc bằng dấu phân tách). \\\"report.pdf\\\" đi qua; \\\"..\\\\..\\\\etc\\\\passwd\\\" và đường dẫn tuyệt đối bị chặn.",
+  "tests": [
+    {
+      "name": "clean-name-passes",
+      "hint": "var full = Path.GetFullPath(Path.Combine(baseDir, userInput)); var baseFull = Path.GetFullPath(baseDir); if (!full.StartsWith(baseFull)) throw new UnauthorizedAccessException();"
+    },
+    {
+      "name": "traversal-rejected",
+      "hint": "Path.Combine + GetFullPath chuẩn hóa ..; kiểm tra tiền tố bắt cả traversal tương đối lẫn thoát tuyệt đối."
+    }
+  ]
+}

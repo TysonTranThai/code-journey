@@ -1,0 +1,35 @@
+## Memory visibility and ordering
+
+When two threads touch the same variable, the hardware and the JIT each
+conspire to make things faster — caches absorb writes, the compiler hoists
+reads out of loops into registers. A `bool` flag can spin `true` forever
+because the reading loop cached it. The fix is not "thread safety" hand-
+waving; it is a concrete memory model:
+
+```csharp
+// Writer thread                          // Reader thread
+_flag = true;                             while (!_flag) { }        // may never see it!
+
+Volatile.Write(ref _flag, true);          while (Volatile.Read(ref _flag) == false) { }
+// Volatile.Write = release: prior writes become visible before it
+// Volatile.Read  = acquire: subsequent reads see everything before it
+```
+
+The guarantees, weakest to strongest:
+
+- **Plain field**: no guarantees across threads. JIT may cache; CPU may
+  reorder.
+- **`volatile` field**: acquire/release semantics — no caching, no reordering
+  of accesses around it. But `volatile` does NOT make compound operations
+  atomic: `volatile int x; x++;` still loses updates (read-modify-write is
+  three steps).
+- **`Interlocked`**: full atomicity for read-modify-write (`Add`, `Increment`,
+  `CompareExchange`) — the only correct tool for counters shared across
+  threads.
+- **`lock`**: mutual exclusion AND the same acquire/release fences — a lock
+  makes everything inside visible, which is why locking one variable fixes
+  visibility of every write before it.
+
+The teaching rule: use `Interlocked` for counters, `lock` for invariants
+spanning multiple variables, `Volatile` for flags. Reach for anything
+weaker only with a measurement that proves you need the speed.

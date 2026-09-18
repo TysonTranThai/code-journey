@@ -1,0 +1,33 @@
+## Async streams and IAsyncDisposable
+
+`IAsyncEnumerable<T>` is the async `IEnumerable`: items arrive over time,
+and `await foreach` consumes them. An async iterator combines `yield return`
+with `await`:
+
+```csharp
+static async IAsyncEnumerable<Trade> StreamAsync(
+    IAsyncEnumerable<string> lines, [EnumeratorCancellation] CancellationToken ct = default)
+{
+    await foreach (var line in lines.WithCancellation(ct).ConfigureAwait(false))
+        if (Trade.TryParse(line, out var t)) yield return t;
+}
+```
+
+Backpressure is inherent: the consumer pulls; the producer only produces
+when pulled (unlike `Task`-based fan-out, which produces as fast as it can).
+For bounded buffering semantics, compose streams with `Channel<T>`
+(Module 13).
+
+`IAsyncDisposable` + `await using` close the lifecycle for resources whose
+release is itself asynchronous (network connections, streams, DB readers):
+
+```csharp
+await using var conn = await pool.RentAsync(ct);
+// DisposeAsync runs on scope exit — even on exception
+```
+
+The trap: `DisposeAsync` is NOT awaited if you use `using` instead of
+`await using` — the compiler inserts a sync-over-async wait, or worse,
+fire-and-forget semantics depending on the type. And `ConfigureAwait(false)`
+belongs on the `await foreach` line, applied to the enumerator, not the
+items.

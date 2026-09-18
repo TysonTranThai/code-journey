@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m15-task",
+  "title": "CLR internals checkpoint",
+  "prompt": "Implement `static (string ilName, bool isSealed, int methodCount) Inspect<T>()` using reflection: return the type's full name, whether it is sealed, and its declared instance method count. Then implement `static string DispatchDescription(Type t)` returning exactly \"virtual\" if t has any virtual methods (declared, instance), \"interface\" if it implements any interfaces, otherwise \"direct\". The graded insight: typeof(List<int>) reports sealed, virtual, and interface all at once.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "inspect-sealed",
+      "code": "var (name, sealed_, count) = Solution.Inspect<string>();\nCj.True(name.Contains(\"String\"), \"full name\");\nCj.True(sealed_, \"string is sealed\");\nCj.True(count > 0, \"has methods\");",
+      "hint": "typeof(T).FullName, .IsSealed, .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Length."
+    },
+    {
+      "name": "dispatch-desc",
+      "code": "var v = new V();\nvar o = new O();\nCj.Eq(Solution.DispatchDescription(typeof(V)), \"direct\", \"plain class: direct\");\nCj.Eq(Solution.DispatchDescription(typeof(O)), \"virtual\", \"class declaring virtual: virtual\");\nclass V { public int M() => 1; }\nclass O { public virtual int M() => 2; }",
+      "hint": "m.IsVirtual is true for overrides too — require the method to declare a new virtual slot (IsVirtual && !IsFinal) or use DeclaredOnly and check for the `virtual` keyword via attributes."
+    }
+  ]
+}

@@ -202,11 +202,14 @@ export function LiveConsole({
     [stopWorker, d, t],
   );
 
-  // Live: re-run (debounced) whenever the code changes.
+  const isJs = !language || language === "javascript" || language === "js";
+
+  // Live: re-run (debounced) whenever the code changes (JavaScript only).
   useEffect(() => {
+    if (!isJs) return;
     const t = setTimeout(() => runCode(code), DEBOUNCE_MS);
     return () => clearTimeout(t);
-  }, [code, runCode]);
+  }, [code, isJs, runCode]);
 
   const untouched = code === boilerplate;
   const explanation = getErrorExplanation(output, d, language);

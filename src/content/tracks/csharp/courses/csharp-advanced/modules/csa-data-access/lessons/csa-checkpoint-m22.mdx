@@ -1,0 +1,11 @@
+## Checkpoint: data access
+
+One store, one state machine, one budget. The store enforces optimistic
+concurrency (version check or conflict); the retry loop re-reads the current
+version on conflict and converges in rounds; the pool drill keeps the
+occupancy arithmetic honest.
+
+If your first `SaveAll` threw forever, the usual cause is reusing the stale
+expected version — the fix is *re-read on conflict*, exactly as in production
+retry loops. If `VersionOf` lied after a conflict, check that a *failed* Put
+mutates nothing.

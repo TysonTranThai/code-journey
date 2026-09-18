@@ -1,0 +1,14 @@
+{
+  "title": "Checkpoint Roslyn",
+  "prompt": "Hiện thực `static string[] PublicMethodNames(string source)`: parse `source` bằng CSharpSyntaxTree.ParseText, tìm mọi node MethodDeclarationSyntax, và trả về identifier đã sắp. Rồi hiện thực `static bool Compiles(string source)`: dựng CSharpCompilation (OutputKind.DynamicallyLinkedLibrary) trên source đó với các reference từ AppDomain.CurrentDomain.GetAssemblies() lọc IsDynamic == false && Location != string.Empty, và trả về việc nó có đúng 0 diagnostic lỗi hay không.",
+  "tests": [
+    {
+      "name": "syntax-walk",
+      "hint": "tree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>() — thu Identifier.ValueText."
+    },
+    {
+      "name": "semantic-verify",
+      "hint": "CSharpCompilation.Create với syntax trees + references; kiểm tra diags nơi Severity == DiagnosticSeverity.Error."
+    }
+  ]
+}

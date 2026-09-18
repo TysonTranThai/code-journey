@@ -189,7 +189,7 @@ def build() -> None:
                 "code": (
                     "var a = new Account(1, 100); var b = new Account(2, 50);\n"
                     'Cj.Eq(Solution.SafeTransfer(b, a, 20), 1, "b->a also succeeds (consistent order)");\n'
-                    'Cj.Eq(b.Balance, 30); Cj.Eq(a.Balance, 120);'
+                    'Cj.Eq(b.Balance, 30, "reverse direction credited"); Cj.Eq(a.Balance, 120, "reverse direction debited");'
                 ),
                 "hint": "Same lock order regardless of argument order — that is the whole fix.",
             },

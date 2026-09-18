@@ -1,0 +1,14 @@
+{
+  "title": "Quét song song có hủy",
+  "prompt": "Hiện thực `static int FirstMatch(int[] data, Func<int, bool> predicate, int workers)` tìm chỉ số đầu tiên (i thấp nhất) mà predicate(data[i]) đúng, chạy quét theo chunk song song — dùng Parallel.For với 'chỉ số tìm thấy' dùng chung được bảo vệ bởi Interlocked.CompareExchange nên chỉ chỉ số THẤP HƠN mới thắng, và dừng các vòng lặp còn lại khi đã tìm thấy (loopState.Stop()). Trả về -1 nếu vắng mặt.",
+  "tests": [
+    {
+      "name": "first-match",
+      "hint": "Interlocked.CompareExchange(ref best, i, int.MaxValue) chỉ thắng khi best vẫn là MaxValue HOẶC i thấp hơn — vòng CAS giữ giá trị nhỏ nhất."
+    },
+    {
+      "name": "absent",
+      "hint": "Cùng vòng lặp; không CAS nào thành công."
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+## Tái cấu trúc chỉ có một định nghĩa
+
+> Tái cấu trúc là thay đổi *cấu trúc* của code mà không thay đổi *hành vi*.
+
+Không phải dọn dẹp. Không phải "tiện tay cải tiến". Nếu hành vi đổi, đó là fix
+bug hay thêm tính năng — một hoạt động khác với nhu cầu review khác. Trộn hai
+việc trong một thay đổi là cách regression ẩn mình.
+
+## Lưới an toàn: test trước, luôn luôn
+
+Không thể tái cấu trúc an toàn trên code chưa được kiểm chứng, nên quy trình
+là:
+
+1. **Đóng băng hành vi bằng test.** Chạy code hiện tại, ghim các cặp
+   input/output thú vị vào test (kể cả edge case — đó là nơi refactor rỉ máu).
+2. **Mỗi lần một nước đi.** Tách method, chạy test. Đổi tên, chạy test. Mỗi
+   bước biên dịch được và giữ màu xanh.
+3. **Bước cỡ một commit.** Các bước xanh nhỏ ghép được với nhau; viết lại một
+   phát ăn ngay thì không.
+
+Nếu không viết nổi test quanh hành vi sắp bị tái cấu trúc, bạn không phải
+đang refactor — bạn đang đánh bạc.
+
+## Catalog khởi đầu
+
+| Nước đi | Khi nào |
+|---|---|
+| Extract method | khối có một mục đích gọi được tên |
+| Magic number → hằng số | `0.20m` → `GoldDiscount` |
+| Guard clause | `if` lồng chỉ bảo vệ trường hợp suy biến |
+| Decompose conditional | điều kiện dài thành method có tên tốt |
+| Introduce parameter object | cùng 4 giá trị đi cùng nhau khắp nơi |
+
+## Khi nào KHÔNG refactor
+
+- Code sắp bị xóa — refactor nó là việc âm.
+- Không có test và không có thời gian viết — làm thay đổi nhỏ an toàn nhất;
+  lên lịch refactor sau.
+- Hành vi sai — sửa bug trước, *rồi* dọn hình dạng. Refactor hành vi sai chỉ
+  làm thứ sai trông đẹp hơn.
+
+Tái cấu trúc giúp codebase giữ được khả năng bảo trì khi lớn lên — các module
+sau (patterns, architecture) mặc định bạn tái cấu trúc an toàn được.

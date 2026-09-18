@@ -1,0 +1,23 @@
+## Reflection và bảo mật
+
+Reflection là quyền lực kèm hóa đơn. Ba nghĩa vụ trong .NET hiện đại:
+
+**1. Nó vượt qua cam kết tĩnh.** Member `private` là lời hứa lúc biên dịch;
+`BindingFlags.NonPublic` phá vỡ nó một cách âm thầm. Phong cách: không bao
+giờ reflect vào `private` của kiểu bạn không sở hữu — bạn đang ghép chặt
+vào chi tiết triển khai mà bất kỳ lần refactor nào cũng phá, và (trên app
+đã trim hoặc AOT, Module 19) member không được code "thật" dùng có thể
+không tồn tại lúc chạy.
+
+**2. Nó là mối nguy deserialization.** `Activator.CreateInstance(type)`
+trong đó `type` đến từ input người dùng là việc tạo object tùy ý — lịch sử
+lỗ hổng của .NET có đúng chuyện này. Whitelist: ánh xạ tên tin cậy sang kiểu
+trong assembly của bạn; không bao giờ `Type.GetType` chuỗi của người dùng
+mà không xác thực.
+
+**3. Tương thích trim/AOT giờ là vấn đề đúng-sai.** Mọi
+`GetProperty("Name")` với literal là vô hình với IL trimmer trừ khi bạn
+gắn `[DynamicallyAccessedMembers]` hoặc dùng `nameof`. Trong sandbox của
+khóa này (framework đầy đủ, không trim) reflection chạy ổn — nhưng code
+bạn ship lên NativeAOT sẽ không, nên giữ reflection ở rìa thiết kế và ưu
+tiên source generation (Module 8) cho phần nóng ở giữa.

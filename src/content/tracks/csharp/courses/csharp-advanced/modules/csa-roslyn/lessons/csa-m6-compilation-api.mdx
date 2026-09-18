@@ -1,0 +1,35 @@
+## The Compilation API
+
+`CSharpCompilation` is Roslyn's build in a function call: trees +
+references + options → diagnostics + a pe-stream you can emit. Everything
+in this module runs **inside the sandbox** — no dotnet CLI needed:
+
+```csharp
+var comp = CSharpCompilation.Create(
+    "policy",
+    new[] { CSharpSyntaxTree.ParseText(policySource) },
+    references,   // MetadataReference.CreateFromFile(assembly.Location)
+    new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+var diags = comp.GetDiagnostics()
+    .Where(d => d.Severity == DiagnosticSeverity.Error);
+
+using var pe = new MemoryStream();
+var result = comp.Emit(pe);
+// result.Success, result.Diagnostics — the real compiler verdict
+```
+
+What the platform's own grader does for every challenge you submit: stage
+your code, reference the framework assemblies, compile, run the test
+harness — exactly this API shape, executed in a hardened container.
+
+Three practical notes from real use:
+
+- **References come from loaded assemblies**: filter
+  `AppDomain.CurrentDomain.GetAssemblies()` to non-dynamic assemblies with
+  a `Location` on disk. The Roslyn dlls themselves need explicit refs when
+  you compile code that *uses* Roslyn (as the harness does for this course).
+- `GetDiagnostics()` vs `Emit()`: emit also validates — some errors (missing
+  types at link time) appear only when emitting.
+- Compilation is expensive (~tens of ms per small program); batch work or
+  keep compilations long-lived instead of rebuilding per request.

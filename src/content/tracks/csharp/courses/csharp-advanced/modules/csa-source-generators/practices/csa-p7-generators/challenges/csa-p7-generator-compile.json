@@ -1,0 +1,16 @@
+{
+  "id": "csa-p7-generator-compile",
+  "title": "Verify the pipeline compiles",
+  "prompt": "Implement `static bool GeneratedCatalogCompiles(string userSource)`: run the same catalog generator pattern as the checkpoint (attribute + GenCatalog class) but ALSO verify the OUTPUT compilation has zero error diagnostics (generated code included). Return false both when generation fails and when the generated source does not compile.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "end-to-end",
+      "code": "Cj.True(Solution.GeneratedCatalogCompiles(\"[Gen] public class A { }\"), \"valid input\");\n// A struct marked [Gen] still generates; class-only filter makes it skip, catalog empty but valid:\nCj.True(Solution.GeneratedCatalogCompiles(\"[Gen] public struct S { }\"), \"no marked classes still compiles\");",
+      "hint": "Reuse the driver pattern; additionally run comp.GetDiagnostics() on the OUTPUT compilation."
+    }
+  ],
+  "level": "independent"
+}

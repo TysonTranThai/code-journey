@@ -1,0 +1,21 @@
+{
+  "id": "csa-p11-parallel-cancel",
+  "title": "Cancellable parallel scan",
+  "prompt": "Implement `static int FirstMatch(int[] data, Func<int, bool> predicate, int workers)` that finds the first index (lowest i) where predicate(data[i]) is true, running the scan in parallel chunks — using Parallel.For with a shared 'found index' guarded by Interlocked.CompareExchange so only a LOWER index ever wins, and stopping other iterations once found (loopState.Stop()). Return -1 if absent.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "first-match",
+      "code": "var data = new int[100_000];\nfor (int i = 0; i < data.Length; i++) data[i] = i;\ndata[42_000] = -1;\nCj.Eq(Solution.FirstMatch(data, x => x == -1, 4), 42_000, \"lowest index wins under parallelism\");",
+      "hint": "Interlocked.CompareExchange(ref best, i, int.MaxValue) wins only when best is still MaxValue OR i is lower — a CAS loop keeping the minimum."
+    },
+    {
+      "name": "absent",
+      "code": "var data = Enumerable.Range(0, 10_000).ToArray();\nCj.Eq(Solution.FirstMatch(data, x => x == 99_999, 4), -1, \"absent returns -1\");",
+      "hint": "Same loop; no CAS ever succeeds."
+    }
+  ],
+  "level": "real-world"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "csa-p6-diagnostic-scan",
+  "title": "Diagnostic scan",
+  "prompt": "Implement `static List<string> CompilerWarnings(string source)`: compile the source as a library and return the IDs (d.Id) of all WARNING-severity diagnostics (no errors expected in the given inputs), deduplicated and sorted. Example input that warns: \"public class A { public int X; }\" — CS0169 (unused field) only appears when the field is private and never used; public fields do not warn, so use \"public class A { int y; }\" for the warning case.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "warnings",
+      "code": "var w = Solution.CompilerWarnings(\"public class A { int y; }\");\nCj.True(w.Contains(\"CS0169\"), $\"unused field warns: [{string.Join(\",\", w)}]\");\nvar clean = Solution.CompilerWarnings(\"public class A { public int X { get; set; } }\");\nCj.Eq(clean.Count, 0, \"no warnings for auto-property\");",
+      "hint": "GetDiagnostics() returns warnings and errors; filter Severity == Warning; Distinct().OrderBy().ToList()."
+    }
+  ],
+  "level": "independent"
+}

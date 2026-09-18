@@ -1,0 +1,26 @@
+{
+  "id": "csi-p17-extract-total",
+  "title": "A Total Built from Named Pieces",
+  "prompt": "Money math belongs in small named pieces, not one formula. Implement four methods:\n\n- `Subtotal(lines)` — sum of `Qty * Price`\n- `Discount(subtotal, pct)` — `subtotal * pct / 100`\n- `Shipping(afterDiscount)` — free (0) when `afterDiscount >= 100`, else `5m`\n- `Total(lines, pct)` — `subtotal - discount + Shipping(subtotal - discount)`\n\nThe shipping decision reads the **after-discount** amount — that ordering is\nthe whole point.\n\n```csharp\npublic static class Solution\n{\n    public static decimal Subtotal(System.Collections.Generic.IEnumerable<OrderLine> lines);\n    public static decimal Discount(decimal subtotal, decimal pct);\n    public static decimal Shipping(decimal afterDiscount);\n    public static decimal Total(System.Collections.Generic.IEnumerable<OrderLine> lines, decimal pct);\n}\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n\n// Provided infrastructure — do not modify.\npublic sealed class OrderLine\n{\n    public int Qty;\n    public decimal Price;\n}\n",
+  "tests": [
+    {
+      "name": "pieces compose",
+      "code": "\nvar lines = new List<OrderLine> { new OrderLine { Qty = 2, Price = 30m } };\nCj.Eq(Solution.Subtotal(lines), 60m, \"subtotal\");\nCj.Eq(Solution.Discount(60m, 10m), 6m, \"10pct of 60\");\nCj.Eq(Solution.Shipping(54m), 5m, \"under threshold ships\");\nCj.Eq(Solution.Total(lines, 10m), 59m, \"60 - 6 + 5\");\n",
+      "hint": "Total = afterDiscount + Shipping(afterDiscount). Do the pieces in order."
+    },
+    {
+      "name": "free shipping boundary",
+      "code": "\nvar at = new List<OrderLine> { new OrderLine { Qty = 10, Price = 10m } };   // subtotal 100\nCj.Eq(Solution.Shipping(100m), 0m, \"exactly 100 is free\");\nCj.Eq(Solution.Total(at, 0m), 100m, \"no discount, free ship\");\nCj.Eq(Solution.Total(at, 5m), 100m, \"95 after discount + 5 ship\");\n",
+      "hint": "The threshold applies to the AFTER-discount amount: 100 with 5% off is 95, which ships for 5."
+    },
+    {
+      "name": "discount crossing the threshold",
+      "code": "\nvar big = new List<OrderLine> { new OrderLine { Qty = 105, Price = 1m } };  // subtotal 105\nCj.Eq(Solution.Total(big, 10m), 99.5m, \"94.5 after discount + 5 ship\");\n",
+      "hint": "105 at 10% off drops below 100 — shipping re-enters. Getting this right requires reading the after-discount value."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,35 @@
+## Hiệu ứng JIT lên phép đo của bạn
+
+JIT là đồng tác giả của bạn, và nó biên tập rất hăng. Bốn biên tập làm
+phép đo giả hoặc che mất hiệu năng:
+
+**Tiered compilation** (mặc định từ .NET Core 3): phương thức được compile
+nhanh-và-thô trước (tier 0), rồi compile lại tối ưu sau ~30 lần gọi.
+Benchmark bao gồm phần chạy tier-0 là đo SAI code. Làm nóng không phải
+tùy chọn; đó là khác biệt giữa hai trình biên dịch.
+
+**Inlining.** Phương thức nhỏ tan vào caller — chi phí gọi bạn định đo
+biến mất. Micro-benchmark đo "chi phí gọi phương thức nhỏ" thường không
+đo được gì: lời gọi chưa từng diễn ra.
+
+**Devirtualization + guarded devirtualization.** Khi JIT nhìn thấy kiểu
+chính xác, lời gọi ảo thành lời gọi trực tiếp (đôi khi cả inline).
+Lớp sealed/interface với một bản cài duy nhất được điều này miễn phí.
+
+**Dead-code elimination.** Tính kết quả mà không dùng? JIT có thể xóa cả
+phép tính. Micro-benchmark gãy kinh điển:
+
+```csharp
+sw.Start();
+for (int i = 0; i < N; i++) ExpensivePure(i);   // kết quả bị bỏ — có thể bị xóa!
+sw.Stop();
+```
+
+Cách sửa: tích lũy vào field/biến cục bộ rồi in hoặc assert sau vòng lặp
+— bộ harness chuẩn làm đúng vậy. `[Benchmark]` của BenchmarkDotNet xử lý
+cả bốn tự động (Consumer của nó giữ kết quả sống).
+
+Bài học hành vi là đối xứng: cùng các tối ưu đó nghĩa là code THẬT cũng
+nhanh hơn điều mà đọc mã nguồn gợi ý — đường nóng với phương thức nhỏ,
+kiểu sealed, dữ liệu thân-vòng-lặp không chỉ là phong cách, mà là độ thân
+thiện với JIT đo bằng nano giây.

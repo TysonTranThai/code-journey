@@ -1,0 +1,40 @@
+## Injection và deserialization không an toàn
+
+Injection là lớp bug nơi dữ liệu trở thành code. Ba họ mà khóa học luyện:
+
+**SQL injection.** User input được nối vào chuỗi SQL thay đổi ý nghĩa của
+nó (`' OR '1'='1`, `'; DROP TABLE x--`). Phòng thủ mang tính cấu trúc,
+không phải dạng chuỗi: **parameterized query** — driver vận chuyển giá trị
+ngoài luồng, nên dữ liệu không thể quay lại ngữ pháp SQL. Drill practice
+cho thấy hình dạng: user input nằm trong `@name`, không bao giờ trong
+chuỗi. Tên bảng/cột không thể là tham số (chúng là định danh) — nên chúng
+đến từ allow-list, không bao giờ từ user. ORM (EF Core) parameterize theo
+mặc định; rủi ro quay lại ở các lối thoát raw-SQL.
+
+**Path traversal.** `Path.Combine(base, "../../etc/passwd")` thoát khỏi
+base. Phòng thủ là *chuẩn hóa-rồi-xác-minh*: GetFullPath đường dẫn kết hợp
+và yêu cầu nó bắt đầu bằng (bản chuẩn hóa của) base — `SafeJoin` trong
+checkpoint. Blacklist `..` bỏ sót các dạng URL-encoded, double-encoded, và
+đường tuyệt đối; phép kiểm tra tiền tố thì không.
+
+**Deserialization không an toàn.** Deserializing dữ liệu do kẻ tấn công
+kiểm soát vào các kiểu THỰC THI (`BinaryFormatter` — thảm họa kinh điển
+của .NET, bị loại khỏi platform vì một lý do) là giao nòi quyền kiểm soát.
+Thế phòng thủ:
+
+1. Không bao giờ deserializing dữ liệu không tin cậy bằng formatter tự do
+   chọn kiểu.
+2. JSON (System.Text.Json) vào POCO an toàn theo mặc định — dữ liệu thành
+   dữ liệu. Cấu hình giới hạn: độ sâu tối đa, dung lượng tối đa.
+3. Deserialization vẫn cần xác thực: một trường string 2GB là DoS nếu
+   không có trần kích thước.
+
+**Command injection** khép lại họ: `Process.Start("sh", "-c " + userInput)`
+là SQL injection có shell. Mảng đối số (không shell) và allow-list là cách
+sửa.
+
+Nguyên tắc thống nhất: **biên ngữ pháp là phòng thủ.** Giữ dữ liệu ở phía
+của nó trong ngữ pháp — tham số cho giá trị, allow-list cho định danh,
+validator cho đường dẫn — và không payload nào vượt qua được. Phòng thủ
+tầng sâu (user DB đặc-quyền-tối-thiểu, WAF) mua thời gian, nhưng biên
+ngữ pháp mới là bản sửa.

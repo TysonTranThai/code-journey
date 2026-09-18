@@ -361,17 +361,19 @@ export function ChallengeWorkspace({
 
   // Markup challenges (HTML/CSS in <style>) get a live sandboxed preview:
   // the learner should SEE the page they are building, not just test verdicts.
-  // Everything else gets the live worker console (JS challenges).
+  // JavaScript challenges get the live worker console (in-browser evaluation).
+  // Backend languages (Java, Python, C, C++, C#) are executed & verified in the isolated server sandbox upon submit.
   const showPreview = looksLikeMarkup(code);
+  const isJs = !showPreview && (language === "javascript" || language === "js");
 
   const output = (
     <div className="flex flex-col gap-3">
       {showPreview ? (
         <LivePreview code={code} />
-      ) : (
+      ) : isJs ? (
         <LiveConsole code={code} boilerplate={boilerplate} language={language} />
-      )}
-      <VerdictPanel state={runState} testNames={testNames} />
+      ) : null}
+      <VerdictPanel state={runState} testNames={testNames} language={language} />
       {error === "log_in_to_run" ? (
         <p className="rounded-xl border border-rose-500/40 bg-rose-950/40 p-4 text-sm text-rose-300 shadow-lg font-mono">
           {d.workspace.logInToRunBefore}

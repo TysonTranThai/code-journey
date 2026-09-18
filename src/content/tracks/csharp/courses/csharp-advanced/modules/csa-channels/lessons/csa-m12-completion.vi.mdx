@@ -1,0 +1,38 @@
+## Completion và graceful shutdown
+
+Completion là cách channel nói "không còn gì nữa, mãi mãi":
+`ch.Writer.Complete()` (hoặc `TryComplete`, hoặc `Complete(exception)` để
+làm nó lỗi). Sau completion:
+
+- `WriteAsync` ném `ChannelClosedException` — tín hiệu cho producer ngừng
+  nhận.
+- `ReadAllAsync` rút cạn các phần tử còn buffer, RỒI kết thúc. Ngữ nghĩa
+  rút cạn này khiến graceful shutdown gần như miễn phí.
+- `ReadAsync` ném `ChannelClosedException` một khi rỗng.
+
+```csharp
+// Phía producer
+ch.Writer.TryComplete();                       // ngừng nhận, vẫn giao tiếp
+
+// Phía consumer — rút cạn rồi thoát
+await foreach (var item in ch.Reader.ReadAllAsync())
+    Process(item);
+```
+
+Graceful shutdown của pipeline nhiều tầng có thứ tự nghiêm ngặt — ngược
+chiều dữ liệu:
+
+1. Ngừng ingest (ngừng ghi vào input của tầng 1, hoặc đóng nguồn).
+2. Tầng 1 rút cạn input của mình, hoàn tất, complete kênh OUTPUT của nó.
+3. `ReadAllAsync` của tầng 2 kết thúc vì input của nó đã complete; tầng 2
+   rút cạn, complete output của nó... và cứ thế dọc theo chuỗi.
+
+Mỗi tầng cần cùng một khung: `try { drain } finally { complete output }`.
+Quên finally là bỏ rơi tầng kế (reader của nó chờ mãi mãi) — bug treo
+shutdown kinh điển.
+
+Lan truyền lỗi: `Complete(new SomeException(...))` khiến reader ném
+exception đó sau khi rút cạn — tương đương fault trong pipeline. Và
+cancellation KHÔNG phải completion: hủy token chặn ngang reader/writer
+(dừng thô), còn completion là dừng sạch. Hệ production thường muốn:
+cancel-rồi-rút-cạn với deadline.

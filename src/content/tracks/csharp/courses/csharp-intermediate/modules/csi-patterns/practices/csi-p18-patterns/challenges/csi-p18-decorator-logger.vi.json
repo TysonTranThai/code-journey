@@ -1,0 +1,18 @@
+{
+  "title": "Decorator: Xếp chồng Hành vi lên Client",
+  "prompt": "`IApiClient.Send(string path)` trả \"200:\" + path. Dựng chồng **Decorator** — mỗi decorator bọc đúng một `IApiClient` và thêm đúng một hành vi: `Caching` (path lặp lại không gọi inner lần hai, lộ `InnerCalls`); `Uppercase` (biến response thành chữ hoa SAU inner, cache giữ bản gốc). `Solution.Run()` dựng `new Uppercase(new Caching(new Base()))` và gọi \"a\", \"a\", \"b\".",
+  "tests": [
+    {
+      "name": "caching serves repeat paths once",
+      "hint": "Caching lưu response inner theo path; path lặp không được chạm vào inner."
+    },
+    {
+      "name": "decorator stack composes",
+      "hint": "Thứ tự: Uppercase(Caching(Base)). Uppercase biến đổi SAU response (có thể từ cache)."
+    },
+    {
+      "name": "stack calls inner the right number of times",
+      "hint": "Với Uppercase(Caching(Base)), inner gọi đúng một lần cho mỗi path khác nhau."
+    }
+  ]
+}

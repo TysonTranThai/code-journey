@@ -1,0 +1,29 @@
+## Rò rỉ bộ nhớ trong thế giới managed
+
+Tracing GC giải phóng thứ không thể tiếp cận. Vậy "rò rỉ" trong managed
+code nghĩa là **vẫn tiếp cận được trong khi bạn tưởng đã chết**: một thứ
+gì đó tiếp cận được đang giữ root tới thứ bạn coi đã chết. Danh mục:
+
+1. **Đăng ký event.** `publisher.Event += handler` lưu subscriber vào
+   invocation list của publisher. Publisher sống lâu + subscriber sống
+   ngắn = mọi subscriber đều rò rỉ. Cách sửa: hủy đăng ký qua IDisposable,
+   weak-event pattern, hoặc `IObserver` với disposal tường minh.
+2. **Cache tĩnh không dọn dẹp.** `static Dictionary<string, T>` phình mãi;
+   mọi entry bị root bởi kiểu. Cách sửa: `MemoryCache` với giới hạn
+   kích thước/thời gian, `ConditionalWeakTable` cho metadata, hoặc LRU
+   giới hạn.
+3. **Timer.** Một `System.Threading.Timer` còn sống sẽ root callback target
+   của nó. Timer fire-and-forget trong các component quên dispose sẽ giữ
+   cả cây object sống mãi. (TARGET của callback, và mọi thứ nó tham chiếu.)
+4. **Closure và lambda.** Một lambda bắt `this` rồi đăng ký vào service
+   sống lâu sẽ root cả object. Task runner giữ closure vượt quá tuổi thọ
+   hữu ích cũng vậy.
+5. **Thread-static và context bị giữ** (SynchronizationContext,
+   ExecutionContext của các thread đang đỗ).
+
+Quy trình chẩn đoán không cần công cụ sang (sandbox không có dotnet-dump):
+đếm số instance theo thời gian (một vòng lặp cấp phát probe object mỗi
+lần lặp và một WeakReference có thể poll), ép thu gom, và xem
+`GC.GetTotalMemory` leo dốc — bộ nhớ leo dù đã ép thu gom toàn phần là
+chữ ký của rò rỉ. Test weak-reference trong checkpoint CHÍNH LÀ probe này,
+thu nhỏ lại.

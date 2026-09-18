@@ -1,0 +1,32 @@
+## What generics cost at runtime
+
+The CLR implements generics with two different strategies, and knowing
+which is in play explains real performance:
+
+- **Reference types share code.** `List<string>`, `List<object>`,
+  `List<YourClass>` all execute ONE specialized-for-references body. The
+  runtime creates it once per generic type. You pay nothing extra per
+  instantiation — that is why generic collections of classes are free.
+- **Value types get specialized code.** `List<int>` compiles its own
+  version with the element type embedded — no boxing, direct indexing,
+  better cache locality. Cost: more native code per distinct T (code bloat)
+  — normally a fine trade.
+
+What this means in practice:
+
+```csharp
+// Same source, different runtime story:
+var a = new List<string>();  // shared ref-type body
+var b = new List<int>();     // specialized: no boxing, tight layout
+var c = new List<MyStruct>(); // specialized: copies whole structs on add
+```
+
+Bigger elements = more copying on every insert/remove — a large struct in a
+`List<T>` copies bytes; if that hurts, store references (`List<Ref>`), or
+restructure as arrays of primitives (data-oriented layout, Module 15).
+
+Where constraints matter to cost: `where T : class` keeps the shared
+ref-type path; unconstrained `T` with value types means specialization.
+`default(T)` in shared code, interface calls through generic `T`, and
+reflection over open generics (`typeof(List<>).MakeGenericType(...)`) each
+have their own story — measure before believing any of it.

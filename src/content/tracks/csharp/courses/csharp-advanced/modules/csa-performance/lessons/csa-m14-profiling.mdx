@@ -1,0 +1,32 @@
+## Profiling allocation and CPU
+
+Profiling turns "it feels slow" into a ranked list of suspects. Three
+instruments, cheapest first:
+
+**1. Allocation profiling** (free, in-process): the checkpoint pattern —
+`GC.GetAllocatedBytesForCurrentThread` deltas around suspect components,
+plus `GC.CollectionCount` before/after a workload. Interpreting:
+
+- High bytes/op on a hot path → allocation-driven GC pressure → Span,
+  pooling, struct iteration, string.Create are the levers.
+- Gen2 collections climbing during a request burst → the latency killer;
+  find the per-request allocations reaching 85KB+ (LOH) or the sheer count.
+
+**2. CPU sampling** (dotnet-trace/dotnet-counters when available): sample
+stacks periodically; hot frames tell you WHERE cycles go. Without those
+tools in a container, the poor-man's sampler — Stopwatch around
+hypothesized boundaries — is legitimate evidence gathering: it is exactly
+what the checkpoint's `Measure` does.
+
+**3. The 90/10 discipline.** A ranked profile usually shows the top frame
+owning 50–90% of samples. Optimize THAT one; re-measure; the next one
+rises. Fixing frame #7 first is emotional programming.
+
+Reading the results into a hypothesis table:
+
+| Symptom | Likely cause | First lever |
+|---|---|---|
+| High allocs + ok CPU | LINQ/string churn on hot path | Span, for-loops, caching |
+| High CPU, low allocs | algorithmic complexity, boxing, interface dispatch | better algorithm, struct generics |
+| Spiky p99, ok median | Gen2/LOH collections | kill LOH allocations, pool buffers |
+| Slow but CPU-idle | I/O waits, locks | async, lock sharding (Module 10) |

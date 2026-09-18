@@ -1,0 +1,39 @@
+## The default sort
+
+```cpp
+int n; in >> n;
+vector<long long> a(n);
+for (long long& x : a) in >> x;
+sort(a.begin(), a.end());           // ascending, O(n log n)
+```
+
+`std::sort` is **introsort**: quicksort that falls back to heapsort when
+recursion gets too deep, with an insertion-sort finish on small runs —
+guaranteed O(n log n), no adversarial case. Hand-written bubble/selection
+sort at n = 10^5 is ~10^10 operations: guaranteed TLE. In contests, use
+`std::sort`.
+
+### Descending and stable variants
+
+```cpp
+sort(a.begin(), a.end(), greater<long long>());   // descending
+stable_sort(a.begin(), a.end());                  // keeps equal keys in input order
+```
+
+`stable_sort` matters when you sort by one key and earlier order by another
+must survive — a classic "sort by score, ties keep input order" requirement.
+
+### Custom comparator — the strict-weak-ordering rule
+
+```cpp
+sort(v.begin(), v.end(), [](const pair<int,int>& x, const pair<int,int>& y) {
+    if (x.first != y.first) return x.first < y.first;    // primary key
+    return x.second > y.second;                          // secondary
+});
+```
+
+A comparator must be a **strict weak ordering**: `cmp(x, x)` must be
+false, and it must be consistent. The classic bug — `return a <= b;` —
+violates that (`cmp(x,x)` is true) and is **undefined behavior**: in
+practice it crashes or corrupts the array under `-std=c++20`. Never use
+`<=` or `>=` inside a comparator.

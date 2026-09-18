@@ -1,0 +1,18 @@
+{
+  "title": "Checkpoint GC",
+  "prompt": "Hiện thực `static long MeasureAlloc<T>(Func<T> factory, int iterations)` trả về chênh lệch GC.GetAllocatedBytesForCurrentThread() qua `iterations` lần gọi factory — đầu dò cấp phát vi mô chuẩn. Rồi hiện thực `static int Gen0Collections()` trả về GC.CollectionCount(0), và `static WeakReference MakeWeak()` trả về WeakReference tới một object() mới cấp phát. Test: 1000 lần `new byte[64]` phải cấp phát NHIỀU HƠN 1000*64 byte; Target của weak reference phải thành null sau GC.Collect + WaitForPendingFinalizers + GC.Collect (mẫu helper-method về liveness mà bài học dạy).",
+  "tests": [
+    {
+      "name": "allocation-probe",
+      "hint": "GC.GetAllocatedBytesForCurrentThread() chính xác cho luồng hiện tại — chụp trước/sau, không có cấp phát nào xen giữa."
+    },
+    {
+      "name": "weak-ref-death",
+      "hint": "MakeWeak phải trả WeakReference mà KHÔNG giữ local còn sống: `var o = new object(); var wr = new WeakReference(o); return wr;` — object không được nằm trong thanh ghi khi caller thu gom (mẫu helper method + return)."
+    },
+    {
+      "name": "gc-counts-exposed",
+      "hint": "return GC.CollectionCount(0) — đơn điệu tăng theo định nghĩa; vòng lặp chỉ tạo áp lực."
+    }
+  ]
+}

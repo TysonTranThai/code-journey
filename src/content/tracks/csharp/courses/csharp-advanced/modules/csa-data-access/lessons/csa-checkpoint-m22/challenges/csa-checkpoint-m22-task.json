@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m22-task",
+  "title": "Data access checkpoint",
+  "prompt": "Build `class OptimisticStore<T> where T : notnull` with `void Put(string key, T value, int expectedVersion)` and `(bool ok, T? value) TryGet(string key)` plus `int VersionOf(string key)`. Put stores only if the expected version matches the current one (missing key = expected version 0), increments the version, and throws `InvalidOperationException` named by message prefix \"version conflict\" otherwise. Then implement `static int SaveAll(OptimisticStore<string> store, List<(string Key, string Value, int Expected)> writes, int maxRounds)` that applies writes in rounds — each round attempts every not-yet-saved write against the current version, counting conflicts — and returns the number of rounds needed (throw InvalidOperationException if not done within maxRounds).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "conflict-detected",
+      "code": "var s = new OptimisticStore<string>();\ns.Put(\"k\", \"v1\", 0);\nbool threw = false;\ntry { s.Put(\"k\", \"v2\", 0); } catch (InvalidOperationException) { threw = true; }\nCj.True(threw, \"stale expected version must throw\");\nCj.Eq(s.TryGet(\"k\").value, \"v1\", \"original value preserved\");\nCj.Eq(s.VersionOf(\"k\"), 1, \"version advanced once\");",
+      "hint": "Track Dictionary<string,(T value,int version)>; on Put compare expected to current version before writing."
+    },
+    {
+      "name": "conflict-retry-converges",
+      "code": "var s = new OptimisticStore<string>();\n// The third write is ALREADY stale when submitted: it expects version 0,\n// but the first write bumps 'a' to version 1 in the same round.\nvar writes = new List<(string, string, int)> { (\"a\", \"x\", 0), (\"b\", \"y\", 0), (\"a\", \"x2\", 0) };\nint rounds = OptimisticStore<string>.SaveAll(s, writes, 5);\nCj.True(rounds >= 2, \"stale write needs a second round\");\nCj.Eq(s.TryGet(\"a\").value, \"x2\", \"stale write won after retry\");\nCj.Eq(s.VersionOf(\"a\"), 2, \"a was written twice\");",
+      "hint": "Keep a pending list; each round retry entries whose expectedVersion now matches; count rounds."
+    }
+  ]
+}

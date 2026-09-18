@@ -1,0 +1,32 @@
+## JIT và tiered compilation
+
+Thực thi bắt đầu từ IL và kết thúc bằng mã máy, theo các tầng:
+
+| Tầng | Khi nào | Chất lượng | Chi phí |
+|---|---|---|---|
+| Quick JIT (tier 0) | lần gọi đầu | tối ưu tối thiểu | compile nhanh |
+| Tier 1 | sau ngưỡng số lần gọi (~30) + recompile nền | tối ưu đầy đủ | compile chậm hơn |
+| OSR | phát hiện vòng lặp nóng trong khung tier-0 | tối ưu hóa giữa phương thức | hiếm |
+
+Các hệ quả bạn đo được (và khóa học làm, ở Module 14):
+
+- **Lần gọi đầu chậm, sau đó nhanh hơn.** Làm nóng trước khi benchmark;
+  ngưỡng là theo phương thức.
+- **Dynamic PGO** (mặc định trên .NET 8+): các bộ đếm instrumented của
+  tier-0 nuôi bộ tối ưu tier-1 — tần suất nhánh thật định hướng các quyết
+  định inline và devirtualize mà phân tích tĩnh không thể.
+- **Tiered PGO có thể devirtualize** dựa trên kiểu receiver quan sát
+  được: một interface call luôn gặp một kiểu cụ thể sẽ thành lời gọi trực
+  tiếp. Vì vậy chi phí interface dispatch đo được thay đổi theo lịch sử
+  lời gọi.
+
+**Khởi động vs ổn định.** ReadyToRun (R2R) precompile code kiểu tier-1 lúc
+publish — khởi động nhanh hơn, binary lớn hơn, hơi kém tối ưu hơn (không có
+PGO). NativeAOT (Module 19) compile hoàn toàn ahead-of-time. Phổ: Quick JIT
+(start nhanh, code chậm) → R2R (cân bằng) → AOT (không JIT, khởi động nhanh
+nhất, hạn chế reflection).
+
+GC, thread pool, và JIT là các dịch vụ runtime do host quản lý — cùng IL
+chạy với các cấu hình runtime khác nhau (Server GC vs Workstation,
+`DOTNET_TieredPGO=0`) cho hiệu năng khác nhau. Tinh chỉnh production là
+cấu hình runtime ngang hàng với code.

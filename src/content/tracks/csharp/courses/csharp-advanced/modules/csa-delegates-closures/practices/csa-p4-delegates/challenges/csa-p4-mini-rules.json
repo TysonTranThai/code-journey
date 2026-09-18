@@ -1,0 +1,16 @@
+{
+  "id": "csa-p4-mini-rules",
+  "title": "Mini rule engine",
+  "prompt": "Implement `class RuleEngine` with `private readonly List<(string Name, Func<Dictionary<string,int>, bool>)> _rules = new();`, `public void Add(string name, Func<Dictionary<string,int>, bool> pred)` and `public List<string> Evaluate(Dictionary<string,int> ctx)` returning names of all passing rules in registration order. Prove closure capture over the context is by-reference at evaluation time.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "rules",
+      "code": "var e = new RuleEngine();\ne.Add(\"high\", ctx => ctx[\"score\"] > 50);\ne.Add(\"even\", ctx => ctx[\"score\"] % 2 == 0);\nvar ctx = new Dictionary<string, int> { [\"score\"] = 60 };\nvar r = e.Evaluate(ctx);\nCj.Eq(string.Join(\",\", r), \"high,even\", \"both pass in order\");\nctx[\"score\"] = 40;\nCj.Eq(string.Join(\",\", e.Evaluate(ctx)), \"even\", \"re-evaluated against current ctx\");",
+      "hint": "The lambdas capture ctx by reference to the dictionary object; evaluation reads current contents."
+    }
+  ],
+  "level": "mini-build"
+}

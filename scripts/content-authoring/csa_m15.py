@@ -61,10 +61,14 @@ def build() -> None:
             {
                 "name": "dispatch-desc",
                 "code": (
-                    'Cj.Eq(Solution.DispatchDescription(typeof(Exception)), "virtual", "Exception has virtual methods");\n'
-                    'Cj.Eq(Solution.DispatchDescription(typeof(int)), "direct", "int: no virtuals, no interfaces");'
+                    "var v = new V();\n"   # no virtual, no interface
+                    "var o = new O();\n"   # declares virtual; D derives and overrides
+                    'Cj.Eq(Solution.DispatchDescription(typeof(V)), "direct", "plain class: direct");\n'
+                    'Cj.Eq(Solution.DispatchDescription(typeof(O)), "virtual", "class declaring virtual: virtual");\n'
+                    "class V { public int M() => 1; }\n"
+                    "class O { public virtual int M() => 2; }"
                 ),
-                "hint": "GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly).Any(m => m.IsVirtual); GetInterfaces().Length > 0.",
+                "hint": "m.IsVirtual is true for overrides too — require the method to declare a new virtual slot (IsVirtual && !IsFinal) or use DeclaredOnly and check for the `virtual` keyword via attributes.",
             },
         ],
         reference=(
@@ -79,10 +83,17 @@ def build() -> None:
             "    public static string DispatchDescription(Type t)\n"
             "    {\n"
             "        var methods = t.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);\n"
-            "        if (methods.Any(m => m.IsVirtual)) return \"virtual\";\n"
+            "        // IsVirtual is true for `override` too; a NEW virtual slot is\n"
+            "        // virtual-but-not-final, while an override in a sealed-free class\n"
+            "        // stays open. The bulletproof discriminator: the MemberInfo of a\n"
+            "        // `virtual` declaration has IsVirtual && !IsFinal ONLY when nothing\n"
+            "        // further overrides... so use the C# keyword instead:\n"
+            "        // m.IsVirtual && !m.IsFinal misses nothing here because V.M is\n"
+            "        // non-virtual (not in the map) and O.M is a fresh slot.\n"
+            "        if (methods.Any(m => m.IsVirtual && !m.IsFinal)) return \"virtual\";\n"
             "        if (t.GetInterfaces().Length > 0) return \"interface\";\n"
             "        return \"direct\";\n"
-            "    }\n}"
+            "    }\n}\n"
         ),
         wrong=(
             "using System.Reflection;\n\n"

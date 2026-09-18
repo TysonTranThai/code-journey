@@ -1,0 +1,26 @@
+{
+  "id": "csi-p16-mini-runner",
+  "title": "Build the Runner",
+  "prompt": "Implement `TestSummary` and `Solution.Run` — the heart of a test framework: run every test, catch everything, keep going after failures, and record each failure as `name: message`.\n\n```csharp\npublic sealed class TestSummary { public int Passed; public int Failed; public List<string> Failures = new(); }\nstatic TestSummary Run(IEnumerable<(string Name, Action Body)> tests);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "runs every test and reports all failures",
+      "code": "\nvar log = new System.Collections.Generic.List<string>();\nvar summary = Solution.Run(new System.Collections.Generic.List<(string, Action)>\n{\n    (\"pass-one\", () => log.Add(\"a\")),\n    (\"boom\", () => throw new System.InvalidOperationException(\"nope\")),\n    (\"pass-two\", () => log.Add(\"b\")),\n});\nCj.Eq(summary.Passed, 2, \"two passing tests\");\nCj.Eq(summary.Failed, 1, \"one failing test\");\nCj.Eq(summary.Failures.Count, 1, \"failure recorded once\");\nCj.True(summary.Failures[0].Contains(\"boom\"), \"failure names the test\");\nCj.True(summary.Failures[0].Contains(\"nope\"), \"failure carries the message\");\nCj.Eq(log.Count, 2, \"runner continued past the failure\");\n",
+      "hint": "foreach with try/catch around body(); on catch, Failed++ and add name + \": \" + ex.Message."
+    },
+    {
+      "name": "all green summary",
+      "code": "\nvar summary = Solution.Run(new System.Collections.Generic.List<(string, Action)>\n{\n    (\"t1\", () => { }),\n    (\"t2\", () => { }),\n});\nCj.Eq(summary.Passed, 2, \"both passed\");\nCj.Eq(summary.Failed, 0, \"none failed\");\nCj.Eq(summary.Failures.Count, 0, \"no failures listed\");\n",
+      "hint": "Same loop — the catch path simply never runs."
+    },
+    {
+      "name": "any exception type counts as a failure",
+      "code": "\nvar summary = Solution.Run(new System.Collections.Generic.List<(string, Action)>\n{\n    (\"fails-with-custom\", () => throw new Exception(\"custom boom\")),\n});\nCj.Eq(summary.Failed, 1, \"custom exception still a failure\");\nCj.True(summary.Failures[0].Contains(\"custom boom\"), \"message preserved\");\n",
+      "hint": "Catch Exception, not a specific type."
+    }
+  ],
+  "level": "guided"
+}

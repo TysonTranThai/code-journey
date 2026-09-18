@@ -1,0 +1,17 @@
+## The gate (mini-build)
+
+Three pieces, one file:
+
+1. `IInventory` — `int GetStock(string sku)`, `void Reserve(string sku, int qty)`.
+2. `FakeInventory : IInventory` — the fake: `Dictionary<string,int> Stock`
+   (missing sku = 0), `List<string> Reservations`, plus two fault hooks:
+   `LyingStock` (when true, `GetStock` returns the real value **+ 1000**) and
+   `BrokenReserve` (when true, `Reserve` records nothing).
+3. `OrderService(IInventory)` — `PlaceOrder(sku, qty)` → "ok" | "outofstock";
+   reserves only on success.
+4. `CheckAll(FakeInventory inv)` — a small suite (≥ 3 tests) that verifies:
+   the ok path reserves, the out-of-stock path does not reserve, and qty
+   exactly equal to stock still succeeds. Returns the list of failure
+   messages — **empty means every test passed**. The suite must genuinely
+   test the *injected* inventory: handed a lying or broken fake, it must
+   report failures, not happy-face an empty list.

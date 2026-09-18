@@ -1,0 +1,28 @@
+## ValueTask: khi nào và vì sao
+
+`Task<T>` luôn cấp phát (và box `T` khi là value type). `ValueTask<T>` là
+struct chứa HOẶC một `T` HOẶC một `Task<T>` — đường nóng/đồng bộ không cấp
+phát gì:
+
+```csharp
+// Accessor cache-first: công dân ValueTask lý tưởng
+ValueTask<int> GetAsync(int key) =>
+    _cache.TryGetValue(key, out var v)
+        ? new ValueTask<int>(v)          // không cấp phát
+        : new ValueTask<int>(FetchAsync(key));  // quay về Task
+```
+
+Hợp đồng giữ ValueTask an toàn (vi phạm là hành vi không xác định, không
+chỉ là bug):
+
+1. **Await đúng một lần.** Không double-await, không `.Result` sau await.
+2. **Không bao giờ await đồng thời.**
+3. **Không lưu nó** — await trước điểm await kế, hoặc gọi `.AsTask()` nếu
+   buộc phải giữ.
+4. Không compose trực tiếp (`WhenAll`) — convert bằng `.AsTask()` trước.
+
+Khi nào ValueTask ĐÚNG: phương thức mà kết quả thường có sẵn đồng bộ
+(cache, đọc buffer, xác thực), hoặc đường nóng nhạy cảm cấp phát đã được đo.
+Khi nào SAI: API thư viện công khai nơi caller sẽ lưu/compose/await-hai-lần
+— cái bẫy ergonomics nuốt chửng lợi nhuận hiệu năng. Mặc định dùng `Task`,
+lên `ValueTask` khi có bằng chứng.

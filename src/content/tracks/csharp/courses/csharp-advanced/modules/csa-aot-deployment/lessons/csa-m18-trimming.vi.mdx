@@ -1,0 +1,41 @@
+## Trimming và thuế reflection
+
+Trimmer (ILLink) đi dọc đồ thị lời gọi từ các điểm vào của bạn, vứt bỏ mọi
+type/member nó không chứng minh được là có dùng. "Không chứng minh được là
+có dùng" là cụm từ then chốt — không phải "không dùng":
+
+```csharp
+var t = Type.GetType(configValue)!;      // string đến từ config lúc RUNTIME
+Activator.CreateInstance(t);             // trimmer thấy một string, không phải kiểu
+// → mọi type ĐỀU có thể được tham chiếu; trimmer phải giả định giữ tất cả
+//   hoặc (khi bật trim) giả định không giữ gì — một trong hai, bạn gãy hoặc bạn phình
+```
+
+Cái gì gãy, và cách sửa:
+
+| Pattern động | Vì sao gãy | Thay thế tĩnh |
+|---|---|---|
+| Kích hoạt kiểu theo tên | tên là dữ liệu, không phải tham chiếu | factory tường minh / `Dictionary<string, Func<T>>` |
+| Quét assembly | khả năng tiếp cận của cả assembly là không chứng minh được | attribute + source generator phát sinh đăng ký |
+| Serialization dựa reflection | thành phần qua đường string/attribute | serializer sinh mã (System.Text.Json) |
+| `Activator.CreateInstance<T>` với T không ràng buộc | không ctor nào chứng minh được | ràng buộc generic `where T : new()` hoặc tham số factory |
+
+Các annotation khai báo ý định:
+
+```csharp
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+private static Type? _handlerType;   // "giá trị Type này cần giữ public ctor"
+
+[RequiresUnreferencedCode("uses Type.GetType")]
+private static void LoadPlugin(string name) { ... }   // "gọi tôi làm hỏng trimming"
+```
+
+`DynamicallyAccessedMembers` giữ lại các loại thành phần được nêu trên
+một giá trị kiểu Type; `RequiresUnreferencedCode` cắm cờ phương thức để
+caller nhận warning lúc build — phân tích trim biến thói quen reflection
+thành cuộc đối thoại lúc compile.
+
+Ngân sách trung thực: app nhẹ reflection trim được 50–70% kích thước miễn
+phí; app nặng plugin đối đầu linker từng bước và nên tự hỏi có muốn trim
+hay không. Thử thách audit trong checkpoint mã hóa suy luận đó: phép toán
+nào sống, phép nào không bao giờ.

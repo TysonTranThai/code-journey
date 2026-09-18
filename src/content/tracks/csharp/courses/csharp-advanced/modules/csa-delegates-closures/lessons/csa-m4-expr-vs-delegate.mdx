@@ -1,0 +1,34 @@
+## Expression trees vs delegates
+
+`Expression<Func<T,bool>>` is code as *data*: a tree of nodes you can
+inspect, transform, print, or compile. A `Func<T,bool>` is code as *code*:
+opaque, fast to invoke.
+
+```csharp
+Expression<Func<int, bool>> e = x => x > 5;
+var body = (BinaryExpression)e.Body;      // node inspection
+Console.WriteLine(body.NodeType);         // GreaterThan
+
+var f = e.Compile();                      // → IL via Lightweight Code Generation
+f(7);                                     // true — and now it runs fast
+```
+
+Decide by use, not by fashion:
+
+| Need | Choose |
+|---|---|
+| call it many times, never look inside | delegate |
+| translate it (EF, LINQ providers, rules → SQL) | expression tree |
+| build rules from configuration at runtime | build Expression, Compile once |
+| hot path called in a tight loop | delegate (or compile the tree ONCE, cache it) |
+
+Costs: building trees allocates node objects; `Compile()` is expensive —
+do it once per rule, not per item. Expression trees cannot contain async,
+null-coalescing assignment, or `??=` — they model expression logic, not
+statements; when rules need statements, either restructure to expressions
+or generate code another way (source generators, Module 8).
+
+The classic production bug: storing `Expression<Func<...>>` and invoking it
+directly (it's not a delegate), or compiling per call and wondering why the
+"fast" rule engine is slow. Both are one-line fixes once you can *see* the
+difference between the two types.

@@ -1,0 +1,14 @@
+{
+  "title": "Xử triệt deadlock",
+  "prompt": "Hiện thực `static int SafeTransfer(Account a, Account b, int amount)` chuyển `amount` từ a sang b bằng `Monitor.TryEnter` với timeout trên cả hai khóa, thu nhận theo THỨ TỰ NHẤT QUAN (theo account id) nên không bao giờ deadlock — nhả khóa sạch trên mọi nhánh. Hiện thực `static void UnsafeTransfer(...)` cách ngây thơ (lock a rồi lock b, theo thứ tự đối số) để minh họa ABBA deadlock mà bài học lập bảng. SafeTransfer trả 1 khi thành công, 0 khi hết giờ.",
+  "tests": [
+    {
+      "name": "safe-transfer",
+      "hint": "Xếp theo Id: first = a.Id < b.Id ? a : b; TryEnter(first, 1000); TryEnter(second, 1000); finally nhả cả hai."
+    },
+    {
+      "name": "reverse-direction-safe",
+      "hint": "Cùng thứ tự khóa bất kể thứ tự đối số — đó là toàn bộ bản sửa."
+    }
+  ]
+}

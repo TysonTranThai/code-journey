@@ -1,0 +1,12 @@
+## Checkpoint: production architecture
+
+The last gate. Submit duplicates, exceed capacity, run everything: if all
+three counters come out exactly as the tests demand, you have implemented the
+core contracts of a production job platform — idempotency, backpressure, and
+exactly-once execution — in a form you can defend line by line.
+
+Common failures: accepting duplicates (the seen-set came after the capacity
+check), counting rejections wrong (duplicates are rejected *twice* in the
+schedule: once per extra delivery), or double-executing because `RunAll` did
+not clear pending. Each maps to a real production bug with a real outage
+story.

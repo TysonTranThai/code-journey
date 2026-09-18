@@ -1,0 +1,34 @@
+## Exceptions at runtime
+
+.NET exceptions use **two-pass unwinding**, modeled on the Itanium C++ ABI:
+
+1. **Pass 1 (search):** walk the stack looking for a frame whose `catch`
+   matches. No user code runs.
+2. **Pass 2 (unwind):** re-walk, running each frame's `finally`/`fault`
+   handlers up to (and including) the winning catch. Stack frames are torn
+   down as handlers complete.
+
+This explains observable behaviors: state mutations in `finally` are
+guaranteed on the unwind path; filters (`catch when`) run in pass 1 and
+can *decline* an exception so an outer handler takes it without unwinding
+the intermediate frames.
+
+**The cost model** — what to say when someone says "exceptions are slow":
+
+- The **throw path** (construct, pass 1+2, stack walk) costs microseconds —
+  often 100–1000× a return-based check. Per-iteration throwing in a loop is
+  a genuine performance bug (the checkpoint measures it honestly).
+- The **non-throw path** is nearly free: a try block adds a jump-table
+  entry, not a branch. "Put try/catch around hot loops" costs approximately
+  nothing until an exception actually flies.
+
+**Design corollary**: `TryX` patterns (`int.TryParse`) exist for *predictable*
+failures; exceptions are for *exceptional* ones. Request validation that
+rejects 30% of inputs should use the Try pattern — not because exceptions
+are "bad", but because microsecond-per-failure multiplies. The runtime
+itself follows this: dictionary lookups, span parsing, channel reads all
+offer non-throwing variants.
+
+`ExceptionDispatchInfo.Capture(ex).Throw()` preserves the original stack —
+the right way to rethrow after async boundaries, where `throw ex;` would
+rewrite the trace.

@@ -1,0 +1,30 @@
+## Data parallelism: Parallel.For and friends
+
+`Parallel.For` and `Parallel.ForEach` split an index range or collection
+across worker threads, pooling the thread pool's threads. The three-delegate
+form is the workhorse because it solves the aggregation problem correctly:
+
+```csharp
+long total = 0;
+Parallel.For(0, data.Length,
+    localInit: () => 0L,                                    // per-worker accumulator
+    body: (i, state, local) => local + (long)data[i] * data[i],
+    localFinally: local => Interlocked.Add(ref total, local));  // combine once per worker
+```
+
+Why it matters: the naive `Parallel.For(0, n, i => total += f(i))` loses
+updates — the combine happens inside the hot loop under contention. The
+local-state version touches shared memory once per worker chunk, which is
+the difference between parallel speedup and parallel slowdown.
+
+Control surfaces worth knowing: `loopState.Stop()` halts as soon as possible
+(earliest-stop, not index-ordered); `loopState.Break()` stops everything
+AFTER the current iteration (ordered-ish, rarely what you want);
+`ParallelOptions { MaxDegreeOfParallelism, CancellationToken }` bound both
+CPU and lifetime.
+
+The scheduler chunks the range adaptively — small ranges get small chunks
+(load balance), big ones get bigger chunks (less coordination). This is
+also why tiny bodies lose: chunk coordination + thread handoff dominates
+a 10ns body. Parallelism needs per-item work measured in microseconds, not
+nanoseconds.

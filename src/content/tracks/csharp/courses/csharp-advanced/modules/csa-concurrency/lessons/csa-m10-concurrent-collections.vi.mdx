@@ -1,0 +1,30 @@
+## Concurrent collections từ bên trong
+
+`ConcurrentDictionary<K,V>` thay khóa toàn cục bằng đồng bộ hóa tinh vi —
+và API của nó mã hóa sự khác biệt giữa nguyên tử và không nguyên tử:
+
+```csharp
+// NGUYÊN TỬ — luôn an toàn:
+d.TryAdd(k, v); d.TryGetValue(k, out var v); d[k] = v;
+d.GetOrAdd(k, factory); d.AddOrUpdate(k, add, update);
+
+// KHÔNG NGUYÊN TỬ — check-then-act qua hai lời gọi sẽ bị race:
+if (!d.ContainsKey(k)) d[k] = Compute();     // hai racer có thể cùng bỏ lỡ
+```
+
+Điểm tinh vi nổi tiếng: **factory giá trị của `GetOrAdd` có thể chạy nhiều
+hơn một lần** khi bị race — hai thread cùng tính, một thắng việc publish.
+Nếu factory có tác dụng phụ (log, gọi HTTP), bạn sẽ cảm nhận được. Cách
+chữa chuẩn là `GetOrAdd(k, _ => new Lazy<T>(factory))` — Lazy làm việc tính
+trùng vô hại (một Lazy thắng; giá trị của kẻ thua bị vứt, chưa từng tạo).
+
+`ConcurrentQueue<T>` dùng các segment liên kết — một cặp head/tail gồm các
+segment mảng — cho enqueue/dequeue gần như lock-free. `ConcurrentBag<T>`
+giữ một deque mỗi thread (hương work-stealing): rẻ với cùng thread, đắt qua
+thread, nên nó đúng cho tích lũy thread-local và sai khi làm queue dùng
+chung.
+
+Bảng đánh đổi trung thực: contention thấp thì `Dictionary` thường sau một
+`lock` thường NHANH HƠN `ConcurrentDictionary` (không tốn atomic mỗi phép
+op); concurrent collections tỏa sáng khi contention thật hoặc không gian
+khóa phân mảnh. Hãy đo — đừng bao giờ đoán bản concurrent nhanh hơn.

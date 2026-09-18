@@ -1,0 +1,47 @@
+## Mùi là triệu chứng, không phải tội lỗi
+
+*Code smell* là dấu hiệu bề mặt cho thấy thứ gì đó sâu hơn đang sai. Không thể
+thuộc lòng rồi bỏ qua — bạn phải luyện mắt trên các loại kinh điển:
+
+| Mùi | Trông như | Thường có nghĩa là |
+|---|---|---|
+| Method dài | 60 dòng, "chương" cách bằng dòng trắng | làm 3 việc; tách method |
+| Magic number | `if (age > 18 && level > 4)` | chính sách không tên; đặt tên |
+| Trùng lặp | cùng 6 dòng ở 3 chỗ | một quy tắc, copy; tách một lần |
+| Lồng sâu | 5 tầng `if`/`foreach` | thiếu guard clause |
+| God class | `OrderManager` cũng gửi email | nhiều trách nhiệm (SRP) |
+| Tham số cờ | `Save(order, true)` | hai hành vi trong một method |
+
+Thói quen giá trị nhất: **khi bạn không gọi được tên cho một khối, bạn chưa
+hiểu nó** — và người đọc sau cũng vậy.
+
+## Quy tắc đặt tên đáng công sức
+
+- **Tên nói mục đích, không nói kiểu**: `remainingBalance`, không phải
+  `remainingDec`.
+- **Boolean đọc như vị từ**: `isSuspended`, `hasItems`, `canRefund`.
+- **Method là động từ**; tên nói nó *làm gì*: `CalculateTax`, không phải
+  `TaxData`.
+- **Một khái niệm, một từ vựng**. `customer`, `client`, `buyer` trong cùng
+  file nghĩa là ba từ cho một thứ — chọn một.
+- **Tên gây hiểu lầm tệ hơn tên xấu**: method tên `GetTotal` mà cũng ghi vào
+  database sẽ bị gọi sai chỗ, bởi người đã tin bạn.
+
+## Guard clause: san phẳng kim tự tháp
+
+Lồng sâu khiến xử lý edge case và logic nghiệp vụ dồn thành một đống. Guard
+clause đảo ngược điều đó — xử lý trường hợp suy biến *trước*, thoát sớm, để
+đường chính không thụt lề và dễ đọc (xem ví dụ `Label` trong bản tiếng Anh —
+cùng hành vi, một mức thụt lề, mỗi edge case một dòng).
+
+## Cohesion, coupling, SRP
+
+- **Cohesion** — các thành viên của một type thuộc về một việc đến đâu.
+  Cohesion cao: mọi method của `InvoiceCalculator` tính gì đó về invoice.
+- **Coupling** — một type cần biết gì về type khác. `Invoice` biết về
+  `SmtpClient` là coupling bạn không cần.
+- **Single Responsibility Principle** — mỗi type một lý do thay đổi. Bài
+  test: "class này vì sao đổi?" Nếu câu trả lời có "và" ("khi luật thuế đổi
+  *và* khi email template đổi"), tách nó.
+
+Bạn sẽ luyện tất cả bằng tái cấu trúc ở bài sau.

@@ -1,0 +1,16 @@
+{
+  "id": "csa-p11-amdahl",
+  "title": "Amdahl's law, measured",
+  "prompt": "A pipeline has a parallelizable part P and a serial fraction S (S + P = 1). Implement `static double Speedup(double serialFraction, int cores)` returning Amdahl's speedup S(n) = 1 / (S + P/n) — and `static int BreakEvenCores(double serialFraction, double minSpeedup)` returning the smallest core count whose speedup reaches minSpeedup (return -1 if no finite core count reaches it). The test checks the hard ceiling: with 10% serial work, no number of cores beats 10x.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "amdahl-values",
+      "code": "Cj.True(Math.Abs(Solution.Speedup(0.1, 4) - 1.0 / (0.1 + 0.9 / 4)) < 1e-9, \"formula exact\");\nCj.True(Solution.Speedup(0.1, 1_000_000) < 10.0, \"serial 10% caps speedup below 10x\");\nCj.Eq(Solution.BreakEvenCores(0.1, 5.0), 13, \"smallest n reaching 5x with S=0.1\");",
+      "hint": "Speedup = 1/(S + (1-S)/n). BreakEven: solve 1/(S + (1-S)/n) >= target for n, ceil it — unless S*target >= 1, then unreachable (-1)."
+    }
+  ],
+  "level": "independent"
+}

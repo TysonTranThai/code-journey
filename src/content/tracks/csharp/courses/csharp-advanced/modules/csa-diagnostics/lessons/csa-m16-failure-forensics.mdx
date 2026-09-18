@@ -1,0 +1,35 @@
+## Failure forensics without a debugger
+
+Production failures rarely come with a debugger attached. The discipline
+that replaces it:
+
+**1. Structured logging over string logs.** Emit events with typed
+properties, not prose:
+
+```csharp
+logger.LogInformation("Order {OrderId} processed in {ElapsedMs}ms items={Count}",
+    order.Id, sw.ElapsedMilliseconds, order.Items.Count);
+```
+
+Queryable afterward (OrderId=... across services), and the correlation
+chain — request ID → order ID → downstream call IDs — is what turns "it
+failed somewhere" into a timeline.
+
+**2. Deterministic reproduction.** A bug you can trigger on demand is
+dead; a bug that "happens sometimes" is expensive. Techniques that force
+reproduction: seed every random source; collapse concurrency (run the
+suspect interleaving single-threaded first); shrink the input (find the
+minimal failing case); control time (inject a clock). The failing test you
+commit is the artifact that prevents regression forever.
+
+**3. The hypothesis discipline.** Worst debugging loop: change something,
+run everything, hope. The disciplined loop: write down the hypothesis
+("the timeout fires because the token is linked to a long-lived source"),
+predict an observable ("logs show cancellation at exactly 30s even when
+work takes 2s"), then run the SMALLEST experiment that confirms or kills
+it. Binary-search the suspect space — never shotgun.
+
+**4. Evidence preservation.** When a production incident is live: capture
+logs and metrics FIRST (they rotate), heap/thread state second, then fix.
+Post-incident, the writeup that matters names the root cause, the detection
+gap, and the prevention change — blame-free, evidence-full.

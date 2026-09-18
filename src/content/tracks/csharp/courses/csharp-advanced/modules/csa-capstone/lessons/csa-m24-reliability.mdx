@@ -1,0 +1,20 @@
+## Reliability: retries, idempotency, backpressure
+
+The stack from module 20 returns, assembled: **timeout** inside **retry**
+(with exponential backoff and jitter) inside a **circuit breaker**, all
+wrapped around operations that are **idempotent** — because a retry after an
+ambiguous failure is indistinguishable from a duplicate delivery, and the
+handler must make duplicates harmless (the checkpoint of module 20, now
+load-bearing).
+
+Backpressure closes the loop: an unbounded queue is a slow-motion crash — it
+converts "we are overloaded" into "we are overloaded *and* out of memory,
+*and* every latency SLO is dead." A bounded queue with an explicit admission
+decision (reject fast, return `429`-style responses, let callers decide) keeps
+the system honest. The capstone's `Submit` returns `false` over capacity:
+that is the whole production posture in one boolean.
+
+Failure injection is the teaching method here: the platform is graded by a
+*deterministic schedule* of duplicate deliveries and over-capacity submits,
+so every acceptance/rejection/executed count is a contract you can reason
+about — the same way you reason about a load test before black Friday.

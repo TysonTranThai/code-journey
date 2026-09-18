@@ -1,0 +1,14 @@
+{
+  "title": "Checkpoint concurrency",
+  "prompt": "Sửa race trên biến đếm: hiện thực `static long CountUnique(int[] values)` trả về số giá trị phân biệt dùng ConcurrentDictionary như một tập atomic — test dồn 8 task song song để chứng minh không mất cập nhật. Rồi hiện thực `static bool TryAddIfAbsent(ConcurrentDictionary<string,int> d, string key, Func<string,int> compute)` thêm giá trị tính được một cách atomic CHỈ khi key vắng mặt — đúng một lần kể cả khi các lời gọi song song (không tính hai lần).",
+  "tests": [
+    {
+      "name": "no-lost-update",
+      "hint": "CountUnique có thể dùng worker Parallel/Task, nhưng thao tác trên dictionary dùng chung phải atomic (GetOrAdd/TryUpdate), không bao giờ check-then-act."
+    },
+    {
+      "name": "compute-once",
+      "hint": "Factory của GetOrAdd có thể chạy hai lần mà không publish hai lần — cần TryGetValue trước, rồi GetOrAdd, rồi so sánh bên nào thắng... hoặc dùng cờ Lazy<int> để tính trùng vô hại nhưng publish vẫn atomic."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Ngân sách connection pool",
+  "prompt": "Một pool cỡ P phục vụ các request đồng thời: mỗi request giữ kết nối trong `holdMs` mili giây. Hiện thực `static int MaxConcurrentWithin(int poolSize, int requests, int holdMs, int windowMs)` = bao nhiêu trong `requests` có thể in-flight đồng thời với poolSize kết nối (min(poolSize, requests)), và `static double Utilization(int poolSize, int requests, int holdMs, int windowMs)` = MaxConcurrentWithin × holdMs / windowMs × 100, làm tròn 2 số thập phân. Rồi `static bool WillStarve(int poolSize, int requests, int holdMs, int windowMs)` = true khi requests > poolSize.",
+  "tests": [
+    {
+      "name": "pool-limits-concurrency",
+      "hint": "Phép toán thuần: cap = min(poolSize, requests); starve = requests > poolSize."
+    },
+    {
+      "name": "utilization-formula",
+      "hint": "cap × holdMs ÷ windowMs × 100, Math.Round tới 2 số thập phân."
+    }
+  ]
+}

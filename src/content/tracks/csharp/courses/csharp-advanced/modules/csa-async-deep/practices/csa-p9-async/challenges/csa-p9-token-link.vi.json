@@ -1,0 +1,14 @@
+{
+  "title": "Hủy liên kết (linked cancellation)",
+  "prompt": "Hiện thực `static async Task<int> RaceTask(Task<int> a, Task<int> b, CancellationToken external)` trả về task nào trong a/b hoàn thành trước — và phải ngừng chờ khi external hủy, ném OperationCanceledException. Dùng CancellationTokenSource.CreateLinkedTokenSource và Task.WhenAny với đăng ký hủy.",
+  "tests": [
+    {
+      "name": "race-external-cancel",
+      "hint": "Link token; đăng ký callback hoàn thành một TaskCompletionSource, WhenAny trên cả hai task cộng task TCS đó."
+    },
+    {
+      "name": "race-fast-wins",
+      "hint": "WhenAny trả về task hoàn thành đầu tiên; trả kết quả của nó."
+    }
+  ]
+}

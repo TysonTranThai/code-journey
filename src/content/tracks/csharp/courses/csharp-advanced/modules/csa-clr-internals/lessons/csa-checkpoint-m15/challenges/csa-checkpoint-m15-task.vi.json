@@ -1,0 +1,14 @@
+{
+  "title": "Checkpoint CLR internals",
+  "prompt": "Hiện thực `static (string ilName, bool isSealed, int methodCount) Inspect<T>()` bằng reflection: trả về tên đầy đủ của kiểu, có sealed không, và số phương thức instance khai báo. Rồi hiện thực `static string DispatchDescription(Type t)` trả về đúng \\\"virtual\\\" nếu t có phương thức virtual (khai báo, instance), \\\"interface\\\" nếu nó hiện thực interface nào, ngược lại \\\"direct\\\". Insight được chấm điểm: typeof(List<int>) báo cùng lúc sealed, virtual, và interface.",
+  "tests": [
+    {
+      "name": "inspect-sealed",
+      "hint": "typeof(T).FullName, .IsSealed, .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Length."
+    },
+    {
+      "name": "dispatch-desc",
+      "hint": "GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly).Any(m => m.IsVirtual); GetInterfaces().Length > 0."
+    }
+  ]
+}

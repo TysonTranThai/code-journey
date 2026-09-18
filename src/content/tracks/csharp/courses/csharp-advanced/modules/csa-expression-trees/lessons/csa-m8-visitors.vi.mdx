@@ -1,0 +1,30 @@
+## Đi và viết lại cây
+
+`ExpressionVisitor` đi qua cây và dựng lại nó, gọi `VisitXxx` theo từng loại
+node. Override chỉ những gì bạn đổi; `Visit` xử lý đệ quy và tái dựng:
+
+```csharp
+class TenantFilter : ExpressionVisitor
+{
+    protected override Expression VisitBinary(BinaryExpression node)
+    {
+        var left = Visit(node.Left);
+        var right = Visit(node.Right);
+        return node.Update(left, node.Conversion, right);
+    }
+    protected override Expression VisitConstant(ConstantExpression node)
+        => node.Value is int v && v == 42 ? Expression.Constant(43) : node;
+}
+```
+
+Đây chính xác là điều EF Core làm: `Where(o => o.Tenant == "a")` của bạn
+được visit, truy cập member thành cột, hằng thành tham số, và cây được phát
+lại thành SQL. Visitor cũng là cách bạn hiện thực các lượt tối ưu (constant
+folding, predicate pushdown) và các lượt an toàn (từ chối cấu trúc không hỗ
+trợ bằng thông báo rõ ràng).
+
+Hai pattern đáng biết: **biến đổi bottom-up** (fold con trước — constant
+folding) và **guard top-down** (xác thực trước khi đi xuống — dịch provider).
+Trả về node GỐC (qua `node.Update(...)`) khi không đổi gì giúp visitor bỏ
+qua việc dựng lại các cây con nguyên vẹn — tính bất biến giá rẻ đang hoạt
+động.

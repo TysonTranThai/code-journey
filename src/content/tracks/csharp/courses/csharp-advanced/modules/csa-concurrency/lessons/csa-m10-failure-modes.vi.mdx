@@ -1,0 +1,35 @@
+## Race condition, deadlock, starvation
+
+Danh mục lỗi mà mọi kỹ sư phải nhận diện được ngay khi nhìn:
+
+**Race condition** — tính đúng phụ thuộc thời điểm. Triệu chứng: chạy tốt
+ở dev, lỗi ngẫu nhiên ở prod, không bao giờ lặp dưới debugger. Nguyên nhân
+luôn là chuỗi check-then-act hoặc read-modify-write không được bảo vệ bằng
+nguyên tử hay khóa. `Count++` trên field dùng chung là ví dụ nhỏ nhất và
+đầy đủ nhất.
+
+**Deadlock (ABBA)** — thread A giữ khóa 1, chờ khóa 2; thread B giữ khóa 2,
+chờ khóa 1. Mọi thứ dừng; không đốt CPU (đó là chữ ký chẩn đoán: thread
+đang đỗ, usage bằng 0). Phòng ngừa: thứ tự khóa toàn cục, hoặc `TryEnter`
+có timeout. Trong code async, biến thể kinh điển là **sync-over-async
+deadlock**: `.Result` trên một Task mà continuation của nó cần context mà
+thread đang bị chặn chiếm giữ.
+
+**Starvation** — một thread không bao giờ được lập lịch vì kẻ khác luôn
+thắng: writer bị đói dưới `ReaderWriterLockSlim` với reader không ngừng,
+hoặc task dài hạn chiếm kín thread pool (cách sửa: `TaskCreationOptions.LongRunning`
+hoặc thread riêng, không phải `Task.Run` cho vòng CPU dài hàng phút).
+
+**Livelock** — các thread phản hồi nhau mãi mà không tiến triển (hai người
+nhường nhau trong hành lang). Vòng retry không có backoff là nguyên nhân
+vô ý thường gặp.
+
+**Convoy** — khóa nóng biến thành hàng đợi; throughput sụp khi các thread
+xếp hàng. Triệu chứng: CPU cao trong context switch, `Monitor.Enter` thống
+trị sample. Cách chữa: rút ngắn vùng găng, phân mảnh khóa, hoặc chuyển sang
+nguyên tử.
+
+Thứ tự xử lý trong production: chụp trạng thái (thread dump / dump file),
+phân loại (đỗ xe = deadlock, quay vòng = livelock, chen chúc =
+convoy/race), rồi sửa *giao thức*, không sửa thời điểm. Thêm `Thread.Sleep`
+đến khi triệu chứng biến mất là cách race sống sót sang quý sau.

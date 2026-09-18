@@ -1,0 +1,47 @@
+## Writing analyzers and diagnostics
+
+An analyzer is a Roslyn `DiagnosticAnalyzer`: register callbacks per syntax
+node kind, inspect, and report `Diagnostic`s against a
+`DiagnosticDescriptor` (id, severity, message template). The runtime
+pattern that keeps analyzers fast:
+
+```csharp
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public sealed class EmptyCatchAnalyzer : DiagnosticAnalyzer
+{
+    static readonly DiagnosticDescriptor Rule = new(
+        "CJ0001", "Empty catch block", "Catch of '{0}' swallows everything",
+        "Reliability", DiagnosticSeverity.Warning, isEnabledByDefault: true);
+
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
+        => [Rule];
+
+    public override void Initialize(AnalysisContext ctx)
+    {
+        ctx.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+        ctx.EnableConcurrentExecution();
+        ctx.RegisterSyntaxNodeAction(Analyze, SyntaxKind.CatchClause);
+    }
+
+    static void Analyze(SyntaxNodeAnalysisContext c)
+    {
+        var node = (CatchClauseSyntax)c.Node;
+        if (node.Block?.Statements.Count == 0)
+            c.ReportDiagnostic(Diagnostic.Create(Rule, node.CatchKeyword.GetLocation(), node.Declaration));
+    }
+}
+```
+
+The discipline that separates useful analyzers from noise:
+
+1. **Register narrowly** — per node kind or symbol kind, never walk the
+   whole tree per compilation.
+2. **Skip generated code** — `GeneratedCodeAnalysisFlags.None` avoids
+   fighting the compiler's own output.
+3. **Report with a location and arguments** — the message template fills
+   in; the IDE can offer a code fix at that exact span.
+
+Analyzers ship as NuGet packages and run inside the compiler — your rules
+execute at build time, not in CI scripts after the fact. Code fixes are a
+separate layer (`CodeFixProvider`) that offers replacements; the analyzer
+only reports.

@@ -1,0 +1,14 @@
+{
+  "title": "Checkpoint unsafe",
+  "prompt": "Hiện thực `static int UnsafeSum(ReadOnlySpan<int> values)` cộng một span int bằng con trỏ unsafe: `fixed (int* p = values)` (hoặc trong unsafe method trên span qua GetPinnableReference), đi bằng p[i], cộng dồn. Test xác minh đúng đắn VÀ việc nó chỉ biên dịch nhờ harness thêm -unsafe (cùng cờ mà dự án thật cấu hình). Rồi hiện thực `static byte[] Reinterpret(long value)` diễn giải lại byte của một long thành mảng ushort 4 phần tử (bản sao) bằng Unsafe/MemoryMarshal — minh họa reinterpretation không cần con trỏ.",
+  "tests": [
+    {
+      "name": "unsafe-sum",
+      "hint": "unsafe { fixed (int* p = values) { for (int i = 0; i < values.Length; i++) sum += p[i]; } }"
+    },
+    {
+      "name": "reinterpret",
+      "hint": "var src = MemoryMarshal.CreateReadOnlySpan(ref value, 1); var dst = MemoryMarshal.AsBytes(src); rồi đọc hai ushort — hoặc gọn hơn: MemoryMarshal.Cast<long, ushort>(new Span<long>(ref value, 1)).ToArray()"
+    }
+  ]
+}

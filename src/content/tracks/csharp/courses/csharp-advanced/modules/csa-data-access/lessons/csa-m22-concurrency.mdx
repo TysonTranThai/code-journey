@@ -1,0 +1,25 @@
+## Optimistic vs pessimistic concurrency
+
+Two strategies when two writers touch the same row:
+
+**Pessimistic**: lock first (`SELECT ... WITH (UPDLOCK)`, `SELECT ... FOR
+UPDATE`). The second writer *waits* before reading. Safe under high conflict,
+deadlock-prone, and it holds the lock across your whole unit of work —
+including any remote calls (never do that; see module 20).
+
+**Optimistic**: read freely; on write, verify the row is unchanged via a
+**version column** (`UPDATE ... WHERE id = @id AND version = @expected`) and
+treat `rows affected = 0` as a conflict to retry. The database does the
+arbitration atomically — no locks held across user think-time. This is why
+nearly every web API should be optimistic: conflict windows are milliseconds,
+human think-time is seconds, and holding locks through it is how you build
+pool exhaustion on top of lock queues.
+
+The retry loop is the subtle part: on conflict you must **re-read** the
+current version and re-apply your change — not blindly re-run with the stale
+expected version, which either loops forever or overwrites. The checkpoint
+implements exactly this state machine, deterministically.
+
+**When pessimistic wins**: genuinely hot rows (inventory decrement at flash-
+sale rates) where retries would thrash, or multi-table invariants that row
+versions cannot express. Even then, prefer the shortest possible lock scope.

@@ -1,0 +1,37 @@
+## Đo cấp phát một cách trung thực
+
+Thăm dò trả lời câu hỏi "cái này có cấp phát không?":
+
+```csharp
+long before = GC.GetAllocatedBytesForCurrentThread();
+Work();
+long delta = GC.GetAllocatedBytesForCurrentThread() - before;
+```
+
+Theo-thread là điểm mấu chốt: hoạt động GC nền, nhiễu từ thread khác, tất
+cả bị loại. Nhưng hai luật đo trung thực vẫn đứng vững với bất kỳ probe
+nào:
+
+1. **Làm nóng trước.** Các lần gọi đầu trả chi phí JIT compile, từ điển
+   generic được điền, delegate được cấp phát. Hãy đo từ lần gọi thứ hai
+   trở đi, hoặc lặp N lần rồi chia — một phép đo lạnh dối bằng nhiều bậc
+   độ lớn.
+2. **Delta là sự thật, không phải số tuyệt đối.** Số byte tuyệt đối bao gồm
+   cả harness. Con số quan trọng là HIỆU giữa hai đường code làm cùng một
+   việc.
+
+Đọc kết quả như một kỹ sư hiệu năng:
+
+- **Đúng bằng 0** — đường nhanh không cấp phát. Xác nhận bằng vòng 100 lần
+  lặp: một cấp phát ẩn 24 byte mỗi lần gọi sẽ hiện ra thành 2400.
+- **Hằng số nhỏ** — một cấp phát cố định; tìm nó và chất vấn (tuple? giá
+  trị bị box? một lần cache miss của delegate?).
+- **Tuyến tính theo N** — vòng lặp cấp phát mỗi lần lặp. Span/vòng for thay
+  LINQ là cách sửa thường gặp.
+
+Probe này KHÔNG thể nói cho bạn: áp lực bộ nhớ tổng (thread khác), kích
+thước bị giữ lại (rò rỉ — đó là GC.GetTotalMemory theo thời gian), hay độ
+trễ (đó là benchmark, và là benchmark dối trá trừ khi bạn theo các luật
+ở Module 15). Đo cấp phát chỉ là một trong vài nhạc cụ; thói quen VỀ PHÍA
+NÓ trước khi tranh cãi mới là thứ phân biệt kỹ sư có hiệu năng thật với
+kỹ sư có hiệu năng theo cảm giác.

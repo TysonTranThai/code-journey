@@ -1,0 +1,21 @@
+{
+  "id": "csa-p10-deadlock-diagnose",
+  "title": "Deadlock triage",
+  "prompt": "Implement `static int SafeTransfer(Account a, Account b, int amount)` that moves `amount` from a to b using `Monitor.TryEnter` with a timeout on both locks, acquired in a CONSISTENT ORDER (by account id) so it can never deadlock — releasing cleanly on every path. Implement `static void UnsafeTransfer(...)` the naive way (lock a then lock b, in argument order) to demonstrate the ABBA deadlock the lesson catalogs. Return 1 on success, 0 on timeout in SafeTransfer.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "safe-transfer",
+      "code": "var a = new Account(1, 100); var b = new Account(2, 50);\nCj.Eq(Solution.SafeTransfer(a, b, 30), 1, \"transfer succeeds\");\nCj.Eq(a.Balance, 70, \"a debited\"); Cj.Eq(b.Balance, 80, \"b credited\");",
+      "hint": "Order by Id: first = a.Id < b.Id ? a : b; TryEnter(first, 1000); TryEnter(second, 1000); finally-release both."
+    },
+    {
+      "name": "reverse-direction-safe",
+      "code": "var a = new Account(1, 100); var b = new Account(2, 50);\nCj.Eq(Solution.SafeTransfer(b, a, 20), 1, \"b->a also succeeds (consistent order)\");\nCj.Eq(b.Balance, 30, \"reverse direction credited\"); Cj.Eq(a.Balance, 120, \"reverse direction debited\");",
+      "hint": "Same lock order regardless of argument order — that is the whole fix."
+    }
+  ],
+  "level": "real-world"
+}

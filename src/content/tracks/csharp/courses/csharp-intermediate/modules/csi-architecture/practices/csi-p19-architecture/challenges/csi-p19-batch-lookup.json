@@ -1,0 +1,26 @@
+{
+  "id": "csi-p19-batch-lookup",
+  "title": "Kill the N+1",
+  "prompt": "`LegacyLoader` fetches one record per customer — the N+1 shape,\ncaptured by a counting fake. Write `Solution.LoadNames(Customer[] customers,\nILookup store)` that returns names in input order with **exactly one store\nround trip**:\n\n- store port: `ILookup { string[] FetchMany(int[] ids); int Calls { get; } }`\n  — returns the names for the requested ids, **in the same order as the ids**.\n- behavior: distinct ids are fetched once; results map back to each customer\n  by position of their first occurrence; repeated customers get the same name\n  without extra calls.\n\nThe fake's `Calls` must be 1 after a batched load. The store provides the\nnames — do not read `Customer.Name`; the point is the batched fetch.\n\n```csharp\npublic static class Solution\n{\n    public sealed class Customer { public int Id; }\n    public static string[] LoadNames(Customer[] customers, ILookup store);\n}\n// top level: public interface ILookup { string[] FetchMany(int[] ids); int Calls { get; } }\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n\n// Provided infrastructure — do not modify.\npublic sealed class FakeLookup : ILookup\n{\n    private readonly string[] _names;\n    public int Calls { get; private set; }\n    public System.Collections.Generic.List<int[]> LastIds = new();\n\n    public FakeLookup(params string[] names) => _names = names;\n    public string[] FetchMany(int[] ids)\n    {\n        Calls++;\n        LastIds.Add((int[])ids.Clone());\n        var outp = new string[ids.Length];\n        for (int i = 0; i < ids.Length; i++)\n            outp[i] = _names[(ids[i] - 1) % _names.Length];\n        return outp;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "one round trip",
+      "code": "\nvar store = new FakeLookup(\"alpha\", \"beta\", \"gamma\");\nvar cs = new[] { new Solution.Customer { Id = 1 }, new Solution.Customer { Id = 2 } };\nvar names = Solution.LoadNames(cs, store);\nCj.Eq(string.Join(\"|\", names), \"alpha|beta\", \"names in customer order\");\nCj.Eq(store.Calls, 1, \"exactly one FetchMany call\");\n",
+      "hint": "Collect distinct ids first, one FetchMany, then map results back by position."
+    },
+    {
+      "name": "repeated customers, no extra calls",
+      "code": "\nvar store = new FakeLookup(\"alpha\", \"beta\");\nvar cs = new[] { new Solution.Customer { Id = 1 }, new Solution.Customer { Id = 1 } };\nvar names = Solution.LoadNames(cs, store);\nCj.Eq(string.Join(\"|\", names), \"alpha|alpha\", \"same name for the same id\");\nCj.Eq(store.Calls, 1, \"dedup made it one call\");\n",
+      "hint": "Distinct ids: [1]. Both customers map to the first result."
+    },
+    {
+      "name": "order of ids is preserved",
+      "code": "\nvar store = new FakeLookup(\"x\", \"y\", \"z\");\nvar cs = new[] { new Solution.Customer { Id = 3 }, new Solution.Customer { Id = 1 } };\nCj.Eq(string.Join(\"|\", Solution.LoadNames(cs, store)), \"z|x\", \"id order -> result order\");\nCj.Eq(store.LastIds[0][0], 3, \"distinct ids requested in first-seen order\");\n",
+      "hint": "The fake returns names positionally: ids [3,1] -> names [z,x]."
+    }
+  ],
+  "level": "independent"
+}

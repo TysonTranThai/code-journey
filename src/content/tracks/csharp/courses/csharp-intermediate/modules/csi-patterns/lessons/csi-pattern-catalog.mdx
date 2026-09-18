@@ -1,0 +1,32 @@
+## How to learn patterns without cargo-culting them
+
+A design pattern is a *named, reusable solution shape* to a problem that
+recurs. The name is worth having only after you have felt the problem. So
+every pattern in this module follows one arc:
+
+1. **Problem** — the code smells it: duplication, a switch that grows on every
+   change, construction code nobody can follow.
+2. **Naive solution** — what you would write in a hurry.
+3. **What breaks** — the concrete pain that shows up next sprint.
+4. **Pattern** — the shape that names and fixes the pain.
+5. **Tradeoffs** — what the pattern costs (indirection, ceremony, files).
+6. **When NOT to use it** — the most skipped, most valuable part.
+
+## The seven you will build
+
+| Pattern | The problem it answers | The tell you need it |
+|---|---|---|
+| **Strategy** | one behavior, many interchangeable variants | a growing `switch` over a "mode" |
+| **Factory Method** | object construction branching on input | `new` scattered behind `if`s |
+| **Builder** | constructing a complex object step by step | constructor with 8 bools/strings |
+| **Adapter** | an interface you need vs an interface you have | a third-party shape leaking in |
+| **Decorator** | layering optional behavior on a core | N boolean flags each wrapping a step |
+| **Repository** | persistence details leaking into logic | SQL in a business method |
+| **Observer** | one event, many reactions, decoupled | publisher calling 5 concrete subscribers |
+
+## The universal caution
+
+Patterns add indirection. Indirection is a cost you pay for a benefit you
+must actually have. "We might need it later" is not a benefit. The honest
+sequence in real work: write it naive, feel the pain, *then* reach for the
+named shape — which is exactly how this module grades you.

@@ -1,0 +1,31 @@
+## Protocol design: requests, responses, timeouts
+
+A request/response protocol on raw sockets needs four properties to
+survive contact with reality:
+
+**1. Correlation.** Requests and responses must be pairable — a
+request ID echoed in the response. Without it, a client with two
+in-flight requests cannot tell which response is which (and pipelining
+becomes impossible).
+
+**2. Deadlines.** Every read gets a timeout, enforced with
+`Task.WhenAny(read, delay)` or a CancellationToken from
+`CancellationTokenSource(TimeSpan)` — abandon the wait, then fail the
+connection. A protocol without read deadlines accumulates half-open
+connections until the file-descriptor table fills.
+
+**3. Bounded buffers.** A reader that accepts unbounded data before
+framing validates it is a DoS primitive (slowloris: send one byte every
+59 seconds forever). Policy: cap the frame size, cap the buffer, and
+close connections that exceed either.
+
+**4. Clean states.** The protocol state machine — connected, awaiting
+request, awaiting response, closed — must be explicit, and every
+transition must be reachable by the tests. The failure modes (mid-frame
+disconnect, timeout, oversized frame, bad magic) each map to a transition
+to `closed` with a diagnostic reason.
+
+The client-side contract mirrors it: connect with timeout, write framed
+requests, read with deadline, correlate, dispose deterministically. The
+checkpoint's `EchoProtocol` is the smallest honest version of all four
+properties; the practice drills add the stream-gluing reality.

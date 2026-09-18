@@ -1,0 +1,21 @@
+{
+  "id": "csa-p21-path-traversal",
+  "title": "Defeat path traversal",
+  "prompt": "Implement `static string SafeJoin(string baseDir, string userInput)` that joins a user-supplied relative filename onto a base directory but REJECTS traversal: normalize the combined path (Path.GetFullPath) and throw UnauthorizedAccessException if the result does not start with the normalized base (allowing the base to end with a separator). \"report.pdf\" passes; \"..\\..\\etc\\passwd\" and absolute paths fail.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "clean-name-passes",
+      "code": "var p = Solution.SafeJoin(\"/srv/data\", \"reports/q1.pdf\");\nCj.True(p.Replace('\\\\', '/').EndsWith(\"reports/q1.pdf\"), \"subdirectory allowed\");",
+      "hint": "var full = Path.GetFullPath(Path.Combine(baseDir, userInput)); var baseFull = Path.GetFullPath(baseDir); if (!full.StartsWith(baseFull)) throw new UnauthorizedAccessException();"
+    },
+    {
+      "name": "traversal-rejected",
+      "code": "var ex1 = await Cj.ThrowsAsync<UnauthorizedAccessException>(() => Task.Run(() => Solution.SafeJoin(\"/srv/data\", \"../../etc/passwd\")));\nvar ex2 = await Cj.ThrowsAsync<UnauthorizedAccessException>(() => Task.Run(() => Solution.SafeJoin(\"/srv/data\", \"/etc/passwd\")));\nCj.True(ex1 is not null && ex2 is not null, \"both traversal forms rejected\");",
+      "hint": "Path.Combine + GetFullPath normalizes ..; the prefix check catches both relative traversal and absolute escapes."
+    }
+  ],
+  "level": "real-world"
+}

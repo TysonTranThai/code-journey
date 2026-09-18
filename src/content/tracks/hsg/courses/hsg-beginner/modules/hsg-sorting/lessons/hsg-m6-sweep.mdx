@@ -1,0 +1,46 @@
+## Pattern 1 — closest pair by adjacent difference
+
+After sorting, the two closest values are **adjacent**:
+
+```cpp
+sort(a.begin(), a.end());
+long long best = a[1] - a[0];
+for (int i = 2; i < n; ++i) best = min(best, a[i] - a[i-1]);
+```
+
+O(n^2) pair scanning becomes O(n log n). This "sorting creates locality"
+move powers min-difference, closest-value, and gap problems.
+
+### Pattern 2 — merging intervals
+
+Sort by start, then extend the current run:
+
+```cpp
+sort(iv.begin(), iv.end());            // pairs [start, end]
+vector<pair<long long,long long>> merged;
+for (auto& [s, e] : iv) {
+    if (!merged.empty() && s <= merged.back().second)
+        merged.back().second = max(merged.back().second, e);
+    else merged.push_back({s, e});
+}
+```
+
+Watch `<=` vs `<`: they decide whether touching intervals merge. Read the
+statement.
+
+### Pattern 3 — rank assignment
+
+```cpp
+sort(b.begin(), b.end());                          // sorted copy
+for (long long x : a)
+    out << lower_bound(b.begin(), b.end(), x) - b.begin() + 1 << ' ';
+```
+
+Each element's rank = its position in the sorted copy. Ties get distinct
+ranks unless you dedupe first — another statement-reading decision.
+
+### Why sorting enables everything else
+
+Binary search (next module), greedy proofs, sweep lines, and dedup all
+start with `sort`. When stuck, always ask: **"What happens if I sort the
+data first?"**

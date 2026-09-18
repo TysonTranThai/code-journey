@@ -1,0 +1,37 @@
+## Cạm bẫy song song và xử lý exception
+
+**Exception được tổng hợp.** Một vòng song song có thể ném ở nhiều worker
+cùng lúc; bạn nhận `AggregateException` mang tất cả:
+
+```csharp
+try { Parallel.ForEach(files, f => Process(f)); }
+catch (AggregateException ag)
+{
+    foreach (var ex in ag.Flatten().InnerExceptions) Log(ex);
+}
+```
+
+Bắt trong thân rồi nuốt là cách lỗi cục bộ bị che giấu — xử lý được nửa
+số file mà vẫn báo thành công.
+
+**Bắt closure là cạm bẫy kinh điển.** `Parallel.For` đưa chỉ số qua tham
+số nên bug closure của vòng `for` cũ không áp dụng — nhưng `Parallel.ForEach`
+trên bộ sưu tập có enumerator không thread-safe, hay trạng thái khả biến
+dùng chung trong lambda, sẽ cắn bạn. Mọi thứ được hai lần lặp cùng ghi cần
+nguyên tử hoặc tổng hợp cục bộ.
+
+**Oversubscription.** Phóng 100 job CPU qua `Task.Run` trên 8 nhân chỉ nhân
+đôi context switch. Chặn bằng `MaxDegreeOfParallelism`, hoặc phân mảnh tường
+minh. Hill-climbing của thread pool cũng ghét bão CPU — công việc dài hạn
+thuộc về task `LongRunning` hoặc worker riêng, không phải lũ `Task.Run`.
+
+**Cancellation** của vòng song song hợp tác như mọi thứ khác: truyền token
+qua `ParallelOptions`, vòng sẽ ngưng *phóng* lần lặp mới khi nó bốc cháy;
+thân vòng phải tự kiểm tra `loopState.ShouldExitCurrentIteration` hoặc token
+để thoát kịp thời. Token không bị quan sát chỉ hủy việc lập lịch — hiểu
+lầm production phổ biến ("chúng tôi đã hủy rồi, sao nó vẫn ngốn CPU?").
+
+**Deadlock UI-thread** là mùi async, nhưng Parallel + UI cũng sập: chặn
+thread UI bằng `Parallel.For(...).Wait()` thì ổn, nhưng chặn thread UI
+trong thân mà thân đó lại await sẽ deadlock cả vòng. Giữ thân thuần CPU;
+orchestrate async ở biên.

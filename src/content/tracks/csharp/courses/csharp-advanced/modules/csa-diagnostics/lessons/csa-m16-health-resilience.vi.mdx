@@ -1,0 +1,32 @@
+## Health probe và các primitive chịu lỗi
+
+Một hệ thống debuggable phải để lộ trạng thái của chính nó. Các tín hiệu
+mà orchestrator và kỹ sư trực ban tiêu thụ:
+
+**Liveness vs readiness.** Liveness = "process không bị kẹt" (restart tôi
+nếu sai). Readiness = "tôi có thể phục vụ" (chỉ route request cho tôi khi
+đúng). Gộp hai cái gây vòng sự cố kinh điển: service báo not-ready vì
+phụ thuộc sập sẽ bị restart — và việc restart làm mọi thứ tệ hơn. Readiness
+kiểm tra phụ thuộc; liveness kiểm tra bản thân.
+
+**Circuit breaker** (checkpoint cài một cái): ngừng đập vào phụ thuộc đang
+lỗi; fail fast trong khi nó hồi phục; thăm dò trước khi mở lại. Ba trạng
+thái — closed, open, half-open — và các chuyển tiếp là một design pattern
+có máy trạng thái test được bằng unit test. Núm vặn quan trọng là OPEN
+DURATION: quá ngắn là half-open vào một phụ thuộc vẫn đang cháy; quá dài
+là từ chối lượng traffic bạn vẫn có thể phục vụ.
+
+**Retry với backoff** (practice cài backoff luỹ thừa): chỉ retry các thao
+tác idempotent, chặn số lần, và backoff theo luỹ thừa — delay phẳng tạo ra
+cơn bão retry đồng bộ. Thêm jitter trong production (rải retry giữa các
+client): lỗi thundering-herd là các retry thẳng hàng với khoảnh khắc hồi
+phục của phụ thuộc.
+
+**Timeout khắp nơi.** Một thao tác không có timeout là rò rỉ tài nguyên có
+thêm các bước dư thừa. Mọi lời gọi phụ thuộc có deadline; mọi deadline được
+thi hành qua cancellation (Module 9), không phải polling.
+
+Stack chịu lỗi kết hợp được: timeout trong retry trong breaker — nhưng
+hãy kết hợp MỘT CÁCH TỰ GIÁC: retry kéo dài timeout hiệu dụng, breaker
+thay đổi hành vi retry, và ngữ nghĩa kết hợp cần một bài test, không phải
+một lời cầu nguyện.

@@ -1,0 +1,38 @@
+## Multi-stage pipeline architecture
+
+Real pipelines chain stages, each with its own channel input and output:
+
+```csharp
+var raw     = Channel.CreateBounded<Line>(2_000);
+var parsed  = Channel.CreateBounded<Trade>(2_000);
+var scored  = Channel.CreateBounded<Score>(2_000);
+
+var s1 = Task.Run(() => IngestAsync(raw.Writer));           // write raw, complete it
+var s2 = Task.Run(() => StageAsync(raw.Reader, parsed.Writer,
+                                   Parse, "parse"));         // pump raw → parsed
+var s3 = Task.Run(() => StageAsync(parsed.Reader, scored.Writer,
+                                   Score, "score"));         // pump parsed → scored
+var s4 = Task.Run(() => SinkAsync(scored.Reader));          // final consumer
+await Task.WhenAll(s1, s2, s3, s4);
+```
+
+Each stage is the same `PumpAsync` shape the checkpoint tests: read all →
+transform → write all → complete output. Composition properties you get
+for free:
+
+- **Concurrency between stages** — parsing overlaps scoring; each stage is
+  also internally parallelizable (fan-out N consumers per channel).
+- **Isolation** — one slow stage backs up only its input channel; the
+  backpressure propagates upstream instead of collapsing the process.
+- **Testability** — test each stage with an in-memory channel; no mocking
+  framework needed.
+
+When channels beat `Task`-based fan-out (`Task.WhenAll` over all items):
+streaming/bounded memory (items flow, nothing accumulates), dynamic rates
+(producer/consumer speeds differ), and exactly-once competing consumers.
+When Tasks win: fixed, known item sets where you want per-item results —
+`Task.WhenAll` + `Select` is simpler and has no infrastructure.
+
+Sizing note: capacity per stage should reflect that stage's burst
+tolerance; a chain of unbounded channels is just a distributed way to run
+out of memory.

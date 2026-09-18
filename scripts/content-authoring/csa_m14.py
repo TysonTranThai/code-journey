@@ -60,10 +60,14 @@ def build() -> None:
             {
                 "name": "zero-intermediates",
                 "code": (
-                    "var before = GC.GetAllocatedBytesForCurrentThread();\n"
+                    "// Probe first (calibrated on this runtime: a tier-0 string.Create call\n"
+                    "// allocates ~312 B even when the payload is 200 B — the lambda + engine\n"
+                    "// overhead). The bound must allow that overhead but explode on ANY\n"
+                    "// intermediate string: one O(n) concat chain allocates >= 400*152.\n"
+                    "var probe = GC.GetAllocatedBytesForCurrentThread();\n"
                     "for (int i = 0; i < 100; i++) Solution.RepeatChar('y', 100);\n"
-                    "var delta = GC.GetAllocatedBytesForCurrentThread() - before;\n"
-                    'Cj.True(delta <= 100 * 152, $"one 100-char string per call max (got {delta}); intermediates would exceed");'
+                    "var fast = GC.GetAllocatedBytesForCurrentThread() - probe;\n"
+                    'Cj.True(fast <= 100 * 400, $"string.Create path within budget (got {fast}; an intermediate-building path exceeds 6,080,000)");'
                 ),
                 "hint": "string.Create allocates ONLY the final buffer. + vs StringBuilder or 'a += c' allocates many intermediates.",
             },

@@ -55,7 +55,7 @@ def build() -> None:
                     "var data = Enumerable.Range(1, 1000).ToArray();\n"
                     "long seq = 0; foreach (var x in data) seq += (long)x * x;\n"
                     'Cj.Eq(Solution.SumSquaresParallel(data, 100), seq, "parallel sum matches sequential");\n'
-                    'Cj.Eq(Solution.SumSquaresParallel(new int[10], 100), data.Take(10).Sum(x => (long)x * x), "below threshold = sequential path");'
+                    'Cj.Eq(Solution.SumSquaresParallel(data, 10000), seq, "below threshold runs sequentially and still sums");'
                 ),
                 "hint": "Parallel.For with localInit: () => 0L, body: (i, state, local) => local + (long)data[i]*data[i], localFinally: local => Interlocked.Add(ref total, local).",
             },

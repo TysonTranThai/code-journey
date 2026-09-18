@@ -1,0 +1,37 @@
+## Ref locals, ref returns, and defensive copies
+
+`ref` makes an alias: another name for existing storage. The copy that
+normally happens on assignment does not happen:
+
+```csharp
+int[] xs = { 1, 2, 3 };
+ref int slot = ref xs[1];   // slot IS xs[1] — same storage
+slot = 99;                  // xs[1] == 99 now
+
+// ref returns expose storage from methods:
+static ref int At(int[] a, int i) => ref a[i];
+At(xs, 0) = 42;             // assign THROUGH the returned ref
+```
+
+The safety rules are strict, and they all prevent escaping stack storage:
+ref returns may not return a ref to a local; ref locals must be initialized
+from something that outlives them; ref structs (Module 2's Span) may not
+cross `await` boundaries or be captured by ordinary closures.
+
+**Ref readonly and defensive copies.** `ref readonly int` promises the
+callee will not write. But a *mutable struct* read through a
+`readonly` field/member forces the compiler to insert a **defensive copy**
+per access — an invisible cost. The classic bug-shaped fact: calling a
+method twice on a readonly mutable struct reads two different copies, and
+each copy costs a full struct copy. The fix is either `readonly struct`
+(all members readonly, no defensive copies ever) or `in` parameters
+passed as readonly refs.
+
+```csharp
+readonly struct Vec { public double X; public double Y; }   // zero copies
+struct Bad   { public double X; }                            // copies on readonly access
+```
+
+Why care: silent per-access copies on big structs (say, 256-byte matrices)
+are a classic allocation-free performance bug — the profiler shows CPU,
+not allocations, because nothing is allocated; the bytes just move.

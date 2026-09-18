@@ -1,0 +1,32 @@
+## Profile cấp phát và CPU
+
+Profiling biến "cảm giác chậm" thành danh sách nghi phạm có xếp hạng. Ba
+nhạc cụ, rẻ nhất trước:
+
+**1. Profile cấp phát** (miễn phí, trong process): pattern của checkpoint —
+delta `GC.GetAllocatedBytesForCurrentThread` quanh các thành phần nghi vấn,
+kèm `GC.CollectionCount` trước/sau workload. Cách đọc:
+
+- Byte/op cao trên đường nóng → áp lực GC do cấp phát → Span, pooling,
+  lặp struct, string.Create là các đòn bẩy.
+- Gen2 tăng trong cơn bão request → kẻ giết độ trễ; tìm các cấp phát mỗi
+  request chạm 85KB+ (LOH) hoặc số lượng khổng lồ.
+
+**2. Lấy mẫu CPU** (dotnet-trace/dotnet-counters khi có): lấy mẫu stack
+định kỳ; các khung nóng cho biết chu kỳ đi đâu. Trong container không có
+công cụ đó, sampler kiểu người-poor — Stopwatch quanh các biên giả thuyết
+— vẫn là bằng chứng hợp lệ: nó chính xác là những gì `Measure` trong
+checkpoint làm.
+
+**3. Kỷ luật 90/10.** Profile có xếp hạng thường cho thấy khung đầu chiếm
+50–90% mẫu. Tối ưu CHÍNH nó; đo lại; khung kế tiếp sẽ nổi lên. Sửa khung
+thứ 7 trước là lập trình theo cảm xúc.
+
+Đọc kết quả thành bảng giả thuyết:
+
+| Triệu chứng | Nguyên nhân khả dĩ | Đòn bẩy đầu tiên |
+|---|---|---|
+| Cấp phát cao + CPU ổn | Churn LINQ/string trên đường nóng | Span, for-loop, cache |
+| CPU cao, cấp phát thấp | Độ phức tạp thuật toán, boxing, interface dispatch | thuật toán tốt hơn, struct generic |
+| p99 gai góc, median ổn | Thu gom Gen2/LOH | diệt cấp phát LOH, pool buffer |
+| Chậm nhưng CPU rảnh | Chờ I/O, khóa | async, phân mảnh khóa (Module 10) |

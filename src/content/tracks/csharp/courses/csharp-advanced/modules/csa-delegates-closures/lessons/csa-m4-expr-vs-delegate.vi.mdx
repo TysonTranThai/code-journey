@@ -1,0 +1,34 @@
+## Expression tree vs delegate
+
+`Expression<Func<T,bool>>` là mã dưới dạng *dữ liệu*: một cây node bạn có
+thể kiểm tra, biến đổi, in ra, hoặc biên dịch. `Func<T,bool>` là mã dưới
+dạng *mã*: mờ đục, gọi nhanh.
+
+```csharp
+Expression<Func<int, bool>> e = x => x > 5;
+var body = (BinaryExpression)e.Body;      // soi node
+Console.WriteLine(body.NodeType);         // GreaterThan
+
+var f = e.Compile();                      // → IL qua Lightweight Code Generation
+f(7);                                     // true — và giờ nó chạy nhanh
+```
+
+Chọn theo nhu cầu, không theo mốt:
+
+| Nhu cầu | Chọn |
+|---|---|
+| gọi nhiều lần, không cần nhìn vào trong | delegate |
+| dịch nó (EF, LINQ provider, rule → SQL) | expression tree |
+| dựng rule từ cấu hình lúc chạy | dựng Expression, Compile MỘT lần |
+| đường nóng gọi trong vòng kín | delegate (hoặc compile cây MỘT lần rồi cache) |
+
+Chi phí: dựng cây cấp phát node; `Compile()` đắt — làm một lần mỗi rule,
+không phải mỗi phần tử. Expression tree không chứa được async, gán
+null-coalescing, hay `??=` — nó mô hình hóa logic biểu thức, không phải
+câu lệnh; khi rule cần câu lệnh, hoặc tái cấu trúc thành biểu thức, hoặc
+sinh mã bằng cách khác (source generator, Module 8).
+
+Bug production kinh điển: lưu `Expression<Func<...>>` rồi gọi trực tiếp
+(nó không phải delegate), hoặc compile mỗi lần gọi rồi thắc mắc sao "rule
+engine nhanh" mà chậm. Cả hai đều sửa một dòng khi bạn *nhìn thấy* khác biệt
+giữa hai kiểu này.

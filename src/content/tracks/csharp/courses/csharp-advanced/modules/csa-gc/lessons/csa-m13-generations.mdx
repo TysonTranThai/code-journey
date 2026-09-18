@@ -1,0 +1,34 @@
+## Generations and allocation
+
+.NET's GC is generational and tracing-based. New objects land in **Gen 0**;
+survivors are promoted to **Gen 1**, then **Gen 2**. Large objects (≥85,000
+bytes on CoreCLR — an implementation detail, but a stable one) go
+straight to the **Large Object Heap (LOH)**. The bet: most objects die
+young, so scanning a small Gen0 window collects most garbage cheaply.
+
+```csharp
+GC.CollectionCount(0 | 1 | 2);      // collections per generation
+GC.GetAllocatedBytesForCurrentThread();  // precise per-thread allocation probe
+GC.GetTotalMemory(false);           // current managed heap estimate
+GC.Collect(2, GCCollectionMode.Aggressive);  // force (measurement only!)
+```
+
+The economics that change how you write code:
+
+- **Allocation is cheap.** Gen0 allocation bumps a pointer — tens of
+  nanoseconds. The .NET design philosophy is "allocate freely, collect
+  often"; fighting every allocation with pooling everywhere is usually a
+  loss.
+- **Survival is expensive.** An object that survives Gen0 gets copied,
+  promoted, and re-scanned every future collection. Long-lived cache
+  objects are fine; long-lived objects that CHANGE generation boundaries
+  under churn are the cost.
+- **Gen2/LOH collections stop the world longest.** Allocation-rate spikes
+  that trigger Gen2 collections are the classic latency bug: steady
+  99th-percentile, then a 200ms stall every 30s. The fix is allocation
+  reduction on the hot path (Span, pooling, struct iteration), not GC
+  tuning first.
+
+Measurement discipline: capture `GC.CollectionCount` per generation and
+allocation bytes around a workload — the delta IS your GC story. The
+checkpoint's probe methods are exactly this pattern.

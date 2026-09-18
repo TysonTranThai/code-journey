@@ -1,0 +1,30 @@
+## Incremental generators
+
+`ISourceGenerator` cổ điển chạy lại mọi thứ sau mỗi thay đổi — ổn với công
+cụ tí hon, tàn bạo với IDE. `IIncrementalGenerator` thay vào đó dựng một
+**pipeline** các phép biến đổi mà compiler theo dõi bằng so sánh giá trị:
+một phím gõ chỉ chạy lại các bước mà input thật sự thay đổi.
+
+```csharp
+var provider = ctx.SyntaxProvider.ForAttributeWithMetadataName(...)
+    .Select(static (name, _) => name.ToUpperInvariant())   // biến đổi thuần
+    .Collect();                                            // gom thành ImmutableArray
+
+ctx.RegisterSourceOutput(provider, static (spc, names) => { /* phát một lần */ });
+```
+
+Hợp đồng hiệu năng, theo đúng hướng dẫn của đội Roslyn:
+
+1. **Phép biến đổi phải thuần và rẻ** — chúng có thể chạy nhiều lần; kết
+   quả được cache theo so sánh giá trị.
+2. **`ForAttributeWithMetadataName` trước tiên.** Đây là provider được tối
+   ưu mạnh cho pattern chủ đạo (tìm kiểu có attribute X); predicate
+   `CreateSyntaxProvider` viết tay chạy thường hơn và làm nhiều việc hơn.
+3. **`Collect()` có chủ đích** — collect phá tính tăng dần cho các bước
+   sau nó; làm việc từng phần tử trước khi collect, rồi phát một lần.
+4. **Vệ sinh lambda**: mọi lambda pipeline phải `static` (không bắt biến) —
+   capture âm thầm phá hợp đồng caching.
+
+Khi generator lỗi trong production, gần như luôn là pipeline tính lại mô
+hình toàn dự án cho mỗi phím gõ — cách sửa luôn là "đẩy việc về sau, làm
+cho từng bước rẻ, cache theo giá trị".

@@ -1,0 +1,38 @@
+## Kiến trúc pipeline nhiều tầng
+
+Pipeline thật xâu chuỗi các tầng, mỗi tầng có kênh input và output riêng:
+
+```csharp
+var raw     = Channel.CreateBounded<Line>(2_000);
+var parsed  = Channel.CreateBounded<Trade>(2_000);
+var scored  = Channel.CreateBounded<Score>(2_000);
+
+var s1 = Task.Run(() => IngestAsync(raw.Writer));           // ghi raw, complete nó
+var s2 = Task.Run(() => StageAsync(raw.Reader, parsed.Writer,
+                                   Parse, "parse"));         // bơm raw → parsed
+var s3 = Task.Run(() => StageAsync(parsed.Reader, scored.Writer,
+                                   Score, "score"));         // bơm parsed → scored
+var s4 = Task.Run(() => SinkAsync(scored.Reader));          // consumer cuối
+await Task.WhenAll(s1, s2, s3, s4);
+```
+
+Mỗi tầng là cùng hình dạng `PumpAsync` mà checkpoint kiểm thử: đọc hết →
+transform → ghi hết → complete output. Các tính chất kết hợp bạn được
+miễn phí:
+
+- **Đồng thời giữa các tầng** — parse đè lên score; mỗi tầng cũng song song
+  hóa được bên trong (fan-out N consumer mỗi kênh).
+- **Cách ly** — một tầng chậm chỉ làm ùn input channel của nó; backpressure
+  lan ngược thượng nguồn thay vì sập cả process.
+- **Kiểm thử được** — test từng tầng bằng channel trong bộ nhớ; không cần
+  mocking framework.
+
+Khi nào channels thắng fan-out kiểu `Task` (`Task.WhenAll` trên mọi phần
+tử): streaming/bộ nhớ giới hạn (phần tử chảy, không tích tụ), tốc độ động
+(producer/consumer chênh nhau), và consumer cạnh tranh exactly-once. Khi
+nào Task thắng: tập phần tử cố định, đã biết, muốn kết quả từng phần tử —
+`Task.WhenAll` + `Select` đơn giản hơn và không cần hạ tầng.
+
+Ghi chú kích thước: capacity mỗi tầng nên phản ánh khả năng chịu burst của
+tầng đó; chuỗi các channel unbounded chỉ là cách chạy hết bộ nhớ một cách
+phân tán.

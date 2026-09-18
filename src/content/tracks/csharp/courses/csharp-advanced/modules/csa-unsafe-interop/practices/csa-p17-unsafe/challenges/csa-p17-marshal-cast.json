@@ -1,0 +1,16 @@
+{
+  "id": "csa-p17-marshal-cast",
+  "title": "Struct reinterpretation",
+  "prompt": "Implement struct `Packet { public uint Header; public uint Payload; }` and `static uint[] ReadPacketBytes(byte[] bytes)` that reinterprets an 8-byte segment as a Packet via MemoryMarshal.Read<Packet> — returning [Header, Payload] as a uint array. The test feeds little-endian bytes and verifies field values; the lesson: reinterpretation is layout-dependent and never a substitute for a real parser.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "packet-fields",
+      "code": "var bytes = new byte[] { 0x78, 0x56, 0x34, 0x12, 0xEF, 0xCD, 0xAB, 0x89 };\nvar fields = Solution.ReadPacketBytes(bytes);\nCj.Eq(fields[0], 0x12345678u, \"little-endian header\");\nCj.Eq(fields[1], 0x89ABCDEFu, \"little-endian payload\");",
+      "hint": "MemoryMarshal.Read<Packet>(bytes.AsSpan(0, 8)) then return [p.Header, p.Payload]."
+    }
+  ],
+  "level": "independent"
+}

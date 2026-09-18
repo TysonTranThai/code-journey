@@ -1,0 +1,21 @@
+{
+  "id": "csa-p17-pointer-copy",
+  "title": "Pointer copy with scoped pinning",
+  "prompt": "Implement `static void CopyBytes(byte[] src, int srcOffset, byte[] dst, int dstOffset, int count)` using unsafe pointer arithmetic with `fixed` — pinning BOTH arrays for the copy. Correctness test does overlapping-free copies at offsets; the lesson: pin narrowly (only the fixed block), never store the pointers, never let them escape.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "copy-correct",
+      "code": "var src = new byte[] { 1, 2, 3, 4, 5, 6 };\nvar dst = new byte[6];\nSolution.CopyBytes(src, 2, dst, 1, 3);\nCj.Eq(string.Join(\",\", dst), \"0,3,4,5,0,0\", \"3 bytes from src[2..] into dst[1..]\");",
+      "hint": "fixed (byte* ps = src) fixed (byte* pd = dst) { for (int i = 0; i < count; i++) pd[dstOffset + i] = ps[srcOffset + i]; }"
+    },
+    {
+      "name": "empty-count",
+      "code": "var src = new byte[] { 9 };\nvar dst = new byte[1];\nSolution.CopyBytes(src, 0, dst, 0, 0);\nCj.Eq(dst[0], 0, \"count=0 copies nothing\");",
+      "hint": "The for-loop condition handles it; fixed on an empty segment is legal."
+    }
+  ],
+  "level": "guided"
+}

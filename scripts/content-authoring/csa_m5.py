@@ -125,10 +125,13 @@ def build() -> None:
                 "code": (
                     "var p = new Person { Name = \"x\", Age = 1 };\n"
                     "var getter = Solution.BuildGetter(typeof(Person), \"Age\");\n"
+                    "for (int i = 0; i < 200; i++) getter(p);   // warm the reflection caches\n"
                     "long b0 = GC.GetAllocatedBytesForCurrentThread();\n"
                     "for (int i = 0; i < 50; i++) getter(p);\n"
                     "long b1 = GC.GetAllocatedBytesForCurrentThread();\n"
-                    "// GetValue boxes value-type props; cap at one box per call, no per-call reflection setup:\n"
+                    "// Calibrated on this runtime: one cached GetValue call on an int prop costs\n"
+                    "// ~24 B (boxing + args array). A build-once delegate stays under 50*32;\n"
+                    "// re-resolving GetProperty every call exceeds 50*200.\n"
                     'Cj.True(b1 - b0 < 50 * 32, $"per-call overhead too high: {b1 - b0}");'
                 ),
                 "hint": "Do the GetProperty work ONCE when building the delegate; the loop must not re-resolve.",

@@ -1,0 +1,47 @@
+## The optimization loop
+
+The full cycle, demonstrated on a real (sandbox-verifiable) workload —
+string building:
+
+**1. MEASURE.** Baseline the obvious implementation:
+
+```csharp
+static string SlowBuild(int n)
+{
+    var s = "";
+    for (int i = 0; i < n; i++) s += i;   // quadratic: reallocates each append
+    return s;
+}
+// n=10_000: ~150M+ bytes allocated, multiple Gen2 collections
+```
+
+**2. PROFILE.** Allocation delta says ~2×n² bytes — every `+=` copies the
+whole string. The bottleneck is allocation count × copy size, not parsing,
+not I/O.
+
+**3. CHANGE — the smallest fix first.** StringBuilder (amortized growth):
+
+```csharp
+static string BetterBuild(int n)
+{
+    var sb = new StringBuilder(n * 5);   // pre-size: no internal array doubling
+    for (int i = 0; i < n; i++) sb.Append(i);
+    return sb.ToString();                 // one final string
+}
+// ~n*5 bytes + final string: ~50x less allocation
+```
+
+**4. MEASURE AGAIN.** Delta collapses; wall time follows. Then ask: is
+StringBuilder the floor? Only with another measurement: `string.Create`
+when the content is char-uniform, or writing directly to the output
+stream, skipping the intermediate string entirely.
+
+**5. DECIDE.** Is the added complexity justified by the measured win, at
+the measured frequency? 50x on a code path hit 1/second is noise; 2x on a
+path hit 1M times/second is a career. The optimization loop is not done
+when the code is fast — it is done when the evidence says stop.
+
+The anti-patterns this loop kills: optimizing without a baseline ("it
+felt slow"), stopping at the first clever idea (StringBuilder everywhere —
+including cold paths), and never re-measuring after the change (the
+"optimization" that made it slower).

@@ -1,0 +1,56 @@
+## Guess, check, narrow
+
+Some problems do not ask "find this value in an array" — they ask for the
+best feasible value of something. If feasibility is **monotone** (once
+feasible at value v, feasible at every easier value), you can binary
+search the answer itself:
+
+```
+lo = smallest possible answer, hi = largest possible answer
+while (lo < hi) {
+    mid = lo + (hi - lo + 1) / 2;      // round UP for last-true search
+    if (feasible(mid)) lo = mid;       // mid works — try bigger
+    else hi = mid - 1;                 // mid fails — go smaller
+}
+// lo is the largest feasible value
+```
+
+`feasible(v)` is a greedy/checker function you write — often O(n). Total:
+O(n log(range)).
+
+### Worked example — maximum minimum distance
+
+n positions on a line, place k cows so the **smallest** gap is as large
+as possible. Feasibility of gap d: greedily place a cow every time the
+distance since the last placement reaches d.
+
+```cpp
+bool feasible(const vector<long long>& pos, int k, long long d) {
+    int used = 1;
+    long long last = pos[0];
+    for (int i = 1; i < (int)pos.size(); ++i)
+        if (pos[i] - last >= d) { ++used; last = pos[i]; }
+    return used >= k;
+}
+// binary search d in [1, pos.back() - pos.front()]
+```
+
+Why greedy is right inside the checker: placing each cow as early as
+possible never hurts — any valid placement can be shifted left.
+
+### Rounding direction is everything
+
+- Searching **first true** (smallest feasible): `mid = lo + (hi-lo)/2`,
+  `if feasible: hi = mid else lo = mid + 1`.
+- Searching **last true** (largest feasible): `mid = lo + (hi-lo+1)/2`,
+  `if feasible: lo = mid else hi = mid - 1`.
+
+Mixing the two directions is the most common way binary search silently
+returns a neighbor of the true answer. When unsure, hand-simulate a range
+of size 2 and size 3.
+
+### Real contest signal
+
+If the statement says "minimize the maximum ..." or "maximize the
+minimum ...", that phrasing is a huge hint: those objectives are monotone
+in the answer — binary search on the answer is the standard attack.

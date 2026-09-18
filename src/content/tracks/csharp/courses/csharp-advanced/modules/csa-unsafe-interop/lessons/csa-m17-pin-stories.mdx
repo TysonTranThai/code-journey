@@ -1,0 +1,45 @@
+## Interop without native libraries: Unsafe, MemoryMarshal
+
+Most "unsafe-flavored" work happens entirely inside managed memory, with
+two libraries that need no P/Invoke:
+
+**`Unsafe`** — the light abstraction over pointers:
+
+```csharp
+// Reinterpret without copying, no pointers in sight:
+int i = 42;
+ref float f = ref Unsafe.As<int, float>(ref i);   // same bits, new type
+```
+
+`Unsafe.As<TFrom, TTo>` reinterprets a ref — zero cost, zero checks. It is
+the expert tool: wrong type = silent garbage. Use only with proven
+layouts.
+
+**`MemoryMarshal`** — the safer face of the same tricks:
+
+```csharp
+var shorts = MemoryMarshal.Cast<long, ushort>(span);   // reinterpret a span
+var bytes  = MemoryMarshal.AsBytes(span);              // any T as raw bytes
+var packet = MemoryMarshal.Read<Packet>(bytes);        // struct from bytes
+```
+
+`Cast<TFrom, TTo>` views one span as another element type (same buffer,
+new lens); `Read<T>/Write<T>` overlay a struct on bytes; `GetReference`
+gives a managed ref to buffer element 0. All bounds-checked except the
+explicitly unchecked variants.
+
+The classic application this course drills: **zero-copy protocol
+parsing**. A wire format lands as bytes; instead of allocating field
+objects, you reinterpret fixed-layout segments — struct layouts declared
+with `[StructLayout(LayoutKind.Sequential)]`. The technique's dangers
+are the lesson: layout is platform-dependent (endianness for multi-byte
+fields is the layout of the RUNNING machine — the test shows
+little-endian), padding must match (`Sequential` honors declared packing),
+and a version mismatch between writer and reader silently reinterprets
+the wrong bytes. Real protocols ship explicit field parsing; the
+reinterpret trick is for measured hot paths and proven-stable formats.
+
+**`GCHandle`/pinned handles** complete the picture: `GCHandle.Alloc(obj,
+GCHandleType.Pinned)` pins beyond a fixed block (for handing buffers to
+async native work) — and must be `Free()`d, or the object stays pinned
+for the process lifetime. The same leak discipline as everything else.

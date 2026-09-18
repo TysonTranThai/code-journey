@@ -16,10 +16,9 @@ import { NextResponse } from "next/server";
  */
 const HSTS_VALUE = "max-age=31536000; includeSubDomains";
 
-function buildCsp(isProd: boolean): string {
-  const scriptSrc = isProd
-    ? "script-src 'self' 'unsafe-inline'"
-    : "script-src 'self' 'unsafe-inline' 'unsafe-eval'";
+function buildCsp(): string {
+  // 'unsafe-eval' is required for the client-side JavaScript challenge runner (Web Worker evaluation)
+  const scriptSrc = "script-src 'self' 'unsafe-inline' 'unsafe-eval'";
   return [
     "default-src 'self'",
     scriptSrc,
@@ -43,7 +42,7 @@ export function middleware() {
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
   response.headers.set("X-Frame-Options", "DENY");
-  response.headers.set("Content-Security-Policy", buildCsp(isProd));
+  response.headers.set("Content-Security-Policy", buildCsp());
   if (isProd) {
     response.headers.set("Strict-Transport-Security", HSTS_VALUE);
   }

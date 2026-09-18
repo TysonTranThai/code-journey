@@ -1,0 +1,85 @@
+## Test framework thực chất là gì
+
+Gỡ bỏ attribute và UI đi, một test framework chỉ là một `foreach` với
+`try/catch`:
+
+```csharp
+public sealed record TestResult(string Name, bool Passed, string Message);
+
+public sealed class TestSummary
+{
+    public int Passed;
+    public int Failed;
+    public List<string> Failures = new();   // "tên: thông điệp"
+}
+
+public static TestSummary Run(IEnumerable<(string Name, Action Body)> tests)
+{
+    var summary = new TestSummary();
+    foreach (var (name, body) in tests)
+    {
+        try { body(); summary.Passed++; }
+        catch (Exception ex)
+        {
+            summary.Failed++;
+            summary.Failures.Add(name + ": " + ex.Message);
+        }
+    }
+    return summary;
+}
+```
+
+Hai quyết định thiết kế quan trọng hơn cả:
+
+1. **Chạy tiếp sau một lỗi.** Runner dừng ở test đỏ đầu tiên che giấu tất cả
+   những gì phía sau. Framework thật chạy mọi test và báo tất cả lỗi — đó là
+   lý do một lần CI đỏ hữu ích.
+2. **Test "thất bại" bằng cách ném exception.** Assertion chỉ là các method
+   nhỏ ném lỗi khi lệch. `Assert.Equal` của xUnit và helper `Cj` mà nền tảng
+   này chấm điểm là cùng một ý tưởng.
+
+## AAA — hình dáng của mọi test
+
+Sắp đặt thế giới, hành động một lần, khẳng định kết quả:
+
+```csharp
+// Arrange
+var cart = new Cart();
+cart.Add("tea", price: 3m, qty: 2);
+// Act
+var total = cart.Total();
+// Assert
+// total == 6m
+```
+
+Nếu không thấy được ba khối, test đang làm quá nhiều việc — tách nó ra.
+
+## Đặt tên: tên test là đặc tả
+
+Ưu tiên tên câu mô tả hành vi kỳ vọng:
+`Total_sums_price_times_quantity`, `PlaceOrder_rejects_when_out_of_stock`.
+Đúng tên thì danh sách lỗi đọc như danh sách việc cần làm; sai tên ("Test1",
+"works now"), mọi người đọc lại phải đoán ý định.
+
+## Test tham số hóa: một thân, nhiều ca
+
+Cùng hành vi qua nhiều đầu vào → lặp bảng, đừng sao chép test:
+
+```csharp
+var cases = new (string Input, int Expected)[]
+{
+    ("", 0), ("a", 1), ("ab", 2),
+};
+foreach (var (input, expected) in cases)
+{
+    // assert Count(input) == expected, nhãn chứa input
+}
+```
+
+Mỗi vòng lặp phải mang đầu vào trong thông điệp lỗi — "expected 2, got 3"
+trần trụi giữa bảng 40 hàng là vô dụng.
+
+## Kiểm tra hiểu biết
+
+- Vì sao runner phải chạy tiếp sau lỗi? (Một test đỏ không được che mười test khác — CI báo tất cả.)
+- Điều gì làm một test thất bại trong mọi framework? (Một exception thoát ra khỏi thân test.)

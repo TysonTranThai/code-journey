@@ -1,0 +1,44 @@
+## Attributes as executable metadata
+
+An attribute is a tiny object serialized into the assembly's metadata.
+It does nothing by itself — it is *data about code* that you (or a
+framework) read and act on:
+
+```csharp
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+sealed class RetryAttribute : Attribute
+{
+    public int Times { get; }
+    public RetryAttribute(int times) => Times = times;
+}
+
+class Job
+{
+    [Retry(3)]
+    public void Run() { }
+}
+
+// Reading it back:
+var attr = typeof(Job).GetMethod("Run")!.GetCustomAttribute<RetryAttribute>();
+// attr.Times == 3
+```
+
+The three properties that decide behavior:
+
+- **AttributeUsage**: where it may appear. Enforce this — an attribute on
+  the wrong target is a design smell the compiler should have caught.
+- **AllowMultiple**: stacking `[Retry(3)][Retry(5)]` is legal or a compile
+  error.
+- **Inherited**: do derived classes see the base class's attributes?
+
+Attribute *arguments* are limited to compile-time constants, `Type`
+objects, and arrays of those — that constraint is what makes attributes
+safe to serialize into metadata. Everything dynamic (config values, live
+services) belongs in the code that *reacts* to the attribute, not in the
+attribute itself.
+
+Design boundary that keeps systems sane: attributes declare **intent**
+("this needs retries", "this is a job"), a single engine interprets them
+once at startup, and hot paths never re-read attributes. Re-reading
+attributes per request is the classic reflection-performance bug — and a
+sign the framework boundary leaked.

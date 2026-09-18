@@ -1,0 +1,50 @@
+## Linear search and when it suffices
+
+```cpp
+int pos = -1;
+for (int i = 0; i < n; ++i) if (a[i] == x) { pos = i; break; }
+```
+
+O(n). For one query on unsorted data, that is optimal — sorting for a
+single lookup (O(n log n)) is slower. Binary search pays off with many
+queries or pre-sorted data.
+
+### The invariant formulation
+
+Search the half-open range [lo, hi) for the first index with a[i] >= x:
+
+```cpp
+int lo = 0, hi = n;                 // answer is in [lo, hi]
+while (lo < hi) {
+    int mid = lo + (hi - lo) / 2;   // overflow-safe midpoint
+    if (a[mid] < x) lo = mid + 1;   // a[lo..mid] all < x
+    else hi = mid;                  // answer is mid or left of it
+}
+// lo == n means every element is < x
+```
+
+The loop keeps one promise: **everything left of `lo` is too small,
+everything at or right of `hi` is big enough**. The range shrinks every
+iteration, so it terminates; when `lo == hi` the answer is pinned. This is
+exactly `lower_bound(a.begin(), a.end(), x) - a.begin()`.
+
+### lower_bound vs upper_bound
+
+```cpp
+int lb = lower_bound(b.begin(), b.end(), x) - b.begin();  // first index with b[i] >= x
+int ub = upper_bound(b.begin(), b.end(), x) - b.begin();  // first index with b[i] > x
+int count = ub - lb;                                      // occurrences of x
+```
+
+- Is x present? `lb < n && b[lb] == x`.
+- How many times? `ub - lb`.
+- Predecessor (largest value < x)? `lb - 1`, if `lb > 0`.
+
+### The classic fatal bugs
+
+- `mid = (lo + hi) / 2` — overflows for lo, hi near 2·10^9. Use
+  `lo + (hi - lo) / 2`.
+- `hi = n - 1` with `while (lo <= hi)` and `hi = mid` — infinite loop when
+  the range is 2 elements. Prefer the half-open form above; it cannot hang.
+- Binary search on **unsorted** data — the invariant silently means
+  nothing. Sort first (and remember sorting permutes indices).

@@ -1,0 +1,36 @@
+## Closure và biến bị bắt giữ
+
+Khi lambda bắt một biến cục bộ, compiler nâng biến đó vào một **display
+class** do compiler sinh ra; phương thức và lambda dùng chung một thể hiện.
+Những hệ quả quyết định bug:
+
+```csharp
+var actions = new List<Action>();
+for (int i = 0; i < 3; i++)
+    actions.Add(() => Console.Write(i));
+// C# 5+: in 012 — vòng foreach capture theo từng lần lặp
+// nhưng biến đếm của vòng `for` là MỘT biến dùng chung mọi lần lặp
+```
+
+Từ C# 5, biến lặp của `foreach` được capture theo từng lần lặp (cái bẫy
+lịch sử đã được sửa ở đó); chỉ số của vòng `for` vẫn là một biến duy nhất —
+mọi closure thấy giá trị cuối cùng của nó, trừ khi bạn sao chép vào biến
+cục bộ bên trong vòng lặp.
+
+Biến bị capture sống cùng delegate: một lambda giữ object lớn giữ cho cả
+object đó luôn truy cập được — đây chính là dáng vẻ **rò rỉ bộ nhớ managed**
+trong code event-handler (Module 14). Hãy capture có chủ đích:
+
+```csharp
+// capture bản chụp, không phải biến:
+for (int i = 0; i < 3; i++)
+{
+    var copy = i;
+    actions.Add(() => Use(copy));   // 0, 1, 2
+}
+```
+
+Và ưu tiên capture những thứ *nhỏ, sống lâu* (một service, một formatter)
+hơn biến cục bộ trong vòng lặp. Mỗi capture khác nhau theo lần lặp là một
+cấp phát display class — với đường nóng, tái cấu trúc để một closure phục
+vụ nhiều lần gọi (tham số hóa thay vì capture).

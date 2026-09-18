@@ -1,0 +1,11 @@
+## Checkpoint: kiến trúc production
+
+Cổng cuối. Gửi bản trùng, vượt sức chứa, chạy tất cả: nếu cả ba bộ đếm ra
+đúng như các bài kiểm tra đòi hỏi, bạn đã hiện thực các hợp đồng cốt lõi của
+một nền tảng job production — idempotency, backpressure, và thực thi
+exactly-once — dưới một hình dạng bạn có thể bảo vệ từng dòng một.
+
+Các lỗi thường gặp: chấp nhận bản trùng (seen-set đứng sau kiểm tra sức chứa),
+đếm sai số lần từ chối (mỗi bản trùng bị từ chối *một lần cho mỗi lần gửi
+thừa*), hoặc thực thi hai lần vì `RunAll` không dọn pending. Mỗi lỗi ánh xạ
+với một bug production thật với một câu chuyện sự cố thật.

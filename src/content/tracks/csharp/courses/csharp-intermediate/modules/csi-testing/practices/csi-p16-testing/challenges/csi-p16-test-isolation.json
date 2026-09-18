@@ -1,0 +1,21 @@
+{
+  "id": "csi-p16-test-isolation",
+  "title": "Debug: Passes Alone, Fails Together",
+  "prompt": "`OrderService` behaves correctly when each test runs in its own process — but back-to-back calls across *different service instances* see ghosts of each other. Find the root cause and fix it: the service must depend only on its injected `IOrderStore`, hold no state outside the instance, and every call must see fresh data from the store it was given.\n\n```csharp\npublic static class Solution { public sealed class OrderService { public OrderService(IOrderStore store); public string PlaceOrder(string sku, int qty); } }  // PlaceOrder -> \"ok\" | \"outofstock\"\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n\n// Provided infrastructure — do not modify.\npublic interface IOrderStore\n{\n    int GetStock(string sku);\n    void Reserve(string sku, int qty);\n}\n\npublic sealed class SqlOrderStore : IOrderStore   // the \"real\" backend, simulated\n{\n    public System.Collections.Generic.Dictionary<string, int> Stock = new();\n    public System.Collections.Generic.List<string> Reservations = new();\n    public int GetStock(string sku) => Stock.TryGetValue(sku, out var n) ? n : 0;\n    public void Reserve(string sku, int qty) => Reservations.Add(sku + \":\" + qty);\n}\n",
+  "tests": [
+    {
+      "name": "service behaves against a fresh store",
+      "code": "\nvar real = new SqlOrderStore();\nreal.Stock[\"widget\"] = 5;\nvar svc = new Solution.OrderService(real);\nCj.Eq(svc.PlaceOrder(\"widget\", 3), \"ok\", \"in stock\");\nCj.Eq(real.Reservations.Count, 1, \"reservation recorded on the injected store\");\nCj.Eq(svc.PlaceOrder(\"widget\", 9), \"outofstock\", \"too many\");\nCj.Eq(real.Reservations.Count, 1, \"no reservation when out of stock\");\n",
+      "hint": "Constructor stores the IOrderStore; PlaceOrder reads GetStock, reserves only on success."
+    },
+    {
+      "name": "no state leaks between instances",
+      "code": "\nvar first = new SqlOrderStore();\nfirst.Stock[\"widget\"] = 5;\nvar svc1 = new Solution.OrderService(first);\nCj.Eq(svc1.PlaceOrder(\"widget\", 3), \"ok\", \"first store ok\");\n\nvar second = new SqlOrderStore();\nsecond.Stock[\"widget\"] = 0;\nvar svc2 = new Solution.OrderService(second);\nCj.Eq(svc2.PlaceOrder(\"widget\", 3), \"outofstock\", \"second store sees only its own data\");\n",
+      "hint": "A second instance with a second store must be completely unaffected by the first — no shared cache, no statics."
+    }
+  ],
+  "level": "debugging"
+}

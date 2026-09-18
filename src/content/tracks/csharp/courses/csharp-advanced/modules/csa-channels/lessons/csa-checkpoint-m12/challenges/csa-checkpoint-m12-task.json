@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m12-task",
+  "title": "Channels checkpoint",
+  "prompt": "Implement `static async Task<int> PumpAsync(ChannelReader<int> source, ChannelWriter<int> sink, int factor, CancellationToken ct)` reading every item from source, writing item*factor to sink, and completing the sink when done — propagating cancellation. Then implement `static async Task<List<int>> RunBounded(int count)`: create a bounded channel (capacity 8), a producer writing 0..count-1 then completing, and a single consumer collecting via ReadAllAsync. The test verifies end-to-end flow and that the consumer's output is complete.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "pump",
+      "code": "var c = Channel.CreateBounded<int>(4);\nvar prod = Task.Run(async () => { foreach (var n in new[] { 1, 2, 3 }) await c.Writer.WriteAsync(n); c.Writer.Complete(); });\nvar outC = Channel.CreateUnbounded<int>();\nawait Solution.PumpAsync(c.Reader, outC.Writer, 10, CancellationToken.None);\nvar got = new List<int>();\nawait foreach (var n in outC.Reader.ReadAllAsync()) got.Add(n);\nCj.Eq(string.Join(\",\", got), \"10,20,30\", \"pumped and multiplied, sink completed\");",
+      "hint": "await foreach (var item in source.ReadAllAsync(ct)) await sink.WriteAsync(item * factor, ct); finally sink.Complete()."
+    },
+    {
+      "name": "bounded-drain",
+      "code": "var r = await Solution.RunBounded(100);\nCj.Eq(r.Count, 100, \"all 100 items drained\");\nCj.Eq(r[0], 0, \"bounded channel keeps order\"); Cj.Eq(r[99], 99, \"in order\");",
+      "hint": "Bounded(capacity: 8); producer: for-loop WriteAsync then TryComplete; consumer: await foreach ReadAllAsync into list."
+    }
+  ]
+}

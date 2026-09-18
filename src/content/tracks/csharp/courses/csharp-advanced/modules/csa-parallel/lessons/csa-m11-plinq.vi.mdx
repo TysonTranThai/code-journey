@@ -1,0 +1,33 @@
+## PLINQ: truy vấn song song, giá thật
+
+`.AsParallel()` biến truy vấn LINQ thành pipeline song song; PLINQ phân
+mảnh nguồn, chạy các toán tử đồng thời, và gộp kết quả:
+
+```csharp
+var heavy = urls.AsParallel()
+                .Select(ParseAndScore)      // CPU-bound, đắt mỗi phần tử
+                .Where(s => s > threshold)
+                .ToArray();
+```
+
+Hành vi gộp là bất ngờ đầu tiên: **PLINH đổi thứ tự theo mặc định.** Nó
+buffer kết quả để trả về nhanh hơn, đánh đổi thứ tự lấy thông lượng.
+`.AsOrdered()` khôi phục thứ tự nguồn với chi phí buffer thật — chỉ trả khi
+thứ tự là một phần của đáp án.
+
+PLINQ giỏi gì: công việc element-wise gắn CPU trên đầu vào lớn (`Select`
+với transform đắt), `Aggregate` với overload có seed. PLINQ tệ ở đâu:
+
+- **Công việc mỗi phần tử quá nhỏ** — chi phí phân mảnh nuốt phần thắng
+  (cùng quy tắc với Parallel.For).
+- **Toán tử phụ thuộc thứ tự** — `Take`, `First`, `Skip` cần ngữ nghĩa
+  trình tự mà chúng đi ngược phân mảnh.
+- **Lambda có tác dụng phụ** — chúng giờ chạy trên nhiều thread; closure
+  của bạn phải thread-safe.
+- **Công việc gắn I/O** — PLINQ song song hóa THREAD, không phải chờ đợi.
+  Await một lời gọi mạng trong PLINQ là chặn thread pool. Việc đó thuộc về
+  `Task.WhenAll`/async stream.
+
+`WithDegreeOfParallelism(n)` chặn số worker — cần thiết khi nhiều truy vấn
+PLINQ dùng chung một process, hoặc máy dùng chung. `AsSequential()` hạ về
+tuần tự giữa truy vấn khi toán tử sau không song song hóa được.

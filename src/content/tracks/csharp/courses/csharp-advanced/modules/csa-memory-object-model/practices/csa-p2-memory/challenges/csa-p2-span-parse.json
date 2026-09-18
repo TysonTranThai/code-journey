@@ -1,0 +1,21 @@
+{
+  "id": "csa-p2-span-parse",
+  "title": "Parse without allocating",
+  "prompt": "Implement `static (int a, int b) ParsePair(ReadOnlySpan<char> input)` that parses two comma-separated integers from the span WITHOUT allocating any string. No Split, no Substring — slice and parse the span directly. The test measures allocations to prove it.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "correctness",
+      "code": "var (a, b) = Solution.ParsePair(\"12,345\".AsSpan());\nCj.Eq(a, 12, \"a\");\nCj.Eq(b, 345, \"b\");",
+      "hint": "Slice at the comma: input[..i] and input[(i+1)..], then int.Parse each slice."
+    },
+    {
+      "name": "zero-alloc",
+      "code": "// The FIRST loop runs before JIT tiering settles and observes a small\n// per-call overhead; after warmup the span path is byte-identical to\n// zero. The Split path still allocates per call, so it fails the second\n// (warmed) measurement — exactly the lesson.\nReadOnlySpan<char> s = \"9,10\".AsSpan();\nfor (int i = 0; i < 200; i++) Solution.ParsePair(s);   // warmup\nlong before = GC.GetAllocatedBytesForCurrentThread();\nfor (int i = 0; i < 100; i++) Solution.ParsePair(s);\nlong after = GC.GetAllocatedBytesForCurrentThread();\nCj.True(after - before <= 96, $\"100 warmed parses allocated {after - before} bytes (must be ~0)\");",
+      "hint": "int.Parse(ReadOnlySpan<char>) never allocates; the tuple fits in registers/stack."
+    }
+  ],
+  "level": "guided"
+}

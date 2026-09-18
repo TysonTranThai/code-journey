@@ -1,0 +1,18 @@
+{
+  "title": "Checkpoint networking",
+  "prompt": "Hiện thực length-prefix framing trên buffer trong bộ nhớ (không phụ thuộc loopback, tất định): `static byte[] EncodeFrame(string payload)` — tiền tố độ dài 4 byte little-endian rồi byte UTF-8; `static string DecodeFrame(ReadOnlySpan<byte> data)` — đọc tiền tố, xác thực data.Length >= 4 + length (ném ArgumentException nếu không), giải mã đúng `length` byte. Rồi hiện thực `static async Task<string> EchoProtocol(string message)`: mở TcpListener trên port loopback ephemeral, nhận một client, đọc một frame, echo payload trả về theo khung, và trả về thứ client nhận được. Loopback TCP của sandbox đã được xác minh hoạt động.",
+  "tests": [
+    {
+      "name": "frame-roundtrip",
+      "hint": "BinaryPrimitives.WriteInt32LittleEndian(prefix, Encoding.UTF8.GetByteCount(payload)); rồi ghi byte."
+    },
+    {
+      "name": "truncated-frame-rejected",
+      "hint": "Nếu data.Length < 4 + length, ném ArgumentException — frame dở dang là bug TCP số một."
+    },
+    {
+      "name": "loopback-echo",
+      "hint": "TcpListener(IPAddress.Loopback, 0) chọn port ephemeral; đọc frame, ghi cùng payload đóng khung trả về; client đọc và giải mã."
+    }
+  ]
+}

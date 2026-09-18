@@ -1,0 +1,50 @@
+## Tìm tuyến tính và khi nào là đủ
+
+```cpp
+int pos = -1;
+for (int i = 0; i < n; ++i) if (a[i] == x) { pos = i; break; }
+```
+
+O(n). Với một truy vấn trên dữ liệu chưa sắp, đó là tối ưu — sắp xếp chỉ
+để tra một lần (O(n log n)) còn chậm hơn. Tìm kiếm nhị phân có lợi khi có
+nhiều truy vấn hoặc dữ liệu đã sắp sẵn.
+
+### Dạng bất biến
+
+Tìm chỉ số đầu tiên với a[i] >= x trong đoạn nửa mở [lo, hi):
+
+```cpp
+int lo = 0, hi = n;                 // đáp án nằm trong [lo, hi]
+while (lo < hi) {
+    int mid = lo + (hi - lo) / 2;   // điểm giữa an toàn tràn số
+    if (a[mid] < x) lo = mid + 1;   // a[lo..mid] đều < x
+    else hi = mid;                  // đáp án là mid hoặc bên trái
+}
+// lo == n nghĩa là mọi phần tử đều < x
+```
+
+Vòng lặp giữ một lời hứa: **mọi thứ bên trái `lo` đều quá nhỏ, mọi thứ từ
+`hi` trở đi đều đủ lớn**. Đoạn thu hẹp mỗi vòng nên chắc chắn dừng; khi
+`lo == hi` đáp án được khoanh đúng. Đây chính là
+`lower_bound(a.begin(), a.end(), x) - a.begin()`.
+
+### lower_bound vs upper_bound
+
+```cpp
+int lb = lower_bound(b.begin(), b.end(), x) - b.begin();  // chỉ số đầu với b[i] >= x
+int ub = upper_bound(b.begin(), b.end(), x) - b.begin();  // chỉ số đầu với b[i] > x
+int count = ub - lb;                                      // số lần xuất hiện của x
+```
+
+- x có mặt? `lb < n && b[lb] == x`.
+- Bao nhiêu lần? `ub - lb`.
+- Tiền nhiệm (giá trị lớn nhất < x)? `lb - 1`, nếu `lb > 0`.
+
+### Các lỗi chí mạng kinh điển
+
+- `mid = (lo + hi) / 2` — tràn số khi lo, hi gần 2·10^9. Dùng
+  `lo + (hi - lo) / 2`.
+- `hi = n - 1` với `while (lo <= hi)` và `hi = mid` — vòng lặp vô hạn khi
+  đoạn còn 2 phần tử. Hãy dùng dạng nửa mở ở trên; nó không thể treo.
+- Tìm kiếm nhị phân trên dữ liệu **chưa sắp** — bất biến im lặng mất nghĩa.
+  Sắp trước (và nhớ rằng sắp làm xáo trộn chỉ số).

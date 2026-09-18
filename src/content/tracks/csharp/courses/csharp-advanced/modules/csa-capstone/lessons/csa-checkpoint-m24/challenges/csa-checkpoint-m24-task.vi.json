@@ -1,0 +1,14 @@
+{
+  "title": "Checkpoint capstone",
+  "prompt": "Lắp ráp lõi nền tảng thành `class JobPlatform`. Constructor: `JobPlatform(int capacity)`. Phương thức: `(bool accepted) Submit(string jobId, Func<int> work)` — chỉ nhận khi jobId chưa từng thấy VÀ số in-flight < capacity (idempotency + backpressure; bản trùng và vượt sức chứa trả false và tính là bị từ chối); `int RunAll()` — thực thi mọi công việc đã nhận đúng một lần (theo thứ tự thời gian), trả về chênh lệch bộ đếm work (bằng số đã nhận — chứng minh mỗi job chạy đúng một lần); thuộc tính `int Pending`. Rồi `static (int accepted, int rejected, int executed) SubmitSchedule(JobPlatform p, List<string> jobIds, int duplicatesPerJob)` — nộp mỗi id (1 + duplicatesPerJob) lần, trả về số accepted/rejected và executed = RunAll().",
+  "tests": [
+    {
+      "name": "idempotent-and-bounded",
+      "hint": "HashSet<string> seen + danh sách chờ; nhận khi !seen.Contains && pending.Count < capacity."
+    },
+    {
+      "name": "schedule-runs-once",
+      "hint": "SubmitSchedule: giao mỗi id (1+duplicates) lần; executed = p.RunAll(); bộ đếm work dùng chung."
+    }
+  ]
+}

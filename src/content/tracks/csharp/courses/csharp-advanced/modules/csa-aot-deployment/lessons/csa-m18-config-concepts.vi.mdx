@@ -1,0 +1,25 @@
+## Cấu hình, khởi động, và hợp đồng lúc compile
+
+Các mô hình triển khai định hình nơi quyết định nằm. Bề mặt cấu hình
+runtime mà bạn nên suy luận một cách chủ ý:
+
+**Công tắc lúc compile/publish** (property MsBuild): `PublishTrimmed`,
+`PublishAot`, `PublishReadyToRun`, `InvariantGlobalization` (bỏ ICU —
+image nhỏ hơn, ngữ nghĩa bất biến văn hóa), `EnableDynamicLoading` (tắt
+cho trim, bật cho plugin). Những cái này chọn hợp đồng runtime; một bộ
+property khác có thể nghĩa là một bề mặt bug hoàn toàn khác.
+
+**Công tắc lúc runtime** (biến môi trường): `DOTNET_TieredPGO`,
+`DOTNET_gcServer`, `DOTNET_GCDynamicAdaptationMode` — thay đổi hành vi đo
+được mà không cần code. Tinh chỉnh production bắt đầu từ đây, không phải
+viết lại code: bảng chi phí trong checkpoint đúng là hình dạng của suy
+luận đó (chi phí nào mang tính cấu trúc, chi phí nào tinh chỉnh được).
+
+**Hợp đồng lúc compile** là kỷ luật thời AOT: ưu tiên quyết định tại build
+hơn quyết định lúc chạy, bất cứ nơi nào quyết định đã biết từ lúc build.
+Đăng ký DI do generator phát sinh, route sinh từ chữ ký phương thức,
+serializer sinh từ kiểu — mỗi cái dời một lỗi từ runtime production về
+build trong CI. Phần cấu hình runtime còn lại (endpoint, credential,
+feature flag) chính là phần NÊN là dữ liệu — nghệ thuật nằm ở ranh giới,
+và ranh giới là một quyết định thiết kế mà khóa học liên tục bắt bạn phát
+biểu.

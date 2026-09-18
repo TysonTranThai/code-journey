@@ -1,0 +1,60 @@
+## Why doubles at all
+
+A unit test must not need the network, a database, or the file system. It
+needs the *behavior* of those things, controlled by the test. A **test
+double** is a stand-in object that provides it. The dependency-inversion
+you built in Module 11 — services depend on interfaces — is exactly what
+makes doubles possible: the test hands the service a different
+implementation.
+
+## The spectrum, by hand
+
+- **Stub** — returns hardcoded answers. "The payment gateway approves."
+  No state worth checking.
+- **Fake** — a working lightweight implementation. A `Dictionary`-backed
+  repository stands in for the SQL one. The service can't tell the
+  difference, and the test can inspect real behavior.
+- **Mock** — records the *interaction* for later verification: "Reserve was
+  called exactly once with sku=tea". Use when the interaction itself is the
+  requirement (side effects), not the data.
+
+```csharp
+public interface IPaymentGateway { bool Charge(decimal amount); }
+
+public sealed class StubGateway : IPaymentGateway          // stub
+{
+    public bool Result = true;
+    public bool Charge(decimal amount) => Result;
+}
+
+public sealed class MockGateway : IPaymentGateway          // mock
+{
+    public int Calls;
+    public decimal LastAmount;
+    public bool Charge(decimal amount) { Calls++; LastAmount = amount; return true; }
+}
+```
+
+Fakes are the workhorse; mocks pull their weight when the *call* is the
+outcome. Reaching for a mocking library before writing two by hand is how
+people end up testing the mock instead of the code.
+
+## Isolation: every test gets a fresh world
+
+The classic rot: tests pass alone, fail in a suite — or the reverse.
+Root causes are almost always shared mutable state:
+
+- a `static` field or cache on the service;
+- a singleton the service mutates;
+- ordering: test B depends on something test A created.
+
+Rules that prevent it: fresh instances per test (the Arrange block builds
+its own world), no statics holding state, and no test may depend on another
+having run. In real frameworks, test *order* is undefined — anything that
+needs ordering is a bug.
+
+## Check your understanding
+
+- Stub vs fake? (Stub answers canned values; fake is a working lightweight implementation.)
+- When is a mock the right choice? (When the interaction itself — was it called, with what — is the requirement.)
+- Tests pass alone, fail together. First suspects? (Shared static state, singletons, hidden ordering.)

@@ -1,0 +1,11 @@
+## Checkpoint: truy cập dữ liệu
+
+Một store, một state machine, một ngân sách. Store thi hành đồng thời tối ưu
+(kiểm tra phiên bản hoặc xung đột); vòng retry đọc lại phiên bản hiện tại khi
+xung đột và hội tụ theo các vòng; bài tập pool giữ phép tính chiếm dụng trung
+thực.
+
+Nếu `SaveAll` đầu tiên của bạn ném lỗi vĩnh viễn, nguyên nhân thường là tái sử
+dụng expected version cũ — cách sửa là *đọc lại khi xung đột*, đúng như các
+vòng retry trong production. Nếu `VersionOf` nói dối sau xung đột, hãy kiểm
+tra một Put *thất bại* không thay đổi gì cả.

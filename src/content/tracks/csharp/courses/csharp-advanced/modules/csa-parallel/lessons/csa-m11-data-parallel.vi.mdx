@@ -1,0 +1,29 @@
+## Song song dữ liệu: Parallel.For và bạn bè
+
+`Parallel.For` và `Parallel.ForEach` chia một dải chỉ số hoặc bộ sưu tập
+cho các worker thread, gom mượn thread của thread pool. Dạng ba-delegate là
+lao động chính vì nó giải bài toán tổng hợp đúng cách:
+
+```csharp
+long total = 0;
+Parallel.For(0, data.Length,
+    localInit: () => 0L,                                    // bộ tích lũy mỗi worker
+    body: (i, state, local) => local + (long)data[i] * data[i],
+    localFinally: local => Interlocked.Add(ref total, local));  // gộp một lần mỗi worker
+```
+
+Vì sao quan trọng: `Parallel.For(0, n, i => total += f(i))` ngây thơ mất
+cập nhật — phép gộp diễn ra trong vòng nóng dưới contention. Bản local-state
+chạm bộ nhớ dùng chung một lần mỗi mảnh worker — đó là khác biệt giữa tăng
+tốc song song và giảm tốc song song.
+
+Các bề mặt điều khiển đáng biết: `loopState.Stop()` dừng càng sớm càng tốt
+(early-stop, không theo thứ tự chỉ số); `loopState.Break()` dừng mọi thứ
+SAU lần lặp hiện tại (kiểu có thứ tự, hiếm khi là điều bạn muốn);
+`ParallelOptions { MaxDegreeOfParallelism, CancellationToken }` chặn cả CPU
+lẫn tuổi thọ.
+
+Bộ lập lịch chia mảnh thích ứng — dải nhỏ được mảnh nhỏ (cân bằng tải),
+dải lớn được mảnh lớn (ít phối hợp hơn). Đây cũng là lý do thân lặp nhỏ
+thua: phối hợp mảnh + chuyển thread áp đảo một thân 10ns. Song song cần
+công việc mỗi phần tử đo bằng micro giây, không phải nano giây.

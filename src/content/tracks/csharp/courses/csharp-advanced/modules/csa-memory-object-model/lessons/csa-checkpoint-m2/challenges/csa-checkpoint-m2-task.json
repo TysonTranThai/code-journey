@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m2-task",
+  "title": "Memory model checkpoint",
+  "prompt": "Implement `static (int copiedX, int aliasedY) AliasVsCopy()`. Inside: create a struct `S { public int X; }` with X=1, copy it to a second local and set the copy's X=2 (original must stay 1); then create an array `int[] a = {5}`, take a ref local `ref int r = ref a[0]`, set r=7. Return (original struct X, a[0]).",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "copy-independence",
+      "code": "var (cx, ay) = Solution.AliasVsCopy();\nCj.Eq(cx, 1, \"struct copy must not leak mutation\");\nCj.Eq(ay, 7, \"ref alias writes through to the array\");",
+      "hint": "Struct assignment copies; `ref` creates an alias that writes through."
+    },
+    {
+      "name": "allocation-shape",
+      "code": "// One array allocation (the 1-element int[]); no other heap allocations expected:\nlong before = GC.GetAllocatedBytesForCurrentThread();\nSolution.AliasVsCopy();\nlong after = GC.GetAllocatedBytesForCurrentThread();\n// Tolerant: allow the tuple allocation if any, but cap it:\nCj.True(after - before <= 64, $\"leaked {after - before} bytes\");",
+      "hint": "The whole method should allocate at most the small array (and tuple) — no boxing, no string."
+    }
+  ]
+}

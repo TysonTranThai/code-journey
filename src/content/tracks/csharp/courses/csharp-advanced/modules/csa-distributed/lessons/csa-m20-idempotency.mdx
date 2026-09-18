@@ -1,0 +1,42 @@
+## Idempotency and exactly-once
+
+The messaging truth table everyone eventually learns: networks offer
+**at-most-once** (drop on failure) and **at-least-once** (retry until
+acknowledged — which duplicates). **Exactly-once** delivery across a
+network is not achievable as a transport property; it is achievable as an
+*effect* — exactly-once processing — and idempotency is how.
+
+```csharp
+// The pattern the checkpoint implements:
+public int Process(string messageId, Func<int> work)
+{
+    if (_results.TryGetValue(messageId, out var cached)) return cached;   // duplicate absorbed
+    var result = work();
+    _results[messageId] = result;    // remember — before acknowledging!
+    return result;
+}
+```
+
+The production-grade version stores the key and result **atomically with
+the side effect** (same DB transaction, or a dedupe table the write
+checks). The broken version caches in memory and side-effects in the
+database: crash between them = duplicate side effect on redelivery.
+
+Where idempotency keys come from: the producer stamps every message with a
+unique ID at creation; consumers dedupe. Payment APIs (Stripe et al.) made
+this famous — client-generated idempotency keys make double-click
+double-charges impossible.
+
+The vocabulary that keeps design conversations honest:
+
+- **At-least-once + idempotent consumer = effectively exactly-once.** The
+  standard architecture.
+- **Duplicate suppression window**: dedupe state is finite; keys expire.
+  "At least once within a 24h window" is the real contract — document it.
+- **Ordered delivery**: at-least-once + retries also reorder. If order
+  matters, include sequence numbers and buffer/hold at the consumer.
+
+The checkpoint's `DeliverAll` proves the math: 20 messages delivered 3
+times each = 60 deliveries, 20 side effects. The practice drill shows what
+happens when a team forgets: the retry storm is not bad luck, it is
+arithmetic.

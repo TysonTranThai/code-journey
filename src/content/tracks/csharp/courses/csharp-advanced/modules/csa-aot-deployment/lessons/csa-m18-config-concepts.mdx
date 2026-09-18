@@ -1,0 +1,25 @@
+## Configuration, startup, and the compile-time contract
+
+Deployment models reshape where decisions live. The runtime-configuration
+surface you should reason about deliberately:
+
+**Compile/publish-time switches** (MsBuild properties): `PublishTrimmed`,
+`PublishAot`, `PublishReadyToRun`, `InvariantGlobalization` (drops ICU —
+smaller images, culture-invariant semantics), `EnableDynamicLoading`
+(off for trim, on for plugins). These choose the runtime contract; a
+different property set can mean a different bug surface entirely.
+
+**Runtime switches** (env vars): `DOTNET_TieredPGO`, `DOTNET_gcServer`,
+`DOTNET_GCDynamicAdaptationMode` — measurable behavior changes with zero
+code. Production tuning starts here, not with rewrites: the checkpoint's
+cost table is the shape of the reasoning (which costs are structural,
+which are tunable).
+
+**The compile-time contract** is the AOT-era discipline: prefer decisions
+made at build over decisions made at run, whenever the decision is
+knowable at build. DI registrations emitted by generators, routes
+generated from method signatures, serializers generated from types —
+each moves a failure from production runtime to CI build. The remaining
+runtime configuration (endpoints, credentials, feature flags) is exactly
+the part that SHOULD be data — the art is the boundary, and the
+boundary is a design decision this course keeps making you articulate.

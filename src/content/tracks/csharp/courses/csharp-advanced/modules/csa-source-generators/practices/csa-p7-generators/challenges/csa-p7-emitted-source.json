@@ -1,0 +1,21 @@
+{
+  "id": "csa-p7-emitted-source",
+  "title": "Emit clean generated source",
+  "prompt": "Implement `static string EmitDto(string className, (string Name, string Type)[] fields)` returning a complete, compilable C# source string for `public sealed record {className}(...)` with the given fields — using FULLY QUALIFIED types for non-primitives (e.g. System.DateTime) so the output compiles without any usings. Primitives (int, string, bool, double) stay as-is.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "compiles-without-usings",
+      "code": "var src = Solution.EmitDto(\"Order\", new[] { (\"Id\", \"int\"), (\"Placed\", \"System.DateTime\") });\nCj.True(src.Contains(\"record Order(\"), \"record declared\");\n// The emitted source must compile standalone (no usings available):\nCj.True(Solution.CompilesStandalone(src), \"emitted source compiles\");",
+      "hint": "Generated code must not depend on ambient usings — emit fully qualified names for anything not a primitive keyword."
+    },
+    {
+      "name": "primitives-stay-short",
+      "code": "var src = Solution.EmitDto(\"P\", new[] { (\"Age\", \"int\"), (\"Name\", \"string\") });\nCj.True(src.Contains(\"int Age\"), \"primitive stays keyword\");\nCj.False(src.Contains(\"System.Int32 Age\"), \"no verbose primitives\");",
+      "hint": "Keep a keyword map for primitives; qualify only the rest."
+    }
+  ],
+  "level": "guided"
+}

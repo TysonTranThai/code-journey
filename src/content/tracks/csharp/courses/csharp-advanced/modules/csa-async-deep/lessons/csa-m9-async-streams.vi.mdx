@@ -1,0 +1,31 @@
+## Async stream và IAsyncDisposable
+
+`IAsyncEnumerable<T>` là bản async của `IEnumerable`: phần tử đến theo thời
+gian, và `await foreach` tiêu thụ chúng. Async iterator kết hợp `yield return`
+với `await`:
+
+```csharp
+static async IAsyncEnumerable<Trade> StreamAsync(
+    IAsyncEnumerable<string> lines, [EnumeratorCancellation] CancellationToken ct = default)
+{
+    await foreach (var line in lines.WithCancellation(ct).ConfigureAwait(false))
+        if (Trade.TryParse(line, out var t)) yield return t;
+}
+```
+
+Backpressure có sẵn: consumer kéo; producer chỉ sản xuất khi được kéo
+(khác fan-out kiểu `Task`, sản xuất hết tốc lực). Muốn ngữ nghĩa buffer giới
+hạn, compose stream với `Channel<T>` (Module 13).
+
+`IAsyncDisposable` + `await using` khép vòng đời cho tài nguyên mà việc giải
+phóng cũng bất đồng bộ (kết nối mạng, stream, DB reader):
+
+```csharp
+await using var conn = await pool.RentAsync(ct);
+// DisposeAsync chạy khi thoát phạm vi — kể cả khi có exception
+```
+
+Cái bẫy: `DisposeAsync` KHÔNG được await nếu bạn dùng `using` thay cho
+`await using` — compiler chèn chờ sync-over-async, hoặc tệ hơn, ngữ nghĩa
+fire-and-forget tùy kiểu. Và `ConfigureAwait(false)` nằm trên dòng
+`await foreach`, áp vào enumerator, không phải các phần tử.

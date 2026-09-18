@@ -1,0 +1,39 @@
+## The AOT mindset: runtime services, statically
+
+NativeAOT is not "JIT but earlier" — it removes runtime services:
+
+- **No JIT**: no tiering, no dynamic PGO, no code generation at run.
+  Consequences: no `Reflection.Emit`, no `System.Linq.Expressions.Compile()`,
+  no dynamically loaded assemblies executing code.
+- **No interpreter fallback**: reflection still WORKS for metadata
+  reading, but member access paths are precompiled — unreachable members
+  don't exist.
+- **Static everything**: every type the program might use must be
+  reachable at compile time, or preserved explicitly (same annotations as
+  trimming, plus AOT-specific warnings).
+
+What you gain: microsecond startup, small self-contained binaries, no
+JIT memory, predictable first-request latency, and hard-to-tamper
+deployment (no IL to swap on disk).
+
+**Source generators are the bridge.** The industry-wide pattern that
+makes AOT viable: move code GENERATION from runtime reflection to compile
+time. System.Text.Json's source generator, ASP.NET Core's route/parameter
+generators, DI registrations, regex — each replaces a reflective
+mechanism with emitted static code:
+
+```csharp
+[JsonSourceGenerationOptions(WriteIndented = true)]
+[JsonSerializable(typeof(Order))]
+partial class OrderJsonContext : JsonSerializerContext { }
+
+JsonSerializer.Serialize(order, OrderJsonContext.Default.Order);
+// metadata generated at compile time; no reflection at run
+```
+
+The migration mindset: every time code asks "what types exist?" or
+"construct this by name," rewrite it as an explicit registration table —
+often generated from attributes by your own source generator (Module 8's
+skill). The AOT constraint is a forcing function for the architecture the
+course has advocated all along: explicit boundaries, static knowledge,
+reflection at the edges only.

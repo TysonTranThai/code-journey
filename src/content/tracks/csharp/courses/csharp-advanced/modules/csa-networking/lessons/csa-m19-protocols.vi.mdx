@@ -1,0 +1,31 @@
+## Thiết kế giao thức: request, response, timeout
+
+Một giao thức request/response trên socket thô cần bốn tính chất để sống
+sót khi va chạm với thực tế:
+
+**1. Tương quan.** Request và response phải ghép cặp được — một request ID
+được echo trong response. Không có nó, client có hai request đang bay
+không thể biết response nào của request nào (và pipelining trở nên bất khả
+thi).
+
+**2. Deadline.** Mọi lệnh đọc có timeout, thi hành bằng
+`Task.WhenAny(read, delay)` hoặc CancellationToken từ
+`CancellationTokenSource(TimeSpan)` — từ bỏ cuộc chờ, rồi hủy kết nối.
+Một giao thức không có deadline khi đọc sẽ tích lũy các kết nối nửa mở cho
+đến khi bảng file-descriptor đầy.
+
+**3. Buffer giới hạn.** Reader chấp nhận dữ liệu vô hạn trước khi framing
+kịp xác thực là một công cụ DoS (slowloris: gửi một byte mỗi 59 giây mãi
+mãi). Chính sách: trần kích thước khung, trần buffer, và đóng mọi kết nối
+vượt một trong hai.
+
+**4. Trạng thái sạch.** Máy trạng thái của giao thức — connected, awaiting
+request, awaiting response, closed — phải tường minh, và mọi chuyển tiếp
+phải với tới được bằng test. Các chế độ lỗi (ngắt giữa khung, timeout,
+khung quá lớn, magic sai) mỗi cái ánh xạ tới một chuyển tiếp về `closed`
+kèm lý do chẩn đoán.
+
+Hợp đồng phía client phản chiếu: kết nối có timeout, ghi request có
+framing, đọc có deadline, tương quan, dispose tất định. `EchoProtocol`
+trong checkpoint là phiên bản nhỏ nhất trung thực của cả bốn tính chất;
+các drill practice bổ sung thực tế dính khung của stream.

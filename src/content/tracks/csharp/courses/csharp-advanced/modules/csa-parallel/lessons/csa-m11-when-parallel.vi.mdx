@@ -1,0 +1,29 @@
+## Khi nào song song có lợi — phép tính
+
+Trước khi viết vòng song song, làm phép tính này. Nó dự đoán thành bại
+tốt hơn mọi cảm tính benchmark:
+
+**Định luật Amdahl.** Với phân số tuần tự S, speedup S(n) = 1/(S + (1-S)/n).
+Mười phần trăm tuần tự chặn bạn dưới 10x bất kể bao nhiêu nhân. Phân số
+tuần tự không chỉ là vòng lặp — đó là các điểm contention, queue dùng chung,
+phép gộp cuối. Vì vậy checkpoint bắt bạn tính break-even cores: phần lớn
+workload thật dừng scale ở 4–8x.
+
+**Chi phí mỗi phần tử.** Phối hợp của Parallel.For tốn cỡ hàng trăm nano
+giây đến micro giây mỗi mảnh. Kinh nghiệm: thân của mỗi phần tử nên tốn
+≥ một micro giây (hoặc tập dữ liệu ≥ hàng triệu phần tử) trước khi song
+song có lợi. Thấp hơn thế, bản song song CHẬM HƠN — sự thật đo đếm được,
+không phải ý kiến.
+
+**False sharing.** Hai worker ghi các phần tử mảng kề nhau (hoặc các field
+kề nhau trong một cache line) sẽ chuyền line qua lại giữa các nhân.
+Triệu chứng: bản song song scale tới 2 nhân rồi dừng phẳng — trong khi CPU
+báo 100%. Cách sửa: pad/phân mảnh bộ tích lũy (tổng hợp thread-local làm
+việc đó tự nhiên).
+
+**Trần băng thông bộ nhớ.** Cộng một int[] là tính toán tầm thường và bị
+chặn bởi bộ nhớ; quá vài nhân thì bus bão hòa và speedup chững. Hãy song
+song hóa công việc nặng tính toán, không phải công việc có hình memcpy.
+
+Thói quen: mô hình hóa trước (S, chi phí mỗi phần tử, cỡ dữ liệu), rồi đo,
+rồi giữ hoặc bỏ. `BreakEvenCores` của checkpoint mã hóa mô hình đó.

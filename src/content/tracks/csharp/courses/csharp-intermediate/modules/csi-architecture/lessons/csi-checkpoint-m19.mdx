@@ -1,0 +1,27 @@
+## The gate (mini-build)
+
+Three seams in one file, checked by the tests through the ports only:
+
+1. **Ports** — `ICatalog { int Price(string sku); }` and
+   `IBasket { void Add(string sku, int qty); int Count { get; } string FirstSku { get; } }`
+   (Count = total quantity added; FirstSku = the first sku ever added).
+2. **Service** — `Checkout(ICatalog, IBasket)`: `Quote()` returns
+   `"Total:" + price-of-FirstSku + " x " + Count`; throws
+   `InvalidOperationException` on an empty basket (Count == 0). Quote must
+   work through the interfaces only — no casting to concrete types.
+3. **Batch boundary** — `QuoteMany(string[] skus, ICatalog catalog)` returns
+   one price per sku (input order), pricing each distinct sku exactly once —
+   dedup, then map.
+
+```csharp
+public static class Solution
+{
+    public interface ICatalog { int Price(string sku); }
+    public sealed class MemCatalog : ICatalog;    // "t1" -> 25, "t2" -> 40
+    public interface IBasket { void Add(string sku, int qty); int Count { get; } string FirstSku { get; } }
+    public sealed class MemBasket : IBasket;
+    public sealed class Checkout { public Checkout(ICatalog c, IBasket b); public string Quote(); }
+    public static int[] QuoteMany(string[] skus, ICatalog catalog);
+    public static bool Threw(Action a);
+}
+```

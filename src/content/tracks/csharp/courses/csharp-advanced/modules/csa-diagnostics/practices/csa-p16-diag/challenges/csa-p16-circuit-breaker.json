@@ -1,0 +1,21 @@
+{
+  "id": "csa-p16-circuit-breaker",
+  "title": "Circuit breaker state machine",
+  "prompt": "Implement class `CircuitBreaker(int failureThreshold, TimeSpan openDuration)` with method `bool TryExecute(Action action)`: CLOSED executes and counts consecutive failures (resetting on success); at threshold it opens for openDuration (TryExecute returns false immediately while open); after the duration it becomes HALF-OPEN, letting one attempt through — success closes, failure re-opens. Implement `string State` returning \"closed\", \"open\", or \"half-open\".",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "opens-and-resets",
+      "code": "var cb = new CircuitBreaker(2, TimeSpan.FromMilliseconds(80));\nvar ok = true;\nCj.True(cb.TryExecute(() => { if (!ok) throw new InvalidOperationException(); }), \"first succeeds\");\nok = false;\nCj.False(cb.TryExecute(() => { throw new InvalidOperationException(); }), \"failure 1\");\nCj.False(cb.TryExecute(() => { throw new InvalidOperationException(); }), \"failure 2 → opens\");\nCj.Eq(cb.State, \"open\", \"now open\");\nCj.False(cb.TryExecute(() => { }), \"open rejects immediately\");\nawait Task.Delay(120);\nok = true;\nCj.True(cb.TryExecute(() => { }), \"half-open probe succeeds → closed\");\nCj.Eq(cb.State, \"closed\", \"recovered\");",
+      "hint": "Track _state, _consecutiveFailures, _openedAt. On TryExecute: if open and now < openedAt+duration → false; if open and expired → state=half-open, allow one try."
+    },
+    {
+      "name": "half-open-fails-reopens",
+      "code": "var cb = new CircuitBreaker(1, TimeSpan.FromMilliseconds(60));\nvar ok = false;\ncb.TryExecute(() => { if (!ok) throw new InvalidOperationException(); });\nCj.Eq(cb.State, \"open\", \"after threshold failure\");\nawait Task.Delay(100);\nok = false;\nCj.False(cb.TryExecute(() => { if (!ok) throw new InvalidOperationException(); }), \"half-open probe fails\");\nCj.Eq(cb.State, \"open\", \"re-opened after failed probe\");",
+      "hint": "Failed half-open probe: reset _openedAt, state=open."
+    }
+  ],
+  "level": "real-world"
+}

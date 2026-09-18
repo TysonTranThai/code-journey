@@ -1,0 +1,39 @@
+## Backpressure như một công cụ thiết kế
+
+Queue không giới hạn là kẻ giết người âm thầm của service dưới tải. Trình
+tự luôn như vậy: producer vượt consumer → queue phình → bộ nhớ phình → áp
+lực GC tăng → độ trễ tăng → timeout → retry → THÊM tải. Queue không gây ra
+sự cố; *sự vắng mặt của backpressure* mới gây ra.
+
+Một bounded channel biến quá tải thành tín hiệu tường minh, sống sót được:
+
+```csharp
+var ch = Channel.CreateBounded<Job>(new BoundedChannelOptions(1_000)
+{
+    FullMode = BoundedChannelFullMode.Wait,   // writer cảm nhận được tải
+    SingleReader = false,
+});
+
+// Producer:
+try { await ch.Writer.WriteAsync(job, ct); }
+catch (ChannelClosedException) { /* đang shutdown: shed */ }
+```
+
+Với `Wait`, độ trễ phía producer tăng khi queue đầy — hệ thống suy giảm về
+đúng throughput thật của consumer thay vì chết. Các caller thượng nguồn
+(handler HTTP, message pump) cảm nhận áp lực và có thể shed, trả 503, hoặc
+chậm lại — hành vi hệ thống đúng đắn.
+
+Các quyết định thiết kế mà bounded channel buộc bạn đưa ra (tất cả đều là
+câu hỏi tốt):
+
+1. **Capacity** = burst tối đa chấp nhận được. 0 = rendezvous thuần; nhỏ =
+   nhạy độ trễ; lớn = hấp thụ burst (và ngốn bộ nhớ).
+2. **Drop hay wait?** Drop đúng cho metrics/log (dữ liệu cũ vô giá trị);
+   wait đúng cho work item (mất dữ liệu là bug).
+3. **Ai quan sát sự chờ?** Nếu không ai thượng nguồn phản ứng được với
+   backpressure, bạn chỉ dời vách núi đi chỗ khác.
+
+Phép đo quan trọng nhất: phân bố thời gian chờ của producer. Pipeline
+bounded khỏe mạnh cho thấy chờ gần bằng 0 dưới tải thường và tăng duyên
+dáng dưới tải nặng — channel chính là đồng hồ đo tải của bạn.

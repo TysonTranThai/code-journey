@@ -1,0 +1,16 @@
+## The gate (mini-build)
+
+A user directory service over the in-memory engine:
+
+1. `IUserRepository` — `Register(string name)`, `FindByName(string name)`
+   (returns `User?`), `Count()`.
+2. `SqlUserRepository(CjDb db) : IUserRepository` — every SQL parameterized;
+   `Register` wraps a uniqueness pre-check and the insert in ONE transaction
+   (begin → check → insert → commit) and returns "ok" or "duplicate".
+3. `Map(row)` → `User(Name, Balance)` — balance defaults to 0 when the
+   column is null.
+4. `UserService(IUserRepository)` — `Invite(string name)` returns
+   `"invited:<name>"` on success, `"exists:<name>"` when the name is taken
+   (Module 11: the service knows only the interface).
+
+User: `record User(string Name, decimal Balance)`.

@@ -37,7 +37,7 @@ def build() -> None:
         prompt=(
             "Implement `static List<Func<int>> Counters(int n)` returning n functions; function i returns i-th "
             "value 0,1,...,n-1 — each counter must return ITS OWN index (proving you captured per-iteration "
-            "values correctly, not one shared variable). Then implement `static Func<int> Adder(int start)` "
+            "values correctly, not one shared variable). Then implement `static Func<int,int> Adder(int start)` "
             "returning a function that adds its argument to `start` and returns the RUNNING total (state must "
             "persist across calls — a captured mutable local)."
         ),
@@ -76,7 +76,7 @@ def build() -> None:
             "        }\n"
             "        return r;\n"
             "    }\n\n"
-            "    public static Func<int> Adder(int start)\n    {\n"
+            "    public static Func<int, int> Adder(int start)\n    {\n"
             "        int total = start;\n"
             "        return x => total += x;\n"
             "    }\n}"
@@ -93,7 +93,7 @@ def build() -> None:
             "        }\n"
             "        return r;\n"
             "    }\n\n"
-            "    public static Func<int> Adder(int start) => x => x;   // no state\n}"
+            "    public static Func<int, int> Adder(int start) => x => x;   // no state\n}"
         ),
         checkpoint=True,
     )

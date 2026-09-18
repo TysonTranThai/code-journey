@@ -1,0 +1,45 @@
+## Mẫu 1 — cặp gần nhất bằng hiệu kề
+
+Sau khi sắp, hai giá trị gần nhau nhất **nằm cạnh nhau**:
+
+```cpp
+sort(a.begin(), a.end());
+long long best = a[1] - a[0];
+for (int i = 2; i < n; ++i) best = min(best, a[i] - a[i-1]);
+```
+
+Quét cặp O(n^2) thành O(n log n). Bước "sắp tạo tính cục bộ" này nuôi các
+bài hiệu nhỏ nhất, giá trị gần nhất, và khoảng cách.
+
+### Mẫu 2 — gộp đoạn
+
+Sắp theo đầu đoạn, rồi kéo dài đoạn đang chạy:
+
+```cpp
+sort(iv.begin(), iv.end());            // cặp [đầu, cuối]
+vector<pair<long long,long long>> merged;
+for (auto& [s, e] : iv) {
+    if (!merged.empty() && s <= merged.back().second)
+        merged.back().second = max(merged.back().second, e);
+    else merged.push_back({s, e});
+}
+```
+
+Chú ý `<=` hay `<`: chúng quyết định đoạn chạm nhau có gộp không. Đọc đề.
+
+### Mẫu 3 — gán hạng
+
+```cpp
+sort(b.begin(), b.end());                          // bản sao đã sắp
+for (long long x : a)
+    out << lower_bound(b.begin(), b.end(), x) - b.begin() + 1 << ' ';
+```
+
+Hạng của phần tử = vị trí của nó trong bản sao đã sắp. Giá trị hòa nhận
+hạng khác nhau trừ khi bạn lọc trùng trước — một quyết định đọc đề.
+
+### Vì sao sắp mở ra mọi thứ
+
+Tìm kiếm nhị phân (module sau), chứng minh tham lam, quét đường thẳng, và
+lọc trùng đều bắt đầu từ `sort`. Khi bí, luôn hỏi: **"Sắp dữ liệu trước thì
+sao?"**

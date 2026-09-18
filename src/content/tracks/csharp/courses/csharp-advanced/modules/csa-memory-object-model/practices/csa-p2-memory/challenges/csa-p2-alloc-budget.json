@@ -1,0 +1,21 @@
+{
+  "id": "csa-p2-alloc-budget",
+  "title": "Meet the allocation budget",
+  "prompt": "Implement `static int[] Squares(int n)` returning the squares 0..n-1 as a NEW array, and `static int SumSquares(int n)` computing the same total with ZERO heap allocations (a plain loop, no LINQ). The test enforces: Squares allocates ≤ n*8+64 bytes; SumSquares allocates exactly 0.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "values",
+      "code": "var arr = Solution.Squares(4);\nCj.Eq(arr.Length, 4, \"length\");\nCj.Eq(arr[3], 9, \"3^2\");\nCj.Eq(Solution.SumSquares(4), 14, \"0+1+4+9\");",
+      "hint": "Squares: new int[n] and fill; SumSquares: accumulate in a loop."
+    },
+    {
+      "name": "budget",
+      "code": "long b0 = GC.GetAllocatedBytesForCurrentThread();\nSolution.Squares(1000);\nlong b1 = GC.GetAllocatedBytesForCurrentThread();\nlong sq = b1 - b0;\nb0 = GC.GetAllocatedBytesForCurrentThread();\nfor (int i = 0; i < 100; i++) Solution.SumSquares(1000);\nb1 = GC.GetAllocatedBytesForCurrentThread();\nCj.True(sq <= 1000 * 8 + 64, $\"Squares allocated {sq}\");\nCj.Eq(b1 - b0, 0L, $\"SumSquares allocated {b1 - b0} over 100 runs\");",
+      "hint": "One array of n ints ≈ 8n bytes. SumSquares must not even allocate an enumerator — no LINQ."
+    }
+  ],
+  "level": "independent"
+}

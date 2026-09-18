@@ -1,0 +1,14 @@
+{
+  "title": "Parameterize hoặc gãy",
+  "prompt": "SQL injection là chuỗi nối gặp input người dùng. Hiện thực `static string BuildQuery(string tableName, string userInput)` trả về văn bản SQL kiểu-tham-số hóa AN TOÀN: \\\"SELECT * FROM \\\" + table đã xác thực + \\\" WHERE name = @name\\\" — xác thực table với danh sách trắng {\\\"orders\\\", \\\"customers\\\"} (ném ArgumentException nếu khác) và KHÔNG BAO GIỜ nhúng userInput vào chuỗi (@name giữ là placeholder). Hiện thực `static bool IsSafeQuery(string sql)` trả về false nếu sql chứa ký tự nháy đơn (bằng chứng dữ liệu người dùng đã bị nội suy).",
+  "tests": [
+    {
+      "name": "placeholder-not-interpolated",
+      "hint": "Xác thực table với danh sách trắng; trả $\\\"SELECT * FROM {table} WHERE name = @name\\\" — input người dùng không bao giờ vào chuỗi."
+    },
+    {
+      "name": "table-allowlist",
+      "hint": "Tên bảng không thể là tham số — hãy cho vào danh sách trắng."
+    }
+  ]
+}

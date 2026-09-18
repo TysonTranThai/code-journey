@@ -1,0 +1,30 @@
+## DTO: ngôn ngữ riêng của đường ranh
+
+**DTO** (Data Transfer Object) là kiểu biên không có hành vi: hình dạng mà API
+hay tầng lưu trữ nói. Vì sao không lộ domain type ra ngoài?
+
+- **Ổn định** — refactor nội bộ không được làm vỡ consumer bên ngoài.
+- **An toàn** — bạn chọn từng field được đi qua; không gì rỉ ra do vô ý.
+- **Ý định** — hình dạng trên dây nói rõ use-case nghĩa là gì:
+  `PlaceOrderRequest` chỉ với những field quan trọng.
+
+Ví dụ `Order`, `OrderDto` và hàm map `ToDto` trong bản tiếng Anh — mapping có
+vẻ boilerplate cho đến lần đầu hợp đồng công khai sống sót qua một lần viết
+lại nội bộ — khi đó nó là bảo hiểm.
+
+## Hình dạng N+1 (học ngay, trước cả ORM)
+
+Lấy 20 order, rồi mỗi order lấy customer: 1 + 20 query. Trong code, dấu hiệu
+là một vòng lặp mà thân làm một lookup đáng lẽ đã batch được (xem cặp ví dụ
+trước/sau trong bản tiếng Anh).
+
+Bạn sẽ sửa hình dạng này trên một fake đếm truy vấn — cùng cách bạn sẽ nhận ra
+nó dưới lazy loading của EF Core sau này.
+
+## "Ngược chiều" trông thế nào
+
+Vi phạm kinh điển: một domain type (hay chữ ký method của nó) nhắc tên
+infrastructure — `Order.LoadFrom(SqlConnection)`. Đường ranh sụp đổ: không
+fake nào thay thế được connection, nên không test nào chạy nổi mà không có
+database. Refactor được chấm điểm ở phần luyện, chính là khôi phục đường ranh
+đó.

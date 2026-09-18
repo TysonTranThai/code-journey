@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p7-router",
+  "title": "Maximum Segment Sum Limit",
+  "prompt": "**Description:** Split an array of n non-negative values into k\nconsecutive segments so that the **largest segment sum** is as small as\npossible. Print that sum.\n\n**Input:** Line 1: n k (1 <= k <= n <= 10^5). Line 2: n values\n(0 <= a_i <= 10^4).\n**Output:** One integer — the minimal possible maximum segment sum.\n\n**Example:** `5 2` / `1 2 3 4 5` -> `9` (segments [1 2 3] and [4 5]).",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"5 2\\\\n1 2 3 4 5\\\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"9\\\\n\"));",
+      "hint": "Split after 3: sums 6 and 9."
+    },
+    {
+      "name": "one segment",
+      "code": "std::istringstream in(\"4 1\\\\n3 1 4 1\\\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"9\\\\n\"));",
+      "hint": "k = 1 forces the whole array."
+    },
+    {
+      "name": "each own",
+      "code": "std::istringstream in(\"5 5\\\\n2 2 2 2 2\\\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\\\n\"));",
+      "hint": "k = n: every segment is a single element."
+    },
+    {
+      "name": "zeros",
+      "code": "std::istringstream in(\"3 2\\\\n0 0 5\\\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\\\n\"));",
+      "hint": "Zeros pad any segment."
+    }
+  ],
+  "level": "combination"
+}

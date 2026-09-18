@@ -1,0 +1,10 @@
+{
+  "title": "Chẩn đoán rò rỉ event",
+  "prompt": "Đăng ký event neo giữ subscriber của nó: publisher sống lâu giữ các subscriber ngắn hạn là rò rỉ kinh điển của .NET. Hiện thực `static int AliveAfterUnsubscribe()`: tạo một Publisher, tạo 100 Subscriber mỗi cái đăng ký Publisher.Tick, trả về 100; rồi hiện thực `static void UnsubscribeAll(Publisher p, List<Subscriber> subs)` gọi Dispose trên từng cái (subscriber hiện thực IDisposable và hủy đăng ký trong Dispose). Test xác minh sau Dispose + GC.Collect x2, WeakReference tới subscriber đã chết — chứng minh hủy đăng ký cắt gốc.",
+  "tests": [
+    {
+      "name": "unsubscribe-breaks-root",
+      "hint": "Subscriber.Dispose phải làm p.Tick -= OnTick; chính phép -= cắt gốc publisher→subscriber."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "csa-m16-checkpoint-lesson-task",
+  "title": "Diagnostics checkpoint",
+  "prompt": "Implement `static string Describe(Exception ex)` producing a one-line diagnostic: \"<TypeName>: <Message> | caused by: <TypeName>: <Message> | ...\" walking the InnerException chain to the root, joined with \" | caused by: \". Then implement `static (int depth, string rootType) Analyze(Exception ex)` returning the inner-exception depth (0 for no inner) and the root exception's type name. The graded skill: never lose the root cause buried in AggregateException/InnerException chains.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "describe-chain",
+      "code": "var root = new InvalidOperationException(\"root cause\");\nvar mid = new ApplicationException(\"layer\", root);\nvar top = new Exception(\"api boundary\", mid);\nvar s = Solution.Describe(top);\nCj.True(s.StartsWith(\"Exception: api boundary\"), \"top first\");\nCj.True(s.Contains(\"ApplicationException: layer\"), \"middle present\");\nCj.True(s.EndsWith(\"InvalidOperationException: root cause\"), \"root last\");",
+      "hint": "Walk ex → ex.InnerException → null, joining each \"type: message\" with \" | caused by: \"."
+    },
+    {
+      "name": "analyze-depth",
+      "code": "var root = new InvalidOperationException(\"r\");\nvar nested = new Exception(\"a\", new Exception(\"b\", new Exception(\"c\", root)));\nvar (d, rootType) = Solution.Analyze(nested);\nCj.Eq(d, 4, \"four levels deep\");\nCj.Eq(rootType, \"InvalidOperationException\", \"root type found\");",
+      "hint": "Count hops to InnerException == null; record the last exception's GetType().Name."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+## Trimming and the reflection tax
+
+The trimmer (ILLink) walks the call graph from your entry points,
+discarding every type/member it cannot prove used. "Cannot prove used" is
+the operative phrase — not "unused":
+
+```csharp
+var t = Type.GetType(configValue)!;      // string comes from config at RUNTIME
+Activator.CreateInstance(t);             // trimmer saw a string, not a type
+// → every type COULD be referenced; the trimmer must assume all of them
+//   or (with trimming on) assume none — either way, you break or you bloat
+```
+
+What breaks, and the fix:
+
+| Dynamic pattern | Why it breaks | Static replacement |
+|---|---|---|
+| Type-by-name activation | names are data, not references | explicit factory / `Dictionary<string, Func<T>>` |
+| Assembly scanning | whole-assembly reachability is unprovable | attribute + source generator emitting registrations |
+| Reflection-based serialization | members via string/attribute paths | source-generated serializers (System.Text.Json) |
+| `Activator.CreateInstance<T>` with unconstrained T | no ctor provable | generic constraint `where T : new()` or factory parameter |
+
+The annotations that declare intent:
+
+```csharp
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+private static Type? _handlerType;   // "this Type value is meant to have public ctors kept"
+
+[RequiresUnreferencedCode("uses Type.GetType")]
+private static void LoadPlugin(string name) { ... }   // "calling me breaks trimming"
+```
+
+`DynamicallyAccessedMembers` preserves named member kinds on a Type-typed
+value; `RequiresUnreferencedCode` flags the method so callers get build
+warnings — the trim analysis turning reflection habits into compile-time
+conversations.
+
+The honest budget: a reflection-light app trims 50–70% of size for free;
+a plugin-heavy app fights the linker at every step and should ask whether
+it wants trimming at all. The checkpoint's audit challenge encodes the
+reasoning: which operations survive, which never do.

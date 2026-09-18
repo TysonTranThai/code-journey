@@ -1,0 +1,23 @@
+## Reflection and security
+
+Reflection is power with a bill. Three duties in modern .NET:
+
+**1. It bypasses static guarantees.** A `private` member is a compile-time
+promise; `BindingFlags.NonPublic` breaks it silently. Style says: never
+reflect into `private` of types you don't own — you are coupling to
+implementation details that any refactor will break, and (on trimmed or
+AOT-compiled apps, Module 19) members unused by "real" code may not exist
+at runtime at all.
+
+**2. It is a deserialization hazard.** `Activator.CreateInstance(type)`
+where `type` comes from user input is arbitrary construction — the
+class-history of .NET vulnerabilities includes exactly this. Whitelist:
+map trusted names to types in your own assembly; never `Type.GetType`
+user strings without validation.
+
+**3. Trim/AOT compatibility is now a correctness issue.** Every
+`GetProperty("Name")` with a literal is invisible to the IL trimmer unless
+you annotate `[DynamicallyAccessedMembers]` or use `nameof`. In this
+course's sandbox (full framework, no trimming) reflection runs fine — but
+code you ship to NativeAOT will not, so keep reflection at the edges of
+your design and prefer source generation (Module 8) for the hot middle.

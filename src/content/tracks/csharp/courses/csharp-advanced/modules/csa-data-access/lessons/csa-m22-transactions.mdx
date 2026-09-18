@@ -1,0 +1,28 @@
+## Transactions and isolation levels
+
+A transaction groups operations so they commit together or not at all. The
+interesting part is the **isolation level** — what concurrent transactions are
+allowed to see of each other. SQL Server defaults to `READ COMMITTED`; the
+anomalies each level prevents is a *ladder*, and each rung you climb costs
+concurrency:
+
+| Level | Dirty reads | Non-repeatable reads | Phantoms |
+| --- | --- | --- | --- |
+| READ UNCOMMITTED | possible | possible | possible |
+| READ COMMITTED | prevented | possible | possible |
+| REPEATABLE READ | prevented | prevented | possible |
+| SERIALIZABLE | prevented | prevented | prevented |
+
+(Plus snapshot flavors — `READ COMMITTED SNAPSHOT`, `SNAPSHOT` — which give
+you row versions instead of locks; the same anomaly ladder applies, paid in
+tempdb and write conflicts instead of blocking.)
+
+**The production skill** is matching the level to the invariant: a report that
+sums rows can usually tolerate non-repeatable reads; a "transfer must not
+double-spend" cannot. Escalating everything to SERIALIZABLE is how you build a
+single-lane bridge and call it a database.
+
+Two more invariants worth memorizing: transactions that only *read* should not
+hold write locks long; and **the shorter the transaction, the less any of this
+hurts** — commit before remote calls, never await inside one (module 10's
+rule, restated in data terms).

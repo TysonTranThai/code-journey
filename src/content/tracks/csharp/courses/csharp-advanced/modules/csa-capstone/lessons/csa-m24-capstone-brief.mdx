@@ -1,0 +1,26 @@
+## Capstone: the job-processing platform
+
+Everything from 21 modules converges into one design brief:
+
+- **Acceptance API** — idempotency keys (`jobId` seen-set), admission control
+  against a capacity limit (backpressure), fast rejections.
+- **Work store** — the pending set, drained by `RunAll` exactly-once
+  (deterministic stand-in for the Channels pipeline of module 13).
+- **Retrying worker** — per-job attempt tracking with a failure threshold and
+  DLQ promotion (the drill's rule table, now real code in the exercises).
+- **Observability hooks** — work counters, rejected/accepted metrics, and an
+  SLO arithmetic layer (drill 1).
+- **The architecture discipline** — one seam, dependency arrows toward
+  abstractions, no sideways pokes into another concept's internals.
+
+The in-sandbox graded portion (the checkpoint) verifies the three contracts
+that matter most and are most often broken in production: *duplicates are
+absorbed* (idempotency), *overload is rejected* (backpressure), and *accepted
+work executes exactly once* (exactly-once semantics, achieved via idempotent
+intake + tracked execution). Extensions for self-study: wire the platform to
+a real `Channel<T>` with bounded capacity, add a `Polly`-style policy pipeline
+around `Submit`, and write the SLO dashboard queries you would run.
+
+Ship it with the module-14 discipline: measure allocations and counters for
+your implementation, and be able to say *why* each design decision — not just
+that it works.

@@ -66,7 +66,7 @@ def build() -> None:
                 "code": (
                     "var r = await Solution.RunBounded(100);\n"
                     'Cj.Eq(r.Count, 100, "all 100 items drained");\n'
-                    'Cj.Eq(r[0], 0); Cj.Eq(r[99], 99, "in order");'
+                    'Cj.Eq(r[0], 0, "bounded channel keeps order"); Cj.Eq(r[99], 99, "in order");'
                 ),
                 "hint": "Bounded(capacity: 8); producer: for-loop WriteAsync then TryComplete; consumer: await foreach ReadAllAsync into list.",
             },
@@ -206,7 +206,7 @@ def build() -> None:
                 "code": (
                     "var r = await Solution.ShutdownDrain(100, 30);\n"
                     'Cj.Eq(r.Count, 30, "exactly the accepted items processed");\n'
-                    'Cj.Eq(r.Min(), 0); Cj.Eq(r.Max(), 29, "the first 30, in order");'
+                    'Cj.Eq(r.Min(), 0, "every item present"); Cj.Eq(r.Max(), 29, "the first 30, in order");'
                 ),
                 "hint": "In the producer loop: if (i == shutdownAfter) writer.TryComplete(); then WriteAsync(i) — but TryComplete BEFORE the writes you want accepted... order: write i, then when i == shutdownAfter-1, TryComplete after the write. Items already buffered are still delivered to ReadAllAsync after completion.",
             },

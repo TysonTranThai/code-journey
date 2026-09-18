@@ -1,0 +1,33 @@
+## Retry, timeout, và ngân sách thất bại
+
+Stack chịu lỗi kết hợp được — và mỗi tầng thay đổi hành vi của các tầng
+khác. Đưacomposition đúng là kỹ năng:
+
+```
+call ──> [retry: 3 lần, backoff 100/200/400ms]
+              └──> mỗi lần ──> [timeout: 2s, qua cancellation]
+                                         └──> phụ thuộc thật
+[breaker: mở sau 5 thất bại liên tiếp, half-open sau 30s]
+```
+
+Các luật tương tác:
+
+1. **Timeout ⊂ Retry.** Mỗi lần retry mang deadline riêng; một retry không
+   có timeout có thể sống lâu hơn tổng ngân sách request.
+2. **Retry ⊂ Breaker.** Breaker đếm một *chuỗi lần thử* thất bại là một lỗi.
+   Không có breaker, 1000 client × 3 retry = 3000 request đánh vào một phụ
+   thuộc đang chết — sự khuếch đại mà drill practice tính ra.
+3. **Ngân sách = tổng độ trễ.** Nếu SLA của caller là 3s và mỗi lần thử có
+   thể mất 2s, ba lần retry không thể vừa — chặn số lần theo ngân sách còn
+   lại, không phải theo số chính sách.
+4. **Idempotency hoặc là chết.** Retry một thao tác không idempotent
+   (charge, insert) nhân đôi hiệu ứng. Idempotency key (bài trước) làm cho
+   retry an toàn.
+
+Chi tiết backoff quan trọng dưới tải: luỹ thừa (mỗi lần chờ gấp đôi) cộng
+**jitter** (random ±50%) để hàng nghìn client không đồng bộ retry thành
+các đợt sóng — thundering herd biến một cú hích của một phụ thuộc thành sự
+cố toàn nền tảng. Khung ngân sách thất bại: định nghĩa hệ thống chịu được
+bao nhiêu thất bại trong SLO (ví dụ 0.1% request có thể lỗi), tiêu nó một
+cách chủ ý (fail fast khi ngân sách cạn thay vì xếp hàng những request không
+ai chờ) — resilience là một ngân sách, không phải một đức tính.

@@ -1,0 +1,31 @@
+## Các thế hệ và cấp phát
+
+GC của .NET là GC thế hệ và truy vết. Object mới rơi vào **Gen 0**; kẻ
+sống sót được thăng **Gen 1**, rồi **Gen 2**. Object lớn (≥85,000 byte trên
+CoreCLR — chi tiết cài đặt, nhưng ổn định) đi thẳng vào **Large Object Heap
+(LOH)**. Cược phẩm: phần lớn object chết trẻ, nên quét cửa sổ Gen0 nhỏ thu
+hầu hết rác một cách rẻ.
+
+```csharp
+GC.CollectionCount(0 | 1 | 2);      // số lần thu mỗi thế hệ
+GC.GetAllocatedBytesForCurrentThread();  // thăm dò cấp phát chính xác theo thread
+GC.GetTotalMemory(false);           // ước lượng heap managed hiện tại
+GC.Collect(2, GCCollectionMode.Aggressive);  // ép (chỉ để đo!)
+```
+
+Kinh tế học thay đổi cách bạn viết code:
+
+- **Cấp phát rẻ.** Cấp phát Gen0 chỉ tăng con trỏ — vài chục nano giây.
+  Triết lý thiết kế của .NET là "cấp phát thoải mái, thu thường xuyên";
+  chống mọi cấp phát bằng pooling khắp nơi thường là lỗ.
+- **Sống sót đắt.** Object sống qua Gen0 bị sao chép, thăng cấp, và quét
+  lại ở mọi lần thu sau. Object cache sống lâu thì ổn; object sống lâu mà
+  CHẠY QUA ranh giới thế hệ dưới churn mới là cái giá.
+- **Thu Gen2/LOH dừng thế giới lâu nhất.** Bùng nổ tốc độ cấp phát gây các
+  lần thu Gen2 là bug độ trễ kinh điển: percentile 99 ổn định, rồi một cú
+  khựng 200ms mỗi 30s. Cách sửa là giảm cấp phát trên đường nóng (Span,
+  pooling, lặp struct), không phải tinh chỉnh GC trước.
+
+Kỷ luật đo đếm: chụp `GC.CollectionCount` từng thế hệ và số byte cấp phát
+quanh một workload — delta CHÍNH LÀ câu chuyện GC của bạn. Các phương pháp
+probe trong checkpoint đúng là pattern này.

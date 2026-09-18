@@ -1,0 +1,33 @@
+## Network failure modes on localhost
+
+Every distributed-systems failure has a miniature you can reproduce on
+loopback — which is why this module works:
+
+**Partial transfer.** Reader gets half a frame. Cause: stream semantics
+(framing, above). Fix: buffering state machine. This is 90% of "random
+protocol bug" reports.
+
+**Slowloris / resource exhaustion.** Client opens many connections and
+sends bytes slowly; server threads/buffers pile up. Fix: read deadlines +
+connection caps + accept-loop isolation (one bad client cannot kill the
+listener).
+
+**Connection storms.** Client retries failing connections in a tight
+loop; listener accept queue overflows; client sees connection-refused
+storms. Fix: retry with backoff (Module 16) and treat refusal as a signal,
+not a provocation.
+
+**Head-of-line blocking.** One slow response delays every subsequent one
+on the same connection. Fix: multiplexing (correlation IDs + concurrent
+requests) or a connection pool. This tradeoff — one connection, ordered,
+simple vs many connections, concurrent, complex — is the HTTP/1.1 →
+HTTP/2 story, reproducible at 20 lines on loopback.
+
+**The half-open problem.** Peer dies mid-request. Your read blocks
+forever — TCP will not tell you for minutes. Fix: deadlines, period. The
+`ReadWithDeadline` practice task is the muscle memory.
+
+The habit these drills build: when a distributed failure appears in
+production, reduce it to its loopback miniature, fix the miniature with a
+test, then re-verify the real system. The failure catalog transfers; only
+the timescales differ.

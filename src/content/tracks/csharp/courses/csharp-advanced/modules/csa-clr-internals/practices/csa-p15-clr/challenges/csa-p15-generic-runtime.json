@@ -1,0 +1,16 @@
+{
+  "id": "csa-p15-generic-runtime",
+  "title": "Generic specialization at runtime",
+  "prompt": "Value-type generics get per-type specialization; reference types share one instantiation. Prove the observable part: implement `static int OpenGenericCount()` returning the number of open generic type definitions reachable via typeof(Dictionary<,>) (0 if it is constructed, 1 if open) — implement it as: `typeof(Dictionary<,>).IsGenericTypeDefinition ? 1 : 0`. Then implement `static bool SameRuntimeType<A, B>() => typeof(A) == typeof(B)` and the test checks SameRuntimeType<List<int>, List<int>>() is true while SameRuntimeType<List<int>, List<string>>() is false.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "open-generic",
+      "code": "Cj.Eq(Solution.OpenGenericCount(), 1, \"typeof(Dictionary<,>) is an open generic definition\");\nCj.True(Solution.SameRuntimeType<List<int>, List<int>>(), \"same construction = same runtime type\");\nCj.False(Solution.SameRuntimeType<List<int>, List<string>>(), \"different type args = different type\");",
+      "hint": "IsGenericTypeDefinition on the unbound typeof(Dictionary<,>); typeof(A) == typeof(B) is reference equality on runtime types."
+    }
+  ],
+  "level": "independent"
+}
