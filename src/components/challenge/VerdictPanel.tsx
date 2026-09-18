@@ -3,8 +3,6 @@
 import type { PerTestResult, Verdict } from "@/lib/execution/types";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { useI18n } from "@/lib/i18n/provider";
-import { getErrorExplanation } from "@/lib/mentor/error-explainer";
-import { ErrorExplanationCard } from "./ErrorExplanationCard";
 
 /**
  * Verdict display (CHAL-05): every test shows pass/fail WITH its
@@ -174,49 +172,46 @@ export function VerdictPanel({
       </div>
 
       {state.verdict === "timeout" && <p className="text-sm">{d.verdict.timeoutHint}</p>}
-
       {state.verdict === "error" && (
-        <div className="flex flex-col gap-2.5">
-          <pre className="max-h-40 overflow-auto whitespace-pre-wrap rounded-xl border border-rose-500/30 bg-[#160a0f] p-3.5 font-mono text-xs text-rose-300">
-            {state.output}
-          </pre>
-          {(() => {
-            const explanation = getErrorExplanation(state.output, d);
-            return explanation ? <ErrorExplanationCard explanation={explanation} /> : null;
-          })()}
-        </div>
+        <p className="text-xs text-zinc-400">{d.verdict.errorHint}</p>
       )}
 
-      {/* Sandbox console output (console.log etc.) — show whenever there is
-          any, not only on errors, so JS challenges give visible feedback. */}
-      {state.verdict !== "error" && state.output.trim().length > 0 && (
-        <section aria-label={d.verdict.sandboxOutput} className="flex flex-col gap-1">
-          <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
-            {d.verdict.consoleOutput}
-          </h3>
-          <pre className="max-h-48 overflow-auto whitespace-pre-wrap rounded-md border border-zinc-800 bg-zinc-950/70 px-3 py-2 text-xs text-zinc-300">
-            {state.output}
-          </pre>
-        </section>
-      )}
-
-      {state.perTestResults.length > 0 && (
-        <ul className="flex flex-col gap-2">
-          {state.perTestResults.map((result, index) => (
-            <li key={result.name} className="flex flex-col gap-1">
-              <span className="flex items-center gap-2 text-sm">
-                <span aria-hidden="true">{result.passed ? "✅" : "❌"}</span>
-                <span className={result.passed ? "text-emerald-200" : "text-rose-200"}>
-                  {testNames?.[index] ?? result.name}
+      {state.perTestResults.length > 0 ? (
+        <div className="mt-1 border-t border-white/[0.08] pt-2.5">
+          <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-2 font-mono">
+            {d.verdict.expectedTests} ({state.perTestResults.length}):
+          </p>
+          <ul className="flex flex-col gap-2">
+            {state.perTestResults.map((result, index) => (
+              <li key={result.name} className="flex flex-col gap-1">
+                <span className="flex items-center gap-2 text-sm">
+                  <span aria-hidden="true">{result.passed ? "✅" : "❌"}</span>
+                  <span className={result.passed ? "text-emerald-200 font-medium" : "text-rose-200 font-medium"}>
+                    {testNames?.[index] ?? result.name}
+                  </span>
                 </span>
-              </span>
-              {!result.passed && result.message && (
-                <span className="ml-6 text-xs text-zinc-300">{result.message}</span>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+                {!result.passed && result.message && (
+                  <span className="ml-6 text-xs text-zinc-300 font-mono">{result.message}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : testNames && testNames.length > 0 ? (
+        <div className="mt-1 border-t border-white/[0.08] pt-2.5">
+          <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-2 font-mono">
+            {d.verdict.expectedTests} ({testNames.length}):
+          </p>
+          <ul className="flex flex-col gap-1.5 text-sm font-mono text-zinc-400">
+            {testNames.map((name, index) => (
+              <li key={index} className="flex items-center gap-2">
+                <span className="text-zinc-600" aria-hidden="true">○</span>
+                <span>{name}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </div>
   );
 }
