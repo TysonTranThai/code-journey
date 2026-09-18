@@ -1,7 +1,7 @@
 {
   "id": "csa-checkpoint-m21-task",
-  "title": "Security checkpoint",
-  "prompt": "Implement `static byte[] RandomSalt(int bytes)` using RandomNumberGenerator, and `static string HashPassword(string password, byte[] salt)` returning Base64 of Rfc2898DeriveBytes(Pbkdf2) with 100_000 iterations, SHA256, 32-byte output. Then implement `static bool VerifyPassword(string password, byte[] salt, string expectedBase64)` that recomputes and compares with CryptographicOperations.FixedTimeEquals (the timing-safe comparison the lesson mandates). The wrong-solution uses string == — the test proves both behaviors differ semantically.",
+  "title": "Checkpoint: security discipline",
+  "prompt": "Implement `static byte[] RandomSalt(int bytes)` using RandomNumberGenerator, and `static string HashPassword(string password, byte[] salt)` returning Base64 of Rfc2898DeriveBytes(Pbkdf2) with 100_000 iterations, SHA256, 32-byte output. Then implement `static bool VerifyPassword(string password, byte[] salt, string expectedBase64)` that recomputes and compares with CryptographicOperations.FixedTimeEquals (the timing-safe comparison the lesson mandates). The tests prove the work factor matters: hashing must actually take measurable time (100k iterations is >= 10ms on this runtime) — a 1-iteration stub is a vulnerability even when the outputs match.",
   "difficulty": "advanced",
   "language": "csharp",
   "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
@@ -9,12 +9,17 @@
     {
       "name": "hash-verify",
       "code": "var salt = Solution.RandomSalt(16);\nCj.Eq(salt.Length, 16, \"salt size\");\nvar h1 = Solution.HashPassword(\"correct horse\", salt);\nvar h2 = Solution.HashPassword(\"correct horse\", salt);\nCj.Eq(h1, h2, \"deterministic for same salt+password\");\nCj.True(Solution.VerifyPassword(\"correct horse\", salt, h1), \"correct password verifies\");\nCj.False(Solution.VerifyPassword(\"wrong\", salt, h1), \"wrong password rejected\");",
-      "hint": "Rfc2898DeriveBytes.Pbkdf2(password, salt, 100_000, HashAlgorithmName.SHA256, 32); Convert.ToBase64String the result."
+      "hint": "Rfc2898DeriveBytes.Pbkdf2(password, salt, 100_000, HashAlgorithmName.SHA256, 32)"
     },
     {
       "name": "salt-unique",
-      "code": "var s1 = Solution.RandomSalt(16);\nvar s2 = Solution.RandomSalt(16);\nCj.False(s1.SequenceEqual(s2), \"two salts differ (cryptographic randomness)\");\nvar h1 = Solution.HashPassword(\"same password\", s1);\nvar h2 = Solution.HashPassword(\"same password\", s2);\nCj.False(h1 == h2, \"same password + different salt = different hash (rainbow-table defense)\");\n// cryptographic RNG must not be seed-replayable: two fresh generators\n// with the most common seed (0) must disagree with each other and with the salts\nvar replay = new byte[16];\nnew Random(0).NextBytes(replay);\nCj.False(replay.SequenceEqual(s1), \"salt must not match a seeded System.Random stream\");\nCj.False(replay.SequenceEqual(s2), \"salt must not match a seeded System.Random stream (2)\");",
+      "code": "var s1 = Solution.RandomSalt(16);\nvar s2 = Solution.RandomSalt(16);\nCj.False(s1.SequenceEqual(s2), \"two salts differ (cryptographic randomness)\");\nvar h1 = Solution.HashPassword(\"same password\", s1);\nvar h2 = Solution.HashPassword(\"same password\", s2);\nCj.False(h1 == h2, \"same password + different salt = different hash (rainbow-table defense)\");\n// cryptographic RNG must not be seed-replayable: the most common seed (0)\n// must not reproduce the salt stream\nvar replay = new byte[16];\nnew Random(0).NextBytes(replay);\nCj.False(replay.SequenceEqual(s1), \"salt must not match a seeded System.Random stream\");\nCj.False(replay.SequenceEqual(s2), \"salt must not match a seeded System.Random stream (2)\");",
       "hint": "RandomNumberGenerator.GetBytes(16) — never new Random() for secrets."
+    },
+    {
+      "name": "work-factor",
+      "code": "// The 100_000-iteration work factor IS the security: it makes offline guessing expensive.\n// On this runtime one Pbkdf2 pass at 100k iterations takes well over 10ms; a 1-iteration\n// stub (same outputs, \"still works\") finishes in microseconds.\nvar salt = Solution.RandomSalt(16);\nvar sw = System.Diagnostics.Stopwatch.StartNew();\nSolution.HashPassword(\"cost matters\", salt);\nsw.Stop();\nCj.True(sw.ElapsedMilliseconds >= 10, $\"100k iterations must cost real time, got {sw.ElapsedMilliseconds}ms\");",
+      "hint": "Keep the iteration count at 100_000 — the cost is the defense."
     }
   ]
 }

@@ -1,14 +1,14 @@
 {
   "id": "csa-p8-compile-cache",
   "title": "Compile once, cache forever",
-  "prompt": "Implement `static Func<int, bool> CachedCheck(int threshold)` that compiles the predicate from the checkpoint FOR the given threshold and caches the delegate in a static ConcurrentDictionary<int, Func<int, bool>>. The test proves compilation happens once: the SECOND call with the same threshold must return the SAME delegate instance (ReferenceEquals), and invoking the cached delegate allocates nothing.",
+  "prompt": "Implement `static Func<int, bool> CachedCheck(int threshold)` that compiles the predicate `x => x >= threshold && x % 2 == 0` for the given threshold and caches the delegate in a static ConcurrentDictionary<int, Func<int, bool>>. The test proves compilation happens once: the SECOND call with the same threshold must return the SAME delegate instance (ReferenceEquals), invoking the cached delegate allocates nothing, and the boundary is exact — CachedCheck(10) accepts 10.",
   "difficulty": "advanced",
   "language": "csharp",
   "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
   "tests": [
     {
       "name": "same-instance",
-      "code": "var f1 = Solution.CachedCheck(10);\nvar f2 = Solution.CachedCheck(10);\nCj.True(ReferenceEquals(f1, f2), \"cached delegate reused\");\nCj.True(f1(12), \"works\");",
+      "code": "var f1 = Solution.CachedCheck(10);\nvar f2 = Solution.CachedCheck(10);\nCj.True(ReferenceEquals(f1, f2), \"cached delegate reused\");\nCj.True(f1(10), \"boundary exact: 10 >= 10 accepted\");\nCj.True(f1(12), \"works above\");\nCj.False(f1(9), \"below rejected\");",
       "hint": "GetOrAdd on a static ConcurrentDictionary; build + compile only inside the factory."
     },
     {
@@ -17,5 +17,5 @@
       "hint": "After caching, invoking is a plain delegate call — zero allocations."
     }
   ],
-  "level": "real-world"
+  "level": "guided"
 }

@@ -1,14 +1,14 @@
 {
   "title": "Cache lần invoke",
-  "prompt": "Hiện thực `static Func<object?, object?> BuildGetter(Type type, string propertyName)` trả về một DELEGATE đọc thuộc tính instance cho trước qua reflection — và delegate phải cache công việc tra PropertyInfo (dựng một lần, gọi nhiều lần). Thêm `static object? Read(object target, string prop) => BuildGetter(target.GetType(), prop)(target);` làm tiện ích một dòng.",
+  "prompt": "Hiện thực `static Func<object?, object?> BuildGetter(Type type, string propertyName)` trả về một DELEGATE đọc thuộc tính instance cho trước qua reflection — và delegate phải được CACHE: hai lần gọi với cùng (type, name) trả về CÙNG một thể hiện delegate, và khi gọi, delegate dùng sẵn công việc PropertyInfo đã bắt chứ không resolve lại. Thêm `static object? Read(object target, string prop) => BuildGetter(target.GetType(), prop)(target);`.",
   "tests": [
     {
-      "name": "getter-works",
-      "hint": "PropertyInfo.GetValue(target) bọc trong lambda; delegate bắt PropertyInfo."
+      "name": "cached-and-works",
+      "hint": "Cache delegate trong static ConcurrentDictionary<(Type, string), Func<object?, object?>>; bắt PropertyInfo bên trong factory."
     },
     {
       "name": "allocation-profile",
-      "hint": "Chạy GetProperty MỘT LẦN khi dựng delegate; vòng lặp không được resolve lại."
+      "hint": "Chạy GetProperty MỘT LẦN bên trong factory được cache; delegate trả về không được resolve lại theo từng lần gọi."
     }
   ]
 }

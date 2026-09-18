@@ -1,7 +1,7 @@
 {
   "id": "csa-p16-retry-backoff",
   "title": "Retry with exponential backoff",
-  "prompt": "Implement `static async Task<int> RetryAsync(Func<int> attempt, int maxAttempts, int baseDelayMs)` calling attempt() up to maxAttempts times: on success return the value; on failure await Task.Delay(baseDelayMs * 2^attemptIndex) before the next try (attemptIndex starting at 0). After exhausting attempts throw InvalidOperationException. The test counts attempts with a counter and verifies backoff delays grow: run with maxAttempts=3 and a failing function — total elapsed must be at least baseDelayMs + 2*baseDelayMs.",
+  "prompt": "Implement `static async Task<int> RetryAsync(Func<int> attempt, int maxAttempts, int baseDelayMs)` calling attempt() up to maxAttempts times: on success return the value; on failure await Task.Delay(baseDelayMs * 2^attemptIndex) before the next try (attemptIndex starting at 0). After exhausting attempts throw InvalidOperationException. The test verifies backoff timing directly: with 3 attempts and baseDelayMs=50 the total must reach at least 50 + 100 = 150ms (the exception must propagate too — no sentinel returns).",
   "difficulty": "advanced",
   "language": "csharp",
   "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
@@ -13,9 +13,9 @@
     },
     {
       "name": "backoff-timing",
-      "code": "var sw = Stopwatch.StartNew();\nvar ex = await Cj.ThrowsAsync<InvalidOperationException>(() => Solution.RetryAsync(() => throw new InvalidOperationException(), 3, 30));\nsw.Stop();\nCj.True(sw.ElapsedMilliseconds >= 90, $\"3 attempts + delays 30+60 = 90ms minimum, got {sw.ElapsedMilliseconds}\");",
-      "hint": "Delay before retries 2 and 3: 30 * 2^0 = 30, then 30 * 2^1 = 60. Total wait 90ms."
+      "code": "var sw = Stopwatch.StartNew();\nvar ex = await Cj.ThrowsAsync<InvalidOperationException>(() => Solution.RetryAsync(() => throw new InvalidOperationException(), 3, 50));\nsw.Stop();\nCj.True(ex is not null, \"the exception must propagate - no sentinel returns\");\nCj.True(sw.ElapsedMilliseconds >= 145, $\"exponential delays 50+100 = 150ms minimum, got {sw.ElapsedMilliseconds}ms\");",
+      "hint": "Delay before retries 2 and 3: 50 * 2^0 = 50, then 50 * 2^1 = 100. Total wait 150ms."
     }
   ],
-  "level": "real-world"
+  "level": "guided"
 }

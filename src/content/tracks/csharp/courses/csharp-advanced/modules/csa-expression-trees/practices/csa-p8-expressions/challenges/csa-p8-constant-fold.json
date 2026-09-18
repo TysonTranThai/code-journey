@@ -1,15 +1,15 @@
 {
   "id": "csa-p8-constant-fold",
-  "title": "Constant folding visitor",
-  "prompt": "Implement `class FoldVisitor : ExpressionVisitor` that replaces any BinaryExpression with two Constant operands by a single Constant of its computed value (ints only). Also implement `static string Fold(string desc)` no — implement `static Expression<Func<int,int>> FoldExpr(Expression<Func<int,int>> e)` returning the visited (folded) expression.",
+  "title": "Constant-folding visitor",
+  "prompt": "Implement `class FoldVisitor : ExpressionVisitor` that replaces any BinaryExpression with two Constant operands by a single Constant of its computed value (ints only; support Add, Multiply, Subtract). Folding must be RECURSIVE: once inner binary nodes fold to constants, the enclosing binary folds too. Also implement `static Expression<Func<int,int>> FoldExpr(Expression<Func<int,int>> e)` returning the visited (folded) expression.",
   "difficulty": "advanced",
   "language": "csharp",
   "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
   "tests": [
     {
       "name": "folds",
-      "code": "Expression<Func<int, int>> e = x => x + (2 * 3);\nvar folded = Solution.FoldExpr(e);\nvar f = folded.Compile();\nCj.Eq(f(4), 10, \"x + 6\");\nbool hasMul = false;\nnew Visitor(v => { if (v.NodeType == ExpressionType.Multiply) hasMul = true; }).Visit(folded);\nCj.False(hasMul, \"the constant 2*3 was folded away — no Multiply node remains\");",
-      "hint": "Override VisitBinary: if Left/Right are ConstantExpression of int, return Expression.Constant(computed)."
+      "code": "Expression<Func<int, int>> e = x => 2 + 3 + x;\nvar folded = Solution.FoldExpr(e);\nvar f = folded.Compile();\nCj.Eq(f(4), 9, \"(2+3)+x must fold to 5+x\");\nint constAdds = 0;\nnew Visitor(v =>\n{\n    if (v is BinaryExpression b && v.NodeType == ExpressionType.Add\n        && b.Left is ConstantExpression && b.Right is ConstantExpression) constAdds++;\n}).Visit(folded);\nCj.Eq(constAdds, 0, \"no constant-only Add remains — inner folds, then the enclosing node folds too\");",
+      "hint": "Override VisitBinary: Visit the operands FIRST, then if both are int constants return Expression.Constant(computed) — recursing makes (2+3) fold before the outer Add sees it."
     }
   ],
   "level": "guided"

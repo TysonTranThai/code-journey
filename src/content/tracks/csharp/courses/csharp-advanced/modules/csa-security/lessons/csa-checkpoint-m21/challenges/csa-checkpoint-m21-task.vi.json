@@ -1,6 +1,6 @@
 {
   "title": "Checkpoint bảo mật",
-  "prompt": "Hiện thực `static byte[] RandomSalt(int bytes)` dùng RandomNumberGenerator, và `static string HashPassword(string password, byte[] salt)` trả về Base64 của Rfc2898DeriveBytes(Pbkdf2) với 100_000 vòng lặp, SHA256, đầu ra 32 byte. Rồi hiện thực `static bool VerifyPassword(string password, byte[] salt, string expectedBase64)` tính lại và so bằng CryptographicOperations.FixedTimeEquals (so sánh an toàn thời gian mà bài học bắt buộc). Nghiệm sai dùng string == — test chứng minh hai hành vi khác biệt về ngữ nghĩa.",
+  "prompt": "Hiện thực `static byte[] RandomSalt(int bytes)` dùng RandomNumberGenerator, và `static string HashPassword(string password, byte[] salt)` trả về Base64 của Rfc2898DeriveBytes(Pbkdf2) với 100_000 vòng lặp, SHA256, đầu ra 32 byte. Rồi hiện thực `static bool VerifyPassword(string password, byte[] salt, string expectedBase64)` tính lại và so bằng CryptographicOperations.FixedTimeEquals (so sánh an toàn thời gian mà bài học bắt buộc). Test chứng minh work factor là quan trọng: băm phải tốn thời gian đo được (100k vòng >= 10ms trên runtime này) — bản stub 1 vòng là lỗ hổng kể cả khi kết quả khớp.",
   "tests": [
     {
       "name": "hash-verify",
@@ -9,6 +9,10 @@
     {
       "name": "salt-unique",
       "hint": "RandomNumberGenerator.GetBytes(16) — không bao giờ new Random() cho bí mật."
+    },
+    {
+      "name": "work-factor",
+      "hint": "Giữ số vòng lặp ở 100_000 — chính chi phí đó là lá chắn."
     }
   ]
 }

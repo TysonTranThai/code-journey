@@ -1,10 +1,10 @@
 {
   "title": "Xác minh pipeline biên dịch được",
-  "prompt": "Hiện thực `static bool GeneratedCatalogCompiles(string userSource)`: chạy đúng mẫu catalog generator như checkpoint (attribute + lớp GenCatalog) nhưng ĐỒNG THỜI xác minh output compilation có đúng 0 diagnostic lỗi (gồm cả mã sinh). Trả về false khi cả generation thất bại lẫn khi source sinh ra không biên dịch được.",
+  "prompt": "Hiện thực `static bool GeneratedCatalogCompiles(string userSource)`: dựng pipeline generator trong đó Gen2Attribute (do chính generator phát qua RegisterPostInitializationOutput, AttributeTargets.Class) đánh dấu lớp, và lớp tĩnh GenCatalog2 được sinh ra với một method cho mỗi lớp được đánh dấu. Chỉ trả về true khi OUTPUT compilation — cả mã người dùng LẪN mã sinh ra — không còn diagnostic lỗi. Test chứng minh việc kiểm tra output là cần thiết: một lớp người dùng tên GenCatalog2 xung đột với kiểu được sinh ra và phải trả về false.",
   "tests": [
     {
       "name": "end-to-end",
-      "hint": "Dùng lại mẫu driver; thêm chạy comp.GetDiagnostics() trên OUTPUT compilation."
+      "hint": "RunGeneratorsAndUpdateCompilation đưa cho bạn OUTPUT compilation — GetDiagnostics() trên nó bao phủ cả cây được sinh ra. Chỉ nhìn genDiags là chưa đủ."
     }
   ]
 }

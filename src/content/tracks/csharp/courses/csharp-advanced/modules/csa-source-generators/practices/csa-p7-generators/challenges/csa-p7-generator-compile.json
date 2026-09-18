@@ -1,16 +1,16 @@
 {
   "id": "csa-p7-generator-compile",
   "title": "Verify the pipeline compiles",
-  "prompt": "Implement `static bool GeneratedCatalogCompiles(string userSource)`: run the same catalog generator pattern as the checkpoint (attribute + GenCatalog class) but ALSO verify the OUTPUT compilation has zero error diagnostics (generated code included). Return false both when generation fails and when the generated source does not compile.",
+  "prompt": "Implement `static bool GeneratedCatalogCompiles(string userSource)`: build a generator pipeline where a Gen2Attribute (emitted by the generator itself via RegisterPostInitializationOutput, AttributeTargets.Class) marks classes, and a generated static class GenCatalog2 exposes one method per marked class. Return true only when the OUTPUT compilation — user code AND generated code — has zero error diagnostics. The test proves the output check matters: a user class named GenCatalog2 collides with the generated type and must yield false.",
   "difficulty": "advanced",
   "language": "csharp",
   "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
   "tests": [
     {
       "name": "end-to-end",
-      "code": "Cj.True(Solution.GeneratedCatalogCompiles(\"[Gen2] public class A { }\"), \"valid input\");\n// A struct marked [Gen2] is skipped by the class-only filter; catalog is empty but the\n// generated file must still compile:\nCj.True(Solution.GeneratedCatalogCompiles(\"[Gen2] public struct S { }\"), \"no marked classes still compiles\");",
-      "hint": "Reuse the driver pattern; additionally run comp.GetDiagnostics() on the OUTPUT compilation."
+      "code": "Cj.True(Solution.GeneratedCatalogCompiles(\"[Gen2] public class A { }\"), \"valid input\");\n// A user class named exactly like the GENERATED catalog collides in the output\n// compilation - user source alone is valid, so only the output check can catch it:\nCj.False(Solution.GeneratedCatalogCompiles(\"[Gen2] public class GenCatalog2 { }\"), \"collision with generated GenCatalog2 -> false\");\nCj.True(Solution.GeneratedCatalogCompiles(\"[Gen2] public class A { } [Gen2] public class B { }\"), \"two marked classes\");",
+      "hint": "RunGeneratorsAndUpdateCompilation hands you the OUTPUT compilation — GetDiagnostics() on it covers the generated trees. genDiags alone does not."
     }
   ],
-  "level": "independent"
+  "level": "guided"
 }

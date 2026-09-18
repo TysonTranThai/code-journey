@@ -1,6 +1,6 @@
 {
   "title": "Retry với exponential backoff",
-  "prompt": "Hiện thực `static async Task<int> RetryAsync(Func<int> attempt, int maxAttempts, int baseDelayMs)` gọi attempt() tối đa maxAttempts lần: thành công thì trả giá trị; thất bại thì await Task.Delay(baseDelayMs * 2^attemptIndex) trước lần thử kế (attemptIndex bắt đầu từ 0). Hết lượt thì ném InvalidOperationException. Test đếm số lần thử và xác minh delay tăng dần: chạy maxAttempts=3 với hàm luôn thất bại — tổng thời gian phải ít nhất baseDelayMs + 2*baseDelayMs.",
+  "prompt": "Hiện thực `static async Task<int> RetryAsync(Func<int> attempt, int maxAttempts, int baseDelayMs)` gọi attempt() tối đa maxAttempts lần: thành công thì trả giá trị; thất bại thì await Task.Delay(baseDelayMs * 2^attemptIndex) trước lần thử kế (attemptIndex bắt đầu từ 0). Hết lượt thì ném InvalidOperationException. Test xác minh thời gian backoff trực tiếp: với 3 lần thử và baseDelayMs=50, tổng thời gian phải đạt ít nhất 50 + 100 = 150ms (exception cũng phải lan truyền — không trả sentinel).",
   "tests": [
     {
       "name": "succeeds-eventually",
@@ -8,7 +8,7 @@
     },
     {
       "name": "backoff-timing",
-      "hint": "Delay trước lần thử 2 và 3: 30 * 2^0 = 30, rồi 30 * 2^1 = 60. Tổng chờ 90ms."
+      "hint": "Delay trước lần thử 2 và 3: 50 * 2^0 = 50, rồi 50 * 2^1 = 100. Tổng chờ 150ms."
     }
   ]
 }
