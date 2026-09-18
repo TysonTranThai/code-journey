@@ -173,18 +173,18 @@ VI: dict[str, dict] = {
             "discovery": "assembly.GetTypes(), lọc typeof(IPlugin).IsAssignableFrom(t) && !t.IsAbstract, rồi Activator.CreateInstance.",
         },
     },
-    "csa-p5-cached-invoke": {
+        "csa-p5-cached-invoke": {
         "title": "Cache lần invoke",
         "prompt": (
             "Hiện thực `static Func<object?, object?> BuildGetter(Type type, string propertyName)` "
             "trả về một DELEGATE đọc thuộc tính instance cho trước qua reflection — và delegate phải "
-            "cache công việc tra PropertyInfo (dựng một lần, gọi nhiều lần). Thêm `static object? "
-            "Read(object target, string prop) => BuildGetter(target.GetType(), prop)(target);` làm "
-            "tiện ích một dòng."
+            "được CACHE: hai lần gọi với cùng (type, name) trả về CÙNG một thể hiện delegate, và khi "
+            "gọi, delegate dùng sẵn công việc PropertyInfo đã bắt chứ không resolve lại. Thêm "
+            "`static object? Read(object target, string prop) => BuildGetter(target.GetType(), prop)(target);`."
         ),
         "hints": {
-            "getter-works": "PropertyInfo.GetValue(target) bọc trong lambda; delegate bắt PropertyInfo.",
-            "allocation-profile": "Chạy GetProperty MỘT LẦN khi dựng delegate; vòng lặp không được resolve lại.",
+            "cached-and-works": "Cache delegate trong static ConcurrentDictionary<(Type, string), Func<object?, object?>>; bắt PropertyInfo bên trong factory.",
+            "allocation-profile": "Chạy GetProperty MỘT LẦN bên trong factory được cache; delegate trả về không được resolve lại theo từng lần gọi.",
         },
     },
     "csa-p5-attr-validation": {
@@ -298,16 +298,19 @@ VI: dict[str, dict] = {
             "primitives-stay-short": "Giữ một bảng ánh xạ từ khóa cho primitive; chỉ qualify phần còn lại.",
         },
     },
-    "csa-p7-generator-compile": {
+        "csa-p7-generator-compile": {
         "title": "Xác minh pipeline biên dịch được",
         "prompt": (
-            "Hiện thực `static bool GeneratedCatalogCompiles(string userSource)`: chạy đúng mẫu "
-            "catalog generator như checkpoint (attribute + lớp GenCatalog) nhưng ĐỒNG THỜI xác minh "
-            "output compilation có đúng 0 diagnostic lỗi (gồm cả mã sinh). Trả về false khi cả "
-            "generation thất bại lẫn khi source sinh ra không biên dịch được."
+            "Hiện thực `static bool GeneratedCatalogCompiles(string userSource)`: dựng pipeline "
+            "generator trong đó Gen2Attribute (do chính generator phát qua RegisterPostInitializationOutput, "
+            "AttributeTargets.Class) đánh dấu lớp, và lớp tĩnh GenCatalog2 được sinh ra với một method cho "
+            "mỗi lớp được đánh dấu. Chỉ trả về true khi OUTPUT compilation — cả mã người dùng LẪN mã sinh "
+            "ra — không còn diagnostic lỗi. Test chứng minh việc kiểm tra output là cần thiết: một lớp người "
+            "dùng tên GenCatalog2 xung đột với kiểu được sinh ra và phải trả về false."
         ),
         "hints": {
-            "end-to-end": "Dùng lại mẫu driver; thêm chạy comp.GetDiagnostics() trên OUTPUT compilation.",
+            "end-to-end": "RunGeneratorsAndUpdateCompilation đưa cho bạn OUTPUT compilation — GetDiagnostics() trên nó "
+                          "bao phủ cả cây được sinh ra. Chỉ nhìn genDiags là chưa đủ.",
         },
     },
     "csa-checkpoint-m8-task": {
@@ -324,16 +327,18 @@ VI: dict[str, dict] = {
             "inspection": "e.Body.NodeType.ToString().",
         },
     },
-    "csa-p8-constant-fold": {
+        "csa-p8-constant-fold": {
         "title": "Visitor gấp hằng số",
         "prompt": (
-            "Hiện thực `class FoldVisitor : ExpressionVisitor` thay mọi BinaryExpression có hai toán "
-            "hạng Constant bằng một Constant của giá trị tính được (chỉ int). Rồi hiện thực "
-            "`static Expression<Func<int,int>> FoldExpr(Expression<Func<int,int>> e)` trả về biểu thức "
-            "đã được duyệt (đã gấp)."
+            "Hiện thực `class FoldVisitor : ExpressionVisitor` thay mọi BinaryExpression có hai toán hạng "
+            "Constant bằng một Constant của giá trị tính được (chỉ int; hỗ trợ Add, Multiply, Subtract). "
+            "Việc gấp phải ĐỆ QUY: khi các node nhị phân bên trong gấp thành hằng số thì node nhị phân bao "
+            "ngoài cũng gấp theo. Rồi hiện thực `static Expression<Func<int,int>> "
+            "FoldExpr(Expression<Func<int,int>> e)` trả về biểu thức đã được duyệt (đã gấp)."
         ),
         "hints": {
-            "folds": "Ghi đè VisitBinary: nếu Left/Right là ConstantExpression kiểu int, trả về Expression.Constant(kết quả).",
+            "folds": "Ghi đè VisitBinary: Visit các toán hạng TRƯỚC, rồi nếu cả hai là hằng int thì trả về "
+                     "Expression.Constant(kết quả) — đệ quy khiến (2+3) gấp trước khi Add bên ngoài nhìn thấy nó.",
         },
     },
     "csa-p8-mini-provider": {
@@ -349,14 +354,15 @@ VI: dict[str, dict] = {
                            "ConstantExpression phía phải.",
         },
     },
-    "csa-p8-compile-cache": {
+        "csa-p8-compile-cache": {
         "title": "Biên dịch một lần, cache mãi mãi",
         "prompt": (
-            "Hiện thực `static Func<int, bool> CachedCheck(int threshold)` biên dịch predicate của "
-            "checkpoint CHO threshold cho trước và cache delegate trong static "
-            "ConcurrentDictionary<int, Func<int, bool>>. Test chứng minh việc biên dịch xảy ra đúng "
-            "một lần: lần gọi THỨ HAI với cùng threshold phải trả về CÙNG một thể hiện delegate "
-            "(ReferenceEquals), và gọi delegate đã cache không cấp phát gì."
+            "Hiện thực `static Func<int, bool> CachedCheck(int threshold)` biên dịch predicate "
+            "`x => x >= threshold && x % 2 == 0` CHO threshold cho trước và cache delegate trong static "
+            "ConcurrentDictionary<int, Func<int, bool>>. Test chứng minh việc biên dịch xảy ra đúng một "
+            "lần: lần gọi THỨ HAI với cùng threshold phải trả về CÙNG một thể hiện delegate "
+            "(ReferenceEquals), gọi delegate đã cache không cấp phát gì, và biên giới phải chính xác — "
+            "CachedCheck(10) chấp nhận 10."
         ),
         "hints": {
             "same-instance": "GetOrAdd trên static ConcurrentDictionary; dựng + compile chỉ bên trong factory.",
@@ -483,19 +489,22 @@ VI: dict[str, dict] = {
             "plinq-ordered": "data.AsParallel().AsOrdered().Select(x => x * x).ToArray() — thiếu AsOrdered, PLINQ gộp lệch thứ tự.",
         },
     },
-    "csa-p11-parallel-cancel": {
+        "csa-p11-parallel-cancel": {
         "title": "Quét song song có hủy",
         "prompt": (
-            "Hiện thực `static int FirstMatch(int[] data, Func<int, bool> predicate, int workers)` tìm "
-            "chỉ số đầu tiên (i thấp nhất) mà predicate(data[i]) đúng, chạy quét theo chunk song "
-            "song — dùng Parallel.For với 'chỉ số tìm thấy' dùng chung được bảo vệ bởi "
-            "Interlocked.CompareExchange nên chỉ chỉ số THẤP HƠN mới thắng, và dừng các vòng lặp còn "
-            "lại khi đã tìm thấy (loopState.Stop()). Trả về -1 nếu vắng mặt."
+            "Hiện thực `static int FirstMatch(int[] data, Func<int, bool> predicate, int workers)` tìm chỉ "
+            "số đầu tiên (i thấp nhất) mà predicate(data[i]) đúng, chạy quét theo chunk song song — dùng "
+            "Parallel.For với 'chỉ số tìm thấy' dùng chung được bảo vệ bởi Interlocked.CompareExchange nên "
+            "chỉ chỉ số THẤP HƠN mới thắng, và dừng các vòng lặp còn lại khi đã tìm thấy (loopState.Stop()). "
+            "Trả về -1 nếu vắng mặt. Test chứng minh Stop() là cần thiết: với predicate chậm và match ở chỉ "
+            "số 5 của mảng 10 triệu phần tử, solution quét hết mất hàng giây — của bạn phải trả về trong "
+            "vài trăm ms."
         ),
         "hints": {
             "first-match": "Interlocked.CompareExchange(ref best, i, int.MaxValue) chỉ thắng khi best vẫn là MaxValue HOẶC i thấp "
                            "hơn — vòng CAS giữ giá trị nhỏ nhất.",
             "absent": "Cùng vòng lặp; không CAS nào thành công.",
+            "early-exit": "Sau khi CAS thắng, gọi loopState.Stop() để Parallel.For ngừng điều phối các iteration tiếp theo.",
         },
     },
     "csa-p11-amdahl": {

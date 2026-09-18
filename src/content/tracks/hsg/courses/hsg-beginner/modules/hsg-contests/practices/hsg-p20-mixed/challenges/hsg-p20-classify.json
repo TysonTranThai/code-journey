@@ -1,0 +1,36 @@
+{
+  "id": "hsg-p20-classify",
+  "title": "Number Classes",
+  "prompt": "**Description:** For each query value x, classify: `perfect-square` if x is a\nperfect square (0, 1, 4, 9, ...), `even` if even, `odd` otherwise.\nPerfect-square wins over parity.\n\n**Input:** Line 1: q (1 <= q <= 100000). Next q lines: x (0 <= x <= 10^9).\n**Output:** q lines: the classification.\n\n**Example:** `3` / `16` / `6` / `7` -> `perfect-square` / `even` / `odd`.\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"3\\n16\\n6\\n7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"perfect-square\\neven\\nodd\\n\"));",
+      "hint": "Square beats parity."
+    },
+    {
+      "name": "zero",
+      "code": "std::istringstream in(\"1\\n0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"perfect-square\\n\"));",
+      "hint": "0 = 0^2."
+    },
+    {
+      "name": "one",
+      "code": "std::istringstream in(\"1\\n1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"perfect-square\\n\"));",
+      "hint": "1 = 1^2."
+    },
+    {
+      "name": "big square",
+      "code": "std::istringstream in(\"1\\n999999999\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"odd\\n\"));",
+      "hint": "31622^2 = 999950884; 31623^2 = 1000013129 > 1e9 — x is neither, classify by parity."
+    },
+    {
+      "name": "perfect big",
+      "code": "std::istringstream in(\"1\\n999950884\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"perfect-square\\n\"));",
+      "hint": "31622^2 exactly."
+    }
+  ],
+  "level": "independent"
+}

@@ -1561,6 +1561,18 @@ import HsgCpM19 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-debu
 import HsgCpM19Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-debug/lessons/hsg-cp-m19.vi.mdx";
 import HsgCpM1Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-cp-m1.vi.mdx";
 import HsgCpM2 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-cp-m2.mdx";
+import HsgCpM20a from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-cp-m20a.mdx";
+import HsgCpM20aVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-cp-m20a.vi.mdx";
+import HsgCpM20b from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-cp-m20b.mdx";
+import HsgCpM20bVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-cp-m20b.vi.mdx";
+import HsgCpM20c from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-cp-m20c.mdx";
+import HsgCpM20cVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-cp-m20c.vi.mdx";
+import HsgCpM20d from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-cp-m20d.mdx";
+import HsgCpM20dVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-cp-m20d.vi.mdx";
+import HsgCpM20e from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-cp-m20e.mdx";
+import HsgCpM20eVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-cp-m20e.vi.mdx";
+import HsgCpM20f from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-cp-m20f.mdx";
+import HsgCpM20fVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-cp-m20f.vi.mdx";
 import HsgCpM2Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-cp-m2.vi.mdx";
 import HsgCpM3 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-arrays/lessons/hsg-cp-m3.mdx";
 import HsgCpM3Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-arrays/lessons/hsg-cp-m3.vi.mdx";
@@ -1620,6 +1632,10 @@ import HsgM1Bridge from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-v
 import HsgM1BridgeVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-bridge.vi.mdx";
 import HsgM1Reading from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-reading.mdx";
 import HsgM1ReadingVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-reading.vi.mdx";
+import HsgM20Manage from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-m20-manage.mdx";
+import HsgM20ManageVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-m20-manage.vi.mdx";
+import HsgM20Strategy from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-m20-strategy.mdx";
+import HsgM20StrategyVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-contests/lessons/hsg-m20-strategy.vi.mdx";
 import HsgM2DigitWork from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-m2-digit-work.mdx";
 import HsgM2DigitWorkVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-m2-digit-work.vi.mdx";
 import HsgM2Patterns from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-m2-patterns.mdx";
@@ -3898,6 +3914,22 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["hsg-backtrack/hsg-m14-prune.vi.mdx"]: HsgM14PruneVi,
   ["hsg-backtrack/hsg-cp-m14.mdx"]: HsgCpM14,
   ["hsg-backtrack/hsg-cp-m14.vi.mdx"]: HsgCpM14Vi,
+  ["hsg-contests/hsg-m20-strategy.mdx"]: HsgM20Strategy,
+  ["hsg-contests/hsg-m20-strategy.vi.mdx"]: HsgM20StrategyVi,
+  ["hsg-contests/hsg-m20-manage.mdx"]: HsgM20Manage,
+  ["hsg-contests/hsg-m20-manage.vi.mdx"]: HsgM20ManageVi,
+  ["hsg-contests/hsg-cp-m20a.mdx"]: HsgCpM20a,
+  ["hsg-contests/hsg-cp-m20a.vi.mdx"]: HsgCpM20aVi,
+  ["hsg-contests/hsg-cp-m20b.mdx"]: HsgCpM20b,
+  ["hsg-contests/hsg-cp-m20b.vi.mdx"]: HsgCpM20bVi,
+  ["hsg-contests/hsg-cp-m20c.mdx"]: HsgCpM20c,
+  ["hsg-contests/hsg-cp-m20c.vi.mdx"]: HsgCpM20cVi,
+  ["hsg-contests/hsg-cp-m20d.mdx"]: HsgCpM20d,
+  ["hsg-contests/hsg-cp-m20d.vi.mdx"]: HsgCpM20dVi,
+  ["hsg-contests/hsg-cp-m20e.mdx"]: HsgCpM20e,
+  ["hsg-contests/hsg-cp-m20e.vi.mdx"]: HsgCpM20eVi,
+  ["hsg-contests/hsg-cp-m20f.mdx"]: HsgCpM20f,
+  ["hsg-contests/hsg-cp-m20f.vi.mdx"]: HsgCpM20fVi,
   ["hsg-debug/hsg-m19-method.mdx"]: HsgM19Method,
   ["hsg-debug/hsg-m19-method.vi.mdx"]: HsgM19MethodVi,
   ["hsg-debug/hsg-m19-taxonomy.mdx"]: HsgM19Taxonomy,

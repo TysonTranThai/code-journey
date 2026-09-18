@@ -132,20 +132,20 @@ VI: dict[str, dict] = {
             "half-open-fails-reopens": "Lần dò half-open thất bại: reset _openedAt, state=open.",
         },
     },
-    "csa-p16-retry-backoff": {
+        "csa-p16-retry-backoff": {
         "title": "Retry với exponential backoff",
         "prompt": (
             "Hiện thực `static async Task<int> RetryAsync(Func<int> attempt, int maxAttempts, int "
-            "baseDelayMs)` gọi attempt() tối đa maxAttempts lần: thành công thì trả giá trị; thất bại "
-            "thì await Task.Delay(baseDelayMs * 2^attemptIndex) trước lần thử kế (attemptIndex bắt đầu "
-            "từ 0). Hết lượt thì ném InvalidOperationException. Test đếm số lần thử và xác minh delay "
-            "tăng dần: chạy maxAttempts=3 với hàm luôn thất bại — tổng thời gian phải ít nhất "
-            "baseDelayMs + 2*baseDelayMs."
+            "baseDelayMs)` gọi attempt() tối đa maxAttempts lần: thành công thì trả giá trị; thất bại thì "
+            "await Task.Delay(baseDelayMs * 2^attemptIndex) trước lần thử kế (attemptIndex bắt đầu từ 0). "
+            "Hết lượt thì ném InvalidOperationException. Test xác minh thời gian backoff trực tiếp: với 3 "
+            "lần thử và baseDelayMs=50, tổng thời gian phải đạt ít nhất 50 + 100 = 150ms (exception cũng "
+            "phải lan truyền — không trả sentinel)."
         ),
         "hints": {
             "succeeds-eventually": "for (int i = 0; i < maxAttempts; i++) { try { return attempt(); } catch when (i < maxAttempts - "
                                    "1) { await Task.Delay(baseDelayMs << i); } } — rồi ném.",
-            "backoff-timing": "Delay trước lần thử 2 và 3: 30 * 2^0 = 30, rồi 30 * 2^1 = 60. Tổng chờ 90ms.",
+            "backoff-timing": "Delay trước lần thử 2 và 3: 50 * 2^0 = 50, rồi 50 * 2^1 = 100. Tổng chờ 150ms.",
         },
     },
     "csa-checkpoint-m17-task": {
@@ -337,21 +337,22 @@ VI: dict[str, dict] = {
                                     "replica[key]=v; }). ReadAfterWriteHolds: Write, rồi ReadStale != null.",
         },
     },
-    "csa-checkpoint-m21-task": {
+        "csa-checkpoint-m21-task": {
         "title": "Checkpoint bảo mật",
         "prompt": (
             "Hiện thực `static byte[] RandomSalt(int bytes)` dùng RandomNumberGenerator, và `static "
             "string HashPassword(string password, byte[] salt)` trả về Base64 của "
             "Rfc2898DeriveBytes(Pbkdf2) với 100_000 vòng lặp, SHA256, đầu ra 32 byte. Rồi hiện thực "
-            "`static bool VerifyPassword(string password, byte[] salt, string expectedBase64)` tính "
-            "lại và so bằng CryptographicOperations.FixedTimeEquals (so sánh an toàn thời gian mà bài "
-            "học bắt buộc). Nghiệm sai dùng string == — test chứng minh hai hành vi khác biệt về ngữ "
-            "nghĩa."
+            "`static bool VerifyPassword(string password, byte[] salt, string expectedBase64)` tính lại "
+            "và so bằng CryptographicOperations.FixedTimeEquals (so sánh an toàn thời gian mà bài học "
+            "bắt buộc). Test chứng minh work factor là quan trọng: băm phải tốn thời gian đo được "
+            "(100k vòng >= 10ms trên runtime này) — bản stub 1 vòng là lỗ hổng kể cả khi kết quả khớp."
         ),
         "hints": {
             "hash-verify": "Rfc2898DeriveBytes.Pbkdf2(password, salt, 100_000, HashAlgorithmName.SHA256, 32); "
                            "Convert.ToBase64String kết quả.",
             "salt-unique": "RandomNumberGenerator.GetBytes(16) — không bao giờ new Random() cho bí mật.",
+            "work-factor": "Giữ số vòng lặp ở 100_000 — chính chi phí đó là lá chắn.",
         },
     },
     "csa-p21-path-traversal": {

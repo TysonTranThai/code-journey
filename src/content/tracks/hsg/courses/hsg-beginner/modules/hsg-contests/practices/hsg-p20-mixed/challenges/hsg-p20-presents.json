@@ -1,0 +1,41 @@
+{
+  "id": "hsg-p20-presents",
+  "title": "Present Bags",
+  "prompt": "**Description:** n bags; bag i contains a[i] candies. Split the bags into two\ngroups so that the difference of total candies between groups is minimized.\nPrint that minimum difference. n is small — full search is intended.\n\n**Input:** Line 1: n (1 <= n <= 20). Line 2: n integers (1 <= a[i] <= 10^6).\n**Output:** One integer — the minimal |sum1 - sum2|.\n\n**Example:** `3` / `1 2 4` -> `1` (1+2=3 vs 4).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"3\\n1 2 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "3 vs 4."
+    },
+    {
+      "name": "even split",
+      "code": "std::istringstream in(\"2\\n5 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Perfect balance."
+    },
+    {
+      "name": "one bag",
+      "code": "std::istringstream in(\"1\\n9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"9\\n\"));",
+      "hint": "One group gets everything."
+    },
+    {
+      "name": "big total",
+      "code": "std::istringstream in(\"3\\n1000000 999999 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "1000000 vs 999999+3: difference 2."
+    },
+    {
+      "name": "all equal",
+      "code": "std::istringstream in(\"4\\n7 7 7 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "2 and 2."
+    },
+    {
+      "name": "greedy trap",
+      "code": "std::istringstream in(\"5\\n8 7 6 5 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "8+7 vs 6+5+4: perfect 15/15 split — smaller-side greedy ends 4 apart."
+    }
+  ],
+  "level": "independent"
+}

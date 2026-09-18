@@ -246,3 +246,14 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 13. Python Beginner | 4 waves | **Complete (2026-09-13)** — 15 modules, 57 lessons, 40 practice sets, 134 challenges (EN+VI); Python sandbox runtime added to worker contract; harness 134/134; validator all-courses green; unit 124/124 (later re-runs green); E2E 36/36 | 2026-09-13 |
 | 14. Python Intermediate | 4 waves | **Complete (2026-09-13)** — 12 modules, 49 lessons, 36 practice sets, 93 challenges (EN+VI); prerequisite on python-beginner; harness 93/93 after root-causing 24 failures (platform exec-contract, sqlite, accidentally-correct wrong solutions); unit 160/160; E2E 36/36; build 986 pages | 2026-09-13 |
 | 15. C++ Beginner | 5 waves | **Complete (2026-09-13)** — new cpp track: 19 modules, 66 lessons (17 checkpoints), 27 practice sets, 46 challenges (EN+VI); C++20 sandbox runtime added (cpp-runtime.ts, g++ 14.2, exec-able /tmp tmpfs); modern ownership-first C++; harness 46/46 after root-causing 11 failures (variadic CHECK_LINES/CHECK_THROWS, 3 accidentally-correct wrong solutions, broken authored snippets); systemic over-escape repair; unit 160/160; E2E 36/36; build 1125 pages | 2026-09-13 |
+| 16. Python Advanced | 4 waves | **Complete (2026-09-14)** — see .planning/phases/16-python-advanced/SUMMARY.md | 2026-09-14 |
+| 17. C++ Intermediate | 4 waves | **Complete (2026-09-14)** — see .planning/phases/17-cpp-intermediate/SUMMARY.md | 2026-09-14 |
+| 18. Java Beginner | 4 waves | **Complete (2026-09-14)** — see .planning/phases/18-java-beginner/SUMMARY.md | 2026-09-14 |
+| 19. Java Intermediate | 4 waves | **Complete (2026-09-15)** — see .planning/phases/19-java-intermediate/SUMMARY.md | 2026-09-15 |
+| 20. C++ Advanced | 4 waves | **Complete (2026-09-15)** — see .planning/phases/20-cpp-advanced/SUMMARY.md | 2026-09-15 |
+| 21. Java Advanced | 4 waves | **Complete (2026-09-15)** — see .planning/phases/21-java-advanced/SUMMARY.md | 2026-09-15 |
+| 22. C Beginner | 4 waves | **Complete (2026-09-15)** — see .planning/phases/22-c-beginner/SUMMARY.md | 2026-09-15 |
+| 23. C Intermediate | 4 waves | **Complete (2026-09-15)** — see .planning/phases/23-c-intermediate/SUMMARY.md | 2026-09-15 |
+| 24. C Advanced | 4 waves | **Complete (2026-09-16)** — see .planning/phases/24-c-advanced/SUMMARY.md | 2026-09-16 |
+| 25. C# Beginner | 4 waves | **Complete (2026-09-17)** — new csharp track: 21 modules, 85 lessons, 105 challenges; .NET 10 sandbox runtime; harness 105/105; see .planning/phases/25-csharp-beginner/SUMMARY.md | 2026-09-17 |
+| 26. C# Intermediate | 4 waves | **Complete (2026-09-18)** — 22 modules, 70 lessons (22 checkpoints), 25 practice sets, 101 challenges (EN+VI, 244 nodes × 2 locales); harness 101/101 (254 ref tests, every wrong solution fails ≥1); validator all-tracks green; typecheck 0, lint 0 errors, unit 181/181; live smoke PASS; E2E deferred (port conflict, documented); see .planning/phases/26-csharp-intermediate/SUMMARY.md | 2026-09-18 |

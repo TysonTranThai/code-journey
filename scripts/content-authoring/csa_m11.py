@@ -113,78 +113,41 @@ def build() -> None:
     )
     csa.register_challenge(
         "csa-p11-parallel-cancel", MID,
-        title="Cancellable parallel scan",
+        title='Parallel scan with early exit',
         prompt=(
-            "Implement `static int FirstMatch(int[] data, Func<int, bool> predicate, int workers)` that finds the first "
-            "index (lowest i) where predicate(data[i]) is true, running the scan in parallel chunks — using "
-            "Parallel.For with a shared 'found index' guarded by Interlocked.CompareExchange so only a LOWER index "
-            "ever wins, and stopping other iterations once found (loopState.Stop()). Return -1 if absent."
+            "Implement `static int FirstMatch(int[] data, Func<int, bool> predicate, int workers)` that finds the first index (lowest i) where predicate(data[i]) is true, running the scan in parallel chunks — using Parallel.For with a shared 'found index' guarded by Interlocked.CompareExchange so only a LOWER index ever wins, and stopping other iterations once found (loopState.Stop()). Return -1 if absent. The test proves the Stop() matters: with a slow predicate and a match at index 5 of a 10-million array, a solution that scans everything takes seconds — yours must return well under a second."
         ),
-        difficulty="advanced",
+        difficulty='advanced',
         tests=[
             {
-                "name": "first-match",
+                "name": 'first-match',
                 "code": (
-                    "var data = new int[100_000];\n"
-                    "for (int i = 0; i < data.Length; i++) data[i] = i;\n"
-                    "data[42_000] = -1; data[42_001] = -1;\n"
-                    "for (int rep = 0; rep < 50; rep++)\n"
-                    '    Cj.Eq(Solution.FirstMatch(data, x => x == -1, 8), 42_000, "lowest index wins, every rep");'
+                    'var data = new int[100_000];\nfor (int i = 0; i < data.Length; i++) data[i] = i;\ndata[42_000] = -1; data[42_001] = -1;\nfor (int rep = 0; rep < 50; rep++)\n    Cj.Eq(Solution.FirstMatch(data, x => x == -1, 8), 42_000, "lowest index wins, every rep");'
                 ),
-                "hint": "Interlocked.CompareExchange(ref best, i, int.MaxValue) wins only when best is still MaxValue OR i is lower — a CAS loop keeping the minimum.",
+                "hint": 'Interlocked.CompareExchange(ref best, i, int.MaxValue) wins only when best is still MaxValue OR i is lower — the CAS loop keeps the smallest index.',
             },
             {
-                "name": "absent",
+                "name": 'absent',
                 "code": (
-                    "var data = Enumerable.Range(0, 10_000).ToArray();\n"
-                    'Cj.Eq(Solution.FirstMatch(data, x => x == 99_999, 4), -1, "absent returns -1");'
+                    'var data = Enumerable.Range(0, 10_000).ToArray();\nCj.Eq(Solution.FirstMatch(data, x => x == 99_999, 4), -1, "absent returns -1");'
                 ),
-                "hint": "Same loop; no CAS ever succeeds.",
+                "hint": 'Same loop; no CAS ever succeeds.',
+            },
+            {
+                "name": 'early-exit',
+                "code": (
+                    '// 10M elements, match at index 5, predicate costs ~100ns (SpinWait) - a full scan of all\n// workers costs >1s; Stop() must cut it to well under 500ms.\nvar data = new int[10_000_000];\ndata[5] = -1;\nvar sw = System.Diagnostics.Stopwatch.StartNew();\nint hit = Solution.FirstMatch(data, x => { if (x == -1) return true; System.Threading.SpinWait.SpinBetween(50); return false; }, 4);\nsw.Stop();\nCj.Eq(hit, 5, "finds the early match");\nCj.True(sw.ElapsedMilliseconds < 500, $"early exit required: took {sw.ElapsedMilliseconds}ms (full scan would exceed 1000ms)");'
+                ),
+                "hint": 'After the CAS wins, call loopState.Stop() so Parallel.For stops scheduling further iterations.',
             },
         ],
         reference=(
-            "public class Solution\n{\n"
-            "    public static int FirstMatch(int[] data, Func<int, bool> predicate, int workers)\n"
-            "    {\n"
-            "        int best = int.MaxValue;\n"
-            "        var options = new ParallelOptions { MaxDegreeOfParallelism = workers };\n"
-            "        Parallel.For(0, data.Length, options, (i, loopState) =>\n"
-            "        {\n"
-            "            if (predicate(data[i]))\n"
-            "            {\n"
-            "                int seen;\n"
-            "                do { seen = best; }\n"
-            "                while (i < seen && Interlocked.CompareExchange(ref best, i, seen) != seen);\n"
-            "                if (best == i) loopState.Stop();   // we won; tell the others\n"
-            "            }\n"
-            "        });\n"
-            "        return best == int.MaxValue ? -1 : best;\n"
-            "    }\n"
-            "}"
+            'public class Solution\n{\n    public static int FirstMatch(int[] data, Func<int, bool> predicate, int workers)\n    {\n        int best = int.MaxValue;\n        var options = new ParallelOptions { MaxDegreeOfParallelism = workers };\n        Parallel.For(0, data.Length, options, (i, loopState) =>\n        {\n            if (predicate(data[i]))\n            {\n                int seen;\n                do { seen = best; }\n                while (i < seen && Interlocked.CompareExchange(ref best, i, seen) != seen);\n                if (best == i) loopState.Stop();   // we won; tell the others\n            }\n        });\n        return best == int.MaxValue ? -1 : best;\n    }\n}'
         ),
         wrong=(
-            "public class Solution\n{\n"
-            "    public static int FirstMatch(int[] data, Func<int, bool> predicate, int workers)\n"
-            "    {\n"
-            "        int best = int.MaxValue;\n"
-            "        var options = new ParallelOptions { MaxDegreeOfParallelism = workers };\n"
-            "        Parallel.For(0, data.Length, options, (i, loopState) =>\n"
-            "        {\n"
-            "            // WRONG: no coordination at all — every worker overwrites 'best' with its own\n"
-            "            // match, so with chunks running in parallel the result can be ANY matching\n"
-            "            // index (or a torn value). The test plants the match at 42_000 AND 42_001 with\n"
-            "            // the contract that the LOWEST index must always come back.\n"
-            "            if (predicate(data[i]) && i < best)\n"
-            "            {\n"
-            "                best = i;\n"
-            "                loopState.Stop();\n"
-            "            }\n"
-            "        });\n"
-            "        return best == int.MaxValue ? -1 : best;\n"
-            "    }\n"
-            "}"
+            'public class Solution\n{\n    public static int FirstMatch(int[] data, Func<int, bool> predicate, int workers)\n    {\n        int best = int.MaxValue;\n        var options = new ParallelOptions { MaxDegreeOfParallelism = workers };\n        Parallel.For(0, data.Length, options, (i, loopState) =>\n        {\n            // WRONG: coordination without cancellation - every match CASes the minimum, but the\n            // loop never stops early, so all 10 million iterations ALWAYS run. With a slow\n            // predicate and an early match this is an order of magnitude slower.\n            if (predicate(data[i]))\n            {\n                int seen;\n                do { seen = best; }\n                while (i < seen && Interlocked.CompareExchange(ref best, i, seen) != seen);\n            }\n        });\n        return best == int.MaxValue ? -1 : best;\n    }\n}'
         ),
-        level="real-world",
+        level='guided',
     )
     csa.register_challenge(
         "csa-p11-amdahl", MID,

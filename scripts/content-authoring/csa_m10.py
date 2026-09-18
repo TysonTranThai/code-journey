@@ -86,7 +86,7 @@ def build() -> None:
             "        // the key exists — argument evaluation precedes the call. The Lazy wrapper\n"
             "        // defers compute until we know we are the winner.\n"
             "        if (d.ContainsKey(key)) return false;\n"
-            "        var lazy = new Lazy<int>(compute, LazyThreadSafetyMode.ExecutionAndPublication);\n"
+            "        var lazy = new Lazy<int>(() => compute(key), LazyThreadSafetyMode.ExecutionAndPublication);\n"
             "        return d.TryAdd(key, lazy.Value);\n"
             "    }\n"
             "}\n"

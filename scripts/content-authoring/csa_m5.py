@@ -102,61 +102,34 @@ def build() -> None:
     )
     csa.register_challenge(
         "csa-p5-cached-invoke", MID,
-        title="Cache the invoke",
+        title='Cache the invoke',
         prompt=(
-            "Implement `static Func<object?, object?> BuildGetter(Type type, string propertyName)` that returns a "
-            "DELEGATE reading the given instance property via reflection — and it must cache the PropertyInfo "
-            "lookup work in the returned delegate (build once, call many). Also implement `static object? Read(object "
-            "target, string prop) => BuildGetter(target.GetType(), prop)(target);` as the one-line convenience."
+            'Implement `static Func<object?, object?> BuildGetter(Type type, string propertyName)` that returns a DELEGATE reading the given instance property via reflection — and the delegate must be CACHED: two calls with the same (type, name) return the SAME delegate instance, and invoking the cached delegate performs the PropertyInfo work already captured, not a fresh resolve. Also implement `static object? Read(object target, string prop) => BuildGetter(target.GetType(), prop)(target);`.'
         ),
-        difficulty="advanced",
+        difficulty='advanced',
         tests=[
             {
-                "name": "getter-works",
+                "name": 'cached-and-works',
                 "code": (
-                    "var p = new Person { Name = \"Ada\", Age = 36 };\n"
-                    'Cj.Eq((string?)Solution.Read(p, "Name"), "Ada", "string prop");\n'
-                    'Cj.Eq((int?)Solution.Read(p, "Age"), 36, "int prop");'
+                    'var g1 = Solution.BuildGetter(typeof(Person), "Age");\nvar g2 = Solution.BuildGetter(typeof(Person), "Age");\nCj.True(ReferenceEquals(g1, g2), "same (type,name) must return the SAME delegate instance");\nvar p = new Person { Name = "Ada", Age = 36 };\nCj.Eq((int?)g1(p), 36, "cached getter works");\nCj.Eq((string?)Solution.Read(p, "Name"), "Ada", "Read convenience");'
                 ),
-                "hint": "PropertyInfo.GetValue(target) wrapped in a lambda; the delegate captures the PropertyInfo.",
+                "hint": 'Cache delegates in a static ConcurrentDictionary<(Type, string), Func<object?, object?>>; capture the PropertyInfo inside the factory.',
             },
             {
-                "name": "allocation-profile",
+                "name": 'allocation-profile',
                 "code": (
-                    "var p = new Person { Name = \"x\", Age = 1 };\n"
-                    "var getter = Solution.BuildGetter(typeof(Person), \"Age\");\n"
-                    "for (int i = 0; i < 200; i++) getter(p);   // warm the reflection caches\n"
-                    "long b0 = GC.GetAllocatedBytesForCurrentThread();\n"
-                    "for (int i = 0; i < 50; i++) getter(p);\n"
-                    "long b1 = GC.GetAllocatedBytesForCurrentThread();\n"
-                    "// Calibrated on this runtime: one cached GetValue call on an int prop costs\n"
-                    "// ~24 B (boxing + args array). A build-once delegate stays under 50*32;\n"
-                    "// re-resolving GetProperty every call exceeds 50*200.\n"
-                    'Cj.True(b1 - b0 < 50 * 32, $"per-call overhead too high: {b1 - b0}");'
+                    'var p = new Person { Name = "x", Age = 1 };\nvar getter = Solution.BuildGetter(typeof(Person), "Age");\nfor (int i = 0; i < 200; i++) getter(p);   // warm the reflection caches\nlong b0 = GC.GetAllocatedBytesForCurrentThread();\nfor (int i = 0; i < 50; i++) getter(p);\nlong b1 = GC.GetAllocatedBytesForCurrentThread();\n// Calibrated on this runtime: one cached GetValue call on an int prop costs\n// ~24 B (boxing + args array) - under 50*32 total. A closure that re-resolves\n// GetProperty on every invoke exceeds 50*200.\nCj.True(b1 - b0 < 50 * 32, $"per-call overhead too high: {b1 - b0}");'
                 ),
-                "hint": "Do the GetProperty work ONCE when building the delegate; the loop must not re-resolve.",
+                "hint": 'Do the GetProperty work ONCE inside the cached factory; the returned delegate must not resolve per invoke.',
             },
         ],
         reference=(
-            "public class Person { public string Name { get; set; } = \"\"; public int Age { get; set; } }\n\n"
-            "public class Solution\n{\n"
-            "    public static Func<object?, object?> BuildGetter(Type type, string propertyName)\n    {\n"
-            "        var prop = type.GetProperty(propertyName)\n"
-            "            ?? throw new ArgumentException($\"no property {propertyName}\");\n"
-            "        return target => prop.GetValue(target);\n"
-            "    }\n\n"
-            "    public static object? Read(object target, string prop) =>\n"
-            "        BuildGetter(target.GetType(), prop)(target);\n}"
+            'using System.Collections.Concurrent;\n\npublic class Person { public string Name { get; set; } = ""; public int Age { get; set; } }\n\npublic class Solution\n{\n    static readonly ConcurrentDictionary<(Type, string), Func<object?, object?>> Cache = new();\n\n    public static Func<object?, object?> BuildGetter(Type type, string propertyName)\n        => Cache.GetOrAdd((type, propertyName), static key =>\n        {\n            var prop = key.Item1.GetProperty(key.Item2)\n                ?? throw new ArgumentException($"no property {key.Item2}");\n            return target => prop.GetValue(target);\n        });\n\n    public static object? Read(object target, string prop) =>\n        BuildGetter(target.GetType(), prop)(target);\n}'
         ),
         wrong=(
-            "public class Person { public string Name { get; set; } = \"\"; public int Age { get; set; } }\n\n"
-            "public class Solution\n{\n"
-            "    public static Func<object?, object?> BuildGetter(Type type, string propertyName)\n"
-            "        => target => type.GetProperty(propertyName)!.GetValue(target);   // resolves EVERY call (busts the budget)\n\n"
-            "    public static object? Read(object target, string prop) =>\n"
-            "        BuildGetter(target.GetType(), prop)(target);\n}"
+            'public class Person { public string Name { get; set; } = ""; public int Age { get; set; } }\n\npublic class Solution\n{\n    public static Func<object?, object?> BuildGetter(Type type, string propertyName)\n        => target =>\n        {\n            var prop = type.GetProperty(propertyName)!;   // WRONG: re-resolves on EVERY invoke\n            return prop.GetValue(target);\n        };\n\n    public static object? Read(object target, string prop) =>\n        BuildGetter(target.GetType(), prop)(target);\n}'
         ),
-        level="guided",
+        level='guided',
     )
     csa.register_challenge(
         "csa-p5-attr-validation", MID,

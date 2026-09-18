@@ -1,0 +1,36 @@
+{
+  "id": "hsg-p20-queue",
+  "title": "Cafeteria Queue",
+  "prompt": "**Description:** n students queue; student i needs t[i] seconds to be served. The\ncounter serves them in order. Print, for each student, the second they finish\n(student 1 finishes at t[1]; student i finishes when student i-1 did, plus t[i]).\n\n**Input:** Line 1: n (1 <= n <= 200000). Line 2: n integers (1 <= t[i] <= 1000).\n**Output:** One line: n finish times, space-separated (fits in 64 bits).\n\n**Example:** `3` / `2 5 1` -> `2 7 8`.\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"3\\n2 5 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2 7 8\\n\"));",
+      "hint": "Running prefix sums."
+    },
+    {
+      "name": "single",
+      "code": "std::istringstream in(\"1\\n4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\n\"));",
+      "hint": "One student."
+    },
+    {
+      "name": "all same",
+      "code": "std::istringstream in(\"4\\n3 3 3 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3 6 9 12\\n\"));",
+      "hint": "Arithmetic progression."
+    },
+    {
+      "name": "big",
+      "code": "std::istringstream in(\"3\\n1000 1000 1000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1000 2000 3000\\n\"));",
+      "hint": "64-bit not strictly needed but keep it."
+    },
+    {
+      "name": "max n sanity",
+      "code": "std::istringstream in(\"5\\n1 1 1 1 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1 2 3 4 5\\n\"));",
+      "hint": "Count up."
+    }
+  ],
+  "level": "independent"
+}

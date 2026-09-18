@@ -1,0 +1,36 @@
+{
+  "id": "hsg-cp-m20final-gridsum",
+  "title": "Final — A: Grid Corridor",
+  "prompt": "**Description:** An n x m grid of digits (0-9). You start at the top-left cell and\nwalk to the bottom-right, moving only right or down, collecting the digits along\nthe way (including both ends). Print the maximum total collectible.\n\n**Input:** Line 1: n m (1 <= n, m <= 1000). Next n lines: m digits each.\n**Output:** One integer — the maximum total.\n\n**Example:** `2 2` / `19` / `28` -> `18` (1->9->8).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"2 2\\n19\\n28\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"18\\n\"));",
+      "hint": "1->9->8 = 18 beats 1->2->8 = 11."
+    },
+    {
+      "name": "single cell",
+      "code": "std::istringstream in(\"1 1\\n7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n\"));",
+      "hint": "Just the start."
+    },
+    {
+      "name": "one row",
+      "code": "std::istringstream in(\"1 4\\n1234\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"10\\n\"));",
+      "hint": "Everything collected."
+    },
+    {
+      "name": "zeros",
+      "code": "std::istringstream in(\"2 2\\n00\\n00\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Nothing to collect."
+    },
+    {
+      "name": "bigger",
+      "code": "std::istringstream in(\"3 3\\n123\\n456\\n789\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"29\\n\"));",
+      "hint": "1->4->7->8->9: classic diagonal."
+    }
+  ],
+  "level": "combination"
+}

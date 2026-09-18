@@ -40,7 +40,8 @@ write_module(
     "Three mock contests mixing every beginner tool — time management and problem selection are graded skills too.",
     "Chuỗi kỳ thi người mới",
     "Ba kỳ thi giả lập trộn mọi công cụ đã học — quản lý thời gian và chọn bài cũng là kỹ năng bị chấm.",
-    ["hsg-m20-strategy", "hsg-m20-manage", "hsg-cp-m20a", "hsg-cp-m20b", "hsg-cp-m20final"],
+    ["hsg-m20-strategy", "hsg-m20-manage", "hsg-cp-m20a", "hsg-cp-m20b",
+     "hsg-cp-m20c", "hsg-cp-m20d", "hsg-cp-m20e", "hsg-cp-m20f"],
     ["hsg-p20-mixed"],
 )
 
@@ -228,7 +229,8 @@ A2 = challenge(
                      "9 has one neighbor and is higher — counts; 4 does not."),
         contest_test("plateau", T("5", "1 5 5 5 1"), T("0"),
                      "Equal neighbors are not STRICTLY higher."),
-        contest_test("valley only", T("3", "5 1 5"), T("0"), "A minimum is not a maximum."),
+        contest_test("valley endpoints", T("3", "5 1 5"), T("2"),
+                     "Both endpoint 5s beat their single neighbor — the middle 1 is the only non-maximum."),
     ],
     level="guided",
     difficulty="intermediate",
@@ -304,6 +306,8 @@ A5 = challenge(
         contest_test("big total", T("3", "1000000 999999 3"), T("2"),
                      "1000000 vs 999999+3: difference 2."),
         contest_test("all equal", T("4", "7 7 7 7"), T("0"), "2 and 2."),
+        contest_test("greedy trap", T("5", "8 7 6 5 4"), T("0"),
+                     "8+7 vs 6+5+4: perfect 15/15 split — smaller-side greedy ends 4 apart."),
     ],
     level="independent",
     difficulty="intermediate",
@@ -345,7 +349,7 @@ VI1 = {
             ("single day", "Một ngày không hàng xóm — được tính."),
             ("two days", "9 có một hàng xóm và cao hơn — được tính; 4 thì không."),
             ("plateau", "Bằng nhau không phải CAO HƠN nghiêm ngặt."),
-            ("valley only", "Đáy không phải đỉnh."),
+            ("valley endpoints", "Cả hai số 5 ở đầu thắng hàng xóm duy nhất — chỉ số 1 giữa là không-đỉnh."),
         ],
     ),
     "hsg-p20-classify": vi_challenge(
@@ -406,6 +410,7 @@ VI1 = {
             ("one bag", "Một nhóm nhận tất cả."),
             ("big total", "1000000 với 999999+3: chênh 2."),
             ("all equal", "2 và 2."),
+            ("greedy trap", "8+7 với 6+5+4: tách 15/15 hoàn hảo — tham lam bên-nhỏ lệch 4."),
         ],
     ),
 }
@@ -549,7 +554,7 @@ write_practice(
     // use 6 5 5 4: greedy 10/10 -> 0... the failing case is 8 7 6 5 5 5:
     // greedy 17/19 -> 2, optimal 18/18 -> 0)
     long long s1 = 0, s2 = 0;
-    sort(a.begin(), a.end(), greater<long long>());
+    sort(a.begin(), a.end(), [](long long x, long long y) { return x > y; });
     for (int i = 0; i < n; ++i) {
         if (s1 <= s2) s1 += a[i]; else s2 += a[i];
     }
@@ -559,7 +564,7 @@ write_practice(
     ],
 )
 
-# ============ Contest checkpoints ============
+# ============ Contest problems ============
 
 C1A = challenge(
     "hsg-cp-m20a-mirage",
@@ -653,85 +658,6 @@ VI_C1B = vi_challenge(
     ],
 )
 
-write_checkpoint(
-    M,
-    "hsg-cp-m20a",
-    "Contest 1 — Warm-up (A+B)",
-    "Two-entry mock contest: prefix maxima and greedy simulation. Target: both solved within 30 minutes.",
-    30,
-    """**Contest 1 — khởi động.** Hai bài A/B: duyệt max tiền tố và mô phỏng
-tham lam. Mục tiêu: giải cả hai trong 30 phút. Near-miss bị chấm ở bài
-A: dùng >= thay vì > (đếm thừa các sóng bằng nhau); ở bài B: in dung
-tích thay vì phần thực lấy (người cuối phải in số lít còn lại, không
-phải c[i]).
-
-**Contest 1 — warm-up.** A/B pair: prefix maxima and greedy
-simulation. Target both in 30 minutes. Graded near-misses: A counts
-equal waves as visible; B prints capacity instead of the taken amount.
-""",
-    "Kỳ thi 1 — Khởi động (A+B)",
-    "Kỳ thi giả hai bài: max tiền tố và mô phỏng tham lam. Mục tiêu: giải cả hai trong 30 phút.",
-    """**Kỳ thi 1 — khởi động.** Hai bài A/B: duyệt max tiền tố và mô phỏng
-tham lam. Mục tiêu: giải cả hai trong 30 phút. Near-miss bị chấm ở bài
-A: dùng >= thay vì > (đếm thừa các sóng bằng nhau); ở bài B: in dung
-tích thay vì phần thực lấy (người cuối phải in số lít còn lại, không
-phải c[i]).
-""",
-    [C1A, C1B],
-    [VI_C1A, VI_C1B],
-    solutions=[
-        (
-            "hsg-cp-m20a-mirage",
-            CPP_STD + cpp("""    int n; in >> n;
-    long long best = 0;
-    bool first = true;
-    int cnt = 0;
-    for (int i = 0; i < n; ++i) {
-        long long h; in >> h;
-        if (first || h > best) { ++cnt; best = h; first = false; }
-    }
-    out << cnt << "{{NL}}";
-""") + END,
-            CPP_STD + cpp("""    int n; in >> n;
-    long long best = 0;
-    bool first = true;
-    int cnt = 0;
-    for (int i = 0; i < n; ++i) {
-        long long h; in >> h;
-        // near-miss: >= counts equal waves as newly visible
-        if (first || h >= best) { ++cnt; best = h; first = false; }
-    }
-    out << cnt << "{{NL}}";
-""") + END,
-        ),
-        (
-            "hsg-cp-m20a-oasis",
-            CPP_STD + cpp("""    long long n, m; in >> n >> m;
-    string res;
-    for (int i = 0; i < n; ++i) {
-        long long c; in >> c;
-        long long take = c < m ? c : m;
-        m -= take;
-        res += to_string(take);
-        if (i + 1 < n) res += " ";
-    }
-    out << res << "{{NL}}";
-""") + END,
-            CPP_STD + cpp("""    long long n, m; in >> n >> m;
-    string res;
-    for (int i = 0; i < n; ++i) {
-        long long c; in >> c;
-        long long take = c < m ? c : m;
-        // near-miss: forgets to consume the water — everyone takes full capacity
-        res += to_string(c);
-        if (i + 1 < n) res += " ";
-    }
-    out << res << "{{NL}}";
-""") + END,
-        ),
-    ],
-)
-
 C2A = challenge(
     "hsg-cp-m20b-lanterns",
     "Contest 2 — A: Lantern Rows",
@@ -749,7 +675,7 @@ C2A = challenge(
         contest_test("sample", T("7", "LLDDDLD"), T("2"), "Two maximal D runs."),
         contest_test("all lit", T("3", "LLL"), T("0"), "Nothing to light."),
         contest_test("all dark", T("4", "DDDD"), T("1"), "One segment."),
-        contest_test("alternating", T("5", "DDDDD" if False else "LDLDL"), T("2"),
+        contest_test("alternating", T("5", "LDLDL"), T("2"),
                      "Two single-cell segments."),
         contest_test("single dark tail", T("3", "LLD"), T("1"), "The tail run."),
     ],
@@ -825,96 +751,6 @@ VI_C2B = vi_challenge(
     ],
 )
 
-write_checkpoint(
-    M,
-    "hsg-cp-m20b",
-    "Contest 2 — Technique (A+B)",
-    "Two-entry mock contest: run counting and cycle decomposition. Target: both within 45 minutes.",
-    45,
-    """**Contest 2 — kỹ thuật.** A đếm đoạn 'D' dài nhất (một dòng quét); B
-phân rã chu trình hoán vị sau khi ánh xạ hạng. Near-miss bị chấm ở bài
-A: đếm từng ô 'D' thay vì từng đoạn (DDDD phải là 1 không phải 4); ở
-bài B: đếm nửa số cặp sai thứ tự thay vì chu trình (đúng cho hoán vị
-đối xứng, sai cho chu trình dài).
-
-**Contest 2 — technique.** A counts maximal D-runs (one scan); B does
-permutation cycle decomposition after rank mapping. Graded near-misses:
-A counts D cells instead of runs; B counts inversions/2 instead of
-cycle cost (right for reversed pairs, wrong for long cycles).
-""",
-    "Kỳ thi 2 — Kỹ thuật (A+B)",
-    "Kỳ thi giả hai bài: đếm đoạn và phân rã chu trình. Mục tiêu: giải cả hai trong 45 phút.",
-    """**Kỳ thi 2 — kỹ thuật.** A đếm đoạn 'D' dài nhất (một dòng quét); B
-phân rã chu trình hoán vị sau khi ánh xạ hạng. Near-miss bị chấm ở bài
-A: đếm từng ô 'D' thay vì từng đoạn (DDDD phải là 1 không phải 4); ở
-bài B: đếm nửa số cặp sai thứ tự thay vì chu trình (đúng cho hoán vị
-đối xứng, sai cho chu trình dài).
-""",
-    [C2A, C2B],
-    [VI_C2A, VI_C2B],
-    solutions=[
-        (
-            "hsg-cp-m20b-lanterns",
-            CPP_STD + cpp("""    int n; in >> n;
-    string s; in >> s;
-    int runs = 0;
-    bool inRun = false;
-    for (char ch : s) {
-        if (ch == 'D' && !inRun) { ++runs; inRun = true; }
-        if (ch == 'L') inRun = false;
-    }
-    out << runs << "{{NL}}";
-""") + END,
-            CPP_STD + cpp("""    int n; in >> n;
-    string s; in >> s;
-    int runs = 0;
-    for (char ch : s)
-        if (ch == 'D') ++runs;               // near-miss: per cell, not per run
-    out << runs << "{{NL}}";
-""") + END,
-        ),
-        (
-            "hsg-cp-m20b-balloon",
-            CPP_STD + cpp("""    int n; in >> n;
-    vector<long long> h(n);
-    for (auto& x : h) in >> x;
-    vector<long long> s = h;
-    sort(s.begin(), s.end());
-    vector<int> p(n + 1);
-    for (int i = 0; i < n; ++i) {
-        int idx = lower_bound(s.begin(), s.end(), h[i]) - s.begin();
-        p[i + 1] = idx + 1;                  // 1-based permutation target
-    }
-    vector<char> vis(n + 1, 0);
-    long long swaps = 0;
-    for (int i = 1; i <= n; ++i) {
-        if (vis[i]) continue;
-        int len = 0, j = i;
-        while (!vis[j]) { vis[j] = 1; j = p[j]; ++len; }
-        swaps += len - 1;
-    }
-    out << swaps << "{{NL}}";
-""") + END,
-            CPP_STD + cpp("""    int n; in >> n;
-    vector<long long> h(n);
-    for (auto& x : h) in >> x;
-    vector<long long> s = h;
-    sort(s.begin(), s.end());
-    vector<int> p(n + 1);
-    for (int i = 0; i < n; ++i) {
-        int idx = lower_bound(s.begin(), s.end(), h[i]) - s.begin();
-        p[i + 1] = idx + 1;
-    }
-    // near-miss: counts fixed-point misses / 2 — wrong for 3+ cycles
-    int wrong = 0;
-    for (int i = 1; i <= n; ++i)
-        if (p[i] != i) ++wrong;
-    out << wrong / 2 << "{{NL}}";
-""") + END,
-        ),
-    ],
-)
-
 C3A = challenge(
     "hsg-cp-m20final-gridsum",
     "Final — A: Grid Corridor",
@@ -926,10 +762,11 @@ C3A = challenge(
         "**Input:** Line 1: n m (1 <= n, m <= 1000). Next n lines: m digits each.",
         "**Output:** One integer — the maximum total.",
         "",
-        "**Example:** `2 2` / `19` / `28` -> `11` (1->9->8).",
+        "**Example:** `2 2` / `19` / `28` -> `18` (1->9->8).",
     ),
     [
-        contest_test("sample", T("2 2", "19", "28"), T("11"), "1+9+8 beats 1+2+8 = 11? Both 11 — the point is the DP, not the winner."),
+        contest_test("sample", T("2 2", "19", "28"), T("18"),
+                     "1->9->8 = 18 beats 1->2->8 = 11."),
         contest_test("single cell", T("1 1", "7"), T("7"), "Just the start."),
         contest_test("one row", T("1 4", "1234"), T("10"), "Everything collected."),
         contest_test("zeros", T("2 2", "00", "00"), T("0"), "Nothing to collect."),
@@ -950,10 +787,10 @@ VI_C3A = vi_challenge(
         "**Dữ liệu vào:** Dòng 1: n m (1 <= n, m <= 1000). n dòng tiếp: mỗi dòng m chữ số.",
         "**Dữ liệu ra:** Một số nguyên — tổng lớn nhất.",
         "",
-        "**Ví dụ:** `2 2` / `19` / `28` -> `11` (1->9->8).",
+        "**Ví dụ:** `2 2` / `19` / `28` -> `18` (1->9->8).",
     ),
     [
-        ("sample", "1+9+8 bằng 1+2+8 = 11 — điểm nằm ở DP, không ở bên thắng."),
+        ("sample", "1->9->8 = 18 thắng 1->2->8 = 11."),
         ("single cell", "Chỉ ô xuất phát."),
         ("one row", "Thu hết."),
         ("zeros", "Không có gì để thu."),
@@ -982,8 +819,8 @@ C3B = challenge(
         contest_test("wrap up", T("1", "0009 0001"), T("2"), "9->0->1: two presses."),
         contest_test("wrap down", T("1", "0001 0009"), T("2"), "1->0->9."),
         contest_test("multi", T("2", "9999 0000", "1234 4321"),
-                     T("4", "12"),
-                     "Each digit independently: 9->0 costs 1; 4->3->2->1 = 3, 3->2->1 = 2... per-digit sums."),
+                     T("4", "8"),
+                     "Per digit, circular: |1-4|=3, |2-3|=1, |3-2|=1, |4-1|=3."),
     ],
     level="combination",
     difficulty="intermediate",
@@ -1007,39 +844,219 @@ VI_C3B = vi_challenge(
         ("same", "Đã ở đích."),
         ("wrap up", "9->0->1: hai lần bấm."),
         ("wrap down", "1->0->9."),
-        ("multi", "Từng chữ số độc lập: 9->0 tốn 1; cộng theo từng chữ số."),
+        ("multi", "Từng chữ số độc lập: |1-4|=3, |2-3|=1, |3-2|=1, |4-1|=3."),
     ],
+)
+
+# ============ Contest checkpoints (one graded problem per checkpoint lesson) ============
+
+write_checkpoint(
+    M,
+    "hsg-cp-m20a",
+    "Contest 1-A: Desert Mirage",
+    "Mock contest, problem A: prefix-maxima counting. Target: solved within 10 minutes.",
+    10,
+    """**Contest 1-A — Ảo cảnh sa mạc.** Duyệt max tiền tố. Near-miss bị
+chấm: dùng >= thay vì > (đếm thừa các sóng bằng nhau).
+
+**Contest 1-A.** Prefix-maxima counting. Graded near-miss: >= instead
+of > (equal waves wrongly counted as newly visible).
+""",
+    "Contest 1-A: Desert Mirage",
+    "Mock contest, problem A: prefix-maxima counting. Target: solved within 10 minutes.",
+    """**Contest 1-A — Ảo cảnh sa mạc.** Duyệt max tiền tố. Near-miss bị
+chấm: dùng >= thay vì > (đếm thừa các sóng bằng nhau).
+""",
+    C1A,
+    VI_C1A,
+    solution=CPP_STD + cpp("""    int n; in >> n;
+    long long best = 0;
+    bool first = true;
+    int cnt = 0;
+    for (int i = 0; i < n; ++i) {
+        long long h; in >> h;
+        if (first || h > best) { ++cnt; best = h; first = false; }
+    }
+    out << cnt << "{{NL}}";
+""") + END,
+    wrong=CPP_STD + cpp("""    int n; in >> n;
+    long long best = 0;
+    bool first = true;
+    int cnt = 0;
+    for (int i = 0; i < n; ++i) {
+        long long h; in >> h;
+        // near-miss: >= counts equal waves as newly visible
+        if (first || h >= best) { ++cnt; best = h; first = false; }
+    }
+    out << cnt << "{{NL}}";
+""") + END,
 )
 
 write_checkpoint(
     M,
-    "hsg-cp-m20final",
-    "Final Mock — Beginner Championship",
-    "Two graded problems mixing DP and math. Target: both within 60 minutes, full score.",
-    60,
-    """**Mock cuối — vô địch người mới.** A là QHD lưới kinh điển; B là toán
-độ cao modulo-10 (min bước quay vòng per digit). Near-miss bị chấm ở
-bài A: duyệt thiếu cột/hàng đầu (khởi tạo dp sai biên); ở bài B: tính
-hiệu số thường thay vì quay vòng (9->0 phải là 1 bước, không phải 9).
+    "hsg-cp-m20b",
+    "Contest 1-B: Oasis Shares",
+    "Mock contest, problem B: greedy simulation with a depleting source. Target: solved within 15 minutes.",
+    15,
+    """**Contest 1-B — Chia nước ốc đảo.** Mô phỏng tham lam với nguồn cạn
+dần. Near-miss bị chấm: quên trừ nguồn (mọi người lấy đủ dung tích).
 
-**Final mock — beginner championship.** A is the classic grid DP; B is
-modulo-10 circular distance math. Graded near-misses: A initializes
-the dp border wrong (misses first row/column); B uses plain
-difference instead of circular distance (9->0 is 1 press, not 9).
+**Contest 1-B.** Greedy simulation with a depleting source. Graded
+near-miss: forgetting to consume the water (everyone takes full
+capacity).
 """,
-    "Mock cuối — Vô địch người mới",
-    "Hai bài chấm trộn QHD và toán học. Mục tiêu: giải cả hai trong 60 phút, điểm trọn vẹn.",
-    """**Mock cuối — vô địch người mới.** A là QHD lưới kinh điển; B là toán
-độ cao modulo-10 (min bước quay vòng per digit). Near-miss bị chấm ở
-bài A: duyệt thiếu cột/hàng đầu (khởi tạo dp sai biên); ở bài B: tính
-hiệu số thường thay vì quay vòng (9->0 phải là 1 bước, không phải 9).
+    "Contest 1-B: Oasis Shares",
+    "Mock contest, problem B: greedy simulation with a depleting source. Target: solved within 15 minutes.",
+    """**Kỳ thi 1-B — Chia nước ốc đảo.** Mô phỏng tham lam với nguồn cạn
+dần. Near-miss bị chấm: quên trừ nguồn (mọi người lấy đủ dung tích).
 """,
-    [C3A, C3B],
-    [VI_C3A, VI_C3B],
-    solutions=[
-        (
-            "hsg-cp-m20final-gridsum",
-            CPP_STD + cpp("""    int n, m; in >> n >> m;
+    C1B,
+    VI_C1B,
+    solution=CPP_STD + cpp("""    long long n, m; in >> n >> m;
+    string res;
+    for (int i = 0; i < n; ++i) {
+        long long c; in >> c;
+        long long take = c < m ? c : m;
+        m -= take;
+        res += to_string(take);
+        if (i + 1 < n) res += " ";
+    }
+    out << res << "{{NL}}";
+""") + END,
+    wrong=CPP_STD + cpp("""    long long n, m; in >> n >> m;
+    string res;
+    for (int i = 0; i < n; ++i) {
+        long long c; in >> c;
+        long long take = c < m ? c : m;
+        // near-miss: forgets to consume the water
+        res += to_string(c);
+        if (i + 1 < n) res += " ";
+    }
+    out << res << "{{NL}}";
+""") + END,
+)
+
+write_checkpoint(
+    M,
+    "hsg-cp-m20c",
+    "Contest 2-A: Lantern Rows",
+    "Mock contest, problem A: counting maximal dark runs. Target: solved within 10 minutes.",
+    10,
+    """**Contest 2-A — Hàng đèn lồng.** Đếm đoạn 'D' dài nhất (một dòng quét).
+Near-miss bị chấm: đếm từng ô 'D' thay vì từng đoạn (DDDD phải là 1
+không phải 4).
+
+**Contest 2-A.** Counting maximal D-runs in one scan. Graded near-miss:
+counting D cells instead of runs.
+""",
+    "Contest 2-A: Lantern Rows",
+    "Mock contest, problem A: counting maximal dark runs. Target: solved within 10 minutes.",
+    """**Kỳ thi 2-A — Hàng đèn lồng.** Đếm đoạn 'D' dài nhất (một dòng quét).
+Near-miss bị chấm: đếm từng ô 'D' thay vì từng đoạn.
+""",
+    C2A,
+    VI_C2A,
+    solution=CPP_STD + cpp("""    int n; in >> n;
+    string s; in >> s;
+    int runs = 0;
+    bool inRun = false;
+    for (char ch : s) {
+        if (ch == 'D' && !inRun) { ++runs; inRun = true; }
+        if (ch == 'L') inRun = false;
+    }
+    out << runs << "{{NL}}";
+""") + END,
+    wrong=CPP_STD + cpp("""    int n; in >> n;
+    string s; in >> s;
+    int runs = 0;
+    for (char ch : s)
+        if (ch == 'D') ++runs;               // near-miss: per cell, not per run
+    out << runs << "{{NL}}";
+""") + END,
+)
+
+write_checkpoint(
+    M,
+    "hsg-cp-m20d",
+    "Contest 2-B: Balloon Heights",
+    "Mock contest, problem B: permutation cycle decomposition. Target: solved within 20 minutes.",
+    20,
+    """**Contest 2-B — Độ cao bóng bay.** Ánh xạ hạng rồi phân rã chu trình;
+mỗi chu trình dài L tốn L-1 lần đổi. Near-miss bị chấm: đếm số phần tử
+sai vị trí chia 2 (đúng cho chu trình 2, sai cho chu trình dài hơn).
+
+**Contest 2-B.** Rank-mapping then cycle decomposition; a cycle of
+length L costs L-1 swaps. Graded near-miss: misplaced-count / 2
+(correct for 2-cycles, wrong for longer cycles).
+""",
+    "Contest 2-B: Balloon Heights",
+    "Mock contest, problem B: permutation cycle decomposition. Target: solved within 20 minutes.",
+    """**Kỳ thi 2-B — Độ cao bóng bay.** Ánh xạ hạng rồi phân rã chu trình;
+mỗi chu trình dài L tốn L-1 lần đổi. Near-miss bị chấm: đếm số phần tử
+sai vị trí chia 2.
+""",
+    C2B,
+    VI_C2B,
+    solution=CPP_STD + cpp("""    int n; in >> n;
+    vector<long long> h(n);
+    for (auto& x : h) in >> x;
+    vector<long long> s = h;
+    sort(s.begin(), s.end());
+    vector<int> p(n + 1);
+    for (int i = 0; i < n; ++i) {
+        int idx = lower_bound(s.begin(), s.end(), h[i]) - s.begin();
+        p[i + 1] = idx + 1;                  // 1-based target positions
+    }
+    vector<char> vis(n + 1, 0);
+    long long swaps = 0;
+    for (int i = 1; i <= n; ++i) {
+        if (vis[i]) continue;
+        int len = 0, j = i;
+        while (!vis[j]) { vis[j] = 1; j = p[j]; ++len; }
+        swaps += len - 1;
+    }
+    out << swaps << "{{NL}}";
+""") + END,
+    wrong=CPP_STD + cpp("""    int n; in >> n;
+    vector<long long> h(n);
+    for (auto& x : h) in >> x;
+    vector<long long> s = h;
+    sort(s.begin(), s.end());
+    vector<int> p(n + 1);
+    for (int i = 0; i < n; ++i) {
+        int idx = lower_bound(s.begin(), s.end(), h[i]) - s.begin();
+        p[i + 1] = idx + 1;
+    }
+    // near-miss: misplaced elements / 2 — wrong for 3+ cycles
+    int wrongcnt = 0;
+    for (int i = 1; i <= n; ++i)
+        if (p[i] != i) ++wrongcnt;
+    out << wrongcnt / 2 << "{{NL}}";
+""") + END,
+)
+
+write_checkpoint(
+    M,
+    "hsg-cp-m20e",
+    "Final-A: Grid Corridor",
+    "Final mock, problem A: classic grid DP. Target: solved within 25 minutes.",
+    25,
+    """**Chốt-A — Hành lang lưới.** QHD lưới kinh điển: dp[i][j] = max(đến từ
+trên, từ trái) + ô hiện tại; biên là tổng tiền tố một hàng/cột.
+Near-miss bị chấm: khởi tạo biên sai (thiếu hàng/cột đầu).
+
+**Final-A.** Classic grid DP: dp[i][j] = max(from top, from left) +
+current cell; the border is a one-row/column prefix sum. Graded
+near-miss: wrong border initialization.
+""",
+    "Final-A: Grid Corridor",
+    "Final mock, problem A: classic grid DP. Target: solved within 25 minutes.",
+    """**Chốt-A — Hành lang lưới.** QHD lưới kinh điển. Near-miss bị chấm:
+khởi tạo biên sai (thiếu hàng/cột đầu).
+""",
+    C3A,
+    VI_C3A,
+    solution=CPP_STD + cpp("""    int n, m; in >> n >> m;
     vector<string> g(n);
     for (auto& row : g) in >> row;
     vector<vector<long long>> dp(n, vector<long long>(m, 0));
@@ -1051,23 +1068,41 @@ hiệu số thường thay vì quay vòng (9->0 phải là 1 bước, không ph�
             dp[i][j] = max(dp[i-1][j], dp[i][j-1]) + (g[i][j] - '0');
     out << dp[n-1][m-1] << "{{NL}}";
 """) + END,
-            CPP_STD + cpp("""    int n, m; in >> n >> m;
+    wrong=CPP_STD + cpp("""    int n, m; in >> n >> m;
     vector<string> g(n);
     for (auto& row : g) in >> row;
     vector<vector<long long>> dp(n, vector<long long>(m, 0));
     dp[0][0] = g[0][0] - '0';
-    for (int j = 1; j < m; ++j) dp[0][j] = dp[0][j-1] + (g[0][j] - '0');
-    for (int i = 1; i < n; ++i) dp[i][0] = dp[i-1][0] + (g[i][0] - '0');
+    // near-miss: forgets the first-row/first-column prefix borders —
+    // cells there start from 0
     for (int i = 1; i < n; ++i)
         for (int j = 1; j < m; ++j)
-            // near-miss: min instead of max — the corridor avoids valuable digits
-            dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + (g[i][j] - '0');
+            dp[i][j] = max(dp[i-1][j], dp[i][j-1]) + (g[i][j] - '0');
     out << dp[n-1][m-1] << "{{NL}}";
 """) + END,
-        ),
-        (
-            "hsg-cp-m20final-vault",
-            CPP_STD + cpp("""    int t; in >> t;
+)
+
+write_checkpoint(
+    M,
+    "hsg-cp-m20f",
+    "Final-B: The Vault Clock",
+    "Final mock, problem B: circular digit distance. Target: solved within 20 minutes.",
+    20,
+    """**Chốt-B — Đồng hồ két sắt.** Khoảng cách quay vòng từng chữ số:
+min(d, 10 - d). Near-miss bị chấm: dùng hiệu số thường (9->0 là 1
+bước, không phải 9).
+
+**Final-B.** Per-digit circular distance: min(d, 10 - d). Graded
+near-miss: plain absolute difference (9->0 costs 1, not 9).
+""",
+    "Final-B: The Vault Clock",
+    "Final mock, problem B: circular digit distance. Target: solved within 20 minutes.",
+    """**Chốt-B — Đồng hồ két sắt.** Khoảng cách quay vòng từng chữ số:
+min(d, 10 - d). Near-miss bị chấm: dùng hiệu số thường.
+""",
+    C3B,
+    VI_C3B,
+    solution=CPP_STD + cpp("""    int t; in >> t;
     string res;
     for (int i = 0; i < t; ++i) {
         string a, b; in >> a >> b;
@@ -1082,7 +1117,7 @@ hiệu số thường thay vì quay vòng (9->0 phải là 1 bước, không ph�
     }
     out << res << "{{NL}}";
 """) + END,
-            CPP_STD + cpp("""    int t; in >> t;
+    wrong=CPP_STD + cpp("""    int t; in >> t;
     string res;
     for (int i = 0; i < t; ++i) {
         string a, b; in >> a >> b;
@@ -1098,8 +1133,6 @@ hiệu số thường thay vì quay vòng (9->0 phải là 1 bước, không ph�
     }
     out << res << "{{NL}}";
 """) + END,
-        ),
-    ],
 )
 
 print("M20 done")
