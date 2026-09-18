@@ -1,0 +1,18 @@
+{
+  "title": "JSON fetch có bảo vệ",
+  "prompt": "Viết `async function fetchJSON(url, fetchImpl)` — `fetchImpl` mặc định là `fetch` thật (test sẽ chèn bản giả). Hàm phải:\n\n- throw `new Error(\"HTTP \" + status)` khi `!res.ok`\n- trả về JSON đã parse trong trường hợp ngược lại\n- gửi kèm `method` và `headers` khi có body: `fetchJSON(url, fetchImpl, { method: \"POST\", body: value })` phải gọi fetch với `method`, `body: JSON.stringify(value)`, và `Content-Type: application/json`.",
+  "tests": [
+    {
+      "name": "trả về JSON đã parse khi 2xx",
+      "hint": "const res = await fetchImpl(url, opts); if (!res.ok) throw ...; return res.json();"
+    },
+    {
+      "name": "throw khi không phải 2xx kèm status",
+      "hint": "Kiểm tra res.ok trước; mẫu message là 'HTTP ' + res.status."
+    },
+    {
+      "name": "gửi JSON body với header đúng",
+      "hint": "Khi opts.body tồn tại, dựng { ...opts, body: JSON.stringify(opts.body), headers: { 'Content-Type': 'application/json' } }."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "ca16-lifetime-classify",
+  "title": "Lifetime Violation or Not?",
+  "prompt": "Implement `const char *lifetime_verdict(int kind)` for five scenarios: 0 returning a pointer to a local → \"dangling\", 1 returning a malloc'd buffer → \"valid\", 2 storing a pointer to a stack array in a global → \"dangling\", 3 returning a pointer into a static buffer → \"valid\", 4 freeing then returning the freed pointer → \"dangling\".",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "dangling scenarios",
+      "code": "CHECK_STR_EQ(lifetime_verdict(0), \"dangling\");\nCHECK_STR_EQ(lifetime_verdict(2), \"dangling\");",
+      "hint": "The object dies at return; the pointer survives — question 2 fails."
+    },
+    {
+      "name": "valid scenarios",
+      "code": "CHECK_STR_EQ(lifetime_verdict(1), \"valid\");\nCHECK_STR_EQ(lifetime_verdict(3), \"valid\");",
+      "hint": "Heap and static storage outlive the function — the pointer's lifetime is covered."
+    },
+    {
+      "name": "free-then-return",
+      "code": "CHECK_STR_EQ(lifetime_verdict(4), \"dangling\");",
+      "hint": "Free ends the lifetime immediately; the returned pointer is use-after-free by construction."
+    }
+  ],
+  "level": "imitation"
+}

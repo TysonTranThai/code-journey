@@ -1,0 +1,21 @@
+{
+  "id": "pi5-log-error-exc",
+  "title": "Error with Traceback",
+  "prompt": "Reusing the LOG_OUTPUT logger config, implement safe_run(fn) that calls fn(); on exception it must log at ERROR level with exc_info=True and return the string 'handled'. On success it returns fn's result.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import io, logging\n\nLOG_OUTPUT = io.StringIO()\nlog = logging.getLogger('app.safe')\n# configure handler + formatter\n\ndef safe_run(fn):\n    pass\n",
+  "tests": [
+    {
+      "name": "success returns the value",
+      "code": "assert safe_run(lambda: 7) == 7",
+      "hint": "No exception path — plain return."
+    },
+    {
+      "name": "failure logs and returns 'handled'",
+      "code": "def bad(): raise ValueError('boom')\nassert safe_run(bad) == 'handled'\nout = LOG_OUTPUT.getvalue()\nassert 'ERROR:app.safe' in out\nassert 'Traceback' in out",
+      "hint": "exc_info=True is what puts the traceback in the record."
+    }
+  ],
+  "level": "independent"
+}

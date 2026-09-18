@@ -1,0 +1,22 @@
+## NIO.2: Path, Files, and the byte/char divide
+
+`java.nio.file` separates *where* (Path) from *what you do* (Files):
+
+```java
+Path p = Path.of("data", "2026", "sales.csv");
+Files.exists(p);          // test
+Files.createDirectories(p.getParent());   // mkdir -p equivalent
+Files.size(p);            // bytes
+Files.readAllLines(p);    // small text files (whole file in memory)
+Files.lines(p);           // lazy Stream<String> — use for big files
+Files.writeString(p, text);
+Files.readString(p);
+```
+
+Encoding is not optional: bytes → chars needs a charset.
+`Files.newBufferedReader(p, StandardCharsets.UTF_8)` — always name it;
+the platform-default charset is a portability bug.
+
+Memory discipline: `readAllLines` loads everything; `Files.lines` streams
+lazily and must be closed (use try-with-resources) or the file handle
+leaks.

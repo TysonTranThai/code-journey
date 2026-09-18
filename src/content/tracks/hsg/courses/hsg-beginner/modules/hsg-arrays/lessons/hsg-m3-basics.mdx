@@ -1,0 +1,36 @@
+## Declaration and indexing
+
+```cpp
+int n; in >> n;
+vector<long long> a(n);          // indices 0 .. n-1
+for (long long& x : a) in >> x;
+```
+
+Indices run **0 to n-1**. Accessing `a[n]` is undefined behavior — the
+#1 cause of Runtime Error. When a problem says "the i-th element" with
+1-based counting, translate: element i lives at `a[i-1]`.
+
+### Traversal styles
+
+```cpp
+for (int i = 0; i < n; ++i) ...     // when you need the index
+for (long long x : a) ...           // values only
+for (int i = n - 1; i >= 0; --i)    // backwards
+```
+
+### min/max with a running best
+
+```cpp
+long long best = a[0];              // NOT 0 — values may be negative!
+for (long long x : a) best = max(best, x);
+```
+
+Initializing `best = 0` fails the moment all values are negative. Start
+from the first element (or -infinity).
+
+### Reverse and rotate
+
+```cpp
+reverse(a.begin(), a.end());                    // in place
+rotate(a.begin(), a.begin() + k, a.end());      // left-rotate by k
+```

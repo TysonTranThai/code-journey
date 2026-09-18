@@ -1,0 +1,52 @@
+## pyproject.toml: một tệp cai trị tất cả
+
+Đóng gói Python hiện đại được chuẩn hóa quanh `pyproject.toml`:
+
+```toml
+[project]
+name = "fincli"
+version = "1.2.0"
+requires-python = ">=3.11"
+dependencies = ["click>=8.1"]
+
+[project.scripts]
+fincli = "fincli.cli:main"
+```
+
+`[project]` là metadata chuẩn hóa (PEP 621); `[project.scripts]` tạo lệnh
+`fincli` import `fincli.cli` và gọi `main`. Build backend (setuptools,
+hatchling, flit) đọc tệp này; bạn chọn một, nhưng hợp đồng metadata là phổ quát.
+
+## Wheel và sdist
+
+`python -m build` tạo ra hai artifact:
+
+- **wheel** (`.whl`) — định dạng cài đặt: nhanh, người dùng không phải build,
+- **sdist** (`.tar.gz`) — bản phân phối nguồn để có thể dựng lại wheel.
+
+Cài từ wheel bằng `pip install dist/fincli-1.2.0-py3-none-any.whl` — hoặc phát
+hành lên một index. Phiên bản theo chính sách của bạn; semver
+(`major.minor.patch`) là hợp đồng phổ biến cho *breaking.feature.fix*.
+
+## Lockfile: môi trường tái lập được
+
+`requirements.txt` với các dải lỏng nói *xấp xỉ cái gì*; lockfile nói *chính
+xác cái gì* — mọi dependency bắc cầu được ghim vào một phiên bản xác minh bằng
+hash, để môi trường bạn đã test chính là môi trường đồng nghiệp cài đặt. Công
+cụ: `pip-tools`, `uv`, `poetry`. Nguyên tắc: thư viện khai báo dải lỏng trong
+`pyproject.toml`; ứng dụng khóa chặt.
+
+## Entry point ngoài scripts
+
+Cơ chế `[project.scripts]` là một cách dùng **entry point** — một registry mà
+các package công bố và người khác truy vấn được. Hệ plugin dùng cùng cơ chế:
+một ứng dụng khai báo một nhóm entry point (`fincli.plugins`), và bất kỳ package
+đã cài nào cũng có thể đăng ký plugin vào đó. Các pattern metaclass/registry
+từ Module 2 gặp gỡ hệ đóng gói.
+
+## Môi trường tái lập được
+
+`python -m venv .venv` — một môi trường cho mỗi dự án, không bao giờ cài toàn
+cục; kích hoạt và `pip install -e .` (cài dạng editable: thay đổi code của bạn
+có tác dụng ngay) khi phát triển. `requires-python` là hợp đồng với máy của
+người dùng; hãy khai báo trung thực.

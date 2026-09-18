@@ -1,0 +1,23 @@
+## The beginner decision table
+
+| Need | Container |
+| --- | --- |
+| An ordered list you iterate, append to, index | `std::vector` |
+| Exactly N elements, fixed at compile time | `std::array` |
+| Look up a value BY A KEY (name → phone) | `std::map` / `std::unordered_map` |
+| Track "have I seen X?" / distinct values | `std::set` / `std::unordered_set` |
+| Two values travelling together | `std::pair` (or a struct — module 9) |
+
+If your answer is not in the table, the odds are it is `vector`. It genuinely is the default.
+
+## Cost intuition (not a course in complexity)
+
+- `vector`: index access O(1); append at end amortized O(1); insert in the middle O(n) — everything after it shifts.
+- `map`/`set`: operations O(log n); keeps order.
+- `unordered_map`/`unordered_set`: average O(1), worst-case degradation exists.
+
+You do not memorize these tables; you remember *the shape of the tradeoff*: vector is compact and cache-friendly, trees trade a little per-op cost for sorted order, hashes gamble on speed. When a loop over a collection feels slow, the first question is "is the *container* right?" — the second is module 18's.
+
+## The honesty rule
+
+Choosing a container is an architectural statement about your data. `std::map<std::string, std::vector<int>> grades_by_student;` says "each student has many grades, looked up by name" — the declaration alone is documentation. When a container choice surprises a reviewer, either the choice or the name is wrong.

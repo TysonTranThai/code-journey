@@ -1,0 +1,63 @@
+Các trang HTML của bạn hoạt động — mọi phần tử đều có diện mạo mặc định hợp lý. Nhưng "mặc định hợp lý" chưa phải là "của bạn". CSS là ngôn ngữ tiếp quản phần giao diện.
+
+## CSS làm gì
+
+CSS (_Cascading Style Sheets_) là một danh sách các **quy tắc**. Mỗi quy tắc nói: _khi một phần tử khớp với selector này, áp dụng những khai báo này._
+
+```css
+h1 {
+  color: seagreen;
+}
+```
+
+Giải phẫu, gọi tên:
+
+- `h1` — **selector**: những phần tử mà quy tắc nhắm tới.
+- `color: seagreen;` — một **khai báo (declaration)**: một _thuộc tính_ (`color`), một dấu hai chấm, một _giá trị_ (`seagreen`), một dấu chấm phẩy.
+- Mọi thứ giữa `{ }` là **khối khai báo**.
+
+Khai báo luôn kết thúc bằng dấu chấm phẩy. Quên nó là bug CSS kinh điển đầu tiên — quy tắc âm thầm ngừng có ý nghĩa từ điểm đó. Khi kiểu của bạn "không hoạt động", hãy kiểm tra dấu chấm phẩy và dấu ngoặc nhọn trước bất cứ thứ gì khác.
+
+## Ba cách gắn CSS
+
+**1. Inline style** — thuộc tính `style` trên một phần tử:
+
+```html
+<p style="color: seagreen">Green text</p>
+```
+
+**2. Stylesheet nội bộ** — một khối `<style>` trong `<head>`:
+
+```html
+<head>
+  <style>
+    p {
+      color: seagreen;
+    }
+  </style>
+</head>
+```
+
+**3. Stylesheet bên ngoài** — một tệp `.css` riêng, được liên kết từ `<head>`:
+
+```html
+<head>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+```
+
+## Vì sao external thắng
+
+Inline style đối đầu với mọi thứ bạn sẽ học: nó không thể tái sử dụng, nó đè lên stylesheet của bạn theo những cách gây nhầm lẫn, và nó chôn giao diện lẫn vào nội dung. Stylesheet nội bộ thì ổn cho thí nghiệm nhanh nhưng bị nhốt trong một tệp.
+
+Stylesheet bên ngoài được trình duyệt cache và dùng chung bởi mọi trang của site: viết `h1 { ... }` một lần, và mọi trang nào liên kết tệp đó đều áp dụng. Nó còn thực thi sự tách bạch mà khóa học này liên tục nhắc lại — nội dung trong HTML, giao diện trong CSS.
+
+Từ đây trở đi, mọi ví dụ đều giả định một `styles.css` bên ngoài.
+
+## Bạn đã học được gì
+
+- Quy tắc: selector + khối khai báo; property: value; dấu chấm phẩy rất quan trọng
+- Inline, nội bộ, và external CSS — và vì sao external là mặc định chuyên nghiệp
+- Mẫu `<link rel="stylesheet">` bạn sẽ dùng cho phần còn lại của khóa học
+
+**Tiếp theo:** vườn thú selector — cách nhắm _chính xác_ vào những phần tử bạn muốn.

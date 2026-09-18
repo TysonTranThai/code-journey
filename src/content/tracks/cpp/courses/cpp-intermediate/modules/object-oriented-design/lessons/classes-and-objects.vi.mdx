@@ -1,0 +1,36 @@
+**Class** gộp trạng thái và các thao tác giữ trạng thái đó hợp lệ. Cơ bản đã
+cho bạn `class` để đóng gói; giờ ta dùng nó như công cụ thiết kế: chọn bất
+biến trước, rồi chỉ mở những thao tác giữ gìn bất biến đó.
+
+```cpp
+#include <string>
+
+class Timer {
+public:
+    void start() { running_ = true; ++starts_; }
+    void stop()  { running_ = false; }
+    bool running() const { return running_; }
+    int  starts() const { return starts_; }   // bất biến: đếm mọi lần start
+
+private:
+    bool running_{false};
+    int  starts_{0};
+};
+```
+
+Bất biến ở đây đơn giản ("starts_ đếm mỗi lần gọi start"), nhưng *hình dạng*
+mới là điều quan trọng: trạng thái private, thao tác là cánh cửa duy nhất,
+`const` đánh dấu nửa chỉ-đọc của interface.
+
+## Thứ tự thiết kế hiệu quả
+
+1. Viết bất biến trong một câu.
+2. Chọn member khiến bất biến dễ được giữ.
+3. Mở thao tác; đặt `private` cho mọi thứ bất biến cần.
+4. Đánh dấu `const` cho thao tác không làm thay đổi.
+
+## Struct với class, nói thẳng
+
+Khác biệt duy nhất là quyền truy cập mặc định (`struct` public, `class`
+private). Dùng `struct` cho gói dữ liệu thụ động, `class` khi có bất biến cần
+bảo vệ. Với C++, cả hai đều là "class".

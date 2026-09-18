@@ -1,0 +1,57 @@
+## Compare-exchange, nguyên tử phổ quát
+
+```c
+atomic_int v = 10;
+int expected = 10;
+atomic_compare_exchange_strong(&v, &expected, 20);
+/* nếu v == expected: v = 20, trả true (expected giữ nguyên)
+   else:              expected = v hiện tại, trả false */
+```
+
+CAS đọc, so sánh, và ghi có điều kiện trong **một** bước atomic. Mọi cấu trúc lock-free là một vòng lặp: load, tính giá trị mới, CAS; thất bại thì CAS đưa giá trị mới về cho bạn và bạn thử lại:
+
+```c
+int old = atomic_load(&v);
+while (!atomic_compare_exchange_weak(&v, &old, old * 2)) {
+    /* old đã được CAS thất bại làm mới; cứ lặp */
+}
+```
+
+`weak` có thể thất bại giả (rẻ hơn trên vài kiến trúc) — luôn dùng trong vòng lặp; dùng `strong` cho quyết định một lần.
+
+## ABA: sự so sánh nói dối
+
+CAS so sánh *giá trị*, không phải *lịch sử*. Thread 1 đọc A rồi bị treo; thread 2 thay A bằng B, rồi B bằng A trở lại. CAS của thread 1 thấy giá trị A và thành công — nhưng đối tượng sau giá trị không còn là đối tượng nó từng xem xét. Nạn nhân kinh điển: stack lock-free tái chế node qua free list.
+
+Giảm nhẹ ở mức người mới, theo giá tăng dần:
+
+1. **Không thu hồi khi reader còn giữ con trỏ** (kỷ luật epoch/RCU — pattern Intermediate/Advanced).
+2. **Gắn thẻ giá trị**: đóng gói bộ đếm phiên bản cạnh đó (atomic_fetch_add trên từ thứ hai, hoặc CAS kép).
+3. **Pool theo thread** để node không thể bị thread khác giải phóng và cấp lại giữa thao tác.
+
+Chúng ta luyện pattern gắn thẻ vì nó cài đặt và kiểm thử được ở đây; RCU được nêu tên để bạn biết nó tồn tại.
+
+## False sharing: thuế cache-line
+
+Các core trao đổi bộ nhớ theo cache line (thường 64 byte; đây là thực tế phần cứng, không phải thuật ngữ chuẩn C). Hai atomic nóng đặt cạnh nhau đá một line qua lại giữa các core dù không thread nào đụng biến kia — đúng đắn nhưng thông lượng sập.
+
+```c
+struct counts {
+    atomic_int a;    /* thread 0 đập a */
+    atomic_int b;    /* thread 1 đập b — cùng line 64B với a! */
+};
+
+struct counts_padded {
+    atomic_int a;
+    char pad[64 - sizeof(atomic_int)];   /* b sang line kế */
+    atomic_int b;
+};
+```
+
+Padding là bản vá. Đo đạc là kỷ luật: chỉ pad khi số liệu contention cho thấy line là vấn đề.
+
+## Ghi chú thực địa
+
+- Vòng CAS dễ đói dưới contention — chặn số lần thử và lùi về khóa nếu cần bảo đảm tiến trình.
+- `atomic_exchange` hoán đổi vô điều kiện và trả giá trị cũ; tiện cho pattern "lấy mới nhất".
+- Ảnh này báo `ATOMIC_POINTER_LOCK_FREE == 2`: atomic cỡ con trỏ là hardware lock-free tại đây.

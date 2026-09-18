@@ -1,0 +1,61 @@
+## Resources, not verbs
+
+REST models your API as **nouns with methods**:
+
+```text
+GET    /api/tasks          list (supports ?status=open&limit=20)
+POST   /api/tasks          create — 201 + Location: /api/tasks/42
+GET    /api/tasks/42       read one — 404 if absent
+PUT    /api/tasks/42       replace — full object
+PATCH  /api/tasks/42       partial update
+DELETE /api/tasks/42       remove — 200 or 204
+```
+
+Compare with the anti-pattern: `/api/getTasks`, `/api/deleteTask?id=42`. Verbs-in-URLs duplicate what the method already says and grow unboundedly. Exceptions exist (auth: `POST /api/login` is fine — login is a process, not a resource).
+
+## Path parameters and queries
+
+- **Path** identifies the resource: `/api/tasks/42`.
+- **Query** shapes the response without changing identity: `?status=open&sort=due&limit=20`.
+
+Conventions clients will assume: `limit`/`offset` (or `cursor`) for pagination, `sort=-createdAt` (minus = descending), filtering by field names.
+
+## Design review checklist
+
+- Plural nouns (`/tasks` not `/task`)
+- No verbs in paths (methods carry the action)
+- Status codes truthful (201 on create, 404 on missing, 400 on invalid body)
+- Consistent error shape: `{ "error": { "message": "...", "field": "due" } }` — clients parse one shape
+- Versioning strategy when you must break the contract: `/api/v2/...` (avoid until forced)
+
+## A tiny router, by hand
+
+```js
+const routes = [];
+function route(method, pattern, handler) {
+  // "/tasks/:id" -> regex with a named group
+  const keys = [];
+  const rx = new RegExp(
+    "^" +
+      pattern.replace(/:(\w+)/g, (_, k) => {
+        keys.push(k);
+        return "([^/]+)";
+      }) +
+      "$",
+  );
+  routes.push({ method, rx, keys, handler });
+}
+
+function match(method, url) {
+  for (const r of routes) {
+    const m = r.rx.exec(url);
+    if (r.method === method && m) {
+      const params = Object.fromEntries(r.keys.map((k, i) => [k, decodeURIComponent(m[i + 1])]));
+      return { handler: r.handler, params };
+    }
+  }
+  return null;
+}
+```
+
+Thirty lines and routing is demystified: patterns become regexes, matches become parameter objects. (Framework routers do exactly this plus optimizations.)

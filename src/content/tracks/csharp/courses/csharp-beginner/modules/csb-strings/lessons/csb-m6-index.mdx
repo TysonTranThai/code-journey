@@ -1,0 +1,38 @@
+## Strings are sequences of char
+
+```csharp
+string lang = "C#";
+char first = lang[0];      // 'C'
+char last  = lang[^1];     // '#'  — ^1 is "one from the end"
+int  len   = lang.Length;  // 2
+```
+
+Indexing starts at 0; `[i]` returns a `char` (single quotes: `'C'`), not a string. `lang[^1]` uses the **hat operator** — count from the end. An out-of-range index throws `IndexOutOfRangeException` immediately; there is no silent clamping.
+
+`foreach (char c in text)` walks every character without an index — use it when you don't need the position; use a `for` loop when you do.
+
+## Immutable: strings never change
+
+```csharp
+string name = "code";
+name.ToUpper();        // produces "CODE" ... and throws it away
+string upper = name.ToUpper();   // name is STILL "code"
+```
+
+Every string "modification" method (`ToUpper`, `Replace`, `Trim`, `Substring`, ...) **returns a new string** and leaves the original untouched. Forgetting to capture the result is the single most common string bug:
+
+```csharp
+line = line.Trim();    // correct: rebind the variable
+```
+
+Why immutable? One string object can be safely shared everywhere — no method can reach into your string and change it behind your back. The cost: heavy rebuild-in-a-loop code allocates a new string each pass (that's the `StringBuilder` discussion, later).
+
+## Building strings: interpolation wins
+
+```csharp
+var user = "minh"; var score = 97;
+Console.WriteLine($"{user} scored {score} points");     // interpolation
+Console.WriteLine(user + " scored " + score + " points"); // concatenation
+```
+
+String interpolation (`$"..."`) reads in output order and converts each expression with its `ToString`. Prefer it to `+` chains — and note the `$` prefix is what enables the `{}` holes.

@@ -1,0 +1,16 @@
+{
+  "id": "cppa18-shell-quote",
+  "title": "Injection-Safe Shell Quoting",
+  "prompt": "Implement `shellQuote` so the output, when passed to `sh -c 'printf %s '<quoted>''`, always yields exactly the original argument — for every hostile input in the battery.",
+  "difficulty": "advanced",
+  "level": "real-world",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <cstdint>\n#include <optional>\n#include <string>\n#include <vector>\n\n// --- checked allocation math: fail closed on overflow ---\nstd::optional<std::size_t> checkedTotal(std::size_t a, std::size_t b, std::size_t c);\n\n// --- canonicalizing path sandboxer ---\n// Resolves '.', '..', redundant separators; then requires the result to stay\n// under the trusted root \"/data\". Returns nullopt on escape attempt.\nstd::optional<std::string> sandboxPath(const std::string& userPath);\n\n// --- shell-argument quoting: result cannot change token structure ---\nstd::string shellQuote(const std::string& arg);\n",
+  "tests": [
+    {
+      "name": "quoting battery",
+      "code": "CHECK_EQ(shellQuote(\"hello\"), \"'hello'\");\nCHECK_EQ(shellQuote(\"it's\"), \"'it'\\\\''s'\");\nCHECK_EQ(shellQuote(\"\"), \"''\");\nCHECK_EQ(shellQuote(\"$(rm -rf /)\"), \"'$(rm -rf /)'\");\nCHECK_EQ(shellQuote(\"a b\\nc\\\"d'e\"), \"'a b\\nc\\\"d'\\\\''e'\");\nCHECK_EQ(shellQuote(\"`; touch /tmp/pwned #\"), \"'`; touch /tmp/pwned #'\");",
+      "hint": "Wrap in single quotes; replace each embedded ' with '\\'' (close, escaped quote, reopen). Nothing else needs transformation — that is the whole safe surface."
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+## Từ vựng, viết ra giấy
+
+C không có exception — mọi hàm *đàm phán* thất bại qua giá trị trả về.
+Các quy ước khiến API dự đoán được:
+
+```c
+/* thành công: 0 hoặc giá trị; thất bại: -1 (số) hoặc NULL (con trỏ) */
+long  parse(const char *s, long *out);      /* 0 ok, -1 xấu */
+char *dup_str(const char *s);               /* NULL khi thất bại */
+/* ba giá trị: 0 = có, 1 = không, -1 = lỗi */
+int   contains(const Set *s, int v);        /* phân biệt "vắng" với "hỏng" */
+```
+
+Quy tắc tối thượng: **một giá trị, một nghĩa.** Hàm trả `int` với 0 là
+"tìm thấy", 1 là "không có", -1 là "lỗi" đang *ghi rõ* caller phải kiểm
+cả ba — viết vào header, và test cả ba.
+
+## errno: sợi chỉ ngữ cảnh
+
+Khi thất bại, hàm thư viện đặt `errno` — một int toàn cục (tương đối)
+với tên biểu tượng trong `<errno.h>`:
+
+```c
+#include <errno.h>
+FILE *f = fopen(path, "r");
+if (!f) {
+    if (errno == ENOENT) /* không có tệp */;
+    else if (errno == EACCES) /* không quyền */;
+}
+```
+
+Hợp đồng tinh tế: errno có nghĩa **chỉ ngay sau một lời gọi vừa thất
+bại** — và chỉ khi hàm đó ghi rõ là đặt nó. Đọc errno sau một thành công
+(hoặc sau lời gọi khác) là rác. `perror` và `strerror(errno)` dịch số
+cho người. ISO C định nghĩa cơ chế; *các giá trị cụ thể* ngoài nhóm lõi
+(ENOENT, EACCES, ENOMEM...) là lãnh thổ platform — một biên giới ISO/
+POSIX nữa cần đánh dấu.
+
+## Đường thất bại cũng là code
+
+Mỗi `-1` trong cài đặt là một nhánh mà test phải chạm tới. API có đường
+thất bại không thể kích hoạt từ test có các đường thất bại chưa từng
+được chạy — code nguy hiểm nhất của codebase. Thiết kế thất bại để tiêm
+được: tham số xấu (NULL, rỗng, ngoài khoảng) là đòn bẩy trung thực trong
+unit test.

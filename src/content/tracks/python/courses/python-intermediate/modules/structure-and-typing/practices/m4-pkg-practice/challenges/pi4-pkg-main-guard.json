@@ -1,0 +1,21 @@
+{
+  "id": "pi4-pkg-main-guard",
+  "title": "Script or Module?",
+  "prompt": "Implement run_report() returning the string 'report'. Then implement the module-level pattern: a variable RAN_DIRECTLY set by the __main__ guard. Because the sandbox imports your code as a module, RAN_DIRECTLY must be False here — and run_report() must not print.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "RAN_DIRECTLY = None\n\ndef run_report():\n    pass\n\n# add the __main__ guard below\n",
+  "tests": [
+    {
+      "name": "run_report returns, does not print",
+      "code": "import io, contextlib\nbuf = io.StringIO()\nwith contextlib.redirect_stdout(buf):\n    result = run_report()\nassert result == 'report'\nassert buf.getvalue() == ''",
+      "hint": "Return the string; printing would fail this test."
+    },
+    {
+      "name": "guard did not fire on import",
+      "code": "assert RAN_DIRECTLY is False",
+      "hint": "if __name__ == '__main__': RAN_DIRECTLY = True — as an imported module, __name__ is not '__main__'."
+    }
+  ],
+  "level": "guided"
+}

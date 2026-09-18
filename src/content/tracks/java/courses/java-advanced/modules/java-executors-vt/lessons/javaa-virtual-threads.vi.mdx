@@ -1,0 +1,33 @@
+**Virtual threads** (JEP 444, chuẩn từ 21 — đã kiểm chứng chạy được trong
+sandbox này) tách *đơn vị đồng thời* khỏi *đơn vị chi phí*:
+
+```java
+try (var exec = Executors.newVirtualThreadPerTaskExecutor()) {
+    for (int i = 0; i < 1_000_000; i++) {
+        exec.submit(() -> { Thread.sleep(100); return i; });  // ổn!
+    }
+}   // close() chờ mọi tác vụ
+```
+
+Một JVM giữ được *hàng triệu* virtual thread vì chúng không phải thread của
+OS: chúng là đối tượng trên heap được xếp lịch lên một nhóm nhỏ thread
+**carrier**. Khi virtual thread block (sleep, I/O), JVM **tháo nó ra** và
+carrier chạy người khác. Block lại rẻ — đó là cả cuộc cách mạng.
+
+**Điều virtual threads KHÔNG thay đổi**:
+
+1. **Công việc nặng CPU** không được lợi gì: máy bạn vẫn chỉ có vậy nhân;
+   `Runtime.getRuntime().availableProcessors()` chi phối parallelism nền.
+   VT giúp *chờ đợi*, không giúp *tính toán*.
+2. **Pinning**: bên trong khối `synchronized` (hoặc frame native), virtual
+   thread không thể bị tháo ra — carrier bị giữ con tin. Khối synchronized
+   dài dưới tải VT nặng có thể đói carrier. (JDK 24 đã sửa trường hợp
+   `synchronized`; trên runtime `--release 21` của chúng ta đây là rủi ro
+   thật — ưu tiên `ReentrantLock` cho khối dài trong code nhiều VT.)
+3. **Không pooling**: VT dùng một lần. Pool chúng là tái tạo lại kinh tế
+   thread nền mà bạn đang trốn. `newVirtualThreadPerTaskExecutor` — mỗi
+   tác vụ một thread.
+
+**Structured concurrency** (JEP 453) chỉ là preview trong 21 — dạy ở mức
+khái niệm: coi một cụm tác vụ liên quan là một đơn vị với một đường lỗi và
+một đường hủy.

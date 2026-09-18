@@ -1,0 +1,25 @@
+Two engines, one contract:
+
+```java
+public interface Engine {
+    void put(String key, String value);   // upsert
+    java.util.Optional<String> get(String key);
+    java.util.List<String> keys();        // sorted, for determinism
+    int count();
+}
+```
+
+**InMemory**: a `ConcurrentHashMap` behind the interface. Determinism comes
+from `keys()` sorting — iteration order of a hash map is otherwise an
+implementation detail that would leak into reports.
+
+**JsonlFile**: the source of truth is an append-only file, one JSON-ish
+record per line: `{"op":"put","k":"a","v":"1"}`. `put` appends then updates
+an in-memory index (write-through); `keys()` sorts the index the same way.
+Replay — reading the file and re-applying operations — rebuilds the state
+after any "restart"; the checkpoint simulates one by constructing a second
+engine over the same path and comparing reports.
+
+This is the Shape of every real persistence layer: an ordered event log you
+can replay, an index you can rebuild, and a read path that never lies about
+what has been acknowledged.

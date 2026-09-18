@@ -1,0 +1,20 @@
+{
+  "id": "i2-capstone-contract",
+  "title": "The API Contract Decision",
+  "prompt": "Declare the two core endpoints as objects. `createEndpoint`: method (creating a ticket), path (your chosen route), successStatus (number), and bodyFields (array of the fields the client sends). `listEndpoint`: method, path, and the query parameter name used for priority filtering (queryParam, string; use \"\" if you filter client-side).",
+  "difficulty": "advanced",
+  "level": "independent",
+  "boilerplate": "const createEndpoint = {\n  method: \"\",\n  path: \"\",\n  successStatus: 0,\n  bodyFields: [],\n};\n\nconst listEndpoint = {\n  method: \"\",\n  path: \"\",\n  queryParam: \"\",\n};\n",
+  "tests": [
+    {
+      "name": "create: POST-shaped, records created",
+      "code": "const fn = new Function(code + \"\\nreturn { createEndpoint };\");\nconst { createEndpoint } = fn();\nif (createEndpoint.method.toUpperCase() !== \"POST\") throw new Error(\"Creating a ticket is a POST.\");\nif (typeof createEndpoint.path !== \"string\" || !createEndpoint.path.startsWith(\"/\")) {\n  throw new Error(\"Paths start with / (e.g. /api/tickets).\");\n}\nif (createEndpoint.successStatus < 200 || createEndpoint.successStatus > 299) {\n  throw new Error(\"Success must be a 2xx — 201 is the REST choice for created.\");\n}\nif (!Array.isArray(createEndpoint.bodyFields) || createEndpoint.bodyFields.length < 3) {\n  throw new Error(\"The create body must carry at least: title, description, priority.\");\n}\n",
+      "hint": "201 Created is not pedantry — it tells caches and clients what happened."
+    },
+    {
+      "name": "list: GET-shaped, filter named",
+      "code": "const fn = new Function(code + \"\\nreturn { listEndpoint };\");\nconst { listEndpoint } = fn();\nif (listEndpoint.method.toUpperCase() !== \"GET\") throw new Error(\"Listing is a GET.\");\nif (typeof listEndpoint.path !== \"string\" || !listEndpoint.path.startsWith(\"/\")) {\n  throw new Error(\"Paths start with /.\");\n}\nif (typeof listEndpoint.queryParam !== \"string\") throw new Error(\"queryParam is a string (\\\"\\\" if none).\");\n",
+      "hint": "GET /api/tickets?priority=high — what do you call that parameter?"
+    }
+  ]
+}

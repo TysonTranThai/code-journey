@@ -1,0 +1,20 @@
+{
+  "id": "i2-page-diagnose",
+  "title": "Diagnose the Broken Page",
+  "prompt": "A page spec is { htmlKB, cssKB, jsKB, imageKB, ttfbMs, renderBlocking: [types], imageCount, heroLazy }. Write `diagnose(page)` returning the SINGLE dominant issue as a string, by these rules (first match wins): ttfbMs > 800 => \"slow-server\"; heroLazy true => \"lazy-hero\"; any \"css\" in renderBlocking => \"blocking-css\"; imageKB > 2000 => \"oversized-images\"; jsKB > 500 => \"heavy-js\"; otherwise \"healthy\".",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function diagnose(page) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "identifies each dominant issue",
+      "code": "const fn = new Function(code + \"\\nreturn { diagnose };\");\nconst { diagnose } = fn();\nif (diagnose({ ttfbMs: 1200, heroLazy: false, renderBlocking: [], imageKB: 100, jsKB: 100 }) !== \"slow-server\") throw new Error(\"TTFB first.\");\nif (diagnose({ ttfbMs: 200, heroLazy: true, renderBlocking: [], imageKB: 100, jsKB: 100 }) !== \"lazy-hero\") throw new Error(\"Hero before css.\");\nif (diagnose({ ttfbMs: 200, heroLazy: false, renderBlocking: [\"css\"], imageKB: 100, jsKB: 100 }) !== \"blocking-css\") throw new Error(\"css before images.\");\nif (diagnose({ ttfbMs: 200, heroLazy: false, renderBlocking: [], imageKB: 3000, jsKB: 100 }) !== \"oversized-images\") throw new Error(\"Images before js.\");\nif (diagnose({ ttfbMs: 200, heroLazy: false, renderBlocking: [], imageKB: 100, jsKB: 900 }) !== \"heavy-js\") throw new Error(\"js last.\");\n",
+      "hint": "A pure if-chain in the stated priority order."
+    },
+    {
+      "name": "healthy page passes",
+      "code": "const fn = new Function(code + \"\\nreturn { diagnose };\");\nconst { diagnose } = fn();\nif (diagnose({ ttfbMs: 300, heroLazy: false, renderBlocking: [], imageKB: 400, jsKB: 200 }) !== \"healthy\") throw new Error(\"Within all thresholds.\");\n",
+      "hint": "The final else is an answer, not an error."
+    }
+  ]
+}

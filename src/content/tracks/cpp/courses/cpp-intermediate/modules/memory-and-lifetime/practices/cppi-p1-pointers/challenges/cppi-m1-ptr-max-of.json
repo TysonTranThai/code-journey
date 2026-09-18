@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m1-ptr-max-of",
+  "title": "Optional result via pointer",
+  "prompt": "Implement `const int* max_of(const int* a, const int* b)`: return a pointer to the larger int; if both are null return nullptr; if one is null return the other's pointer.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\n\nconst int* max_of(const int* a, const int* b);\n",
+  "tests": [
+    {
+      "name": "both",
+      "code": "int x = 3, y = 9;\nCHECK_EQ(*max_of(&x, &y), 9);",
+      "hint": "Return the address of the larger, not a copy."
+    },
+    {
+      "name": "one-null",
+      "code": "int x = 5;\nconst int* r = max_of(&x, nullptr);\nCHECK(r != nullptr);\nCHECK_EQ(*r, 5);",
+      "hint": "One side missing → the other wins."
+    },
+    {
+      "name": "none",
+      "code": "CHECK(max_of(nullptr, nullptr) == nullptr);",
+      "hint": "No objects → nullptr is the honest answer."
+    }
+  ],
+  "level": "independent"
+}

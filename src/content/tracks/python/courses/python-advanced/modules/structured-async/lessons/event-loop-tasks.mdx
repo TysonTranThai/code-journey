@@ -1,0 +1,33 @@
+## Coroutines, the loop, and TaskGroup
+
+`async def` defines a **coroutine function**; calling it creates a coroutine
+object that does nothing until awaited or scheduled. The **event loop** runs
+scheduled coroutines to completion, switching between them at every `await`
+(suspension point).
+
+Cooperative multitasking means one rule: **never block the loop.** A bare
+`time.sleep(1)` inside a coroutine freezes every other task; `await
+asyncio.sleep(1)` yields properly.
+
+```python
+import asyncio
+
+async def fetch(name, delay):
+    await asyncio.sleep(delay)          # stand-in for I/O
+    return f"{name}-done"
+
+async def main():
+    results = []
+    async with asyncio.TaskGroup() as tg:          # 3.11+
+        t1 = tg.create_task(fetch("a", 0.1))
+        t2 = tg.create_task(fetch("b", 0.2))
+    return t1.result(), t2.result()    # both done when the block exits
+```
+
+`TaskGroup` (3.11+) is the structured-concurrency primitive: tasks created in
+the group are guaranteed finished (or the group raised) when the `async with`
+exits. If any task raises, the group cancels the others and raises
+`ExceptionGroup` (unwrap single errors with `except*` or `group.exceptions`).
+
+Legacy `asyncio.gather(*aws)` still exists and returns results in order; it
+does NOT cancel siblings on failure by default. New code prefers TaskGroup.

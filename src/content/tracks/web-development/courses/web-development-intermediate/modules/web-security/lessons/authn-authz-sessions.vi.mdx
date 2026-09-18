@@ -1,0 +1,30 @@
+Hai câu hỏi khác nhau, bị nhầm lẫn vĩnh viễn:
+
+- **Xác thực (authentication)** — _ai_ đang gửi request này? (mật khẩu, OAuth, magic link)
+- **Phân quyền (authorization)** — danh tính đó _được phép làm gì_? (vai trò, quyền sở hữu, quyền hạn)
+
+## Điều cốt yếu của xác thực
+
+- **Mật khẩu**: không bao giờ lưu thô — lưu hash muối chậm (bcrypt/argon2). Muối đánh bại rainbow table; độ chậm đánh bại brute force bằng GPU.
+- **Phiên (session)**: khi đăng nhập, server phát một định danh phiên — kinh điển là cookie **HttpOnly, Secure, SameSite**. HttpOnly giữ JS khỏi nó (XSS không lấy được); Secure giữ nó cho https; SameSite=Lax/Strict làm yếu CSRF.
+- **Token (JWT)**: các claim được ký trong token mà client mang theo. Đổi lại: stateless, dễ mở rộng, nhưng khó thu hồi — logout và đổi mật khẩu cần denylist hoặc hạn ngắn + refresh token.
+
+## Phân quyền: nơi bug thật sự sống
+
+Phần lớn vụ vi phạm thực tế không phải lỗi mã hóa; chúng là **thiếu kiểm tra**:
+
+- **IDOR (Insecure Direct Object Reference)**: `/api/orders/1234` trả về đơn hàng mà không hỏi "đơn này có phải _của bạn_?" — test mọi endpoint bằng ID của người dùng khác.
+- **Nâng quyền dọc**: người dùng thường gọi được endpoint admin vì UI giấu nút nhưng API không kiểm tra vai trò.
+- **Thực thi phía client**: quyền chỉ được kiểm trong UI. API mới là nơi ra quyết định; UI chỉ là trang trí.
+
+Kỷ luật: **mọi request đều kiểm tra lại authn + authz phía server.** Không phải lúc tải trang — _mọi request_, kể cả GET, kể cả những lượt đọc "hiển nhiên an toàn".
+
+## Giới hạn tốc độ và vệ sinh tài khoản
+
+- **Giới hạn tốc độ** cho đăng nhập, đăng ký, reset mật khẩu, và các endpoint đắt — theo IP và theo tài khoản. (Chính bộ E2E của Code Journey từng gặp: các dòng rate-limiter cũ chặn đăng ký của test!)
+- **So sánh thời gian không đổi** cho bí mật (`crypto.timingSafeEqual`) để làm cùn timing attack.
+- **Fail closed, log ồn ào**: một phép kiểm authz gặp lỗi phải từ chối, và phải ghi log mà có người đọc.
+
+## Checklist phiên an toàn tối thiểu
+
+Đủ cờ cookie, authz trên mọi endpoint, kiểm tra quyền sở hữu trên mọi lần đọc theo ID, giới hạn tốc độ trên các route xác thực, secrets trong biến môi trường, không token trong URL (URL rò rỉ vào log, lịch sử, referrer).

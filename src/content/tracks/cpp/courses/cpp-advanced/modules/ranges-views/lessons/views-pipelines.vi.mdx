@@ -1,0 +1,26 @@
+## Mô hình tư duy
+
+**View** là lớp bọc nhẹ, không sở hữu dữ liệu — nó *trình diễn* dữ liệu khác đi mà không sao chép. Phép biến đổi là lười biếng: dựng pipeline không tốn công; duyệt thì kéo phần tử đi qua nó.
+
+```cpp
+namespace rv = std::views;
+
+int total = 0;
+for (int v : rv::iota(1, 11) | rv::filter([](int x) { return x % 2 == 0; })
+                             | rv::transform([](int x) { return x * x; })) {
+    total += v;
+}
+// total == 220 — bình phương của 2,4,6,8,10, tính từng phần tử một
+```
+
+`rv::iota(1, 11)` là range sinh ra — không có vector nào tồn tại. `filter` bỏ qua; `transform` ánh xạ; `take`/`drop` cắt lát; `reverse` đi ngược. `views::all(v)` biến container thành view khi bạn cần ranh giới.
+
+## Vì sao pipeline thắng
+
+- **Không container trung gian**: chuỗi thuật toán thường phải dựng một vector mỗi giai đoạn; view thì không.
+- **Kết hợp một lượt**: mỗi phần tử chảy hết chuỗi trước khi phần tử kế tiếp bắt đầu — thân thiện cache và thoát sớm được (`take(5)` dừng cả pipeline).
+- **Khả năng kết hợp**: pipeline là một giá trị; lưu nó, chuyển nó, tái sử dụng nó.
+
+## Những cái giá phải tôn trọng
+
+Duyệt không miễn phí (chuỗi filter+transform kiểm tra lại từng phần tử); lambda lồng sâu có thể hại inlining; và — cái lớn nhất — view **không sở hữu** thứ nó trỏ tới. Đó là chủ đề của bài học kế tiếp.

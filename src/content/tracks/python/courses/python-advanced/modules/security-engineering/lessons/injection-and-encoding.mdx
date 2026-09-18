@@ -1,0 +1,57 @@
+Injection is one bug with many costumes: **data crosses a boundary and gets
+interpreted as code.** The costumes matter because the parsers differ.
+
+## SQL injection → parameterize
+
+```python
+# WRONG: string-built query
+cursor.execute(f"SELECT * FROM users WHERE name = '{name}'")
+# name = "'; DROP TABLE users; --"  → your table is gone
+
+# RIGHT: parameters
+cursor.execute("SELECT * FROM users WHERE name = %s", (name,))
+```
+
+Parameterized queries send the *value* separately from the *statement*, so a
+value can never change the statement's meaning. There is no input you cannot
+safely pass this way — which is why "escape the quotes by hand" is never the
+answer.
+
+## Command injection → don't shell out
+
+`os.system(f"convert {filename}.png")` with `filename = "a; rm -rf /; echo"`
+executes arbitrary commands. The hierarchy of fixes: **don't invoke a shell**
+(use library APIs, or `subprocess.run([...list form...], shell=False)`); if you
+must shell, whitelist-validate the argument against an exact pattern; and never
+pass user data near a shell.
+
+## Path traversal → resolve and confine
+
+`open(base_dir + "/" + filename)` with `filename = "../../etc/passwd"` leaves
+the directory. Confine: resolve the joined path and verify it is still inside
+the base (`path.resolve().is_relative_to(base.resolve())`), then open. Reject
+or normalize `..` — and remember URLs are not paths.
+
+## Unsafe deserialization → never unpickle foreign bytes
+
+`pickle.loads(untrusted)` executes embedded code — it is arbitrary-code
+execution as a library feature. For data crossing a boundary use JSON (values
+only, no code), and treat any binary deserializer as remote code execution
+waiting to happen.
+
+## XSS and output encoding
+
+XSS is injection into the *browser's* parser: your data lands in HTML and
+executes as script. Defense is **context-aware output encoding** (escape for
+HTML body, attribute, JS, URL as appropriate) plus frameworks that escape by
+default — and a **Content-Security-Policy** header as a second wall. And the
+cookie that proves your identity should never be readable by JavaScript:
+`HttpOnly; Secure; SameSite=Lax`.
+
+## Authorization: the bug scanners can't find
+
+Broken access control sits at #1 in the OWASP Top 10 precisely because it's a
+*design* failure: `/api/orders/42` works for everyone because the handler never
+asked *is 42 yours?*. The rule is boring and absolute: **every object access
+carries an ownership/role check derived from the session, never from a
+parameter.** IDOR (Insecure Direct Object Reference) is the name of forgetting.

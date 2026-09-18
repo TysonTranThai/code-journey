@@ -1,0 +1,10 @@
+{
+  "title": "Bộ công cụ release",
+  "prompt": "Cài ba hàm nhỏ để ship một bản release:\n\n- `next_release(version, changes)` — `changes` là list chứa bất kỳ 'breaking', 'feature', 'fix' nào: bump major cho breaking, không thì minor cho feature, không thì patch; trả chuỗi phiên bản mới (tái dùng quy tắc semver: MAJOR.MINOR.PATCH nghiêm ngặt, các phần dưới reset)\n- `safe_registry(entries)` — entries là các tuple `(group, name, factory)`; trả `{group: {name: factory}}`, raise `ValueError('duplicate plugin: <name>')` khi có tên trùng trong cùng một nhóm\n- `incident_log(correlation_id, events)` — events là các `(level, event, fields)` với field có thể là 'password'/'token'; trả list các dòng JSON (khóa đã sắp) với `correlation_id` được thêm và field nhạy cảm thay bằng '[REDACTED]'\n\nCác bất biến: breaking > feature > fix; không che khuất plugin im lặng; không có secret trong log.",
+  "tests": [
+    {
+      "name": "Ưu tiên, registry, che giấu",
+      "hint": "Ba hợp đồng, một bản release: sự thật phiên bản, an toàn plugin, vệ sinh log."
+    }
+  ]
+}

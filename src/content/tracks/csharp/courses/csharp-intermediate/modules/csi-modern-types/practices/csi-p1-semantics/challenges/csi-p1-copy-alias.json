@@ -1,0 +1,21 @@
+{
+  "id": "csi-p1-copy-alias",
+  "title": "Copy or Alias?",
+  "prompt": "Implement two small types and a probe — the test asserts what each assignment did:\n\n```csharp\npublic struct ValuePoint { public int X; }          /* value: copies */\npublic sealed class RefPoint { public int X; }      /* reference: aliases */\n\n/* increments X and returns the (copied) struct — the caller's copy\n   must NOT be affected */\nstatic ValuePoint BumpValue(ValuePoint p);\n/* increments X through the reference — the caller's object MUST be\n   affected, and the same instance is returned */\nstatic RefPoint   BumpRef(RefPoint p);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "value copies",
+      "code": "\nvar v = new Solution.ValuePoint { X = 1 };\nvar bumped = Solution.BumpValue(v);\nCj.Eq(v.X, 1, \"caller's struct untouched\");\nCj.Eq(bumped.X, 2, \"returned copy incremented\");\n",
+      "hint": "Structs: mutate the parameter copy and return it — the caller's copy never moves."
+    },
+    {
+      "name": "references alias",
+      "code": "\nvar r = new Solution.RefPoint { X = 1 };\nvar same = Solution.BumpRef(r);\nCj.Eq(r.X, 2, \"caller's object mutated through the alias\");\nCj.True(ReferenceEquals(r, same), \"returns the same object\");\n",
+      "hint": "Classes: mutate the object the parameter references — caller sees it."
+    }
+  ],
+  "level": "imitation"
+}

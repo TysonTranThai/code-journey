@@ -1,0 +1,15 @@
+## The load-bearing categories
+
+- **Signed arithmetic overflow** (`INT_MAX + 1`): the compiler may assume it never happens, so overflow-guard code written *after* the add can be deleted as dead.
+- **Out-of-bounds access**: an OOB loop index licenses the compiler to assume the loop bound is large — bounds checks vanish.
+- **Uninitialized reads**: an indeterminate value is not 'random garbage' — reading one is UB; the compiler may propagate anything.
+- **Shift abuse**: shifting by >= width, or negative left operands, is UB; `1u << 32` on a 32-bit int is not 'wrap to 0'.
+- **Lifetime violations**: use-after-free, use-after-scope, use-before-init.
+
+## What UB is for
+
+It is not malice: every category marks a place where the abstract machine stops constraining the implementation, letting optimizers reason about the *other* 99% of the program. The cost is that a bug in the 1% can invalidate proofs about everything.
+
+## The professional response
+
+You do not memorize the 200 rules; you know the load-bearing dozen above, and you make every one *detectable*: warning flags, checked arithmetic at boundaries, initialized-everywhere discipline, and the sanitizer runs of module 16.

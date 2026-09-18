@@ -1,0 +1,26 @@
+{
+  "id": "ca21-buffered-writer",
+  "title": "Flush Only When Full",
+  "prompt": "ISO C design of stdio's rule. Given `struct bw { char buf[64]; size_t n; int flushes; };` (zero-initialized before use), implement `void bw_write(struct bw *w, const char *s, size_t len)` — append bytes; the moment one more byte would exceed 64, flush first (flushes++, n=0) and continue. Implement `size_t bw_pending(const struct bw *w)` returning w->n. NULL guards: w or s NULL with len>0 does nothing.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "fill exactly then overflow",
+      "code": "struct bw w = {0};\nchar big[129];\nmemset(big, 65, 129);\nbw_write(&w, big, 128);\nCHECK_EQ(bw_pending(&w), 64);\nCHECK_EQ(w.flushes, 1);\nbw_write(&w, big, 1);\nCHECK_EQ(w.flushes, 2);\nCHECK_EQ(bw_pending(&w), 1);",
+      "hint": "128 bytes fill the 64-buffer exactly once and overflow once: 1 flush, 64 pending. One more byte forces the second flush."
+    },
+    {
+      "name": "single small write stays",
+      "code": "struct bw w2 = {0};\nbw_write(&w2, \"fallback\", 8);\nCHECK_EQ(bw_pending(&w2), 8);\nCHECK_EQ(w2.flushes, 0);",
+      "hint": "Nothing overflows: zero flushes — buffering is the whole point."
+    },
+    {
+      "name": "NULL guards",
+      "code": "struct bw w3 = {0};\nbw_write(&w3, NULL, 4);\nbw_write(NULL, \"fallback\", 4);\nbw_write(&w3, NULL, 0);\nCHECK_EQ(bw_pending(&w3), 0);\nCHECK_EQ(w3.flushes, 0);",
+      "hint": "NULL inputs must change nothing — refuse by ignoring, not by crashing."
+    }
+  ],
+  "level": "combination"
+}

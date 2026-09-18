@@ -1,0 +1,15 @@
+## Một mảng, không con trỏ cho từng phần tử
+
+Chaining giữ linked list cho mỗi bucket — bước qua con trỏ làm miss cache mỗi lần. Open addressing giữ *mọi phần tử trong một mảng*: khi đụng độ, thăm slot kế tiếp (linear probing) tới khi gặp slot trống.
+
+## Load factor điều khiển tất cả
+
+`alpha = used / capacity`. Khi alpha tiến về 1, dãy probe dài ra; kỷ luật chuẩn là resize (rehash sang bảng lớn hơn) ở alpha ~ 0.7. Insert khấu trừ vẫn O(1) — lần rehash hiếm hoi được trả bằng nhiều insert rẻ.
+
+## Xóa cần tombstone
+
+Slot trống kết thúc dãy probe — vậy là chỉ đơn giản làm trống slot của phần tử bị xóa sẽ phá lookup của phần tử từng probe đi qua. Cách chữa: đánh dấu xóa bằng trạng thái *tombstone* mà probe vẫn đi tiếp qua. Tombstone tích tụ; rehash định kỳ dọn chúng.
+
+## Bố cục là hiệu năng
+
+Một mảng các entry thân thiện với cache: một probe là quét tuyến tính. Vì vậy bảng băm nhanh (và cả khóa học này) coi *bố cục bộ nhớ* là một phần thiết kế cấu trúc dữ liệu.

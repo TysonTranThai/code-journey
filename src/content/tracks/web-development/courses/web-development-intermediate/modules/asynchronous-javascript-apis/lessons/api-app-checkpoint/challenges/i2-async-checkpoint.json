@@ -1,0 +1,24 @@
+{
+  "id": "i2-async-checkpoint",
+  "title": "Async Request Engine Check",
+  "prompt": "Implement three async helpers:\n\n1. `createLoader(fetchFn)` RETURNS `{ load, reset }`. `load(key)` calls `fetchFn(key)` once per key and RETURNS the resulting promise; concurrent and later calls with the same key RETURN THE SAME promise. `reset()` clears all cached promises (the next load re-fetches).\n2. `loadDashboard(sources)` where `sources` is an array of zero-argument promise-returning functions. It runs ALL of them concurrently and RETURNS a promise for `{ loaded, failed }` — `loaded` is the array of fulfilled values (in order), `failed` the array of rejection reasons (in order). It never rejects.\n3. `withTimeout(promise, ms, fallback)` RETURNS a promise that settles with the promise's value if it fulfills within `ms`, otherwise with `fallback`. It never rejects.",
+  "difficulty": "intermediate",
+  "boilerplate": "// 1) createLoader(fetchFn)\n\n// 2) loadDashboard(sources)\n\n// 3) withTimeout(promise, ms, fallback)\n",
+  "tests": [
+    {
+      "name": "loader dedupes concurrent requests per key",
+      "code": "const fn = new Function(code + \"\\nreturn { createLoader, loadDashboard, withTimeout };\");\nconst { createLoader, loadDashboard, withTimeout } = fn();\nlet calls = 0;\nconst loader = createLoader(async (key) => { calls++; await new Promise((r) => setTimeout(r, 10)); return key + \"-data\"; });\nconst [a, b] = await Promise.all([loader.load(\"x\"), loader.load(\"x\")]);\nif (a !== \"x-data\" || b !== \"x-data\") throw new Error(\"Both loads should resolve with the fetched value.\");\nif (calls !== 1) throw new Error(\"Concurrent loads of the same key must share one flight (1 call, got \" + calls + \").\");\nconst c = await loader.load(\"x\");\nif (c !== \"x-data\") throw new Error(\"Later loads still return the cached promise's value.\");\nloader.reset();\nawait loader.load(\"x\");\nif (calls !== 2) throw new Error(\"After reset, loading again must re-fetch.\");",
+      "hint": "Keep a Map of key → promise in the closure; store the promise (not the value) so in-flight requests are shared. reset() = map.clear()."
+    },
+    {
+      "name": "loadDashboard separates fulfilled and rejected",
+      "code": "const fn = new Function(code + \"\\nreturn { createLoader, loadDashboard, withTimeout };\");\nconst { createLoader, loadDashboard, withTimeout } = fn();\nconst ok1 = () => Promise.resolve(1);\nconst ok2 = () => Promise.resolve(2);\nconst bad = () => Promise.reject(new Error(\"boom\"));\nconst out = await loadDashboard([ok1, bad, ok2]);\nif (out.loaded.join() !== \"1,2\") throw new Error(\"loaded should be fulfilled values in source order.\");\nif (out.failed.length !== 1) throw new Error(\"failed should hold the single rejection reason.\");\nconst allBad = await loadDashboard([bad, bad]);\nif (allBad.loaded.length !== 0 || allBad.failed.length !== 2) throw new Error(\"loadDashboard never rejects, even when every source fails.\");",
+      "hint": "Promise.allSettled, then split results on status === 'fulfilled'."
+    },
+    {
+      "name": "withTimeout resolves value or fallback",
+      "code": "const fn = new Function(code + \"\\nreturn { createLoader, loadDashboard, withTimeout };\");\nconst { createLoader, loadDashboard, withTimeout } = fn();\nconst fast = withTimeout(Promise.resolve(\"quick\"), 50, \"fallback\");\nif ((await fast) !== \"quick\") throw new Error(\"A promise that fulfills in time resolves with its value.\");\nconst slow = withTimeout(new Promise((r) => setTimeout(() => r(\"late\"), 80)), 20, \"gave-up\");\nif ((await slow) !== \"gave-up\") throw new Error(\"A promise that misses the deadline settles with the fallback.\");",
+      "hint": "Promise.race([promise, timerPromise]) where the timer resolves with fallback after ms."
+    }
+  ]
+}

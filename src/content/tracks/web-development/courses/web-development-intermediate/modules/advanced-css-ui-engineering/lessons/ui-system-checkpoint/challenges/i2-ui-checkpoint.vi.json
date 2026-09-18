@@ -1,0 +1,18 @@
+{
+  "title": "Kiểm tra kiến thức: Logic Hệ thống UI",
+  "prompt": "Cài đặt ba hàm hệ thống UI:\n\n1. `resolveTokens(scopes)` — `scopes` là mảng các object token được áp theo thứ tự (sớm nhất trước). RETURN một object hợp nhất; phạm vi sau ghi đè phạm vi trước tính theo từng token.\n2. `applyTheme(state, action)` — state là `{ mode: \"light\" | \"dark\" | \"system\", explicit: boolean }`. Các action: `{ type: \"set\", mode }` đặt mode tường minh, `{ type: \"reset\" }` trả về `{ mode: \"system\", explicit: false }`. RETURN trạng thái mới; không bao giờ làm thay đổi input.\n3. `motionPolicy(prefersReducedMotion, userSetting)` — `userSetting` là `\"system\" | \"reduced\" | \"full\"`. RETURN `\"reduced\"` khi người dùng chọn reduced tường minh HOẶC (user chọn system VÀ prefersReducedMotion là true); nếu không thì `\"full\"`.",
+  "tests": [
+    {
+      "name": "phạm vi sau ghi đè theo từng token",
+      "hint": "Reduce với { ...acc, ...scope }."
+    },
+    {
+      "name": "reducer theme set, reset, không đụng vào input",
+      "hint": "Trả về object mới: { ...state, mode: action.mode, explicit: true }."
+    },
+    {
+      "name": "chính sách motion tôn trọng lựa chọn tường minh và hệ thống",
+      "hint": "userSetting === 'reduced' || (userSetting === 'system' && prefersReducedMotion) ? 'reduced' : 'full'."
+    }
+  ]
+}

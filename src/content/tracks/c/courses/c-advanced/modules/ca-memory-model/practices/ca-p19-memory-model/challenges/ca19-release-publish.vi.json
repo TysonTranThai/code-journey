@@ -1,0 +1,18 @@
+{
+  "title": "Publish với Release, quan sát với Acquire",
+  "prompt": "ISO C11. Cài pattern publish: `void publish(...)` store payload vào data (relaxed), rồi store 1 vào flag (release). `int observe(...)` load flag với acquire; khi thấy 1 phải thấy payload — trả giá trị data, hoặc -1 khi flag chưa là 1.",
+  "tests": [
+    {
+      "name": "publish rồi observe",
+      "hint": "Release store lên flag synchronizes-with acquire load: 42 hiển thị."
+    },
+    {
+      "name": "trước khi publish",
+      "hint": "flag vẫn 0 — observer phải báo chưa sẵn sàng bằng -1."
+    },
+    {
+      "name": "payload sống qua republish",
+      "hint": "Publish thứ hai ghi đè; acquire load thấy release mới nhất."
+    }
+  ]
+}

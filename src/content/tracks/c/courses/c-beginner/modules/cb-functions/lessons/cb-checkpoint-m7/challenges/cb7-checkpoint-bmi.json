@@ -1,0 +1,25 @@
+{
+  "id": "cb7-checkpoint-bmi",
+  "title": "BMI Toolkit",
+  "prompt": "Implement `double bmi(double weight_kg, double height_m)` = weight / (height*height), and `const char* bmi_band(double b)`: <18.5 -> \"under\", <25 -> \"normal\", <30 -> \"over\", else \"obese\".",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "formula",
+      "code": "CHECK_NEAR(bmi(70, 1.75), 22.857142857, 1e-6);",
+      "hint": "weight / (height*height)."
+    },
+    {
+      "name": "bands",
+      "code": "CHECK_STR_EQ(bmi_band(17.0), \"under\");\nCHECK_STR_EQ(bmi_band(22.0), \"normal\");\nCHECK_STR_EQ(bmi_band(27.0), \"over\");\nCHECK_STR_EQ(bmi_band(31.0), \"obese\");",
+      "hint": "Band edges: 18.5, 25, 30 — each boundary belongs to the band above it."
+    },
+    {
+      "name": "band edges",
+      "code": "CHECK_STR_EQ(bmi_band(18.5), \"normal\");\nCHECK_STR_EQ(bmi_band(25.0), \"over\");\nCHECK_STR_EQ(bmi_band(30.0), \"obese\");",
+      "hint": "The comparison is strict < on each threshold."
+    }
+  ]
+}

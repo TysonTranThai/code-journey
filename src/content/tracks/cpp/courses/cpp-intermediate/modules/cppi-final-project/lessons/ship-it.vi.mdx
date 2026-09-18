@@ -1,0 +1,21 @@
+Bạn đã dựng chương trình suốt khóa học; module cuối là về việc *hoàn thành*
+một chương trình. "Hoàn thành" có checklist riêng:
+
+1. **Yêu cầu phải kiểm thử được.** Mỗi tính năng có một kịch bản cụ thể:
+   "thêm ISBN trùng sẽ cập nhật số lượng" — không phải "xử lý input".
+2. **Lỗi được thiết kế, không phải ngẫu nhiên.** Mỗi lỗi user có thể gây
+   ra có một kênh được chọn: trả `nullopt`, ném `ValidationError`, hoặc
+   in thông báo. Chọn theo từng trường hợp; ghi rõ qua chữ ký hàm.
+3. **Đường vui phải nhàm chán.** Đọc vòng lặp chính: nếu nhiều hơn
+   parse → điều phối → in, thì trách nhiệm đã rò rỉ lên trên.
+4. **Trạng thái sống sót qua lần khởi động lại.** Serialize khi thay đổi,
+   deserialize khi khởi động; input hỏng suy giảm thành "bắt đầu rỗng"
+   kèm cảnh báo — không bao giờ crash.
+5. **Bạn giải thích được từng dòng.** Buổi review cuối là nói: chỉ vào
+   một dòng và nói nó cài quyết định nào. Nếu không nói được, dòng đó
+   hoặc là thừa, hoặc là chưa thiết kế.
+
+Các bài chấm điểm dưới đây là ba đường nối mà người học hay sai nhất:
+state machine mượn/trả, vòng round-trip lưu trữ, và biên giới kiểm tra
+dữ liệu. Mỗi cái đều nhỏ; mỗi cái đều là nơi các chương trình "gần chạy"
+thực sự gãy.

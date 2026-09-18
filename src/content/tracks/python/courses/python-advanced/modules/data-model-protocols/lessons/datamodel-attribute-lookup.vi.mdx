@@ -1,0 +1,38 @@
+## Mọi thứ đều là tra cứu namespace
+
+Bạn đã biết `obj.x` đọc một attribute. Python nâng cao nghĩa là biết **thứ tự
+chính xác** Python hỏi khi phân giải `obj.x`, và dùng thứ tự đó như một công cụ
+thiết kế.
+
+For `obj.x` on an instance, Python (conceptually) tries, in order:
+
+1. **Data descriptor** on the type (a descriptor defining `__set__` or
+   `__delete__`) — e.g. `property`, most validators.
+2. **Instance dictionary** — `obj.__dict__`.
+3. **Non-data descriptor** on the type (defines only `__get__`) — e.g. plain
+   functions (that is how bound methods are created!), `staticmethod`,
+   `classmethod`, `functools.cached_property` before first call.
+4. **`__getattr__` fallback** (if defined) — called only when normal lookup
+   fails. Great for delegation, dangerous for hiding typos.
+
+Hai hệ quả đáng khắc cốt khắc da:
+
+- Data descriptor **thắng** mục trong `__dict__` của instance. Đó là lý do
+  setter của `property` có thể kiểm tra dữ liệu dù bạn vẫn gán `obj.x = 5` được.
+- Hàm là non-data descriptor; "bound method" bạn gọi được tạo ra **tại thời điểm
+  tra cứu** bởi `__get__`. Không có gì kỳ diệu được lưu trên instance.
+
+```python
+class Loud:
+    def __getattr__(self, name):      # only called on MISS
+        return f"<fallback for {name}>"
+
+loud = Loud()
+loud.real = 1
+print(loud.real)                     # 1  (found normally)
+print(loud.anything)                 # <fallback for anything>
+```
+
+Dùng `vars(obj)` / `obj.__dict__` để xem phía instance, và `type(obj).__mro__`
+để xem phía class. Khi hành vi khiến bạn ngạc nhiên, hãy hỏi: "bước nào trong
+lookup đã tạo ra cái này?"

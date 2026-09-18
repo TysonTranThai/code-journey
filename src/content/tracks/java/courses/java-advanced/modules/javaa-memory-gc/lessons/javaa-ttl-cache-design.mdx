@@ -1,0 +1,21 @@
+A GC-backed TTL cache binds three mechanisms:
+
+- **WeakHashMap** — the collector retires entries whose *keys* are reachable
+  only from the map. (Values must not reach their own keys, or nothing dies.)
+- **A 60-second window** — System.nanoTime() arithmetic; expired by *time*.
+- **A size bound** — eviction by *policy*.
+
+```java
+boolean fresh(CacheKey k) {
+    CacheLine line = store.get(k);
+    if (line == null) return false;
+    if (line.expiry() <= System.nanoTime()) { store.remove(k); return false; }
+    return true;
+}
+```
+
+Each mechanism answers a *different* failure: time expires stale data,
+size bounds memory, weak keys release objects whose owners are gone. Remove
+any one and the cache leaks in that dimension. The checkpoint assembles all
+three — the same reasoning production caches (Caffeine and friends) apply at
+industrial strength.

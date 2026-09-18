@@ -1,0 +1,57 @@
+## Vấn đề dependency
+
+`OrderService` tự `new` `SqlEmailer` của chính nó thì bị hàn chặt vào nó:
+không test được mà không có database, không thay provider được, không nhìn
+thấy nó cần gì. Dependency INVERSION đảo chiều mũi tên: tầng chính sách cao
+(OrderService) định nghĩa abstraction nó cần; tầng chi tiết thấp
+(SqlEmailer) hiện thực nó:
+
+```csharp
+public interface IEmailer { void Send(string to, string body); }
+
+public sealed class OrderService
+{
+    private readonly IEmailer _emailer;
+    public OrderService(IEmailer emailer) => _emailer = emailer;   // injected
+
+    public void Place(Order o)
+    {
+        // ... business rules ...
+        _emailer.Send(o.Email, "order confirmed");
+    }
+}
+```
+
+CONSTRUCTOR INJECTION: dependency đến như tham số constructor, lưu vào
+field readonly. Lớp không thể được dựng trong trạng thái dở dang.
+
+## Lợi ích testability
+
+Một fake thay thế bản thật trong test — không network, không database:
+
+```csharp
+public sealed class FakeEmailer : IEmailer
+{
+    public System.Collections.Generic.List<(string To, string Body)> Sent = new();
+    public void Send(string to, string body) => Sent.Add((to, body));
+}
+
+var fake = new FakeEmailer();
+var svc = new OrderService(fake);
+svc.Place(order);
+// assert fake.Sent có notification
+```
+
+Vì vậy lớp được inject không cần mocking framework cho unit test.
+
+## Cái gì KHÔNG nên inject
+
+Value object, DTO, và tiện ích tĩnh thuần túy giữ nguyên. Inject các hành
+vi có state hoặc I/O: gateway, repository, clock, provider cấu hình. Hai
+tham số constructor + một news-up bên trong vẫn ổn; năm tham số là mùi
+thiết kế — lớp đang làm quá nhiều việc.
+
+## Kiểm tra hiểu biết
+
+- Ai sở hữu interface — consumer hay hiện thực? (Consumer; chi tiết hiện thực.)
+- Vì sao field injected phải readonly? (Chốt lúc dựng — không có instance dở dang.)

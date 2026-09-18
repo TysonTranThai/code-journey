@@ -1,0 +1,44 @@
+`read_text()` loads everything. For a 10 GB export that's a crash. The
+streaming pattern reads **one unit at a time**:
+
+```python
+from pathlib import Path
+
+total = 0
+with Path("huge.log").open(encoding="utf-8") as f:
+    for line in f:                  # file objects iterate lazily, line by line
+        total += len(line)
+```
+
+The file object **is** an iterator (module 3!), so it composes with
+generators into pipelines that never hold more than one line plus your
+accumulators:
+
+```python
+def errors(lines):
+    for line in lines:
+        if line.startswith("ERROR:"):
+            yield line.strip()
+
+def short_errors(lines, limit=50):
+    for line in errors(lines):
+        if len(line) <= limit:
+            yield line
+
+with Path("app.log").open(encoding="utf-8") as f:
+    first_five = [e for e, _ in zip(short_errors(f), range(5))]
+```
+
+## Chunked binary reads
+
+Non-text files (backups, media) stream in **chunks**:
+
+```python
+def copy_in_chunks(src, dst, chunk=64 * 1024):
+    with open(src, "rb") as a, open(dst, "wb") as b:
+        while block := a.read(chunk):
+            b.write(block)
+```
+
+The walrus `while block := read()` idiom reads until the empty bytes signal
+the end. Memory stays at one chunk, no matter the file size.

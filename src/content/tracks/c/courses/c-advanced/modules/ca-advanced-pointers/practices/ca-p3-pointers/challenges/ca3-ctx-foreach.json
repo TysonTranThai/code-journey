@@ -1,0 +1,21 @@
+{
+  "id": "ca3-ctx-foreach",
+  "title": "Sum Through a Callback",
+  "prompt": "Implement `void foreach_int(const int *a, size_t n, void (*fn)(int v, void *ctx), void *ctx)` calling fn once per element, and use it to implement `long long sum_with_ctx(const int *a, size_t n)` which totals the array through a stack-allocated context struct — no globals. The ctx pattern is the point.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "sums correctly",
+      "code": "int v[5] = {1, -2, 3, -4, 5};\nCHECK_EQ(sum_with_ctx(v, 5), 3);",
+      "hint": "The ctx accumulator collects every callback visit; 1-2+3-4+5 = 3."
+    },
+    {
+      "name": "empty is zero",
+      "code": "CHECK_EQ(sum_with_ctx(0, 0), 0);",
+      "hint": "n = 0 must survive: zero visits, ctx total stays 0."
+    }
+  ],
+  "level": "combination"
+}

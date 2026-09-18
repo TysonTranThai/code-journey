@@ -1,0 +1,21 @@
+{
+  "id": "pi9-client-pages",
+  "title": "Pagination Loop",
+  "prompt": "Implement collect(fetch) where fetch(page) returns {'items': [...], 'has_more': bool}. Loop pages from 1, extending items, stopping when has_more is False or page exceeds 1000 (safety bound). Return the concatenated list.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "def collect(fetch):\n    pass\n",
+  "tests": [
+    {
+      "name": "collects all pages",
+      "code": "data = {1: {'items': [1, 2], 'has_more': True}, 2: {'items': [3], 'has_more': False}}\nassert collect(lambda p: data[p]) == [1, 2, 3]",
+      "hint": "Loop until has_more is falsy."
+    },
+    {
+      "name": "safety bound stops runaway servers",
+      "code": "assert collect(lambda p: {'items': [p], 'has_more': True}) == [p for p in range(1, 1001)]",
+      "hint": "After 1000 pages, stop even if has_more never turns False."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "cpp16-check-pipeline",
+  "title": "The Pipeline Refactor",
+  "prompt": "Implement the decomposed pipeline for expense lines \"name,amount\": `parse_amount(line)` (double; 0.0 on missing/invalid), `is_valid(line)` (name non-empty AND amount > 0), and `pipeline_total(lines)` (sum of valid amounts). Empty list → 0.0.",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <vector>\n\ndouble parse_amount(const std::string& line) {\n    // TODO\n}\nbool is_valid(const std::string& line) {\n    // TODO\n}\ndouble pipeline_total(const std::vector<std::string>& lines) {\n    // TODO\n}",
+  "tests": [
+    {
+      "name": "parse",
+      "code": "CHECK_NEAR(parse_amount(std::string{\"coffee,3.5\"}), 3.5, 0.001);",
+      "hint": "Second field as double."
+    },
+    {
+      "name": "invalid amount",
+      "code": "CHECK(!is_valid(std::string{\"coffee,0\"}));",
+      "hint": "Amount must be > 0."
+    },
+    {
+      "name": "invalid name",
+      "code": "CHECK(!is_valid(std::string{\",3.5\"}));",
+      "hint": "Empty name is invalid even with a good amount."
+    },
+    {
+      "name": "total skips invalid",
+      "code": "CHECK_NEAR(pipeline_total({std::string{\"a,2\"}, std::string{\"b,0\"}, std::string{\"c,5\"}}), 7.0, 0.001);",
+      "hint": "Only valid lines contribute."
+    }
+  ],
+  "level": "real-world"
+}

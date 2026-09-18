@@ -1,0 +1,21 @@
+{
+  "id": "pi3-ctx-tracker",
+  "title": "Session Tracker",
+  "prompt": "Create a class Session with __enter__ returning the string 'open' and appending 'open' to a module-level list EVENTS; __exit__ appends 'closed' and returns False. After a with block, EVENTS must be ['open', 'closed'] even if the body raises.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "EVENTS = []\n\nclass Session:\n    pass\n",
+  "tests": [
+    {
+      "name": "normal flow",
+      "code": "global EVENTS\nEVENTS.clear()\nwith Session() as s:\n    assert s == 'open'\nassert EVENTS == ['open', 'closed']",
+      "hint": "__enter__ appends and returns 'open'; __exit__ appends 'closed'."
+    },
+    {
+      "name": "cleanup on exception",
+      "code": "global EVENTS\nEVENTS.clear()\nraised = False\ntry:\n    with Session():\n        raise RuntimeError('boom')\nexcept RuntimeError:\n    raised = True\nassert raised, '__exit__ must not swallow the exception (return falsy)'\nassert EVENTS == ['open', 'closed']\n",
+      "hint": "__exit__ must run even when the body raises — return False so the error still propagates."
+    }
+  ],
+  "level": "guided"
+}

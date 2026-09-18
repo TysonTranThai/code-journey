@@ -1,0 +1,20 @@
+{
+  "id": "i2-optimistic-ui",
+  "title": "Optimistic Update",
+  "prompt": "Write `optimisticApply(state, action)` — state is { items, pending: [] }. For action { type: \"add\", item }: append item AND record it in pending. For { type: \"confirm\", id }: remove id from pending (it's now real). For { type: \"rollback\", id }: remove the pending item from items too. Return the new state (non-mutating). Optimistic UI = show first, reconcile later.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function optimisticApply(state, action) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "add, confirm, rollback",
+      "code": "const fn = new Function(code + \"\\nreturn { optimisticApply };\");\nconst { optimisticApply } = fn();\nlet s = { items: [], pending: [] };\ns = optimisticApply(s, { type: \"add\", item: { id: \"t1\", title: \"A\" } });\nif (s.items.length !== 1 || s.pending.length !== 1) throw new Error(\"Shown immediately, marked pending.\");\ns = optimisticApply(s, { type: \"confirm\", id: \"t1\" });\nif (s.pending.length !== 0 || s.items.length !== 1) throw new Error(\"Confirmed is real.\");\ns = optimisticApply(s, { type: \"add\", item: { id: \"t2\", title: \"B\" } });\ns = optimisticApply(s, { type: \"rollback\", id: \"t2\" });\nif (s.items.some((i) => i.id === \"t2\")) throw new Error(\"Rolled back means gone.\");\n",
+      "hint": "Three action types; each adjusts items and/or pending."
+    },
+    {
+      "name": "non-mutation discipline",
+      "code": "const fn = new Function(code + \"\\nreturn { optimisticApply };\");\nconst { optimisticApply } = fn();\nconst original = { items: [{ id: \"t1\" }], pending: [] };\nconst out = optimisticApply(original, { type: \"add\", item: { id: \"t2\" } });\nif (original.items.length !== 1) throw new Error(\"Original untouched.\");\nif (out.items.length !== 2) throw new Error(\"New state returned.\");\n",
+      "hint": "Spread arrays; never push on the input."
+    }
+  ]
+}

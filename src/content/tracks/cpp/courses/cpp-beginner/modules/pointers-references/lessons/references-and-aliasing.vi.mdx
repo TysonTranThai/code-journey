@@ -1,0 +1,32 @@
+## Tham chiếu là một bí danh
+
+```cpp
+int score = 90;
+int& alias = score;      // alias CHÍNH LÀ score — không phải bản sao
+alias = 95;
+CHECK(score == 95);      // thay đổi qua bí danh
+```
+
+Gán một tham chiếu không ghi bộ nhớ và không gọi constructor: nó chỉ là một *tên khác* cho đối tượng đã tồn tại. Các quy tắc theo sau:
+
+- Tham chiếu phải được khởi tạo ngay khi khai báo, và không bao giờ trỏ sang đối tượng khác sau đó (không gán lại).
+- `sizeof(alias)` là kích thước của đối tượng được trỏ, `&alias` lấy địa chỉ của đối tượng đó — ngôn ngữ giả vờ như bí danh không tồn tại.
+- Không có tham chiếu đến "không gì cả": tham chiếu sinh ra đã trỏ vào một đối tượng (treo chỉ xảy ra qua bug — bên dưới).
+
+## Các mẫu API (nhắc lại với răng sắc hơn)
+
+```cpp
+void scale_all(std::vector<int>& v, int k);            // in-out: sẽ sửa
+int  total(const std::vector<int>& v);                 // in: dữ liệu lớn, chỉ đọc
+void bump(int& n);                                     // out: kết quả qua tham số
+int  twice(int n);                                     // giá trị nhỏ: truyền thường
+```
+
+## Một nguy hiểm duy nhất: treo (dangling)
+
+```cpp
+const std::string& name = make_greeting();   // nếu make_greeting trả về THEO GIÁ TRỊ...
+// ...đối tượng tạm chết khi kết thúc câu lệnh; trong nhiều trường hợp thật, name bị treo
+```
+
+Tham chiếu hứa *không sở hữu và không kéo dài vòng đời* (trường hợp ngoại lệ: đối tượng tạm được gán trực tiếp trong initializer — và dựa vào ngoại lệ đó là chuyện nâng cao). Quy tắc người mới: **tham chiếu không được sống lâu hơn đối tượng mà nó gọi tên.** Khi dữ liệu phải sống sót qua scope đã tạo ra nó, đó là sở hữu — smart pointer ở module 12, không phải tham chiếu.

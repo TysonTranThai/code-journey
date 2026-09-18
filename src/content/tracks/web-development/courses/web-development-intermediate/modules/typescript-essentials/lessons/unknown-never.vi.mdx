@@ -1,0 +1,33 @@
+## any: công tắc ngắt
+
+`any` từ chối kiểm tra — gán được với mọi thứ và mọi thứ gán được vào nó. Nó
+làm tắt lỗi hôm nay và tái xuất crash runtime ngày mai. Mỗi `any` trong codebase
+là một lỗ hổng trong hợp đồng.
+
+## unknown: phiên bản trung thực
+
+`unknown` cũng nhận mọi thứ — nhưng bạn phải thu hẹp trước khi dùng:
+
+```ts
+function parse(input: unknown) {
+  // input.foo            ✗ — unknown chưa dùng được
+  if (typeof input === "string") return input.trim(); // ✓ đã thu hẹp
+  if (isUser(input)) return renderUser(input); // ✓ guard
+  throw new Error("Unexpected payload");
+}
+```
+
+Nguyên tắc: `unknown` cho bất cứ thứ gì vượt qua biên giới bạn không kiểm soát
+— phản hồi mạng, JSON.parse, localStorage, callback của bên thứ ba.
+
+## never: kiểu không thể
+
+`never` là kiểu của những giá trị không thể tồn tại: hàm luôn luôn throw, hoặc
+phép kiểm tra đầy đủ trong bài union. Khi compiler tính ra "không còn trường
+hợp nào", kết quả là `never` — việc gán nó ép phép kiểm tra xảy ra.
+
+## Mỗi loại thuộc về đâu
+
+- Tham số mà bạn thật sự nhận mọi thứ: `unknown` + thu hẹp.
+- Giá trị bạn dựng mà không thể xảy ra: thiết kế lại cho hết chuyện đó, hoặc `never`.
+- `any`: chỉ ở những điểm nối legacy chưa có kiểu, kèm chú thích và kế hoạch bỏ nó.

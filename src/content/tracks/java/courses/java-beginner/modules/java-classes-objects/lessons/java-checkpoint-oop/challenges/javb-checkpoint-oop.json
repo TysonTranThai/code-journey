@@ -1,0 +1,25 @@
+{
+  "id": "javb-checkpoint-oop",
+  "title": "Checkpoint: The Point Class",
+  "prompt": "\nThe Point class — a coordinate with rules.\n\nInside `Solution`, write `static class Point` with:\n\n1. `private final int x; private final int y;` — an **immutable** point.\n2. A constructor taking `(int x, int y)`.\n3. Getters `getX()`, `getY()`.\n4. `public Point translate(int dx, int dy)` — returns a NEW Point moved by\n   the delta (the original must be untouched — immutability!).\n5. `public double distanceTo(Point other)` — Euclidean distance\n   (`Math.hypot(dx, dy)` is fine).\n6. `static Point origin()` — a factory returning `new Point(0, 0)`.\n7. `public boolean equalsPoint(Point other)` — same x AND same y. (The\n   real `equals`/`hashCode` contract arrives in Module 9; this method-side\n   version keeps the focus on fields.)\n\nImmutability is the heart of this checkpoint: after\n`Point p2 = p1.translate(5, 0);`, `p1` must still have its original\ncoordinates, and `p2` must be a different object with the new ones.\n",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Point {\n        public Point(int x, int y) {\n        }\n\n        public int getX() { return 0; }\n        public int getY() { return 0; }\n\n        public Point translate(int dx, int dy) {\n            return this;\n        }\n\n        public double distanceTo(Point other) {\n            return 0;\n        }\n\n        public boolean equalsPoint(Point other) {\n            return false;\n        }\n    }\n\n    public static Point origin() {\n        return null;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "construction and getters",
+      "code": "\nSolution.Point p = new Solution.Point(3, 4);\nCjTestBase.checkEq(p.getX(), 3, \"x\");\nCjTestBase.checkEq(p.getY(), 4, \"y\");\nSolution.Point o = Solution.origin();\nCjTestBase.checkEq(o.getX(), 0, \"origin x\");\n",
+      "hint": "Constructor stores both coordinates; origin() is (0,0)."
+    },
+    {
+      "name": "translate returns a NEW point",
+      "code": "\nSolution.Point p1 = new Solution.Point(2, 2);\nSolution.Point p2 = p1.translate(5, -1);\nCjTestBase.checkEq(p2.getX(), 7, \"moved x\");\nCjTestBase.checkEq(p2.getY(), 1, \"moved y\");\nCjTestBase.checkEq(p1.getX(), 2, \"original x untouched\");\nCjTestBase.checkEq(p1.getY(), 2, \"original y untouched\");\n",
+      "hint": "The original must keep its own coordinates — return a new Point."
+    },
+    {
+      "name": "distance and equality",
+      "code": "\nSolution.Point a = new Solution.Point(0, 0);\nSolution.Point b = new Solution.Point(3, 4);\nCjTestBase.checkNear(a.distanceTo(b), 5.0, 1e-9, \"3-4-5 triangle\");\nCjTestBase.checkTrue(new Solution.Point(1, 2).equalsPoint(new Solution.Point(1, 2)), \"same point\");\nCjTestBase.checkTrue(!new Solution.Point(1, 2).equalsPoint(new Solution.Point(2, 1)), \"different point\");\n",
+      "hint": "Distance is Euclidean; equality needs both coordinates."
+    }
+  ]
+}

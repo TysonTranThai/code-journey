@@ -1,0 +1,16 @@
+## Ship là một động từ bạn đã biết
+
+Mọi thứ trong khóa học hội tụ ở bước cuối: build pipeline bạn đã hiểu, biến môi trường bạn từ chối hard-code, health check mà API của bạn trả lời, log có cấu trúc mà bạn sẽ grep lúc 11 giờ đêm, migration chạy trước code, rollback thực hiện được mà không kịch tính. Bài cuối của capstone không nói về ServiceDesk — nó nói về _bàn giao ServiceDesk_.
+
+Checklist ship của bạn, theo thứ tự:
+
+1. **Build & config** — artifact build được từ checkout sạch; mọi khác biệt giữa môi trường nằm trong env vars; thiếu biến thì fail ngay khi khởi động, chứ không phải ở request đầu tiên.
+2. **Cơ sở dữ liệu** — thay đổi schema là các script migration trong version control, có thứ tự, chạy lại được; không bao giờ sửa tay vào database đang chạy.
+3. **Triển khai & kiểm chứng** — deploy, rồi gọi `GET /healthz` trước khi tuyên bố thắng lợi; xem những request đầu tiên trong log.
+4. **Tài liệu** — README nêu ứng dụng là gì, cách chạy, từng env var nghĩa là gì, migration được áp thế nào. Viết cho người đồng nghiệp vào làm thứ Hai.
+
+## Bản kiểm toán bạn được chấm
+
+Phần xác thực capstone yêu cầu bạn khai báo những gì bạn thực sự xây: mô hình phân quyền, các lớp validation, hợp đồng lỗi của API, lần kiểm tra accessibility, chiến lược migration. Khai sai là trượt — grader hỏi những câu sắc bén mà chỉ một bản hiện thực thật mới trả lời được. Nếu bạn chưa làm chiến lược migration, bạn sẽ không trả lời nổi. Đó chính là điểm: **phần xác thực không thể bị đoán mò qua được.**
+
+Khi vượt qua nó, câu mà cả khóa học hướng tới sẽ thành sự thật: _Tôi có thể xây và kỹ thuật hóa một ứng dụng web thật, chứ không chỉ theo tutorial._

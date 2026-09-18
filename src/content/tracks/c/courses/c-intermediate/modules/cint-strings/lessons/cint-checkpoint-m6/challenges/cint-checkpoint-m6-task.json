@@ -1,0 +1,15 @@
+{
+  "id": "cint-checkpoint-m6-task",
+  "title": "CSV Line Validator & Parser",
+  "prompt": "Implement a one-line CSV parser for the format `name,age,score`\n(name: 1..15 non-comma chars; age: 0..130; score: 0..100). The boilerplate\ndeclares:\n\n```c\n/* parses exactly three fields. Returns 0 and fills outputs on success.\n   Returns -1 on ANY deviation: wrong field count, empty name, name too\n   long, non-numeric or out-of-range age/score, trailing junk.\n   line is NOT modified. */\nint csv_parse(const char *line, char name[16], int *age, int *score);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\nint csv_parse(const char *line, char name[16], int *age, int *score);\n",
+  "tests": [
+    {
+      "name": "accept the well-formed, reject the rest",
+      "code": "\nchar name[16];\nint age, score;\nCHECK_EQ(csv_parse(\"ann,30,95\", name, &age, &score), 0);\nCHECK(!strcmp(name, \"ann\"));\nCHECK_EQ(age, 30);\nCHECK_EQ(score, 95);\nCHECK_EQ(csv_parse(\"bob,0,0\", name, &age, &score), 0);\nCHECK(!strcmp(name, \"bob\")); CHECK_EQ(age, 0); CHECK_EQ(score, 0);\nCHECK_EQ(csv_parse(\"cat,130,100\", name, &age, &score), 0);\nCHECK_EQ(csv_parse(\"ann,30\", name, &age, &score), -1);        /* too few */\nCHECK_EQ(csv_parse(\"ann,30,95,extra\", name, &age, &score), -1);\nCHECK_EQ(csv_parse(\",30,95\", name, &age, &score), -1);        /* empty name */\nCHECK_EQ(csv_parse(\"0123456789abcdefg,30,95\", name, &age, &score), -1); /* 17 chars */\nCHECK_EQ(csv_parse(\"ann,abc,95\", name, &age, &score), -1);\nCHECK_EQ(csv_parse(\"ann,131,95\", name, &age, &score), -1);    /* age range */\nCHECK_EQ(csv_parse(\"ann,30,101\", name, &age, &score), -1);    /* score range */\nCHECK_EQ(csv_parse(\"ann,30.5,95\", name, &age, &score), -1);\nCHECK_EQ(csv_parse(NULL, name, &age, &score), -1);\n",
+      "hint": "Two passes: split into exactly 3 spans, then validate each. Reuse your parse discipline digit by digit."
+    }
+  ]
+}

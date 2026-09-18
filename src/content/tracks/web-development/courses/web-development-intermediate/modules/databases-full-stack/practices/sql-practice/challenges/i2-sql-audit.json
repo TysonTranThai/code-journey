@@ -1,0 +1,20 @@
+{
+  "id": "i2-sql-audit",
+  "title": "SQL Safety Auditor",
+  "prompt": "Write `auditStatement(sql)` — return \"unsafe\" when the statement is an UPDATE/DELETE without WHERE, or builds SQL via string concatenation (contains `\" + ` or backtick-interpolation `${`), or contains \"= NULL\". Return \"parameterized\" when it contains \"$1\" (or \"?\" placeholder) with a WHERE. Otherwise \"ok\".",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function auditStatement(sql) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "flags the dangerous statements",
+      "code": "const fn = new Function(code + \"\\nreturn { auditStatement };\");\nconst { auditStatement } = fn();\nif (auditStatement(\"UPDATE tasks SET done = true;\") !== \"unsafe\") throw new Error(\"No WHERE on UPDATE.\");\nif (auditStatement('DELETE FROM tasks WHERE id = ' + '\" + id') !== \"unsafe\") throw new Error(\"Concatenation.\");\nif (auditStatement(\"SELECT * FROM t WHERE x = NULL\") !== \"unsafe\") throw new Error(\"= NULL is always wrong.\");\n",
+      "hint": "Three independent danger patterns; check them in order."
+    },
+    {
+      "name": "parameterized is the gold standard",
+      "code": "const fn = new Function(code + \"\\nreturn { auditStatement };\");\nconst { auditStatement } = fn();\nif (auditStatement(\"SELECT * FROM tasks WHERE id = $1\") !== \"parameterized\") throw new Error(\"Placeholder detected.\");\nif (auditStatement(\"SELECT title FROM tasks WHERE author_id = 7\") !== \"ok\") throw new Error(\"Plain safe select.\");\n",
+      "hint": "The parameterized check needs a placeholder AND a WHERE."
+    }
+  ]
+}

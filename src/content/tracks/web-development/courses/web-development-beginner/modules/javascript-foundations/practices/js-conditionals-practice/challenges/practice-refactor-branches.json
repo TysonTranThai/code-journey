@@ -1,0 +1,20 @@
+{
+  "id": "practice-refactor-branches",
+  "title": "Debug: The Dead Branch",
+  "prompt": "This classifier has a bug: the second branch can never run. Reorder or fix the conditions so each score range reports correctly — under 60 `\"cold\"`, 60–79 `\"warm\"`, 80+ `\"hot\"` for `function temp(score)`.\n\nRules:\n- All three results reachable.\n- Keep it as chained if / else if / else.",
+  "difficulty": "beginner",
+  "level": "debugging",
+  "boilerplate": "function temp(score) {\n  if (score >= 60) {\n    return \"warm\";\n  } else if (score >= 80) {\n    return \"hot\";\n  } else {\n    return \"cold\";\n  }\n}\nconsole.log(temp(85));\n",
+  "tests": [
+    {
+      "name": "all three ranges reachable",
+      "code": "const fn = new Function(code + \"\\nreturn temp;\");\nconst t = fn();\nconst out = new Set([t(85), t(70), t(30)]);\nif (!out.has(\"hot\")) throw new Error(\"85 must return 'hot' — it currently can't.\");\nif (t(70) !== \"warm\") throw new Error(\"70 must return 'warm'.\");\nif (t(30) !== \"cold\") throw new Error(\"30 must return 'cold'.\");",
+      "hint": "Check the highest threshold FIRST: 80+ hot, then 60+ warm, else cold."
+    },
+    {
+      "name": "still chained conditionals",
+      "code": "if (!/else\\s+if/i.test(code)) {\n  throw new Error(\"Keep the if / else if / else chain — reordering, not rewriting.\");\n}",
+      "hint": "Fix the order of the conditions; the structure stays a chain."
+    }
+  ]
+}

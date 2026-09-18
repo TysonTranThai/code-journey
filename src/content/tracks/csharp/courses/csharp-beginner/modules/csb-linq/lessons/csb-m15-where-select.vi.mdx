@@ -1,0 +1,28 @@
+## Lọc với Where
+
+```csharp
+var nums = new List<int> { 1, 2, 3, 4, 5, 6 };
+var evens = nums.Where(n => n % 2 == 0);   // 2, 4, 6
+```
+
+`Where` nhận một **predicate** — hàm từ phần tử sang bool — và trả các phần tử mà nó trả true. Nguồn không đổi; kết quả là một *truy vấn* trên nguồn đó.
+
+## Chiếu với Select
+
+```csharp
+var names = new[] { "an", "binh" };
+var upper = names.Select(s => s.ToUpperInvariant());   // "AN", "BINH"
+var lengths = names.Select(s => s.Length);             // 2, 4
+```
+
+`Select` biến đổi từng phần tử thành thứ khác — vào bao nhiêu ra bấy nhiêu, nhưng hình dạng mới. Kết hợp lại:
+
+```csharp
+var longUpper = names.Where(s => s.Length > 2).Select(s => s.ToUpperInvariant());
+```
+
+Đọc chuỗi từ trái sang phải: lọc trước, biến đổi sau. Chuỗi hóa là phong cách LINQ hằng ngày; đầu ra của mỗi mắt xích là đầu vào của mắt xích kế.
+
+## LINQ thật ra là gì
+
+Không phép màu: `Where`/`Select` là các extension method bình thường trên `IEnumerable<T>` từ `System.Linq`. Lambda bạn truyền là một delegate chạy trên từng phần tử. Thực-thi-hoãn là bất ngờ duy nhất — ở bài thứ ba.

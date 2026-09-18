@@ -1,0 +1,49 @@
+A binary search tree keeps *sorted order alive through insertion*: left
+subtree < node < right subtree. Lookup, insert, and erase are O(h) where h
+is the tree height — O(log n) when the tree is balanced, O(n) when it
+degenerates into a list.
+
+```cpp
+struct TreeNode {
+    int value;
+    TreeNode* left = nullptr;
+    TreeNode* right = nullptr;
+};
+
+bool contains(const TreeNode* n, int v) {
+    if (!n) return false;
+    if (v == n->value) return true;
+    return v < n->value ? contains(n->left, v)
+                        : contains(n->right, v);
+}
+
+TreeNode* insert(TreeNode* n, int v) {
+    if (!n) return new TreeNode{v};
+    if (v < n->value) n->left = insert(n->left, v);
+    else if (v > n->value) n->right = insert(n->right, v);
+    return n;   // duplicates are ignored
+}
+```
+
+In-order traversal (left, node, right) visits a BST in sorted order —
+the property that makes it a *sorted* container.
+
+Graphs generalize: nodes + edges, no ordering promise. Breadth-first
+search (BFS, queue) explores by distance; depth-first search (DFS, stack
+or recursion) explores by depth. Their shapes in code:
+
+```cpp
+// BFS skeleton over an adjacency list
+std::queue<int> q;
+q.push(start);
+visited[start] = true;
+while (!q.empty()) {
+    int cur = q.front(); q.pop();
+    for (int next : adj[cur]) {
+        if (!visited[next]) { visited[next] = true; q.push(next); }
+    }
+}
+```
+
+`std::map` is a balanced BST in disguise — after this lesson you know
+what it is doing under its interface.

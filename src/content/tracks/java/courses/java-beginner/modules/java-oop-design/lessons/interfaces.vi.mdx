@@ -1,0 +1,56 @@
+**Interface** là hợp đồng thuần: chữ ký phương thức (và hằng số) không có
+trường và theo truyền thống không có thân. Một class *implements* interface
+và hứa cung cấp mọi phương thức:
+
+```java
+interface Describable {
+    String describe();          // mặc định public và abstract
+}
+
+interface Priceable {
+    double price();
+}
+
+class Book implements Describable, Priceable {
+    private final String title;
+    private final double cost;
+
+    Book(String title, double cost) { this.title = title; this.cost = cost; }
+
+    @Override
+    public String describe() { return "Book: " + title; }
+
+    @Override
+    public double price() { return cost; }
+}
+```
+
+**Một class có thể implement NHIỀU interface** — đó là lối thoát khỏi việc
+chỉ được kế thừa một class. Interface phát biểu *năng lực* ("mô tả được",
+"có giá"); kế thừa phát biểu *danh tính* ("là Vehicle"). Thiết kế hiện đại
+nghiêng về năng lực: nhận `Describable`, và phương thức của bạn chạy với
+Book, Movie, và mọi thứ người dùng sẽ thêm sau này.
+
+Những interface đã có trong đời bạn: `Comparable` (có `compareTo` — sorting),
+`Runnable` (có `run` — thread), `Iterable` (có `iterator` — for-each chạy
+trên mọi thứ implement nó).
+
+**Đa hình chạy qua interface** y như qua superclass:
+
+```java
+Describable[] items = { new Book("Dune", 12.5) };
+for (Describable d : items) {
+    System.out.println(d.describe());
+}
+```
+
+Từ Java 8, interface còn có phương thức `default` (có thân, implementor dùng
+ngay) và phương thức `static` — tiện cho việc tiến hóa hợp đồng mà không làm
+gãy mọi implementor. Người mới vẫn nên nhìn interface như "một danh sách lời
+hứa"; default là công cụ di trú.
+
+**Chọn giữa chúng:** extends cho danh tính và trạng thái chung; implements
+cho năng lực chung. Không chắc thì chọn interface — chi phí thấp hơn và
+lời hứa ít hơn.
+
+**Tiếp theo:** composition, con ngựa thầm lặng kéo mọi thiết kế.

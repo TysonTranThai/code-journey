@@ -1,0 +1,13 @@
+## Checkpoint — hardened fan-out
+
+Combine the module: `async def fetch_all(jobs)` runs zero-arg async jobs under
+a per-job timeout of 0.05s inside ONE TaskGroup:
+
+- success → `(index, value)` in that slot
+- job exceeding 0.05s → `(index, 'timeout:0.05')`
+- a job raising a REAL error → fetch_all still raises (only timeouts are
+  converted)
+
+The wrong-probe implements this with a blanket `except BaseException` — which
+also eats CancelledError and masks real errors. Your cleanup discipline is the
+graded skill.

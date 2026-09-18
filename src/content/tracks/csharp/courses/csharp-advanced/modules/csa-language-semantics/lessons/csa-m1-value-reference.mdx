@@ -1,0 +1,28 @@
+## Value semantics vs reference semantics
+
+A **value type** variable *is* the data; a **reference type** variable is an
+address *to* the data. Everything else follows:
+
+```csharp
+var a = new Counter();   // struct
+var b = a;               // full copy — two independent objects
+b.Increment();
+// a unchanged
+
+var s1 = new Service();  // class
+var s2 = s1;             // address copy — ONE object, two names
+s2.Tick();
+// s1 observed the tick
+```
+
+The trap is not the definition — it is the **blast radius**. Copies stay
+local: mutation can't leak. References spread: every alias can observe every
+mutation, which is why shared mutable references are the root cause of most
+"impossible state" bugs. Equality follows the same split: value types
+compare contents (`a.Equals(b)`), reference types compare identity unless
+the author overrode `Equals`.
+
+Decision rule for modeling: default to **immutable value or record** when
+the thing is data (`Money`, `Coordinates`); use a class when the thing has
+**identity** that outlives its values (`UserSession`, `OrderPipeline`) —
+identity, not size, is the real axis.

@@ -1,0 +1,53 @@
+Custom properties (biến CSS) là xương sống của CSS dễ bảo trì: **token** có thể
+cascade, kế thừa, và đổi giá trị theo từng phạm vi — điều biến của preprocessor
+chưa bao giờ làm được.
+
+## Token
+
+```css
+:root {
+  --color-bg: #ffffff;
+  --color-fg: #111827;
+  --color-accent: #2563eb;
+  --radius: 8px;
+  --space-1: 0.25rem;
+}
+.card {
+  background: var(--color-bg);
+  border-radius: var(--radius);
+  padding: calc(4 * var(--space-1));
+}
+```
+
+`var()` đọc _tại thời điểm sử dụng_ qua cascade; `calc()` tính chiều dài từ
+token. Đổi `--color-bg` trên bất kỳ cây con nào và mọi chỗ dùng nó cập nhật
+theo.
+
+## Theming chỉ là khai báo lại
+
+Nhờ token cascade, một theme chỉ là một phạm vi khai báo lại chúng:
+
+```css
+[data-theme="dark"] {
+  --color-bg: #0b1120;
+  --color-fg: #e2e8f0;
+}
+```
+
+Mọi component dùng `var(--color-bg)` giờ biết dark mode mà không cần sửa gì.
+Hãy tôn trọng tùy chọn hệ thống làm mặc định và cho lựa chọn tường minh ghi đè:
+
+```css
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* token tối */
+  }
+}
+```
+
+## Fallback và invalid at computed-value time
+
+`var(--missing, #333)` cung cấp fallback. Một thuộc tính tham chiếu var chưa
+định nghĩa sẽ trở thành _invalid at computed-value time_ — nó rơi về giá trị
+kế thừa hoặc mặc định, hiếm khi là điều bạn muốn. Hãy định nghĩa token ở
+`:root` và coi chúng như một API.

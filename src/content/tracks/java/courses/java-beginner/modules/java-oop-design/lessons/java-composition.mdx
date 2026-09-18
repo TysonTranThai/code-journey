@@ -1,0 +1,41 @@
+**Composition** means building complex behavior from simpler objects held
+as fields — "has-a" instead of "is-a".
+
+```java
+class Engine {
+    void start() { System.out.println("vroom"); }
+}
+
+class Car {
+    private final Engine engine = new Engine();   // Car HAS-AN Engine
+
+    void start() { engine.start(); }              // delegation
+}
+```
+
+Why prefer it so often? Three reasons professionals reach for composition:
+
+1. **Flexibility.** Swapping `Engine` for `ElectricEngine` needs no change
+   to Car's structure — and Car never inherits Engine's baggage.
+2. **No coupling to a single parent.** Inheritance locks you into one `extends`;
+   composition composes many collaborators.
+3. **Testability.** A Car built with an injected Engine can run with a fake
+   engine in tests — Module 13 leans on exactly this.
+
+**Delegation** is composition's verb: a method forwards the real work to a
+field. The forwarding is not waste — it defines Car's public contract while
+Engine stays swappable.
+
+**The design heuristic, in one paragraph:** model what a thing IS with
+inheritance (rare, stable hierarchies like Shape); model what a thing HAS
+or USES with composition (most of the time: engines, repositories,
+formatters, connections). Inheritance used without a true is-a makes
+subclass behavior surprising; composition keeps every object small and
+replaceable. When you finish this module you will have written both — and
+felt composition win more often.
+
+**AI angle:** generated code over-uses inheritance ("extend BaseService to
+add a flag"). Treat that as a review trigger: ask "is this a genuine is-a?"
+before accepting it.
+
+**Next:** practice.

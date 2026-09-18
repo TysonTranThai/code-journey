@@ -1,0 +1,31 @@
+{
+  "id": "javi-p5-teeing-stats",
+  "title": "Two Stats, One Pass",
+  "prompt": "Use `Collectors.teeing` (or an equivalent single-pass reduction) on a\nlist of integers:\n- `static double average(List<Integer> xs)` — arithmetic mean; empty\n  throws IllegalArgumentException.\n- `static Map<String, Integer> rangeStats(List<Integer> xs)` — returns\n  `{\"min\": ..., \"max\": ...}` computed in one teeing pass.\n- `static String classify(List<Integer> xs)` — stream composition drill:\n  map each x to x*2, keep only values > 10, join with commas; return the\n  joined string (empty list → empty string).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\nimport java.util.stream.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "average",
+      "code": "\ncheckNear(Solution.average(List.of(2, 4, 6)), 4.0, 1e-9, \"mean\");\n",
+      "hint": "Sum/count as double."
+    },
+    {
+      "name": "min/max in one pass",
+      "code": "\ncheckEq(Solution.rangeStats(List.of(3, 9, 1)), Map.of(\"min\", 1, \"max\", 9), \"range\");\n",
+      "hint": "teeing(min, max, Map::entry) or equivalent."
+    },
+    {
+      "name": "classify composition",
+      "code": "\ncheckEq(Solution.classify(List.of(3, 6, 9, 12)), \"12,18,24\", \"doubled, filtered, joined\");\n",
+      "hint": "3*2=6 (dropped), 6*2=12, 9*2=18, 12*2=24 — join in stream order."
+    },
+    {
+      "name": "average rejects empty",
+      "code": "\ntry { Solution.average(List.of()); checkTrue(false, \"must throw\"); }\ncatch (IllegalArgumentException e) { checkTrue(true, \"threw\"); }\n",
+      "hint": "Empty list throws IllegalArgumentException."
+    }
+  ],
+  "level": "independent"
+}

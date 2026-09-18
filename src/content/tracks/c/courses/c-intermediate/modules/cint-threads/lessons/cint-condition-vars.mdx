@@ -1,0 +1,42 @@
+## Waiting politely
+
+A thread that needs data has two bad options: spin on a flag (burns
+CPU) or sleep blindly (wastes latency). The third option is the
+**condition variable** — a wait channel paired with a mutex:
+
+```c
+/* consumer: */
+mtx_lock(&m);
+while (!data_ready)               /* WHILE, not if — see below */
+    cnd_wait(&cv, &m);            /* atomically: unlock m + sleep;
+                                     re-lock m before returning */
+use(data);
+mtx_unlock(&m);
+
+/* producer: */
+mtx_lock(&m);
+data_ready = 1;
+cnd_signal(&cv);                  /* wake ONE waiter */
+mtx_unlock(&m);
+```
+
+`cnd_wait` releases the mutex while sleeping and re-acquires it before
+returning — that pairing is why the predicate (`data_ready`) and the
+signal both happen under the same mutex.
+
+## The while-loop is not style
+
+`cnd_signal` may wake a thread even when the predicate is false
+(*spurious wakeup* — permitted by the standard), and between signal and
+wake another consumer may have eaten the data. The `while` re-checks
+the predicate after every wake; an `if` proceeds on a lie. This is the
+single most-tested line in concurrency teaching — and the most-failed
+one in student code.
+
+## The bounded queue: the module's thesis
+
+Producer/consumer with a fixed-size ring: `not_full` and `not_empty`
+condition variables over the same mutex; producer waits on `not_full`,
+consumer on `not_empty`; each signals the *other* after changing the
+state. This is the shape inside every work queue, channel, and
+connection pool — and it is the checkpoint's build.

@@ -1,0 +1,60 @@
+## One library, every lesson
+
+The capstone is a **key-value store**: `put`, `get`, `del`, iterate —
+persisted to a file, loaded back. It is small on purpose. Every decision
+in it is one you have already studied; the capstone forces them into
+**one coherent design**.
+
+### The API, and what each line commits you to
+
+```c
+#define KV_CAP      16
+#define KV_KEYMAX   32
+
+typedef enum {
+    KV_OK = 0,       /* success                                   */
+    KV_EARGS,        /* NULL handle/buffer — caller's bug         */
+    KV_ENOMEM,       /* table full — a state outcome, not a bug   */
+    KV_ENOENT,       /* key not present — normal, reportable      */
+    KV_EFORMAT,      /* file: bad magic/version                   */
+    KV_ETRUNC,       /* file: shorter than its own layout         */
+    KV_EBADSUM,      /* file: checksum mismatch — corrupted       */
+} KVError;
+
+typedef struct { char key[KV_KEYMAX]; long value; int live; } KVSlot;
+typedef struct { KVSlot slots[KV_CAP]; size_t count; } KVStore;
+
+KVError kv_put(KVStore *s, const char *key, long value);
+KVError kv_get(const KVStore *s, const char *key, long *out);
+KVError kv_del(KVStore *s, const char *key);
+```
+
+Read that header like a contract, because it is one:
+
+- **Errors are values, not side channels.** `KV_OK` is the only success.
+  Distinguishing *caller bug* (`KV_EARGS`) from *state* (`KV_ENOMEM`,
+  `KV_ENOENT`) is the M13 discipline: three different answers to three
+  different questions the caller must ask.
+- **`kv_get` takes `const KVStore *`.** Reading must not mutate — the
+  type system enforces the promise so reviewers do not have to.
+- **Keys are copied.** `kv_put` copies the caller's bytes into
+  `slot.key`; the caller may free or reuse their buffer immediately.
+  This is the ownership rule from M3, expressed in the type signature.
+
+### Why fixed capacity (for now)
+
+`KV_CAP 16` with first-free-slot placement is not laziness — it is a
+**scoping decision**. Growth, resizing, and heap-backed tables are the
+next course's problem. A fixed table lets the capstone spend its
+complexity budget on persistence and error design, where the threads
+converge. Real designs state what they *defer*; that is this lesson's
+meta-lesson.
+
+### Single-threaded, on purpose
+
+Concurrency is deliberately **absent**. M15 showed that threads make
+every invariant probabilistic; a graded capstone test that races is a
+flaky test, and flaky tests teach the wrong lesson. The honest statement
+belongs in the header comment: *not thread-safe; serialize access
+externally*. Adding an `mtx_t` around each call is exactly the M15
+exercise — architecture prose here, machinery there.

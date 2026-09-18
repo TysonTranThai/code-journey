@@ -1,0 +1,31 @@
+{
+  "id": "javi-checkpoint-m3-generics",
+  "title": "Reusable Bounded Collector API",
+  "prompt": "Build a small generic API inside `Solution`:\n- `static <T extends Comparable<T>> List<T> topN(List<T> xs, int n)` —\n  the n largest elements in DESCENDING order; n larger than size returns\n  all; n <= 0 throws IllegalArgumentException; xs null/empty throws too.\n- `static double sumNumbers(List<? extends Number> xs)` — PECS producer.\n- `static <T> List<? super T> drain(List<T> src, List<? super T> dst)` —\n  moves every element from src into dst and returns dst; src ends empty.\n\nAll three signatures must keep the generic promises above (the tests\ncompile call sites that would fail with weaker types).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Provide topN, sumNumbers, drain here.\n}\n",
+  "tests": [
+    {
+      "name": "topN descending",
+      "code": "\ncheckEq(Solution.topN(List.of(1, 9, 4, 9), 2), List.of(9, 9), \"two largest, ties kept\");\n",
+      "hint": "Sort descending; take first n; duplicates count individually."
+    },
+    {
+      "name": "topN validates n",
+      "code": "\ntry { Solution.topN(List.of(1), 0); checkTrue(false, \"must throw\"); }\ncatch (IllegalArgumentException e) { checkTrue(true, \"threw\"); }\n",
+      "hint": "n <= 0 throws IllegalArgumentException."
+    },
+    {
+      "name": "sumNumbers wildcard",
+      "code": "\ncheckNear(Solution.sumNumbers(List.of(1, 2.5)), 3.5, 1e-9, \"wildcard sum\");\n",
+      "hint": "Reads via doubleValue()."
+    },
+    {
+      "name": "drain moves and returns dst",
+      "code": "\nList<Integer> src = new ArrayList<>(List.of(1, 2, 3));\nList<Object> dst = new ArrayList<>(List.of(0));\nList<? super Integer> out = Solution.drain(src, dst);\ncheckEq(out, List.of(0, 1, 2, 3), \"dst gained all\");\ncheckEq(src.isEmpty(), true, \"src drained empty\");\n",
+      "hint": "Iterate src, addAll into dst, clear src, return dst."
+    }
+  ],
+  "level": "independent"
+}

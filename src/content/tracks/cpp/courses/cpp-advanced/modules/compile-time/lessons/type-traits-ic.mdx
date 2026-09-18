@@ -1,0 +1,18 @@
+## Traits: questions about types
+
+`std::is_integral_v<T>`, `std::is_same_v<A, B>`, `std::is_nothrow_move_constructible_v<T>`, `std::underlying_type_t<E>` — each is a compile-time query. Traits come in `_t` (type result) and `_v` (value result) flavors; the `_v` forms are the modern spelling of `::value`.
+
+## std::integral_constant: a value wearing a type
+
+`std::integral_constant<int, 5>` is a *type* whose value is part of it. That lets you pass compile-time numbers through normal overload machinery — dispatch on value:
+
+```cpp
+constexpr int route(std::integral_constant<int, 0>) { return 0; }  // empty pack
+constexpr int route(std::integral_constant<int, 1>) { return 1; }  // one element
+```
+
+You rarely write the type by hand — you usually receive it: a function template parameter `std::size_t N` produces `std::integral_constant<std::size_t, N>` when deduced through helpers, and `std::bool_constant<B>` is `integral_constant<bool, B>`.
+
+## When traits beat if constexpr
+
+Use traits in *concepts and constraints* (Module 4) and in type-level arithmetic (`std::conditional_t<flag, A, B>`). Use `if constexpr` when *values* in the function body differ. The graded exercises use both together.

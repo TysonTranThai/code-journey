@@ -1,0 +1,46 @@
+## Tại sao tham số thường không làm được
+
+Đối số hàm C là **bản sao**:
+
+```c
+void bump(int n) { n = n + 1; }   // tăng BẢN SAO
+
+int x = 5;
+bump(x);
+// x vẫn là 5 — hàm chỉ đổi bản sao của nó
+```
+
+## Truyền địa chỉ thì thay đổi được đối tượng
+
+Đưa cho hàm *địa chỉ*, nó có thể giải tham chiếu để về lại bản gốc:
+
+```c
+void bump(int *n) { *n = *n + 1; }   // đi theo con trỏ tới int của người gọi
+
+int x = 5;
+bump(&x);        // truyền ĐỊA CHỈ
+// x giờ là 6
+```
+
+Đây là mẫu con trỏ quan trọng nhất trong C: **tham số xuất**. `scanf("%d", &n)`
+hoạt động chính vì lý do này — bạn đưa scanf địa chỉ để nó gửi giá trị vào.
+
+## Hai đầu ra từ một hàm
+
+```c
+void minmax(int a, int b, int *lo, int *hi) {
+    if (a <= b) { *lo = a; *hi = b; }
+    else        { *lo = b; *hi = a; }
+}
+...
+int lo, hi;
+minmax(3, 8, &lo, &hi);
+```
+
+Hàm trả về một giá trị; con trỏ cho nó nhiều giá trị.
+
+## Giao ước
+
+Tham số con trỏ là một lời hứa: "cái này trỏ tới một int hợp lệ". Truyền
+`NULL` hoặc con trỏ chưa khởi tạo là phá vỡ giao ước — hàm sẽ giải tham chiếu
+rác. Module 14 sẽ giới thiệu việc kiểm tra.

@@ -1,0 +1,28 @@
+## Prefix sums and binary search boundaries
+
+**Prefix sums** make any range-sum O(1) after O(n) setup:
+
+```java
+long[] pre = new long[n + 1];
+for (int i = 0; i < n; i++) pre[i + 1] = pre[i] + xs[i];
+// sum of [l, r) = pre[r] - pre[l]
+```
+
+**Binary search** is not just "find x" — its real power is *boundary*
+search on a predicate: the first index where something becomes true.
+
+```java
+// first index with xs[i] >= target (classic lower bound)
+int lo = 0, hi = xs.length;          // hi exclusive
+while (lo < hi) {
+    int mid = (lo + hi) >>> 1;
+    if (xs[mid] >= target) hi = mid; else lo = mid + 1;
+}
+return lo;   // == xs.length means "not found"
+```
+
+The half-open interval `[lo, hi)` + `hi = mid` / `lo = mid + 1`
+invariant kills the off-by-one family. `(lo + hi) >>> 1` avoids int
+overflow. If you can phrase a question as "first/last index where P
+holds", you can binary-search it in O(log n) — monotonic predicate
+required.

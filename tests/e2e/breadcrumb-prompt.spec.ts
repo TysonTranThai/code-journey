@@ -8,7 +8,7 @@ import { expect, test } from "@playwright/test";
 test.skip(process.env.CJ_SKIP_E2E === "1", "E2E explicitly skipped");
 
 const CHALLENGE =
-  "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html/challenge/fix-the-heading";
+  "/learn/web-development/web-development-beginner/html-foundations/practice/introduction-to-html-practice/fix-the-heading";
 
 test("breadcrumb shows course and module titles, not slugs", async ({ page }) => {
   await page.goto(CHALLENGE);

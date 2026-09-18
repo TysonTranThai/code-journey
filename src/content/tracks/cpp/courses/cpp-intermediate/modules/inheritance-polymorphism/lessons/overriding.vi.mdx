@@ -1,0 +1,44 @@
+Lớp dẫn xuất có thể **override** hàm thành viên của base — nhưng chỉ khi chữ
+ký khớp tuyệt đối, và base phải tuyên bố hàm đó *cho phép* bị override
+(`virtual`, bài sau). Override không phải overload.
+
+```cpp
+#include <iostream>
+#include <string>
+
+class Animal {
+public:
+    virtual ~Animal() = default;
+    virtual void speak() const { std::cout << "...\n"; }
+};
+
+class Dog : public Animal {
+public:
+    void speak() const override { std::cout << "Woof\n"; }  // override
+    void speak(int times) const;                             // sẽ là OVERLOAD, không phải override
+};
+
+class Cat : public Animal {
+public:
+    void speak() const override { std::cout << "Meow\n"; }
+};
+```
+
+## override: luôn viết nó
+
+`override` yêu cầu compiler xác minh hàm này thật sự override điều gì. Không
+có nó, một lỗi gõ phím hoặc lệch `const` lặng lẽ tạo ra một hàm *mới*:
+
+```cpp
+class Bird : public Animal {
+public:
+    void Speak() const override;   // lỗi biên dịch: base không có hàm này (bắt được lỗi gõ!)
+    void speak() /* thiếu override + thiếu const */;   // hàm mới, bug câm lặng
+};
+```
+
+## Danh sách khớp
+
+Cùng tên, cùng kiểu tham số, cùng const-qualification, kiểu trả về tương
+thích. `override` kiểm tra tất cả lúc biên dịch — từ khóa này không tốn gì
+mà xóa sổ cả một lớp bug câm lặng.

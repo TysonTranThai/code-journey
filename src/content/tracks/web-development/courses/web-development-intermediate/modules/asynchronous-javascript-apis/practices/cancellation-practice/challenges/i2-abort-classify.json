@@ -1,0 +1,20 @@
+{
+  "id": "i2-abort-classify",
+  "title": "Abort Classifier",
+  "prompt": "Write `classifyError(err)` that RETURNS `\"aborted\"` when `err` is an object with `err.name === \"AbortError\"`, `\"network\"` when `err.message` contains `\"fetch\"` or `\"network\"` (case-insensitive), and `\"other\"` for everything else (including non-Error values).",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function classifyError(err) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "AbortError by name wins first",
+      "code": "const fn = new Function(code + \"\\nreturn { classifyError };\");\nconst { classifyError } = fn();\nconst e = new Error(\"fetch failed for /api\");\ne.name = \"AbortError\";\nif (classifyError(e) !== \"aborted\") throw new Error(\"name === 'AbortError' must classify as aborted, even if the message mentions fetch.\");\nif (classifyError(new Error(\"Failed to fetch\")) !== \"network\") throw new Error(\"A fetch/network message classifies as network.\");",
+      "hint": "Check err && err.name === 'AbortError' before looking at the message."
+    },
+    {
+      "name": "handles junk input without throwing",
+      "code": "const fn = new Function(code + \"\\nreturn { classifyError };\");\nconst { classifyError } = fn();\nif (classifyError(null) !== \"other\") throw new Error(\"null must not crash — classify as other.\");\nif (classifyError(\"weird\") !== \"other\") throw new Error(\"Non-Error values are other.\");\nif (classifyError(new Error(\"boom\")) !== \"other\") throw new Error(\"Plain errors are other.\");",
+      "hint": "Guard with err && typeof err === 'object' before touching properties."
+    }
+  ]
+}

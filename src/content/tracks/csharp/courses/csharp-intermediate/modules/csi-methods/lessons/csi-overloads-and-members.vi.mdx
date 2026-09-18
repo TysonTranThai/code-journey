@@ -1,0 +1,66 @@
+## Overload resolution: betterness, không phải sự thông minh
+
+Với một lời gọi, compiler chọn ứng viên *tốt nhất*: khớp chính xác thắng
+chuyển đổi số ngầm, thắng boxing. Mơ hồ là lỗi biên dịch — chỗ sửa nằm ở
+thiết kế API của bạn, không phải nơi gọi:
+
+```csharp
+static void Log(int n) { }
+static void Log(double n) { }
+static void Log(object o) { }
+
+Log(5);        // Log(int) — chính xác
+Log(5.0);      // Log(double) — chính xác
+Log((short)5); // Log(int) — short->int thắng short->double và boxing
+Log(null);     // Log(object)? mơ hồ nếu có overload string!
+```
+
+Hai luật ngừa hầu hết đau đớn: không bao giờ overload chỉ trên kiểu *boxed*,
+và giữ bộ overload để cùng ý định diễn đạt được — overload là từ đồng nghĩa,
+không phải hành vi khác nhau.
+
+## Tham số tùy chọn và tên
+
+Giá trị mặc định sụp đổ cơn bão overload; tham số tên làm nơi gọi tự tài liệu:
+
+```csharp
+static void Send(string to, string subject = "(no subject)", bool cc = false) { }
+
+Send("a@b.c");
+Send("a@b.c", cc: true);              // bỏ qua mặc định giữa
+Send(to: "a@b.c", subject: "hi");     // đọc như một câu
+```
+
+Bẫy: đổi giá trị mặc định là thay đổi *gãy nhị phân* — nơi gọi biên dịch
+hằng số vào trong. Phiên bản cẩn thận.
+
+## Expression-bodied members
+
+Với thành viên là một phép tính duy nhất, mũi tên bỏ nghi thức:
+
+```csharp
+public static int Square(int x) => x * x;
+public string Name => _name?.Trim() ?? "";
+public static bool IsVowel(char c) =>
+    c is 'a' or 'e' or 'i' or 'o' or 'u';
+```
+
+Giới hạn là khả năng đọc: nếu thân cần hai suy nghĩ, dùng khối với tên.
+Local function hoàn tất bộ công cụ — helper có tên gọn trong một phương thức,
+đóng tham số của nó, không nghi thức:
+
+```csharp
+static int CircleOps(double r)
+{
+    double Area() => Math.PI * r * r;      // đóng trên r
+    double Circ() => 2 * Math.PI * r;
+    return Area() > 100 ? 1 : (Circ() > 10 ? 2 : 0);
+}
+```
+
+## Kiểm tra hiểu biết
+
+- Vì sao `Log(null)` mơ hồ với `Log(string)` + `Log(object)`?
+  (string "tốt hơn" nhưng null khớp cả hai; compiler từ chối đoán.)
+- Tham số tùy chọn hay overload: cái nào mở rộng được mà không gãy nhị phân?
+  (Overload — mặc định mới sẽ nướng vào nơi gọi.)

@@ -1,0 +1,77 @@
+In Beginner you _used_ `map` and `filter`. Here we treat functions as
+first-class values — the idea that makes those methods possible — and build
+our own.
+
+## Functions are values
+
+A function can live in a variable, be passed to another function, and be
+returned from one. A function that takes or returns functions is a
+**higher-order function (HOF)**:
+
+```js
+// takes a function — HOF
+function repeat(times, action) {
+  for (let i = 0; i < times; i++) action(i);
+}
+repeat(3, (i) => console.log("run " + i));
+
+// returns a function — HOF
+const multiply = (a) => (b) => a * b;
+const triple = multiply(3);
+triple(4); // 12
+```
+
+## map / filter / reduce, precisely
+
+```js
+const orders = [
+  { id: 1, user: "ada", total: 120, status: "paid" },
+  { id: 2, user: "linh", total: 35, status: "open" },
+  { id: 3, user: "ada", total: 80, status: "paid" },
+];
+
+// map: same length, transformed items
+const totals = orders.map((o) => o.total); // [120, 35, 80]
+
+// filter: subset, same shape
+const paid = orders.filter((o) => o.status === "paid");
+
+// reduce: any shape → any other shape
+const byUser = orders.reduce((acc, o) => {
+  acc[o.user] = (acc[o.user] ?? 0) + o.total;
+  return acc;
+}, {}); // { ada: 200, linh: 35 }
+```
+
+`reduce` deserves respect: it is the general-purpose one. `map` and
+`filter` can both be written with it, and so can grouping, counting, and
+flattening. When a data question sounds like "combine everything into …",
+reduce is the answer.
+
+## Chaining and its limits
+
+```js
+const topAda = orders
+  .filter((o) => o.user === "ada")
+  .map((o) => o.total)
+  .reduce((sum, t) => sum + t, 0); // 200
+```
+
+Chains read top-to-bottom like a pipeline. Two cautions:
+
+- Each step copies the array. On hot paths over huge arrays, one `for`
+  loop beats three passes.
+- A chain longer than ~5 steps is harder to read than two named steps.
+  Refactoring into small named functions is the intermediate move:
+
+```js
+const paidFor = (user) => orders.filter((o) => o.user === user && o.status === "paid");
+const sumTotals = (os) => os.reduce((s, o) => s + o.total, 0);
+sumTotals(paidFor("ada")); // 200
+```
+
+## Why this matters at Intermediate
+
+Data transformation is most of what applications do. The HOF toolkit — and
+knowing when _not_ to use it — is the difference between copy-pasting loops
+and expressing intent.

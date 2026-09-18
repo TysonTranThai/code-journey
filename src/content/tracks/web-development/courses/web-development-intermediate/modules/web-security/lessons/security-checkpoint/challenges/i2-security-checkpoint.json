@@ -1,0 +1,25 @@
+{
+  "id": "i2-security-checkpoint",
+  "title": "Audit Bench",
+  "prompt": "Write THREE functions. 1) `classify(snippet)` — given a one-line code description, name the vulnerability class: contains \"innerHTML\" or \"document.write\" => \"xss\"; contains string concatenation into \"SELECT\" or \"query(\" => \"sql-injection\"; contains \"exec(`\" or \"exec(\"\" => \"command-injection\"; contains \"/api/\" + an id read without an ownership check description => \"idor\"; otherwise \"none\". 2) `defenseFor(threat)` — map: \"xss\" => \"output-encoding\", \"sql-injection\" => \"parameterized-queries\", \"command-injection\" => \"execfile-allowlist\", \"idor\" => \"ownership-check\", \"csrf\" => \"samesite-token\", unknown => \"defense-in-depth\". 3) `corsVerdict(allowOrigin, credentials)` — return \"invalid\" when allowOrigin is \"*\" AND credentials is true; \"ok\" when allowOrigin is a concrete origin; otherwise \"risky\".",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function classify(snippet) {\n  // your code\n}\n\nfunction defenseFor(threat) {\n  // your code\n}\n\nfunction corsVerdict(allowOrigin, credentials) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "classifies vulnerability classes",
+      "code": "const fn = new Function(code + \"\\nreturn { classify, defenseFor, corsVerdict };\");\nconst { classify } = fn();\nif (classify(\"el.innerHTML = userText\") !== \"xss\") throw new Error(\"innerHTML sink => xss.\");\nif (classify(\"db.query('SELECT * FROM t WHERE x=' + v)\") !== \"sql-injection\") throw new Error(\"Concat into query => sqli.\");\nif (classify(\"exec('convert ' + file)\") !== \"command-injection\") throw new Error(\"exec sink => command-injection.\");\nif (classify(\"route reads /api/orders/:id, no owner check\") !== \"idor\") throw new Error(\"Unguarded id read => idor.\");\nif (classify(\"adds two numbers\") !== \"none\") throw new Error(\"Innocent code => none.\");",
+      "hint": "Check the sinks in order: innerHTML, query concatenation, exec, then idor."
+    },
+    {
+      "name": "defenses map to their threats",
+      "code": "const fn = new Function(code + \"\\nreturn { classify, defenseFor, corsVerdict };\");\nconst { defenseFor } = fn();\nif (defenseFor(\"xss\") !== \"output-encoding\") throw new Error(\"Encoding for XSS.\");\nif (defenseFor(\"sql-injection\") !== \"parameterized-queries\") throw new Error(\"Params for SQLi.\");\nif (defenseFor(\"mystery\") !== \"defense-in-depth\") throw new Error(\"Unknown threat => layers.\");",
+      "hint": "A lookup object; default is layers."
+    },
+    {
+      "name": "CORS verdicts follow the spec",
+      "code": "const fn = new Function(code + \"\\nreturn { classify, defenseFor, corsVerdict };\");\nconst { corsVerdict } = fn();\nif (corsVerdict(\"*\", true) !== \"invalid\") throw new Error(\"Wildcard + credentials is forbidden.\");\nif (corsVerdict(\"https://app.example.com\", true) !== \"ok\") throw new Error(\"Concrete origin with credentials is fine.\");\nif (corsVerdict(\"*\", false) !== \"risky\") throw new Error(\"Wildcard without credentials: allowed but risky.\");",
+      "hint": "The invalid check first; then concrete-vs-wildcard."
+    }
+  ]
+}

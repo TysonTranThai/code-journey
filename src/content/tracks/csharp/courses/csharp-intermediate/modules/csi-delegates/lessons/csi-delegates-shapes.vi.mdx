@@ -1,0 +1,46 @@
+## Kiểu delegate là kiểu của một hàm
+
+`delegate int Calculator(int a, int b)` tuyên bố rằng một số phương thức có
+hình dạng này. Mọi phương thức khớp chữ ký chuyển đổi ngầm — **method group
+conversion**:
+
+```csharp
+static int Add(int a, int b) => a + b;
+Calculator op = Add;          // method group -> đối tượng delegate
+int result = op(2, 3);        // gọi như một phương thức
+```
+
+Bạn sẽ hiếm khi tự khai báo. BCL sẵn các hình dạng cần:
+
+- `Action` / `Action<T...>` — nhận 0..16 tham số, trả void.
+- `Func<T... TResult>` — nhận 0..16 tham số, trả TResult.
+- `Predicate<T>` — nhận T, trả bool. (`Func<T, bool>` mặc áo mưa; cả hai dùng
+  được với LINQ, `Predicate` đọc tốt hơn trên `List<T>.Find`.)
+
+```csharp
+Action tick = () => Console.WriteLine("tick");
+Func<int, int> square = x => x * x;
+Func<int, int, int> add = static (a, b) => a + b;   // static: cấm capture
+Predicate<string> isEmpty = string.IsNullOrEmpty;
+```
+
+`static` lambda hứa không capture — lớp chắn được compiler kiểm tra chống
+việc lỡ tay đóng trên trạng thái.
+
+## Multicast: delegate là danh sách trá hình
+
+`+` và `-` ghép các đối tượng delegate thành danh sách gọi:
+
+```csharp
+Action pipeline = Step1;
+pipeline += Step2;        // giờ cả hai chạy, theo thứ tự
+pipeline -= Step1;        // chỉ còn Step2
+```
+
+Lời gọi trả về giá trị của handler CUỐI (với Func) — lý do multicast hợp
+với Action (event) hơn nhiều so với Func.
+
+## Kiểm tra hiểu biết
+
+- Vì sao `Func<T, bool>` tồn tại song song `Predicate<T>`? (Lịch sử; `List<T>` ra đời trước `Func`.)
+- `+=` trên delegate thực sự làm gì? (Tạo delegate mới với danh sách gồm cả hai.)

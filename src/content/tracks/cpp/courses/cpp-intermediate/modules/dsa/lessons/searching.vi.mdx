@@ -1,0 +1,30 @@
+Tìm kiếm tuyến tính là `std::find` — O(n), chạy trên mọi thứ có phép so
+sánh bằng. Tìm kiếm nhị phân thì khác: nó đòi hỏi **dữ liệu đã sắp** và
+random access, và trả công bằng O(log n).
+
+```cpp
+#include <algorithm>
+#include <vector>
+
+std::vector<int> v{1, 3, 5, 7, 9, 11};
+
+bool has = std::binary_search(v.begin(), v.end(), 7);      // có/không
+
+auto lb = std::lower_bound(v.begin(), v.end(), 7);  // đầu tiên >= 7
+auto ub = std::upper_bound(v.begin(), v.end(), 7);  // đầu tiên > 7
+```
+
+`lower_bound`/`upper_bound` là lực lao động chính: `lower_bound` cho vị trí
+đầu tiên có thể chèn giá trị mà vẫn giữ thứ tự; `upper_bound` cho vị trí
+sau cùng. Khoảng cách giữa chúng là số phần tử bằng nhau. Trên
+`std::map`/`std::set`, các member cùng tên làm điều này trong O(log n)
+mà không cần iterator.
+
+Bug kinh điển của người mới: tìm kiếm nhị phân trên dữ liệu *chưa sắp*.
+Nó âm thầm trả câu sai — không exception, không cảnh báo. Sắp trước, hoặc
+dùng cấu trúc tự giữ thứ tự.
+
+Tự cài tìm kiếm nhị phân là nghi thức pass môn chính vì số học biên
+(`lo + (hi - lo) / 2`, `lo <= hi` hay `lo < hi`) đã nuốt sống bao thế hệ
+lập trình viên. Các phiên bản thư viện chuẩn đã sống sót qua trận đó —
+hãy ưu tiên dùng chúng.

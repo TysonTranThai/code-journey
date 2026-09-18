@@ -1,0 +1,21 @@
+{
+  "id": "cppa5-consteval-gate",
+  "title": "consteval as a Compile-Time Gate",
+  "prompt": "Implement `specVersion` as `consteval`, rejecting anything below version 2 at compile time (throw in the constexpr path), and `pick` as a plain constexpr selector.",
+  "difficulty": "advanced",
+  "level": "independent",
+  "language": "cpp",
+  "boilerplate": "#include <concepts>\n#include <cstddef>\n#include <type_traits>\n\n// TODO: consteval unsigned specVersion(unsigned v);\n//       must REJECT versions below 2 at compile time:\n//       throw (or fail to be a constant expression) for v < 2.\n// TODO: constexpr unsigned pick(bool useA, unsigned a, unsigned b);\n",
+  "tests": [
+    {
+      "name": "valid versions pass at compile time",
+      "code": "constexpr unsigned v = specVersion(3);\nstatic_assert(v == 3, \"baked\");\nCHECK_EQ(pick(true, 1, 2), 1);\nCHECK_EQ(pick(false, 1, 2), 2);",
+      "hint": "consteval unsigned specVersion(unsigned v) { if (v < 2) throw \"too old\"; return v; } — throw is allowed in constexpr paths to FAIL compilation."
+    },
+    {
+      "name": "pick selects at compile time too",
+      "code": "static_assert(pick(false, 10, 20) == 20, \"selector\");",
+      "hint": "constexpr unsigned pick(bool useA, unsigned a, unsigned b) { return useA ? a : b; }"
+    }
+  ]
+}

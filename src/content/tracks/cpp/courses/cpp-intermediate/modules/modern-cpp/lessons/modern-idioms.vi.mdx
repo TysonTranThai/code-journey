@@ -1,0 +1,29 @@
+Modern C++ phần lớn là *loại bỏ* bẫy lỗi. Bốn idiom trả tiền ngay lập tức.
+
+1. **Thu hẹp interface bằng kiểu.** Tham số `std::string_view` nhận được
+   `std::string`, chuỗi literal, hoặc một lát cắt mà không copy:
+
+```cpp
+#include <string_view>
+
+bool is_command(std::string_view s) {
+    return s.starts_with("--");   // C++20
+}
+```
+
+   View không sở hữu; nó không được sống lâu hơn chuỗi nền tảng.
+
+2. **Structured bindings để bóc pair/tuple/struct** — `for (const auto&
+   [k, v] : map)` dễ đọc hơn `.first/.second`.
+
+3. **`constexpr` cho bảng hằng và giới hạn** — magic number chuyển thành
+   hằng có tên, được kiểm tra lúc biên dịch.
+
+4. **`switch` đầy đủ trên `enum class`** không có `default` — compiler khi
+   đó buộc bạn cập nhật mọi switch khi enum thêm giá trị. Đó là bảo trì
+   miễn phí.
+
+Và một deprecation cần biết: `std::auto_ptr` và `std::vector::operator[]`
+ném ngoại lệ là lịch sử; dynamic exception specification (`throw(...)`) đã
+bị loại khỏi ngôn ngữ. Code hiện đại catch các kiểu ngoại lệ cụ thể —
+công việc của Module 10.

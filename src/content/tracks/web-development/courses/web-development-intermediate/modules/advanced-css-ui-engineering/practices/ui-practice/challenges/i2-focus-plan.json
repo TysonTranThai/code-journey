@@ -1,0 +1,20 @@
+{
+  "id": "i2-focus-plan",
+  "title": "Modal Focus Plan",
+  "prompt": "Write `focusPlan({ focusables, currentIndex })` returning the NEXT index when Tab is pressed forward and the PREVIOUS when Shift+Tab (`{ forward }` is boolean). Wrap around at both ends. Also return `restoreTo` — always the value passed as `restoreIndex` (the opener) in the result object.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function focusPlan({ focusables, currentIndex, forward, restoreIndex }) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "moves forward and back with wrap-around",
+      "code": "const fn = new Function(code + \"\\nreturn { focusPlan };\");\nconst { focusPlan } = fn();\nconst f = { focusables: 3, currentIndex: 0, forward: true, restoreIndex: 9 };\nif (focusPlan(f).next !== 1) throw new Error(\"Tab from 0 goes to 1.\");\nif (focusPlan({ ...f, currentIndex: 2 }).next !== 0) throw new Error(\"Tab from the last wraps to 0.\");\nif (focusPlan({ ...f, forward: false, currentIndex: 0 }).next !== 2) throw new Error(\"Shift+Tab from 0 wraps to the last.\");",
+      "hint": "(currentIndex + (forward ? 1 : -1) + n) % n."
+    },
+    {
+      "name": "always carries the restore target",
+      "code": "const fn = new Function(code + \"\\nreturn { focusPlan };\");\nconst { focusPlan } = fn();\nconst out = focusPlan({ focusables: 3, currentIndex: 1, forward: true, restoreIndex: 7 });\nif (out.restoreTo !== 7) throw new Error(\"restoreTo must echo restoreIndex — the element to refocus on close.\");\nif (out.next !== 2) throw new Error(\"Normal next calculation still applies.\");",
+      "hint": "Return { next, restoreTo: restoreIndex }."
+    }
+  ]
+}

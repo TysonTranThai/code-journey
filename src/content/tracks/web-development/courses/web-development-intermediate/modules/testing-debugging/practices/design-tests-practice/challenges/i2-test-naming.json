@@ -1,0 +1,20 @@
+{
+  "id": "i2-test-naming",
+  "title": "Behavior Namer",
+  "prompt": "Write `testName(fn, behavior)` producing framework-style names: prefix the function name, join with a space, behavior text unchanged. E.g. testName(\"cart\", \"rejects negative quantities\") => \"cart rejects negative quantities\". Empty behavior throws Error(\"behavior required\").",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function testName(fn, behavior) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "formats standard names",
+      "code": "const fn = new Function(code + \"\\nreturn { testName };\");\nconst { testName } = fn();\nif (testName(\"cart\", \"rejects negative quantities\") !== \"cart rejects negative quantities\") throw new Error(\"Standard join.\");\nif (testName(\"fmt\", \"trims whitespace\") !== \"fmt trims whitespace\") throw new Error(\"Simple case.\");\n",
+      "hint": "One join."
+    },
+    {
+      "name": "guards empty behavior",
+      "code": "const fn = new Function(code + \"\\nreturn { testName };\");\nconst { testName } = fn();\nlet threw = false;\ntry { testName(\"cart\", \"\"); } catch { threw = true; }\nif (!threw) throw new Error(\"Empty behavior must throw.\");\n",
+      "hint": "The check comes before any string work."
+    }
+  ]
+}

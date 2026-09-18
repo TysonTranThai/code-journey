@@ -1,0 +1,58 @@
+## Await tuần tự vs fan-out WhenAll
+
+Await nối tiếp nhau chạy lần lượt. Khởi động TẤT CẢ task TRƯỚC, rồi await —
+chúng chồng lên nhau:
+
+```csharp
+Task<int> a = ComputeAsync(1);          // bắt đầu ngay
+Task<int> b = ComputeAsync(2);          // bắt đầu ngay
+int[] both = await Task.WhenAll(a, b);  // tổng thời gian = max, không phải tổng
+```
+
+Gọi `ComputeAsync` chạy phương thức đồng bộ cho tới `await` đầu tiên, rồi
+trả Task đang chạy. Vì sao "start rồi await" khác "await rồi start" — một
+fan-out mà await đầu đến trước start cuối thì gần như tuần tự.
+
+WhenAll ném lại exception ĐẦU TIÊN; xem trạng thái từng task nếu cần kết
+quả một phần.
+
+## CancellationToken: hợp đồng hợp tác
+
+Hủy là HỢP TÁC — token phát tín hiệu, code của bạn kiểm tra:
+
+```csharp
+async Task WorkAsync(CancellationToken ct)
+{
+    for (int i = 0; i < 1000; i++)
+    {
+        ct.ThrowIfCancellationRequested();     // hoặc ct.IsCancellationRequested
+        await StepAsync(i, ct);                // truyền token XUỐNG
+    }
+}
+```
+
+Truyền token vào mọi lời gọi async; một lệnh hủy không chạm tới thao tác
+sau cùng thì không phải là hủy. Ném `OperationCanceledException` (việc của
+token) là quy ước callers mong đợi.
+
+## Timeout: WhenAny + Task.Delay, hoặc WaitAsync
+
+```csharp
+string body = await FetchAsync(ct).WaitAsync(TimeSpan.FromSeconds(2), ct);
+```
+
+`Task.WaitAsync(timeout, ct)` (.NET 8+) ném `TimeoutException` khi hết hạn —
+time-box hiện đại cho một task. Dạng kinh điển là
+`Task.WhenAny(work, Task.Delay(timeout, ct))` rồi so winner. Cách nào cũng
+phải đưa token cho thao tác gốc để nó DỪNG thật.
+
+## Fire-and-forget là nhà máy bug
+
+Task không được await làm rơi exception và đua với shutdown. Nếu thật sự
+không thể await, hãy giữ task và quan sát hoàn thành tường minh với
+try/catch bên trong — không bao giờ vứt gọi trần quanh thứ có thể lỗi.
+
+## Kiểm tra hiểu biết
+
+- `ComputeAsync(1)` bắt đầu chạy khi nào? (Đồng bộ, cho tới await đầu tiên.)
+- Ai thực hiện việc hủy? (Code của bạn, hợp tác — token chỉ phát tín hiệu.)

@@ -1,0 +1,37 @@
+## Declaration and indexing
+
+```c
+int grid[3][4];                    // 3 rows, 4 columns
+grid[1][2] = 7;                    // row 1, column 2
+int diag[2][2] = {{1, 0}, {0, 1}};
+```
+
+A 2D array is one contiguous block, stored **row-major**: row 0's four ints,
+then row 1's, then row 2's. `[r][c]` is the element at row r, column c.
+
+## The nested-loop walk
+
+```c
+int grid[3][4] = {0};
+for (int r = 0; r < 3; r++) {
+    for (int c = 0; c < 4; c++) {
+        grid[r][c] = r * 10 + c;
+    }
+}
+```
+
+Outer loop = rows, inner loop = columns. Total elements = 3 × 4 = 12.
+
+## Row totals
+
+```c
+int row_sum(const int g[][4], int rows) {   // column count is part of the type
+    int total = 0;
+    for (int r = 0; r < rows; r++)
+        for (int c = 0; c < 4; c++)
+            total += g[r][c];
+    return total;
+}
+```
+
+Note the parameter shape: the first bracket may be empty, the second may not.

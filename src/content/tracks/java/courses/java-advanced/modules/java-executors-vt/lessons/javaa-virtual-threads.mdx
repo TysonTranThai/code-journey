@@ -1,0 +1,33 @@
+**Virtual threads** (JEP 444, standard in 21 — verified executable in this
+sandbox) detach *unit of concurrency* from *unit of cost*:
+
+```java
+try (var exec = Executors.newVirtualThreadPerTaskExecutor()) {
+    for (int i = 0; i < 1_000_000; i++) {
+        exec.submit(() -> { Thread.sleep(100); return i; });  // fine!
+    }
+}   // close() waits for all tasks
+```
+
+One JVM can hold *millions* of virtual threads because they are not OS
+threads: they are heap objects scheduled onto a small pool of **carrier**
+platform threads. When a virtual thread blocks (sleep, I/O), the JVM
+**unmounts** it and the carrier runs someone else. Blocking is cheap again —
+that is the whole revolution.
+
+**What virtual threads do NOT change**:
+
+1. **CPU-bound work** gains nothing: you still have only the machine's cores;
+   `Runtime.getRuntime().availableProcessors()` governs platform parallelism.
+   VTs help *waiting*, not *computing*.
+2. **Pinning**: inside a `synchronized` block (or a native frame), a virtual
+   thread cannot unmount — the carrier is held hostage. Long synchronized
+   sections under heavy VT load can starve carriers. (JDK 24 fixed the
+   `synchronized` case; on our `--release 21` runtime it is a live hazard —
+   prefer `ReentrantLock` for long sections in VT-heavy code.)
+3. **No pooling**: VTs are one-shot. Pooling them recreates the platform-thread
+   economics you were escaping. `newVirtualThreadPerTaskExecutor` — per task.
+
+**Structured concurrency** (JEP 453) is preview-only in 21 — taught
+conceptually: treat a fan of related tasks as one unit with one error and one
+cancellation path.

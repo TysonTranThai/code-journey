@@ -5,6 +5,8 @@ import { ReplyForm } from "@/components/discussion/ReplyForm";
 import { Breadcrumbs } from "@/components/learn/Breadcrumbs";
 import { auth } from "@/lib/auth/config";
 import { getLesson, getTracks } from "@/lib/curriculum/loaders";
+import { INTL_TAG } from "@/lib/i18n/config";
+import { getServerI18n } from "@/lib/i18n/server";
 import { getThread, getThreadLessonId } from "@/lib/discussions/threads";
 
 interface ThreadPageProps {
@@ -23,9 +25,10 @@ export const metadata: Metadata = { title: "Thread" };
 export default async function ThreadPage({ params }: ThreadPageProps) {
   const { trackId, courseId, moduleId, lessonId, threadId } = await params;
 
+  const { d, locale } = await getServerI18n();
   let lesson;
   try {
-    lesson = getLesson(trackId, courseId, moduleId, lessonId);
+    lesson = getLesson(trackId, courseId, moduleId, lessonId, undefined, locale);
   } catch {
     notFound();
   }
@@ -34,7 +37,7 @@ export default async function ThreadPage({ params }: ThreadPageProps) {
   // Threads may only be viewed under the lesson they anchor to.
   const threadLessonId = await getThreadLessonId(threadId);
   if (threadLessonId !== lessonId) notFound();
-  const track = getTracks().find((t) => t.id === trackId);
+  const track = getTracks(undefined, locale).find((t) => t.id === trackId);
   const session = await auth();
   const discussionBase = `/learn/${trackId}/${courseId}/${moduleId}/${lessonId}/discussion`;
 
@@ -42,10 +45,10 @@ export default async function ThreadPage({ params }: ThreadPageProps) {
     <article className="mx-auto flex w-full max-w-3xl flex-col gap-6">
       <Breadcrumbs
         items={[
-          { label: "Learn", href: "/learn" },
+          { label: d.breadcrumb.learn, href: "/learn" },
           { label: track?.title ?? trackId, href: `/learn/${trackId}` },
           { label: lesson.title, href: `/learn/${trackId}/${courseId}/${moduleId}/${lessonId}` },
-          { label: "Discussion", href: discussionBase },
+          { label: d.discussion.crumb, href: discussionBase },
           { label: thread.title },
         ]}
       />
@@ -53,12 +56,12 @@ export default async function ThreadPage({ params }: ThreadPageProps) {
       <header className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold tracking-tight text-zinc-100">{thread.title}</h1>
         <p className="text-sm text-zinc-400">
-          {thread.replies[0]?.authorName ?? thread.authorName ?? "A learner"} ·{" "}
-          {thread.createdAt.toLocaleDateString("en-US", { month: "long", day: "numeric" })}
+          {thread.replies[0]?.authorName ?? thread.authorName ?? d.discussion.authorFallbackCap}{" "}
+          {thread.createdAt.toLocaleDateString(INTL_TAG[locale], { month: "long", day: "numeric" })}
         </p>
       </header>
 
-      <ul className="flex flex-col gap-4" aria-label="Conversation">
+      <ul className="flex flex-col gap-4" aria-label={d.discussion.conversationAria}>
         {thread.replies.map((reply, index) => (
           <li
             key={reply.id}
@@ -70,15 +73,18 @@ export default async function ThreadPage({ params }: ThreadPageProps) {
               {reply.body}
             </p>
             <p className="mt-2 text-xs text-zinc-400">
-              {reply.authorName ?? "A learner"} ·{" "}
-              {reply.createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+              {reply.authorName ?? d.discussion.authorFallbackCap} ·{" "}
+              {reply.createdAt.toLocaleDateString(INTL_TAG[locale], {
+                month: "short",
+                day: "numeric",
+              })}
             </p>
           </li>
         ))}
       </ul>
 
-      <section aria-label="Reply" className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold text-zinc-100">Your reply</h2>
+      <section aria-label={d.discussion.replyAria} className="flex flex-col gap-3">
+        <h2 className="text-lg font-semibold text-zinc-100">{d.discussion.yourReply}</h2>
         <ReplyForm threadId={thread.id} signedIn={Boolean(session?.user)} />
       </section>
     </article>

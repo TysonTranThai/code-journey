@@ -1,0 +1,63 @@
+## Chaining output
+
+`<<` chains naturally, which is how you format small messages:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string name = "Linh";
+    int age = 20;
+    std::cout << "Name: " << name << ", age: " << age << '\n';
+    return 0;
+}
+```
+
+Output:
+
+```
+Name: Linh, age: 20
+```
+
+Note that `name` and `age` are *values* — `cout` knows how to print strings, ints, doubles, and more without any format codes.
+
+## Reading input with `std::cin`
+
+`std::cin` is the mirror image: it reads from the keyboard into a variable:
+
+```cpp
+std::string name;
+int age;
+std::cin >> name >> age;   // >> reads, << writes
+```
+
+`>>` skips leading whitespace and stops at the next space or newline. Input makes programs interactive — try it locally on your machine. Reading input is also where beginners meet their first *state* bug: reading into the wrong variable type silently fails (age stays at 0). `cin >> x` followed by checking `if (std::cin.fail())` is the honest first lesson in validation, which we develop properly in later modules.
+
+## Why graded challenges do not use `std::cin`
+
+On this platform, graded runs execute your code automatically in a sandbox — nobody is typing at a keyboard. So the grading convention is:
+
+1. **Write functions** with parameters and return values — tests call them directly, e.g. `add(2, 3)` must return `5`.
+2. **Or write a `void program()`** that prints something — the test captures what it printed and checks the text.
+
+Lessons and ungraded exploration can still use `cin`; the sandbox simply replaces it with a clear error during graded runs, exactly like the platform already does for Python. This keeps every challenge automatic, objective, and identical for every learner — in both English and Vietnamese.
+
+## The boilerplate you will see
+
+Many challenges pre-fill this shape in the editor:
+
+```cpp
+#include <iostream>
+
+void program() {
+    // your code here
+}
+
+int main() {
+    program();
+    return 0;
+}
+```
+
+You fill in `program()`; the harness handles the rest. When a challenge grades a function instead, the boilerplate contains that function's empty shell.

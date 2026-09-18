@@ -1,0 +1,21 @@
+{
+  "id": "javb-m6-csv-parser",
+  "title": "CSV row parser",
+  "prompt": "Implement `static String field(String row, int index)` that extracts one comma-separated field: `field(\"name,age,city\", 1)` is `\"age\"`. Out-of-range index returns `\"\"`. Fields keep their own spaces; do not trim.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String field(String row, int index) {\n        return \"\";\n    }\n}\n",
+  "tests": [
+    {
+      "name": "happy path",
+      "code": "\nCjTestBase.checkEq(Solution.field(\"name,age,city\", 0), \"name\", \"first field\");\nCjTestBase.checkEq(Solution.field(\"name,age,city\", 1), \"age\", \"middle field\");\nCjTestBase.checkEq(Solution.field(\"name,age,city\", 2), \"city\", \"last field\");\n",
+      "hint": "split(\",\") gives the array; index into it."
+    },
+    {
+      "name": "boundaries",
+      "code": "\nCjTestBase.checkEq(Solution.field(\"name,age,city\", 3), \"\", \"past the end\");\nCjTestBase.checkEq(Solution.field(\"name,age,city\", -1), \"\", \"negative index\");\nCjTestBase.checkEq(Solution.field(\"a , b\", 0), \"a \", \"spaces preserved\");\n",
+      "hint": "The contract says no trimming and empty on any bad index."
+    }
+  ],
+  "level": "guided"
+}

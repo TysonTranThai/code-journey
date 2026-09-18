@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p10-walk",
+  "title": "Walk, match, clean up",
+  "prompt": "1. `static List<String> findLogs(Path root)` — walk the tree depth 3, collect the\nFILE NAMES (not full paths) of every regular file ending in .log, SORTED\nalphabetically. Use try-with-resources on the stream.\n2. `static long totalBytes(Path root)` — sum file sizes of regular files at ANY\ndepth (Files.size; skip directories).\n3. `static boolean globMatches(String pattern, Path candidate)` — use\n`FileSystems.getDefault().getPathMatcher(\"glob:\" + pattern)` and\n`matcher.matches(candidate)`.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "tree walked, names collected",
+      "code": "\njava.nio.file.Path root = java.nio.file.Files.createTempDirectory(\"cjadv\");\njava.nio.file.Files.writeString(root.resolve(\"a.log\"), \"x\");\njava.nio.file.Path sub = root.resolve(\"sub\");\njava.nio.file.Files.createDirectories(sub);\njava.nio.file.Files.writeString(sub.resolve(\"b.log\"), \"yy\");\njava.nio.file.Files.writeString(sub.resolve(\"note.txt\"), \"z\");\ncheckEq(Solution.findLogs(root), java.util.List.of(\"a.log\", \"b.log\"), \"both logs, sorted, no txt\");\ncheckEq(Solution.totalBytes(root), 4L, \"1 + 2 + 1 bytes\");\n",
+      "hint": "Depth does not hide files; extensions filter."
+    },
+    {
+      "name": "glob semantics",
+      "code": "\ncheckTrue(Solution.globMatches(\"*.log\", java.nio.file.Path.of(\"a.log\")), \"filename glob\");\ncheckTrue(Solution.globMatches(\"**/*.log\", java.nio.file.Path.of(\"x\", \"y\", \"a.log\")), \"path glob\");\ncheckTrue(!Solution.globMatches(\"*.log\", java.nio.file.Path.of(\"a.txt\")), \"txt rejected\");\n",
+      "hint": "Glob shape matches target shape."
+    }
+  ],
+  "level": "independent"
+}

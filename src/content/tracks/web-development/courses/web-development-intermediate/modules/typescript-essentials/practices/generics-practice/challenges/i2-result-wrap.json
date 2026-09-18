@@ -1,0 +1,15 @@
+{
+  "id": "i2-result-wrap",
+  "title": "Result Wrapper",
+  "prompt": "Write `attempt(fn)` — calls zero-argument `fn`. On success RETURN `{ ok: true, value }`; on throw RETURN `{ ok: false, error: err.message }`. The value keeps whatever shape fn returned (number, array, object — anything), proving the wrapper is shape-agnostic.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function attempt(fn) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "wraps success and failure for any shape",
+      "code": "const fn = new Function(code + \"\\nreturn { attempt };\");\nconst { attempt } = fn();\nconst a = attempt(() => [1, 2, 3]);\nif (a.ok !== true || a.value.join() !== \"1,2,3\") throw new Error(\"Arrays pass through inside ok.\");\nconst b = attempt(() => ({ deep: { x: 1 } }));\nif (b.value.deep.x !== 1) throw new Error(\"Objects pass through.\");\nconst c = attempt(() => { throw new Error(\"nope\"); });\nif (c.ok !== false || c.error !== \"nope\") throw new Error(\"Failures become { ok: false, error }.\");",
+      "hint": "try { return { ok: true, value: fn() }; } catch (err) { return { ok: false, error: err.message }; }"
+    }
+  ]
+}

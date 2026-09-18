@@ -1,0 +1,41 @@
+## Race, lock và hộp công cụ đồng bộ
+
+**Race condition** tồn tại khi tính đúng đắn phụ thuộc vào thứ tự chen lấn.
+Kinh điển nhất: read-modify-write trên trạng thái chia sẻ.
+
+```python
+import threading
+
+class UnsafeCounter:
+    def __init__(self):
+        self.value = 0
+    def inc(self):
+        value = self.value          # load
+        self.value = value + 1      # store   <-- another thread may have run here
+
+class SafeCounter:
+    def __init__(self):
+        self._value = 0
+        self._lock = threading.Lock()
+    def inc(self):
+        with self._lock:            # acquire; released even on exception
+            self._value += 1
+    @property
+    def value(self):
+        with self._lock:
+            return self._value
+```
+
+Những nguyên tắc giữ cho Python đa thread còn tỉnh táo:
+
+- Bảo vệ **mọi** đường truy cập tới trạng thái mutable chia sẻ, kể cả lần đọc
+  giả định tính nhất quán.
+- Giữ lock trong vùng nhỏ nhất có thể; không bao giờ gọi code lạ trong lúc giữ
+  lock.
+- Hai lock lấy theo hai thứ tự khác nhau = deadlock. Nếu buộc phải lấy hai,
+  định nghĩa thứ tự toàn cục.
+- `RLock` cho vào lại được (cùng thread có thể acquire lần nữa); `Semaphore(n)`
+  giới hạn n bên giữ đồng thời; `Event` là cờ broadcast một chiều; `Condition`
+  hỗ trợ wait/notify; `Barrier(n)` khiến n thread chờ nhau.
+- `queue.Queue` đã thread-safe và thường là công cụ *đúng* — truyền message thay
+  vì chia sẻ trạng thái (xem bài luyện kế tiếp).

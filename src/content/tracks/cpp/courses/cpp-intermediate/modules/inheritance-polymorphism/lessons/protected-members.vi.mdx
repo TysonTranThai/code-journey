@@ -1,0 +1,44 @@
+`protected` là cánh cửa giữa: member mà lớp dẫn xuất được dùng, nhưng thế
+giới bên ngoài không được.
+
+```cpp
+#include <string>
+
+class Account {
+public:
+    explicit Account(long cents) : balance_{cents} {}
+
+private:
+    long balance_;                     // cả derived cũng không thấy
+};
+
+class SavingsAccount : public Account {
+public:
+    SavingsAccount(long cents, double rate) : Account{cents}, rate_{rate} {}
+
+    long balance() const {
+        // return balance_;            // LỖI: base đã đặt private
+        return view_balance();          // đi qua accessor protected
+    }
+protected:
+    long view_balance() const { return protected_balance(); }
+private:
+    // phần cài minh họa cho bài chạy được của bài học
+    static long protected_balance() { return 12345; }
+    double rate_;
+};
+```
+
+## Dùng protected tiết kiệm — và không bao giờ cho dữ liệu
+
+Hàm thành viên `protected` là điểm mở rộng được kiểm soát: base cung cấp hook
+mà derived có thể gọi hoặc override. Dữ liệu `protected` trói buộc mọi lớp
+dẫn xuất sau này vào quyết định lưu trữ của bạn — đổi tên trong base giờ đây
+làm gãy tất cả chúng. Hãy giữ dữ liệu `private` kể cả với con, và chỉ mở
+*thao tác* protected nếu lớp dẫn xuất thật sự cần.
+
+## Chuỗi constructor
+
+Constructor của derived phải khởi tạo base tường minh khi base không có
+constructor mặc định: `SavingsAccount(...) : Account{cents}, rate_{rate}`.
+Phần base được dựng trước — bạn không thể đụng `this` trước khi nó tồn tại.

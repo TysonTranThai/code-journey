@@ -1,0 +1,47 @@
+A queue decouples *accepting* work from *doing* work. The API enqueues a job
+and returns 202; workers pull jobs and process them. The trade: you now run a
+distributed system, so the queue's semantics matter more than its features.
+
+## The delivery-semantics spectrum
+
+- **At-most-once:** fire and forget. Losses are silent.
+- **At-least-once:** redeliver until acknowledged. Nothing is silently lost —
+  but duplicates arrive, so consumers **must be idempotent**. This is what most
+  production queues offer.
+- **Exactly-once:** the marketing dream; in practice it means at-least-once
+  delivery plus idempotent processing achieved at the receiver.
+
+## The worker contract
+
+A worker processing a job must honor three rules:
+
+1. **Acknowledge only after the effect is durable.** If you ack-then-crash, the
+   job is lost; if you crash-then-ack, the job is redelivered (fine — see
+   idempotency).
+2. **Make the effect idempotent.** Key the work on a job ID: `(INSERT ... ON
+   CONFLICT DO NOTHING)`-style, or a processed-keys table checked inside the
+   same transaction as the effect.
+3. **Bound the work.** A job that can loop forever will. Set internal timeouts
+   and give up explicitly.
+
+## Retry, backoff, and the dead-letter queue
+
+Redelivery comes from visibility timeouts (the lease on an in-flight job
+expires). After N failed attempts, the job moves to a **dead-letter queue**
+(DLQ) — a humanInspectable pile of poison messages. Two properties make DLQs
+useful: the *failure reason* travels with the message, and replaying from the
+DLQ is a deliberate operation, not an accident.
+
+## Heartbeats, leases, and poisoned workers
+
+A crashed worker must not hold a job hostage. Leases expire; heartbeats renew
+them. A job whose lease lapses becomes visible to other workers — which is
+exactly why the processing must be idempotent: two workers may race on the same
+job, and the second one's effect must be a no-op.
+
+## Simulating all of this in-process
+
+You don't need infrastructure to *learn* the semantics. An in-process queue
+with explicit `deliver()` (a redelivery sweep) and a `_done` idempotency store
+reproduces every behavior above deterministically — that's how the challenges
+in this module work.

@@ -1,0 +1,22 @@
+{
+  "title": "Niêm phong registry",
+  "prompt": "`Registry` giữ chỉ mục khả biến nhưng lộ ra ngoài an toàn.\nCài trong `Solution`:\n- `static class Registry` với `put(String k, int v)`,\n  `int get(String k)` (thiếu → ném NoSuchElementException),\n  `Map<String, Integer> snapshot()` (view không thể sửa),\n  và `Map<String, Integer> frozenCopy()` (bản sao bất biến độc lập).\n- `static int totalOf(Map<String, Integer> values)` cộng các giá trị —\n  phải biên dịch được với cả hai kiểu lộ dữ liệu.\n\nTest sửa registry sau khi lấy snapshot để chứng minh bản sao độc lập.",
+  "tests": [
+    {
+      "name": "snapshot phản chiếu trạng thái hiện tại",
+      "hint": "snapshot() trả view không thể sửa của map sống."
+    },
+    {
+      "name": "frozenCopy độc lập với ghi sau đó",
+      "hint": "frozenCopy() phải là Map.copyOf(...) — put sau không chạm tới được."
+    },
+    {
+      "name": "Key thiếu phải ném",
+      "hint": "get với key không tồn tại ném NoSuchElementException."
+    },
+    {
+      "name": "totalOf cộng giá trị",
+      "hint": "Duyệt values() và cộng."
+    }
+  ]
+}

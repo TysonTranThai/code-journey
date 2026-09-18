@@ -1,0 +1,16 @@
+{
+  "id": "javaa-p12-order",
+  "title": "Ordered results from unordered work",
+  "prompt": "1. `static List<Integer> fanout(List<Integer> inputs, Executor executor)` — for each\ninput, `supplyAsync(() -> input * 2, executor)`; after ALL complete (allOf + join),\nreturn the results IN SUBMISSION ORDER (join each future in list order).\n2. `static List<Integer> withFailures(List<Integer> inputs, Executor executor)` — same,\nbut odd inputs THROW; recover per-branch with handle → -1 for failed branches;\nsubmission order preserved throughout.\nUse `var f = CompletableFuture.supplyAsync(...)` per input; never trust join order\nto equal completion order.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "submission order, per-branch recovery",
+      "code": "\njava.util.concurrent.Executor e = java.util.concurrent.Executors.newFixedThreadPool(3,\n    r -> { Thread t = new Thread(r); t.setDaemon(true); return t; });   // daemon: JVM may exit\ncheckEq(Solution.fanout(java.util.List.of(1, 2, 3), e), java.util.List.of(2, 4, 6), \"ordered doubles\");\ncheckEq(Solution.withFailures(java.util.List.of(1, 2, 3), e), java.util.List.of(-1, 4, -1), \"odds recovered\");\n",
+      "hint": "Results ordered by submission, not by chance."
+    }
+  ],
+  "level": "real-world"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ca21-mmap-sum",
+  "title": "Sum a File Through mmap",
+  "prompt": "POSIX. Implement `long sum_bytes_mmap(const char *path)` — open O_RDONLY, fstat for size, mmap PROT_READ MAP_PRIVATE, sum all bytes as unsigned char, munmap, close, return the sum; return -1 on any failure (open/fstat/mmap/munmap). An empty file sums to 0.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define _POSIX_C_SOURCE 200809L\n#include <unistd.h>\n#include <fcntl.h>\n#include <sys/mman.h>\n#include <sys/stat.h>\n#include <sys/uio.h>\n#include <time.h>\n#include <errno.h>\nstatic const char *GIVEN_PATTERN_PATH = \"/tmp/cj_ca21_pattern.bin\";\nstatic long make_pattern_file(void) {\n    int fd = open(GIVEN_PATTERN_PATH, O_RDWR | O_CREAT | O_TRUNC, 0600);\n    if (fd < 0) return -1;\n    unsigned char byte[256];\n    for (int i = 0; i < 256; i++) byte[i] = (unsigned char)i;\n    for (int r = 0; r < 16; r++) {\n        if (write(fd, byte, 256) != 256) { close(fd); return -1; }\n    }\n    close(fd);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sums the 0..255 pattern",
+      "code": "CHECK_EQ(make_pattern_file(), 0);\nlong s = sum_bytes_mmap(GIVEN_PATTERN_PATH);\nCHECK_EQ(s, 522240);",
+      "hint": "The file holds sixteen 0..255 ramps: 16 times 32640 — sum 522240."
+    },
+    {
+      "name": "missing file",
+      "code": "CHECK_EQ(sum_bytes_mmap(\"/tmp/cj_definitely_missing.bin\"), -1);",
+      "hint": "A path that cannot be opened is an error, not a sum of zero."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "pi5-chain-retry",
+  "title": "Bounded Retry",
+  "prompt": "Implement retry(fn, attempts) that calls fn() up to `attempts` times, returning the first successful result. If fn raises, sleep-free retry; when all attempts fail, re-raise the LAST exception.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "def retry(fn, attempts):\n    pass\n",
+  "tests": [
+    {
+      "name": "succeeds on a later attempt",
+      "code": "calls = []\ndef flaky():\n    calls.append(1)\n    if len(calls) < 3:\n        raise ValueError('nope')\n    return 'ok'\nassert retry(flaky, 5) == 'ok'\nassert len(calls) == 3",
+      "hint": "Keep calling until success or attempts exhausted."
+    },
+    {
+      "name": "last exception surfaces",
+      "code": "def always_bad():\n    raise KeyError('final')\ntry:\n    retry(always_bad, 2)\n    failed = False\nexcept KeyError:\n    failed = True\nassert failed",
+      "hint": "The final error propagates — swallowed errors hide reality."
+    },
+    {
+      "name": "zero attempts still tries once? No — attempts is a hard cap",
+      "code": "calls = []\ndef f():\n    calls.append(1)\n    raise ValueError('x')\ntry:\n    retry(f, 1)\nexcept ValueError:\n    pass\nassert len(calls) == 1",
+      "hint": "attempts=1 means exactly one try."
+    }
+  ],
+  "level": "combination"
+}

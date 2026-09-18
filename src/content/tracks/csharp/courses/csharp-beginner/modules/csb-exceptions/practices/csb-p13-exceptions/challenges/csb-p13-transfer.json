@@ -1,0 +1,21 @@
+{
+  "id": "csb-p13-transfer",
+  "title": "Transfer with cleanup discipline",
+  "prompt": "Implement `static decimal Transfer(decimal from, decimal to, decimal amount)` inside a running total model: throws `ArgumentException` for non-positive amount, throws `InvalidOperationException` when `amount > from`, otherwise returns `to + amount`. Also implement `static bool AuditTrail(List<string> log, Action action)`: runs `action`, always appending `\"done\"` to the log afterwards (even when action throws, log gets `\"done\"` and the exception propagates); returns true only if action completed without throwing.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "transfer",
+      "code": "Cj.Eq(Solution.Transfer(100m, 50m, 30m), 80m, \"amount lands\");\nbool t1 = false;\ntry { Solution.Transfer(100m, 50m, 0m); } catch (ArgumentException) { t1 = true; }\nbool t2 = false;\ntry { Solution.Transfer(10m, 50m, 20m); } catch (InvalidOperationException) { t2 = true; }\nCj.True(t1 && t2, \"both contracts enforced\");",
+      "hint": "Argument validation and state validation stay distinct exception types."
+    },
+    {
+      "name": "audit",
+      "code": "var log = new List<string>();\nbool ok = Solution.AuditTrail(log, () => log.Add(\"work\"));\nCj.True(ok, \"success returns true\");\nCj.Eq(string.Join(\",\", log), \"work,done\", \"done appended after success\");\nvar log2 = new List<string>();\nbool threw = false;\ntry { Solution.AuditTrail(log2, () => throw new InvalidOperationException()); } catch (InvalidOperationException) { threw = true; }\nCj.True(threw, \"exception propagates\");\nCj.Eq(log2.Count, 1, \"done still appended on failure\");\nCj.Eq(log2[0], \"done\", \"and it is exactly done\");",
+      "hint": "finally semantics: the append happens on both paths; only the return value differs."
+    }
+  ],
+  "level": "independent"
+}

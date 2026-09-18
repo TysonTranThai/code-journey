@@ -1,0 +1,21 @@
+{
+  "id": "pa-dm-descriptor-field",
+  "title": "Build a Validated field",
+  "prompt": "Implement a data descriptor `Validated(min_value, max_value)` usable as a class attribute:\n\n- stores the value under a mangled name chosen in `__set_name__`\n- `__set__` raises `ValueError` when the value is not an `int` or is outside `[min_value, max_value]`\n- `__get__` on the class (obj is None) returns the descriptor itself\n- the class access must expose the declared bounds: `Model.age.min_value == 0`",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class Validated:\n    def __init__(self, min_value, max_value):\n        self.min_value = min_value\n        self.max_value = max_value\n\n    # TODO: __set_name__, __get__, __set__\n\n\nclass Model:\n    age = Validated(0, 150)",
+  "tests": [
+    {
+      "name": "rejects out-of-range and wrong types",
+      "code": "m = Model()\nm.age = 42\nassert m.age == 42\nfor bad in (-1, 999, 'x', 3.5):\n    try:\n        m.age = bad\n    except ValueError:\n        pass\n    else:\n        raise AssertionError(f'value {bad!r} must be rejected')\nprint('ok')",
+      "hint": "Validate type first (must be int — bool is not allowed here, treat non-int as ValueError), then range."
+    },
+    {
+      "name": "descriptor visible on the class with bounds",
+      "code": "assert isinstance(Model.age, Validated), 'class access must return the descriptor'\nassert Model.age.min_value == 0 and Model.age.max_value == 150\nprint('ok')",
+      "hint": "When obj is None, return self."
+    }
+  ],
+  "level": "guided"
+}

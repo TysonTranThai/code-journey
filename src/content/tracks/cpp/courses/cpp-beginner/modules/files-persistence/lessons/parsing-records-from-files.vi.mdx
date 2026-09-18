@@ -1,0 +1,58 @@
+## Mẫu hoàn chỉnh: file → dòng → trường → dữ liệu có kiểu
+
+```cpp
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+
+struct Item { std::string name; double price{}; int qty{}; };
+
+std::vector<Item> load_items(const std::string& path) {
+    std::ifstream in{path};
+    std::vector<Item> items;
+    std::string line;
+    while (std::getline(in, line)) {
+        if (line.empty()) continue;                 // tha thứ dòng trống
+        std::istringstream row{line};
+        std::string name, price_s, qty_s;
+        std::getline(row, name, ',');
+        std::getline(row, price_s, ',');
+        std::getline(row, qty_s);
+        items.push_back({name, std::stod(price_s), std::stoi(qty_s)});
+    }
+    return items;
+}
+```
+
+Nhận ra từng mảnh: vòng lặp getline (13A), row stream với ký tự phân cách (module 6), chuyển đổi có kiểu. Hàm này chính là phôi thai của tầng lưu trữ trong capstone — dữ liệu sống lâu hơn chương trình vì nó chỉ là *text* mà bạn có thể mở bằng bất kỳ trình soạn thảo nào.
+
+## Ghi bản ghi ngược lại
+
+```cpp
+void save_items(const std::string& path, const std::vector<Item>& items) {
+    std::ofstream out{path};
+    for (const Item& it : items) {
+        out << it.name << ',' << it.price << ',' << it.qty << '\n';
+    }
+}
+```
+
+Kỷ luật round-trip: bất cứ gì bạn ghi ra đều phải phân tích được lần nữa. Chọn một định dạng và giữ cả hai phía đồng bộ.
+
+## std::filesystem (một lát cắt cho người mới)
+
+```cpp
+#include <filesystem>
+namespace fs = std::filesystem;
+
+fs::exists("data/items.csv")         // nó có tồn tại không?
+fs::file_size("data/items.csv")      // số byte
+for (const auto& entry : fs::directory_iterator("data")) { /* các mục */ }
+```
+
+Đủ để kiểm tra, đo, và liệt kê. Tạo/xóa thư mục và biến đổi đường dẫn sẽ lớn lên ở Trung cấp.
+
+## Một lưu ý về số và locale
+
+`stod`/`cout` định dạng số theo locale C mặc định (dấu chấm thập phân). Với các file dữ liệu của khóa này, dấu chấm vào, dấu chấm ra — tính nhất quán là tất cả.

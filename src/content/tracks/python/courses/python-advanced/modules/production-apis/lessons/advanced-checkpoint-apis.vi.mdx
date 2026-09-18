@@ -1,0 +1,12 @@
+**Viết code trả lời ba câu hỏi này cho một dịch vụ thật:**
+
+1. Khi đầu vào xấu, client có nhận được *mọi* vấn đề trong một câu trả lời
+   dạng envelope — không lộ nội bộ trên 5xx không?
+2. Khi tải tăng vọt, limiter có chặn theo *đồng hồ được tiêm vào*, chứ không
+   theo may rủi của đồng hồ hệ thống không?
+3. Khi một dependency chết, readiness có báo vậy *mà không crash* không?
+
+Thử thách dưới đây kết hợp câu 2 và 3: một readiness probe với các check là
+callable không-tham-số được tiêm vào. Một check raise nghĩa là dependency đang
+chết — điều đó phải đánh dấu dịch vụ **chưa sẵn sàng** (và hiện là `false`),
+không bao giờ làm probe crash và không bao giờ bị tính là khỏe mạnh.

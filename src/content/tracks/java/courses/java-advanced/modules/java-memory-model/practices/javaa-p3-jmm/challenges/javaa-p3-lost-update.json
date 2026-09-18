@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p3-lost-update",
+  "title": "Watch a lost update happen (then avoid it)",
+  "prompt": "Demonstrate atomicity gaps WITHOUT timing luck, using latch choreography:\n1. `static List<Integer> racyIncrement()` — two virtual threads each await `go`, then read a plain `int counter` field, add 1, and write it back, each recording the value they wrote; main releases `go` once both are ready and joins both.\n2. Return the two written values. With both threads interleaved read→write, at least one update is usually lost — but this test only requires the method to be *structurally* racy: implement it exactly as described (read, add, write — no synchronization).\n3. `static int atomicIncrement()` — same scenario but using `AtomicInteger.incrementAndGet()`; must always return 2 when called after both threads complete.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "atomic version never loses updates",
+      "code": "\ncheckEq(Solution.atomicIncrement(), 2, \"CAS makes read-modify-write atomic\");\n",
+      "hint": "AtomicInteger.incrementAndGet() is atomic."
+    },
+    {
+      "name": "racy version is structurally racy",
+      "code": "\njava.util.List<Integer> writes = Solution.racyIncrement();\ncheckEq(writes.size(), 2, \"both threads wrote once\");\n",
+      "hint": "Both threads perform the read-add-write sequence."
+    }
+  ],
+  "level": "independent"
+}

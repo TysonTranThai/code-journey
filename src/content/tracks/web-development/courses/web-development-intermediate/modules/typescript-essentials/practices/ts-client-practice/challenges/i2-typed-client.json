@@ -1,0 +1,20 @@
+{
+  "id": "i2-typed-client",
+  "title": "Typed-Feel Client",
+  "prompt": "Write `createTypedClient(fetchImpl)` where every method validates BEFORE returning:\n\n- `getTask(id)` — fetches `/tasks/{id}`; if the body passes `isTaskDTO` return `{ ok: true, task }`; a 404 returns `{ ok: false, reason: \"not-found\" }`; a malformed body returns `{ ok: false, reason: \"invalid\" }`\n- `listTasks()` — fetches `/tasks`; valid list → `{ ok: true, tasks }`; malformed → `{ ok: false, reason: \"invalid\" }`\n- the fake `fetchImpl(url)` returns `{ ok, status, json: async () => body }`",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function createTypedClient(fetchImpl) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "valid task flows through",
+      "code": "const fn = new Function(code + \"\\nreturn { createTypedClient };\");\nconst { createTypedClient } = fn();\nconst task = { id: \"t1\", title: \"ship\", done: false };\nconst c = createTypedClient(async (u) => ({ ok: true, status: 200, json: async () => task }));\nconst out = await c.getTask(\"t1\");\nif (out.ok !== true || out.task.title !== \"ship\") throw new Error(\"A valid DTO returns { ok: true, task }.\");",
+      "hint": "Fetch, parse, then isTaskDTO(body) decides the shape of your result."
+    },
+    {
+      "name": "not-found and invalid are distinct failures",
+      "code": "const fn = new Function(code + \"\\nreturn { createTypedClient };\");\nconst { createTypedClient } = fn();\nconst c404 = createTypedClient(async () => ({ ok: false, status: 404, json: async () => ({}) }));\nif ((await c404.getTask(\"x\")).reason !== \"not-found\") throw new Error(\"A 404 maps to reason 'not-found'.\");\nconst cBad = createTypedClient(async () => ({ ok: true, status: 200, json: async () => ({ junk: true }) }));\nif ((await cBad.getTask(\"x\")).reason !== \"invalid\") throw new Error(\"A malformed body maps to reason 'invalid'.\");\nconst cBadList = createTypedClient(async () => ({ ok: true, status: 200, json: async () => ({ not: \"a list\" }) }));\nif ((await cBadList.listTasks()).reason !== \"invalid\") throw new Error(\"listTasks validates the whole list.\");",
+      "hint": "Check res.ok/res.status first (not-found), then validate the parsed body (invalid)."
+    }
+  ]
+}

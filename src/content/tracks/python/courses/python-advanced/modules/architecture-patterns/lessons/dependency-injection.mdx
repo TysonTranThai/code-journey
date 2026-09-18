@@ -1,0 +1,23 @@
+## Dependency injection without a framework
+
+DI means dependencies arrive from outside instead of being constructed inside.
+Python needs no framework for this — an `__init__` is a container:
+
+```python
+class ReportService:
+    def __init__(self, repo, clock, mailer):     # all seams visible
+        self._repo, self._clock, self._mailer = repo, clock, mailer
+```
+
+- **Constructor injection** is the default: required collaborators are
+  arguments. Everything the object needs is visible in the signature.
+- **Functional core, imperative shell**: keep decisions in pure functions
+  `(data) -> data`, push I/O to the edges. The shell is thin and boring;
+  the core is trivially testable.
+- **Composition root**: one place (often `main()` or a tiny factory) builds
+  real objects and wires them. Tests build a different graph with fakes.
+- **The clock, the RNG, the UUID factory are dependencies.** Time-dependent
+  logic is untestable only because `datetime.now()` is hidden inside. Inject
+  `clock` and pass a fixed fake in tests.
+- When construction graphs grow large, a tiny factory function beats a DI
+  framework: explicit, greppable, debuggable.

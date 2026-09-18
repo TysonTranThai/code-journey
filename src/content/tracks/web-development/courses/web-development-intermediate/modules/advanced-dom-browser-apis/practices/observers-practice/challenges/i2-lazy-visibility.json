@@ -1,0 +1,20 @@
+{
+  "id": "i2-lazy-visibility",
+  "title": "Lazy-Load on Visibility",
+  "prompt": "Model IntersectionObserver. Write `createLazyLoader()` returning { observe, intersect } — observe(el, onLoad) registers an element with a pending state; intersect(el) simulates it entering the viewport: the FIRST call marks it loaded, fires its onLoad(el) exactly once, and returns true; subsequent intersects return false and do nothing. Unknown elements return false.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function createLazyLoader() {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "onLoad fires exactly once",
+      "code": "const fn = new Function(code + \"\\nreturn { createLazyLoader };\");\nconst { createLazyLoader } = fn();\nconst loader = createLazyLoader();\nconst el = { id: \"img-1\" };\nlet loads = 0;\nloader.observe(el, () => loads++);\nif (loader.intersect(el) !== true) throw new Error(\"First intersection loads.\");\nif (loads !== 1) throw new Error(\"onLoad fired once.\");\nif (loader.intersect(el) !== false) throw new Error(\"Second intersection is a no-op.\");\nif (loads !== 1) throw new Error(\"Still exactly one load.\");\n",
+      "hint": "Store state on the element entry: pending → loaded."
+    },
+    {
+      "name": "unobserved elements never load",
+      "code": "const fn = new Function(code + \"\\nreturn { createLazyLoader };\");\nconst { createLazyLoader } = fn();\nconst loader = createLazyLoader();\nif (loader.intersect({ id: \"stranger\" }) !== false) {\n  throw new Error(\"Unknown element => false, no crash.\");\n}\n",
+      "hint": "Defensive lookup: no registration, no load."
+    }
+  ]
+}

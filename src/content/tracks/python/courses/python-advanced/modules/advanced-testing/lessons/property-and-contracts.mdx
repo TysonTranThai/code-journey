@@ -1,0 +1,46 @@
+## Example tests pin; property tests generalize
+
+An example test says: `sort([3,1,2]) == [1,2,3]`. A property says: *for every
+list*, sorting yields the same multiset, in non-decreasing order. Properties
+are where the real bugs live, because humans write examples for the cases they
+imagined and bugs live in the cases they didn't.
+
+Classic properties worth knowing by heart:
+
+- **Round-trip**: `decode(encode(x)) == x` (serialize/deserialize, escape/unescape).
+- **Invariant preservation**: the result is sorted / balanced / within range.
+- **Oracle**: compare against a slow, obviously-correct implementation.
+- **Idempotence**: `f(f(x)) == f(x)` (normalizers, deduplication).
+- **Metamorphic relations**: the same query in a different order returns the
+  same set; adding an item grows the count by exactly one.
+
+## How a property-based framework works
+
+Hypothesis-style flow, in four verbs:
+
+1. **Generate** — draw inputs from a strategy (ints, strings, lists of your
+   own strategies, and strategies you compose).
+2. **Shrink** — on failure, automatically reduce to the *minimal* failing input
+   (the empty list, the one bad string). The shrunk example is the bug report.
+3. **Replay** — failures are cached and re-run before new cases, so a fixed
+   bug stays fixed.
+4. **Derandomize** — a seed pinpoints a run; CI replays it exactly.
+
+Property tests complement, not replace, the pyramid: they're a unit-level
+technique with much deeper search.
+
+## Contracts at the boundaries
+
+Design-by-contract makes properties *executable*: preconditions (what must be
+true on entry), postconditions (what the caller gets), invariants (what never
+changes). In Python, `assert` documents and enforces cheaply (enable with
+`-O` off in tests, on in hot production paths only if measured). The trick
+that pays: **reuse the contract as the property** — the postcondition you wrote
+once becomes the property-based test's oracle.
+
+## Types are tests that run for free
+
+Type hints eliminate an entire class of property failures (wrong shapes,
+wrong None-ness) before any input is drawn. `mypy --strict` in CI plus
+property tests for behavior is the modern default: types for structure,
+properties for logic, examples for regressions.

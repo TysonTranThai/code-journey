@@ -1,0 +1,16 @@
+{
+  "id": "py-file-report-writer",
+  "title": "Mini Build: Report Writer",
+  "prompt": "inventory = {\"apples\": 12, \"bananas\": 7} is given. Write summary.csv with a header line name,qty then one line per item (apples,12 then bananas,7). No trailing newline needed on the last line.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "inventory = {\"apples\": 12, \"bananas\": 7}\n",
+  "tests": [
+    {
+      "name": "csv written correctly",
+      "code": "with open(\"summary.csv\", encoding=\"utf-8\") as _f:\n    _lines = [ _l for _l in _f.read().splitlines() if _l.strip() ]\nassert _lines == [\"name,qty\", \"apples,12\", \"bananas,7\"], f\"got {_lines}\"",
+      "hint": "write the header, then loop the dict writing f\"{name},{qty}\\n\" per line."
+    }
+  ],
+  "level": "mini-build"
+}

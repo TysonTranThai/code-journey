@@ -1,0 +1,40 @@
+A **reference** is a second name for an existing object. Once bound, a
+reference can never refer to anything else — assignment goes through it to
+the object. References must be initialized and can never be null.
+
+```cpp
+void double_it(int& out) { out *= 2; }       // non-const: writes through
+
+void report(const std::string& name) {       // const&: read-only borrow
+    std::cout << name << '\n';
+}
+
+int main_cj_reference() {
+    int x = 5;
+    int& alias = x;         // binding, not copying
+    alias = 9;              // x is now 9
+    double_it(x);           // x is now 18
+    return 0;
+}
+```
+
+## Choosing between by-value, by-reference, and const&
+
+| You want... | Pass by | Why |
+|---|---|---|
+| a private copy the callee may change | value | cheap for small types |
+| to modify the caller's object | `T&` | the callee writes through |
+| read-only access, no copy | `const T&` | zero copy, cannot write |
+| an optional "no object" state | pointer (later) or `std::optional` | references cannot be null |
+
+## Rules that keep references safe
+
+- Never return a reference to a local — the object dies before the caller reads it.
+- Range-based loops over containers should take `const auto&` (read) or `auto&` (modify).
+- A reference member makes a type non-assignable; usually prefer a pointer or value member.
+
+```cpp
+std::vector<int> data{3, 1, 2};
+for (const auto& value : data) std::cout << value;   // read: no copy
+for (auto& value : data) value *= 10;                // write in place
+```

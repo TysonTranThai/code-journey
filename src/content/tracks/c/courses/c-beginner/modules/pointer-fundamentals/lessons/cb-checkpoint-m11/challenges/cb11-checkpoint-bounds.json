@@ -1,0 +1,35 @@
+{
+  "id": "cb11-checkpoint-bounds",
+  "title": "Bounds Reporter",
+  "prompt": "Implement `void bounds(const int* a, int n, int *mn, int *mx)` storing the smallest element into *mn and the largest into *mx (n >= 1), and `int pick(const int* p, int alt)` returning *p when p is non-NULL else alt.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "bounds basic",
+      "code": "int a[] = {3, 1, 4};\nint mn, mx;\nbounds(a, 3, &mn, &mx);\nCHECK_EQ(mn, 1);\nCHECK_EQ(mx, 4);",
+      "hint": "Two scans or one — your choice."
+    },
+    {
+      "name": "bounds single",
+      "code": "int a[] = {7};\nint mn, mx;\nbounds(a, 1, &mn, &mx);\nCHECK_EQ(mn, 7);\nCHECK_EQ(mx, 7);",
+      "hint": "One element: min and max agree."
+    },
+    {
+      "name": "bounds negatives",
+      "code": "int a[] = {-5, -2, -9};\nint mn, mx;\nbounds(a, 3, &mn, &mx);\nCHECK_EQ(mn, -9);\nCHECK_EQ(mx, -2);",
+      "hint": "Works below zero."
+    },
+    {
+      "name": "pick null",
+      "code": "CHECK_EQ(pick(NULL, 5), 5);",
+      "hint": "NULL means alt."
+    },
+    {
+      "name": "pick real",
+      "code": "int x = 9;\nCHECK_EQ(pick(&x, 5), 9);",
+      "hint": "Non-NULL means *p."
+    }
+  ]
+}

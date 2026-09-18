@@ -1,0 +1,21 @@
+{
+  "id": "cint-p4-cmp-int",
+  "title": "A Safe Comparator",
+  "prompt": "Implement the overflow-proof comparator family:\n\n```c\nint cmp_int(const void *a, const void *b);        /* ints ascending */\nint cmp_long(const void *a, const void *b);       /* longs ascending */\nint cmp_str(const void *a, const void *b);        /* C strings ascending (strcmp) */\n```\n\nAll three follow the qsort contract. cmp_str receives pointers to char*\n(the array elements are char* values).",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "three-way contracts",
+      "code": "\nint x = 5, y = 9;\nCHECK_EQ(cmp_int(&x, &y) < 0, 1);\nCHECK_EQ(cmp_int(&y, &x) > 0, 1);\nCHECK_EQ(cmp_int(&x, &x), 0);\nint lo = -2000000000, hi = 2000000000;\nCHECK_EQ(cmp_int(&lo, &hi) < 0, 1);   /* subtraction would overflow the negation */\nlong a = 100, b = 200;\nCHECK_EQ(cmp_long(&a, &b) < 0, 1);\nconst char *s1 = \"apple\", *s2 = \"banana\";\nCHECK_EQ(cmp_str(&s1, &s2) < 0, 1);\nCHECK_EQ(cmp_str(&s2, &s2), 0);\n",
+      "hint": "return (x > y) - (x < y); for numbers; strcmp for strings."
+    },
+    {
+      "name": "qsort integration",
+      "code": "\nint arr[] = {5, 1, 4, 2, 8};\nqsort(arr, 5, sizeof(int), cmp_int);\nCHECK_EQ(arr[0], 1); CHECK_EQ(arr[4], 8);\nint neg[] = {-3, 7, -9};\nqsort(neg, 3, sizeof(int), cmp_int);\nCHECK_EQ(neg[0], -9); CHECK_EQ(neg[2], 7);\n",
+      "hint": "qsort calls your comparator; extremes must not break it."
+    }
+  ],
+  "level": "imitation"
+}

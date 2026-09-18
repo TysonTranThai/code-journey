@@ -1,0 +1,26 @@
+{
+  "id": "cpp13-filter-errors",
+  "title": "Filter Error Logs",
+  "prompt": "Implement `error_lines(log)` returning a new string containing only the lines that start with \"ERROR\", each kept as-is with its newline. No ERROR lines → empty string.",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <sstream>\n#include <string>\n\nstd::string error_lines(const std::string& log) {\n    // TODO\n}",
+  "tests": [
+    {
+      "name": "filters",
+      "code": "std::string out = error_lines(std::string{\"INFO ok\\nERROR bad\\nINFO fine\\nERROR worse\\n\"}); CHECK(out == std::string{\"ERROR bad\\nERROR worse\\n\"});",
+      "hint": "Only ERROR lines, order preserved, newlines kept."
+    },
+    {
+      "name": "none",
+      "code": "CHECK(error_lines(std::string{\"INFO a\\n\"}).empty());",
+      "hint": "No matches → empty output."
+    },
+    {
+      "name": "prefix only",
+      "code": "CHECK(error_lines(std::string{\"XERROR no\\nERROR yes\\n\"}) == std::string{\"ERROR yes\\n\"});",
+      "hint": "The line must START with ERROR — not merely contain it."
+    }
+  ],
+  "level": "real-world"
+}

@@ -1,0 +1,35 @@
+{
+  "id": "cb12-checkpoint-scale",
+  "title": "Scalar Scale & Locate",
+  "prompt": "Implement `void scale(int *a, int n, int k)` multiplying the first n elements by k IN PLACE, and `const int* last_of(const int *begin, const int *end, int target)` returning a pointer to the LAST occurrence of target (or end if absent).",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "scale",
+      "code": "int a[] = {1, 2, 3};\nscale(a, 3, 10);\nCHECK_EQ(a[0], 10);\nCHECK_EQ(a[2], 30);",
+      "hint": "Write through the pointer."
+    },
+    {
+      "name": "scale zero",
+      "code": "int a[] = {1, 2};\nscale(a, 2, 0);\nCHECK_EQ(a[0], 0);\nCHECK_EQ(a[1], 0);",
+      "hint": "k=0 zeroes everything."
+    },
+    {
+      "name": "last of",
+      "code": "int a[] = {1, 2, 1, 2};\nCHECK_EQ(last_of(a, a + 4, 2), &a[3]);",
+      "hint": "Scan forward, keep the latest match."
+    },
+    {
+      "name": "last of absent",
+      "code": "int a[] = {1, 2};\nCHECK_EQ(last_of(a, a + 2, 9), a + 2);",
+      "hint": "Absent: end is the contract."
+    },
+    {
+      "name": "last of only",
+      "code": "int a[] = {5};\nCHECK_EQ(last_of(a, a + 1, 5), a);",
+      "hint": "Single element."
+    }
+  ]
+}

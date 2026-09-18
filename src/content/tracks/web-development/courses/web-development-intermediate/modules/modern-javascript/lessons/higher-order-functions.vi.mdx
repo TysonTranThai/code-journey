@@ -1,0 +1,75 @@
+Ở Sơ cấp bạn đã _dùng_ `map` và `filter`. Ở đây ta coi function là
+giá trị đầu tiên đúng nghĩa — ý tưởng làm nên các method đó — và tự viết lại.
+
+## Function là một giá trị
+
+Function có thể nằm trong biến, được truyền vào function khác, và được trả về
+từ function khác. Function nhận hoặc trả về function gọi là
+**higher-order function (HOF)**:
+
+```js
+// nhận một function — HOF
+function repeat(times, action) {
+  for (let i = 0; i < times; i++) action(i);
+}
+repeat(3, (i) => console.log("run " + i));
+
+// trả về một function — HOF
+const multiply = (a) => (b) => a * b;
+const triple = multiply(3);
+triple(4); // 12
+```
+
+## map / filter / reduce, chính xác
+
+```js
+const orders = [
+  { id: 1, user: "ada", total: 120, status: "paid" },
+  { id: 2, user: "linh", total: 35, status: "open" },
+  { id: 3, user: "ada", total: 80, status: "paid" },
+];
+
+// map: cùng độ dài, biến đổi từng phần tử
+const totals = orders.map((o) => o.total); // [120, 35, 80]
+
+// filter: tập con, giữ nguyên hình dạng
+const paid = orders.filter((o) => o.status === "paid");
+
+// reduce: hình dạng bất kỳ → hình dạng bất kỳ khác
+const byUser = orders.reduce((acc, o) => {
+  acc[o.user] = (acc[o.user] ?? 0) + o.total;
+  return acc;
+}, {}); // { ada: 200, linh: 35 }
+```
+
+`reduce` đáng được nể trọng: nó là khái niệm tổng quát nhất. `map` và
+`filter` đều viết được bằng reduce, và cả grouping, counting, flattening
+nữa. Khi câu hỏi dữ liệu nghe như "gộp tất cả thành …", reduce là câu trả lời.
+
+## Chuỗi (chain) và giới hạn của nó
+
+```js
+const topAda = orders
+  .filter((o) => o.user === "ada")
+  .map((o) => o.total)
+  .reduce((sum, t) => sum + t, 0); // 200
+```
+
+Chain đọc từ trên xuống như một đường ống. Hai điều cần cảnh giác:
+
+- Mỗi bước sao chép mảng một lần. Với mảng khổng lồ chạy trong vòng lặp nóng,
+  một vòng `for` thắng ba lượt duyệt.
+- Chain dài hơn ~5 bước khó đọc hơn hai bước có tên riêng. Refactor thành các
+  function nhỏ có tên là bước đi đúng đắn ở trình độ trung cấp:
+
+```js
+const paidFor = (user) => orders.filter((o) => o.user === user && o.status === "paid");
+const sumTotals = (os) => os.reduce((s, o) => s + o.total, 0);
+sumTotals(paidFor("ada")); // 200
+```
+
+## Vì sao điều này quan trọng ở Trung cấp
+
+Biến đổi dữ liệu chiếm phần lớn công việc của ứng dụng. Bộ công cụ HOF — và
+biết khi nào _không_ nên dùng — là ranh giới giữa copy-paste vòng lặp và
+diễn đạt đúng ý định.

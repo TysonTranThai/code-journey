@@ -1,0 +1,25 @@
+{
+  "id": "cppi-checkpoint-modern",
+  "title": "Checkpoint: Describe a variant",
+  "prompt": "Implement `std::string describe(const std::variant<int, double, std::string>& v)` returning exactly `\"int: 42\"`, `\"double: 3.50\"` (always two decimals), or `\"string: hi\"` depending on the held alternative. Use `std::visit` with a generic lambda and `if constexpr` — no manual `index()` branching.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <sstream>\n#include <string>\n#include <variant>\n#include <iostream>\n\n// std::string describe(const std::variant<int, double, std::string>& v)\n",
+  "tests": [
+    {
+      "name": "int-case",
+      "code": "CHECK_EQ(describe(std::variant<int, double, std::string>{42}), std::string(\"int: 42\"));",
+      "hint": "The int branch prints the raw value."
+    },
+    {
+      "name": "double-case",
+      "code": "CHECK_EQ(describe(std::variant<int, double, std::string>{3.5}), std::string(\"double: 3.50\"));\nCHECK_EQ(describe(std::variant<int, double, std::string>{2.0}), std::string(\"double: 2.00\"));",
+      "hint": "Two decimals, always — std::fixed with precision 2."
+    },
+    {
+      "name": "string-case",
+      "code": "CHECK_EQ(describe(std::variant<int, double, std::string>{std::string(\"hi\")}), std::string(\"string: hi\"));",
+      "hint": "The string branch passes the text through."
+    }
+  ]
+}

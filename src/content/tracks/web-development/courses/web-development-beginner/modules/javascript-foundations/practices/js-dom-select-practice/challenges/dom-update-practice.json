@@ -1,0 +1,25 @@
+{
+  "id": "dom-update-practice",
+  "title": "Update the Page",
+  "prompt": "A page is loaded for you: a heading with id \"status\", a paragraph with class \"intro\", and an image with id \"hero\". JavaScript received the real element objects as `heading`, `intro`, and `hero` — do NOT call document.querySelector; use these variables directly.\n\n1. Set the heading's text to exactly: Pipeline running\n2. Add the class \"is-active\" to the intro paragraph.\n3. Set the hero image's src to \"/photos/dawn.jpg\" and give its alt text a meaningful description.",
+  "difficulty": "intermediate",
+  "boilerplate": "// heading, intro, hero are the real element objects\n\n// 1) heading text\n\n// 2) intro class\n\n// 3) hero image\n",
+  "tests": [
+    {
+      "name": "heading text set to Pipeline running",
+      "code": "function el() { return { classList: { add() {}, remove() {}, toggle() {} } }; }\nconst heading = el(), intro = el(), hero = el();\nnew Function(\"heading\", \"intro\", \"hero\", code)(heading, intro, hero);\nif (heading.textContent !== \"Pipeline running\") {\n  throw new Error('heading.textContent should be exactly \"Pipeline running\" — got \"' + heading.textContent + '\".');\n}",
+      "hint": "heading.textContent = \"Pipeline running\";"
+    },
+    {
+      "name": "intro gets is-active via classList.add",
+      "code": "const added = [];\nfunction el() { return { classList: { add: (c) => added.push(c), remove() {}, toggle() {} } }; }\nconst heading = el(), intro = el(), hero = el();\nnew Function(\"heading\", \"intro\", \"hero\", code)(heading, intro, hero);\nif (!added.includes(\"is-active\")) {\n  throw new Error('Call intro.classList.add(\"is-active\").');\n}",
+      "hint": "intro.classList.add(\"is-active\");"
+    },
+    {
+      "name": "hero src and alt set",
+      "code": "function el() { return { classList: { add() {}, remove() {}, toggle() {} } }; }\nconst heading = el(), intro = el(), hero = el();\nnew Function(\"heading\", \"intro\", \"hero\", code)(heading, intro, hero);\nif (hero.src !== \"/photos/dawn.jpg\") {\n  throw new Error('Set hero.src to \"/photos/dawn.jpg\".');\n}\nif (typeof hero.alt !== \"string\" || hero.alt.length < 8) {\n  throw new Error(\"Give the image a meaningful alt description (at least a few words).\");\n}",
+      "hint": "hero.src = \"/photos/dawn.jpg\"; hero.alt = \"Sunrise over a mountain lake\";"
+    }
+  ],
+  "level": "guided"
+}

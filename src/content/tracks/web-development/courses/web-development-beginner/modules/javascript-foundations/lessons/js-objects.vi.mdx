@@ -1,0 +1,75 @@
+Mảng là danh sách được đánh số. **Object** là tập hợp được gán nhãn:
+
+```js
+const learner = {
+  name: "Ada",
+  streak: 12,
+  level: "beginner",
+};
+```
+
+Mỗi cặp `key: value` là một **thuộc tính (property)**.
+
+## Đọc và ghi thuộc tính
+
+```js
+learner.name; // "Ada"   — truy cập bằng chấm (mặc định)
+learner.streak; // 12
+learner["name"]; // "Ada"   — truy cập bằng ngoặc (cần cho khóa động)
+
+learner.level = "confident beginner"; // cập nhật
+learner.badges = ["first-run"]; // thêm một thuộc tính mới
+```
+
+## Method — hàm làm thuộc tính
+
+```js
+const counter = {
+  count: 0,
+  increment() {
+    this.count++; // this = chính object đó
+  },
+};
+
+counter.increment();
+counter.count; // 1
+```
+
+Một thuộc tính mà giá trị của nó là một hàm là một **method**. Bên trong một method viết theo cách này, `this` tham chiếu đến chính object. Sẽ đào sâu sau; giờ chỉ cần nhận diện hình dạng.
+
+## Object + mảng: dữ liệu thật
+
+Dữ liệu trang thật là sự kết hợp này:
+
+```js
+const lessons = [
+  { title: "Variables", minutes: 10, done: true },
+  { title: "Functions", minutes: 14, done: false },
+  { title: "Arrays", minutes: 14, done: false },
+];
+
+lessons[1].title; // "Functions" — chỉ số, rồi thuộc tính
+lessons.filter((l) => !l.done); // những bài chưa xong
+lessons.find((l) => l.title === "Arrays"); // nguyên object
+```
+
+Đọc các biểu thức ghép từ ngoài vào trong. `lessons[1].title`: mảng → phần tử 1 → tiêu đề của nó. Hình dạng mảng-của-object này là thứ các API trả về (những bài cuối của Module 4) và là thứ bạn sẽ render thành các trang.
+
+## JSON — cùng hình dạng, dưới dạng văn bản
+
+```js
+const text = '{"name":"Ada","streak":12}';
+const parsed = JSON.parse(text); // chuỗi → object
+JSON.stringify(learner); // object → chuỗi
+```
+
+**JSON** (JavaScript Object Notation) là hình dạng dữ liệu này được tuần tự hóa thành chuỗi — lingua franca của các web API. `JSON.parse`/`stringify` chuyển đổi cả hai chiều; chúng sẽ xuất hiện trở lại trong bài về lưu trữ.
+
+## Bạn đã học được gì
+
+- Object literal: các cặp key/value; truy cập chấm theo mặc định, ngoặc cho khóa động
+- Thuộc tính bị thiếu đọc ra undefined; method là thuộc tính dạng hàm
+- Mảng của object mô hình hóa dữ liệu thật; truy cập ghép đọc từ ngoài vào trong
+- `JSON.parse`/`stringify` bắc cầu giữa object và chuỗi
+
+**Tiếp theo:** phần thưởng — chạm vào trang thật.

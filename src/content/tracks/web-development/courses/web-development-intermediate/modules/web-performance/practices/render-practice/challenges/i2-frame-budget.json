@@ -1,0 +1,20 @@
+{
+  "id": "i2-frame-budget",
+  "title": "Frame Budget Auditor",
+  "prompt": "Write `frameVerdict(tasks)` — tasks is an array of millisecond durations that all ran within ONE 16.7ms frame. Return \"jank\" if their sum exceeds 16.7, \"tight\" if it exceeds 12, otherwise \"smooth\". Also `longTaskCount(tasks)` returning how many SINGLE tasks exceed 50ms (the long-task threshold).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function frameVerdict(tasks) {\n  // your code\n}\n\nfunction longTaskCount(tasks) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "sums decide the verdict",
+      "code": "const fn = new Function(code + \"\\nreturn { frameVerdict, longTaskCount };\");\nconst { frameVerdict, longTaskCount } = fn();\nif (frameVerdict([3, 4, 5]) !== \"smooth\") throw new Error(\"12ms total is smooth.\");\nif (frameVerdict([6, 4, 4]) !== \"tight\") throw new Error(\"14ms is tight.\");\nif (frameVerdict([10, 10]) !== \"jank\") throw new Error(\"20ms blows the budget.\");\n",
+      "hint": "Sum, then two comparisons."
+    },
+    {
+      "name": "long tasks counted individually",
+      "code": "const fn = new Function(code + \"\\nreturn { frameVerdict, longTaskCount };\");\nconst { frameVerdict, longTaskCount } = fn();\nif (longTaskCount([60, 10, 55, 49]) !== 2) throw new Error(\"60 and 55 are long; 49 is not.\");\nif (longTaskCount([]) !== 0) throw new Error(\"Nothing runs, nothing counts.\");\n",
+      "hint": "filter with t > 50."
+    }
+  ]
+}

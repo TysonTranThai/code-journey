@@ -1,0 +1,31 @@
+{
+  "id": "javi-p8-frozen-clock",
+  "title": "Freeze Time Behind a Seam",
+  "prompt": "Design time-dependent logic testably inside `Solution`:\n- `interface Clock { java.time.Instant now(); }`\n- `static class Trial` with a constructor `(Clock clock)`; method\n  `boolean isActive(java.time.Instant start, java.time.Instant end)`\n  returning `!clock.now().isBefore(start) && clock.now().isBefore(end)`.\n- `static Clock frozenAt(String iso)` — a Clock pinned to that instant.\n\nThe tests freeze time instead of sleeping — the entire point of the seam.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "active within window",
+      "code": "\nSolution.Clock c = Solution.frozenAt(\"2026-09-14T12:00:00Z\");\nSolution.Trial t = new Solution.Trial(c);\ncheckEq(t.isActive(\n    java.time.Instant.parse(\"2026-09-14T00:00:00Z\"),\n    java.time.Instant.parse(\"2026-09-15T00:00:00Z\")), true, \"inside window\");\n",
+      "hint": "Frozen now (12:00) is after start and before end."
+    },
+    {
+      "name": "expired after end",
+      "code": "\nSolution.Clock c = Solution.frozenAt(\"2026-09-16T12:00:00Z\");\nSolution.Trial t = new Solution.Trial(c);\ncheckEq(t.isActive(\n    java.time.Instant.parse(\"2026-09-14T00:00:00Z\"),\n    java.time.Instant.parse(\"2026-09-15T00:00:00Z\")), false, \"after end\");\n",
+      "hint": "now past end → false."
+    },
+    {
+      "name": "not yet started",
+      "code": "\nSolution.Clock c = Solution.frozenAt(\"2026-09-13T12:00:00Z\");\nSolution.Trial t = new Solution.Trial(c);\ncheckEq(t.isActive(\n    java.time.Instant.parse(\"2026-09-14T00:00:00Z\"),\n    java.time.Instant.parse(\"2026-09-15T00:00:00Z\")), false, \"before start\");\n",
+      "hint": "now before start → false."
+    },
+    {
+      "name": "start instant itself is active",
+      "code": "\nSolution.Clock c = Solution.frozenAt(\"2026-09-14T00:00:00Z\");\nSolution.Trial t = new Solution.Trial(c);\ncheckEq(t.isActive(\n    java.time.Instant.parse(\"2026-09-14T00:00:00Z\"),\n    java.time.Instant.parse(\"2026-09-15T00:00:00Z\")), true, \"inclusive start\");\n",
+      "hint": "now == start must count as active — the boundary catches strict-comparison bugs."
+    }
+  ],
+  "level": "guided"
+}

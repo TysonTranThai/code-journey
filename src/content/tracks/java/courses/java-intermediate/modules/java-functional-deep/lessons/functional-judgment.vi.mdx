@@ -1,0 +1,30 @@
+## Composition hàm — và khi nào KHÔNG nên stream
+
+Stream compose được: `map` → `filter` → `sorted` → `collect` đọc như một
+pipeline dữ liệu. Các kiểu hàm cũng compose:
+
+```java
+Function<String, String> trim = String::trim;
+Function<String, String> lower = String::toLowerCase;
+Function<String, String> clean = trim.andThen(lower);
+```
+
+Nhưng kỹ năng trung cấp là *sự phán đoán*:
+
+**Dùng stream khi**: biến đổi dữ liệu, nhóm, reduction, công việc độc lập
+có thể song song.
+
+**Dùng vòng lặp khi**: cần thoát sớm (`break` dễ đọc hơn `takeWhile`),
+đang cập nhật trạng thái bên ngoài, cần index, hoặc bản stream cần ba
+collector lồng nhau mới diễn đạt được một ý.
+
+```java
+// vòng lặp rõ ràng
+for (int i = 0; i < xs.size(); i++) {
+    if (xs.get(i).matches(q)) return i;   // index + thoát sớm
+}
+// bản stream gượng ép
+IntStream.range(0, xs.size()).filter(i -> xs.get(i).matches(q)).findFirst().orElse(-1);
+```
+
+Vòng lặp không phải lỗi phong cách — nó là chương trình rõ hơn ở đây.

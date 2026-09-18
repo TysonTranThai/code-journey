@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m12-persistence",
+  "title": "Capstone seam 2: persistence round-trip",
+  "prompt": "Implement the pair `std::string serialize(const std::vector<Book>&)` and `std::vector<Book> deserialize(const std::string&)` with the record format `title|quantity` per line. `deserialize` skips blank lines, skips lines without `|`, and skips lines whose quantity is not a valid integer — one bad line never aborts the load. `Book` is `{std::string title; int quantity;}`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <sstream>\n#include <string>\n#include <vector>\n#include <iostream>\n\nstruct Book {\n    std::string title;\n    int quantity;\n};\n\n// std::string serialize(const std::vector<Book>& books)\n// std::vector<Book> deserialize(const std::string& content)\n",
+  "tests": [
+    {
+      "name": "roundtrip",
+      "code": "std::vector<Book> books{{\"C++ Primer\", 3}, {\"Effective Modern C++\", 1}};\nauto restored = deserialize(serialize(books));\nCHECK_EQ(restored.size(), 2);\nCHECK_EQ(restored[0].title, std::string(\"C++ Primer\"));\nCHECK_EQ(restored[0].quantity, 3);\nCHECK_EQ(restored[1].quantity, 1);",
+      "hint": "Serialize → deserialize must reproduce every record."
+    },
+    {
+      "name": "corrupt-lines",
+      "code": "auto restored = deserialize(std::string{\"good:2\\nbroken\\nX|notanumber\\nlast|5\\n\"});\nCHECK_EQ(restored.size(), 1);\nCHECK_EQ(restored[0].title, std::string(\"last\"));\nCHECK_EQ(restored[0].quantity, 5);",
+      "hint": "No '|' → skip; non-numeric quantity → skip. Only `last|5` survives."
+    },
+    {
+      "name": "empty-content",
+      "code": "CHECK(deserialize(std::string{\"\"}).empty());",
+      "hint": "Empty file loads as an empty library."
+    }
+  ],
+  "level": "real-world"
+}

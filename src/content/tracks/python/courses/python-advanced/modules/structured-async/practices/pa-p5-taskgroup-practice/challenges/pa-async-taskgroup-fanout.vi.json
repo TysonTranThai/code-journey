@@ -1,0 +1,14 @@
+{
+  "title": "Fan-out có cấu trúc với TaskGroup",
+  "prompt": "Cài `async def fetch_all(jobs)` với `jobs` là danh sách callable async không tham số:\n\n- chạy TẤT CẢ job đồng thời bên trong một `asyncio.TaskGroup`\n- trả về danh sách tuple `(index, value)` theo thứ tự ĐẦU VÀO\n- nếu job nào raise, fetch_all phải raise (không nuốt)\n\nGhi chú tất định: các job được chấm ngủ với thời lượng so le; tổng thời gian treo tường phải phản ánh tính đồng thời, và kết quả phải về theo thứ tự đầu vào bất kể thứ tự hoàn tất.",
+  "tests": [
+    {
+      "name": "Chạy đồng thời, kết quả theo thứ tự đầu vào",
+      "hint": "create_task cả ba trong TaskGroup, rồi đọc .result() theo index sau khi block thoát."
+    },
+    {
+      "name": "Lỗi lan truyền từ nhóm",
+      "hint": "TaskGroup gom lỗi vào ExceptionGroup; test dùng except* (3.11)."
+    }
+  ]
+}

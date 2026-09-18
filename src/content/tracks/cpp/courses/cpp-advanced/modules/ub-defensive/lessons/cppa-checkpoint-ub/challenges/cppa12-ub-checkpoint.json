@@ -1,0 +1,20 @@
+{
+  "id": "cppa12-ub-checkpoint",
+  "title": "Boundary Battery",
+  "prompt": "Implement all four checked operations. Adversarial extremes (INT_MAX, INT_MIN, empty vector, division by zero and INT_MIN/-1) must return nullopt — the naive versions are UB.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <climits>\n#include <cstdint>\n#include <optional>\n#include <string>\n#include <vector>\n\n// The defensive battery: every operation either returns its defined result\n// or std::nullopt when the operation would be undefined/unsafe.\nstd::optional<int> addChecked(int a, int b);\nstd::optional<int> mulChecked(int a, int b);\nstd::optional<int> atChecked(const std::vector<int>& v, std::size_t i);\nstd::optional<int> divChecked(int a, int b);\n",
+  "tests": [
+    {
+      "name": "addition and multiplication extremes",
+      "code": "CHECK(!addChecked(INT_MAX, 1).has_value());\nCHECK(!addChecked(INT_MIN, -1).has_value());\nCHECK(!mulChecked(INT_MAX, 2).has_value());\nCHECK(!mulChecked(INT_MIN, -1).has_value());\nCHECK_EQ(mulChecked(INT_MAX, 1).value_or(0), INT_MAX);\nCHECK_EQ(addChecked(INT_MAX, INT_MIN).value_or(0), -1);",
+      "hint": "Pre-check with wider arithmetic or the guard identities: b>0&&a>INT_MAX-b for add; for mul, long long product then range-check (special-case INT_MIN*-1)."
+    },
+    {
+      "name": "bounds and division",
+      "code": "std::vector<int> v{10, 20};\nCHECK_EQ(atChecked(v, 0).value_or(-1), 10);\nCHECK(!atChecked(v, 2).has_value());\nCHECK(!atChecked({}, 0).has_value());\nCHECK(!divChecked(7, 0).has_value());\nCHECK(!divChecked(INT_MIN, -1).has_value());\nCHECK_EQ(divChecked(7, 2).value_or(0), 3);\nCHECK_EQ(divChecked(-7, 2).value_or(0), -3);",
+      "hint": "atChecked: i >= v.size() -> nullopt. divChecked: b == 0 or (a == INT_MIN && b == -1) -> nullopt; C++ integer division truncates toward zero."
+    }
+  ]
+}

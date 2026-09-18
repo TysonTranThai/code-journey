@@ -1,0 +1,23 @@
+## Ba nguyên thủy
+
+- **Mutex** — một người giữ tại một thời điểm. Lựa chọn mặc định. Rẻ khi không tranh chấp (musl: một CAS trong fast path), đắt dưới contention.
+- **Khóa đọc/ghi** — nhiều reader HOẶC một writer. Chỉ thắng khi đọc áp đảo ghi *và* vùng tới hạn đủ dài để đáng kể; nếu không, sổ sách của nó thua mutex thường.
+- **Biến điều kiện** — cho thread ngủ đến khi trạng thái đổi. Luôn đi cặp với mutex, luôn chờ trong vòng lặp:
+
+```c
+pthread_mutex_lock(&mtx);
+while (!ready) {                       /* while, không phải if */
+    pthread_cond_wait(&cv, &mtx);
+}
+pthread_mutex_unlock(&mtx);
+```
+
+`while` không phải phong cách: `pthread_cond_wait` có thể trả về mà không ai signal (*spurious wakeup* được POSIX cho phép), và thread khác có thể tiêu thụ điều kiện giữa signal và thức dậy. Vòng lặp kiểm tra lại vị từ dưới khóa.
+
+## Rào chắn
+
+`pthread_barrier_wait` cho N thread gặp nhau tại biên pha; đúng một caller nhận `PTHREAD_BARRIER_SERIAL_THREAD`. Pha là cách thuật toán song song nói 'không ai đi tiếp đến khi mọi người đã đến'.
+
+## Cái giá của chúng
+
+Mọi khóa serialize *một cái gì đó*. Kỷ luật mô-đun này rèn: giữ vùng tới hạn nhỏ, không giữ khóa qua I/O, và đo contention trước khi đua đòi thứ gì phức tạp hơn.

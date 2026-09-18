@@ -1,0 +1,46 @@
+## RAII trong một câu
+
+**Bọc mọi tài nguyên trong một đối tượng mà destructor của nó sẽ giải phóng tài nguyên đó.** Lấy tài nguyên trong constructor, trả lại trong destructor. Vì destructor chạy xác định khi ra khỏi scope — kể cả khi có exception — tài nguyên không còn cách nào rò rỉ trong code viết tốt, thông thường.
+
+Bạn đã dùng RAII suốt từ đầu: `std::vector` sở hữu buffer heap của nó; `std::ifstream` sở hữu file handle (module 13); `std::lock_guard` sở hữu một khóa (Trung cấp). Bây giờ hãy làm điều đó thành ý thức:
+
+```cpp
+class FileGuard {                 // một lớp bọc RAII viết tay (để hiểu)
+public:
+    explicit FileGuard(std::FILE* f) : f_(f) {}
+    ~FileGuard() { if (f_) std::fclose(f_); }        // VIỆC trả tài nguyên xảy ra ở đây — luôn luôn
+    FileGuard(const FileGuard&) = delete;            // một owner: cấm sao chép
+    FileGuard& operator=(const FileGuard&) = delete;
+    std::FILE* get() const { return f_; }
+private:
+    std::FILE* f_;
+};
+```
+
+## std::unique_ptr: owner mặc định
+
+```cpp
+#include <memory>
+
+auto owned = std::make_unique<Report>("q3");   // đối tượng heap, MỘT owner
+owned->render();                                // dùng như con trỏ: ->
+// không có delete ở bất kỳ đâu — destructor tự giải phóng
+```
+
+- Đúng một owner; sao chép bị cấm (move *chuyển giao* sở hữu và làm nguồn rỗng).
+- Chi phí bằng không so với con trỏ thô.
+- `std::make_unique<T>(args...)` là cách tạo nó — không bao giờ `new`.
+
+## std::shared_ptr: khi thật sự có nhiều owner
+
+```cpp
+auto shared = std::make_shared<Sensor>();      // sở hữu theo bộ đếm tham chiếu
+auto alias = shared;                            // cả hai giữ nó sống; người cuối cùng dọn dẹp
+CHECK_EQ(alias.use_count(), 2);
+```
+
+Sở hữu dùng chung có chi phí thật (bộ đếm atomic, vòng đời "sống dai" bất ngờ, chu kỳ gây leak). Quy tắc người mới: mặc định `unique_ptr`, chỉ với tới `shared_ptr` khi có một *vòng đời* nhiều owner thật sự — và dù thế nào, hãy giữ các cái nhìn không-owning dưới dạng con trỏ thô/tham chiếu (observer), không bao giờ là các bản sao shared thêm.
+
+## weak_ptr (liếc qua)
+
+`std::weak_ptr` quan sát một shared_ptr mà không sở hữu — công cụ phá các chu kỳ sở hữu (cha↔con). Biết nó tồn tại; capstone không cần đến nó.

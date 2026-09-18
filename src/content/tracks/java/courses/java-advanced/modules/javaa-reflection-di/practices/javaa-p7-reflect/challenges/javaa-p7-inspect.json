@@ -1,0 +1,16 @@
+{
+  "id": "javaa-p7-inspect",
+  "title": "Inventory a class honestly",
+  "prompt": "Inside Solution, define `static class Widget { private int a; private String b; public int c; }` then:\n1. `static int declaredFieldCount()` — Widget.class.getDeclaredFields().length\n2. `static int accessibleFieldCount()` — Widget.class.getFields().length\n3. `static boolean knowsPrivate()` — true iff one of the DECLARED fields is named \"a\"\n(search by name; do not hardcode an index).\n4. `static String superName()` — Widget.class.getSuperclass().getName()",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "declared sees everything, accessible sees public",
+      "code": "\ncheckEq(Solution.declaredFieldCount(), 3, \"getDeclaredFields sees all visibility\");\ncheckEq(Solution.accessibleFieldCount(), 1, \"getFields sees only public\");\ncheckTrue(Solution.knowsPrivate(), \"private field found by name\");\ncheckEq(Solution.superName(), \"java.lang.Object\", \"default superclass\");\n",
+      "hint": "The two inventories differ exactly by visibility."
+    }
+  ],
+  "level": "guided"
+}

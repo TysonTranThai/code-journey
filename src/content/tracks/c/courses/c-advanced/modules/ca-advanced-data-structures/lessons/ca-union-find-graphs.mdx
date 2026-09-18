@@ -1,0 +1,17 @@
+## Disjoint sets in two arrays
+
+Union-find tracks *which set* each element belongs to, using a parent array:
+
+- **find(x)**: follow parents to the root.
+- **union(a, b)**: attach one root under the other.
+
+Two optimizations turn worst-case chains into near-constant time:
+
+- **path compression**: after find, point every visited node straight at the root;
+- **union by rank/size**: attach the smaller tree under the larger.
+
+With both, amortized cost per operation is effectively constant — the famous inverse-Ackermann bound. This structure runs Kruskal's MST and connectivity queries in competitive and production graph code alike.
+
+## Adjacency lists from edge arrays
+
+Counting sort the edges by source into an offset array (CSR layout): `offset[v]` gives where v's neighbors start. Memory: exactly V + E entries. This is the layout GPU and graph-engine code uses because it is compact and iteration is a plain array walk.

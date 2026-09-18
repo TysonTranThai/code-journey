@@ -1,0 +1,21 @@
+{
+  "id": "pa-dm-mixin-order",
+  "title": "Mixin that must come first",
+  "prompt": "You are given a base `Base` with `label()` returning 'base'. Build a class `Widget` from mixins and Base such that `Widget().label()` returns 'widget+base':\n\n- `LabelMixin` overrides `label()` to return `'widget+' + super().label()`\n- the class statement must be `class Widget(<one or more mixins>, Base)` — the mixin must run BEFORE Base's method\n- also return the MRO class names (excluding object) from `mro_names()` as a list",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class Base:\n    def label(self):\n        return 'base'\n\n# TODO: define LabelMixin and Widget\ndef widget_label():\n    return Widget().label()\n\ndef mro_names():\n    return [c.__name__ for c in Widget.__mro__ if c is not object]",
+  "tests": [
+    {
+      "name": "mixin wraps the base result",
+      "code": "assert widget_label() == 'widget+base', f\"got {widget_label()}\"\nprint('ok')",
+      "hint": "In the class statement, earlier bases are earlier in the MRO."
+    },
+    {
+      "name": "MRO places the mixin before Base",
+      "code": "names = mro_names()\nassert names == ['Widget', 'LabelMixin', 'Base'], f\"MRO: {names}\"\nprint('ok')",
+      "hint": "class Widget(LabelMixin, Base) linearizes to Widget, LabelMixin, Base, object."
+    }
+  ],
+  "level": "independent"
+}

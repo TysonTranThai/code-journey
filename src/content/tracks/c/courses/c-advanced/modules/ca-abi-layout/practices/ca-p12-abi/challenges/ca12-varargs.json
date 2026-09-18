@@ -1,0 +1,21 @@
+{
+  "id": "ca12-varargs",
+  "title": "va_list Windows onto the Convention",
+  "prompt": "Implement `int sum_ints(int count, ...)` using va_start/va_arg/va_end to total `count` int arguments, and `double sum_dbls(int count, ...)` doing the same for doubles. The header is the standard's only portable view of how variadic arguments physically travel.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#include <stdarg.h>\n",
+  "tests": [
+    {
+      "name": "ints through va_arg",
+      "code": "CHECK_EQ(sum_ints(4, 10, 20, 30, 40), 100);",
+      "hint": "Each va_arg(int) fetch advances the window once."
+    },
+    {
+      "name": "doubles through va_arg",
+      "code": "CHECK_EQ((int)sum_dbls(3, 1.5, 2.5, 3.0), 7);",
+      "hint": "Floating arguments travel by their own rules; va_arg(double) reads them portably. 1.5+2.5+3.0 = 7.0."
+    }
+  ],
+  "level": "combination"
+}

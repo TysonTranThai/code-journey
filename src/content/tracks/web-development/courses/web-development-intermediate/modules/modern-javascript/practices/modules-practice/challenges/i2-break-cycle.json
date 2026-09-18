@@ -1,0 +1,25 @@
+{
+  "id": "i2-break-cycle",
+  "title": "Break a Circular Import",
+  "prompt": "Two modules depend on each other: `user.js` needs `formatName`, and `format.js` needs `getUser`. Write `extractShared(code)` — given a string describing the two modules, return the name of the piece that should move to a third shared module.\n\nActually, simpler and more real: write `findCycle(graph)` that detects a circular dependency. `graph` is an object mapping module name to an array of names it imports. Return `true` if any cycle exists, `false` otherwise.",
+  "difficulty": "intermediate",
+  "level": "combination",
+  "boilerplate": "function findCycle(graph) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "detects a two-module cycle",
+      "code": "const fn = new Function(code + \"\\nreturn { findCycle };\");\nconst { findCycle } = fn();\nif (findCycle({ a: [\"b\"], b: [\"a\"] }) !== true) throw new Error(\"a→b→a is a cycle: expect true.\");",
+      "hint": "Walk the graph depth-first; if you reach a node already on the current path, that is a cycle."
+    },
+    {
+      "name": "accepts an acyclic graph",
+      "code": "const fn = new Function(code + \"\\nreturn { findCycle };\");\nconst { findCycle } = fn();\nif (findCycle({ a: [\"b\", \"c\"], b: [\"d\"], c: [\"d\"], d: [] }) !== false) throw new Error(\"This graph has no cycle: expect false.\");",
+      "hint": "Track two sets: visited (done) and onPath (current recursion)."
+    },
+    {
+      "name": "handles self-import",
+      "code": "const fn = new Function(code + \"\\nreturn { findCycle };\");\nconst { findCycle } = fn();\nif (findCycle({ a: [\"a\"] }) !== true) throw new Error(\"A module importing itself is a cycle.\");",
+      "hint": "a→a means when you visit a and see a again on the current path."
+    }
+  ]
+}

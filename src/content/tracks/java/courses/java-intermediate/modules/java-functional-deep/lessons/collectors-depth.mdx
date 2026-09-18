@@ -1,0 +1,25 @@
+## Collectors: reshaping data in one pass
+
+Beginner streams end at `collect(toList())`. The real power is reshaping:
+
+```java
+// group orders by customer
+Map<String, List<Order>> byCustomer =
+    orders.stream().collect(Collectors.groupingBy(Order::customer));
+
+// count per group — groupingBy + counting downstream
+Map<String, Long> counts =
+    words.stream().collect(Collectors.groupingBy(w -> w, Collectors.counting()));
+
+// partition into two buckets by a predicate
+Map<Boolean, List<Integer>> parts =
+    nums.stream().collect(Collectors.partitioningBy(n -> n % 2 == 0));
+
+// toMap with a merge function (duplicate keys otherwise explode)
+Map<String, Integer> merged =
+    sales.stream().collect(Collectors.toMap(
+        Sale::region, Sale::amount, Integer::sum));
+```
+
+`teeing` runs two collectors at once and merges their results — perfect
+for "average and max" style passes over one stream.

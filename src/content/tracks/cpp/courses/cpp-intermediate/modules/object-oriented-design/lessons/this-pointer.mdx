@@ -1,0 +1,40 @@
+Inside every non-static member function, `this` is the address of the object
+the call runs on. You rarely *write* it — `balance_` means `this->balance_` —
+but you use it deliberately in three places.
+
+```cpp
+#include <string>
+
+class Account {
+public:
+    Account& deposit(long cents) {          // returning *this enables chaining
+        balance_ += cents;
+        return *this;
+    }
+    Account& withdraw(long cents) {
+        balance_ -= cents;
+        return *this;
+    }
+    bool same_as(const Account& other) const {
+        return this == &other;               // identity: addresses compared
+    }
+    long balance() const { return balance_; }
+
+private:
+    long balance_{0};
+};
+
+// chaining: a.deposit(100).withdraw(30).deposit(5);
+```
+
+## The three deliberate uses
+
+1. **Return `*this`** by reference for chaining and for assignment operators
+   (Module 4's `operator=` does exactly this).
+2. **Identity comparisons** — `this == &other` answers "is it literally the
+   same object?" (distinct from `==` meaning equal values).
+3. **Disambiguation** — when a parameter shadows a member, `this->name` picks
+   the member; better, rename instead.
+
+In `const` member functions, `this` is `const Account*` — that is the whole
+mechanism by which const propagates to members.

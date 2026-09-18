@@ -1,0 +1,26 @@
+## Lưới case biên và tính xác định
+
+Suite test trình trung cấp săn *biên*:
+
+- **rỗng / một / nhiều** — ba kích thước mọi hành vi collection phải thỏa
+- **0, min, max** — biên số học (0, Integer.MIN_VALUE, MAX_VALUE)
+- **đầu / cuối / giữa** — logic nhạy cảm vị trí
+- **key trùng và key vắng** — ngữ nghĩa map
+- **null vs rỗng vs blank** — ba kiểu "không có gì" khác nhau
+
+```java
+// lưới biên cho hàm giảm giá
+checkEq(discount(0), 0, "giá 0");
+checkEq(discount(1), 1, "giá nhỏ nhất");
+checkEq(discount(Integer.MAX_VALUE), ..., "giá lớn nhất");
+```
+
+Quy tắc xác định:
+- không bao giờ assert trên toString của collection không thứ tự (thứ tự
+  là ngẫu nhiên)
+- sort hoặc so như set khi thứ tự không quan trọng
+- seed cố định cho random; đồng hồ đóng băng cho thời gian
+- test *thi thoảng* fail còn tệ hơn test luôn fail — sửa hoặc xóa ngay
+  hôm nay
+
+Lưới hồi quy: khi sửa một bug, thêm test lẽ ra bắt được nó — vĩnh viễn.

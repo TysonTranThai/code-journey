@@ -1,0 +1,34 @@
+Test là code chạy code của bạn và phàn nàn khi hiện thực khác kỳ vọng. Vậy thôi — cái khó là _phàn nàn về điều gì_.
+
+## Test mua cho bạn điều gì
+
+- **Tự tin để thay đổi.** Code không có test bị hóa đá: không ai dám đụng vào. Code có test có thể refactor vô tư — test sẽ báo nếu hành vi đổi.
+- **Tài liệu chạy được.** "Hàm này xử lý giỏ hàng rỗng thế nào?" — đọc test của nó.
+- **Gỡ lỗi nhanh hơn.** Khi có gì đó hỏng, test failing chỉ đúng _ở đâu_ trước khi bạn mở trình duyệt.
+
+## Kim tự tháp
+
+```text
+        /  E2E  \        ít — cả hệ thống, chậm, dễ gãy
+       / Integr. \       vừa — nhiều module cùng chạy
+      /   Unit    \      nhiều — một hàm, nhanh, chính xác
+```
+
+- **Unit test** trả lời: _hàm này đúng với những input này không?_ Mili giây. Hàng trăm cái.
+- **Integration test** trả lời: _các module có phối hợp đúng không?_ (hàm của bạn + localStorage thật, route của bạn + DB thật).
+- **E2E test** trả lời: _người dùng có làm được việc thật không?_ Mỗi cái tốn vài giây; chỉ dành cho luồng quan trọng.
+
+## Một unit test tốt trông thế nào
+
+- **Một hành vi mỗi test.** Tên nói rõ hành vi: `rejects negative quantities` — không phải `testCart4`.
+- **Arrange–Act–Assert.** Dựng input, làm đúng một việc, kiểm tra đúng một kết quả.
+- **Độc lập.** Không test nào phụ thuộc test khác đã chạy, hay vào thứ tự chạy.
+- **Nhanh.** Nếu bộ test mất vài phút, bạn sẽ ngừng chạy nó, và nó không còn bảo vệ gì nữa.
+
+## Khi test nói dối
+
+Test có thể sai theo hai hướng: pass trong khi code hỏng (assertion yếu — chỉ assert "không ném lỗi"), hoặc fail trong khi code đúng (test quá gắt, assert chi tiết hiện thực). Cả hai phá hủy niềm tin. Hãy assert _hành vi quan sát được_.
+
+## Coverage là chuột báo khói, không phải mục tiêu
+
+100% coverage chứng minh các dòng đã chạy, không chứng minh hành vi đúng. Đuổi theo con số sinh ra test vô dụng. Hãy dùng coverage để tìm _vùng chưa được test_, rồi quyết định vùng nào xứng đáng có test thật.

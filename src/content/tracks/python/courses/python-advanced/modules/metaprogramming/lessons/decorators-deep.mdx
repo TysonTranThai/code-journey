@@ -1,0 +1,59 @@
+## Decorators beyond the basics
+
+You know `@decorator` wraps a function. Advanced usage is about **preserving
+identity**, **taking arguments**, and **decorating classes**.
+
+```python
+import functools
+
+def timed(fn):
+    @functools.wraps(fn)                # keep __name__, __doc__, __wrapped__
+    def wrapper(*args, **kwargs):
+        import time
+        start = time.perf_counter()
+        try:
+            return fn(*args, **kwargs)
+        finally:
+            print(f"{fn.__name__}: {time.perf_counter() - start:.6f}s")
+    return wrapper
+```
+
+Without `functools.wraps`, the wrapper *replaces* the function's metadata —
+breaking introspection, docs, and debuggers.
+
+**Decorator factories** take arguments and return the real decorator:
+
+```python
+def retry(times):
+    def decorator(fn):
+        @functools.wraps(fn)
+        def wrapper(*args, **kwargs):
+            for attempt in range(1, times + 1):
+                try:
+                    return fn(*args, **kwargs)
+                except Exception:
+                    if attempt == times:
+                        raise
+        return wrapper
+    return decorator
+
+@retry(times=3)
+def flaky(): ...
+```
+
+**Class decorators** receive and return the class — a lightweight alternative
+to mixins or metaclasses when you only need to patch or register:
+
+```python
+def final(cls):
+    cls.__final__ = True
+    return cls
+
+@final
+class Config: ...
+```
+
+One subtlety professionals hit in production: a decorator applied to *methods*
+must survive descriptor lookup — `functools.wraps` copies `__wrapped__`, so
+`inspect.signature` still sees the original parameters. And stacking order is
+bottom-up: the decorator closest to the `def` runs first (outermost last).

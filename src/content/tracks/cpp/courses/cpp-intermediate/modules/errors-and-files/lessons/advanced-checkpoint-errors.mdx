@@ -1,0 +1,17 @@
+`parse_config_value` is the module's exam: it combines custom exception
+design (Module lesson 2), line-based parsing (lesson 4), and accurate
+diagnostics.
+
+The three failure modes your parser must distinguish:
+
+1. a `value=` line whose payload is empty or non-numeric →
+   `ConfigError` with the real line number
+2. no `value=` line at all → `ConfigError` with the missing-value message
+3. a valid line → return the number
+
+The line counter is the part that fails casually-written solutions:
+increment per line *before* inspecting it, and count the final line even
+when the content does not end with `\n`.
+
+Tests assert on `e.line_no()` as a string field — proof that structured
+exceptions carry more than a message can.

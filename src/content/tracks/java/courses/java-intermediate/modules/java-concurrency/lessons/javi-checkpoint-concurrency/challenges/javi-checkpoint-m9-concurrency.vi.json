@@ -1,0 +1,18 @@
+{
+  "title": "Bộ đếm từ song song",
+  "prompt": "Xây `Solution`:\n- `static Map<String, Integer> countWords(List<String> chunks, int threads)`:\n  - chia list chunk thành `threads` sublist (như parallelSum)\n  - mỗi thread đếm từ trong các chunk của nó vào một\n    `HashMap<String, Integer>` CỤC BỘ riêng\n  - sau khi join hết thread, MERGE các map thành một\n  - trả map đã merge\n\nMerge phải xảy ra sau mọi join — trước đó, map cục bộ của thread được\ngiam giữ và an toàn. threads <= 0 → map rỗng; chunk rỗng thì ok.",
+  "tests": [
+    {
+      "name": "Số đếm chính xác qua các thread",
+      "hint": "Ba thread, rồi merge — tổng phải chính xác."
+    },
+    {
+      "name": "Thứ tự chunk không quan trọng",
+      "hint": "Cùng tổng bất kể cách chia."
+    },
+    {
+      "name": "Guard",
+      "hint": "Input rỗng hoặc threads <= 0 → map rỗng."
+    }
+  ]
+}

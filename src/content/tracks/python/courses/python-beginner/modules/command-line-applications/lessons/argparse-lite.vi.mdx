@@ -1,0 +1,23 @@
+Menu ép cứng cuộc hội thoại. **Tham số dòng lệnh** cho phép người dùng nói trước:
+
+```bash
+python todo.py add "mua sữa"
+python todo.py list
+```
+
+Module thư viện chuẩn cho việc này là `argparse` — đây là phần cơ bản:
+
+```python
+import argparse
+
+parser = argparse.ArgumentParser(description="Todo CLI")
+parser.add_argument("action", choices=["add", "list", "done"])
+parser.add_argument("text", nargs="?")     # từ/cụm từ bổ sung tùy chọn
+args = parser.parse_args()
+
+print(args.action, args.text)
+```
+
+`parse_args()` đọc `sys.argv` giúp bạn, kiểm tra choices, và thậm chí in hướng
+dẫn với `-h`. Dùng sai thoát với thông báo lỗi rõ ràng thay vì sập với
+traceback — hành vi chuyên nghiệp miễn phí.

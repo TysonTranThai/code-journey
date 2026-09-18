@@ -1,0 +1,14 @@
+{
+  "title": "Specialize Vector3<bool> đóng gói bằng bit",
+  "prompt": "`Vector3<T>` tổng quát lãng phí một byte cho mỗi bool. Hãy viết **full specialization** `Vector3<bool>` gói ba cờ vào một biến `unsigned` và báo `storage = \"bit-packed\"`.",
+  "tests": [
+    {
+      "name": "specialization báo bit-packed",
+      "hint": "template <> struct Vector3<bool> { ... static constexpr const char* storage = \"bit-packed\"; };"
+    },
+    {
+      "name": "bit round-trip độc lập",
+      "hint": "set: bits_ |= (1u << i) khi true, bits_ &= ~(1u << i) khi false; get: (bits_ >> i) & 1u."
+    }
+  ]
+}

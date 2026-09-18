@@ -1,0 +1,37 @@
+## Constructor: sinh ra đã hợp lệ
+
+Một constructor chạy tự động khi đối tượng được tạo. Nhiệm vụ của nó là để đối tượng **hợp lệ** — không có khung thời gian "chưa khởi tạo rồi sửa sau":
+
+```cpp
+class Timer {
+public:
+    explicit Timer(std::string name) : name_(std::move(name)), start_(std::chrono::steady_clock::now()) {}
+
+private:
+    std::string name_;
+    std::chrono::steady_clock::time_point start_;
+};
+```
+
+- **Danh sách khởi tạo thành viên** (sau `:`) khởi tạo thành viên trực tiếp — ưu tiên hơn gán trong thân hàm.
+- `explicit` chặn các chuyển đổi bất ngờ từ một đối số (`Timer t = "x";` sẽ không biên dịch — tốt).
+- `std::move(name)` chuyển "ruột" của chuỗi vào thành viên thay vì sao chép (thư viện chuẩn làm điều này khắp nơi; bạn dùng `std::move` trong constructor, không bao giờ trên đối tượng const, và không tự tiện trên biến cục bộ ngay trước lần dùng cuối nếu không có lý do — module 12 sẽ nhắc lại).
+
+## Destructor: sinh ra hợp lệ, chết đi sạch sẽ
+
+Destructor `~Timer()` chạy tự động khi ra khỏi scope, theo thứ tự dựng ngược. Ở trình độ Cơ bản bạn hiếm khi tự viết nó (các thành viên tự dọn dẹp — lời hứa RAII của module 12), nhưng bạn phải biết nó tồn tại và chạy **xác định**: đó là lý do C++ không có `finally` và không cần.
+
+## Hàm thành viên const
+
+```cpp
+long long balance() const { return balance_cents_; }   // hứa: không sửa gì cả
+```
+
+`const` sau danh sách tham số nghĩa là "gọi hàm này không sửa đối tượng". Đối tượng non-const và tham chiếu const (tức gần như mọi tham số trong code viết tốt) chỉ gọi được các hàm const — nên hãy thêm const cho mọi hàm chỉ đọc, nếu không API của bạn sẽ vô dụng khi truyền qua `const BankAccount&`.
+
+## Kỷ luật, tóm tắt
+
+- Constructor: làm mọi thành viên hợp lệ.
+- Hàm: thực thi bất biến ở mọi lần sửa.
+- const cho mọi hàm chỉ đọc.
+- Mọi thứ còn lại giữ private.

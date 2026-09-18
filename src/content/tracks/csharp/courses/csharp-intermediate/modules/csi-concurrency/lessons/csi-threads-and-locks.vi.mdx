@@ -1,0 +1,59 @@
+## Đồng thời vs song song, thread vs pool
+
+ĐỒNG THỜI là về cấu trúc (xử lý nhiều việc cùng lúc); SONG SONG là về thực
+thi (làm nhiều việc thật sự cùng một lúc). `Thread` là một làn thực thi của
+OS; `ThreadPool` tái sử dụng một bể thread để không trả phí tạo thread cho
+từng work item — `Task.Run` xếp hàng vào bể (task ở Module 9 chạy ở đó).
+
+## Race: read-modify-write là ba bước
+
+`_count++` biên dịch thành đọc, cộng, ghi. Hai thread chen nhau có thể cùng
+đọc 5 và cùng ghi 6 — một lần tăng biến mất:
+
+```csharp
+int v = _count;      // thread A đọc 5
+// ...thread B đọc 5, ghi 6...
+_count = v + 1;      // thread A ghi 6 — lần tăng của B mất
+```
+
+Race không đều và phụ thuộc máy — lớp bug khó chịu nhất. Bất kỳ state chia
+sẻ mutable nào bị hai thread chạm mà không đồng bộ đều là race theo định
+nghĩa, kể cả khi test chưa bắt được.
+
+## lock: loại trừ lẫn nhau
+
+```csharp
+private readonly object _gate = new();
+lock (_gate)
+{
+    _count = _count + 1;   // mỗi lúc chỉ một thread ở trong
+}
+```
+
+`lock` là đường của `Monitor.Enter/Exit`. Nguyên tắc: lock trên object
+PRIVATE readonly (lock `this` hoặc Type cho phép người lạ chặn bạn); giữ
+vùng tối giản; mọi thread chạm state phải dùng CÙNG gate — một accessor
+không đồng bộ là mở lại race.
+
+## Interlocked: phép toán nguyên tử nhỏ
+
+Với cập nhật một biến, `Interlocked.Increment/Decrement/Add/Exchange/
+CompareExchange` làm read-modify-write nguyên tử không cần lock:
+
+```csharp
+Interlocked.Increment(ref _count);   // chính xác dưới bất kỳ tranh chấp nào
+```
+
+Ưu tiên Interlocked cho bộ đếm; `lock` cho bất biến nhiều bước.
+
+## Tầm nhìn bộ nhớ (khái niệm)
+
+Mỗi thread có thể cache giá trị field; không đồng bộ thì một thread có thể
+thấy dữ liệu cũ. `lock` và Interlocked đều ngầm memory barrier — ghi trở
+nên hiển thị khi thoát. Đừng rắc `volatile`; đồng bộ đúng way thì tầm nhìn
+theo đúng.
+
+## Kiểm tra hiểu biết
+
+- Vì sao `++` có thể mất cập nhật? (Read-modify-write chen nhau giữa các thread.)
+- `lock(this)` sai ở đâu? (Code ngoài có thể lock cùng object — nguy cơ chặn/deadlock.)

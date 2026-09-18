@@ -1,0 +1,16 @@
+## Cổng kiểm tra (mini-build)
+
+Lắp các mảnh thành một pipeline đơn hàng có thể ghép:
+
+1. `IOrderValidator.IsValid(decimal amount)` — nghiệp vụ (amount > 0).
+2. `IOrderRepository.Save(Order order)` — ranh giới lưu trữ.
+3. `IAuditLog.Record(string message)` — nhật ký audit.
+4. `OrderProcessor(IOrderValidator, IOrderRepository, IAuditLog)` —
+   inject qua constructor; `Process(decimal amount)` trả `"ok:<id>"`
+   khi hợp lệ (repository lưu, audit ghi), nếu không `"rejected"`.
+5. `BuildProcessor(IOrderRepository repo, IAuditLog audit)` — composition
+   root: đăng ký validator singleton và processor transient qua
+   `TinyContainer` được cấp, resolve và trả processor.
+
+Order: `record Order(int Id, decimal Amount)`. Repository sinh id bắt đầu
+từ 1.

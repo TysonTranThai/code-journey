@@ -1,0 +1,21 @@
+## Measure first: the discipline
+
+Every performance claim in this module is graded the same way professionals
+verify: **count the work, don't guess at the clock.** Wall-clock on a shared
+machine is noisy; call counts, query counts, and allocation counts are facts.
+
+The workflow:
+
+1. **Establish a baseline** — the current numbers (latency, throughput,
+   calls to the expensive thing).
+2. **Attribute** — find where the work actually goes (next lesson: cProfile).
+3. **Hypothesize** — "the O(n²) membership test dominates", "we re-fetch the
+   same rows 50 times".
+4. **Change one thing.**
+5. **Verify** — re-measure the SAME metric. Keep the win, or revert.
+
+Premature optimization has a precise meaning here: changing code before step 1
+exists. `timeit` is the tool for micro-benchmarks (it disables GC and repeats
+enough times to beat noise); `time.perf_counter()` is the wall-clock tool for
+in-process timing; **but for graded correctness of an optimization, count
+operations** — a memoization win is `calls: 13529 → 39`, not a fuzzy x2.

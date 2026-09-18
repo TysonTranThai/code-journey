@@ -1,0 +1,42 @@
+A **class** bundles state (attributes) with the behavior that operates on it
+(methods). `__init__` runs at creation; `self` is the instance being worked on:
+
+```python
+class Book:
+    def __init__(self, title, pages):
+        self.title = title
+        self.pages = pages
+
+    def reading_time(self, minutes_per_page=2):
+        return self.pages * minutes_per_page
+
+book = Book("Fluent Python", 780)
+book.reading_time()        # 1560 — method call binds book as self
+```
+
+## Two dunders every serious class defines
+
+- `__repr__`: **unambiguous**, for developers — ideally code that rebuilds the object.
+- `__str__`: **readable**, for end users (falls back to `__repr__` if absent).
+
+```python
+class Book:
+    def __init__(self, title):
+        self.title = title
+
+    def __repr__(self):
+        return f"Book({self.title!r})"
+
+    def __str__(self):
+        return self.title
+```
+
+In a REPL or traceback you see the `repr`; in `print()` you see the `str`.
+Without them you get `<Book object at 0x...>` — useless when debugging.
+
+## Class attributes vs instance attributes
+
+An attribute assigned at class level is **shared** by all instances
+(constants, counters). Instance attributes (assigned via `self.`) belong to
+one object. Default to instance attributes; reach for class attributes only
+for genuinely shared data.

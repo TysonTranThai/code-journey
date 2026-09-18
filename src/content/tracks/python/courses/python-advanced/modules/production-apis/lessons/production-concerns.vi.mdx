@@ -1,0 +1,71 @@
+Một bản demo chỉ xử lý happy path. Một dịch vụ phải sống sót qua 10 giờ sáng
+ngày thứ ba. Khoảng cách đó là một nắm cơ chế nhỏ — mỗi cơ chế là một hàm,
+không phải một framework.
+
+## Rate limiting: token bucket
+
+Thuật toán cổ điển nhỏ đến mức có thể thuộc lòng:
+
+```python
+class TokenBucket:
+    def __init__(self, rate, capacity):
+        self.rate, self.capacity = rate, capacity      # token/giây, sức chứa burst
+        self.tokens, self.updated = capacity, 0.0
+
+    def allow(self, now):
+        self.tokens = min(self.capacity,
+                          self.tokens + (now - self.updated) * self.rate)
+        self.updated = now
+        if self.tokens >= 1:
+            self.tokens -= 1
+            return True
+        return False
+```
+
+Requests được nạp lại `rate` token mỗi giây; mỗi request tốn một token. Burst
+tới `capacity` đi qua ngay lập tức, tải kéo dài bị chặn ở `rate`, và câu trả
+lời cho "nhanh quá" là **429**. Chú ý mánh thiết kế: `now` là tham số — bucket
+*xác định được* và test được, vì thời gian được tiêm vào.
+
+## Health check: liveness và readiness
+
+- **Liveness** (`/healthz`): "tiến trình còn sống không?" — luôn 200 trừ khi
+  tiến trình bị treo. Không sống thì khởi động lại tôi.
+- **Readiness** (`/readyz`): "ngay lúc này tôi có phục vụ được không?" — kiểm
+  tra từng dependency (ping database, ping cache). Bất kỳ lỗi nào → 503, và
+  load balancer ngừng routing traffic tới đây *mà không giết tiến trình*.
+
+Một readiness probe crash khi dependency hỏng là tự đánh bại mục đích của chính
+nó: nó phải catch, ghi nhận và báo cáo — `{"ready": false, "checks": {"db": false}}`.
+
+## Graceful degradation
+
+Khi một dependency không-critical chết, dịch vụ nên mất một tính năng, không
+mất mạng sống. Gợi ý sản phẩm không khả dụng? Vẫn phục vụ trang sản phẩm.
+Pattern: phân loại dependency thành critical (làm fail request) hoặc optional
+(làm fail tính năng), và **sự phân loại** đó phải hiện rõ trong code.
+
+## Ghi idempotent với idempotency store
+
+```python
+class IdempotencyStore:
+    def __init__(self):
+        self._done = {}
+
+    def execute(self, key, fn):
+        if key not in self._done:
+            self._done[key] = fn()
+        return self._done[key]
+```
+
+Lần đầu với một key thì chạy `fn`; mọi retry với cùng key phát lại phản hồi đã
+ghi. `fn` phải chạy *đúng một lần* — đó là toàn bộ hợp đồng, và nó xứng đáng có
+một bài test đếm số lần gọi.
+
+## Transaction và pool (nhìn trước)
+
+Hai handler dùng chung một kết nối sẽ hỏng transaction của nhau; một connection
+*pool* cho mượn các kết nối ngắn hạn. Và mọi thao tác ghi-nhiều-lần thuộc về
+một transaction — tất cả các ghi commit cùng nhau hoặc không cái nào. Module
+databases sẽ đi sâu phần này; ở đây chỉ cần ghi nhớ về mặt kiến trúc: *handler
+khai báo đơn vị công việc, cơ chế pool/transaction sở hữu kết nối.*

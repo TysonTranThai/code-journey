@@ -1,0 +1,34 @@
+## Separate chaining: một list mỗi bucket
+
+```c
+typedef struct HNode {
+    long          key;
+    int           value;
+    struct HNode *next;
+} HNode;
+HNode **buckets;      /* nbuckets slot, mỗi slot NULL hoặc đầu chuỗi */
+```
+
+Chèn đẩy vào đầu chuỗi — luôn O(1). Lookup đi một chuỗi. Delete unlinks
+(bạn đã biết phép đi `HNode **link`). Chaining chịu load > 1 và không
+bao giờ hết chỗ chèn; giá phải trả là một con trỏ mỗi node, malloc
+thường xuyên, và cache miss khi đi chuỗi.
+
+## Open addressing: tất cả nằm trong mảng
+
+Không node. Khi va chạm, *probe* — thử slot kế (linear), slot h+1², h+2²
+(quadratic), hoặc bước "double hash". Lookup đi cùng chuỗi probe đến khi
+slot rỗng chứng minh absence. Điều tinh tế là **xóa**: gỡ một phần tử để
+lại lỗ thủng cắt đứt chuỗi probe — nên xóa đánh dấu slot thành
+*tombstone* (chiếm chỗ khi probe, rỗng khi chèn), và tombstone cần dọn
+định kỳ hoặc bảng đầy dần các con ma.
+
+| | chaining | open addressing |
+|---|---|---|
+| xóa | dễ | tombstone |
+| giới hạn load | >1 vẫn ổn | 0.5–0.7 |
+| bộ nhớ | con trỏ/node | dày, cache-friendly |
+| xấu nhất | một chuỗi dài | quét cả bảng |
+
+Kinh nghiệm: open addressing khi locality bộ nhớ quan trọng (bảng lớn
+trong RAM), chaining khi xóa nhiều hoặc load khó đoán.

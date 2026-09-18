@@ -1,0 +1,24 @@
+## Ba lớp hành vi
+
+1. **Implementation-defined**: hiện thực phải chọn, ghi rõ và giữ nhất quán. Ví dụ: `sizeof(int)`.
+2. **Unspecified**: hiện thực chọn *một* hành vi hợp lệ trong tập, không cần ghi rõ. Ví dụ: thứ tự tính giá trị đối số.
+3. **Không định nghĩa (UB)**: không ràng buộc gì. Trình biên dịch có thể làm *bất cứ điều gì* — kể cả giả định điều đó không xảy ra.
+
+```c
+char c = -1;
+printf("%d\n", c);            /* tùy nền tảng */
+
+int i = 0;
+printf("%d %d\n", i, ++i);    /* ĐỪNG. Thứ tự không xác định. */
+
+int big = INT_MAX;
+int overflowed = big + 1;     /* UB */
+```
+
+## UB không có nghĩa là "nó crash"
+
+UB thường chạy "khá ổn" ở -O0 và "kinh khủng" ở -O2, vì tối ưu hóa dựa trên giả định UB không bao giờ xảy ra.
+
+## Quy tắc làm việc
+
+Đặt mỗi cấu trúc lên bản đồ này. Nếu là UB, kiểm thử không cứu được — sửa cấu trúc, đừng sửa test.

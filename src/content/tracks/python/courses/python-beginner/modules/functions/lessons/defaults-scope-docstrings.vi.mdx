@@ -1,0 +1,49 @@
+## Tham số mặc định
+
+```python
+def power(base, exponent=2):
+    return base ** exponent
+
+power(5)        # 25 — exponent mặc định là 2
+power(5, 3)     # 125
+```
+
+Giá trị mặc định làm cho hành vi tùy chọn trở nên tường minh. Đừng bao giờ dùng
+mặc định có thể thay đổi (list hoặc dict) — nó được chia sẻ qua các lần gọi, một
+cái bẫy Python nổi tiếng bạn sẽ gặp lại ở Intermediate.
+
+## Đối số theo tên (keyword arguments)
+
+Gọi với `name=value` — thứ tự không còn quan trọng và lời gọi trở nên dễ đọc:
+
+```python
+def make_coffee(size, milk, sugar):
+    return f"{size}, milk={milk}, sugar={sugar}"
+
+make_coffee("L", milk=False, sugar=True)
+```
+
+## Phạm vi (scope): cục bộ theo mặc định
+
+Tên được tạo bên trong hàm chỉ tồn tại bên trong nó:
+
+```python
+def calc():
+    result = 42     # cục bộ
+calc()
+print(result)       # NameError — result đã biến mất
+```
+
+Tham số cũng là cục bộ. Hàm nhận thông tin **vào** qua tham số và đưa **ra**
+qua giá trị trả về — không phải qua biến toàn cục. Kỷ luật này giữ cho các
+chương trình lớn không trở nên điên loạn.
+
+## Docstring
+
+Một dòng ba dấu ngoặc kép đầu tiên tài liệu hóa hàm; `help(tên_hàm)` hiển thị nó:
+
+```python
+def celsius_to_f(c):
+    '''Chuyển nhiệt độ Celsius sang Fahrenheit.'''
+    return c * 9 / 5 + 32
+```

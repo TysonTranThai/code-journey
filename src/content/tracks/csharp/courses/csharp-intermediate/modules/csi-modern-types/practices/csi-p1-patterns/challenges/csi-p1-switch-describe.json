@@ -1,0 +1,26 @@
+{
+  "id": "csi-p1-switch-describe",
+  "title": "The Classifier Switch",
+  "prompt": "Implement classification with ONE switch expression each — no if chains:\n\n```csharp\n/* \"neg\" (<0), \"zero\" (0), \"small\" (1..99), \"large\" (>=100) */\nstatic string SizeClass(int n);\n/* \"ok\" for \"yes\"/\"no\"/\"maybe\" (any case); \"unknown\" otherwise */\nstatic string Vote(string? answer);\n/* Decision table: (hasTicket, isVip, age) -> zone.\n   vip => \"gold\"; ticket & age>=18 => \"standard\"; ticket => \"minor\";\n   else \"deny\". */\nstatic string Zone(bool hasTicket, bool isVip, int age);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "numeric bands",
+      "code": "\nCj.Eq(Solution.SizeClass(-5), \"neg\", \"negative\");\nCj.Eq(Solution.SizeClass(0), \"zero\", \"zero\");\nCj.Eq(Solution.SizeClass(1), \"small\", \"lower bound\");\nCj.Eq(Solution.SizeClass(99), \"small\", \"upper bound\");\nCj.Eq(Solution.SizeClass(100), \"large\", \"boundary moves up\");\n",
+      "hint": "Relational patterns: < 0, 0, and ( > 0 and < 100 ) vs >= 100."
+    },
+    {
+      "name": "voting",
+      "code": "\nCj.Eq(Solution.Vote(\"yes\"), \"ok\", \"lowercase\");\nCj.Eq(Solution.Vote(\"YES\"), \"ok\", \"uppercase\");\nCj.Eq(Solution.Vote(\"Maybe\"), \"ok\", \"mixed\");\nCj.Eq(Solution.Vote(\"nope\"), \"unknown\", \"not a vote\");\nCj.Eq(Solution.Vote(null), \"unknown\", \"null vote\");\nCj.Eq(Solution.Vote(\"\"), \"unknown\", \"empty vote\");\n",
+      "hint": "Constant patterns with a case-insensitive normalize first; null handled by the nullable pattern."
+    },
+    {
+      "name": "zone table",
+      "code": "\nCj.Eq(Solution.Zone(true, true, 30), \"gold\", \"vip wins\");\nCj.Eq(Solution.Zone(true, false, 30), \"standard\", \"adult with ticket\");\nCj.Eq(Solution.Zone(true, false, 15), \"minor\", \"young with ticket\");\nCj.Eq(Solution.Zone(false, true, 30), \"gold\", \"vip needs no ticket\");\nCj.Eq(Solution.Zone(false, false, 30), \"deny\", \"no ticket, no vip\");\nCj.Eq(Solution.Zone(false, false, 15), \"deny\", \"young, nothing else\");\n",
+      "hint": "Order the rows: vip first (it overrides ticket), then ticket+adult, then ticket, then deny."
+    }
+  ],
+  "level": "imitation"
+}

@@ -1,0 +1,25 @@
+## Frame sở hữu nhiều hơn bạn nghĩ
+
+Frame lưu: **tham số** của coroutine (được copy/move lúc gọi — tham số truyền giá trị được move vào frame; tham chiếu được lưu dưới dạng tham chiếu vẫn trỏ ra ngoài và có thể dangling), mọi biến cục bộ sống qua các điểm treo, và promise. Cấp phát frame bình thường là một `operator new` trên heap — trừ khi compiler chứng minh được vòng đời nằm trong phạm vi và loại bỏ nó (HALO). Hãy coi mỗi lời gọi coroutine là một phép cấp phát, trừ khi đã đo.
+
+## Bẫy lambda bắt tham chiếu
+
+```cpp
+auto makeGen() {
+    int state = 0;
+    return [&state]() -> Generator<int> {   // SAI: state chết cùng makeGen
+        while (state < 3) co_yield state++;
+    }();
+}
+```
+
+Lambda bắt `state` **bằng tham chiếu**; generator sống lâu hơn nó. Lần resume đầu đọc một biến đã chết. Cách sửa: bắt bằng giá trị (`[state]`) hoặc truyền `state` làm tham số coroutine truyền giá trị (tham số sống *trong frame* — ngôi nhà an toàn).
+
+## Quy tắc vòng đời dễ đoán
+
+1. Tham số coroutine an toàn **trong frame** nếu truyền bằng giá trị/move.
+2. Bất cứ thứ gì được tham chiếu (tham số bằng &, capture bằng &) phải chứng minh được sống lâu hơn generator — cùng kỷ luật với view.
+3. Đối tượng generator sở hữu handle; di chuyển generator là di chuyển quyền sở hữu; bản bị move không được resume hay hủy hai lần (`std::exchange` trong move, như code trong bài học).
+4. Hủy (hoặc để RAII hủy) **trước khi** môi trường được tham chiếu chết.
+
+Bài tập chấm điểm: sửa chính xác generator bị dangling-capture, rồi dự đoán đoạn nào trong các đoạn cho sẵn bị dangling.

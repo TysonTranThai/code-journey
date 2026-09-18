@@ -1,0 +1,31 @@
+## The loop
+
+1. **Characterize**: write tests (or run existing ones) that pin the *current* behavior — including the ugly parts.
+2. **Small step**: one structural change — extract a function, rename, replace a magic number.
+3. **Compile + tests green.** If red, undo the step (it was one step — that is the point).
+4. Repeat until the mess is structure.
+
+Never mix "refactor" and "add a feature" in the same step — the commit that does both is the commit you cannot trust.
+
+## A mess, and its dissection
+
+```cpp
+// BEFORE: 60 lines in main — parse, validate, compute, print, all interleaved
+int main() { /* read csv line, split, stoi everywhere, if-chains, cout... */ }
+```
+
+Extraction order that always works: **constants** → **pure functions** (parse, compute — no I/O) → **I/O boundary** (read/print) → data type (`struct Record`). Pure functions first: they are the tests' favorite food.
+
+```cpp
+// AFTER:
+struct Record { std::string name; int qty{}; double price{}; };
+std::optional<Record> parse_record(const std::string& line);
+double record_total(const Record& r);
+void print_report(const std::vector<Record>& rows);
+```
+
+Same behavior (your characterization tests still pass), new shape: every unit named, testable, and single-purpose.
+
+## The compiler is your refactor partner
+
+Renaming a function: change the declaration, compile, follow every error to its caller. C++'s strictness — the thing that made week one painful — is exactly what makes refactoring safe here: nothing breaks silently.

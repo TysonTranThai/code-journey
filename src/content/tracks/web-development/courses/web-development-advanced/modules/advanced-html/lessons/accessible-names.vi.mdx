@@ -1,0 +1,112 @@
+Mọi phần tử tương tác và mọi landmark đều có một **accessible name** — đoạn văn bản mà
+công nghệ hỗ trợ dùng để thông báo, và mà người dùng điều khiển bằng giọng nói sẽ đọc
+ra để trỏ tới. Sai tên thì nút lại đọc là "button", ảnh lại đọc là "image", liên kết
+lại đọc là "bấm vào đây". HTML nâng cao nghĩa là biết chính xác tên đến từ đâu — và
+hiểu rằng nền tảng tự tính tên cho bạn thường xuyên hơn bạn nghĩ.
+
+## Quy tắc lấy tên từ nội dung
+
+Các phần tử gốc tự tính tên của chúng. Bạn hầu như không cần *đặt* tên — bạn cần *cung
+cấp nội dung* mà tên được sinh ra từ đó:
+
+```html
+<!-- tự có tên "Save draft" -->
+<button>Save draft</button>
+
+<!-- tự có tên "Search" nhờ label -->
+<label for="q">Search</label>
+<input id="q" name="q">
+
+<!-- tự có tên "Team photo at offsite" nhờ alt -->
+<img src="team.jpg" alt="Team photo at offsite">
+
+<!-- tự có tên từ chính văn bản của nó -->
+<a href="/pricing">Pricing</a>
+```
+
+Đây chính là **quy tắc số một của ARIA** trong thực tế: đừng thêm ARIA để đặt tên cho
+những thứ đã có tên. `aria-label` trên một `<button>` đã có văn bản là nhiễu — và nếu
+hai cái trái nhau, trình đọc màn hình có thể đọc ra sự mâu thuẫn.
+
+## Khi tên phải đến từ nơi khác: aria-labelledby
+
+Một số điều khiển không có văn bản hiện hữu: nút đóng chỉ có icon, một landmark điều
+hướng, một dialog. Khi một phần tử khác *trên trang* đang giữ đúng câu chữ bạn cần —
+kể cả văn bản ẩn — hãy trỏ tới nó bằng `aria-labelledby`:
+
+```html
+<button aria-labelledby="close-label">
+  <svg aria-hidden="true"><path d="…"/></svg>
+</button>
+<span id="close-label" hidden>Close dialog</span>
+```
+
+`aria-labelledby` **thay thế** nội dung của chính phần tử làm nguồn tên, và có thể nối
+nhiều id theo thứ tự: `aria-labelledby="first last"` được đọc thành một tên duy nhất.
+Dùng nó khi câu chữ đã tồn tại ở nơi khác; dùng `aria-label` khi không có văn bản hiện
+hữu nào và bạn phải cung cấp tên trực tiếp:
+
+```html
+<nav aria-label="Footer">…</nav>   <!-- phân biệt với nav chính -->
+```
+
+Có icon bên trong nút đã có tên? Đánh dấu SVG trang trí là `aria-hidden="true"` để nó
+không bao giờ lọt vào tên.
+
+## Thứ tự ưu tiên
+
+Khi có nhiều nguồn cùng lúc, nền tảng giải quyết theo thứ tự cố định — `aria-labelledby`
+trước, rồi `aria-label`, rồi nội dung gốc (văn bản, `alt`, `<label for>`, `<summary>`,
+`<caption>`, `value` với nút submit, `title` cuối cùng). Hai hệ quả đáng ghi nhớ:
+
+1. Thêm `aria-label` vào phần tử đã có văn bản hiển thị có thể **lặng lẽ thay đổi** điều
+   người dùng trình đọc màn hình nghe được so với điều người dùng nhìn thấy — người dùng
+   điều khiển bằng giọng nói sẽ đọc nhầm câu lệnh. Hãy giữ tên khớp với văn bản hiển thị.
+2. `title` là nguồn yếu nhất và không nên là chiến lược đặt tên của bạn.
+
+## Tên cho landmark và biểu mẫu
+
+Hai `<nav>` không thể phân biệt — "navigation" hai lần — trừ khi bạn đặt tên cho một
+trong hai:
+
+```html
+<nav aria-label="Primary">…</nav>
+<nav aria-label="Footer">…</nav>
+```
+
+Tương tự với các vùng `<section>`/`<article>` (mượn heading bằng `aria-labelledby` như
+bài kiến trúc đã chỉ), và với `<fieldset>`:
+
+```html
+<fieldset>
+  <legend>Shipping address</legend>
+  …
+  <fieldset>
+    <legend>Name</legend>
+    <input aria-label="First"> <input aria-label="Last">
+  </fieldset>
+</fieldset>
+```
+
+Hai ô bên trong trở thành "First, Name, Shipping address" — một địa chỉ hoàn chỉnh. Đó
+là đường ống accessible name đang làm việc cho bạn, không cần pha trò ARIA.
+
+## Điều gì hay sai
+
+- **`alt=""` trên ảnh có ý nghĩa**: xóa sạch tên của ảnh; trình đọc màn hình bỏ qua nó.
+  Chỉ dùng alt rỗng cho ảnh trang trí.
+- **href="/more" links**: năm liên kết "Learn more" trên một trang là năm cái tên giống
+  hệt nhau, không ngữ cảnh — hãy cho mỗi liên kết tên riêng ("Learn more about pricing").
+- **ARIA làm trang trí**: `role="button"` trên `<div>` thêm vai trò nhưng không thêm
+  hành vi nút — focus bàn phím, Enter/Space, ngữ nghĩa disabled đều vẫn thiếu. `<button>`
+  gốc có đủ tất cả miễn phí.
+- **aria-label trên điều khiển đã có văn bản hiển thị** — lỗi lệch tên kinh điển mà
+  người dùng giọng nói gặp phải.
+
+## Thực hành và điểm nối tiếp
+
+Bộ thực hành luyện tính tên trên các điều khiển khá leur — nút icon, vùng có tên, một
+biểu mẫu fieldset — cùng một thử thách debugging trong đó mọi tên đều hỏng một cách tinh
+vi. Accessible name cũng là cửa ngõ vào chuyên đề kỹ thuật accessibility phía sau trong
+khóa này, và là nền cho công việc component: một component sai tên là hỏng, dù code của
+nó sạch đến đâu.

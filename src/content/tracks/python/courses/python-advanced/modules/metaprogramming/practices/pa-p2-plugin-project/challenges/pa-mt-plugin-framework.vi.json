@@ -1,0 +1,14 @@
+{
+  "title": "Framework plugin Exporter",
+  "prompt": "Dựng một framework plugin nhỏ. Host cung cấp `ExporterBase` (bên dưới). Plugin kế thừa và tự đăng ký.\n\nYêu cầu:\n\n1. `ExporterBase.__init_subclass__` đăng ký subclass theo attribute `name` (str khác rỗng, duy nhất — trùng raise `ValueError` ngay lúc định nghĩa).\n2. Mọi exporter phải cài `export(rows)` trả về STRING. Thiếu `export` thì raise `TypeError` lúc định nghĩa.\n3. `ExporterBase.create(name)` trả về một instance hoặc raise `KeyError`.\n4. `ExporterBase.names()` trả về danh sách tên đã đăng ký, đã sort.\n5. Cung cấp hai plugin sẵn có: `CsvExporter` (name='csv', các row là dict nối thành 'k1=v1,k2=v2', row cách nhau bằng xuống dòng) và `JsonLinesExporter` (name='jsonl', mỗi dòng một JSON object gọn).\n6. Test phản chủ: đăng ký plugin tên 'csv' lần nữa phải raise `ValueError`; plugin thiếu `export` phải raise `TypeError`.",
+  "tests": [
+    {
+      "name": "Plugin sẵn có đăng ký và chạy",
+      "hint": "csv row = các field theo thứ tự dict nối bằng ',' dạng k=v; jsonl = json.dumps(obj, separators=(',', ':')) mỗi dòng."
+    },
+    {
+      "name": "Đăng ký phản chủ thất bại nhanh",
+      "hint": "Cả ba phép kiểm tra nằm trong __init_subclass__ + tra dict trong create()."
+    }
+  ]
+}

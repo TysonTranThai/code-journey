@@ -1,0 +1,31 @@
+## Opening and closing
+
+```c
+#include <stdio.h>
+
+FILE *f = fopen("notes.txt", "r");   // mode: how you intend to use it
+if (f == NULL) {
+    perror("notes.txt");             // WHY it failed, on stderr
+    return 1;
+}
+// ... use f ...
+fclose(f);                           // every open gets a close
+```
+
+`fopen` returns NULL on failure — missing file, no permission, bad path.
+Unconditionally assuming success is a beginner signature move; check it.
+
+## The modes that matter now
+
+| mode | meaning | if file exists | if missing |
+|------|---------|----------------|------------|
+| "r"  | read    | reads from start | NULL |
+| "w"  | write   | TRUNCATED to empty | created |
+| "a"  | append  | writes at end | created |
+
+"w" destroys existing content the moment you open it. "a" preserves it.
+
+## Streams you already use
+
+`stdout` and `stderr` are FILE* too. `printf(...)` is `fprintf(stdout, ...)`.
+That is why the same fprintf/fgets family works everywhere.

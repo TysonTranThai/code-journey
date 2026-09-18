@@ -1,0 +1,37 @@
+## Bảng đáng nhớ (rồi tự suy ra)
+
+| Cấu trúc | Contains/Add | Remove | Ghi chú |
+|---|---|---|---|
+| `List<T>` | O(n) / O(1)* | O(n) | *khuyếch đại; truy chỉ số O(1) |
+| `Dictionary<K,V>` | O(1) trung bình | O(1) tb | xấu nhất O(n) khi đụng độ; không thứ tự |
+| `HashSet<T>` | O(1) tb | O(1) tb | phần tử duy nhất; đại số tập hợp |
+| `SortedDictionary<K,V>` | O(log n) | O(log n) | duyệt có thứ tự; cây |
+| `Queue<T>` / `Stack<T>` | O(1) | O(1) | FIFO / LIFO duy nhất |
+| `LinkedList<T>` | O(1) tại node | O(1) tại node | tìm là O(n); không chỉ số |
+
+"Trung bình" che giấu chuyện hash: bucket + `GetHashCode` tốt + `Equals`
+nhất quán. Một kiểu có hash thay đổi theo trạng thái biến đổi sẽ đầu độc
+mọi dictionary chứa nó — vì vậy KEY của dictionary theo quy ước là bất biến.
+
+## Tăng trưởng khuyếch đại
+
+`List<T>` nhân đôi sức chứa khi đầy: thỉnh thoảng sao chép O(n), cộng cuối
+khuyếch đại O(1). Định sẵn kích thước cho đường nóng —
+`new List<int>(capacity)` — khi bạn biết kích thước; cùng logic biện minh
+cho capacity hint của `Dictionary`.
+
+## Đại số tập hợp có sẵn
+
+```csharp
+var a = new HashSet<int> { 1, 2, 3 };
+var b = new HashSet<int> { 3, 4 };
+a.UnionWith(b);          // a thành {1,2,3,4}
+a.IntersectWith(b); a.ExceptWith(b); a.SymmetricExceptWith(b);
+```
+
+Khử trùng lặp theo khóa (`HashSet` trên khóa chiếu) là ứng dụng kinh điển.
+
+## Kiểm tra hiểu biết
+
+- Vì sao Dictionary "không thứ tự"? (Bố cục bucket; thứ tự chèn là chi tiết hiện thực.)
+- LinkedList đúng lúc nào? (Chèn/nối giữa chuỗi khi cầm node trong tay; hiếm.)

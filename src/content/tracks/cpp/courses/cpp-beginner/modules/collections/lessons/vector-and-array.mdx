@@ -1,0 +1,39 @@
+```cpp
+#include <vector>
+
+std::vector<int> scores;                 // empty
+scores.push_back(9);                     // append: {9}
+scores.push_back(7);                     // {9, 7}
+std::vector<int> init{9, 7, 10};         // initializer list
+std::vector<int> filled(5, 0);           // {0,0,0,0,0} — five zeros
+```
+
+## Why vector beats raw arrays
+
+A raw C array `int a[10]` is a fixed block of bytes: no size knowledge, no bounds checks, decays to a pointer when passed, and cannot grow. `std::vector` is a resizable array that *knows its own length*, copies properly on assignment, and cleans up after itself (that last point is RAII — module 12). Rule of thumb with almost no exceptions: **if you are writing a raw array, you probably want a `std::vector` (known size) or `std::array` (fixed small size)**.
+
+`std::array<int, 3>` is a thin wrapper over a fixed-size array that adds the standard-library conveniences (`.size()`, comparisons, STL algorithm compatibility) with zero overhead. Use it when the size is genuinely fixed at compile time.
+
+## The everyday API
+
+```cpp
+scores.size()            // 2 — a size_t (unsigned); watch int/size_t comparisons
+scores.at(1)             // 7 — bounds-checked; [] is the unchecked fast path
+scores.back()            // 10
+scores.pop_back()        // remove last
+scores.empty()           // false
+```
+
+## Iterating
+
+```cpp
+for (int s : scores) { /* by value — copies each int */ }
+for (const int& s : scores) { /* read-only, no copy */ }
+for (int& s : scores) { s *= 2; }        // mutate in place
+```
+
+The `const&` form matters when elements are big (strings); for ints it is a wash. Module 11 explains the `&` fully.
+
+## Growth and 2-D
+
+`push_back` occasionally grows the vector's buffer (capacity ≥ size) — you do not manage that; just know `size()` is elements, `capacity()` is room. A 2-D grid is a vector of vectors: `std::vector<std::vector<int>> grid(rows, std::vector<int>(cols, 0));` then `grid[r][c]` (bounds-checked: `grid.at(r).at(c)`).

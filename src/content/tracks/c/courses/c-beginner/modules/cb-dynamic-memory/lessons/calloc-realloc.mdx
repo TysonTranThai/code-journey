@@ -1,0 +1,48 @@
+## calloc: malloc + zero fill
+
+```c
+int *p = calloc(n, sizeof(int));   // n elements, EACH set to 0
+```
+
+Two differences from `malloc(n * sizeof(int))`: two arguments (count, size),
+and every byte is zeroed. Choose calloc when "all zeros" is the state you
+want; choose malloc when you will overwrite everything immediately.
+
+## realloc: grow or shrink
+
+```c
+int *q = realloc(p, new_count * sizeof(int));
+```
+
+`realloc` may extend in place or move the block — if it moves, it COPIES the
+old contents. Either way you get the block's new address.
+
+## The realloc idiom — do not lose your only pointer
+
+```c
+int *tmp = realloc(p, m * sizeof(int));
+if (tmp == NULL) {
+    free(p);                 // old block is still valid; clean up
+    return 1;
+}
+p = tmp;                     // success: adopt the new address
+```
+
+Assigning straight to `p` (`p = realloc(p, ...)`) is the classic bug: on
+failure it returns NULL and the ORIGINAL address is lost — a leak with no way
+to free.
+
+## Growing a dynamic array
+
+```c
+int count = 0, cap = 4;
+int *a = malloc(cap * sizeof(int));
+// ... need more room ...
+cap *= 2;
+int *tmp = realloc(a, cap * sizeof(int));
+if (tmp == NULL) { free(a); /* handle */ }
+else a = tmp;
+```
+
+This grow-by-doubling pattern is the heart of every dynamic array you will
+build in module 20.

@@ -1,0 +1,36 @@
+{
+  "id": "cb11-clamp-ptr",
+  "title": "Clamp Through a Pointer",
+  "prompt": "Implement `void clamp_to(int *v, int lo, int hi)`: if *v is below lo set it to lo; above hi set it to hi; otherwise leave it.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "below",
+      "code": "int x = 3;\nclamp_to(&x, 10, 20);\nCHECK_EQ(x, 10);",
+      "hint": "Raise it to the floor."
+    },
+    {
+      "name": "above",
+      "code": "int x = 42;\nclamp_to(&x, 10, 20);\nCHECK_EQ(x, 20);",
+      "hint": "Cap it at the ceiling."
+    },
+    {
+      "name": "inside untouched",
+      "code": "int x = 15;\nclamp_to(&x, 10, 20);\nCHECK_EQ(x, 15);",
+      "hint": "Inside the range: no change."
+    },
+    {
+      "name": "boundary lo",
+      "code": "int x = 10;\nclamp_to(&x, 10, 20);\nCHECK_EQ(x, 10);",
+      "hint": "Lo itself stays."
+    },
+    {
+      "name": "boundary hi",
+      "code": "int x = 20;\nclamp_to(&x, 10, 20);\nCHECK_EQ(x, 20);",
+      "hint": "Hi itself stays."
+    }
+  ],
+  "level": "guided"
+}

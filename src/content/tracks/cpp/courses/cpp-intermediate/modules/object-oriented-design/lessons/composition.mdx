@@ -1,0 +1,41 @@
+**Composition** — building a class out of member objects — is the default
+relationship in C++. Inheritance (next module) is for substitutability, not
+for code reuse; most "is-a" instincts are really "has-a".
+
+```cpp
+#include <string>
+#include <vector>
+
+class Engine {
+public:
+    void start() { running_ = true; }
+    bool running() const { return running_; }
+private:
+    bool running_{false};
+};
+
+class Car {
+public:
+    void drive() { engine_.start(); }        // delegates; owns an Engine
+    bool ready() const { return engine_.running(); }
+private:
+    Engine engine_;                           // composition: Car HAS an Engine
+    std::vector<std::string> trips_;          // and HAS a trip log
+};
+```
+
+## Why composition first
+
+- The member's invariants stay encapsulated inside it; `Car` cannot corrupt
+  `Engine`'s internals.
+- Lifetime is automatic: `Car`'s members construct and destroy with it, in
+  declaration order.
+- Swapping an implementation (a `Battery` instead of `Engine`) touches one
+  member declaration, not a hierarchy.
+
+## When inheritance is genuinely right
+
+When callers must treat different types uniformly *through one interface* —
+shapes drawn the same way, handlers invoked the same way. If you cannot point
+at a call site that holds a base-class reference/pointer, you do not need
+inheritance. That call-site test decides Module 3's design exercises too.

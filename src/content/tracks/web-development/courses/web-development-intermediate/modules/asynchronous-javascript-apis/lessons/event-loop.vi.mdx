@@ -1,0 +1,39 @@
+JavaScript chạy code của bạn trên **một luồng duy nhất**. Nó không bao giờ chặn:
+công việc chậm (timer, mạng, đĩa) được giao cho môi trường, và callback của bạn
+được _xếp hàng_. Luật của hàng đợi đó chính là event loop.
+
+## Ba hàng đợi quan trọng
+
+1. **Call stack** — hàm đang thực thi. Luôn luôn một cái tại một thời điểm.
+2. **Hàng đợi microtask** — callback của promise (`.then`, phần tiếp theo của
+   `await`), `queueMicrotask`. Bị xả **toàn bộ** sau mỗi lần stack rỗng.
+3. **Hàng đợi macrotask** — `setTimeout`, `setInterval`, callback I/O, sự kiện.
+   Mỗi vòng lặp chỉ một macrotask.
+
+Mỗi vòng: chạy một macrotask → xả **tất cả** microtask → có thể render →
+macrotask kế tiếp. Microtask luôn thắng.
+
+## Dự đoán thứ tự
+
+```js
+console.log("1");
+setTimeout(() => console.log("2"), 0);
+Promise.resolve().then(() => console.log("3"));
+console.log("4");
+```
+
+In ra `1, 4, 3, 2`. Code đồng bộ trước (`1`, `4`), rồi microtask (`3`), rồi
+timer macrotask (`2`). `setTimeout(fn, 0)` không có nghĩa là _ngay bây giờ_ —
+nó có nghĩa là _macrotask kế tiếp, sớm nhất có thể_.
+
+## Vì sao điều này quan trọng
+
+- Một vòng lặp chạy lâu chặn tất cả: render, click, timer. Chia nhỏ công việc
+  với `await new Promise(r => setTimeout(r))` để nhường luồng.
+- Chuỗi promise phân giải trước mọi callback của timer — lỗi thứ tự đến từ việc
+  quên mình đang ở hàng đợi nào.
+- UI chỉ cập nhật được giữa các task: await giữa các phần cho trình duyệt kịp
+  vẽ.
+
+Bài _Concurrency model and the event loop_ trên MDN là tài liệu tham khảo;
+bài học này là mô hình tư duy bạn sẽ áp dụng trong mọi bài luyện bên dưới.

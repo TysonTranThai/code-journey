@@ -1,0 +1,37 @@
+## CSV: parsing rules that bite
+
+Real CSV (RFC 4180) has three rules beginners miss:
+
+1. **Quoted fields** — `"hello, world"` is ONE field containing a comma.
+2. **Escaped quotes** — `""` inside quotes is a literal `"`.
+3. **Newlines in quotes** — a row can span lines.
+
+A split(",") parser fails all three:
+
+```java
+// naive — breaks on quoted commas
+String[] fields = line.split(",");
+
+// character scanner — the honest parser
+List<String> parseRow(String line) {
+    List<String> out = new ArrayList<>();
+    StringBuilder cur = new StringBuilder();
+    boolean inQuotes = false;
+    for (int i = 0; i < line.length(); i++) {
+        char c = line.charAt(i);
+        if (inQuotes) {
+            if (c == '"') {
+                if (i + 1 < line.length() && line.charAt(i + 1) == '"') { cur.append('"'); i++; }
+                else inQuotes = false;
+            } else cur.append(c);
+        } else if (c == '"') inQuotes = true;
+        else if (c == ',') { out.add(cur.toString()); cur.setLength(0); }
+        else cur.append(c);
+    }
+    out.add(cur.toString());
+    return out;
+}
+```
+
+The scanner handles rules 1–2; full rule 3 needs row-merging across
+lines — beyond today's scope, but you now know why libraries exist.

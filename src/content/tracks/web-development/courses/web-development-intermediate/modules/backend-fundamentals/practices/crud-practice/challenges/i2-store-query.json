@@ -1,0 +1,20 @@
+{
+  "id": "i2-store-query",
+  "title": "Task Store: Query",
+  "prompt": "Add `list(query, userId)` — returns only the caller's tasks (ownership at the read path!), filtered: query.done === true|false filters on the done flag; query.title substring-matches case-insensitively. Sorted by id ascending. No query => all own tasks.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function makeStore() {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "ownership applies to reads",
+      "code": "const fn = new Function(code + \"\\nreturn { makeStore };\");\nconst { makeStore } = fn();\nconst store = makeStore();\nstore.create({ title: \"Mine\" }, \"u1\");\nstore.create({ title: \"Theirs\" }, \"u2\");\nconst mine = store.list({}, \"u1\");\nif (mine.length !== 1 || mine[0].title !== \"Mine\") throw new Error(\"u1 sees only u1's tasks.\");",
+      "hint": "Filter by ownerId before any other filter."
+    },
+    {
+      "name": "filters compose",
+      "code": "const fn = new Function(code + \"\\nreturn { makeStore };\");\nconst { makeStore } = fn();\nconst store = makeStore();\nconst a = store.create({ title: \"Write tests\" }, \"u1\").task;\nconst b = store.create({ title: \"Write docs\" }, \"u1\").task;\nstore.update(b.id, { done: true }, \"u1\");\nconst open = store.list({ done: false }, \"u1\");\nif (open.length !== 1 || open[0].id !== a.id) throw new Error(\"done:false filters.\");\nconst wr = store.list({ title: \"WRITE\" }, \"u1\");\nif (wr.length !== 2) throw new Error(\"Case-insensitive substring.\");",
+      "hint": "Chain the filters; toLowerCase both sides."
+    }
+  ]
+}

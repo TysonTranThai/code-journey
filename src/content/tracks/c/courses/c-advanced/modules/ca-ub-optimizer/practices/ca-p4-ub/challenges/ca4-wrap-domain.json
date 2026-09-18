@@ -1,0 +1,26 @@
+{
+  "id": "ca4-wrap-domain",
+  "title": "Deliberate Wraparound",
+  "prompt": "Implement `unsigned int fnv1a_step(unsigned int h, unsigned char byte)` — one FNV-1a round: h ^= byte; h *= 16777619u. Unsigned overflow is *defined* modular arithmetic; this hash depends on it. Then implement `int mod16(int x)` returning x mod 16 for non-negative x using only unsigned reasoning (no % on negative signed values).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "known FNV step",
+      "code": "CHECK_EQ(fnv1a_step(2166136261u, 0x61), 3826002220u);",
+      "hint": "xor 0x61 into the offset basis, then multiply by 16777619 — defined modular 2^32."
+    },
+    {
+      "name": "wrap is deterministic",
+      "code": "unsigned int h = 4294967295u;\nh = fnv1a_step(h, 1);\nCHECK_EQ(h, 4261412058u);",
+      "hint": "0xFFFFFFFF ^ 1 = 0xFFFFFFFE; times the prime mod 2^32 = 4261412058 — the same value every run, by definition."
+    },
+    {
+      "name": "mod without %",
+      "code": "CHECK_EQ(mod16(37), 5);\nCHECK_EQ(mod16(64), 0);",
+      "hint": "x & 15 computes the same value as x % 16 for non-negative x."
+    }
+  ],
+  "level": "combination"
+}

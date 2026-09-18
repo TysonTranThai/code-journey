@@ -1,0 +1,30 @@
+{
+  "id": "practice-choice-controls",
+  "title": "Checkboxes or Radios?",
+  "prompt": "Choice controls have rules. Build both kinds:\n\n- A group of three `radio` inputs named `size` (values `s`, `m`, `l`) — radios share a `name`, so only one can be picked.\n- A single `checkbox` named `gift` (value `yes`) — independent on/off.\n- A `label` for each control, wired with `for`/`id`.\n\nRules:\n- All three radios share `name=\"size\"`.\n- The checkbox uses `name=\"gift\"`.\n- Every control has a connected label.",
+  "difficulty": "beginner",
+  "level": "independent",
+  "boilerplate": "<fieldset>\n  <legend>Choose a size</legend>\n  <!-- three radio buttons -->\n</fieldset>\n\n<p>\n  <!-- one checkbox -->\n</p>\n",
+  "tests": [
+    {
+      "name": "three radios sharing one name",
+      "code": "const radios = code.match(/<input[^>]*type=[\"']radio[\"'][^>]*>/gi) ?? [];\nif (radios.length !== 3) throw new Error(`Expected three radio inputs, found ${radios.length}.`);\nif (!radios.every((r) => /name=[\"']size[\"']/i.test(r))) {\n  throw new Error(\"All three radios must share name=\\\"size\\\" — that's what makes them exclusive.\");\n}",
+      "hint": "Radios in the same group all carry the same name=\"size\"; give each a different value."
+    },
+    {
+      "name": "radio values s, m, l",
+      "code": "const values = (code.match(/<input[^>]*type=[\"']radio[\"'][^>]*>/gi) ?? [])\n  .map((r) => (r.match(/value=[\"']([^\"']*)[\"']/i) ?? [])[1]);\nfor (const v of [\"s\", \"m\", \"l\"]) {\n  if (!values.includes(v)) throw new Error(`A radio with value=\"${v}\" is missing.`);\n}",
+      "hint": "value=\"s\", value=\"m\", value=\"l\" — one per radio."
+    },
+    {
+      "name": "one independent checkbox",
+      "code": "const boxes = code.match(/<input[^>]*type=[\"']checkbox[\"'][^>]*>/gi) ?? [];\nif (boxes.length !== 1) throw new Error(`Expected one checkbox, found ${boxes.length}.`);\nif (!/name=[\"']gift[\"']/i.test(boxes[0])) throw new Error(\"The checkbox needs name=\\\"gift\\\".\");\nif (!/value=[\"']yes[\"']/i.test(boxes[0])) throw new Error(\"The checkbox needs value=\\\"yes\\\".\");",
+      "hint": "<input type=\"checkbox\" name=\"gift\" value=\"yes\"> — on/off, independent of the radios."
+    },
+    {
+      "name": "every control has a wired label",
+      "code": "const ids = [...code.matchAll(/<input[^>]*id=[\"']([^\"']*)[\"']/gi)].map((m) => m[1]);\nif (ids.length < 4) throw new Error(\"Give every control an id.\");\nfor (const id of ids) {\n  if (!new RegExp(`for=[\"']${id}[\"']`, \"i\").test(code)) {\n    throw new Error(`The control with id=\"${id}\" has no label wired with for=\"${id}\".`);\n  }\n}",
+      "hint": "One <label for=\"…\"> per control — radios and checkbox all need one."
+    }
+  ]
+}

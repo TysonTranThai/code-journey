@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p13-traversal",
+  "title": "Containment, not string matching",
+  "prompt": "1. `static boolean contained(java.nio.file.Path root, String userPath)` — resolve\nuserPath against root, NORMALIZE, and return whether the result is still inside\nroot (startsWith on normalized paths). Must reject \"../../etc/passwd\" but accept\n\"docs/report.txt\" and even \"docs/../docs/report.txt\" (it normalizes INSIDE).\n2. `static boolean allowsHost(String host, java.util.Set<String> allowlist)` —\nexact-match membership (no substring tricks); lowercase both sides.\n3. `static String classifyUrl(String url, java.util.Set<String> allowlist)` — parse\nthe host out of `http://HOST/...` (between \"://\" and the next \"/\"), return\n\"allowed\" if the host is in the allowlist else \"blocked\". Malformed (no ://) →\n\"blocked\".",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "canonical containment",
+      "code": "\njava.nio.file.Path root = java.nio.file.Path.of(\"/srv/data\");\ncheckTrue(Solution.contained(root, \"docs/report.txt\"), \"ordinary file inside\");\ncheckTrue(Solution.contained(root, \"docs/../docs/report.txt\"), \"normalizes back inside\");\ncheckTrue(!Solution.contained(root, \"../secrets.txt\"), \"traversal rejected\");\ncheckTrue(!Solution.contained(root, \"/etc/passwd\"), \"absolute escape rejected\");\n",
+      "hint": "The filesystem's view, not the string's."
+    },
+    {
+      "name": "finite allowlists",
+      "code": "\njava.util.Set<String> hosts = java.util.Set.of(\"api.example.com\");\ncheckTrue(Solution.allowsHost(\"API.example.COM\", hosts), \"case-insensitive exact\");\ncheckTrue(!Solution.allowsHost(\"evil-api.example.com.attacker.io\", hosts), \"suffix trick rejected\");\ncheckEq(Solution.classifyUrl(\"http://api.example.com/v1\", hosts), \"allowed\", \"known host\");\ncheckEq(Solution.classifyUrl(\"http://169.254.169.254/latest\", hosts), \"blocked\", \"metadata blocked\");\ncheckEq(Solution.classifyUrl(\"not a url\", hosts), \"blocked\", \"malformed blocked\");\n",
+      "hint": "Allowlists are finite; blacklists are not."
+    }
+  ],
+  "level": "guided"
+}

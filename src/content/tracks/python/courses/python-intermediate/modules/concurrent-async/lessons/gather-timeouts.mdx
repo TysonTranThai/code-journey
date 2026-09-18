@@ -1,0 +1,43 @@
+`asyncio.gather` runs a collection of coroutines concurrently and collects
+results — with one knob that changes its failure philosophy:
+
+```python
+import asyncio
+
+async def job(name, delay, fail=False):
+    await asyncio.sleep(delay)
+    if fail:
+        raise ValueError(name)
+    return name
+
+async def main():
+    results = await asyncio.gather(
+        job("a", 0.1),
+        job("b", 0.1, fail=True),
+        job("c", 0.1),
+        return_exceptions=True,       # failures become VALUES, not crashes
+    )
+    # ["a", ValueError("b"), "c"]
+```
+
+With `return_exceptions=False` (default), the first exception cancels the
+gang and re-raises — right for *all-or-nothing* work. With `True`, each
+failure is returned in place — right for *collect what you can*, like
+fetching from many flaky sources. Choosing between them **is** the design
+decision.
+
+## Timeouts: nobody waits forever
+
+```python
+async def main():
+    try:
+        result = await asyncio.wait_for(job("slow", 10), timeout=0.5)
+    except asyncio.TimeoutError:
+        result = "gave up"
+```
+
+`wait_for` cancels the coroutine when the deadline passes and raises
+`TimeoutError` in the caller. Real collectors combine the two: gather with
+`return_exceptions=True`, wrap each job in a timeout, and treat
+`(timeout, error)` results as "failed sources" — the exact shape of this
+module's checkpoint.

@@ -1,0 +1,29 @@
+## Hợp đồng equals/hashCode
+
+Viết `equals()` thì **bắt buộc** phải viết `hashCode()`. Hợp đồng:
+
+1. Hai đối tượng bằng nhau phải có hash code bằng nhau.
+2. Hai đối tượng khác nhau *có thể* cùng hash code (va chạm) — nhưng không
+   nên, vì collection dựa trên hash sẽ suy giảm về phía danh sách.
+
+Vi phạm cặp đôi này và `HashSet`/`HashMap` hành xử sai âm thầm. Cách hỏng
+to rõ nhất là **bẫy key khả biến**: đưa một đối tượng khả biến vào
+`HashSet`, rồi sửa field mà nó hash — đối tượng kẹt lại trong bucket *cũ*,
+nên `contains` trả false dù `equals` nói nó phải ở đó:
+
+```java
+Set<Point> pts = new HashSet<>();   // Point khả biến
+pts.add(p);
+p.x = 99;                           // hashCode đổi dưới chân set
+pts.contains(p);                    // false! — tìm nhầm bucket
+```
+
+Vì vậy key dùng cho hash nên bất biến.
+
+Quy tắc viết tay `equals`:
+- tham số là `Object`, rồi thu hẹp bằng `instanceof`
+- phản xạ, đối xứng, bắc cầu, ổn định, không bao giờ trả true với `null`
+- luôn có `@Override` để lỗi chính tả như `equals(Point)` vỡ ngay lúc build
+
+`hashCode` nên trộn tất cả field có trong `equals`:
+`Objects.hash(x, y)` làm đúng và nhất quán.

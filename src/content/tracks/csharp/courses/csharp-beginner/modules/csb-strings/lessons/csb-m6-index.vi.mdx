@@ -1,0 +1,38 @@
+## Chuỗi là dãy các char
+
+```csharp
+string lang = "C#";
+char first = lang[0];      // 'C'
+char last  = lang[^1];     // '#'  — ^1 là "tính từ cuối một"
+int  len   = lang.Length;  // 2
+```
+
+Chỉ số bắt đầu từ 0; `[i]` trả về một `char` (nháy đơn: `'C'`), không phải string. `lang[^1]` dùng **toán tử mũ (^)** — đếm từ cuối. Chỉ số ngoài phạm vi ném `IndexOutOfRangeException` ngay lập tức; không có kẹp âm thầm.
+
+`foreach (char c in text)` đi qua từng ký tự mà không cần chỉ số — dùng khi không cần vị trí; dùng `for` khi cần vị trí.
+
+## Bất biến: chuỗi không bao giờ thay đổi
+
+```csharp
+string name = "code";
+name.ToUpper();        // tạo ra "CODE" ... rồi vứt nó đi
+string upper = name.ToUpper();   // name VẪN là "code"
+```
+
+Mọi phương thức "sửa" chuỗi (`ToUpper`, `Replace`, `Trim`, `Substring`, ...) **trả về một chuỗi mới** và giữ nguyên bản gốc. Quên gán lại kết quả là bug chuỗi phổ biến nhất:
+
+```csharp
+line = line.Trim();    // đúng: gán lại biến
+```
+
+Vì sao bất biến? Một đối tượng chuỗi có thể được chia sẻ an toàn ở mọi nơi — không phương thức nào chạm vào chuỗi của bạn và thay đổi nó sau lưng. Cái giá: code dựng chuỗi nặng trong vòng lặp cấp phát một chuỗi mới mỗi vòng (chuyện `StringBuilder`, sau này).
+
+## Dựng chuỗi: interpolation thắng
+
+```csharp
+var user = "minh"; var score = 97;
+Console.WriteLine($"{user} scored {score} points");     // interpolation
+Console.WriteLine(user + " scored " + score + " points"); // nối chuỗi
+```
+
+String interpolation (`$"..."`) đọc theo thứ tự đầu ra và chuyển mỗi biểu thức bằng `ToString` của nó. Ưu tiên hơn chuỗi `+` — và nhớ tiền tố `$` là thứ bật các lỗ `{}`.

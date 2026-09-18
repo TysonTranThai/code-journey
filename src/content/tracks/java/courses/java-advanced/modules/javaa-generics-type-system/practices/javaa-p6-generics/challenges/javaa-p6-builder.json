@@ -1,0 +1,26 @@
+{
+  "id": "javaa-p6-builder",
+  "title": "Self-typed fluent API",
+  "prompt": "Inside Solution, write:\n1. `abstract static class Node<Self extends Node<Self>>` with an INSTANCE-level\n`List<String> labels` and `public Self label(String l)` that records the label and\nreturns `(Self) this` (annotated @SuppressWarnings(\"unchecked\")).\n2. `static class Task extends Node<Task>` with `public String describe()` returning\n\"Task\" + labels (e.g. `Task[a, b]`).\n3. `static class Job extends Node<Job>` with describe() prefixing \"Job\".\nInstances must NOT share state: labeling one object must never appear in another's\ndescribe().",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "fluent chain preserves the subtype",
+      "code": "\nSolution.Task t = new Solution.Task().label(\"a\").label(\"b\");\ncheckTrue(t instanceof Solution.Task, \"chaining keeps Task\");\ncheckTrue(t.describe().contains(\"a\") && t.describe().contains(\"b\"), \"labels recorded\");\n",
+      "hint": "Every link returns Self."
+    },
+    {
+      "name": "two subtypes, one parent",
+      "code": "\nSolution.Job j = new Solution.Job().label(\"x\");\ncheckTrue(j instanceof Solution.Job, \"Job chains as Job\");\ncheckTrue(j.describe().startsWith(\"Job\"), \"own describe prefix\");\n",
+      "hint": "Node<Job> and Node<Task> coexist."
+    },
+    {
+      "name": "no shared state between instances",
+      "code": "\nSolution.Task t1 = new Solution.Task().label(\"a\");\nSolution.Task t2 = new Solution.Task().label(\"b\");\ncheckTrue(!t1.describe().contains(\"b\"), \"instances do not bleed state\");\n",
+      "hint": "Per-instance labels, not statics."
+    }
+  ],
+  "level": "real-world"
+}

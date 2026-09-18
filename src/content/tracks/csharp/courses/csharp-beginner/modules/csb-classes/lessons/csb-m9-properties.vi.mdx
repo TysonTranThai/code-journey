@@ -1,0 +1,44 @@
+## Vấn đề của trường công khai
+
+Một trường công khai trao trạng thái thô — ai cũng có thể viết `account.Balance = -999;` và đối tượng của bạn giờ đang nói dối. Trường nên là `private`; câu hỏi là người ngoài *đọc* trạng thái họ cần bằng cách nào.
+
+## Thuộc tính: giống trường về cú pháp, chạy như phương thức
+
+Một **thuộc tính** được truy cập bằng cú pháp trường nhưng biên dịch thành lời gọi phương thức:
+
+```csharp
+class Account
+{
+    private decimal balance;                 // trạng thái ẩn
+
+    public decimal Balance                   // truy cập có kiểm soát
+    {
+        get { return balance; }
+        private set { balance = value; }     // chỉ lớp này được đổi
+    }
+}
+```
+
+Người đọc viết `account.Balance` — tại chỗ gọi, không phân biệt được với trường. Người ghi chạm vào mã *của bạn* — nơi bất biến sinh sống. `value` là giá trị đang được gán bên trong `set`.
+
+## Auto-property và kiểm tra dữ liệu
+
+Khi cả hai accessor chỉ bọc một trường ẩn, hãy để C# tự sinh:
+
+```csharp
+public string Name { get; }             // chỉ-get: gán một lần trong constructor
+public int Hits { get; private set; }   // đọc ở đâu cũng được, đổi trong phương thức
+```
+
+Khi thuộc tính có set phải giữ một luật, hãy kiểm tra trong `set`:
+
+```csharp
+private int health;
+public int Health
+{
+    get { return health; }
+    set { health = Math.Clamp(value, 0, 100); }   // luôn nằm trong [0, 100]
+}
+```
+
+`Math.Clamp(value, min, max)` ghim một số vào khoảng — mọi .NET hiện đại đều có. Thói quen quan trọng: **trạng thái là private, hành vi là public**. Phương thức và setter là những cánh cửa duy nhất, và mỗi cánh cửa có thể thực thi luật riêng.

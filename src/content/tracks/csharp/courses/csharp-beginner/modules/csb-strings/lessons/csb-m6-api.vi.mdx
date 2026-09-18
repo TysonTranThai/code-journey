@@ -1,0 +1,47 @@
+## Đặt câu hỏi
+
+```csharp
+string file = "report.PDF";
+file.EndsWith(".pdf")              // false — phân biệt hoa thường!
+file.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)  // true
+file.Contains("port")              // true
+file.StartsWith("rep")             // true
+string.Empty == file.Trim()        // có trống không?
+```
+
+So sánh chuỗi **phân biệt hoa thường theo mặc định** — `"PDF"` không kết thúc bằng `".pdf"`. Với input người dùng, hãy nói rõ ý bạn bằng đối số `StringComparison`. Phép bằng (`==` và `Equals`) so *nội dung*, không phải tham chiếu — string là kiểu tham chiếu mà `==` làm đúng điều người mới mong đợi.
+
+## Cắt và biến đổi
+
+```csharp
+string s = "  Code Journey  ";
+s.Trim()                       // "Code Journey"      — chuỗi mới
+s.Substring(5)                 // "Journey"           — từ chỉ số 5 trở đi
+s.Substring(5, 3)              // "Jou"               — 3 ký tự từ chỉ số 5
+s.Replace(" ", "-")            // "  Code-Journey-  "
+s.Trim().Replace(" ", "-")     // "Code-Journey"      — xích nhau
+```
+
+`Substring(start)` lấy mọi thứ từ `start`; `Substring(start, length)` lấy đúng `length` ký tự — và ném nếu khoảng vượt khỏi chuỗi. `Replace` thay **mọi** lần xuất hiện, không chỉ lần đầu.
+
+## Split và join
+
+```csharp
+string csv = "rice,beans,oil";
+string[] items = csv.Split(',');          // ["rice", "beans", "oil"]
+string re = string.Join(" | ", items);    // "rice | beans | oil"
+```
+
+`Split` cắt một chuỗi thành mảng tại mỗi dấu phân cách; trường rỗng thành chuỗi rỗng, và bạn có thể truyền `char[]` hoặc `string[]` làm phân cách. `string.Join` là chiều ngược lại — dán một mảng (các chuỗi) bằng dấu phân cách. Cùng nhau, chúng là xương sống của xử lý văn bản theo dòng và bản ghi (tệp kiểu CSV, log, bản ghi người dùng).
+
+## Biên giới số↔chuỗi
+
+```csharp
+int n = 42;
+string t = n.ToString();          // "42"
+string f = n.ToString("D5");      // "00042" — có các mã định dạng
+int back = int.Parse("42");       // ném khi gặp rác
+bool ok  = int.TryParse("42", out int value);  // false + value=0 khi gặp rác
+```
+
+`Parse` ném `FormatException` với input xấu; `TryParse` báo thành công bằng `bool` — bạn đã gặp nó ở Module 3, đây là nơi nó nằm về mặt khái niệm.

@@ -1,0 +1,36 @@
+## Vấn đề atomic giải quyết
+
+Hai thread tăng một `int` thường là **data race** — hành vi không xác định trong ISO C (C11 §5.1.2.4). Compiler có thể load một lần, cộng hai lần, store một lần; phần cứng có thể xen kẽ đọc/ghi giữa từ. Atomic sửa điều này bằng cách làm read-modify-write **vẹn nguyên** và cho bạn chọn mức truyền-ba-thấy.
+
+```c
+#include <stdatomic.h>          /* ISO C — không phải POSIX */
+
+atomic_int counter = 0;
+
+void bump(void) {
+    atomic_fetch_add(&counter, 1);   /* trả về giá trị TRƯỚC khi cộng */
+}
+```
+
+`atomic_fetch_add` trả về giá trị *trước* phép cộng — race kinh điển của `x++` biến mất vì toàn bộ load-cộng-store là một thao tác atomic.
+
+## Sáu thứ tự, xếp hạng thẳng thắn
+
+| thứ tự | hứa hẹn | dùng khi |
+|--------|---------|----------|
+| `memory_order_relaxed` | chỉ atomicity; không thứ tự bộ nhớ khác | bộ đếm thống kê, số thứ tự |
+| `memory_order_acquire` | đọc/ghi sau không trôi lên trước load này | phía *đọc* của publish lock-free |
+| `memory_order_release` | đọc/ghi trước không trôi xuống sau store này | phía *ghi* của publish lock-free |
+| `memory_order_acq_rel` | cả hai, cho read-modify-write | vòng CAS vừa đọc vừa ghi |
+| `memory_order_seq_cst` | một thứ tự toàn cục mọi thread đồng ý | mặc định; dùng trừ khi profiling nói khác |
+| `memory_order_consume` | thực tế bị bỏ; compiler nâng thành acquire | không dùng |
+
+Cặp **release/acquire** là ngựa thồ: release store đặt flag=1 *synchronizes-with* acquire load thấy flag=1, khiến mọi thứ viết trước release hiển thị sau acquire. Sandbox này (gcc trên aarch64) tôn trọng cả hai; `ATOMIC_INT_LOCK_FREE == 2`, nên `atomic_int` không cần khóa.
+
+## Relaxed không hỏng — nó hẹp hơn
+
+Mặc định `seq_cst` là thứ tự toàn cục qua *mọi* thao tác atomic. `relaxed` giữ atomicity nhưng cho phép các thread *không đồng thuận về thứ tự giữa các biến khác nhau*. Đúng cho bộ đếm miss không ai phối hợp — sai cho publish con trỏ (dữ liệu sau con trỏ cần hàng rào release/acquire).
+
+## Quy tắc của mô-đun
+
+**ISO C atomics định nghĩa khả năng hiển thị; POSIX pthreads định nghĩa thread.** `pthread_create` là POSIX (cần feature macro); `atomic_int` là ISO C. Giữ nhãn rõ và code vẫn portable.

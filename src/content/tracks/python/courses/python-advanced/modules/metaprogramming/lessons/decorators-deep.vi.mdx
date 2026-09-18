@@ -1,0 +1,59 @@
+## Decorator vượt ngoài cơ bản
+
+Bạn biết `@decorator` bọc một hàm. Dùng nâng cao là về **giữ nguyên bản thể**,
+**nhận tham số**, và **bọc class**.
+
+```python
+import functools
+
+def timed(fn):
+    @functools.wraps(fn)                # keep __name__, __doc__, __wrapped__
+    def wrapper(*args, **kwargs):
+        import time
+        start = time.perf_counter()
+        try:
+            return fn(*args, **kwargs)
+        finally:
+            print(f"{fn.__name__}: {time.perf_counter() - start:.6f}s")
+    return wrapper
+```
+
+Không có `functools.wraps`, wrapper *thay thế* metadata của hàm — làm hỏng
+introspection, tài liệu và debugger.
+
+**Decorator factory** nhận tham số và trả về decorator thật:
+
+```python
+def retry(times):
+    def decorator(fn):
+        @functools.wraps(fn)
+        def wrapper(*args, **kwargs):
+            for attempt in range(1, times + 1):
+                try:
+                    return fn(*args, **kwargs)
+                except Exception:
+                    if attempt == times:
+                        raise
+        return wrapper
+    return decorator
+
+@retry(times=3)
+def flaky(): ...
+```
+
+**Decorator class** nhận vào và trả về class — lựa chọn nhẹ nhàng thay cho
+mixin hay metaclass khi bạn chỉ cần vá hoặc đăng ký:
+
+```python
+def final(cls):
+    cls.__final__ = True
+    return cls
+
+@final
+class Config: ...
+```
+
+Một điểm tinh vi mà dân production hay gặp: decorator gắn lên *method* phải
+sống sót qua descriptor lookup — `functools.wraps` copy `__wrapped__`, nên
+`inspect.signature` vẫn thấy tham số gốc. Thứ tự xếp lớp là từ dưới lên:
+decorator gần `def` nhất chạy trước (ngoài cùng chạy sau).

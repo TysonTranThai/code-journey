@@ -1,0 +1,30 @@
+{
+  "id": "cb10-checkpoint-word",
+  "title": "Word Analyzer",
+  "prompt": "Implement `int word_length(const char* w)` (length, -1 for NULL), `int digit_count(const char* s)` (count of '0'..'9'), and `void title_case(char* w)` (uppercase the FIRST letter a-z in place; leave everything else).",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "length",
+      "code": "CHECK_EQ(word_length(\"keyboard\"), 8);\nCHECK_EQ(word_length(NULL), -1);",
+      "hint": "Delegate to strlen after the NULL check."
+    },
+    {
+      "name": "digits",
+      "code": "CHECK_EQ(digit_count(\"a1b22c\"), 3);\nCHECK_EQ(digit_count(\"no\"), 0);",
+      "hint": "'0'..'9' is a contiguous range: 1, 2, 2 here."
+    },
+    {
+      "name": "title case",
+      "code": "char w[] = \"hello\";\ntitle_case(w);\nCHECK_STR_EQ(w, \"Hello\");",
+      "hint": "w[0] = w[0] - 'a' + 'A' when it is lowercase."
+    },
+    {
+      "name": "title case guard",
+      "code": "char w[] = \"9lives\";\ntitle_case(w);\nCHECK_STR_EQ(w, \"9lives\");",
+      "hint": "A non-letter first character is left alone."
+    }
+  ]
+}

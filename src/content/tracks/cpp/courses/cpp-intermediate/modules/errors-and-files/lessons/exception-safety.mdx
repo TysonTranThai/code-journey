@@ -1,0 +1,25 @@
+Exception safety is a guarantee a function makes about its state when an
+exception flies through it. Three useful levels:
+
+- **basic**: invariants hold; nothing leaks; the object is destructible —
+  but the value may be anything valid.
+- **strong**: the call either completes or has no effect (commit/rollback).
+- **noexcept**: never throws; moves and destructors should be here.
+
+The canonical strong-guarantee idiom is *copy-and-swap*: do the risky work
+on a copy, then commit with non-throwing moves.
+
+```cpp
+Config& operator=(const Config& other) {
+    Config tmp{other};      // may throw — *this untouched
+    std::swap(data_, tmp.data_);  // no-throw commit
+    return *this;
+}
+```
+
+Where exceptions fly from matters: between `new` and `delete`, a throw
+leaks; RAII (Module 8) closes that window by tying release to scope.
+Destructors must be `noexcept` — a `throw` inside unwinding calls
+`std::terminate`. This is why `std::vector::erase` with move-only types
+demands move constructors marked `noexcept`: reallocation would otherwise
+use the copying path.

@@ -1,0 +1,30 @@
+Dòng `[project.scripts]` là `tasknoter = "tasknoter.cli:main"` báo cho bộ
+cài đặt: tạo lệnh `tasknoter` import `tasknoter.cli` và gọi `main()`.
+`main` của bạn nhận **không tham số** — nó đọc sys.argv (thường qua
+`argparse` từ khóa Beginner):
+
+```python
+# src/tasknoter/cli.py
+import argparse
+
+def main():
+    parser = argparse.ArgumentParser(prog="tasknoter")
+    parser.add_argument("command", choices=["add", "list", "done"])
+    parser.add_argument("text", nargs="?")
+    args = parser.parse_args()
+    if args.command == "add" and args.text:
+        print(f"added: {args.text}")
+    elif args.command == "list":
+        print("listing...")
+
+if __name__ == "__main__":
+    main()
+```
+
+Phép lịch sự CLI chuyên nghiệp: **exit code quan trọng** (0 = thành công,
+khác 0 = thất bại — `raise SystemExit(2)` hoặc `sys.exit(2)`), lỗi đi ra
+**stderr** (`print(..., file=sys.stderr)`), và `--help` được sinh sẵn. CLI
+tôn trọng những điều này ghép mượt với các công cụ khác.
+
+Capstone đòi đúng hình dạng này: một `main()` điều phối subcommand xuống các
+tầng storage và service của bạn.

@@ -1,0 +1,38 @@
+## The vocabulary
+
+- **O(1)**: cost independent of size — one arithmetic step
+- **O(log n)**: halving each step — binary search
+- **O(n)**: one pass over the data — summing an array
+- **O(n log n)**: good sorting
+- **O(n²)**: every element against every element — naive sorting
+
+Numbers make it real: for n = 1,000,000, an O(n) scan is a million steps;
+O(n²) is a trillion. Same hardware, different worlds.
+
+## Reading a loop's complexity
+
+```c
+for (i = 0; i < n; i++)          // O(n)
+for (i = 0; i < n; i++)          // O(n) — doubling i reaches n in log n steps
+    i *= 2;
+for (i = 0; i < n; i++)          // O(n²) — outer n times, inner n times
+    for (j = 0; j < n; j++)
+```
+
+Nested loops multiply; sequential loops take the larger.
+
+## The beginner decision table
+
+| need | reach for |
+|------|-----------|
+| a list you index often | dynamic array |
+| frequent inserts at the front | linked list |
+| undo / matching brackets / DFS | stack |
+| fair waiting lines, buffering | queue |
+| fastest lookup by key | (hash table — later courses) |
+
+## Measurement beats theory
+
+When unsure, time it. C gives you `clock()`; even a crude before/after print
+beats guessing. Theory picks the top 2 candidates; the stopwatch closes the
+case.

@@ -1,0 +1,28 @@
+## Thứ tự: Comparable và Comparator
+
+`Comparable<T>` là thứ tự *tự nhiên* — chính đối tượng quyết định:
+
+```java
+record Weight(int grams) implements Comparable<Weight> {
+    public int compareTo(Weight o) { return Integer.compare(grams, o.grams); }
+}
+```
+
+`Comparator<T>` là thứ tự *bên ngoài, hoán đổi được*:
+
+```java
+Comparator<Employee> bySalary = Comparator.comparingInt(Employee::salary);
+Comparator<Employee> bySalaryDesc = bySalary.reversed();
+Comparator<Employee> byDeptThenSalary =
+    Comparator.comparing(Employee::dept).thenComparingInt(Employee::salary);
+```
+
+Quy tắc:
+- compare(a,b) < 0, 0, hoặc > 0 — chỉ dấu là quan trọng
+- comparator phải *nhất quán với equals* nếu dùng trong set/map có thứ tự,
+  nếu không bạn sẽ thấy các entry "trùng lặp" giả tạo
+- `Comparator.comparing(keyExtractor)` dễ đọc hơn lambda tự viết, và xử
+  lý null rõ ràng (`nullsFirst`, `nullsLast`)
+
+Sắp xếp bằng stream (`sorted(cmp)`) và `Collections.sort` dùng chung các
+interface này.

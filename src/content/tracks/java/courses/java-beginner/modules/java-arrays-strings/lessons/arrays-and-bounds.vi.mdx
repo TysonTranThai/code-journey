@@ -1,0 +1,36 @@
+**Mảng** là một hàng giá trị cùng kiểu, độ dài cố định, truy cập bằng chỉ số:
+
+```java
+int[] temps = {18, 21, 19, 25};       // literal: độ dài cố định lúc tạo
+double[] prices = new double[10];     // 10 ô, đều là 0.0
+temps[0] = 17;                        // chỉ số 0 là phần tử ĐẦU TIÊN
+int last = temps[temps.length - 1];   // length là trường, không phải phương thức
+```
+
+Các quy tắc định hình mọi thứ:
+
+- **Kích thước cố định.** Mảng không thể lớn lên. `temps.length` không bao
+  giờ đổi. Khi dữ liệu phải lớn lên, đó là tín hiệu chuyển sang `ArrayList`
+  (Module 10).
+- **Chỉ số bắt đầu từ 0.** Chỉ số hợp lệ chạy `0` .. `length-1`. Ngoài vùng
+  đó sẽ ném `ArrayIndexOutOfBoundsException` ngay tại chỗ xảy ra.
+- **Đồng nhất và có kiểu.** `int[]` chỉ chứa int — không gì khác. Java kiểm
+  tra lúc biên dịch.
+
+Duyệt mảng là vòng lặp module-4 với `length` làm biên; enhanced `for` phủ
+trường hợp phổ biến là đọc hết mọi phần tử. **Tư duy biên** là kỹ năng cốt
+lõi: mọi chỉ số bạn tính ra (`i`, `i + 1`, `length - 1`, điểm giữa) đều phải
+được kiểm tra lại trong đầu với `0` và `length - 1`. Đổi chỗ `a[i]` với
+`a[i + 1]` chỉ đúng khi `i + 1 <= length - 1` — sai một phép so sánh là JVM ném exception.
+
+**Mảng 2D** là mảng của các mảng — một lưới:
+
+```java
+int[][] grid = { {1, 2}, {3, 4} };
+System.out.println(grid[1][0]);      // 3 — hàng 1, cột 0
+for (int[] row : grid) {
+    for (int cell : row) { /* ... */ }
+}
+```
+
+**Tiếp theo:** class được dùng nhiều nhất của Java — String.

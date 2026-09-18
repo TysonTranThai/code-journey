@@ -1,0 +1,16 @@
+A defensible micro-benchmark in 30 lines:
+
+1. **Warmup**: run the workload W times; discard everything.
+2. **Measure**: run R rounds, each timing N operations with nanoTime.
+3. **Reduce**: take the MEDIAN of the per-round averages — the median resists
+   outliers (a GC pause in one round) far better than the mean.
+4. **Compare with epsilon**: declare A faster than B only if
+   `medianB - medianA > epsilon` where epsilon is a meaningful fraction (say
+   10%) of the slower median. Anything inside epsilon is "no measured
+   difference".
+
+The benchmark is itself code and can be gamed: if the JIT proves the measured
+result is unused, it deletes the work (dead-code elimination) and you measure
+nothing. Consume the result — sum it into a variable, print it in verbose
+mode, check it. A benchmark that returns void and ignores its output is a
+benchmark of the optimizer, not of your code.

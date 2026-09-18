@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m5-word-count",
+  "title": "Ordered word counts",
+  "prompt": "Implement `std::map<std::string, int> word_counts(const std::vector<std::string>& words)` counting occurrences of each word. The returned `map` must iterate in sorted key order — that ordering is part of the contract, so an unordered_map will fail the sorted test.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <map>\n#include <string>\n#include <vector>\n#include <iostream>\n\n// std::map<std::string, int> word_counts(const std::vector<std::string>& words)\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "auto m = word_counts({\"b\",\"a\",\"b\",\"c\",\"a\"});\nCHECK_EQ(m.size(), 3);\nCHECK_EQ(m.at(\"a\"), 2);\nCHECK_EQ(m.at(\"b\"), 2);\nCHECK_EQ(m.at(\"c\"), 1);",
+      "hint": "operator[] inserts 0 for missing keys, then ++ counts."
+    },
+    {
+      "name": "sorted-order",
+      "code": "auto m = word_counts({\"b\",\"a\",\"c\"});\nstd::string keys;\nfor (const auto& [k, v] : m) keys += k;\nCHECK_EQ(keys, std::string(\"abc\"));",
+      "hint": "A std::map iterates keys in sorted order."
+    },
+    {
+      "name": "empty",
+      "code": "CHECK_EQ(word_counts({}).size(), 0);",
+      "hint": "No words, no entries."
+    }
+  ],
+  "level": "imitation"
+}

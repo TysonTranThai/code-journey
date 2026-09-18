@@ -1,0 +1,42 @@
+Loops repeat work without repeating code. Java has three loop forms; the
+counting `for` comes first:
+
+```java
+for (int i = 1; i <= 5; i++) {
+    System.out.println("tick " + i);
+}
+```
+
+Read the header as three sentences: **start** with `i` at 1; **keep going**
+while `i <= 5`; after every pass, **step** `i` forward. The variable `i`
+exists only inside the loop — declare it there, not outside.
+
+The counting pattern that covers most real loops:
+
+```java
+int[] scores = {72, 85, 90};
+for (int i = 0; i < scores.length; i++) {
+    System.out.println(scores[i]);
+}
+```
+
+Zero-based counting with `i < length` (not `<=`) is the Java convention —
+arrays and Strings index from 0, so `i` from 0 to length-1 touches every
+element exactly once. Off-by-one bugs (`<=`) throw
+`ArrayIndexOutOfBoundsException` at the last step.
+
+The **enhanced for** ("for-each") visits every element without an index at
+all:
+
+```java
+for (int s : scores) {
+    System.out.println(s);
+}
+```
+
+Use for-each whenever you need the *elements*; use the classic `for` when
+you need the *position* or a custom step (`i += 3`). Both loops here print
+the same three numbers — choosing the loop is choosing which idea
+(index vs element) your code is about.
+
+**Next:** loops that run until something happens.

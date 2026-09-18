@@ -1,0 +1,34 @@
+## char vs string
+
+```csharp
+char grade = 'A';          // single quotes: ONE UTF-16 code unit
+string name = "Ada";       // double quotes: a sequence of chars
+```
+
+They're different types: `"A"` (string) and `'A'` (char) are not interchangeable. A string is **immutable** — methods like `ToUpper()` return a *new* string; the original never changes:
+
+```csharp
+string shout = name.ToUpper();   // "ADA" — name is still "Ada"
+```
+
+## Interpolation: the modern default
+
+```csharp
+string user = "Lan";
+int points = 42;
+Console.WriteLine($"User {user} has {points} points.");
+// Any expression goes inside the braces:
+Console.WriteLine($"Double: {points * 2}");
+```
+
+`$"` switches interpolation on. Inside `{}`, the compiler type-checks the expression. Formatting follows the value after `:` — `{price:F2}` for two decimals, `{n:D5}` to pad an integer:
+
+```csharp
+Console.WriteLine($"[{score:D3}]");   // [007]
+```
+
+Prefer interpolation over `+` concatenation: it reads in order, survives edits, and type-checks. You'll meet `StringBuilder` much later, when loop-built strings become a real performance topic — immutability means `a + b + c` allocates, but for beginner-scale strings clarity wins.
+
+## Useful string members now
+
+`name.Length`, `name.Contains("da")`, `name.StartsWith("A")`, `name.ToUpper()`, `name.Trim()`. Comparisons: `==` compares string *contents* in C# (unlike Java) — `a == b` is true when the text matches.

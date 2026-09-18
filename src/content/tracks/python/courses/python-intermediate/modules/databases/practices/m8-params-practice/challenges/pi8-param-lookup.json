@@ -1,0 +1,21 @@
+{
+  "id": "pi8-param-lookup",
+  "title": "Safe Lookup",
+  "prompt": "Implement safe_lookup(conn, name) returning rows from users WHERE name = ?. It MUST survive the injection attempt in the test (the classic quote trick must be treated as a literal name).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import sqlite3\n\ndef safe_lookup(conn, name):\n    pass\n",
+  "tests": [
+    {
+      "name": "finds exact matches",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE users (name TEXT)')\nconn.execute(\"INSERT INTO users VALUES ('An')\")\nassert safe_lookup(conn, 'An') == [('An',)]",
+      "hint": "Parameterized WHERE with the ? placeholder."
+    },
+    {
+      "name": "injection attempt is inert",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE users (name TEXT)')\nconn.execute(\"INSERT INTO users VALUES ('An')\")\nrows = safe_lookup(conn, \"' OR '1'='1\")\nassert rows == []",
+      "hint": "A parameterized query treats the payload as a literal name — zero rows."
+    }
+  ],
+  "level": "guided"
+}

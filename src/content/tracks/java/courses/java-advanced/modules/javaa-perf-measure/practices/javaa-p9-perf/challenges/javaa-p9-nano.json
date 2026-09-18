@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p9-nano",
+  "title": "Timing that cannot lie",
+  "prompt": "1. `static long timedSum(int n)` — time a loop summing 1..n with nanoTime; return\nthe elapsed NANOS. Verify the sum equals (long) n * (n + 1) / 2 and throw\nIllegalStateException if it does not (defeat dead-code elimination by consuming\nthe result).\n2. `static long warmMedianSum(int n, int rounds)` — for each of `rounds` rounds:\ntime the same sum, convert to microseconds, collect; return the MEDIAN of the\nrounds (sort, take the middle). Warmup is inside: run the sum 2_000 times\nuntimed before measuring.\n3. `static boolean nanoIsMonotonic()` — read nanoTime 1_000 times; return true iff\nno read was less than its predecessor (strictly: never a NEGATIVE step).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "timed, consumed, honest",
+      "code": "\nlong ns = Solution.timedSum(1_000_000);\ncheckTrue(ns > 0, \"elapsed is positive: \" + ns);\ncheckTrue(Solution.nanoIsMonotonic(), \"nanoTime never steps backward\");\n",
+      "hint": "Consumed results survive DCE; monotonic holds."
+    },
+    {
+      "name": "median after warmup",
+      "code": "\nlong us = Solution.warmMedianSum(1_000_000, 5);\ncheckTrue(us > 0, \"median micros is positive: \" + us);\n",
+      "hint": "Warm first, median second."
+    }
+  ],
+  "level": "guided"
+}

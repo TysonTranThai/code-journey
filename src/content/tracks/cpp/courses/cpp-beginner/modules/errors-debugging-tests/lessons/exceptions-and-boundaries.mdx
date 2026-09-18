@@ -1,0 +1,40 @@
+## throw, catch, and the journey between
+
+```cpp
+#include <stdexcept>
+
+double parse_ratio(const std::string& text) {
+    double value = std::stod(text);            // std::stod throws std::invalid_argument on garbage
+    if (value < 0 || value > 1) throw std::out_of_range("ratio must be within [0,1]");
+    return value;
+}
+
+int main() {
+    try {
+        double r = parse_ratio("1.5");
+        use(r);
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "not a number: " << e.what() << '\n';
+        return 1;
+    } catch (const std::out_of_range& e) {
+        std::cerr << "out of range: " << e.what() << '\n';
+        return 1;
+    }
+}
+```
+
+A `throw` unwinds the call stack until some `catch` accepts it; destructors run along the way (RAII holds under exceptions — that is the design). Catch **by const reference**; `catch (...)` is the last-resort catch-all.
+
+## The hierarchy you will actually meet
+
+`std::exception` → `std::logic_error` (`std::invalid_argument`, `std::out_of_range`) and `std::runtime_error` (and stream/file failures). Throw `std::runtime_error` (or a logic_error child) with a *specific message*; `e.what()` is what your users will read.
+
+## The boundary rule
+
+**Throw** when a function cannot fulfill its contract and no local answer exists (bad input deep inside a parser). **Catch** at boundaries — `main`, a request handler, a CLI command loop — where you can inform a human and continue or exit cleanly. Catching everywhere in between buries errors under layers of `try` noise; letting everything crash loses the chance to explain. The graded exercises follow the rule: low-level functions throw, the harness plays `main`.
+
+## What NOT to do
+
+- Don't throw for ordinary control flow (end-of-list is a return value, not an exception).
+- Don't `catch (...)` silently and continue — that is how bugs become ghosts.
+- Don't throw from destructors.

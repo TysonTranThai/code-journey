@@ -1,0 +1,21 @@
+{
+  "id": "csb-p11-batch",
+  "title": "Value vs reference: the batch",
+  "prompt": "Implement in `Solution`: `struct Batch { public int Count; }` and `static (int First, int Second) CopyProbe()` that creates a `Batch` with `Count = 1`, copies it to a second variable, sets the copy's `Count = 2`, and returns BOTH counts. Also `static (int First, int Second) RefProbe()` doing the same with `class BatchRef { public int Count; }`.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "struct-copies",
+      "code": "var probe = Solution.CopyProbe();\nCj.Eq(probe.First, 1, \"original struct untouched\");\nCj.Eq(probe.Second, 2, \"copy mutated independently\");",
+      "hint": "Struct assignment copies: the second variable's write cannot reach the first."
+    },
+    {
+      "name": "class-shares",
+      "code": "var probe = Solution.RefProbe();\nCj.Eq(probe.First, 2, \"class shares: both see 2\");\nCj.Eq(probe.Second, 2, \"same object\");",
+      "hint": "Class assignment shares one object: both variables report 2 — the discriminating pair."
+    }
+  ],
+  "level": "independent"
+}

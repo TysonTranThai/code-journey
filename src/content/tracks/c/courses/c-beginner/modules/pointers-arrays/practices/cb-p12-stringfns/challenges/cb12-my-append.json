@@ -1,0 +1,26 @@
+{
+  "id": "cb12-my-append",
+  "title": "my_strcat",
+  "prompt": "Implement `void my_strcat(char *dst, const char *src)` appending src's characters to the END of dst's string (after dst's NUL), then terminating. dst is large enough.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "append",
+      "code": "char d[16] = \"foo\";\nmy_strcat(d, \"bar\");\nCHECK_STR_EQ(d, \"foobar\");",
+      "hint": "Find dst's NUL, then copy from there."
+    },
+    {
+      "name": "append empty",
+      "code": "char d[16] = \"abc\";\nmy_strcat(d, \"\");\nCHECK_STR_EQ(d, \"abc\");",
+      "hint": "Appending nothing changes nothing."
+    },
+    {
+      "name": "onto empty",
+      "code": "char d[16] = \"\";\nmy_strcat(d, \"hi\");\nCHECK_STR_EQ(d, \"hi\");",
+      "hint": "NUL at position 0: append writes at 0."
+    }
+  ],
+  "level": "independent"
+}

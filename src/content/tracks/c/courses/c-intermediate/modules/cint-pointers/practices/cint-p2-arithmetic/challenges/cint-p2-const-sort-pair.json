@@ -1,0 +1,21 @@
+{
+  "id": "cint-p2-const-sort-pair",
+  "title": "Read-Only In, Write Out",
+  "prompt": "Implement the const-discipline pair:\n\n```c\n/* returns a NEW heap array holding a's elements sorted ascending;\n   a is never modified. Caller owns the result (frees it).\n   Returns NULL for NULL input or allocation failure. */\nint *sorted_copy(const int *a, size_t n);\n/* returns 1 iff a is already sorted ascending */\nint is_sorted(const int *a, size_t n);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "copy is sorted, original untouched",
+      "code": "\nint src[] = {5, 1, 4, 2, 8};\nint *cp = sorted_copy(src, 5);\nCHECK_NOT_NULL(cp);\nCHECK_EQ(cp[0], 1); CHECK_EQ(cp[4], 8);\nCHECK_EQ(src[0], 5); CHECK_EQ(src[1], 1);   /* original untouched */\nCHECK_EQ(is_sorted(src, 5), 0);\nCHECK_EQ(is_sorted(cp, 5), 1);\nfree(cp);\nCHECK_EQ(sorted_copy(NULL, 0), NULL);\n",
+      "hint": "malloc n ints, memcpy, qsort with a comparator; const params keep src safe."
+    },
+    {
+      "name": "trivially sorted",
+      "code": "\nint one[] = {42};\nCHECK_EQ(is_sorted(one, 1), 1);\nint two[] = {1, 2};\nCHECK_EQ(is_sorted(two, 2), 1);\nint bad[] = {2, 1};\nCHECK_EQ(is_sorted(bad, 2), 0);\nCHECK_EQ(is_sorted(NULL, 0), 1);\n",
+      "hint": "Empty and single-element arrays are sorted."
+    }
+  ],
+  "level": "imitation"
+}

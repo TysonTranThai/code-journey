@@ -1,0 +1,21 @@
+{
+  "id": "cb3-parse-pair",
+  "title": "Parse Name and Age",
+  "prompt": "Implement `int parse_person(const char* line, char* name, int* age)`: parse `<name> <age>` from the line. Store the name (max 31 chars + terminator) and age through the out-parameters. Return 1 if both fields were read, 0 otherwise.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "valid line",
+      "code": "char name[32]; int age = -1;\nCHECK_EQ(parse_person(\"Linh 21\", name, &age), 1);\nCHECK_STR_EQ(name, \"Linh\");\nCHECK_EQ(age, 21);",
+      "hint": "int got = sscanf(line, \"%31s %d\", name, age); return got == 2;"
+    },
+    {
+      "name": "missing age fails",
+      "code": "char name[32]; int age = -1;\nCHECK_EQ(parse_person(\"Linh\", name, &age), 0);",
+      "hint": "sscanf returns how many items it read — 1 here, so return 0."
+    }
+  ],
+  "level": "guided"
+}

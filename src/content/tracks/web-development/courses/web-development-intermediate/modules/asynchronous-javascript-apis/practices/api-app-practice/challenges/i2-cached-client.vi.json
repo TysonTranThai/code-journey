@@ -1,0 +1,18 @@
+{
+  "title": "API client có cache",
+  "prompt": "Viết `createClient(fetchImpl)` — một API client với:\n\n- `get(url)` — dùng cache theo client: lần gọi đầu fetch và cache PROMISE; các lần gọi sau trả về cùng promise đó (một chuyến bay cho mỗi URL cho đến khi bị vô hiệu hóa)\n- `invalidate(url)` — xóa mục cache cho URL đó (lần `get` kế sẽ fetch lại)\n- `invalidateAll()` — xóa hết\n- `post(url, body)` — không bao giờ cache; gửi `{ method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'application/json' } }` và phân giải với phản hồi đã parse\n- mọi fetch đi qua `fetchImpl(url, opts)` được chèn vào",
+  "tests": [
+    {
+      "name": "get khử trùng lặp và cache theo URL",
+      "hint": "Cùng mẫu với loader trong bài kiểm tra — cache promise, không phải giá trị."
+    },
+    {
+      "name": "invalidate ép fetch lại",
+      "hint": "Map.delete(url) cho invalidate; clear() cho invalidateAll."
+    },
+    {
+      "name": "post không bao giờ cache và gửi JSON",
+      "hint": "post đi vòng qua cache hoàn toàn; dựng opts với method/body/headers rồi parse res.json()."
+    }
+  ]
+}

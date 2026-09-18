@@ -1,0 +1,10 @@
+{
+  "title": "Chứng minh bộ gom chu kỳ hoạt động",
+  "prompt": "Cài `cycle_probe()`:\n\n1. Tạo hai instance `Node` (class bên dưới có `partner = None`).\n2. Nối chu kỳ: `a.partner = b` và `b.partner = a`.\n3. Ghi `partners_wired = a.partner is b and b.partner is a`.\n4. Bỏ tham chiếu cục bộ tới CẢ HAI node.\n5. Chạy `gc.collect()` và giữ giá trị trả về.\n6. Trả về `(collected, partners_wired)`.\n\nPhần chấm khẳng định `partners_wired là True` VÀ `collected >= 2` — hai node trỏ chéo nhau chỉ bộ gom chu kỳ thu hồi được.",
+  "tests": [
+    {
+      "name": "Chu kỳ được nối và được thu hồi bởi collect()",
+      "hint": "Nối a.partner = b và b.partner = a TRƯỚC khi bỏ tham chiếu; rồi gc.collect()."
+    }
+  ]
+}

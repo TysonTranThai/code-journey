@@ -1,0 +1,20 @@
+{
+  "id": "i2-error-shape",
+  "title": "Uniform Error Shaper",
+  "prompt": "Write `apiError(status, message, field?)` returning { status, body } where body is { error: { message, field? } } — field only included when provided. Write `fromZod(issues)` mapping an array of { path, message } into the details array shape [{ field, message }] (path is a string like \"dueDate\").",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function apiError(status, message, field) {\n  // your code\n}\n\nfunction fromZod(issues) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "single error with optional field",
+      "code": "const fn = new Function(code + \"\\nreturn { apiError, fromZod };\");\nconst { apiError, fromZod } = fn();\nconst e = apiError(400, \"validation failed\", \"title\");\nif (e.status !== 400 || e.body.error.field !== \"title\") throw new Error(\"Field included when given.\");\nconst e2 = apiError(404, \"task not found\");\nif (\"field\" in e2.body.error) throw new Error(\"No field, no key.\");\n",
+      "hint": "Conditionally attach the key — don't send field: undefined."
+    },
+    {
+      "name": "zod issues map to details",
+      "code": "const fn = new Function(code + \"\\nreturn { apiError, fromZod };\");\nconst { apiError, fromZod } = fn();\nconst details = fromZod([\n  { path: \"title\", message: \"required\" },\n  { path: \"dueDate\", message: \"must be a date\" },\n]);\nif (details[0].field !== \"title\" || details[1].message !== \"must be a date\") throw new Error(\"Shape converted.\");\n",
+      "hint": "A straight map from path=>field."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ca2-sequenced-sum",
+  "title": "Fix the Unsequenced Sum",
+  "prompt": "This expression is UB: `int k = i++ + i++;`. Implement `int sequenced_sum(int start)` returning the value that `start + (start+1)` computes, but built WITHOUT any unsequenced pair: use temporaries or separate statements. Your submitted source is exposed as `sequenced_sum_src` (a string constant you also define) so the checker can verify it contains no `++` at all.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "correct arithmetic",
+      "code": "CHECK_EQ(sequenced_sum(5), 11);\nCHECK_EQ(sequenced_sum(0), 1);\nCHECK_EQ(sequenced_sum(-3), -5);",
+      "hint": "start + (start + 1): for -3 that is -3 + -2 = -5 — computed via temporaries or separate statements, never two unsequenced ++."
+    },
+    {
+      "name": "no increments at all",
+      "code": "CHECK(strstr(sequenced_sum_src, \"++\") == 0);",
+      "hint": "sequenced_sum_src is the string you define; keep it free of ++ — temporaries need none."
+    }
+  ],
+  "level": "debugging"
+}

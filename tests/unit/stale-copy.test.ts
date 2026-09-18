@@ -50,9 +50,13 @@ describe("stale product copy guard (07-05)", () => {
   }
 
   it("homepage affirmatively describes shipped features", () => {
+    // The homepage copy moved into the EN dictionary when i18n landed; the
+    // guard checks both the page and its dictionary source of truth.
     const home = readFileSync(join(process.cwd(), "src/app/page.tsx"), "utf8");
-    expect(home).toMatch(/auto-graded challenges/i);
-    expect(home).toMatch(/progress tracking/i);
-    expect(home).toMatch(/mentor/i);
+    const dict = readFileSync(join(process.cwd(), "src/lib/i18n/dictionaries.ts"), "utf8");
+    const combined = `${home}\n${dict}`;
+    expect(combined).toMatch(/auto-graded challenges/i);
+    expect(combined).toMatch(/progress tracking/i);
+    expect(combined).toMatch(/mentor/i);
   });
 });

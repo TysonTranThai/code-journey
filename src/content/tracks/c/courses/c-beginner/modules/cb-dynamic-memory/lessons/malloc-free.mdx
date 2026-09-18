@@ -1,0 +1,46 @@
+## The call
+
+```c
+int *p = malloc(n * sizeof(int));   // bytes, computed from the element type
+```
+
+`malloc` returns `void*` — assignment to `int*` converts implicitly. Always
+multiply by `sizeof` the element type, never hardcode 4.
+
+## Always check for failure
+
+`malloc` returns `NULL` when it cannot satisfy the request (out of memory, or
+an absurd size):
+
+```c
+int *p = malloc(n * sizeof(int));
+if (p == NULL) {
+    fprintf(stderr, "out of memory\n");
+    return 1;
+}
+```
+
+Un-checked malloc is how programs crash later, far from the cause.
+
+## Exactly one free
+
+```c
+free(p);      // memory returned
+p = NULL;     // now p cannot be used-after-free by accident
+```
+
+Free takes the pointer back to the START of the allocation — the pointer you
+got from malloc, unchanged. Advancing it loses the address `free` needs:
+
+```c
+p++;          // legal to walk the array
+free(p);      // WRONG — p no longer points at the allocation start
+```
+
+Keep the original pointer (or free a saved copy).
+
+## After free
+
+`p` still holds the old address but the memory is no longer yours — reading
+or writing `*p` is undefined behavior. Setting `p = NULL` immediately after
+free is a cheap, effective habit.

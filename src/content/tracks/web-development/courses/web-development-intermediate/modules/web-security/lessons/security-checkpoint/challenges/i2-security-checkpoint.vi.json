@@ -1,0 +1,19 @@
+{
+  "id": "i2-security-checkpoint",
+  "title": "Bàn kiểm toán",
+  "prompt": "Viết BA hàm. 1) `classify(snippet)` — nhận mô tả một dòng code, nêu tên lớp lỗ hổng: chứa \"innerHTML\" hoặc \"document.write\" => \"xss\"; chứa phép nối chuỗi vào \"SELECT\" hoặc \"query(\" => \"sql-injection\"; chứa \"exec(`\" hoặc \"exec(\"\" => \"command-injection\"; chứa \"/api/\" + một id được đọc mà không có mô tả kiểm tra quyền sở hữu => \"idor\"; còn lại \"none\". 2) `defenseFor(threat)` — ánh xạ: \"xss\" => \"output-encoding\", \"sql-injection\" => \"parameterized-queries\", \"command-injection\" => \"execfile-allowlist\", \"idor\" => \"ownership-check\", \"csrf\" => \"samesite-token\", không rõ => \"defense-in-depth\". 3) `corsVerdict(allowOrigin, credentials)` — trả về \"invalid\" khi allowOrigin là \"*\" VÀ credentials là true; \"ok\" khi allowOrigin là một origin cụ thể; còn lại \"risky\".",
+  "tests": [
+    {
+      "name": "phân loại các lớp lỗ hổng",
+      "hint": "Kiểm tra các sink theo thứ tự: innerHTML, nối chuỗi query, exec, rồi idor."
+    },
+    {
+      "name": "phòng thủ ghép đúng mối đe dọa",
+      "hint": "Một lookup object; mặc định là nhiều lớp."
+    },
+    {
+      "name": "phán quyết CORS theo đúng đặc tả",
+      "hint": "Kiểm tra invalid trước; rồi cụ thể-so-với-wildcard."
+    }
+  ]
+}

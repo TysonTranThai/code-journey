@@ -1,0 +1,21 @@
+{
+  "id": "ca14-dependency-closure",
+  "title": "Header Dependency Closure",
+  "prompt": "Given the edge table already in your editor (`struct dep { int obj; int header; }; deps[]` mapping objects to the headers they include: main.o→util.h, util.o→util.h, main.o→main.h), implement `int header_touch_breaks(size_t n_objects, const int *obj_uses_header, size_t n_uses)` returning how many objects must rebuild when a header changes — obj_uses_header being a 0/1 per object. Then implement `int stale_objects_possible(int rule_includes_header)` returning 1 iff omitting a real header dependency can leave stale objects after an edit.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "affected objects rebuild",
+      "code": "int uses[3] = {1, 1, 0};\nCHECK_EQ(header_touch_breaks(3, uses, 3), 2);",
+      "hint": "Two of the three objects include the changed header: two rebuilds."
+    },
+    {
+      "name": "omission leaves stale objects",
+      "code": "CHECK_EQ(stale_objects_possible(0), 1);",
+      "hint": "A rule that forgets a header dependency lets edited headers ship as stale objects — the quiet lie of incomplete graphs."
+    }
+  ],
+  "level": "combination"
+}

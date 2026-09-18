@@ -1,0 +1,16 @@
+{
+  "id": "javaa-p7-dispatch",
+  "title": "Annotation-driven dispatch",
+  "prompt": "Inside Solution:\n1. Declare `@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)\npublic @interface Route { String value(); }`\n2. Add three STATIC methods annotated with routes: `@Route(\"/home\") static String serveHome()`,\n`@Route(\"/about\") static String serveAbout()`, `@Route(\"/help\") static String serveHelp()`\nreturning \"home-page\", \"about-page\", \"help-page\" respectively. (Method names deliberately\ndiffer from the route paths — the mapping must come from the annotation.)\n3. `static Map<String, String> routeTable()` — reflect over getDeclaredMethods, map\neach @Route value to the METHOD NAME that carries it.\n4. `static String dispatch(String path, String body)` — look up the handler method\nname for path in routeTable(); if found, invoke it reflectively (it's static, no\nreceiver) and return the result; if unknown, return exactly \"404\". The body arg is\nunused (routes take no input) — keep it for signature stability.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "routes come from annotations, not method names",
+      "code": "\njava.util.Map<String, String> t = Solution.routeTable();\ncheckEq(t.get(\"/home\"), \"serveHome\", \"annotation value maps to method name\");\ncheckEq(t.get(\"/about\"), \"serveAbout\", \"second route\");\ncheckEq(Solution.dispatch(\"/home\", \"\"), \"home-page\", \"reflective invocation works\");\ncheckEq(Solution.dispatch(\"/nope\", \"\"), \"404\", \"unknown path handled\");\n",
+      "hint": "The reader pattern: scan, map, invoke."
+    }
+  ],
+  "level": "independent"
+}

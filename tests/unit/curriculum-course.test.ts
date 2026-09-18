@@ -5,6 +5,8 @@ import {
   getCurriculumModule,
   getLinearLessons,
   getLessonChallenges,
+  getModulePractices,
+  getPracticeChallenges,
   getLesson,
   getTracks,
   readLessonBody,
@@ -58,9 +60,12 @@ describe("course structure (Phase 8: web-development-beginner)", () => {
 
   it("has a linear order that interleave conceptual and practical modules", () => {
     const linear = getLinearLessons(TRACK);
-    expect(linear).toHaveLength(56);
+    expect(linear).toHaveLength(143);
     expect(linear[0]?.id).toBe("how-the-web-works");
     expect(linear[55]?.id).toBe("capstone-build-and-ship");
+    expect(linear[135]?.id).toBe("capstone-ship");
+    expect(linear[136]?.id).toBe("html-architecture");
+    expect(linear[142]?.id).toBe("docs-hub-project");
   });
 
   it("every lesson body exists on disk and is non-trivial", () => {
@@ -69,14 +74,17 @@ describe("course structure (Phase 8: web-development-beginner)", () => {
     for (const lesson of linear) {
       const body = readLessonBody(TRACK, lesson.courseId, lesson.moduleId, lesson.id);
       // A real lesson explains; placeholder bodies would be far shorter.
+      const threshold = lesson.courseId === "web-development-intermediate" ? 900 : 1200;
       expect(body.length, `lesson body too short: ${lesson.moduleId}/${lesson.id}`).toBeGreaterThan(
-        1200,
+        threshold,
       );
     }
   });
 
   it("every declared challenge resolves with valid, executable tests", () => {
-    const linear = getLinearLessons(TRACK);
+    // Course 1 revision: coding challenges live in practice sets (plus the
+    // checkpoint challenges that stay lesson-attached).
+    const linear = getLinearLessons(TRACK).filter((l) => l.courseId === COURSE);
     let challengeCount = 0;
     for (const lesson of linear) {
       const challenges = getLessonChallenges(TRACK, lesson.courseId, lesson.moduleId, lesson.id);
@@ -91,7 +99,77 @@ describe("course structure (Phase 8: web-development-beginner)", () => {
         }
       }
     }
-    expect(challengeCount).toBe(51);
+    for (const moduleId of [
+      "the-web-and-your-first-website",
+      "how-modern-websites-work",
+      "html-foundations",
+      "css-foundations",
+      "javascript-foundations",
+      "developer-tools-git-and-github",
+      "final-project",
+    ]) {
+      for (const p of getModulePractices(TRACK, COURSE, moduleId)) {
+        for (const challenge of getPracticeChallenges(TRACK, COURSE, moduleId, p.id)) {
+          challengeCount += 1;
+          expect(challenge.prompt.length).toBeGreaterThan(0);
+          expect(challenge.tests.length).toBeGreaterThan(0);
+          expect(challenge.level, `${challenge.id} should have a level`).toBeTruthy();
+          for (const test of challenge.tests) {
+            expect(test.name.length).toBeGreaterThan(0);
+            expect(test.code.length).toBeGreaterThan(0);
+            expect(test.hint.length).toBeGreaterThan(0);
+          }
+        }
+      }
+    }
+    expect(challengeCount).toBe(91);
+  });
+
+  it("intermediate course ships 13 modules, 80 lessons, 182 challenges", () => {
+    const I2 = "web-development-intermediate";
+    const course = getCourse(TRACK, I2);
+    expect(course.modules.map((m) => m.reference)).toEqual([
+      "modern-javascript",
+      "advanced-dom-browser-apis",
+      "asynchronous-javascript-apis",
+      "advanced-css-ui-engineering",
+      "typescript-essentials",
+      "git-workflow",
+      "testing-debugging",
+      "web-performance",
+      "web-security",
+      "backend-fundamentals",
+      "databases-full-stack",
+      "production",
+      "capstone",
+    ]);
+
+    let lessons = 0;
+    let challengeCount = 0;
+    for (const ref of course.modules) {
+      const mod = getCurriculumModule(TRACK, I2, ref.reference);
+      lessons += mod.lessons.length;
+      for (const l of mod.lessons) {
+        for (const challenge of getLessonChallenges(TRACK, I2, mod.id, l.reference)) {
+          challengeCount += 1;
+          expect(challenge.tests.length).toBeGreaterThan(0);
+        }
+      }
+      for (const p of getModulePractices(TRACK, I2, mod.id)) {
+        for (const challenge of getPracticeChallenges(TRACK, I2, mod.id, p.id)) {
+          challengeCount += 1;
+          expect(challenge.prompt.length).toBeGreaterThan(0);
+          expect(challenge.level, `${challenge.id} should have a level`).toBeTruthy();
+          for (const test of challenge.tests) {
+            expect(test.name.length).toBeGreaterThan(0);
+            expect(test.code.length).toBeGreaterThan(0);
+            expect(test.hint.length).toBeGreaterThan(0);
+          }
+        }
+      }
+    }
+    expect(lessons).toBe(80);
+    expect(challengeCount).toBe(181);
   });
 
   it("hands-on modules each end with a checkpoint or project lesson", () => {
@@ -110,10 +188,15 @@ describe("course structure (Phase 8: web-development-beginner)", () => {
     }
   });
 
-  it("is the only track and course shipped (no competing schemas)", () => {
+  it("is one track holding all three shipped web courses (no competing schemas)", () => {
     const tracks = getTracks();
-    expect(tracks).toHaveLength(1);
-    expect(tracks[0]?.courses.map((c) => c.reference)).toEqual([COURSE]);
+    expect(tracks.map((t) => t.id)).toContain("web-development");
+    const web = tracks.find((t) => t.id === "web-development");
+    expect(web?.courses.map((c) => c.reference)).toEqual([
+      COURSE,
+      "web-development-intermediate",
+      "web-development-advanced",
+    ]);
   });
 });
 

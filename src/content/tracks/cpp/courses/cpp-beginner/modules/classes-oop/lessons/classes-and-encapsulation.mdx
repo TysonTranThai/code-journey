@@ -1,0 +1,43 @@
+## From struct to class: the difference is the door
+
+`struct` leaves everything public. `class` makes members **private by default** — and that is the point:
+
+```cpp
+class BankAccount {
+public:                                  // the interface — what others may use
+    void deposit(long long cents) {
+        if (cents <= 0) return;          // the object enforces its own rules
+        balance_cents_ += cents;
+    }
+
+    long long balance() const { return balance_cents_; }
+
+private:                                 // the state — nobody touches this directly
+    long long balance_cents_{0};
+};
+```
+
+An **invariant** is a rule that must always hold ("balance is never negative"). Hiding the state behind a disciplined interface means the invariant is enforced in *one place* instead of hoped-for at every call site.
+
+## Encapsulation is not getters-and-setters-for-everything
+
+```cpp
+// ANTI-PATTERN: a struct with extra steps
+class Bad {
+public:
+    void set_balance(long long b) { balance_ = b; }   // anyone can set anything
+    long long get_balance() const { return balance_; }
+private:
+    long long balance_{};
+};
+```
+
+If every member has a trivial getter *and* setter, nothing is protected — you built a struct with worse ergonomics. Expose **operations** (deposit, withdraw), not fields. Ask "what can others *do*?" not "what can others *read*?"
+
+## The trailing underscore convention
+
+`balance_cents_` marks private members visually; many styles use `m_` or a plain name. Pick one convention and stay consistent — the point is that a reader never wonders whether a name is a member or a local.
+
+## Composition is still the default
+
+A `class` with `std::vector<Transaction> history_` as a member is *composition* — objects owning other objects. It will remain your most-used tool; the next lessons add constructors and (only then) inheritance.

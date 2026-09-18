@@ -1,0 +1,24 @@
+Big-O trả lời đúng một câu hỏi: *chi phí tăng thế nào khi input tăng?*
+Không phải máy bạn nhanh hay chậm — mà là đường cong dốc thế nào.
+
+| Độ phức tạp | Tên | Ví dụ |
+|---|---|---|
+| O(1) | hằng số | `v[i]`, `m[key]` |
+| O(log n) | logarit | tìm kiếm nhị phân, tra cứu `std::map` |
+| O(n) | tuyến tính | `std::find`, một lượt duyệt |
+| O(n log n) | tuyến tính-logarit | `std::sort`, chia để trị tốt |
+| O(n²) | bậc hai | vòng lặp lồng trên cùng một dữ liệu |
+| O(2ⁿ) | mũ | liệt kê tập con kiểu ngây thơ |
+
+Nguyên tắc đọc code:
+
+- các vòng tuần tự nhân nhau; vòng lồng trên *các thứ độc lập* cũng nhân —
+  `for a in X: for b in Y:` là O(|X|·|Y|)
+- bỏ hằng số và số hạng nhỏ: O(2n + 10) là O(n)
+- chi phí khấu hao: một lần `vector::push_back` là O(1) khấu hao vì sự lớn
+  lên O(n) thỉnh thoảng được trả bằng nhiều lần thêm rẻ
+- `std::unordered_map` là O(1) *trung bình* — xấu nhất O(n) khi hash suy
+  giảm; chữ "trung bình" là một phần của tuyên bố
+
+Độ phức tạp là công cụ thiết kế: chọn hash map thay vì quét tuyến tính có
+thể biến O(n²) thành O(n) mà không đụng gì khác.

@@ -1,0 +1,59 @@
+## Service lifetimes
+
+- SINGLETON — one instance for the whole process (stateless services,
+  caches). Thread-safety is now the implementation's problem.
+- TRANSIENT — a new instance per resolution (stateful per-operation
+  services, fakes). Cheap to create.
+- (Scoped — one instance per logical unit of work — matters with a web
+  framework and a request pipeline; revisit it in Advanced/API work.)
+
+## The hand-rolled container
+
+With no NuGet, the pattern behind every DI container is small enough to
+build — a registry of factory functions:
+
+```csharp
+public sealed class Container
+{
+    private readonly System.Collections.Generic.Dictionary<Type, Func<object>> _factories = new();
+    private readonly System.Collections.Generic.Dictionary<Type, object> _singletons = new();
+
+    public void Register<TService>(Func<TService> factory) =>
+        _factories[typeof(TService)] = () => factory();
+
+    public void RegisterSingleton<TService>(Func<TService> factory)
+    {
+        object? instance = null;
+        _factories[typeof(TService)] = () =>
+        {
+            if (instance is null) instance = factory();   // lazy, once
+            return instance;
+        };
+    }
+
+    public TService Resolve<TService>() => (TService)_factories[typeof(TService)]();
+}
+```
+
+Real containers add constructor discovery via reflection and lifetime
+scopes — but registration/resolution/lifetimes are the concepts.
+
+## The composition root
+
+Wiring lives in ONE place, at the application's entry point:
+
+```csharp
+var container = new Container();
+container.RegisterSingleton<IEmailer>(() => new SmtpEmailer(config));
+container.RegisterTransient<IOrderService>(() => new OrderService(
+    container.Resolve<IEmailer>(), container.Resolve<IClock>()));
+var svc = container.Resolve<IOrderService>();   // app runs from here down
+```
+
+Business classes never touch the container; they receive what they need.
+When the provider changes, exactly one file changes.
+
+## Check your understanding
+
+- Transient or singleton for a stateful per-request service? (Transient.)
+- Where does `new SmtpEmailer()` belong? (The composition root — nowhere else.)

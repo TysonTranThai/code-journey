@@ -1,0 +1,21 @@
+{
+  "id": "pi9-http-classify",
+  "title": "Status Verdicts",
+  "prompt": "Implement classify(status: int) -> str returning exactly one of: 'ok' (2xx), 'redirect' (3xx), 'client_error' (4xx), 'server_error' (5xx), 'invalid' (anything else, including < 100 or > 599).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "def classify(status):\n    pass\n",
+  "tests": [
+    {
+      "name": "families map correctly",
+      "code": "assert classify(200) == 'ok'\nassert classify(201) == 'ok'\nassert classify(301) == 'redirect'\nassert classify(404) == 'client_error'\nassert classify(503) == 'server_error'",
+      "hint": "100-based families: 2xx/3xx/4xx/5xx."
+    },
+    {
+      "name": "out-of-range is invalid",
+      "code": "assert classify(99) == 'invalid'\nassert classify(600) == 'invalid'",
+      "hint": "HTTP status codes live between 100 and 599."
+    }
+  ],
+  "level": "imitation"
+}

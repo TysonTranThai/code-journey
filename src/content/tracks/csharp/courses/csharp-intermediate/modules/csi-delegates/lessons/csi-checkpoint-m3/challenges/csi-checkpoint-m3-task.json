@@ -1,0 +1,25 @@
+{
+  "id": "csi-checkpoint-m3-task",
+  "title": "Checkpoint: Capture Mechanics",
+  "prompt": "Implement the three functions described in the checkpoint:\n\n```csharp\nstatic Func<int, int> MakeAccumulator(int seed);\nstatic Action SumActions(params Action?[] steps);\nstatic void RegisterCommand(string name, Func<int, int> fn);\nstatic int Route(string command, int value);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "independent accumulators",
+      "code": "\nvar acc1 = Solution.MakeAccumulator(100);\nvar acc2 = Solution.MakeAccumulator(0);\nCj.Eq(acc1(5), 105, \"first add to seed\");\nCj.Eq(acc1(5), 110, \"running total continues\");\nCj.Eq(acc2(1), 1, \"second accumulator independent\");\nCj.Eq(acc2(1), 2, \"second accumulator also accumulates\");\n",
+      "hint": "The running total must live in the closure — one variable per MakeAccumulator call."
+    },
+    {
+      "name": "null-safe composition",
+      "code": "\nvar log = new List<string>();\nAction a = () => log.Add(\"a\");\nAction b = () => log.Add(\"b\");\nSolution.SumActions(a, null, b)();\nCj.Eq(string.Join(\",\", log), \"a,b\", \"skips null, keeps order\");\nlog.Clear();\nSolution.SumActions(a, a)();\nCj.Eq(log.Count, 2, \"duplicate step runs twice\");\nvar empty = Solution.SumActions();\nCj.Eq(empty, empty, \"empty composition still an Action\");\n",
+      "hint": "foreach over steps, `step?.Invoke()` — order preserved, duplicates natural."
+    },
+    {
+      "name": "table router",
+      "code": "\nSolution.RegisterCommand(\"double\", v => v * 2);\nSolution.RegisterCommand(\"neg\", v => -v);\nCj.Eq(Solution.Route(\"double\", 21), 42, \"registered command applies\");\nCj.Eq(Solution.Route(\"neg\", 7), -7, \"second command\");\nCj.Eq(Solution.Route(\"missing\", 7), -1, \"unknown -> -1\");\nSolution.RegisterCommand(\"double\", v => v * 10);\nCj.Eq(Solution.Route(\"double\", 3), 30, \"re-registration replaces\");\n",
+      "hint": "A Dictionary<string, Func<int,int>>: indexer assignment replaces on re-registration."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+`take()` is the exam because it is the precise dance ownership teaches:
+
+1. find the slot by name
+2. `auto out = std::move(*it);` — ownership leaves the vector; the slot
+   now holds an empty `unique_ptr`
+3. `items_.erase(it);` — remove the empty husk
+4. return `out`
+
+Skipping step 2 destroys the item; skipping step 3 leaves a nullptr hole
+in the container. Both mistakes are silent at compile time — which is why
+the tests check size, identity, and containment after the call.
+
+This is the same dance `std::vector::erase`-with-move, node removal in
+linked structures, and job queues all perform. Learn it once here and you
+will recognize it everywhere.

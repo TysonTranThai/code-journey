@@ -1,0 +1,50 @@
+## Task is a future; await is a suspension point
+
+`async` marks a method as awaitable-composing; `await` yields the thread
+until the awaited Task completes. The method state (locals) is captured and
+resumed — code after `await` runs LATER, possibly on a different thread:
+
+```csharp
+async Task<string> FetchNameAsync(HttpClient http, string url)
+{
+    string body = await http.GetStringAsync(url);  // thread released here
+    return body.Trim();                            // resumed after completion
+}
+```
+
+`Task` = async operation with no result; `Task<T>` = with a result. Methods
+named `*Async` returning Task follow the convention.
+
+## Exceptions flow through the Task
+
+An exception inside `async Task` is stored ON the Task and re-thrown at the
+`await` — unwrapped, as the original type:
+
+```csharp
+try { await DivideAsync(1, 0); }
+catch (DivideByZeroException ex) { /* caught here, unwrapped */ }
+```
+
+`async void` has nowhere to route exceptions except the thread pool — it can
+crash the process. Use `async void` ONLY for event handlers (Module 4).
+
+## Blocking on a Task: .Result and its friends
+
+`.Result` / `.Wait()` / `.GetAwaiter().GetResult()` block the calling
+thread until the task completes. In app code with a synchronization context
+that deadlocks; even without one it burns a thread and WRAPS exceptions:
+
+```csharp
+string s = FetchAsync().Result;   // throws AggregateException, not the real type
+```
+
+`await` unwraps — that's why production code goes async all the way, and
+why a test harness (like this one) may block on tasks: `FetchAsync()
+.GetAwaiter().GetResult()` observes the same unwrapping? No — only `await`
+unwraps. Blocking surfaces `AggregateException`. The habit to build: async
+callers await; sync callers who must block expect the wrapper.
+
+## Check your understanding
+
+- Where does an exception thrown in an async method surface? (At the awaiting await, unwrapped.)
+- What does `.Result` throw when the task fails? (AggregateException wrapping the real exception.)

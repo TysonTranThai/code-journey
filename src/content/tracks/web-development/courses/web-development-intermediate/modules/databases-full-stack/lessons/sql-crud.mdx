@@ -1,0 +1,50 @@
+## The four statements
+
+```sql
+INSERT INTO tasks (title, author_id) VALUES ('Write tests', 7) RETURNING id;
+
+SELECT title, created_at FROM tasks WHERE author_id = 7 AND done = false ORDER BY created_at DESC LIMIT 20 OFFSET 40;
+
+UPDATE tasks SET done = true WHERE id = 42 RETURNING *;
+
+DELETE FROM tasks WHERE id = 42;
+```
+
+Read them as sentences. `RETURNING` (Postgres) hands back the affected row — no second query after insert.
+
+## WHERE and friends
+
+- Comparison: `=`, `<>`, `<`, `>`, `<=`, `>=`; ranges `BETWEEN a AND b`; membership `IN (1, 2, 3)`
+- Patterns: `LIKE 'wr%'` (% = any string, \_ = one char), `ILIKE` for case-insensitivity
+- NULL checks: `IS NULL` / `IS NOT NULL` — **never** `= NULL`
+- Logic: `AND`/`OR`/`NOT` — parenthesize mixed groups; `a OR b AND c` binds as `a OR (b AND c)`
+
+## Aggregates and grouping
+
+```sql
+SELECT author_id, COUNT(*) AS task_count, MAX(created_at) AS latest
+FROM tasks
+WHERE done = false
+GROUP BY author_id
+HAVING COUNT(*) > 5
+ORDER BY task_count DESC;
+```
+
+`WHERE` filters rows _before_ grouping; `HAVING` filters groups _after_. COUNT/SUM/AVG/MIN/MAX are the workhorses.
+
+## The safety habits
+
+1. **Always a WHERE on UPDATE/DELETE.** `UPDATE tasks SET done = true;` touches _every_ row. Professional habit: write the WHERE first.
+2. **Parameterized from application code** (module 9!): `query("... WHERE id = $1", [id])` — never string concatenation.
+3. **Transactions for multi-step writes** (next lesson): try in a transaction, verify, commit or roll back.
+4. **SELECT the columns you need**, not `*`, in application code — self-documenting and cheaper over the wire.
+
+## Indexes: why lookups are fast
+
+An index is a sorted side-structure (B-tree) letting the engine find rows in log-time instead of scanning everything. Primary keys get one automatically; add them on columns you filter/join/sort by:
+
+```sql
+CREATE INDEX idx_tasks_author ON tasks (author_id);
+```
+
+Trade-offs: indexes speed reads, slow writes slightly, and consume disk. Index what you query; ignore what you don't (most tools show unused-index reports).

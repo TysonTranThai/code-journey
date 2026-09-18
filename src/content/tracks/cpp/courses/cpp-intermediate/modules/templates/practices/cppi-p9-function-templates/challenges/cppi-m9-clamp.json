@@ -1,0 +1,31 @@
+{
+  "id": "cppi-m9-clamp",
+  "title": "Function template: clamp_to",
+  "prompt": "Implement `template <typename T> T clamp_to(const T& v, const T& lo, const T& hi)` returning v bounded into [lo, hi]. Contract: T supports operator<. Must work for int and double.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\n\n// template <typename T> T clamp_to(const T& v, const T& lo, const T& hi)\n",
+  "tests": [
+    {
+      "name": "in-range",
+      "code": "CHECK_EQ(clamp_to(5, 1, 10), 5);",
+      "hint": "Inside the bounds, unchanged."
+    },
+    {
+      "name": "below",
+      "code": "CHECK_EQ(clamp_to(-3, 1, 10), 1);",
+      "hint": "Below lo snaps to lo."
+    },
+    {
+      "name": "above",
+      "code": "CHECK_EQ(clamp_to(42, 1, 10), 10);",
+      "hint": "Above hi snaps to hi."
+    },
+    {
+      "name": "double",
+      "code": "CHECK(clamp_to(0.5, 1.0, 2.0) > 0.99 && clamp_to(0.5, 1.0, 2.0) < 1.01);",
+      "hint": "Same template, T = double."
+    }
+  ],
+  "level": "guided"
+}

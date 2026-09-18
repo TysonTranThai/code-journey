@@ -1,0 +1,15 @@
+{
+  "id": "cint-p9-void-core",
+  "title": "The Generic Engine",
+  "prompt": "Implement three generic array algorithms:\n\n```c\n/* returns pointer to first element where cmp returns 0, else NULL.\n   base has n elements of `size` bytes. */\nvoid *g_lsearch(const void *key, const void *base, size_t n, size_t size,\n                int (*cmp)(const void *, const void *));\n/* reverses element order in place */\nvoid g_reverse(void *base, size_t n, size_t size);\n/* returns 1 if some two elements compare equal, else 0.\n   O(n^2) is fine. */\nint g_has_dup(const void *base, size_t n, size_t size,\n              int (*cmp)(const void *, const void *));\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\nstatic int cmp_int(const void *a, const void *b) {\n    int x = *(const int *)a, y = *(const int *)b;\n    return (x > y) - (x < y);\n}\nstatic int cmp_short(const void *a, const void *b) {\n    short x = *(const short *)a, y = *(const short *)b;\n    return (x > y) - (x < y);\n}\nvoid *g_lsearch(const void *key, const void *base, size_t n, size_t size,\n                int (*cmp)(const void *, const void *));\nvoid g_reverse(void *base, size_t n, size_t size);\nint g_has_dup(const void *base, size_t n, size_t size,\n              int (*cmp)(const void *, const void *));\n",
+  "tests": [
+    {
+      "name": "search, reverse, duplicate-hunt",
+      "code": "\nint a[] = {10, 20, 30, 40};\nint key = 30;\nint *hit = g_lsearch(&key, a, 4, sizeof(int), cmp_int);\nCHECK(hit && *hit == 30 && hit == &a[2]);\nkey = 99;\nCHECK(g_lsearch(&key, a, 4, sizeof(int), cmp_int) == NULL);\nCHECK(g_lsearch(&key, NULL, 4, sizeof(int), cmp_int) == NULL);\ng_reverse(a, 4, sizeof(int));\nCHECK(a[0] == 40 && a[3] == 10);\ndouble d[] = {1.5, 2.5};\ng_reverse(d, 2, sizeof(double));\nCHECK(d[0] == 2.5 && d[1] == 1.5);           /* any type, same code */\nshort s[] = {1, 2, 3, 2};\nCHECK_EQ(g_has_dup(s, 4, sizeof(short), cmp_short), 1);\nshort s2[] = {1, 2, 3, 4};\nCHECK_EQ(g_has_dup(s2, 4, sizeof(short), cmp_short), 0);\n",
+      "hint": "char* stepping: (const char*)base + i*size. Reverse: swap element i with n-1-i via a byte loop or temp buffer."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+## Checked arithmetic
+
+```cpp
+bool checkedMul(std::size_t a, std::size_t b, std::size_t* out) {
+    return !__builtin_mul_overflow(a, b, out);
+}
+```
+
+The pattern: compute into a *candidate*, test overflow, fail closed (nullopt/error) before any allocation. Apply it at every untrusted-to-trusted boundary: `checkedMul(width, height)` then `checkedMul(px, sizeof(Pixel))`.
+
+## Canonicalizing paths
+
+The naive fix — reject any input containing `..` — is wrong (encoded forms, redundant separators, symlinks in real systems). The right shape: process the path segment by segment against a *conceptual* stack (`..` pops, `.` and empty segments skip), then compare the final result against the trusted root. Rejecting patterns before canonicalization is exactly the "filter the string" anti-pattern.
+
+## Context-correct quoting
+
+A shell-argument escaper must make the payload unable to *change structure*: wrap in single quotes and replace every embedded `'` with `'\''` — so no input byte can close the quoting context. Compare with SQL parameterization: the escape belongs to the layer that understands the context, never to string concatenation at the call site.
+
+## Verification posture
+
+Every hardened function in this module ships with an adversarial battery: overflow extremes (`SIZE_MAX`), traversal payloads, quote/control characters, unicode-adjacent edge bytes. If a fix has no failing-then-passing test, it is not a fix — it is a hope.

@@ -1,0 +1,46 @@
+## Lời gọi
+
+```c
+int *p = malloc(n * sizeof(int));   // theo BYTE, tính từ kiểu phần tử
+```
+
+`malloc` trả về `void*` — gán cho `int*` chuyển đổi ngầm. Luôn nhân với
+`sizeof` kiểu phần tử, đừng hardcode số 4.
+
+## Luôn kiểm tra thất bại
+
+`malloc` trả về `NULL` khi không đáp ứng được yêu cầu (hết bộ nhớ, hoặc kích
+thước vô lý):
+
+```c
+int *p = malloc(n * sizeof(int));
+if (p == NULL) {
+    fprintf(stderr, "out of memory\n");
+    return 1;
+}
+```
+
+malloc không kiểm tra là cách chương trình crash về sau, xa chỗ gây lỗi.
+
+## Đúng một lần free
+
+```c
+free(p);      // trả lại bộ nhớ
+p = NULL;     // giờ p không thể bị dùng-sau-free do sơ suất
+```
+
+free cần con trỏ trỏ về ĐẦU vùng cấp phát — con trỏ bạn nhận từ malloc, nguyên
+vẹn. Tăng nó lên sẽ làm mất địa chỉ mà free cần:
+
+```c
+p++;          // đi bộ trên mảng thì hợp lệ
+free(p);      // SAI — p không còn trỏ tới đầu vùng cấp phát
+```
+
+Giữ con trỏ gốc (hoặc free một bản sao đã lưu).
+
+## Sau free
+
+`p` vẫn giữ địa chỉ cũ nhưng bộ nhớ không còn của bạn — đọc hay ghi `*p` đều
+là hành vi không xác định. Gán `p = NULL` ngay sau free là một thói quen rẻ
+và hiệu quả.

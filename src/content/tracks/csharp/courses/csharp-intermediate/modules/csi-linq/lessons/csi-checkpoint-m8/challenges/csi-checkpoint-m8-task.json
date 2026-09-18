@@ -1,0 +1,25 @@
+{
+  "id": "csi-checkpoint-m8-task",
+  "title": "Checkpoint: One-Pass Analytics",
+  "prompt": "Implement the analytics engine described in the checkpoint:\n\n```csharp\npublic record Sale(string Customer, string Category, decimal Amount);\nstatic decimal Revenue(IEnumerable<Sale> sales);\nstatic string BestCategory(IEnumerable<Sale> sales);\nstatic List<string> CustomerMatrix(IEnumerable<Sale> sales, IEnumerable<string> customers);\nstatic string Run(IEnumerable<Sale> sales, IEnumerable<string> customers);\n// Run format: \"revenue=<r>;best=<c>;|name=total|name=total...\"\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "revenue and best category",
+      "code": "\nvar sales = new[] {\n    new Solution.Sale(\"ann\", \"books\", 40m),\n    new Solution.Sale(\"bob\", \"toys\", 70m),\n    new Solution.Sale(\"ann\", \"toys\", 20m),\n};\nCj.Eq(Solution.Revenue(sales), 130m, \"total revenue\");\nCj.Eq(Solution.BestCategory(sales), \"toys\", \"90m toys beats 40m books\");\n",
+      "hint": "Sum and a GroupBy-category with Sum, ordered by amount desc then name."
+    },
+    {
+      "name": "customer matrix keeps order, zeros included",
+      "code": "\nvar sales = new[] {\n    new Solution.Sale(\"ann\", \"books\", 40m),\n    new Solution.Sale(\"cid\", \"toys\", 10m),\n};\nCj.Eq(string.Join(\"|\", Solution.CustomerMatrix(sales, new[] { \"ann\", \"bob\", \"cid\" })),\n      \"ann=40|bob=0|cid=10\", \"given order, zero for no sales\");\n",
+      "hint": "ToDictionary from a GroupBy, then map the customer list — do NOT sort."
+    },
+    {
+      "name": "one pass through sales",
+      "code": "\nvar counter = new Solution.CountingSales(\n    new Solution.Sale(\"ann\", \"books\", 40m),\n    new Solution.Sale(\"bob\", \"toys\", 70m));\nstring report = Solution.Run(counter, new[] { \"ann\", \"bob\" });\nCj.Eq(report.Contains(\"revenue=110\"), true, \"revenue present\");\nCj.Eq(report.Contains(\"best=toys\"), true, \"best present\");\nCj.Eq(report.Contains(\"ann=40\"), true, \"matrix present\");\nCj.Eq(counter.ReadCount, 2, \"sales enumerated exactly once\");\n",
+      "hint": "Materialize sales ONCE (ToList) inside Run; derive revenue/best/matrix from the list."
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+`with` đảm bảo việc dọn dẹp **ngay cả khi exception bay xuyên qua**. Bạn dùng
+nó hằng ngày với tệp — giờ tự viết một cái:
+
+```python
+class Timer:
+    def __enter__(self):
+        self.start = time.monotonic()
+        return self                    # gắn vào biến sau as
+
+    def __exit__(self, exc_type, exc, tb):
+        self.elapsed = time.monotonic() - self.start
+        return False                   # không nuốt exception
+
+with Timer() as t:
+    do_work()
+print(t.elapsed)
+```
+
+`__exit__` nhận thông tin exception (hoặc None). Trả `True` sẽ nuốt exception;
+trả `False` (lựa chọn thường dùng) cho nó lan tiếp. Quyết định đó là toàn bộ
+câu chuyện xử lý lỗi của context manager: **dọn dẹp luôn chạy; lỗi vẫn hiện
+hữu.**
+
+## Cách nhẹ nhàng: @contextmanager
+
+Với trường hợp đơn giản, một generator với `@contextmanager` dễ đọc hơn class:
+
+```python
+from contextlib import contextmanager
+
+@contextmanager
+def indent_log(depth):
+    print("  " * depth + ">")
+    yield                        # trước yield = __enter__, sau yield = __exit__
+    print("  " * depth + "<")
+```
+
+## Vì sao không try/finally?
+
+`with` **chính là** try/finally có tên riêng và giao thức. Lợi thế là khả
+năng tái sử dụng: viết dọn dẹp một lần, dùng ở năm mươi chỗ gọi, và không
+chỗ nào quên nó. Kỷ luật tài nguyên — connection, lock, tệp tạm — nên vô hình
+với người gọi, và context manager là công cụ làm được điều đó.

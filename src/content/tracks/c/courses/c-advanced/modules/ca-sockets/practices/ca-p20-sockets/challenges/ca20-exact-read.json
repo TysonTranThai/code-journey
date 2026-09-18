@@ -1,0 +1,31 @@
+{
+  "id": "ca20-exact-read",
+  "title": "Read Exactly N Bytes",
+  "prompt": "POSIX. Implement `ssize_t read_exact(int fd, void *buf, size_t n)` — loop recv until exactly n bytes are accumulated; return n, or -1 on EOF-before-complete (peer closed mid-message), error, or NULL/zero-argument misuse (n==0 returns 0 immediately). Partial data stays in buf on failure — the tests only check return values.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define _POSIX_C_SOURCE 200809L\n#include <unistd.h>\n#include <sys/socket.h>\n#include <sys/time.h>\n#include <netinet/in.h>\n#include <arpa/inet.h>\n#include <signal.h>\n#include <errno.h>\n",
+  "tests": [
+    {
+      "name": "complete read",
+      "code": "int sv[2];\nCHECK_EQ(socketpair(AF_UNIX, SOCK_STREAM, 0, sv), 0);\nCHECK_EQ((int)send(sv[0], \"A\", 3, 0), 3);\nchar b1[8] = {0};\nCHECK_EQ(read_exact(sv[1], b1, 3), 3);\nclose(sv[0]);\nclose(sv[1]);",
+      "hint": "3 bytes arrive; read_exact returns 3 after one recv — the trivial case."
+    },
+    {
+      "name": "split delivery",
+      "code": "int sv2[2];\nCHECK_EQ(socketpair(AF_UNIX, SOCK_STREAM, 0, sv2), 0);\nCHECK_EQ((int)send(sv2[0], \"A\", 1, 0), 1);\nCHECK_EQ((int)send(sv2[0], \"A\", 1, 0), 1);\nCHECK_EQ((int)send(sv2[0], \"A\", 1, 0), 1);\nchar b2[8] = {0};\nCHECK_EQ(read_exact(sv2[1], b2, 3), 3);\nclose(sv2[0]);\nclose(sv2[1]);",
+      "hint": "Three 1-byte sends: the loop must keep recv-ing until 3 accumulate."
+    },
+    {
+      "name": "EOF before complete",
+      "code": "int sv3[2];\nCHECK_EQ(socketpair(AF_UNIX, SOCK_STREAM, 0, sv3), 0);\nCHECK_EQ((int)send(sv3[0], \"A\", 1, 0), 1);\nclose(sv3[0]);\nchar b3[8] = {0};\nCHECK_EQ(read_exact(sv3[1], b3, 3), -1);\nclose(sv3[1]);",
+      "hint": "1 byte then EOF: a message cut short is an error, not a success."
+    },
+    {
+      "name": "zero is immediate",
+      "code": "int sv4[2];\nCHECK_EQ(socketpair(AF_UNIX, SOCK_STREAM, 0, sv4), 0);\nchar b4[1] = {0};\nCHECK_EQ(read_exact(sv4[1], b4, 0), 0);\nclose(sv4[0]);\nclose(sv4[1]);",
+      "hint": "n==0 asks for nothing: return 0 without touching the socket."
+    }
+  ],
+  "level": "combination"
+}

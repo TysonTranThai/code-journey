@@ -1,0 +1,16 @@
+{
+  "id": "cint-p4-context-cb",
+  "title": "Context-Carrying Callbacks",
+  "prompt": "Implement the for_each with context — the closure pattern:\n\n```c\ntypedef struct { long long total; size_t count; } StatsCtx;  /* in boilerplate */\n/* calls visit(i, ctx) for each i in [0, n) in order */\nvoid for_each_i(size_t n, void (*visit)(size_t i, void *ctx), void *ctx);\n/* convenience: uses for_each_i with a visitor that adds i to ctx->total\n   and increments ctx->count */\nvoid stats_collect(size_t n, StatsCtx *ctx);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\ntypedef struct { long long total; size_t count; } StatsCtx;\n",
+  "tests": [
+    {
+      "name": "closure semantics",
+      "code": "\nStatsCtx ctx = {0, 0};\nstats_collect(5, &ctx);\nCHECK_EQ(ctx.count, 5);\nCHECK_EQ(ctx.total, 10);   /* 0+1+2+3+4 */\nStatsCtx c2 = {0, 0};\nstats_collect(0, &c2);\nCHECK_EQ(c2.count, 0);\nCHECK_EQ(c2.total, 0);\n",
+      "hint": "for_each_i loops calling visit(i, ctx); the stats visitor casts ctx back to StatsCtx*."
+    }
+  ],
+  "level": "mini-build"
+}

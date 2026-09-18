@@ -1,0 +1,21 @@
+{
+  "id": "pa-cc-job-processor",
+  "title": "run_jobs with retries",
+  "prompt": "Implement `run_jobs(jobs, workers=3, retries=2)` where `jobs` is a list of zero-arg callables:\n\n- execute jobs concurrently on a `ThreadPoolExecutor(max_workers=workers)`\n- a job that raises gets retried, up to `retries` additional attempts\n- return `{'succeeded': {index: value}, 'failed': [sorted indices]}`\n- failed jobs are those whose FINAL attempt still raised\n\nDeterministic grading: the test uses closure-counted flaky jobs (fail once, then succeed) so no timing assumptions are needed.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "from concurrent.futures import ThreadPoolExecutor, as_completed\n\n# TODO: run_jobs(jobs, workers=3, retries=2)",
+  "tests": [
+    {
+      "name": "retries rescue transient failures",
+      "code": "calls = {}\nlock = threading.Lock()\n\ndef flaky(i):\n    def job():\n        with lock:\n            n = calls.get(i, 0)\n            calls[i] = n + 1\n        if calls[i] < 2:\n            raise ValueError('transient')\n        return f'ok-{i}'\n    return job\n\njobs = [flaky(0), flaky(1), (lambda: 'plain-2')]\nr = run_jobs(jobs, workers=3, retries=2)\nassert r['succeeded'] == {0: 'ok-0', 1: 'ok-1', 2: 'plain-2'}, f'got: {r}'\nassert r['failed'] == []\nprint('ok')",
+      "hint": "Wrap each attempt in try/except; resubmit to the pool until attempts exceed retries."
+    },
+    {
+      "name": "permanent failures land in failed, sorted",
+      "code": "def dead():\n    raise KeyError('always')\n\ndef good():\n    return 42\n\nr = run_jobs([good, dead, dead], workers=2, retries=1)\nassert r['succeeded'] == {0: 42}\nassert r['failed'] == [1, 2], f'failed: {r[\"failed\"]}'\nprint('ok')",
+      "hint": "Only the final attempt's outcome decides succeeded vs failed; sort the failed indices."
+    }
+  ],
+  "level": "real-world"
+}

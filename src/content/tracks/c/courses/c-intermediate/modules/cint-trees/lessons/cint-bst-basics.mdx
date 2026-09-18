@@ -1,0 +1,53 @@
+## The invariant is the algorithm
+
+```c
+typedef struct TNode {
+    int           value;
+    struct TNode *left, *right;   /* left < value < right (no dups) */
+} TNode;
+```
+
+Every node's left subtree holds smaller values, right holds larger.
+Search descends one path — O(h) where h is height:
+
+```c
+int bst_find(const TNode *t, int v) {
+    while (t) {
+        if (v == t->value) return 1;
+        t = (v < t->value) ? t->left : t->right;
+    }
+    return 0;
+}
+```
+
+Insert walks the same path and attaches at the empty slot. All three
+traversals are two lines of recursion; **in-order** (left, self, right)
+visits values in *sorted order* — the property an entire family of
+algorithms rests on.
+
+## Height is the fine print
+
+A balanced tree of n nodes has h ≈ log₂ n. A tree built from sorted
+input degenerates into a linked list — h = n, and every O(log n) claim
+becomes O(n). Self-balancing trees (AVL, red-black) restore balance
+after each change; a plain BST's contract must be honest: fast *when
+insertion order cooperates*.
+
+## Destroying a tree: post-order or bust
+
+Free children before the parent — **post-order**. Pre-order frees a
+parent and orphans its subtrees (leak); in-order frees a left child,
+then the parent the right child is reached *through* (use-after-free).
+
+```c
+void bst_destroy(TNode *t) {
+    if (!t) return;
+    bst_destroy(t->left);     /* children first */
+    bst_destroy(t->right);
+    free(t);                  /* parent last */
+}
+```
+
+Recursion depth is O(h) — fine for balanced trees, a stack-overflow
+risk for degenerate ones. That risk is another reason height is the
+fine print.

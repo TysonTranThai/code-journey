@@ -1,0 +1,31 @@
+```cpp
+#include <string>
+
+std::string s = "Code Journey";
+```
+
+## Các phép toán hằng ngày
+
+```cpp
+s.size()                 // 12  (length() cũng là nó)
+s[0]                     // 'C' — KHÔNG kiểm tra biên
+s.at(0)                  // 'C' — ném std::out_of_range nếu sai
+s.substr(5, 7)           // "Journey" — chỉ số bắt đầu, số ký tự
+s.find("Jour")           // 5 — chỉ số, hoặc std::string::npos nếu không có
+s + "!"                  // nối chuỗi → "Code Journey!"
+s == "Code Journey"      // true — so sánh giá trị, không phải so sánh con trỏ
+```
+
+## `.at()` với `[]` trong lúc bạn còn học
+
+`[]` với chỉ số sai là **hành vi không xác định** — có thể in rác, crash, hoặc âm thầm hỏng bộ nhớ. `.at()` ném một exception có thể bắt được. Trong bài tập của khóa này, hãy ưu tiên `.at()`: khi bạn chắc chắn sẽ đi một bước quá xa, bạn nhận một lỗi rõ ràng thay vì một vụ án không có hung thủ. (`.at` tốn một lần kiểm tra biên; lập trình viên chuyên nghiệp chuyển về `[]` trong vòng lặp nóng khi logic đã được chứng minh — và nói rõ điều đó khi review.)
+
+`std::string::npos` là giá trị đặc biệt "không tìm thấy"; so sánh bằng `==`, đừng bao giờ in nó ra.
+
+## Ký tự (char)
+
+Đánh chỉ số cho ra một `char`. Các phép kiểm tra hữu ích: `std::isdigit`, `std::isalpha`, `std::isspace`, `std::toupper`, `std::tolower` — tất cả nhận `int`; hãy truyền `static_cast<unsigned char>(c)` (một `char` trần có thể âm và điều đó là UB). Nhìn không đẹp nhưng đúng — boilerplate làm vậy, và giờ bạn biết lý do.
+
+## Dựng chuỗi
+
+Dùng `+`/`+=` cho việc dựng nhỏ; khi ghép nhiều mảnh (và cả số), `std::ostringstream` (bài sau) dễ đọc hơn một đống `to_string`.

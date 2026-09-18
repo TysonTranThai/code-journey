@@ -1,0 +1,34 @@
+## Terminator chính là độ dài của chuỗi
+
+```c
+char word[6] = {'h', 'e', 'l', 'l', 'o', '\0'};
+char word2[] = "hello";              // y hệt; kích thước 6, gồm cả terminator
+const char* msg = "hello";           // trỏ vào literal chỉ-đọc
+```
+
+Mọi hàm chuỗi tìm điểm kết thúc bằng cách quét `'\0'`. Thiếu terminator =
+quét tràn khỏi mảng = hành vi không xác định. Đây là câu quan trọng nhất của
+module này.
+
+## Thực sự lưu những gì
+
+`"hi"` chiếm **3 byte**: 'h', 'i', '\\0'. `strlen("hi")` là 2 (không tính
+terminator); mảng cần **3** ô.
+
+## Làm việc với ký tự
+
+```c
+char c = 'A';
+if (c >= 'a' && c <= 'z') { /* chữ thường */ }
+char up = c - 'a' + 'A';             // 'b' -> 'B' — số học trên mã
+char digit_val = '7' - '0';          // 7 — ký tự số thành số
+```
+
+Ký tự là số nguyên nhỏ. `'a'..'z'`, `'A'..'Z'`, `'0'..'9'` là các khoảng liên
+tiếp (với các bộ ký tự này, trong mọi toolchain bạn gặp ở đây).
+
+## Literal hay mảng
+
+String **literal** ("hello") nằm trong vùng chỉ-đọc: ghi qua con trỏ là hành
+vi không xác định. Mảng **char** bạn khai báo thì ghi được. Khi cần sửa, hãy
+chép vào mảng trước.

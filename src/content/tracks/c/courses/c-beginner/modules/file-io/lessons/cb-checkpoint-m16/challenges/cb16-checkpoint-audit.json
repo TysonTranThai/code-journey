@@ -1,0 +1,25 @@
+{
+  "id": "cb16-checkpoint-audit",
+  "title": "Deposit Log Audit",
+  "prompt": "Implement `int log_deposit(const char *path, int cents)` appending a line \"D <cents>\\n\" (mode \"a\"), and `int audit_total(const char *path)` reading all \"D <int>\" lines and returning the sum (other lines are ignored; missing file returns -1).",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "log then audit",
+      "code": "remove(\"/tmp/cj16-cap.txt\");\nlog_deposit(\"/tmp/cj16-cap.txt\", 100);\nlog_deposit(\"/tmp/cj16-cap.txt\", 250);\nCHECK_EQ(audit_total(\"/tmp/cj16-cap.txt\"), 350);\nremove(\"/tmp/cj16-cap.txt\");",
+      "hint": "Append twice, sum once."
+    },
+    {
+      "name": "skips junk",
+      "code": "FILE *f = fopen(\"/tmp/cj16-cap2.txt\", \"w\");\nfputs(\"D 10\\nJUNK\\nD 5\\n\", f);\nfclose(f);\nCHECK_EQ(audit_total(\"/tmp/cj16-cap2.txt\"), 15);\nremove(\"/tmp/cj16-cap2.txt\");",
+      "hint": "Only D lines count."
+    },
+    {
+      "name": "missing",
+      "code": "CHECK_EQ(audit_total(\"/tmp/cj16-nope4.txt\"), -1);",
+      "hint": "The -1 contract again."
+    }
+  ]
+}

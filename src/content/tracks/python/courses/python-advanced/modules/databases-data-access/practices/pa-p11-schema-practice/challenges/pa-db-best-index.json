@@ -1,0 +1,21 @@
+{
+  "id": "pa-db-best-index",
+  "title": "Pick the index the planner would",
+  "prompt": "Implement `best_index(queries, available)`:\n\n- each query is `{'filter': [...columns in WHERE order...], 'sort': column-or-None}`\n- an index tuple `(a, b, c)` covers a query when its leading columns equal the filter columns in order, and its next column equals the sort column (or the query has no sort)\n- return the index covering the most queries; ties go to the earlier index in `available`\n- if any query is covered by NO index, raise `ValueError('uncovered query')`\n\nColumn ORDER matters — this is the leftmost-prefix rule as executable code.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: best_index",
+  "tests": [
+    {
+      "name": "leftmost prefix, order-sensitive",
+      "code": "queries = [\n    {'filter': ['user_id'], 'sort': 'created_at'},\n    {'filter': ['user_id', 'status'], 'sort': None},\n]\nassert best_index(queries, [('status', 'user_id'), ('user_id', 'status', 'created_at'), ('user_id',)]) == ('user_id', 'status', 'created_at')\nprint('ok')",
+      "hint": "(user_id, status, created_at) covers both; (status, user_id) covers neither."
+    },
+    {
+      "name": "uncovered queries fail loudly",
+      "code": "try:\n    best_index([{'filter': ['email'], 'sort': None}], [('user_id',)])\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('must raise for uncovered query')\nprint('ok')",
+      "hint": "A query no index serves is a production incident waiting."
+    }
+  ],
+  "level": "independent"
+}

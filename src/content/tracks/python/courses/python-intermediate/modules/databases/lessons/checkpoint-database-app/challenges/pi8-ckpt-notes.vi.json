@@ -1,0 +1,22 @@
+{
+  "title": "Notes Repository",
+  "prompt": "Viết init_notes(conn) tạo bảng notes(id INTEGER PRIMARY KEY, title TEXT NOT NULL UNIQUE, body TEXT NOT NULL) và class NotesRepository(conn) với add(title, body) -> int (dịch vi phạm UNIQUE thành ValueError 'duplicate title'), search(term) -> list[dict] các note có tiêu đề CHỨA term (LIKE với pattern được gán tham số; sống sót qua test injection), và delete(note_id) -> bool.",
+  "tests": [
+    {
+      "name": "add, trùng lặp được dịch",
+      "hint": "UNIQUE trong schema; IntegrityError → ValueError('duplicate title')."
+    },
+    {
+      "name": "search khớp chuỗi con",
+      "hint": "LIKE '%' || ? || '%' — pattern được gán tham số, không phải định dạng."
+    },
+    {
+      "name": "Injection qua search vô hại",
+      "hint": "LIKE gán tham số coi payload là chuỗi con nguyên văn."
+    },
+    {
+      "name": "delete báo cáo sự thật",
+      "hint": "DELETE ... WHERE id = ?; rowcount quyết định True/False."
+    }
+  ]
+}

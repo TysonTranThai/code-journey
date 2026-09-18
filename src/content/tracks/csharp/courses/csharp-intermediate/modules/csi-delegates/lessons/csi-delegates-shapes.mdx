@@ -1,0 +1,46 @@
+## A delegate type is a function's type
+
+`delegate int Calculator(int a, int b)` declares that some methods have this
+shape. Any method matching the signature converts implicitly — the **method
+group conversion**:
+
+```csharp
+static int Add(int a, int b) => a + b;
+Calculator op = Add;          // method group -> delegate instance
+int result = op(2, 3);        // invoke like a method
+```
+
+You will rarely declare one. The BCL ships the shapes you need:
+
+- `Action` / `Action<T...>` — takes 0..16 args, returns void.
+- `Func<T... TResult>` — takes 0..16 args, returns TResult.
+- `Predicate<T>` — takes T, returns bool. (`Func<T, bool>` in a trench coat;
+  both work with LINQ, `Predicate` reads better on `List<T>.Find`.)
+
+```csharp
+Action tick = () => Console.WriteLine("tick");
+Func<int, int> square = x => x * x;
+Func<int, int, int> add = static (a, b) => a + b;   // static: no capture allowed
+Predicate<string> isEmpty = string.IsNullOrEmpty;
+```
+
+`static` lambdas promise no capture — a compiler-checked guard against
+accidentally closing over state.
+
+## Multicast: delegates are lists in disguise
+
+`+` and `-` compose delegate instances into an invocation list:
+
+```csharp
+Action pipeline = Step1;
+pipeline += Step2;        // now both run, in order
+pipeline -= Step1;        // only Step2 remains
+```
+
+Invocation returns the LAST handler's value (for Func) — a reason multicast
+fits Actions (events) far better than Funcs.
+
+## Check your understanding
+
+- Why does `Func<T, bool>` coexist with `Predicate<T>`? (History; `List<T>` predates `Func`.)
+- What does `+=` on a delegate actually do? (Creates a new delegate whose list is both.)

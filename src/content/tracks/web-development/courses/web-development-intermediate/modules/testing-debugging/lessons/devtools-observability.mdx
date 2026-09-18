@@ -1,0 +1,31 @@
+Production bugs don't come with test names. You observe live systems with DevTools — here's the panel.
+
+## Sources panel: the debugger in the wild
+
+- Set breakpoints in the served code (Sources → your file → click a line number).
+- **Event listener breakpoints**: break on every `click` or `submit` — instantly find which handler owns a behavior.
+- **XHR/fetch breakpoints**: break when any request URL matches a pattern — catch the code that fires surprise requests.
+- **Debug on exception** (pause on caught/uncaught): stop exactly where things go wrong instead of chasing it after.
+
+## Network panel: truth about requests
+
+Columns that matter: **status** (304 vs 200 vs 404 — is caching working, is the endpoint real), **size** (actual transfer vs decompressed), **time** (queueing? TTFB? download?), and the **waterfall order** (what blocked what). Click any request → Response/Preview tabs to see the payload your code actually received. The "Initiator" column names the exact line that fired the request — the fastest route from mystery request to owning code.
+
+## Console discipline
+
+`console.log` is fine; three upgrades:
+
+- `console.table(rows)` — arrays of objects, aligned and scannable
+- `console.error`/`warn` for actual anomalies — they carry stack traces and filter separately
+- **Log points** (right-click a line in Sources → "Add logpoint"): logging without editing code, surviving reloads
+
+And the console _is a REPL_: inspect any live object, run `document.querySelectorAll` experiments, call functions by hand. The console is not just for output you anticipated.
+
+## Performance first-aid (deep dive = module 8)
+
+- **Performance panel**: record an interaction, look for the red — long tasks blocking the main thread, forced synchronous layout (purple "Recalculate Style" storms), jank between frames.
+- **Lighthouse**: quick audit scores for performance/accessibility; a _compass_, not a map — it suggests, you diagnose.
+
+## When DevTools lies
+
+Minified production code renames everything; use source maps (or reproduce locally). And remember _heisenbugs_: adding logging can change timing and hide race conditions. When a bug won't show itself under observation, look for ordering/timing assumptions — module 3 taught you why those exist.

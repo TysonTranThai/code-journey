@@ -1,0 +1,20 @@
+**Kiểm duyệt dạng chuẩn, không bao giờ duyệt chuỗi thô.** Path traversal:
+`..%2F..%2Fetc%2Fpasswd` sau khi decode và normalize là `/etc/passwd` — bộ lọc
+từ chối `..` trên chuỗi RAW không thấy chấm nào lẫn slash nào.
+
+```java
+Path root = baseDir.toAbsolutePath().normalize();
+Path target = root.resolve(userPath).normalize();
+if (!target.startsWith(root)) throw new SecurityException("traversal");
+```
+
+`resolve` + `normalize` tạo ra path chuẩn; *kiểm tra bao chứa* rồi trả lời câu
+hỏi duy nhất quan trọng: kết quả còn nằm trong root không? Chú ý điều này từ
+chối mà bộ lọc chuỗi bỏ lỡ: `docs/../secrets`, thoát bằng đường tuyệt đối, mẹo
+mã hóa (đã decode trước khi bạn thấy String), symlink do chính filesystem giải.
+
+Hình dạng tương tự áp dụng cho SSRF: không bao giờ blacklist host xấu (vô hạn),
+allowlist những host bạn muốn (hữu hạn). `URL.openStream()` trên URL do người
+dùng cung cấp có thể chạm tới `http://169.254.169.254/` (cloud metadata) hoặc
+`http://localhost:8080/` (admin của chính bạn) — cách sửa là kiểm tra host với
+allowlist TRƯỚC mọi I/O.

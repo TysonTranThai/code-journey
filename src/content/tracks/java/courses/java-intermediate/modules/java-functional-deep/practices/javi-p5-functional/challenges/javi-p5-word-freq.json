@@ -1,0 +1,26 @@
+{
+  "id": "javi-p5-word-freq",
+  "title": "Frequency Map & Grouping",
+  "prompt": "Given `List<String> words`, implement with Collectors (no explicit\nloops):\n- `static Map<String, Long> frequencies(List<String> words)` — each\n  distinct word → how many times it appears (case-SENSITIVE keys).\n- `static Map<Integer, List<String>> byLength(List<String> words)` —\n  group words by their length.\n- `static Map<Boolean, List<String>> longWords(List<String> words)` —\n  partition into length > 4 (true) vs rest (false).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\nimport java.util.stream.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "frequencies count duplicates",
+      "code": "\ncheckEq(Solution.frequencies(List.of(\"a\", \"b\", \"a\")), Map.of(\"a\", 2L, \"b\", 1L), \"freq\");\n",
+      "hint": "groupingBy(identity, counting()) — returns Long values."
+    },
+    {
+      "name": "byLength groups",
+      "code": "\ncheckEq(Solution.byLength(List.of(\"hi\", \"there\", \"hey\")), Map.of(2, List.of(\"hi\"), 5, List.of(\"there\"), 3, List.of(\"hey\")), \"by length\");\n",
+      "hint": "groupingBy(String::length)."
+    },
+    {
+      "name": "partition by threshold",
+      "code": "\ncheckEq(Solution.longWords(List.of(\"hi\", \"there\")), Map.of(true, List.of(\"there\"), false, List.of(\"hi\")), \"partition\");\n",
+      "hint": "partitioningBy(w -> w.length() > 4)."
+    }
+  ],
+  "level": "guided"
+}

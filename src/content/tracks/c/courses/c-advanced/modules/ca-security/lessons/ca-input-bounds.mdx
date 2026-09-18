@@ -1,0 +1,24 @@
+## The corruption family
+
+All of these are memory-safety failures the compiler will not stop:
+
+- **Buffer overflow** — writing past an array's end. A fixed `char buf[64]` fed 65 attacker-controlled bytes writes into whatever lives next (return address, heap metadata, another object). C23 Annex K offers `strcpy_s`-style bounds-checked APIs, but portable practice is: **never** copy without a length: `snprintf`, `memcpy` with a computed, checked bound.
+- **Format-string injection** — `printf(user_input)` treats `%s`/`%n` in the input as directives: leaks memory (`%s` from a garbage pointer), writes memory (`%n`). The fix is one character: `printf("%s", user_input)`.
+- **Integer overflow** — `(size_t)len + 1` when `len` is near SIZE_MAX wraps to 0 and the subsequent `malloc(len+1)` hands out a tiny buffer for a huge copy. Check the addition, or use `__builtin_add_overflow`-style checks where available.
+- **TOCTOU** — check-then-use across a system boundary: `access(path, R_OK)` says yes, the file is swapped, `open(path)` opens something else. The durable fix: open first (get an fd), then `fstat` *the fd*, and work through the fd — the check and the use reference the same object.
+- **Use-after-free / double free** — ownership discipline from module 6 is the prevention; a deliberate `free(NULL)`-safe, single-owner, null-on-free pattern (`free(p); p = NULL;`) kills the double-free class.
+
+## Uninitialized reads
+
+Reading a local before writing it is undefined behavior — and in practice hands the attacker whatever was in that stack slot (old pointers, keys). Rule: **initialize at declaration** (`int x = 0;`) or structure code so every path writes before any read. Zero-cost discipline, whole bug-class removed.
+
+## The defender's checklist
+
+1. Every copy carries an explicit, checked length.
+2. Every format string is a literal.
+3. Every size arithmetic is checked before allocation.
+4. Every file interaction goes through one descriptor, checked at use time.
+5. Every free leaves NULL behind.
+6. Every uninitialized variable is a compile-error in review.
+
+None of this requires attacker creativity to justify — only ordinary input.

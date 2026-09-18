@@ -1,0 +1,18 @@
+Walking a tree is a pipeline, not a loop with recursion homework:
+
+```java
+try (Stream<Path> paths = Files.walk(root, 3)) {
+    List<Path> logs = paths
+        .filter(p -> p.toString().endsWith(".log"))
+        .collect(toList());
+}
+```
+
+`Files.walk` lazily streams the tree (depth-bounded); `Files.find` folds a
+predicate in; `Files.list` covers a single directory. Glob matching is
+built in — `FileSystems.getDefault().getPathMatcher("glob:**/*.{log,tmp}")` —
+and must be applied against *both* the path and its filename form depending
+on the pattern's shape (`dir/**` matches path-syntax; `*.log` matches
+filenames). The stream is LAZY and backed by the directory iterator: closing
+it (try-with-resources) releases the handle — leaking it leaks file
+descriptors.

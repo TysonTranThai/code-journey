@@ -1,0 +1,26 @@
+{
+  "id": "cpp7-inventory",
+  "title": "Inventory Operations",
+  "prompt": "Implement `add_stock(map, item, qty)` (adds qty to item, inserting if needed) and `stock_of(map, item)` (returns qty, or 0 if absent — WITHOUT using operator[] on the read path).",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <map>\n#include <string>\n\nstd::map<std::string, int> add_stock(std::map<std::string, int> stock, const std::string& item, int qty) {\n    // TODO\n}\nint stock_of(const std::map<std::string, int>& stock, const std::string& item) {\n    // TODO — reading a missing key must not insert\n}",
+  "tests": [
+    {
+      "name": "add new",
+      "code": "auto s = add_stock({}, std::string{\"pen\"}, 10); CHECK_EQ(s.at(std::string{\"pen\"}), 10);",
+      "hint": "Inserting a new item with its qty."
+    },
+    {
+      "name": "add existing",
+      "code": "auto s = add_stock(add_stock({}, std::string{\"pen\"}, 10), std::string{\"pen\"}, 5); CHECK_EQ(s.at(std::string{\"pen\"}), 15);",
+      "hint": "Adds to the existing quantity."
+    },
+    {
+      "name": "read missing",
+      "code": "CHECK_EQ(stock_of({}, std::string{\"ghost\"}), 0);",
+      "hint": "Missing item reads as 0 without inserting anything."
+    }
+  ],
+  "level": "real-world"
+}

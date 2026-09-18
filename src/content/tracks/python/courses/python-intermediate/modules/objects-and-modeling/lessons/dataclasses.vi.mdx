@@ -1,0 +1,30 @@
+Phần lớn class chủ yếu là **dữ liệu**. Tự viết `__init__`, `__repr__`, và
+`__eq__` cho từng lớp là code mẫu với đầy đủ chỗ phát sinh lỗi. `@dataclass`
+sinh ra cả ba từ chính khai báo trường của bạn:
+
+```python
+from dataclasses import dataclass, field
+
+@dataclass
+class Task:
+    title: str
+    priority: int = 1
+    tags: list = field(default_factory=list)   # default mutable an toàn
+
+task = Task("ship release", 2)
+task == Task("ship release", 2)     # True — __eq__ so từng trường
+repr(task)                          # Task(title='ship release', ...)
+```
+
+Ba chi tiết lập trình viên cần biết:
+
+- **Default mutable cần `field(default_factory=list)`** — `tags=[]` trần trụi sẽ chia sẻ một list cho mọi thực thể (cùng bẫy với `def f(x=[])`).
+- **`frozen=True`** khiến thực thể bất biến và hashable — hợp với value object như `Money` hay `Point`.
+- **`__post_init__`** chạy sau `__init__` để kiểm tra chéo giữa các trường.
+
+## Chọn cái nào khi nào
+
+Class thường → đối tượng nặng hành vi với vòng đời phức tạp. Dataclass →
+bản ghi dữ liệu: dòng dữ liệu, cấu hình, message, DTO. Ưu tiên dataclass
+trước là tín hiệu bạn đang nghĩ về **hình dạng dữ liệu** — thứ thường cho ra
+thiết kế tốt hơn là nghĩ về cây thừa kế.

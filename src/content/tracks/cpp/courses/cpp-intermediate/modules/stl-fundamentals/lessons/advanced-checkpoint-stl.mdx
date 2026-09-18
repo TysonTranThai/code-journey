@@ -1,0 +1,14 @@
+`top_k` is the module's exam: it needs a counting map, an ordering, and a
+tie-break — all three from this module's lessons.
+
+- counting: `std::map<std::string, int>` with `operator[]`'s insert-then-increment
+- ordering: count descending
+- tie-break: lexicographic (smaller word first) — decide this BEFORE coding
+
+Sorting a vector of `(count, word)` pairs with a comparator that checks
+`count != count` first is the cleanest deterministic form. A
+`priority_queue` with the same comparator works equally well.
+
+If your tie-break test fails while the basic test passes, your comparator
+is silently depending on map iteration order or input order — exactly the
+nondeterminism this course is training you to eliminate.

@@ -1,0 +1,42 @@
+# Code Journey — SANDBOX HOST (private beta, two-host split).
+#
+# This host exists for one purpose: running the hardened student-code
+# containers. It holds NO application secrets, NO database credentials, and
+# NO user data. Its Docker daemon listens on a READ-ONLY TCP endpoint bound
+# to the private network interface, reachable ONLY from the beta worker
+# (restrict with a host firewall to the worker host's IP).
+#
+# NEVER expose this port to the public internet. Docker's TCP API has no
+# authentication on its own — firewall it (ufw/iptables/security group) and
+# keep it off the public interface.
+
+services:
+  # The hardened sandbox image, built on the sandbox host (the worker
+  # references it by name; it must exist here).
+  sandbox:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.sandbox
+    image: codejourney-sandbox:latest
+    restart: "no"
+    entrypoint:
+      ["sh", "-c", "echo 'sandbox image ready (not a long-running service)' && sleep infinity"]
+
+# Daemon listener (run on the HOST, requires root — not via compose):
+#
+# Option A — systemd drop-in (recommended, persistent):
+#   systemctl edit docker  →  add:
+#     [Service]
+#     ExecStart=
+#     ExecStart=/usr/bin/dockerd -H unix:///var/run/docker.sock \
+#       -H tcp://192.168.X.X:2375 --tls=false
+#   (bind the PRIVATE interface IP only; then firewall the port to the
+#    worker host's IP)
+#
+# Option B — SSH transport (no TCP listener at all; worker uses
+#   SANDBOX_DOCKER_HOST=ssh://user@sandbox-host). Requires key-based SSH
+#   from the worker container (mount a deploy key) — most secure option.
+#
+# Firewall (either option):
+#   ufw allow from <worker-host-ip> to any port 2375 proto tcp
+#   ufw deny 2375/tcp

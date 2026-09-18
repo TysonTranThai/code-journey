@@ -1,0 +1,16 @@
+{
+  "id": "javb-m1-predict-order",
+  "title": "Predict the output, then prove it",
+  "prompt": "Before running anything, write on paper what this prints:\n\n```java\nSystem.out.println(\"A\");\nSystem.out.print(\"B\");\nSystem.out.print(\"C\");\nSystem.out.println(\"D\");\nSystem.out.println(\"E\");\n```\n\nThen implement `main` so the program produces EXACTLY that output — no extra blank lines, no trailing spaces.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static void main(String[] args) {\n        // Your printing code goes here.\n    }\n}\n",
+  "tests": [
+    {
+      "name": "exact output",
+      "code": "\nString out = CjTestBase.capture(() -> Solution.main(new String[0]));\nCjTestBase.checkEq(out, \"A\\nBCD\\nE\\n\", \"mixed print/println output\");\n",
+      "hint": "print glues text onto one line; println ends the line. Expected: A on line 1, BCD on line 2, E on line 3."
+    }
+  ],
+  "level": "combination"
+}

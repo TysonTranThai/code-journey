@@ -1,0 +1,37 @@
+## Declaration and indexing
+
+```c
+int scores[5];              // 5 ints, UNINITIALIZED (indeterminate values)
+int primes[4] = {2, 3, 5, 7};
+int first = primes[0];      // 2 — indexing starts at 0
+int last  = primes[3];      // 7 — index size-1
+```
+
+- Elements live **contiguously** in memory: `primes[i]` sits at
+  "start + i * sizeof(int)".
+- The size is part of the type — fixed at compile time (dynamic sizing is
+  module 13).
+- The compiler will not stop you from reading `primes[9]` — that is
+  **undefined behavior**. Out-of-bounds access is THE classic C bug.
+
+## Initialization rules
+
+```c
+int a[4] = {1, 2};          // {1, 2, 0, 0} — rest zero-filled
+int b[]  = {1, 2, 3};       // size deduced: 3
+int c[4] = {0};             // all zeros
+```
+
+Any initializer list (even `{0}`) gives defined values; no list at all leaves
+the contents indeterminate — reading them is a bug.
+
+## No length operator
+
+C arrays do not know their own length. Passing them to functions loses the
+size — you pass it separately (module 12). For now: keep a constant.
+
+```c
+#define N 5
+int a[N];
+for (int i = 0; i < N; i++) { /* ... */ }
+```

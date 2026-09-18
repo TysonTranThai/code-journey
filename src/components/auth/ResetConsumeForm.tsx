@@ -3,11 +3,13 @@
 import { useActionState } from "react";
 
 import { consumePasswordReset, type AuthFormState } from "@/server/actions/auth";
+import { useI18n } from "@/lib/i18n/provider";
 
 const initialState: AuthFormState = {};
 
 export function ResetConsumeForm({ token }: { token: string }) {
   const [state, formAction, pending] = useActionState(consumePasswordReset, initialState);
+  const { d } = useI18n();
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
@@ -34,7 +36,7 @@ export function ResetConsumeForm({ token }: { token: string }) {
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="password" className="text-sm font-medium text-zinc-300">
-          New password
+          {d.reset.consumeTitle}
         </label>
         <input
           id="password"
@@ -52,7 +54,7 @@ export function ResetConsumeForm({ token }: { token: string }) {
         disabled={pending}
         className="min-h-11 rounded-lg bg-indigo-500 px-5 py-2.5 font-medium text-white transition-colors hover:bg-indigo-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 disabled:opacity-60"
       >
-        {pending ? "Updating…" : "Set new password"}
+        {pending ? d.reset.consumeSubmitting : d.reset.consumeSubmit}
       </button>
     </form>
   );

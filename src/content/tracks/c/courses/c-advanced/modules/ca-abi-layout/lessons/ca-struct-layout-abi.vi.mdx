@@ -1,0 +1,15 @@
+## Bố cục được suy ra, không tùy tiện
+
+Mọi thành phần ngồi tại biên căn của nó, và tổng kích thước struct là bội của căn chặt nhất (pháp y của mô-đun 1, giờ là hợp đồng). Hai trình biên dịch tuyên bố cùng ABI phải tính ra cùng bố cục cho cùng khai báo — nếu không, các module nhị phân không thể trao đổi struct.
+
+## Một thay đổi vị trí phá tung mọi thứ
+
+Thêm thành phần vào *giữa* dịch chuyển offset của mọi thành phần sau. Binary cũ ghi bố cục cũ lặng lẽ tạo rác cho trình đọc mới: không lỗi, dữ liệu sai. Vì vậy API công khai của C chỉ thêm vào cuối struct, hoặc giấu hoàn toàn sau opaque handle (mô-đun 3).
+
+## Phiên bản hóa mà không phá vỡ
+
+- **append-only**: thành phần mới đi sau; code cũ phớt lờ phần đuôi (kích thước cũ vẫn dùng được cho phần đầu).
+- **reserved field**: đệm struct tới kích thước ổn định từ ngày đầu.
+- **opaque handle**: bố cục thành riêng tư; đổi gì cũng được.
+
+Chọn có chủ đích: mọi struct công khai trong sự nghiệp của bạn sẽ mang một trong ba quyết định này.

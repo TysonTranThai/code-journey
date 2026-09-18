@@ -1,0 +1,21 @@
+Three metric primitives cover most systems:
+
+- **Counter** — only ever increases: requests served, errors, retries.
+- **Gauge** — a point-in-time value: queue depth, active connections, cache size.
+- **Timer** — a distribution of durations: p50/p95/p99 latency.
+
+```java
+long p95(List<Long> sortedMicros) {
+    int idx = (int) Math.ceil(0.95 * sortedMicros.size()) - 1;
+    return sortedMicros.get(Math.max(0, idx));
+}
+```
+
+Percentiles answer "how bad is the *worst* user's experience" — the average
+hides them (half your users are below average, always). A timer that records
+the p99 while the average looks fine is telling you: most requests are quick,
+and someone is having a terrible day.
+
+Cardinality is the trap: a label per user id creates one time series per
+user — millions of series no backend can store. Labels enumerate *classes*
+(endpoint, status, region), never *instances* (user, request, URL with ids).

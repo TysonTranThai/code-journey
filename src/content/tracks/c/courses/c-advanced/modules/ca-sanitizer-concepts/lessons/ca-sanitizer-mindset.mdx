@@ -1,0 +1,15 @@
+## Environment honesty first
+
+This course's execution sandbox has no AddressSanitizer, no UBSan, no TSan, no Valgrind, no gdb. The *skills* below are taught as reasoning drills; the *tools* are described so you can run them in your own environment. Both halves are professional knowledge.
+
+## The tool map (run these locally, not here)
+
+- **ASan** (compile with `-fsanitize=address`): use-after-free, buffer overflow (heap/stack/global), double free, invalid frees. Slowdown ~2x; shadow-memory technique.
+- **UBSan** (`-fsanitize=undefined`): signed overflow, invalid shifts, misaligned access, null dereference — each caught *at the moment it executes*.
+- **TSan** (`-fsanitize=thread`): data races via happens-before tracking.
+- **LSan** (bundled with ASan on most platforms): leak reports at exit.
+- **Valgrind** (dynamic binary instrumentation): memory errors and leaks without recompiling, at larger slowdowns.
+
+## Why they change how you write code
+
+A sanitizer converts silent corruption into an immediate, attributed abort. Teams that adopt them in CI stop debugging mysteries because mysteries never reach production. The reasoning drills in the next lesson give you the same early-detection instinct for environments without the tools — including this one.

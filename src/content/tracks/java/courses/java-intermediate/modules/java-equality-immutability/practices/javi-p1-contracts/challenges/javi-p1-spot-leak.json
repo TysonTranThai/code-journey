@@ -1,0 +1,26 @@
+{
+  "id": "javi-p1-spot-leak",
+  "title": "Find the Leaked Mutability",
+  "prompt": "`Badge` stores an internal `List<String> log` of scan events.\nThe current implementation returns the internal list directly. A caller can\n`clear()` your history without your class knowing.\n\nFix `Badge` so that:\n- the internal list can never be modified from outside\n- scans still accumulate internally via `scan(String event)`\n- `history()` returns a read-only view\n\nKeep the constructor defensive too: copy the incoming list.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "history is unmodifiable",
+      "code": "\nSolution.Badge b = new Solution.Badge(List.of(\"start\"));\nb.scan(\"door-1\");\nList<String> h = b.history();\ntry { h.add(\"hack\"); checkTrue(false, \"add must throw\"); }\ncatch (UnsupportedOperationException e) { checkTrue(true, \"threw correctly\"); }\n",
+      "hint": "history() must return Collections.unmodifiableList(...) — an add() must throw."
+    },
+    {
+      "name": "constructor copies input",
+      "code": "\nList<String> src = new ArrayList<>(List.of(\"a\"));\nSolution.Badge b = new Solution.Badge(src);\nsrc.clear();\ncheckEq(b.history(), List.of(\"a\"), \"badge survives caller mutation\");\n",
+      "hint": "Copy the incoming list (List.copyOf) so later caller mutation cannot reach the badge."
+    },
+    {
+      "name": "scans accumulate internally",
+      "code": "\nSolution.Badge b = new Solution.Badge(List.of());\nb.scan(\"x\"); b.scan(\"y\");\ncheckEq(b.history(), List.of(\"x\", \"y\"), \"scans accumulate\");\n",
+      "hint": "scan() appends to the internal (mutable) list; history() only wraps it read-only."
+    }
+  ],
+  "level": "debugging"
+}

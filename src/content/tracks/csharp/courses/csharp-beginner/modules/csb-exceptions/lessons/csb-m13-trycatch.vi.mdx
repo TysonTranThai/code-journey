@@ -1,0 +1,27 @@
+## Ngoại lệ là gì
+
+Khi mã gặp điều kiện không thể thực hiện — `int.Parse("abc")`, đánh chỉ số quá giới hạn mảng — nó **ném** một đối tượng ngoại lệ mô tả thất bại. Runtime cuộn ngược call stack để tìm trình xử lý:
+
+```csharp
+try
+{
+    int n = int.Parse("abc");   // ném FormatException
+    Console.WriteLine("không bao giờ chạy");
+}
+catch (FormatException ex)
+{
+    Console.WriteLine($"không phải số: {ex.Message}");
+}
+Console.WriteLine("chương trình tiếp tục");
+```
+
+`try` đánh dấu vùng được bảo vệ; `catch` xử lý một loại thất bại cụ thể. Nếu không ai bắt, chương trình chết với stack trace.
+
+## Bắt cụ thể, xử lý trung thực
+
+```csharp
+catch (FormatException ex) { ... }   // chỉ thất bại này
+catch (Exception ex) { ... }         // mọi thứ — dùng hạn chế
+```
+
+Một `catch (Exception)` rộng nuốt cả những bug bạn không lường trước: lỗi đánh máy, null ref, lỗi logic — tất cả vô hình. Hãy bắt **loại cụ thể** mà bạn thật sự làm được gì đó; để phần còn lại nổ to trong lúc phát triển thay vì ẩn đi.

@@ -1,0 +1,38 @@
+Khi một trang chậm, ảnh là nghi phạm trong ~70% trường hợp. Rồi đến font. Rồi mới đến JS của bạn.
+
+## Ảnh: đòn bẩy lớn nhất
+
+- **Định dạng đúng**: SVG cho icon/logo (độc lập độ phân giải, siêu nhỏ), WebP/AVIF cho ảnh chụp (nhỏ hơn JPEG 30–50% ở cùng chất lượng), PNG chỉ khi cần trong suốt mà SVG không làm được.
+- **Kích thước đúng**: đưa ảnh 3000px vào khung 400px phí ~90% byte. `srcset` + `sizes` để trình duyệt tự chọn:
+
+```html
+<img
+  src="hero-800.webp"
+  srcset="hero-400.webp 400w, hero-800.webp 800w, hero-1600.webp 1600w"
+  sizes="(max-width: 600px) 100vw, 50vw"
+  alt="..."
+/>
+```
+
+- **Lazy-load** mọi thứ dưới màn hình đầu: `loading="lazy"`. TUYỆT ĐỐI không lazy-load ảnh hero/LCP — làm trang _cảm giác_ chậm hơn.
+- **Khai báo kích thước tường minh** (attribute `width`/`height`) để layout không nhảy khi ảnh về (CLS — bài sau).
+
+## Font
+
+Font là văn bản chặn render. `font-display: swap` hiển thị chữ fallback ngay lập tức và hoán đổi khi font thật về. `preload` font chính (cái tiêu đề dùng) — nhưng chỉ cái đó thôi. Subset font (tiếng Việt cần bộ subset Vietnamese!) — ship 5 weight × full Unicode là tự gây thương tích tính bằng megabyte.
+
+## Chiến lược caching
+
+Header `Cache-Control` là một hợp đồng:
+
+```text
+Cache-Control: max-age=31536000, immutable   # tài sản có hash: cache một năm
+Cache-Control: no-cache                      # xác nhận lại trước khi dùng (HTML)
+Cache-Control: no-store                      # không bao giờ cache (bí mật, dữ liệu cá nhân)
+```
+
+Sơ đồ chuẩn: HTML = `no-cache` (luôn mới), JS/CSS/ảnh có content hash = `immutable` một năm. Đổi code là đổi hash, là đổi URL, là né cache — đúng đắn và nhanh cùng tồn tại.
+
+## Script bên thứ ba đắt hơn vẻ ngoài
+
+Analytics, chat widget, tag manager: mỗi cái là tải script + chạy + thường có request riêng. Mỗi cái trì hoãn hoặc tranh chấp tài nguyên với ứng dụng. Hãy áp ngân sách (bài sau), tải `async`, và rà soát định kỳ — tag chết là chuyện thường.

@@ -1,0 +1,21 @@
+{
+  "id": "javi-p6-resource-order",
+  "title": "Close Order & Suppression",
+  "prompt": "Model in-memory resources inside `Solution`:\n- `static class Res implements AutoCloseable` with a `StringBuilder log`\n  passed in and a name; `close()` appends `name + \":closed\"` to the log.\n- `static String run(boolean failSecond, StringBuilder log)`:\n  opens `new Res(\"a\", log)`, then `new Res(\"b\", log)` in ONE\n  try-with-resources statement (body appends \"work\" to the log);\n  when failSecond is true the body throws IllegalStateException AFTER\n  the first resource was opened.\n\nReturn `log.toString()`. Correct behavior:\n- happy path: `work` then `b:closed` then `a:closed` (reverse order)\n- failure: `a:closed b:closed` STILL both closed, exception propagates",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "happy path closes in reverse",
+      "code": "\nStringBuilder log = new StringBuilder();\nString out = Solution.run(false, log);\ncheckEq(out, \"workb:closeda:closed\", \"work then reverse close\");\n",
+      "hint": "Body first, then resources closed b→a (reverse acquisition)."
+    },
+    {
+      "name": "failure still closes both",
+      "code": "\nStringBuilder log = new StringBuilder();\ntry { Solution.run(true, log); checkTrue(false, \"must throw\"); }\ncatch (IllegalStateException e) { checkTrue(true, \"propagated\"); }\ncheckTrue(log.toString().contains(\"b:closed\"), \"b closed\");\ncheckTrue(log.toString().contains(\"a:closed\"), \"a closed\");\n",
+      "hint": "Both close() calls run even though the body threw."
+    }
+  ],
+  "level": "guided"
+}

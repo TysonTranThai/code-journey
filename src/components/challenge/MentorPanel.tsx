@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import type { HintLevel } from "@/lib/mentor/types";
+import { useI18n } from "@/lib/i18n/provider";
 
 interface MentorPanelProps {
   mentorAvailable: boolean;
@@ -30,6 +31,7 @@ interface MentorState {
  */
 export function MentorPanel(props: MentorPanelProps) {
   const { mentorAvailable, signedIn, failedTest } = props;
+  const { d, t, locale } = useI18n();
   const [level, setLevel] = useState<HintLevel | null>(null);
   const [hint, setHint] = useState<MentorState | null>(null);
   const [explanation, setExplanation] = useState<MentorState | null>(null);
@@ -45,6 +47,7 @@ export function MentorPanel(props: MentorPanelProps) {
     challengeTitle: props.challengeTitle,
     prompt: props.prompt,
     testHints: props.testHints,
+    locale,
   };
 
   async function nextHint() {
@@ -84,57 +87,67 @@ export function MentorPanel(props: MentorPanelProps) {
 
   return (
     <section
-      aria-label="Mentor"
-      className="flex flex-col gap-3 rounded-lg border border-indigo-800/60 bg-indigo-950/30 px-4 py-3"
+      aria-label={d.mentor.aria}
+      className="conductor-window rounded-xl flex flex-col gap-3.5 border border-white/[0.1] bg-[#0c101b] p-4 shadow-xl"
     >
-      <h3 className="text-sm font-semibold text-indigo-200">Stuck? Ask the mentor</h3>
+      <div className="flex items-center justify-between border-b border-white/[0.08] pb-2.5">
+        <div className="flex items-center gap-2.5">
+          <div className="relative flex h-7 w-7 items-center justify-center rounded-lg bg-[#111726] border border-emerald-500/40 text-emerald-400 font-mono font-bold text-xs shadow-[0_0_10px_rgba(34,197,94,0.3)]">
+            <span className="relative z-10">AI</span>
+            {pending && <span className="beacon-pulse" />}
+          </div>
+          <div>
+            <h3 className="text-xs font-semibold text-zinc-100">{d.mentor.title}</h3>
+            <p className="text-[10px] font-mono text-emerald-400/80">{d.mentor.subtitle}</p>
+          </div>
+        </div>
+        <span className="badge-pixel badge-pixel-level text-[10px]">{d.mentor.agentBadge}</span>
+      </div>
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 pt-1">
         <button
           type="button"
           onClick={nextHint}
           disabled={pending || level === 3 || !signedIn}
-          className="rounded-lg border border-indigo-500/60 px-3 py-1.5 text-xs font-medium text-indigo-200 hover:bg-indigo-900/50 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400"
+          className="btn-conductor-primary px-3.5 py-1.5 text-xs font-bold disabled:opacity-50 min-h-9"
         >
           {level === null
-            ? "Get a hint"
+            ? d.mentor.getHint
             : level === 3
-              ? "That's all the hints"
-              : `Another hint (${level}/3)`}
+              ? d.mentor.allHints
+              : t(d.mentor.anotherHint, { level })}
         </button>
         {failedTest && (
           <button
             type="button"
             onClick={explain}
             disabled={pending || !signedIn}
-            className="rounded-lg border border-indigo-500/60 px-3 py-1.5 text-xs font-medium text-indigo-200 hover:bg-indigo-900/50 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400"
+            className="btn-conductor-secondary px-3.5 py-1.5 text-xs font-medium disabled:opacity-50 min-h-9"
           >
-            Explain my error
+            {d.mentor.explainError}
           </button>
         )}
       </div>
 
-      {!signedIn && <p className="text-xs text-zinc-400">Sign in to use the mentor.</p>}
+      {!signedIn && <p className="text-xs text-zinc-400 font-mono">⚡ {d.mentor.signInToUse}</p>}
       {error && (
-        <p role="alert" className="text-xs text-amber-300">
+        <p role="alert" className="rounded-lg border border-rose-500/30 bg-rose-950/20 p-3 text-xs font-mono text-rose-300">
           {error}
         </p>
       )}
       {hint && (
-        <p className="text-sm leading-relaxed text-zinc-200" aria-live="polite">
-          {hint.text}
-        </p>
+        <div className="rounded-lg border border-emerald-500/25 bg-[#091220] p-3 text-xs leading-relaxed text-zinc-200 shadow-sm" aria-live="polite">
+          <div className="text-[10px] font-mono text-emerald-400 font-semibold mb-1">{d.mentor.guidanceLabel}</div>
+          <p>{hint.text}</p>
+        </div>
       )}
       {explanation && (
-        <p className="text-sm leading-relaxed text-zinc-200" aria-live="polite">
-          {explanation.text}
-        </p>
+        <div className="rounded-lg border border-emerald-500/25 bg-[#091220] p-3 text-xs leading-relaxed text-zinc-200 shadow-sm" aria-live="polite">
+          <div className="text-[10px] font-mono text-emerald-400 font-semibold mb-1">{d.mentor.errorAnalysisLabel}</div>
+          <p>{explanation.text}</p>
+        </div>
       )}
-      {hint?.refused && (
-        <p className="text-xs text-zinc-400">
-          (The mentor is designed to guide you, not finish the challenge for you.)
-        </p>
-      )}
+      {hint?.refused && <p className="text-xs text-zinc-400">{d.mentor.refusalNote}</p>}
     </section>
   );
 }

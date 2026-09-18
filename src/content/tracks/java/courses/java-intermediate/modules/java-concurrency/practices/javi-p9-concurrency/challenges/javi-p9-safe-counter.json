@@ -1,0 +1,21 @@
+{
+  "id": "javi-p9-safe-counter",
+  "title": "The Thread-Safe Counter",
+  "prompt": "Implement inside `Solution`:\n- `static class RacyCounter` with `void inc()` (`count++` on a plain\n  field) and `long value()`.\n- `static class SafeCounter` with the same API backed by an\n  `AtomicLong`.\n- `static long hammer(Object counter, int threads, int perThread)`:\n  starts `threads` threads, each calling `inc()` perThread times via\n  reflection (RacyCounter or SafeCounter), joins them, then returns\n  `value()` via reflection.\n\nWith hammer(c, 4, 1000): RacyCounter usually loses updates (< 4000);\nSafeCounter must ALWAYS return exactly 4000. The safe test runs the\nhammer five times to make flakiness visible.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\nimport java.util.concurrent.atomic.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "safe counter exact under contention",
+      "code": "\nfor (int round = 0; round < 5; round++) {\n    Object c = new Solution.SafeCounter();\n    checkEq(Solution.hammer(c, 4, 1000), 4000L, \"exact after round \" + round);\n}\n",
+      "hint": "AtomicLong read-modify-write never loses an update."
+    },
+    {
+      "name": "racy counter exists (control)",
+      "code": "\nObject c = new Solution.RacyCounter();\nlong v = Solution.hammer(c, 2, 10);\ncheckTrue(v >= 0 && v <= 20, \"racy result within loose bounds\");\n",
+      "hint": "The racy version runs but gets no exactness guarantee — that's the lesson."
+    }
+  ],
+  "level": "guided"
+}

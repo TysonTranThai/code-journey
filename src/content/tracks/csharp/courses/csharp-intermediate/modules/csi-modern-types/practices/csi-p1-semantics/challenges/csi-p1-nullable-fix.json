@@ -1,0 +1,26 @@
+{
+  "id": "csi-p1-nullable-fix",
+  "title": "Make Null a Contract",
+  "prompt": "Rebuild a fragile API around honest nullability:\n\n```csharp\n/* Parses a positive integer; null when input is null, blank, or not a\n   positive integer. */\nstatic int? ParsePositive(string? input);\n/* First key in the dictionary whose value is > threshold; null when none.\n   Dictionary iteration order is insertion order — first match wins. */\nstatic string? FirstAbove(Dictionary<string, int> scores, int threshold);\n/* Defaults: name null/blank -> \"guest\"; else trimmed name. */\nstatic string DisplayName(string? name);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "parse contract",
+      "code": "\nCj.Eq(Solution.ParsePositive(\"42\"), 42, \"positive parses\");\nCj.Eq(Solution.ParsePositive(\"-1\"), null, \"negative is absent\");\nCj.Eq(Solution.ParsePositive(\"0\"), null, \"zero is not positive\");\nCj.Eq(Solution.ParsePositive(\"x\"), null, \"garbage is absent\");\nCj.Eq(Solution.ParsePositive(null), null, \"null input, null output\");\nCj.Eq(Solution.ParsePositive(\"  7 \"), 7, \"trim tolerantly\");\n",
+      "hint": "int.TryParse + a positivity check + a null/blank guard, expressed as one nullable return."
+    },
+    {
+      "name": "first match wins",
+      "code": "\nvar scores = new Dictionary<string, int>\n{\n    [\"ann\"] = 90, [\"bob\"] = 95, [\"cat\"] = 91,\n};\nCj.Eq(Solution.FirstAbove(scores, 89), \"ann\", \"first above threshold\");\nCj.Eq(Solution.FirstAbove(scores, 90), \"bob\", \"strictly above: 90 not > 90\");\nCj.Eq(Solution.FirstAbove(scores, 100), null, \"none -> null\");\nvar empty = new Dictionary<string, int>();\nCj.Eq(Solution.FirstAbove(empty, 0), null, \"empty -> null\");\n",
+      "hint": "foreach + break on the first hit; null when the loop finishes empty."
+    },
+    {
+      "name": "display defaults",
+      "code": "\nCj.Eq(Solution.DisplayName(\"  ann \"), \"ann\", \"trimmed\");\nCj.Eq(Solution.DisplayName(null), \"guest\", \"null guest\");\nCj.Eq(Solution.DisplayName(\"   \"), \"guest\", \"blank guest\");\nCj.Eq(Solution.DisplayName(\"bob\"), \"bob\", \"plain pass-through\");\n",
+      "hint": "IsNullOrWhiteSpace + Trim + ?? — three tools, one line each."
+    }
+  ],
+  "level": "guided"
+}

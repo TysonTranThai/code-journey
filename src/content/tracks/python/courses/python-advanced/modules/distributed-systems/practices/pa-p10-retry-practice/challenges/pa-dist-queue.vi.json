@@ -1,0 +1,14 @@
+{
+  "title": "Queue at-least-once idempotent",
+  "prompt": "Cài hai phần:\n\n`InProcessQueue` — một queue at-least-once:\n- `enqueue(job_id, payload)`; `deliver()` chuyển mọi job đang chờ (cộng cả những job đã deliver mà chưa ack — mô phỏng lease hết hạn bằng cách deliver lại job inflight ở lần deliver kế tiếp) và trả batch dưới dạng list `[job_id, payload, attempts]`\n- `ack(job_id, result)` ghi hoàn thành; `fail(job_id, max_attempts=3)` tăng bộ đếm lần thử và trả job về queue, hoặc chuyển nó vào dead-letter khi `attempts >= max_attempts`\n- `done` (dict kết quả) và `dead` (list [job_id, payload, attempts]) phơi trạng thái\n\n`process(queue, jobs, max_attempts=3)` — vòng lặp worker:\n- gọi `deliver()` liên tục cho tới khi queue giữ nguyên rỗng\n- với mỗi job: bỏ qua job đã có trong `done` (idempotency!), xử lý payload `'poison'` bằng cách gọi `queue.fail(...)`, còn lại ghi hiệu ứng và `ack(job_id, 'done:' + job_id)`\n- trả `(done_dict, dead_list)`\n\nKịch bản phân biệt: một job được deliver hai lần phải sinh đúng một hiệu ứng; job poison phải được retry tới `max_attempts` rồi nằm trong `dead`.",
+  "tests": [
+    {
+      "name": "Chuyển giao trùng lặp, hiệu ứng đơn lẻ",
+      "hint": "Kiểm tra kho done trước khi tạo hiệu ứng."
+    },
+    {
+      "name": "Poison được retry tới DLQ, không mãi mãi",
+      "hint": "fail() tăng số lần thử; đến max_attempts thì job ngừng quay vòng."
+    }
+  ]
+}

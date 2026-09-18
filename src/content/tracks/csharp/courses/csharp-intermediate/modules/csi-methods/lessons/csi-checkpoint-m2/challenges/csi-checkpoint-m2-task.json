@@ -1,0 +1,25 @@
+{
+  "id": "csi-checkpoint-m2-task",
+  "title": "Checkpoint: Three Contracts",
+  "prompt": "Implement the three functions described in the checkpoint:\n\n```csharp\nstatic bool TrySplitRatio(string input, out int a, out int b);\nstatic int SwapWithCount(ref int x, ref int y);   /* returns swap count so far */\nstatic long FlattenDepth(object[][] groups, int depth);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "ratio parser",
+      "code": "\nCj.True(Solution.TrySplitRatio(\"3:5\", out int a1, out int b1), \"parses\");\nCj.Eq(a1, 3, \"left\"); Cj.Eq(b1, 5, \"right\");\nCj.False(Solution.TrySplitRatio(\"3::5\", out _, out _), \"double colon\");\nCj.False(Solution.TrySplitRatio(\"3\", out _, out _), \"missing colon\");\nCj.False(Solution.TrySplitRatio(\"-3:5\", out _, out _), \"negative left\");\nCj.False(Solution.TrySplitRatio(\"3:0\", out _, out _), \"zero right\");\nCj.False(Solution.TrySplitRatio(\"x:5\", out _, out _), \"garbage left\");\nCj.False(Solution.TrySplitRatio(\"\", out _, out _), \"empty\");\n",
+      "hint": "Split on ':' — exactly 2 parts, both int.TryParse, both > 0. Assign out params before every return."
+    },
+    {
+      "name": "swap with history",
+      "code": "\nint x = 1, y = 2;\nint c1 = Solution.SwapWithCount(ref x, ref y);\nCj.Eq(x, 2, \"x got y\"); Cj.Eq(y, 1, \"y got x\"); Cj.Eq(c1, 1, \"first swap\");\nint c2 = Solution.SwapWithCount(ref x, ref y);\nCj.Eq(x, 1, \"swapped back\"); Cj.Eq(c2, 2, \"second swap\");\n",
+      "hint": "Static counter incremented per call; (a, b) = (b, a) does the swap."
+    },
+    {
+      "name": "bounded flatten",
+      "code": "\nvar groups = new object[][]\n{\n    new object[] { 1, 2 },\n    new object[] { 3 },\n};\nCj.Eq(Solution.FlattenDepth(groups, 1), 6L, \"depth 1 sums inner\");\nCj.Eq(Solution.FlattenDepth(groups, 0), 0L, \"depth 0 = outer only (no ints there)\");\nCj.Eq(Solution.FlattenDepth(groups, -1), 0L, \"negative depth\");\nCj.Eq(Solution.FlattenDepth(Array.Empty<object[]>(), 5), 0L, \"empty groups\");\n",
+      "hint": "Recursion on (depth - 1); base case depth <= 0 returns 0; ints count only at depth >= 1."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "javb-m8-notifier",
+  "title": "Interface-driven notifications",
+  "prompt": "Inside `Solution`, write `interface Notifier { String send(String msg); }` plus two implementations: `static class EmailNotifier implements Notifier` returns `\"EMAIL: \" + msg`, and `static class SmsNotifier` returns `\"SMS: \" + msg`. Implement `static String broadcast(Notifier n, String msg)` that dispatches through the interface.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public interface Notifier {\n        String send(String msg);\n    }\n\n    public static class EmailNotifier implements Notifier {\n        public String send(String msg) { return \"\"; }\n    }\n\n    public static class SmsNotifier implements Notifier {\n        public String send(String msg) { return \"\"; }\n    }\n\n    public static String broadcast(Notifier n, String msg) {\n        return \"\";\n    }\n}\n",
+  "tests": [
+    {
+      "name": "both channels",
+      "code": "\nSolution.Notifier email = new Solution.EmailNotifier();\nCjTestBase.checkEq(Solution.broadcast(email, \"hi\"), \"EMAIL: hi\", \"email channel\");\nSolution.Notifier sms = new Solution.SmsNotifier();\nCjTestBase.checkEq(Solution.broadcast(sms, \"hi\"), \"SMS: hi\", \"sms channel\");\n",
+      "hint": "broadcast() sees only the Notifier interface."
+    },
+    {
+      "name": "unknown at compile time",
+      "code": "\nSolution.Notifier custom = new Solution.Notifier() {\n    public String send(String msg) { return \"PING: \" + msg; }\n};\nCjTestBase.checkEq(Solution.broadcast(custom, \"yo\"), \"PING: yo\", \"anonymous implementation\");\n",
+      "hint": "A third implementation the broadcast() author never knew must work unchanged."
+    }
+  ],
+  "level": "independent"
+}

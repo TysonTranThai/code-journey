@@ -1,0 +1,18 @@
+Pipeline thống kê từ - ba công đoạn stream hợp thành một record.
+
+Bên trong khung `Solution`, cài đặt `analyze(words)` theo đúng checkpoint.
+Ba ghi chú thiết kế trước khi bắt đầu:
+
+1. **Viết thường trước khi group** - `groupingBy` sau
+   `map(String::toLowerCase)`, và lọc từ rỗng trước (từ rỗng không có chữ
+   cái đầu).
+2. **Hai lượt là chuyện bình thường** - `max()` rồi
+   `filter(length == max)` rõ ràng hơn một fold một-lượt thông minh, và
+   chạy stream hai lần trên danh sách trong bộ nhớ rất rẻ.
+3. **Input rỗng** - `String.join` trên không gì cả cho ra `""`; đề bài
+   muốn một *Optional rỗng*, nên hãy chặn trường hợp đó. Đây chính là sự
+   trung thực tại biên giới mà `Optional` sinh ra để phục vụ.
+
+Solution sai trong ghi chú sai theo hai cách: nó dựng `Optional.of("")`
+cho input rỗng, và trước đó còn sập với input rỗng - `substring(0, 1)`
+không có chữ cái đầu để lấy.

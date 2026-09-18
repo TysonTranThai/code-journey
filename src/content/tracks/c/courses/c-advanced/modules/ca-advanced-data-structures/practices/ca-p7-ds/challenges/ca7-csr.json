@@ -1,0 +1,21 @@
+{
+  "id": "ca7-csr",
+  "title": "CSR Adjacency from Edge List",
+  "prompt": "Build compressed sparse rows from an edge array:\n \n```c\nvoid csr_build(int V, const int (*edges)[2], size_t E, int *offset, int *adj);\n```\n \n`offset` has V+1 entries; `adj` has E entries: neighbors grouped by source vertex in increasing vertex order.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "offsets and adjacency",
+      "code": "int edges[4][2] = {{0, 2}, {1, 0}, {0, 1}, {2, 0}};\nint offset[4];\nint adj[4];\ncsr_build(3, edges, 4, offset, adj);\nCHECK_EQ(offset[0], 0);\nCHECK_EQ(offset[1], 2);\nCHECK_EQ(offset[2], 3);\nCHECK_EQ(offset[3], 4);\nCHECK_EQ(adj[0], 2);\nCHECK_EQ(adj[1], 1);",
+      "hint": "Vertex 0 has two outgoing edges (to 2 and 1) landing adj[0..1]; vertex 1 one; the offsets count up to E."
+    },
+    {
+      "name": "isolated vertex",
+      "code": "int e2[2][2] = {{0, 1}, {0, 2}};\nint off2[4];\nint adj2[2];\ncsr_build(3, e2, 2, off2, adj2);\nCHECK_EQ(off2[1], 2);\nCHECK_EQ(off2[2], 2);\nCHECK_EQ(off2[3], 2);",
+      "hint": "Both edges leave vertex 0: offset[1] is 2; vertex 1 has an empty range [offset[2], offset[2]) — isolation is an empty span."
+    }
+  ],
+  "level": "combination"
+}

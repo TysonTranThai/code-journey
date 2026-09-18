@@ -1,0 +1,21 @@
+{
+  "id": "ca14-rebuild-model",
+  "title": "Model Incremental Rebuilds",
+  "prompt": "Implement `int needs_rebuild(long long tgt_mtime, long long dep_mtimes, size_t n)` returning 1 iff any prerequisite mtime is strictly newer than the target's. Then implement `int make_would_build(long long tgt, const long long *deps, size_t n, int phony)` — same, but a phony target always rebuilds.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "newer prerequisite triggers",
+      "code": "long long deps[2] = {100, 105};\nCHECK_EQ(needs_rebuild(102, deps, 2), 1);\nCHECK_EQ(needs_rebuild(106, deps, 2), 0);\nCHECK_EQ(needs_rebuild(105, deps, 2), 0);",
+      "hint": "One newer prerequisite (105 > 102) is enough; all older means up to date. Equal timestamps mean up to date (strictly-newer semantics)."
+    },
+    {
+      "name": "phony always rebuilds",
+      "code": "long long deps2[1] = {10};\nCHECK_EQ(make_would_build(20, deps2, 1, 1), 1);",
+      "hint": ".PHONY ignores timestamps by definition."
+    }
+  ],
+  "level": "independent"
+}

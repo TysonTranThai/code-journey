@@ -1,0 +1,48 @@
+## strtok owns global state — and you cannot see it
+
+```c
+char *tok = strtok(line, ",");     /* mutates line, remembers position
+                                      in hidden static state */
+while (tok) { use(tok); tok = strtok(NULL, ","); }
+```
+
+Two problems: the hidden position makes the function unusable across two
+concurrent parses, and it *writes `'\0'` into your buffer* — the input is
+consumed. ISO C offers nothing reentrant here (`strtok_r` is POSIX, not
+standard C). The honest standard-C pattern is a cursor you control:
+
+```c
+/* split on ',' without mutating input: report [start,end) spans */
+const char *p = line;
+while (*p) {
+    const char *start = p;
+    while (*p && *p != ',') p++;
+    /* token = start..p, length p-start */
+    if (*p) p++;
+}
+```
+
+Spans, not mutation: the caller decides what to do with each token, the
+input survives, and the loop has no hidden state.
+
+## Numbers from strangers
+
+`atoi("12abc")` returns 12 and shrugs. `atoi` reports *nothing* about
+garbage, overflow, or empty input. The validated pattern:
+
+```c
+/* parse a nonneg int in [0..999999]; 0 ok, -1 bad */
+int parse_bounded(const char *s, long *out) {
+    if (!s || !*s) return -1;
+    char *end;
+    long v = strtol(s, &end, 10);
+    if (*end != '\0') return -1;          /* trailing garbage */
+    if (v < 0 || v > 999999) return -1;   /* range */
+    *out = v;
+    return 0;
+}
+```
+
+`strtol` gives you the end pointer; the discipline is checking every
+failure mode: empty, non-numeric tail, overflow (check `errno == ERANGE`
+when bounds matter), and your own domain range.

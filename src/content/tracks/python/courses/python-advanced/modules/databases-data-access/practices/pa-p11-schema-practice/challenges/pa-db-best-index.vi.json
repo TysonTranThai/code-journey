@@ -1,0 +1,14 @@
+{
+  "title": "Chọn index như planner",
+  "prompt": "Cài `best_index(queries, available)`:\n\n- mỗi query là `{'filter': [...các cột theo thứ tự trong WHERE...], 'sort': cột-hoặc-None}`\n- index tuple `(a, b, c)` phủ một query khi các cột đầu của nó bằng các cột filter theo đúng thứ tự, và cột kế tiếp bằng cột sort (hoặc query không có sort)\n- trả index phủ nhiều query nhất; hòa thì index đứng trước trong `available` thắng\n- nếu có query KHÔNG được index nào phủ, raise `ValueError('uncovered query')`\n\nThứ tự cột là điều kiện bắt buộc — đây là quy tắc tiền-tố-trái nhất dưới dạng code.",
+  "tests": [
+    {
+      "name": "Tiền tố trái nhất, nhạy thứ tự",
+      "hint": "(user_id, status, created_at) phủ cả hai; (status, user_id) không phủ cái nào."
+    },
+    {
+      "name": "Truy vấn không được phủ phải fail ầm ĩ",
+      "hint": "Một truy vấn không index nào phục vụ là sự cố chờ ngày."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "i3-project-doc-layer",
+  "title": "Project Grade: Document + Architecture",
+  "prompt": "GRADED PROJECT CHECKPOINT — build your Documentation Hub page for 'Kite CLI' now (one HTML file), satisfying the document and architecture layers: complete head (charset, viewport, non-empty title, description, canonical https://docs.example.com/kite/, og:title + og:image absolute), one <h1>, no skipped heading levels, <time datetime>, header/nav/main/footer landmarks, nav fragment links resolving to real ids, an <article aria-labelledby> named by a real heading id, footer contact inside <address>.",
+  "difficulty": "advanced",
+  "level": "real-world",
+  "boilerplate": "<!-- Documentation Hub: document + architecture layer -->\n\n",
+  "tests": [
+    {
+      "name": "head is machine-readable",
+      "code": "if (!/<!DOCTYPE\\s+html>/i.test(code)) throw new Error(\"Start with <!DOCTYPE html>.\");\nif (!/<html[^>]*\\slang\\s*=/i.test(code)) throw new Error(\"<html> needs a lang attribute.\");\nif (!/<meta[^>]*charset/i.test(code)) throw new Error(\"charset missing.\");\nif (!/<meta[^>]*name\\s*=\\s*[\"']viewport[\"']/i.test(code)) throw new Error(\"viewport missing.\");\nconst t = code.match(/<title>([\\s\\S]*?)<\\/title>/i);\nif (!t || !t[1].trim()) throw new Error(\"Add a non-empty <title>.\");\nif (!/<meta[^>]*name\\s*=\\s*[\"']description[\"']/i.test(code)) throw new Error(\"meta description missing.\");\nif (!/<link[^>]*rel\\s*=\\s*[\"']canonical[\"'][^>]*docs\\.example\\.com\\/kite\\//i.test(code)) {\n  throw new Error(\"Canonical link to https://docs.example.com/kite/… is missing.\");\n}\nif (!/<meta[^>]*property\\s*=\\s*[\"']og:title[\"']/i.test(code)) throw new Error(\"og:title missing.\");\nconst og = code.match(/<meta[^>]*property\\s*=\\s*[\"']og:image[\"'][^>]*content\\s*=\\s*[\"']([^\"']+)[\"']/i);\nif (!og || !/^https:\\/\\//i.test(og[1])) {\n  throw new Error(\"og:image must exist and be an absolute URL.\");\n}",
+      "hint": "Work through the head checklist in order: encoding, viewport, title, description, canonical, OG pair."
+    },
+    {
+      "name": "heading architecture is sound",
+      "code": "const h1s = (code.match(/<h1[\\s>]/gi) || []).length;\nif (h1s !== 1) throw new Error(\"Exactly one <h1> (found \" + h1s + \").\");\nconst levels = [...code.matchAll(/<h([1-6])[\\s>]/gi)].map((m) => Number(m[1]));\nlet prev = 0;\nfor (const level of levels) {\n  if (level > prev + 1) {\n    throw new Error(\"Heading levels must not skip (h\" + prev + \" followed by h\" + level + \").\");\n  }\n  prev = level;\n}\nif (!/<time[^>]*\\bdatetime\\s*=\\s*[\"']\\d{4}-\\d{2}-\\d{2}[\"']/i.test(code)) {\n  throw new Error(\"Mark the last-updated date with <time datetime=\\\"YYYY-MM-DD\\\">.\");\n}",
+      "hint": "One h1, monotone descent, and the date gets a machine-readable datetime."
+    },
+    {
+      "name": "landmarks and resolved nav links",
+      "code": "for (const tag of [\"header\", \"nav\", \"main\", \"footer\"]) {\n  if (!new RegExp(\"<\" + tag + \"[\\\\s>]\").test(code)) {\n    throw new Error(\"Missing <\" + tag + \"> landmark.\");\n  }\n}\nconst nav = code.match(/<nav[\\s>][\\s\\S]*?<\\/nav>/i);\nif (!nav) throw new Error(\"Keep the <nav>.\");\nconst frags = nav[0].match(/href\\s*=\\s*[\"']#[^\"']+[\"']/gi) || [];\nif (frags.length < 2) throw new Error(\"The nav needs at least two fragment links.\");\nconst ids = [...code.matchAll(/id\\s*=\\s*[\"']([^\"']+)[\"']/gi)].map((m) => m[1]);\nfor (const f of frags) {\n  const target = f.replace(/href\\s*=\\s*[\"']#/, \"\").replace(/[\"']/g, \"\");\n  if (!ids.includes(target)) {\n    throw new Error(\"Nav link #\" + target + \" has no element with that id.\");\n  }\n}",
+      "hint": "Four landmarks, and every table-of-contents link must land on a real id."
+    },
+    {
+      "name": "article named by heading, contact in address",
+      "code": "const art = code.match(/<article[^>]*aria-labelledby\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>/i);\nif (!art) throw new Error(\"The docs body should be an <article aria-labelledby=\\\"…\\\">.\");\nif (!new RegExp(\"<h[1-6][\\\\s>][^>]*id\\\\s*=\\\\s*[\\\"']\" + art[1] + \"[\\\"']\").test(code)) {\n  throw new Error('aria-labelledby \"' + art[1] + '\" must point at a real heading id.');\n}\nif (!/<address[\\s>][\\s\\S]*?<\\/address>/i.test(code)) {\n  throw new Error(\"Put the contact line in <address> inside the footer.\");\n}",
+      "hint": "The article borrows its heading as a name; <address> holds contact info in the footer."
+    }
+  ]
+}

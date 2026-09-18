@@ -1,0 +1,25 @@
+The browser practices for this module run in real DOM. The checkpoint below
+verifies the same patterns at the logic level, so your understanding — not just
+your copy-paste — is tested.
+
+Three problems, straight from the lessons:
+
+1. **Delegation resolver** — given a click target and a tree, find the
+   actionable ancestor exactly like `closest` does.
+2. **Tabs state reducer** — `reduceTabs(state, action)` returning the new
+   state for select/next/prev. Never mutate the input state.
+3. **Debounce** — the classic closure + timer implementation, verified for both
+   immediate and trailing behavior.
+
+## Why logic-level?
+
+The browser is where your components live, but the _hard_ parts are the
+decisions: which element handled which event, what the next state is, when a
+call is allowed through. Those decisions survive any rendering technology —
+which is why interviews and code reviews both probe them directly.
+
+Treat the three problems as a checklist for the dashboard project: if your
+delegation resolver is right, your sortable table stays fast; if your tab
+reducer never mutates state, your React (or vanilla) rewrite later is nearly
+free; if your debounce behaves on both edges, your search box stops firing
+a request per keystroke.

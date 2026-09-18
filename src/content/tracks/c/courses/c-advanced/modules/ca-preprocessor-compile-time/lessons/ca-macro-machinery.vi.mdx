@@ -1,0 +1,18 @@
+## Đối số mở rộng trước khi thay thế — trừ khi dùng # và ##
+
+`SQUARE(x) ((x) * (x))` thay x bằng đối số *đã mở rộng* — trừ khi x đi với `#` (stringize) hoặc `##` (paste), khi đó giữ nguyên. Chi tiết này là lý do idiom mở rộng kép tồn tại:
+
+```c
+#define STR_(x) #x          /* x giữ nguyên: thành "x" */
+#define STR(x)  STR_(x)     /* x mở rộng trước, rồi stringize */
+```
+
+`STR(__LINE__)` cho "14"; `STR_(__LINE__)` cho "__LINE__".
+
+## Bọc ngoặc mọi thứ
+
+`#define BAD(a, b) a + b` với `BAD(1, 2) * 3` mở rộng thành `1 + 2 * 3`. Mọi tham chiếu tham số được bọc ngoặc; toàn bộ phần thay thế cũng vậy. Macro vi phạm điều này không chỉ sai phong cách — nó tính sai.
+
+## Nhiều dòng và do-while
+
+Macro dạng câu lệnh bọc trong `do { ... } while (0)` để `if (x) MACRO(); else ...` vẫn phân tích được — `{ }` trơn sẽ phá dấu chấm phẩy. Đây không phải mê tín; là bảo trì cú pháp.

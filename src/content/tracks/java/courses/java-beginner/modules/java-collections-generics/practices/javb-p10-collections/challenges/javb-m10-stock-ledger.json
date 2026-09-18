@@ -1,0 +1,26 @@
+{
+  "id": "javb-m10-stock-ledger",
+  "title": "Stock ledger",
+  "prompt": "Implement `static int totalQuantity(java.util.List<Integer> quantities)` (sum of a List — generics in action) and `static java.util.Map<String, Integer> mergeStock(java.util.Map<String, Integer> a, java.util.Map<String, Integer> b)` returning a NEW map with quantities summed per key.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int totalQuantity(java.util.List<Integer> quantities) {\n        return 0;\n    }\n\n    public static java.util.Map<String, Integer> mergeStock(\n            java.util.Map<String, Integer> a, java.util.Map<String, Integer> b) {\n        return null;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "list summation",
+      "code": "\nCjTestBase.checkEq(Solution.totalQuantity(java.util.List.of(2, 3, 5)), 10, \"2+3+5\");\nCjTestBase.checkEq(Solution.totalQuantity(java.util.List.of()), 0, \"empty list\");\n",
+      "hint": "for-each over the list; empty list sums to 0."
+    },
+    {
+      "name": "map merging",
+      "code": "\njava.util.Map<String, Integer> a = java.util.Map.of(\"pen\", 2, \"book\", 1);\njava.util.Map<String, Integer> b = java.util.Map.of(\"pen\", 3, \"ink\", 5);\njava.util.Map<String, Integer> out = Solution.mergeStock(a, b);\nCjTestBase.checkEq(out.get(\"pen\"), 5, \"2+3 pens\");\nCjTestBase.checkEq(out.get(\"book\"), 1, \"book untouched\");\nCjTestBase.checkEq(out.get(\"ink\"), 5, \"ink added\");\n",
+      "hint": "Copy a, then add b's entries with getOrDefault."
+    },
+    {
+      "name": "no mutation of inputs",
+      "code": "\njava.util.Map<String, Integer> a = new java.util.HashMap<>();\na.put(\"pen\", 2);\nSolution.mergeStock(a, java.util.Map.of(\"ink\", 1));\nCjTestBase.checkEq(a.size(), 1, \"input map untouched\");\n",
+      "hint": "Build a new map; never write into the parameters."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,10 @@
+{
+  "title": "Ghi như thể OS đang nhìn",
+  "prompt": "Cài `AtomicStore` — một kho tệp mà `write(path, data)` theo đúng pattern replace-nguyên-tử thật, được ghi trong `log`:\n\n- thêm `('write', path + '.tmp')`, rồi `('flush', path + '.tmp')`, rồi `('replace', path + '.tmp', path)`\n- sau các entry log, dữ liệu đọc được tại `path`, và không còn tệp `.tmp` nào\n- `read(path)` raise `FileNotFoundError` với đường dẫn lạ\n- phơi `log` như một property\n\nLog chính là bài test: bản ghi rách là bất khả khi trình tự là write-tmp, flush, replace.",
+  "tests": [
+    {
+      "name": "Trình tự chính là lập luận đúng đắn",
+      "hint": "write, flush, replace — đúng thứ tự đó."
+    }
+  ]
+}

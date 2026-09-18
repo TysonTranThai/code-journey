@@ -1,0 +1,15 @@
+{
+  "id": "cint-checkpoint-m12-task",
+  "title": "Load a Possibly-Corrupt Database",
+  "prompt": "The checkpoint: a reader for the record store from this module's\nfirst challenge — hardened. The boilerplate declares:\n\n```c\n/* same format as rs_*: \"CJR1\" | u16 count LE | count * 8-byte records\n   (id:u8, qty:i32 LE, 3 pad). BUT the file may be truncated, corrupted,\n   or missing. The reader must:\n   - return -1 for any structural violation (missing/bad magic,\n     count beyond file size, short records)\n   - return the number of VALID records read into out (capacity cap),\n     filling only records whose full 8 bytes exist\n   - not allocate, not crash on any input */\nlong db_load(const char *path, unsigned char *out, size_t cap);\n```\n\nout is a flat buffer of cap * 8 bytes; record i lives at out + i*8.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stdio.h>\n#include <stddef.h>\nlong db_load(const char *path, unsigned char *out, size_t cap);\n",
+  "tests": [
+    {
+      "name": "never crash, never over-read",
+      "code": "\n/* build a valid 2-record file via the known format */\nFILE *f = fopen(\"/tmp/cj_db.bin\", \"wb\");\nCHECK(f != NULL);\nunsigned char good[] = {\n    'C','J','R','1', 2, 0,\n    1, 100,0,0,0, 0,0,0,\n    2, 200,0,0,0, 0,0,0,\n};\nfwrite(good, 1, sizeof good, f);\nfclose(f);\nunsigned char buf[16];\nCHECK_EQ(db_load(\"/tmp/cj_db.bin\", buf, 2), 2);\nCHECK_EQ(buf[0], 1);\nCHECK_EQ(buf[8], 2);\n/* truncated file: header promises 2 records, only 1 present */\nf = fopen(\"/tmp/cj_cut.bin\", \"wb\");\nCHECK(f != NULL);\nfwrite(good, 1, 6 + 8, f);                    /* header + one record */\nfclose(f);\nCHECK_EQ(db_load(\"/tmp/cj_cut.bin\", buf, 2), 1);\n/* bad magic */\nf = fopen(\"/tmp/cj_bad.bin\", \"wb\");\nCHECK(f != NULL);\nunsigned char bad[] = { 'X','Y','Z','1', 0, 0 };\nfwrite(bad, 1, sizeof bad, f);\nfclose(f);\nCHECK_EQ(db_load(\"/tmp/cj_bad.bin\", buf, 2), -1);\nCHECK_EQ(db_load(\"/tmp/cj_absent.bin\", buf, 2), -1);\nCHECK_EQ(db_load(NULL, buf, 2), -1);\nCHECK_EQ(db_load(\"/tmp/cj_db.bin\", NULL, 2), -1);\n",
+      "hint": "Stat-by-read: read the header, then read records one at a time; a short record read stops the scan (count what you got)."
+    }
+  ]
+}

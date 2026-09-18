@@ -1,0 +1,36 @@
+## Phương thức là một phép tính có tên
+
+```csharp
+static double Total(double price, int quantity)
+{
+    return price * quantity;
+}
+```
+
+Đọc từng phần: `static` (thuộc về kiểu, không phải một đối tượng — bạn đã gọi `Console.WriteLine` theo cùng cách), `double` (**kiểu trả về** — cái được trả lại), `Total` (tên — theo thông lệ là một cụm động từ), và **danh sách tham số** `(double price, int quantity)` — các đầu vào được đặt tên mà thân hàm dùng như biến cục bộ.
+
+`return` trả giá trị về và thoát ngay — mã phía sau một `return` trên cùng nhánh thực thi sẽ không bao giờ chạy. Phương thức có kiểu trả về khác `void` phải `return` trên *mọi* nhánh; trình biên dịch bắt buộc điều này ("not all code paths return a value").
+
+## void: hành động, không phải câu trả lời
+
+```csharp
+static void Greet(string name)
+{
+    Console.WriteLine("Hello, " + name + "!");
+}
+```
+
+`void` nghĩa là "tôi không tạo ra giá trị — tôi làm một việc nào đó." Gọi phương thức `void` như một câu lệnh là bình thường; gọi phương thức có giá trị trả về rồi bỏ qua kết quả là hợp lệ nhưng thường là mùi code. Đừng giả trả về: `Greet` không trả gì là trung thực; trả `true` "vì nó chạy rồi" thì không.
+
+## Expression-bodied members
+
+```csharp
+static int Square(int x) => x * x;
+static bool IsAdult(int age) => age >= 18;
+```
+
+Khi thân chỉ là một biểu thức, `=> biểu_thức` thay cho ngoặc nhọn và `return`. Cùng ngữ nghĩa, ít ceremony hơn. Quy tắc: nếu nó đọc như một công thức, dùng expression body; nếu cần nhiều bước hoặc rẽ nhánh kèm tác dụng phụ, dùng khối lệnh.
+
+## Tại sao cần phương thức
+
+Ba lý do, theo thứ tự quan trọng: một **tên** ghi lại ý định (`Total(price, qty)` rõ hơn một phép `price * qty` không giải thích); **tái sử dụng** nghĩa là công thức chỉ tồn tại đúng một nơi — sửa lỗi một lần; **khả năng kiểm thử** — phương thức có đầu vào và đầu ra có thể được chấm điểm bằng code, đúng như mọi thử thách trong khóa học này.

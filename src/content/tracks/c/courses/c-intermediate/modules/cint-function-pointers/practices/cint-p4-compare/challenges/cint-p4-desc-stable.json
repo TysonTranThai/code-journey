@@ -1,0 +1,16 @@
+{
+  "id": "cint-p4-desc-stable",
+  "title": "Ascending, Descending, By Field",
+  "prompt": "Implement a struct sort family with the boilerplate Entry type:\n\n```c\nint cmp_key_asc(const void *a, const void *b);\nint cmp_key_desc(const void *a, const void *b);   /* exact reverse of asc */\nint cmp_name_asc(const void *a, const void *b);   /* by name (strcmp) */\n```\n\nSorting stability is NOT required by qsort — but your comparators must each be\na consistent total order (equal keys return 0; equal names return 0).",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\ntypedef struct { int key; const char *name; } Entry;\n",
+  "tests": [
+    {
+      "name": "same struct, three orders",
+      "code": "\nEntry e[] = { {3, \"c\"}, {1, \"b\"}, {3, \"a\"}, {2, \"d\"} };\nqsort(e, 4, sizeof(Entry), cmp_key_asc);\nCHECK_EQ(e[0].key, 1); CHECK_EQ(e[3].key, 3);\nqsort(e, 4, sizeof(Entry), cmp_key_desc);\nCHECK_EQ(e[0].key, 3); CHECK_EQ(e[3].key, 1);\nqsort(e, 4, sizeof(Entry), cmp_name_asc);\nCHECK_STR_EQ(e[0].name, \"a\"); CHECK_STR_EQ(e[3].name, \"d\");\n",
+      "hint": "desc = negate the asc result; name uses strcmp of ->name."
+    }
+  ],
+  "level": "imitation"
+}

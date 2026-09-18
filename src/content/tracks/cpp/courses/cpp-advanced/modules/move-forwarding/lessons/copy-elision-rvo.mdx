@@ -1,0 +1,30 @@
+Since C++17, returning a **prvalue** is *guaranteed elision*: no copy or move exists even conceptually. The object is constructed directly in its final home:
+
+```cpp
+std::string build() { return std::string(1000, 'x'); }   // zero copies, zero moves — by the language
+auto s = build();                                        // one allocation, one string
+```
+
+## NRVO — the powerful courtesy
+
+Returning a **named** local (NRVO) is not guaranteed, but mainstream compilers do it for simple flows:
+
+```cpp
+std::string accumulate(int n) {
+    std::string out;              // named local: NRVO candidate
+    for (int i = 0; i < n; ++i) out += 'a';
+    return out;                   // usually constructed directly in the caller's storage
+}
+```
+
+## The anti-pattern: return std::move(local)
+
+`return std::move(local);` **disables NRVO** (the expression is no longer the local's name) and forces a move — strictly worse than `return local;`, which moves anyway when elision fails. Compilers flag it (`-Wpessimizing-move`).
+
+## Where elision never applies
+
+- Assignment (only initialization elides),
+- parameters (they are copies or references from the start),
+- returning a member or parameter (only a local's NRVO or a prvalue return elides).
+
+Count constructions with an instrumented type in the practice — the counters are the proof.

@@ -1,0 +1,29 @@
+Assertion trong một script dừng ở lỗi đầu tiên. Một **bộ test** chạy mọi ca,
+báo tất cả thất bại, và trở thành lưới an toàn khi refactor. `unittest` có
+sẵn trong Python:
+
+```python
+import unittest
+
+class TestInvoice(unittest.TestCase):
+    def setUp(self):                       # fixture mới cho mỗi test
+        self.invoice = Invoice(["tea", "cup"])
+
+    def test_total_sums_items(self):
+        self.assertEqual(self.invoice.total(), 7)
+
+    def test_empty_invoice_is_zero(self):
+        self.assertEqual(Invoice([]).total(), 0)
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+Những gì bạn có hơn assert trần:
+
+- **Test độc lập**: `setUp` chạy mới trước mỗi method — không trạng thái dùng chung, không phụ thuộc thứ tự.
+- **Kết quả thất bại giàu thông tin**: kỳ vọng vs thực tế, cho từng test.
+- **Một runner**: `python -m unittest` dò và chạy tất cả; sandbox của nền tảng chạy test của bạn theo cùng cách.
+
+Tên test là thông điệp: `test_total_sums_items` nói rõ hành vi kỳ vọng. Khi
+một test thất bại nhiều tháng sau, cái tên là manh mối đầu tiên.

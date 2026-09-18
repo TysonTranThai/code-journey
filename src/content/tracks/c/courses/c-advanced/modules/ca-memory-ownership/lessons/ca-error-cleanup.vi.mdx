@@ -1,0 +1,29 @@
+## Lỗi xảy ra ở giữa
+
+Hàm có ba tài nguyên có thể thất bại tại ba điểm. Mỗi thất bại phải giải phóng *đúng những gì đã cấp đến lúc đó* — không thiếu, không thừa. Free lặp lại tùy ý trong từng nhánh là nơi sinh ra leak và double-free.
+
+## Mẫu thang
+
+```c
+int run(void) {
+    int rc = -1;
+    res_a *a = a_open();
+    if (!a) goto fail;
+    res_b *b = b_open(a);
+    if (!b) goto fail_a;
+    if (use(a, b) != 0) goto fail_b;
+    rc = 0;
+fail_b:
+    b_close(b);
+fail_a:
+    a_close(a);
+fail:
+    return rc;
+}
+```
+
+Một thang lối ra, trải ngược thứ tự cấp phát. `goto` không phải cấm kỵ ở đây — Linux dùng mẫu này, vì 'chuyện gì xảy ra khi lỗi' đọc được ở một chỗ.
+
+## Chuyển giao làm rỗng nguồn
+
+Chuyển buffer giữa hai chủ phải *gán NULL cho nguồn* — nguồn rỗng là bằng chứng chuyển giao đã xảy ra; nguồn vẫn giữ con trỏ là một double-free chờ lần dọn thứ hai.

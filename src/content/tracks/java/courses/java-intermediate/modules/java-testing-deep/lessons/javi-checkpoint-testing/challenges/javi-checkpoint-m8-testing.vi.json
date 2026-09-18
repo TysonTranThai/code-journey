@@ -1,0 +1,22 @@
+{
+  "title": "Bộ giới hạn tần suất test được",
+  "prompt": "Thiết kế rate limiter quanh một seam Clock trong `Solution`:\n- `interface Clock { long nowMillis(); }`\n- `static class RateLimiter` với constructor `(Clock clock, int maxPerWindow)`\n  và `boolean allow(String key)`:\n  - đếm lượt gọi theo key trong cửa sổ trượt 1000ms (từ clock)\n  - trả true nếu dưới hạn mức, false nếu ngược lại\n  - các lượt gọi CŨ hơn 1000ms (nghiêm ngặt) không còn được đếm\n- `static Clock manualClock(long startMillis)` trả một clock có thể tua\n  bằng cách gọi `((Solution.AdvanceableClock) c).advance(ms)` — định nghĩa\n  `static interface AdvanceableClock extends Clock` với\n  `void advance(long ms)`.\n\nTest điều khiển thời gian tường minh — không ngủ.",
+  "tests": [
+    {
+      "name": "Dưới hạn mức được qua",
+      "hint": "Hai lượt gọi trong cửa sổ đi qua."
+    },
+    {
+      "name": "Lượt thứ ba bị chặn",
+      "hint": "maxPerWindow là trần cứng."
+    },
+    {
+      "name": "Cửa sổ trượt theo clock",
+      "hint": "Sau khi tua 1500ms, lượt cũ (>1000ms) rơi ra."
+    },
+    {
+      "name": "Các key độc lập",
+      "hint": "Hạn mức tính theo key."
+    }
+  ]
+}

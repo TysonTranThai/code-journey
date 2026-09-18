@@ -1,0 +1,48 @@
+## Task là future; await là điểm treo
+
+`async` đánh dấu phương thức có thể ghép await; `await` nhả thread cho tới
+khi Task được awaited hoàn tất. Trạng thái phương thức (biến cục bộ) được
+chụp lại và tiếp tục — code sau `await` chạy SAU, có thể trên thread khác:
+
+```csharp
+async Task<string> FetchNameAsync(HttpClient http, string url)
+{
+    string body = await http.GetStringAsync(url);  // nhả thread tại đây
+    return body.Trim();                            // tiếp tục sau khi xong
+}
+```
+
+`Task` = thao tác async không kết quả; `Task<T>` = có kết quả. Phương thức
+`*Async` trả Task theo đúng quy ước.
+
+## Exception đi qua Task
+
+Exception trong `async Task` được lưu TRÊN Task và ném lại tại `await` —
+đã bóc vỏ, giữ nguyên kiểu gốc:
+
+```csharp
+try { await DivideAsync(1, 0); }
+catch (DivideByZeroException ex) { /* bắt tại đây, đã bóc vỏ */ }
+```
+
+`async void` không có nơi nào đưa exception đi except thread pool — có thể
+làm sập tiến trình. Chỉ dùng `async void` cho event handler (Module 4).
+
+## Chặn trên Task: .Result và bạn bè
+
+`.Result` / `.Wait()` / `.GetAwaiter().GetResult()` chặn thread gọi cho tới
+khi task xong. Trong code ứng dụng có synchronization context thì deadlock;
+dù không có vẫn đốt một thread và BỌC exception:
+
+```csharp
+string s = FetchAsync().Result;   // ném AggregateException, không phải kiểu gốc
+```
+
+`await` bóc vỏ — vì vậy production code async trọn độ, còn test harness
+(như harness này) có thể chặn task: caller async thì await; caller đồng bộ
+bắt buộc chặn phải ngờ lớp bọc AggregateException.
+
+## Kiểm tra hiểu biết
+
+- Exception trong phương thức async nổi lên ở đâu? (Tại await, đã bóc vỏ.)
+- `.Result` ném gì khi task thất bại? (AggregateException bọc exception gốc.)

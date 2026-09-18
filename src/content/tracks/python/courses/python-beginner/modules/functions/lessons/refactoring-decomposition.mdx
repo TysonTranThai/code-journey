@@ -1,0 +1,45 @@
+**Refactoring** is improving code without changing what it does. The most
+common beginner refactor: copy-pasted code → functions.
+
+Before:
+
+```python
+print("Welcome Minh, your balance is 120")
+print("Welcome Lan, your balance is 90")
+print("Welcome Bo, your balance is 0")
+```
+
+After:
+
+```python
+def welcome(name, balance):
+    print(f"Welcome {name}, your balance is {balance}")
+
+for who, amount in [("Minh", 120), ("Lan", 90), ("Bo", 0)]:
+    welcome(who, amount)
+```
+
+Same output — but now one place to change the message, and a name that says
+what the line does.
+
+## How to spot refactor targets
+
+- The same 2+ lines appear more than once → extract a function.
+- A block does one identifiable job → give that job a name.
+- A condition so long it needs a comment → name it (`is_valid_order(order)`).
+
+## Decomposition in practice
+
+Build programs as pipelines of small functions:
+
+```python
+def read_input(): ...
+def process(data): ...
+def format_output(result): ...
+def main():
+    data = read_input()
+    print(format_output(process(data)))
+```
+
+Each function is testable alone; `main` reads like the problem statement.
+That is the shape every remaining project in this course uses.

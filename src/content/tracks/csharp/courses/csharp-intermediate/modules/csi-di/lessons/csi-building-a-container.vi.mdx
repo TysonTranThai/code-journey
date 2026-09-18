@@ -1,0 +1,59 @@
+## Service lifetime
+
+- SINGLETON — một instance cho cả tiến trình (service không state, cache).
+  Thread-safety giờ là việc của hiện thực.
+- TRANSIENT — instance mới cho mỗi lần resolve (service có state theo từng
+  thao tác, fake). Tạo ra rẻ.
+- (Scoped — một instance cho mỗi đơn vị công việc — quan trọng khi có web
+  framework và request pipeline; sẽ quay lại ở phần Nâng cao/API.)
+
+## Container tự viết
+
+Không có NuGet, pattern đứng sau mọi DI container nhỏ đến mức tự dựng được
+— một sổ đăng ký các hàm factory:
+
+```csharp
+public sealed class Container
+{
+    private readonly System.Collections.Generic.Dictionary<Type, Func<object>> _factories = new();
+    private readonly System.Collections.Generic.Dictionary<Type, object> _singletons = new();
+
+    public void Register<TService>(Func<TService> factory) =>
+        _factories[typeof(TService)] = () => factory();
+
+    public void RegisterSingleton<TService>(Func<TService> factory)
+    {
+        object? instance = null;
+        _factories[typeof(TService)] = () =>
+        {
+            if (instance is null) instance = factory();   // lazy, đúng một lần
+            return instance;
+        };
+    }
+
+    public TService Resolve<TService>() => (TService)_factories[typeof(TService)]();
+}
+```
+
+Container thật thêm discovery constructor bằng reflection và lifetime scope
+— nhưng đăng ký/resolve/lifetime là các khái niệm cốt lõi.
+
+## Composition root
+
+Việc nối dây nằm ở MỘT nơi, tại điểm vào ứng dụng:
+
+```csharp
+var container = new Container();
+container.RegisterSingleton<IEmailer>(() => new SmtpEmailer(config));
+container.RegisterTransient<IOrderService>(() => new OrderService(
+    container.Resolve<IEmailer>(), container.Resolve<IClock>()));
+var svc = container.Resolve<IOrderService>();   // app chạy từ đây xuống
+```
+
+Lớp nghiệp vụ không đụng container; chúng nhận những gì cần. Đổi provider
+thì chỉ đúng một file thay đổi.
+
+## Kiểm tra hiểu biết
+
+- Transient hay singleton cho service có state theo từng request? (Transient.)
+- `new SmtpEmailer()` thuộc về đâu? (Composition root — không nơi nào khác.)

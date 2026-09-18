@@ -1,0 +1,36 @@
+## Các móc tạo class — và metaclass đích thực
+
+Python cho bạn ba móc vào lúc tạo class, quyền lực và cái giá tăng dần:
+
+1. **`__init_subclass__`** — method kế thừa bình thường, được gọi trên cha cho
+   mỗi subclass mới. Không cú pháp đặc biệt. Lựa chọn đúng cho đăng ký,
+   kiểm tra hợp lệ, tự nối dây.
+2. **Decorator class** — biến đổi class sau khi thân class chạy. Đúng cho việc vá
+   một lần, nhưng không có gì chạy lúc *định nghĩa attribute* và subclass không
+   thừa hưởng hiệu ứng.
+3. **Metaclass** — kiểm soát chính *type* của class: chặn việc tạo class qua
+   `Meta.__new__`, sửa namespace trước khi class tồn tại, ép bất biến trên cả
+   hệ thứ tự.
+
+```python
+class FrozenMeta(type):
+    def __new__(mcls, name, bases, ns):
+        cls = super().__new__(mcls, name, bases, ns)
+        allowed = set(ns.get("__annotations__", {}))
+        def _setattr(self, key, value):
+            if key not in allowed:
+                raise AttributeError(f"frozen: cannot set {key!r}")
+            object.__setattr__(self, key, value)
+        cls.__setattr__ = _setattr
+        return cls
+```
+
+Metaclass chỉ chính đáng khi *hợp đồng* thuộc về cả hệ thứ tự và phải được giữ
+ngay cả với code quên chủ động tham gia — ORM, ABC (`abc.ABCMeta`), enum
+(`EnumMeta`), và ép interface là những trường hợp kinh điển.
+
+Thước đo chuyên nghiệp, ngay từ lịch sử của thư viện chuẩn: `__init_subclass__`
+và `__set_name__` được thêm vào chính là để code Python bình thường làm được
+những việc trước đây phải cần metaclass. Chỉ chạm tới metaclass khi bạn buộc phải
+kiểm soát bản thân đối tượng class — namespace, tổng hợp `__slots__`, kiểm tra
+cấp class với keyword argument riêng mà metaclass tiêu thụ.

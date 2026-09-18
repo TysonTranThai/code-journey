@@ -1,0 +1,42 @@
+Time to assemble. The capstone is a **personal transaction ledger**: a
+text-persisted record of money in and money out. Nothing here is new -
+that's the point. It composes:
+
+- **records** (Module 9) - an immutable `Transaction` with a compact
+  constructor validating itself;
+- **collections + streams** (Modules 10, 12) - a `List<Transaction>`
+  queried with pipelines;
+- **defensive parsing** (Module 11) - every loaded line survives a
+  `try/catch` gauntlet;
+- **file persistence** (this module) - save and load through
+  `Files.writeString`/`readString`;
+- **testing discipline** (Module 13) - the grading tests are the bar, and
+  you've written your own all course.
+
+## The format you're building
+
+One transaction per line, four fields, `|`-separated:
+
+```
+2026-01-15|coffee|CASH_OUT|4.50
+2026-01-16|salary|CASH_IN|2500.00
+```
+
+`CASH_IN` adds to the balance, `CASH_OUT` subtracts. That's the entire
+schema - the complexity lives in *handling it well*.
+
+## How the capstone is graded
+
+You get requirements, tests, and hints - not a tutorial. The four test
+blocks each fail until the matching behavior exists: validation, round-trip
+persistence, filtering/summary queries, and balance arithmetic with
+defensive guards. Build the `Ledger` methods one test block at a time;
+when all four pass, the capstone is done and so is the course.
+
+## Where you could go next
+
+Java Intermediate would take you from this: generics you write (not just
+read), inheritance hierarchies that pay rent, interfaces as contracts,
+builder patterns, and the first real concurrency. The ledger is the
+foundation those courses assume - finish it, understand every line, and
+you've earned the title this course promised: someone who can write Java.

@@ -1,0 +1,77 @@
+An API is a **contract**. Two teams that never meet — your backend and someone
+else's client — coordinate entirely through the shapes and statuses you commit
+to. Advanced API design is mostly contract hygiene.
+
+## Status codes are vocabulary, not decoration
+
+Pick from a small set and use them precisely:
+
+| Status | Means | Typical trigger |
+|---|---|---|
+| 200 | success with body | GET/PUT that returns data |
+| 201 | created | POST created a resource (return its location) |
+| 204 | success, no body | DELETE |
+| 400 | malformed request | unparseable body / params |
+| 401 | who are you? | missing/invalid credentials |
+| 403 | I know you, but no | authenticated, not allowed |
+| 404 | no such resource | unknown id or path |
+| 409 | conflict | duplicate, stale version, impossible state |
+| 422 | understood but invalid | failed validation |
+| 429 | slow down | rate limit exceeded |
+
+Two rules that separate professional APIs from accidental ones:
+
+1. **401 vs 403 vs 404 are different sentences.** Collapsing them all into 400
+   destroys the client's ability to react ("re-authenticate" vs "give up" vs
+   "fix the URL").
+2. **Never leak internals on 5xx.** A 500 whose body contains a stack trace or
+   SQL fragment is a gift to an attacker. Return a generic envelope; log the
+   detail server-side.
+
+## Error envelope: one shape for every failure
+
+Clients write one error handler when every failure looks the same:
+
+```json
+{
+  "error": {
+    "status": 422,
+    "title": "validation_failed",
+    "detail": "email is not a valid address",
+    "field": "email"
+  }
+}
+```
+
+`field` only exists for field-scoped problems. The detail for 5xx errors is a
+*generic* string — the specifics go to your logs, not the wire.
+
+## Idempotency: what a retry is allowed to do
+
+Networks fail *after* your handler ran. A client that retries must not
+double-charge. Classify methods by what a retry does:
+
+- **Idempotent:** `GET`, `PUT`, `DELETE` — repeating them converges to the same
+  state. `DELETE` twice = still deleted. `PUT` twice = same representation.
+- **Not idempotent:** `POST` — two identical POSTs may create two resources.
+
+Two standard fixes for non-idempotent operations:
+
+- **Idempotency keys:** the client sends `Idempotency-Key: <uuid>`; the server
+  remembers the first response for that key and *replays* it on retry instead
+  of re-executing.
+- **Natural keys:** make the resource itself unique (`UNIQUE(email)`), so the
+  second insert fails safely with 409.
+
+## Pagination is part of the contract
+
+Every list endpoint needs a deterministic slice. Offset pagination
+(`?page=2&per_page=50`) is simple and cacheable; cursor pagination survives
+concurrent inserts. Whichever you pick, the response carries its own metadata —
+`total`, `page`, `per_page`, `has_next` — so clients never count items.
+
+## Versioning is an admission
+
+`/v1/` in the path says: *this contract will change someday, and old clients
+deserve a stable copy.* You are not designing endpoints; you are designing a
+succession of contracts.

@@ -1,0 +1,27 @@
+## Mô hình hóa quan hệ không cần database
+
+Tư duy SQL chuyển thẳng sang thiết kế repository:
+
+- **Primary key** → key của map (id), duy nhất và bất biến
+- **Foreign key** → field tham chiếu id của aggregate khác
+  (`Expense.categoryId()`)
+- **JOIN** → method kết hợp các repository hoặc một view phi chuẩn hóa
+- **Ràng buộc UNIQUE** → store kiểm tra và chặn trùng lặp
+  (`save` ném khi email xung đột)
+- **INDEX** → một `Map<String, List<Expense>>` byCategory phụ, được giữ
+  nhất quán ở mọi lần ghi
+
+Ý sâu ở mục cuối: index là cấu trúc *dẫn xuất*. Mọi đường ghi phải duy
+trì nó — bug kinh điển là cập nhật store chính rồi quên index:
+
+```java
+public Expense save(Expense e) {
+    Expense old = store.put(e.id(), e);
+    if (old != null) byCategory.get(old.category()).remove(old);
+    byCategory.computeIfAbsent(e.category(), k -> new ArrayList<>()).add(e);
+    return e;
+}
+```
+
+Xây lại index lúc đọc (`findAll` lọc tại chỗ) thì đúng nhưng O(n) mỗi
+truy vấn — cái giá mà database tính cho bạn.

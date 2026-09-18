@@ -1,0 +1,42 @@
+## Tách chữ số bằng % và /
+
+Một số nguyên là dãy chữ số bạn xử lý được mà không cần xâu:
+
+```cpp
+long long n; in >> n;
+long long digitSum = 0;
+while (n > 0) {
+    digitSum += n % 10;   // chữ số cuối
+    n /= 10;              // bỏ chữ số cuối
+}
+```
+
+`n % 10` = chữ số cuối; `n / 10` = phần còn lại. Hai phép toán, mọi bài
+chữ số thành bài vòng lặp.
+
+### Các bài chữ số kinh điển
+
+| Bài | Cách làm |
+| --- | --- |
+| Tổng chữ số | cộng dồn `n % 10` |
+| Số chữ số | đếm số vòng lặp |
+| Chữ số lớn nhất | lưu max của `n % 10` |
+| Tích chữ số | cộng dồn tích (coi chừng chữ số 0) |
+| Đảo chữ số | `rev = rev * 10 + n % 10` |
+
+### Ví dụ làm mẫu: số có đối xứng không?
+
+```cpp
+long long n; in >> n;
+long long m = n, rev = 0;
+while (m > 0) { rev = rev * 10 + m % 10; m /= 10; }
+out << (rev == n ? "PALIN" : "NO") << "\n";
+```
+
+Chú ý giữ `n` nguyên trong bản copy `m` — vòng lặp phá hủy cái nó tách.
+Quên bản copy là lỗi kinh điển.
+
+### Tràn số và số âm
+
+Đảo số 19 chữ số có thể tràn `long long` — đọc giới hạn trước. Với input
+âm, chốt quy ước (thường làm với `abs(n)`) trước khi lặp.

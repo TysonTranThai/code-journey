@@ -1,0 +1,21 @@
+{
+  "id": "cppa3-ctad-array",
+  "title": "CTAD from a C Array",
+  "prompt": "Add to `Stats` an array constructor that scans for the real min/max, and the deduction guide so `Stats s{arr};` deduces `Stats<int>` from `int arr[]`.",
+  "difficulty": "advanced",
+  "level": "imitation",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <type_traits>\n#include <utility>\n\ntemplate <class T>\nstruct Stats {\n    T min;\n    T max;\n    Stats(T lo, T hi) : min(std::move(lo)), max(std::move(hi)) {}\n    // TODO: add an array constructor that scans the whole array for min/max:\n    //   template <std::size_t N> Stats(const T (&a)[N]);\n    // plus the deduction guide that lets Stats s{arr}; deduce Stats<T>.\n};\n",
+  "tests": [
+    {
+      "name": "guide + constructor deduce and scan",
+      "code": "int arr[] = {4, 8, 2};\nStats s{arr};\nstatic_assert(std::is_same_v<decltype(s), Stats<int>>, \"deduce element type\");\nCHECK_EQ(s.min, 2);\nCHECK_EQ(s.max, 8);",
+      "hint": "template <std::size_t N> Stats(const T (&a)[N]) : min(a[0]), max(a[0]) { for (std::size_t i = 1; i < N; ++i) { if (a[i] < min) min = a[i]; if (a[i] > max) max = a[i]; } }\ntemplate <class T, std::size_t N> Stats(const T (&)[N]) -> Stats<T>;"
+    },
+    {
+      "name": "pair constructor still works",
+      "code": "Stats p{1, 2};\nstatic_assert(std::is_same_v<decltype(p), Stats<int>>, \"pair still deduces\");\nCHECK_EQ(p.min, 1);\nCHECK_EQ(p.max, 2);",
+      "hint": "Do not break the original constructor — CTAD tries all guides."
+    }
+  ]
+}

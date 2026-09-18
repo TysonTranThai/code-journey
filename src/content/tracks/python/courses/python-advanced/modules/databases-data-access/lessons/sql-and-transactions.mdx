@@ -1,0 +1,52 @@
+## SQL is declarative — use that
+
+You state *what*; the planner decides *how*. Write queries the planner can
+reason about:
+
+- Filter with `WHERE`, aggregate with `GROUP BY`, and let indexes do the seeking.
+- `JOIN ... ON` states the relationship explicitly. `INNER JOIN` keeps matches;
+  `LEFT JOIN` keeps every left row (and is how you *find the missing* — users
+  with no orders are `LEFT JOIN orders ON ... WHERE orders.id IS NULL`).
+- `ORDER BY` without an index means a sort — of the whole result set, after all
+  the joins. The `LIMIT` doesn't save you.
+
+## Indexes: the planner's shortcuts
+
+An index is a sorted side-structure (typically a B-tree) that turns a scan into
+a seek. Rules that survive contact with production:
+
+1. **Index the columns you filter, join, and sort on** — in the order of the
+   query (a composite index `(user_id, created_at)` serves
+   `WHERE user_id = ? ORDER BY created_at DESC`).
+2. **Leftmost prefix:** the index on `(a, b)` serves queries on `a`, and on
+   `a AND b` — but not on `b` alone.
+3. **Low-selectivity columns barely help** (an index on `active BOOLEAN` in a
+   table where 99% are true seeks almost nothing).
+4. **Every index taxes every write.** Indexes are not free; each one must be
+   updated on INSERT/UPDATE/DELETE.
+
+## Transactions and the classic anomalies
+
+A transaction is all-or-nothing (atomicity) plus isolation — and isolation has
+levels, because full isolation is expensive:
+
+| Isolation | Anomaly possible |
+|---|---|
+| READ UNCOMMITTED | dirty reads (see uncommitted data) |
+| READ COMMITTED | non-repeatable reads (same query, different answer) |
+| REPEATABLE READ | phantom rows (new rows appear between reads) |
+| SERIALIZABLE | none — but the most locking/retrying |
+
+Default for Postgres is READ COMMITTED — which means **write-write races are
+your problem**. The fix is *optimistic concurrency*: stamp rows with a version,
+and update with `UPDATE ... SET v = v + 1 WHERE id = :id AND v = :seen`. Zero
+rows updated means someone raced you: re-read, re-decide, retry. Locking after
+the fact beats locking in advance for low-contention data.
+
+## The N+1 query problem
+
+Fetch 50 orders, then loop and fetch each order's customer: 1 + 50 queries.
+The network round-trip, not the database work, dominates. Fix: fetch the
+collection once (`WHERE user_id IN (...)`) and join in memory — or a single
+JOIN. Detect it by *counting queries per request*, which is exactly what the
+practice below does.

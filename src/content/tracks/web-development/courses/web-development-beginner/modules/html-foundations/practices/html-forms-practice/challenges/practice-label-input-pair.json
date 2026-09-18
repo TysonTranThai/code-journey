@@ -1,0 +1,25 @@
+{
+  "id": "practice-label-input-pair",
+  "title": "Pair a Label with Its Input",
+  "prompt": "Every input needs a label. Below is a lone input. Add a `label` element reading `Email address`, connect it to the input with `for`/`id`, and give the input a `name` of `email`.\n\nRules:\n- The `label` comes first, wired with `for=\"email\"`.\n- The input has `id=\"email\"` and `name=\"email\"`.",
+  "difficulty": "beginner",
+  "level": "imitation",
+  "boilerplate": "<form>\n  <input type=\"email\">\n</form>\n",
+  "tests": [
+    {
+      "name": "a label exists with the right text",
+      "code": "const label = code.match(/<label[^>]*>([\\s\\S]*?)<\\/label>/i);\nif (!label || label[1].trim() !== \"Email address\") {\n  throw new Error(\"Add a <label> reading exactly: Email address\");\n}",
+      "hint": "<label for=\"email\">Email address</label> — the text goes between the tags."
+    },
+    {
+      "name": "label is wired to the input with for/id",
+      "code": "if (!/for=[\"']email[\"']/i.test(code)) throw new Error(\"The label needs for=\\\"email\\\".\");\nif (!/<input[^>]*id=[\"']email[\"']/i.test(code)) throw new Error(\"The input needs id=\\\"email\\\".\");\nif (!/for=[\"']email[\"']/i.test(code) || !/id=[\"']email[\"']/i.test(code)) {\n  throw new Error(\"The for attribute and the input id must match exactly: email\");\n}",
+      "hint": "for=\"email\" on the label, id=\"email\" on the input — the two values must match."
+    },
+    {
+      "name": "input has a name for form submission",
+      "code": "if (!/<input[^>]*name=[\"']email[\"']/i.test(code)) {\n  throw new Error(\"Give the input name=\\\"email\\\" so its value is sent with the form.\");\n}",
+      "hint": "Controls without a name never send their value — add name=\"email\"."
+    }
+  ]
+}

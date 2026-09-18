@@ -1,0 +1,78 @@
+## Not random bad luck — broken ownership
+
+The three classic violations are not "bugs that happen"; each is a specific
+ownership question that went unanswered:
+
+| Violation | Unanswered question |
+|---|---|
+| **Leak** | Who frees this? (Nobody was assigned.) |
+| **Use-after-free** | How long does it live? (Someone used it after the answer expired.) |
+| **Double-free** | Who owns it? (Two owners both did their duty.) |
+
+## Leak: every path must land somewhere
+
+A function that allocates and exits early (an error return, a loop break) must
+still free. The shape that fails:
+
+```c
+int load(Config **out) {
+    Config *c = malloc(sizeof *c);
+    if (!parse(c)) return 0;        /* LEAK: c never freed on this path */
+    *out = c;
+    return 1;
+}
+```
+
+The fixed shape frees on every failure path (or uses one exit):
+
+```c
+int load(Config **out) {
+    Config *c = malloc(sizeof *c);
+    if (!c) return 0;
+    if (!parse(c)) { free(c); return 0; }   /* every path accounted for */
+    *out = c;
+    return 1;
+}
+```
+
+**Rule: count your allocations, then count your frees on every path. They
+must balance — except along the success path where ownership is handed off.**
+
+## Use-after-free: the pointer outlived the agreement
+
+```c
+char *name = strdup("ada");
+free(name);
+printf("%s\\n", name);      /* UB: reading freed memory */
+```
+
+It reads *garbage or stale data* — no diagnostic, no trap, the worst kind of
+bug. Prevention: NULL the pointer after free (Module lesson 1), and never let
+a borrowed pointer outlive the borrow. Structures that store borrowed pointers
+must document "not owned; do not free; invalid after owner frees."
+
+## Double-free: two owners, one object
+
+```c
+void give_away(char *s) { log(s); free(s); }   /* takes ownership */
+/* caller: */
+give_away(name);
+free(name);                /* DOUBLE FREE: caller forgot ownership moved */
+```
+
+APIs that take ownership should make it visible: naming (`consume`, `take`),
+or by the callee NULLing the caller's handle when practical (`char **s`).
+
+## The Intermediate checklist
+
+Before calling any function that touches heap memory, answer:
+1. Does this call allocate? Who frees?
+2. Does this call take ownership? (Then stop using my copy.)
+3. On this function's failure paths, what must be freed?
+
+## Check your understanding
+
+- `int save(FILE *f)` allocates a temp buffer, writes, returns early on write
+  error. What is missing? (free of the temp on the error path.)
+- A struct stores `char *name` it never frees and never writes. Who owns it?
+  (The creator — the struct borrows; document that.)

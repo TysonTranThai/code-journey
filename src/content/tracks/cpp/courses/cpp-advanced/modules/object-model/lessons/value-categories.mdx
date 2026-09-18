@@ -1,0 +1,43 @@
+Every **expression** in C++ has two independent properties: a *type*, and a *value category*. The category answers one question: **what does this expression refer to, and can I reuse it?**
+
+## The three categories
+
+- **lvalue** — has identity, *can* be reused: a named variable, a dereferenced pointer, a function returning `T&`.
+- **xvalue** ("expiring") — has identity, but *marks it as reusable*: `std::move(x)`, a function returning `T&&`, a member of an xvalue.
+- **prvalue** ("pure") — no identity yet, just a value being born: literals, `T{...}`, a function returning `T` by value.
+
+lvalues + xvalues are **glvalues** (they designate an object). xvalues + prvalues are **rvalues** (they can be moved from).
+
+```cpp
+std::string a = "hi";        // 'a' is an lvalue
+std::move(a);                // std::move(a) is an xvalue
+std::string(3, '?');         // prvalue
+a + "!";                     // prvalue (operator+ returns by value)
+```
+
+## Why the taxonomy exists
+
+Overload resolution cares: `f(T&)` beats `f(T&&)` for lvalues, and `f(T&&)` is *viable* only for rvalues. That is the entire mechanism behind move-on-return, `emplace_back`, and forwarding. `std::move` does not move anything — it is a **cast to xvalue**: "here is identity, please cannibalize it."
+
+## Reading categories out of types with decltype
+
+The standard gives you a probe: for an expression `e`, `decltype((e))` is:
+- `T&` if `e` is an lvalue,
+- `T&&` if `e` is an xvalue,
+- `T` if `e` is a prvalue.
+
+```cpp
+static_assert(std::is_same_v<decltype((a)), std::string&>);             // lvalue
+static_assert(std::is_same_v<decltype((std::move(a))), std::string&&>); // xvalue
+static_assert(std::is_same_v<decltype((a + "!")), std::string>);        // prvalue
+```
+
+(Plain `decltype(a)` names the *declared* type; the double parentheses make decltype treat it as an expression.)
+
+## The two classic traps
+
+**Trap 1 — named rvalue references are lvalues.** Inside `void f(T&& x)`, the expression `x` is an lvalue (it has a name!). Passing it on, assigning it, or storing it copies unless you `std::forward`/`std::move` it. One place the compiler compensates: the bare statement `return x;` performs an *implicit move* for rvalue-reference parameters (C++20 P1825) — a convenience, not a rule to lean on. Everywhere else, forward explicitly.
+
+**Trap 2 — rvalue-ness does not mean modifiable.** A `const T&&` parameter binds rvalues but cannot be moved from; some APIs use it deliberately to *reject* moves.
+
+**Practice discipline for this module:** before each exercise, *write down* the category you expect. The graded checks use `decltype` probes — the same tool you will use in code review.

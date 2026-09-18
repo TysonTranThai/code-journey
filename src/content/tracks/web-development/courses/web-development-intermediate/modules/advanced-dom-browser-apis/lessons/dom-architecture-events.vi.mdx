@@ -1,0 +1,44 @@
+Ở khóa người mới bắt đầu, bạn gắn listener rồi thôi quan tâm. Giờ hãy nhìn xem
+thực sự điều gì xảy ra khi bạn click.
+
+## Luồng sự kiện có ba pha
+
+Khi bạn click một `button` nằm trong `div`, sự kiện không đi thẳng
+đến button. Nó **đi xuống** từ `window` qua từng tổ tiên (pha
+**capture**), phát ra tại button (pha **target**), rồi **đi ngược lên** qua các
+tổ tiên (pha **bubble**):
+
+```text
+window → document → div → button   (capture)
+                        button     (target)
+window ← document ← div ← button   (bubble)
+```
+
+Mặc định, listener chạy ở pha bubble. Truyền `true` (hoặc
+`{ capture: true }`) làm tham số thứ ba để chạy ở pha capture:
+
+```js
+document.addEventListener("click", onCaptureClick, true);
+```
+
+## Ba công cụ khác nhau
+
+Ba cái này thường bị nhầm — chúng làm những việc khác nhau:
+
+- `event.preventDefault()` — hủy **hành vi mặc định** của trình duyệt
+  (link điều hướng, form submit) mà không chặn sự lan truyền.
+- `event.stopPropagation()` — chặn sự kiện đi tiếp trong luồng. Các tổ
+  tiên sẽ không hề hay biết.
+- `event.stopImmediatePropagation()` — ngoài ra còn chặn các listener
+  **cùng phần tử** khác khỏi chạy.
+
+`preventDefault` không chặn lan truyền, và chặn lan truyền không hủy các
+hành vi mặc định. Một handler của form gọi `event.stopPropagation()` mà
+quên `preventDefault()` vẫn khiến trang bị submit.
+
+## event.target và event.currentTarget
+
+Bên trong handler, `event.target` là phần tử khởi phát sự kiện (button),
+còn `event.currentTarget` là phần tử mà listener được gắn vào (div). Khi
+bạn gắn listener trực tiếp vào chính target thì hai giá trị trùng nhau — chính
+sự khác biệt này là nền tảng cho bài kế tiếp.

@@ -1,0 +1,42 @@
+## Scope: where a name exists
+
+A local variable exists from its declaration to the closing brace of its block:
+
+```csharp
+static double Tip(double bill)
+{
+    double rate = 0.15;          // born here
+    double tip = bill * rate;    // can see rate
+    return tip;
+}                                // rate and tip are gone
+```
+
+Two blocks may each declare their own `rate`; they are unrelated variables. A parameter is also a local — redeclaring `double bill` inside `Tip` is an error (`CS0136`). One warning: a method can *read* fields of its class, so a local that silently shadows a field name is a classic confusion source — keep local names distinct.
+
+## Refactor: from wall-of-Main to named steps
+
+```csharp
+// before: 40 lines of Main doing everything
+// after:
+static void Main()
+{
+    var items = ReadItems();
+    var total = TotalWithTax(items);
+    PrintReceipt(items, total);
+}
+```
+
+Main becomes a table of contents. Each helper does **one thing**, and its name tells you what without reading the body. Signals it's time to extract a method: a comment you wrote to explain a block (the block wants to be a named method); the same three lines appearing twice; a nesting level deeper than about three.
+
+## Return early, guard first
+
+```csharp
+static double Price(int qty, double unit)
+{
+    if (qty <= 0) return 0;              // guard clause
+    if (unit < 0) throw new ArgumentException("negative unit price");
+    return qty * unit;                   // the real logic, unindented
+}
+```
+
+Handling the unusual cases first and returning (or throwing) keeps the main logic flat. Compare with nesting the happy path inside `if (qty > 0) { if (unit >= 0) { ... } }` — same result, one extra indent per worry. Preconditions at the top also document the contract: this method expects non-negative quantities, and says so in code.

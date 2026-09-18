@@ -1,0 +1,21 @@
+{
+  "id": "cb13-zeros",
+  "title": "Zeroed Buffer",
+  "prompt": "Implement `int* zero_buffer(int n)`: heap array of n ints where EVERY element is 0 (n >= 1 guaranteed). Return NULL if allocation fails.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "zeros then sentinel",
+      "code": "int *p = zero_buffer(4);\nCHECK_NOT_NULL(p);\nCHECK_EQ(p[0], 0);\nCHECK_EQ(p[2], 0);\nCHECK_EQ(p[3], 1);\nfree(p);",
+      "hint": "calloc zeroes everything; then set the LAST element to 1."
+    },
+    {
+      "name": "single",
+      "code": "int *p = zero_buffer(1);\nCHECK_EQ(p[0], 1);\nfree(p);",
+      "hint": "n=1: the only element is the sentinel."
+    }
+  ],
+  "level": "imitation"
+}

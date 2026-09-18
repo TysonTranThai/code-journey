@@ -1,0 +1,70 @@
+## One source file, three stages
+
+Beginner treated "compile" as one step. It is three, and knowing which stage
+failed is half of debugging C:
+
+1. **Preprocessing** — textual. `#include` pastes a file's text in place,
+   macros are expanded, `#if` blocks are pruned. Output: one big **translation
+   unit** (TU).
+2. **Compilation** — the TU is parsed and optimized into an **object file**
+   (`.o`), machine code with holes where other files' symbols are referenced.
+3. **Linking** — the linker merges object files and libraries, filling every
+   hole. If it cannot fill one, you get a **linker error**, not a compiler
+   error.
+
+```c
+/* what #include actually does — it is copy-paste */
+#include "myheader.h"   /* pastes myheader.h's full text here */
+```
+
+## Why this matters for errors
+
+- `error: unknown type name 'Foo'` → **compile stage** (a declaration is
+  missing where the compiler is reading).
+- `undefined reference to 'helper'` → **link stage** (the name was declared
+  but never defined in any object file).
+- `multiple definition of 'counter'` → **link stage** (two TUs both defined it).
+
+## The one-definition rule (in C terms)
+
+A program may **declare** a name many times (that is what headers do) but must
+**define** it exactly once across all TUs. A declaration says "this exists
+somewhere"; a definition creates it.
+
+```c
+extern int counter;   /* declaration: exists somewhere else */
+int counter = 0;      /* definition: it lives in THIS object file */
+```
+
+## Internal linkage: `static` at file scope
+
+```c
+static int helpers_used = 0;   /* private to this TU */
+static void tally(void) { helpers_used++; }   /* not visible to the linker */
+```
+
+`static` at file scope means "this name is **internal** — other object files
+cannot see it, and mine cannot collide with theirs." Two different files may
+each have their own `static int count;` without conflict. Without `static`,
+the name is **external** and every TU's copy must be one and the same.
+
+## Functions are external by default
+
+```c
+static int fast_path(int x) { return x + 1; }  /* internal: this file only */
+int slow_path(int x);                          /* external: defined elsewhere */
+```
+
+Rule of thumb: give every file-private helper `static`. You get better
+diagnostics (unused-function warnings), no accidental cross-file collisions,
+and the optimizer can sometimes inline more aggressively when a name has
+internal linkage.
+
+## Check your understanding
+
+- Which stage complains about a missing semicolon? (Compile — preprocessing
+  only reshuffles text; the parser finds the error.)
+- Two files both define `int total;` at file scope. Which stage fails?
+  (Link — tentative definitions of the same external name collide.)
+- What does the preprocessor do with `#if 0 ... #endif`? (Deletes the block
+  before the compiler ever sees it.)

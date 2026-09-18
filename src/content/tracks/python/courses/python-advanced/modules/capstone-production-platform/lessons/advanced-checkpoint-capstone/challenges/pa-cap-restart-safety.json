@@ -1,0 +1,15 @@
+{
+  "id": "pa-cap-restart-safety",
+  "title": "Crash, restart, and the truth survives",
+  "prompt": "Implement `simulate_crash_restart(core)` — a scenario runner over your TaskFlowCore from the core-loop milestone:\n\n1. `a = core.submit('alpha', {'op': 1})` and `b = core.submit('beta', {'op': 2})`\n2. deliver once; record the delivered batch\n3. SIMULATE CRASH: call `core.shutdown()` — which must stop intake and requeue everything in-flight back to pending (exactly-once effects make this safe) — and then call `core.restart()` (adds `'restarted': True` to metrics; running again)\n4. after restart: deliver, and `process(job_id, True)` for every delivered job\n\nThe function returns `{'a': core.status(a), 'b': core.status(b), 'metrics': core.metrics}` where both jobs end `'succeeded'`, and metrics show `submitted == 2`, `succeeded == 2`, `failed == 0` (the crash requeued; it did not fail anything).\n\nAdd `shutdown()` and `restart()` to TaskFlowCore: `shutdown()` moves all in-flight jobs back to pending (running = False); `restart()` clears drained state and sets metrics['restarted'] = True.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TaskFlowCore gains shutdown() and restart(); then:\n\ndef simulate_crash_restart(core):\n    ...",
+  "tests": [
+    {
+      "name": "the crash loses nothing and breaks nothing",
+      "code": "core = TaskFlowCore()\nr = simulate_crash_restart(core)\nassert r['a']['status'] == 'succeeded' and r['b']['status'] == 'succeeded'\nassert r['metrics']['submitted'] == 2 and r['metrics']['succeeded'] == 2\nassert r['metrics']['failed'] == 0 and r['metrics'].get('restarted') is True\nprint('ok')",
+      "hint": "In-flight work was requeued, redelivered once, effected once."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m8-weak-callbacks",
+  "title": "weak_ptr observer pattern",
+  "prompt": "Complete `Event`: `void subscribe(std::weak_ptr<void> w)` stores the watcher, and `int fire()` counts watchers whose object is still alive, pruning expired ones from the list. This is the classic observer pattern that does NOT keep observers alive.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <memory>\n#include <vector>\n#include <iostream>\n\n// Implement class Event { subscribe(std::weak_ptr<void>), fire() -> int }\n",
+  "tests": [
+    {
+      "name": "live-watcher",
+      "code": "Event e;\nauto owner = std::make_shared<int>(42);\ne.subscribe(owner);\nCHECK_EQ(e.fire(), 1);",
+      "hint": "A live owner means one surviving watcher."
+    },
+    {
+      "name": "expired-watcher",
+      "code": "Event e;\n{\n    auto owner = std::make_shared<int>(42);\n    e.subscribe(owner);\n}\nCHECK_EQ(e.fire(), 0);",
+      "hint": "When the owner dies inside the scope, fire() must not count it."
+    },
+    {
+      "name": "mixed-and-prune",
+      "code": "Event e;\nauto keep = std::make_shared<int>(1);\ne.subscribe(keep);\n{\n    auto dying = std::make_shared<int>(2);\n    e.subscribe(dying);\n}\nCHECK_EQ(e.fire(), 1);\nCHECK_EQ(e.fire(), 1);",
+      "hint": "fire() twice: pruning happens on the first pass, the second stays correct."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "csb-p21-categories",
+  "title": "Category report",
+  "prompt": "Implement `static List<string> TopCategories(List<Transaction> ledger, int n)` — the category names by total (expenses and incomes alike), descending; ties alphabetical; return at most n names.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\npublic enum Direction { Income, Expense }\n\npublic record Transaction(int Id, Direction Dir, decimal Amount, string Category, string Description, DateTime Date);\n\npublic record AddResult(bool Ok, string Error);\n\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "var ledger = new List<Transaction>\n{\n    new(1, Direction.Expense, 50m, \"food\", \"a\", new DateTime(2026, 5, 1)),\n    new(2, Direction.Expense, 80m, \"rent\", \"b\", new DateTime(2026, 5, 2)),\n    new(3, Direction.Expense, 20m, \"food\", \"c\", new DateTime(2026, 5, 3)),\n};\nCj.Eq(string.Join(\",\", Solution.TopCategories(ledger, 2)), \"rent,food\", \"rent 80 > food 70\");",
+      "hint": "Totals must accumulate before ranking."
+    },
+    {
+      "name": "ties",
+      "code": "var ledger = new List<Transaction>\n{\n    new(1, Direction.Expense, 60m, \"zoo\", \"a\", new DateTime(2026, 5, 1)),\n    new(2, Direction.Expense, 60m, \"art\", \"b\", new DateTime(2026, 5, 2)),\n};\nCj.Eq(string.Join(\",\", Solution.TopCategories(ledger, 5)), \"art,zoo\", \"tie alphabetical\");\nCj.Eq(Solution.TopCategories(ledger, 1).Count, 1, \"capped at n\");",
+      "hint": "The tie rule and the cap — both part of the contract."
+    }
+  ],
+  "level": "independent"
+}

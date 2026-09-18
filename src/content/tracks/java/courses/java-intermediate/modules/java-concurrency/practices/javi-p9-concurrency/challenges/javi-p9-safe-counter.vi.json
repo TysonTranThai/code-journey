@@ -1,0 +1,14 @@
+{
+  "title": "Bộ đếm an toàn luồng",
+  "prompt": "Cài bên trong `Solution`:\n- `static class RacyCounter` với `void inc()` (`count++` trên field\n  thường) và `long value()`.\n- `static class SafeCounter` cùng API nhưng dùng `AtomicLong` làm điểm\n  tựa.\n- `static long hammer(Object counter, int threads, int perThread)`:\n  khởi động `threads` thread, mỗi thread gọi `inc()` perThread lần qua\n  reflection (RacyCounter hoặc SafeCounter), join chúng, rồi trả\n  `value()` qua reflection.\n\nVới hammer(c, 4, 1000): RacyCounter thường mất cập nhật (< 4000);\nSafeCounter phải LUÔN trả đúng 4000. Test an toàn chạy hammer năm lần\nđể làm lộ tính chập chờn.",
+  "tests": [
+    {
+      "name": "Bộ đếm an toàn chính xác dưới contention",
+      "hint": "Đọc-sửa-ghi của AtomicLong không bao giờ mất cập nhật."
+    },
+    {
+      "name": "Bộ đếm racy tồn tại (đối chứng)",
+      "hint": "Bản racy vẫn chạy nhưng không được bảo đảm chính xác — đó chính là bài học."
+    }
+  ]
+}

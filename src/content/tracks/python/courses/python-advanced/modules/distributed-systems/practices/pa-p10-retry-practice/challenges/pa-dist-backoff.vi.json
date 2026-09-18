@@ -1,0 +1,14 @@
+{
+  "title": "Lịch backoff được tính chứ không sleep",
+  "prompt": "Cài `RetryPolicy(max_attempts=5, base=0.5, cap=8.0)` với hai method:\n\n- `schedule(attempt, rnd=None)` — độ trễ trước lần retry thứ `attempt` (tính từ 0): trần theo hàm mũ `min(cap, base * 2**attempt)` nhân với hệ số jitter từ `rnd` (callable không tham số trả float trong [0, 1); mặc định `random.random`) — tức full jitter: `rnd() * ceiling`\n- `run(fn, rnd=None, clock=None)` — gọi `fn(attempt)` tối đa `max_attempts` lần; dừng ở kết quả truthy đầu tiên và trả `(result, attempts_used)`; nếu mọi lần thử đều fail trả `(None, max_attempts)`\n\nYêu cầu xác định: `run` tính lịch nhưng không được sleep thật — test tự truyền `rnd` của họ.",
+  "tests": [
+    {
+      "name": "Trần mũ với full jitter",
+      "hint": "Trần nhân đôi rồi chặn; jitter nhân nó với rnd() trong [0, 1)."
+    },
+    {
+      "name": "Vòng retry tôn trọng số lần thử",
+      "hint": "Dừng ở truthy đầu tiên; dùng hết nếu không bao giờ thành công."
+    }
+  ]
+}

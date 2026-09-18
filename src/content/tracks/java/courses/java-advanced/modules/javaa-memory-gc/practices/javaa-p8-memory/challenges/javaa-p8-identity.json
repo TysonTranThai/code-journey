@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p8-identity",
+  "title": "Identity vs state, live",
+  "prompt": "1. `static boolean smallBoxedIdentity()` — `Integer a = 100, b = 100; return a == b;`\n2. `static boolean largeBoxedIdentity()` — `Integer a = 500, b = 500; return a == b;`\n3. `static boolean largeBoxedEquals()` — same values, `a.equals(b)`.\n4. `static int sameIdentityTwice()` — build one `List<String>`, call\n`System.identityHashCode` on it twice, return how many DISTINCT hash values you saw\n(one — identity is stable).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "the boxed cache boundary",
+      "code": "\ncheckTrue(Solution.smallBoxedIdentity(), \"100 == 100 shares the cached object\");\ncheckTrue(!Solution.largeBoxedIdentity(), \"500 == 500 are two allocations\");\ncheckTrue(Solution.largeBoxedEquals(), \"equals compares state\");\n",
+      "hint": "== on boxed numerics is a latent bug."
+    },
+    {
+      "name": "identity is stable",
+      "code": "\ncheckEq(Solution.sameIdentityTwice(), 1, \"identityHashCode stable per object\");\n",
+      "hint": "Same object, same identity hash."
+    }
+  ],
+  "level": "independent"
+}

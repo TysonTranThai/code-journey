@@ -1,0 +1,26 @@
+{
+  "id": "csi-p1-deconstruct-report",
+  "title": "Deconstruct the Ledger",
+  "prompt": "Work with tuples and deconstruction:\n\n```csharp\n/* Splits entries into (income, expense) where expense is stored as\n   positive numbers to subtract. Returns the pair. */\nstatic (int Income, int Expense) Split(int[] signedEntries);\n/* Finds the earliest first-max: value of the first element that equals\n   the max, and its zero-based index. Empty -> (0, -1). */\nstatic (int Value, int Index) FirstMax(int[] values);\n/* A record with a Deconstruct(int Whole, int Remainder) — division by a\n   fixed divisor 10: Whole = n / 10, Remainder = n % 10. */\nsealed record Split10(int N)\n{\n    public void Deconstruct(out int whole, out int remainder);\n}\n/* The test deconstructs: var (w, r) = new Split10(47); */\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "signed split",
+      "code": "\nvar (inc, exp) = Solution.Split(new[] { 100, -30, 50, -20 });\nCj.Eq(inc, 150, \"positives sum\");\nCj.Eq(exp, 50, \"negatives subtracted from zero\");\nvar (i0, e0) = Solution.Split(Array.Empty<int>());\nCj.Eq(i0, 0, \"empty income\"); Cj.Eq(e0, 0, \"empty expense\");\n",
+      "hint": "Two accumulators: positive adds to income, negative adds its absolute value to expense."
+    },
+    {
+      "name": "first max",
+      "code": "\nvar (v, i) = Solution.FirstMax(new[] { 1, 9, 9, 3 });\nCj.Eq(v, 9, \"max value\"); Cj.Eq(i, 1, \"FIRST index of the max\");\nvar (v2, i2) = Solution.FirstMax(new[] { 5 });\nCj.Eq(v2, 5, \"single\"); Cj.Eq(i2, 0, \"index 0\");\nvar (v3, i3) = Solution.FirstMax(Array.Empty<int>());\nCj.Eq(v3, 0, \"empty value\"); Cj.Eq(i3, -1, \"empty index\");\n",
+      "hint": "Strictly-greater comparison keeps the FIRST max — >= would drift to the last."
+    },
+    {
+      "name": "deconstruct record",
+      "code": "\nvar (w, r) = new Solution.Split10(47);\nCj.Eq(w, 4, \"whole\"); Cj.Eq(r, 7, \"remainder\");\nvar (w2, r2) = new Solution.Split10(100);\nCj.Eq(w2, 10, \"exact tens\"); Cj.Eq(r2, 0, \"no remainder\");\nvar (w3, r3) = new Solution.Split10(5);\nCj.Eq(w3, 0, \"less than divisor\"); Cj.Eq(r3, 5, \"all remainder\");\n",
+      "hint": "out parameters in Deconstruct — the record body computes n/10 and n%10."
+    }
+  ],
+  "level": "guided"
+}

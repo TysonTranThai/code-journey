@@ -1,0 +1,21 @@
+{
+  "id": "pa-async-bounded-pipeline",
+  "title": "Bounded async pipeline",
+  "prompt": "Implement `async def pipeline(items, transform, workers=2, maxsize=3)`:\n\n- put all `items` through an `asyncio.Queue(maxsize=maxsize)`\n- `workers` async tasks consume and append `await transform(item)` results\n- the producer must NOT dump everything into the queue at once — with maxsize honored, queue backpressure applies (`await q.put` suspends when full)\n- return `sorted(results)` after `await q.join()`; cancel the workers afterwards",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import asyncio\n\n# TODO: pipeline(items, transform, workers=2, maxsize=3)",
+  "tests": [
+    {
+      "name": "processes all items with backpressure safe",
+      "code": "async def dbl(x):\n    await asyncio.sleep(0.005)\n    return x * 2\n\nloop = asyncio.new_event_loop()\nout = loop.run_until_complete(pipeline([3, 1, 2, 5, 4], dbl, workers=2, maxsize=2))\nloop.close()\nassert out == [2, 4, 6, 8, 10], f'out: {out}'\nprint('ok')",
+      "hint": "q.join() releases only when every queued item has task_done() called; put() suspends when the bounded queue is full."
+    },
+    {
+      "name": "many items through a tiny queue",
+      "code": "async def ident(x):\n    await asyncio.sleep(0.001)\n    return x\n\nloop = asyncio.new_event_loop()\nout = loop.run_until_complete(pipeline(list(range(60)), ident, workers=3, maxsize=2))\nloop.close()\nassert out == list(range(60))\nprint('ok')",
+      "hint": "60 items must flow through a maxsize-2 queue without deadlock."
+    }
+  ],
+  "level": "combination"
+}

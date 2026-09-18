@@ -1,0 +1,54 @@
+Chương trình ra quyết định bằng `if`, `else if`, và `else`:
+
+```java
+int temperature = 31;
+
+if (temperature > 30) {
+    System.out.println("Stay hydrated");
+} else if (temperature > 20) {
+    System.out.println("Perfect weather");
+} else {
+    System.out.println("Bring a jacket");
+}
+```
+
+Các điều kiện được kiểm tra **từ trên xuống**, và CHỈ nhánh đúng ĐẦU TIÊN
+chạy — khi một nhánh khớp, phần còn lại bị bỏ qua hoàn toàn. Thứ tự đó là
+một phần logic chương trình: kiểm tra `temperature > 20` trước sẽ khiến
+nhánh `> 30` không bao giờ với tới.
+
+Dấu ngoặc chứa biểu thức boolean; dấu ngoặc nhọn chứa code sẽ chạy. Trong
+khóa học này ngoặc nhọn **không bao giờ tùy chọn**, kể cả cho một câu lệnh:
+
+```java
+if (active) System.out.println("on");   // hợp lệ, nhưng là bẫy bảo trì
+```
+
+Không có ngoặc nhọn, chỉ câu lệnh tiếp theo thuộc về `if` — dòng lỗi "Apple
+goto fail" nổi tiếng. Luôn viết ngoặc nhọn.
+
+Điều kiện có thể **lồng nhau**, nhưng lồng sâu là mùi code xấu:
+
+```java
+if (user != null) {
+    if (user.isActive()) {
+        if (user.hasPermission("write")) {
+            // ba tầng sâu — khó theo dõi
+        }
+    }
+}
+```
+
+Cùng logic đó, phẳng và dễ đọc, dùng `&&` từ Module 2:
+
+```java
+if (user != null && user.isActive() && user.hasPermission("write")) {
+    // một cổng kiểm tra rõ ràng
+}
+```
+
+**Ghi nhớ phạm vi:** biến khai báo trong một nhánh biến mất ở ngoặc nhọn
+đóng của nhánh đó. Khai báo biến kết quả *trước* các nhánh nếu mọi nhánh
+cùng góp giá trị cho nó.
+
+**Tiếp theo:** `switch` — quyết định theo giá trị.

@@ -1,0 +1,24 @@
+## Toàn bộ mô hình trong ba câu
+
+Makefile tuyên bố: một **target** phụ thuộc các **prerequisite**, và **recipe** dựng lại nó khi bất kỳ prerequisite nào mới hơn. Make đi đồ thị này từ dưới lên, bỏ qua mọi thứ đã cập nhật. Đó là toàn bộ lý thuyết.
+
+```make
+CC = gcc
+CFLAGS = -std=c23 -Wall -Wextra -O2
+
+app: main.o util.o
+	$(CC) main.o util.o -o app
+
+%.o: %.c util.h
+	$(CC) $(CFLAGS) -c $< -o $@
+```
+
+`$<` là prerequisite đầu, `$@` là target, `%.o: %.c` là pattern rule — ba mảnh cú pháp phủ phần lớn build thật.
+
+## Thiếu sót là lỗi kinh điển
+
+Nếu rule của util.o quên phụ thuộc util.h, sửa util.h không dựng lại gì — build *thành công* trong khi vẫn vận hành object cũ. Phụ thuộc thiếu không hụt ầm ầm; chúng nói dối một cách lặng lẽ. Bộ sinh phụ thuộc header (`-MMD -MP`) tồn tại chính vì con người quên.
+
+## Order-only và phony target
+
+Thư mục làm prerequisite nên là order-only (`| bin`), và target phi-file như `clean` phải khai báo `.PHONY` — hoặc một file tên `clean` sẽ lặng lẽ vô hiệu hóa nó.

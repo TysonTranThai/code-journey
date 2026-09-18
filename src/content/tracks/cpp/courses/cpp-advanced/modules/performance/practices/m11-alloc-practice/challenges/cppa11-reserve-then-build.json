@@ -1,0 +1,21 @@
+{
+  "id": "cppa11-reserve-then-build",
+  "title": "Reserve Then Build",
+  "prompt": "Implement `squares` so it produces n values 1..n into the output vector using **at most one allocation**: reserve the exact capacity before writing. `push_back` in a loop after reserving is fine.",
+  "difficulty": "advanced",
+  "level": "real-world",
+  "language": "cpp",
+  "boilerplate": "#include <cstdlib>\n#include <vector>\n\n// Global allocation counter (each graded test is its own program).\ninline int& gAllocs() { static int n = 0; return n; }\nvoid* operator new(std::size_t sz) { ++gAllocs(); return std::malloc(sz); }\nvoid* operator new[](std::size_t sz) { ++gAllocs(); return std::malloc(sz); }\nvoid operator delete(void* p) noexcept { std::free(p); }\nvoid operator delete[](void* p) noexcept { std::free(p); }\nvoid operator delete(void* p, std::size_t) noexcept { std::free(p); }\nvoid operator delete[](void* p, std::size_t) noexcept { std::free(p); }\ninline int allocCount() { return gAllocs(); }\n\n// Fill out with 1², 2², …, n² using at most ONE allocation.\nvoid squares(std::vector<long long>& out, int n);\n",
+  "tests": [
+    {
+      "name": "values and single allocation",
+      "code": "std::vector<long long> v;\nint before = allocCount();\nsquares(v, 5);\nCHECK_EQ(allocCount() - before <= 1, true);\nCHECK_EQ(v.size(), 5u);\nCHECK_EQ(v[0], 1LL);\nCHECK_EQ(v[4], 25LL);",
+      "hint": "out.reserve(n) before the loop — a growing vector reallocates O(log n) times."
+    },
+    {
+      "name": "large n stays at one allocation",
+      "code": "std::vector<long long> v;\nint before = allocCount();\nsquares(v, 10000);\nCHECK_EQ(allocCount() - before <= 1, true);\nCHECK_EQ(v.back(), 100000000LL);",
+      "hint": "reserve(10000) then push_back n times — no reallocation path is ever taken."
+    }
+  ]
+}

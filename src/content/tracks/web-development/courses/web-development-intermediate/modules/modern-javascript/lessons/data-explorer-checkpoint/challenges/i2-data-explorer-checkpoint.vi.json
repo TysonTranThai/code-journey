@@ -1,0 +1,22 @@
+{
+  "title": "Kiểm tra kiến thức: Lõi Trình khám phá dữ liệu",
+  "prompt": "Xây phần lõi của một trình khám phá dữ liệu:\n\n1. `groupBy(records, keyFn)` RETURN một object thường, ánh xạ mỗi key (từ `keyFn(record)`) sang mảng các bản ghi khớp với key đó.\n2. `uniqueBy(records, keyFn)` RETURN các bản ghi đã khử trùng lặp theo key, giữ lại lần xuất hiện đầu tiên của mỗi key.\n3. `summarize(records)` RETURN `{ count, avgScore, top }` — số bản ghi, trung bình cộng của các trường `score`, và toàn bộ bản ghi có điểm cao nhất. Input rỗng trả về `{ count: 0, avgScore: 0, top: null }`.\n4. `safeGet(records, index)` RETURN bản ghi tại vị trí `index`, hoặc `null` khi index vượt phạm vi hoặc không phải số nguyên. Hàm không được phép throw.",
+  "tests": [
+    {
+      "name": "groupBy gom nhóm bản ghi theo keyFn",
+      "hint": "Duyệt mảng một lần; với mỗi key, push vào (out[key] ??= [])."
+    },
+    {
+      "name": "uniqueBy giữ lần xuất hiện đầu tiên theo key",
+      "hint": "Dùng Set theo dõi các key đã gặp; chỉ push bản ghi khi key là mới."
+    },
+    {
+      "name": "summarize tính count, trung bình và top",
+      "hint": "Xử lý trường hợp rỗng trước; sau đó duyệt một vòng, cùng lúc cộng dồn tổng và ghi nhớ bản ghi tốt nhất."
+    },
+    {
+      "name": "safeGet không bao giờ throw, trả null cho index xấu",
+      "hint": "Kiểm tra Number.isInteger(index) và 0 <= index < records.length trước khi đụng vào mảng."
+    }
+  ]
+}

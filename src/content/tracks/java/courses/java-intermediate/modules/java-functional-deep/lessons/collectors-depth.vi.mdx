@@ -1,0 +1,26 @@
+## Collectors: biến đổi dữ liệu trong một lượt
+
+Stream trình độ mới kết thúc ở `collect(toList())`. Sức mạnh thật nằm ở
+việc biến đổi hình dạng dữ liệu:
+
+```java
+// nhóm đơn theo khách
+Map<String, List<Order>> byCustomer =
+    orders.stream().collect(Collectors.groupingBy(Order::customer));
+
+// đếm theo nhóm — groupingBy + counting downstream
+Map<String, Long> counts =
+    words.stream().collect(Collectors.groupingBy(w -> w, Collectors.counting()));
+
+// chia làm hai nhóm theo predicate
+Map<Boolean, List<Integer>> parts =
+    nums.stream().collect(Collectors.partitioningBy(n -> n % 2 == 0));
+
+// toMap với merge function (không có thì key trùng sẽ nổ)
+Map<String, Integer> merged =
+    sales.stream().collect(Collectors.toMap(
+        Sale::region, Sale::amount, Integer::sum));
+```
+
+`teeing` chạy hai collector cùng lúc rồi trộn kết quả — hoàn hảo cho kiểu
+"vừa trung bình vừa lớn nhất" trên một stream.

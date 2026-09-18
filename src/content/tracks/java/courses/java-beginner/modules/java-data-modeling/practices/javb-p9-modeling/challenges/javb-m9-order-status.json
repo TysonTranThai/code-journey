@@ -1,0 +1,21 @@
+{
+  "id": "javb-m9-order-status",
+  "title": "Order status state machine",
+  "prompt": "Inside `Solution`, write `enum OrderStatus { PENDING, PAID, SHIPPED, CANCELLED }` and `static boolean canCancel(OrderStatus s)` returning true only for PENDING and PAID. Also `static OrderStatus next(OrderStatus s)`: PENDING→PAID, PAID→SHIPPED, and for SHIPPED/CANCELLED the state stays itself (terminal).",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public enum OrderStatus { PENDING, PAID, SHIPPED, CANCELLED }\n\n    public static boolean canCancel(OrderStatus s) {\n        return false;\n    }\n\n    public static OrderStatus next(OrderStatus s) {\n        return s;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "cancellation rules",
+      "code": "\nCjTestBase.checkTrue(Solution.canCancel(Solution.OrderStatus.PENDING), \"pending can cancel\");\nCjTestBase.checkTrue(Solution.canCancel(Solution.OrderStatus.PAID), \"paid can cancel\");\nCjTestBase.checkTrue(!Solution.canCancel(Solution.OrderStatus.SHIPPED), \"shipped cannot\");\n",
+      "hint": "Only the two early stages allow cancellation."
+    },
+    {
+      "name": "state transitions",
+      "code": "\nCjTestBase.checkEq(Solution.next(Solution.OrderStatus.PENDING), Solution.OrderStatus.PAID, \"pending -> paid\");\nCjTestBase.checkEq(Solution.next(Solution.OrderStatus.SHIPPED), Solution.OrderStatus.SHIPPED, \"shipped is terminal\");\n",
+      "hint": "Terminal states map to themselves."
+    }
+  ],
+  "level": "guided"
+}

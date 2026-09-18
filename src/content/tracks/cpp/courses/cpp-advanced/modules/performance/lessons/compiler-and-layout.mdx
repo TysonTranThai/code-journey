@@ -1,0 +1,16 @@
+## What the optimizer may and may not do
+
+At `-O2` the compiler assumes no undefined behavior: signed overflow won't happen, pointers won't alias `char` buffers illegally, in-bounds access is guaranteed. UB lets it delete your "safety" checks — which is why UB hunting (module 12) is a performance topic too. It may reorder, vectorize, and inline — but it cannot fix O(n²).
+
+## Flags that matter, briefly
+
+`-O2` default shipping; `-O3` marginal, sometimes worse; `-march=native` for your machine only; `-fsanitize=…` never in production; LTO links the optimizer across translation units (module 15 territory).
+
+## Layout micro-wins that are actually macro
+
+- SoA over AoS when loops touch field subsets (module 10).
+- `std::vector` over `std::list` almost always — contiguous beats node-based even with extra copying.
+- Smaller structs → more records per cache line → fewer misses.
+- Sorting before scanning improves branch prediction *and* lets early-exit algorithms fire.
+
+None of these require cleverness — only measuring and choosing.

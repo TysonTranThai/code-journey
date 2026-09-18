@@ -1,0 +1,21 @@
+{
+  "id": "javb-m2-safe-sum",
+  "title": "Sum that refuses to overflow",
+  "prompt": "Implement `long sumTo(int n)` returning `1 + 2 + ... + n`. Then implement `boolean fitsInInt(long total)` returning whether the total can be stored in an `int` safely (compare against `Integer.MAX_VALUE`). `sumTo(65_536)` must NOT silently wrap (its true value exceeds `Integer.MAX_VALUE`).",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static long sumTo(int n) {\n        return 0;\n    }\n\n    public static boolean fitsInInt(long total) {\n        return false;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "small sums",
+      "code": "\nCjTestBase.checkEq(Solution.sumTo(10), 55L, \"sumTo(10)\");\nCjTestBase.checkEq(Solution.sumTo(100), 5050L, \"sumTo(100)\");\n",
+      "hint": "Gauss: n*(n+1)/2 as a long, or a simple accumulation loop."
+    },
+    {
+      "name": "big sums stay correct",
+      "code": "\nCjTestBase.checkEq(Solution.sumTo(65_536), 2_147_516_416L, \"sumTo(65536)\");\nCjTestBase.checkTrue(!Solution.fitsInInt(Solution.sumTo(65_536)), \"does not fit int\");\nCjTestBase.checkTrue(Solution.fitsInInt(Solution.sumTo(100)), \"5050 fits int\");\n",
+      "hint": "Accumulate into a `long` (or compute n*(n+1)/2L). 2_147_516_416 > Integer.MAX_VALUE (2_147_483_647)."
+    }
+  ],
+  "level": "real-world"
+}

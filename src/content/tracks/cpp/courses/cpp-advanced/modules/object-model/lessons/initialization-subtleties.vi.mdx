@@ -1,0 +1,39 @@
+C++ có khoảng 17 dạng khởi tạo gom vào vài nhóm. Bốn nhóm dùng hằng ngày:
+
+## Trực tiếp vs sao chép vs ngoặc nhọn
+
+```cpp
+std::string a("x");     // direct-initialization
+std::string b = "x";    // copy-initialization: không được dùng constructor explicit
+std::string c{"x"};     // direct-list-initialization
+std::string d = {"x"};  // copy-list-initialization
+```
+
+Copy-initialization không thể gọi constructor `explicit` — chính từ khóa `explicit` giúp kiểu từ chối các chuyển đổi ngầm gây bất ngờ. Mặt còn lại quan trọng cho thiết kế overload: một constructor forwarding tham lam chỉ cướp **direct** initialization (`Tracked c{b};`), không bao giờ cướp copy initialization (`Tracked c = b;`).
+
+## Most vexing parse
+
+`Timer t(Log());` khai báo một **hàm** `t` trả về `Timer`, nhận một hàm trả về `Log`. Ngoặc nhọn gỡ nhầm lẫn: `Timer t(Log{});` mới là tạo đối tượng.
+
+## Narrowing với ngoặc nhọn
+
+Ngoặc nhọn **cấm** thu hẹp kiểu — mặc định an toàn:
+
+```cpp
+int x{3.9};     // lỗi: narrowing
+int y = 3.9;    // biên dịch được: y == 3, lặng lẽ
+```
+
+## Default member initializer và thứ tự khởi tạo
+
+Thành viên được khởi tạo theo **thứ tự khai báo**, không phải thứ tự trong initializer list — `-Wreorder` bắt lỗi lệch pha. Default member initializer tập trung giá trị mặc định trong khi constructor vẫn ghi đè được:
+
+```cpp
+struct Session {
+    std::chrono::steady_clock::time_point start{std::chrono::steady_clock::now()};
+    int retries{0};
+    explicit Session(int r) : retries{r} {}   // theo thứ tự khai báo: start trước
+};
+```
+
+**Ghi chú chấm điểm:** các bài kiểm tra dùng bẫy ngoặc nhọn và `static_assert` trên kiểu được tạo. Hãy dự đoán trước, rồi để compiler chấm.

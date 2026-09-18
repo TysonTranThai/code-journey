@@ -1,0 +1,86 @@
+Menu, tooltip, picker, toast — cả gia đình "UI tạm thời" này từng là đặc sản của các
+framework. Kể từ khi Popover API có mặt trên mọi trình duyệt hiện đại (tháng 1/2025),
+nó là HTML. Và trong năm 2026, Invoker Commands API (Baseline tháng 1/2026) chuẩn hóa
+mảnh ghép cuối cùng: những nút bấm điều khiển dialog, popover và hơn thế — hoàn toàn
+khai báo.
+
+## Thuộc tính popover
+
+```html
+<button popovertarget="menu">Actions</button>
+
+<div id="menu" popover>
+  <button>Rename</button>
+  <button>Duplicate</button>
+  <button popovertarget="menu" popovertargetaction="hide">Close</button>
+</div>
+```
+
+Một thuộc tính trao cho phần tử cả chồng hành vi popover: ẩn cho tới khi được gọi, hiển
+thị trong **top layer** (không cần chiến tranh `z-index`), **light dismiss** (Escape
+hoặc bấm ra ngoài là đóng), và trình đọc màn hình hiểu được việc gọi này. Đáng chú ý:
+popover *không* giữ focus — người dùng vẫn tab ra trang được. Đó là hành vi đúng cho
+menu và panel; những modal bắt buộc giữ focus là địa phận của `<dialog>`.
+
+Hai kiểu popover: `popover="auto"` (mặc định — light dismiss, mỗi lần một popover auto)
+và `popover="manual"` (giữ mở, không light dismiss — dành cho toast và công cụ xếp
+lớp).
+
+## Hành động với popovertarget
+
+Nút gọi điều khiển popover của mình bằng `popovertarget` cộng
+`popovertargetaction="show" | "hide" | "toggle"` — mặc định là `toggle`. Bên trong
+popover, một nút có `popovertarget` trỏ vào *chính nó* với `action="hide"` chính là nút
+đóng chuẩn mực. Tất cả chạy không cần một dòng JavaScript.
+
+## Invoker commands: command và commandfor
+
+Bước chuẩn hóa của 2026: cặp thuộc tính `command`/`commandfor` khái quát việc gọi khai
+báo cho mọi mục tiêu hỗ trợ lệnh, thống nhất điều khiển dialog và popover trong một mô
+hình:
+
+```html
+<button commandfor="settings" command="show-modal">Settings</button>
+
+<dialog id="settings">
+  <button commandfor="settings" command="close">Done</button>
+  …
+</dialog>
+```
+
+`command="show-modal"` trên nút thay cho lời gọi `showModal()` bằng JS; `command="close"`
+thay cho `close()`. Cặp tương ứng cho popover là `command="show"` / `command="hide"` /
+`command="toggle"`. Cũ hơn một chút, `popovertarget`/`popovertargetaction` vẫn hoạt động
+— mô hình invoker là người kế thừa hợp nhất. Khi cần vượt qua các lệnh có sẵn, sự kiện
+`command` sẽ phát trên mục tiêu kèm `event.command`: móc tùy biến duy nhất của bạn cho
+việc nâng cấp tăng tiến.
+
+## Cái gì thuộc về tầng nào
+
+- **HTML thuần** — các trạng thái mở/đóng: `popovertarget`, `command`/`commandfor`.
+  Ship tầng này trước; nó chạy khi không có script nào.
+- **CSS** — diện mạo, chuyển động (`@starting-style`, `::backdrop`), định vị.
+- **JavaScript** — *hành vi bên trên*: `oncommand` cho hành động tùy biến, tải dữ liệu,
+  đồng bộ trạng thái. Là lớp nâng cấp, không phải điều kiện bắt buộc.
+
+Cách xếp lớp này *chính là* nâng cấp tăng tiến áp dụng cho UI tương tác: menu mở được
+cho tất cả mọi người; phần lấp lánh nằm bên trên ở những nơi được hỗ trợ.
+
+## Điều gì hay sai
+
+- **Ám ảnh modal**: `popover` không phải modal. Nếu nhiệm vụ phải chặn trang, hãy dùng
+  `<dialog>` + `showModal()`.
+- **`popover="manual"` do sơ suất**: không light dismiss — "cái tooltip không chịu
+  biến mất".
+- **Quên nút đóng bên trong popover** trên màn hình cảm ứng, nơi việc bấm ra ngoài ít
+  rõ ràng hơn.
+- **Lại gọi JS `showModal()`** trong khi `command="show-modal"` làm được bằng khai báo.
+- **Giả định về vị trí**: popover rơi vào top layer ở vị trí mặc định; định vị theo
+  phần tử neo cần CSS anchor positioning — một chủ đề riêng.
+
+## Thực hành và điểm nối tiếp
+
+Bạn sẽ dựng một menu thanh công cụ (toggle + light dismiss), một toast với manual
+popover, rồi chuyển một dialog chạy bằng JS sang invoker commands, và sửa một popover
+có tác giả chọn sai kiểu. Gọi khai báo cũng là nếm thử đầu tiên của tư duy kiến trúc
+frontend mà khóa này hướng tới: nền tảng quản lý trạng thái; code của bạn chỉ đạo hành vi.

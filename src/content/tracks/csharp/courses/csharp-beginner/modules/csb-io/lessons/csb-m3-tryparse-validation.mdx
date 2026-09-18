@@ -1,0 +1,55 @@
+## The pattern
+
+```csharp
+bool ok = int.TryParse("42", out int value);   // ok = true,  value = 42
+bool bad = int.TryParse("abc", out int other); // bad = false, other = 0
+```
+
+`TryParse` attempts the conversion and reports success as a `bool`. The parsed value arrives through an **`out` parameter** — a second return channel. On failure the `out` value is `0` (a well-defined default), never garbage.
+
+The idiomatic shape combines declaration and use:
+
+```csharp
+if (int.TryParse(input, out int count))
+{
+    Console.WriteLine($"Got {count}");
+}
+else
+{
+    Console.WriteLine("Not a whole number.");
+}
+```
+
+## Validation: refuse politely, specifically
+
+A robust reader distinguishes *why* input is invalid:
+
+```csharp
+static string Classify(string input)
+{
+    if (input.Trim().Length == 0)
+        return "empty";
+    if (!int.TryParse(input, out int n))
+        return "not-a-number";
+    if (n < 0)
+        return "negative";
+    return $"ok:{n}";
+}
+```
+
+Empty first, then format, then range — each failure mode gets its own message. That specificity is what separates a program people can use from one that just says "error".
+
+## Looping until valid (console shape)
+
+```csharp
+int age;
+while (true)
+{
+    Console.Write("Age: ");
+    string line = Console.ReadLine() ?? "";
+    if (int.TryParse(line, out age) && age >= 0 && age <= 130) break;
+    Console.WriteLine("Please enter a whole number 0–130.");
+}
+```
+
+The loop *contains* the validation, so the rest of the program can trust `age`. That's the deeper principle: validate at the boundary, then write code that assumes validity.

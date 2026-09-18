@@ -1,0 +1,33 @@
+The STL hands you four containers that hold values in *your* order. Picking
+between them is a complexity decision, not a style preference.
+
+```cpp
+#include <vector>
+#include <array>
+#include <deque>
+#include <list>
+
+std::vector<int> v{1, 2, 3};   // contiguous; O(1) index; O(1) amortized push_back
+std::array<int, 3> a{1, 2, 3}; // fixed size; zero heap; O(1) index
+std::deque<int> d{1, 2, 3};    // chunked; O(1) push_front AND push_back
+std::list<int> l{1, 2, 3};     // doubly linked; O(1) splice/erase anywhere
+```
+
+## What each buys you
+
+| Container | Random access | Insert/erase ends | Insert/erase middle |
+|-----------|---------------|-------------------|---------------------|
+| `vector`  | O(1)          | back O(1) amortized | O(n) |
+| `array`   | O(1)          | — (fixed) | — (fixed) |
+| `deque`   | O(1)          | both ends O(1) | O(n) |
+| `list`    | — O(n)        | O(1) | O(1) at an iterator |
+
+## The rule that bites everyone: iterator invalidation
+
+- `vector`: **any** growth may reallocate — every iterator/pointer into it dies.
+  `push_back` after storing an iterator is a dangling-iterator bug.
+- `deque`: insertion at the ends invalidates iterators but **not** references.
+- `list`: nothing ever invalidates except erasing the node you hold.
+
+`vector` is the default. Reach for `deque` when you truly need both ends;
+`list` only when you splice or hold iterators across many mutations.

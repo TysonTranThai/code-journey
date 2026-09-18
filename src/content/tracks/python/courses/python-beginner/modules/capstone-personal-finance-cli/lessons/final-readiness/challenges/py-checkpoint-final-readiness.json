@@ -1,0 +1,15 @@
+{
+  "id": "py-checkpoint-final-readiness",
+  "title": "The Import Pipeline",
+  "prompt": "raw = \"coffee,3.5\\nBOOK,12\\ncoffee,1.5\\n,,skip-me\\npen,-2\" is a messy CSV of category,amount rows. Write ingest(raw) returning a NEW list of clean expenses: skip blank/missing-field lines, skip amounts that are not positive numbers, lowercase categories, round amounts to 2 decimals. Then print the total of the clean list, formatted :.2f (one line).",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "raw = \"coffee,3.5\\nBOOK,12\\ncoffee,1.5\\n,,skip-me\\npen,-2\"\n\ndef ingest(raw):\n    pass\n\nprint(f\"{sum(e[\\\"amount\\\"] for e in ingest(raw)):.2f}\")\n",
+  "tests": [
+    {
+      "name": "clean list is correct",
+      "code": "r = ingest(raw)\nassert r == [\n    {\"amount\": 3.5, \"category\": \"coffee\"},\n    {\"amount\": 12.0, \"category\": \"book\"},\n    {\"amount\": 1.5, \"category\": \"coffee\"},\n], f\"got {r}\"\nassert ingest(\"\") == [], \"empty input -> empty list\"\nassert ingest(\"x,abc\") == [], \"non-numeric amount skipped\"\nassert ingest(\"tea, 2.5 \") == [{\"amount\": 2.5, \"category\": \"tea\"}], \"whitespace tolerated\"",
+      "hint": "split lines then commas; strip everything; float(amount) in try/except; validate > 0."
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+Khi một đối tượng bị copy (truyền bằng giá trị, container tăng dung lượng...),
+C++ dùng **copy constructor**; khi gán thì dùng **copy assignment**. Compiler
+mặc định copy từng member — đúng với member kiểu giá trị, sai thảm khốc với
+raw pointer sở hữu tài nguyên.
+
+```cpp
+#include <cstring>
+#include <iostream>
+
+class Buffer {
+public:
+    explicit Buffer(std::size_t n) : size_{n}, data_{new char[n]{}} {}
+    ~Buffer() { delete[] data_; }
+
+    Buffer(const Buffer& other)                       // copy ctor: deep copy
+        : size_{other.size_}, data_{new char[other.size_]} {
+        std::memcpy(data_, other.data_, size_);
+    }
+
+    Buffer& operator=(const Buffer& other) {           // copy assign
+        if (this == &other) return *this;              // chặn tự-gán
+        char* fresh = new char[other.size_];           // cấp phát TRƯỚC
+        std::memcpy(fresh, other.data_, other.size_);
+        delete[] data_;                                // rồi mới giải phóng
+        data_ = fresh;
+        size_ = other.size_;
+        return *this;
+    }
+
+    std::size_t size() const { return size_; }
+    char& at(std::size_t i) { return data_[i]; }
+
+private:
+    std::size_t size_;
+    char* data_;
+};
+```
+
+## Rule of Three
+
+Nếu bạn viết một trong ba: destructor, copy constructor, copy assignment —
+gần như chắc chắn bạn cần cả ba. Destructor báo hiệu kiểu này *sở hữu* tài
+nguyên; copy mặc định từng member khi đó tạo hai chủ của một tài nguyên
+(double-free) — crash kinh điển.
+
+## Phương án copy-and-swap
+
+`Buffer& operator=(Buffer other) { swap(*this, other); return *this; }` tự
+xử lý tự-gán, đạt bảo đảm exception mạnh, và khó viết sai — đổi lại tốn một
+lần copy.

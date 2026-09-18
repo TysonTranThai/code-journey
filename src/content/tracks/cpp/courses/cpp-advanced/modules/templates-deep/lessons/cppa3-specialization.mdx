@@ -1,0 +1,38 @@
+A primary template states the general algorithm; a **specialization** replaces it for specific arguments. The library uses this everywhere: `std::hash<std::string>` is a specialization of `std::hash<T>`.
+
+## Full specialization
+
+One concrete argument list, `template <>`:
+
+```cpp
+template <class T> struct Serializer {
+    static std::string dump(const T&) { return "generic"; }
+};
+template <> struct Serializer<bool> {
+    static std::string dump(const bool& b) { return b ? "true" : "false"; }
+};
+```
+
+## Partial specialization
+
+Still templated, but constrained — a *pattern*, not a point:
+
+```cpp
+template <class T> struct Serializer<std::vector<T>> {
+    static std::string dump(const std::vector<T>& v);
+};
+```
+
+The compiler picks the **most specialized** match. This is how `Capacity<std::array<T, N>>` can read `N` out of the type.
+
+## Variable templates
+
+A compile-time value parameterized by type:
+
+```cpp
+template <class T> inline constexpr bool is_small_v = sizeof(T) <= 8;
+```
+
+Pairs naturally with specialization: give `Rank<T>` per-type values, expose `rank_v<T>`.
+
+**Design rule:** specialize for *behavior the type cannot express with its own members* (external traits). If the behavior belongs inside the type, write a member instead.

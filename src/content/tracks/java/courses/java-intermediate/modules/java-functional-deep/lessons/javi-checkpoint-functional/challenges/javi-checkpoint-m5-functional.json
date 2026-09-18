@@ -1,0 +1,26 @@
+{
+  "id": "javi-checkpoint-m5-functional",
+  "title": "Analytics Reducer",
+  "prompt": "Build `Solution` analytics over `record Event(String user, String type, int ms)`:\n- `static Map<String, Long> eventsByType(List<Event> events)` — counts\n  per type (Long values).\n- `static Map<String, Integer> msByUser(List<Event> events)` — total ms\n  per user (merge duplicates with sum).\n- `static Map<Boolean, List<String>> slowVsFast(List<Event> events,\n  int threshold)` — partition event *types* by whether their average ms\n  exceeds the threshold (true bucket = slower). Types in each bucket\n  sorted alphabetically.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\nimport java.util.stream.*;\n\npublic class Solution {\n    public record Event(String user, String type, int ms) {}\n    // Provide the three analytics methods here.\n}\n",
+  "tests": [
+    {
+      "name": "counts per type",
+      "code": "\nList<Object> evs = List.of(\n    new Solution.Event(\"u\", \"read\", 10), new Solution.Event(\"v\", \"read\", 20),\n    new Solution.Event(\"u\", \"write\", 50));\ncheckEq(Solution.eventsByType((List) evs), Map.of(\"read\", 2L, \"write\", 1L), \"type counts\");\n",
+      "hint": "groupingBy(Event::type, counting())."
+    },
+    {
+      "name": "ms totals merge per user",
+      "code": "\nList<Object> evs = List.of(\n    new Solution.Event(\"u\", \"read\", 10), new Solution.Event(\"u\", \"write\", 50));\ncheckEq(Solution.msByUser((List) evs), Map.of(\"u\", 60), \"user ms merged\");\n",
+      "hint": "toMap(Event::user, Event::ms, Integer::sum)."
+    },
+    {
+      "name": "slow vs fast by average",
+      "code": "\nList<Object> evs = List.of(\n    new Solution.Event(\"u\", \"quick\", 5), new Solution.Event(\"u\", \"slow\", 90),\n    new Solution.Event(\"v\", \"slow\", 30));\nMap<Boolean, List<String>> out = Solution.slowVsFast((List) evs, 40);\ncheckEq(out.get(true), List.of(\"slow\"), \"slow type\");\ncheckEq(out.get(false), List.of(\"quick\"), \"fast type\");\n",
+      "hint": "Average per type: quick=5 ≤ 40 (false), slow=60 > 40 (true)."
+    }
+  ],
+  "level": "real-world"
+}

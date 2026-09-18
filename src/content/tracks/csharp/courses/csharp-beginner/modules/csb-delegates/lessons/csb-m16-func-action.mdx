@@ -1,0 +1,18 @@
+## Methods as values
+
+A **delegate** is a type whose values are methods. You pass a method where data would go, and invoke it later:
+
+```csharp
+static int Apply(int x, Func<int, int> f) => f(x);
+
+Apply(5, n => n * 2);   // 10
+Apply(5, n => n + 1);   // 6
+```
+
+The BCL's three workhorses:
+
+- **`Action`** — takes 0–16 arguments, returns nothing: `Action<string> log = msg => Console.WriteLine(msg);`
+- **`Func<T, TResult>`** — takes up to 16 arguments, last type parameter is the **return**: `Func<string, int> len = s => s.Length;`
+- **`Predicate<T>`** — `Func<T, bool>` by another name: `Predicate<int> isEven = n => n % 2 == 0;`
+
+The one syntax rule people trip on: in `Func<A, B, C>`, `A` and `B` are parameters, `C` is the return type.

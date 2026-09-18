@@ -1,0 +1,21 @@
+{
+  "id": "csb-p8-inventory",
+  "title": "Stock adjustments",
+  "prompt": "Implement `static Dictionary<string, int> ApplySales(Dictionary<string, int> stock, IEnumerable<(string Sku, int Qty)> sales)` — subtract each sale's quantity from the matching SKU; a sale for an unknown SKU or one that would push stock negative must throw `InvalidOperationException`. Return the same dictionary instance, mutated.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "var stock = new Dictionary<string, int> { [\"pen\"] = 10, [\"ink\"] = 3 };\nvar out_ = Solution.ApplySales(stock, new[] { (\"pen\", 4), (\"ink\", 3) });\nCj.Eq(out_[\"pen\"], 6, \"pen sold\");\nCj.Eq(out_[\"ink\"], 0, \"ink to exactly zero is fine\");\nCj.True(ReferenceEquals(stock, out_), \"same instance mutated\");",
+      "hint": "Selling to exactly zero is legal; the contract is the same instance back."
+    },
+    {
+      "name": "failures",
+      "code": "var stock = new Dictionary<string, int> { [\"pen\"] = 2 };\nbool t1 = false, t2 = false;\ntry { Solution.ApplySales(stock, new[] { (\"pen\", 3) }); } catch (InvalidOperationException) { t1 = true; }\ntry { Solution.ApplySales(stock, new[] { (\"ghost\", 1) }); } catch (InvalidOperationException) { t2 = true; }\nCj.True(t1 && t2, \"negative and unknown both throw\");\nCj.Eq(stock[\"pen\"], 2, \"failed sale leaves stock untouched\");",
+      "hint": "A rejected sale must not have half-applied — the stock dict is unchanged after the throw."
+    }
+  ],
+  "level": "independent"
+}

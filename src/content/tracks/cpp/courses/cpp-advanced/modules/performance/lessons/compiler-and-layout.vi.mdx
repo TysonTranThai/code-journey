@@ -1,0 +1,16 @@
+## Optimizer được và không được làm gì
+
+Ở `-O2` trình biên dịch giả định không có UB: signed overflow sẽ không xảy ra, con trỏ không alias trái phép với buffer `char`, truy cập trong biên. UB cho phép nó xóa các "kiểm tra an toàn" của bạn — vì vậy săn UB (module 12) cũng là chủ đề hiệu năng. Nó có thể sắp xếp lại, vector hóa, inline — nhưng không thể chữa O(n²).
+
+## Các cờ quan trọng, ngắn gọn
+
+`-O2` mặc định khi xuất bản; `-O3` dư sức, đôi khi tệ hơn; `-march=native` chỉ cho máy bạn; `-fsanitize=…` không bao giờ dùng nơi sản xuất; LTO nối optimizer qua các translation unit (mảng module 15).
+
+## Các điểm cộng bố trí thực ra là vĩ mô
+
+- SoA hơn AoS khi vòng lặp chỉ đụng tập trường con (module 10).
+- `std::vector` gần như luôn hơn `std::list` — liền kề đánh bại node-based dù tốn thêm sao chép.
+- Struct nhỏ hơn → nhiều bản ghi mỗi cache line → ít miss hơn.
+- Sort trước khi quét giúp dự đoán nhánh *và* kích hoạt thuật toán thoát sớm.
+
+Không cái nào cần sự khéo léo — chỉ cần đo và chọn.

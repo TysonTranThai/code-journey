@@ -1,0 +1,21 @@
+{
+  "id": "cppa3-variadic-min",
+  "title": "minOf over a Pack",
+  "prompt": "Implement `minOf(first, rest...)` — at least one argument, returns the smallest. Uses pack expansion (a fold with std::min works), and must also handle the single-argument call.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "language": "cpp",
+  "boilerplate": "#include <algorithm>\n\ntemplate <class T, class... Rest>\nT minOf(T first, Rest... rest);   // min of all arguments\n",
+  "tests": [
+    {
+      "name": "multi-argument minimum",
+      "code": "CHECK_EQ(minOf(3, 1, 2), 1);\nCHECK_EQ(minOf(2.5, 1.5, 9.0), 1.5);",
+      "hint": "Assign as you fold: T m = first; ((m = std::min(m, rest)), ...); return m; — a bare (std::min(first, rest), ...) fold DISCARDS every comparison."
+    },
+    {
+      "name": "single argument",
+      "code": "CHECK_EQ(minOf(5), 5);\nCHECK_EQ(minOf(std::size_t{9}), std::size_t{9});",
+      "hint": "With an empty rest pack, the result is just `first` — the fold over zero elements must not run."
+    }
+  ]
+}

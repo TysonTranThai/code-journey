@@ -1,0 +1,32 @@
+## Two numbers, one pointer
+
+A C *string* is `char *` plus a convention: bytes until `'\0'`. Its length
+is *discovered* by walking (`strlen`). A C *buffer* is `char *` plus a
+*capacity* someone must track: how many bytes the allocation actually
+holds. The classic disasters come from conflating them:
+
+```c
+char buf[8];
+strcpy(buf, "0123456789");   /* writes 11 bytes into 8 — gone */
+```
+
+`strcpy` knows the source length but not the destination capacity — it
+*cannot* be safe. The functions that can be safe take both numbers:
+
+```c
+/* strncpy: copies at most n bytes; NO '\0' if source fills n! */
+strncpy(buf, src, sizeof buf);
+/* snprintf: always terminates, returns what it WOULD have written */
+int need = snprintf(buf, sizeof buf, "%s/%s", a, b);
+if (need < 0 || (size_t)need >= sizeof buf) /* truncated — handle it */;
+```
+
+`snprintf` is the workhorse: bounded, terminating, and it *tells you*
+when the output did not fit. That return value is the truncation
+detector most code forgets to check.
+
+## The boundary question, every time
+
+Before touching a buffer, answer three questions in a comment: capacity?
+current length? who terminates? Code that cannot answer those three
+questions in its own comments is code that overflows under maintenance.

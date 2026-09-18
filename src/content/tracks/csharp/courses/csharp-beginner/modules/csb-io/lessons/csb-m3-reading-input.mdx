@@ -1,0 +1,27 @@
+## ReadLine: text, always text
+
+```csharp
+Console.Write("Your name: ");
+string name = Console.ReadLine() ?? "";
+Console.WriteLine($"Hello, {name}!");
+```
+
+`Console.ReadLine()` reads one line and hands it to you as a `string` — **even if the user typed digits**. `"42"` (text) and `42` (number) are different universes: you cannot do arithmetic on text. The `?? ""` covers the edge case where input ends before a line arrives (ReadLine then returns `null`).
+
+Every interactive program you've used is this loop underneath: read text → interpret → respond.
+
+## The shape of input handling
+
+```csharp
+Console.Write("Radius: ");
+string input = Console.ReadLine() ?? "";
+double radius = double.Parse(input);       // crashes on "abc"!
+double area = Math.PI * radius * radius;
+Console.WriteLine($"Area: {area:F2}");
+```
+
+`double.Parse` converts text to a number — and **throws `FormatException`** if the text isn't a valid number. A user who types `ten` or `3,14` or just presses Enter crashes this program. That's the problem the next two lessons solve properly (TryParse + validation).
+
+## A note on this course's sandbox
+
+Challenges here grade the *logic* (parse, validate, respond) through a method that takes the raw input string — the same code shape ReadLine programs need, but deterministic and testable. When you take this code to a real console, the ReadLine wrapper around it is trivial.

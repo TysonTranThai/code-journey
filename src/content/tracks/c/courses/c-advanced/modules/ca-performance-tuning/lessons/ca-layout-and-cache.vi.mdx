@@ -1,0 +1,31 @@
+## Nóng và lạnh
+
+Mọi trường của struct đi cùng nhau trên mọi lần truy cập. Vòng lặp nóng chạm `id` và `score` không nên kéo mảng tên 60-byte qua cache:
+
+```c
+struct fat { int id; int score; char name[60]; };   /* 68 byte, đa số chết trong vòng lặp */
+struct hot { int id; int score; };                  /* 8 byte: 8 bản ghi mỗi line */
+struct cold { char name[60]; };                     /* để riêng, hiếm khi chạm */
+```
+
+Tách nóng khỏi lạnh (hai mảng riêng hoặc chỉ số nối chúng) nhân số bản ghi mỗi cache line lên gấp 8. Cùng độ phức tạp tiệm cận, khác nhau căn bản về hằng số — và hằng số là thứ bạn giao hàng.
+
+## Mảng struct vs struct mảng
+
+```c
+struct particle { double x, y, vx, vy, mass; };   /* AoS */
+struct particle p[N];
+
+struct soa { double *x, *y, *vx, *vy, *mass; };   /* SoA: năm mảng song song */
+```
+
+Vòng lặp chỉ cập nhật vận tốc chạm 40% byte của mỗi bản ghi AoS; với SoA nó chảy đúng ba mảng cần. SIMD và prefetcher yêu SoA. Truy cập ngẫu nhiên theo toàn bộ bản ghi yêu AoS. Chọn theo pattern truy cập, không theo mốt.
+
+## Lăng kính 64 byte
+
+Cache line (thường 64 byte — thực tế phần cứng, không phải ISO C) là đơn vị giao thông bộ nhớ. Mọi câu hỏi bố cục đều là cùng một câu hỏi: *trong mỗi line, bao nhiêu byte là thứ mình thực sự cần?* Padding chống false sharing (mô-đun 19) và tách nóng/lạnh là cùng một đòn bẩy ở các thang khác nhau.
+
+## Giới hạn trung thực
+
+- `sizeof`/`offsetof` là ISO C và tất định cho một target nhất định — khẳng định tự do trên chúng.
+- Truy cập nào nhanh là tùy target. Sandbox này là aarch64 với hình học cache riêng; máy x86 khác. *Phương pháp* chuyển giao được; con số thì không.

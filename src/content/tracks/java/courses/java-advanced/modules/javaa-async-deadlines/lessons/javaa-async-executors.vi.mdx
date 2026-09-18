@@ -1,0 +1,18 @@
+`CompletableFuture.supplyAsync(fn)` chạy trên **ForkJoinPool.commonPool** —
+một pool dùng chung, kích thước theo số nhân, mà bạn không cấu hình và không
+tune được từ bên trong tác vụ. Dưới tải, các tính năng không liên quan chia sẻ
+(và đói) lẫn nhau. Nước đi nâng cao: **tiêm executor**.
+
+```java
+CompletableFuture.supplyAsync(() -> fetch(id), executor);
+```
+
+Giờ mức đồng thời của pipeline là một *quyết định triển khai*, hiện rõ tại
+nơi dựng. Trong test, tiêm một executor bạn điều khiển (pool cố định 2 làm cho
+"hai cái này chạy đồng thời" quan sát được và tất định). Trong production,
+tiêm pool có kích thước theo workload. Anti-pattern là một thư viện gắn chặt
+commonPool sâu bên trong và không cho người gọi tiếng nói.
+
+Lựa chọn executor *cũng* là nơi virtual thread trở lại: cho fan-out阻塞 là
+chính, `Executors.newVirtualThreadPerTaskExecutor()` là executor được tiêm
+mà mở rộng được.

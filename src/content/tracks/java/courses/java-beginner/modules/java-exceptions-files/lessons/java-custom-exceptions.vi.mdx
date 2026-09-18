@@ -1,0 +1,33 @@
+Thư viện chuẩn đặt tên exception theo *nó*: `NumberFormatException`,
+`IOException`. Lĩnh vực của bạn có từ vựng thất bại riêng, và custom
+exception giúp bạn nói bằng thứ tiếng đó.
+
+```java
+class InsufficientFundsException extends Exception {
+    private final double shortfall;
+
+    InsufficientFundsException(double shortfall) {
+        super("thiếu " + shortfall);
+        this.shortfall = shortfall;
+    }
+
+    double getShortfall() { return shortfall; }
+}
+```
+
+Ba quyết định trong lớp nhỏ đó:
+
+1. **`extends Exception`** (không phải `RuntimeException`) làm nó trở thành
+   *checked* - mọi caller buộc phải quyết định rút-tiền-thiếu-tiền nghĩa
+   là gì với họ. Chọn cách này cho lỗi nghiệp vụ mà caller có thể xử lý.
+2. **`super(message)`** mang giải thích cho con người lên stack trace và log.
+3. **Trường dữ liệu thêm** (`shortfall`) cho phép caller *phản ứng theo
+   code*, không chỉ hiển thị chuỗi.
+
+## Khi NÀO KHÔNG nên viết
+
+Hãy viết custom exception khi một **quy tắc nghiệp vụ** bị vi phạm và
+caller muốn xử lý nó khác với các lỗi khác. Đừng viết khi
+`IllegalArgumentException` đã nói đủ. Và tuyệt đối không dùng exception
+làm luồng điều khiển bình thường: điều kiện vòng lặp và `if` rõ ràng hơn
+và rẻ hơn rất nhiều.

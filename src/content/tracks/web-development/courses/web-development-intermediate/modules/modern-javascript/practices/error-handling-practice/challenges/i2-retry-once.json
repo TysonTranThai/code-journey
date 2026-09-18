@@ -1,0 +1,25 @@
+{
+  "id": "i2-retry-once",
+  "title": "Retry on Failure",
+  "prompt": "Write `withRetry(task, retries)`. `task` is a zero-argument function. Call it; if it throws, call it again — up to `retries` additional attempts. RETURN the first successful result. If every attempt fails, rethrow the LAST error.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function withRetry(task, retries) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "returns immediately when the task succeeds",
+      "code": "const fn = new Function(code + \"\\nreturn { withRetry };\");\nconst { withRetry } = fn();\nlet calls = 0;\nconst out = withRetry(() => { calls++; return \"done\"; }, 3);\nif (out !== \"done\") throw new Error(\"The successful result must be returned.\");\nif (calls !== 1) throw new Error(\"A task that succeeds first try must be called exactly once.\");",
+      "hint": "Return the result inside the try block the moment the call succeeds."
+    },
+    {
+      "name": "retries until success",
+      "code": "const fn = new Function(code + \"\\nreturn { withRetry };\");\nconst { withRetry } = fn();\nlet calls = 0;\nconst out = withRetry(() => { calls++; if (calls < 3) throw new Error(\"flaky\"); return \"ok\"; }, 3);\nif (out !== \"ok\") throw new Error(\"A task that fails twice then succeeds should return 'ok'.\");\nif (calls !== 3) throw new Error(\"The task should have been attempted 3 times (2 failures + 1 success).\");",
+      "hint": "Loop attempts from 0 to retries inclusive; return early on the first success."
+    },
+    {
+      "name": "rethrows the last error after exhausting retries",
+      "code": "const fn = new Function(code + \"\\nreturn { withRetry };\");\nconst { withRetry } = fn();\nlet calls = 0;\nlet err;\ntry {\n  withRetry(() => { calls++; throw new Error(\"attempt \" + calls); }, 2);\n} catch (e) { err = e; }\nif (!err) throw new Error(\"An always-failing task must eventually throw.\");\nif (calls !== 3) throw new Error(\"Initial call + 2 retries = 3 attempts.\");\nif (err.message !== \"attempt 3\") throw new Error(\"The rethrown error must be the LAST one (attempt 3), not the first.\");",
+      "hint": "Remember the most recent error in a variable and throw it after the loop ends."
+    }
+  ]
+}

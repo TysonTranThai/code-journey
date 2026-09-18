@@ -1,0 +1,21 @@
+{
+  "id": "pi6-json-roundtrip",
+  "title": "JSON Round-Trip",
+  "prompt": "Implement save_records(records, path) writing a JSON list (ensure_ascii=False) and load_records(path) reading it back. Both use UTF-8 explicitly.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import json\nfrom pathlib import Path\n\ndef save_records(records, path):\n    pass\n\ndef load_records(path):\n    pass\n",
+  "tests": [
+    {
+      "name": "round-trips unicode safely",
+      "code": "from pathlib import Path\nimport tempfile, os\nrecords = [{'name': 'Minh', 'note': 'xin chào'}]\np = Path(tempfile.mkdtemp()) / 'rec.json'\nsave_records(records, p)\nassert load_records(p) == records",
+      "hint": "write_text(encoding='utf-8') + json.dumps(ensure_ascii=False)."
+    },
+    {
+      "name": "file content is valid JSON",
+      "code": "from pathlib import Path\nimport tempfile, json\np = Path(tempfile.mkdtemp()) / 'r.json'\nsave_records([{'a': 1}], p)\nassert json.loads(p.read_text(encoding='utf-8')) == [{'a': 1}]",
+      "hint": "The file itself must parse as JSON."
+    }
+  ],
+  "level": "guided"
+}

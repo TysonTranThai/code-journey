@@ -1,0 +1,15 @@
+## Cổng kiểm tra (mini-build)
+
+Hàng đợi công việc được các worker đồng thời rút cạn — lõi producer/consumer:
+
+1. `Enqueue(string job)` → thêm một job.
+2. `RunAll(int workers)` → khởi động `workers` thread; mỗi worker lặp: lấy
+   một job (nếu còn) và xử lý: gọi `CjConcurrency.Pause()` (công việc mô
+   phỏng), rồi ghi `"done:" + job` vào kết quả.
+3. Mỗi job được xử lý ĐÚNG MỘT LẦN — không mất, không nhân đôi — dù các
+   worker lấy job từng cái một từ hàng đợi chung.
+4. `Results` đưa ra các bản ghi; `RunAll` trả về sau khi mọi worker kết thúc
+   (join các thread của bạn).
+
+Test chấm điểm chạy 20 job trên 4 worker với công việc mô phỏng 5 ms và
+assert số lượng chính xác, không trùng.

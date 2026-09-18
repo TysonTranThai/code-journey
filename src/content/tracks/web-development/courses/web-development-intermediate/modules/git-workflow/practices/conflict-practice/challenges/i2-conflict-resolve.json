@@ -1,0 +1,20 @@
+{
+  "id": "i2-conflict-resolve",
+  "title": "Clean Resolver",
+  "prompt": "Write `resolveConflictFile(text, chosen)` where chosen is \"mine\" or \"theirs\": return the file with the conflict block replaced by the chosen side's lines — markers removed, surrounding context preserved exactly.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function resolveConflictFile(text, chosen) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "replaces the block, keeps context",
+      "code": "const fn = new Function(code + \"\\nreturn { resolveConflictFile };\");\nconst { resolveConflictFile } = fn();\nconst text = \"const a = 1;\\n<<<<<<< HEAD\\nconst t = 1.1;\\n=======\\nconst t = 2;\\n>>>>>>> main\\n// done\\n\";\nconst out = resolveConflictFile(text, \"theirs\");\nif (!out.startsWith(\"const a = 1;\\n\")) throw new Error(\"Context before is kept.\");\nif (!out.includes(\"const t = 2;\")) throw new Error(\"Chosen side is in.\");\nif (out.includes(\"<<<<<<<\") || out.includes(\"=======\")) throw new Error(\"No markers may survive.\");",
+      "hint": "Rebuild line by line, emitting context always and only the chosen side inside the block."
+    },
+    {
+      "name": "choosing mine works symmetrically",
+      "code": "const fn = new Function(code + \"\\nreturn { resolveConflictFile };\");\nconst { resolveConflictFile } = fn();\nconst text = \"<<<<<<< HEAD\\nA\\n=======\\nB\\n>>>>>>> main\\n\";\nconst out = resolveConflictFile(text, \"mine\");\nif (out !== \"A\\n\") throw new Error(\"Just the HEAD lines remain.\");",
+      "hint": "Same walk, emit the other array."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "cppa10-pmr-arena",
+  "title": "Arena Carve and Reset",
+  "prompt": "Implement a tiny linear arena: `Arena(bytes)` owns a buffer; `carve(n)` returns a pointer into it (16-byte aligned) or `nullptr` if `n` does not fit; `reset()` makes the whole buffer reusable; `used()` reports allocated bytes.",
+  "difficulty": "advanced",
+  "level": "real-world",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <cstdint>\n\n// A linear (monotonic) arena.\nclass Arena {\npublic:\n    explicit Arena(std::size_t bytes);\n    ~Arena();\n    void* carve(std::size_t n);   // 16-byte aligned; nullptr if it doesn't fit\n    void reset();                 // everything becomes reusable\n    std::size_t used() const;\nprivate:\n    std::size_t bytes_;\n    std::size_t offset_ = 0;\n    std::uint8_t* buf_ = nullptr;\n};\n",
+  "tests": [
+    {
+      "name": "carve hands out aligned, non-overlapping ranges",
+      "code": "Arena a{100};\nvoid* p1 = a.carve(10);\nvoid* p2 = a.carve(10);\nCHECK(p1 != nullptr);\nCHECK(p2 != nullptr);\nCHECK(static_cast<std::uint8_t*>(p2) >= static_cast<std::uint8_t*>(p1) + 10);\nCHECK_EQ(reinterpret_cast<std::uintptr_t>(p1) % 16, 0u);\nCHECK_EQ(reinterpret_cast<std::uintptr_t>(p2) % 16, 0u);\nCHECK(a.used() >= 20u);",
+      "hint": "Round the offset up to the next multiple of 16 (padding counts toward used()), return buf_ + offset, advance offset by n."
+    },
+    {
+      "name": "reset restores capacity",
+      "code": "Arena a{64};\nCHECK(a.carve(48) != nullptr);\nCHECK_EQ(a.carve(48), nullptr);   // doesn't fit\na.reset();\nCHECK_EQ(a.used(), 0u);\nCHECK(a.carve(48) != nullptr);",
+      "hint": "reset() sets offset_ back to 0 — carve succeeds again after reset. The alignment rule: round the offset up to a multiple of 16 BEFORE handing out the pointer."
+    }
+  ]
+}

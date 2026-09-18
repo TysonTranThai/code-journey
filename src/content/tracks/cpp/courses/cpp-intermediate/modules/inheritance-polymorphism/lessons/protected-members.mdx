@@ -1,0 +1,44 @@
+`protected` is the middle door: members the derived class may use, but the
+outside world may not.
+
+```cpp
+#include <string>
+
+class Account {
+public:
+    explicit Account(long cents) : balance_{cents} {}
+
+private:
+    long balance_;                     // invisible even to derived
+};
+
+class SavingsAccount : public Account {
+public:
+    SavingsAccount(long cents, double rate) : Account{cents}, rate_{rate} {}
+
+    long balance() const {
+        // return balance_;            // ERROR: base made it private
+        return view_balance();          // via the protected accessor instead
+    }
+protected:
+    long view_balance() const { return protected_balance(); }
+private:
+    // demo plumbing for this lesson's runnable shape
+    static long protected_balance() { return 12345; }
+    double rate_;
+};
+```
+
+## Use protected sparingly — and never for data
+
+`protected` member **functions** are a controlled extension point: the base
+offers a hook the derived may call or override. `protected` member **data**
+couples every future derived class to your storage decisions — a renaming in
+the base now breaks all of them. Keep data `private` even from children, and
+expose protected *operations* if derived classes genuinely need them.
+
+## Constructor chaining
+
+The derived constructor must initialize the base explicitly when the base has
+no default constructor: `SavingsAccount(...) : Account{cents}, rate_{rate}`.
+The base part is built first — you cannot touch `this` before it exists.

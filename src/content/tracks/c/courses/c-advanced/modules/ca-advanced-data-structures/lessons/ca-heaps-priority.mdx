@@ -1,0 +1,14 @@
+## A tree that lives in an array
+
+A binary heap is a complete binary tree stored flat: for index i, parent = (i-1)/2, children = 2i+1 and 2i+2. No pointers, perfect cache locality, and the shape guarantee (complete tree) is what makes the encoding lossless.
+
+## Two operations carry everything
+
+- **sift-up**: after appending at the end, swap upward while the parent is larger (min-heap) — O(log n).
+- **sift-down**: after moving the last element to the root, swap downward with the smaller child — O(log n).
+
+push = append + sift-up; pop = swap root with last, shrink, sift-down. peek is free — the root is the minimum.
+
+## Complexity that matters
+
+Build-heap from an arbitrary array is O(n) — better than n pushes at O(log n) each — because most nodes sift only a short distance. Heapsort: build-heap, then pop n times; in-place, O(n log n), no recursion.

@@ -1,0 +1,26 @@
+Những dự án đầu tiên của bạn chỉ dùng thư viện chuẩn — không cần cài gì. Dự án
+thật dựa vào các **gói bên thứ ba** (requests, rich, pytest...), và đó là lúc
+vấn đề xuất hiện: hai dự án trên cùng một máy thường cần khác phiên bản của
+cùng một gói.
+
+## Vấn đề
+
+```
+project-a cần requests==2.25
+project-b cần requests==2.31
+```
+
+Cài toàn cục và một dự án sẽ âm thầm phá vỡ dự án kia.
+
+## Giải pháp: môi trường ảo
+
+Một **venv** là bộ Python riêng tư, dùng một lần rồi bỏ, cho từng dự án:
+
+```bash
+python3 -m venv .venv        # tạo (mỗi dự án một lần)
+source .venv/bin/activate    # kích hoạt (mỗi phiên terminal) — Windows: .venv\Scripts\activate
+```
+
+Khi venv đang kích hoạt, `pip install` chỉ ảnh hưởng DUY NHẤT dự án đó. Thoát
+bằng `deactivate`. Venv có thể tái tạo — xóa đi, tạo lại, không mất thứ gì của
+bạn.

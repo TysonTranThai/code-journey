@@ -1,0 +1,30 @@
+The same codebase runs in (at least) two worlds, and they optimize for different things.
+
+## What changes between environments
+
+| Concern   | Development                 | Production                               |
+| --------- | --------------------------- | ---------------------------------------- |
+| Speed     | hot reload, no minification | minified, hashed, cached forever         |
+| Errors    | full stack trace on screen  | generic message to users, detail in logs |
+| Data      | seed fixtures               | real, backed-up, revered                 |
+| Secrets   | `.env` file, fake keys      | vault/environment injection, real keys   |
+| HTTPS     | optional on localhost       | mandatory, everywhere                    |
+| Debugging | you, interactively          | logs, metrics, alerts                    |
+
+`NODE_ENV` (or framework equivalent) switches bundles: dev ships unminified code with devtools hooks; prod ships optimized builds. The classic accident: production running with a development build — 3–10× slower JS, dev-only endpoints exposed.
+
+## Configuration, one more time
+
+Module 6's rule scales up: **config lives in environment variables**, read at startup, validated (Zod) before the app accepts traffic. Fail fast on missing config at boot — not at 2am when the first user hits the un-configured path.
+
+```js
+const env = EnvSchema.parse(process.env); // throws at startup with the missing key
+```
+
+## Feature flags: decoupling deploy from release
+
+Deploying code ≠ enabling features. Flags let you merge incomplete work (dark), enable gradually (1% → 10% → 100%), and kill a broken feature without rolling back the deploy. The discipline: flags are debt — clean them up when fully rolled out, or the codebase drowns in dead branches.
+
+## The 12-factor mindset
+
+The industry checklist for production services (12factor.net) — the four that matter most here: **config in env** (same image, every environment), **backing services as attached resources** (swap the DB URL, not the code), **logs as event streams** (write to stdout; the platform decides where they go), **disposability** (the app starts fast and shuts down cleanly — kill -TERM handled, connections drained).

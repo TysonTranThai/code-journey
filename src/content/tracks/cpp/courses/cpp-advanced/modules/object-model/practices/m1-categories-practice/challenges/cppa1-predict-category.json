@@ -1,0 +1,26 @@
+{
+  "id": "cppa1-predict-category",
+  "title": "Land Each Call in Its Category",
+  "prompt": "Implement the three probe functions. The tests prove each call expression's value category with `decltype((expr))`.",
+  "difficulty": "advanced",
+  "level": "imitation",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <utility>\n#include <type_traits>\n\n// Implement the three probe functions so every static_assert passes.\nstd::string makeGreeting();                 // (1) its call must be a prvalue\nstd::string& lvalueRef();                   // (2) its call must be an lvalue\nstd::string&& xvalueRef(std::string& s);    // (3) its call must be an xvalue\n",
+  "tests": [
+    {
+      "name": "makeGreeting is a prvalue",
+      "code": "static_assert(std::is_same_v<decltype((makeGreeting())), std::string>, \"prvalue: plain T\");\nstatic_assert(!std::is_reference_v<decltype((makeGreeting()))>, \"prvalue is not a reference\");\nCHECK_CONTAINS(makeGreeting(), \"Hello\");",
+      "hint": "A prvalue's decltype((e)) is the plain type T — no reference. Return a std::string by value."
+    },
+    {
+      "name": "lvalueRef is an lvalue",
+      "code": "static_assert(std::is_lvalue_reference_v<decltype((lvalueRef()))>, \"lvalue: T&\");\nstatic_assert(!std::is_rvalue_reference_v<decltype((lvalueRef()))>, \"not an xvalue\");\nlvalueRef() += \" from ref\";",
+      "hint": "Return std::string& bound to an object that outlives the call — a function-local static works."
+    },
+    {
+      "name": "xvalueRef is an xvalue",
+      "code": "std::string base = \"payload\";\nstatic_assert(std::is_rvalue_reference_v<decltype((xvalueRef(base)))>, \"xvalue: T&&\");\nCHECK_EQ(xvalueRef(base), std::string(\"payload\"));",
+      "hint": "Return std::string&& — a function returning T&& produces an xvalue. std::move(s) inside does it."
+    }
+  ]
+}

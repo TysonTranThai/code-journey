@@ -1,0 +1,31 @@
+{
+  "id": "cb16-write-read-back",
+  "title": "Write Then Read",
+  "prompt": "Implement `int echo_file(const char *path, const char *text)`: write text to path (mode \"w\"), then read the WHOLE file back and return the number of characters stored. Any open failure returns -1.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "round trip",
+      "code": "CHECK_EQ(echo_file(\"/tmp/cj16-d.txt\", \"hello\"), 5);\nremove(\"/tmp/cj16-d.txt\");",
+      "hint": "5 characters written and read."
+    },
+    {
+      "name": "with newline",
+      "code": "CHECK_EQ(echo_file(\"/tmp/cj16-e.txt\", \"a\\nb\\n\"), 4);\nremove(\"/tmp/cj16-e.txt\");",
+      "hint": "Newlines are characters too."
+    },
+    {
+      "name": "empty text",
+      "code": "CHECK_EQ(echo_file(\"/tmp/cj16-f.txt\", \"\"), 0);\nremove(\"/tmp/cj16-f.txt\");",
+      "hint": "Zero-length writes are legal."
+    },
+    {
+      "name": "content really written",
+      "code": "CHECK_EQ(echo_file(\"/tmp/cj16-g.txt\", \"hello\"), 5);\nFILE *f = fopen(\"/tmp/cj16-g.txt\", \"r\");\nchar buf[16] = {0};\nfgets(buf, 16, f);\nfclose(f);\nCHECK_STR_EQ(buf, \"hello\");\nremove(\"/tmp/cj16-g.txt\");",
+      "hint": "The bytes must actually reach the disk."
+    }
+  ],
+  "level": "independent"
+}

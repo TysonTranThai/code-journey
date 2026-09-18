@@ -1,0 +1,28 @@
+## AAA và test đọc như đặc tả
+
+Mọi test tốt có ba khối, tách bạch rõ ràng:
+
+```java
+// Arrange — dựng thế giới
+var cart = new Cart();
+cart.add(new Item("pen", 200));
+
+// Act — một hành vi
+int total = cart.totalCents();
+
+// Assert — một kỳ vọng
+assertEquals(200, total);
+```
+
+Kỷ luật mở rộng được:
+- **Một hành vi mỗi test** — hai assert cùng hành vi thì được; hai hành
+  vi thì không
+- **Tên = kịch bản + kỳ vọng**: `total_includes_quantity_multiplier`,
+  không phải `testTotal`
+- **Không logic trong test** (không vòng lặp, không if) — nếu cần logic,
+  bạn đang viết lại phần mềm đang được test
+- Test là người đọc đầu tiên của API: nếu Arrange đau khổ, API cần thêm
+  builder hoặc factory
+
+Thông báo test thất bại phải cho biết cái gì vỡ mà không cần mở debugger
+— vì vậy `checkEq(actual, expected, "what")` có nhãn.

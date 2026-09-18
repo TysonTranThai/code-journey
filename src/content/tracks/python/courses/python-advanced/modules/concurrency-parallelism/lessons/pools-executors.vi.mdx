@@ -1,0 +1,39 @@
+## Executor: concurrent.futures là giao diện mặc định
+
+`concurrent.futures` gói cả threading lẫn multiprocessing sau một API —
+và là lựa chọn mặc định đúng đắn cho đa số chương trình:
+
+```python
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+def fetch(url):
+    ...  # I/O-bound work
+
+with ThreadPoolExecutor(max_workers=8) as pool:
+    futures = {pool.submit(fetch, u): u for u in urls}
+    for fut in as_completed(futures):
+        url = futures[fut]
+        try:
+            result = fut.result()
+        except Exception as e:
+            print(f"{url} failed: {e}")
+```
+
+Hai kiểu duyệt với bảo đảm khác nhau:
+
+- **`pool.map(fn, iterable)`** — kết quả theo thứ tự ĐẦU VÀO, exception được
+  raise khi bạn đọc kết quả, đơn giản nhất cho biến đổi thuần túy.
+- **`as_completed(futures)`** — kết quả theo thứ tự HOÀN THÀNH (item nhanh về
+  trước), chọn khi latency từng item quan trọng và bạn muốn tiến độ ngay khi
+  item xong.
+
+Những chi tiết chuyên nghiệp mà production hay cắn:
+
+- `fut.result(timeout=...)` giới hạn thời gian chờ của bạn; task treo vẫn giữ
+  worker thread mãi — hủy thread *đang chạy* là hợp tác, không ép được.
+- `Executor.shutdown(cancel_futures=True)` (3.9+) bỏ việc đã vào queue nhưng
+  chưa chạy khi teardown.
+- Luôn dùng `with` (hoặc shutdown tường minh): executor bị rò rỉ khiến trình
+  thông dịch chờ khi thoát.
+- `ProcessPoolExecutor` cùng API nhưng pickle tham số và kết quả — job phải là
+  hàm top-level pickle được; tuyệt cho việc CPU-bound (mỗi process có GIL riêng).

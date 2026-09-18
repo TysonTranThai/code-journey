@@ -1,0 +1,20 @@
+## Algorithmic wins: complexity beats micro-tuning
+
+The biggest speedups come from changing the *shape* of the work:
+
+- **Membership on a list is O(n); on a set/dict it is O(1).** Filtering a list
+  against a large denylist with `x in some_list` is the classic quadratic
+  accident. One `set(...)` call removes an entire order of magnitude.
+- **Memoization** converts overlapping recursive work into a table lookup:
+  naive `fib(25)` makes ~243k calls; the memoized version makes ~49. Same
+  answer, different universe of work. `functools.lru_cache(maxsize=None)` is
+  the standard tool; a dict keyed by arguments is the manual equivalent.
+- **Batching** turns N round-trips into 1: fetching per-item from a database
+  or API inside a loop (N+1 queries) collapses into one batched fetch.
+- **Early exit / bounds**: stop scanning when the answer is decided; prefer
+  `any()`/`all()` over building full lists of booleans.
+
+Micro-tuning (attribute-lookup hoisting, local variable caching) yields small
+constant factors. Complexity fixes yield orders of magnitude. When both are
+available, take the complexity fix first — it also tends to be the more
+readable change.

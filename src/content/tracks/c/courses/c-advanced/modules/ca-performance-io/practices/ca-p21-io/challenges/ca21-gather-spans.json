@@ -1,0 +1,26 @@
+{
+  "id": "ca21-gather-spans",
+  "title": "Gather Spans Like writev",
+  "prompt": "POSIX-flavored design. Given `struct span { const char *base; size_t len; };`, implement `size_t spans_total(const struct span *s, size_t n)` (sum of lens; NULL s with n>0 returns (size_t)-1) and `void spans_gather(const struct span *s, size_t n, char *out)` (concatenate the spans into out in order; assume out is large enough — but skip NULL bases).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstruct span { const char *base; size_t len; };\n",
+  "tests": [
+    {
+      "name": "total and gather",
+      "code": "struct span s[3];\ns[0].base = \"hello\";\ns[0].len = 5;\ns[1].base = \"-\";\ns[1].len = 1;\ns[2].base = \"world\";\ns[2].len = 5;\nCHECK_EQ(spans_total(s, 3), 11);\nchar out[16] = {0};\nspans_gather(s, 3, out);\nCHECK_STR_EQ(out, \"hello-world\");",
+      "hint": "Three buffers, one pass: gather reproduces the logical byte stream in order."
+    },
+    {
+      "name": "empty list",
+      "code": "CHECK_EQ(spans_total(NULL, 0), 0);\nCHECK_EQ(spans_total(NULL, 3), (size_t)-1);",
+      "hint": "n==0 means nothing to sum (0 is correct); NULL with n>0 is a contract violation."
+    },
+    {
+      "name": "NULL base skipped",
+      "code": "struct span t[2];\nt[0].base = NULL;\nt[0].len = 3;\nt[1].base = \"world\";\nt[1].len = 5;\nCHECK_EQ(spans_total(t, 2), 8);\nchar out2[16] = {0};\nspans_gather(t, 2, out2);\nCHECK_STR_EQ(out2, \"world\");",
+      "hint": "A NULL base contributes nothing to the output — the gather must skip, never dereference."
+    }
+  ],
+  "level": "guided"
+}

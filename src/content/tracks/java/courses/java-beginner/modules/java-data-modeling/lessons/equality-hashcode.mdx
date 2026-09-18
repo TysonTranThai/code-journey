@@ -1,0 +1,41 @@
+Equality in Java has two layers, and collections stand on both.
+
+**`equals(Object)`** — value equality. The default (from `Object`) is
+reference identity; classes override it to compare contents. The contract
+you must know: reflexive, symmetric (`a.equals(b)` ⇔ `b.equals(a)`), null
+returns `false` (never throws — but calling `x.equals(null)` on your own
+object should be guarded by an `instanceof` check).
+
+```java
+String a = "yes";
+a.equals("yes")                    // true — content
+new Point(1, 2).equals(new Point(1, 2))   // record: true — all components
+```
+
+**`hashCode()`** — an int summary of the value. THE rule: **equal objects
+must have equal hash codes**. If you override equals you must override
+hashCode consistently, because hash-based collections (HashSet, HashMap)
+first bucket by hashCode, then confirm with equals. Break the pairing and
+objects vanish inside sets ("I added it, but contains says false").
+
+```java
+class BadPoint {
+    final int x, y;
+    // ...
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof BadPoint p && p.x == x && p.y == y;
+    }
+    // hashCode NOT overridden → identity hash → HashSet misbehaves
+}
+```
+
+Records and enums get all of this for free — one more reason the modeling
+tree above prefers them. When you DO hand-write equals (an old-style class),
+generate hashCode too (your IDE does; `Objects.hash(x, y)` is the manual
+form).
+
+**`toString()`** is the third leg: every exception message, log line, and
+debugger view prints it. A class without a real toString debugs badly.
+
+**Next:** practice — modeling real data.

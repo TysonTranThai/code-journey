@@ -1,0 +1,25 @@
+{
+  "id": "function-practice",
+  "title": "Make a Greeter and a Max",
+  "prompt": "1. Write `greet(name)` that RETURNS a friendly sentence using the name (any sentence — build it with a template literal).\n2. Write `maxOfTwo(a, b)` that RETURNS whichever number is larger (if equal, return either).\n3. Log `greet(\"Ada\")` and `maxOfTwo(7, 3)`.",
+  "difficulty": "beginner",
+  "boilerplate": "// 1) greet(name)\n\n\n// 2) maxOfTwo(a, b)\n\n\n// 3) log examples\n",
+  "tests": [
+    {
+      "name": "greet builds a sentence with the name inside",
+      "code": "const fn = new Function(code + \"\\nreturn { greet, maxOfTwo };\");\nconst { greet } = fn();\nconst out = greet(\"Ada\");\nif (typeof out !== \"string\" || !out.includes(\"Ada\")) {\n  throw new Error('greet(\"Ada\") must return a string containing \"Ada\".');\n}\nif (out === \"Ada\") {\n  throw new Error(\"Return a full sentence, not just the name.\");\n}",
+      "hint": "return `Hello, ${name}! welcome aboard.`; — any sentence works."
+    },
+    {
+      "name": "maxOfTwo returns the larger",
+      "code": "const fn = new Function(code + \"\\nreturn { greet, maxOfTwo };\");\nconst { maxOfTwo } = fn();\nif (maxOfTwo(7, 3) !== 7) throw new Error(\"maxOfTwo(7, 3) should be 7.\");\nif (maxOfTwo(2, 9) !== 9) throw new Error(\"maxOfTwo(2, 9) should be 9.\");\nif (maxOfTwo(5, 5) !== 5) throw new Error(\"maxOfTwo(5, 5) should be 5 (either is fine).\");",
+      "hint": "if (a >= b) { return a; } return b;  — or use the ternary a > b ? a : b"
+    },
+    {
+      "name": "examples logged",
+      "code": "const logs = [];\nconst fakeConsole = { log: (...a) => logs.push(a.map(String).join(\" \")) };\nnew Function(\"console\", code)(fakeConsole);\nif (!logs.some((l) => l === \"7\")) {\n  throw new Error(\"Log maxOfTwo(7, 3) — the console should show 7.\");\n}\nif (!logs.some((l) => l.includes(\"Ada\"))) {\n  throw new Error('Log greet(\"Ada\") so the name appears in the console.');\n}",
+      "hint": "console.log(greet(\"Ada\")); console.log(maxOfTwo(7, 3));"
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "ca1-layout",
+  "title": "Report Struct Layout",
+  "prompt": "Given\n \n```c\nstruct S { char a; int b; char c; };\n```\n \nimplement `void program(void)` that prints each member's offset and the struct size:\\n \\n```\\na@0 b@4 c@8 size:12\\n```\\n \\nUse `offsetof` from `<stddef.h>` and `sizeof` — measure, do not hard-code.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stddef.h>\n#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "exact layout line",
+      "code": "const char* out = cj_capture(program);\nCHECK_STR_EQ(out, \"a@0 b@4 c@8 size:12\\n\");",
+      "hint": "offsetof(struct S, a) is 0; b sits at its 4-byte alignment; trailing padding grows sizeof to a multiple of 4."
+    },
+    {
+      "name": "padding detected",
+      "code": "struct S { char a; int b; char c; };\nCHECK_EQ((int)(sizeof(struct S) - (offsetof(struct S, c) + sizeof(char))), 3);",
+      "hint": "size minus (last member offset + its size) is exactly the trailing padding."
+    },
+    {
+      "name": "compact alternative",
+      "code": "struct T { int b; char a; char c; };\nCHECK_EQ((int)sizeof(struct T), 8);",
+      "hint": "Largest-first ordering packs both chars after the int: 4+1+1+2 tail = 8."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,12 @@
+## Mọi byte của chương trình nằm trong một section
+
+- **.text** — code chạy được. Chỉ đọc lúc chạy; tự sửa nó là UB và kernel hiện đại cưỡng chế điều đó.
+- **.data** — global có khởi tạo (`int x = 5;`). Chiếm chỗ trong file.
+- **.bss** — global khởi tạo 0 (`int y;`). KHÔNG chiếm chỗ trong file: loader chỉ cần zero các trang lúc load. `static char big[1000000];` tốn đúng 0 trên đĩa.
+- **.rodata** — string literal và dữ liệu const. Các literal của bạn nằm đây; ghi vào là UB của mô-đun 2.
+
+`size a.out` in tổng; `nm a.out` liệt kê ký hiệu nào rơi vào đâu (các chữ T/D/B của mô-đun 10).
+
+## Relocation: vì sao .o không chạy được
+
+Lời gọi và tham chiếu global trong object file là *placeholder* — địa chỉ cuối không tồn tại đến khi linker bố trí các section. Relocation entry ghi lại 'vá chuỗi byte này bằng địa chỉ của ký hiệu kia'. Vì vậy liên kết hai object giải quyết được điều biên dịch riêng lẻ không thể.

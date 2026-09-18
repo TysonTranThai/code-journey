@@ -1,0 +1,23 @@
+## Thang kiểu
+
+| Kiểu | Kích thước | Phạm vi / dùng khi | Literal |
+|---|---|---|---|
+| `int` | 32-bit | số nguyên ±~2,1 tỷ | `int n = 42;` |
+| `long` | 64-bit | số đếm lớn, timestamp | `long t = 9_876_543_210L;` |
+| `double` | 64-bit | số thập phân nói chung, khoa học | `double d = 0.5;` |
+| `decimal` | 128-bit | **tiền tệ**, chính xác base-10 | `decimal m = 19.99m;` |
+
+Hai cái bẫy mà thang kiểu che giấu:
+
+**1. Chia số nguyên bị cắt.** `7 / 2` là `3`, không phải `3.5` — cả hai toán tử đều `int` nên kết quả là `int`. Viết `7 / 2.0` (một toán tử làm biểu thức thành `double`) khi bạn cần phần lẻ. Đây là lỗi số học phổ biến nhất của người mới.
+
+**2. `double` là base-2; tiền là base-10.** `double x = 0.1 + 0.2;` cho ra `0.30000000000000004`. Số thực nhị phân không biểu diễn được hầu hết phân số thập phân một cách chính xác — ổn cho đo lường, sai cho tiền tệ. Hãy dùng `decimal` (chú ý hậu tố `m`) cho tiền:
+
+```csharp
+decimal price = 19.99m;
+decimal total = price * 3;    // 59.97 chính xác
+```
+
+**Tràn số mặc định là âm thầm**: `int.MaxValue + 1` quay vòng trong ngữ cảnh unchecked (mặc định khi chạy). Chưa cần dùng `checked` — chỉ cần biết biên giới tồn tại và `long` là lối thoát khi số đếm có thể vượt ~2,1 tỷ.
+
+**Quy tắc chuyển đổi**: nhỏ → lớn là ngầm định (`int` → `long` → `double`); lớn → nhỏ cần ép kiểu tường minh `(int)`, và nó **cắt** (`(int)3.9` là `3`). Ép `double` → `int` chỉ bỏ phần lẻ, không bao giờ làm tròn. Cần làm tròn thì dùng `Math.Round` trước.

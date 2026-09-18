@@ -1,0 +1,21 @@
+{
+  "id": "pa-cc-producer-consumer",
+  "title": "Bounded producer/consumer pipeline",
+  "prompt": "Implement `process_all(items, transform, workers=3)`:\n\n- feed `items` through a `queue.Queue` into `workers` daemon threads\n- each worker applies `transform(item)` and collects results thread-safely\n- `process_all` must RETURN (not hang) once every item is processed, returning `sorted(results)`\n- a worker that forgets `task_done()` deadlocks the join — make sure you call it exactly once per item, even when transform raises is NOT required here (transform is assumed safe)",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import threading\nimport queue\n\n# TODO: process_all(items, transform, workers=3)",
+  "tests": [
+    {
+      "name": "processes everything and returns",
+      "code": "out = process_all([5, 3, 8, 1, 9], lambda x: x * 2, workers=3)\nassert out == [2, 6, 10, 16, 18], f'out: {out}'\nprint('ok')",
+      "hint": "q.join() releases when unfinished-task count hits zero — exactly one task_done per get()."
+    },
+    {
+      "name": "many items, few workers",
+      "code": "items = list(range(200))\nout = process_all(items, lambda x: x + 1, workers=2)\nassert out == [x + 1 for x in range(200)]\nprint('ok')",
+      "hint": "All 200 items must be processed by 2 workers; sort for order-independent comparison."
+    }
+  ],
+  "level": "combination"
+}

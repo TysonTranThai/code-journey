@@ -1,0 +1,21 @@
+{
+  "id": "pi8-sql-agg",
+  "title": "Aggregate by Region",
+  "prompt": "Given table sales(region TEXT, amount INTEGER), implement totals_by_region(conn) returning a dict region → SUM(amount), sorted by region name (insertion order of the dict).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import sqlite3\n\ndef totals_by_region(conn):\n    pass\n",
+  "tests": [
+    {
+      "name": "sums per region",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE sales (region TEXT, amount INTEGER)')\nconn.executemany('INSERT INTO sales VALUES (?, ?)', [('east', 5), ('west', 2), ('east', 3)])\nconn.commit()\nassert totals_by_region(conn) == {'east': 8, 'west': 2}",
+      "hint": "SELECT region, SUM(amount) ... GROUP BY region."
+    },
+    {
+      "name": "empty table gives empty dict",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE sales (region TEXT, amount INTEGER)')\nassert totals_by_region(conn) == {}",
+      "hint": "No rows → no keys."
+    }
+  ],
+  "level": "independent"
+}

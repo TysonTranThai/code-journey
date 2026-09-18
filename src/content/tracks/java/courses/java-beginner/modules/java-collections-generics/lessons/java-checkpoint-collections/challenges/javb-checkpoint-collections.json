@@ -1,0 +1,25 @@
+{
+  "id": "javb-checkpoint-collections",
+  "title": "Checkpoint: Contact Book",
+  "prompt": "\nThe Contact Book — collections composing.\n\nInside `Solution`, using collections throughout:\n\n1. `static java.util.List<String> sortedUnique(java.util.List<String> raw)` —\n   distinct names, case-insensitively, returned ALPHABETICALLY (lowercase\n   order); keep the lowercase form in the result.\n2. `static java.util.Map<Character, Integer> initialCounts(java.util.List<String>\n   names)` — map from first letter (lowercase) to how many names start\n   with it.\n3. `record Contact(String name, java.util.List<String> phones) { }` with a\n   compact constructor rejecting blank names; and\n   `static String findPhone(java.util.List<Contact> contacts, String name)`\n   — case-insensitive lookup returning the FIRST phone of the matching\n   contact, `null` when the name is unknown.\n",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static java.util.List<String> sortedUnique(java.util.List<String> raw) {\n        return null;\n    }\n\n    public static java.util.Map<Character, Integer> initialCounts(java.util.List<String> names) {\n        return null;\n    }\n\n    public record Contact(String name, java.util.List<String> phones) {\n        public Contact {\n        }\n    }\n\n    public static String findPhone(java.util.List<Contact> contacts, String name) {\n        return null;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "sorted unique names",
+      "code": "\njava.util.List<String> out = Solution.sortedUnique(java.util.List.of(\"BO\", \"ada\", \"bo\", \"Cat\"));\nCjTestBase.checkEq(out, java.util.List.of(\"ada\", \"bo\", \"cat\"), \"distinct + sorted\");\n",
+      "hint": "Lowercase, dedupe with a set, sort."
+    },
+    {
+      "name": "initial letter counts",
+      "code": "\njava.util.Map<Character, Integer> m =\n    Solution.initialCounts(java.util.List.of(\"ada\", \"alan\", \"bo\"));\nCjTestBase.checkEq(m.get('a'), 2, \"two a-names\");\nCjTestBase.checkEq(m.get('b'), 1, \"one b-name\");\n",
+      "hint": "First letter of each lowercased name."
+    },
+    {
+      "name": "contact lookup",
+      "code": "\njava.util.List<Solution.Contact> contacts = java.util.List.of(\n    new Solution.Contact(\"Ada\", java.util.List.of(\"111\", \"222\")),\n    new Solution.Contact(\"Bo\", java.util.List.of(\"333\")));\nCjTestBase.checkEq(Solution.findPhone(contacts, \"ada\"), \"111\", \"first phone wins\");\nCjTestBase.checkEq(Solution.findPhone(contacts, \"BO\"), \"333\", \"case-insensitive name\");\nCjTestBase.checkTrue(Solution.findPhone(contacts, \"Cy\") == null, \"unknown name\");\nCjTestBase.checkThrows(() -> new Solution.Contact(\"  \", java.util.List.of()), \"blank name rejected\");\n",
+      "hint": "equals/equalsIgnoreCase on the name; first phone of the match."
+    }
+  ]
+}

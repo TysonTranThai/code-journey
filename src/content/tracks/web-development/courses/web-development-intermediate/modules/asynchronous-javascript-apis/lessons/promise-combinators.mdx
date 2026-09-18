@@ -1,0 +1,38 @@
+Four static methods combine promise lists. Choosing the right one is a design
+decision, not trivia.
+
+| Combinator           | Resolves when             | Rejects when    | Use for                  |
+| -------------------- | ------------------------- | --------------- | ------------------------ |
+| `Promise.all`        | **all** fulfill           | first rejection | everything is required   |
+| `Promise.allSettled` | all settle (either way)   | never           | partial failure is OK    |
+| `Promise.race`       | first settle (either way) | —               | timeouts, first response |
+| `Promise.any`        | first **fulfillment**     | all reject      | fastest working source   |
+
+## all vs allSettled — the partial-failure problem
+
+A dashboard fetching user + orders + notifications: with `Promise.all`, one
+failing endpoint kills the page. With `Promise.allSettled`, every request
+finishes and you decide per-item:
+
+```js
+const results = await Promise.allSettled([getUser(), getOrders(), getNotifs()]);
+for (const r of results) {
+  if (r.status === "fulfilled") render(r.value);
+  else renderError(r.reason);
+}
+```
+
+`allSettled` results are `{ status: "fulfilled", value }` or
+`{ status: "rejected", reason }` — always inspect `status`.
+
+## race for timeouts
+
+```js
+const work = doLongThing();
+const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 3000));
+await Promise.race([work, timeout]);
+```
+
+Note `race` does not cancel the loser — the long fetch keeps running (cancellation
+comes two lessons ahead). `Promise.any` is the rarest: multiple mirrors, take
+whichever answers successfully first.

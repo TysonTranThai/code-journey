@@ -1,0 +1,21 @@
+{
+  "id": "pi4-type-td",
+  "title": "Typed Payload",
+  "prompt": "Define a TypedDict ProductDict with keys sku: str and price: float. Then implement total_price(items: list[ProductDict]) -> float summing prices. get_type_hints(ProductDict) must show both annotations.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "from typing import TypedDict\n\nclass ProductDict(TypedDict):\n    pass\n\ndef total_price(items):\n    pass\n",
+  "tests": [
+    {
+      "name": "totals prices",
+      "code": "items = [{'sku': 't', 'price': 3.0}, {'sku': 'c', 'price': 4.5}]\nassert total_price(items) == 7.5",
+      "hint": "sum(item['price'] for item in items)."
+    },
+    {
+      "name": "typed keys verified",
+      "code": "import typing\nhints = typing.get_type_hints(ProductDict)\nassert hints['sku'] is str and hints['price'] is float",
+      "hint": "Annotate sku: str and price: float in the TypedDict body."
+    }
+  ],
+  "level": "combination"
+}

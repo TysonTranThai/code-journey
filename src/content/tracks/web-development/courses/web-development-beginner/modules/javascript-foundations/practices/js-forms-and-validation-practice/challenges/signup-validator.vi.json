@@ -1,0 +1,18 @@
+{
+  "title": "Kiểm tra hợp lệ biểu mẫu đăng ký",
+  "prompt": "Các phần tử được cung cấp: `form`, `usernameInput` (trường văn bản), `emailInput`, và `errorBox`. Dựng luồng submit:\n\n1. Thêm một listener submit vào `form` gọi event.preventDefault() trước tiên.\n2. Đọc username; nếu độ dài sau trim dưới 3, đặt `errorBox.textContent` thành một thông báo hữu ích và dừng lại.\n3. Đọc email; nếu nó không chứa \"@\", hiện lỗi theo cùng cách.\n4. Nếu không, xóa `errorBox.textContent` và log `Welcome, <username>`.\n\nRồi mô phỏng: submit với username \"ab\" (quá ngắn), rồi submit với username và email hợp lệ — và log sau mỗi lần.",
+  "tests": [
+    {
+      "name": "listener submit được đăng ký và mặc định bị chặn",
+      "hint": "form.addEventListener(\"submit\", (event) => { event.preventDefault(); ... });"
+    },
+    {
+      "name": "username ngắn hiện lỗi và dừng",
+      "hint": "const username = usernameInput.value.trim(); if (username.length < 3) { errorBox.textContent = \"...\"; return; }"
+    },
+    {
+      "name": "input hợp lệ xóa lỗi và chào mừng",
+      "hint": "errorBox.textContent = \"\"; console.log(\"Welcome, \" + username);"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+## The recurring classes
+
+- **Integer overflow in allocation math** — `width * height * 4` in 32-bit wraps, you allocate 40 bytes, the loop writes 4 billion. Every parser that sizes a buffer from untrusted integers needs a checked multiply (`__builtin_mul_overflow` on GCC/Clang).
+- **Path traversal** — user-controlled `../../etc/passwd` through a join function. The fix class: canonicalize, then verify the result stays under the trusted root — *after* resolving `..`, not before.
+- **Injection** — any function that composes code/commands from strings (SQL, shell, format strings). The fix class: parameterize or quote with a whitelist escaper; never filter characters from the middle of a string.
+- **Parsing confusion** — two parsers disagree on where a token ends (request smuggling is exactly this). The fix class: one canonical parser; if you must have two, they must share the tokenizer.
+
+## The economics
+
+Attackers automate the *classes*, not the instances. That is why the deliverable here is never "fixed the bug" — it is "closed the class, with a regression test that fails if it ever reopens."

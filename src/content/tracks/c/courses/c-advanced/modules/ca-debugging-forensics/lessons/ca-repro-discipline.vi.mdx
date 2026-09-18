@@ -1,0 +1,19 @@
+## Repro là đơn vị công việc
+
+Báo lỗi nói 'đôi khi nó crash'. Repro nói 'chương trình 12 dòng này, biên dịch với cờ này, in X nhưng phải in Y'. Cái thứ hai đã giải được một nửa. Thực hành chuyên nghiệp: cắt một case lỗi cho đến khi bỏ thêm một dòng nữa là nó pass. Repro thu nhỏ thường *bộc lộ* nguyên nhân — hành động tối thiểu hóa chính là chẩn đoán.
+
+Trong sandbox không có debugger, kỷ luật repro kiêm luôn vai trò harness kiểm thử: mỗi lỗi được chẩn đoán trở thành regression test vĩnh viễn. Các bài two-sided của khóa học này (tham chiếu pass, mutant fail) chính là artifact đó.
+
+## assert() là hợp đồng, không phải xử lý lỗi
+
+```c
+/* hợp đồng: người gọi đã hứa non-NULL và đã sắp xếp */
+assert(buf != NULL);
+assert(is_sorted(buf, n));
+
+/* điều kiện lúc chạy: input người dùng CÓ THỂ xấu - xử lý nó */
+if (n == 0) return -1;             /* nhánh lỗi, không phải assert */
+if (read(fd, buf, cap) < 0) ...    /* nhánh errno, không phải assert */
+```
+
+Điều kiện assert phải là *không thể xảy ra theo hợp đồng*. Nếu điều kiện có thể xảy ra hợp lệ (input xấu, thiếu file, lỗi cấp phát), đó là xử lý lỗi, và đặt nó vào assert khiến build release của bạn nói dối. Phân biệt đúng là khác biệt giữa lưới assertion và bãi mìn.

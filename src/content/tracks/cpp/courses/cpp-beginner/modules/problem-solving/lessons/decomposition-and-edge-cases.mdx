@@ -1,0 +1,22 @@
+## The five-step method
+
+1. **Restate** the problem in your own words, one sentence. If you cannot, you are not ready to code.
+2. **Work an example by hand** — input, steps, output. The by-hand trace IS the algorithm sketch.
+3. **Find the edges first**: empty input, one element, duplicates, extremes, zero/negative. Write them as test cases *before* coding.
+4. **Decompose**: name the stages (parse → compute → format) — each becomes a function.
+5. **Implement the happy path, then the edges.** Compile often.
+
+## Why edges first
+
+Edge cases discovered after coding force redesign; discovered before coding, they only constrain it. "What if the list is empty?" changes your function's *shape* (early return? sentinel?) — asking late costs a rewrite, asking early costs a minute.
+
+## Worked micro-example
+
+"Return the second-largest value in a vector."
+
+- Restate: largest, then the largest among the rest.
+- By hand: `{4, 9, 2, 9}` → remove one 9 → second largest is 9 again (duplicates count!). `{5}` → none.
+- Edges: empty → throw or 0? Decide and document. One element → none. Duplicates of the max → still valid second-largest.
+- Decompose: `int second_largest(const std::vector<int>&)` — one pass tracking two values.
+
+The exercise set practices exactly this loop on progressively harder problems.

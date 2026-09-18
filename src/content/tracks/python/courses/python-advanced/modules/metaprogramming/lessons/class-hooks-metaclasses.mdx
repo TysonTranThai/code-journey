@@ -1,0 +1,36 @@
+## Class creation hooks — and real metaclasses
+
+Python gives you three hooks into class creation, in increasing power and cost:
+
+1. **`__init_subclass__`** — a plain inherited method called on the parent for
+   every new subclass. No magic syntax. Right choice for registration,
+   validation, and auto-wiring.
+2. **Class decorators** — transform a class after its body executes. Right
+   choice for one-shot patching, but nothing runs at *attribute* definition
+   time and subclasses do not inherit the effect.
+3. **Metaclasses** — control the *type* of the class itself: intercept class
+   creation via `Meta.__new__`, modify the namespace before the class exists,
+   enforce invariants across a hierarchy.
+
+```python
+class FrozenMeta(type):
+    def __new__(mcls, name, bases, ns):
+        cls = super().__new__(mcls, name, bases, ns)
+        allowed = set(ns.get("__annotations__", {}))
+        def _setattr(self, key, value):
+            if key not in allowed:
+                raise AttributeError(f"frozen: cannot set {key!r}")
+            object.__setattr__(self, key, value)
+        cls.__setattr__ = _setattr
+        return cls
+```
+
+A metaclass is justified when the *contract* belongs to the whole hierarchy and
+must hold even for code that forgets to opt in — ORMs, ABCs (`abc.ABCMeta`),
+enum (`EnumMeta`), and interface enforcement are the canonical cases.
+
+The professional bar, from the standard library's own history: `__init_subclass__`
+and `__set_name__` were added precisely so ordinary Python code could do what
+previously required a metaclass. Reach for the metaclass only when you must
+control the class object itself — namespaces, `__slots__` synthesis, class-level
+validation with custom keyword arguments consumed by the metaclass.

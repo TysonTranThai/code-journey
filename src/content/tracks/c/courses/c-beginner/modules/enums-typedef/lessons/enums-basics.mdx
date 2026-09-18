@@ -1,0 +1,36 @@
+## Declaring and using
+
+```c
+enum Color { RED, GREEN, BLUE };
+
+enum Color c = GREEN;
+```
+
+The compiler assigns values starting at 0: RED=0, GREEN=1, BLUE=2. You can
+pin or offset values:
+
+```c
+enum Level { LOW = 1, MEDIUM, HIGH };   // 1, 2, 3
+enum Mask  { BIT0 = 1, BIT2 = 4 };      // explicit
+```
+
+## Why not just ints?
+
+Magic numbers (`if (s == 2)`) hide meaning; enum names carry it
+(`if (s == STATE_PAUSED)`). The compiler also type-checks the intent, and
+switch coverage warnings catch missing cases.
+
+## Enums and switch
+
+```c
+enum Color invert(enum Color c) {
+    switch (c) {
+        case RED:   return BLUE;
+        case BLUE:  return RED;
+        case GREEN: return GREEN;
+    }
+    return c;   // defensive: reachable only on invalid input
+}
+```
+
+Each `case` names a constant — no more guessing what 1 meant.

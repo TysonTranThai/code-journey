@@ -1,0 +1,30 @@
+{
+  "id": "cb15-checkpoint-orders",
+  "title": "Order Pipeline",
+  "prompt": "Given the Order model in scope, implement `Order next_status(Order o)` advancing PENDING -> SHIPPED -> DELIVERED (DELIVERED stays), `int count_status(const Order *os, int n, Order s)` counting matches, and `int shipped_revenue(const Order *os, int n)` summing total_cents of SHIPPED orders.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\ntypedef enum { PENDING, SHIPPED, DELIVERED } Order;\ntypedef struct { int id; Order status; int total_cents; } OrderRec;\n",
+  "tests": [
+    {
+      "name": "advance",
+      "code": "CHECK_EQ(next_status(PENDING), SHIPPED);\nCHECK_EQ(next_status(SHIPPED), DELIVERED);",
+      "hint": "One step per call."
+    },
+    {
+      "name": "delivered stays",
+      "code": "CHECK_EQ(next_status(DELIVERED), DELIVERED);",
+      "hint": "Terminal state is stable."
+    },
+    {
+      "name": "count",
+      "code": "OrderRec os[] = {{1, PENDING, 100}, {2, SHIPPED, 200}, {3, PENDING, 300}};\nCHECK_EQ(count_status(os, 3, PENDING), 2);",
+      "hint": "Compare os[i].status."
+    },
+    {
+      "name": "revenue",
+      "code": "OrderRec os[] = {{1, SHIPPED, 100}, {2, DELIVERED, 400}, {3, SHIPPED, 50}};\nCHECK_EQ(shipped_revenue(os, 3), 150);",
+      "hint": "Only SHIPPED counts."
+    }
+  ]
+}

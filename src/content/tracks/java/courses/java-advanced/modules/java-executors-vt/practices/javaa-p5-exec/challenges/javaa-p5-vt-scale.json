@@ -1,0 +1,26 @@
+{
+  "id": "javaa-p5-vt-scale",
+  "title": "Virtual threads under load",
+  "prompt": "1. `static int vtFanout(int tasks)` — run `tasks` virtual threads via `newVirtualThreadPerTaskExecutor`, each sleeping 20ms then adding 1 to an AtomicInteger; return the final count. Must work for 10,000 tasks (a platform pool of equal size would blow the 30s sandbox ceiling — VTs make it trivial).\n2. `static boolean isVirtualInside()` — start a virtual thread that records `Thread.currentThread().isVirtual()` and return that record.\n3. `static int platformParallelism()` — return `Runtime.getRuntime().availableProcessors()` (the honest CPU-bound ceiling).\n4. `static boolean virtualThreadsHelpCpuBound()` — return false (VTs help waiting, not computing).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "10k virtual tasks complete",
+      "code": "\ncheckEq(Solution.vtFanout(10_000), 10_000, \"massive fanout on virtual threads\");\n",
+      "hint": "newVirtualThreadPerTaskExecutor + sleep 20ms each."
+    },
+    {
+      "name": "thread identity is virtual",
+      "code": "\ncheckTrue(Solution.isVirtualInside(), \"isVirtual() observed from inside\");\n",
+      "hint": "Record from within the virtual thread."
+    },
+    {
+      "name": "parallelism honesty",
+      "code": "\ncheckTrue(Solution.platformParallelism() >= 1, \"at least one core\");\ncheckTrue(!Solution.virtualThreadsHelpCpuBound(), \"VTs help waiting, not computing\");\n",
+      "hint": "availableProcessors is the CPU ceiling; VT claim is false for CPU-bound."
+    }
+  ],
+  "level": "real-world"
+}

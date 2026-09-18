@@ -1,0 +1,21 @@
+{
+  "id": "cppa1-explicit-conversions",
+  "title": "explicit Guards Implicit Conversions",
+  "prompt": "The starter's `Meters(int)` allows accidental implicit conversions like `Meters m = 42;`. Mark the constructor `explicit` (keep the user-defined literal working) so the tests prove conversions require intent.",
+  "difficulty": "advanced",
+  "level": "imitation",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <type_traits>\n\nstruct Meters {\n    int v;\n    // TODO: make this constructor so int->Meters never happens implicitly\n    Meters(int value) : v(value) {}\n};\n\nMeters operator\"\"_m(unsigned long long m);   // a literal that must still work\n",
+  "tests": [
+    {
+      "name": "conversion requires intent",
+      "code": "static_assert(!std::is_convertible_v<int, Meters>, \"int must not convert implicitly\");\nstatic_assert(std::is_constructible_v<Meters, int>, \"explicit construction still works\");\nMeters m{42};\nCHECK_EQ(m.v, 42);",
+      "hint": "Add explicit to the constructor: Meters m = 42; becomes ill-formed, Meters m{42}; keeps working."
+    },
+    {
+      "name": "the literal still constructs directly",
+      "code": "Meters run = 400_m;\nCHECK_EQ(run.v, 400);",
+      "hint": "In the literal, call Meters(static_cast<int>(m)) — direct-initialization, which explicit allows."
+    }
+  ]
+}

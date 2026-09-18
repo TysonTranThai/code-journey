@@ -1,0 +1,14 @@
+{
+  "title": "TaskFlow ops: nhã nhặn, trung thực, quan sát được",
+  "prompt": "Cài `TaskFlowOps` (cột mốc 3+4):\n\n- `shutdown()` — ngừng tiếp nhận (`running = False`), trả số in-flight về `requeued`, đưa `in_flight` về 0, đánh dấu `drained = True`\n- `job(job_id, principal)` đăng ký quyền sở hữu; `status_for(job_id, principal)` trả dict trạng thái cho owner, `None` với bất kỳ ai khác (không phân biệt forbidden, không có tham số as_user để tin)\n- `log(level, event, job_id=None, **fields)` — thêm một dòng JSON khóa-đã-sắp với `correlation_id` bằng job_id, che giấu password/token/secret/card_number thành '[REDACTED]'\n- `trip_breaker()` / `readiness()` — readiness trả `{'ready': running và không breaker_open, 'checks': {'intake': ..., 'dependencies': ...}}`\n\nKhởi động lại được: sau `shutdown()`, mọi công việc nằm trong `requeued` và không mất gì.",
+  "tests": [
+    {
+      "name": "Shutdown trả về queue; trạng thái kiểm quyền; log che giấu",
+      "hint": "Vòng đời, ủy quyền, và quan sát trong một bề mặt."
+    },
+    {
+      "name": "Readiness báo breaker",
+      "hint": "Probe phân biệt được check nào hỏng — đó mới là ý nghĩa của readiness."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "pi8-ckpt-notes",
+  "title": "Notes Repository",
+  "prompt": "Implement init_notes(conn) creating notes(id INTEGER PRIMARY KEY, title TEXT NOT NULL UNIQUE, body TEXT NOT NULL) and class NotesRepository(conn) with add(title, body) -> int (translate UNIQUE violation to ValueError 'duplicate title'), search(term) -> list[dict] of notes whose title CONTAINS term (LIKE with parameter-bound pattern; survives the injection test), and delete(note_id) -> bool.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import sqlite3\n\ndef init_notes(conn):\n    pass\n\nclass NotesRepository:\n    def __init__(self, conn):\n        pass\n\n    def add(self, title, body):\n        pass\n\n    def search(self, term):\n        pass\n\n    def delete(self, note_id):\n        pass\n",
+  "tests": [
+    {
+      "name": "add, duplicate translated",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.row_factory = sqlite3.Row\ninit_notes(conn)\nrepo = NotesRepository(conn)\nnid = repo.add('meeting', 'agenda')\ntry:\n    repo.add('meeting', 'again')\n    failed = False\nexcept ValueError as e:\n    failed = 'duplicate title' in str(e)\nassert failed",
+      "hint": "UNIQUE in schema; IntegrityError → ValueError('duplicate title')."
+    },
+    {
+      "name": "search matches substrings",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.row_factory = sqlite3.Row\ninit_notes(conn)\nrepo = NotesRepository(conn)\nrepo.add('team meeting', 'x')\nrepo.add('meetup', 'y')\nfound = repo.search('meet')\nassert {n['title'] for n in found} == {'team meeting', 'meetup'}",
+      "hint": "LIKE '%' || ? || '%' — the pattern is bound, not formatted."
+    },
+    {
+      "name": "injection via search is inert",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.row_factory = sqlite3.Row\ninit_notes(conn)\nrepo = NotesRepository(conn)\nrepo.add('safe', 'b')\nassert repo.search(\"%' OR '1'='1\") == []",
+      "hint": "Parameter-bound LIKE treats the payload as a literal substring."
+    },
+    {
+      "name": "delete reports reality",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.row_factory = sqlite3.Row\ninit_notes(conn)\nrepo = NotesRepository(conn)\nnid = repo.add('gone', 'x')\nassert repo.delete(nid) is True\nassert repo.delete(nid) is False",
+      "hint": "DELETE ... WHERE id = ?; rowcount decides True/False."
+    }
+  ]
+}

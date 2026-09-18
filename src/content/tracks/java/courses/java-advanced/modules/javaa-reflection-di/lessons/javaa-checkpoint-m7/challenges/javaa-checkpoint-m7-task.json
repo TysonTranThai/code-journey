@@ -1,0 +1,26 @@
+{
+  "id": "javaa-checkpoint-m7-task",
+  "title": "Checkpoint: full container",
+  "prompt": "Extend the practice Container (copy it in) with:\n1. Everything from before: recursive constructor injection, singleton cache by\nClass token, cycle detection throwing IllegalStateException(\"...circular...\").\n2. `public <T> boolean canResolve(Class<T> type)` — true iff resolve(type) would\nsucceed: every constructor parameter type must itself be resolvable (primitive or\narray parameter types cannot be injected -> false), and there must be no cycle\nreachable from type. MUST NOT throw for unresolvable types — answer the question.\ncanResolve must never mutate the singleton cache for types it merely inspects.\n3. `public int constructions` on the CONTAINER (public field) — incremented for every\nconstructor invocation the container performs. (Lets tests distinguish real\nconstruction from mere inspection.)",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "graph resolves and shares instances",
+      "code": "\nSolution.Container c = new Solution.Container();\nSolution.Facade f = c.resolve(Solution.Facade.class);\ncheckTrue(f.svc.repo != null, \"two-level injection\");\ncheckTrue(c.resolve(Solution.Service.class) == f.svc, \"singleton shared with graph\");\n",
+      "hint": "Recursive injection + memoization."
+    },
+    {
+      "name": "cycles answer, not crash",
+      "code": "\nSolution.Container c = new Solution.Container();\ntry { c.resolve(Solution.CycleA.class); checkTrue(false, \"resolve must throw\"); }\ncatch (IllegalStateException e) { checkTrue(e.getMessage().contains(\"circular\"), \"diagnostic\"); }\ncheckTrue(!c.canResolve(Solution.CycleA.class), \"cycle reported via canResolve\");\n",
+      "hint": "Both APIs agree on the cycle."
+    },
+    {
+      "name": "unresolvable types answered honestly",
+      "code": "\nSolution.Container c = new Solution.Container();\ncheckTrue(c.canResolve(Solution.Repo.class), \"plain class resolvable\");\ncheckEq(c.constructions, 0, \"canResolve NEVER constructs\");\ncheckTrue(!c.canResolve(int.class), \"primitives cannot be injected\");\ncheckTrue(!c.canResolve(String[].class), \"arrays cannot be injected\");\ncheckEq(c.constructions, 0, \"still zero constructions after failed probes\");\ncheckTrue(c.resolve(Solution.Repo.class) != null, \"resolve DOES construct\");\ncheckEq(c.constructions, 1, \"exactly one construction\");\n",
+      "hint": "Inspection without construction — counted."
+    }
+  ],
+  "level": "real-world"
+}

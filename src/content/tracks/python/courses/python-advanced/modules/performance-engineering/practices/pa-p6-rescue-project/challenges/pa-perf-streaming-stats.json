@@ -1,0 +1,21 @@
+{
+  "id": "pa-perf-streaming-stats",
+  "title": "Streaming running stats",
+  "prompt": "Implement `running_stats(numbers)` — a GENERATOR that yields `(count, running_total)` after consuming each number.\n\nGrading probe: the test feeds an infinite-ish source and only pulls the first 5 pairs — a materializing implementation (list(...)) hangs or blows up; a lazy one passes instantly.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "def running_stats(numbers):\n    # TODO: generator — yield (count, total) per input number",
+  "tests": [
+    {
+      "name": "pulls lazily from a hostile source",
+      "code": "class Hostile:\n    '''Yields 10**9 ones; materializing it is impossible in practice.'''\n    def __iter__(self):\n        self.n = 0\n        return self\n    def __next__(self):\n        self.n += 1\n        if self.n > 10**9:\n            raise StopIteration\n        return 1\n\nout = []\nfor pair in running_stats(Hostile()):\n    out.append(pair)\n    if len(out) == 5:\n        break\nassert out == [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)], f'out: {out}'\nprint('ok')",
+      "hint": "for-loop over the iterable, yield per step — nothing may call list() on the source."
+    },
+    {
+      "name": "finite source, exact pairs",
+      "code": "out = list(running_stats([10, 20, 30]))\nassert out == [(1, 10), (2, 30), (3, 60)]\nprint('ok')",
+      "hint": "Running total includes each new number."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,40 @@
+Một báo lỗi nói "tổng bị sai." Bắt đầu từ đâu? Từ một phương pháp, không
+phải từ một tâm trạng.
+
+## Vòng lặp có hiệu quả
+
+1. **Tái hiện** - tìm input nhỏ nhất gây ra bug. Bug mà bạn gọi là tới
+   đã chết một nửa.
+2. **Đọc bằng chứng** - stack trace, chính giá trị sai. "Tổng là 0" nói
+   nhiều hơn "tổng sai": số 0 thường nghĩa là vòng lặp chưa từng chạy,
+   biến tích lũy chưa từng được gán, hoặc một lần tra cứu hụt.
+3. **Đặt ra một giả thuyết** - một câu cụ thể, có thể bác bỏ: "tổng là 0
+   vì `items` rỗng khi `filter` chặn hết mọi thứ."
+4. **Thử giả thuyết giá rẻ** - in giá trị trung gian một lần
+   (`System.out.println`), hoặc step trong debugger. `items.size()` có
+   bằng 0 không? Giả thuyết được xác nhận hoặc bị xử tử - cả hai đều là
+   kiến thức.
+5. **Sửa nguyên nhân, không phải triệu chứng** - gán lại biến tại chỗ gọi
+   có thể che được lần crash này trong khi bug collection-rỗng vẫn sống
+   ở nơi khác.
+6. **Chứng minh nó đã chết** - thêm một test fail khi có bug và pass khi
+   không có. Đó là regression test, và đó là cách cùng một bug không bao
+   giờ浪费 thời gian bạn hai lần.
+
+## Debugger bạn sẵn có
+
+Dự án thật dùng debugger của IDE (breakpoint, step-over, soi biến). Trong
+khóa này sandbox cho bạn hai công cụ:
+
+- `System.out.println("items=" + items + " size=" + items.size())` -
+  một dòng, dùng một lần, biến mất trước khi commit.
+- Một **test** fail với message chính xác - những lỗi `checkEq` bạn thấy
+  suốt khóa học đúng là thứ đó: `expected X but got Y` ngay tại câu lệnh.
+
+## Đọc stack trace của người khác
+
+Từ dưới lên: lớp của bạn trước, thư viện sau. Dòng exception trên cùng
+nêu tên tội phạm (`NumberFormatException: For input string: "12x"`); các
+frame dưới cùng nêu hiện trường (`Main.parseCount(Main.java:8)`). Khi có
+chuỗi *cause* (`Caused by: ...`), đọc `Caused by` sâu nhất trước - đó
+thường là nguồn gốc thật.

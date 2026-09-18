@@ -1,0 +1,29 @@
+RAII — Resource Acquisition Is Initialization — is the single most important
+C++ idiom: wrap every resource in an object whose destructor releases it.
+Scope exit, including via exception, runs the destructor. Nothing leaks.
+
+```cpp
+class FileGuard {
+public:
+    explicit FileGuard(std::FILE* f) : f_{f} {}
+    ~FileGuard() { if (f_) std::fclose(f_); }
+
+    FileGuard(const FileGuard&) = delete;             // one owner
+    FileGuard& operator=(const FileGuard&) = delete;
+private:
+    std::FILE* f_;
+};
+
+void work() {
+    FileGuard g{std::fopen("data.txt", "r")};  // acquired
+    // ... even an exception here cannot leak the handle
+}                                              // destructor runs here
+```
+
+You have used RAII all along without naming it: `std::vector` owns its heap
+buffer; `std::string` owns its chars; `std::ofstream` owns a file handle.
+Smart pointers are just RAII for the case where *you* call `new`: they own
+a heap object and delete it in their own destructor.
+
+Ownership is the design word behind the acronym: exactly one piece of code
+is responsible for releasing each resource. Everything else borrows.

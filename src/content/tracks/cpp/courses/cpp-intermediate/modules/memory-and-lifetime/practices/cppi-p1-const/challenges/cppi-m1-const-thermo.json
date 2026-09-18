@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m1-const-thermo",
+  "title": "A const-correct thermometer",
+  "prompt": "Implement `struct Thermometer` with a private `double celsius_{0.0};`, `void set(double c)` storing the value, `double celsius() const` returning it, and `double fahrenheit() const` returning `celsius() * 9.0 / 5.0 + 32.0`. Both getters must be `const`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\n\nstruct Thermometer {\n    // your declarations and one private member\n};\n",
+  "tests": [
+    {
+      "name": "roundtrip",
+      "code": "Thermometer t;\nt.set(100.0);\nCHECK_NEAR(t.celsius(), 100.0, 1e-9);\nCHECK_NEAR(t.fahrenheit(), 212.0, 1e-9);",
+      "hint": "Getters marked const can be called on a const object later."
+    },
+    {
+      "name": "zero",
+      "code": "Thermometer t;\nCHECK_NEAR(t.fahrenheit(), 32.0, 1e-9);",
+      "hint": "Default value 0 °C is 32 °F."
+    },
+    {
+      "name": "const-object",
+      "code": "Thermometer t;\nt.set(25.0);\nconst Thermometer& view = t;\nCHECK_NEAR(view.celsius(), 25.0, 1e-9);",
+      "hint": "A const reference may only call const members — proof your getters are const."
+    }
+  ],
+  "level": "combination"
+}

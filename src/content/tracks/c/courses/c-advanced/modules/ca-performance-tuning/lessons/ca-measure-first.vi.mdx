@@ -1,0 +1,24 @@
+## Vòng lặp ngân sách
+
+Làm ngược từ ngân sách thời gian: nếu một lần lặp tốn `p` mili giây và bạn được phép tiêu `B` mili giây, hãy chạy `ceil(B / p)` lần lặp — và chặn chia cho không. Suy số lần lặp từ ngân sách (thay vì hằng số thừa số) làm benchmark dừng được *và* so sánh được giữa các máy.
+
+## Giữ optimizer trung thực
+
+```c
+volatile double sink = 0.0;          /* hoặc cộng dồn rồi in */
+for (size_t i = 0; i < iters; i++) sink += work(i);
+```
+
+Không có kết quả được tiêu thụ, optimizer có thể xóa cả vòng lặp: tính một giá trị không ai dùng không phải hành vi quan sát được (mô-đun 2). Sink (hoặc checksum in ra) biến công việc thành thật.
+
+## Các mức tối ưu, nói thẳng
+
+- `-O0`: biên dịch nhanh, code chậm — chế độ debug. Biến sống trên bộ nhớ; bước qua debugger vẫn tỉnh táo.
+- `-O2`/`-O3`: inline, vector hóa, sắp xếp lại quyết liệt. Code có thể quan sát được giống hệt mà thực thi khác hẳn.
+- Khoảng cách giữa -O0 và -O2 trên cùng mã nguồn thường rất lớn — vì thế "nó cảm giác chậm trong debug" không phải một tuyên bố hiệu năng.
+
+ISO C không định nghĩa gì trong số này: mức tối ưu là cờ compiler (GCC/Clang ở đây, ghi nhãn rõ). Hành vi không xác định cộng tối ưu hóa bằng vườn thú của mô-đun 4 — hãy đo với đúng cờ bạn giao hàng.
+
+## Thói quen chống thoái hóa
+
+Một con số không có đường cơ sở là giai thoại. Giữ benchmark trong repo, ghi lại máy, cờ, và đầu vào; so sánh cùng loại với cùng loại. Khi một thay đổi tự nhận 20%, chạy lại có và không có nó. Nếu độ chênh không tái hiện, nó chưa từng xảy ra.

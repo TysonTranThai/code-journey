@@ -1,0 +1,37 @@
+## Constructors: born valid
+
+A constructor runs automatically when an object is created. Its job is to leave the object **valid** — no "uninitialized then fixed later" window:
+
+```cpp
+class Timer {
+public:
+    explicit Timer(std::string name) : name_(std::move(name)), start_(std::chrono::steady_clock::now()) {}
+
+private:
+    std::string name_;
+    std::chrono::steady_clock::time_point start_;
+};
+```
+
+- The **member initializer list** (after `:`) initializes members directly — prefer it over assigning in the body.
+- `explicit` stops surprise conversions from single arguments (`Timer t = "x";` will not compile — good).
+- `std::move(name)` passes the string's *guts* into the member instead of copying (the standard library does this everywhere; you use `std::move` in constructors, never on const objects, and never manually on locals right before last use without a reason — module 12 revisits).
+
+## Destructors: born valid, die clean
+
+The destructor `~Timer()` runs automatically at scope exit, in reverse construction order. You rarely write one in Beginner (members clean themselves up — the RAII promise of module 12), but you must know it exists and runs **deterministically**: this is why C++ has no `finally` and does not need one.
+
+## const member functions
+
+```cpp
+long long balance() const { return balance_cents_; }   // promises: no mutation
+```
+
+`const` after the parameter list means "calling this does not modify the object". Non-const objects and const references (i.e., nearly every parameter in well-written code) can only call const methods — so mark every read-only method const, or your API becomes unusable from `const BankAccount&` parameters.
+
+## The discipline, summarized
+
+- Constructor: make every member valid.
+- Methods: enforce the invariant on every mutation.
+- const on every read-only method.
+- Everything else stays private.

@@ -1,0 +1,32 @@
+## Compile with warnings ON, always
+
+```sh
+gcc -std=c23 -Wall -Wextra -o app main.c
+```
+
+`-Wall -Wextra` is the default posture for this course's challenges too: the
+build warnings you see are the same ones the grader sees.
+
+## The warnings that mark real bugs
+
+- `unused variable` — you computed something and never used it: often a
+  forgotten step
+- `uninitialized` — the value is read before any assignment: undefined
+  behavior waiting to happen
+- `wrong format specifier` — `printf("%d", 3.14)` prints garbage: the type
+  and the format must agree
+- `control reaches end of non-void function` — a code path returns nothing
+- `assignment in condition` — `if (x = 5)` assigns, then tests 5; you
+  probably meant `==`
+
+## Read errors bottom-up
+
+The FIRST error is the real one; later errors are often its shockwaves. Fix
+the first, recompile, repeat. And read the caret line (`^`) — the compiler
+points at the exact token it choked on.
+
+## Error vs warning
+
+A warning compiles anyway — the program runs, wrongly. The discipline:
+**treat every warning as a bug**. `-Werror` (turn warnings into errors) is
+how professional builds enforce it.

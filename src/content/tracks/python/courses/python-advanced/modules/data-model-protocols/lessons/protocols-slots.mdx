@@ -1,0 +1,52 @@
+## Protocols, special methods, and `__slots__`
+
+Python's built-in behaviors are all data-model hooks. Objects "become"
+iterable, sized, comparable, or callable by defining the right special method:
+
+| You write | Python calls | Enables |
+|---|---|---|
+| `len(x)` | `x.__len__` | sizing |
+| `for a in x` | `iter(x)` → `x.__iter__` | iteration |
+| `x[k]` | `x.__getitem__` | indexing / sequences |
+| `k in x` | `x.__contains__` (or falls back to `__iter__`) | membership |
+| `x == y` | `x.__eq__` | equality |
+| `x()` | `x.__call__` | callable objects |
+| `with x:` | `x.__enter__` / `x.__exit__` | context managers |
+
+Slicing arrives as **slice objects**: `x[1:5]` calls
+`__getitem__(slice(1, 5, None))`. A robust `__getitem__` handles both `int`
+and `slice`:
+
+```python
+def __getitem__(self, index):
+    if isinstance(index, slice):
+        return type(self)(self._data[index])
+    return self._data[index]
+```
+
+**Structural typing with `typing.Protocol`** (3.8+) lets a checker verify "has
+these methods" without inheritance — duck typing, statically checked:
+
+```python
+from typing import Protocol, runtime_checkable
+
+@runtime_checkable
+class Closeable(Protocol):
+    def close(self) -> None: ...
+
+def shutdown(x: Closeable) -> None:
+    x.close()
+```
+
+**`__slots__`** replaces the per-instance `__dict__` with fixed slots:
+less memory for millions of instances, faster attribute access, and a typo
+becomes `AttributeError` instead of a silent new attribute. Cost: no dynamic
+attributes unless you add `__dict__` back, and care needed with multiple
+inheritance (two slotted parents with nonempty slots conflict).
+
+```python
+class Vector:
+    __slots__ = ("x", "y")
+    def __init__(self, x, y):
+        self.x, self.y = x, y
+```

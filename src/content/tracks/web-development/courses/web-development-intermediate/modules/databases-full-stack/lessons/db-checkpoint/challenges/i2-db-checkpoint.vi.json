@@ -1,0 +1,19 @@
+{
+  "id": "i2-db-checkpoint",
+  "title": "Bàn dữ liệu",
+  "prompt": "Viết BA hàm. 1) `joinPlan(query)` — cho mô tả truy vấn mong muốn, trả về loại join: \"users and their tasks (skip users with none)\" => \"inner\"; \"all users with task counts (zero included)\" => \"left\"; \"all tasks with their tag names\" (nhiều-nhiều) => \"inner-two\" (hai join); còn lại => \"none\". 2) `txDecision(steps, hasFailureRisk)` — trả về \"transaction\" khi có 2+ bước ghi HOẶC hasFailureRisk; \"single\" khi đúng một bước ghi và không rủi ro; \"readonly\" khi không có bước ghi nào. 3) `countQueries(taskCount, pattern)` — pattern \"n+1\" => taskCount + 1 query; \"join\" => 1; \"in-clause\" => 2.",
+  "tests": [
+    {
+      "name": "loại join khớp ý định",
+      "hint": "Việc giữ lại hàng quyết định inner vs left; bảng nối cần hai bước nhảy."
+    },
+    {
+      "name": "transaction đúng chỗ của nó",
+      "hint": "Sắp các check: zero, rồi nhiều-hoặc-rủi-ro, rồi single."
+    },
+    {
+      "name": "đếm N+1 trung thực",
+      "hint": "Ba pattern, ba công thức."
+    }
+  ]
+}

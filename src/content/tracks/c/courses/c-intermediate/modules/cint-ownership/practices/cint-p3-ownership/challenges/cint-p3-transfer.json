@@ -1,0 +1,16 @@
+{
+  "id": "cint-p3-transfer",
+  "title": "Ownership Transfer Protocols",
+  "prompt": "Implement the three transfer flavors:\n\n```c\n/* STORE: copies s into the slot; caller keeps ownership of its own copy. */\nvoid store_copy(char **slot, const char *s);\n/* TAKE: slot now owns s's memory (no copy). Caller must not free s. */\nvoid take_ownership(char **slot, char *s);\n/* RELEASE: hands ownership back; returns the pointer and empties the slot. */\nchar *release(char **slot);\n```\n\nNULL-safe throughout: any NULL argument is a no-op (release returns NULL).",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "copy vs take vs release",
+      "code": "\nchar *slot = NULL;\nstore_copy(&slot, \"copied\");\nCHECK_STR_EQ(slot, \"copied\");\nchar *mine = malloc(6);\nmemcpy(mine, \"taken\", 6);\ntake_ownership(&slot, mine);\nCHECK_STR_EQ(slot, \"taken\");\nCHECK_EQ(slot, mine);            /* no copy: same pointer */\nchar *back = release(&slot);\nCHECK_EQ(back, mine);\nCHECK_NULL(slot);\nfree(back);                       /* caller owns it again */\nstore_copy(NULL, \"x\");            /* no-ops */\ntake_ownership(NULL, NULL);\nCHECK_EQ(release(NULL), NULL);\n",
+      "hint": "store_copy strdups; take stores the pointer itself; release reads and NULLs."
+    }
+  ],
+  "level": "imitation"
+}

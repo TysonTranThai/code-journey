@@ -1,0 +1,26 @@
+{
+  "id": "cb22-balance",
+  "title": "Running Balance",
+  "prompt": "Given the Txn model in scope, implement `int after_balance(const Txn *txs, int n, int start)` returning start plus every transaction's cents (expenses are negative cents).",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\ntypedef struct { int id; int cents; int cat; } Txn;\n",
+  "tests": [
+    {
+      "name": "mixed",
+      "code": "Txn t[] = {{1, -200, 1}, {2, 1000, 2}, {3, -300, 1}};\nCHECK_EQ(after_balance(t, 3, 500), 1000);",
+      "hint": "500 - 200 + 1000 - 300."
+    },
+    {
+      "name": "empty",
+      "code": "Txn t[1];\nCHECK_EQ(after_balance(t, 0, 42), 42);",
+      "hint": "No transactions: unchanged."
+    },
+    {
+      "name": "all negative",
+      "code": "Txn t[] = {{1, -100, 1}, {2, -50, 1}};\nCHECK_EQ(after_balance(t, 2, 100), -50);",
+      "hint": "Can go below zero."
+    }
+  ],
+  "level": "independent"
+}

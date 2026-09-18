@@ -1,0 +1,16 @@
+## The gate (mini-build)
+
+A resilient API client — the shape from the lesson, assembled:
+
+1. `ApiClient(HttpClient http)` — injected client (Module 11 discipline).
+2. `GetUserAsync(int id, CancellationToken ct)` → GET `/users/{id}`.
+   Outcomes: `"user:<name>"` on 200, `"notfound"` on 404,
+   `"failed"` on any other status.
+3. `GetUserWithRetryAsync(int id, int maxAttempts, CancellationToken ct)` —
+   same contract, but 5xx attempts are retried with the harness's recorded
+   delays (non-decreasing, capped at 50 ms); 404 is NOT retried.
+4. Cancellation wins: a pre-cancelled token throws
+   OperationCanceledException before any request.
+
+Provided: `CjStubHandler` (records requests, replays scripted responses,
+records fake delays).

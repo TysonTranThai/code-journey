@@ -1,0 +1,44 @@
+`with` guarantees cleanup **even when an exception flies through**. You use
+it daily with files — now build your own:
+
+```python
+class Timer:
+    def __enter__(self):
+        self.start = time.monotonic()
+        return self                    # bound to the as-variable
+
+    def __exit__(self, exc_type, exc, tb):
+        self.elapsed = time.monotonic() - self.start
+        return False                   # do not swallow exceptions
+
+with Timer() as t:
+    do_work()
+print(t.elapsed)
+```
+
+`__exit__` receives the exception details (or None). Returning `True`
+suppresses the exception; returning `False` (the usual choice) lets it
+propagate. That decision is the whole error-handling story of context
+managers: **cleanup always runs; failures stay visible.**
+
+## The lightweight way: @contextmanager
+
+For simple cases, a generator with `@contextmanager` reads better than a
+class:
+
+```python
+from contextlib import contextmanager
+
+@contextmanager
+def indent_log(depth):
+    print("  " * depth + ">")
+    yield                        # everything before = __enter__, after = __exit__
+    print("  " * depth + "<")
+```
+
+## Why not try/finally?
+
+`with` **is** try/finally with a name and a protocol. The advantage is
+reusability: write the cleanup once, use it at fifty call sites, and nothing
+forgets it. Resource discipline — connections, locks, temp files — should be
+invisible to callers, and context managers are the tool that makes it so.

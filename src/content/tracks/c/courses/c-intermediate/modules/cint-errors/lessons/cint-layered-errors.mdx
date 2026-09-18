@@ -1,0 +1,57 @@
+## Swallowing is the original sin
+
+```c
+int load_config(Config *c) {
+    if (read_file(c) != 0) return 0;      /* failed, but reports success */
+    return 0;
+}
+```
+
+A layer that converts failure into success doesn't remove the failure —
+it *hides* it, so the bug surfaces three layers away from its cause.
+The opposite sin is conflation: returning the same code for "file
+missing" and "file unreadable", so the caller cannot react differently.
+The middle path is **wrap and add context**:
+
+```c
+/* layer 1 returns: 0 ok, -1 io error */
+/* layer 2 adds meaning without lying: */
+int load_app(App *app) {
+    if (load_config(&app->cfg) != 0) return CFG_ERR;     /* distinct code */
+    if (load_assets(&app->art) != 0) return ASSET_ERR;   /* distinct code */
+    return OK;
+}
+```
+
+Each layer translates the codes below it into codes that mean something
+at its own abstraction level. The caller of `load_app` does not care
+*which* file read failed — it cares that configuration, specifically,
+is broken.
+
+## Construction can fail: two-phase init
+
+Constructors in C cannot return errors inside the object — so the
+idiom is either NULL-returning constructors or **two-phase init**:
+
+```c
+/* phase 1: make it valid-but-empty; returns error code */
+int conn_init(Conn *c);
+/* phase 2: attach resources; returns error code */
+int conn_connect(Conn *c, const char *target);
+/* teardown is always safe, from any state */
+void conn_destroy(Conn *c);
+```
+
+The rule that makes it work: `destroy` must be safe from *every*
+reachable state — freshly-init'd, connected, or failed-connect. That
+invariant is testable: init, destroy; init, connect-fail, destroy;
+init, connect, destroy — no leak, no crash in any order.
+
+## The panic boundary
+
+Some failures are not recoverable by the layer that sees them: a NULL
+*self* argument is a *contract violation by the caller* — a programming
+error, not a runtime condition. Real APIs either crash fast (assert)
+with a message naming the file/line, or document the UB honestly.
+Silently "handling" a NULL self hides the bug from the only person who
+can fix it: the programmer who made the call.

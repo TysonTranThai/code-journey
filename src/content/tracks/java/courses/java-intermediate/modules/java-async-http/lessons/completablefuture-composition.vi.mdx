@@ -1,0 +1,25 @@
+## CompletableFuture: soạn async work
+
+`Future` chỉ *chờ*. `CompletableFuture` *soạn đồ*:
+
+```java
+CompletableFuture<Integer> price =
+    CompletableFuture.supplyAsync(() -> fetchPrice("USD"))
+        .thenApply(p -> p * 100)               // biến đổi
+        .thenCombine(otherFuture, Integer::sum) // nối hai pipeline
+        .exceptionally(ex -> -1);               // giá trị dự phòng
+```
+
+Mô hình tâm trí: một chuỗi stage; mỗi stage chạy khi đầu vào của nó hoàn
+tất.
+- `supplyAsync` — bắt đầu từ giá trị sinh trên thread khác
+- `thenApply` — map giá trị
+- `thenCompose` — nối một async call *phụ thuộc* (flatMap)
+- `thenCombine` — trộn hai chuỗi độc lập
+- `allOf` / `anyOf` — chờ nhiều / cái đầu tiên
+- `exceptionally` / `handle` — phục hồi hoặc biến đổi thất bại
+
+Quy tắc vàng: ngoại lệ nhảy cóc tới stage phục hồi gần nhất — một
+`exceptionally` cuối chuỗi phủ mọi bước phía trên.
+Executor mặc định là ForkJoinPool chung; truyền executor riêng khi cần
+cô lập task.

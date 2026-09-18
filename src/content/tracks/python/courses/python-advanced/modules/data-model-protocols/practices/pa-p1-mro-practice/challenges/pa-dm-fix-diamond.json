@@ -1,0 +1,21 @@
+{
+  "id": "pa-dm-fix-diamond",
+  "title": "Repair a broken diamond",
+  "prompt": "The hierarchy below initializes `Base.__init__` TWICE when `D` is constructed (the effects list gets two entries): A and B bypass cooperation with direct calls, and D adds a belt-and-braces direct call on top of its own super() chain.\n\nFix A, B, and D so that every construction — D(), A(), or B() — appends exactly one 'base' entry, using cooperative `super()` throughout. Do not change `Base`.\n\nGiven broken code:\n\n```python\nclass A(Base):\n    def __init__(self):\n        Base.__init__(self)\n\nclass B(Base):\n    def __init__(self):\n        Base.__init__(self)\n\nclass D(B, A):\n    def __init__(self):\n        super().__init__()\n        Base.__init__(self)\n```",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class Base:\n    effects = []\n\n    def __init__(self):\n        Base.effects.append('base')\n\n# TODO: redefine A(Base), B(Base), D(B, A) with cooperative __init__\n\ndef construct():\n    Base.effects.clear()\n    D()\n    return list(Base.effects)\n\ndef construct_each():\n    out = []\n    for cls in (A, B):\n        Base.effects.clear()\n        cls()\n        out.append(list(Base.effects))\n    return out",
+  "tests": [
+    {
+      "name": "single cooperative init for D",
+      "code": "assert construct() == ['base'], f\"effects: {construct()}\"\nprint('ok')",
+      "hint": "The MRO D→B→A→Base must pass through Base.__init__ exactly once."
+    },
+    {
+      "name": "single init for every class",
+      "code": "assert construct_each() == [['base'], ['base']], f\"each: {construct_each()}\"\nprint('ok')",
+      "hint": "Cooperative super() must not skip or repeat Base for any single-parent class either."
+    }
+  ],
+  "level": "debugging"
+}

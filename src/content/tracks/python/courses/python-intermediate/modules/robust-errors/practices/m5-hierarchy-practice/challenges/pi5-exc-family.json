@@ -1,0 +1,26 @@
+{
+  "id": "pi5-exc-family",
+  "title": "App Exception Family",
+  "prompt": "Define AppError(Exception), ValidationError(AppError), and NotFoundError(AppError). Then implement get_item(items: dict, key) that raises NotFoundError (message must contain the key) for missing keys and returns the value otherwise.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "class AppError(Exception):\n    pass\n\nclass ValidationError(AppError):\n    pass\n\nclass NotFoundError(AppError):\n    pass\n\ndef get_item(items, key):\n    pass\n",
+  "tests": [
+    {
+      "name": "found returns value",
+      "code": "assert get_item({'a': 1}, 'a') == 1",
+      "hint": "Plain lookup when present."
+    },
+    {
+      "name": "missing raises NotFoundError",
+      "code": "try:\n    get_item({}, 'x')\n    failed = False\nexcept NotFoundError as e:\n    failed = 'x' in str(e)\nexcept Exception:\n    failed = False\nassert failed",
+      "hint": "Raise NotFoundError with the key in the message."
+    },
+    {
+      "name": "hierarchy is real",
+      "code": "try:\n    get_item({}, 'x')\nexcept AppError:\n    pass\nelse:\n    raise AssertionError('must be an AppError')",
+      "hint": "NotFoundError must be catchable as AppError."
+    }
+  ],
+  "level": "guided"
+}

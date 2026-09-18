@@ -1,0 +1,20 @@
+{
+  "id": "i2-omit-pick",
+  "title": "Pick & Omit",
+  "prompt": "Implement the runtime twins of the utility types: `pick(obj, keys)` returns only the listed keys that exist, and `omit(obj, keys)` returns everything except them. Neither may mutate `obj`; both return fresh objects.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function pick(obj, keys) {\n  // your code\n}\n\nfunction omit(obj, keys) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "pick keeps listed keys only",
+      "code": "const fn = new Function(code + \"\\nreturn { pick, omit };\");\nconst { pick, omit } = fn();\nconst u = { id: 1, email: \"a\", password: \"x\" };\nconst pub = pick(u, [\"id\", \"email\"]);\nif (pub.id !== 1 || pub.password !== undefined) throw new Error(\"Only listed keys survive.\");\nif (u.password !== \"x\") throw new Error(\"The input must not be mutated.\");",
+      "hint": "Build a fresh object key by key."
+    },
+    {
+      "name": "omit removes listed keys",
+      "code": "const fn = new Function(code + \"\\nreturn { pick, omit };\");\nconst { pick, omit } = fn();\nconst u = { id: 1, email: \"a\", password: \"x\" };\nconst safe = omit(u, [\"password\"]);\nif (safe.password !== undefined || safe.email !== \"a\") throw new Error(\"Listed keys removed, rest survive.\");\nif (Object.keys(u).length !== 3) throw new Error(\"Input untouched.\");\nconst both = omit(pick(u, [\"id\", \"email\"]), [\"email\"]);\nif (both.id !== 1 || both.email !== undefined) throw new Error(\"The utilities compose.\");",
+      "hint": "Copy everything, then delete the listed keys from the copy."
+    }
+  ]
+}

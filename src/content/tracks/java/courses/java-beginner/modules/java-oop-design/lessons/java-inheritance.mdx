@@ -1,0 +1,49 @@
+**Inheritance** lets a class reuse and specialize another class's fields and
+methods. The parent is the *superclass*, the child the *subclass*:
+
+```java
+class Vehicle {
+    private final String name;
+    private int speed = 0;
+
+    Vehicle(String name) { this.name = name; }
+
+    public void accelerate(int by) { speed += by; }
+    public int getSpeed() { return speed; }
+    public String getName() { return name; }
+}
+
+class ElectricCar extends Vehicle {
+    private int batteryPercent = 100;
+
+    public ElectricCar(String name) { super(name); }   // build the parent first
+
+    public void drainBattery(int by) { batteryPercent -= by; }
+    public int getBatteryPercent() { return batteryPercent; }
+}
+```
+
+`ElectricCar` **is-a** Vehicle: it accelerates, has a speed and a name —
+inherited — plus its own battery. Two new keywords:
+
+- `extends` declares the relationship. Java allows **one** direct
+  superclass (no diamond of parents).
+- `super(...)` calls the parent constructor; it must be the FIRST statement.
+  If you omit it, Java inserts a silent `super()` — which only compiles when
+  the parent has a no-argument constructor.
+
+`private` fields are inherited but *invisible* to the subclass — the child
+owns them without being able to touch them directly. That is deliberate:
+the parent's rules stay intact. When a subclass genuinely needs access,
+`protected` opens the door to subclasses (while still closing it to the
+world).
+
+**Inheritance is a design decision, not a default.** It fits when the
+relationship is a true is-a that stays true forever ("an ElectricCar is a
+Vehicle"). When the relationship is has-a ("a Car **has an** Engine"), use
+**composition** — a field holding the other object — which is more flexible
+and never breaks under change. Rule of thumb for this course: reach for
+inheritance only when every subclass must satisfy the same contract; reach
+for composition when you merely want to reuse behavior.
+
+**Next:** overriding — specializing inherited behavior.

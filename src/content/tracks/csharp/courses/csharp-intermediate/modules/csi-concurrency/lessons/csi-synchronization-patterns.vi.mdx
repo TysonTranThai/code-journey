@@ -1,0 +1,54 @@
+## SemaphoreSlim: giới hạn truy cập
+
+Semaphore đếm NGƯỢC số slot. `Wait()` lấy một, `Release()` trả lại — khởi
+tạo 0 thì là cổng tín hiệu; `new SemaphoreSlim(3)` giới hạn đồng thời tối
+đa 3:
+
+```csharp
+private readonly SemaphoreSlim _slots = new(3);
+await _slots.WaitAsync();
+try { await UseResourceAsync(); }
+finally { _slots.Release(); }
+```
+
+Luôn release trong `finally`. (Module 9: `WaitAsync` là bản async; `Wait()`
+đồng bộ chặn thread.)
+
+## Concurrent collection: đừng tự lock cái map
+
+`ConcurrentDictionary<TKey, TValue>` an toàn luồng theo từng thao tác, và
+các phương thức đặc biệt của nó là NGUYÊN TỬ — đó mới là điểm nhấn:
+
+```csharp
+int now = _counts.AddOrUpdate(path, 1, (key, old) => old + 1);
+```
+
+Lỗi kinh điển là check-then-act đặt lên trên nó
+(`if (!dict.ContainsKey(k)) dict[k] = v;` — hai thao tác, một race nằm giữa).
+Còn `ConcurrentQueue<T>`, `ConcurrentStack<T>`, `ConcurrentBag<T>` cho các
+shape producer/consumer; `BlockingCollection<T>` bọc chúng với giới hạn và
+chặn. Đọc `ConcurrentDictionary` khi thread khác đang ghi là an toàn; bất
+biến nhiều bước qua nhiều entry vẫn cần lock của bạn.
+
+## Deadlock: vòng chờ tròn
+
+Hai thread mỗi bên giữ lock mà bên kia cần; không bên nào tiến được:
+
+```
+A: lock(a) ... lock(b)     B: lock(b) ... lock(a)
+```
+
+Chữa chuẩn là THỨ TỰ LOCK: lấy nhiều lock theo một thứ tự toàn cục nhất quán
+(ví dụ theo Id) — không thể tạo thành chu kỳ. Nguyên tắc khác: không gọi
+code lạ khi đang giữ lock; giữ vùng lock gọn; ưu tiên số lock tối thiểu bảo
+vệ bất biến.
+
+## Interlocked + lock trong một thiết kế
+
+Bộ đếm → Interlocked. Bất biến nhiều trường (chuyển tiền giữa tài khoản,
+lấy một work item) → lock quanh TOÀN BỘ check-and-act.
+
+## Kiểm tra hiểu biết
+
+- `dict[k] = v` trên ConcurrentDictionary đủ cho "thêm nếu chưa có"? (Không — dùng GetOrAdd/AddOrUpdate; check + indexer là hai thao tác.)
+- Thứ tự lock phòng deadlock thế nào? (Không thể có chu kỳ nếu mọi người lấy lock theo cùng thứ tự toàn cục.)

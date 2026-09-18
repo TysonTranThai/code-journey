@@ -1,0 +1,22 @@
+## Luật sao chép
+
+```csharp
+struct PointS { public double X, Y; }
+class  PointC { public double X, Y; }
+
+var s1 = new PointS { X = 1 };
+var s2 = s1;  s2.X = 99;    // s1.X vẫn 1 — s2 là BẢN SAO
+
+var c1 = new PointC { X = 1 };
+var c2 = c1;  c2.X = 99;    // c1.X là 99! c2 là CÙNG đối tượng
+```
+
+Biến **struct** *chính là* dữ liệu (value type): phép gán sao chép nó. Biến **class** *trỏ tới* dữ liệu (reference type): phép gán dùng chung nó. Đây là khác biệt thời-giant-chạy quan trọng nhất trong C#.
+
+## Chọn kiểu nào
+
+- Thứ nhỏ, ngắn hạn, dạng dữ liệu, việc sao chép vô hại và định danh vô nghĩa → `struct` (tốt hơn là `readonly record struct`).
+- Thực thể có định danh và vòng đời — tài khoản ngân hàng, cửa sổ UI → `class`.
+- Dữ liệu được chuyển tay và so sánh theo nội dung → `record` (kiểu tham chiếu với ngữ nghĩa giá trị).
+
+Hướng dẫn cho người mới: mặc định dùng class và record; chỉ dùng struct khi sao chép thật sự là điều bạn muốn. Lạm dụng struct lớn có thể biến đổi sẽ tạo ra những bug sao-chép bí ẩn — đúng cái bẫy phần luyện tập dưới đây.

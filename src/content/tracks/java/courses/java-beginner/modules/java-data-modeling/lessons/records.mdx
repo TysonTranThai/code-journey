@@ -1,0 +1,43 @@
+A **record** (Java 16+) declares an immutable data carrier in one line:
+
+```java
+record Point(int x, int y) { }
+
+Point p = new Point(3, 4);
+p.x();                    // accessor named like the component, not getX()
+```
+
+From that single line the compiler generates: `private final` fields for
+every component, an accessor per component (`x()`, `y()`), a constructor
+taking all components in order, `equals` and `hashCode` comparing ALL
+components, and a `toString` like `Point[x=3, y=4]`. Compare that with the
+30 lines of class, constructor, getters, equals, hashCode, toString you
+would have typed in Module 7 — records delete ceremony, not meaning.
+
+**When to use what** — the modeling decision tree:
+
+- **record**: immutable value whose identity IS its data (two `Point(3,4)`s
+  are interchangeable). Money, coordinates, name pairs, API responses.
+- **enum**: a closed set of named constants (OrderStatus).
+- **class**: mutable state, partial construction, behavior-rich objects
+  (Account with a changing balance), or unique identity (a bank account is
+  its number, not its balance — two accounts with equal balances are NOT
+  the same account).
+
+Records may validate: a **compact constructor** runs before fields are set:
+
+```java
+record Temperature(double celsius) {
+    Temperature {                      // compact form: no parameter list
+        if (celsius < -273.15) {
+            throw new IllegalArgumentException("below absolute zero");
+        }
+    }
+}
+```
+
+Records cannot extend a class (they already extend `java.lang.Record`) but
+can implement interfaces — and nested records give your challenges clean,
+readable data types.
+
+**Next:** equality and hashing, the contract behind collections.

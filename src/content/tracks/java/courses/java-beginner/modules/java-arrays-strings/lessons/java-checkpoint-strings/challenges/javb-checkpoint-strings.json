@@ -1,0 +1,30 @@
+{
+  "id": "javb-checkpoint-strings",
+  "title": "Checkpoint: Name Analyzer",
+  "prompt": "\nThe Name Analyzer crunches names with the full string toolbox.\n\nImplement:\n\n1. `static String initials(String first, String last)` — both initials\n   upper-cased with a dot between: `initials(\"ada\",\"lovelace\")` is `\"A.L.\"`.\n   Null or blank parts are skipped entirely (`initials(null,\"hopper\")` is\n   `\"H.\"`; both blank → `\"\"`).\n2. `static int vowelCount(String text)` — count `a e i o u` in any case.\n3. `static String maskEmail(String email)` — replace everything before and\n   including the `@` with `\"***@\"`; input without `@` comes back unchanged.\n   `maskEmail(\"ada@example.com\")` is `\"***@example.com\"`.\n4. `static boolean isUsername(String s)` — a valid username is 3–16\n   characters, letters/digits/underscore only, and does NOT start with a\n   digit. Null is invalid.\n",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String initials(String first, String last) {\n        return \"\";\n    }\n\n    public static int vowelCount(String text) {\n        return 0;\n    }\n\n    public static String maskEmail(String email) {\n        return \"\";\n    }\n\n    public static boolean isUsername(String s) {\n        return false;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "initials",
+      "code": "\nCjTestBase.checkEq(Solution.initials(\"ada\", \"lovelace\"), \"A.L.\", \"both parts\");\nCjTestBase.checkEq(Solution.initials(null, \"hopper\"), \"H.\", \"first skipped\");\nCjTestBase.checkEq(Solution.initials(\"ada\", \"\"), \"A.\", \"last skipped\");\nCjTestBase.checkEq(Solution.initials(\"\", \"  \"), \"\", \"both blank\");\n",
+      "hint": "Skip blank parts; dot AFTER each kept initial."
+    },
+    {
+      "name": "vowel counting",
+      "code": "\nCjTestBase.checkEq(Solution.vowelCount(\"Ada Lovelace\"), 6, \"mixed case\");\nCjTestBase.checkEq(Solution.vowelCount(\"xyz\"), 0, \"no vowels\");\n",
+      "hint": "Lowercase the text, then count the five letters."
+    },
+    {
+      "name": "email masking",
+      "code": "\nCjTestBase.checkEq(Solution.maskEmail(\"ada@example.com\"), \"***@example.com\", \"normal email\");\nCjTestBase.checkEq(Solution.maskEmail(\"no-at-sign\"), \"no-at-sign\", \"unchanged\");\n",
+      "hint": "indexOf('@') decides: mask or pass through."
+    },
+    {
+      "name": "username rules",
+      "code": "\nCjTestBase.checkTrue(Solution.isUsername(\"ada_99\"), \"letters, digits, underscore\");\nCjTestBase.checkTrue(!Solution.isUsername(\"9lives\"), \"no leading digit\");\nCjTestBase.checkTrue(!Solution.isUsername(\"ab\"), \"too short\");\nCjTestBase.checkTrue(!Solution.isUsername(null), \"null is invalid\");\nCjTestBase.checkTrue(!Solution.isUsername(\"has space\"), \"no spaces\");\n",
+      "hint": "Check length range, allowed characters, and the first character."
+    }
+  ]
+}

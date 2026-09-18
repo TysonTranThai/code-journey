@@ -1,0 +1,29 @@
+## Exception boundaries and translation
+
+An intermediate codebase *translates* exceptions at architectural
+boundaries instead of letting them leak:
+
+```java
+// repository layer
+public User findUser(String id) {
+    try {
+        return db.lookup(id);
+    } catch (SQLException e) {
+        throw new StorageException("user lookup failed", e);  // translate + chain
+    }
+}
+```
+
+Rules that hold up in review:
+- **catch only what you can handle** — otherwise translate or declare
+- **always chain the cause** (`new X("...", e)`) so the stack trace keeps
+  the original story
+- **don't catch Throwable/Error** — OutOfMemoryError is not yours
+- **don't swallow** — an empty catch block is a hidden bug
+- low-level types (SQLException, IOException) should not cross into the
+  service layer's API
+
+Checked vs unchecked at the boundary: use *checked* for recoverable,
+expected conditions the caller must handle (parse failures); *unchecked*
+for programming errors and unrecoverable state (IllegalArgument,
+IllegalState).

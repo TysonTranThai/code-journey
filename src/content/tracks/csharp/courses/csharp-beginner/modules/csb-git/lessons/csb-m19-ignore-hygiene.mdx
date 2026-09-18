@@ -1,0 +1,20 @@
+## What gets ignored
+
+```gitignore
+bin/
+obj/
+*.user
+```
+
+Build outputs (`bin/`, `obj/`) are regenerable — committing them bloats every clone and breeds merge conflicts on binary files. Machine-local settings (`*.user`) don't describe the project. The test for what to commit: **can a teammate rebuild the world from what's checked in?** Source, project files, and configuration yes; artifacts no.
+
+## Messages that explain why
+
+```text
+Fix off-by-one in SumRange
+
+The exclusive upper bound was treated as inclusive after the
+refactor; SumRange(1,5) returned 15 instead of 10.
+```
+
+A good message has a subject line (imperative, ~50 chars) and, when needed, a body explaining *why* — the diff already shows *what*. "fix bug" describes nothing; six months later, nobody (including you) knows which bug or why it happened.

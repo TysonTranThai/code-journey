@@ -1,0 +1,25 @@
+{
+  "id": "practice-personal-heading",
+  "title": "Your Name as a Heading",
+  "prompt": "The page below has an empty body. Add exactly one `h1` containing your name (use `Ada Lovelace` if you prefer not to share it), and one `p` underneath that starts with the words `I am learning`.\n\nRules:\n- Exactly one `h1`.\n- The `h1` is not empty.\n- One `p` that starts with `I am learning`.",
+  "difficulty": "beginner",
+  "level": "imitation",
+  "boilerplate": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<title>My page</title>\n</head>\n<body>\n\n</body>\n</html>\n",
+  "tests": [
+    {
+      "name": "exactly one heading",
+      "code": "const h1 = code.match(/<h1\\s*>[\\s\\S]*?<\\/h1\\s*>/gi) ?? [];\nif (h1.length !== 1) {\n  throw new Error(`Expected exactly one <h1>, found ${h1.length}.`);\n}",
+      "hint": "One page, one <h1>. Add it inside the <body>."
+    },
+    {
+      "name": "heading is not empty",
+      "code": "const m = code.match(/<h1\\s*>([\\s\\S]*?)<\\/h1\\s*>/i);\nif (!m || m[1].trim().length === 0) {\n  throw new Error(\"The <h1> is empty — put your name between the tags.\");\n}",
+      "hint": "Write your name (or Ada Lovelace) between <h1> and </h1>."
+    },
+    {
+      "name": "an intro paragraph follows",
+      "code": "const p = code.match(/<p\\s*>([\\s\\S]*?)<\\/p\\s*>/i);\nif (!p || !/^I am learning/i.test(p[1].trim())) {\n  throw new Error(\"Add a <p> that starts with the words 'I am learning'.\");\n}",
+      "hint": "Under the heading: <p>I am learning web development.</p>"
+    }
+  ]
+}

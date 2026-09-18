@@ -1,0 +1,16 @@
+{
+  "id": "cint-p4-fp-array",
+  "title": "Dense Opcodes",
+  "prompt": "Implement the array-of-functions interpreter:\n\n```c\n/* opcodes 0..3 map to: nop(a,b)=a, add, sub, mul (in that order).\n   run_op returns OPS[code](a, b), or -1 for out-of-range code. */\nint run_op(int code, int a, int b);\n/* validates: 1 iff code in [0,3] */\nint op_valid(int code);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "opcode dispatch",
+      "code": "\nCHECK_EQ(run_op(0, 7, 9), 7);\nCHECK_EQ(run_op(1, 2, 3), 5);\nCHECK_EQ(run_op(2, 9, 4), 5);\nCHECK_EQ(run_op(3, 6, 7), 42);\nCHECK_EQ(run_op(4, 1, 1), -1);\nCHECK_EQ(run_op(-1, 1, 1), -1);\nCHECK_EQ(op_valid(3), 1);\nCHECK_EQ(op_valid(4), 0);\n",
+      "hint": "static int (*OPS[4])(int, int) = {op_nop, op_add, op_sub, op_mul}; bounds-check first."
+    }
+  ],
+  "level": "imitation"
+}

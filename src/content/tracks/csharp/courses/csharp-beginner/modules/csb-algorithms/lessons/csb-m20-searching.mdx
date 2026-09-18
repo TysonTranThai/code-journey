@@ -1,0 +1,15 @@
+## Linear: the honest default
+
+Unsorted data gives you no choice — check items one by one, O(n). Correct, simple, and the right tool when `n` is small or the data refuses to stay sorted.
+
+## Binary: pay for order once
+
+A **sorted** array lets each comparison discard half the candidates:
+
+```text
+[1 3 5 7 9]  target 7
+lo=0 hi=4 mid=2:  5 < 7 → keep right half
+lo=3 hi=4 mid=3:  found at 3
+```
+
+The invariant: *if the target exists, it is always within `[lo, hi]`*. Each step preserves the invariant while shrinking the window — O(log n). A million sorted items need ~20 comparisons. The classic bugs are off-by-one on the window (`lo <= hi` vs `lo < hi` — the last element never gets examined) and on the move (`mid` vs `mid ± 1` — infinite loops); both come from breaking the invariant.

@@ -1,0 +1,27 @@
+Code production hỏng theo cách laptop của bạn chưa từng cho thấy. Observability là bộ dụng cụ đo lường biến "nó hỏng rồi" thành "đây là lý do".
+
+## Log: có cấu trúc hoặc vô dụng
+
+```js
+log.info("task.created", { taskId, userId, durationMs });
+```
+
+Log có cấu trúc (JSON) hơn hẳn chuỗi: trường tìm kiếm được ("mọi task.created chậm hơn 500ms"), liên kết được (cùng requestId xuyên qua mọi dịch vụ), và rẻ để parse. Mỗi request có một **request id** (sinh ở mép, truyền xuyên suốt, phản hồi lại trong response) — sợi chỉ bạn kéo để dựng lại phiên của bất kỳ người dùng nào từ log.
+
+Mức log có kỷ luật: `error` (cần con người, hôm nay), `warn` (giảm Chất lượng nhưng vẫn chạy), `info` (sự kiện nghiệp vụ), `debug` (chi tiết, mặc định tắt ở prod). Và **không bao giờ log secret** — token, mật khẩu, body request đầy đủ: log được nhiều người đọc hơn bạn nghĩ và sống lâu hơn bạn tưởng.
+
+## Metric: dấu hiệu sinh tồn
+
+Bốn tín hiệu vàng: **độ trễ** (bao lâu, phân vị p50/p95/p99 — trung bình nói dối), **lưu lượng** (request/giây), **lỗi** (tỷ lệ thất bại), **bão hòa** (CPU, bộ nhớ, chiều sâu hàng đợi). Theo dõi theo từng endpoint; alert trên triệu chứng người dùng cảm nhận (tỷ lệ lỗi, độ trễ p99), không phải trên nguyên nhân bạn đoán.
+
+## Theo dõi lỗi: stack trace tự đến
+
+Công cụ (Sentry, GlitchTip) bắt exception client và server kèm stack trace, release, và breadcrumb. Đây là chỗ source map (bài build) trả công. Gom theo fingerprint — 1,000 người dùng đụng cùng một bug là _một_ issue kèm số đếm, không phải 1,000 alert.
+
+## Alert không giật gân
+
+Mỗi alert phải: **có thể hành động** (con người làm được gì đó ngay), **khẩn cấp** (bỏ qua thì người dùng khổ), và **duy nhất** (không bị ba alert khác trùng lặp). Thứ còn lại cho vào dashboard. Sức khỏe on-call: nếu một tuần alert không tạo ra sự cố thật nào, ngưỡng sai — tinh chỉnh, nếu không team sẽ học cách phớt lờ alert, điều tệ hơn không có alert.
+
+## Health check
+
+`GET /healthz` trả 200 khi tiến trình có thể phục vụ (nhanh, không gọi DB) và `GET /readyz` trả 200 khi có thể phục vụ _đúng_ (phụ thuộc với tới được). Load balancer và nền tảng định tuyến theo các endpoint này; cấu hình sai nghĩa là nhận traffic bạn không gánh nổi, hoặc bị đánh dấu chết trong khi khỏe.

@@ -1,0 +1,31 @@
+{
+  "id": "javi-checkpoint-m1-contracts",
+  "title": "Repair the Broken Value Class",
+  "prompt": "`Config` is meant to be an immutable settings key, but it is broken:\n`hashCode` uses only one field and the constructor accepts nulls.\n\nInside `Solution`, provide a fixed `Config`:\n- final fields `String app, String key` (both participate in equality)\n- equals via instanceof pattern comparing both fields\n- hashCode via `Objects.hash(app, key)`\n- constructor throws `IllegalArgumentException` when app or key is null\n\nThen implement `static List<String> sortedKeys(List<Config> configs)`\nreturning the distinct configs' `key` values in natural sorted order,\nusing a `HashSet` for dedup (which only works because Config now keeps\nits hash contract).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Provide Config + sortedKeys here.\n}\n",
+  "tests": [
+    {
+      "name": "distinct apps, same key: both kept",
+      "code": "\nSet<Object> seen = new HashSet<>(List.of(\n    new Solution.Config(\"web\", \"timeout\"), new Solution.Config(\"db\", \"timeout\")));\ncheckEq(seen.size(), 2, \"org/app must be hashed\");\n",
+      "hint": "hashCode must mix app in — two apps' keys are distinct entries."
+    },
+    {
+      "name": "identical configs deduplicate",
+      "code": "\nSet<Object> seen = new HashSet<>(List.of(\n    new Solution.Config(\"web\", \"timeout\"), new Solution.Config(\"web\", \"timeout\")));\ncheckEq(seen.size(), 1, \"equal configs dedupe\");\n",
+      "hint": "equals true + hashCode equal ⇒ one set element."
+    },
+    {
+      "name": "null fields rejected",
+      "code": "\ntry { new Solution.Config(null, \"a\"); checkTrue(false, \"must throw\"); }\ncatch (IllegalArgumentException e) { checkTrue(true, \"threw correctly\"); }\n",
+      "hint": "Fail fast in the constructor: null app or key must throw IllegalArgumentException."
+    },
+    {
+      "name": "sortedKeys dedupes and sorts",
+      "code": "\nList<Object> cfgs = List.of(\n    new Solution.Config(\"web\", \"timeout\"), new Solution.Config(\"db\", \"host\"),\n    new Solution.Config(\"web\", \"timeout\"));\nList<String> out = Solution.sortedKeys((List) cfgs);\ncheckEq(out, List.of(\"host\", \"timeout\"), \"distinct + sorted\");\n",
+      "hint": "Feed the list through a HashSet, map to key, sort."
+    }
+  ],
+  "level": "independent"
+}

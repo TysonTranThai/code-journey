@@ -1,0 +1,24 @@
+## Choosing a model: a decision procedure
+
+Run this procedure per workload — never per fashion trend:
+
+1. **Characterize the work.** Mostly waiting (network/disk/subprocess) or
+   mostly computing (parsing, math, image processing)?
+2. **Waiting** → try `asyncio` first (thousands of concurrent tasks on one
+   thread — see the next module); if the libraries you need are blocking,
+   use a `ThreadPoolExecutor`.
+3. **Computing, pure Python** → `ProcessPoolExecutor` (or workers outside the
+   process). Threads buy nothing under the GIL.
+4. **Computing inside C extensions that release the GIL** → threads work.
+5. **Measure.** Wall-clock the candidate against the baseline on real data
+   sizes. Threads and processes both have setup costs that can dominate small
+   workloads — a pool of 8 workers on 3 tiny tasks is slower than serial code.
+
+Backpressure thinking: an unbounded task queue grows until memory dies.
+Bound the queue (`queue.Queue(maxsize=N)`), cap pool `max_workers`, and let
+producers block or shed load. Concurrency without limits is an outage story.
+
+And the free-threaded future (prose): with PEP 703 builds, CPU-bound threads
+parallelize without processes — but shared-state races become real instead of
+GIL-masked, so the synchronization skills of this module become MORE important,
+not less.

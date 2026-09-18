@@ -1,0 +1,21 @@
+{
+  "id": "cppa3-nttp-buffer",
+  "title": "A Fixed Ring from an NTTP",
+  "prompt": "Finish `Ring<N>`: `push` writes at `head_ % N` and advances `head_` (wrapping is the point), `capacity()` returns `N`. The test wraps around the buffer edge to prove it.",
+  "difficulty": "advanced",
+  "level": "independent",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n\ntemplate <std::size_t N>\nstruct Ring {\n    int data_[N]{};\n    std::size_t head_ = 0;\n    // TODO: push writes at head_ % N then advances; capacity() returns N.\n    void push(int v);\n    int at(std::size_t i) const { return data_[i % N]; }\n    static constexpr std::size_t capacity();\n};\n",
+  "tests": [
+    {
+      "name": "capacity is the NTTP",
+      "code": "static_assert(Ring<4>::capacity() == 4, \"N from the type\");\nstatic_assert(Ring<64>::capacity() == 64, \"N from the type\");",
+      "hint": "static constexpr std::size_t capacity() { return N; } — N is part of the type."
+    },
+    {
+      "name": "push wraps at the edge",
+      "code": "Ring<3> r;\nr.push(1); r.push(2); r.push(3); r.push(4);\nCHECK_EQ(r.at(0), 4);\nCHECK_EQ(r.at(1), 2);\nCHECK_EQ(r.at(2), 3);",
+      "hint": "void push(int v) { data_[head_ % N] = v; ++head_; } — the 4th push overwrites slot 0."
+    }
+  ]
+}

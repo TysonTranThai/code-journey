@@ -1,0 +1,50 @@
+I/O tệp đi qua stream. `ifstream` đọc, `ofstream` ghi, và cả hai đều đóng
+trong destructor — RAII một lần nữa.
+
+```cpp
+#include <fstream>
+#include <iostream>
+
+std::ifstream in{"config.txt"};
+if (!in) {                       // stream false-y khi mở thất bại
+    std::cerr << "cannot open config.txt\n";
+    return 1;
+}
+
+std::string line;
+while (std::getline(in, line)) {
+    process(line);               // line không chứa ký tự xuống dòng cuối
+}
+// in đóng tại đây — tự động
+```
+
+Một bản tham chiếu cho pattern được chấm điểm của chúng ta — lọc các dòng
+có nội dung bắt đầu bằng `ERROR `:
+
+```cpp
+#include <sstream>
+#include <string>
+#include <vector>
+
+std::string error_lines(const std::string& content) {
+    std::istringstream in{content};          // cùng interface, trong bộ nhớ
+    std::string out;
+    std::string line;
+    while (std::getline(in, line)) {
+        if (line.rfind("ERROR ", 0) == 0) {  // kiểm tra tiền tố
+            out += line;
+            out += '\n';
+        }
+    }
+    return out;
+}
+```
+
+Các bài kiểm tra trong module này truyền *nội dung* tệp dưới dạng chuỗi —
+sandbox không có thư mục làm việc ổn định cho tệp thật. Kỷ luật phân tích
+thì giống hệt: đọc theo dòng, kiểm tra trạng thái stream, và đừng bao giờ
+giả định dòng cuối kết thúc bằng `\n`.
+
+Các lỗi tệp thường gặp: đọc mà không kiểm tra `if (!stream)`, trộn `>>`
+với `getline` (`>>` để lại `\n` trong buffer), và quên rằng `getline` vẫn
+thành công trên dòng cuối không có `\n` kết thúc.

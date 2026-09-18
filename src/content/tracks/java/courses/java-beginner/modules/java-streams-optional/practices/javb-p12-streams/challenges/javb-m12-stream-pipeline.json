@@ -1,0 +1,21 @@
+{
+  "id": "javb-m12-stream-pipeline",
+  "title": "One pipeline, three stages",
+  "prompt": "Using ONE stream pipeline per method (no loops): `loudLongNames` returns the names longer than 3 characters, uppercased, sorted alphabetically. `sumLengths` returns the total character count of all words (empty list -> 0).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static java.util.List<String> loudLongNames(java.util.List<String> names) {\n        return java.util.List.of();\n    }\n\n    public static int sumLengths(java.util.List<String> words) {\n        return 0;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "filter, map, sort, collect",
+      "code": "\nCjTestBase.checkEq(Solution.loudLongNames(java.util.List.of(\"Turing\", \"bob\", \"Grace\")),\n    java.util.List.of(\"GRACE\", \"TURING\"), \"long names, loud, sorted - input order scrambled\");\nCjTestBase.checkEq(Solution.loudLongNames(java.util.List.of(\"a\", \"bb\")), java.util.List.of(), \"nothing long enough\");\n",
+      "hint": "names.stream().filter(...).map(String::toUpperCase).sorted().collect(...) - do not drop the sorted() stage."
+    },
+    {
+      "name": "primitive stream sums",
+      "code": "\nCjTestBase.checkEq(Solution.sumLengths(java.util.List.of(\"Ada\", \"Grace\")), 8, \"3+5\");\nCjTestBase.checkEq(Solution.sumLengths(java.util.List.of()), 0, \"empty list -> 0\");\n",
+      "hint": "mapToInt(String::length).sum() handles the empty case for free."
+    }
+  ],
+  "level": "guided"
+}

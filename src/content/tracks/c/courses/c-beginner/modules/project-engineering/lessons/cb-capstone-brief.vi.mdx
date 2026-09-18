@@ -1,0 +1,30 @@
+## Nhiệm vụ
+
+Một **lõi tài chính cá nhân** — trái tim tính toán và lưu trữ của ứng dụng sổ
+sách, dựng từ mọi thứ khóa học đã dạy:
+
+- một bản ghi `Txn`: id, số tiền (cents), danh mục
+- các thao tác: thêm, tổng theo danh mục, khoản chi lớn nhất, dòng báo cáo
+- kiểm tra hợp lệ tại mọi ranh giới
+
+## Bộ chấm kiểm tra gì
+
+Bộ capstone chạy với bốn hàm:
+
+1. `total_by_cat` — tổng lọc theo danh mục
+2. `biggest_idx` — chỉ số của khoản chi lớn nhất
+3. `after_balance` — số dư chạy dồn từ một giá trị ban đầu
+4. `fmt_report` — một dòng tổng kết chính xác, dựng bằng snprintf
+
+## Vì sao là bốn hàm này
+
+Chúng ép mọi tầng cùng lúc: struct (bản ghi), con trỏ (mảng và bộ đệm xuất),
+kỷ luật const (đầu vào chỉ đọc), thuật toán (quét max), và định dạng (báo
+cáo). Thay bất kỳ mảnh nào thì tổng thể vẫn phải giữ vững — đó là tích hợp,
+kỹ năng thật sự của kỹ nghệ phần mềm.
+
+## Ngoài bộ test
+
+Trong dự án thật, bạn sẽ thêm: lưu tệp (module 16 — cặp save/load), vòng
+menu (module 5-6), và unit test cho từng hàm. Bộ test sandbox xác minh lõi
+logic; kiến trúc xung quanh là phần của bạn để dựng trong gallery dự án.

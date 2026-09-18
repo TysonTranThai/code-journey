@@ -1,0 +1,30 @@
+## Mỗi thứ một cái, không thứ tự
+
+```csharp
+var seen = new HashSet<string>();
+seen.Add("a");          // True  — mới
+bool dup = seen.Add("a");   // False — đã có
+Console.WriteLine(seen.Count);   // 1
+```
+
+`Add` trả **có gì thay đổi không** — kiểm tra trùng lặp trong một lệnh. `Contains` là O(1) (dựa trên băm), khác với quét O(n) của `List.Contains`. Toán tập có sẵn: `seen.UnionWith(other)`, `IntersectWith`, `ExceptWith` biến đổi tập; `Overlaps`/`IsSubsetOf` trả lời câu hỏi.
+
+## Cặp khử trùng-lặp và đếm
+
+```csharp
+var distinct = new HashSet<string>(words);   // sao chép + khử trùng lặp
+Console.WriteLine(distinct.Count);           // số từ duy nhất
+```
+
+Khởi tạo từ bộ sưu tập có sẵn là cách khử trùng lặp nhanh nhất trong ngôn ngữ — và ghép một `HashSet` (duy nhất) với một `Dictionary` (đếm) phủ các bảng tần suất.
+
+## Chọn dạng
+
+| Nhu cầu | Dạng |
+| --- | --- |
+| Giá trị có thứ tự, cho phép trùng, truy chỉ số | `List<T>` |
+| Giá trị duy nhất, kiểm tra thành viên nhanh | `HashSet<T>` |
+| Tra cứu theo khóa | `Dictionary<TKey,TValue>` |
+| Kích thước cố định, truy chỉ số | mảng |
+
+Dạng sai buộc bạn viết workaround thủ công — khử trùng lặp List bằng tay, hay quét Values của Dictionary. Quyết định từ các *thao tác* bạn cần, không phải thói quen: "cần trùng lặp không? cần vị trí không? cần khóa không?" Ba câu hỏi ấy chọn đúng bộ chứa trong hầu hết chương trình beginner.

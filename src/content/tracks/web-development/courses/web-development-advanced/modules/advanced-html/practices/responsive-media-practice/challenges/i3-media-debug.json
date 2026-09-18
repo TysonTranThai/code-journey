@@ -1,0 +1,30 @@
+{
+  "id": "i3-media-debug",
+  "title": "Debug: The Lying Gallery",
+  "prompt": "Every attribute in this gallery is wrong: the hero carries loading=\"lazy\" (it is the LCP), sizes=\"100vw\" on a 300px card slot, no width/height anywhere (layout shift), and an alt was pasted onto a <source>. Repair: hero gets fetchpriority=\"high\" and no lazy; card sizes says 300px; add intrinsic dimensions to both images; move alt to the <img> only.",
+  "difficulty": "advanced",
+  "level": "debugging",
+  "boilerplate": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\"><title>Gallery</title></head>\n<body>\n  <h1>Launch gallery</h1>\n  <picture>\n    <source type=\"image/avif\" srcset=\"hero.avif\">\n    <img src=\"hero.jpg\" alt=\"Confetti falling over the launch stage\" loading=\"lazy\" width=\"1600\" height=\"800\">\n  </picture>\n  <div class=\"card\">\n    <img src=\"team.jpg\" sizes=\"100vw\" alt=\"The founding team on stage\">\n  </div>\n  <picture>\n    <source type=\"image/webp\" srcset=\"chart.webp\" alt=\"Downloads chart\">\n    <img src=\"chart.jpg\" width=\"900\" height=\"500\">\n  </picture>\n</body>\n</html>\n",
+  "tests": [
+    {
+      "name": "hero is eager and high priority",
+      "code": "const hero = code.match(/<picture[\\s>][\\s\\S]*?<img[^>]*hero[^>]*>/i) ||\n  [...code.matchAll(/<img[^>]*>/gi)].find((m) => /hero/i.test(m[0]));\nif (!hero) throw new Error(\"Keep the hero image.\");\nif (/loading\\s*=\\s*[\"']lazy[\"']/i.test(hero[0])) {\n  throw new Error(\"The hero must NOT be lazy — it is the LCP image.\");\n}\nif (!/fetchpriority\\s*=\\s*[\"']high[\"']/i.test(hero[0])) {\n  throw new Error('Give the hero fetchpriority=\"high\".');\n}",
+      "hint": "Lazy-loading the LCP image is self-sabotage — swap lazy for fetchpriority=\"high\"."
+    },
+    {
+      "name": "card sizes tells the truth",
+      "code": "const card = [...code.matchAll(/<img[^>]*>/gi)].find((m) => /team/i.test(m[0]));\nif (!card) throw new Error(\"Keep the team image.\");\nif (!/sizes\\s*=\\s*[\"'][^\"']*300[^\"']*[\"']/i.test(card[0])) {\n  throw new Error(\"The card slot is 300px — say so in sizes instead of 100vw.\");\n}",
+      "hint": "sizes=\"100vw\" makes the browser fetch desktop-sized files for a 300px box."
+    },
+    {
+      "name": "every image has dimensions",
+      "code": "const imgs = [...code.matchAll(/<img[^>]*>/gi)];\nfor (const m of imgs) {\n  if (!/width\\s*=\\s*[\"']\\d+[\"']/i.test(m[0]) || !/height\\s*=\\s*[\"']\\d+[\"']/i.test(m[0])) {\n    throw new Error(\"Every <img> needs width and height — the browser reserves the box from them.\");\n  }\n}",
+      "hint": "The chart image lost its dimensions — restore width and height to stop layout shift."
+    },
+    {
+      "name": "alt only on imgs",
+      "code": "if (/<source[^>]*\\balt\\s*=/i.test(code)) {\n  throw new Error(\"Remove alt from the <source> — sources have no alt attribute.\");\n}\nconst chart = [...code.matchAll(/<img[^>]*>/gi)].find((m) => /chart/i.test(m[0]));\nif (!chart || !(((chart[0].match(/alt\\s*=\\s*[\"']([^\"']*)[\"']/i) || [])[1] || \"\").trim())) {\n  throw new Error(\"The chart <img> needs the alt (4+ characters).\");\n}",
+      "hint": "alt pasted on a source is dead weight — the img is the one element that carries it."
+    }
+  ]
+}

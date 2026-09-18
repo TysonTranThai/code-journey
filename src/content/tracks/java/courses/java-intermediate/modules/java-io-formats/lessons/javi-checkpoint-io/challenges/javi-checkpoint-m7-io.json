@@ -1,0 +1,31 @@
+{
+  "id": "javi-checkpoint-m7-io",
+  "title": "CSV Payload Normalizer",
+  "prompt": "Build `Solution`:\n- `static List<String> parseRow(String line)` — the quoted-CSV scanner\n  from the practice (reuse your implementation).\n- `record Record(String name, int qty)` in `Solution`.\n- `static List<Record> normalize(List<String> rows, String header)`:\n  parse each row with the scanner; SKIP rows that fail numeric parsing\n  of the qty column (index 1); the header row (matching `header` exactly)\n  is skipped too. Return the records in order.\n\nEdge cases: fields may contain quoted commas; `qty` may have\nsurrounding spaces (trim before parse).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Provide parseRow + Record + normalize here.\n}\n",
+  "tests": [
+    {
+      "name": "clean payload",
+      "code": "\nList<Solution.Record> out = Solution.normalize(\n    List.of(\"name,qty\", \"pen,3\", \"ink,1\"), \"name,qty\");\ncheckEq(out.size(), 2, \"two records\");\n",
+      "hint": "Header skipped, two data rows parsed."
+    },
+    {
+      "name": "quoted commas survive",
+      "code": "\nList<Solution.Record> out = Solution.normalize(\n    List.of(\"name,qty\", \"\\\"pen, blue\\\",2\"), \"name,qty\");\ncheckEq(out.get(0).name(), \"pen, blue\", \"quoted name\");\ncheckEq(out.get(0).qty(), 2, \"qty parsed\");\n",
+      "hint": "The scanner keeps 'pen, blue' as one field."
+    },
+    {
+      "name": "bad qty skipped",
+      "code": "\nList<Solution.Record> out = Solution.normalize(\n    List.of(\"name,qty\", \"pen,3\", \"ghost,xyz\", \"ink,1\"), \"name,qty\");\ncheckEq(out.size(), 2, \"ghost dropped\");\n",
+      "hint": "Non-numeric qty rows are skipped, not fatal."
+    },
+    {
+      "name": "qty with spaces",
+      "code": "\nList<Solution.Record> out = Solution.normalize(\n    List.of(\"name,qty\", \"pen, 3\"), \"name,qty\");\ncheckEq(out.get(0).qty(), 3, \"trimmed qty\");\n",
+      "hint": "Trim before Integer.parseInt."
+    }
+  ],
+  "level": "real-world"
+}

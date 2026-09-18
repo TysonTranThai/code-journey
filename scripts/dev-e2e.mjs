@@ -9,6 +9,12 @@
  *
  * Both children are torn down when this entry exits, so Playwright's
  * webServer shutdown takes the worker with it.
+ *
+ * AUTH_URL is pinned to the webServer's own port: cookies are host-scoped
+ * (not port-scoped), so if another app instance answers on AUTH_URL's port
+ * (e.g. the beta container on :3000), its session probes can clear the
+ * E2E session cookie and every authenticated run 401s. Redirects must
+ * therefore stay on the webServer origin.
  */
 import { spawn } from "node:child_process";
 
@@ -19,7 +25,10 @@ const port = process.argv.includes("--port")
 const children = [];
 
 function spawnChild(name, command, args) {
-  const child = spawn(command, args, { stdio: "inherit", env: process.env });
+  const child = spawn(command, args, {
+    stdio: "inherit",
+    env: { ...process.env, AUTH_URL: `http://localhost:${port}` },
+  });
   child.on("exit", (code) => {
     if (code !== null && code !== 0) {
       console.error(`[dev-e2e] ${name} exited with code ${code}`);

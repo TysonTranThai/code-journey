@@ -1,0 +1,38 @@
+## Phạm vi khối
+
+Một **khối** là `{ ... }`. Tên khai báo trong khối tồn tại từ chỗ khai báo đến
+ngoặc đóng của khối đó:
+
+```c
+int main(void) {
+    int x = 1;            // nhìn thấy đến hết main
+    {
+        int y = 2;        // chỉ trong ngoặc này
+        x = x + y;
+    }
+    // y không tồn tại ở đây
+    return x;             // 3
+}
+```
+
+Thân vòng lặp và `if` cũng là khối — cái bẫy kinh điển:
+
+```c
+for (int i = 0; i < 3; i++) { }   // i chỉ tồn tại trong vòng lặp
+// i++ ở đây là lỗi
+```
+
+## Che tên (shadowing)
+
+Khai báo trong trùng tên sẽ che biến ngoài:
+
+```c
+int total = 100;
+{
+    int total = 5;        // một biến KHÁC
+    printf("%d\n", total); // 5
+}
+printf("%d\n", total);    // 100 — không đổi
+```
+
+Che tên hợp lệ nhưng gây nhiễu. Tránh dùng lại tên trong phạm vi lồng nhau.

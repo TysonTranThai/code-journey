@@ -1,0 +1,26 @@
+{
+  "id": "pi7-ut-suite",
+  "title": "First Suite",
+  "prompt": "Implement a function slugify(text) that lowercases and joins words with '-' (split on whitespace). Then write a unittest.TestCase class named TestSlugify with TWO test methods covering a normal case and an edge case, and assign the class to the variable SUITE_TEST (the grader imports it and runs it).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import unittest\n\ndef slugify(text):\n    pass\n\nclass TestSlugify(unittest.TestCase):\n    pass\n\nSUITE_TEST = None  # set to your TestCase class\n",
+  "tests": [
+    {
+      "name": "slugify behaves",
+      "code": "assert slugify('Hello Big World') == 'hello-big-world'\nassert slugify('  spaced   out  ') == 'spaced-out'",
+      "hint": "text.split() handles runs of whitespace; '-'.join(words)."
+    },
+    {
+      "name": "suite is a TestCase subclass with 2+ tests",
+      "code": "import unittest\nassert issubclass(SUITE_TEST, unittest.TestCase)\nloader = unittest.TestLoader()\nsuite = loader.loadTestsFromTestCase(SUITE_TEST)\nassert suite.countTestCases() >= 2",
+      "hint": "Two or more test methods starting with 'test_'."
+    },
+    {
+      "name": "tests actually pass",
+      "code": "import unittest, io\nstream = io.StringIO()\nrunner = unittest.TextTestRunner(stream=stream, verbosity=0)\nresult = runner.run(unittest.TestLoader().loadTestsFromTestCase(SUITE_TEST))\nassert result.wasSuccessful(), stream.getvalue()",
+      "hint": "Your own tests must pass — the runner reports failures."
+    }
+  ],
+  "level": "guided"
+}

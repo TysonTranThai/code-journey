@@ -1,0 +1,20 @@
+{
+  "id": "i2-health-checks",
+  "title": "Liveness vs Readiness",
+  "prompt": "Write `healthZ(state)` and `readyZ(state)` — state is { crashed: bool, dbUp: bool, cacheUp: bool }. healthZ: 503 only when crashed (liveness = process alive; dependencies do not matter). readyZ: 200 only when dbUp AND cacheUp (readiness = can serve correctly). Return numbers.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function healthZ(state) {\n  // your code\n}\n\nfunction readyZ(state) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "liveness ignores dependencies",
+      "code": "const fn = new Function(code + \"\\nreturn { healthZ };\");\nconst { healthZ } = fn();\nif (healthZ({ crashed: false, dbUp: false, cacheUp: false }) !== 200) {\n  throw new Error(\"Alive process is 200 even with every dependency down.\");\n}\nif (healthZ({ crashed: true, dbUp: true, cacheUp: true }) !== 503) {\n  throw new Error(\"Crashed process is 503.\");\n}\n",
+      "hint": "Only `crashed` matters for liveness."
+    },
+    {
+      "name": "readiness requires dependencies",
+      "code": "const fn = new Function(code + \"\\nreturn { readyZ };\");\nconst { readyZ } = fn();\nif (readyZ({ crashed: false, dbUp: true, cacheUp: true }) !== 200) throw new Error(\"All up => ready.\");\nif (readyZ({ crashed: false, dbUp: false, cacheUp: true }) !== 503) throw new Error(\"DB down => not ready.\");\nif (readyZ({ crashed: false, dbUp: true, cacheUp: false }) !== 503) throw new Error(\"Cache down => not ready.\");\n",
+      "hint": "Both dependencies must be up."
+    }
+  ]
+}

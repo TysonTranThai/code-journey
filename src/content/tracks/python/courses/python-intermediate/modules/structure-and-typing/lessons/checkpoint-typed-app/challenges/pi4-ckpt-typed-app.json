@@ -1,0 +1,30 @@
+{
+  "id": "pi4-ckpt-typed-app",
+  "title": "Typed Note Service",
+  "prompt": "Define TypedDict NoteDict(id: int, text: str), a @runtime_checkable Protocol NoteStore with add(note_id: int, text: str) -> None and get(note_id: int) -> str | None, class MemoryNotes implementing both, and function save_note(store: NoteStore, note: NoteDict) -> bool that raises ValueError when note['text'] is empty/whitespace, otherwise stores and returns True.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "from typing import TypedDict, Protocol, runtime_checkable, get_type_hints\n\nclass NoteDict(TypedDict):\n    pass\n\n@runtime_checkable\nclass NoteStore(Protocol):\n    pass\n\nclass MemoryNotes:\n    pass\n\ndef save_note(store, note):\n    pass\n",
+  "tests": [
+    {
+      "name": "stores a valid note",
+      "code": "m = MemoryNotes()\nassert save_note(m, {'id': 1, 'text': 'buy milk'}) is True\nassert m.get(1) == 'buy milk'",
+      "hint": "Validate, then delegate to store.add."
+    },
+    {
+      "name": "rejects blank text",
+      "code": "m = MemoryNotes()\ntry:\n    save_note(m, {'id': 2, 'text': '   '})\n    failed = False\nexcept ValueError:\n    failed = True\nassert failed",
+      "hint": "Whitespace-only text must raise ValueError before touching the store."
+    },
+    {
+      "name": "missing get returns None",
+      "code": "m = MemoryNotes()\nassert m.get(999) is None",
+      "hint": "get returns None for unknown ids."
+    },
+    {
+      "name": "annotations verifiable",
+      "code": "import typing\nhints = typing.get_type_hints(NoteDict)\nassert hints['id'] is int and hints['text'] is str",
+      "hint": "NoteDict fields must carry id: int and text: str."
+    }
+  ]
+}

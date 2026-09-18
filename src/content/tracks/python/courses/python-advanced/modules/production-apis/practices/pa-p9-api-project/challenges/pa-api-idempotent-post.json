@@ -1,0 +1,16 @@
+{
+  "id": "pa-api-idempotent-post",
+  "title": "Retry-safe POST",
+  "prompt": "Implement `IdempotencyStore` with `execute(key, fn)`:\n\n- the first call with a key runs `fn()` and records its return value\n- every later call with the same key replays the recorded value WITHOUT calling `fn` again\n- different keys are independent\n\nThe guarantee under test: `fn` runs exactly once per key, no matter how many retries arrive.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class IdempotencyStore:\n    def __init__(self):\n        ...\n\n    def execute(self, key, fn):\n        ...",
+  "tests": [
+    {
+      "name": "fn runs exactly once per key",
+      "code": "s = IdempotencyStore()\ncalls = []\ndef charge(amount):\n    calls.append(amount)\n    return {'charged': amount}\na = s.execute('k1', lambda: charge(100))\nb = s.execute('k1', lambda: charge(100))\nc = s.execute('k1', lambda: charge(100))\nassert calls == [100], calls\nassert a == b == c == {'charged': 100}\nd = s.execute('k2', lambda: charge(50))\nassert calls == [100, 50]\nprint('ok')",
+      "hint": "Compute once, store, replay. Distinct keys don't share."
+    }
+  ],
+  "level": "combination"
+}

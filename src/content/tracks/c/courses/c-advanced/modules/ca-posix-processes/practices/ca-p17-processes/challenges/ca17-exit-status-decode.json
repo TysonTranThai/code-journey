@@ -1,0 +1,26 @@
+{
+  "id": "ca17-exit-status-decode",
+  "title": "Decode the Exit Status",
+  "prompt": "POSIX. `run_exit_status(code)` (given) forks a child that exits with `code` and returns the raw waitpid status word. Implement `int decode_exit(int status)` returning the child's exit code if it exited normally, or -1 if it did not exit normally. Remember: exit codes are the low 8 bits.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define _POSIX_C_SOURCE 200809L\n#include <unistd.h>\n#include <sys/wait.h>\n#include <fcntl.h>\n#include <signal.h>\n#include <string.h>\n#include <errno.h>\nstatic int run_exit_status(int code) {\n    pid_t p = fork();\n    if (p < 0) return -1;\n    if (p == 0) _exit(code);\n    int st = 0;\n    if (waitpid(p, &st, 0) < 0) return -1;\n    return st;\n}\n",
+  "tests": [
+    {
+      "name": "normal exit",
+      "code": "CHECK_EQ(decode_exit(run_exit_status(7)), 7);",
+      "hint": "WIFEXITED holds and WEXITSTATUS extracts the low byte: 7."
+    },
+    {
+      "name": "zero exit",
+      "code": "CHECK_EQ(decode_exit(run_exit_status(0)), 0);",
+      "hint": "Success is exit code 0 — the exact value every script tests."
+    },
+    {
+      "name": "truncation to 8 bits",
+      "code": "CHECK_EQ(decode_exit(run_exit_status(256)), 0);",
+      "hint": "_exit(256) keeps only the low 8 bits: 256 = 0x100, low byte 0."
+    }
+  ],
+  "level": "guided"
+}

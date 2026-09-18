@@ -1,0 +1,30 @@
+{
+  "id": "pi3-ckpt-pipeline",
+  "title": "Log Pipeline",
+  "prompt": "Implement error_rate(lines) — lines are strings like 'ERROR: disk full' or 'INFO: ok'. Yield-free helper allowed. Return the fraction (round to 2 decimals) of lines that start with 'ERROR: ', ignoring blank/whitespace-only lines. Use a generator pipeline internally (no full-list copies of filtered results). Empty/blank-only input returns 0.0.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "def error_rate(lines):\n    pass\n",
+  "tests": [
+    {
+      "name": "computes the fraction",
+      "code": "lines = ['ERROR: a', 'INFO: b', 'ERROR: c', 'INFO: d']\nassert error_rate(lines) == 0.5",
+      "hint": "2 of 4 lines are errors → 0.5."
+    },
+    {
+      "name": "ignores blank lines",
+      "code": "lines = ['ERROR: a', '   ', '', 'INFO: b']\nassert error_rate(lines) == 0.5",
+      "hint": "Blank lines are not denominator food."
+    },
+    {
+      "name": "empty input",
+      "code": "assert error_rate([]) == 0.0",
+      "hint": "No lines → 0.0, never ZeroDivisionError."
+    },
+    {
+      "name": "rounds to two decimals",
+      "code": "lines = ['ERROR: a'] + ['INFO: x'] * 3\nassert error_rate(lines) == 0.25",
+      "hint": "round(value, 2)."
+    }
+  ]
+}

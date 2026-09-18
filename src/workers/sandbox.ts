@@ -3,6 +3,13 @@ import "server-only";
 import { randomBytes } from "node:crypto";
 import { spawn } from "node:child_process";
 
+import { buildCppJobScript } from "./cpp-runtime";
+import { buildCJobScript } from "./c-runtime";
+import { buildCSharpJobScript } from "./csharp-runtime";
+import { buildJavaJobScript } from "./java-runtime";
+import { buildPyJobScript } from "./python-runtime";
+import { sanitizeTestName } from "./sanitize-name";
+
 /**
  * Hardened container execution (03-CONTEXT D-02).
  *
@@ -57,6 +64,7 @@ export function buildDockerArgs(options: {
   memoryMb: number;
   image: string;
   dockerHost: string | null;
+  name: string;
 }): string[] {
   const args: string[] = [];
   if (options.dockerHost) {
@@ -66,14 +74,25 @@ export function buildDockerArgs(options: {
   }
   args.push(
     "run",
+    // Container name: the wall-clock timeout (host-side kill) needs to target
+    // the CONTAINER — killing the local `docker run` client alone leaves the
+    // container running on the daemon indefinitely (leak + CPU burn).
+    "--name",
+    options.name,
     "--rm", // ephemeral
     "--network",
     "none", // no egress
     "--read-only", // immutable rootfs
     "--tmpfs",
-    "/tmp:size=16m,noexec,nosuid,nodev", // scratch space only
+    // /tmp allows exec (Docker's tmpfs defaults include noexec, so it must
+    // be explicit): the C++ track compiles test binaries there. This is NOT
+    // a weakening — arbitrary student code already executes in-container via
+    // the node/python interpreters (which noexec never prevented); the real
+    // boundaries are network-off, read-only rootfs, cap-drop ALL, non-root,
+    // and the memory/cpu/pids ceilings below. nosuid/nodev stay.
+    "/tmp:size=64m,exec,nosuid,nodev",
     "--tmpfs",
-    "/job:size=16m,noexec,nosuid,nodev,uid=100,gid=101", // job files
+    "/job:size=16m,noexec,nosuid,nodev,uid=100,gid=101", // job files (data only)
     "--memory",
     `${options.memoryMb}m`,
     "--memory-swap",
@@ -96,6 +115,33 @@ export function buildDockerArgs(options: {
 }
 
 /**
+ * Best-effort container kill (Phase 9 leak fix): on wall-clock timeout or
+ * client death we must stop the CONTAINER, not just the local docker CLI
+ * process. `--rm` then cleans it up daemon-side. Failures are swallowed:
+ * cleanup is best-effort and a leaked container is logged by the caller.
+ */
+export function killSandboxContainer(name: string, dockerHost: string | null): void {
+  const args: string[] = [];
+  if (dockerHost) args.push("-H", dockerHost);
+  args.push("kill", name);
+  try {
+    const kill = spawn("docker", args, {
+      stdio: "ignore",
+      env: {
+        PATH: process.env.PATH ?? "/usr/local/bin:/usr/bin:/bin",
+        HOME: "/tmp",
+        NODE_ENV: process.env.NODE_ENV,
+      } as NodeJS.ProcessEnv,
+    });
+    kill.on("error", () => undefined);
+    // Do not await: the docker run client is being torn down anyway.
+    kill.unref();
+  } catch {
+    // best-effort by contract
+  }
+}
+
+/**
  * Per-job heredoc delimiter (07-01 grade integrity). The submitted code and
  * test snippets are written into the job script as heredoc data. A FIXED
  * delimiter lets a submission containing it terminate the heredoc early and
@@ -113,12 +159,20 @@ export function runSandboxed(options: {
   testFiles: { name: string; code: string }[];
   timeoutMs: number;
   memoryMb: number;
+  /** "python" runs solution.py with the Python harness; "cpp" compiles
+   *  solution.cpp with the C++ harness; "java" compiles Solution.java with
+   *  the Java harness; "c" compiles solution.c with the C harness
+   *  (c-runtime.ts); "csharp" compiles Solution.cs with the C# harness
+   *  (csharp-runtime.ts); default "javascript". */
+  language?: "javascript" | "python" | "cpp" | "java" | "c" | "csharp";
 }): Promise<SandboxResult> {
   const timeoutMs = Math.min(Math.max(options.timeoutMs, 1000), MAX_TIMEOUT_MS);
   const delim = randomDelimiter();
+  // Unique container name (unique-ify with the same entropy as the delimiter).
+  const containerName = `cj-sandbox-${randomBytes(8).toString("hex")}`;
   // Defensive: if the submitted code/tests happen to contain the delimiter,
   // fail closed rather than risk the heredoc being terminated inside sh.
-  const collides = [options.code, ...options.testFiles.map((t) => t.code)].some((s) =>
+  const collides = [options.code, ...options.testFiles.map((t) => t.code), STUBS_MODULE].some((s) =>
     s.includes(delim),
   );
   if (collides) {
@@ -132,14 +186,18 @@ export function runSandboxed(options: {
   return new Promise((resolve, reject) => {
     // Materialize files into a docker-build-compatible context via stdin:
     // we create the job dir in-container through a shell script passed as
+    // stdin. Language branches ONLY the job script (solution.py + python3
+    // tests vs solution.js + node tests) — hardening, delimiter hygiene,
+    // timeout, and marker protocol are identical for every language.
     // the command. Files are written to tmpfs (world-writable, ephemeral);
     // code and tests are passed as argv-safe heredoc content via stdin.
-    const script = buildJobScript(options.code, options.testFiles, delim);
+    const script = buildJobScript(options.code, options.testFiles, delim, options.language ?? "javascript");
 
     const args = buildDockerArgs({
       memoryMb: options.memoryMb,
       image: SANDBOX_IMAGE,
       dockerHost: SANDBOX_DOCKER_HOST,
+      name: containerName,
     });
 
     const child = spawn("docker", args, {
@@ -159,6 +217,9 @@ export function runSandboxed(options: {
 
     const timer = setTimeout(() => {
       timedOut = true;
+      // Kill the container FIRST (the actual workload), then the client.
+      // Client-only kill leaves the container running on the daemon forever.
+      killSandboxContainer(containerName, SANDBOX_DOCKER_HOST);
       child.kill("SIGKILL");
     }, timeoutMs);
 
@@ -173,6 +234,7 @@ export function runSandboxed(options: {
 
     child.on("error", (err) => {
       clearTimeout(timer);
+      killSandboxContainer(containerName, SANDBOX_DOCKER_HOST);
       reject(err);
     });
 
@@ -200,9 +262,31 @@ function buildJobScript(
   code: string,
   testFiles: { name: string; code: string }[],
   delim: string,
+  language: "javascript" | "python" | "cpp" | "java" | "c" | "csharp" = "javascript",
 ): string {
+  if (language === "python") {
+    return buildPyJobScript({ code, testFiles }, delim);
+  }
+  if (language === "cpp") {
+    return buildCppJobScript({ code, testFiles }, delim);
+  }
+  if (language === "c") {
+    return buildCJobScript({ code, testFiles }, delim);
+  }
+  if (language === "java") {
+    return buildJavaJobScript({ code, testFiles }, delim);
+  }
+  if (language === "csharp") {
+    return buildCSharpJobScript({ code, testFiles }, delim);
+  }
   const parts: string[] = ["set -u", "cd /job"];
   parts.push(heredoc("solution.js", code, delim));
+  // Challenge globals (button/display/storage/fake fetch/…): the QA harness
+  // provides these to every test run; without them the DOM/async/storage
+  // challenges' tests throw ReferenceError in the real sandbox even for a
+  // correct solution. Fresh per test file (each test file is its own
+  // `node` process, so the module-level state never leaks between tests).
+  parts.push(heredoc("stubs.mjs", STUBS_MODULE, delim));
   for (const test of testFiles) {
     parts.push(heredoc(`test-${sanitizeName(test.name)}.mjs`, buildTestFile(test), delim));
   }
@@ -222,6 +306,8 @@ function buildJobScript(
 function buildTestFile(test: { name: string; code: string }): string {
   return [
     `import { readFileSync } from "node:fs";`,
+    // Challenge-provided globals (same contract as the QA harness).
+    `import "./stubs.mjs";`,
     `const code = readFileSync("/job/solution.js", "utf8");`,
     `try {`,
     test.code, // the challenge author's assertion snippet
@@ -238,11 +324,91 @@ function heredoc(name: string, content: string, delim: string): string {
   return `cat > "${name}" << '${delim}'\n${content}\n${delim}`;
 }
 
+// Diacritic-preserving shared sanitizer (Vietnamese test names stay
+// readable in the verdict panel; learner bug report 2026-09-13).
 function sanitizeName(name: string): string {
-  return (
-    name
-      .toLowerCase()
-      .replace(/[^a-z0-9-_]/g, "-")
-      .slice(0, 60) || "test"
-  );
+  return sanitizeTestName(name);
 }
+
+/**
+ * Challenge-provided globals, injected into every test file's process
+ * (same contract as the content QA harness's buildStubs). A lightweight
+ * DOM element recorder covers the DOM/storage/async challenges' tests.
+ * Declared with `var` + globalThis assignment so bare references inside
+ * author snippets resolve as globals.
+ */
+const STUBS_MODULE = String.raw`
+function makeEl(tag = "div") {
+  const e = {
+    tagName: String(tag).toUpperCase(),
+    textContent: "",
+    className: "",
+    src: "",
+    alt: "",
+    value: "",
+    children: [],
+    listeners: {},
+    classList: {
+      add: (...c) => c.forEach((x) => e._added.add(x)),
+      remove: () => {},
+      toggle: () => {},
+    },
+    _added: new Set(),
+    addEventListener: (type, fn) => (e.listeners[type] = fn),
+    appendChild: (c) => e.children.push(c),
+    remove: () => {},
+  };
+  return e;
+}
+const __listEl = makeEl("ul");
+const __storageMap = new Map();
+
+var api = {
+  loadUser: () => Promise.resolve({ name: "Ada" }),
+  loadGreeting: (n) => Promise.resolve("Hello, " + n),
+};
+// NOTE: fetch is intentionally NOT stubbed — Node's native fetch stays, and
+// --network none makes it unable to reach out. Tests that need a fake
+// fetch provide one explicitly (e.g. as a new Function parameter).
+var checkReady = () => Promise.resolve(true);
+var storage = {
+  setItem: (k, v) => __storageMap.set(String(k), String(v)),
+  getItem: (k) => (__storageMap.has(String(k)) ? __storageMap.get(String(k)) : null),
+  removeItem: (k) => __storageMap.delete(String(k)),
+};
+var document = {
+  createElement: (t) => makeEl(t),
+  querySelector: (sel) =>
+    String(sel).includes("task-list") || String(sel).includes("todo-list") ? __listEl : makeEl("div"),
+  getElementById: () => __listEl,
+};
+var button = makeEl("button");
+var display = makeEl("span");
+var heading = makeEl("h1");
+var intro = makeEl("p");
+var hero = makeEl("img");
+var form = makeEl("form");
+var usernameInput = makeEl("input");
+var emailInput = makeEl("input");
+var errorBox = makeEl("div");
+
+// Bare button/display/... references inside new Function(code) bodies
+// resolve through the global scope only if they are true globals.
+for (const [k, v] of Object.entries({
+  api,
+  checkReady,
+  storage,
+  document,
+  button,
+  display,
+  heading,
+  intro,
+  hero,
+  form,
+  usernameInput,
+  emailInput,
+  errorBox,
+})) {
+  globalThis[k] = v;
+}
+`;

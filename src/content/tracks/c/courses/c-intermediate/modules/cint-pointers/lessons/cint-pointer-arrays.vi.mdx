@@ -1,0 +1,64 @@
+## Hai tầng gián tiếp
+
+`char **` nghĩa là: theo tôi đến một `char *`, theo tiếp đến `char`. Ví dụ
+kinh điển là tham số thứ hai của `main`:
+
+```c
+int main(int argc, char **argv)   /* argv[i] là char* — mỗi cái một chuỗi */
+```
+
+`argv` là một mảng (ở đây: con trỏ đến phần tử đầu) gồm các con trỏ, mỗi con
+trỏ trỏ vào một chuỗi. Vẽ nó ra là một nửa của việc hiểu:
+
+```
+argv ──► [0] ──► "./program"
+         [1] ──► "--verbose"
+         [2] ──► NULL (theo quy ước argv[argc] == NULL)
+```
+
+Mỗi chuỗi sở hữu bộ nhớ riêng (từ OS); mảng giữ các địa chỉ.
+
+## Out-parameter trả con trỏ
+
+Ứng dụng mạnh nhất hàng ngày của `char **` (hay `T **`) là **out-parameter**:
+hàm muốn đưa cho bạn một con trỏ phải ghi qua con-trỏ-đến-con-trỏ:
+
+```c
+/* cố cấp phát; trả 1 và đặt *out khi thành công */
+int make_buffer(size_t n, char **out) {
+    char *b = malloc(n);
+    if (!b) return 0;
+    *out = b;          /* ghi chính con trỏ qua tầng thứ hai */
+    return 1;
+}
+```
+
+Vì sao không trả con trỏ trực tiếp? Vì bạn thường cần báo thất bại *và* tạo
+giá trị. C có một kênh trả về; out-parameter là kênh thứ hai. Module 3 ghép
+điều này với quy tắc sở hữu: caller của `make_buffer` sở hữu `*out` và phải
+`free`.
+
+## Sửa mảng con trỏ
+
+```c
+void sort_strings(char **tab, size_t n);   /* xáo các CON TRỎ, không phải các char */
+```
+
+Sắp xếp mảng chuỗi di chuyển các giá trị `char *` trong mảng — các byte của
+chuỗi không bao giờ di chuyển. Vì vậy `qsort` trên bảng `char *` rẻ và vì sao
+hàm so sánh nhận `char *const *` (con trỏ đến các phần tử).
+
+## Bậc thang sở hữu
+
+Hai tầng nghĩa là hai câu hỏi sở hữu, luôn luôn:
+1. Ai sở hữu mảng con trỏ? (Free chính mảng.)
+2. Ai sở hữu từng chuỗi được trỏ tới? (Free từng chuỗi.)
+
+Câu trả lời khác nhau tạo ra các vòng free khác nhau. Module 3 biến điều này
+thành checklist; Module 10 (hash table) bắt bạn sống với nó.
+
+## Kiểm tra hiểu biết
+
+- Trong `char *tab[4]`, kiểu của `tab[i]` là gì? (`char *` — một chuỗi.)
+- Để callee thay đổi `tab[0]` trỏ vào đâu, bạn truyền gì? (`&tab[0]`, tức một
+  `char **`.)

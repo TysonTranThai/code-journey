@@ -1,0 +1,21 @@
+{
+  "id": "ca1-behavior-map",
+  "title": "Classify the Contract",
+  "prompt": "Implement `const char* classify(int code)` mapping each code to its standard-contract class for the construct described:\n \n- code 0: reading `sizeof(int)` → returns `\"implementation-defined\"`\n- code 1: the value of an uninitialized automatic `int` → returns `\"indeterminate\"`\n- code 2: signed integer overflow → returns `\"undefined\"`\n- code 3: order of evaluation of two function arguments → returns `\"unspecified\"`\n- code 4: `unsigned int` wraparound on overflow → returns `\"well-defined\"`\n \nAny other code returns `\"unknown\"`.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "all six codes",
+      "code": "CHECK_STR_EQ(classify(0), \"implementation-defined\");\nCHECK_STR_EQ(classify(1), \"indeterminate\");\nCHECK_STR_EQ(classify(2), \"undefined\");\nCHECK_STR_EQ(classify(3), \"unspecified\");\nCHECK_STR_EQ(classify(4), \"well-defined\");\nCHECK_STR_EQ(classify(9), \"unknown\");",
+      "hint": "A plain switch on code; unsigned arithmetic is fully defined modulo 2^N."
+    },
+    {
+      "name": "default is unknown",
+      "code": "CHECK_STR_EQ(classify(-1), \"unknown\");",
+      "hint": "The default case must return the same string for any unrecognized code."
+    }
+  ],
+  "level": "independent"
+}

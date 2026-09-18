@@ -1,0 +1,23 @@
+`volatile` cho bạn đúng hai thứ — và không cho thứ thứ ba:
+
+1. **Visibility**: mọi lần đọc thấy lần ghi mới nhất (cạnh hb mỗi lần truy
+   cập).
+2. **Ordering**: compiler/CPU không thể hoán đổi các truy cập volatile với
+   nhau theo cách quan sát được.
+
+Volatile KHÔNG cho: **tính nguyên tử của hành động ghép**. `volatile int n;
+n++` vẫn là race read-modify-write — hai thread cùng đọc 5 và cùng ghi 6,
+mất một lần tăng. Đó là việc của `AtomicInteger` (CAS) — module sau.
+
+**Safe publication** (§17.4.4): để trao đối tượng cho thread khác một cách
+an toàn, phát hành qua kênh mang cạnh hb — trường volatile, `BlockingQueue`,
+executor submit, hay cấu trúc synchronized đúng. Nếu bạn dựng đối tượng rồi
+đặt vào static field thường, thread khác có thể thấy đối tượng *được dựng
+dở* (trường ở giá trị mặc định hoặc cũ).
+
+**Ngữ nghĩa final-field** (§17.5): nếu đối tượng được *dựng đúng* (không có
+`this` thoát ra), mọi thread nhận tham chiếu tới nó sẽ thấy các trường final
+được khởi tạo đầy đủ — kể cả không đồng bộ. Cam kết này giải thích vì sao
+`String` chia sẻ tự do được an toàn, và vì sao để `this` thoát khỏi
+constructor không chỉ xấu mà còn là bug *đúng đắn*: nó có thể phá vỡ cam kết
+final-field.

@@ -1,0 +1,16 @@
+{
+  "id": "pa-int-cycle-gc",
+  "title": "Prove the cycle collector works",
+  "prompt": "Implement `cycle_probe()`:\n\n1. Create two `Node` instances (class defined below has `partner = None`).\n2. Wire the cycle: `a.partner = b` and `b.partner = a`.\n3. Record `partners_wired = a.partner is b and b.partner is a`.\n4. Drop your local references to BOTH nodes.\n5. Run `gc.collect()` and capture its return value.\n6. Return `(collected, partners_wired)`.\n\nGrading asserts `partners_wired is True` AND `collected >= 2` — the two mutually-referencing nodes are only reclaimable by the cycle collector.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import gc\n\nclass Node:\n    def __init__(self):\n        self.partner = None\n\n# TODO: cycle_probe()",
+  "tests": [
+    {
+      "name": "cycle is wired and reclaimed by collect()",
+      "code": "collected, wired = cycle_probe()\nassert wired is True, f'wired: {wired}'\nassert collected >= 2, f'collected: {collected} — cycle must be collected'\nprint('ok')",
+      "hint": "Wire a.partner = b and b.partner = a BEFORE dropping references; then gc.collect()."
+    }
+  ],
+  "level": "real-world"
+}

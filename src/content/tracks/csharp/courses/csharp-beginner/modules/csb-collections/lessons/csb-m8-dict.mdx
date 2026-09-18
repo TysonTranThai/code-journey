@@ -1,0 +1,36 @@
+## Keys map to values
+
+```csharp
+var ages = new Dictionary<string, int>();
+ages["an"] = 30;               // insert or overwrite
+ages.Add("binh", 25);          // THROWS if "binh" already exists
+Console.WriteLine(ages["an"]); // 30 — THROWS if "an" is absent
+```
+
+The indexer **creates or overwrites**; `Add` refuses duplicates. Reading `ages["missing"]` throws `KeyNotFoundException` — the single most common dictionary crash. Two safe reads:
+
+```csharp
+if (ages.TryGetValue("missing", out int age))
+    Console.WriteLine(age);    // out param set only when found
+
+if (ages.ContainsKey("missing")) { ... }   // check without reading
+```
+
+`TryGetValue` is preferred: one lookup instead of two (`ContainsKey` then indexer), and it gives you the value.
+
+## Counting things — the classic pattern
+
+```csharp
+var votes = new Dictionary<string, int>();
+foreach (string ballot in ballots)
+{
+    votes.TryGetValue(ballot, out int n);
+    votes[ballot] = n + 1;      // read-modify-write
+}
+```
+
+`TryGetValue` with `out` conveniently yields `0` when the key is absent, so the pattern handles first-votes without a branch. Counting, grouping, and deduplicating (next lesson) are the three dictionary superpowers — every practice challenge here is one of them.
+
+## Iteration
+
+`foreach (var kv in ages)` yields `KeyValuePair<string,int>` — read `kv.Key`/`kv.Value`. Dictionaries have **no defined order**; never write logic that depends on enumeration order.

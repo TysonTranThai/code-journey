@@ -1,0 +1,16 @@
+{
+  "id": "pa-test-flaky-triage",
+  "title": "Diagnose the flaky test",
+  "prompt": "Implement `diagnose_flaky(test_record)` — the record has booleans `uses_time`, `uses_random_unseeded`, `shared_state`, `order_dependent`:\n\n- returns `(verdict, causes)`: `'flaky'` when any cause fires, else `'sound'`\n- causes are human-readable fixes in fixed order: time → `'reads the wall clock: inject a clock'`; randomness → `'unseeded randomness: seed it'`; shared state → `'shared state: give each test its own world'`; order dependence → `'order-dependent: construct prerequisites in the test'`\n\nMechanized triage: the reviewer's first five minutes, as a function.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: diagnose_flaky",
+  "tests": [
+    {
+      "name": "every cause reported, in order",
+      "code": "rec = {'uses_time': True, 'uses_random_unseeded': True, 'shared_state': True, 'order_dependent': True}\nverdict, causes = diagnose_flaky(rec)\nassert verdict == 'flaky' and len(causes) == 4\nassert causes[0].startswith('reads the wall clock')\nassert causes[-1].startswith('order-dependent')\nprint('ok')",
+      "hint": "All four suspects checked, in the fixed order."
+    }
+  ],
+  "level": "debugging"
+}

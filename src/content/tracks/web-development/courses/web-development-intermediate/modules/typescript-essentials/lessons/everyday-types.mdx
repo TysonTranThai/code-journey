@@ -1,0 +1,46 @@
+The vocabulary you will use daily.
+
+## Objects, optional, readonly
+
+```ts
+type User = {
+  id: number;
+  email: string;
+  displayName?: string; // may be absent — type is string | undefined
+  readonly createdAt: Date; // cannot be reassigned
+};
+```
+
+`?` changes the type AND the shape-check: callers may omit it. `readonly`
+blocks reassignment (not deep freezing).
+
+## Aliases and interfaces
+
+```ts
+type ID = string | number; // aliases: unions, primitives, generics
+interface Repo {
+  url: string;
+} // interfaces: object shapes, extendable
+interface Repo {
+  stars: number;
+} // declaration merging (feature or footgun)
+```
+
+Either works for objects; reach for `type` when you need unions, mapped types,
+or utilities; `interface` when a library expects to extend your shape. Consistency
+matters more than the choice.
+
+## Literal types
+
+A literal type is one exact value — combined with unions, it becomes an enum
+without the enum:
+
+```ts
+type Direction = "north" | "east" | "south" | "west";
+type Size = "sm" | "md" | "lg";
+function move(dir: Direction, by: Size) { ... }
+move("up", "md"); // ✗ "up" is not assignable
+```
+
+Arrays and tuples: `string[]` is many strings; `[string, number]` is exactly
+two, typed per position — useful for key/value pairs and fixed results.

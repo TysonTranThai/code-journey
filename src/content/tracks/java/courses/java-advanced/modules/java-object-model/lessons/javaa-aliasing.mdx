@@ -1,0 +1,22 @@
+Intermediate covered equals/hashCode. The Advanced discipline is **aliasing
+control** — knowing exactly how many references point at a mutable object and
+making illegal aliasing impossible to express:
+
+- **Identity vs equality, deliberately**: `==` asks "same object?", `equals`
+  asks "same value?". Collections, caches, and locks all have opinions about
+  which one they use — `IdentityHashMap` exists precisely because sometimes
+  identity *is* the semantics.
+- **Defensive copies at the boundary**: a constructor taking a mutable
+  collection should copy it (`List.copyOf(in)`); an accessor exposing internal
+  state should hand out an unmodifiable view or a copy. Intermediate taught
+  the *what*; here the rule is *every boundary, every time*.
+- **Immutability as the default answer**: an immutable type cannot have
+  aliasing bugs, is safe to share across threads without synchronization, and
+  makes honest cache keys. Prefer records + `List.copyOf` + final fields.
+- **Escape analysis starts in your head**: returning `this` from a
+  constructor, registering `this` with a listener before construction
+  finishes, or storing an internal array in a public field — each is an
+  object *escaping* before it is safe.
+
+The operational payoff: objects that never mutate after construction need no
+defensive synchronization anywhere in the program.

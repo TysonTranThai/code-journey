@@ -1,0 +1,25 @@
+## The frame owns more than you think
+
+The frame stores: the coroutine's **parameters** (copied or moved at call time — by-value parameters are moved into the frame; references stored as references still point outside and can dangle), all locals live across suspensions, and the promise. Frame allocation is normally a heap `operator new` — unless the compiler proves the lifetime is scoped and elides it (HALO). Treat every coroutine call as an allocation unless measured otherwise.
+
+## The by-reference lambda trap
+
+```cpp
+auto makeGen() {
+    int state = 0;
+    return [&state]() -> Generator<int> {   // WRONG: state dies with makeGen
+        while (state < 3) co_yield state++;
+    }();
+}
+```
+
+The lambda captured `state` **by reference**; the generator outlives it. First resume reads a dead variable. Fix: capture by value (`[state]`) or pass `state` as a by-value coroutine parameter (parameters live inside the frame — the safe home).
+
+## Predictable lifetime rules
+
+1. Coroutine parameters are safe **inside the frame** if passed by value/move.
+2. Anything referenced (parameters by &, captures by &) must provably outlive the generator — same discipline as views.
+3. The generator object owns the handle; moving the generator moves ownership; the moved-from one must not be resumed or destroyed twice (`std::exchange` in the move, as in the lesson's code).
+4. Destroy or let RAII destroy **before** the referenced environment dies.
+
+The graded exercise: repair exactly the dangling-capture generator, then predict which of several snippets dangle.

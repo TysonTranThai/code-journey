@@ -1,0 +1,27 @@
+## Chuyển đổi ngầm
+
+C âm thầm chuyển đổi trong biểu thức trộn kiểu — "các phép chuyển đổi số học
+thông thường": kiểu yếu hơn được nâng lên kiểu rộng hơn.
+
+```c
+int i = 3;
+double d = i;          // int -> double, chính xác: 3.0
+double half = i / 2;   // int / int TRƯỚC (0), rồi int -> double: 0.0!
+double ok = i / 2.0;   // i được nâng thành double: 1.5
+```
+
+Phép gán chiều ngược lại cắt cụt: `int x = 2.9;` lưu `2` — phần lẻ bị bỏ,
+không làm tròn.
+
+## Ép kiểu tường minh
+
+Ép kiểu nói "chuyển đổi có chủ đích":
+
+```c
+double avg = (double)total / count;   // chia như double
+int rounded = (int)(x + 0.5);         // làm tròn nửa lên cho x dương
+char c = (char)('A' + 3);             // int -> char
+```
+
+Ép kiểu khi bạn thật sự muốn; đừng bao giờ ép chỉ để tắt một cảnh báo bạn
+không hiểu.

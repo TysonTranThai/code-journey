@@ -1,0 +1,30 @@
+Từ C++17, trả về **prvalue** là *guaranteed elision*: không hề có copy hay move, kể cả trên lý thuyết. Đối tượng được dựng trực tiếp tại chỗ cuối cùng:
+
+```cpp
+std::string build() { return std::string(1000, 'x'); }   // không copy, không move — theo ngôn ngữ
+auto s = build();                                        // một lần cấp phát, một chuỗi
+```
+
+## NRVO — ân huệ mạnh mẽ
+
+Trả về biến cục bộ **có tên** (NRVO) không được bảo đảm, nhưng compiler hiện đại vẫn làm với luồng đơn giản:
+
+```cpp
+std::string accumulate(int n) {
+    std::string out;              // biến cục bộ có tên: ứng viên NRVO
+    for (int i = 0; i < n; ++i) out += 'a';
+    return out;                   // thường được dựng trực tiếp vào bộ nhớ của caller
+}
+```
+
+## Anti-pattern: return std::move(local)
+
+`return std::move(local);` **tắt NRVO** (biểu thức không còn là tên của biến cục bộ) và ép phải move — tệ hơn hẳn `return local;` vốn tự move khi elision thất bại. Compiler có cờ cảnh báo (`-Wpessimizing-move`).
+
+## Khi nào elision không bao giờ áp dụng
+
+- Phép gán (chỉ khởi tạo mới elide),
+- tham số hàm (chúng vốn là bản copy hoặc reference),
+- trả về thành viên hoặc tham số (chỉ NRVO của biến cục bộ hay return prvalue mới elide).
+
+Đếm số lần dựng bằng kiểu có bộ đếm trong phần luyện tập — bộ đếm chính là bằng chứng.

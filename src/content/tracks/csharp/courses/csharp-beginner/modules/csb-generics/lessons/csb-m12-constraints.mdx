@@ -1,0 +1,17 @@
+## Operations need permissions
+
+Inside a generic method, `T` starts with no abilities — you can't call `a.CompareTo(b)` without promising `T` supports comparison. **Constraints** are that promise:
+
+```csharp
+where T : IComparable<T>   // T knows how to compare to itself
+where T : class            // T is a reference type
+where T : struct           // T is a value type (non-nullable)
+where T : new()            // T has a parameterless constructor
+where T : SomeBase         // T is (or derives from) SomeBase
+```
+
+With `where T : IComparable<T>`, the compiler *unlocks* `CompareTo` on every `T` — and *rejects* type arguments that lack it. Constraints both restrict callers and enable the method body.
+
+## The honest rule
+
+Add a constraint only when the body needs that capability. An empty `where T : class` "for safety" restricts callers for no reason. Start from the operations the algorithm needs; the constraint list writes itself.

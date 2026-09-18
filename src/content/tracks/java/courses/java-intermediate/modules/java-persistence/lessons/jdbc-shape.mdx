@@ -1,0 +1,36 @@
+## JDBC concepts (what your repository would wrap)
+
+The sandbox has no database driver, but the JDBC *shape* is essential
+knowledge — here is the canonical safe pattern you'd implement:
+
+```java
+public Optional<Expense> findById(String id) {
+    String sql = "SELECT id, category, cents FROM expenses WHERE id = ?";
+    try (Connection c = dataSource.getConnection();
+         PreparedStatement ps = c.prepareStatement(sql)) {
+        ps.setString(1, id);                       // bind, NEVER concatenate
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return Optional.of(new Expense(rs.getString("id"),
+                    rs.getString("category"), rs.getInt("cents")));
+            }
+            return Optional.empty();
+        }
+    } catch (SQLException e) {
+        throw new StorageException("expense lookup failed", e);  // translate (Module 6)
+    }
+}
+```
+
+The four non-negotiables:
+1. **PreparedStatement with `?` placeholders** — the only defense against
+   SQL injection; concatenating user input is the vulnerability itself.
+2. **try-with-resources** — Connection/Statement/ResultSet are all
+   AutoCloseable; leaks exhaust connection pools.
+3. **Transactions** — multi-statement work needs
+   `c.setAutoCommit(false)` … `commit()`/`rollback()`.
+4. **Translate SQLException** at the repository boundary.
+
+Connection pooling (HikariCP et al.) exists because connections are
+expensive — the repository *borrows* from the pool via a DataSource, it
+never constructs raw connections.

@@ -1,0 +1,16 @@
+{
+  "id": "cint-checkpoint-m1-task",
+  "title": "Checkpoint: The Two-File Build",
+  "prompt": "Model an entire two-TU build and its failure modes in one API:\n\n```c\n/* files: 'C' = compile OK, 'c' = compile ERROR, 'L' = links, 'l' = link ERROR.\n   A build string is a sequence like \"CCLl\" — per-TU compile results followed\n   by the link result. */\nint build_verdict(const char *stages);\n```\n\nRules: if any compile stage is 'c', the build fails at that point — return\n`-1 - <index of first failing TU>` (first TU is index 0). Otherwise if the link\nresult is 'l', return `-100`. Otherwise return the number of successful TUs.\nNULL or empty returns -1. Extra characters (spaces) are skipped.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "full build verdicts",
+      "code": "\nCHECK_EQ(build_verdict(\"CCL\"), 2);\nCHECK_EQ(build_verdict(\"cCL\"), -1);          /* first TU fails compile */\nCHECK_EQ(build_verdict(\"CcL\"), -2);          /* second TU fails compile */\nCHECK_EQ(build_verdict(\"CCl\"), -100);\nCHECK_EQ(build_verdict(\"CCC L\"), 3);\nCHECK_EQ(build_verdict(\"\"), -1);\n",
+      "hint": "Scan compile chars until you hit L or l; on 'c' return -1 - index."
+    }
+  ],
+  "level": "independent"
+}

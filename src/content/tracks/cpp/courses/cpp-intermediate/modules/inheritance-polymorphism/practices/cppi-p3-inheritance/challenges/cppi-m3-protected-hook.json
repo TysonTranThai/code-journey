@@ -1,0 +1,21 @@
+{
+  "id": "cppi-m3-protected-hook",
+  "title": "A protected extension point",
+  "prompt": "Implement `class Greeter` with `std::string greet() const` returning `\"Hello, \" + salutation()` where `salutation()` is a protected member function returning `\"world\"`. Implement `class FormalGreeter : public Greeter` overriding nothing but the base stays intact — the test calls both through their own types.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <string>\\n#include <iostream>\\n\\nclass Greeter {\\n    // greet() + protected salutation()\\n};\\n",
+  "tests": [
+    {
+      "name": "base",
+      "code": "Greeter g;\nCHECK_EQ(g.greet(), std::string(\"Hello, world\"));",
+      "hint": "The base composes greet from a protected hook."
+    },
+    {
+      "name": "derived-uses",
+      "code": "FormalGreeter f;\nCHECK_EQ(f.greet(), std::string(\"Hello, world\"));",
+      "hint": "The derived inherits the whole shape."
+    }
+  ],
+  "level": "combination"
+}

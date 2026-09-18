@@ -1,0 +1,25 @@
+## Bộ nhớ & streaming: generator hơn list
+
+Materialize dữ liệu mà bạn có thể stream là lỗi bộ nhớ âm thầm. Một hàm đọc
+log 10 GB "vào list" thì chết; cùng hàm đó nhưng *yield* từng dòng đã parse
+chạy với bộ nhớ hằng.
+
+```python
+def parse(lines):                      # lines: any iterable of str
+    for line in lines:
+        if not line.strip() or line.startswith("#"):
+            continue
+        key, _, value = line.partition("=")
+        yield (key.strip(), value.strip())
+```
+
+Cách chứng minh streaming khi chấm (như các bài tập trong module này dùng):
+truyền vào một **iterator không có `len()` và nổ tung nếu bị materialize** —
+một iterable tự viết mà `__iter__`_yield_ hàng triệu giá trị sẽ khiến `list()`
+mất thời gian vô hạn — không, probe thực dụng đơn giản hơn: một đối tượng raise
+bên trong `__iter__` sau N giá trị chứng minh phía tiêu thụ kéo lười và dừng sớm.
+
+Các bộ kết hợp ghép được với nhau: `map`, `filter`, `itertools.islice`,
+`itertools.chain`, `sum(...)`, `any(...)` đều tiêu thụ iterable lười.
+`sorted(...)` và `max(...)` tiêu thụ toàn bộ (điều bắt buộc). Hãy biết cái nào
+thuộc loại nào.

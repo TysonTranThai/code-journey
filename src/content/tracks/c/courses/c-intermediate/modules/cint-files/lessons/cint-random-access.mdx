@@ -1,0 +1,39 @@
+## A file is an array you can index
+
+Fixed-width records make any record reachable directly:
+
+```c
+/* record i of width W: */
+fseek(f, (long)i * W, SEEK_SET);   /* SEEK_SET: from the start */
+fread(buf, W, 1, f);
+```
+
+`ftell` reports the current position; `SEEK_CUR` moves relative, and
+`SEEK_END` from the tail (`fseek(f, 0, SEEK_END); ftell(f)` is the
+classical file-size idiom — though for real sizes, prefer the OS stat
+API; this is the stdlib-only version).
+
+## "r+" is read AND write — not append
+
+Opening with `"r+"` allows both directions but does **not** create the
+file and does **not** move the position for you: after writing, the
+position is where you stopped. `"a"` (append) always writes at the end
+but reads nowhere. Modes are contracts — table them once:
+
+| mode | reads | writes | creates | truncates |
+|---|---|---|---|---|
+| "r" | ✓ | ✗ | ✗ | ✗ |
+| "w" | ✗* | ✓ | ✓ | ✓ |
+| "a" | ✗ | ✓ | ✓ | ✗ |
+| "r+" | ✓ | ✓ | ✗ | ✗ |
+| "w+" | ✓* | ✓ | ✓ | ✓ |
+
+\* only after rewinding; "w" truncates on open, destroying existing data —
+the mode that deletes files when chosen carelessly.
+
+## Update in place: the width must match
+
+Overwriting record i via `"r+"` works only if the new record has
+*exactly* the same width — otherwise everything after it shifts and the
+file is corrupt. Variable-width updates rewrite the tail or use an
+indirection (slot table) — the reason real databases are complicated.

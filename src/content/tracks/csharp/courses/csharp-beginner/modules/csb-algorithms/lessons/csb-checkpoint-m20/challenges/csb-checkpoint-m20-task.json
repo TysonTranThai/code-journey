@@ -1,0 +1,25 @@
+{
+  "id": "csb-checkpoint-m20-task",
+  "title": "AlgorithmToolkit",
+  "prompt": "Implement `MissingNumber`, `HasPairSum`, and `Compress` — each is one of the module's patterns.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "gaps",
+      "code": "Cj.Eq(Solution.MissingNumber(new[] { 3, 0, 1 }), 2, \"missing middle\");\nCj.Eq(Solution.MissingNumber(new[] { 0 }), 1, \"missing one past the end\");\nCj.Eq(Solution.MissingNumber(new[] { 0, 1, 2 }), 3, \"missing last\");",
+      "hint": "The array has n numbers from 0..n — so n equals nums.Length, not Length+1."
+    },
+    {
+      "name": "pairs",
+      "code": "Cj.True(Solution.HasPairSum(new[] { 1, 2, 3, 4 }, 6), \"2+4\");\nCj.False(Solution.HasPairSum(new[] { 1, 2, 3, 4 }, 8), \"4+4 is one element twice\");\nCj.False(Solution.HasPairSum(new int[] { }, 5), \"empty\");",
+      "hint": "Check `seen` BEFORE adding the current value — that's what forbids self-pairing."
+    },
+    {
+      "name": "runs",
+      "code": "Cj.Eq(Solution.Compress(\"aaabbc\"), \"a3b2c1\", \"runs of 3, 2, 1\");\nCj.Eq(Solution.Compress(\"a\"), \"a1\", \"count of one is still written\");\nCj.Eq(Solution.Compress(\"\"), \"\", \"empty\");",
+      "hint": "Flush the final run after the loop — the last run has no next character to trigger it."
+    }
+  ]
+}

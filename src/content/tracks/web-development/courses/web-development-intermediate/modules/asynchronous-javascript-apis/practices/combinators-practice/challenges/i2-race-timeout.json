@@ -1,0 +1,20 @@
+{
+  "id": "i2-race-timeout",
+  "title": "Timeout Race",
+  "prompt": "Write `async function withDeadline(task, ms, onTimeout)` where `task` is a promise. If `task` fulfills within `ms`, RETURN its value. Otherwise RETURN the result of calling `onTimeout()`. The underlying task is NOT cancelled (that comes later) — you simply stop waiting.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "async function withDeadline(task, ms, onTimeout) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "fast task resolves with its value",
+      "code": "const fn = new Function(code + \"\\nreturn { withDeadline };\");\nconst { withDeadline } = fn();\nconst out = await withDeadline(Promise.resolve(\"quick\"), 50, () => \"late-fallback\");\nif (out !== \"quick\") throw new Error(\"A task that finishes in time resolves with its own value.\");",
+      "hint": "Promise.race([task, timer]) — the timer promise resolves after ms."
+    },
+    {
+      "name": "slow task falls back",
+      "code": "const fn = new Function(code + \"\\nreturn { withDeadline };\");\nconst { withDeadline } = fn();\nlet fallbackRan = false;\nconst out = await withDeadline(new Promise((r) => setTimeout(() => r(\"late\"), 100)), 20, () => { fallbackRan = true; return \"deadline\"; });\nif (out !== \"deadline\") throw new Error(\"A task that misses the deadline resolves with onTimeout's result.\");\nif (!fallbackRan) throw new Error(\"onTimeout should actually be called.\");",
+      "hint": "The timer promise resolves with onTimeout()'s result: new Promise((res) => setTimeout(() => res(onTimeout()), ms))."
+    }
+  ]
+}

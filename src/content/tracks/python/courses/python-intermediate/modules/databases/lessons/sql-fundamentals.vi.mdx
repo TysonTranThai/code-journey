@@ -1,0 +1,33 @@
+Cơ sở dữ liệu quan hệ lưu **bảng** gồm các dòng với cột có kiểu. SQL là
+ngôn ngữ truy vấn; SQLite là engine không cần cấu hình, tích hợp sẵn trong
+Python:
+
+```python
+import sqlite3
+
+conn = sqlite3.connect(":memory:")     # hoặc "app.db" cho tệp thật
+conn.execute(
+    """
+    CREATE TABLE tasks (
+        id INTEGER PRIMARY KEY,
+        title TEXT NOT NULL,
+        done INTEGER DEFAULT 0
+    )
+    """
+)
+conn.execute("INSERT INTO tasks (title) VALUES (?)", ("write lesson",))
+conn.commit()
+
+rows = conn.execute("SELECT id, title FROM tasks WHERE done = 0").fetchall()
+```
+
+Vốn từ quan trọng:
+
+- **SELECT ... FROM ... WHERE** — đọc các dòng khớp điều kiện.
+- **ORDER BY ... LIMIT** — sắp và lấy nhóm dòng đầu.
+- **INSERT INTO ... VALUES** — thêm dòng; **UPDATE ... SET ... WHERE** — sửa các dòng khớp.
+- **DELETE FROM ... WHERE** — xóa dòng. (WHERE trong UPDATE/DELETE không phải tùy chọn — quên nó là thay đổi mọi dòng.)
+- **COUNT, SUM, AVG, GROUP BY** — tổng hợp theo nhóm: `SELECT region, SUM(amount) FROM sales GROUP BY region`.
+
+`conn.row_factory = sqlite3.Row` khiến dòng dữ liệu dùng như dict
+(`row["title"]`) — dễ đọc hơn tuple trần.

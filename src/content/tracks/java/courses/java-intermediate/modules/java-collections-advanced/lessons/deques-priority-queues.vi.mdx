@@ -1,0 +1,29 @@
+## Queue, Deque, PriorityQueue
+
+`ArrayDeque` là stack VÀ queue tốt nhất của Java — nhanh hơn `Stack` cổ
+điển và `LinkedList`:
+
+```java
+Deque<String> stack = new ArrayDeque<>();
+stack.push("a");          // addFirst
+stack.pop();              // removeFirst — LIFO
+
+Deque<String> queue = new ArrayDeque<>();
+queue.offer("a");         // addLast
+queue.poll();             // removeFirst — FIFO
+```
+
+Có hai kiểu method là có chủ đích:
+- `add/push/offer` ném ngoại lệ hoặc trả báo hiệu khác nhau khi hết chỗ
+- `element/peek` so với `remove/poll`: cặp đầu *ném* khi rỗng, cặp sau
+  trả null — chọn rõ ràng, đừng trộn tùy hứng.
+
+`PriorityQueue` là một heap: `poll()` luôn cho phần tử nhỏ nhất *theo
+comparator của nó*, không phải theo thứ tự chèn:
+
+```java
+PriorityQueue<Task> q = new PriorityQueue<>(Comparator.comparingInt(Task::priority));
+```
+
+O(log n) cho insert/poll — công cụ cho kiểu "luôn xử lý việc cấp bách
+nhất trước".

@@ -1,0 +1,26 @@
+## The mental model
+
+A **view** is a lightweight, non-owning wrapper over elements — it *presents* data differently without copying it. Adaptation is lazy: building the pipeline does no work; iterating pulls elements through it.
+
+```cpp
+namespace rv = std::views;
+
+int total = 0;
+for (int v : rv::iota(1, 11) | rv::filter([](int x) { return x % 2 == 0; })
+                             | rv::transform([](int x) { return x * x; })) {
+    total += v;
+}
+// total == 220 — squares of 2,4,6,8,10, computed one element at a time
+```
+
+`rv::iota(1, 11)` is a generated range — no vector exists. `filter` skips; `transform` maps; `take`/`drop` slice; `reverse` walks backwards. `views::all(v)` materializes a container into a view when you need the boundary.
+
+## Why pipelines win
+
+- **No intermediate containers**: chained algorithm calls would build a vector per stage; views build none.
+- **Single pass composition**: each element flows through the whole chain before the next one starts — cache-friendly and early-exit-able (`take(5)` stops the whole pipeline).
+- **Composability**: the pipeline is a value; store it, pass it, reuse it.
+
+## The costs to respect
+
+Iteration is not free (a filter+transform chain re-tests per element); deeply nested lambdas can hurt inlining; and — the big one — a view **does not own** what it points at. That is the next lessons' subject.

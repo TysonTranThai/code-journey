@@ -1,0 +1,44 @@
+## A tiny state machine
+
+```c
+typedef enum { IDLE, RUNNING, PAUSED } State;
+
+State step(State s, int event) {
+    switch (s) {
+        case IDLE:    return event == 1 ? RUNNING : IDLE;
+        case RUNNING: return event == 0 ? PAUSED  : RUNNING;
+        case PAUSED:  return event == 1 ? RUNNING : PAUSED;
+    }
+    return s;
+}
+```
+
+The enum names the states, the function names the transition rules, and the
+types make illegal states obvious.
+
+## Modeling records
+
+```c
+typedef enum { DOC, VIDEO, QUIZ } Kind;
+
+typedef struct {
+    int id;
+    Kind kind;
+    int minutes;
+} Material;
+
+int total_minutes(const Material *ms, int n, Kind k) {
+    int t = 0;
+    for (int i = 0; i < n; i++)
+        if (ms[i].kind == k) t += ms[i].minutes;
+    return t;
+}
+```
+
+This is the data-modeling layer of every C program: an enum for categories, a
+struct for records, functions that query and update them.
+
+## Design hint
+
+When you catch yourself writing `status == 3`, stop and invent the enum.
+The rename costs two minutes and pays off for the life of the code.

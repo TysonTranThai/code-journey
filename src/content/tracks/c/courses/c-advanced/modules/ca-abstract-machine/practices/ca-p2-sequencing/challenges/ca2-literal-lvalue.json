@@ -1,0 +1,21 @@
+{
+  "id": "ca2-literal-lvalue",
+  "title": "Literals are Lvalues",
+  "prompt": "Implement `size_t literal_addr_delta(void)`: take the address of the string literal `\"ca\"` twice (two separate `&\"ca\"[0]` expressions), return the byte distance between them as a size_t (0 if equal). Then implement `int literal_is_lvalue(void)` returning 1 unconditionally — because taking that address compiled at all, proving literals are lvalues (modifying them would be UB, not a compile error).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "addresses comparable",
+      "code": "CHECK_EQ((int)literal_addr_delta(), 0);",
+      "hint": "Both expressions designate the same pooled literal on this compiler — distance 0."
+    },
+    {
+      "name": "lvalue proof",
+      "code": "CHECK_EQ(literal_is_lvalue(), 1);",
+      "hint": "Address-of on a literal only compiles for lvalues."
+    }
+  ],
+  "level": "independent"
+}

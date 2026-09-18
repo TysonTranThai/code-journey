@@ -1,0 +1,26 @@
+{
+  "id": "javaa-p3-safe-publish",
+  "title": "Publish safely through a chosen channel",
+  "prompt": "Implement `static List<String> publishViaQueue()`:\n1. A `worker` virtual thread: builds `List.of(\"payload-1\", \"payload-2\")`, then `put`s it on a `SynchronousQueue<List<String>>`.\n2. The main path `take()`s it and returns the list.\n3. Also implement `static boolean queueCarriesHappensBefore()` returning true — documenting that BlockingQueue operations establish hb between producer and consumer.\n4. Implement `static List<String> tornRead()` that returns a list published through a PLAIN static field, slept 1ms, then re-read — this is intentionally NOT guaranteed (the test only checks the method exists and returns some list; the LESSON explains why it is unsafe).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "queue publication is safe",
+      "code": "\ncheckEq(Solution.publishViaQueue(), List.of(\"payload-1\", \"payload-2\"), \"queue carries the hb edge\");\n",
+      "hint": "BlockingQueue put/take is a publication channel."
+    },
+    {
+      "name": "documentation flag",
+      "code": "\ncheckTrue(Solution.queueCarriesHappensBefore(), \"Javadoc-backed guarantee\");\n",
+      "hint": "BlockingQueue ops establish hb."
+    },
+    {
+      "name": "plain-field variant exists (unsafe by design)",
+      "code": "\ncheckTrue(Solution.tornRead() instanceof java.util.List, \"shape only; never do this in production\");\n",
+      "hint": "Returned for illustration only."
+    }
+  ],
+  "level": "real-world"
+}

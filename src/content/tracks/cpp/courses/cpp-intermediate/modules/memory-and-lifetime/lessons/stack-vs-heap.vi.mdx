@@ -1,0 +1,40 @@
+**Stack** là vùng nhớ nhanh, giới hạn dành cho đối tượng tự động; **heap** là
+vùng lớn hơn, chậm hơn mà bạn quản lý tường minh. Chọn nơi đối tượng sống là
+một quyết định thiết kế.
+
+```cpp
+#include <vector>
+
+struct Sample { double readings[64]; };
+
+Sample make_on_stack() {
+    Sample s{};              // 512 byte trên stack: nhanh, chết khi return
+    return s;                // được move/copy ra ngoài — ổn với kích thước nhỏ
+}
+
+std::vector<Sample> make_many(int n) {
+    std::vector<Sample> out;
+    out.reserve(n);          // n * 512 byte trên heap, vector là chủ sở hữu
+    for (int i = 0; i < n; ++i) out.push_back(make_on_stack());
+    return out;              // một chủ sở hữu, dọn dẹp tự động
+}
+```
+
+## Đánh đổi trong một bảng
+
+| | Stack | Heap |
+|---|---|---|
+| tốc độ | rất nhanh (tăng con trỏ) | chậm hơn (sổ sách allocator) |
+| vòng đời | kết thúc khi ra khỏi phạm vi | đến khi bạn giải phóng |
+| kích thước | nhỏ (giới hạn KB–MB) | lớn |
+| lỗi gặp phải | tràn stack | cấp phát ném `bad_alloc` |
+| ai dọn | compiler, luôn luôn | bạn, qua RAII |
+
+## Hướng dẫn thực dụng
+
+- Cục bộ, nhỏ, gắn với phạm vi → stack (tự động). Đây là mặc định.
+- Kích thước chỉ biết lúc chạy, chia sẻ sở hữu, hoặc buffer lớn → heap, do container hoặc smart pointer sở hữu.
+- Đệ quy sâu với biến cục bộ lớn sẽ tràn stack — crash kinh điển khi người ta "thêm đệ quy cho nhanh".
+
+Mọi thứ còn lại trong khóa này — container, smart pointer, sở hữu đa hình —
+đều là cơ chế đặt bộ nhớ heap dưới quy tắc vòng đời tự động.

@@ -1,0 +1,47 @@
+**Set** — không trùng lặp, không hứa thứ tự (HashSet):
+
+```java
+Set<Integer> seen = new HashSet<>();
+seen.add(1);
+seen.add(1);                    // bị bỏ qua: add trả false
+System.out.println(seen.size()); // 1
+```
+
+Điểm giá trị nằm ở phép kiểm thành viên: `contains` trên HashSet nhanh gần
+như tức thì bất kể kích thước — nó xếp bucket theo hash code. "Id này tôi
+đã xử lý chưa?" là câu hỏi của Set, không phải của việc quét List.
+
+**Map** — cặp khóa → giá trị (HashMap):
+
+```java
+Map<String, Integer> stock = new HashMap<>();
+stock.put("pen", 12);
+stock.put("book", 3);
+stock.get("pen");               // 12
+stock.getOrDefault("ink", 0);   // 0 — không bất ngờ khi thiếu khóa
+stock.containsKey("book");      // true
+stock.remove("pen");
+
+for (var entry : stock.entrySet()) {          // cả hai nửa
+    System.out.println(entry.getKey() + "=" + entry.getValue());
+}
+for (String key : stock.keySet()) { /* khóa */ }
+for (int qty : stock.values())    { /* giá trị */ }
+```
+
+`get` với khóa thiếu trả `null` — với các kiểu wrapper (`Integer` ở đây),
+null đó có thể NPE lúc unboxing sau này. `getOrDefault` và `containsKey`
+là cách đọc phòng thủ. Chú ý `var` (Java 10+): suy luận kiểu cục bộ khi
+vế phải đã nói rõ kiểu.
+
+**Chọn cấu trúc, gói trong một bảng:**
+
+| Nhu cầu | Cấu trúc |
+|---|---|
+| chuỗi có thứ tự, truy cập theo chỉ số | `ArrayList` |
+| thành viên duy nhất, contains nhanh | `HashSet` (hoặc `LinkedHashSet` giữ thứ tự thêm vào) |
+| tra cứu khóa → giá trị | `HashMap` (hoặc `TreeMap` khi cần khóa có thứ tự) |
+| xử lý vào-trước-ra-trước | `ArrayDeque` làm hàng đợi |
+| undo / các mục gần đây | `ArrayDeque` làm ngăn xếp (`push`/`pop`) |
+
+**Tiếp theo:** `<…>` thực chất là gì.

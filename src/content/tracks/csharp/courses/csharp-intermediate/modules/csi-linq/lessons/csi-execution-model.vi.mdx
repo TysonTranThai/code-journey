@@ -1,0 +1,51 @@
+## Hai chế độ thực thi, một quy tắc
+
+Hầu hết toán tử là TRÌ HOÃN — chúng ghi lại kế hoạch. `Count()`, `ToList()`,
+`ToArray()`, `ToDictionary()`, `First()`, `Sum()`, `Any()` là NGAY LẬP TỨC —
+chúng kéo dữ liệu. Chuỗi ghép vẫn lười cho tới khi một trong những hàm đó
+kích hoạt:
+
+```csharp
+var big = nums.Where(n => n > 10).Select(n => n * 2);   // chưa làm gì
+var total = big.Sum();                                  // BÂY GIỜ pipeline chạy
+```
+
+Nguồn quan trọng: mảng duyệt lại rẻ, nhưng query dựng trên phương thức có
+tác dụng phụ sẽ kích hoạt lại chúng ở MỌI lần liệt kê.
+
+## Cái bẫy nhiều lần liệt kê
+
+```csharp
+var expensive = LoadAndParse();          // IEnumerable — lười
+if (expensive.Any())                     // lượt 1
+    Render(expensive.Where(x => x.Ok)); // lượt 2: LoadAndParse lần nữa!
+```
+
+Chữa: hóa rắn một lần ở ranh giới — `var data = LoadAndParse().ToList();`
+— rồi query trên danh sách thoải mái. Hóa rắn dữ liệu EAGER hạn chế (bộ
+nhớ), nguồn lười có tác dụng phụ thì luôn luôn.
+
+## Biến bị bắt: kế hoạch không phải ảnh chụp
+
+Query trì hoãn đóng trên BIẾN, nên đổi biến trước khi thực thi sẽ đổi kết
+quả:
+
+```csharp
+int threshold = 10;
+var q = nums.Where(n => n > threshold);
+threshold = 100;            // q giờ dùng 100 — query thấy trạng thái hiện tại
+```
+
+Đây chính là ngữ nghĩa capture của lambda (Module 3) áp cho kế hoạch.
+
+## IEnumerable vs IQueryable (khái niệm)
+
+`IEnumerable<T>` ghép delegate; lọc diễn ra trong bộ nhớ. `IQueryable<T>`
+ghép EXPRESSION TREE mà provider có thể dịch (sang SQL). Bạn dùng
+IQueryable với database ở phần Nâng cao/dữ liệu — nhưng kỷ luật ở đây
+(nhìn nguồn, biết khi nào nó chạy) thì giống hệt.
+
+## Kiểm tra hiểu biết
+
+- Toán tử nào khiến cả chuỗi chạy? (Bất kỳ toán tử ngay lập tức nào.)
+- Vì sao hóa rắn nguồn có tác dụng phụ một lần? (Mỗi lần liệt kê chạy lại tác dụng phụ.)

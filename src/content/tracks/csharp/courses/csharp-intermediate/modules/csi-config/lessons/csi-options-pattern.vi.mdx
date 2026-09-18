@@ -1,0 +1,54 @@
+## Cấu hình là dữ liệu code cần trước khi chạy
+
+Vị trí database, feature flag, giới hạn, URL. Nguyên tắc: cấu hình nằm
+NGOÀI mã biên dịch, đến từ CÁC NGUỒN (file JSON, biến môi trường, tham số
+dòng lệnh — cụ thể nhất thắng), và tới tay các lớp như giá trị được inject
+bình thường.
+
+## Options pattern: góc nhìn có kiểu
+
+Thay vì rải string key khắp nơi, bó một section vào một lớp:
+
+```csharp
+public sealed class RetryOptions
+{
+    public int MaxAttempts { get; set; } = 3;
+    public int DelayMs { get; set; } = 200;
+}
+
+// bó (dạng tự viết; binder của ASP.NET làm y hệt)
+var section = JsonDocument.Parse(json).RootElement.GetProperty("Retry");
+var options = new RetryOptions
+{
+    MaxAttempts = section.GetProperty("MaxAttempts").GetInt32(),
+    DelayMs = section.GetProperty("DelayMs").GetInt32(),
+};
+```
+
+Mặc định nằm TRÊN lớp options; cấu hình ghi đè. Consumer nhận
+`RetryOptions` (hoặc `IOptions<RetryOptions>` trong ASP.NET) — không bao giờ
+nhận cấu hình thô — nên key chỉ được nhắc đúng một nơi.
+
+## Kiểm tra lúc khởi động, không phải 3 giờ sáng
+
+Fail NHANH với thông báo chính xác:
+
+```csharp
+if (options.MaxAttempts < 1)
+    throw new OptionsValidationException("Retry", "MaxAttempts must be >= 1");
+```
+
+Số cổng sai phát hiện lúc startup là sửa một dòng; phát hiện giống hệt lúc
+tối thứ sáu là một sự cố.
+
+## Biến môi trường: tầng triển khai
+
+`Environment.GetEnvironmentVariable("CJ_RETRY__MAXATTEMPTS")` — pipeline
+triển khai đưa vào; hai dấu gạch dưới là quy ước lồng của ASP.NET
+(`Retry:MaxAttempts`). Env ghi đè file trong mọi host phổ thông — xếp lớp
+chính là điểm nhấn.
+
+## Kiểm tra hiểu biết
+
+- Vì sao bó vào lớp có kiểu thay vì truyền string? (Một nơi nắm key; kiểu bắt lỗi hình dạng; mặc định nằm trên lớp.)
+- Cái nào thắng: file hay biến môi trường? (Môi trường — ngữ cảnh triển khai cụ thể hơn.)

@@ -1,0 +1,25 @@
+{
+  "id": "practice-semantic-rescue",
+  "title": "Debug: Div Soup to Semantics",
+  "prompt": "This page works, but it's meaningless to assistive tech: everything is `div`s. Restructure it: the first `div` becomes a `header`, the second a `nav`, the third `main`, and the last a `footer`. Keep every piece of text exactly where it is.\n\nRules:\n- Exactly those four semantic elements, same order.\n- All text content unchanged.\n- No `div`s remain.",
+  "difficulty": "beginner",
+  "level": "debugging",
+  "boilerplate": "<div>\n  <p class=\"site-name\">PetitFour</p>\n</div>\n<div>\n  <a href=\"#menu\">Menu</a>\n  <a href=\"#order\">Order</a>\n</div>\n<div>\n  <h1>Small cakes, big joy</h1>\n  <p>Baked fresh every morning.</p>\n</div>\n<div>\n  <p>12 Rue des Lilas, Paris</p>\n</div>\n",
+  "tests": [
+    {
+      "name": "all four landmarks in order",
+      "code": "const order = [\"<header\", \"<nav\", \"<main\", \"<footer\"];\nlet pos = -1;\nfor (const tag of order) {\n  const next = code.toLowerCase().indexOf(tag);\n  if (next === -1 || next < pos) {\n    throw new Error(`Expected elements in order: header, nav, main, footer (problem at ${tag}).`);\n  }\n  pos = next;\n}",
+      "hint": "Replace the four divs, top to bottom: header, nav, main, footer."
+    },
+    {
+      "name": "text content untouched",
+      "code": "for (const text of [\"PetitFour\", \"Menu\", \"Order\", \"Small cakes, big joy\", \"Baked fresh every morning.\", \"12 Rue des Lilas, Paris\"]) {\n  if (!code.includes(text)) {\n    throw new Error(`The text \"${text}\" went missing — keep every line, change only the wrappers.`);\n  }\n}",
+      "hint": "This is a swap-the-wrapper exercise: the inner content stays identical."
+    },
+    {
+      "name": "no divs remain",
+      "code": "if (/<div/i.test(code)) {\n  throw new Error(\"A <div> is still present — every one of the four becomes a semantic element.\");\n}",
+      "hint": "All four divs get replaced — none should survive."
+    }
+  ]
+}

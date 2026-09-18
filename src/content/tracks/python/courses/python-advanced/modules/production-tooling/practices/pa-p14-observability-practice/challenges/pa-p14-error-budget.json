@@ -1,0 +1,16 @@
+{
+  "id": "pa-p14-error-budget",
+  "title": "The error budget",
+  "prompt": "Implement `error_budget(slo_success_rate, total, failures, window_days=30)`:\n\n- allowed failures = `total * (1 - slo)`; budget remaining = `1 - failures/allowed`, floored at 0 (1.0 when allowed is 0 and there are no failures)\n- returns `{'slo', 'actual' (measured success rate), 'budget_remaining', 'status'}`\n- status: `'healthy'` when remaining >= 0.5, `'burning'` when 0 < remaining < 0.5, `'breached'` at 0 (a real breach must NOT read as merely burning)\n\nThis function is the SLO decision: healthy → ship features; burning → stabilize.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: error_budget",
+  "tests": [
+    {
+      "name": "healthy, burning, breached",
+      "code": "r = error_budget(0.99, 1000, 3)\nassert r['status'] == 'healthy' and abs(r['budget_remaining'] - 0.7) < 1e-9\nr = error_budget(0.99, 1000, 6)\nassert r['status'] == 'burning' and r['budget_remaining'] > 0\nr = error_budget(0.99, 1000, 20)\nassert r['status'] == 'breached' and r['budget_remaining'] == 0.0\nprint('ok')",
+      "hint": "20 failures exceeds the 10-failure budget: breached, not burning."
+    }
+  ],
+  "level": "independent"
+}

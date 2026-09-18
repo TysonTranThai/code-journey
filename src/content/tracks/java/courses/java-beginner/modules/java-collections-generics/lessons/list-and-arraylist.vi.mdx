@@ -1,0 +1,36 @@
+**Collections Framework** là hộp công cụ các cấu trúc dữ liệu có thể lớn lên
+của Java. `List` là cái hằng ngày: một chuỗi có thứ tự, lớn lên được.
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+List<String> names = new ArrayList<>();   // interface bên trái, hiện thực bên phải
+names.add("Ada");
+names.add("Grace");
+names.add(1, "Linus");                    // chèn vào chỉ số 1
+System.out.println(names.get(0));         // Ada
+System.out.println(names.size());         // 3
+System.out.println(names.remove("Ada"));  // true (đã xóa)
+```
+
+Khai báo kiểu **interface** (`List`), khởi tạo **hiện thực** (`ArrayList`).
+Toàn bộ code gọi chỉ nhìn thấy interface; đổi sang `LinkedList` ngày mai chỉ
+sửa đúng một dòng. `<String>` là **tham số kiểu generic** — sẽ nói kỹ sau,
+nhưng nó đã trả tiền ngay: `names.get(0)` được biết tĩnh là String.
+
+Các phương thức List cốt lõi: `add(e)`, `add(i, e)`, `get(i)`, `set(i, e)`,
+`remove(i)`, `remove(Object)`, `size()`, `contains(e)`, `indexOf(e)`,
+`isEmpty()`, `clear()`. Duyệt dùng for-each như với mảng:
+
+```java
+for (String n : names) { System.out.println(n); }
+```
+
+**ArrayList vs LinkedList** — câu hỏi phỏng vấn kinh điển, nói cho thật:
+ArrayList là mảng tự phình; `get(i)` tức thì, chèn giữa dồn phần tử.
+LinkedList là chuỗi liên kết; hai đầu rẻ, `get(i)` đi bộ từ đầu gần nhất.
+Tóm tắt trung thực cho người mới: **dùng ArrayList** cho tới khi bạn đo được
+một bài toán thật (và trong khóa Cơ bản thì hầu như chưa).
+
+**Tiếp theo:** set, map, và hình dạng của tra cứu.

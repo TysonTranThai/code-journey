@@ -1,0 +1,14 @@
+{
+  "title": "TypedDict + TypeGuard kiểm tra đơn hàng",
+  "prompt": "Dựng model đơn hàng có kiểu:\n\n1. `Status = Literal['pending', 'paid', 'shipped']`\n2. `class Order(TypedDict, total=False)` với các field `id: int`, `status: Status`, `items: List[str]`, `note: Optional[str]`\n3. `is_valid_order(data) -> TypeGuard[Order]` trả True chỉ khi: data là dict; `id` là int thật (loại bool); `status` là một trong ba literal; `items` là list của str\n4. `status_of(order) -> Status` trả về field status\n\nNghiêm ngặt với bool: trong Python `isinstance(True, int)` là True, nên isinstance thường sẽ chấp nhận boolean — hãy loại chúng.",
+  "tests": [
+    {
+      "name": "Đơn hợp lệ qua, rác bị chặn",
+      "hint": "Kiểm tra dict, id là int thật (loại bool), status thuộc literal, items là list của str."
+    },
+    {
+      "name": "Chặn bool phải tường minh",
+      "hint": "id 0 hợp lệ; False thì không — phép kiểm bool phải hiện hữu."
+    }
+  ]
+}

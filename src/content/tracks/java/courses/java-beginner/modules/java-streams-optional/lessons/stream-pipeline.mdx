@@ -1,0 +1,58 @@
+A **stream** is a conveyor belt for data: you line up processing steps,
+and elements flow through them one stage at a time.
+
+```java
+List<String> names = List.of("Ada", "bob", "Grace", "eve", "Turing");
+
+List<String> result = names.stream()          // 1. source
+    .filter(n -> n.length() > 3)              // 2. intermediate: keep some
+    .map(String::toUpperCase)                 // 3. intermediate: transform
+    .sorted()                                 // 4. intermediate: order
+    .collect(java.util.stream.Collectors.toList());  // 5. terminal: produce
+// [ADA, GRACE, TURING]
+```
+
+The vocabulary:
+
+- **Source** - `list.stream()`, `Stream.of(...)`, `map.entrySet().stream()`.
+- **Intermediate operations** (return a new stream, are *lazy* - nothing
+  runs until a terminal op exists): `filter`, `map`, `sorted`, `distinct`,
+  `limit`, `skip`, `peek`.
+- **Terminal operations** (actually run the belt, once):
+  `collect`, `forEach`, `count`, `anyMatch`/`allMatch`/`noneMatch`,
+  `findFirst`, `reduce`.
+
+## Primitive streams avoid boxing
+
+```java
+int total = prices.stream()            // Stream<Double>
+    .mapToInt(Double::intValue)        // IntStream - no Double objects
+    .sum();
+```
+
+`mapToInt`/`mapToLong`/`mapToDouble` switch to primitive streams with
+`sum()`, `average()`, `max()`, `count()` ready-made.
+
+## Collectors you will actually use
+
+```java
+Collectors.toList()                              // the everyday one
+Collectors.joining(", ")                         // "Ada, Grace"
+Collectors.groupingBy(String::length)            // Map<Integer, List<String>>
+Collectors.counting()                            // usually inside groupingBy
+```
+
+## The honesty section: when a loop is clearer
+
+Streams are not a badge of honor. Prefer a plain loop when:
+
+- you're **accumulating with tricky state** (running indexes, two counters
+  stepping on each other);
+- you need **early exit with side effects** mid-computation;
+- the chain would run five stages deep and nobody can read it;
+- you're processing **two collections in lockstep**.
+
+A good rule: use streams for *describe-a-transformation* code
+("filter the valid, map to names, collect"), loops for
+*drive-a-procedure* code. If a teammate must squint at your stream, write
+the loop.

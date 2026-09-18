@@ -1,0 +1,22 @@
+## Phương pháp năm bước
+
+1. **Diễn đạt lại** đề bài bằng lời của bạn, một câu. Nếu không được, bạn chưa sẵn sàng code.
+2. **Làm một ví dụ bằng tay** — input, các bước, output. Chính vết tay-trắng đó là bản phác thuật toán.
+3. **Tìm edge trước**: input rỗng, một phần tử, trùng lặp, giá trị cực đoan, không/âm. Viết chúng thành test case *trước khi* code.
+4. **Phân rã**: đặt tên các chặng (parse → compute → format) — mỗi chặng thành một hàm.
+5. **Cài luồng chính, rồi tới edge.** Biên dịch thường xuyên.
+
+## Vì sao edge trước
+
+Edge case phát hiện sau khi code buộc bạn thiết kế lại; phát hiện trước khi code, chúng chỉ ràng buộc thiết kế. "Nếu danh sách rỗng thì sao?" thay đổi *hình dạng* hàm của bạn (return sớm? giá trị linh thiêng?) — hỏi muộn tốn một lần viết lại, hỏi sớm tốn một phút.
+
+## Ví dụ nhỏ đã giải
+
+"Trả về giá trị lớn thứ hai trong một vector."
+
+- Diễn đạt: lớn nhất, rồi lớn nhất trong phần còn lại.
+- Bằng tay: `{4, 9, 2, 9}` → bỏ một số 9 → lớn thứ hai vẫn là 9 (trùng lặp vẫn tính!). `{5}` → không có.
+- Edge: rỗng → ném hay trả 0? Quyết định và ghi lại. Một phần tử → không có. Trùng số lớn nhất → vẫn là lớn thứ hai hợp lệ.
+- Phân rã: `int second_largest(const std::vector<int>&)` — một lượt duyệt theo dõi hai giá trị.
+
+Bộ bài tập luyện đúng vòng lặp này trên những bài toán khó dần.

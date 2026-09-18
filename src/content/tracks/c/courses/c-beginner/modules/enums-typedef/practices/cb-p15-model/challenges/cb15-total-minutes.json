@@ -1,0 +1,26 @@
+{
+  "id": "cb15-total-minutes",
+  "title": "Minutes by Kind",
+  "prompt": "Given the Material model in scope, implement `int total_minutes(const Material *ms, int n, Kind k)` summing minutes of records with kind k.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\ntypedef enum { DOC, VIDEO, QUIZ } Kind;\ntypedef struct { int id; Kind kind; int minutes; } Material;\n",
+  "tests": [
+    {
+      "name": "mixed",
+      "code": "Material ms[] = {{1, DOC, 5}, {2, VIDEO, 7}, {3, DOC, 2}};\nCHECK_EQ(total_minutes(ms, 3, DOC), 7);",
+      "hint": "Filter first, then sum."
+    },
+    {
+      "name": "video only",
+      "code": "Material ms[] = {{1, VIDEO, 4}, {2, VIDEO, 6}};\nCHECK_EQ(total_minutes(ms, 2, VIDEO), 10);",
+      "hint": "All match."
+    },
+    {
+      "name": "none match",
+      "code": "Material ms[] = {{1, QUIZ, 9}};\nCHECK_EQ(total_minutes(ms, 1, DOC), 0);",
+      "hint": "No match: 0."
+    }
+  ],
+  "level": "guided"
+}

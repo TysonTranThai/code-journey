@@ -1,0 +1,31 @@
+{
+  "id": "ca15-checkpoint-ring",
+  "title": "Checkpoint: Ring Forensics",
+  "prompt": "A ring buffer's public fields live in your editor (`struct ring { int buf[8]; size_t head, tail, count; };`). Implement three verdicts:\\n1. `bool ring_size_ok(const struct ring *r)` — count <= capacity 8, and head/tail in [0, 8).\\n2. `bool ring_count_matches(const struct ring *r, size_t expected)` — the recorded count equals the actual occupancy derived from head/tail/count consistency (here: count <= 8 && head < 8 && tail < 8 && (r->count == 0 ? r->head == r->tail : true)).\\n3. `const char *diagnose(const struct ring *r)` — return \"ok\" when both verdicts hold; \"size-corrupt\" when sizes are out of range; \"index-corrupt\" when head or tail is out of range (checked first).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstruct ring { int buf[8]; size_t head, tail, count; };\n",
+  "tests": [
+    {
+      "name": "healthy ring",
+      "code": "struct ring r = {{0}, 0, 0, 0};\nCHECK_STR_EQ(diagnose(&r), \"ok\");",
+      "hint": "Empty ring, all indices in range: both lattices hold."
+    },
+    {
+      "name": "index corruption diagnosed first",
+      "code": "struct ring r2 = {{0}, 9, 0, 0};\nCHECK_STR_EQ(diagnose(&r2), \"index-corrupt\");",
+      "hint": "head 9 is outside [0,8) — index verdict fires before size."
+    },
+    {
+      "name": "size corruption",
+      "code": "struct ring r3 = {{0}, 2, 3, 9};\nCHECK_STR_EQ(diagnose(&r3), \"size-corrupt\");",
+      "hint": "count 9 exceeds capacity 8 with valid indices — size verdict."
+    },
+    {
+      "name": "both corrupt: index wins",
+      "code": "struct ring r4 = {{0}, 9, 0, 9};\nCHECK_STR_EQ(diagnose(&r4), \"index-corrupt\");\nCHECK(!ring_size_ok(&r4));\nCHECK(!ring_count_matches(&r4, 0));",
+      "hint": "head 9 breaks indices AND count 9 breaks size — index is diagnosed first, and both boolean verdicts reject."
+    }
+  ],
+  "level": "mini-build"
+}

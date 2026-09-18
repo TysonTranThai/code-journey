@@ -1,0 +1,31 @@
+{
+  "id": "cb16-count-lines",
+  "title": "Count Lines",
+  "prompt": "Implement `int count_lines(const char *path)` opening path for reading and returning the number of lines (a line ends at '\\n'; a trailing final line without '\\n' still counts; missing file returns -1).",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "three lines",
+      "code": "FILE *f = fopen(\"/tmp/cj16-a.txt\", \"w\");\nfputs(\"x\\ny\\nz\\n\", f);\nfclose(f);\nCHECK_EQ(count_lines(\"/tmp/cj16-a.txt\"), 3);\nremove(\"/tmp/cj16-a.txt\");",
+      "hint": "One '\\n' per line."
+    },
+    {
+      "name": "no trailing newline",
+      "code": "FILE *f = fopen(\"/tmp/cj16-b.txt\", \"w\");\nfputs(\"x\\ny\", f);\nfclose(f);\nCHECK_EQ(count_lines(\"/tmp/cj16-b.txt\"), 2);\nremove(\"/tmp/cj16-b.txt\");",
+      "hint": "The last partial line counts."
+    },
+    {
+      "name": "empty file",
+      "code": "FILE *f = fopen(\"/tmp/cj16-c.txt\", \"w\");\nfclose(f);\nCHECK_EQ(count_lines(\"/tmp/cj16-c.txt\"), 0);\nremove(\"/tmp/cj16-c.txt\");",
+      "hint": "Zero bytes: zero lines."
+    },
+    {
+      "name": "missing file",
+      "code": "CHECK_EQ(count_lines(\"/tmp/cj16-nope.txt\"), -1);",
+      "hint": "fopen NULL means -1."
+    }
+  ],
+  "level": "guided"
+}

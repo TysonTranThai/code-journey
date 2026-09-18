@@ -1,0 +1,26 @@
+## Chi tiết noexcept mang lại hiệu năng
+
+`std::vector::push_back` phải giữ đảm bảo ngoại lệ mạnh khi lớn lên. Nó chỉ chuyển chỗ phần tử bằng **move constructor `noexcept`**; nếu không sẽ quay lại copy (`std::move_if_noexcept`). Khai báo move `noexcept` không phải trang trí — đó là hợp đồng hiệu năng:
+
+```cpp
+struct Buffer {
+    std::unique_ptr<char[]> data_;
+    std::size_t size_{0};
+    Buffer(Buffer&& b) noexcept : data_(std::exchange(b.data_, nullptr)), size_(std::exchange(b.size_, 0)) {}
+    Buffer& operator=(Buffer&& b) noexcept { /* cùng hình dáng */ return *this; }
+};
+```
+
+`std::exchange` ghi trạng thái "đã bị move" và trao cho bạn giá trị cũ trong một bước — cách viết move chuẩn mực.
+
+## Rule of Zero trước tiên
+
+Nếu mọi thành viên tự quản lý (`std::string`, `std::vector`, `std::unique_ptr`), bạn không viết **bất kỳ** special member nào trong năm. Mặc định làm đúng với cả copy lẫn move.
+
+## Rule of Five — tất cả hoặc không gì
+
+Sở hữu tài nguyên thô thì bạn phải quyết định cả năm: destructor, copy ctor, copy assign, move ctor, move assign. Khai báo *một* cái sẽ tắt các move ngầm — một sự chậm đi âm thầm. Nếu khai báo destructor, hãy khai báo (hoặc `= default`) cả move.
+
+## Trạng thái sau move
+
+Các kiểu chuẩn sau move **hợp lệ nhưng không xác định** — vẫn gán được và hủy được, không hứa gì thêm. Hãy ghi rõ kiểu của bạn đảm bảo gì sau move; bài tập chấm điểm đòi hỏi đúng kỷ luật đó.

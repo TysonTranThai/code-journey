@@ -1,0 +1,46 @@
+## The include guard
+
+Every header wears this armor:
+
+```c
+#ifndef GEOM_H
+#define GEOM_H
+
+/* declarations live here */
+
+#endif
+```
+
+If the header is included twice, the second pass finds GEOM_H already
+defined and skips the body — no duplicate definitions. Without guards,
+two #includes of one header that defines anything = compile error.
+
+## #ifdef / #ifndef for platform or debug switches
+
+```c
+#define DEBUG 1
+
+#ifdef DEBUG
+    fprintf(stderr, "x=%d\n", x);
+#endif
+```
+
+The debug line exists in the compiled program ONLY when DEBUG is defined.
+This is how C code bases support many platforms and configurations from one
+source tree.
+
+## #if with constant expressions
+
+```c
+#if MAX_SCORE > 50
+#   define GRADE_SCALE "percent"
+#else
+#   define GRADE_SCALE "raw"
+#endif
+```
+
+## What the preprocessor is NOT
+
+It knows nothing of C types, variables, or scopes. It is a text machine.
+Everything it produces must still be legal C — the errors you see after
+expansion point at the result, not the macro call.

@@ -1,0 +1,26 @@
+{
+  "id": "javi-p11-index-sync",
+  "title": "Keep the Index Honest",
+  "prompt": "Extend the repository idea: an indexed store where every write\nmaintains a secondary index. Implement in `Solution`:\n- `record Book(String isbn, String genre)`\n- `static class IndexedStore` with `save(Book b)` (upsert),\n  `List<Book> byGenre(String genre)` (insertion order), `int size()`,\n  and `remove(String isbn)` (boolean).\n\nThe index is the contract: `byGenre` must NEVER return a book that was\nupdated to another genre, re-saved, or removed. Upserting must move the\nbook between index buckets — the exact bug from the lesson.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "genre index groups",
+      "code": "\nSolution.IndexedStore s = new Solution.IndexedStore();\ns.save(new Solution.Book(\"1\", \"scifi\"));\ns.save(new Solution.Book(\"2\", \"fantasy\"));\ncheckEq(s.byGenre(\"scifi\").size(), 1, \"one scifi\");\ncheckEq(s.size(), 2, \"two books\");\n",
+      "hint": "Buckets reflect the stored data."
+    },
+    {
+      "name": "upsert moves buckets",
+      "code": "\nSolution.IndexedStore s = new Solution.IndexedStore();\ns.save(new Solution.Book(\"1\", \"scifi\"));\ns.save(new Solution.Book(\"1\", \"fantasy\"));   // genre changed\ncheckEq(s.byGenre(\"scifi\").size(), 0, \"old bucket empty\");\ncheckEq(s.byGenre(\"fantasy\").size(), 1, \"new bucket has it\");\n",
+      "hint": "The stale-index bug: old bucket must lose the entry."
+    },
+    {
+      "name": "remove clears the index",
+      "code": "\nSolution.IndexedStore s = new Solution.IndexedStore();\ns.save(new Solution.Book(\"1\", \"scifi\"));\ncheckEq(s.remove(\"1\"), true, \"removed\");\ncheckEq(s.byGenre(\"scifi\").size(), 0, \"index clean\");\n",
+      "hint": "Removal must touch the index too."
+    }
+  ],
+  "level": "independent"
+}

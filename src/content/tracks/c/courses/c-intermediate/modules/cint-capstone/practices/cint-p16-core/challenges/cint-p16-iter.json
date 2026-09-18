@@ -1,0 +1,20 @@
+{
+  "id": "cint-p16-iter",
+  "title": "Deterministic Iteration",
+  "prompt": "Implement kv_count and kv_iter: visit live slots in slot order, skipping tombstones and empty slots. A deleted key must never be observed again, and count must agree with iteration on every state.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#include <stddef.h>\n#define KV_CAP 16\n#define KV_KEYMAX 32\ntypedef enum {\n    KV_OK = 0, KV_EARGS, KV_ENOMEM, KV_ENOENT,\n    KV_EFORMAT, KV_ETRUNC, KV_EBADSUM\n} KVError;\ntypedef struct { char key[KV_KEYMAX]; long value; int live; } KVSlot;\ntypedef struct { KVSlot slots[KV_CAP]; size_t count; } KVStore;\nvoid kv_init(KVStore *s);\nKVError kv_put(KVStore *s, const char *key, long value);\nKVError kv_get(const KVStore *s, const char *key, long *out);\nKVError kv_del(KVStore *s, const char *key);\nsize_t kv_count(const KVStore *s);\nvoid kv_iter(const KVStore *s, void (*fn)(const char *key, long value, void *ctx), void *ctx);\n/* ---- capture state for iteration tests (defined here) ---- */\nstatic char kv_cap_keys[16][KV_KEYMAX];\nstatic long kv_cap_vals[16];\nstatic int kv_cap_n;\nstatic void kv_capture(const char *key, long value, void *ctx) {\n    (void)ctx;\n    if (kv_cap_n < 16) {\n        snprintf(kv_cap_keys[kv_cap_n], KV_KEYMAX, \"%s\", key);\n        kv_cap_vals[kv_cap_n] = value;\n        kv_cap_n++;\n    }\n}\nstatic void kv_capture_reset(void) { kv_cap_n = 0; }\n",
+  "tests": [
+    {
+      "name": "live slots in order",
+      "code": "\nKVStore s; kv_init(&s);\nCHECK_EQ(kv_put(&s, \"alpha\", 1), KV_OK);\nCHECK_EQ(kv_put(&s, \"beta\", 2), KV_OK);\nCHECK_EQ(kv_put(&s, \"gamma\", 3), KV_OK);\nCHECK_EQ(kv_del(&s, \"beta\"), KV_OK);\nkv_capture_reset();\nkv_iter(&s, kv_capture, NULL);\nCHECK_EQ(kv_cap_n, 2);                             /* tombstone invisible */\nCHECK_STR_EQ(kv_cap_keys[0], \"alpha\");             /* slot order */\nCHECK_STR_EQ(kv_cap_keys[1], \"gamma\");\nCHECK_EQ(kv_cap_vals[1], 3);\n",
+      "hint": "Tombstoned slots must be skipped, not reported."
+    },
+    {
+      "name": "count agrees with iteration",
+      "code": "\nKVStore s; kv_init(&s);\nfor (int i = 0; i < 5; i++) {\n    char k[8]; snprintf(k, sizeof k, \"k%d\", i);\n    CHECK_EQ(kv_put(&s, k, i), KV_OK);\n}\nCHECK_EQ(kv_del(&s, \"k2\"), KV_OK);\nCHECK_EQ(kv_del(&s, \"k0\"), KV_OK);\nCHECK_EQ(kv_count(&s), 3);\nkv_capture_reset();\nkv_iter(&s, kv_capture, NULL);\nCHECK_EQ(kv_cap_n, 3);\nCHECK_EQ(kv_put(&s, \"k9\", 9), KV_OK);\nCHECK_EQ(kv_count(&s), 4);\nkv_capture_reset();\nkv_iter(&s, kv_capture, NULL);\nCHECK_EQ(kv_cap_n, 4);\n",
+      "hint": "kv_count and kv_iter must agree on every state."
+    }
+  ]
+}

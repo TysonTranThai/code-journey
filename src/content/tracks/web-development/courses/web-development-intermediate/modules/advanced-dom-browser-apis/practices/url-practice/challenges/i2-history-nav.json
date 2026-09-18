@@ -1,0 +1,20 @@
+{
+  "id": "i2-history-nav",
+  "title": "History Navigation Model",
+  "prompt": "Model pushState/replaceState semantics WITHOUT a browser. Write `createHistory()` returning { push, replace, back, canBack, current } — current is the latest entry pushed or replaced (null initially); push adds and makes canBack true; replace swaps the top entry WITHOUT changing depth; back moves one entry back and returns it (null at the start).",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function createHistory() {\n  // your code — no DOM needed\n}\n",
+  "tests": [
+    {
+      "name": "push and back walk the stack",
+      "code": "const fn = new Function(code + \"\\nreturn { createHistory };\");\nconst { createHistory } = fn();\nconst h = createHistory();\nif (h.current() !== null) throw new Error(\"Starts empty.\");\nh.push(\"/a\"); h.push(\"/b\");\nif (h.current() !== \"/b\") throw new Error(\"Push sets current.\");\nif (h.back() !== \"/a\") throw new Error(\"Back returns the previous entry.\");\nif (h.back() !== null) throw new Error(\"Past the start, back yields null.\");\n",
+      "hint": "A plain array plus an index is the whole model."
+    },
+    {
+      "name": "replace swaps without growing",
+      "code": "const fn = new Function(code + \"\\nreturn { createHistory };\");\nconst { createHistory } = fn();\nconst h = createHistory();\nh.push(\"/a\"); h.push(\"/b\");\nh.replace(\"/c\");\nif (h.current() !== \"/c\") throw new Error(\"Replace swaps the top entry.\");\nif (h.back() !== \"/a\") throw new Error(\"Depth unchanged — /b is gone, /a remains.\");\n",
+      "hint": "replace mutates the top; it never adds."
+    }
+  ]
+}

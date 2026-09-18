@@ -1,0 +1,21 @@
+## Phép tính có kiểm tra
+
+```cpp
+bool checkedMul(std::size_t a, std::size_t b, std::size_t* out) {
+    return !__builtin_mul_overflow(a, b, out);
+}
+```
+
+Mẫu: tính vào một *ứng viên*, kiểm tra overflow, fail closed (nullopt/lỗi) trước mọi cấp phát. Áp dụng ở mọi biên giới không-tin-cậy-sang-tin-cậy: `checkedMul(width, height)` rồi `checkedMul(px, sizeof(Pixel))`.
+
+## Canonicalize path
+
+Bản sửa ngây thơ — chặn mọi đầu vào chứa `..` — là sai (dạng encoded, dấu phân cách thừa, symlink trong hệ thật). Hình dạng đúng: xử lý path theo từng segment với một *stack khái niệm* (`..` pop, `.` và segment rỗng bỏ qua), rồi so sánh kết quả cuối với root tin cậy. Chặn pattern trước khi canonicalize chính là anti-pattern "lọc chuỗi".
+
+## Quoting đúng ngữ cảnh
+
+Bộ escape tham số shell phải khiến payload không thể *thay đổi cấu trúc*: bọc trong nháy đơn và thay mọi `'` nhúng bằng `'\''` — để không byte đầu vào nào có thể đóng ngữ cảnh quote. So với SQL parameterization: escape thuộc về tầng hiểu ngữ cảnh, không bao giờ là nối chuỗi tại nơi gọi.
+
+## Thế đứng xác minh
+
+Mọi hàm được gia cố trong module này đi kèm bộ adversarial: cực trị tràn số (`SIZE_MAX`), payload traversal, ký tự quote/điều khiển, byte biên unicode-adjacent. Bản sửa không có test fail-rồi-pass thì không phải bản sửa — chỉ là hy vọng.

@@ -1,0 +1,37 @@
+Inheritance is the most misused tool in OOP. Before reaching for `class
+Admin(User)`, ask: **is Admin really *a kind of* User in every behavior —
+forever?** Often what you want is *has-a*: the object **uses** a part.
+
+```python
+class Engine:
+    def start(self):
+        return "vroom"
+
+class Car:                      # Car HAS-An Engine — no inheritance
+    def __init__(self, engine):
+        self.engine = engine    # injected from outside
+
+    def start(self):
+        return self.engine.start()
+
+Car(Engine()).start()           # "vroom"
+Car(LoudEngine()).start()       # swap parts freely — duck typing
+```
+
+The engine is **injected**, so tests can pass a fake engine, and new engine
+types work without touching `Car`. That is composition: small parts, wired
+together, each replaceable.
+
+## When inheritance IS right
+
+True taxonomies that must flow through all behavior: `windows.XyzError →
+AppError → Exception` in your own exception hierarchies, framework base
+classes, `enum.Enum`. Notice the pattern: the relationship is permanent and
+everywhere-code depends on it. Data-record reuse ("Student and Teacher both
+have names, so one inherits the other") is usually **not** that.
+
+## Duck typing: the Python alternative to interfaces
+
+Python doesn't ask "what is it?" but "what can it do?" Any object with a
+`start()` works as an engine. Small protocols like this are why composition
+is so cheap in Python — and they set up the next module's `Protocol` typing.

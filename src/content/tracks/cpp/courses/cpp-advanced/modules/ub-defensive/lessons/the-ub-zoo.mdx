@@ -1,0 +1,16 @@
+## UB is not "crash"
+
+Undefined behavior means the standard imposes **no requirements**. The optimizer is allowed to assume UB never happens — and it does assume exactly that: a check like `if (i + 1 < i)` is deleted as impossible (signed overflow is UB), loops containing UB get vectorized away, and "defensive" code after UB may never run. UB is permission granted to the compiler, taken from you.
+
+## The zoo, by danger
+
+- **Signed integer overflow** — UB, not wraparound. `INT_MAX + 1` can do anything. Unsigned wraps; that is defined.
+- **Out-of-bounds access** — `v[i]` with `i >= v.size()` reads garbage or corrupts memory. `v.at(i)` throws instead.
+- **Dangling references/iterators** — using an object past its lifetime, or an iterator invalidated by `push_back`/`erase`. The read "works" in tests and corrupts in production.
+- **Data races** — two threads, one write, no synchronization (module 8). UB even if "it looks fine".
+- **Uninitialized reads** — reading an uninitialized `int` is UB; `std::optional`/value-init fixes it.
+- **Strict aliasing violations** — reinterpreting a `float`'s bits through an `int*` is UB; use `std::bit_cast` (C++20).
+
+## The professional stance
+
+You do not memorize every corner case — you build systems where UB cannot reach: checked boundaries at the edges, types that make invalid states unrepresentable, sanitizers in CI (next lessons). The graded exercises here grade the *defensive implementation*, not UB observation, because UB observation is not reproducible by definition.

@@ -1,0 +1,20 @@
+{
+  "id": "i2-repository",
+  "title": "Repository Pattern",
+  "prompt": "Write `makeRepo(db)` — db is { rows: [], nextId: 1 }. The repo exposes `create(data)`, `findById(id)`, `update(id, patch)`, `remove(id)`. create assigns `id` (\"r<n>\") and returns the row; findById returns the row or null; update returns { ok: true, row } or { ok: false, error: \"not-found\" }; remove returns { ok: true } or { ok: false, error: \"not-found\" }. The repo is the ONLY code that touches db.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function makeRepo(db) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "full CRUD cycle",
+      "code": "const fn = new Function(code + \"\\nreturn { makeRepo };\");\nconst { makeRepo } = fn();\nconst repo = makeRepo({ rows: [], nextId: 1 });\nconst row = repo.create({ title: \"A\" });\nif (row.id !== \"r1\") throw new Error(\"Created with id.\");\nif (repo.findById(\"r1\").title !== \"A\") throw new Error(\"Found by id.\");\nif (repo.findById(\"r9\") !== null) throw new Error(\"Missing => null.\");\nconst up = repo.update(\"r1\", { title: \"B\" });\nif (!up.ok || up.row.title !== \"B\") throw new Error(\"Updated.\");\nif (repo.update(\"r9\", {}).error !== \"not-found\") throw new Error(\"Missing update named.\");\nif (repo.remove(\"r1\").ok !== true) throw new Error(\"Removed.\");\nif (repo.remove(\"r1\").error !== \"not-found\") throw new Error(\"Second remove fails.\");",
+      "hint": "One closure over db; four small methods."
+    },
+    {
+      "name": "repo hides the storage",
+      "code": "const fn = new Function(code + \"\\nreturn { makeRepo };\");\nconst { makeRepo } = fn();\nconst db = { rows: [], nextId: 1 };\nconst repo = makeRepo(db);\nrepo.create({ title: \"X\" });\nif (db.rows.length !== 1) throw new Error(\"Backing store used.\");\nif (!Array.isArray(db.rows) || typeof db.nextId !== \"number\") throw new Error(\"Storage shape unchanged by the repo.\");",
+      "hint": "The repo mutates the db object — callers never do."
+    }
+  ]
+}

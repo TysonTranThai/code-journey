@@ -1,0 +1,41 @@
+## Một địa chỉ bạn có thể cầm
+
+```cpp
+int score = 90;
+int* p = &score;      // p giữ ĐỊA CHỈ của score ("con trỏ tới int")
+CHECK(*p == 90);      // * giải tham chiếu: đọc/ghi qua địa chỉ
+*p = 95;
+CHECK(score == 95);
+```
+
+`&x` lấy địa chỉ; `*p` đi theo địa chỉ. Con trỏ là một *giá trị* (một địa chỉ) — có thể sao chép, so sánh, và khác tham chiếu, **gán lại được**:
+
+```cpp
+int a = 1, b = 2;
+int* p = &a;
+p = &b;               // giờ trỏ vào b — tham chiếu không bao giờ làm được
+```
+
+## nullptr: trỏ vào không-gì-cả, một cách trung thực
+
+```cpp
+int* p = nullptr;         // tường minh "không có đối tượng"
+if (p) { use(*p); }       // LUÔN kiểm tra trước khi giải tham chiếu
+```
+
+Giải tham chiếu `nullptr` là một crash (thực chất là hành vi không xác định). Đừng bao giờ khởi tạo con trỏ bằng `0`/`NULL` (cổ xưa); hãy viết `nullptr`. Đừng bao giờ để con trỏ không được khởi tạo.
+
+## Con trỏ hay tham chiếu — cách chọn
+
+| Câu hỏi | Dùng |
+| --- | --- |
+| Có bắt buộc luôn gọi tên một đối tượng? | tham chiếu (`&`) |
+| Có cần biểu diễn "không có đối tượng"? | con trỏ + `nullptr` |
+| Có cần đổi mục tiêu về sau (gán lại)? | con trỏ |
+| Truyền dữ liệu lớn chỉ đọc? | `const&` (lựa chọn hằng ngày) |
+
+Trong code ứng dụng hiện đại, **con trỏ không-owning xuất hiện ít hơn tham chiếu rất nhiều** — chủ yếu cho mục tiêu tùy chọn và observer có thể gán lại (và như thứ bạn sẽ gặp trong các API kiểu C).
+
+## Ranh giới sở hữu (hãy nói to điều này)
+
+Một con trỏ thô trong C++ hiện đại là **cái nhìn không-owning**: "tôi có thể *nhìn thấy* đối tượng đó; vòng đời của nó là việc của người khác." Khoảnh khắc một con trỏ bị kỳ vọng *giữ đối tượng còn sống*, con trỏ thô là sai công cụ — đó là việc của `std::unique_ptr`/`std::shared_ptr` (module 12). Core Guidelines R.3: "một con trỏ thô (một `T*`) là không-owning" — hãy để code của bạn nói điều tương tự.

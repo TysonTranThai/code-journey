@@ -1,0 +1,26 @@
+Trước khi viết một dòng: hình dạng của thứ bạn sắp xây. Một trình quản lý
+thư viện nhỏ với bốn trách nhiệm, mỗi trách nhiệm một lớp riêng:
+
+```
+┌─────────────────────────────────────────────┐
+│  App            — vòng lặp CLI (menu, I/O)  │
+│    │ được sở hữu bởi unique_ptr               │
+│  Library        — luật chơi (thêm, mượn)    │
+│    │ sở hữu                                     │
+│  vector<Book>   — trạng thái (bản ghi)      │
+│    └ serialize thành                           │
+│  string content — lưu trữ (M10)             │
+└─────────────────────────────────────────────┘
+```
+
+Ba quyết định kiến trúc đáng làm một cách có ý thức:
+
+1. **App biết menu; Library biết luật.** Vòng lặp app phân tích input và
+   in kết quả; nó không bao giờ sửa trực tiếp vector sách. Khi sau này
+   bạn thay CLI bằng GUI, Library vẫn nguyên vẹn.
+2. **Trạng thái là một collection, không phải năm biến toàn cục.** Một
+   `Library` sở hữu `std::vector<Book>`; không ai khác đụng vào nó.
+   Module 2-4 cho bạn lớp, Module 8 cho từ vựng sở hữu cho ai giữ nó.
+3. **Lưu trữ là một biên giới, không phải rắc rắc khắp nơi.** Đúng hai
+   hàm (`serialize`, `deserialize`) chuyển đổi giữa bản ghi và văn bản.
+   Kỷ luật phân tích của Module 10 sống *ở đây*, và chỉ ở đây.

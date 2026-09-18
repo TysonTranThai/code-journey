@@ -1,0 +1,31 @@
+Java Memory Model (JLS §17.4) định nghĩa **happens-before** — mũi tên duy
+nhất quan trọng khi các thread chia sẻ dữ liệu. Nếu A happens-before B, B
+nhìn thấy hiệu ứng của A. Không có mũi tên đó, **visibility không được bảo
+đảm**: một boolean thường do thread khác ghi có thể không bao giờ được loop
+của bạn nhìn thấy.
+
+Ba cạnh hb bạn có thể dựa vào:
+
+1. **Program order** trong cùng một thread.
+2. **Quy tắc monitor**: unlock happens-before mọi lần lock sau trên cùng
+   monitor; mọi phương thức của lock `java.util.concurrent` cũng vậy.
+3. **Volatile**: ghi vào trường volatile happens-before mọi lần đọc sau
+   trường đó.
+
+Và hai cạnh cấu trúc miễn phí:
+
+4. **Thread.start()** happens-before mọi việc thread mới làm.
+5. Mọi việc một thread làm happens-before **join()** phát hiện nó kết thúc.
+
+Mẫu code hỏng kinh điển — cờ dừng:
+
+```java
+class Stop {
+    private static boolean run = true;          // KHÔNG volatile
+    static void stop() { run = false; }         // có thể không bao giờ hiển thị
+    static void loop() { while (run) {} }       // có thể quay mãi
+}
+```
+
+Đây không là đạo đức giả: compiler tầng JIT có thể kéo phép đọc ra khỏi vòng
+lặp vì *không gì trong mô hình buộc nó đọc lại*.

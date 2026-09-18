@@ -1,0 +1,21 @@
+{
+  "id": "pi6-path-traversal",
+  "title": "Escape-Proof Join",
+  "prompt": "Implement safe_join(base: str, user_path: str) that joins base with user_path and raises ValueError if the resolved result escapes base (classic directory-traversal defense). Return the joined Path on success.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "from pathlib import Path\n\ndef safe_join(base, user_path):\n    pass\n",
+  "tests": [
+    {
+      "name": "normal subpath allowed",
+      "code": "from pathlib import Path\nresult = safe_join('/srv/data', 'reports/q1.csv')\nassert str(result).endswith('reports/q1.csv')",
+      "hint": "Resolve and check containment."
+    },
+    {
+      "name": "traversal attempt rejected",
+      "code": "try:\n    safe_join('/srv/data', '../../etc/passwd')\n    failed = False\nexcept ValueError:\n    failed = True\nassert failed",
+      "hint": "resolve() collapses '..' — then verify the result is under the resolved base."
+    }
+  ],
+  "level": "combination"
+}

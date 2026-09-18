@@ -1,0 +1,61 @@
+## Node là toàn bộ ý tưởng
+
+```c
+typedef struct SNode {
+    int            value;
+    struct SNode  *next;    /* NULL kết thúc danh sách */
+} SNode;
+```
+
+Danh sách *là* con trỏ head. Danh sách rỗng là `SNode *head = NULL;` —
+không có object list nào để khởi tạo. Mỗi hàm biến đổi phải xử lý ba
+trường hợp đặc biệt: **rỗng**, **một phần tử**, và **chính head** (thay đổi).
+
+Chèn đầu là rẻ nhất — O(1), không đi bộ, và tự nhiên đảo ngược thứ tự:
+
+```c
+int push_front(SNode **head, int v) {
+    SNode *n = malloc(sizeof *n);
+    if (!n) return -1;
+    n->value = v;
+    n->next = *head;      /* rỗng cũng đúng: *head là NULL */
+    *head = n;
+    return 0;
+}
+```
+
+`SNode **head` không phải trang trí. Hàm phải *thay đổi head của caller*
+— và để đổi một con trỏ bạn cần địa chỉ của nó. Cách thay thế (trả về
+head mới) được nhưng buộc caller gán lại mỗi lần — cách một `head = ...`
+quên là một leak.
+
+## Xóa là nơi danh sách trừng phạt bạn
+
+Để xóa một node bạn cần node *trước* nó — nhưng node singly-linked chỉ
+chỉ về phía trước. Hoặc đi bằng hai ngón tay (`prev`/`cur`), hoặc copy
+payload của node kế vào node sắp chết rồi unlinh (O(1) không cần tail,
+nhưng đổi ngữ nghĩa duyệt). Đi hai ngón là mặc định trung thực:
+
+```c
+int remove_val(SNode **head, int v) {
+    SNode **link = head;              /* trỏ vào "kẻ trỏ vào cur" */
+    for (SNode *cur = *head; cur; cur = cur->next) {
+        if (cur->value == v) {
+            *link = cur->next;        /* gỡ: sửa head HOẶC prev->next */
+            free(cur);
+            return 1;
+        }
+        link = &cur->next;
+    }
+    return 0;
+}
+```
+
+`SNode **link` đi qua các *link*, không phải node: `*link` là "bất cứ cái
+gì đang trỏ vào cur" — head, hoặc `next` của node trước. Một đường code
+cho cả hai, không trường hợp đặc biệt.
+
+## Hủy danh sách
+
+Free từng node đúng một lần rồi null head. Bẫy kinh điển:
+`free(cur); cur = cur->next;` — đọc node đã free. Lưu next trước, luôn luôn.

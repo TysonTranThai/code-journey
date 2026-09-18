@@ -1,0 +1,20 @@
+{
+  "id": "i2-container-card",
+  "title": "Container-Responsive Card",
+  "prompt": "Make `.slot` a size container, then inside `@container (min-width: 420px)` give `.card` a two-column grid (`120px 1fr`). Below that width the card stays a single column — all without media queries.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "<div class=\"slot\">\n  <article class=\"card\">\n    <div class=\"thumb\">img</div>\n    <div class=\"body\">text</div>\n  </article>\n</div>\n\n<style>\n  /* container setup + @container rule */\n</style>\n",
+  "tests": [
+    {
+      "name": "slot is a size container",
+      "code": "const css = code;\nif (!/\\.slot\\s*{[^}]*container-type\\s*:\\s*inline-size/i.test(css)) throw new Error(\"Mark .slot with container-type: inline-size.\");",
+      "hint": "container-type: inline-size;"
+    },
+    {
+      "name": "card switches to two columns inside the container query",
+      "code": "const css = code;\nif (!/@container\\s*\\([^)]*min-width\\s*:\\s*420px[^)]*\\)/i.test(css)) throw new Error(\"Add @container (min-width: 420px).\");\nif (!/@container[^{]*{[^@]*\\.card\\s*{[^}]*grid-template-columns\\s*:\\s*120px\\s+1fr/i.test(css)) throw new Error(\"Inside the query, .card uses grid-template-columns: 120px 1fr.\");\nif (!/^(?!.*@media)/i.test(css)) throw new Error(\"No @media anywhere — containers do the adapting.\");",
+      "hint": "@container (min-width: 420px) { .card { display: grid; grid-template-columns: 120px 1fr; } }"
+    }
+  ]
+}

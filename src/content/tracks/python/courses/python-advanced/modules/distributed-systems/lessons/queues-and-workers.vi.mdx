@@ -1,0 +1,47 @@
+Một queue tách rời việc *nhận* công việc khỏi việc *làm* công việc. API đẩy một
+job vào queue và trả 202; worker kéo job về xử lý. Cái giá: từ giờ bạn vận hành
+một hệ phân tán, nên ngữ nghĩa của queue quan trọng hơn các tính năng của nó.
+
+## Phổ ngữ nghĩa chuyển giao
+
+- **At-most-once:** bắn và quên. Mất mát là vô hình.
+- **At-least-once:** chuyển giao lại cho đến khi được xác nhận. Không có gì bị
+  mất âm thầm — nhưng bản sao sẽ đến, nên consumer **bắt buộc idempotent**. Đây
+  là điều hầu hết queue production cung cấp.
+- **Exactly-once:** giấc mơ marketing; trên thực tế nó nghĩa là chuyển giao
+  at-least-once cộng với xử lý idempotent đạt được ở phía người nhận.
+
+## Hợp đồng của worker
+
+Một worker xử lý một job phải tuân ba quy tắc:
+
+1. **Chỉ acknowledge sau khi hiệu ứng đã bền vững.** Ack-xong-rồi-crash thì job
+   bị mất; crash-xong-rồi-ack thì job được chuyển giao lại (ổn thôi — xem
+   idempotency).
+2. **Khiến hiệu ứng idempotent.** Khóa công việc theo job ID: kiểu
+   `(INSERT ... ON CONFLICT DO NOTHING)`, hoặc bảng processed-keys được kiểm
+   tra trong cùng transaction với hiệu ứng.
+3. **Chặn giới hạn công việc.** Một job có thể lặp vô hạn thì sẽ lặp vô hạn. Đặt
+   timeout bên trong và từ bỏ một cách tường minh.
+
+## Retry, backoff, và dead-letter queue
+
+Chuyển giao lại xuất phát từ visibility timeout (kỳ hạn thuê job đang xử lý
+hết hạn). Sau N lần thử thất bại, job chuyển sang **dead-letter queue**
+(DLQ) — một đống tin nhắn độc để con người kiểm tra. Hai đặc tính khiến DLQ hữu
+ích: *lý do thất bại* đi cùng message, và phát lại từ DLQ là một thao tác chủ
+động, không phải một tai nạn.
+
+## Heartbeat, lease, và worker bị độc
+
+Một worker crash không được phép giữ job làm con tin. Lease hết hạn; heartbeat
+hồi renewed chúng. Job có lease hết hạn sẽ hiện thấy trở lại với các worker
+khác — chính vì vậy mà xử lý phải idempotent: hai worker có thể cùng chạy trên
+một job, và hiệu ứng của worker thứ hai phải là no-op.
+
+## Mô phỏng tất cả trong tiến trình
+
+Bạn không cần hạ tầng để *học* các ngữ nghĩa này. Một queue trong tiến trình
+với `deliver()` tường minh (một lượt quét chuyển giao lại) và kho idempotency
+`_done` tái hiện mọi hành vi trên một cách xác định — các thử thách trong
+module này hoạt động đúng như vậy.

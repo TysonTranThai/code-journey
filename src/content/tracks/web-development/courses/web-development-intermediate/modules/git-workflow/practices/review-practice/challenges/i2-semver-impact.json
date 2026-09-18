@@ -1,0 +1,20 @@
+{
+  "id": "i2-semver-impact",
+  "title": "Release Notes Builder",
+  "prompt": "Given an array of parsed commits `{ type, breaking }`, write `releaseBump(commits)`: return \"major\" if any commit is breaking, else \"minor\" if any type is \"feat\", else \"patch\" if any \"fix\", else null (no release).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function releaseBump(commits) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "major wins over everything",
+      "code": "const fn = new Function(code + \"\\nreturn { releaseBump };\");\nconst { releaseBump } = fn();\nconst cs = [{ type: \"feat\", breaking: false }, { type: \"fix\", breaking: true }];\nif (releaseBump(cs) !== \"major\") throw new Error(\"Any breaking change => major.\");",
+      "hint": "Priority order: major, minor, patch, null."
+    },
+    {
+      "name": "minor, patch, and no-release cases",
+      "code": "const fn = new Function(code + \"\\nreturn { releaseBump };\");\nconst { releaseBump } = fn();\nif (releaseBump([{ type: \"feat\", breaking: false }]) !== \"minor\") throw new Error(\"feat => minor.\");\nif (releaseBump([{ type: \"fix\", breaking: false }]) !== \"patch\") throw new Error(\"fix => patch.\");\nif (releaseBump([{ type: \"docs\", breaking: false }]) !== null) throw new Error(\"No user-facing change => null.\");",
+      "hint": "some() per level, in priority order."
+    }
+  ]
+}

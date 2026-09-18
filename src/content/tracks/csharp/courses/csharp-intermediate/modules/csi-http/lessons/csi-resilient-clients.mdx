@@ -1,0 +1,46 @@
+## Typed outcomes, not exceptions for flow control
+
+`EnsureSuccessStatusCode()` throws HttpRequestException for ANY failure —
+you lose the status distinction. Map outcomes explicitly:
+
+```csharp
+public sealed record ApiResult(bool Ok, string? Body, int Status);
+
+public async Task<ApiResult> GetAsync(string path, CancellationToken ct)
+{
+    using var resp = await _http.GetAsync(path, ct);
+    string body = resp.IsSuccessStatusCode
+        ? await resp.Content.ReadAsStringAsync(ct) : null;
+    return new ApiResult(resp.IsSuccessStatusCode, body, (int)resp.StatusCode);
+}
+```
+
+## Timeouts and cancellation
+
+`CancellationToken` aborts the wait from the caller's side; HttpClient's
+`Timeout` (default 100 s) bounds the whole request. A timeout surfaces as
+TaskCanceledException/OperationCanceledException — catch both deliberately.
+
+## Retries: only transient, only safe
+
+Retry 5xx and network failures; NEVER retry 4xx (your request is wrong —
+retrying hammers the server with the same mistake). Respect 429's
+`Retry-After` when present. Add exponential backoff with a cap, and make
+the token flow so cancellation still wins:
+
+```csharp
+for (int attempt = 1; ; attempt++)
+{
+    try { return await SendOnceAsync(ct); }
+    catch (HttpRequestException) when (attempt < maxAttempts) { }
+    await Task.Delay(Math.Min(baseMs * (1 << (attempt - 1)), capMs), ct);
+}
+```
+
+Retrying a non-idempotent POST (payments!) can double-charge — safety is
+about the operation's semantics, not just the status code.
+
+## Check your understanding
+
+- Why not retry a 400? (The request is wrong; a retry repeats it.)
+- What does `1 << (attempt - 1)` build? (Exponential backoff: 1x, 2x, 4x…)

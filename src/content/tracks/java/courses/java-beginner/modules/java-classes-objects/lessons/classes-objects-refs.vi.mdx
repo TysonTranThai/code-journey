@@ -1,0 +1,46 @@
+**Class** là bản thiết kế; **object** là một vật cụ thể được dựng từ nó.
+Class nói rõ dữ liệu (**trường**) và hành vi (**phương thức**) mà mọi object
+thuộc loại đó có:
+
+```java
+class Dog {
+    String name;
+    int age;
+
+    void bark() {
+        System.out.println(name + " says woof");
+    }
+}
+
+Dog a = new Dog();     // object 1
+a.name = "Rex";
+a.age = 3;
+a.bark();              // Rex says woof
+
+Dog b = new Dog();     // object 2: tên riêng, tuổi riêng, hành vi CHUNG
+b.name = "Lucky";
+b.bark();              // Lucky says woof
+```
+
+`new Dog()` cấp phát một object mới với bản sao riêng của mọi trường. Dấu
+chấm truy cập những gì object sở hữu: `a.name` là tên của object a. Hai
+object độc lập với nhau — đổi tên Rex không bao giờ chạm tới Lucky.
+
+**Trạng thái + hành vi ở một chỗ** là điểm cốt lõi của class. `bark()` dùng
+`name` mà *không cần tham số*, vì nó tự động tác động lên object được gọi
+đến. Bên trong một phương thức, `this` là tên của object đó: `this.name`
+nghĩa là "trường name của object tôi được gọi trên đó". Khi tham số che
+bóng trường, `this` phân biệt:
+
+```java
+void rename(String name) {
+    this.name = name;   // trường = tham số
+}
+```
+
+**Tham chiếu object.** `Dog d2 = a;` KHÔNG sao chép con chó — nó sao chép
+*tham chiếu* (mũi tên trỏ vào object). Từ đó `a` và `d2` là hai tên của một
+object; đổi trường qua cái nào cũng thấy qua cái kia. Đây là nửa object của
+câu "tham số là bản sao" ở Module 5: bản sao là của mũi tên, không phải con chó.
+
+**Tiếp theo:** constructor — kiểm soát cách object được sinh ra.

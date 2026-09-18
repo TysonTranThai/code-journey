@@ -1,0 +1,13 @@
+`describe` là bài kiểm tra của module: một variant ba nhánh, một generic
+lambda, và chọn nhánh lúc biên dịch bằng `if constexpr`.
+
+Những quyết định thiết kế bạn đang luyện:
+
+- visitor xử lý mọi phương án — thêm phương án thứ tư sau này thì lambda
+  phải lớn lên hoặc không biên dịch
+- `std::decay_t<decltype(x)>` gọi tên kiểu đang giữ bên trong generic lambda
+- nhánh double cần `std::fixed` với `precision(2)` TRƯỚC khi đẩy giá trị —
+  trạng thái định dạng nhạy với thứ tự
+
+Nếu nhánh int pass nhưng double in ra `3.5`, bạn vừa tự khám phá vì sao
+trạng thái định dạng nằm trên stream, không nằm trong giá trị.

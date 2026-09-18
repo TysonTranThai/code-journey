@@ -1,0 +1,53 @@
+## Nullable value types: sự vắng mặt nhìn thấy được
+
+Kiểu giá trị không thể null — trừ khi bạn bọc nó: `int?` là `Nullable<int>`,
+một struct chứa `bool HasValue` và `T Value`.
+
+```csharp
+int? found = list.Find(x => x > 10);   // 0 sẽ là nói dối; null nghĩa là "không có"
+if (found is int value) Use(value);    // kiểm tra + gỡ bọc trong một bước
+int fallback = found ?? -1;            // mặc định kiểu GetValueOrDefault
+```
+
+`int?` nâng các toán tử: `null + 5` cho `null` (không phải exception). Phép
+so sánh với null cho `false` — `null < 5` là false, không phải true.
+
+## Nullable reference types: lời hứa compiler kiểm tra
+
+Từ C# 8, kiểu tham chiếu **mặc định không-null** khi bật NRT. Compiler theo
+dõi trạng thái null và cảnh báo:
+
+- `string?` — "có thể null"; phải kiểm tra trước khi dùng.
+- `string` — "kỳ vọng không-null"; gán null sẽ bị cảnh báo.
+- `string? name = Fetch(); var len = name.Length;` — cảnh báo: có thể null.
+- Sau `if (name != null)` compiler *biết* an toàn — phân tích luồng.
+- `!` (null-forgiving) nghĩa là "tin mình đi" — giải pháp cuối, không phải công cụ.
+
+Hai công cụ trung thực khi null là câu trả lời chính đáng:
+
+```csharp
+string? found = dict.GetValueOrDefault(key);        // null là sự vắng mặt thật
+string  found2 = dict.GetValueOrDefault(key, "");   // hoặc mặc định
+```
+
+Và một thứ không trung thực cần tránh: khởi tạo trường bằng `= null!` để
+im lặng compiler — tạo lời nói dối phát nổ về sau.
+
+## Cơ chế nullable trong thiết kế API
+
+Mẫu `TryX` (như `int.TryParse` ở Beginner) trả `bool` + `out`; trả nullable
+cho phép diễn đạt "không có kết quả" trực tiếp:
+
+```csharp
+public static int? ParseAge(string input) =>
+    int.TryParse(input, out int age) && age >= 0 ? age : null;
+```
+
+Người gọi dùng `??`, `is int v`, hoặc `if (v is not null)` — null trở thành
+một phần nhìn thấy, kiểm tra được của hợp đồng thay vì cuộc phục kích.
+
+## Kiểm tra hiểu biết
+
+- `(int?)null == null` là gì? (True — equality đã nâng.)
+- `string s = null;` dưới NRT — cảnh báo hay lỗi? (Cảnh báo; vẫn biên dịch.)
+- Vì sao ưu tiên `int?` thay sentinel `-1` ma thuật? (Sentinel đụng dữ liệu thật.)

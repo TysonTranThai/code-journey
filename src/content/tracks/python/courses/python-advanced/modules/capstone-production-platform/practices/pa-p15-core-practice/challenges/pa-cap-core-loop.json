@@ -1,0 +1,21 @@
+{
+  "id": "pa-cap-core-loop",
+  "title": "TaskFlow core: idempotent submits, budgeted retries",
+  "prompt": "Implement `TaskFlowCore` (milestones 1+2 of the capstone):\n\n- `submit(key, payload)` → job id `'job-<n>'` (n counts submissions); submitting the SAME key again returns the ORIGINAL job id without counting or queueing anything (the idempotency gate, covering pending, in-flight, succeeded, and dead jobs)\n- `deliver()` → list of `[job_id, key, payload, attempts]`, moving pending jobs in-flight and re-delivering in-flight ones (lease expiry)\n- `process(job_id, outcome)` — `True` records success; a string records a failure reason, increments attempts, and re-queues; at `attempts >= 3` the job moves to the dead tier carrying the LAST reason and attempt count; unknown job ids are ignored\n- `status(job_id)` — dict with `'status'` one of `'pending'/'in_flight'/'succeeded'/'dead'` (plus key/payload/attempts/reason as appropriate), or `None` for unknown ids\n- `metrics` property — `{'submitted', 'succeeded', 'failed', 'dead'}` counts\n\nDelivered jobs whose outcome was already recorded must be skippable: a redelivered succeeded job neither re-executes nor corrupts counts.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class TaskFlowCore:\n    def __init__(self):\n        ...\n\n    def submit(self, key, payload):\n        ...\n\n    def deliver(self):\n        ...\n\n    def process(self, job_id, outcome):\n        ...\n\n    def status(self, job_id):\n        ...\n\n    @property\n    def metrics(self):\n        ...",
+  "tests": [
+    {
+      "name": "idempotent submits, exactly-once effects",
+      "code": "core = TaskFlowCore()\na = core.submit('k1', {'op': 'charge'})\nb = core.submit('k1', {'op': 'charge'})   # same key: same job, no double-count\nassert a == b\nassert core.metrics['submitted'] == 1\nbatch = core.deliver()\nassert len(batch) == 1\ncore.process(batch[0][0], True)\nassert core.status(batch[0][0])['status'] == 'succeeded'\ncore.deliver()   # lease expiry re-delivers the (already acked) job\ncore.process(batch[0][0], True)  # ignored: already recorded\nassert core.metrics['succeeded'] == 1\nprint('ok')",
+      "hint": "Duplicate submit replays the original id; duplicate processing is a no-op."
+    },
+    {
+      "name": "retries exhaust into the dead tier with the reason",
+      "code": "core = TaskFlowCore()\njid = core.submit('poison-1', {'op': 'x'})\nfor _ in range(3):\n    batch = core.deliver()\n    core.process(batch[0][0], 'dependency down')\nst = core.status(jid)\nassert st['status'] == 'dead' and st['attempts'] == 3 and st['reason'] == 'dependency down'\nassert core.metrics == {'submitted': 1, 'succeeded': 0, 'failed': 3, 'dead': 1}\nprint('ok')",
+      "hint": "Three failures = dead with the reason attached; metrics tell the story."
+    }
+  ],
+  "level": "combination"
+}

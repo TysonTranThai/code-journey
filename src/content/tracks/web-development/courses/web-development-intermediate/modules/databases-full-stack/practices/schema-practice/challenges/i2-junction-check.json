@@ -1,0 +1,20 @@
+{
+  "id": "i2-junction-check",
+  "title": "Junction Integrity",
+  "prompt": "Write `link(tables, taskId, tagId)` for the junction table `tables.taskTags` (array of { taskId, tagId }): both ids must exist (tables.tasks / tables.tags are arrays with .id fields); duplicates (same pair) are rejected. Success => { ok: true, pair } appended; failure => { ok: false, error: \"fk-violation\" | \"duplicate\" }.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function link(tables, taskId, tagId) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "valid pairs link once",
+      "code": "const fn = new Function(code + \"\\nreturn { link };\");\nconst { link } = fn();\nconst db = { tasks: [{ id: \"t1\" }], tags: [{ id: \"g1\" }], taskTags: [] };\nconst r = link(db, \"t1\", \"g1\");\nif (!r.ok || db.taskTags.length !== 1) throw new Error(\"Pair stored.\");\nconst dup = link(db, \"t1\", \"g1\");\nif (dup.ok !== false || dup.error !== \"duplicate\") throw new Error(\"Same pair twice => duplicate.\");",
+      "hint": "Existence checks, then a pair-membership check."
+    },
+    {
+      "name": "missing sides rejected",
+      "code": "const fn = new Function(code + \"\\nreturn { link };\");\nconst { link } = fn();\nconst db = { tasks: [], tags: [{ id: \"g1\" }], taskTags: [] };\nconst r = link(db, \"t1\", \"g1\");\nif (r.ok !== false || r.error !== \"fk-violation\") throw new Error(\"Missing task => FK violation.\");\nif (db.taskTags.length !== 0) throw new Error(\"No partial links.\");",
+      "hint": "Both sides must exist before linking."
+    }
+  ]
+}

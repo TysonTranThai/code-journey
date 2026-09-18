@@ -1,0 +1,36 @@
+## Khai báo và chỉ số
+
+```cpp
+int n; in >> n;
+vector<long long> a(n);          // chỉ số 0 .. n-1
+for (long long& x : a) in >> x;
+```
+
+Chỉ số chạy **từ 0 đến n-1**. Truy cập `a[n]` là hành vi không xác định —
+nguyên nhân Runtime Error số một. Khi đề nói "phần tử thứ i" (đếm từ 1),
+dịch sang chỉ số: phần tử i nằm ở `a[i-1]`.
+
+### Các kiểu duyệt
+
+```cpp
+for (int i = 0; i < n; ++i) ...     // cần chỉ số
+for (long long x : a) ...           // chỉ giá trị
+for (int i = n - 1; i >= 0; --i)    // duyệt ngược
+```
+
+### min/max với biến giữ kỷ lục
+
+```cpp
+long long best = a[0];              // KHÔNG phải 0 — giá trị có thể âm!
+for (long long x : a) best = max(best, x);
+```
+
+Khởi tạo `best = 0` sai ngay khi mọi giá trị đều âm. Hãy bắt đầu từ phần
+tử đầu tiên (hoặc -infinity).
+
+### Đảo và xoay
+
+```cpp
+reverse(a.begin(), a.end());                    // tại chỗ
+rotate(a.begin(), a.begin() + k, a.end());      // xoay trái k bước
+``

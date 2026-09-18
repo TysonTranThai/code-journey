@@ -1,0 +1,20 @@
+{
+  "id": "cppa7-coroutines-checkpoint",
+  "title": "Coroutine Gauntlet",
+  "prompt": "Implement Generator<T> + counter (as in the lesson) and the `evens` filtering adapter (consumes src by move).",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <coroutine>\n#include <cstddef>\n#include <exception>\n#include <utility>\n\n// TODO: implement the Generator<T> class from the lesson:\n//   promise_type with current_, get_return_object, initial/final suspend_always,\n//   yield_value storing by move, return_void, unhandled_exception -> std::terminate;\n//   move-only wrapper owning the handle; next() resume+done check; value() read.\ntemplate <class T>\nclass Generator;\n\n// TODO: implement with co_yield: from, from+1, ..., to (inclusive; empty if from > to).\nGenerator<int> counter(int from, int to);\n\n// TODO: yield only the even values of src, in order (src consumed by move).\nGenerator<int> evens(Generator<int> src);\n",
+  "tests": [
+    {
+      "name": "counter yields inclusively",
+      "code": "Generator<int> c = counter(0, 5);\nstd::string got;\nwhile (c.next()) got += std::to_string(c.value()) + \",\";\nCHECK_EQ(got, std::string(\"0,1,2,3,4,5,\"));",
+      "hint": "The lesson's generator verbatim; the counter body is a simple inclusive for-loop with co_yield."
+    },
+    {
+      "name": "evens filters through the frame",
+      "code": "Generator<int> e = evens(counter(1, 7));\nstd::string got;\nwhile (e.next()) got += std::to_string(e.value()) + \",\";\nCHECK_EQ(got, std::string(\"2,4,6,\"));",
+      "hint": "Generator<int> evens(Generator<int> src) { while (src.next()) if (src.value() % 2 == 0) co_yield src.value(); } — src lives in the frame; the while ends the coroutine when src exhausts."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+## Ép thiết kế chịu áp lực
+
+Một thiết kế chưa từng bị tấn công chỉ là mong muốn. Hãy đưa backlog quyết định của bạn qua ba đợt tấn công:
+
+**Tấn công đầu vào rỗng.** Mọi trường có thể rỗng thì sẽ rỗng. "Tạo ticket" làm gì với `title: ""`? Trang danh sách render gì khi không có ticket nào? Câu trả lời "chắc sẽ không xảy ra" chính là nguồn gốc của mọi sự cố production.
+
+**Tấn công người dùng ác ý.** Điều gì xảy ra nếu request nói `author_id: cua-nguoi-khac`? Nếu một script đăng 10.000 ticket mỗi phút? Nếu description chứa markup `<script>`? Bạn không hề tấn công ai — bạn đang kiểm tra _ranh giới_ có vững không: phân quyền ở server, validation ở server, output encoding.
+
+**Tấn công mạng lỗi.** API có thể hỏng. UI của bạn hiện trạng thái lỗi ở đâu? Người dùng có thể submit đôi khi request đang bay không? Retry có nhân đôi ticket không? Tính bất đồng bộ là một phần của thiết kế, không phải chuyện để sau.
+
+## Quyết định API trước khi code
+
+Viết hợp đồng API thành bảng và để cạnh mình trong lúc build:
+
+| Method | Path                   | Input                              | 200                             | 4xx                                |
+| ------ | ---------------------- | ---------------------------------- | ------------------------------- | ---------------------------------- |
+| POST   | /api/tickets           | `{ title, description, priority }` | 201 + ticket                    | 400 lỗi theo trường, 401           |
+| GET    | /api/tickets?priority= | —                                  | 200 + danh sách, mới nhất trước | 401                                |
+| PATCH  | /api/tickets/:id       | `{ status?, title? }`              | 200 + bản ghi mới               | 400, 401, 403 (không phải tác giả) |
+
+Ba dòng đã buộc hàng chục quyết định: validation nằm ở đâu, 403 khác 401 thế nào, "mới nhất trước" được bảo đảm thế nào (ORDER BY created_at DESC trong câu truy vấn, chứ không phải sort bằng JS sau khi fetch).
+
+## Kỹ năng bạn đang luyện
+
+Bạn không hề xây ServiceDesk. Bạn đang xây khả năng đi từ _mong muốn mơ hồ của con người_ đến _cam kết kỹ thuật không mơ hồ_ — kỹ năng phân biệt người theo tutorial với người được giao một bảng ticket. Tài liệu thiết kế mới là sản phẩm bàn giao; ứng dụng chỉ là bằng chứng.

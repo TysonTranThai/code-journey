@@ -1,0 +1,29 @@
+## var: inference, not dynamic
+
+```csharp
+var count = 10;          // compiler infers int — count IS an int, forever
+var name = "Ada";        // string
+var price = 19.99m;      // decimal (the suffix drives inference)
+```
+
+`var` is not JavaScript's `var`. The type is inferred **at compile time** and then fixed; `var x = 5; x = "hi";` is a compile error. Rule of thumb: use `var` when the right-hand side makes the type obvious (`new List<int>()`, a constructor call); write the explicit type when it aids reading (`long total = 0;`).
+
+## const
+
+```csharp
+const int MaxRetries = 3;
+const double Pi = 3.14159;
+```
+
+`const` is a compile-time constant: its value is baked into every use site, it's implicitly static, and it can never be reassigned. Use it for values that are truly permanent (`MaxRetries`, `DaysInWeek`). Naming: `PascalCase` is the C# convention for constants.
+
+## null: the absence of an object
+
+A variable of a *reference type* (like `string`) either refers to an object or is `null` — "refers to nothing". Dereferencing `null` throws `NullReferenceException` at runtime:
+
+```csharp
+string nickname = null;
+Console.WriteLine(nickname.Length);   // throws at runtime
+```
+
+C#'s compiler flow analysis warns you about likely nulls (nullable reference types), and `null` checks are a normal part of validating input. For now: know the word, expect the exception name, and treat every incoming value as possibly-absent until validated. Value types (`int`, `decimal`, `bool`) cannot be `null` — they always hold a value.

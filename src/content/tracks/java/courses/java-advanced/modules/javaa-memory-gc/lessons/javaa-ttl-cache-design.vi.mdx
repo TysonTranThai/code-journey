@@ -1,0 +1,22 @@
+Cache TTL dựa trên GC gắn kết ba cơ chế:
+
+- **WeakHashMap** — bộ thu gom rút các entry có *key* không còn ai chạm tới
+  ngoài map. (Value không được chạm ngược tới key của chính nó, nếu không
+  chẳng gì chết được.)
+- **Cửa sổ 60 giây** — phép tính System.nanoTime(); hết hạn theo *thời gian*.
+- **Giới hạn kích thước** — evict theo *chính sách*.
+
+```java
+boolean fresh(CacheKey k) {
+    CacheLine line = store.get(k);
+    if (line == null) return false;
+    if (line.expiry() <= System.nanoTime()) { store.remove(k); return false; }
+    return true;
+}
+```
+
+Mỗi cơ chế trả lời một *lỗi* khác nhau: thời gian hết hạn dữ liệu cũ, kích
+thước chặn bộ nhớ, weak key buông đối tượng khi chủ nhân đã biến mất. Bỏ bất
+kỳ cơ chế nào, cache sẽ rò rỉ theo đúng chiều đó. Checkpoint lắp cả ba —
+chính là lý luận mà các cache production (Caffeine và bạn bè) áp dụng ở cấp
+công nghiệp.

@@ -1,0 +1,25 @@
+Debugging is not a talent; it's a search procedure. The difference between a struggling junior and a calm senior is that the senior's loop _halves the search space every step_.
+
+## The five-step loop
+
+1. **Reproduce reliably.** A bug you can't reproduce on demand is a bug you can't fix. Find the minimal input: which exact data, which exact sequence? (An automated reproduction — a failing test — is gold: it becomes your regression test later.)
+2. **Isolate.** Binary search the pipeline. Does the data arrive wrong from the API, or get corrupted in processing, or render wrong? Log/inspect at the midpoint. Wrong upstream? The bug is upstream; throw away the downstream half. Repeat. Even a 10-step pipeline falls in ~4 steps.
+3. **Understand.** Found the line — now explain _why_ it produces the wrong output. "The filter keeps items where `qty` is truthy, and 0 is falsy" is understanding. "I removed the filter and it worked" is superstition; it'll bite you next week.
+4. **Fix the cause, not the symptom.** Guarding against the corrupted value downstream hides the bug; fixing the producer of the corrupted value removes it. Symptom patches accumulate into systems nobody can reason about.
+5. **Prove it.** Write the failing test FIRST (it fails before the fix), then fix, then watch it pass, then keep it forever as a regression test. A fix without a test is a rumor.
+
+## Tools that matter
+
+- **Breakpoints > console.log.** The debugger pauses _state in context_: every variable in scope, the call stack that led here. Log statements show you a photo; the debugger gives you the whole album, backward.
+- **Conditional breakpoints** for loops that iterate 10,000 times: break only when `i === 937`.
+- **Watch expressions** track a value across steps.
+- **Network tab**: what actually left the browser, headers included. Half of "frontend bugs" are requests the code never made, or responses it misread.
+- **`git bisect`** (module 6!): when "it used to work," history finds the culprit commit in log-time.
+
+## Reading stack traces like a pro
+
+Read the _top_ frame first — that's where the error was thrown. Then walk down to the first frame that is _your code_ (skip library internals). The error message tells you what; the frame tells you where; the surrounding code tells you why. `undefined is not a function` means a name resolved to undefined — check for typos, missing imports, or an object that isn't the shape you assumed.
+
+## When you're stuck
+
+Explain the bug out loud, line by line, to anyone (or a rubber duck) — articulating the _expected_ vs _actual_ flow frequently reveals the gap mid-sentence. And if 30 minutes of binary search hasn't narrowed anything: you're searching the wrong pipeline. Stop, re-map the data flow, pick a new midpoint.

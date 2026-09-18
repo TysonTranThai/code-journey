@@ -1,0 +1,72 @@
+Một file sẽ nhanh chóng không còn đủ dùng. **ES module** là cách tích hợp sẵn
+của JavaScript để tách code thành nhiều file với quan hệ phụ thuộc tường minh.
+
+## Named export và import
+
+```js
+// file: math-utils.js
+export function clamp(n, min, max) {
+  return Math.min(Math.max(n, min), max);
+}
+export const TAX_RATE = 0.1;
+
+// file: app.js
+import { clamp, TAX_RATE } from "./math-utils.js";
+```
+
+## Default export: mỗi module một cái
+
+```js
+// file: logger.js
+export default function log(msg) {
+  console.log(msg);
+}
+
+// file: app.js — default import có thể đặt tên tùy ý
+import log from "./logger.js";
+import whatever from "./logger.js"; // giống hệt
+```
+
+Nguyên tắc: **default** cho "thứ module này nói về" (một component, một
+class), **named** cho tiện ích và hằng số. Named import tìm được bằng grep —
+bạn lần ra mọi nơi dùng `clamp` trong toàn codebase.
+
+## Re-export và barrel file
+
+```js
+// file: utils/index.js — một barrel
+export { clamp } from "./math.js";
+export { formatDate } from "./dates.js";
+
+// nơi dùng import từ một chỗ:
+import { clamp, formatDate } from "./utils/index.js";
+```
+
+Barrel giúp đường import gọn, nhưng re-export hết mọi thứ từ mọi nơi sinh ra
+bug import vòng. Giữ barrel nông.
+
+## Static so với dynamic
+
+Câu `import` là static: chạy lúc nạp module và phải nằm ở cấp cao nhất.
+Với code bạn chỉ cần _sau này_ (thư viện nặng dùng trong một thao tác), dùng
+dynamic import — nó trả về Promise:
+
+```js
+button.addEventListener("click", async () => {
+  const { default: chart } = await import("./heavy-chart-lib.js");
+  chart.render(data);
+});
+```
+
+## Import vòng
+
+Khi A import B và B import A, cả hai có thể nhận `undefined` lúc khởi
+động. Cách sửa gần như luôn là tách phần dùng chung ra module thứ ba mà cả
+hai cùng import. Thấy `undefined is not a function` lúc khởi động, hãy
+kiểm tra vòng import.
+
+## Vì sao điều này quan trọng ở Trung cấp
+
+Từ đây bạn sẽ cấu trúc chương trình nhiều file: tầng dữ liệu, tầng giao
+diện, tiện ích. Module là đơn vị của cấu trúc đó — và là đơn vị mà test
+import vào.

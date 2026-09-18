@@ -1,0 +1,15 @@
+## Mutation testing: the mirror test
+
+A mutant is a deliberately broken version of your code (`<` → `<=`, `+` → `-`, deleted boundary check). Run the suite against the mutant: if tests still pass, your tests cannot detect that bug class — the mutant *survived* and your suite has a hole. Mutation score = killed / total. It measures the tests, not the code.
+
+## What mutation testing teaches
+
+Boundary conditions (`<=` vs `<` mutants die only if tests probe the boundary), off-by-ones, and dead assertions. If every mutant of a validation function survives except syntax errors, the function is effectively untested.
+
+## Fuzzing: the input machine
+
+A fuzzer feeds structured-random inputs hunting for crashes, sanitizer trips, or hangs. libFuzzer-style harnesses define `LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)` calling your parser with ASan+UBSan enabled; the fuzzer's coverage feedback steers toward untested paths. Any code that parses untrusted bytes deserves a fuzz target — parsers, codecs, protocol handling.
+
+## Where each belongs
+
+Mutation: periodically, on critical modules, to audit the suite. Fuzzing: continuously in CI for input-facing components, with found crashes converted into permanent regression tests (the crash input becomes the test input).

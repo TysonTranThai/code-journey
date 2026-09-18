@@ -1,0 +1,24 @@
+{
+  "ca24-checkpoint-core": {
+    "title": "Kiểm tra: Lõi tiện ích portable",
+    "prompt": "ISO C. Cài tiện ích kết hợp: `core_init` chạy thăm dò endian (1 little, 0 big) và lưu nó; `core_safe_copy` — bản sao từ chối của mô-đun 23; `core_frame` — ghi header 4 byte (độ dài payload theo thứ tự byte của nền tảng, byte-thấp-nhất-trước khi little-endian) rồi payload; từ chối (-1) nếu 4+plen vượt outsz hoặc args NULL; trả 4+(int)plen khi thành công. Cài `core_unframe` — đọc header 4 byte (cùng quy tắc), từ chối nếu độ dài tuyên bố vượt insz-4 hoặc outsz-1, sao payload và kết thúc NUL; trả độ dài payload, -1 khi từ chối.",
+    "tests": [
+      {
+        "name": "khung khép vòng",
+        "hint": "Header little-endian (05 00 00 00) rồi hello: vòng lặp khôi phục payload chính xác."
+      },
+      {
+        "name": "từ chối khung quá cỡ",
+        "hint": "4 header + 5 payload = 9 > 8: từ chối, không tự nhận ngữ nghĩa ghi một phần."
+      },
+      {
+        "name": "unframe chặn header xấu",
+        "hint": "Độ dài tuyên bố 0xFFFFFFFF vượt 2 byte còn lại: từ chối."
+      },
+      {
+        "name": "kỷ luật NULL",
+        "hint": "Đầu vào NULL từ chối — API kết hợp giữ kỷ luật của mô-đun 23."
+      }
+    ]
+  }
+}

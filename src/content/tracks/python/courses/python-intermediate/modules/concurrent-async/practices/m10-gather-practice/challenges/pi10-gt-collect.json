@@ -1,0 +1,21 @@
+{
+  "id": "pi10-gt-collect",
+  "title": "Collect What You Can",
+  "prompt": "Implement async def gather_all(jobs) where jobs are coroutines that may raise. Use asyncio.gather(..., return_exceptions=True) and return (successes, failures): successes is the list of non-exception results in order; failures is the list of exception instances in order. Provide sync wrapper run_collect(jobs).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import asyncio\n\nasync def gather_all(jobs):\n    pass\n\ndef run_collect(jobs):\n    pass\n",
+  "tests": [
+    {
+      "name": "separates results from failures",
+      "code": "async def ok():\n    return 1\nasync def bad():\n    raise ValueError('x')\nsucc, fail = run_collect([ok(), bad(), ok()])\nassert succ == [1, 1]\nassert len(fail) == 1 and isinstance(fail[0], ValueError)",
+      "hint": "return_exceptions=True turns errors into values to partition."
+    },
+    {
+      "name": "empty input",
+      "code": "assert run_collect([]) == ([], [])",
+      "hint": "Nothing in, nothing out — both empty."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,46 @@
+Generics are functions for types: one implementation, types vary per use,
+and the compiler tracks each use separately.
+
+## The idea
+
+```ts
+function first<T>(items: T[]): T | undefined {
+  return items[0];
+}
+const a = first(["x", "y"]); // T inferred as string → a: string | undefined
+const b = first([1, 2]); // T inferred as number → b: number | undefined
+```
+
+Call-site inference means you rarely write the angle brackets — you get them
+from context.
+
+## Constraints
+
+When the body needs capabilities beyond `unknown`, constrain:
+
+```ts
+function pluck<T, K extends keyof T>(items: T[], key: K): T[K][] {
+  return items.map((i) => i[key]);
+}
+pluck(users, "email"); // ✓ — and "emial" is a compile error
+```
+
+`K extends keyof T` ties the key to keys that actually exist on T — a typo
+becomes a compile-time error instead of `undefined` at runtime.
+
+## Utility types
+
+The built-ins cover 90% of needs:
+
+- `Partial<T>` — all fields optional (patch/update payloads)
+- `Pick<T, K>` / `Omit<T, K>` — select or remove fields (public view of a row)
+- `ReturnType<typeof fn>` — capture what a function gives back
+- `Record<K, V>` — typed dictionaries
+
+```ts
+type PublicUser = Omit<User, "passwordHash">;
+function updateUser(id: number, patch: Partial<User>) { ... }
+```
+
+Use generics when the SHAPE relationship matters (in → out); use `unknown`
+when you truly accept anything.

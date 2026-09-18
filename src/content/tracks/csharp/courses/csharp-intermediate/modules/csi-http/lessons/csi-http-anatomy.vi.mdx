@@ -1,0 +1,59 @@
+## Hợp đồng request/response
+
+Request = method (GET đọc, POST tạo/gửi, PUT thay thế, DELETE xóa) + URL +
+header + body tùy chọn. Response = mã trạng thái + header + body tùy chọn.
+Các mã cần thuộc:
+
+- 2xx thành công (200 OK, 201 Created — response mang tài nguyên mới,
+  204 No Content — thành công với body rỗng),
+- 4xx lỗi của NGƯỜI GỌI (400 đầu vào sai, 401 chưa xác thực,
+  403 không đủ quyền, 404 không có, 409 xung đột, 429 bị giới hạn),
+- 5xx lỗi của SERVER (500, 502, 503).
+
+Quy tắc: 4xx thường nghĩa là sửa request của bạn; 5xx nghĩa là bên kia gặp
+ngày xấu — mới là thứ đáng thử lại.
+
+## HttpClient: tạo một lần, dùng khắp nơi
+
+```csharp
+public sealed class ApiClient
+{
+    private readonly HttpClient _http;
+    public ApiClient(HttpClient http) => _http = http;   // injected
+
+    public async Task<string> GetNameAsync(int id, CancellationToken ct)
+    {
+        using var resp = await _http.GetAsync($"/names/{id}", ct);
+        resp.EnsureSuccessStatusCode();
+        return await resp.Content.ReadAsStringAsync(ct);
+    }
+}
+```
+
+Một client cho MỌI tuổi thọ app (nó gom nối kết); tạo-mới-mỗi-lần cạn sạch
+pool socket. Hãy inject (Module 11) hoặc dùng typed client.
+
+## Handler: pipeline
+
+HttpClient gửi request qua chuỗi `HttpMessageHandler` — mỗi handler biến
+đổi hoặc quan sát request/response. Logging, auth header, retry, và stub
+đều sống ở đó:
+
+```csharp
+public sealed class StubHandler : HttpMessageHandler
+{
+    protected override Task<HttpResponseMessage> SendAsync(
+        HttpRequestMessage req, CancellationToken ct)
+        => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent("{ \"ok\": true }")
+        });
+}
+
+var http = new HttpClient(new StubHandler()) { BaseAddress = new Uri("https://api.test") };
+```
+
+## Kiểm tra hiểu biết
+
+- Mã nào nói "bạn gửi sai"? (4xx — ví dụ 400/404/429.)
+- Vì sao không `new HttpClient()` mỗi lần gọi? (Cạn socket — pool theo app, inject một cái.)

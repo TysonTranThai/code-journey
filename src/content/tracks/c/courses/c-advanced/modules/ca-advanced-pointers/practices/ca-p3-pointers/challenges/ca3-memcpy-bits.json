@@ -1,0 +1,21 @@
+{
+  "id": "ca3-memcpy-bits",
+  "title": "Read Bits Legally",
+  "prompt": "Implement `unsigned int float_bits(float f)` returning the 32 bits of f's representation. The cast chain `*(unsigned *)&f` is the UB trap; copy the bytes instead — either via `memcpy`, or through an `unsigned char` walk you accumulate into an unsigned.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "1.0f representation",
+      "code": "CHECK_EQ((int)float_bits(1.0f), (int)0x3F800000u);",
+      "hint": "memcpy into an unsigned; 1.0f is exponent 127, mantissa 0."
+    },
+    {
+      "name": "0.0f representation",
+      "code": "CHECK_EQ((int)float_bits(0.0f), 0);",
+      "hint": "All representation bytes of +0.0f are zero."
+    }
+  ],
+  "level": "independent"
+}

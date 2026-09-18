@@ -1,0 +1,21 @@
+## Runtime vs static: what types are and are not
+
+Python's type hints are **not enforced at runtime**. `def f(x: int) -> str` runs
+happily with `f("oops")`. Hints are consumed by *static checkers* (mypy, pyright)
+and by *readers* — they are a design language layered over the code.
+
+What this means at an advanced level:
+
+- Types describe **intent and contracts**, not runtime behavior. A wrong
+  annotation is a lie that ships silently unless a checker runs in CI.
+- `typing.get_type_hints(obj)` / `obj.__annotations__` can read hints at runtime
+  — that is how dataclasses, pydantic, and dependency-injection frameworks
+  build behavior from annotations.
+- The workflow professionals run: annotate the boundaries first (function
+  signatures, API models), let inference handle the inside, run the checker in
+  CI, and treat `Any` as a TODO, not a default.
+
+Version note (prose only): Python 3.12 adds PEP 695 type-parameter syntax
+(`def first[T](xs: list[T]) -> T`), and 3.13 adds `typing.TypeIs`. This course's
+graded code targets 3.11 (`TypeVar`, `Generic`, `TypeGuard`), which runs
+unchanged on 3.12+ sandboxes.

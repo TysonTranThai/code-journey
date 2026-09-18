@@ -1,0 +1,16 @@
+{
+  "id": "javb-m6-fix-title",
+  "title": "Debug: the title-izer that misbehaves",
+  "prompt": "`titleCase` should capitalize the first letter of EVERY word and lower the rest: `titleCase(\"the JAVA tutorial\")` is `\"The Java Tutorial\"`. The version below drops words and keeps wrong case — find both bugs (loop boundary and char handling) and fix them.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String titleCase(String input) {\n        String[] words = input.split(\" \");\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i <= words.length; i++) {\n            String w = words[i];\n            out.append(w.toUpperCase());\n            out.append(\" \");\n        }\n        return out.toString().trim();\n    }\n}\n",
+  "tests": [
+    {
+      "name": "correct title casing",
+      "code": "\nCjTestBase.checkEq(Solution.titleCase(\"the JAVA tutorial\"), \"The Java Tutorial\", \"mixed case\");\nCjTestBase.checkEq(Solution.titleCase(\"one\"), \"One\", \"single word\");\nCjTestBase.checkEq(Solution.titleCase(\"a b c\"), \"A B C\", \"letters\");\n",
+      "hint": "Capitalize word.substring(0,1).toUpperCase() + rest.toLowerCase(); join with spaces."
+    }
+  ],
+  "level": "debugging"
+}

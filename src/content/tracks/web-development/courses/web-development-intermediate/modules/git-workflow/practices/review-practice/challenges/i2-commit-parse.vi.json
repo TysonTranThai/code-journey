@@ -1,0 +1,18 @@
+{
+  "title": "Bộ phân tích commit",
+  "prompt": "Viết `parseCommit(msg)` cho conventional commit `<type>(<scope>)?: <desc>`. Trả về `{ type, scope, breaking, desc }` — scope null khi vắng, breaking true khi có `!` trước dấu hai chấm hoặc tồn tại footer BREAKING CHANGE (msg chứa \"BREAKING CHANGE\"). Trả về null cho message sai dạng (type không hợp lệ, thiếu hai chấm, desc rỗng).",
+  "tests": [
+    {
+      "name": "phân tích các dạng chuẩn",
+      "hint": "Một regex: /^(\\w+)(?:\\(([^)]*)\\))?!?: (.+)$/."
+    },
+    {
+      "name": "gắn cờ breaking change",
+      "hint": "Kiểm tra '!' trước hai chấm HOẶC tìm chuỗi footer trong toàn bộ message."
+    },
+    {
+      "name": "từ chối message sai dạng",
+      "hint": "Whitelist type: feat fix refactor perf test docs chore ci."
+    }
+  ]
+}

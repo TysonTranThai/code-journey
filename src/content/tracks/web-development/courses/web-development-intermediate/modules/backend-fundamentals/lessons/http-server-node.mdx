@@ -1,0 +1,47 @@
+You've called APIs for months. Now build the receiving end — with zero frameworks, so you know what they actually do.
+
+## The minimal server
+
+```js
+import http from "node:http";
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ ok: true }));
+});
+
+server.listen(3000, () => console.log("on :3000"));
+```
+
+`createServer` registers a callback that runs for **every request**. The two arguments are everything:
+
+- **req** (IncomingMessage): `req.method` ("GET", "POST"...), `req.url` (path + query), `req.headers`, and the body as a stream (POST bodies arrive in chunks — you assemble them).
+- **res** (ServerResponse): `res.writeHead(status, headers)`, `res.end(body)`. Forget `res.end` and the client hangs forever.
+
+## Reading a request body
+
+```js
+let body = "";
+req.on("data", (chunk) => {
+  body += chunk;
+});
+req.on("end", () => {
+  const data = JSON.parse(body); // wrap in try/catch: bad JSON is user input
+  res.end(JSON.stringify({ got: data }));
+});
+```
+
+This is the stream dance every framework hides behind `req.json()`.
+
+## Status codes that mean something
+
+- **200** OK — success with body · **201** Created — after a successful POST that made something (set `Location` header to the new resource)
+- **400** Bad Request — the client sent garbage (validation failure)
+- **401** Unauthorized — who are you? · **403** Forbidden — I know you; no.
+- **404** Not Found · **409** Conflict (duplicate email) · **500** — our fault, log it
+
+Correct codes are part of your API's contract. A `404` for "validation failed" makes clients build error handling on lies.
+
+## What frameworks buy you
+
+Routing by pattern (`app.get("/users/:id")`), body parsing, middleware chaining, error normalization. Express/Fastify are conveniences over this callback — knowing the callback means you can debug through any framework.

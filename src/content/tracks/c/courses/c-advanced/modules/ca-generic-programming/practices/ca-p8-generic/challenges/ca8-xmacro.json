@@ -1,0 +1,21 @@
+{
+  "id": "ca8-xmacro",
+  "title": "X-Macro Opcode Table",
+  "prompt": "Given the X-macro list already in your editor:\n \n```c\n#define OP_LIST(X) X(OP_ADD) X(OP_SUB) X(OP_MUL)\nenum { \n#define OP_E(e) e,\nOP_LIST(OP_E)\n#undef OP_E\nOP_COUNT };\n```\n \nimplement `const char *op_name(unsigned op)` generating its strings from the *same* list (a second expansion with a stringizing X) — adding an opcode must extend both, or the table lies.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#define OP_LIST(X) X(OP_ADD) X(OP_SUB) X(OP_MUL)\n#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "names from one list",
+      "code": "CHECK_STR_EQ(op_name(OP_ADD), \"OP_ADD\");\nCHECK_STR_EQ(op_name(OP_SUB), \"OP_SUB\");\nCHECK_STR_EQ(op_name(OP_MUL), \"OP_MUL\");",
+      "hint": "Stringizing X expands the same OP_LIST that built the enum — the two tables cannot drift."
+    },
+    {
+      "name": "bounds respected",
+      "code": "CHECK_NULL(op_name(999));",
+      "hint": "Out-of-range opcodes return NULL rather than reading garbage."
+    }
+  ],
+  "level": "combination"
+}

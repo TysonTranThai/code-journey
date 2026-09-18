@@ -1,0 +1,14 @@
+{
+  "title": "Kiểm tra và thu nhỏ",
+  "prompt": "Cài hai hàm của một engine property mini:\n\n- `check_roundtrip_codec(encode, decode, samples)` — với mỗi sample, `decode(encode(x))` phải bằng `x` (mọi exception tính là thất bại). Trả `(passed, first_failure)` — sample failing hoặc `None`.\n- `shrink(samples, bad)` — tối tiểu một list failing: liên tục thử bỏ một phần tử và giữ việc bỏ đó khi property (khứ hồi danh tính qua `check_roundtrip_codec`) vẫn fail; dừng khi không còn lần bỏ nào khiến nó fail hoặc chỉ còn một phần tử. Trả list tối tiểu.\n\nThu nhỏ là thứ biến 'fail với con quái vật 50 phần tử này' thành 'fail với `[\"\\x00\"]`' — báo cáo bug mà tác giả hành động được.",
+  "tests": [
+    {
+      "name": "Codec sạch pass, codec hỏng fail",
+      "hint": "Property bắt được thứ mà test ví dụ không bao giờ tưởng tượng tới."
+    },
+    {
+      "name": "Thu nhỏ tìm list failing tối tiểu",
+      "hint": "Bỏ phần tử trong khi property vẫn fail; còn lại một 7."
+    }
+  ]
+}

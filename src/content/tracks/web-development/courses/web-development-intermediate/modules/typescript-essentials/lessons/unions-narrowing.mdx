@@ -1,0 +1,62 @@
+Real data is often "one of several shapes". Unions model that honestly; the
+compiler then forces you to handle every case.
+
+## Narrowing
+
+TypeScript follows your runtime checks:
+
+```ts
+function format(value: string | number) {
+  if (typeof value === "string") return value.trim(); // here: string
+  return value.toFixed(2); // here: number
+}
+```
+
+`typeof`, `instanceof`, `in`, and truthiness all narrow — no casts needed when
+the check is real.
+
+## Discriminated unions
+
+Give each variant a literal tag and every switch becomes checked:
+
+```ts
+type Request =
+  | { kind: "idle" }
+  | { kind: "loading" }
+  | { kind: "success"; data: string[] }
+  | { kind: "error"; message: string };
+
+function render(r: Request) {
+  switch (r.kind) {
+    case "idle":
+      return "Nothing yet";
+    case "loading":
+      return "Loading…";
+    case "success":
+      return r.data.join(", "); // r.data exists ONLY here
+    case "error":
+      return r.message;
+    default: {
+      const _never: never = r;
+      return "";
+    }
+  }
+}
+```
+
+The `default` trick: assigning to `never` fails to compile the moment someone
+adds a variant without handling it — exhaustiveness enforced by the type
+system.
+
+## Type guards
+
+A predicate function narrows wherever it is used:
+
+```ts
+function isUser(v: unknown): v is User {
+  return typeof v === "object" && v !== null && "id" in v && "email" in v;
+}
+```
+
+That `v is User` return type is the contract between runtime checking and
+compile-time knowledge — the heart of the boundary practice below.

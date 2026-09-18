@@ -1,0 +1,48 @@
+## Event kiểu-trường là trường delegate với luật lệ
+
+Trường delegate công khai cho phép BẤT KỲ AI ghi đè danh sách, xóa nó, hay
+gọi nó. Từ khóa `event` giữ trường riêng tư và cấp cho người ngoài đúng hai
+thao tác: `+=` và `-=`.
+
+```csharp
+public class Order
+{
+    public event EventHandler<OrderEventArgs>? Placed;   // trường nền riêng tư
+
+    public void Place()
+    {
+        OnPlaced(new OrderEventArgs("ord-1", 42m));
+    }
+
+    protected virtual void OnPlaced(OrderEventArgs args) =>
+        Placed?.Invoke(this, args);        // raise an toàn: không ai đăng ký cũng ổn
+}
+```
+
+Lời raise đi qua một phương thức instance để lớp dẫn xuất canh vào
+(`protected virtual`) — quy ước .NET từ ngày đầu tiên.
+
+## Vai trò publisher/subscriber
+
+Publisher định nghĩa event và *quyết định khi nào* raise. Subscriber gắn
+handler và *phản ứng* — họ không bao giờ raise, không sắp xếp lại, không xóa.
+Mũi tên một chiều này làm hệ thống event-driven debug được: thay đổi trạng
+thái chảy một hướng.
+
+```csharp
+order.Placed += (sender, args) => Console.WriteLine($"order {args.Id} for {args.Total}");
+order.Placed += Emailer.OnOrderPlaced;      // method group cũng được
+order.Place();                               // cả hai handler chạy, theo thứ tự
+```
+
+## Raise an toàn, luôn luôn
+
+`Placed?.Invoke(...)` — `?.` chụp nhanh danh sách delegate; một handler hủy
+đăng ký đồng thời không thể làm null lời gọi của bạn giữa chừng. Đừng bao giờ
+viết `if (Placed != null) Placed(...)` — kiểm-tra-rồi-gọi là race kinh điển.
+
+## Kiểm tra hiểu biết
+
+- Code subscriber làm được gì với `event` mà không làm được với trường
+  delegate công khai? (Chỉ += và -=; không invoke, không clear, không ghi đè.)
+- Vì sao `?.Invoke` thay vì null-check rồi gọi? (Chụp nhanh danh sách nguyên tử.)

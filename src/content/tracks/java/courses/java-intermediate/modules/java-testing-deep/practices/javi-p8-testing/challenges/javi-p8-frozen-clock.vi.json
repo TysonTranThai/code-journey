@@ -1,0 +1,22 @@
+{
+  "title": "Đóng băng thời gian sau seam",
+  "prompt": "Thiết kế logic phụ thuộc thời gian có thể test bên trong `Solution`:\n- `interface Clock { java.time.Instant now(); }`\n- `static class Trial` với constructor `(Clock clock)`; method\n  `boolean isActive(java.time.Instant start, java.time.Instant end)`\n  trả `!clock.now().isBefore(start) && clock.now().isBefore(end)`.\n- `static Clock frozenAt(String iso)` — Clock đóng băng tại thời điểm đó.\n\nTest đóng băng thời gian thay vì ngủ/đợi — đó là toàn bộ ý nghĩa của seam.",
+  "tests": [
+    {
+      "name": "Hoạt động trong cửa sổ",
+      "hint": "now đóng băng (12:00) sau start và trước end."
+    },
+    {
+      "name": "Hết hạn sau end",
+      "hint": "now quá end → false."
+    },
+    {
+      "name": "Chưa bắt đầu",
+      "hint": "now trước start → false."
+    },
+    {
+      "name": "Đúng thời điểm start vẫn hoạt động",
+      "hint": "now == start phải tính là hoạt động — biên này bắt bug so sánh nghiêm ngặt."
+    }
+  ]
+}

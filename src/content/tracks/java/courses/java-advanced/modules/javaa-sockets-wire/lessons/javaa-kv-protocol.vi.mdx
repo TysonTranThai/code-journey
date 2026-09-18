@@ -1,0 +1,21 @@
+Giao thức của checkpoint — một KV store trên TCP:
+
+```text
+client: PUT key value
+     server: OK
+
+client: GET key
+           server: VALUE value
+   (hoặc)  MISSING
+
+client: QUIT
+              server: BYE
+  (rồi cả hai đóng)
+```
+
+Những quyết định thiết kế đáng chú ý: khung là một dòng (giao thức văn bản,
+dễ debug bằng telnet); phản hồi là MỘT dòng (client không phải đếm byte);
+`QUIT` kết thúc phiên tường minh thay vì dựa vào race EOF; lệnh lạ trả `ERR`
+thay vì treo hoặc crash. Vòng lặp server: accept → handler mỗi kết nối →
+read-line/write-line cho tới QUIT/EOF. Client kiểm thử chứng minh toàn bộ
+vòng lặp trên byte loopback thật.

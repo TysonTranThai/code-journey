@@ -1,0 +1,14 @@
+{
+  "title": "Gather đồng thời chống lỗi",
+  "prompt": "Cài `gather(urls, fetch, workers=4)` dùng `ThreadPoolExecutor`:\n\n- chạy `fetch(url)` cho mọi url với tối đa `workers` task đồng thời\n- trả về tuple `(results, errors)`\n- `results` map url → kết quả fetch cho các call thành công\n- `errors` map url → thông báo string của exception cho call thất bại\n- một url lỗi không bao giờ được cản các url khác hoàn tất",
+  "tests": [
+    {
+      "name": "Thu hết kết quả, cô lập lỗi",
+      "hint": "Bọc fut.result() trong try/except và ghi kết quả theo từng url; as_completed để mỗi future tự báo kết cục."
+    },
+    {
+      "name": "Đầu vào rỗng, không làm việc nào",
+      "hint": "Lô rỗng trả về hai dict rỗng — không cần xử lý đặc biệt."
+    }
+  ]
+}

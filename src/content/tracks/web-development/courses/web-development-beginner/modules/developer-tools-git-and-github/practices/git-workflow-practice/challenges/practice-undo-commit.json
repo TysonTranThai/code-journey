@@ -1,0 +1,25 @@
+{
+  "id": "practice-undo-commit",
+  "title": "Undo, Safely",
+  "prompt": "You committed too early. Fill the object:\n- `redo`: the command that creates a NEW commit reversing your last one (never rewrite shared history).\n- `inspect`: the command that shows the commit history.",
+  "difficulty": "beginner",
+  "level": "debugging",
+  "boilerplate": "const undo = {\n  inspect: \"\",\n  redo: \"\",\n};\n",
+  "tests": [
+    {
+      "name": "inspect the history",
+      "code": "const fn = new Function(code + \"\\nreturn undo;\");\nconst u = fn();\nif (u.inspect !== \"git log\") throw new Error(\"inspect should be: git log\");",
+      "hint": "git log lists the commits."
+    },
+    {
+      "name": "revert, not reset",
+      "code": "const fn = new Function(code + \"\\nreturn undo;\");\nconst u = fn();\nif (!/^git revert HEAD$/.test(u.redo)) {\n  throw new Error(\"redo should be: git revert HEAD — a new commit that undoes the old one.\");\n}",
+      "hint": "git revert HEAD is safe for shared branches — it adds an inverse commit."
+    },
+    {
+      "name": "no history rewriting",
+      "code": "if (/git\\s+reset\\s+--hard|push\\s+--force|push\\s+-f/.test(code)) {\n  throw new Error(\"reset --hard and force-push rewrite history — banned on shared work.\");\n}",
+      "hint": "Revert adds history; reset/force-push destroys it. On shared branches: revert."
+    }
+  ]
+}

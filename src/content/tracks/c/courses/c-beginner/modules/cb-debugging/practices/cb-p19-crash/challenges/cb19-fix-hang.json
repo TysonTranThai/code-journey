@@ -1,0 +1,26 @@
+{
+  "id": "cb19-fix-hang",
+  "title": "Fix: Infinite Loop",
+  "prompt": "`count_down(int n)` never terminates for n <= 0 and the loop's counter never reaches its bound for n = 5 (it stops early only by luck of the bug). Fix it to return the number of steps counting n, n-1, ..., 1 (so count_down(5) is 5; count_down(0) is 0).\n\n```c\nint count_down(int n) {\n    int steps = 0;\n    while (n != 1) {\n        steps++;\n        n = n - 0;   /* BUG */\n    }\n    return steps;\n}\n```",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "five",
+      "code": "CHECK_EQ(count_down(5), 5);",
+      "hint": "5,4,3,2,1: five steps."
+    },
+    {
+      "name": "one",
+      "code": "CHECK_EQ(count_down(1), 1);",
+      "hint": "Just 1: one step."
+    },
+    {
+      "name": "zero",
+      "code": "CHECK_EQ(count_down(0), 0);",
+      "hint": "Nothing to count."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "pa-db-decompose",
+  "title": "Decompose the denormalized table",
+  "prompt": "Implement `decompose(rows)` — rows are dicts with keys `customer_id`, `customer_name`, `order_id`, `total` (a flat order report). Return `(customers, orders)`:\n\n- `customers`: dict mapping `customer_id → customer_name`\n- `orders`: list of `{'order_id', 'customer_id', 'total'}` dicts, in first-seen order of `order_id` (duplicates of an order_id are ignored)\n- redundancy must be consistent: if the same `customer_id` appears with two different names, raise `ValueError('conflicting customer name')`\n\nThis is normalization as code: eliminate the redundancy, keep the truth.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: decompose",
+  "tests": [
+    {
+      "name": "dedupes customers and orders",
+      "code": "rows = [\n    {'customer_id': 1, 'customer_name': 'Lan', 'order_id': 'o1', 'total': 100},\n    {'customer_id': 1, 'customer_name': 'Lan', 'order_id': 'o2', 'total': 50},\n    {'customer_id': 2, 'customer_name': 'Minh', 'order_id': 'o3', 'total': 70},\n]\ncustomers, orders = decompose(rows)\nassert customers == {1: 'Lan', 2: 'Minh'}\nassert [o['order_id'] for o in orders] == ['o1', 'o2', 'o3']\nprint('ok')",
+      "hint": "Each customer once; each order once, in first-seen order."
+    },
+    {
+      "name": "conflicts are loud, not silent",
+      "code": "rows = [\n    {'customer_id': 1, 'customer_name': 'Lan', 'order_id': 'o1', 'total': 100},\n    {'customer_id': 1, 'customer_name': 'LAN PHUONG', 'order_id': 'o4', 'total': 10},\n]\ntry:\n    decompose(rows)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('conflicting names must raise')\nprint('ok')",
+      "hint": "A silently renamed customer is a data corruption bug."
+    }
+  ],
+  "level": "independent"
+}

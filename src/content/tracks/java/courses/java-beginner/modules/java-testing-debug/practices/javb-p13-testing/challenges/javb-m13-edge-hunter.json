@@ -1,0 +1,26 @@
+{
+  "id": "javb-m13-edge-hunter",
+  "title": "Hunt the boundaries",
+  "prompt": "`countUniqueWords` passes every happy-path test. Write `main` printing one PASS/FAIL line per edge case you believe it must survive: empty string, only whitespace, single word, duplicated words (\"the the\"), mixed case (\"The THE\"), and words with punctuation adjacent (\"hello,world\"). Run it - at least one case should surprise you - then harden `countUniqueWords` so every one of your cases prints PASS (treat \"hello,world\" as two words by splitting on any non-letter).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int countUniqueWords(String text) {\n        if (text == null || text.isBlank()) return 0;\n        String[] words = text.trim().toLowerCase().split(\"\\s+\");\n        java.util.Set<String> unique = new java.util.HashSet<>();\n        for (String w : words) unique.add(w);\n        return unique.size();\n    }\n}\n",
+  "tests": [
+    {
+      "name": "core counting still works",
+      "code": "\nCjTestBase.checkEq(Solution.countUniqueWords(\"the quick brown fox\"), 4, \"four unique words\");\nCjTestBase.checkEq(Solution.countUniqueWords(\"the the THE\"), 1, \"case-insensitive duplicates\");\n",
+      "hint": "Keep the lowercase normalization - the hardening is about splitting, not case."
+    },
+    {
+      "name": "punctuation no longer glues words",
+      "code": "\nCjTestBase.checkEq(Solution.countUniqueWords(\"hello,world\"), 2, \"comma splits words\");\nCjTestBase.checkEq(Solution.countUniqueWords(\"it's\"), 2, \"apostrophe splits too\");\n",
+      "hint": "split(\"[^a-z]+\") after lowercasing splits on every non-letter run."
+    },
+    {
+      "name": "empty and blank survive",
+      "code": "\nCjTestBase.checkEq(Solution.countUniqueWords(\"\"), 0, \"empty -> 0\");\nCjTestBase.checkEq(Solution.countUniqueWords(\"   \"), 0, \"blank -> 0\");\nCjTestBase.checkEq(Solution.countUniqueWords(null), 0, \"null -> 0\");\n",
+      "hint": "Guard first; then the split never sees a blank string."
+    }
+  ],
+  "level": "real-world"
+}

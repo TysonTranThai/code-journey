@@ -1,0 +1,40 @@
+The step up from "writing methods" to "thinking in methods" is
+**decomposition**: splitting a problem into named parts small enough to
+understand at a glance.
+
+**One job per method.** A method whose name contains "and" (`validateAndSave`)
+is probably two methods. The name is the contract; if you cannot state the
+job in one sentence, the method is doing too much.
+
+**The rule of three-ish:** write it once directly; write it twice with a
+wince; the third near-copy becomes a method. Extract when the duplicate
+starts drifting apart — divergent copies of "the same" logic are how bugs
+are born.
+
+**Refactoring loop** you will practice below:
+
+1. Identify repeated or over-long code.
+2. Extract into a method named for the *job* (`formatPrice`, not `doStuff1`).
+3. Pass everything the job needs as parameters; return the result rather
+   than printing it.
+4. Re-run the tests — behavior must be identical.
+
+**Return results, don't print.** A method that computes and prints is glued
+to the console; one that returns its result composes into bigger programs
+and, crucially, is *testable* — the grader (and your future self) can call
+it. Printing is a job for the outermost layer.
+
+```java
+static String line(String item, int qty, double price) {
+    return item + " x" + qty + " = " + formatMoney(qty * price);
+}
+
+static String formatMoney(double amount) {
+    return String.format("$%.2f", amount);
+}
+```
+
+Two small methods, each one sentence, composing into a receipt. That is the
+whole discipline.
+
+**Next:** practice — building and repairing a utility library.

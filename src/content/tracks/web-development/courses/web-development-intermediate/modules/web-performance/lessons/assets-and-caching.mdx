@@ -1,0 +1,38 @@
+When a page is slow, images are the suspect in ~70% of cases. Then fonts. Then your JS.
+
+## Images: the biggest lever
+
+- **Right format**: SVG for icons/logos (resolution-independent, tiny), WebP/AVIF for photos (30–50% smaller than JPEG at equal quality), PNG only when transparency matters and SVG can't do it.
+- **Right size**: serving a 3000px image into a 400px slot wastes ~90% of its bytes. `srcset` + `sizes` let the browser pick:
+
+```html
+<img
+  src="hero-800.webp"
+  srcset="hero-400.webp 400w, hero-800.webp 800w, hero-1600.webp 1600w"
+  sizes="(max-width: 600px) 100vw, 50vw"
+  alt="..."
+/>
+```
+
+- **Lazy-load** everything below the fold: `loading="lazy"`. NEVER lazy-load the hero/LCP image — that makes the page _feel_ slower.
+- **Explicit dimensions** (`width`/`height` attributes) so layout doesn't jump when images arrive (CLS — next lesson).
+
+## Fonts
+
+Fonts are render-blocking text. `font-display: swap` shows fallback text immediately and swaps when the real font lands. `preload` your primary font (the one the headline uses) — but only that one. Subset fonts (Vietnamese needs the Vietnamese subset!) — shipping 5 weights × full Unicode is megabytes of self-inflicted damage.
+
+## Caching strategy
+
+The `Cache-Control` header is a contract:
+
+```text
+Cache-Control: max-age=31536000, immutable   # hashed assets: cache a year
+Cache-Control: no-cache                      # revalidate before use (HTML)
+Cache-Control: no-store                      # never cache (secrets, personal data)
+```
+
+The standard scheme: HTML = `no-cache` (always fresh), JS/CSS/images with content hashes = `immutable` for a year. Changing the code changes the hash, which changes the URL, which bypasses the cache — correctness and speed coexist.
+
+## Third-party scripts cost more than they look
+
+Analytics, chat widgets, tag managers: each is a script download + execute + often its own requests. Every one delays or competes with your app. Budget them (next lessons), load them `async`, and audit them quarterly — dead tags are routine.

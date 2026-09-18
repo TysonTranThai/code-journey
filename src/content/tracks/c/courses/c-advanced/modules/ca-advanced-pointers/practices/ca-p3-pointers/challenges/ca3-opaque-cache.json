@@ -1,0 +1,31 @@
+{
+  "id": "ca3-opaque-cache",
+  "title": "Build an Opaque Cache",
+  "prompt": "Implement a tiny fixed-size cache behind an opaque API: `cache_t *cache_create(size_t cap)`, `int cache_put(cache_t *c, int key, int value)` (returns 1 stored, 0 full), `int *cache_get(cache_t *c, int key)` (returns NULL on miss). Keep the struct definition in your source; the tests only use the functions — that is the opacity contract.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "put then get",
+      "code": "cache_t *c = cache_create(4);\nCHECK_EQ(cache_put(c, 7, 700), 1);\nint *v = cache_get(c, 7);\nCHECK_NOT_NULL(v);\nCHECK_EQ(*v, 700);",
+      "hint": "Store then retrieve through the handle; the caller never sees the layout."
+    },
+    {
+      "name": "miss is NULL",
+      "code": "cache_t *c = cache_create(4);\nCHECK_NULL(cache_get(c, 999));",
+      "hint": "A fresh cache; absent keys must return NULL, not garbage."
+    },
+    {
+      "name": "full is rejected",
+      "code": "cache_t *c = cache_create(4);\nfor (int k = 0; k < 4; k++) cache_put(c, k, k);\nCHECK_EQ(cache_put(c, 99, 99), 0);",
+      "hint": "cap is respected: the fifth insert reports 0."
+    },
+    {
+      "name": "update keeps capacity",
+      "code": "cache_t *c = cache_create(2);\ncache_put(c, 1, 10);\ncache_put(c, 2, 20);\nCHECK_EQ(cache_put(c, 1, 99), 1);\nCHECK_EQ(*cache_get(c, 1), 99);",
+      "hint": "Updating an existing key must succeed on a FULL cache — an update must not consume a new slot."
+    }
+  ],
+  "level": "mini-build"
+}

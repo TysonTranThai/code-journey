@@ -1,0 +1,38 @@
+## Race condition và visibility
+
+Hai vấn đề đe dọa trạng thái khả biến dùng chung:
+
+**Can thiệp** — `count++` là đọc-sửa-ghi; hai thread có thể đọc cùng một
+giá trị và mất một phép tăng:
+
+```java
+class Counter { int count; void inc() { count++; } }
+// 2 thread × 10_000 lần tăng → thường < 20_000
+```
+
+**Visibility** — không đồng bộ hóa, ghi của thread này có thể không bao
+giờ được thread kia nhìn thấy (JIT có thể kéo phép đọc ra khỏi vòng lặp):
+
+```java
+boolean stop = false;          // field thường — có thể không bao giờ được thấy!
+// Thread A: while (!stop) work();
+// Thread B: stop = true;
+```
+
+Cách sửa, từ yếu đến mạnh:
+- `volatile` — chỉ visibility; ổn cho cờ, sai cho count++
+- `AtomicLong`/`AtomicInteger` — đọc-sửa-ghi nguyên tử
+  (`incrementAndGet()`)
+- Khối `synchronized` — loại trừ tương hỗ cho hành động ghép
+
+```java
+class SafeCounter {
+    private final AtomicLong count = new AtomicLong();
+    void inc() { count.incrementAndGet(); }
+    long value() { return count.get(); }
+}
+```
+
+Kinh nghiệm: biến trạng thái dùng chung thành bất biến, hoặc giam giữ nó
+trong một thread, hoặc bảo vệ mọi truy cập nhất quán — chọn một và tài
+liệu hóa nó.

@@ -1,0 +1,21 @@
+{
+  "id": "pi8-param-sorted",
+  "title": "Whitelist the Sort",
+  "prompt": "Implement sorted_users(conn, sort) where sort is 'name' or 'id' — the ONLY two allowed columns. Map through a whitelist and raise ValueError for anything else. Return list of (id, name).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import sqlite3\n\ndef sorted_users(conn, sort):\n    pass\n",
+  "tests": [
+    {
+      "name": "valid sorts work",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)')\nconn.executemany('INSERT INTO users (name) VALUES (?)', [('B',), ('A',)])\nassert sorted_users(conn, 'name') == [(2, 'A'), (1, 'B')]\nassert sorted_users(conn, 'id') == [(1, 'B'), (2, 'A')]",
+      "hint": "ORDER BY the whitelisted column name."
+    },
+    {
+      "name": "unknown sort rejected",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)')\ntry:\n    sorted_users(conn, 'name; DROP TABLE users')\n    failed = False\nexcept ValueError:\n    failed = True\nassert failed",
+      "hint": "Anything outside {'name', 'id'} raises ValueError before touching SQL."
+    }
+  ],
+  "level": "combination"
+}

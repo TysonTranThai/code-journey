@@ -1,0 +1,30 @@
+{
+  "id": "pi6-ckpt-pipeline",
+  "title": "Sales Report Pipeline",
+  "prompt": "Implement report(sales) where sales is a list of dicts with keys 'region' (str) and 'amount' (int, may be negative for refunds). Return a dict mapping region to total amount, but ONLY include regions with a positive total. Also implement is_valid(sale) returning True only for dicts with str region and int amount (no bools).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "def is_valid(sale):\n    pass\n\ndef report(sales):\n    pass\n",
+  "tests": [
+    {
+      "name": "validator shape-checks",
+      "code": "assert is_valid({'region': 'east', 'amount': 5}) is True\nassert is_valid({'region': 3, 'amount': 5}) is False\nassert is_valid({'region': 'east', 'amount': True}) is False",
+      "hint": "str region; int amount that is not a bool."
+    },
+    {
+      "name": "aggregates by region",
+      "code": "sales = [{'region': 'east', 'amount': 10}, {'region': 'west', 'amount': 4}, {'region': 'east', 'amount': 6}]\nassert report(sales) == {'east': 16, 'west': 4}",
+      "hint": "Sum amounts per region."
+    },
+    {
+      "name": "non-positive totals excluded",
+      "code": "sales = [{'region': 'east', 'amount': 5}, {'region': 'west', 'amount': -9}]\nassert report(sales) == {'east': 5}",
+      "hint": "Refund-heavy regions drop out entirely."
+    },
+    {
+      "name": "skips invalid rows",
+      "code": "sales = [{'region': 'east', 'amount': 5}, {'region': 'x'}, None]\nassert report(sales) == {'east': 5}",
+      "hint": "Use is_valid to filter before aggregating."
+    }
+  ]
+}

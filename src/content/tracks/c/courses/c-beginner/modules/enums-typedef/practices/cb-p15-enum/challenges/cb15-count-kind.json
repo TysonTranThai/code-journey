@@ -1,0 +1,26 @@
+{
+  "id": "cb15-count-kind",
+  "title": "Count by Kind",
+  "prompt": "Given the Material model in scope, implement `int count_kind(const Material *ms, int n, Kind k)` returning how many records have kind k.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\ntypedef enum { DOC, VIDEO, QUIZ } Kind;\ntypedef struct { int id; Kind kind; int minutes; } Material;\n",
+  "tests": [
+    {
+      "name": "mixed",
+      "code": "Material ms[] = {{1, DOC, 5}, {2, VIDEO, 7}, {3, DOC, 2}};\nCHECK_EQ(count_kind(ms, 3, DOC), 2);",
+      "hint": "Compare ms[i].kind."
+    },
+    {
+      "name": "none",
+      "code": "Material ms[] = {{1, QUIZ, 4}};\nCHECK_EQ(count_kind(ms, 1, VIDEO), 0);",
+      "hint": "Absent kind counts 0."
+    },
+    {
+      "name": "empty",
+      "code": "Material ms[1];\nCHECK_EQ(count_kind(ms, 0, DOC), 0);",
+      "hint": "n=0 gives 0."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "cppi-m2-class-initializer-order",
+  "title": "Member initialization order",
+  "prompt": "Implement `class EventLog` with members `std::string name_;` then `int id_;` declared IN THAT ORDER, a constructor `EventLog(int id, std::string name)` initializing both via the member initializer list, and getters `const std::string& name() const` / `int id() const`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <iostream>\n\nclass EventLog {\n    // name_ then id_, ctor, getters\n};\n",
+  "tests": [
+    {
+      "name": "values",
+      "code": "EventLog e{7, \"deploy\"};\nCHECK_EQ(e.name(), \"deploy\");\nCHECK_EQ(e.id(), 7);",
+      "hint": "Initializer list maps parameters to members regardless of order."
+    },
+    {
+      "name": "reference-getter",
+      "code": "EventLog e{1, \"x\"};\nconst std::string& ref = e.name();\nCHECK_EQ(ref, \"x\");",
+      "hint": "name() returns a const& — a borrow, not a copy."
+    }
+  ],
+  "level": "independent"
+}

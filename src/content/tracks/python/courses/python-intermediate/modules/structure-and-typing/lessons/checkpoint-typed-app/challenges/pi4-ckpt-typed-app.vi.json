@@ -1,0 +1,22 @@
+{
+  "title": "Note Service có kiểu",
+  "prompt": "Định nghĩa TypedDict NoteDict(id: int, text: str), Protocol NoteStore với @runtime_checkable có add(note_id: int, text: str) -> None và get(note_id: int) -> str | None, class MemoryNotes cài cả hai, và hàm save_note(store: NoteStore, note: NoteDict) -> bool raise ValueError khi note['text'] rỗng/chỉ-whitespace, ngược lại lưu và trả True.",
+  "tests": [
+    {
+      "name": "Lưu note hợp lệ",
+      "hint": "Kiểm tra hợp lệ, rồi ủy quyền cho store.add."
+    },
+    {
+      "name": "Từ chối text trắng",
+      "hint": "Text chỉ-whitespace phải raise ValueError trước khi đụng vào store."
+    },
+    {
+      "name": "get thiếu trả None",
+      "hint": "get trả None cho id lạ."
+    },
+    {
+      "name": "Annotation kiểm chứng được",
+      "hint": "Các trường NoteDict phải có id: int và text: str."
+    }
+  ]
+}

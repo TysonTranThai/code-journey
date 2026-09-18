@@ -1,0 +1,16 @@
+{
+  "id": "cint-p1-static-lib",
+  "title": "A Tiny Static Library Model",
+  "prompt": "Model what `ar` does: bundle object files. Implement:\n\n```c\n/* archive ops: 0 = add object, 1 = remove object, 2 = link whole archive.\n   objects are named 'a'..'z' characters; adding an existing name replaces it. */\nint archive_run(const char *ops);\n```\n\n`archive_run` processes ops left to right and returns the number of distinct\nobjects the archive would contain when a link (`2`) is hit — or -1 if a link op\noccurs before any object was added. Duplicates via re-add do not increase the\ncount. Ops are separated by nothing ('a' then 'b' then '2').",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "archive model",
+      "code": "\nCHECK_EQ(archive_run(\"a b 2\"), 2);       /* spaced for readability; treat spaces as separators too */\nCHECK_EQ(archive_run(\"ab2\"), 2);\nCHECK_EQ(archive_run(\"aba2\"), 2);        /* re-add replaces, not duplicates */\nCHECK_EQ(archive_run(\"2\"), -1);\nCHECK_EQ(archive_run(\"abc2ab2\"), 3);    /* re-add replaces, not duplicates */\n",
+      "hint": "Track a 26-bool presence array; spaces skipped; on '2' count set bits."
+    }
+  ],
+  "level": "mini-build"
+}

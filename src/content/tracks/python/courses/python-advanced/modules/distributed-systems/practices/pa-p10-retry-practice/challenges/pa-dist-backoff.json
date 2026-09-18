@@ -1,0 +1,21 @@
+{
+  "id": "pa-dist-backoff",
+  "title": "Backoff schedule, computed not slept",
+  "prompt": "Implement `RetryPolicy(max_attempts=5, base=0.5, cap=8.0)` with two methods:\n\n- `schedule(attempt, rnd=None)` — the delay before retry number `attempt` (0-based): the exponential ceiling `min(cap, base * 2**attempt)` multiplied by a jitter factor from `rnd` (a zero-arg callable returning floats in [0, 1); default `random.random`) — i.e. full jitter: `rnd() * ceiling`\n- `run(fn, rnd=None, clock=None)` — call `fn(attempt)` up to `max_attempts` times; stop at the first truthy result and return `(result, attempts_used)`; if all attempts fail return `(None, max_attempts)`\n\nDeterministic requirement: `run` computes the schedule but must not actually sleep — tests pass their own `rnd`.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import random\n\n\nclass RetryPolicy:\n    def __init__(self, max_attempts=5, base=0.5, cap=8.0):\n        ...\n\n    def schedule(self, attempt, rnd=None):\n        ...\n\n    def run(self, fn, rnd=None, clock=None):\n        ...",
+  "tests": [
+    {
+      "name": "exponential ceiling with full jitter",
+      "code": "import random\nrnd = random.Random(42).random\np = RetryPolicy(base=0.5, cap=8.0)\nfor attempt, ceiling in [(0, 0.5), (1, 1.0), (2, 2.0), (3, 4.0), (4, 8.0), (5, 8.0), (10, 8.0)]:\n    vals = [p.schedule(attempt, rnd) for _ in range(50)]\n    assert all(0 <= v <= ceiling + 1e-9 for v in vals), (attempt, max(vals))\nprint('ok')",
+      "hint": "Ceiling doubles and caps; jitter multiplies it by rnd() in [0, 1)."
+    },
+    {
+      "name": "retry loop honors attempts and truthiness",
+      "code": "calls = []\ndef flaky(attempt):\n    calls.append(attempt)\n    return attempt >= 2\nresult, used = RetryPolicy(max_attempts=5).run(flaky)\nassert result is True and used == 3 and calls == [0, 1, 2]\ncalls.clear()\ndef always_fails(attempt):\n    calls.append(attempt)\n    return False\nres, used = RetryPolicy(max_attempts=4).run(always_fails)\nassert res is None and used == 4 and calls == [0, 1, 2, 3]\nprint('ok')",
+      "hint": "Stop at first truthy; exhaust otherwise."
+    }
+  ],
+  "level": "guided"
+}

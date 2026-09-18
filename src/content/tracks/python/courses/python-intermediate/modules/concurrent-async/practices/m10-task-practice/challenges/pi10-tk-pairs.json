@@ -1,0 +1,21 @@
+{
+  "id": "pi10-tk-pairs",
+  "title": "Pair Results with Inputs",
+  "prompt": "Implement async def fetch_name(user_id) awaiting sleep(0.02) and returning f'user-{user_id}'. Implement async def collect(pairs) where pairs is a list of (key, user_id) tuples: run all fetches concurrently and return a dict key -> fetched name. Provide sync wrapper run_collect(pairs).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import asyncio\n\nasync def fetch_name(user_id):\n    pass\n\nasync def collect(pairs):\n    pass\n\ndef run_collect(pairs):\n    pass\n",
+  "tests": [
+    {
+      "name": "keys map to fetched names",
+      "code": "out = run_collect([('a', 1), ('b', 2)])\nassert out == {'a': 'user-1', 'b': 'user-2'}",
+      "hint": "Create tasks per pair; await them; zip keys with results."
+    },
+    {
+      "name": "keys stay paired regardless of finish order",
+      "code": "import time\nstart = time.monotonic()\nout = run_collect([('x', 3), ('y', 1), ('z', 2)])\nassert out == {'x': 'user-3', 'y': 'user-1', 'z': 'user-2'}\nelapsed = time.monotonic() - start\nassert elapsed < 0.12, 'fetches ran sequentially (%.3fs) - schedule them together' % elapsed\n",
+      "hint": "Never rely on completion order — pair explicitly."
+    }
+  ],
+  "level": "combination"
+}

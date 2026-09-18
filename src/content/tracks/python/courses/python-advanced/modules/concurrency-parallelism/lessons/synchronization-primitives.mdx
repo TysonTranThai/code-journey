@@ -1,0 +1,42 @@
+## Races, locks, and the synchronization toolbox
+
+A **race condition** exists when correctness depends on interleaving. The
+classic: read-modify-write on shared state.
+
+```python
+import threading
+
+class UnsafeCounter:
+    def __init__(self):
+        self.value = 0
+    def inc(self):
+        value = self.value          # load
+        self.value = value + 1      # store   <-- another thread may have run here
+
+class SafeCounter:
+    def __init__(self):
+        self._value = 0
+        self._lock = threading.Lock()
+    def inc(self):
+        with self._lock:            # acquire; released even on exception
+            self._value += 1
+    @property
+    def value(self):
+        with self._lock:
+            return self._value
+```
+
+Rules that keep multithreaded Python sane:
+
+- Guard **every** access path to shared mutable state, including reads that
+  assume consistency.
+- Hold locks for the smallest possible region; never call unknown code while
+  holding a lock.
+- Two locks acquired in different orders = deadlock. If you must take two,
+  define a global ordering.
+- `RLock` is reentrant (same thread may acquire again); `Semaphore(n)` bounds
+  concurrent access to n holders; `Event` is a one-way broadcast flag;
+  `Condition` supports wait/notify; `Barrier(n)` makes n threads wait for each
+  other.
+- `queue.Queue` is already thread-safe and is usually the *right* tool — pass
+  messages instead of sharing state (see the next practice).

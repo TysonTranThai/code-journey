@@ -1,0 +1,36 @@
+`const` là lời hứa được mã hóa vào hệ thống kiểu: thứ này sẽ không bị sửa.
+Áp dụng nhất quán, nó ghi lại ý định, giúp compiler bắt lỗi, và mở khóa các
+API chỉ đọc.
+
+```cpp
+#include <string>
+#include <vector>
+
+long total(const std::vector<long>& prices) {   // lời hứa: không sửa
+    long sum = 0;
+    for (const long& p : prices) sum += p;
+    return sum;
+}
+
+class Cart {
+public:
+    long total() const { return total_; }        // const member: góc nhìn chỉ đọc
+    void add(long cents) { total_ += cents; }    // non-const: thay đổi trạng thái
+private:
+    long total_{0};
+};
+```
+
+## Thang const
+
+- Tham số `const T&` — đầu vào rẻ, chỉ đọc.
+- `T get() const` — hàm thành viên không thay đổi đối tượng (`const` sau `)`).
+- Biến cục bộ `const` — gán một lần, không gán nữa; ý định rõ ràng.
+- `constexpr` (Module 7) — tính được lúc biên dịch.
+
+## Cách tư duy
+
+Bắt đầu từ mức tối đa: đặt `const` cho mọi thứ. Bỏ `const` khi thật sự cần
+thay đổi thì dễ và an toàn; thêm lại trên cả một codebase thì không bao giờ vậy.
+Const trên hàm thành viên là một phần *hợp đồng interface* — bên gọi được phép
+tin tưởng, và chỉ member `mutable` (hiếm, cho cache/mutex) mới được đổi bên trong.

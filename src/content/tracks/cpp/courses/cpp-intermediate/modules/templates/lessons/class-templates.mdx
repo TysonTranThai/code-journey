@@ -1,0 +1,33 @@
+Class templates parameterize a whole type. `std::vector<int>` is the
+canonical example; here is a minimal Box:
+
+```cpp
+template <typename T>
+class Box {
+public:
+    explicit Box(T value) : value_{std::move(value)} {}
+    const T& get() const { return value_; }
+    void set(T value) { value_ = std::move(value); }
+private:
+    T value_;
+};
+
+Box<int> a{42};
+Box<std::string> b{"hi"};
+```
+
+Rules that matter:
+
+- Members are instantiated **lazily**: a member function that would not
+  compile for T is only an error if some code actually calls it. This is
+  why `std::vector` works for non-copyable types as long as you never
+  copy it.
+- Multiple parameters compose: `template <typename K, typename V> class Map { ... };`
+- Default template arguments work like default function arguments:
+  `template <typename T, typename C = std::less<T>> class Sorted { ... };`
+- CTAD (C++17): `Box b{42};` deduces `Box<int>`. Convenient for locals;
+  spell types in interfaces.
+
+Templates do not replace inheritance for runtime polymorphism — they
+implement **static polymorphism**: the type is resolved at compile time,
+zero virtual dispatch, but one concrete instantiation per type.

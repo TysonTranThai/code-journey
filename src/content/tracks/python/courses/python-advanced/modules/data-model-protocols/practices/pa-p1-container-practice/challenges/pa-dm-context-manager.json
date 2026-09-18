@@ -1,0 +1,21 @@
+{
+  "id": "pa-dm-context-manager",
+  "title": "Reusable context manager",
+  "prompt": "Implement `class Timer` usable as a context manager AND reusable across runs:\n\n- `with Timer() as t:` — on exit, `t.elapsed` is a float ≥ 0 seconds\n- `t.runs` counts completed blocks\n- nested usage of two Timers must be independent\n- entering must return the timer itself",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import time\n\nclass Timer:\n    def __init__(self):\n        self.runs = 0\n        self.elapsed = 0.0\n\n    # TODO: __enter__, __exit__",
+  "tests": [
+    {
+      "name": "measures a block once",
+      "code": "t = Timer()\nwith t:\n    time.sleep(0.01)\nassert t.elapsed >= 0.01, f'elapsed={t.elapsed}'\nassert t.runs == 1\nprint('ok')",
+      "hint": "__exit__ receives (exc_type, exc, tb); return False/None so exceptions still propagate."
+    },
+    {
+      "name": "reusable and independent",
+      "code": "t = Timer()\nwith t:\n    pass\nwith t:\n    time.sleep(0.005)\nassert t.runs == 2\n\na, b = Timer(), Timer()\nwith a:\n    with b:\n        pass\nassert a.runs == 1 and b.runs == 1\nassert b.elapsed < a.elapsed or b.elapsed >= 0\nprint('ok')",
+      "hint": "Reset the clock in __enter__, finalize in __exit__."
+    }
+  ],
+  "level": "combination"
+}

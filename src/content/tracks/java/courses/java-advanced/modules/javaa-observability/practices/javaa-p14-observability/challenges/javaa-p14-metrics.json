@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p14-metrics",
+  "title": "Counters, gauges, percentiles",
+  "prompt": "1. `static long p(List<Long> sortedMicros, double q)` — the q-th percentile of a\nSORTED list: index = ceil(q * n) - 1, clamped to >= 0. p(x, 0.5) is the median.\n2. `static java.util.Map<String, Long> summarize(java.util.List<Long> durations)` —\nsort internally, return {\"p50\":..., \"p95\":..., \"p99\":..., \"count\": n}.\n3. `static boolean avgHides(List<Long> durations)` — return true iff the MEAN is\nless than p95 (the classic 'average looks fine' lie). Empty list → false.\n4. `static boolean cardinalityOk(String labelKey)` — true iff labelKey is a CLASS\n(one of \"endpoint\", \"status\", \"region\"), false for instance labels\n(\"userId\", \"requestId\", \"url\").",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "percentile math and the average lie",
+      "code": "\njava.util.List<Long> d = java.util.List.of(1L, 2L, 3L, 4L, 100L);\ncheckEq(Solution.p(d, 0.5), 3L, \"median of five\");\ncheckEq(Solution.p(d, 0.95), 100L, \"p95 is the outlier\");\njava.util.Map<String, Long> s = Solution.summarize(d);\ncheckEq(s.get(\"count\"), 5L, \"count present\");\ncheckEq(s.get(\"p99\"), 100L, \"p99 present\");\ncheckTrue(Solution.avgHides(d), \"mean (22) is below p95 (100)\");\ncheckTrue(!Solution.avgHides(java.util.List.of(5L, 5L, 5L)), \"flat distribution: no lie\");\n",
+      "hint": "Averages hide tails; percentiles expose them."
+    },
+    {
+      "name": "label discipline",
+      "code": "\ncheckTrue(Solution.cardinalityOk(\"endpoint\"), \"class label\");\ncheckTrue(!Solution.cardinalityOk(\"userId\"), \"instance label\");\n",
+      "hint": "Classes yes, instances never."
+    }
+  ],
+  "level": "independent"
+}

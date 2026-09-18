@@ -1,0 +1,42 @@
+**Class** gói trạng thái (attribute) cùng với hành vi thao tác trên nó
+(method). `__init__` chạy khi tạo đối tượng; `self` là thực thể đang được
+xử lý:
+
+```python
+class Book:
+    def __init__(self, title, pages):
+        self.title = title
+        self.pages = pages
+
+    def reading_time(self, minutes_per_page=2):
+        return self.pages * minutes_per_page
+
+book = Book("Fluent Python", 780)
+book.reading_time()        # 1560 — lời gọi method gắn book vào self
+```
+
+## Hai dunder mà mọi class nghiêm túc nên định nghĩa
+
+- `__repr__`: **không mơ hồ**, cho lập trình viên — tốt nhất là đoạn code dựng lại được đối tượng.
+- `__str__`: **dễ đọc**, cho người dùng cuối (nếu thiếu, Python dùng `__repr__` thay).
+
+```python
+class Book:
+    def __init__(self, title):
+        self.title = title
+
+    def __repr__(self):
+        return f"Book({self.title!r})"
+
+    def __str__(self):
+        return self.title
+```
+
+Trong REPL hay traceback bạn thấy `repr`; trong `print()` bạn thấy `str`.
+Không có chúng, bạn nhận được `<Book object at 0x...>` — vô dụng khi gỡ lỗi.
+
+## Class attribute và instance attribute
+
+Attribute gán ở mức class được **chia sẻ** giữa mọi thực thể (hằng số, bộ
+đếm). Instance attribute (gán qua `self.`) thuộc về một đối tượng. Mặc định
+dùng instance attribute; chỉ dùng class attribute cho dữ liệu thực sự chung.

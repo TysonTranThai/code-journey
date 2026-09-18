@@ -1,0 +1,26 @@
+{
+  "id": "javi-p3-erasure-token",
+  "title": "Erasure Workaround: the Class Token",
+  "prompt": "Because generics erase, a method that must *create* an instance of T\nneeds runtime type information. Implement:\n- `static <T> List<T> fill(int n, Class<T> type, Function<Object, T> maker)`:\n  builds a List with n elements, each produced by maker, typed by the\n  token (use `java.util.function.Function`).\n- `static <T> List<T> nCopiesOf(int n, T value)` — erasure-friendly\n  copying that needs no token at all.\n\nThe tests show which operations survive erasure and which need help.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "token-typed creation",
+      "code": "\nList<String> out = Solution.fill(3, String.class, s -> \"v\" + 1);\ncheckEq(out, List.of(\"v1\", \"v1\", \"v1\"), \"token fill\");\n",
+      "hint": "maker receives a placeholder; produce three equal values."
+    },
+    {
+      "name": "nCopiesOf needs no token",
+      "code": "\nList<Integer> out = Solution.nCopiesOf(2, 42);\ncheckEq(out, List.of(42, 42), \"n copies\");\n",
+      "hint": "Value-based copying erases cleanly."
+    },
+    {
+      "name": "runtime classes agree",
+      "code": "\nList<String> a = Solution.nCopiesOf(1, \"x\");\nList<Integer> b = Solution.nCopiesOf(1, 1);\ncheckEq(a.getClass() == b.getClass(), true, \"same erased class\");\n",
+      "hint": "Erasure: both lists share one runtime class."
+    }
+  ],
+  "level": "independent"
+}

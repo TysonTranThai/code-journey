@@ -1,0 +1,20 @@
+{
+  "id": "pa-checkpoint-metaprogramming",
+  "title": "@timed class instrumentation",
+  "prompt": "Implement the @timed class decorator per the checkpoint spec: wraps every public method, appends per-call durations (seconds, float) to cls.__timings__[name], preserves __name__, skips dunder/private methods, accumulates across instances.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: implement timed(cls)\n\n\n@timed\nclass Service:\n    def work(self, n):\n        total = 0\n        for i in range(n):\n            total += i\n        return total\n\n    def _private(self):\n        return 'hidden'",
+  "tests": [
+    {
+      "name": "public methods are timed, dunders not",
+      "code": "s = Service()\ns.work(1000)\ns.work(50000)\nassert 'work' in Service.__timings__, f'timings: {getattr(Service, \"__timings__\", None)}'\nassert len(Service.__timings__['work']) == 2\nassert all(isinstance(t, float) and t >= 0 for t in Service.__timings__['work'])\nassert '_private' not in Service.__timings__\nassert Service.work.__name__ == 'work'\nprint('ok')",
+      "hint": "Iterate vars(cls) once, wrap callables whose name does not start with '_', store timings on the CLASS."
+    },
+    {
+      "name": "accumulates across instances; private untouched",
+      "code": "Service.__timings__.clear()\nService().work(10)\nService().work(10)\nassert len(Service.__timings__['work']) == 2, 'must accumulate across instances'\np = Service()\nassert p._private() == 'hidden'\nassert '_private' not in Service.__timings__\nprint('ok')",
+      "hint": "Timings live on the class attribute, shared by all instances."
+    }
+  ]
+}

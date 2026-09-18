@@ -1,0 +1,27 @@
+Hiệu năng không có đo lường là giai thoại. Chuẩn ngành là Core Web Vitals — ba chỉ số cảm nhận của người dùng.
+
+## Ba vitals
+
+- **LCP (Largest Contentful Paint)** — khi nội dung chính xuất hiện. Tốt < 2.5s. Thường là ảnh hero hoặc khối tiêu đề. Kẻ thù: server chậm (TTFB), tài nguyên chặn render, hero bị lazy-load, ảnh chưa tối ưu.
+- **INP (Interaction to Next Paint)** — độ trễ input xấu nhất giữa các tương tác. Tốt < 200ms. Kẻ thù: long task trên main thread, event handler khổng lồ.
+- **CLS (Cumulative Layout Shift)** — nội dung nhảy bao nhiêu. Tốt < 0.1. Kẻ thù: ảnh không khai báo kích thước, font/banner/quảng cáo về muộn, nội dung chèn vào trên nội dung có sẵn.
+
+Cả ba đều là _chỉ số thực địa_ — đo trên người dùng thật (CrUX, RUM). Công cụ lab (Lighthouse) xấp xỉ chúng để chẩn đoán.
+
+## Vòng lặp
+
+1. **Đo** ngoài thực địa (hoặc bản tái hiện lab có kiểm soát).
+2. **Chẩn đoán** — pha nào chậm? TTFB? Download? Script? Layout? Mỗi pha một cách sửa khác nhau; tối ưu sai pha là biểu diễn sức lực.
+3. **Sửa cái to nhất trước** — một thay đổi, không phải bảy.
+4. **Đo lại.** Cùng công cụ, cùng điều kiện. Con số có nhúc nhích không?
+5. **Gát nó lại** bằng ngân sách (dưới đây), để chiến thắng sống sót qua feature kế tiếp.
+
+## Ngân sách hiệu năng
+
+Ngân sách là một con số trong CI: "bundle JS phải dưới 170KB đã nén; LCP dưới 2.5s trên điện thoại tầm trung." Công cụ (bundlesize, Lighthouse CI, size-limit) làm fail build khi vượt. Không có ngân sách, hiệu năng thoái trào âm thầm — mọi script "nhỏ thôi" và ảnh "tạm thời" đều thắng vì chẳng có ai cản.
+
+Các nhóm ngân sách đáng đặt: tổng JS đã nén, tổng CSS, ảnh lớn nhất, số request bên thứ ba, điểm LCP lab. Bắt đầu từ số hiện tại trừ 20% — ngân sách không đạt được sẽ bị bỏ qua.
+
+## Trung thực về thiết bị và mạng
+
+Test trên **thiết bị chậm và mạng bị tiết lưu** — DevTools có thể tiết lưu CPU 4–6× và mạng về "Slow 4G". MacBook Pro của bạn nói dối; điện thoại của người dùng đa số thì không. Mục tiêu lab: Android tầm trung, 4G, cache lạnh.

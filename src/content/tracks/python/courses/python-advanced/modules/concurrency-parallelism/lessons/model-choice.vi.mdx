@@ -1,0 +1,24 @@
+## Chọn mô hình: một quy trình ra quyết định
+
+Chạy quy trình này theo từng workload — đừng bao giờ theo mốt:
+
+1. **Xác định tính chất công việc.** Chủ yếu là chờ (network/đĩa/subprocess)
+   hay chủ yếu là tính (parse, toán, xử lý ảnh)?
+2. **Chờ** → thử `asyncio` trước (hàng nghìn task đồng thời trên một thread —
+   xem module kế tiếp); nếu thư viện bạn cần là blocking, dùng
+   `ThreadPoolExecutor`.
+3. **Tính toán, Python thuần** → `ProcessPoolExecutor` (hoặc worker ngoài
+   process). Thread không mua được gì dưới GIL.
+4. **Tính toán trong C extension có nhả GIL** → thread hoạt động.
+5. **Đo.** Bấm giờ ứng viên so với baseline trên dữ liệu cỡ thật. Cả thread lẫn
+   process đều có chi phí khởi tạo có thể át workload nhỏ — pool 8 worker cho
+   3 task tí hon còn chậm hơn code tuần tự.
+
+Tư duy backpressure: queue không giới hạn sẽ lớn dần tới khi bộ nhớ chết.
+Giới hạn queue (`queue.Queue(maxsize=N)`), chặn `max_workers` của pool, và cho
+producer block hoặc bỏ tải. Concurrency không giới hạn là một câu chuyện sự cố.
+
+Và tương lai free-threaded (văn bản): với bản PEP 703, thread CPU-bound song
+song hóa không cần process — nhưng race trên trạng thái chia sẻ trở nên thật
+thay vì bị GIL che, nên kỹ năng đồng bộ của module này càng QUAN TRỌNG hơn,
+không phải ít đi.

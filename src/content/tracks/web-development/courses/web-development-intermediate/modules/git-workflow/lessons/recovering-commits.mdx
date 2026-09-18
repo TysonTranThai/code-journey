@@ -1,0 +1,62 @@
+"I broke it." — four tools, chosen by one question: **who else has seen this commit?**
+
+## `git revert`: the shared-branch tool
+
+Creates a **new commit** that applies the inverse changes:
+
+```bash
+git revert abc1234        # commits the undo of abc1234
+```
+
+History stays intact; everyone pulling gets the undo. The only safe undo for commits already pushed to a shared branch.
+
+## `git reset`: move the branch pointer
+
+```bash
+git reset --soft HEAD~1   # undo commit, keep changes staged
+git reset --mixed HEAD~1  # undo commit, keep changes unstaged (default)
+git reset --hard HEAD~1   # undo commit AND discard the changes
+```
+
+Moves the branch and (hard) rewrites the working tree. Fine for **local, unpushed** work; dangerous on shared branches — and `--hard` can destroy uncommitted work (check `git stash` first).
+
+## `git cherry-pick`: lift one commit
+
+Take a single commit from another branch and apply it here:
+
+```bash
+git cherry-pick abc1234
+```
+
+Typical uses: pulling one bugfix forward to a release branch, or grabbing one commit off a messy branch.
+
+## `git stash`: park work in progress
+
+```bash
+git stash push -m "wip: search filters"
+git stash list
+git stash pop      # reapply + remove; apply keeps the stash
+```
+
+For "I need a clean tree for 5 minutes," not for long-term storage — stashes have no history or review.
+
+## The decision table
+
+| Situation                           | Tool                                                               |
+| ----------------------------------- | ------------------------------------------------------------------ |
+| Commit pushed, others pulled it     | `revert`                                                           |
+| Local commit, not pushed            | `reset --soft` / `--mixed`                                         |
+| Commit on the wrong branch entirely | `cherry-pick` (+ reset there)                                      |
+| Need to switch context right now    | `stash`                                                            |
+| "Everything is on fire"             | `git reflog` → find the last good state → `git reset --hard <sha>` |
+
+## Reflog is the safety net
+
+`git reflog` shows every position HEAD has held. Even after a `reset --hard`, the old commits are reachable:
+
+```bash
+git reflog
+git reset --hard HEAD@{2}   # go back to where you were two moves ago
+```
+
+Practice recovering _before_ you need to: break a branch in a scratch repo and repair it. Panic is the enemy; the graph is your friend.

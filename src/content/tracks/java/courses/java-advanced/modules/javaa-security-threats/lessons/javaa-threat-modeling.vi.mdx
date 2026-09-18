@@ -1,0 +1,20 @@
+Mô hình mối đe dọa là một bảng bạn có thể tranh luận: *tài sản* (cái gì đáng
+giá), *mối đe dọa* (ai/cái gì tấn công), *vector* (chúng tới bằng cách nào),
+*biện pháp kiểm soát* (cái gì chặn), *rủi ro dư* (cái gì còn lại). Ví dụ —
+tính năng xuất tệp:
+
+| tài sản | đe dọa | vector | kiểm soát | dư |
+|---|---|---|---|---|
+| tệp người dùng | đọc traversal | `..` trong tên | canonicalize + bao chứa | race symlink |
+| token phiên | phát lại | cookie bị đánh cắp | HTTPS + hết hạn | mất thiết bị |
+| job xuất | DoS | xuất 10^9 dòng | giới hạn dòng + timeout | slow-loris |
+
+Đặc quyền tối thiểu là kiểm soát xuyên suốt: job xuất chạy dưới một principal
+chỉ đọc được tệp người dùng và KHÔNG CÓ GÌ KHÁC — lỗi traversal trong nó khi
+đó chỉ đọc được những tệp principal vốn chạm tới (vẫn tệ, nhưng không còn thảm
+họa). Bí mật (DB URL, API key) đến từ biến môi trường, không bao giờ là literal;
+code log ra bí mật là bug ngay cả khi bí mật đó "chỉ nội bộ".
+
+STRIDE là vốn từ checklist — Spoofing, Tampering, Repudiation, Information
+disclosure, Denial of service, Elevation of privilege — không thay thế bảng,
+chỉ là nhắc nhở để bạn không bỏ sót một cột.

@@ -1,0 +1,21 @@
+{
+  "id": "javaa-checkpoint-m4-task",
+  "title": "Checkpoint: bounded buffer with dual conditions",
+  "prompt": "Implement `static List<Integer> runBuffer()`:\n1. Inside Solution, build a bounded buffer (capacity 2) with `ReentrantLock` + two Conditions (`notFull`, `notEmpty`) and internal `ArrayDeque<Integer>`.\n2. Producer virtual thread: puts 1..5 (await notFull while full; signal notEmpty after each put).\n3. Consumer virtual thread: takes 5 values (await notEmpty while empty; signal notFull after each take).\n4. `runBuffer()` starts both, waits for the consumer's 5 values, and returns them in take-order.\n5. `static String casAlternative()` returns exactly: \"a CAS loop on an index pair could do it, but Condition queues express the wait logic more clearly\".",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "all five items cross in order",
+      "code": "\ncheckEq(Solution.runBuffer(), java.util.List.of(1,2,3,4,5), \"FIFO crossing under capacity 2\");\n",
+      "hint": "Producer 1..5, consumer takes all five, order preserved."
+    },
+    {
+      "name": "CAS alternative stated",
+      "code": "\ncheckEq(Solution.casAlternative(),\n  \"a CAS loop on an index pair could do it, but Condition queues express the wait logic more clearly\",\n  \"tradeoff line\");\n",
+      "hint": "Copy exactly."
+    }
+  ],
+  "level": "real-world"
+}

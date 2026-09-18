@@ -1,0 +1,15 @@
+{
+  "id": "i2-dto-validators",
+  "title": "DTO Validators",
+  "prompt": "Write `isTaskDTO(v)` — true only for objects with string `id`, non-empty string `title`, boolean `done`, and optional string `due` (absent or string). Write `isTaskListDTO(v)` — true only for arrays where every element passes `isTaskDTO`.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function isTaskDTO(v) {\n  // your code\n}\n\nfunction isTaskListDTO(v) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "accepts valid DTOs, with and without due",
+      "code": "const fn = new Function(code + \"\\nreturn { isTaskDTO, isTaskListDTO };\");\nconst { isTaskDTO, isTaskListDTO } = fn();\nif (isTaskDTO({ id: \"t1\", title: \"ship\", done: false }) !== true) throw new Error(\"Minimal DTO accepted.\");\nif (isTaskDTO({ id: \"t1\", title: \"ship\", done: true, due: \"2026-10-01\" }) !== true) throw new Error(\"Optional due accepted.\");\nif (isTaskDTO({ id: \"t1\", title: \"\", done: false }) !== false) throw new Error(\"Empty title fails (non-empty required).\");\nif (isTaskListDTO([]) !== true) throw new Error(\"An empty list is a valid list.\");\nif (isTaskListDTO([{ id: \"t1\", title: \"ship\", done: false }, null]) !== false) throw new Error(\"One bad element fails the whole list.\");",
+      "hint": "title.trim().length > 0 for non-empty; Array.isArray + every for the list."
+    }
+  ]
+}

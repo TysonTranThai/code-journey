@@ -1,0 +1,21 @@
+{
+  "id": "javb-m5-fix-refactor",
+  "title": "Debug: the method that prints instead of returning",
+  "prompt": "`bmiReport` below compiles and prints, but it is untestable: the verdict is printed, not returned, and the category logic lives inline. Refactor: `static String category(double bmi)` returns `\"under\"`, `\"normal\"`, or `\"over\"` (< 18.5 under; 18.5–24.9 normal; 25+ over), and `bmiReport` RETURNS `\"BMI 22.7 normal\"`-style text using it.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static void bmiReport(double weightKg, double heightM) {\n        double bmi = weightKg / (heightM * heightM);\n        String cat = bmi < 18.5 ? \"under\" : (bmi < 25 ? \"normal\" : \"over\");\n        System.out.println(\"BMI \" + bmi + \" \" + cat);\n    }\n}\n",
+  "tests": [
+    {
+      "name": "category boundaries",
+      "code": "\nCjTestBase.checkEq(Solution.category(17.0), \"under\", \"17 is under\");\nCjTestBase.checkEq(Solution.category(18.5), \"normal\", \"18.5 starts normal\");\nCjTestBase.checkEq(Solution.category(24.9), \"normal\", \"24.9 still normal\");\nCjTestBase.checkEq(Solution.category(25.0), \"over\", \"25 starts over\");\n",
+      "hint": "Boundaries: < 18.5, then < 25, else over."
+    },
+    {
+      "name": "report returns",
+      "code": "\nString out = CjTestBase.capture(() -> System.out.print(Solution.bmiReport(70, 1.755)));\nCjTestBase.checkTrue(out.startsWith(\"BMI \"), \"report starts with 'BMI '\");\nCjTestBase.checkTrue(out.contains(\" normal\"), \"report ends with the category\");\n",
+      "hint": "bmiReport must RETURN the string (capture catches a print only if it happens — it must not)."
+    }
+  ],
+  "level": "debugging"
+}

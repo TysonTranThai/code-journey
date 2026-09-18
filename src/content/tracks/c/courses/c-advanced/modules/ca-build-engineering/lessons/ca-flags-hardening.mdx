@@ -1,0 +1,17 @@
+## The baseline set
+
+- `-Wall -Wextra` — the standard radar: uninitialized use, sign compare, unused results, missing returns.
+- `-Werror` — warnings become build failures; a warning backlog cannot accumulate.
+- `-Wpedantic` — refuses non-standard constructs, guarding portability claims.
+- `-Wshadow` — a local shadowing an outer name is a read-the-wrong-variable bug waiting.
+- `-Wconversion` — implicit narrowing (int to char, size_t to int) made visible.
+
+Each flag is a *class* of defect, not a style opinion. This course's own challenges compile under -Wall -Wextra -Wpedantic — the code you write here passes a strict baseline by construction.
+
+## Hardening for the runtime
+
+- `-D_FORTIFY_SOURCE` — the library checks buffer sizes where it can prove them.
+- `-fstack-protector-strong` — canaries before return addresses on frames with arrays.
+- Position-independent flags plus ASLR (module 24) make memory-corruption exploits substantially harder.
+
+Hardening flags are not a substitute for correct code; they are the safety net that turns latent corruption into loud aborts during testing.

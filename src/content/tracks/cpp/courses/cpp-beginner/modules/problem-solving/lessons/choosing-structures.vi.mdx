@@ -1,0 +1,22 @@
+## Câu hỏi quyết định container
+
+| Câu hỏi nghe như... | Với tới |
+| --- | --- |
+| "theo thứ tự, từng cái một" | `vector` |
+| "cho một khóa, tìm thứ kia" | `map` / `unordered_map` |
+| "đã gặp cái này chưa?" | `set` |
+| "mấy cái đầu/cuối/trước tiên" | `vector` (+ sort hoặc quét) |
+
+Chọn sai khiến mọi bước về sau vụng về: tìm kiếm lặp lại trên vector chưa sắp là O(n) mỗi truy vấn; một `set` trả lời trong O(log n); một `unordered_set` ~O(1). Một lựa chọn cấu trúc có thể thắng mọi tối ưu vi mô cộng lại.
+
+## Đếm vòng lặp của bạn (trực giác độ phức tạp)
+
+- Một lượt qua n phần tử → O(n): ổn với cả triệu.
+- Lồng nhau n×n → O(n²): ổn tới ~10.000; đau đớn ở 100.000.
+- Chia đôi mỗi bước (tìm kiếm nhị phân) → O(log n): một tỷ phần tử trong ~30 bước.
+
+Ở trình độ Cơ bản bạn sẽ không suy diễn các con số này; bạn sẽ *đếm số tầng vòng lặp* và nhân lên. Bài tập kế tiếp làm cho khác biệt thành đo đếm được: cùng một việc, hai cấu trúc — harness không bấm giờ gì cả, nhưng *số phép tính* chính là câu trả lời.
+
+## Hai cấu trúc đúng hơn một cấu trúc sai
+
+"Đếm số lần xuất hiện, rồi liệt kê từ phổ biến nhất" là một `map<string,int>` *cộng với* một lượt quét tìm max — không phải một vector hùng dũng bị quét đi quét lại. Ghép đúng các container là tư duy kiến trúc ở mức người mới, và chính xác điều đó sẽ là tính năng tìm kiếm của capstone.

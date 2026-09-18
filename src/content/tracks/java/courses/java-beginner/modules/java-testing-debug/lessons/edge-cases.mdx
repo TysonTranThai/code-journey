@@ -1,0 +1,46 @@
+Beginners test the happy path. Engineers test the **boundaries** - because
+that's where the bugs actually live.
+
+## The four families to check every time
+
+For a function `parseAge(String)` returning `Integer`:
+
+1. **Empty and missing** - `""`, `"   "`, `null`.
+2. **Wrong shape** - `"abc"`, `"12x"`, `"1.5"` (a double where an int
+   belongs), `"+5"`.
+3. **Edges of the valid range** - exactly `0`, exactly `150`, then the
+   first invalid on each side: `-1`, `151`.
+4. **In the middle** - one boring valid value, so you know the machinery
+   works when the edges do.
+
+```java
+assertEquals(0,  Score.parseAge("0"));      // inclusive edge
+assertEquals(150, Score.parseAge("150"));   // other inclusive edge
+assertEquals(null, Score.parseAge("-1"));   // one past
+assertEquals(null, Score.parseAge("151"));  // other past
+```
+
+Off-by-one bugs *only* show at the exact edges: `<` vs `<=` is invisible
+in the middle of the range and glaring at `150`.
+
+## Numeric landmines
+
+- **Zero** - the input that divides, averages, and indexes by surprise.
+- **Negative values** - legal for temperatures, illegal for ages; decide
+  and enforce.
+- **Very large** - `Integer.MAX_VALUE + 1` wraps to negative; sums can
+  overflow even when every input is small (`int` holds ~2.1 billion).
+- **Doubles are approximations** - `0.1 + 0.2 != 0.3`. Compare with a
+  tolerance (`assertEquals(0.3, x, 1e-9)` in JUnit terms) or use exact
+  types for money.
+
+## Collections and strings
+
+- **Empty collection** - `List.of()`, not just a full one.
+- **Single element** - the smallest non-empty case; loops and streams
+  often misbehave exactly here.
+- **Duplicates** - "count the unique words" must survive `"the the"`.
+- **Whitespace and case** - `"  Ada "`, `"ada"` vs `"Ada"`: decide whether
+  they're equal and test the decision.
+
+A test suite with only happy paths verifies the demo, not the program.

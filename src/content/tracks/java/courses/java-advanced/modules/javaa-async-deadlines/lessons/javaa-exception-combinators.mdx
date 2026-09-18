@@ -1,0 +1,21 @@
+Exception-combinators differ in *what* they pass and *what* they return:
+
+- `exceptionally(fn)` — runs only on failure; fn receives the throwable,
+  returns a replacement RESULT. Skipped on success.
+- `handle(fn)` — runs ALWAYS; fn receives `(result, throwable)` — exactly one
+  is null. The universal transform.
+- `whenComplete(fn)` — runs always; fn observes `(result, throwable)` but
+  CANNOT replace the outcome (returns the same future). Observability.
+
+```java
+future.handle((ok, err) -> err == null ? ok : fallback);
+```
+
+Chaining recovery on a *dependent* stage: `future.thenApply(...).exceptionally(...)`
+recovers failures from BOTH stages — attach recovery at the level you want to
+recover from. Attaching `exceptionally` before `thenApply` leaves the map
+step exposed.
+
+**Time bounds**: `orTimeout(500, MILLISECONDS)` completes the future
+exceptionally (TimeoutException) if it takes longer; `completeOnTimeout(fallback, 500, MILLISECONDS)`
+substitutes a value instead. Both schedule internally — no sleeping threads.

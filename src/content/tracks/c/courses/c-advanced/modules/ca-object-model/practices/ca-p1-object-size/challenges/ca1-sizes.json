@@ -1,0 +1,21 @@
+{
+  "id": "ca1-sizes",
+  "title": "Report Object Sizes",
+  "prompt": "Implement `void program(void)` that prints the sizes of the fundamental integer types on this platform, one per line:\n \n```\nchar: 1\nshort: 2\nint: 4\nlong: 8\n```\n \nUse `sizeof` for each type — your code must compute them, not hard-code numbers.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "all four sizes",
+      "code": "const char* out = cj_capture(program);\nCHECK_STR_EQ(out, \"char: 1\\nshort: 2\\nint: 4\\nlong: 8\\n\");",
+      "hint": "Four printf calls, each ending with the newline escape; format %zu with sizeof(T). char is 1 by definition."
+    },
+    {
+      "name": "deterministic",
+      "code": "for (int k = 0; k < 3; k++) { const char* out = cj_capture(program); CHECK_STR_EQ(out, \"char: 1\\nshort: 2\\nint: 4\\nlong: 8\\n\"); }",
+      "hint": "sizeof is a compile-time constant — repeated runs are identical."
+    }
+  ],
+  "level": "imitation"
+}

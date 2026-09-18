@@ -1,0 +1,50 @@
+## my_strlen — the canonical walk
+
+```c
+int my_strlen(const char* s) {
+    int n = 0;
+    while (s[n] != '\\0') n++;
+    return n;
+}
+```
+
+Read the loop as: "advance until the terminator". The idiom version:
+
+```c
+int my_strlen(const char* s) {
+    const char* p = s;
+    while (*p) p++;
+    return (int)(p - s);
+}
+```
+
+## my_strcmp — compare while both agree
+
+```c
+int my_strcmp(const char* a, const char* b) {
+    while (*a && *a == *b) {   // stop at terminator or first difference
+        a++;
+        b++;
+    }
+    return (unsigned char)*a - (unsigned char)*b;
+}
+```
+
+If the loop ended because both hit '\\0', the difference is 0. Otherwise it
+is the code difference at the first mismatch.
+
+## my_strcpy — copy WITH the terminator
+
+```c
+void my_strcpy(char* dst, const char* src) {
+    while (*src) {
+        *dst = *src;
+        dst++;
+        src++;
+    }
+    *dst = '\\0';              // the step beginners forget
+}
+```
+
+Copy characters, then copy the terminator. Without that last line the
+destination is not a string.

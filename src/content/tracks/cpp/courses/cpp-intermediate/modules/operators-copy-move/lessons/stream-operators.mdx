@@ -1,0 +1,43 @@
+`operator<<` and `operator>>` make your types print and parse like built-ins.
+They must be non-members because the left operand is the stream.
+
+```cpp
+#include <iostream>
+#include <sstream>
+#include <string>
+
+class Version {
+public:
+    Version(int maj, int min) : maj_{maj}, min_{min} {}
+    int major() const { return maj_; }
+    int minor() const { return min_; }
+
+private:
+    int maj_;
+    int min_;
+};
+
+std::ostream& operator<<(std::ostream& os, const Version& v) {
+    return os << v.major() << '.' << v.minor();     // ALWAYS return the stream
+}
+
+std::istream& operator>>(std::istream& is, Version& v) {
+    int maj{}, min{};
+    char dot{};
+    if (is >> maj >> dot >> min && dot == '.') {
+        v = Version{maj, min};
+    } else {
+        is.setstate(std::ios::failbit);              // signal parse failure
+    }
+    return is;
+}
+```
+
+## The two contracts
+
+- `<<` returns `std::ostream&` so chaining works: `cout << a << b`.
+- `>>` validates before overwriting the target, and sets `failbit` instead of
+  throwing for bad input — that is the stream convention.
+
+Pattern for printing: prefer round-trippable, grep-able output
+(`1.4`, not `Version (major=1, minor=4)`) unless humans need the pretty form.

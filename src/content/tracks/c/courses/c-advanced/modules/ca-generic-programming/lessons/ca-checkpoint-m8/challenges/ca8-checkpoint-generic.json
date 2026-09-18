@@ -1,0 +1,26 @@
+{
+  "id": "ca8-checkpoint-generic",
+  "title": "Checkpoint: Generic Tagged Sort",
+  "prompt": "Types already in your editor:\n \n```c\ntypedef struct { unsigned char tag; int key; } item_t; /* tag 1 = int-like, 2 = double-like */\n```\n \nImplement:\n1. `void item_sort(item_t *a, size_t n)` — insertion sort over the array treating elements as raw bytes (memcpy moves, comparator on key), stable.\n2. `const char *item_describe(const item_t *v)` — returns \"int-like\" for tag 1, \"double-like\" for tag 2, NULL otherwise.\n3. `size_t item_count_tag(const item_t *a, size_t n, unsigned char tag)` — how many carry the tag.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "stable sort by key",
+      "code": "item_t a[4] = {{2, 30}, {1, 20}, {2, 10}, {1, 40}};\nitem_sort(a, 4);\nCHECK_EQ(a[0].key, 10);\nCHECK_EQ(a[1].key, 20);\nCHECK_EQ(a[2].tag, 2);\nCHECK_EQ(a[3].tag, 1);",
+      "hint": "Keys order 10, 20, 30, 40; the two tag-2 items keep relative order with their tag-1 neighbors."
+    },
+    {
+      "name": "describe dispatch",
+      "code": "item_t v = {2, 0};\nCHECK_STR_EQ(item_describe(&v), \"double-like\");\nCHECK_NULL(item_describe(&(item_t){7, 0}));",
+      "hint": "Tag 1 and 2 report their names; unknown tags return NULL."
+    },
+    {
+      "name": "tag counting",
+      "code": "item_t b[3] = {{1, 0}, {2, 0}, {1, 0}};\nCHECK_EQ((int)item_count_tag(b, 3, 1), 2);\nCHECK_EQ((int)item_count_tag(b, 3, 2), 1);\nCHECK_EQ((int)item_count_tag(b, 3, 9), 0);",
+      "hint": "Counting per tag is a plain linear scan with an exact contract."
+    }
+  ],
+  "level": "mini-build"
+}

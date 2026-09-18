@@ -1,0 +1,62 @@
+"Tôi làm hỏng rồi." — bốn công cụ, chọn bằng một câu hỏi: **đã có ai khác thấy commit này chưa?**
+
+## `git revert`: công cụ cho branch dùng chung
+
+Tạo một **commit mới** áp dụng các thay đổi nghịch đảo:
+
+```bash
+git revert abc1234        # commit phần hoàn tác của abc1234
+```
+
+Lịch sử được giữ nguyên; ai pull cũng nhận được phần hoàn tác. Đây là cách hoàn tác an toàn duy nhất cho commit đã push lên branch dùng chung.
+
+## `git reset`: di chuyển con trỏ branch
+
+```bash
+git reset --soft HEAD~1   # hoàn tác commit, giữ thay đổi trong staging
+git reset --mixed HEAD~1  # hoàn tác commit, giữ thay đổi ngoài staging (mặc định)
+git reset --hard HEAD~1   # hoàn tác commit VÀ xóa luôn thay đổi
+```
+
+Di chuyển branch và (với --hard) viết lại working tree. Ổn cho công việc **local, chưa push**; nguy hiểm trên branch dùng chung — và `--hard` có thể phá hủy công việc chưa commit (nên `git stash` trước đã).
+
+## `git cherry-pick`: bê một commit
+
+Lấy một commit duy nhất từ branch khác áp dụng vào đây:
+
+```bash
+git cherry-pick abc1234
+```
+
+Dùng điển hình: kéo một bản sửa lỗi sang branch release, hoặc lấy đúng một commit từ một branch lộn xộn.
+
+## `git stash`: gửi tạm công việc đang dở
+
+```bash
+git stash push -m "wip: search filters"
+git stash list
+git stash pop      # áp dụng + xóa khỏi stash; apply giữ lại stash
+```
+
+Dành cho "tôi cần cây file sạch trong 5 phút", không phải kho lưu trữ dài hạn — stash không có lịch sử hay review.
+
+## Bảng quyết định
+
+| Tình huống                         | Công cụ                                                           |
+| ---------------------------------- | ----------------------------------------------------------------- |
+| Commit đã push, người khác đã pull | `revert`                                                          |
+| Commit local, chưa push            | `reset --soft` / `--mixed`                                        |
+| Commit rơi nhầm branch             | `cherry-pick` (+ reset ở branch cũ)                               |
+| Cần đổi bối cảnh ngay lập tức      | `stash`                                                           |
+| "Mọi thứ đang cháy"                | `git reflog` → tìm trạng thái tốt cuối → `git reset --hard <sha>` |
+
+## Reflog là mạng an toàn
+
+`git reflog` hiển thị mọi vị trí HEAD từng đứng. Ngay cả sau `reset --hard`, các commit cũ vẫn với tới được:
+
+```bash
+git reflog
+git reset --hard HEAD@{2}   # quay lại nơi bạn đứng trước đó hai bước
+```
+
+Hãy luyện khôi phục _trước khi_ cần: cố tình làm hỏng một branch trong repo thử nghiệm rồi sửa lại. Hoảng loạn là kẻ thù; đồ thị là bạn của bạn.

@@ -1,0 +1,50 @@
+Java errors come in two families, and telling them apart is a superpower.
+
+**Family 1: compile-time errors** (javac refuses). The compiler names the
+file, the line, and usually the fix:
+
+```java
+public class Broken {
+    public static void main(String[] args) {
+        System.out.println("oops")        // ← missing semicolon
+    }
+}
+```
+
+```text
+Broken.java:3: error: ';' expected
+        System.out.println("oops")
+                                  ^
+1 error
+```
+
+Read it bottom-up: `';' expected` at line 3, with a caret `^` pointing at
+the exact spot. Common members of this family: missing semicolon or brace,
+misspelled identifiers (`System.out.println` vs `system.out.println` — Java
+is case-sensitive), type mismatches (`int x = "5";`), using a variable
+before declaring it.
+
+**Family 2: runtime errors** (the JVM stops and prints a stack trace).
+
+```java
+int[] a = new int[3];
+System.out.println(a[5]);
+```
+
+```text
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException:
+Index 5 out of bounds for length 3
+    at Broken.main(Broken.java:4)
+```
+
+A stack trace reads **top-down as cause, bottom-up as location**: the first
+line names the exception and the message; the `at ...` lines list every
+method call in flight, innermost first, with file and line. `Broken.java:4`
+is where it happened. Stack traces are not scolding — they are a map. You
+will learn to *read* them in Module 12 and even to *throw* your own.
+
+**The beginner loop that works**: write a little → compile → read any error
+carefully → fix → repeat. Small batches keep the error list short and the
+cause fresh.
+
+**Next:** practice.

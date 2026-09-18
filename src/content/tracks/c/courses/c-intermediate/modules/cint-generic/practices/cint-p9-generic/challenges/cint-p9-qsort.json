@@ -1,0 +1,15 @@
+{
+  "id": "cint-p9-qsort",
+  "title": "Sort & Search Through stdlib",
+  "prompt": "Use qsort and bsearch — no hand-rolled sorts. Implement:\n\n```c\n/* sorts n ints ascending */\nvoid sort_ints(int *a, size_t n);\n/* returns index of ANY occurrence of key in the SORTED array via\n   bsearch; -1 if absent. Precondition: a is sorted ascending. */\nlong find_int(const int *a, size_t n, int key);\n/* sorts n doubles ascending (careful: doubles need a different cmp) */\nvoid sort_doubles(double *d, size_t n);\n```\n\nThe boilerplate provides both comparators; you wire qsort/bsearch.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stdlib.h>\n#include <stddef.h>\nstatic int cmp_int(const void *a, const void *b) {\n    int x = *(const int *)a, y = *(const int *)b;\n    return (x > y) - (x < y);\n}\nstatic int cmp_double(const void *a, const void *b) {\n    double x = *(const double *)a, y = *(const double *)b;\n    return (x > y) - (x < y);\n}\nvoid sort_ints(int *a, size_t n);\nlong find_int(const int *a, size_t n, int key);\nvoid sort_doubles(double *d, size_t n);\n",
+  "tests": [
+    {
+      "name": "stdlib wiring",
+      "code": "\nint a[] = {5, 3, 9, 1, 3};\nsort_ints(a, 5);\nCHECK(a[0] == 1 && a[1] == 3 && a[2] == 3 && a[4] == 9);\nCHECK_EQ(find_int(a, 5, 3) >= 1 && find_int(a, 5, 3) <= 2, 1);  /* any of the two */\nCHECK_EQ(find_int(a, 5, 4), -1);\nCHECK_EQ(find_int(a, 0, 1), -1);\ndouble d[] = {2.5, -1.0, 0.0};\nsort_doubles(d, 3);\nCHECK(d[0] == -1.0 && d[2] == 2.5);\n",
+      "hint": "qsort(a, n, sizeof *a, cmp_int); bsearch(&key, a, n, sizeof *a, cmp_int) then subtract base to get the index."
+    }
+  ]
+}

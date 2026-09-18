@@ -1,0 +1,21 @@
+{
+  "id": "ca16-ownership-ledger",
+  "title": "Ownership Ledger",
+  "prompt": "An allocation ledger lives in your editor (`struct ent { const void *p; int freed; }; static struct ent ledger[16]; static size_t n_led;`). Implement `void own(const void *p)` (record), `void release(const void *p)` (mark freed; double-release must be detectable), and `int audit(void)` returning the count of leaked (never freed) entries — the shutdown check LSan performs.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstruct ent { const void *p; int freed; };\nstatic struct ent ledger[16];\nstatic size_t n_led;\n",
+  "tests": [
+    {
+      "name": "leak counting",
+      "code": "int x = 1;\nown(&x);\nown(&x);\nCHECK_EQ(audit(), 2);",
+      "hint": "Two live allocations, none freed: two leaks — the audit question answered."
+    },
+    {
+      "name": "released entries do not leak",
+      "code": "int y = 1;\nown(&y);\nrelease(&y);\nCHECK_EQ(audit(), 0);",
+      "hint": "Marking freed before audit yields zero leaks."
+    }
+  ],
+  "level": "guided"
+}

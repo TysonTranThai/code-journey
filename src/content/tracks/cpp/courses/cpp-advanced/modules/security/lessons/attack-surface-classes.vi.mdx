@@ -1,0 +1,10 @@
+## Các lớp lặp lại
+
+- **Tràn số nguyên trong phép tính cấp phát** — `width * height * 4` trên 32-bit wrap, bạn cấp 40 byte, vòng lặp ghi 4 tỷ. Mọi parser tính kích thước buffer từ số nguyên không tin cậy cần phép nhân có kiểm tra (`__builtin_mul_overflow` trên GCC/Clang).
+- **Path traversal** — `../../etc/passwd` do người dùng điều khiển đi qua hàm nối. Lớp sửa: canonicalize, rồi xác minh kết quả vẫn nằm dưới root tin cậy — *sau khi* giải quyết `..`, không phải trước.
+- **Injection** — bất kỳ hàm nào ghép code/lệnh từ chuỗi (SQL, shell, format string). Lớp sửa: parameterize hoặc quote bằng bộ escape whitelist; không bao giờ lọc ký tự giữa chuỗi.
+- **Nhầm lẫn parsing** — hai parser bất đồng về nơi token kết thúc (request smuggling đúng là cái này). Lớp sửa: một parser chuẩn duy nhất; nếu buộc phải có hai, chúng phải dùng chung tokenizer.
+
+## Bài toán kinh tế
+
+Kẻ tấn công tự động hóa *lớp*, không phải trường hợp cụ thể. Vì thế sản phẩm bàn giao ở đây không bao giờ là "đã sửa bug" — mà là "đã đóng lớp, kèm regression test sẽ fail nếu nó mở lại".

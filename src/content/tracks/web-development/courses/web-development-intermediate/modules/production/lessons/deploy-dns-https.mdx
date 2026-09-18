@@ -1,0 +1,24 @@
+## What happens when someone types your URL
+
+1. **DNS** — the browser asks the resolver for `app.example.com`; the resolver walks root → TLD → authoritative nameserver → returns an IP (cached along the way, per TTL).
+2. **TCP + TLS** — connect to port 443; the TLS handshake verifies the server's certificate (issued by a CA the browser trusts) and establishes encryption. This is HTTPS: privacy _and_ proof you're talking to the right server.
+3. **HTTP request** — hits a load balancer → your server (or CDN edge, which answers before reaching you).
+
+Certificates renew automatically these days (Let's Encrypt, platform-managed); the residual skill is diagnosing expiry mistakes and mixed-content warnings (https page loading http assets — blocked).
+
+## Release strategies
+
+- **Rolling** — replace instances a few at a time; old and new serve simultaneously. Default in most platforms.
+- **Blue-green** — two identical environments; flip the router from blue to green. Instant rollback = flip back.
+- **Canary** — route 1% of traffic to the new version, watch metrics, ramp up. Catches what tests missed, on 1% of users instead of all of them.
+- **Feature flags** (previous lesson) decouple the code deploy from the feature's release.
+
+Choose by blast radius: flags for features, canary for risky refactors, rolling for the everyday.
+
+## Rollback: the skill that buys calm
+
+Deploys fail. The professional move is a **revert deploy** — redeploy the previous artifact — not a hotfix under pressure. Requirements: artifacts are immutable and retrievable (previous lesson), migrations are forward-compatible with the previous code version (expand/contract!), and rollback is rehearsed. "We can't roll back because the migration broke compatibility" is the sentence that turns an outage into a long outage.
+
+## Databases in the deploy story
+
+Schema migrations ride the same pipeline with extra care: **migrate before** the new code starts (or with expand/contract, any time), migrations must be idempotent-safe with the tooling's lock, and destructive changes wait until no running version needs the old column. Most deploy incidents are migration incidents.

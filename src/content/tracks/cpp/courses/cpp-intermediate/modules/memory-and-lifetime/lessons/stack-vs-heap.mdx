@@ -1,0 +1,40 @@
+The **stack** is a fast, bounded region for automatic objects; the **heap** is
+a large, slower region you manage explicitly. Choosing where an object lives
+is a design decision.
+
+```cpp
+#include <vector>
+
+struct Sample { double readings[64]; };
+
+Sample make_on_stack() {
+    Sample s{};              // 512 bytes on the stack: fast, dies at return
+    return s;                // moved/copied out — fine for most sizes
+}
+
+std::vector<Sample> make_many(int n) {
+    std::vector<Sample> out;
+    out.reserve(n);          // n * 512 bytes on the heap, owned by the vector
+    for (int i = 0; i < n; ++i) out.push_back(make_on_stack());
+    return out;              // one owner, automatic cleanup
+}
+```
+
+## Trade-offs in one table
+
+| | Stack | Heap |
+|---|---|---|
+| speed | very fast (pointer bump) | slower (allocator bookkeeping) |
+| lifetime | ends at scope exit | until you free it |
+| size | small (KB–MB limit) | large |
+| failure mode | stack overflow | allocation throws `bad_alloc` |
+| who cleans | compiler, always | you, via RAII |
+
+## Practical guidance
+
+- Local, small, scope-bound → stack (automatic). This is the default.
+- Size known only at runtime, shared ownership, or big buffers → heap, owned by a container or smart pointer.
+- Deep recursion with big locals overflows the stack — that is the classic crash when people "just add recursion".
+
+Everything else in this course — containers, smart pointers, polymorphic
+ownership — is machinery for putting heap memory under automatic-lifetime rules.

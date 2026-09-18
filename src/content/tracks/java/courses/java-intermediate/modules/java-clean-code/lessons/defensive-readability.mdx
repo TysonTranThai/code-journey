@@ -1,0 +1,22 @@
+## Defensive readability
+
+Write code that *prevents* misreading:
+
+- **guard clauses first** — fail fast, then the happy path reads straight
+  down without else-nesting:
+
+```java
+if (order == null) throw new IllegalArgumentException("order required");
+if (order.items().isEmpty()) return OrderResult.empty();
+// happy path continues at indentation 0
+```
+
+- **early returns over else-terraces** — each `else` adds a level the
+  reader must track
+- **expressions over statements where the name is the point**:
+  `boolean isAdult = age >= 18;` beats re-reading `age >= 18` four times
+- **structure beats cleverness** — the branchless bit-trick version of
+  `max` costs a comment and a future bug; `Math.max` costs nothing
+
+The test: could a teammate skimming a PR diff misread any line? If yes,
+rename, extract, or flatten until the answer is no.

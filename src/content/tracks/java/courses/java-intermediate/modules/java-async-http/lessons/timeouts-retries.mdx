@@ -1,0 +1,31 @@
+## Timeouts, retries, and backoff
+
+Distributed calls fail; the professional questions are *how long to
+wait* and *when to try again*:
+
+- **Timeout every call** — a missing timeout turns a slow dependency
+  into a stopped service. `HttpRequest.timeout()`, `Future.get(3, SECONDS)`,
+  or `orTimeout()` on a CompletableFuture stage.
+- **Retry idempotent operations** — GETs, yes; POST payments, only with
+  idempotency keys.
+- **Exponential backoff with cap** — 100ms, 200ms, 400ms… capped at a
+  few seconds; retry storms make outages worse.
+- **Distinguish error classes** — 4xx (your fault) usually isn't
+  retryable; 5xx and timeouts usually are; 429 means *slow down*
+  (respect Retry-After).
+
+```java
+static String getWithRetry(HttpTransport t, HttpRequest req) throws Exception {
+    int[] delays = {100, 200, 400};
+    for (int attempt = 0; ; attempt++) {
+        try {
+            HttpResponse<String> res = t.send(req);
+            if (res.statusCode() < 500) return res.body();  // don't retry 4xx
+            if (attempt == delays.length) throw new IllegalStateException("gave up");
+        } catch (java.io.IOException e) {
+            if (attempt == delays.length) throw e;
+        }
+        Thread.sleep(delays[attempt]);
+    }
+}
+```

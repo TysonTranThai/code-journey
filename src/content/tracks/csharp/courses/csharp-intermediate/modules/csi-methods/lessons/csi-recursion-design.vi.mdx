@@ -1,0 +1,45 @@
+## Hai nửa của mọi phương thức đệ quy
+
+Phương thức đệ quy cần **trường hợp gốc** (đầu vào nhỏ nhất, trả lời trực
+tiếp) và **trường hợp đệ quy** (tiến triển thu nhỏ về gốc). Thiếu một trong
+hai là `StackOverflowException` — thứ mà, lưu ý, không thể catch; nó xé tan
+process.
+
+```csharp
+static long Factorial(int n) =>
+    n <= 1 ? 1 : n * Factorial(n - 1);   // gốc: n<=1; tiến triển: n-1
+```
+
+## Stack là một ngân sách
+
+Mỗi call frame tốn không gian stack. Độ sâu 10 hay 100 ổn; 1.000.000 là sập.
+Đệ quy là công cụ đúng khi *dữ liệu* đệ quy — cây, filesystem, JSON lồng,
+grammar — không phải khi đầu vào chỉ là dài.
+
+```csharp
+/* depth = độ sâu lồng, không phải số phần tử: đệ quy ở đây là trung thực */
+static int SumNested(object node) => node switch
+{
+    int n => n,
+    object[] arr => arr.Sum(SumNested),
+    _ => 0
+};
+```
+
+Với đầu vào tuyến tính, vòng lặp (hoặc stack tường minh) là mặc định chuyên
+nghiệp. C# không đảm bảo tối ưu tail-call — `return F(x);` ở cuối vẫn là
+một frame mỗi lần gọi.
+
+## Checklist thiết kế
+
+1. Trường hợp gốc trước, phủ cả đầu vào thoái hóa (rỗng, null, một).
+2. Tiến triển chỉ ra được: mọi lời gọi tiến về gốc.
+3. Ngân sách độ sâu: đầu vào sâu bao nhiêu thì gãy? Nói con số to lên.
+4. Thuần khiết? Tác dụng phụ trong đệ quy nhân thêm rối — giữ ở mép.
+5. Memoization khi bài toán con lặp lại: `Dictionary<K,V>` cache biến
+   Fibonacci theo cấp số nhân thành tuyến tính.
+
+## Kiểm tra hiểu biết
+
+- Vì sao không catch được StackOverflowException? (Stack cạn; runtime giết process.)
+- Đệ quy đúng chỗ nào? (Dữ liệu đệ quy: cây, lồng, grammar.)

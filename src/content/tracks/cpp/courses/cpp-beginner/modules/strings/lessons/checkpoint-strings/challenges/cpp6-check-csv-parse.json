@@ -1,0 +1,31 @@
+{
+  "id": "cpp6-check-csv-parse",
+  "title": "Parse a CSV Record",
+  "prompt": "Implement `item_price(record)`, `item_qty(record)`, and `item_name(record)` for records shaped `\"pen,2.5,120\"` — name is text, price a double, qty an int.",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n\nstd::string item_name(const std::string& record) {\n    // TODO\n}\ndouble item_price(const std::string& record) {\n    // TODO\n}\nint item_qty(const std::string& record) {\n    // TODO\n}",
+  "tests": [
+    {
+      "name": "name",
+      "code": "CHECK(item_name(std::string{\"pen,2.5,120\"}) == std::string{\"pen\"});",
+      "hint": "First comma-separated field."
+    },
+    {
+      "name": "price",
+      "code": "CHECK_NEAR(item_price(std::string{\"pen,2.5,120\"}), 2.5, 0.001);",
+      "hint": "Second field, converted with std::stod."
+    },
+    {
+      "name": "qty",
+      "code": "CHECK_EQ(item_qty(std::string{\"pen,2.5,120\"}), 120);",
+      "hint": "Third field, converted with std::stoi."
+    },
+    {
+      "name": "spaces in name",
+      "code": "CHECK(item_name(std::string{\"blue pen,2.5,120\"}) == std::string{\"blue pen\"});",
+      "hint": "Names contain spaces — >> would stop at the first one; getline(row, out, ',') does not."
+    }
+  ],
+  "level": "real-world"
+}

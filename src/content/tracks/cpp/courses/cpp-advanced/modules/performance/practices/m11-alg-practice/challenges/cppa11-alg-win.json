@@ -1,0 +1,21 @@
+{
+  "id": "cppa11-alg-win",
+  "title": "Algorithmic Win: Count Once",
+  "prompt": "`sumUnique` returns the sum of distinct values. The naive version sorts and scans, or worse, is O(n²). Implement it to run in **at most n long-long comparisons** by using an unordered_set — the grader counts comparisons via a tracked type.",
+  "difficulty": "advanced",
+  "level": "real-world",
+  "language": "cpp",
+  "boilerplate": "#include <cstdint>\n#include <vector>\n\n// Elements carry a comparison counter. A hash-based solution compares\n// elements only on duplicate insertion (<= n total); a sort-based one\n// needs O(n log n) comparisons and fails the bound.\n#include <unordered_set>\n\nstruct Tracked {\n    long long value;\n    inline static int& comparisons() { static int n = 0; return n; }\n    friend bool operator<(const Tracked& a, const Tracked& b) { ++comparisons(); return a.value < b.value; }\n    friend bool operator==(const Tracked& a, const Tracked& b) { ++comparisons(); return a.value == b.value; }\n};\ntemplate <>\nstruct std::hash<Tracked> {\n    std::size_t operator()(const Tracked& t) const noexcept { return std::hash<long long>{}(t.value); }\n};\ninline int trackedComparisons() { return Tracked::comparisons(); }\n\n// Sum of the distinct values in data.\nlong long sumUnique(const std::vector<Tracked>& data);\n",
+  "tests": [
+    {
+      "name": "correct sums",
+      "code": "CHECK_EQ(sumUnique({{1}, {2}, {3}, {2}, {1}}), 6LL);\nCHECK_EQ(sumUnique({}), 0LL);\nCHECK_EQ(sumUnique({{5}, {5}, {5}}), 5LL);\nCHECK_EQ(sumUnique({{-1}, {-1}, {2}, {3}}), 4LL);",
+      "hint": "Insert everything into std::unordered_set<Tracked>, adding t.value when the insert is new."
+    },
+    {
+      "name": "no sorting-based comparisons",
+      "code": "int before = trackedComparisons();\nsumUnique({{9}, {8}, {7}, {6}, {5}, {4}, {3}, {2}, {1}, {9}, {8}});\nCHECK(trackedComparisons() - before <= 11);",
+      "hint": "unordered_set compares only when a duplicate lands in an occupied bucket — at most n comparisons; a sort-based approach needs O(n log n) and fails the bound."
+    }
+  ]
+}

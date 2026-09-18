@@ -1,0 +1,62 @@
+Some behavior is too small for a named method. Java 8 added a syntax for
+"just the behavior": the **lambda expression**.
+
+```java
+// old way: an anonymous class
+Comparator<String> byLength = new Comparator<String>() {
+    public int compare(String a, String b) {
+        return Integer.compare(a.length(), b.length());
+    }
+};
+
+// new way: the same thing as a lambda
+Comparator<String> byLength = (a, b) -> Integer.compare(a.length(), b.length());
+```
+
+A lambda `(a, b) -> expression` reads: "given `a` and `b`, produce this
+value." Where a variable's type is obvious, Java infers it.
+
+## Functional interfaces
+
+A lambda is not any old shorthand - it fills an interface with **exactly
+one abstract method** (a *functional interface*). The core four, all in
+`java.util.function`:
+
+| Interface | Method | Meaning |
+|---|---|---|
+| `Predicate<T>` | `boolean test(T t)` | a yes/no question about `t` |
+| `Function<T,R>` | `R apply(T t)` | turn a `T` into an `R` |
+| `Consumer<T>` | `void accept(T t)` | do something with `t`, return nothing |
+| `Supplier<T>` | `T get()` | produce a value from nothing |
+
+```java
+Predicate<String> isEmpty = s -> s.isEmpty();
+Function<String, Integer> len = String::length;   // method reference
+Consumer<String> shout = s -> System.out.println(s.toUpperCase());
+Supplier<java.util.List<String>> maker = java.util.ArrayList::new;
+```
+
+The `String::length` form is a **method reference** - a lambda whose body
+only calls one method: `Type::method` for instance methods on the
+argument, `object::method` for a specific object, `Type::new` for a
+constructor.
+
+You can declare your own functional interfaces too - `@FunctionalInterface`
+makes the compiler enforce the one-method rule:
+
+```java
+@FunctionalInterface
+interface Validator<T> {
+    boolean check(T value);   // the single abstract method
+}
+```
+
+## Where you'll meet them first
+
+Sorting, `removeIf`, `replaceAll` on collections:
+
+```java
+names.removeIf(s -> s.isBlank());            // Predicate
+names.replaceAll(s -> s.trim());             // UnaryOperator (a Function T->T)
+names.sort(Comparator.comparingInt(String::length));
+```

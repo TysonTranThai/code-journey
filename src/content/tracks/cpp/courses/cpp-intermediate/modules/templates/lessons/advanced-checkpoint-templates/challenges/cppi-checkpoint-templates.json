@@ -1,0 +1,30 @@
+{
+  "id": "cppi-checkpoint-templates",
+  "title": "Checkpoint: Serializer with specialization",
+  "prompt": "Implement `template <typename T> struct Serializer` with `static std::string to(const T&)` producing `std::to_string(v)`; a **full specialization** for `std::string` returning the string unchanged; and a **partial specialization** for `std::vector<T>` producing `\"[a,b,c]\"` (no spaces), recursively serializing elements. Nested vectors must work: a `std::vector<std::vector<int>>` serializes as `\"[[1,2],[3]]\"`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <vector>\n#include <iostream>\n\n// template <typename T> struct Serializer { static std::string to(const T&); };\n// full spec for std::string; partial spec for std::vector<T>\n",
+  "tests": [
+    {
+      "name": "int",
+      "code": "CHECK_EQ(Serializer<int>::to(42), std::string(\"42\"));",
+      "hint": "The primary template handles numeric types."
+    },
+    {
+      "name": "string",
+      "code": "CHECK_EQ(Serializer<std::string>::to(std::string(\"hi\")), std::string(\"hi\"));",
+      "hint": "The full specialization passes text through unchanged."
+    },
+    {
+      "name": "vector-int",
+      "code": "CHECK_EQ(Serializer<std::vector<int>>::to({1, 2, 3}), std::string(\"[1,2,3]\"));",
+      "hint": "The partial specialization joins with commas."
+    },
+    {
+      "name": "nested",
+      "code": "std::vector<std::vector<int>> v{{1, 2}, {3}};\nCHECK_EQ(Serializer<std::vector<std::vector<int>>>::to(v), std::string(\"[[1,2],[3]]\"));",
+      "hint": "Recursion through the generic composes the output."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+## So sánh cho ra 0 hoặc 1
+
+`== != < <= > >=` cho ra `int`: `1` (đúng) hoặc `0` (sai). C không có kiểu
+boolean riêng trong dùng hàng ngày — mọi giá trị khác 0 là "đúng".
+
+**Lỗi kinh điển:** `=` gán, `==` so sánh. `if (x = 5)` gán 5 cho x và luôn
+đúng. Trình biên dịch cảnh báo; hãy bật cảnh báo (khóa này luôn bật).
+
+## Toán tử logic, cắt ngắn
+
+```c
+int a = 0, b = 5;
+a && b   // 0 — a sai, b không được tính (cắt ngắn)
+b || a   // 1 — b đúng, a không được tính
+!b       // 0 — phủ định của đúng là sai
+```
+
+Cắt ngắn là tính năng: `p != NULL && p->value > 0` an toàn — toán hạng hai chỉ
+chạy khi `p` khác NULL.
+
+## Thứ tự ưu tiên (phần cần ngay)
+
+1. `!`, `-` một ngôi — cao nhất
+2. `* / %`
+3. `+ -`
+4. `< <= > >=`
+5. `== !=`
+6. `&&`
+7. `||`
+8. `=` — thấp nhất
+
+`x + y == 3 && a < b` phân tích thành `((x + y) == 3) && (a < b)`. Khi nghi
+ngờ, thêm ngoặc cho con người đọc.

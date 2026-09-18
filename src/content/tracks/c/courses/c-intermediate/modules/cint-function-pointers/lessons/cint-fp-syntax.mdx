@@ -1,0 +1,58 @@
+## A function has an address too
+
+Code lives in memory. A function pointer stores the address of the code —
+which is all a callback is: "call whatever code this address names."
+
+The syntax reads inside-out:
+
+```c
+int (*fp)(int, int);        /* fp is a pointer to a function taking two ints
+                               and returning int */
+int *fp(int, int);          /* WITHOUT parens: a function returning int* —
+                               entirely different! */
+```
+
+The parentheses around `(*fp)` are not decoration; they bind `fp` to "pointer"
+before `int` can bind to "returning". C precedence has opinions.
+
+## `typedef` makes it humane
+
+```c
+typedef int (*Compare)(const void *, const void *);
+Compare cmp = my_compare;   /* now it reads like any other type */
+```
+
+Every C codebase with callbacks defines a typedef. Raw function-pointer
+syntax in an API is a code smell.
+
+## The name of a function decays to a pointer
+
+```c
+int add(int a, int b) { return a + b; }
+int (*fp)(int, int) = add;     /* &add is the same address */
+int v = fp(3, 4);              /* call through the pointer: 7 */
+int w = (*fp)(3, 4);           /* identical: explicit deref is optional */
+```
+
+Both `fp(...)` and `(*fp)(...)` work — the standard defines the call operator
+to handle either. Pick one style; mixing reads badly.
+
+## Where they live
+
+Function pointers can be parameters, struct members, array elements, return
+values — full citizens:
+
+```c
+typedef struct {
+    const char *name;
+    int (*op)(int, int);
+} BinOp;
+```
+
+## Check your understanding
+
+- What is `char *(*maker)(size_t)`? (Pointer to function taking size_t,
+  returning char*.)
+- Is `fp == &fp` legal? (Trick: no — `&fp` is the address of the pointer
+  variable; `fp` is the code address it holds. But `fp == add` and
+  `*fp == add` both hold.)

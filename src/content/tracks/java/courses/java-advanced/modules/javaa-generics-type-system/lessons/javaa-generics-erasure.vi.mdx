@@ -1,0 +1,24 @@
+**Type erasure**: generic chỉ tồn tại ở *lúc biên dịch*. `ArrayList<String>`
+và `ArrayList<Integer>` là *cùng một class* lúc chạy — một class `ArrayList`,
+compiler kiểm ở cửa, bên trong không kiểm. Compiler chèn cast tự động tại ranh
+giới generic và sinh **bridge method** khi override cần khớp chữ ký đã bị xóa.
+
+```java
+List<String> a = new ArrayList<>();
+List<Integer> b = new ArrayList<>();
+a.getClass() == b.getClass()   // true — một class duy nhất sau erasure
+```
+
+**Mảng thì ngược lại**: reified và covariant.
+
+```java
+Object[] objs = new String[1];   // hợp lệ — mảng covariant
+objs[0] = 42;                    // ArrayStoreException LÚC CHẠY
+```
+
+Mảng biết kiểu phần tử của mình và kiểm tra lúc chạy; list generic thậm chí
+không biết kiểu tham số của mình. Vì vậy `new T[]` bất hợp pháp, không viết
+được `instanceof List<String>`, và `String[].class != Integer[].class` trong
+khi hai list dùng chung một class. Covariance + reification = kiểm tra store
+lúc chạy; invariance + erasure = kiểm tra cửa lúc biên dịch. Hai chiến lược
+an toàn khác nhau.

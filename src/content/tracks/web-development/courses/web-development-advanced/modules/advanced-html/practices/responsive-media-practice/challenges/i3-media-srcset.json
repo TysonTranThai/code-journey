@@ -1,0 +1,30 @@
+{
+  "id": "i3-media-srcset",
+  "title": "Spec an Image from Requirements",
+  "prompt": "A product card image renders at 300px on phones (100vw) and 300px inside a 3-column grid on desktop (30vw). Author the <img>: srcset with at least three w-descriptor candidates (300w/600w/900w), a correct sizes attribute reflecting those two conditions, width=\"900\" height=\"600\", alt, and decoding=\"async\". Then add a below-the-fold illustration img with loading=\"lazy\" and its own alt.",
+  "difficulty": "advanced",
+  "level": "independent",
+  "boilerplate": "<!-- Product card + illustration -->\n\n",
+  "tests": [
+    {
+      "name": "three w-descriptor candidates",
+      "code": "const ss = code.match(/srcset\\s*=\\s*[\"']([^\"']+)[\"']/i);\nif (!ss) throw new Error(\"Add a srcset attribute.\");\nconst widths = [...ss[1].matchAll(/(\\d+)w\\b/gi)].map((m) => Number(m[1]));\nif (widths.length < 3 || !widths.includes(300) || !widths.includes(600) || !widths.includes(900)) {\n  throw new Error(\"srcset needs 300w, 600w and 900w candidates.\");\n}",
+      "hint": "w-descriptors are the real pixel widths of the files — 1x/2x/3x of a 300px slot."
+    },
+    {
+      "name": "sizes reflects the layout",
+      "code": "const sizes = code.match(/sizes\\s*=\\s*[\"']([^\"']+)[\"']/i);\nif (!sizes) throw new Error(\"Add a sizes attribute.\");\nconst s = sizes[1];\nif (!/100vw/i.test(s) || !/30vw/i.test(s)) {\n  throw new Error('sizes must express both conditions: \"(max-width: …) 100vw, 30vw\".');\n}\nif (!/max-width/i.test(s)) {\n  throw new Error(\"The phone condition needs a media query: (max-width: …) 100vw first.\");\n}",
+      "hint": "sizes is a media-condition list: phone case first, then the desktop slot width."
+    },
+    {
+      "name": "intrinsic dimensions and alt",
+      "code": "const img = code.match(/<img[^>]*srcset[^>]*>/i);\nif (!img) throw new Error(\"Keep the srcset image.\");\nif (!/width\\s*=\\s*[\"']900[\"']/i.test(img[0]) || !/height\\s*=\\s*[\"']600[\"']/i.test(img[0])) {\n  throw new Error('The card image needs width=\"900\" height=\"600\".');\n}\nconst alt = (img[0].match(/alt\\s*=\\s*[\"']([^\"']*)[\"']/i) || [])[1] || \"\";\nif (alt.trim().length < 4) {\n  throw new Error(\"Both images need meaningful alt (4+ characters).\");\n}",
+      "hint": "width/height describe the largest candidate's aspect ratio; the browser derives the box."
+    },
+    {
+      "name": "lazy illustration, async decode",
+      "code": "const lazy = [...code.matchAll(/<img[^>]*>/gi)].find((m) =>\n  /loading\\s*=\\s*[\"']lazy[\"']/i.test(m[0])\n);\nif (!lazy) throw new Error('The below-the-fold illustration needs loading=\"lazy\".');\nif (!/decoding\\s*=\\s*[\"']async[\"']/i.test(code)) {\n  throw new Error('Add decoding=\"async\" to the product card image.');\n}",
+      "hint": "One hero eager, the rest lazy — and decoding=\"async\" keeps decode work off the main thread."
+    }
+  ]
+}

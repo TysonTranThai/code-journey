@@ -1,0 +1,32 @@
+`print` goes to stdout and dies there. The `logging` module routes events to
+handlers, formats them uniformly, and carries **levels** for severity:
+
+```python
+import logging
+
+log = logging.getLogger(__name__)          # one logger per module
+
+log.debug("cache size: %d", len(cache))    # detail for developers
+log.info("imported %d rows", count)        # normal milestones
+log.warning("retrying request (%d/3)", attempt)
+log.error("failed to save %s", task_id, exc_info=True)   # + traceback
+```
+
+Professional habits baked into that snippet:
+
+- **`getLogger(__name__)`** names loggers after modules (`app.storage`), so operators can silence or amplify each area independently.
+- **Lazy `%` formatting**, not f-strings — the string is only built if the level is enabled.
+- **`exc_info=True`** attaches the traceback to error logs; losing it is how "it worked locally" mysteries are born.
+
+## Levels are a contract
+
+DEBUG → INFO → WARNING → ERROR → CRITICAL. Choose by *who must react*:
+developers tune DEBUG out in production; INFO is the operational heartbeat;
+WARNING means degraded-but-working; ERROR means an operation failed. Emitting
+everything as INFO is how logs become unreadable.
+
+## Configuration belongs to the entry point
+
+Libraries only **get** loggers; the application **configures** them
+(`logging.basicConfig(level=..., format=...)`) in one place — usually
+`__main__`. That split is why a library can never spam a host app's console.

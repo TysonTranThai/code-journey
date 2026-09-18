@@ -1,0 +1,41 @@
+**Composition** nghĩa là xây hành vi phức tạp từ các object đơn giản hơn,
+giữ chúng như trường — "has-a" thay vì "is-a".
+
+```java
+class Engine {
+    void start() { System.out.println("vroom"); }
+}
+
+class Car {
+    private final Engine engine = new Engine();   // Car HAS-AN Engine
+
+    void start() { engine.start(); }              // ủy quyền
+}
+```
+
+Vì sao ưu tiên nó phần lớn thời gian? Ba lý do dân chuyên chọn composition:
+
+1. **Linh hoạt.** Đổi `Engine` thành `ElectricEngine` không cần sửa cấu trúc
+   của Car — và Car không bao giờ thừa hưởng hành lý của Engine.
+2. **Không bị trói vào một cha.** Kế thừa khóa bạn vào một `extends` duy nhất;
+   composition ghép được nhiều cộng sự.
+3. **Kiểm thử được.** Car dựng với Engine tiêm từ ngoài chạy được với engine
+   giả trong test — Module 13 dựa hẳn vào điều này.
+
+**Ủy quyền (delegation)** là động từ của composition: phương thức chuyển
+công việc thật cho một trường. Phần chuyển tiếp không phải phí — nó định
+nghĩa hợp đồng public của Car trong khi Engine vẫn có thể hoán đổi.
+
+**Heuristic thiết kế, gói trong một đoạn:** mô hình hóa cái gì đó LÀ gì
+bằng kế thừa (hiếm, hệ thống ổn định như Shape); mô hình hóa cái gì đó CÓ
+hoặc DÙNG bằng composition (phần lớn thời gian: engine, repository,
+formatter, kết nối). Kế thừa dùng thiếu is-a thật khiến hành vi subclass
+đáng ngạc nhiên; composition giữ mọi object nhỏ và có thể thay thế. Khi
+kết thúc module này bạn sẽ viết cả hai — và cảm nhận composition thắng
+nhiều hơn.
+
+**Góc nhìn AI:** code sinh ra hay lạm dụng kế thừa ("extend BaseService để
+thêm một cờ"). Hãy coi đó là tín hiệu review: hỏi "đây có phải is-a thật?"
+trước khi chấp nhận.
+
+**Tiếp theo:** thực hành.

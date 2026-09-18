@@ -1,0 +1,21 @@
+{
+  "id": "ca18-rwlock-metric",
+  "title": "rwlock with a Live Reader Count",
+  "prompt": "Given: a `pthread_rwlock_t` and `int active_readers`. Implement `void lock_read(void)` (rdlock AND increment active_readers), `void unlock_read(void)` (decrement, then unlock), `void lock_write(void)` / `void unlock_write(void)` wrapping wrlock. The metric is how tests observe concurrency — keep it truthful.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define _POSIX_C_SOURCE 200809L\n#include <pthread.h>\n#include <stdint.h>\nstatic pthread_rwlock_t g_rwl = PTHREAD_RWLOCK_INITIALIZER;\nstatic int active_readers = 0;\n",
+  "tests": [
+    {
+      "name": "reader count tracks",
+      "code": "lock_read();\nCHECK_EQ(active_readers, 1);\nlock_read();\nCHECK_EQ(active_readers, 2);\nunlock_read();\nCHECK_EQ(active_readers, 1);\nunlock_read();\nCHECK_EQ(active_readers, 0);",
+      "hint": "Two readers hold the lock simultaneously — rdlock allows that — and the count follows exactly."
+    },
+    {
+      "name": "write path works",
+      "code": "lock_write();\nunlock_write();\nCHECK_EQ(active_readers, 0);",
+      "hint": "The write path locks and releases without touching the reader metric."
+    }
+  ],
+  "level": "imitation"
+}

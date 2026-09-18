@@ -1,0 +1,18 @@
+{
+  "title": "Kiểm tra kiến thức: Động Cơ Request Bất Đồng Bộ",
+  "prompt": "Cài đặt ba hàm bất đồng bộ:\n\n1. `createLoader(fetchFn)` RETURN `{ load, reset }`. `load(key)` gọi `fetchFn(key)` một lần cho mỗi key và RETURN promise kết quả; các lời gọi đồng thời hoặc về sau với cùng key RETURN CÙNG MỘT promise. `reset()` xóa toàn bộ promise đã cache (lần load kế tiếp sẽ gọi lại).\n2. `loadDashboard(sources)` trong đó `sources` là mảng các hàm không đối số trả về promise. Nó chạy TẤT CẢ đồng thời và RETURN một promise cho `{ loaded, failed }` — `loaded` là mảng các giá trị fulfilled (đúng thứ tự), `failed` là mảng các lý do reject (đúng thứ tự). Nó không bao giờ reject.\n3. `withTimeout(promise, ms, fallback)` RETURN một promise settle bằng giá trị của promise nếu nó fulfill trong `ms`, nếu không thì bằng `fallback`. Không bao giờ reject.",
+  "tests": [
+    {
+      "name": "loader khử trùng lặp request đồng thời theo key",
+      "hint": "Giữ một Map key → promise trong closure; lưu promise (không phải giá trị) để các request đang bay được dùng chung. reset() = map.clear()."
+    },
+    {
+      "name": "loadDashboard tách fulfilled và rejected",
+      "hint": "Promise.allSettled, rồi tách kết quả theo status === 'fulfilled'."
+    },
+    {
+      "name": "withTimeout phân giải bằng giá trị hoặc fallback",
+      "hint": "Promise.race([promise, timerPromise]) trong đó timer phân giải bằng fallback sau ms."
+    }
+  ]
+}

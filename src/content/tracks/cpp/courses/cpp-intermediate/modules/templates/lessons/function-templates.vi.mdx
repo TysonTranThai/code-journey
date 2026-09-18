@@ -1,0 +1,25 @@
+Function template là một công thức mà compiler đóng khuôn theo từng kiểu.
+Bạn viết thuật toán một lần; compiler viết các bản đặc thù theo kiểu.
+
+```cpp
+template <typename T>
+T max_of(const T& a, const T& b) {
+    return a < b ? b : a;   // T phải hỗ trợ operator< — đó là hợp đồng
+}
+
+int i = max_of(3, 7);          // T = int (suy luận)
+double d = max_of(2.5, 1.5);   // T = double
+auto m = max_of(std::string{"a"}, std::string{"b"});
+```
+
+Cơ chế then chốt:
+
+- **Suy luận** diễn ra từ đối số; viết tường minh `max_of<double>(3, 7)`
+  épbuộc nó (và cho phép chuyển đổi kiểu).
+- **Hợp đồng là ngầm định**: mọi thao tác thân hàm dùng trở thành yêu cầu
+  với T. Một kiểu thiếu `operator<` fail lúc instantiate — với lỗi dài,
+  nhưng ở compile time, không bao giờ ở runtime.
+- Dịch hai pha: bản thân template chỉ được *kiểm tra cú pháp*; mỗi lần
+  instantiate được kiểm tra đầy đủ với T thật.
+- Template sống trong header. Compiler cần định nghĩa tại điểm
+  instantiate — định nghĩa trong .cpp sinh lỗi linker.

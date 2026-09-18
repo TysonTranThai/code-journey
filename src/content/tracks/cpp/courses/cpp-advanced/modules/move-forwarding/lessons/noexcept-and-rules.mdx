@@ -1,0 +1,26 @@
+## The noexcept that buys performance
+
+`std::vector::push_back` must offer the strong exception guarantee while growing. It can only relocate elements with a **`noexcept` move constructor**; otherwise it falls back to copying (`std::move_if_noexcept`). Declaring your move `noexcept` is not decoration — it is a performance contract:
+
+```cpp
+struct Buffer {
+    std::unique_ptr<char[]> data_;
+    std::size_t size_{0};
+    Buffer(Buffer&& b) noexcept : data_(std::exchange(b.data_, nullptr)), size_(std::exchange(b.size_, 0)) {}
+    Buffer& operator=(Buffer&& b) noexcept { /* same shape */ return *this; }
+};
+```
+
+`std::exchange` writes the "moved-from" state and hands you the old value in one step — the idiomatic move body.
+
+## Rule of Zero first
+
+If every member manages itself (`std::string`, `std::vector`, `std::unique_ptr`), you write **none** of the five special members. Defaults do the right thing under copying and moving.
+
+## Rule of Five — all or nothing
+
+Own a raw resource and you must decide about all five: destructor, copy ctor, copy assign, move ctor, move assign. Declaring *any* one suppresses the implicit moves — a silent pessimization. If you declare a destructor, declare (or `= default`) the moves too.
+
+## The moved-from state
+
+Moved-from standard types are **valid but unspecified** — assignable and destructible, nothing more promised. Document what your own types guarantee after a move; the graded exercise asks exactly that discipline.

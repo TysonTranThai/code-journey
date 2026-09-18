@@ -1,0 +1,32 @@
+## The class equality trap
+
+```csharp
+class PointC { public double X, Y; }
+var a = new PointC { X = 1, Y = 2 };
+var b = new PointC { X = 1, Y = 2 };
+// a == b is false! a.Equals(b) is false!
+```
+
+Reference types compare by *identity* by default: two separately built objects are never equal, even with identical contents. Overriding `Equals`/`GetHashCode` correctly by hand is subtle and easy to get wrong.
+
+## Records do it for you
+
+```csharp
+record Point(double X, double Y);
+
+var p1 = new Point(1, 2);
+var p2 = new Point(1, 2);
+Console.WriteLine(p1 == p2);        // True
+Console.WriteLine(p1.Equals(p2));   // True
+Console.WriteLine(p1);              // Point { X = 1, Y = 2 }
+```
+
+A **record** generates value-based `Equals`, `GetHashCode`, a readable `ToString`, and an immutable-by-default shape. It's the right default for data you pass around: messages, coordinates, line items, query results.
+
+`with` copies-and-changes without mutating:
+
+```csharp
+var moved = p1 with { X = 10 };   // new record: (10, 2); p1 unchanged
+```
+
+Immutability plus value equality is exactly what "a piece of data" means — which is why records exist.

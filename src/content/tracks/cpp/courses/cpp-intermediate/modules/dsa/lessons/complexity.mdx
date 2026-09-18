@@ -1,0 +1,24 @@
+Big-O answers one question: *how does cost grow when input grows?* Not how
+fast your machine is — how the curve bends.
+
+| Complexity | Name | Example |
+|---|---|---|
+| O(1) | constant | `v[i]`, `m[key]` |
+| O(log n) | logarithmic | binary search, `std::map` lookup |
+| O(n) | linear | `std::find`, one pass |
+| O(n log n) | linearithmic | `std::sort`, good divide & conquer |
+| O(n²) | quadratic | nested loops over the same data |
+| O(2ⁿ) | exponential | naive subset enumeration |
+
+Rules of thumb for reading code:
+
+- sequential loops multiply; nested loops over *independent* things multiply
+  too — `for a in X: for b in Y:` is O(|X|·|Y|)
+- drop constants and small terms: O(2n + 10) is O(n)
+- amortized cost: one `vector::push_back` is O(1) amortized because the
+  occasional O(n) growth is paid for by many cheap appends
+- `std::unordered_map` is O(1) *average* — worst case O(n) when hashing
+  degrades; the word "average" is part of the claim
+
+Complexity is a design tool: choosing a hash map over a linear scan can
+turn O(n²) into O(n) without touching anything else.

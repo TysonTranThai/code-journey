@@ -1,0 +1,49 @@
+## Why not just long g++ commands?
+
+`g++ main.cpp math_utils.cpp ... -o app` does not scale: 40 files, include paths, libraries, Debug/Release flags. **CMake** describes the project *once*; it generates the right build commands for any platform.
+
+## The minimal honest CMakeLists.txt
+
+```cmake
+cmake_minimum_required(VERSION 3.20)
+project(finance LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+add_executable(finance
+    src/main.cpp
+    src/ledger.cpp
+    src/report.cpp
+)
+
+target_compile_options(finance PRIVATE -Wall -Wextra -Wpedantic)
+```
+
+Read it as a sentence: "a project named finance, C++20, one executable target `finance` from these sources, with warnings on for this target."
+
+- **Target** is the unit of everything: an executable or a library, its sources, its flags, its dependencies.
+- `PRIVATE` means the flags apply to building this target only.
+
+## The two-command build (memorize these)
+
+```
+cmake -B build            # configure: read CMakeLists, generate build files into build/
+cmake --build build       # build: compile + link via the generated system
+./build/finance           # run
+```
+
+`-B build` keeps all generated files in one directory (git-ignored — module 17). Re-run configure after editing CMakeLists; re-run build after editing code — it recompiles only what changed.
+
+## Debug vs Release
+
+```
+cmake -B build-debug -DCMAKE_BUILD_TYPE=Debug      # -g, no optimization: debuggable
+cmake -B build-release -DCMAKE_BUILD_TYPE=Release  # -O2: fast, unreadable in a debugger
+```
+
+Debug while developing; release when measuring or shipping. (Sanitizers attach to the Debug build — Intermediate territory, name-checked here.)
+
+## What Beginner CMake is NOT
+
+No custom functions, no package hunting (`find_package`), no install rules. When a project needs those, it has outgrown Beginner — and now it has the vocabulary to say so.

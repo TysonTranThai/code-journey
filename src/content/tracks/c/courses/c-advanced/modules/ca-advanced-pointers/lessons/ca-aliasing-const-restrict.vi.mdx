@@ -1,0 +1,20 @@
+## Luật effective type
+
+Giá trị của đối tượng chỉ được truy cập qua lvalue kiểu tương thích — hoặc qua `char` (byte của đối tượng nào cũng đọc được thành char, đó là nền của memcpy). Vì vậy:
+
+```c
+float f = 1.0f;
+int bits = *(int *)&f;          /* UB: sai effective type */
+int bits2;
+memcpy(&bits2, &f, sizeof f);   /* hợp lệ: sao chép theo byte */
+```
+
+Trình biên dịch giả định điều này rất mạnh: `int *p` và `float *q` cùng tồn tại nghĩa là ghi qua cái này được coi không đụng cái kia.
+
+## const là hợp đồng, không phải chống trộm
+
+`const int *p` nghĩa là *qua lvalue này* bạn không được ghi. Ép bỏ const rồi ghi là UB **chỉ khi** đối tượng được khai báo const; ghi qua ép kiểu vào đối tượng vốn không const thì hợp lệ.
+
+## restrict: lời hứa có giá
+
+`copy(restrict d, restrict s, n)` hứa: trong thời gian chạy hàm, mọi ghi qua `d` không alias gì đọc qua `s`. Phá lời hứa (vùng chồng nhau) là code giống memcpy có thể ra kết quả sai — đó chính là lý do chuẩn tách `memcpy` (restrict, UB khi chồng) khỏi `memmove` (hợp lệ khi chồng, có thể chậm hơn).

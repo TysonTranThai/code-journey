@@ -1,0 +1,39 @@
+## The compiler may insert holes
+
+Each member must sit at an offset that is a multiple of its alignment.
+The compiler inserts invisible padding to make that true, and pads the
+struct's total size so arrays of it stay aligned:
+
+```c
+struct Packed {
+    char  c;      /* offset 0 */
+                  /* 3 bytes padding */
+    int   i;      /* offset 4 */
+    char  d;      /* offset 8 */
+                  /* 3 bytes padding (so sizeof works for arrays) */
+};                /* sizeof == 12, not 6 */
+```
+
+Reordering members largest-first usually shrinks the struct. But **do not
+memorize layouts — measure them**:
+
+```c
+#include <stddef.h>
+offsetof(struct Packed, i)   /* == 4: the offset as actually compiled */
+sizeof(struct Packed)        /* == 12 */
+```
+
+`offsetof` answers "where is this member really" under *this* compiler,
+*this* standard, *these* flags. Code that files into binary formats uses
+it — or better, uses it in a `_Static_assert` to fail the build if the
+layout ever drifts:
+
+```c
+_Static_assert(offsetof(struct Header, magic) == 0, "header layout");
+```
+
+## Alignment is a property of types
+
+`int` aligns to 4, `double` to 8, pointers to 8 (on 64-bit). The struct's
+own alignment is the max of its members'. That is why member order
+matters and why the trailing padding exists.

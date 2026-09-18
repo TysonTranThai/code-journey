@@ -1,0 +1,35 @@
+Giờ bạn sở hữu mọi tầng. Đến lúc nối chúng thành một ứng dụng.
+
+## Hành trình của một request
+
+1. **Trình duyệt** — user submit form; JS kiểm tra sơ bộ (UX), rồi `fetch("/api/tasks", { method: "POST", body })`
+2. **Tầng API** — auth (ai đang gọi?), validation (body có đúng dạng?), business rules (module 10)
+3. **Tầng dữ liệu** — SQL parameterized trong transaction khi cần; các hàng chảy ra
+4. **Response** — 201 + tài nguyên vừa tạo dưới dạng JSON (hoặc 400 + lỗi có cấu trúc)
+5. **Trình duyệt lần nữa** — parse response, cập nhật state, render; _optimistic UI_ báo thành công ngay và rollback khi thất bại
+
+Mỗi chỗ nối có một kiểu hỏng kinh điển: cuộc gọi mạng (timeout, mất mạng), API (500, sai hình dạng), DB (vi phạm ràng buộc, cạn kết nối), client (cache cũ, submit đôi).
+
+## Hợp đồng chính là schema
+
+Frontend và backend trôi dần khỏi nhau trong im lặng — đến tận runtime. Cách sửa là một nguồn chân lý duy nhất: một Zod schema dùng chung cả hai phía (client validate thứ nó render, server validate thứ nó lưu), hoặc kiểu TypeScript sinh từ schema database (siêu năng lực của Drizzle). Khi cột DB đổi, kiểu đổi, code client fail biên dịch. Sự gãy dịch từ runtime về compile time.
+
+## Loading state là một phần của hợp đồng
+
+Mọi fetch có bốn trạng thái UI và cả bốn cần được thiết kế: **loading** (skeleton, không phải spinner trên nền trắng), **success**, **empty** (một trạng thái "chưa có gì" thật, không phải ô trắng), **error** (thông điệp + nút thử lại). Quên một trạng thái là bug UX mà người dùng phát hiện trước bạn.
+
+## Vấn đề N+1: bug hiệu năng của full-stack
+
+```js
+// liệt kê 50 task, rồi lấy từng tác giả riêng lẻ = 51 query
+const tasks = await db.select().from(tasks);
+for (const t of tasks) {
+  t.author = await getUser(t.authorId); // thêm 50 chuyến khứ hồi
+}
+```
+
+Cách sửa: một join, hoặc một `WHERE author_id IN (...)`. Nhận diện hình dạng: vòng lặp chứa await trên dữ liệu theo từng item. Trên web nó nhân độ trễ × số chuyến khứ hồi và là câu trả lời phổ biến nhất cho "sao trang này chậm" một khi tài sản đã ổn.
+
+## Đánh đổi giữa server-side rendering và SPA
+
+Render HTML ở server (first paint nhanh, SEO, chạy được trước khi JS tải) so với ship một SPA shell (tương tác giàu, state kiểu app). Next.js tồn tại vì cả hai đều có giá trị. Trục quyết định: bao nhiêu % trang là _nội dung_ (SSR) so với _ứng dụng_ (client). Bạn sẽ gặp các framework trong khóa sau — hãy đến với kiến thức về đánh đổi mà bạn đang yêu cầu chúng thực hiện.

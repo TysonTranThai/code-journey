@@ -1,0 +1,25 @@
+## Pattern 1 — publish/consume (acquire + release)
+
+The `ready`/`payload` shape above is *the* pattern: data protected by an atomic flag instead of a mutex. Costs less than a lock when the payload is written once and read many times; requires the discipline to keep every payload access ordered by the flag.
+
+## Pattern 2 — relaxed counting
+
+```cpp
+void onEvent() { stats.fetch_add(1, std::memory_order_relaxed); }
+```
+
+Contested counters on hot paths use relaxed: atomicity is all they need. `shared_ptr`'s reference count is relaxed for increments (the decrement needs release/acquire to order the destructor — the standard library's job, not yours).
+
+## Pattern 3 — exactly once
+
+```cpp
+std::once_flag flag;
+std::call_once(flag, [] { /* init */ });   // or
+static Config cfg;   // C++11 "magic static": thread-safe lazy init — prefer this
+```
+
+For flags: `test_and_set` with acquire on the test loop, release on the clear — or just `std::call_once`/magic statics and skip the micro-management.
+
+## What NOT to hand-roll
+
+Double-checked locking without atomics (racy), spin loops without `yield`/`wait` (burns cores), and lock-free stacks from blog posts (ABA + reclamation, Module 10). The graded work has you *implement* the three safe patterns above — the professional baseline.

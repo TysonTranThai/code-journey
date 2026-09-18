@@ -1,0 +1,21 @@
+{
+  "id": "pa-dist-queue",
+  "title": "The idempotent at-least-once queue",
+  "prompt": "Implement two pieces:\n\n`InProcessQueue` — an at-least-once queue:\n- `enqueue(job_id, payload)`; `deliver()` moves all pending jobs (plus anything previously delivered but not acked — simulate lease expiry by re-delivering inflight jobs on the next deliver) and returns the batch as a list of `[job_id, payload, attempts]`\n- `ack(job_id, result)` records completion; `fail(job_id, max_attempts=3)` increments the attempt counter and re-queues the job, or moves it to the dead-letter list once `attempts >= max_attempts`\n- `done` (dict of results) and `dead` (list of [job_id, payload, attempts]) expose state\n\n`process(queue, jobs, max_attempts=3)` — a worker loop:\n- repeatedly `deliver()` until the queue stays empty\n- for each job: skip jobs already in `done` (idempotency!), process `'poison'` payloads by calling `queue.fail(...)`, otherwise record the effect and `ack(job_id, 'done:' + job_id)`\n- returns `(done_dict, dead_list)`\n\nThe discriminating scenario: a job delivered twice must produce exactly one effect; a poison job must be retried until `max_attempts` then land in `dead`.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class InProcessQueue:\n    def __init__(self):\n        ...\n\n    def enqueue(self, job_id, payload):\n        ...\n\n    def deliver(self):\n        ...\n\n    def ack(self, job_id, result):\n        ...\n\n    def fail(self, job_id, max_attempts=3):\n        ...\n\n\n# done/dead as properties\n\n\ndef process(queue, jobs, max_attempts=3):\n    ...",
+  "tests": [
+    {
+      "name": "duplicate delivery, single effect",
+      "code": "q = InProcessQueue()\nq.enqueue('j1', 'work')\nbatch = q.deliver()\nq.ack('j1', 'done:j1')\nq.enqueue('j2', 'work')   # new work forces another deliver sweep\nq.enqueue('j1', 'work')   # duplicate redelivery of an already-done job\nprocessed, dead = process(q, ['j1', 'j2'])\nassert processed == {'j1': 'done:j1', 'j2': 'done:j2'} and dead == []\nprint('ok')",
+      "hint": "Check the done-store before effecting anything."
+    },
+    {
+      "name": "poison retried to the DLQ, not forever",
+      "code": "q = InProcessQueue()\nq.enqueue('p1', 'poison')\nprocessed, dead = process(q, ['p1'], max_attempts=3)\nassert processed == {} and len(dead) == 1 and dead[0][0] == 'p1' and dead[0][2] == 3\nprint('ok')",
+      "hint": "fail() increments attempts; at max_attempts the job stops cycling."
+    }
+  ],
+  "level": "combination"
+}

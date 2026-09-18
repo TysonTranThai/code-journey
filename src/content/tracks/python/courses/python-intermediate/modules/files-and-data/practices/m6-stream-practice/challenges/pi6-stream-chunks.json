@@ -1,0 +1,26 @@
+{
+  "id": "pi6-stream-chunks",
+  "title": "Chunked Checksum",
+  "prompt": "Implement file_hash(path) computing the SHA-256 hex digest of a file by reading it in 64 KB chunks (never the whole file). Return the hexdigest string.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import hashlib\n\ndef file_hash(path):\n    pass\n",
+  "tests": [
+    {
+      "name": "digest of known content",
+      "code": "import tempfile\nfrom pathlib import Path\np = Path(tempfile.mkdtemp()) / 'f.bin'\np.write_bytes(b'hello world')\nimport hashlib\nassert file_hash(p) == hashlib.sha256(b'hello world').hexdigest()",
+      "hint": "h.update(chunk) in a loop, then h.hexdigest()."
+    },
+    {
+      "name": "empty file has the empty digest",
+      "code": "import hashlib, tempfile\nfrom pathlib import Path\np = Path(tempfile.mkdtemp()) / 'e.bin'\np.write_bytes(b'')\nassert file_hash(p) == hashlib.sha256(b'').hexdigest()",
+      "hint": "Zero chunks still produce a valid digest."
+    },
+    {
+      "name": "reads in blocks, not all at once",
+      "code": "import hashlib\nassert 'read()' not in code, 'f.read() with no size slurps the whole file - read fixed-size blocks'\nassert 'sha256' in code\n",
+      "hint": "f.read() with no argument reads everything; pass a block size."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,16 @@
+Journal chỉ-ghi-thêm là cách trung thực để lưu sự kiện: ghi là append rẻ,
+hỏng hóc không thể phá lịch sử (chỉ cắt đuôi), và replay tái dựng trạng thái
+một cách tất định.
+
+```java
+Files.writeString(file, line + "\n",
+    StandardCharsets.UTF_8, CREATE, APPEND);
+for (String line : Files.readAllLines(file, StandardCharsets.UTF_8)) { ... }
+```
+
+Ba kỷ luật: (1) **charset tường minh mọi nơi** — UTF-8 vào ra; các overload
+mặc định nền đã bị đánh dấu deprecated đúng vì "mặc định" khác nhau giữa các
+máy. (2) **một bản ghi mỗi dòng** (JSONL): newline là khung, nên dòng cuối bị
+cắt là phát hiện được và bỏ qua được. (3) xoay theo chính sách — khi tệp vượt
+giới hạn, `Files.move` nó đi một cách nguyên tử rồi tiếp tục ghi vào tệp mới.
+Kafka, database, và mọi log shipper trên đời chạy trên hình dạng này.

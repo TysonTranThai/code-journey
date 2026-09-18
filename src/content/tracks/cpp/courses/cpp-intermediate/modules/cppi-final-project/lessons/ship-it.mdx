@@ -1,0 +1,20 @@
+You have built programs all course; the final module is about finishing
+one. "Finishing" has a checklist:
+
+1. **Requirements are testable.** Each capability has a concrete scenario:
+   "adding a duplicate ISBN updates the quantity" — not "handles input".
+2. **Errors are designed, not accidental.** Every failure the user can
+   cause has a chosen channel: return `nullopt`, throw `ValidationError`,
+   or print a message. Pick per case; document with the signature.
+3. **The happy path is boring.** Read the main loop: if it is more than
+   parse → dispatch → print, responsibilities leaked upward.
+4. **State survives restart.** Serialize on change, deserialize on start;
+   corrupt input degrades to "start empty" with a warning — never a crash.
+5. **You can explain every file.** The final review is verbal: point at a
+   line and say which decision it implements. If you cannot, that line is
+   either unnecessary or undesigned.
+
+The graded challenges below are the three seams learners most often get
+wrong: the borrow/return state machine, the persistence round-trip, and
+the validation boundary. Each is small; each is where "almost working"
+programs actually break.

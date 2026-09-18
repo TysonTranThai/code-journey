@@ -1,0 +1,41 @@
+Every visual change walks a pipeline. The step that re-runs determines the cost.
+
+## The pipeline
+
+1. **Parse** — HTML becomes the DOM; CSS becomes the CSSOM. Scripts can block parsing (hence `defer`/`async`).
+2. **Style** — compute which CSS rules apply to each element (the "Recalculate Style" you see in DevTools).
+3. **Layout** — geometry: where every element sits, how big it is. A change to _size or position_ invalidates layout.
+4. **Paint** — fill pixels: text, colors, shadows, images.
+5. **Composite** — GPU-assembles painted layers. Cheapest of all.
+
+Cost ordering matters: a `transform` or `opacity` change can stop at composite (cheap). A `width`/`top`/`font-size` change walks style→layout→paint (expensive — it's on every element it affects, and children). `color`/`background` skips layout but still paints.
+
+## Jank and the frame budget
+
+Browsers aim for 60fps — every frame gets a **16.7ms budget** (10ms on 120Hz displays). A script task that runs 200ms freezes that many frames: the page visibly stutters. Long tasks come from big loops, huge DOM mutations, or layout thrashing.
+
+## Layout thrashing: the classic performance bug
+
+```js
+// BAD: read-write-read-write forces layout every iteration
+for (const card of cards) {
+  const h = card.offsetHeight; // READ — forces layout (previous write is pending)
+  card.style.height = h + 20 + "px"; // WRITE — invalidates layout
+}
+```
+
+The fix is batching: **read everything, then write everything**.
+
+```js
+const heights = cards.map((c) => c.offsetHeight); // all reads
+cards.forEach((c, i) => {
+  c.style.height = heights[i] + 20 + "px";
+}); // all writes
+```
+
+## What actually moves the needle
+
+- `visibility`/`opacity` transitions instead of size animations
+- `content-visibility: auto` for long off-screen sections
+- Fewer, larger DOM mutations (DocumentFragment, one reflow)
+- The Composite-only properties (`transform`, `opacity`) for animation

@@ -1,0 +1,16 @@
+## Các kiểu
+
+```csharp
+public enum Direction { Income, Expense }
+
+public record Transaction(int Id, Direction Dir, decimal Amount,
+                          string Category, string Description, DateTime Date);
+
+public record AddResult(bool Ok, string Error);
+```
+
+`record` cho đẳng-thức-giá trị miễn phí (Module 11); enum biến hướng sai không-có-thể-diễn-đạt — `Direction.Expense` đánh bại chuỗi thần chú `"out"` mà trình biên dịch không kiểm được. `decimal` cho tiền (Module 2): số học cơ-số-10 chính xác, không bất ngờ làm tròn nhị phân.
+
+## Xác thực thành dữ liệu
+
+`AddResult` trả *lý do* từ chối thay vì ném: `Ok = false, Error = "amount-must-be-positive"`. Người gọi rẽ nhánh trên kết quả; không chi phí exception, không điều khiển luồng bằng tai nạn. Các chuỗi lỗi chính là API — test ghim chúng.

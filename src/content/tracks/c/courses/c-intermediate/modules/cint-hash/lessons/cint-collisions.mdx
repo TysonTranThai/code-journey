@@ -1,0 +1,36 @@
+## Separate chaining: a list per bucket
+
+```c
+typedef struct HNode {
+    long          key;
+    int           value;
+    struct HNode *next;
+} HNode;
+HNode **buckets;      /* nbuckets slots, each NULL or a chain head */
+```
+
+Insert pushes at the chain head — O(1) always. Lookup walks one chain.
+Delete unlinks (the `HNode **link` walk you already know). Chaining
+tolerates load > 1 and never fails to insert; the costs are a pointer
+per node, malloc traffic, and cache misses walking chains.
+
+## Open addressing: everything lives in the array
+
+No nodes. On collision, *probe* — try the next slot (linear probing),
+the slot at h+1², h+2² (quadratic), or the "double hash" stride. Lookup
+follows the same probe sequence until an empty slot proves absence.
+The subtlety is **deletion**: removing an entry leaves a hole that
+would cut probe sequences — so deletions mark the slot *tombstone*
+(occupied-for-probing, empty-for-insert), and tombstones need periodic
+cleanup or the table slowly fills with ghosts.
+
+| | chaining | open addressing |
+|---|---|---|
+| delete | easy | tombstones |
+| load limit | >1 fine | 0.5–0.7 |
+| memory | pointer/node | dense, cache-friendly |
+| worst case | one long chain | full-table scan |
+
+Rule of thumb: open addressing when memory locality matters (big
+in-memory tables), chaining when deletion is frequent or load is
+unpredictable.

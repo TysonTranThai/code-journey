@@ -1,0 +1,16 @@
+## Mọi con trỏ đều có chủ
+
+Với mỗi cấp phát heap, codebase phải trả lời: hàm hoặc struct nào chịu trách nhiệm free thứ này, và khi nào? Mọi thứ khác chỉ *mượn* — con trỏ hợp lệ trong vòng đời của chủ.
+
+## Các hình dạng API mã hóa quyền sở hữu
+
+- `handle_create` / `handle_destroy` — mô-đun sở hữu; caller mượn giữa hai lần gọi.
+- `take(buf)` — hàm được gọi *nhận quyền sở hữu*: sau lời gọi, caller không được free hay dùng `buf`.
+- `give()` — hàm được gọi trao quyền sở hữu: caller cuối cùng phải free.
+- `const T *view(const T *x)` — mượn thuần: người nhận không bao giờ free.
+
+API che giấu hình dạng của nó là lỗi dưới dạng tài liệu.
+
+## Bộ đếm sống biến hợp đồng thành thứ chạy được
+
+Bộ đếm `objects_alive` cấp mô-đun — tăng trong create, giảm trong destroy — biến 'caller bị leak' từ ý kiến review thành sự kiện kiểm thử được. Code production làm điều này ở bản debug; khóa học làm điều đó trong mọi bài quyền sở hữu.

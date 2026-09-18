@@ -1,0 +1,25 @@
+{
+  "id": "cb19-checkpoint-pipeline",
+  "title": "Report Pipeline Repair",
+  "prompt": "Fix all three defects in the pipeline below: (1) `avg` must not use integer division, (2) `max_of` must handle n == 1 correctly (start from a[0]), (3) `report(const int *a, int n, char *out)` must write `n=<n> avg=<g> max=<g>` into out with snprintf (%g for the doubles). Reference: report({2, 4}, 2, buf) makes buf `n=2 avg=3 max=4`.\n\n```c\ndouble avg(const int *a, int n) {\n    int s = 0;\n    for (int i = 0; i < n; i++) s += a[i];\n    return s / n;          /* BUG: integer division */\n}\nint max_of(const int *a, int n) {\n    int m;\n    for (int i = 1; i < n; i++)\n        if (a[i] > m) m = a[i];   /* BUG: m uninitialized */\n    return m;\n}\nvoid report(const int *a, int n, char *out) {\n    printf(\"n=%d avg=%g max=%g\\n\", n, avg(a, n), (double)max_of(a, n));  /* BUG: prints, ignores out */\n}\n```",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "avg double",
+      "code": "int a[] = {1, 2};\nCHECK_NEAR(avg(a, 2), 1.5, 1e-9);",
+      "hint": "(double)s / n."
+    },
+    {
+      "name": "max single",
+      "code": "int a[] = {7};\nCHECK_EQ(max_of(a, 1), 7);",
+      "hint": "Start m at a[0]."
+    },
+    {
+      "name": "report format",
+      "code": "int a[] = {2, 4};\nchar buf[64] = {0};\nreport(a, 2, buf);\nCHECK_STR_EQ(buf, \"n=2 avg=3 max=4\");",
+      "hint": "snprintf(out, 64, \"n=%d avg=%g max=%g\", n, avg(a, n), (double)max_of(a, n))."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+## The product
+
+A **Personal Finance Manager** — record transactions, categorize them, and answer real questions: what did I spend, on what, and what remains?
+
+## Features (graded subset marked ★)
+
+1. ★ **Record** a transaction: name, category, amount (positive = income, negative = expense).
+2. ★ **Validate** at the boundary: empty name rejected, zero amount rejected.
+3. ★ **Balance**: sum of all amounts.
+4. ★ **By category**: per-category totals (`map<string,double>`).
+5. **Filter**: transactions above/below a threshold.
+6. **Persistence**: save/load CSV lines (`name,category,amount`) — module 6's parser in production.
+7. **Report**: sorted summary printed via `void program()`.
+
+## Architecture constraints
+
+- A `Transaction` **struct**; an `enum class Kind { Income, Expense }` derived from the sign.
+- A **class** `Ledger` owning a `std::vector<Transaction>` — its methods enforce validation (module 10's invariant discipline).
+- Parsing/formatting as **free functions** (module 16's pipeline), not glued into `Ledger`.
+- No `new`/`delete` anywhere (module 12), no C-strings, no `using namespace std;` in headers.
+
+## Milestones
+
+M1: struct + Ledger with record/balance. M2: category totals + filter. M3: CSV save/load round-trip. M4: report via `program()`. Ship each milestone working — the graded checks map to M1–M3 exactly.
+
+## Acceptance (the tests' point of view)
+
+The graded challenges call your names directly: `add_record`, `balance`, `category_totals`, plus a `program()` report check. Edge cases are graded: the empty ledger, the rejected record, the single-category month. Design for them from line one.

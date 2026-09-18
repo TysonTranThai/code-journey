@@ -1,0 +1,43 @@
+## Định nghĩa và khai báo
+
+```c
+struct Point {          // định nghĩa một KIỂU mới
+    int x;
+    int y;
+};
+
+struct Point p = {3, 4};            // khởi tạo theo vị trí
+struct Point q = {.x = 3, .y = 4};  // theo tên (rõ hơn, không phụ thuộc thứ tự)
+```
+
+Từ khóa `struct` là một phần của tên kiểu. Thành viên được truy cập bằng dấu
+chấm: `p.x`, `p.y`.
+
+## Gán là chép toàn bộ
+
+```c
+struct Point a = {1, 2};
+struct Point b = a;     // b có BẢN SAO riêng của cả hai thành viên
+b.x = 99;               // a.x vẫn là 1
+```
+
+Mảng phải tự viết vòng lặp mới chép được từng phần tử; struct chép trong một
+lệnh gán. Vì thế struct là đối tượng giá trị tự nhiên.
+
+## Struct lồng nhau
+
+```c
+struct Rect {
+    struct Point topleft;
+    struct Point size;
+};
+struct Rect r = {{0, 0}, {10, 5}};
+printf("%d\n", r.size.y);   // 5 — dấu chấm nối tiếp
+```
+
+## Mảng struct
+
+```c
+struct Point pts[3] = {{1, 1}, {2, 2}, {3, 3}};
+printf("%d\n", pts[1].x);   // 2 — đánh chỉ số trước, thành viên sau
+```

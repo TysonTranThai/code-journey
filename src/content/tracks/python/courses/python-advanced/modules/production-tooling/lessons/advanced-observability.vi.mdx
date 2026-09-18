@@ -1,0 +1,48 @@
+## Ba trụ cột, nói thẳng trọng lượng
+
+- **Log** — các sự kiện rời rạc với ngữ cảnh. Con ngựa thồ.
+- **Metric** — con số theo thời gian (counter, gauge, histogram). Chuông báo.
+- **Trace** — hành trình của một request qua các thành phần, với một
+  **correlation ID** chung. Thám tử đa chặng.
+
+Structured logging đánh bại định dạng chuỗi: `log.info("order.created",
+order_id=..., total=...)` phát JSON mà máy truy vấn được. Các quy tắc đáng kể:
+
+- mức log là một *chính sách*: DEBUG cho lập trình viên, INFO cho sự kiện
+  nghiệp vụ, WARNING cho điều bất thường tự hồi phục, ERROR cho thứ con người
+  phải nhìn thấy,
+- **không bao giờ log secret hay dữ liệu cá nhân** — mật khẩu, token, số thẻ
+  đầy đủ; log định danh, không log nội dung,
+- một sự kiện cho mỗi lần *xuất hiện*, kèm các field — không phải một dòng cho
+  mỗi biến.
+
+## Metric đáng tiền
+
+Bốn loại metric bao gần hết: counter (đơn điệu tăng — request, lỗi), gauge
+(tại một thời điểm — độ sâu queue, kết nối đang hoạt động), histogram (phân
+phối — độ trễ), và rate (counter trên thời gian). Cảnh báo trên *triệu chứng*
+người dùng cảm nhận (tỷ lệ lỗi, đốt SLO độ trễ) — không phải trên *nguyên nhân*
+(CPU cao) — và mỗi cảnh báo phải hành động được, nếu không nó dạy con người
+phớt lờ cảnh báo.
+
+## Tracing: correlation ID
+
+Một ID cho mỗi request, được truyền qua mọi chặng và gắn vào mọi dòng log. Khi
+người dùng nói "nó bị lỗi", ID tái dựng toàn bộ hành trình: API → queue →
+worker → database, với thời gian tại từng chặng. OpenTelemetry chuẩn hóa phần
+instrumentation; khái niệm quan trọng hơn nhà cung cấp.
+
+## Health check và graceful degradation, nhìn lại
+
+`/readyz` báo *trạng thái dependency* (cái readiness probe bạn đã xây trong
+module API); metric về lỗi dependency nuôi circuit breaker (module distributed);
+trace mang correlation ID biến "lỗi tăng vọt" thành "độ trễ checkout tăng sau
+khi p99 của nhà cung cấp thanh toán vượt 2s lúc 02:14". Mỗi cơ chế đều đơn giản;
+hệ thống ghép là cách sự cố được chẩn đoán trước khi uống cà phê.
+
+## SLO: hợp đồng trung thực
+
+Chọn một tập nhỏ mục tiêu hướng người dùng ("99.9% request checkout thành công
+dưới 500ms"), đo bằng histogram, và để *tốc độ đốt* ngân sách lỗi quyết định
+mức khẩn cấp. Còn trong ngân sách: ship tính năng. Đốt nhanh: dừng lại và ổn
+định. SLO thay thế cảm tính bằng số học.

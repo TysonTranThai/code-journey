@@ -1,0 +1,21 @@
+{
+  "id": "pa-dm-lookup-order",
+  "title": "Who wins the lookup?",
+  "prompt": "Implement a data descriptor `Guarded` that stores its value in the instance dict under the mangled name `_value`.\n\nAlso implement `def probe(obj)` that returns the string 'descriptor' if `obj.value` resolves through the descriptor's `__get__` (i.e. the descriptor increments its own `reads` counter), or 'instance' otherwise.\n\nThe test will create an instance, set BOTH `obj.value = 99` (a plain instance attribute attempt) and the descriptor state, and check that reading `obj.value` still goes through the descriptor.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class Guarded:\n    reads = 0\n\n    def __set_name__(self, owner, name):\n        self.name = '_' + name\n\n    def __get__(self, obj, objtype=None):\n        if obj is None:\n            return self\n        type(self).reads += 1\n        return getattr(obj, self.name)\n\n    def __set__(self, obj, value):\n        setattr(obj, self.name, value)\n\n\nclass Box:\n    value = Guarded()\n\n    def __init__(self):\n        self.value = 1\n\n\ndef probe(obj):\n    # TODO: return 'descriptor' or 'instance'\n    pass",
+  "tests": [
+    {
+      "name": "descriptor beats instance dict",
+      "code": "b = Box()\nb.value = 5\nbefore = Guarded.reads\n_ = b.value\nassert Guarded.reads == before + 1, 'instance read must go through the data descriptor'\nassert probe(b) == 'descriptor', f\"probe returned {probe(b)!r}\"\nprint('ok')",
+      "hint": "A data descriptor has priority over obj.__dict__, so the read must hit __get__."
+    },
+    {
+      "name": "probe reports instance when descriptor absent",
+      "code": "class Plain:\n    def __init__(self):\n        self.value = 7\n\np = Plain()\nassert probe(p) == 'instance', f\"probe returned {probe(p)!r}\"\nprint('ok')",
+      "hint": "With no descriptor on the class, the read resolves from the instance dict."
+    }
+  ],
+  "level": "independent"
+}

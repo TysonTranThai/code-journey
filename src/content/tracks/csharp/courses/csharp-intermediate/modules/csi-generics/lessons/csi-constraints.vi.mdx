@@ -1,0 +1,63 @@
+## T không ràng buộc không hứa gì cả
+
+Bên trong `class Box<T>`, compiler chỉ biết "T là một kiểu." Bạn không thể so
+sánh, khởi tạo, hay sắp xếp nó. Ràng buộc là cách bạn mua quyền năng:
+
+```csharp
+public static T Max<T>(T a, T b) where T : IComparable<T> =>
+    a.CompareTo(b) >= 0 ? a : b;
+
+public static T New<T>() where T : new() => new T();   // khởi tạo được
+
+public class Repo<T> where T : class, IEntity, new()
+{
+    // dùng được T.Id (IEntity), null-check như class (class), new T() (new())
+}
+
+public static T Pick<T>(T[] items, int i) where T : struct
+    => items[i];   // chỉ-kiểu-giá-trị: không thể có null
+```
+
+Từ vựng ràng buộc: `where T : class`, `struct`, `new()`, `IComparable<T>`,
+`SomeBaseClass`, `IEnumerable<T>`, và tổ hợp (ngăn cách bằng phẩy; nhiều
+dòng `where` cho nhiều tham số). Ràng buộc là *yêu cầu đọc được* — một API
+có `where T : IComparable<T>` tự tài liệu hóa.
+
+## Giá trị mặc định cho T
+
+`default(T)` (hoặc chỉ `default`): null cho kiểu tham chiếu, zero cho kiểu
+giá trị. Trong code generic trả về "chưa có gì":
+
+```csharp
+public T? Find(Predicate<T> match)
+{
+    foreach (T item in _items)
+        if (match(item)) return item;
+    return default;          // null hoặc zero — trung thực theo từng loại T
+}
+```
+
+Lối thoát `default!` (`= null!` trên một trường) nói với compiler "tin mình
+đi" — chính đáng chỉ khi việc khởi tạo được đảm bảo ở nơi khác (DI container,
+serializer), và là lời nói dối ở mọi nơi khác.
+
+## Thuật toán generic
+
+Viết thuật toán MỘT LẦN trên các hình dạng:
+
+```csharp
+public static int CountWhile<T>(IEnumerable<T> source, Func<T, bool> ok)
+{
+    int n = 0;
+    foreach (T item in source) if (ok(item)) n++;
+    return n;
+}
+```
+
+Thuật toán không bao giờ box, không bao giờ ép kiểu — an toàn kiểu từ đầu
+đến cuối, điều mà code thời `ArrayList` không thể hứa.
+
+## Kiểm tra hiểu biết
+
+- Vì sao `IComparable<T>` chứ không `IComparable`? (Bản non-generic box và cần ép kiểu.)
+- `default` của `int`? `string`? `bool`? (0, null, false.)

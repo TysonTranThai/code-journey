@@ -1,0 +1,52 @@
+## subprocess: dạng list hoặc không có gì
+
+```python
+# shell=True: một shell diễn giải chuỗi của bạn — injection quay lại
+subprocess.run(f"convert {filename}.png", shell=True)
+
+# dạng list: argv truyền thẳng, không shell, không injection
+subprocess.run(["convert", f"{filename}.png"], check=True, timeout=30)
+```
+
+Luôn dùng `check=True` (exit code khác 0 sẽ raise) trừ khi bạn tự xử lý mã;
+luôn dùng `timeout=` (một con treo là một dịch vụ treo); bắt output bằng
+`capture_output=True` và decode tường minh. Stream là hợp đồng: con ghi vào
+stdout/stderr, và một cha bền bỉ phải đọc chúng *trước khi* lấp đầy buffer pipe
+của OS (hoặc dùng thread) — con bị chặn trên pipe đầy là deadlock im lặng kinh
+điển.
+
+## Filesystem như một API
+
+`pathlib.Path` là giao diện hiện đại: `Path(base) / name` nối đường dẫn khả
+chuyển, `.resolve()` chuẩn hóa, `.is_relative_to(base)` giới hạn (phòng thủ
+traversal từ module bảo mật). Ghi nguyên tử theo một pattern: ghi vào tệp tạm
+trong cùng thư mục, `flush`, `fsync`, rồi `os.replace(tmp, final)` — người đọc
+thấy tệp cũ hoặc tệp mới, không bao giờ thấy bản ghi rách.
+
+## Môi trường và cấu hình
+
+Cấu hình đến từ môi trường trong production (quy tắc secrets từ module bảo
+mật). Parse một lần lúc khởi động với kỷ luật fail-closed, rồi truyền giá trị
+tường minh — một module mổ xẻ `os.environ` sâu trong cây gọi là không thể test
+và không thể đoán.
+
+## Signal và tắt máy nhã nhặn
+
+OS nói chuyện với tiến trình qua signal: `SIGTERM` (làm ơn dừng), `SIGINT`
+(Ctrl-C), `SIGKILL` (không đàm phán, không thể bắt). Pattern tắt máy nhã nhặn:
+
+1. cài handler cho `SIGTERM`/`SIGINT` đặt một cờ shutdown,
+2. ngừng nhận công việc mới,
+3. hoàn tất (hoặc trả về queue một cách bền vững) công việc đang chạy — job
+   idempotent khiến điều này an toàn,
+4. giải phóng tài nguyên, rồi thoát.
+
+Kill-9 giữa chừng job chỉ sống được nhờ thiết kế at-least-once + idempotency
+từ module distributed: job được chuyển giao lại, hiệu ứng vẫn exactly-once.
+
+## Thực thi an toàn cho automation
+
+Một "automation agent" chạy trên máy thật cần danh sách khiêm tốn: validate
+mọi đầu vào bên ngoài (kể cả tên tệp), không bao giờ gọi shell với dữ liệu
+người dùng, chế độ dry-run cho các thao tác phá hủy, và audit log mọi hành
+động. Công cụ bạn viết là công cụ sẽ chạy khi bạn đang đi nghỉ.

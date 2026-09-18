@@ -1,0 +1,21 @@
+{
+  "id": "csi-p8-top-customers",
+  "title": "Top Customers by Revenue",
+  "prompt": "Given order lines (customer, amount, day), return the top N customers by total revenue, formatted \"Name: total\" (ties broken by name ascending).\n\n```csharp\npublic record OrderLine(string Customer, decimal Amount, int Day);\nstatic List<string> TopCustomers(IEnumerable<OrderLine> lines, int n);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "totals and ordering",
+      "code": "\nvar lines = new[] {\n    new Solution.OrderLine(\"ann\", 100m, 1),\n    new Solution.OrderLine(\"bob\", 50m, 1),\n    new Solution.OrderLine(\"ann\", 30m, 2),\n    new Solution.OrderLine(\"cid\", 200m, 2),\n};\nCj.Eq(string.Join(\"|\", Solution.TopCustomers(lines, 2)), \"cid: 200|ann: 130\", \"sorted by total desc\");\nCj.Eq(string.Join(\"|\", Solution.TopCustomers(lines, 1)), \"cid: 200\", \"top 1\");\n",
+      "hint": "GroupBy customer, sum amounts, order by total desc then name, take n, format."
+    },
+    {
+      "name": "tie-break by name",
+      "code": "\nvar tied = new[] {\n    new Solution.OrderLine(\"zed\", 100m, 1),\n    new Solution.OrderLine(\"amy\", 100m, 1),\n};\nCj.Eq(string.Join(\"|\", Solution.TopCustomers(tied, 2)), \"amy: 100|zed: 100\", \"name asc on ties\");\nCj.Eq(Solution.TopCustomers(new Solution.OrderLine[0], 3).Count, 0, \"empty input\");\n",
+      "hint": "ThenBy(name) after OrderByDescending(total)."
+    }
+  ],
+  "level": "guided"
+}

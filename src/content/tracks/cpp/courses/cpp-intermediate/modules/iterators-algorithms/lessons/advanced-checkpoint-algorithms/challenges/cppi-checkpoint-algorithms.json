@@ -1,0 +1,25 @@
+{
+  "id": "cppi-checkpoint-algorithms",
+  "title": "Checkpoint: Running average",
+  "prompt": "Implement `std::vector<double> running_avg(const std::vector<int>& v)` where element i is the average of v[0..i]. One `std::transform` with a by-reference captured prefix sum must produce the whole output (no manual loop in main). The empty vector returns an empty vector.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <algorithm>\n#include <vector>\n#include <iostream>\n\n// std::vector<double> running_avg(const std::vector<int>& v)\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "auto r = running_avg({2, 4, 6});\nCHECK_EQ(r.size(), 3);\nCHECK(r[0] > 1.99 && r[0] < 2.01);\nCHECK(r[1] > 2.99 && r[1] < 3.01);\nCHECK(r[2] > 3.99 && r[2] < 4.01);",
+      "hint": "Averages are 2/1, 6/2, 12/3."
+    },
+    {
+      "name": "negative-dip",
+      "code": "auto r = running_avg({10, -10});\nCHECK(r[0] > 9.99 && r[0] < 10.01);\nCHECK(r[1] > -0.01 && r[1] < 0.01);",
+      "hint": "A negative second element drags the average to zero."
+    },
+    {
+      "name": "empty",
+      "code": "CHECK_EQ(running_avg({}).size(), 0);",
+      "hint": "No elements, no averages."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "practice-fix-the-link",
+  "title": "Debug: The Link That Goes Nowhere",
+  "prompt": "This link is broken in two ways: the `href` is missing its protocol, and there's no link text, so screen readers announce nothing. Repair it — the link should point to `https://developer.mozilla.org` and read `MDN Web Docs`.\n\nRules:\n- A complete, valid absolute URL in `href`.\n- Meaningful text between the tags.\n- Don't change anything else.",
+  "difficulty": "beginner",
+  "level": "debugging",
+  "boilerplate": "<p>When you get stuck, the <a href=\"developer.mozilla.org\"></a> has the answers.</p>\n",
+  "tests": [
+    {
+      "name": "href is a complete absolute URL",
+      "code": "const m = code.match(/<a\\s[^>]*href=[\"']([^\"']*)[\"']/i);\nif (!m || m[1] !== \"https://developer.mozilla.org\") {\n  throw new Error(\"The href must be exactly https://developer.mozilla.org — the protocol was missing.\");\n}",
+      "hint": "Absolute URLs need the scheme: https:// before the domain."
+    },
+    {
+      "name": "link has meaningful text",
+      "code": "const m = code.match(/<a\\s[^>]*href=[^>]*>([\\s\\S]*?)<\\/a>/i);\nif (!m || m[1].trim() !== \"MDN Web Docs\") {\n  throw new Error(\"The link text must read: MDN Web Docs\");\n}",
+      "hint": "Put the text between the tags: <a …>MDN Web Docs</a>."
+    },
+    {
+      "name": "the sentence survives",
+      "code": "if (!/the <a\\s[\\s\\S]*?<\\/a> has the answers/i.test(code)) {\n  throw new Error(\"Keep the surrounding sentence — only fix the link element itself.\");\n}",
+      "hint": "Fix the <a> element; leave the rest of the paragraph as it was."
+    }
+  ]
+}

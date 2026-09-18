@@ -1,0 +1,30 @@
+The `[project.scripts]` line `tasknoter = "tasknoter.cli:main"` tells
+installers: create a command `tasknoter` that imports `tasknoter.cli` and
+calls `main()`. Your `main` receives **no arguments** — it reads sys.argv
+(usually via `argparse` from your Beginner course):
+
+```python
+# src/tasknoter/cli.py
+import argparse
+
+def main():
+    parser = argparse.ArgumentParser(prog="tasknoter")
+    parser.add_argument("command", choices=["add", "list", "done"])
+    parser.add_argument("text", nargs="?")
+    args = parser.parse_args()
+    if args.command == "add" and args.text:
+        print(f"added: {args.text}")
+    elif args.command == "list":
+        print("listing...")
+
+if __name__ == "__main__":
+    main()
+```
+
+Professional CLI manners: **exit codes matter** (0 = success, non-zero =
+failure — `raise SystemExit(2)` or `sys.exit(2)`), errors go to **stderr**
+(`print(..., file=sys.stderr)`), and `--help` is generated for you. Scripts
+that respect these compose cleanly with other tools.
+
+The capstone asks for exactly this shape: a `main()` that dispatches
+subcommands to your storage and service layers.

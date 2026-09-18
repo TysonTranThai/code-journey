@@ -1,0 +1,21 @@
+{
+  "id": "ca1-two-char",
+  "title": "Signed or Plain char?",
+  "prompt": "Plain `char` signedness is implementation-defined. On a typical x86-64 Linux box plain char is signed; on this machine it is not — implementation-defined means the platform decides and your code must adapt. Implement `void program(void)` that prints two lines:\n \n```\nplain char: <signed|unsigned — derived>\nmin value: <CHAR_MIN>\n```\n \nDerive BOTH facts at runtime: assign `(char)-1` and compare with -1 (signed) or 255 (unsigned), then print `CHAR_MIN` from `<limits.h>`. Your output here may differ from x86-64 — that difference is the lesson.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <limits.h>\n#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "derived signedness",
+      "code": "const char* out = cj_capture(program);\nchar probe = (char)-1; CHECK_CONTAINS(out, probe == -1 ? \"signed\" : \"unsigned\");",
+      "hint": "The test derives the platform truth the same way your code must: probe == -1 means signed, probe == 255 means unsigned."
+    },
+    {
+      "name": "exact two-line output",
+      "code": "char probe = (char)-1;\nchar mn[64];\nsprintf(mn, \"plain char: %s\\nmin value: %d\\n\", probe == -1 ? \"signed\" : \"unsigned\", CHAR_MIN);\nCHECK_STR_EQ(cj_capture(program), mn);",
+      "hint": "sprintf builds the platform-truth expectation from probe and CHAR_MIN, then the program must match it exactly — hard-coding either line fails somewhere."
+    }
+  ],
+  "level": "combination"
+}

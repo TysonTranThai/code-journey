@@ -1,6 +1,25 @@
-import { defineConfig } from "vitest/config";
+import { defineConfig, type Plugin } from "vitest/config";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+
+/**
+ * Compile MDX for vitest with the same @mdx-js/mdx the Next build uses
+ * (next.config.ts has no remark/rehype options, so the defaults match).
+ * Keeps tests that import the generated mdx-map (static lesson-body
+ * imports) runnable in plain Node.
+ */
+const mdxPlugin: Plugin = {
+  name: "vitest-mdx",
+  enforce: "pre",
+  async transform(_code, id) {
+    if (!id.endsWith(".mdx")) return undefined;
+    const { compile } = await import("@mdx-js/mdx");
+    const source = readFileSync(id.replace(/\?.*$/, ""), "utf8");
+    // Default outputFormat (ESM) — Vite's SSR transform handles the exports.
+    const compiled = String(await compile(source, {}));
+    return { code: compiled, map: null };
+  },
+};
 
 // Load .env.local into process.env for integration tests (DATABASE_URL etc.).
 // Keys already set in the real environment win.
@@ -19,9 +38,12 @@ try {
 }
 
 export default defineConfig({
+  plugins: [mdxPlugin],
   test: {
     environment: "node",
     include: ["tests/**/*.test.ts"],
+    testTimeout: 15_000,
+    fileParallelism: false,
   },
   resolve: {
     alias: {

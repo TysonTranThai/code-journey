@@ -1,0 +1,30 @@
+# Docker build context exclusions (Phase 9).
+# NEVER ship env files into an image layer — secrets stay in the deployment
+# environment only (compose env_file / orchestrator secrets).
+.env
+.env.*
+!.env.example
+
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Repo-only artifacts
+.git/
+.gitignore
+playwright-report/
+test-results/
+coverage/
+tsconfig.tsbuildinfo
+next-env.d.ts
+
+# Build-time synced (the image build runs pnpm monaco:sync itself)
+public/monaco-vs/
+
+# Planning/tests/docs that never belong in the runtime image
+.planning/
+tests/
+scripts/phase9-live-verify.sh
+docs/

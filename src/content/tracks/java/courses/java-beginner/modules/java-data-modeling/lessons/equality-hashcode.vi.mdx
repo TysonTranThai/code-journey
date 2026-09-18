@@ -1,0 +1,40 @@
+Đẳng thức trong Java có hai tầng, và các collection đứng trên cả hai.
+
+**`equals(Object)`** — đẳng thức theo giá trị. Bản mặc định (từ `Object`)
+là identity theo tham chiếu; class override nó để so nội dung. Hợp đồng
+cần nhớ: phản xạ, đối xứng (`a.equals(b)` ⇔ `b.equals(a)`), với null trả
+`false` (không ném — nhưng khi tự viết equals, chặn bằng kiểm tra
+`instanceof`).
+
+```java
+String a = "yes";
+a.equals("yes")                    // true — nội dung
+new Point(1, 2).equals(new Point(1, 2))   // record: true — mọi thành phần
+```
+
+**`hashCode()`** — một int tóm tắt giá trị. QUY TẮC: **object bằng nhau
+phải có hash code bằng nhau**. Override equals thì phải override hashCode
+nhất quán, vì các collection dựa trên hash (HashSet, HashMap) xếp bucket
+theo hashCode trước, rồi xác nhận bằng equals. Phá cặp này và object biến
+mất trong set ("tôi đã thêm mà contains lại bảo false").
+
+```java
+class BadPoint {
+    final int x, y;
+    // ...
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof BadPoint p && p.x == x && p.y == y;
+    }
+    // hashCode KHÔNG được override → identity hash → HashSet hỏng ngầm
+}
+```
+
+Record và enum có sẵn tất cả — thêm một lý do để cây mô hình hóa ở trên
+ưu tiên chúng. Khi THẬT SỰ phải viết equals tay (class kiểu cũ), hãy sinh
+luôn hashCode (IDE làm được; dạng tay là `Objects.hash(x, y)`).
+
+**`toString()`** là chân thứ ba: mọi thông điệp exception, dòng log, và
+cửa sổ debugger đều in nó. Class thiếu toString thật thì gỡ lỗi rất khổ.
+
+**Tiếp theo:** thực hành — mô hình hóa dữ liệu thật.

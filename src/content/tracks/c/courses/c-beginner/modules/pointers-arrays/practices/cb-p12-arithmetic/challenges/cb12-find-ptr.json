@@ -1,0 +1,26 @@
+{
+  "id": "cb12-find-ptr",
+  "title": "Find by Pointers",
+  "prompt": "Implement `const int* find_ptr(const int *begin, const int *end, int target)` returning a pointer to the first element equal to target, or end if absent. No [] allowed.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "found",
+      "code": "int a[] = {2, 7, 4};\nCHECK_EQ(find_ptr(a, a + 3, 7), &a[1]);",
+      "hint": "Return the ADDRESS of the match."
+    },
+    {
+      "name": "absent returns end",
+      "code": "int a[] = {2, 7, 4};\nCHECK_EQ(find_ptr(a, a + 3, 99), a + 3);",
+      "hint": "end signals 'not found'."
+    },
+    {
+      "name": "first match",
+      "code": "int a[] = {5, 5};\nCHECK_EQ(find_ptr(a, a + 2, 5), a);",
+      "hint": "Ties: earliest."
+    }
+  ],
+  "level": "independent"
+}

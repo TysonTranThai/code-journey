@@ -1,0 +1,47 @@
+## Xem trước thế giới hai tệp trong một tệp
+
+Sandbox của khóa này biên dịch một tệp, nên ta diễn tập mẫu nhiều tệp ngay
+trong đó. Các quy tắc chính là những gì một dự án thật `geom.h` + `geom.c`
+tuân theo:
+
+```c
+/* ---- HỢP ĐỒNG (thứ geom.h sẽ nói) ---- */
+int stack_push(int v);          // người gọi được phép gọi
+int stack_pop(int *out);        // người gọi được phép gọi
+
+/* ---- CÀI ĐẶT (thứ geom.c sẽ chứa) ---- */
+static int data[16];            // riêng tư: người gọi không đụng tới
+static int count = 0;           // trạng thái riêng tư
+
+int stack_push(int v) {
+    if (count == 16) return 0;  // đầy: báo thất bại
+    data[count++] = v;
+    return 1;
+}
+
+int stack_pop(int *out) {
+    if (out == NULL || count == 0) return 0;
+    *out = data[--count];
+    return 1;
+}
+```
+
+## Điều gì khiến nó thành ranh giới
+
+- **công khai**: các hàm người gọi được phép gọi — khai báo trước, không
+  `static`
+- **riêng tư**: dữ liệu và helper `static` — vô hình bên ngoài module
+- Header không bao giờ chứa trạng thái `static` hay thân hàm; nó thuần là
+  lời hứa.
+
+## Kỷ luật mà trình biên dịch bắt buộc
+
+Người gọi chỉ chạm tới các hàm công khai. Khi phần biểu diễn riêng tư thay đổi
+(kích thước mảng, thuật toán), mã của người gọi không đổi — ranh giới giữ vững.
+Đó chính là toàn bộ ý nghĩa của module.
+
+## Khai-báo-rồi-định-nghĩa trong một tệp
+
+Hình dạng hợp đồng/kiểm tra như vậy hoạt động cả trong một đơn vị dịch: khai
+báo các hàm công khai ở đầu (vùng "header"), định nghĩa bên dưới. `gcc` kiểm
+tra mọi lời gọi theo khai báo, y như với header thật.

@@ -1,0 +1,30 @@
+{
+  "id": "i3-embed-sandbox",
+  "title": "Sandbox a Third-Party Widget",
+  "prompt": "Embed a chat widget (https://chat.example.com/widget) that needs scripts and form submission only: iframe with sandbox=\"allow-scripts allow-forms\", a title, loading=\"lazy\", and explicit width/height. Then, below it, embed a trusted static report from YOUR OWN origin as <iframe src=\"report.html\" sandbox=\"allow-scripts allow-same-origin\"> (safe because it is first-party).",
+  "difficulty": "advanced",
+  "level": "guided",
+  "boilerplate": "<!-- Two embeds, two policies -->\n\n",
+  "tests": [
+    {
+      "name": "untrusted widget is least-privileged",
+      "code": "const iframes = [...code.matchAll(/<iframe[^>]*>/gi)];\nif (iframes.length < 2) throw new Error(\"Two iframes expected.\");\nconst widget = iframes.find((m) => /chat\\.example\\.com/i.test(m[0]));\nif (!widget) throw new Error(\"Keep the chat widget iframe.\");\nconst s = (widget[0].match(/sandbox\\s*=\\s*[\"']([^\"']*)[\"']/i) || [])[1] || \"\";\nif (!/allow-scripts/i.test(s)) throw new Error(\"The widget needs allow-scripts to run.\");\nif (!/allow-forms/i.test(s)) throw new Error(\"The widget needs allow-forms for its input.\");\nconst risky = s.split(/\\s+/).filter((t) =>\n  [\"allow-same-origin\", \"allow-top-navigation\", \"allow-popups\"].includes(t.toLowerCase())\n);\nif (risky.length > 0) {\n  throw new Error(\"Grant only what the widget needs — drop \" + risky.join(\", \") + \".\");\n}",
+      "hint": "Least privilege: scripts + forms are the stated need; same-origin, top-navigation and popups are not."
+    },
+    {
+      "name": "widget has a name and dimensions",
+      "code": "const widget = [...code.matchAll(/<iframe[^>]*>/gi)].find((m) => /chat\\.example\\.com/i.test(m[0]));\nif (!widget) throw new Error(\"Keep the chat widget iframe.\");\nif (!/title\\s*=\\s*[\"'][^\"']{4,}[\"']/i.test(widget[0])) {\n  throw new Error(\"The iframe needs a descriptive title (its accessible name).\");\n}\nif (!/width\\s*=\\s*[\"']\\d+[\"']/i.test(widget[0]) || !/height\\s*=\\s*[\"']\\d+[\"']/i.test(widget[0])) {\n  throw new Error(\"Give the iframe explicit width and height.\");\n}",
+      "hint": "An unnamed frame announces only 'frame'; lazy loading without dimensions also causes layout shift."
+    },
+    {
+      "name": "first-party report keeps its origin",
+      "code": "const report = [...code.matchAll(/<iframe[^>]*>/gi)].find((m) => /report\\.html/i.test(m[0]));\nif (!report) throw new Error(\"Keep the first-party report iframe.\");\nconst s = (report[0].match(/sandbox\\s*=\\s*[\"']([^\"']*)[\"']/i) || [])[1] || \"\";\nif (!/allow-same-origin/i.test(s)) {\n  throw new Error('The trusted report keeps allow-same-origin (it is first-party).');\n}",
+      "hint": "Trust is the criterion: first-party content may keep its origin; third-party never does."
+    },
+    {
+      "name": "lazy where it belongs",
+      "code": "const widget = [...code.matchAll(/<iframe[^>]*>/gi)].find((m) => /chat\\.example\\.com/i.test(m[0]));\nif (!widget || !/loading\\s*=\\s*[\"']lazy[\"']/i.test(widget[0])) {\n  throw new Error('The widget embed should carry loading=\"lazy\".');\n}",
+      "hint": "Third-party embeds are prime lazy-loading candidates — off-screen frames should not cost bytes."
+    }
+  ]
+}

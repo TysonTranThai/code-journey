@@ -1,0 +1,40 @@
+## Một thư viện, mọi bài học
+
+Capstone là một **key-value store**: `put`, `get`, `del`, duyệt — lưu ra
+file và nạp lại. Nó nhỏ một cách cố ý: mọi quyết định đều là thứ bạn đã
+học; capstone ép chúng thành **một thiết kế nhất quán**.
+
+### API, và mỗi dòng cam kết điều gì
+
+```c
+typedef enum {
+    KV_OK = 0,       /* thành công                          */
+    KV_EARGS,        /* NULL/tham số sai — lỗi người gọi    */
+    KV_ENOMEM,       /* bảng đầy — trạng thái, không phải bug */
+    KV_ENOENT,       /* không có key — bình thường           */
+    KV_EFORMAT,      /* file: magic/version sai              */
+    KV_ETRUNC,       /* file: ngắn hơn bố cục tự khai        */
+    KV_EBADSUM,      /* file: checksum lệch — hỏng dữ liệu   */
+} KVError;
+```
+
+- **Lỗi là giá trị, không phải kênh phụ.** Phân biệt *lỗi người gọi*
+  (`KV_EARGS`) với *trạng thái* (`KV_ENOMEM`, `KV_ENOENT`) là kỷ luật
+  của M13.
+- **`kv_get` nhận `const KVStore *`.** Đọc không được mutation — hệ
+  thống kiểu giữ lời hứa thay cho người review.
+- **Key được sao chép.** `kv_put` copy bytes của người gọi vào
+  `slot.key`; đây là quy tắc ownership của M3.
+
+### Vì sao dung lượng cố định
+
+`KV_CAP 16` không phải lười — đó là **quyết định phạm vi**. Resize là
+vấn đề của khóa sau; bảng cố định giữ ngân sách phức tạp cho
+persistence và thiết kế lỗi.
+
+### Đơn luồng, cố ý
+
+Concurrency vắng mặt có chủ đích. M15 đã cho thấy thread biến mọi bất
+biến thành xác suất; test capstone có race là test flaky. Lời khai
+trung thực nằm ở comment header: *không thread-safe; đồng bộ bên
+ngoài*.

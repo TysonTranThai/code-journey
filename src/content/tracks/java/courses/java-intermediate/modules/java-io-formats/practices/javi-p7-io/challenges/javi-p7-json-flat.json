@@ -1,0 +1,36 @@
+{
+  "id": "javi-p7-json-flat",
+  "title": "Flat JSON Extractor",
+  "prompt": "Implement flat-object JSON extraction in `Solution`:\n- `static String str(String json, String key)` — value of `\"key\"` when\n  it's a string (unescaped), else null.\n- `static Integer num(String json, String key)` — integer value, else\n  null.\n- `static Boolean bool(String json, String key)` — true/false, else null.\n\nAssume flat objects (no nested braces between the target key and its\nvalue) with `\", \"`-style spacing variations. Missing key → null for all\nthree.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "string value",
+      "code": "\ncheckEq(Solution.str(\"{ \\\"name\\\": \\\"ann\\\", \\\"city\\\": \\\"hanoi\\\" }\", \"city\"), \"hanoi\", \"string field\");\n",
+      "hint": "Read the token after \"city\":."
+    },
+    {
+      "name": "numeric value",
+      "code": "\ncheckEq(Solution.num(\"{ \\\"age\\\": 31, \\\"zip\\\": 10000 }\", \"age\"), 31, \"number field\");\n",
+      "hint": "Parse the token as an integer."
+    },
+    {
+      "name": "boolean value",
+      "code": "\ncheckEq(Solution.bool(\"{ \\\"active\\\": true, \\\"admin\\\": false }\", \"admin\"), false, \"bool field\");\n",
+      "hint": "Recognize true/false literals."
+    },
+    {
+      "name": "missing key → null",
+      "code": "\ncheckEq(Solution.str(\"{ \\\"a\\\": \\\"b\\\" }\", \"nope\"), null, \"missing string\");\ncheckEq(Solution.num(\"{ \\\"a\\\": \\\"b\\\" }\", \"nope\"), null, \"missing number\");\n",
+      "hint": "Absent keys return null rather than throwing."
+    },
+    {
+      "name": "non-boolean is not coerced",
+      "code": "\ncheckEq(Solution.bool(\"{ \\\"label\\\": \\\"taco\\\" }\", \"label\"), null, \"string is not true\");\n",
+      "hint": "A string value (\"taco\") is not a boolean — only exact true/false literals count."
+    }
+  ],
+  "level": "independent"
+}

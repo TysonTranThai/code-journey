@@ -1,0 +1,25 @@
+{
+  "id": "practice-relative-link",
+  "title": "Link to Your Own Pages",
+  "prompt": "Relative links connect pages of the same site. The page lives next to `about.html` and `projects.html`. Add a paragraph with a relative link to `about.html` reading `About this site`, and a second link to `projects.html` reading `See my projects`.\n\nRules:\n- Both links use relative URLs (no `https://`, no leading `/`).\n- Link text exactly as given.",
+  "difficulty": "beginner",
+  "level": "independent",
+  "boilerplate": "<h1>Welcome</h1>\n<p><!-- link to about.html --></p>\n<p><!-- link to projects.html --></p>\n",
+  "tests": [
+    {
+      "name": "relative link to about.html",
+      "code": "const link = code.match(/<a\\s[^>]*href=[\"']([^\"']*)[\"'][^>]*>\\s*About this site\\s*<\\/a>/i);\nif (!link || /https?:|\\/+/.test(link[1]) || link[1] !== \"about.html\") {\n  throw new Error(\"The first link must be <a href=\\\"about.html\\\">About this site</a> — a relative URL.\");\n}",
+      "hint": "Relative URLs name the file directly: href=\"about.html\". No https:// and no leading slash."
+    },
+    {
+      "name": "relative link to projects.html",
+      "code": "const link = code.match(/<a\\s[^>]*href=[\"']([^\"']*)[\"'][^>]*>\\s*See my projects\\s*<\\/a>/i);\nif (!link || link[1] !== \"projects.html\") {\n  throw new Error(\"The second link must be <a href=\\\"projects.html\\\">See my projects</a>.\");\n}",
+      "hint": "Same pattern: href=\"projects.html\" with the text 'See my projects'."
+    },
+    {
+      "name": "no absolute URLs anywhere",
+      "code": "if (/href=[\"']https?:\\/\\//i.test(code)) {\n  throw new Error(\"Found an absolute (https://) URL — this exercise is about linking within your own site.\");\n}",
+      "hint": "This challenge wants relative links only — point at the local files."
+    }
+  ]
+}

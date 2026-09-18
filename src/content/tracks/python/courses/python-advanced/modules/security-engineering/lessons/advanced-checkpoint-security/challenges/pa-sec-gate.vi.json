@@ -1,0 +1,10 @@
+{
+  "title": "Năm phút kiểm toán",
+  "prompt": "Cài `security_gate(handlers)` — bản họ hàng nghiêm ngặt hơn của bài audit:\n\n- mỗi handler: `{'name', 'checks': set, 'public': bool}` với 'public' đánh dấu endpoint chủ động không xác thực (health check)\n- endpoint KHÔNG public phải có 'auth' VÀ 'owner' (endpoint dữ liệu) — thiếu một trong hai → vulnerable với `'critical': True`\n- endpoint CÓ public nhưng lại mang bất kỳ check 'auth'/'owner' nào là đáng ngờ (đánh dấu `'suspicious': True` — health check nào cần code auth?)\n- thiếu 'params' hoặc 'encode' → vulnerable (không critical)\n- trả `{'clean': [...], 'vulnerable': [...xấu nhất trước, hòa theo tên...]}` với các entry vulnerable mang 'missing' (đã sắp), và boolean 'critical'/'suspicious' chỉ khi True",
+  "tests": [
+    {
+      "name": "Phân loại trong một lượt",
+      "hint": "Public+không-auth là clean; dữ liệu+không-owner là critical; lỗ hổng không critical chỉ ghi chú encode."
+    }
+  ]
+}

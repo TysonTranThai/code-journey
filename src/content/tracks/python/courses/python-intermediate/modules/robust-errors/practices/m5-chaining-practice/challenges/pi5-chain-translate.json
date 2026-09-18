@@ -1,0 +1,26 @@
+{
+  "id": "pi5-chain-translate",
+  "title": "Translate the Cause",
+  "prompt": "Implement parse_count(text) that converts text to int, raising ValidationError('not a count: <text>') when it fails — chained from the original error (raise ... from exc).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "class ValidationError(Exception):\n    pass\n\ndef parse_count(text):\n    pass\n",
+  "tests": [
+    {
+      "name": "valid text parses",
+      "code": "assert parse_count('42') == 42",
+      "hint": "int() does the work when the text is a count."
+    },
+    {
+      "name": "invalid raises with message",
+      "code": "try:\n    parse_count('abc')\n    failed = False\nexcept ValidationError as e:\n    failed = 'abc' in str(e)\nassert failed",
+      "hint": "The message must include the offending text."
+    },
+    {
+      "name": "cause is preserved",
+      "code": "try:\n    parse_count('abc')\nexcept ValidationError as e:\n    assert e.__cause__ is not None and isinstance(e.__cause__, ValueError)",
+      "hint": "raise ... from exc sets __cause__ — the chain is the point."
+    }
+  ],
+  "level": "guided"
+}

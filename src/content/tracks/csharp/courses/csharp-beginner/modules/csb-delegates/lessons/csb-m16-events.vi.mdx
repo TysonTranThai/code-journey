@@ -1,0 +1,29 @@
+## Từ một callback tới nhiều
+
+Tham số `Func` giữ đúng **một** phương thức. Mẫu **event** xóa giới hạn đó:
+
+```csharp
+class Thermometer
+{
+    public event Action<int>? Boiling;   // người đăng ký tụ họp ở đây
+
+    public void Check(int celsius)
+    {
+        if (celsius >= 100)
+            Boiling?.Invoke(celsius);    // phát sóng: tất cả subscriber chạy
+    }
+}
+
+var t = new Thermometer();
+t.Boiling += c => Console.WriteLine($"cảnh báo: {c}");
+t.Boiling += c => Stats.Record(c);
+t.Check(101);   // cả hai chạy
+```
+
+`+=` đăng ký, `-=` hủy đăng ký. `?.Invoke` chỉ phát sóng khi có người nghe — null khi danh sách rỗng.
+
+## Hợp đồng
+
+Publisher định nghĩa kiểu delegate của event; subscriber tuân theo. Từ bên ngoài lớp, event chỉ-đăng-ký — bạn không thể gọi hoặc xóa event của người khác. Đó là điểm khác một trường delegate thường: **đóng gói việc kích hoạt**, thứ làm pub/sub an toàn khi mở rộng.
+
+Hủy đăng ký cũng quan trọng: một subscriber mà publisher sống lâu hơn sẽ rò rỉ bộ nhớ cho tới khi `-=` chạy.

@@ -1,0 +1,15 @@
+{
+  "id": "cint-p6-bounded-copy",
+  "title": "A Copy That Reports Truncation",
+  "prompt": "Implement the copy family that never lies:\n\n```c\n/* copies src into dst (capacity dstcap).\n   Always '\u0000'-terminates when dstcap > 0.\n   Returns: 0 if src + its '\u0000' fit (exact fit), 1 copied-but-truncated,\n   -1 bad args\n   (dst NULL, dstcap == 0, or src NULL). src == dst returns 0. */\nint copy_bounded(char *dst, size_t dstcap, const char *src);\n/* like copy_bounded but only the length that WOULD be needed\n   (excluding '\u0000'); 0 for NULL src */\nsize_t copy_needed(const char *src);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\nint copy_bounded(char *dst, size_t dstcap, const char *src);\nsize_t copy_needed(const char *src);\n",
+  "tests": [
+    {
+      "name": "truncation is reported, not silent",
+      "code": "\nchar buf[8];\nCHECK_EQ(copy_bounded(buf, 8, \"ok\"), 0);\nCHECK(!strcmp(buf, \"ok\"));\nCHECK_EQ(copy_bounded(buf, 8, \"0123456\"), 0);    /* exact fit: 7 + '\\0' == 8 */\nCHECK(!strcmp(buf, \"0123456\"));\nCHECK_EQ(copy_bounded(buf, 8, \"01234567\"), 1);   /* 8 chars into 8 bytes: no room for '\\0' */\nCHECK(!strcmp(buf, \"0123456\"));                  /* truncated to 7 */\nCHECK_EQ(copy_bounded(buf, 8, \"0123456789\"), 1); /* truncated */\nCHECK(!strcmp(buf, \"0123456\"));                  /* 7 + '\\0' */\nCHECK_EQ(copy_bounded(NULL, 8, \"x\"), -1);\nCHECK_EQ(copy_bounded(buf, 0, \"x\"), -1);\nCHECK_EQ(copy_bounded(buf, 8, NULL), -1);\nchar self[4] = \"abc\";\nCHECK_EQ(copy_bounded(self, 4, self), 0);        /* self-copy ok */\nCHECK(!strcmp(self, \"abc\"));\nCHECK_EQ(copy_needed(\"hello\"), 5);\nCHECK_EQ(copy_needed(NULL), 0);\n",
+      "hint": "snprintf gives you both: bounded copy and the would-be length. Careful with src==dst (memcpy overlaps)."
+    }
+  ]
+}

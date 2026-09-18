@@ -1,0 +1,44 @@
+## The problem with public fields
+
+A public field hands out raw state — anyone can write `account.Balance = -999;` and your object is now lying. Fields should be `private`; the question is how outsiders *read* state they need.
+
+## Properties look like fields, run like methods
+
+A **property** is accessed with field syntax but compiles to method calls:
+
+```csharp
+class Account
+{
+    private decimal balance;                 // hidden state
+
+    public decimal Balance                   // controlled access
+    {
+        get { return balance; }
+        private set { balance = value; }     // only the class may change it
+    }
+}
+```
+
+Readers write `account.Balance` — indistinguishable from a field at the call site. Writers hit *your* code, where the invariant lives. `value` is the incoming assignment inside `set`.
+
+## Auto-properties and validation
+
+When both accessors just wrap a hidden field, let C# generate it:
+
+```csharp
+public string Name { get; }             // get-only: set once in constructor
+public int Hits { get; private set; }   // read anywhere, mutate inside methods
+```
+
+When a settable property must keep a rule, validate in `set`:
+
+```csharp
+private int health;
+public int Health
+{
+    get { return health; }
+    set { health = Math.Clamp(value, 0, 100); }   // always in [0, 100]
+}
+```
+
+`Math.Clamp(value, min, max)` pins a number into range — every modern .NET has it. The habit that matters: **state is private, behavior is public**. Methods and setters are the only doors, and each door can enforce the rules.

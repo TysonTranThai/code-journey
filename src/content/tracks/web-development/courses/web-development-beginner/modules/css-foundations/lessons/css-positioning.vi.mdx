@@ -1,0 +1,48 @@
+Nói thẳng trước: **layout là việc của Flexbox và Grid** (những bài học sau). `position` giải quyết một vấn đề khác, nhỏ hơn: _đặt một hộp tương đối với thứ gì đó_. Người mới chọn position trước thường tạo ra những trang giòn vỡ; đây là liều lượng đúng.
+
+## Các giá trị
+
+**static** — mặc định. Hộp ngồi trong dòng chảy bình thường; các thuộc tính offset bị bỏ qua.
+
+**relative** — hộp vẫn ở trong dòng, và `top`/`right`/`bottom`/`left` đẩy nó đi _theo thị giác_ so với vị trí vốn có (khoảng chỗ ban đầu được giữ nguyên):
+
+```css
+.callout {
+  position: relative;
+  top: 4px; /* được vẽ thấp hơn 4px so với vị trí dòng chảy */
+}
+```
+
+**absolute** — hộp bị rút khỏi dòng chảy và được định vị so với **tổ tiên được định vị** gần nhất (một phần tử có position khác static). Nếu không có, so với chính trang. Đây là _mẫu_ kinh điển:
+
+```css
+.card {
+  position: relative; /* điểm neo — giờ là một containing block */
+}
+.card .badge {
+  position: absolute; /* được đặt so với .card */
+  top: 8px;
+  right: 8px;
+}
+```
+
+Chiếc badge trôi nổi trên góc phải-trên của thẻ bất kể kích thước thẻ — vì thẻ là `relative`, nó chính là hệ tọa độ. **Quên `position: relative` trên phần cha và badge sẽ định vị theo trang** — bug positioning phổ biến nhất, và giờ bạn biết tên nó.
+
+**fixed** — rút khỏi dòng chảy, định vị theo _viewport_: đứng yên khi trang cuộn. Header dính và banner cookie dùng nó — và cả những popup ai cũng ghét. Dùng tiết chế.
+
+**sticky** — dạng lai: chảy bình thường cho đến một ngưỡng cuộn, rồi dính lại. Tuyệt cho header của bảng; một phần thưởng, không phải yêu cầu hôm nay.
+
+## Khi nào chọn position
+
+- Chồng một badge, tooltip, hoặc nút đóng lên một component → absolute + cha relative.
+- Chrome header/footer bám dai dẳng → fixed/sticky (cẩn trọng về a11y).
+- Mọi thứ khác — đặc biệt bố cục nhiều cột hay chồng lớp → Flexbox/Grid, không phải absolute. Bố cục định vị bằng absolute không reflow và không phản ứng với kích thước nội dung: chính là đối lập của responsive.
+
+## Bạn đã học được gì
+
+- static mặc định; relative đẩy nhẹ và (quan trọng) làm điểm neo cho con
+- absolute định vị theo tổ tiên được định vị gần nhất — luôn đi cặp với một cha relative
+- fixed ghim vào viewport; sticky dính khi cuộn
+- Position dành cho lớp phủ; layout thuộc về flex/grid
+
+**Tiếp theo:** Flexbox — hệ layout một chiều.

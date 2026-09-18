@@ -1,0 +1,31 @@
+```cpp
+#include <string>
+
+std::string s = "Code Journey";
+```
+
+## The everyday operations
+
+```cpp
+s.size()                 // 12  (length() is the same thing)
+s[0]                     // 'C' — NO bounds checking
+s.at(0)                  // 'C' — throws std::out_of_range if invalid
+s.substr(5, 7)           // "Journey" — start index, count
+s.find("Jour")           // 5 — index, or std::string::npos if absent
+s + "!"                  // concatenation → "Code Journey!"
+s == "Code Journey"      // true — value comparison, not pointer comparison
+```
+
+## `.at()` vs `[]` while you are learning
+
+`[]` on a bad index is **undefined behavior** — it may print garbage, crash, or silently corrupt memory. `.at()` throws a catchable exception. In this course's exercises, prefer `.at()`: when you inevitably go one step too far, you get a clear error instead of a mystery. (`.at` does cost a bounds check; professionals drop to `[]` in hot loops once logic is proven — and say so in review.)
+
+`std::string::npos` is the special "not found" value; compare with `==`, never print it.
+
+## Characters
+
+Indexing yields a `char`. Useful checks: `std::isdigit`, `std::isalpha`, `std::isspace`, `std::toupper`, `std::tolower` — all take an `int`; pass `static_cast<unsigned char>(c)` (a plain `char` can be negative and that is UB). Ugly but correct — the boilerplate does it, and now you know why.
+
+## Building strings
+
+Prefer `+`/`+=` for small builds; for assembling many pieces (and numbers), `std::ostringstream` (next lesson) reads better than a pile of `to_string` calls.

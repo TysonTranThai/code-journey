@@ -1,0 +1,15 @@
+{
+  "id": "cint-checkpoint-m13-task",
+  "title": "A Layered Service With Honest Errors",
+  "prompt": "Assemble the module: a three-layer pipeline where each layer\ntranslates errors, cleans up its own resources, and never lies. The\nboilerplate declares:\n\n```c\n/* layer 3 (top) codes */\n#define APP_OK 0\n#define APP_ECONFIG 1      /* config stage failed */\n#define APP_EDATA 2        /* data stage failed */\n#define APP_EARGS (-1)     /* contract violation by caller */\n\n/* layer 2 stages: 0 ok, -1 fail. Records what happened: */\n/* config: parses \"k=v\n...\" lines (max 8, key/value <= 7 chars) */\nint cfg_stage(const char *input, char *report, size_t cap);\n/* data: sums \"n\n\" lines; all lines must be nonneg ints */\nint data_stage(const char *input, long *total, char *report, size_t cap);\n/* layer 3: runs both stages in order; first failure aborts and\n   returns the APP_E* code for the FAILING stage (args bad -> APP_EARGS).\n   report (cap chars) gets \"config:...\" then \"data:...\" details. */\nint app_run(const char *cfg_in, const char *data_in, char *report, size_t cap);\n```\n\nThe error taxonomy is the test: config failures and data failures must\nbe DISTINGUISHABLE at the top, and caller errors (NULL report) must be\na third thing.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\n#define APP_OK 0\n#define APP_ECONFIG 1\n#define APP_EDATA 2\n#define APP_EARGS (-1)\nint cfg_stage(const char *input, char *report, size_t cap);\nint data_stage(const char *input, long *total, char *report, size_t cap);\nint app_run(const char *cfg_in, const char *data_in, char *report, size_t cap);\n",
+  "tests": [
+    {
+      "name": "distinguish, wrap, never swallow",
+      "code": "\nchar report[128];\nlong total = -1;\nCHECK_EQ(app_run(\"name=ann\\nrole=dev\\n\", \"5\\n10\\n\", report, sizeof report), APP_OK);\nCHECK(!strstr(report, \"fail\"));\n/* config failure is APP_ECONFIG, not APP_EDATA */\nCHECK_EQ(app_run(\"noequals\\n\", \"5\\n\", report, sizeof report), APP_ECONFIG);\nCHECK(!strstr(report, \"config\") == 0);        /* report names the stage */\n/* data failure is APP_EDATA */\nCHECK_EQ(app_run(\"a=1\\n\", \"5\\n-3\\n\", report, sizeof report), APP_EDATA);\nCHECK(!strstr(report, \"data\") == 0);\n/* caller errors are their own thing */\nCHECK_EQ(app_run(\"a=1\\n\", \"5\\n\", NULL, 10), APP_EARGS);\nCHECK_EQ(app_run(NULL, \"5\\n\", report, sizeof report), APP_ECONFIG);\n",
+      "hint": "app_run: NULL report or cfg_in -> APP_EARGS/APP_ECONFIG by layer; run config first, stop at first failure, prefix the report with the stage name."
+    }
+  ]
+}

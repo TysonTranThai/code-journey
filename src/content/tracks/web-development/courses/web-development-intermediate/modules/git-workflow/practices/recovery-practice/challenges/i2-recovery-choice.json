@@ -1,0 +1,20 @@
+{
+  "id": "i2-recovery-choice",
+  "title": "Recovery Advisor",
+  "prompt": "Write `advise({ pushed, othersHaveIt, hasUncommittedWork })` returning one of \"revert\", \"reset-soft\", \"stash-then-reset\", \"recreate\". Rules: pushed && othersHaveIt → \"revert\". !pushed && hasUncommittedWork → \"stash-then-reset\". !pushed → \"reset-soft\". pushed && !othersHaveIt && hasUncommittedWork → \"stash-then-reset\"; without uncommitted work → \"recreate\" (rebase/cherry-pick onto a fresh branch).",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function advise(o) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "shared history always reverts",
+      "code": "const fn = new Function(code + \"\\nreturn { advise };\");\nconst { advise } = fn();\nif (advise({ pushed: true, othersHaveIt: true, hasUncommittedWork: false }) !== \"revert\") throw new Error(\"Others pulled it: revert only.\");\nif (advise({ pushed: true, othersHaveIt: true, hasUncommittedWork: true }) !== \"revert\") throw new Error(\"Shared is shared.\");",
+      "hint": "The first rule has no exceptions."
+    },
+    {
+      "name": "local work respects the working tree",
+      "code": "const fn = new Function(code + \"\\nreturn { advise };\");\nconst { advise } = fn();\nif (advise({ pushed: false, othersHaveIt: false, hasUncommittedWork: true }) !== \"stash-then-reset\") throw new Error(\"Protect uncommitted work first.\");\nif (advise({ pushed: false, othersHaveIt: false, hasUncommittedWork: false }) !== \"reset-soft\") throw new Error(\"Clean tree => soft reset.\");\nif (advise({ pushed: true, othersHaveIt: false, hasUncommittedWork: false }) !== \"recreate\") throw new Error(\"Pushed but private: rewrite on a fresh branch.\");",
+      "hint": "Order the checks exactly as the rules are written."
+    }
+  ]
+}

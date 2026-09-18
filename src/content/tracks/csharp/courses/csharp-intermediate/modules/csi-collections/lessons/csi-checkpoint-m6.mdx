@@ -1,0 +1,17 @@
+## The gate (mini-build)
+
+Four tools in one graded unit:
+
+1. `Frequency(string text)` → `IReadOnlyDictionary<string, int>` counting
+   lowercase whitespace-separated words.
+2. `FirstUnique(string text)` → the first word (lowercased) with count 1,
+   or null.
+3. `ProcessOrders(IEnumerable<string> commands)` — "push X" enqueues, "pop"
+   dequeues; returns the join of popped values in order (empty string when
+   nothing popped). FIFO, not LIFO.
+4. `EvictCache` — a tiny cache with `Put(k, v)` and `Get(k)`: capacity 3;
+   `Put` on a full cache evicts the least-recently-used-or-updated key;
+   `Get` refreshes recency; `Get` miss returns -1.
+
+Tool 4 is the composition lesson: Dictionary + recency tracking, graded
+behaviorally.

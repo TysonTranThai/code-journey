@@ -1,0 +1,39 @@
+Bảo mật làm đúng bắt đầu trên bảng trắng, không phải trong một máy quét. Bốn
+câu hỏi của threat modeling:
+
+1. **Chúng ta đang xây gì?** Một sơ đồ luồng dữ liệu: user → API → database,
+   và các *ranh giới tin cậy* giữa chúng (browser↔server, service↔service,
+   admin↔công khai). Mọi ranh giới là nơi các cuộc tấn công sống.
+2. **Chuyện gì có thể sai?** Đi qua từng ranh giới với một checklist — STRIDE
+   là bản kinh điển: **S**poofing (giả làm ai đó), **T**ampering (sửa dữ liệu
+   trên đường truyền/khi lưu), **R**epudiation (chối bỏ hành động),
+   **I**nformation disclosure (rò rỉ dữ liệu), **D**enial of service (kiệt quệ
+   tài nguyên), **E**levation of privilege (trở thành admin).
+3. **Chúng ta sẽ làm gì với nó?** Mỗi mối đe dọa nhận một trong bốn số phận:
+   *mitigate* (sửa), *transfer* (đẩy cho nhà cung cấp), *avoid* (bỏ tính năng),
+   *accept* (ghi tài liệu vì sao chấp nhận được).
+4. **Chúng ta làm tốt không?** Test cho từng biện pháp phòng thủ, và một quy
+   trình mô hình hóa lại khi thiết kế thay đổi.
+
+## Xếp hạng rủi ro: sửa thứ rẻ, thảm khốc, và dễ xảy ra trước
+
+Tác động × khả năng xảy ra quyết định thứ tự ưu tiên. Sự thật nhàm chán của
+bảo mật web: những thắng lợi lớn nhất là vệ sinh cơ bản — không có secrets
+trong code, không redirect không kiểm chứng, query tham số hóa, kiểm tra ủy
+quyền thật trên từng đối tượng, mặc định an toàn. OWASP Top 10 tồn tại vì cùng
+một nắm nhỏ lỗi gây ra phần lớn các vụ vi phạm dữ liệu.
+
+## Không tin gì qua một ranh giới
+
+Bên trong tiến trình của bạn, bạn có thể giả định các bất biến của mình. Qua
+một ranh giới, dữ liệu là *do kẻ tấn công kiểm soát* cho đến khi chứng minh
+ngược lại: mọi HTTP header, query parameter, cookie, tệp, và response của API
+bên thứ ba. Phòng thủ không phải là lọc — mà là kỷ luật ranh giới từ module
+API: **parse một lần tại mép vào, coi giá trị đã parse là đầu vào duy nhất.**
+
+## Least privilege như một tư thế thiết kế
+
+Mọi thành phần chạy với quyền tối thiểu mà nó cần: một job worker chỉ đọc bảng
+orders thì phải có credentials chỉ đọc bảng orders. Khi một thứ bị xâm phạm —
+và cuối cùng thì cũng có thứ bị — least privilege quyết định đó là một sự cố
+hay một thảm họa.

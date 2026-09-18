@@ -1,0 +1,39 @@
+## Truyền bằng giá trị (bản sao)
+
+```c
+int area(struct Rect r) {          // r là BẢN SAO
+    return r.size.x * r.size.y;
+}
+```
+
+Struct nhỏ truyền rẻ và an toàn — hàm không thể đụng tới bản gốc của người
+gọi.
+
+## Trả về struct
+
+```c
+struct Point make_point(int x, int y) {
+    struct Point p = {x, y};
+    return p;                      // một bản sao quay về
+}
+```
+
+## Truyền con trỏ để sửa
+
+```c
+void move_by(struct Point *p, int dx, int dy) {
+    p->x += dx;                    // mũi tên: giải tham chiếu + thành viên
+    p->y += dy;
+}
+...
+struct Point pos = {0, 0};
+move_by(&pos, 3, 4);              // pos giờ là (3, 4)
+```
+
+`p->x` chính là cách viết ngắn của `(*p).x` — giải tham chiếu rồi lấy thành
+viên. Mũi tên ra đời vì `.` kết hợp chặt hơn `*`, khiến `*p.x` mang nghĩa sai.
+
+## Chọn hình dạng
+
+- chỉ đọc với struct nhỏ → truyền bằng giá trị
+- phải sửa, hoặc struct lớn → truyền `struct S *`

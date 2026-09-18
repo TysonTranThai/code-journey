@@ -1,0 +1,28 @@
+## try-with-resources
+
+Mọi `AutoCloseable` đều được try-with-resources quản lý; compiler tự viết
+phần dọn dẹp trong finally cho bạn — theo thứ tự mở *ngược lại*:
+
+```java
+static String firstLine(Path p) throws IOException {
+    try (BufferedReader r = Files.newBufferedReader(p)) {
+        return r.readLine();
+    }   // r.close() đảm bảo chạy, kể cả khi có ngoại lệ
+}
+```
+
+Hai tài nguyên đóng từ phải sang trái:
+
+```java
+try (var in = openInput(); var out = openOutput(in)) {
+    ...
+}   // out đóng trước, rồi in — đúng thứ tự phụ thuộc
+```
+
+Suppressed exception: nếu thân try ném VÀ close() cũng ném, ngoại lệ của
+close được *gắn thêm* vào ngoại lệ thân (`getSuppressed()`), không bao giờ
+mất. Với finally viết tay, ngoại lệ close sẽ *thay thế* ngoại lệ thân —
+nuốt mất lỗi thật.
+
+Sandbox không chạm file thật, nên khóa học này tập AutoCloseable bằng
+tài nguyên trong bộ nhớ — ngữ nghĩa thì y hệt.

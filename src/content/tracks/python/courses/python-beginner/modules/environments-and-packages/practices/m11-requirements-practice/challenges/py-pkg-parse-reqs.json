@@ -1,0 +1,16 @@
+{
+  "id": "py-pkg-parse-reqs",
+  "title": "Validate a Requirements File",
+  "prompt": "Write parse_requirements(text) returning a dict of package -> version from a requirements-style string. Ignore blank lines and comments (# ...). Raise ValueError on any line without a version pin.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "",
+  "tests": [
+    {
+      "name": "parses and validates",
+      "code": "assert parse_requirements(\"rich==13.7.1\\n# comment\\n\\nrequests==2.31.0\") == {\"rich\": \"13.7.1\", \"requests\": \"2.31.0\"}, \"pins and skips\"\ntry:\n    parse_requirements(\"rich\")\n    assert False, \"unpinned must raise\"\nexcept ValueError:\n    pass",
+      "hint": "for line in text.splitlines(): strip, skip blanks and \"#\"; if \"==\" not in line: raise ValueError; name, ver = line.split(\"==\")"
+    }
+  ],
+  "level": "independent"
+}

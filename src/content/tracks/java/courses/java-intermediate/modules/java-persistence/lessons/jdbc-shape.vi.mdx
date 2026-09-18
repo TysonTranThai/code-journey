@@ -1,0 +1,36 @@
+## Khái niệm JDBC (thứ repository của bạn sẽ bọc)
+
+Sandbox không có driver database, nhưng *dáng* JDBC là kiến thức bắt buộc
+— đây là mẫu an toàn kinh điển bạn sẽ hiện thực:
+
+```java
+public Optional<Expense> findById(String id) {
+    String sql = "SELECT id, category, cents FROM expenses WHERE id = ?";
+    try (Connection c = dataSource.getConnection();
+         PreparedStatement ps = c.prepareStatement(sql)) {
+        ps.setString(1, id);                       // bind, KHÔNG BAO GIỜ nối chuỗi
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return Optional.of(new Expense(rs.getString("id"),
+                    rs.getString("category"), rs.getInt("cents")));
+            }
+            return Optional.empty();
+        }
+    } catch (SQLException e) {
+        throw new StorageException("expense lookup failed", e);  // chuyển dịch (Module 6)
+    }
+}
+```
+
+Bốn điều không thể thương lượng:
+1. **PreparedStatement với placeholder `?`** — phòng tuyến duy nhất chống
+   SQL injection; nối input người dùng chính là lỗ hổng.
+2. **try-with-resources** — Connection/Statement/ResultSet đều là
+   AutoCloseable; rò rỉ cạn kiệt connection pool.
+3. **Transaction** — công việc nhiều câu lệnh cần
+   `c.setAutoCommit(false)` … `commit()`/`rollback()`.
+4. **Chuyển dịch SQLException** tại ranh giới repository.
+
+Connection pooling (HikariCP và tương tự) tồn tại vì connection đắt đỏ —
+repository *mượn* từ pool qua một DataSource, không bao giờ tự tạo
+connection thô.

@@ -1,0 +1,25 @@
+## Wildcard và PECS
+
+`Integer` là `Number`, nhưng `List<Integer>` KHÔNG phải `List<Number>` —
+generic bất biến. Wildcard khôi phục sự linh hoạt một cách an toàn:
+
+```java
+static double sum(List<? extends Number> src) {   // producer: đọc ra
+    double t = 0;
+    for (Number n : src) t += n.doubleValue();
+    return t;
+}
+
+static void fill(List<? super Integer> dst) {     // consumer: ghi vào
+    dst.add(1); dst.add(2); dst.add(3);
+}
+```
+
+**PECS** (từ Effective Java): *Producer Extends, Consumer Super.*
+- Nếu tham số **sản xuất** giá trị cho bạn → `? extends T`
+- Nếu tham số **tiêu thụ** giá trị từ bạn → `? super T`
+- Cả hai (ví dụ copy) → dùng cả hai wildcard.
+
+Vì sao `? extends` cấm ghi: compiler chỉ biết "một subtype không xác định
+của Number" — bất kỳ phần tử nào bạn thêm vào có thể là sai kiểu. Đọc luôn
+an toàn; ghi thì không, nên bị cấm.

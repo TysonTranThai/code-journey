@@ -1,0 +1,26 @@
+{
+  "id": "cb14-normalize",
+  "title": "Normalize Health",
+  "prompt": "Given `struct Player { int hp; };` in scope, implement `void heal(struct Player *pl, int amount)` raising hp by amount but never above 100.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstruct Player { int hp; };\n",
+  "tests": [
+    {
+      "name": "within limit",
+      "code": "struct Player p = {80};\nheal(&p, 15);\nCHECK_EQ(p.hp, 95);",
+      "hint": "Simple addition suffices."
+    },
+    {
+      "name": "clamped",
+      "code": "struct Player p = {90};\nheal(&p, 50);\nCHECK_EQ(p.hp, 100);",
+      "hint": "Cap at 100."
+    },
+    {
+      "name": "already max",
+      "code": "struct Player p = {100};\nheal(&p, 30);\nCHECK_EQ(p.hp, 100);",
+      "hint": "Stays at 100."
+    }
+  ],
+  "level": "guided"
+}

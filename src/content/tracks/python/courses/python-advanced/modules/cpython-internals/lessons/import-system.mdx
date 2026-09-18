@@ -1,0 +1,26 @@
+## The import system: modules, caches, and __main__
+
+`import foo` performs a search, then a cached load:
+
+1. Check `sys.modules` — the module cache. Already imported? Reuse the SAME
+   module object (imports are cached per-process).
+2. Find a **finder** willing to handle the name (`sys.meta_path`); default
+   finders search `sys.path` for packages (directories with `__init__.py`) and
+   modules (`.py` files).
+3. **Execute** the module body in a fresh namespace, cache it in
+   `sys.modules`, and bind the name in your namespace.
+
+Consequences that explain everyday mysteries:
+
+- **Import side effects run exactly once** per process — the second `import`
+  is a dict lookup.
+- **Circular imports** break when module A (mid-execution) triggers import of
+  B, which imports A back and gets the half-built namespace. Fixes: reorder
+  imports, import inside functions, or restructure the dependency.
+- `__name__ == "__main__"` is true only when the file is run as the entry
+  script; when *imported*, `__name__` is the module path — that is why the
+  idiom guards CLI/demo code.
+- **`.pyc` bytecode caches** (`__pycache__`) skip recompilation per source
+  version — they are an optimization, invalidated by mtime/size.
+- `sys.path` manipulation and namespace packages exist; prefer proper
+  packaging (next module) over `sys.path.append` hacks.

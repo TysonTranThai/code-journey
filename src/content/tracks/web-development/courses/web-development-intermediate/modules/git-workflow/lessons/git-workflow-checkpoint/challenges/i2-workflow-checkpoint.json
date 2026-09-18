@@ -1,0 +1,25 @@
+{
+  "id": "i2-workflow-checkpoint",
+  "title": "Workflow Simulator",
+  "prompt": "Write THREE functions. 1) `resolveConflict(mine, theirs, strategy)` where mine/theirs are conflict-halved code strings and strategy is \"mine\", \"theirs\", or \"combine\": return mine for \"mine\", theirs for \"theirs\", and for \"combine\" the string `mine + \"\\n\" + theirs` (line-stacked). 2) `chooseRecovery(pushed, othersPulled, wantHistory)` — return \"revert\" when the commit was pushed AND others pulled it; return \"reset\" when it was not pushed; otherwise (pushed, nobody pulled, wantHistory true) return \"merge\"... but if pushed, not pulled, and wantHistory is false, return \"reset\". 3) `bumpVersion(version, type)` — given semver string \"MAJOR.MINOR.PATCH\" and conventional type, bump patch for \"fix\", minor for \"feat\", major for \"feat!\" or \"BREAKING CHANGE\"; return the new version string.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function resolveConflict(mine, theirs, strategy) {\n  // your code\n}\n\nfunction chooseRecovery(pushed, othersPulled, wantHistory) {\n  // your code\n}\n\nfunction bumpVersion(version, type) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "conflict resolution follows the chosen strategy",
+      "code": "const fn = new Function(code + \"\\nreturn { resolveConflict, chooseRecovery, bumpVersion };\");\nconst { resolveConflict } = fn();\nif (resolveConflict(\"a\", \"b\", \"mine\") !== \"a\") throw new Error(\"'mine' keeps our side.\");\nif (resolveConflict(\"a\", \"b\", \"theirs\") !== \"b\") throw new Error(\"'theirs' takes the incoming side.\");\nif (resolveConflict(\"a\", \"b\", \"combine\") !== \"a\\nb\") throw new Error(\"'combine' stacks both sides with a newline.\");",
+      "hint": "Strategy is a simple branch — the lesson's point is that the CHOICE is deliberate, not that the code is hard."
+    },
+    {
+      "name": "recovery choices match the safety rules",
+      "code": "const fn = new Function(code + \"\\nreturn { resolveConflict, chooseRecovery, bumpVersion };\");\nconst { chooseRecovery } = fn();\nif (chooseRecovery(true, true, true) !== \"revert\") throw new Error(\"Pushed + pulled => only revert is safe.\");\nif (chooseRecovery(false, false, true) !== \"reset\") throw new Error(\"Never pushed => reset is fine.\");\nif (chooseRecovery(true, false, true) !== \"merge\") throw new Error(\"Pushed, not pulled, history wanted => merge.\");\nif (chooseRecovery(true, false, false) !== \"reset\") throw new Error(\"Pushed, not pulled, history disposable => reset.\");",
+      "hint": "Ordered checks: pulled? -> revert. Not pushed? -> reset. Then the history flag decides."
+    },
+    {
+      "name": "semver bumps follow commit types",
+      "code": "const fn = new Function(code + \"\\nreturn { resolveConflict, chooseRecovery, bumpVersion };\");\nconst { bumpVersion } = fn();\nif (bumpVersion(\"1.2.3\", \"fix\") !== \"1.2.4\") throw new Error(\"fix bumps patch.\");\nif (bumpVersion(\"1.2.3\", \"feat\") !== \"1.3.0\") throw new Error(\"feat bumps minor and zeroes patch.\");\nif (bumpVersion(\"1.2.3\", \"feat!\") !== \"2.0.0\") throw new Error(\"Breaking changes bump major and zero minor+patch.\");\nif (bumpVersion(\"2.0.5\", \"BREAKING CHANGE\") !== \"3.0.0\") throw new Error(\"The BREAKING CHANGE footer behaves like '!'.\");",
+      "hint": "Parse the three numbers, pick an index by type, increment it, zero everything after it."
+    }
+  ]
+}

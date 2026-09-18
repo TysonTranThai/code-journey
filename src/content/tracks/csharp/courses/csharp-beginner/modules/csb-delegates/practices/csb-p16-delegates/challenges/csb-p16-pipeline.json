@@ -1,0 +1,21 @@
+{
+  "id": "csb-p16-pipeline",
+  "title": "Function pipeline",
+  "prompt": "Implement `static int Pipe(int input, params Func<int, int>[] steps)` — apply each function in order to the result of the previous. Empty/null steps → input unchanged.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "Cj.Eq(Solution.Pipe(5, x => x + 1, x => x * 2), 12, \"add then double\");\nCj.Eq(Solution.Pipe(5, x => x * 2, x => x + 1), 11, \"double then add — order matters\");\nCj.Eq(Solution.Pipe(5), 5, \"no steps\");",
+      "hint": "Same functions, different order, different answer — sequential application."
+    },
+    {
+      "name": "edges",
+      "code": "Cj.Eq(Solution.Pipe(7, x => x), 7, \"identity\");\nCj.Eq(Solution.Pipe(7, null), 7, \"null steps treated as none\");",
+      "hint": "Null-safe: an absent pipeline is the identity function."
+    }
+  ],
+  "level": "guided"
+}

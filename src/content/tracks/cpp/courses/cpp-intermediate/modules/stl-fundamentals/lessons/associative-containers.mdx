@@ -1,0 +1,38 @@
+Associative containers trade *position* for *lookup*. Two families:
+
+```cpp
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
+
+std::map<std::string, int> m;          // balanced tree: sorted order, O(log n)
+std::unordered_map<std::string, int> u; // hash table: no order, O(1) average
+std::set<std::string> s;               // unique keys, sorted
+std::unordered_set<std::string> us;    // unique keys, hashed
+```
+
+## The decision: do you need order?
+
+- Iterate **in sorted key order** or need `lower_bound` → the ordered family.
+- Only single-key lookup, fastest possible → the unordered family.
+
+Insertion is uniform, and `try_emplace` avoids a useless construction when
+the key already exists:
+
+```cpp
+m[key] += 1;                  // inserts 0 first if absent (operator[])
+m.try_emplace(key, 0).first->second += 1;  // no double lookup
+```
+
+One trap worth knowing early: `map[key]` **inserts** when the key is
+missing. On a `const map&` you must use `.at()` or `.find()` — `operator[]`
+does not even compile, and that constraint protects you.
+
+Structures bindings make traversal read cleanly:
+
+```cpp
+for (const auto& [key, value] : m) {
+    // sorted by key here
+}
+```

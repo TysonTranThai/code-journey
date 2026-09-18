@@ -1,0 +1,35 @@
+## Ports & adapters với đường nối thật
+
+**Port** là interface thuộc sở hữu của phần lõi ứng dụng. **Adapter** là mảnh
+hạ tầng thực hiện nó. Lõi định nghĩa `NotificationSender` và `OrderRepository`;
+các adapter là `SendGridSender`, `SmtpSender`, `PostgresOrderRepository`,
+`InMemoryOrderRepository` (cho test).
+
+```python
+from typing import Protocol
+
+class OrderRepository(Protocol):
+    def get(self, order_id: str) -> "Order | None": ...
+    def save(self, order: "Order") -> None: ...
+
+class PlaceOrder:                      # application service — the core
+    def __init__(self, repo: OrderRepository, notify: NotificationSender):
+        self._repo = repo
+        self._notify = notify
+
+    def __call__(self, order: "Order") -> None:
+        self._repo.save(order)
+        self._notify.order_placed(order)
+```
+
+Điều này mua được gì, một cách cụ thể:
+
+- **Test logic nghiệp vụ chạy trong bộ nhớ** — không Postgres, không HTTP,
+  không mock *domain*, chỉ fake ở các port.
+- **Đổi hạ tầng là đổi chỗ nối dây**, không phải viết lại: Postgres → DynamoDB
+  chỉ đụng một adapter.
+- **Lõi biên dịch được mà không biết HTTP tồn tại.**
+
+Kiểu thất bại cần tránh: repository-mỗi-bảng làm rò rỉ các hình dạng kiểu SQL
+(`QuerySet`, `Row`) vào domain. Port phải nói *ngôn ngữ của domain*
+(`Order`, `OrderNotFound`), adapter là người phiên dịch.

@@ -1,0 +1,16 @@
+## Bốn điều kiện
+
+Deadlock cần ĐỦ: loại trừ tương hỗ, hold-and-wait, không chiếm đoạt, và **circular wait**. Bạn hiếm khi đổi được ba cái đầu. Cái bạn kiểm soát là circular wait.
+
+## Quy tắc thứ tự khóa
+
+Nếu mọi thread lấy các mutex theo cùng thứ tự toàn cục (luôn A trước B), không thể tạo chu trình — người giữ B không bao giờ chờ A trong khi người khác giữ A và chờ B, vì không ai lấy B trước. Thi hành bằng quy ước và review: deadlock production kinh điển là hai tính năng mới lấy cùng hai khóa theo hai thứ tự ngược nhau.
+
+Lối thoát khi thứ tự khó:
+
+- `pthread_mutex_trylock` trên khóa thứ hai; nếu thất bại, nhả và thử lại — biến deadlock thành livelock-hoặc-tiến-trình, và livelock ít nhất còn chẩn đoán được.
+- Phân cấp khóa với mức assert-able, kiểm tra trong build debug.
+
+## Tư duy phòng khám
+
+Câu hỏi chẩn đoán, theo thứ tự: Hai thread nào? Hai khóa nào? Ai giữ gì trong khi chờ gì? Nếu không điền được bảng đó, bạn chưa có chẩn đoán deadlock — bạn mới chỉ có nghi ngờ deadlock.

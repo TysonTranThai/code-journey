@@ -1,0 +1,26 @@
+{
+  "id": "ca9-safe-macros",
+  "title": "Parenthesize or Perish",
+  "prompt": "Implement three macros and prove their expansion:\n \n```c\n#define SQ(x) ((x) * (x))\n#define MAX(a, b) ((a) > (b) ? (a) : (b))\n#define STR(x) STR_(x)\n```\n \nThen implement `int sq_trap(void)` returning the value of `SQ(1 + 2)` (9, not 1 + 2*1 + 2 = 5), `int max_side(void)` computing MAX(i++, 5) is forbidden — instead demonstrate the double-evaluation hazard by returning what MAX(a, b) computes for a=3, b=3 when the expression contains a function call counter (implement it safely: call once, store, compare).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "SQ survives addition",
+      "code": "CHECK_EQ(SQ(1 + 2), 9);",
+      "hint": "((1 + 2) * (1 + 2)) = 9; without inner parens this computes 1 + 2 * 1 + 2 = 5."
+    },
+    {
+      "name": "MAX with parens",
+      "code": "CHECK_EQ(MAX(3 + 4, 6), 7);",
+      "hint": "The comparison parenthesizes each argument — compound expressions stay correct."
+    },
+    {
+      "name": "single evaluation by hand",
+      "code": "int calls = 0;\nint v = 5;\nint m = MAX(v, side_effect_counter(&calls));\nCHECK_EQ(calls, 1);",
+      "hint": "Storing the call in a variable first means one evaluation; MAX(v, f()) directly would call f twice."
+    }
+  ],
+  "level": "independent"
+}

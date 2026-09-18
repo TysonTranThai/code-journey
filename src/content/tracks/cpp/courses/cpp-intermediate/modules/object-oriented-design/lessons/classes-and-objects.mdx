@@ -1,0 +1,36 @@
+A **class** bundles state and the operations that keep that state valid.
+Beginner showed you `class` for encapsulation; now we use it as a design tool:
+decide the invariant first, then expose only operations that preserve it.
+
+```cpp
+#include <string>
+
+class Timer {
+public:
+    void start() { running_ = true; ++starts_; }
+    void stop()  { running_ = false; }
+    bool running() const { return running_; }
+    int  starts() const { return starts_; }   // invariant: counts every start
+
+private:
+    bool running_{false};
+    int  starts_{0};
+};
+```
+
+The invariant here is trivial ("starts_ counts calls to start"), but the
+*shape* is what matters: state is private, operations are the only door,
+`const` marks the read-only half of the interface.
+
+## Design order that works
+
+1. Write down the invariant in one sentence.
+2. Choose members that make the invariant easy to keep.
+3. Expose operations; make anything the invariant needs `private`.
+4. Mark non-mutating operations `const`.
+
+## Struct vs class, honestly
+
+The only difference is the default access (`struct` public, `class` private).
+Use `struct` for passive data aggregates, `class` when there is an invariant
+to defend. Both are "classes" in C++'s eyes.

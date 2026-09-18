@@ -1,0 +1,18 @@
+{
+  "title": "Bộ tổng hợp song song",
+  "prompt": "Xây `Solution`:\n- `interface Shard { int fetch(String key); }` — một data shard.\n- `static int totalFromAll(List<Shard> shards, String key)` — gọi mọi\n  shard (tuần tự là đủ), coi shard ném RuntimeException đóng góp 0 (cô\n  lập lỗi).\n- `static CompletableFuture<Integer> asyncTotal(List<Shard> shards,\n  String key)` — cùng ngữ nghĩa qua chuỗi completedFuture/thenApply với\n  một exceptionally mỗi shard, join bằng allOf + tổng.\n\nLỗi của một shard không được đầu độc shard khác — đó là hợp đồng.",
+  "tests": [
+    {
+      "name": "Shard khỏe cộng vào",
+      "hint": "10 + 20 + 12."
+    },
+    {
+      "name": "Shard hỏng đóng góp 0",
+      "hint": "Shard lỗi bị bỏ qua, shard khác vẫn được đếm."
+    },
+    {
+      "name": "Bản async trùng khớp",
+      "hint": "Cùng hợp đồng qua chuỗi CompletableFuture."
+    }
+  ]
+}

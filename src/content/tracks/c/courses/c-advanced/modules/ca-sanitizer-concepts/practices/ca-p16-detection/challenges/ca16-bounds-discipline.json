@@ -1,0 +1,26 @@
+{
+  "id": "ca16-bounds-discipline",
+  "title": "Bounds-Checked Access",
+  "prompt": "Implement `int checked_get(const int *a, size_t n, size_t i, int *out)` returning 0 and writing *out on success, returning -1 without writing on out-of-range or NULL — then `int checked_sum(const int *a, size_t n)` summing via checked_get (a NULL array with n>0 must sum to 0 with -1 per element).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "in-range reads",
+      "code": "int a[3] = {5, 6, 7};\nint v = 0;\nCHECK_EQ(checked_get(a, 3, 1, &v), 0);\nCHECK_EQ(v, 6);",
+      "hint": "The bound is proven before every access — question 3 encoded."
+    },
+    {
+      "name": "out-of-range refused",
+      "code": "int a2[3] = {5, 6, 7};\nint v2 = 6;\nCHECK_EQ(checked_get(a2, 3, 3, &v2), -1);\nCHECK_EQ(v2, 6);",
+      "hint": "Index n is one-past-the-end: refused, and out is untouched on failure (v2 still 6)."
+    },
+    {
+      "name": "NULL array",
+      "code": "int v3 = 0;\nCHECK_EQ(checked_get(NULL, 2, 0, &v3), -1);\nCHECK_EQ(checked_sum(NULL, 2), 0);",
+      "hint": "NULL with nonzero n is refused per element; the sum degrades to 0."
+    }
+  ],
+  "level": "guided"
+}

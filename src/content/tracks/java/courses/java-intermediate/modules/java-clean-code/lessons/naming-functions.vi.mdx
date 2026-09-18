@@ -1,0 +1,35 @@
+## Tên và hàm tôn trọng người đọc
+
+Tên là một hợp đồng với người đọc tiếp theo (thường là chính bạn, sáu
+tháng nữa):
+
+```java
+// "d" là gì? days? data? delta?
+int d = getD(u);
+
+// đọc như câu văn mà nó hiện thực
+int daysUntilExpiry = daysBetween(today, subscription.endDate());
+```
+
+Quy tắc đặt tên mở rộng được:
+- boolean đọc như vị từ: `isExpired`, `hasChildren`, `canRetry`
+- method là động từ: `calculateTotal`, không phải `total` (việc của
+  getter)
+- không viết tắt trừ khi domain sở hữu nó (`vat`, `isbn` thì ổn)
+- một khái niệm, một từ: `fetch`/`get`/`retrieve` cho cùng một ý tưởng
+  trong cùng codebase là nhiễu
+
+Hàm:
+- **làm một việc** ở một mức trừu tượng
+- nhỏ đến mức các `if` của nó nằm gọn trong tầm mắt
+- ít tham số (hai ba là cùng; nhiều hơn nghĩa là một parameter object
+  đang muốn ra đời)
+
+```java
+// trước
+public void process(List<Order> os, boolean f, boolean d) { ... }
+
+// sau — cờ thường là hai hàm đang trốn
+public void processForInvoice(List<Order> orders) { ... }
+public void processForDisplay(List<Order> orders) { ... }
+```

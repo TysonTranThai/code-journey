@@ -1,0 +1,20 @@
+{
+  "id": "i2-pagination",
+  "title": "Offset Pagination",
+  "prompt": "Write `paginate(items, query)` — query is { limit?, offset? } (limit defaults 10, max 100; offset defaults 0). Return { results, total, next }: results is the sliced page; total is items.length; next is the next offset (as a number) when more items remain, else null. Guard against negative and non-integer inputs.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function paginate(items, query) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "slices and computes next",
+      "code": "const fn = new Function(code + \"\\nreturn { paginate };\");\nconst { paginate } = fn();\nconst items = Array.from({ length: 25 }, (_, i) => i);\nconst p1 = paginate(items, { limit: 10 });\nif (p1.results.length !== 10 || p1.total !== 25) throw new Error(\"First page of 10, total 25.\");\nif (p1.next !== 10) throw new Error(\"Next offset is 10.\");\nconst p2 = paginate(items, { limit: 10, offset: 20 });\nif (p2.results.length !== 5) throw new Error(\"Partial last page.\");\nif (p2.next !== null) throw new Error(\"No more pages => null.\");\n",
+      "hint": "offset + limit < total => there's a next."
+    },
+    {
+      "name": "defaults and guards",
+      "code": "const fn = new Function(code + \"\\nreturn { paginate };\");\nconst { paginate } = fn();\nconst items = Array.from({ length: 7 }, (_, i) => i);\nconst p = paginate(items, {});\nif (p.results.length !== 7) throw new Error(\"Default limit 10 returns everything here.\");\nif (paginate(items, { limit: 1000 }).results.length !== 7) throw new Error(\"Max limit clamps to 100 — 7 items unaffected.\");\nif (paginate(items, { offset: -5 }).results[0] !== 0) throw new Error(\"Negative offset clamps to 0.\");\n",
+      "hint": "Clamp: limit <= 100, offset >= 0, both integers."
+    }
+  ]
+}

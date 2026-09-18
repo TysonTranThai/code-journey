@@ -1,0 +1,37 @@
+`static` nghĩa là "thuộc về class, không thuộc object nào". Nó xuất hiện ở
+ba nơi người mới chạm ngay.
+
+**Phương thức static** gọi được mà không cần object:
+`Math.max(3, 9)` chạy được vì `max` là static; mọi phương thức kiểu tiện ích
+trong module này cũng static vì lý do đó. Bên trong phương thức static, bạn
+gọi trực tiếp các phương thức static khác cùng class — nhưng KHÔNG THỂ với
+thành viên dạng object, vì chưa có object nào. Đó là quy tắc thật đứng sau
+lỗi `"non-static method cannot be referenced from a static context"`:
+`main` là static, nên nó chỉ với tới các thứ static (hoặc object nó tự tạo).
+
+**Trường static** là giá trị của cả class:
+
+```java
+static final double VAT_RATE = 0.1;      // hằng số dùng chung
+static int invocationCount = 0;          // trạng thái class có thể đổi (cẩn thận!)
+```
+
+`static final` là cách Java viết một hằng số: cố định ngay khi tạo, dùng
+chung, đặt tên SCREAMING_SNAKE_CASE theo quy ước. Trường static có thể đổi
+là biến toàn cục mặc vest — một ít công dụng thật (bộ đếm, cấu hình chung)
+và một vũ trụ rắc rối; tránh trong code ứng dụng.
+
+**Static import** cho phép bỏ tên class với tiện ích dùng dày:
+
+```java
+import static java.lang.Math.max;
+...
+int m = max(a, b);
+```
+
+Dùng tiết chế — dễ đọc trước tiên. Quy tắc quyết định: một thứ là static khi
+nó không cần bộ nhớ theo-object — nó biến đổi đầu vào, tra hằng số, và trả
+kết quả. Khoảnh khắc hành vi phụ thuộc trạng thái theo-object, nó thuộc về
+object (Module 7).
+
+**Tiếp theo:** overloading — một tên, nhiều chữ ký.

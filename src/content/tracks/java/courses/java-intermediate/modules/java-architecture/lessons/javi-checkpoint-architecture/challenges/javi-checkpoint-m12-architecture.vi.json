@@ -1,0 +1,18 @@
+{
+  "title": "Mini-stack ba lớp",
+  "prompt": "Lắp full stack trong `Solution`:\n- `record Task(String id, String title, boolean done)` (domain)\n- `interface TaskRepository { void save(Task t); Optional<Task> find(String id); List<Task> all(); }`\n- `static class InMemoryTaskRepository implements TaskRepository`\n- `static class TaskService` với constructor `(TaskRepository r)`:\n  - `Task create(String id, String title)` — title blank ném\n    IllegalArgumentException; lưu và trả\n  - `Task complete(String id)` — id thiếu ném NoSuchElementException;\n    đánh dấu done và lưu\n  - `List<Task> pending()` — các task chưa done (thứ tự chèn)\n- `record TaskView(String id, String title)` (DTO)\n- `static List<TaskView> pendingViews(TaskService s)` — hàm controller\n  map pending() sang view.\n\nRồi test điều khiển toàn bộ đồ thị: repo → service → view.",
+  "tests": [
+    {
+      "name": "create kiểm tra và lưu",
+      "hint": "Service giữ quy tắc; repo lưu kết quả."
+    },
+    {
+      "name": "complete lật trạng thái",
+      "hint": "Complete cập nhật trạng thái đã lưu; id lạ ném."
+    },
+    {
+      "name": "pending lọc và map",
+      "hint": "pending() lọc; pendingViews() map sang DTO."
+    }
+  ]
+}

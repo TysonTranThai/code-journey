@@ -1,0 +1,21 @@
+{
+  "id": "cppi-m2-this-chain",
+  "title": "Chaining through *this",
+  "prompt": "Implement `class Ledger` with private `long total_{0};`, `Ledger& add(long cents)` and `Ledger& undo(long cents)` (each updates `total_` and returns `*this`), plus `long total() const`. The test chains calls.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\n\nclass Ledger {\n    // add/undo returning Ledger&, total getter\n};\n",
+  "tests": [
+    {
+      "name": "chain",
+      "code": "Ledger l;\nl.add(100).undo(30).add(5);\nCHECK_EQ(l.total(), 75);",
+      "hint": "Each call returns the same object → chaining works."
+    },
+    {
+      "name": "single",
+      "code": "Ledger l;\nl.add(50);\nCHECK_EQ(l.total(), 50);",
+      "hint": "Single calls behave like plain mutators."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ca6-gadget",
+  "title": "Create/Destroy with a Liveness Counter",
+  "prompt": "A file-scope `int gadgets_alive = 0;` is already in your editor. Implement `gadget_t *gadget_create(int id)` (heap-allocate, set id, increment the counter), `int gadget_id(const gadget_t *g)`, and `void gadget_destroy(gadget_t *g)` (decrement, free; NULL is a no-op). The counter is the contract, made executable.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nint gadgets_alive = 0;\n",
+  "tests": [
+    {
+      "name": "lifecycle tracks",
+      "code": "CHECK_EQ(gadgets_alive, 0);\ngadget_t *g = gadget_create(42);\nCHECK_EQ(gadgets_alive, 1);\nCHECK_EQ(gadget_id(g), 42);\ngadget_destroy(g);\nCHECK_EQ(gadgets_alive, 0);",
+      "hint": "Create increments, destroy decrements — the pair is balanced in one lifetime."
+    },
+    {
+      "name": "NULL destroy is safe",
+      "code": "gadget_destroy(NULL);\nCHECK_EQ(gadgets_alive, 0);",
+      "hint": "Freeing nothing must not corrupt the count."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "py-cli-menu-step",
+  "title": "The Menu Step Function",
+  "prompt": "Write handle(tasks, choice, arg) — one iteration of a task-manager menu: 'add' -> add arg (default 'untitled'), 'done' -> complete index int(arg) (invalid int or range: unchanged), 'clear' -> remove all done tasks, anything else -> unchanged. handle NEVER prints. Returns the (possibly new) list.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "",
+  "tests": [
+    {
+      "name": "one menu iteration",
+      "code": "t0 = [{\"text\": \"a\", \"done\": False}]\nt1 = handle(t0, \"add\", \"email\")\nassert t1[-1] == {\"text\": \"email\", \"done\": False}, f\"add: {t1}\"\nassert handle(t0, \"add\")[-1][\"text\"] == \"untitled\", \"missing arg -> untitled\"\nt2 = handle(t1, \"done\", \"0\")\nassert t2[0][\"done\"] is True, f\"done: {t2}\"\nassert handle(t1, \"done\", \"99\") == t1, \"bad index -> unchanged\"\nassert handle(t1, \"done\", \"x\") == t1, \"bad int -> unchanged\"\nt3 = handle(t2, \"clear\", \"\")\nassert t3 == [{\"text\": \"email\", \"done\": False}], f\"clear removes done only: {t3}\"\nassert handle(t0, \"nonsense\", \"\") == t0, \"unknown choice -> unchanged\"",
+      "hint": "int(arg) in try/except ValueError; reuse complete-style logic; 'clear' filters not t['done']."
+    }
+  ],
+  "level": "mini-build"
+}

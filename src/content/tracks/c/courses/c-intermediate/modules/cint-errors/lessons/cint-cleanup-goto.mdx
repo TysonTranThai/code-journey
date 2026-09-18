@@ -1,0 +1,55 @@
+## The problem: N resources, 2^N exit paths
+
+```c
+int process(const char *in, const char *out) {
+    FILE *fi = fopen(in, "rb");
+    if (!fi) return -1;
+    unsigned char *buf = malloc(SIZE);
+    if (!buf) { fclose(fi); return -1; }        /* repeat for every resource */
+    FILE *fo = fopen(out, "wb");
+    if (!fo) { free(buf); fclose(fi); return -1; }
+    /* ... body: every early return must free everything ... */
+}
+```
+
+Three resources means every new early return must remember the exact
+cleanup list of everything acquired so far — the code review game of
+whack-a-mole. The C-idiomatic answer is **one entry, one exit, cleanup
+in reverse order at the bottom**:
+
+```c
+int process(const char *in, const char *out) {
+    int rc = -1;
+    FILE *fi = NULL, *fo = NULL;
+    unsigned char *buf = NULL;
+
+    fi = fopen(in, "rb");
+    if (!fi) goto cleanup;
+    buf = malloc(SIZE);
+    if (!buf) goto cleanup;
+    fo = fopen(out, "wb");
+    if (!fo) goto cleanup;
+
+    rc = do_work(fi, buf, fo);     /* the happy path */
+
+cleanup:
+    free(buf);                     /* free(NULL) is a no-op: safe */
+    if (fo) fclose(fo);
+    if (fi) fclose(fi);
+    return rc;
+}
+```
+
+`goto` is not a swear word here: the Linux kernel's error handling is
+built on exactly this pattern, at every level, everywhere. The
+discipline is the *direction* — forward jumps to a single cleanup label
+only, never backward, never out of allocation contexts. Variables are
+initialized to their empty state (`NULL`, 0) so the cleanup block is
+correct even when the failure happened before acquisition.
+
+## Why not just nest ifs?
+
+Nesting works for two resources and collapses at four. The cleanup block
+also becomes the *single place to audit*: every resource appears exactly
+once, in reverse-acquisition order — the pairing is visually verifiable.
+That property is what "robust API" means in C.

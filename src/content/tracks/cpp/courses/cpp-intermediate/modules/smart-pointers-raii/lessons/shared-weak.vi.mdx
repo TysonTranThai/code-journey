@@ -1,0 +1,32 @@
+`std::shared_ptr<T>` giữ một control block với hai bộ đếm: strong (bao nhiêu
+`shared_ptr` sở hữu đối tượng) và weak (bao nhiêu `weak_ptr` theo dõi). Đối
+tượng chết khi strong count về 0; control block chết khi cả hai về 0.
+
+```cpp
+#include <memory>
+
+auto a = std::make_shared<Node>();   // strong = 1
+auto b = a;                          // strong = 2
+b.reset();                           // strong = 1
+a.reset();                           // strong = 0 → destructor chạy
+```
+
+`std::weak_ptr<T>` quan sát mà không sở hữu. Nó không giữ đối tượng sống;
+nó chỉ có thể *hỏi* xem đối tượng còn tồn tại không:
+
+```cpp
+std::weak_ptr<Node> w = a;
+if (auto locked = w.lock()) {   // nâng cấp nguyên tử thành shared_ptr
+    locked->use();              // đối tượng còn sống trong khối này
+} else {
+    // đối tượng đã mất
+}
+```
+
+Dùng `shared_ptr` chỉ khi sở hữu thật sự được chia sẻ giữa các vòng đời
+không rõ trước (cache, observer, đồ thị). Nó tốn một bộ đếm nguyên tử và có
+thể che giấu ai giải phóng cái gì — `unique_ptr` vẫn là mặc định.
+
+Bẫy nổi tiếng: hai node giữ `shared_ptr` cho nhau tạo thành **vòng tham
+chiếu**; strong count không bao giờ về 0; cả hai rò rỉ. Cách sửa là một
+chiều đổi thành `weak_ptr` — con trỏ tới cha theo kiểu weak.

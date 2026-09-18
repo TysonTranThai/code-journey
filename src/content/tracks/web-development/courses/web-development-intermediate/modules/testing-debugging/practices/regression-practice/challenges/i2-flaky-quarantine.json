@@ -1,0 +1,20 @@
+{
+  "id": "i2-flaky-quarantine",
+  "title": "Flaky Quarantine",
+  "prompt": "Write `quarantine(history)` — history is an array of { name, passed } runs (oldest first, a test may appear many times). Return the names of FLAKY tests: they appear at least twice AND have both at least one pass and one fail. Sort alphabetically.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function quarantine(history) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "flags mixed-outcome repeat offenders",
+      "code": "const fn = new Function(code + \"\\nreturn { quarantine };\");\nconst { quarantine } = fn();\nconst h = [\n  { name: \"t1\", passed: true }, { name: \"t2\", passed: true },\n  { name: \"t1\", passed: false }, { name: \"t3\", passed: false },\n  { name: \"t3\", passed: false },\n];\nif (quarantine(h).join(\",\") !== \"t1\") throw new Error(\"t1 mixed; t2 once-pass; t3 always-fail.\");\n",
+      "hint": "Aggregate pass/fail counts per name, then filter."
+    },
+    {
+      "name": "deterministic tests are not flaky",
+      "code": "const fn = new Function(code + \"\\nreturn { quarantine };\");\nconst { quarantine } = fn();\nconst h = [\n  { name: \"solid\", passed: true }, { name: \"solid\", passed: true },\n  { name: \"dead\", passed: false }, { name: \"dead\", passed: false },\n];\nif (quarantine(h).length !== 0) throw new Error(\"Always-pass and always-fail are not flaky.\");\n",
+      "hint": "Flaky = BOTH outcomes observed."
+    }
+  ]
+}

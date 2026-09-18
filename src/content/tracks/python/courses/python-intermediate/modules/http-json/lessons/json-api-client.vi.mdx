@@ -1,0 +1,53 @@
+API trả về JSON, nhưng một client giả định luôn thành công là client sập
+trong production. Hình dạng phòng thủ:
+
+```python
+import json
+
+class ApiError(Exception):
+    """API phản hồi với một mã lỗi."""
+
+def parse_response(status: int, body: bytes) -> dict | list:
+    if status == 204:
+        return {}
+    try:
+        data = json.loads(body)
+    except json.JSONDecodeError as exc:
+        raise ApiError(f"non-JSON response (status {status})") from exc
+    if status >= 400:
+        message = data.get("error", "unknown") if isinstance(data, dict) else "error"
+        raise ApiError(f"HTTP {status}: {message}")
+    return data
+```
+
+Hãy để ý các tầng: **giải mã** (có phải JSON không?), **phân loại** (thuộc
+họ trạng thái nào?), **trích xuất** (payload nằm ở đâu?), và chỉ sau đó
+**sử dụng**.
+
+## Phân trang: đọc phong bì
+
+Phần lớn API bọc danh sách trong metadata — page, per_page, total, hoặc URL
+`next`:
+
+```python
+def all_items(fetch, page_size=100):
+    items = []
+    page = 1
+    while True:
+        payload = fetch(page, page_size)        # {"items": [...], "has_more": bool}
+        items.extend(payload["items"])
+        if not payload["has_more"]:
+            return items
+        page += 1
+```
+
+Hai điều không thương lượng: **điều kiện dừng phải tường minh** (thiếu
+`has_more` phải kết thúc vòng lặp, chứ không treo nó), và **giới hạn tần
+suất là có thật** — gặp 429, ngủ theo số giây `Retry-After` và thử lại một
+số lần có giới hạn.
+
+## Timeout không phải tùy chọn
+
+Client không có timeout sẽ chờ mãi mãi. Mọi lời gọi transport thật đều mang
+một timeout; khi hết giờ, bạn raise lỗi phía client và quyết định (thử lại?
+báo lên?) như mọi thất bại khác.

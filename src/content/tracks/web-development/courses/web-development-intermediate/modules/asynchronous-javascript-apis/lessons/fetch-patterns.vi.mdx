@@ -1,0 +1,48 @@
+`fetch` resolve với **mọi** phản hồi — kể cả 404 và 500. Chỉ lỗi mạng mới
+reject. Thói quen chuyên nghiệp đầu tiên: kiểm tra `response.ok`.
+
+## Hình dạng mọi lời gọi nên có
+
+```js
+async function getUser(id) {
+  const res = await fetch("/api/users/" + id);
+  if (!res.ok) {
+    throw new Error("HTTP " + res.status + " for user " + id);
+  }
+  return res.json(); // cũng là một promise
+}
+```
+
+- `res.ok` là `status` trong khoảng 200–299.
+- `res.json()` phân tích body; `res.text()` cho những thứ khác.
+- Các option của request: `method`, `headers`, `body` (JSON cần `JSON.stringify`
+  cộng `Content-Type: application/json`).
+
+```js
+fetch("/api/tasks", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ title: "write tests" }),
+});
+```
+
+## Tham số truy vấn và phân trang
+
+Dựng query bằng `URLSearchParams` — nó encode miễn phí:
+
+```js
+const qs = new URLSearchParams({ page: String(page), perPage: "20", q: term });
+const res = await fetch("/api/items?" + qs);
+```
+
+Vòng lặp phân trang tiếp tục khi còn tín hiệu _has-more_ (link `next`, hoặc
+`page * perPage < total`) — đừng mù quáng chạy đến trang rỗng khi không có giới
+hạn.
+
+## Hợp đồng UI
+
+Mọi view bất đồng bộ nợ người dùng ba trạng thái: **loading** (spinner/skeleton),
+**lỗi** (thông báo + khả năng thử lại), **dữ liệu** (hoặc trạng thái rỗng lịch
+sự). Hãy thiết kế component xoay quanh
+`{ status: "idle" | "loading" | "error" | "success", data, error }` và việc
+render trở nên tầm thường.

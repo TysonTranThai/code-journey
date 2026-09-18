@@ -1,0 +1,51 @@
+Types có giá trị nhất đúng ở nơi dữ liệu đi vào từ bên ngoài.
+
+## DTO ở rìa hệ thống
+
+Mô hình hóa phản hồi của server thành một kiểu, rồi KIỂM TRA trước khi tin —
+types chỉ tồn tại lúc compile; mạng không đọc chúng:
+
+```ts
+type TaskDTO = { id: string; title: string; done: boolean };
+
+function isTask(v: unknown): v is TaskDTO {
+  return (
+    typeof v === "object" &&
+    v !== null &&
+    typeof (v as any).id === "string" &&
+    typeof (v as any).title === "string" &&
+    typeof (v as any).done === "boolean"
+  );
+}
+```
+
+Cặp chuẩn là runtime guard + compile-time type: guard bảo vệ runtime, type tài
+liệu hóa và kiểm tra phần còn lại của chương trình.
+
+## Kết quả fetch dạng discriminated
+
+Kết hợp với bài union — một API client không thể nói dối:
+
+```ts
+type ApiResult<T> =
+  | { ok: true; data: T }
+  | { ok: false; status: number };
+
+async function getJSON<T>(url: string): Promise<ApiResult<T>> { ... }
+```
+
+Chỗ gọi BẮT BUỘC kiểm tra `ok` trước khi đụng vào `data` — hợp đồng
+loading/error của Module 3, giờ được compiler bảo đảm.
+
+## Truy cập DOM cũng là biên giới
+
+`document.querySelector` trả về `Element | null`. Thu hẹp một cách trung thực:
+
+```ts
+const btn = document.querySelector<HTMLButtonElement>("#submit");
+if (!btn) throw new Error("#submit missing"); // hoặc return sớm
+btn.disabled = true; // thành viên của HTMLButtonElement
+```
+
+Tham số generic là lời khẳng định bạn đưa ra về selector — vẫn phải giữ null
+check; kiểu không làm phần tử tồn tại.

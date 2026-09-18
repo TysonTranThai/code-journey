@@ -1,0 +1,42 @@
+## if / else if / else
+
+```csharp
+if (temp >= 30)
+{
+    Console.WriteLine("hot");
+}
+else if (temp >= 20)
+{
+    Console.WriteLine("warm");
+}
+else
+{
+    Console.WriteLine("cool");
+}
+```
+
+Conditions are `bool` — never a number. Order matters: the first true branch wins, so ranges must descend (checking `>= 20` before `>= 30` would misclassify). Braces even for one line: future-you adds a second line and the indentation lie becomes a bug.
+
+## Ternary: conditional expressions
+
+```csharp
+string label = score >= 50 ? "pass" : "fail";
+int max = a > b ? a : b;
+```
+
+`condition ? whenTrue : whenFalse` is an *expression* — it produces a value. Use it for simple choices; nested ternaries are where readability goes to die.
+
+## switch expressions with patterns
+
+```csharp
+static string Grade(int score) => score switch
+{
+    >= 90 => "A",
+    >= 80 => "B",
+    >= 70 => "C",
+    >= 0 => "F",
+    _ => "invalid"
+};
+```
+
+A switch expression matches the subject against **patterns** — here relational patterns (`>= 90`) — and yields the value after `=>`. Arms are tried top to bottom; `_` is the catch-all. Compared with an if-chain: each arm is a value, the compiler warns when you miss cases it can prove (for enums), and ranges read as data, not control flow. Both forms are idiomatic; switch expressions shine for classification.

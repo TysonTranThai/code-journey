@@ -1,0 +1,21 @@
+{
+  "id": "csb-p19-ignore",
+  "title": ".gitignore semantics",
+  "prompt": "Implement `static bool IsIgnored(string path, List<string> rules)` — rules like \"bin/\" (directory prefix), \"*.log\" (extension wildcard), or exact names; earlier rules win, and any rule starting with \"!\" un-ignores. Path matches \"bin/\" when the path starts with \"bin/\".",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "var rules = new List<string> { \"bin/\", \"*.log\" };\nCj.True(Solution.IsIgnored(\"bin/obj/file.dll\", rules), \"directory rule\");\nCj.True(Solution.IsIgnored(\"logs/app.log\", rules), \"wildcard rule\");\nCj.False(Solution.IsIgnored(\"src/Program.cs\", rules), \"source not ignored\");",
+      "hint": "Prefix and extension rules applied in order."
+    },
+    {
+      "name": "negation",
+      "code": "var rules = new List<string> { \"*.log\", \"!keep.log\" };\nCj.True(Solution.IsIgnored(\"debug.log\", rules), \"wildcard\");\nCj.False(Solution.IsIgnored(\"keep.log\", rules), \"negation wins (later rule)\");",
+      "hint": "The last matching rule decides — git's actual semantic."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,22 @@
+## Reading the signatures
+
+```csharp
+public class List<T> { ... }
+public class Dictionary<TKey, TValue> { ... }
+```
+
+The collections you've used since module 8 are generic classes. Their type parameters are why `list[0]` returns `T` — not `object` you must cast — and why putting a `string` into a `List<int>` is a compile error, not a runtime surprise.
+
+## Why not `object`?
+
+Pre-generics collections stored `object` (the base of everything):
+
+```csharp
+// the old disease, still legal:
+var list = new ArrayList();
+list.Add(42);
+int x = (int)list[0];          // cast needed, checked at RUNTIME
+list.Add("oops");              // compiles fine — boom later
+```
+
+Value types stored in `object` also box (heap-allocate) on every add. Generics eliminate the casts, move errors to compile time, and skip the boxing. That trio — no casts, compile-time safety, no boxing — is the entire point.

@@ -1,0 +1,21 @@
+{
+  "id": "ca5-pool",
+  "title": "Build a Fixed-Size Pool",
+  "prompt": "Implement an opaque fixed-block pool:\n \n```c\ntypedef struct pool pool_t;\npool_t *pool_create(size_t blocks, size_t block_size);\nvoid *pool_get(pool_t *p);\nvoid pool_put(pool_t *p, void *blk);\n```\n \n`pool_get` returns a block or NULL when exhausted; `pool_put` returns a block to the free list; a just-returned block must be handed out again first (LIFO).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "exhaustion",
+      "code": "pool_t *p = pool_create(2, 16);\nvoid *b1 = pool_get(p);\nvoid *b2 = pool_get(p);\nCHECK_NOT_NULL(b1);\nCHECK_NOT_NULL(b2);\nCHECK_NULL(pool_get(p));",
+      "hint": "Two blocks exist; the third get must report exhaustion."
+    },
+    {
+      "name": "LIFO reuse",
+      "code": "pool_t *p = pool_create(2, 16);\nvoid *b1 = pool_get(p);\npool_put(p, b1);\nvoid *b3 = pool_get(p);\nCHECK_EQ((int)(b3 == b1), 1);",
+      "hint": "A returned block goes to the head of the free list and is handed out first."
+    }
+  ],
+  "level": "independent"
+}

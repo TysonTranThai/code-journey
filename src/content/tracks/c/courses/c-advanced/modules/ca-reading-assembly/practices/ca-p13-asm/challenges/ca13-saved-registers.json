@@ -1,0 +1,16 @@
+{
+  "id": "ca13-saved-registers",
+  "title": "What Survives a Call",
+  "prompt": "File-scope `static int callee_touch = 0;` is in your editor. Implement `void callee(void)` that increments it (proving the call happened) and `int caller_keeps(int a, int b)` that computes a*2 into a local, calls callee(), then returns the local + b — the local's value must survive the call, which is the caller/callee register split working as designed.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstatic int callee_touch = 0;\n",
+  "tests": [
+    {
+      "name": "locals survive calls",
+      "code": "CHECK_EQ(caller_keeps(10, 5), 25);\nCHECK_EQ(callee_touch, 1);",
+      "hint": "The intermediate a*2 persists across callee() — the ABI's register contract, felt from source."
+    }
+  ],
+  "level": "combination"
+}

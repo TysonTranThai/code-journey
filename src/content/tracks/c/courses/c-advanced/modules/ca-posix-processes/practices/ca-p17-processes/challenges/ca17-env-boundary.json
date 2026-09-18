@@ -1,0 +1,26 @@
+{
+  "id": "ca17-env-boundary",
+  "title": "Environment or Default?",
+  "prompt": "Implement `const char *env_or_default(const char *name, const char *dflt)` — return the environment value if `name` is set (getenv, ISO C), otherwise return dflt. NULL name or NULL dflt returns NULL. This is the inherited-state boundary every 12-factor program leans on.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "unset variable falls back",
+      "code": "CHECK_STR_EQ(env_or_default(\"CJ_DEFINITELY_UNSET_XYZ\", \"fallback\"), \"fallback\");",
+      "hint": "No such environment variable exists in the sandbox: the default is returned."
+    },
+    {
+      "name": "PATH is inherited",
+      "code": "CHECK(env_or_default(\"PATH\", \"none\") != NULL);",
+      "hint": "The sandbox process environment carries PATH — the value survives fork/exec into your test process."
+    },
+    {
+      "name": "NULL guards",
+      "code": "CHECK(env_or_default(NULL, \"x\") == NULL);\nCHECK(env_or_default(\"A\", NULL) == NULL);",
+      "hint": "Refuse to guess when the contract is incomplete."
+    }
+  ],
+  "level": "imitation"
+}

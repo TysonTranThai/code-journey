@@ -1,0 +1,20 @@
+{
+  "id": "i2-url-parse",
+  "title": "Request URL Parser",
+  "prompt": "Write `parseRequest(url)` — url is like \"/api/tasks/42?status=open&limit=10\". Return { path: \"/api/tasks/42\", params: { id: \"42\" } } for ID-bearing paths, else { path, params: {} }; plus `query` — an object of decoded query string keys/values (missing query => {}).",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function parseRequest(url) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "splits path and query",
+      "code": "const fn = new Function(code + \"\\nreturn { parseRequest };\");\nconst { parseRequest } = fn();\nconst r = parseRequest(\"/api/tasks/42?status=open&limit=10\");\nif (r.path !== \"/api/tasks/42\") throw new Error(\"Path isolated.\");\nif (r.query.status !== \"open\" || r.query.limit !== \"10\") throw new Error(\"Query decoded into object.\");\nif (r.params.id !== \"42\") throw new Error(\"Numeric id captured as params.id.\");\n",
+      "hint": "Split on ?, then on & and =; decodeURIComponent each piece."
+    },
+    {
+      "name": "clean handles",
+      "code": "const fn = new Function(code + \"\\nreturn { parseRequest };\");\nconst { parseRequest } = fn();\nconst r = parseRequest(\"/api/tasks\");\nif (r.query && Object.keys(r.query).length !== 0) throw new Error(\"No query => empty object.\");\nif (r.path !== \"/api/tasks\") throw new Error(\"Path unchanged.\");\nif (parseRequest(\"/api/tasks?flag\").query.flag !== \"\") throw new Error(\"Valueless key => empty string.\");\n",
+      "hint": "A key without '=' yields an empty-string value."
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+## char is a small integer
+
+```csharp
+char c = 'A';
+Console.WriteLine((int)c);     // 65 — the code point
+char next = (char)(c + 1);     // 'B'
+```
+
+A `char` holds a UTF-16 code unit — for everyday ASCII work, think "a small number with a costume." Casting to `int` reveals the code; arithmetic shifts the code. That's how case conversion and letter checks work underneath.
+
+## Escapes you'll actually use
+
+```csharp
+"a\tb"      // tab
+"line\n"    // newline
+"quote: \"" // a literal double quote
+"backslash: \\" 
+'a'         // char literal: single quotes, no escape needed
+```
+
+Inside a `char` literal, `'\n'` and `'\t'` work the same way; `'\\''` escapes a single quote. (`"\u00e9"` gives 'é' by code point — worth knowing it exists.)
+
+## Classifiers: the validator toolkit
+
+```csharp
+char.IsDigit(c)      // '0'..'9'
+char.IsLetter(c)     // letters, including accented ones
+char.IsLetterOrDigit(c)
+char.IsWhiteSpace(c) // spaces, tabs, newlines
+char.IsUpper(c) / char.IsLower(c)
+char.ToLower(c) / char.ToUpper(c)
+```
+
+These return `bool` and take a `char`. A username validator, a digit counter, a "does this line start with whitespace" check — all one-liners over these classifiers plus a loop. Prefer `char.IsDigit` over `'0' <= c && c <= '9'`: it says what it does, and it's correct for more than ASCII.

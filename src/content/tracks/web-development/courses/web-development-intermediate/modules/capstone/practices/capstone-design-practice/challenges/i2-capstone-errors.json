@@ -1,0 +1,20 @@
+{
+  "id": "i2-capstone-errors",
+  "title": "The Error Contract Decision",
+  "prompt": "Declare `errors` with: invalidTicket (the HTTP status you return for a failed-server-side-validation create), notAuthor (status for a non-author trying to edit), notSignedIn (status for missing auth), and clientValidates (boolean — do you ALSO validate in the browser for fast feedback?).",
+  "difficulty": "advanced",
+  "level": "independent",
+  "boilerplate": "const errors = {\n  invalidTicket: 0,\n  notAuthor: 0,\n  notSignedIn: 0,\n  clientValidates: false,\n};\n",
+  "tests": [
+    {
+      "name": "the three failure codes are correct",
+      "code": "const fn = new Function(code + \"\\nreturn { errors };\");\nconst { errors } = fn();\nif (errors.invalidTicket !== 400) throw new Error(\"Bad input from the client is 400 Bad Request.\");\nif (errors.notAuthor !== 403) throw new Error(\"Authenticated but forbidden is 403.\");\nif (errors.notSignedIn !== 401) throw new Error(\"No credentials is 401 Unauthorized.\");\n",
+      "hint": "400 = your request is malformed; 401 = who are you; 403 = I know you, no."
+    },
+    {
+      "name": "validation is layered",
+      "code": "const fn = new Function(code + \"\\nreturn { errors };\");\nconst { errors } = fn();\nif (errors.clientValidates !== true) {\n  throw new Error(\"Client-side validation for UX + server-side for correctness is the professional pattern.\");\n}\n",
+      "hint": "Fast feedback in the browser, authority on the server."
+    }
+  ]
+}

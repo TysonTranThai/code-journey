@@ -1,0 +1,50 @@
+Lỗi trong Java có hai dòng họ, và phân biệt được chúng là một siêu năng lực.
+
+**Dòng họ 1: lỗi lúc biên dịch** (javac từ chối). Compiler nêu tên file,
+dòng, và thường là cả cách sửa:
+
+```java
+public class Broken {
+    public static void main(String[] args) {
+        System.out.println("oops")        // ← thiếu chấm phẩy
+    }
+}
+```
+
+```text
+Broken.java:3: error: ';' expected
+        System.out.println("oops")
+                                  ^
+1 error
+```
+
+Đọc từ dưới lên: `';' expected` ở dòng 3, với dấu mũ `^` chỉ đúng vị trí.
+Thành viên quen thuộc của dòng họ này: thiếu chấm phẩy hoặc ngoặc, gõ sai
+tên (`System.out.println` với `system.out.println` — Java phân biệt hoa
+thường), lệch kiểu (`int x = "5";`), dùng biến trước khi khai báo.
+
+**Dòng họ 2: lỗi lúc chạy** (JVM dừng và in stack trace).
+
+```java
+int[] a = new int[3];
+System.out.println(a[5]);
+```
+
+```text
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException:
+Index 5 out of bounds for length 3
+    at Broken.main(Broken.java:4)
+```
+
+Stack trace đọc **từ trên xuống là nguyên nhân, từ dưới lên là vị trí**:
+dòng đầu nêu tên exception và thông điệp; các dòng `at ...` liệt kê mọi
+phương thức đang chạy, trong cùng nhất đứng trước, kèm file và dòng.
+`Broken.java:4` là nơi sự việc xảy ra. Stack trace không phải lời quở trách
+— nó là tấm bản đồ. Bạn sẽ học *đọc* nó ở Module 12, và cả *ném* exception
+của riêng mình.
+
+**Vòng lặp của người mới hiệu quả**: viết một chút → biên dịch → đọc kỹ
+lỗi → sửa → lặp lại. Mẻ code nhỏ giữ danh sách lỗi ngắn và nguyên nhân còn
+tươi.
+
+**Tiếp theo:** thực hành.

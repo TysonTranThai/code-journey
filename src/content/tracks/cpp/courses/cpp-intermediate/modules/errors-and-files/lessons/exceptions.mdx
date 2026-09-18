@@ -1,0 +1,37 @@
+C++ error handling has two channels: return values for *expected* outcomes,
+and exceptions for *conditions the caller cannot quietly ignore*.
+
+```cpp
+#include <stdexcept>
+
+int parse_port(const std::string& s) {
+    int value = std::stoi(s);          // throws std::invalid_argument
+    if (value < 0 || value > 65535)
+        throw std::out_of_range("port out of range: " + s);
+    return value;
+}
+```
+
+The throwing family you will actually use, all in `<stdexcept>`:
+
+- `std::invalid_argument` — the input is not parseable
+- `std::out_of_range` — parseable but outside the legal domain
+- `std::runtime_error` — failures only visible at runtime (I/O, network)
+- `std::logic_error` — the *program* broke its own contract
+
+Throw by value, catch by `const&`:
+
+```cpp
+try {
+    int port = parse_port(user_input);
+    use(port);
+} catch (const std::out_of_range& e) {
+    std::cerr << "bad port: " << e.what() << "\n";
+} catch (const std::exception& e) {
+    std::cerr << "error: " << e.what() << "\n";   // base-class fallback
+}
+```
+
+Catch order matters: handlers are tried top-down, so put derived types
+before bases. A bare `catch (...)` swallows everything — reserve it for
+thread boundaries and last-resort barriers.

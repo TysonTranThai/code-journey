@@ -1,0 +1,37 @@
+Bài capstone exercised mọi module. Mỗi module xuất hiện ở đâu:
+
+| Module | Xuất hiện dưới dạng |
+|---|---|
+| M2-M4 lớp | `Book`, `Library` với encapsulation, `const` correctness |
+| M5 STL | `std::vector<Book>` lưu trữ, `std::map` cho bộ đếm |
+| M6 thuật toán | `std::sort` danh sách, `std::find_if` tìm kiếm |
+| M7 hiện đại | `std::optional` cho tra cứu, `enum class` Status |
+| M8 RAII | kỷ luật sở hữu nếu bạn giữ tài nguyên |
+| M9 template | một helper `format_table` generic nếu bạn tổng quát hóa |
+| M10 lỗi | `ValidationError` mang dữ liệu theo field |
+| M11 DSA | ý thức độ phức tạp khi chọn cách tìm kiếm |
+
+Bài học tích hợp: **mỗi đường nối là một nơi bạn đã luyện.** Khi compiler
+kêu than, giờ đây bạn biết phải đọc lại bài học của module nào.
+
+Một khung mẫu để mở rộng — tìm kiếm với `optional` + `find_if`:
+
+```cpp
+#include <algorithm>
+#include <optional>
+#include <vector>
+
+class Library {
+public:
+    std::optional<const Book*> find(std::string_view title) const {
+        auto it = std::find_if(books_.begin(), books_.end(),
+                               [&](const Book& b) { return b.title() == title; });
+        if (it == books_.end()) return std::nullopt;
+        return &*it;
+    }
+private:
+    std::vector<Book> books_;
+};
+```
+
+Mọi mảnh đều là ôn tập; việc ghép chúng mới là kỹ năng mới.

@@ -1,0 +1,21 @@
+{
+  "id": "csb-p15-filter-shape",
+  "title": "Filter and shape",
+  "prompt": "Implement `static List<string> LongUpper(IEnumerable<string> words)` — words of length ≥ 3, uppercased, original order; and `static List<int> Lengths(IEnumerable<string> words)` — just the lengths, same order. Null input → empty lists.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "var w = new[] { \"hi\", \"pear\", \"fig\", \"apple\" };\nCj.Eq(string.Join(\",\", Solution.LongUpper(w)), \"PEAR,FIG,APPLE\", \"len>=3 uppercase\");\nCj.Eq(string.Join(\",\", Solution.Lengths(w)), \"2,4,3,5\", \"lengths in order\");",
+      "hint": "Where then Select vs Select alone — same source, two shapes."
+    },
+    {
+      "name": "edges",
+      "code": "Cj.Eq(Solution.LongUpper(null).Count, 0, \"null long\");\nCj.Eq(Solution.Lengths(new string[0]).Count, 0, \"empty lengths\");\nCj.Eq(string.Join(\",\", Solution.LongUpper(new[] { \"ab\", \"cd\" })), \"\", \"nothing survives the filter\");",
+      "hint": "Empty results are empty lists, never null or exceptions."
+    }
+  ],
+  "level": "guided"
+}

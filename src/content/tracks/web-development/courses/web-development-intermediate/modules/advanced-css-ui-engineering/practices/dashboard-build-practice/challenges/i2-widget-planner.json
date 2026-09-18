@@ -1,0 +1,20 @@
+{
+  "id": "i2-widget-planner",
+  "title": "Widget Layout Planner",
+  "prompt": "Write `planLayout(widgets, cols)` distributing `widgets` (array of ids) into `cols` columns row-major (like CSS grid auto-placement): RETURN an array of `cols` arrays. `place(widgets, cols, index)` additionally returns the row/column of the widget at `index` as `{ row, col }` (both 0-based).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function planLayout(widgets, cols) {\n  // your code\n}\n\nfunction place(widgets, cols, index) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "row-major distribution",
+      "code": "const fn = new Function(code + \"\\nreturn { planLayout, place };\");\nconst { planLayout, place } = fn();\nconst cols = planLayout([\"a\", \"b\", \"c\", \"d\", \"e\"], 2);\nif (cols.length !== 2) throw new Error(\"Two column buckets.\");\nif (cols[0].join() !== \"a,c,e\" || cols[1].join() !== \"b,d\") throw new Error(\"Row-major: a b / c d / e — column 0 gets a,c,e.\");",
+      "hint": "cols[i % cols].push(widget) walking the list."
+    },
+    {
+      "name": "row and column of an index",
+      "code": "const fn = new Function(code + \"\\nreturn { planLayout, place };\");\nconst { planLayout, place } = fn();\nif (place([\"a\",\"b\",\"c\",\"d\",\"e\"], 2, 3).row !== 1 || place([\"a\",\"b\",\"c\",\"d\",\"e\"], 2, 3).col !== 1) throw new Error(\"Index 3 at 2 cols: row 1, col 1.\");\nif (place([\"a\",\"b\",\"c\",\"d\",\"e\"], 3, 4).row !== 1 || place([\"a\",\"b\",\"c\",\"d\",\"e\"], 3, 4).col !== 1) throw new Error(\"Index 4 at 3 cols: row 1, col 1.\");",
+      "hint": "row = Math.floor(index / cols); col = index % cols."
+    }
+  ]
+}

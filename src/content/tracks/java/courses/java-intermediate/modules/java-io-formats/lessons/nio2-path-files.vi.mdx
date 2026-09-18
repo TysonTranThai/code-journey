@@ -1,0 +1,21 @@
+## NIO.2: Path, Files, và ranh giới byte/char
+
+`java.nio.file` tách *ở đâu* (Path) khỏi *làm gì* (Files):
+
+```java
+Path p = Path.of("data", "2026", "sales.csv");
+Files.exists(p);          // kiểm tra
+Files.createDirectories(p.getParent());   // tương đương mkdir -p
+Files.size(p);            // byte
+Files.readAllLines(p);    // file text nhỏ (cả file trong bộ nhớ)
+Files.lines(p);           // Stream<String> lười — dùng cho file lớn
+Files.writeString(p, text);
+Files.readString(p);
+```
+
+Encoding không phải tùy chọn: byte → char cần charset.
+`Files.newBufferedReader(p, StandardCharsets.UTF_8)` — luôn chỉ đích danh;
+charset mặc định của nền tảng là một bug tính di động.
+
+Kỷ niệm bộ nhớ: `readAllLines` nạp hết; `Files.lines` stream lười và phải
+đóng (dùng try-with-resources) nếu không sẽ rò file handle.

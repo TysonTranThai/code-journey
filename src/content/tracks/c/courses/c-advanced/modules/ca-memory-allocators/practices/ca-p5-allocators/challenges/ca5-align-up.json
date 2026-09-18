@@ -1,0 +1,26 @@
+{
+  "id": "ca5-align-up",
+  "title": "Alignment Helper",
+  "prompt": "Implement `unsigned char *align_up(unsigned char *p, size_t align)` returning the smallest address >= p that is a multiple of align (align is a power of two). This is the helper every arena needs before handing out typed slices.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "rounds up",
+      "code": "unsigned char raw[64];\nunsigned char *p = align_up(raw + 3, 8);\nCHECK_EQ((int)(p - raw), 8);",
+      "hint": "Offset 3 rounds to the next multiple of 8."
+    },
+    {
+      "name": "already aligned",
+      "code": "unsigned char raw2[64];\nunsigned char *q = align_up(raw2 + 16, 8);\nCHECK_EQ((int)(q - raw2), 16);",
+      "hint": "A multiple stays put — no gratuitous bump."
+    },
+    {
+      "name": "align 1 identity",
+      "code": "unsigned char raw3[64];\nunsigned char *r = align_up(raw3 + 7, 1);\nCHECK_EQ((int)(r - raw3), 7);",
+      "hint": "align 1 is the identity."
+    }
+  ],
+  "level": "independent"
+}

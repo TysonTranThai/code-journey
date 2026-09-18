@@ -1,0 +1,50 @@
+**Move semantics** transfer a resource from a dying object instead of copying
+it. The move constructor "steals" the source's pointer and empties the
+source — O(1) instead of O(n).
+
+```cpp
+#include <cstring>
+#include <utility>
+
+class Buffer {
+public:
+    // ... (from the Rule of Three) ...
+
+    Buffer(Buffer&& other) noexcept                    // move ctor
+        : size_{other.size_}, data_{other.data_} {
+        other.data_ = nullptr;                          // leave source empty
+        other.size_ = 0;
+    }
+
+    Buffer& operator=(Buffer&& other) noexcept {        // move assign
+        if (this == &other) return *this;
+        delete[] data_;
+        data_ = other.data_;
+        size_ = other.size_;
+        other.data_ = nullptr;
+        other.size_ = 0;
+        return *this;
+    }
+    // ...
+};
+
+Buffer make_buffer() { return Buffer{1024}; }
+
+int main_cj_move() {
+    Buffer a{make_buffer()};     // move (or elided): no copy of 1024 bytes
+    Buffer b{a};                 // copy: a still owns its data
+    Buffer c{std::move(a)};      // move: a is now empty-but-valid
+    return 0;
+}
+```
+
+## Rule of Five and the moved-from state
+
+Add the two move operations to the Rule of Three and you have five. Whenever
+you declare a destructor or any copy operation, consider all five. A moved-
+from object must be **valid** (destructible, assignable) — but its value is
+unspecified; never assume it still holds data.
+
+`noexcept` on moves matters: `std::vector` only moves elements during growth
+if the move is `noexcept`, otherwise it must copy to keep the strong
+guarantee.

@@ -1,0 +1,32 @@
+## Design to contracts
+
+An interface is a *promise* callers can rely on and implementations can
+swap. The intermediate skill is choosing what belongs in the promise:
+
+```java
+public interface PaymentGateway {
+    PaymentResult charge(Money amount, Card card);
+}
+```
+
+High-level code (checkout) should depend on `PaymentGateway`, not on
+`StripeGateway`. That is the Dependency Inversion Principle in one line:
+**details depend on abstractions, never the reverse.**
+
+```java
+public final class CheckoutService {
+    private final PaymentGateway gateway;
+    public CheckoutService(PaymentGateway gateway) {   // injected
+        this.gateway = gateway;
+    }
+    public PaymentResult checkout(Order order) {
+        return gateway.charge(order.total(), order.card());
+    }
+}
+```
+
+Why this pays off:
+- tests swap in a fake gateway — no network, no secrets
+- adding PayPal means writing a new class, not editing checkout
+- the interface documents the *only* methods checkout actually needs
+  (interface segregation: small promises beat fat ones)

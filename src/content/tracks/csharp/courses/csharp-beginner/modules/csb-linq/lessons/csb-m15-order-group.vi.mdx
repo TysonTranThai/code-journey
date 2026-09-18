@@ -1,0 +1,22 @@
+## Sắp xếp
+
+```csharp
+var words = new[] { "pear", "fig", "apple" };
+var sorted = words.OrderBy(w => w.Length).ThenBy(w => w);
+// sắp theo độ dài: fig(3), pear(4), apple(5)
+```
+
+`OrderBy(key)` sắp tăng dần theo khóa; `OrderByDescending` đảo chiều. `ThenBy` phá hòa: trước theo `Length`, bằng nhau sắp theo alphabet. **Thay thế, không xếp-lại**: gọi `OrderBy` hai lần là thay thế thứ tự đầu — khóa của lần gọi sau thành chính. Chuỗi đọc: chính, rồi các phá-hòa.
+
+## Nhóm
+
+```csharp
+var byLength = words.GroupBy(w => w.Length);
+foreach (var g in byLength)
+{
+    Console.WriteLine($"độ dài {g.Key}: {string.Join(",", g)}");
+}
+// 3: fig  5: apple,pear
+```
+
+`GroupBy(key)` trả một chuỗi các nhóm, mỗi nhóm có `Key` và các phần tử dùng chung nó — một `Dictionary` dạng fluent. Thứ tự nhóm là thứ tự gặp; thứ tự phần tử trong nhóm là thứ tự nguồn.

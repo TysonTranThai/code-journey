@@ -1,0 +1,16 @@
+{
+  "id": "cint-p2-string-table",
+  "title": "The argv Model",
+  "prompt": "Work with an array of strings the way `main` does:\n\n```c\n/* returns the total number of characters across all strings in tab\n   (n entries; a NULL entry counts 0 and stops nothing). */\nsize_t total_chars(char *const *tab, size_t n);\n/* finds the longest string's INDEX (first wins ties); -1 if none. */\nlong longest_index(char *const *tab, size_t n);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "array of pointers traversal",
+      "code": "\nchar *tab[] = {\"alpha\", \"be\", \"gamma!\"};\nCHECK_EQ(total_chars(tab, 3), 13);\nCHECK_EQ(longest_index(tab, 3), 2);\nchar *t2[] = {\"aa\", \"bb\"};\nCHECK_EQ(longest_index(t2, 2), 0);   /* tie: first wins */\nchar *t3[] = {NULL, \"x\"};\nCHECK_EQ(total_chars(t3, 2), 1);\nCHECK_EQ(total_chars(NULL, 0), 0);\nCHECK_EQ(longest_index(NULL, 0), -1);\n",
+      "hint": "Walk i in [0,n): strlen(tab[i]) summed; longest tracks best index."
+    }
+  ],
+  "level": "imitation"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "cppi-m11-two-sum",
+  "title": "Two-sum in one pass",
+  "prompt": "Implement `std::vector<int> two_sum(const std::vector<int>& nums, int target)` returning the indices `[i, j]` (i < j) of the two numbers adding to target, or an empty vector when no pair exists. The one-pass hash-map approach is O(n): before inserting nums[i], check whether `target - nums[i]` was already seen.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <unordered_map>\n#include <vector>\n#include <iostream>\n\n// std::vector<int> two_sum(const std::vector<int>& nums, int target)\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "auto r = two_sum({2, 7, 11, 15}, 9);\nCHECK_EQ(r.size(), 2);\nCHECK_EQ(r[0], 0);\nCHECK_EQ(r[1], 1);",
+      "hint": "2 + 7 = 9 at indices 0 and 1."
+    },
+    {
+      "name": "later-pair",
+      "code": "auto r = two_sum({3, 2, 4}, 6);\nCHECK_EQ(r.size(), 2);\nCHECK_EQ(r[0], 1);\nCHECK_EQ(r[1], 2);",
+      "hint": "3 + 3 would reuse index 0 — the pair is 2 + 4."
+    },
+    {
+      "name": "none",
+      "code": "CHECK(two_sum({1, 2, 3}, 100).empty());",
+      "hint": "No pair: empty vector."
+    },
+    {
+      "name": "duplicates",
+      "code": "auto r = two_sum({3, 3}, 6);\nCHECK_EQ(r.size(), 2);\nCHECK_EQ(r[0], 0);\nCHECK_EQ(r[1], 1);",
+      "hint": "Two equal values still form a valid pair."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "javb-m3-fix-tier",
+  "title": "Debug: the always-expensive shipment",
+  "prompt": "Every customer is charged 12. The intended tiers: prime → 0, items >= 10 → 5, items >= 3 → 8, else 12. Find and fix the condition bugs (order and boundary) in `shippingCost`.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int shippingCost(int items, boolean prime) {\n        if (items >= 10) {\n            return 5;\n        }\n        if (prime) {\n            return 0;\n        }\n        if (items >= 3) {\n            return 8;\n        }\n        return 12;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "all tiers correct",
+      "code": "\nCjTestBase.checkEq(Solution.shippingCost(1, true), 0, \"prime 1 item\");\nCjTestBase.checkEq(Solution.shippingCost(50, true), 0, \"prime bulk is still free\");\nCjTestBase.checkEq(Solution.shippingCost(10, false), 5, \"10 items\");\nCjTestBase.checkEq(Solution.shippingCost(3, false), 8, \"3 items\");\nCjTestBase.checkEq(Solution.shippingCost(2, false), 12, \"2 items\");\n",
+      "hint": "Prime check must come FIRST (bulk prime is free, not 5); volume boundaries stay >=."
+    }
+  ],
+  "level": "debugging"
+}

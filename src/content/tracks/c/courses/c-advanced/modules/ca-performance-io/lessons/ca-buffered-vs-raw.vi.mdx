@@ -1,0 +1,32 @@
+## Hai lớp
+
+- **I/O thô** — `read(fd, buf, n)` / `write(fd, buf, n)`: một syscall mỗi lần gọi, đúng số byte kernel tình cờ cho hoặc nhận. Không bộ đệm; bạn sở hữu mọi biên.
+- **I/O đệm** — `fwrite`/`fread` trên `FILE *`: thư viện C gom các yêu cầu nhỏ vào bộ đệm user-space và hiếm khi vượt biên kernel. `<stdio.h>` là ISO C; `read`/`write` là POSIX.
+
+Một lần đọc 4096 byte của các bản ghi 64-byte tốn 64 syscall kiểu thô — hoặc 1 syscall kiểu đệm. Chuyển tiếp kernel tốn hàng nghìn chu kỳ; sao chép vào bộ đệm của bạn chỉ vài chu kỳ mỗi byte. Tỉ lệ đó là toàn bộ trò chơi.
+
+## writev: một syscall, nhiều buffer
+
+Khi dữ liệu của bạn đã nằm trong N buffer riêng (header đây, payload kia), sao chép vào một buffer tạm tốn một lượt quét — `writev` gom chúng trong kernel:
+
+```c
+#define _POSIX_C_SOURCE 200809L
+#include <sys/uio.h>              /* POSIX */
+
+struct iovec iov[2];
+iov[0].iov_base = header;  iov[0].iov_len = hlen;
+iov[1].iov_base = payload; iov[1].iov_len = plen;
+ssize_t n = writev(fd, iov, 2);   /* một syscall, hlen+plen byte */
+```
+
+Đây là thứ server thật dùng để gửi `length-prefix + body` mà không cần bản sao phòng thủ.
+
+## Khi bộ đệm phản bội bạn
+
+- **Thứ tự**: stdout qua stdio và `write(STDOUT_FILENO, ...)` trong cùng tiến trình có thể trộn lẫn *sai* — hai bộ đệm độc lập. Một stream cho mỗi đích, hoặc flush có chủ đích.
+- **Ngữ nghĩa khi crash**: byte trong bộ đệm chết ngay tại bộ đệm khi `abort()`; byte thô đã kịp đi với kernel. Log phải sống sót qua crash dùng ghi không đệm (hoặc `fflush` rõ ràng).
+- **Prompt tương tác**: `printf("input: ")` không có `fflush(stdout)` có thể hiện gì trước khi `scanf` chặn, trên một số cấu hình. In prompt, flush, rồi đọc.
+
+## Kỷ luật
+
+Không bao giờ tranh luận bằng cảm tính: đếm syscall (`strace` ngoài nền tảng; trên nền tảng, suy luận từ code) và đo thời gian thực với `CLOCK_MONOTONIC` — bài hai của mô-đun 21 biến điều đó thành thói quen.

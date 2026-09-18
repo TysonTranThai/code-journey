@@ -1,0 +1,21 @@
+{
+  "id": "pa-sec-parameterize",
+  "title": "Parameterization beats escaping",
+  "prompt": "Implement two functions that contrast safe and unsafe query building:\n\n- `build_query(template, params)` — the parameterized world. The template may contain `?` placeholders; values are rendered with `repr()` (a quote in a value stays a literal quote inside a quoted token, never changing statement structure). Placeholder-count mismatch raises `UnsafeQuery('placeholder count mismatch')`. Returns `(rendered, 'parameterized')`.\n- `vulnerable_query(template, values)` — the string-formatting world. Render with `template.format(*values)`; if the result contains `drop table` (case-insensitive), `' or '1'='1`, or a `;`, raise `UnsafeQuery('injection detected in string-built query')`; otherwise return it.\n- define `class UnsafeQuery(Exception)`.\n\nThe discriminating scenario: `O'Brien` as a customer name must flow safely through `build_query` unchanged (quotes preserved) — while the same string in the vulnerable path is a hand-escaping hazard.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: UnsafeQuery + build_query + vulnerable_query",
+  "tests": [
+    {
+      "name": "legit data survives parameterization intact",
+      "code": "q, safety = build_query(\"SELECT * FROM users WHERE name = ?\", [\"O'Brien\"])\nassert safety == 'parameterized'\nassert \"O'Brien\" in q  # the apostrophe survives, structure unchanged\ntry:\n    build_query(\"SELECT ?\", [1, 2])\nexcept UnsafeQuery:\n    pass\nelse:\n    raise AssertionError('count mismatch must raise')\nprint('ok')",
+      "hint": "repr() keeps the value literal; structure never changes."
+    },
+    {
+      "name": "the vulnerable path is caught red-handed",
+      "code": "try:\n    vulnerable_query(\"SELECT * FROM t WHERE a = '{}'\", [\"x'; DROP TABLE t; --\"])\nexcept UnsafeQuery:\n    pass\nelse:\n    raise AssertionError('must flag the payload')\nassert vulnerable_query(\"SELECT * FROM t WHERE a = '{}'\", ['bob']) == \"SELECT * FROM t WHERE a = 'bob'\"\nprint('ok')",
+      "hint": "String-formatting + payloads = flagged; plain values pass through."
+    }
+  ],
+  "level": "debugging"
+}

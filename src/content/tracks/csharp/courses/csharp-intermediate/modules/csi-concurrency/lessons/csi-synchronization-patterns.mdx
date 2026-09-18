@@ -1,0 +1,55 @@
+## SemaphoreSlim: limiting access
+
+A semaphore counts DOWN slots. `Wait()` takes one, `Release()` returns it —
+with initial count 0 it's a signaling gate; with `new SemaphoreSlim(3)` it
+caps concurrency at 3:
+
+```csharp
+private readonly SemaphoreSlim _slots = new(3);
+await _slots.WaitAsync();
+try { await UseResourceAsync(); }
+finally { _slots.Release(); }
+```
+
+Always release in `finally`. (Module 9: `WaitAsync` is the async flavor;
+sync `Wait()` blocks a thread.)
+
+## Concurrent collections: don't lock the map yourself
+
+`ConcurrentDictionary<TKey, TValue>` is thread-safe per operation, and its
+special methods are ATOMIC — the whole point:
+
+```csharp
+int now = _counts.AddOrUpdate(path, 1, (key, old) => old + 1);
+```
+
+The classic mistake is check-then-act on top of it
+(`if (!dict.ContainsKey(k)) dict[k] = v;` — two operations, a race between
+them). Also `ConcurrentQueue<T>`, `ConcurrentStack<T>`, `ConcurrentBag<T>`
+for producer/consumer shapes; `BlockingCollection<T>` wraps them with
+bounding and blocking. Read a `ConcurrentDictionary` while another thread
+writes is safe; multi-step invariants across entries still need your own
+lock.
+
+## Deadlock: the circular wait
+
+Two threads each hold a lock the other needs; neither proceeds:
+
+```
+A: lock(a) ... lock(b)     B: lock(b) ... lock(a)
+```
+
+The standard cure is lock ORDERING: acquire multiple locks in a global
+consistent order (e.g., by Id) — a cycle becomes impossible. Other rules:
+never call unknown code while holding a lock; keep lock scope tight; prefer
+the smallest number of locks that protect the invariant.
+
+## Interlocked + lock in one design
+
+Counters → Interlocked. Multi-field invariants (move money between
+accounts, pop one work item) → lock around the WHOLE check-and-act.
+
+## Check your understanding
+
+- Is `dict[k] = v` on a ConcurrentDictionary enough for "add if missing"? (No — use GetOrAdd/AddOrUpdate; indexer+check is two operations.)
+- How does lock ordering prevent deadlock? (No cycle can form if everyone acquires in the same global order.)

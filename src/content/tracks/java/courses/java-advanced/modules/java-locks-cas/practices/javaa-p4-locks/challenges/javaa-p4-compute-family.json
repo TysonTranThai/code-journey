@@ -1,0 +1,26 @@
+{
+  "id": "javaa-p4-compute-family",
+  "title": "The compute family",
+  "prompt": "Implement with ConcurrentHashMap ONLY (no explicit synchronized blocks):\n1. `static Map<String,Integer> frequency(List<String> words)` — count occurrences using `merge`.\n2. `static Map<String,List<String>> indexByFirstLetter(List<String> words)` — group using `computeIfAbsent`, appending into the existing list on repeat letters.\n3. `static int uniqueId(Map<String,Integer> registry, String name)` — reserve `name` with `computeIfAbsent` assigning `registry.size()`; a repeat call with the same name must return the SAME id (never two ids for one name).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "frequency via merge",
+      "code": "\ncheckEq(Solution.frequency(List.of(\"a\",\"b\",\"a\",\"c\",\"b\",\"a\")),\n        Map.of(\"a\",3,\"b\",2,\"c\",1), \"merge counts\");\n",
+      "hint": "map.merge(w, 1, Integer::sum)."
+    },
+    {
+      "name": "grouping via computeIfAbsent",
+      "code": "\nvar idx = Solution.indexByFirstLetter(List.of(\"ant\",\"bee\",\"ape\",\"bat\"));\ncheckEq(idx.get(\"a\"), List.of(\"ant\",\"ape\"), \"a-bucket ordered\");\ncheckEq(idx.get(\"b\"), List.of(\"bee\",\"bat\"), \"b-bucket ordered\");\n",
+      "hint": "computeIfAbsent(k, x -> new ArrayList<>()).add(word)."
+    },
+    {
+      "name": "id reservation is stable",
+      "code": "\nvar reg = new java.util.concurrent.ConcurrentHashMap<String,Integer>();\nint id1 = Solution.uniqueId(reg, \"alice\");\nint id2 = Solution.uniqueId(reg, \"alice\");\nint id3 = Solution.uniqueId(reg, \"bob\");\ncheckTrue(id1 == id2, \"same name, same id\");\ncheckTrue(id1 != id3, \"distinct names, distinct ids\");\ncheckTrue(id1 == 0, \"ids start at zero\");\n",
+      "hint": "computeIfAbsent guarantees at-most-once assignment, starting at 0."
+    }
+  ],
+  "level": "independent"
+}

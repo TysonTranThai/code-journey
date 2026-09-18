@@ -1,0 +1,52 @@
+Hai vòng lặp chạy theo *điều kiện* thay vì theo con số đếm.
+
+**`while`** kiểm tra trước, chạy sau — phần thân có thể không chạy lần nào:
+
+```java
+int cups = 0;
+while (cups < 3) {
+    cups++;
+}
+// tại đây cups == 3
+```
+
+**`do-while`** chạy thân trước, kiểm tra sau — thân luôn chạy ít nhất một
+lần. Hình dạng kinh điển là vòng thử lại:
+
+```java
+int attempts = 0;
+do {
+    attempts++;
+    // thử một việc gì đó
+} while (attempts < 3 && !succeeded);
+```
+
+Dùng `while` khi câu trả lời có thể đã là "xong" (rút cạn hàng đợi); chỉ
+dùng `do-while` khi lượt đầu tiên do chính bài toán yêu cầu (hỏi-roi-kiểm
+tra input). Thực tế 90% vòng theo điều kiện là `while`.
+
+**`break` và `continue`** điều khiển vòng lặp từ bên trong:
+
+```java
+int found = -1;
+for (int i = 0; i < data.length; i++) {
+    if (data[i] < 0) {
+        continue;            // bỏ qua phần tử này, lặp tiếp
+    }
+    if (data[i] == target) {
+        found = i;
+        break;               // dừng cả vòng lặp
+    }
+}
+```
+
+`break` thoát khỏi vòng lặp ngay lập tức; `continue` nhảy sang lần lặp kế.
+Cả hai rõ ràng nhất khi hiếm — một vòng lặp đầy break thực chất là máy
+trạng thái rối. Chú ý thành ngữ tìm kiếm chuẩn: mang kết quả trong một biến
+khai báo *ngoài* vòng lặp, để nó sống sót qua `break`.
+
+**Vòng lặp vô hạn** `while (true) { ... break; }` là hợp lệ khi điểm thoát
+nằm giữa thân — nhưng `break` phải với tới được, và bạn phải nói được trong
+một câu điều gì khiến nó cuối cùng dừng lại.
+
+**Tiếp theo:** vòng lặp trong vòng lặp, và các pattern tích lũy khiến vòng lặp đáng công.

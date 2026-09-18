@@ -1,0 +1,25 @@
+{
+  "id": "javb-checkpoint-methods",
+  "title": "Checkpoint: Text Toolkit",
+  "prompt": "\nThe Text Toolkit is a small library with a clean contract. Implement:\n\n1. `static String initials(String fullName)` — the first letters of the\n   words, upper-cased and joined. `initials(\"ada byron lovelace\")` is\n   `\"ABL\"`. Extra spaces between words are ignored; an empty or null name\n   gives `\"\"`.\n2. `static boolean isPalindrome(String text)` — true when text reads the\n   same forwards and backwards, **ignoring case and every non-letter**\n   (`isPalindrome(\"A man, a plan, a canal: Panama!\")` is true — it reduces to\n   `amanaplanacanalpanama`, which reads the same both ways). Null or empty after cleaning is `false`.\n3. `static String truncate(String text, int max)` — text shortened to at\n   most `max` characters, with `\"...\"` appended **only when shortening\n   happened**. `truncate(\"programming\", 7)` is `\"program\"` + `\"...\"`; a\n   text already within the limit comes back untouched. `max` below 4\n   (no room even for the dots) returns just the first `max` characters\n   with no dots.\n\nEvery method returns a value; none prints. Build helpers if useful — the\ngrader only calls the three public entry points.\n",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String initials(String fullName) {\n        return \"\";\n    }\n\n    public static boolean isPalindrome(String text) {\n        return false;\n    }\n\n    public static String truncate(String text, int max) {\n        return \"\";\n    }\n}\n",
+  "tests": [
+    {
+      "name": "initials",
+      "code": "\nCjTestBase.checkEq(Solution.initials(\"ada byron lovelace\"), \"ABL\", \"three words\");\nCjTestBase.checkEq(Solution.initials(\"  grace   hopper \"), \"GH\", \"extra spaces\");\nCjTestBase.checkEq(Solution.initials(\"\"), \"\", \"empty\");\nCjTestBase.checkEq(Solution.initials(null), \"\", \"null\");\n",
+      "hint": "Split on whitespace, take first char of each token, uppercase, join."
+    },
+    {
+      "name": "isPalindrome",
+      "code": "\nCjTestBase.checkTrue(Solution.isPalindrome(\"A man, a plan, a canal: Panama!\"), \"the classic panama palindrome\");\nCjTestBase.checkTrue(Solution.isPalindrome(\"Noon\"), \"case-insensitive\");\nCjTestBase.checkTrue(!Solution.isPalindrome(\"hello\"), \"not a palindrome\");\nCjTestBase.checkTrue(!Solution.isPalindrome(\"\"), \"empty is false by contract\");\n",
+      "hint": "Keep letters only, lowercase, compare with reversed."
+    },
+    {
+      "name": "truncate",
+      "code": "\nCjTestBase.checkEq(Solution.truncate(\"programming\", 7), \"program...\", \"shortened\");\nCjTestBase.checkEq(Solution.truncate(\"short\", 10), \"short\", \"untouched\");\nCjTestBase.checkEq(Solution.truncate(\"abcdef\", 3), \"abc\", \"no room for dots\");\n",
+      "hint": "Dots only when text.length() > max; max < 4 means no dots."
+    }
+  ]
+}

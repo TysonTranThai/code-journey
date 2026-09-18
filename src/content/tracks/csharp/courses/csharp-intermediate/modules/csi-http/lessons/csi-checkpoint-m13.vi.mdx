@@ -1,0 +1,16 @@
+## Cổng kiểm tra (mini-build)
+
+API client bền bỉ — hình dáng trong bài học, lắp ráp:
+
+1. `ApiClient(HttpClient http)` — client được inject (kỷ luật Module 11).
+2. `GetUserAsync(int id, CancellationToken ct)` → GET `/users/{id}`.
+   Kết quả: `"user:<name>"` khi 200, `"notfound"` khi 404,
+   `"failed"` với mã khác.
+3. `GetUserWithRetryAsync(int id, int maxAttempts, CancellationToken ct)` —
+   cùng hợp đồng, nhưng lần 5xx được retry với delay do harness ghi lại
+   (không giảm, trần 50 ms); 404 KHÔNG được retry.
+4. Hủy thắng: token đã hủy trước ném OperationCanceledException trước mọi
+   request.
+
+Được cấp: `CjStubHandler` (ghi request, phát lại response kịch bản, ghi
+delay giả).

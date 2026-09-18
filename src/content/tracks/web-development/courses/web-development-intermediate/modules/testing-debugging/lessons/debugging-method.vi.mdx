@@ -1,0 +1,25 @@
+Gỡ lỗi không phải tài năng; đó là một thủ tục tìm kiếm. Khác biệt giữa junior loay hoay và senior bình tĩnh là vòng lặp của senior _chia đôi không gian tìm kiếm mỗi bước_.
+
+## Vòng lặp năm bước
+
+1. **Tái hiện được tin cậy.** Bug không tái hiện theo yêu cầu là bug không sửa được. Tìm input tối thiểu: dữ liệu chính xác nào, chuỗi thao tác chính xác nào? (Một bản tái hiện tự động — một test failing — là vàng: sau này nó trở thành regression test.)
+2. **Cô lập.** Tìm kiếm nhị phân trên pipeline. Dữ liệu về sai từ API, bị hỏng trong lúc xử lý, hay render sai? Log/xem tại điểm giữa. Sai từ thượng nguồn? Bug nằm thượng nguồn; vứt bỏ nửa hạ nguồn. Lặp lại. Pipeline 10 bước cũng sụp trong ~4 bước.
+3. **Hiểu.** Tìm ra dòng lỗi — giờ giải thích _tại sao_ nó tạo output sai. "Bộ lọc giữ item có `qty` truthy, mà 0 là falsy" là hiểu. "Tôi bỏ filter đi và nó chạy" là mê tín; tuần sau nó cắn bạn.
+4. **Sửa nguyên nhân, không sửa triệu chứng.** Chặn giá trị hỏng ở hạ nguồn chỉ là giấu bug; sửa nơi sinh ra giá trị hỏng mới xóa được nó. Các bản vá triệu chứng chất đống thành hệ thống không ai lý giải nổi.
+5. **Chứng minh.** Viết test failing TRƯỚC (nó fail trước khi sửa), rồi sửa, rồi nhìn nó pass, rồi giữ nó mãi làm regression test. Bản sửa không có test chỉ là tin đồn.
+
+## Công cụ đáng giá
+
+- **Breakpoint > console.log.** Debugger dừng _trạng thái trong ngữ cảnh_: mọi biến trong scope, cả call stack dẫn đến đây. Câu log là một tấm ảnh; debugger cho cả cuốn album, kể cả những tấm phía sau.
+- **Conditional breakpoint** cho vòng lặp chạy 10,000 lần: chỉ dừng khi `i === 937`.
+- **Watch expression** theo dõi một giá trị qua từng bước.
+- **Tab Network**: thứ thực sự rời khỏi trình duyệt, kèm headers. Một nửa "bug frontend" là request code không bao giờ gửi, hoặc response nó đọc sai.
+- **`git bisect`** (module 6!): khi "trước đây nó chạy mà", lịch sử tìm ra commit thủ phạm theo thời gian log.
+
+## Đọc stack trace như dân chuyên
+
+Đọc frame _đỉnh_ trước — nơi lỗi được ném. Rồi đi xuống đến frame đầu tiên là _code của bạn_ (bỏ qua nội bộ thư viện). Message nói cho bạn _cái gì_; frame nói _ở đâu_; code xung quanh nói _tại sao_. `undefined is not a function` nghĩa là một tên resolve thành undefined — kiểm tra lỗi gõ, thiếu import, hoặc object không có hình dạng bạn tưởng.
+
+## Khi bí
+
+Giải thích bug thành tiếng, từng dòng, cho bất kỳ ai (hoặc con vịt cao su) — việc nói ra _luồng kỳ vọng_ và _luồng thực tế_ thường hé lộ khoảng trống ngay giữa câu. Và nếu 30 phút tìm kiếm nhị phân mà chẳng thu hẹp được gì: bạn đang tìm sai pipeline. Dừng lại, vẽ lại luồng dữ liệu, chọn điểm giữa mới.

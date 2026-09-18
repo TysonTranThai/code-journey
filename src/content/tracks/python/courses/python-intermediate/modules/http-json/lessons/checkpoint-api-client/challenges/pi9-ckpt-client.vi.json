@@ -1,0 +1,22 @@
+{
+  "title": "Mini Client bền vững",
+  "prompt": "Viết MiniClient(base_url, transport=None) với get(path) -> dict. Hành vi: ghép url = base_url + path; gọi transport(url) (None → RuntimeError 'no network in sandbox'); đối tượng phản hồi có .status và .read() -> bytes. Với 200, parse và trả JSON. Với 5xx/429, thử lại tối đa 3 lần tổng, rồi raise ApiError('exhausted retries'). Với 4xx khác, raise ApiError ngay lập tức. Body không phải JSON khi 200 raise ApiError('bad body').",
+  "tests": [
+    {
+      "name": "Thành công trả JSON đã parse",
+      "hint": "200 → parse → return."
+    },
+    {
+      "name": "Lỗi client fail ngay lập tức",
+      "hint": "4xx (khác 429) raise ngay — không retry."
+    },
+    {
+      "name": "Lỗi tạm thời được thử lại rồi thành công",
+      "hint": "503 đầu được thử lại; lần hai thành công."
+    },
+    {
+      "name": "Hết lượt thử sẽ raise",
+      "hint": "Ba lần tổng, rồi ApiError('exhausted retries')."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "pi10-ckpt-collector",
+  "title": "Source Collector",
+  "prompt": "Implement sync collect(sources) where sources is a list of dicts: {'name': str, 'delay': float, 'fail': bool(optional)}. Each source simulates a fetch: async job awaiting delay then raising RuntimeError(name) if fail else returning (name, 'data'). Run ALL concurrently with a per-source timeout of 0.5s (asyncio.wait_for). Return a dict with keys 'ok' (list of names that returned data, in input order) and 'failed' (sorted list of names that raised or timed out).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import asyncio\n\ndef collect(sources):\n    pass\n",
+  "tests": [
+    {
+      "name": "happy sources report ok",
+      "code": "srcs = [{'name': 'a', 'delay': 0.01}, {'name': 'b', 'delay': 0.01}]\nout = collect(srcs)\nassert out['ok'] == ['a', 'b'] and out['failed'] == []",
+      "hint": "Both succeed; results ordered by input order."
+    },
+    {
+      "name": "failing source lands in failed",
+      "code": "srcs = [{'name': 'good', 'delay': 0.01}, {'name': 'bad', 'delay': 0.01, 'fail': True}]\nout = collect(srcs)\nassert out['ok'] == ['good'] and out['failed'] == ['bad']",
+      "hint": "RuntimeError from a source → failed list."
+    },
+    {
+      "name": "slow source times out into failed",
+      "code": "srcs = [{'name': 'slow', 'delay': 2.0}, {'name': 'fast', 'delay': 0.01}]\nout = collect(srcs)\nassert out['failed'] == ['slow'] and out['ok'] == ['fast']",
+      "hint": "Per-source timeout 0.5s — the 2s source must not stall the run."
+    },
+    {
+      "name": "run finishes quickly despite a slow source",
+      "code": "import time\nsrcs = [{'name': 'slow', 'delay': 5.0}, {'name': 'f', 'delay': 0.01}]\nstart = time.monotonic()\ncollect(srcs)\nassert time.monotonic() - start < 2.0",
+      "hint": "Timeout keeps the whole run bounded (~0.5s, not 5s)."
+    }
+  ]
+}

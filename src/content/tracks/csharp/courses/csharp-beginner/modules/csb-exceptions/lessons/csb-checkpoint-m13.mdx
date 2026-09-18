@@ -1,0 +1,13 @@
+## Checkpoint: the reservation service
+
+**Task:** implement in `Solution`:
+
+1. `class BookingConflictException : Exception` with `public string Slot { get; }` (constructor `(string slot, string message)` → base(message), store Slot).
+2. `static string Book(List<string> takenSlots, string slot)`:
+   - null/whitespace slot → `ArgumentException`;
+   - slot already in `takenSlots` → `BookingConflictException` (Slot = slot);
+   - otherwise add and return the slot.
+3. `static T Guard<T>(Func<T> action, string label)`:
+   - runs `action`; returns its result on success;
+   - on exception: throws `InvalidOperationException` with a message containing `label` — but ONLY for `InvalidOperationException`; any other exception type must propagate unchanged;
+   - `label` null → `ArgumentException` before running action.

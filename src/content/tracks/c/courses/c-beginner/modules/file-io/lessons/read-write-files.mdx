@@ -1,0 +1,48 @@
+## Writing text
+
+```c
+FILE *f = fopen("log.txt", "w");
+if (f == NULL) return 1;
+fprintf(f, "score=%d\n", 42);
+fputs("plain line\n", f);
+fclose(f);
+```
+
+## Reading line by line
+
+```c
+char line[128];
+FILE *f = fopen("log.txt", "r");
+if (f == NULL) return 1;
+while (fgets(line, sizeof line, f) != NULL) {
+    // line includes the trailing '\n' (when it fits)
+    fputs(line, stdout);
+}
+fclose(f);
+```
+
+`fgets` returns NULL at end-of-file or error — that is the loop condition.
+The buffer size is respected: no overflow.
+
+## Parsing what you read
+
+```c
+int score;
+if (sscanf(line, "score=%d", &score) == 1) {
+    // matched exactly one conversion
+}
+```
+
+Check sscanf's return value — it counts successful conversions.
+
+## The EOF family
+
+- `fgets` returning NULL: the line loop's end signal
+- `feof(f)`: true AFTER a read hit end-of-file — never loop on feof alone
+- `ferror(f)`: true if an I/O error occurred
+
+## The pattern for persistence
+
+write → fclose → fopen("r") → read → fclose. Closing on write flushes the
+data; reopening for read sees it. You will use exactly this in the practice:
+write a small log, then read it back and count.

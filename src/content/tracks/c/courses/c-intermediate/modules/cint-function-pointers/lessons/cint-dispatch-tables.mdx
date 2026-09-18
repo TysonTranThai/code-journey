@@ -1,0 +1,65 @@
+## Table-driven dispatch
+
+A chain of `strcmp` calls is a dispatch table the compiler cannot see. Make it
+data and it becomes inspectable, extendable, and testable:
+
+```c
+typedef struct { const char *name; int (*fn)(int, int); } Command;
+
+static int cmd_add(int a, int b) { return a + b; }
+static int cmd_mul(int a, int b) { return a * b; }
+
+static const Command TABLE[] = {
+    { "add", cmd_add },
+    { "mul", cmd_mul },
+};
+
+int dispatch(const char *name, int a, int b) {
+    for (size_t i = 0; i < sizeof TABLE / sizeof TABLE[0]; i++)
+        if (strcmp(TABLE[i].name, name) == 0) return TABLE[i].fn(a, b);
+    return INT_MAX;   /* "unknown command" sentinel */
+}
+```
+
+Adding a command is one table row — no new branch logic to break. Unknown
+names are a policy decision visible in one place.
+
+## Closures, the C way: context pointers
+
+JavaScript callbacks carry their environment. C callbacks carry a `void *ctx`
+the caller fills:
+
+```c
+/* calls visit(i, ctx) for each index i in [0, n) */
+void for_each(size_t n, void (*visit)(size_t, void *), void *ctx);
+
+/* the caller's closure */
+struct SumCtx { long long total; };
+static void add_index(size_t i, void *c) {
+    struct SumCtx *s = c;
+    s->total += (long long)i;
+}
+```
+
+The pattern: caller owns a context struct, passes its address, the callback
+casts `void *` back. This is how every callback API in C works — qsort lacks
+a context parameter (a famous criticism; `qsort_r` exists in POSIX, not ISO C),
+so module-level statics or globals substitute when writing ISO C.
+
+## Function pointer arrays
+
+When commands are dense integers, skip the search:
+
+```c
+static int (*OPS[4])(int, int) = { op_nop, op_add, op_sub, op_mul };
+int run(int code, int a, int b) {
+    return (code >= 0 && code < 4) ? OPS[code](a, b) : -1;
+}
+```
+
+## Check your understanding
+
+- Why is a table easier to extend than a switch? (A row is data; a switch arm
+  is logic in the middle of a function.)
+- What does `void *ctx` replace from other languages? (Closure capture — the
+  environment travels with the callback.)

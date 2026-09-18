@@ -1,0 +1,55 @@
+Cascade không phải điều ngẫu nhiên để chống lại — nó là một hệ thống để sắp
+xếp. `@layer` trao cho bạn quyền kiểm soát tường minh.
+
+## Layer thắng specificity
+
+Khai báo trong layer **sau** thắng layer trước — bất kể specificity:
+
+```css
+@layer reset, base, components, utilities;
+
+@layer reset {
+  * {
+    margin: 0;
+  }
+}
+@layer components {
+  .btn {
+    padding: 0.5rem 1rem;
+  }
+}
+@layer utilities {
+  .p-0 {
+    padding: 0;
+  } /* utilities thắng components nhờ thứ tự layer */
+}
+```
+
+Một utility `.p-0` giờ ghi đè padding của component mà không cần `!important`,
+vì layer `utilities` đứng trên `components` theo thứ tự layer.
+
+## Quy tắc thứ tự
+
+Thứ tự layer được cố định ngay lần khai báo đầu: `@layer reset, base,
+components, utilities;` thiết lập độ ưu tiên thấp→cao. Style không nằm trong
+layer nào thắng mọi layer — đó là cách các bản ghi đè được đặt ở cuối.
+
+## :where() — specificity mà bạn có thể tiêu
+
+`:where(...)` đóng góp **zero** specificity — hoàn hảo cho reset luôn phải thua:
+
+```css
+:where(h1, h2, h3) {
+  margin-block: 0.5em;
+}
+```
+
+Bất kỳ quy tắc nào của tác giả giờ đều thắng nó. `:is()` cùng danh sách đó
+nhưng _chiếm_ specificity cao nhất trong các đối số — dùng khi phép khớp cần
+được tính.
+
+## Khi nào dùng cái nào
+
+- Layer: tổ chức cả stylesheet; làm CSS bên thứ ba dễ bị ghi đè.
+- `:where()`: reset và mặc định mà việc ghi đè phải rẻ.
+- `!important`: phương án cuối, và theo quy ước chỉ dành cho layer utility.

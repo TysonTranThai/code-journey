@@ -1,0 +1,21 @@
+{
+  "id": "ca6-move-hollow",
+  "title": "Transfer Hollows the Source",
+  "prompt": "Implement the buffer move that transfers ownership:\n \n```c\ntypedef struct { int *buf; size_t len; size_t cap; } vec_t;\nvoid vec_move(vec_t *dst, vec_t *src);\nvoid vec_free(vec_t *v);\n```\n \n`vec_move` gives dst the buffer and *hollows* src (buf = NULL, len = cap = 0). `vec_free` releases what an owner holds. A file-scope `int buffers_alive = 0;` increments in... nothing yet — see the rules: define it yourself inside vec allocations if you need it; the tests only check the hollowing and value preservation.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "move preserves values",
+      "code": "int *b = malloc(3 * sizeof(int));\nfor (int i = 0; i < 3; i++) b[i] = i + 1;\nvec_t src = {b, 3, 3};\nvec_t dst = {0, 0, 0};\nvec_move(&dst, &src);\nCHECK_EQ(dst.buf[0], 1);\nCHECK_EQ(dst.buf[2], 3);\nCHECK_EQ((long long)dst.len, 3);\nfree(dst.buf);",
+      "hint": "The buffer pointer transfers; the values ride along untouched."
+    },
+    {
+      "name": "source is hollowed",
+      "code": "int *b2 = malloc(2 * sizeof(int));\nb2[0] = 7;\nvec_t s2 = {b2, 2, 2};\nvec_t d2 = {0, 0, 0};\nvec_move(&d2, &s2);\nCHECK_NULL(s2.buf);\nCHECK_EQ((long long)s2.len, 0);\nfree(d2.buf);",
+      "hint": "After the move the source holds nothing — a second free of it is impossible by construction."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "cint-p1-dangling-badge",
+  "title": "Fix the Dangling Badge",
+  "prompt": "This program has the classic return-a-local bug. Implement it CORRECTLY:\n\n```c\nconst char *badge_for(int score);\n```\n\nIt must return the string `\"gold\"` when score >= 90, `\"silver\"` when score >= 80,\n`\"bronze\"` otherwise. The returned pointer must stay valid for the whole program\nlifetime — return a string literal (static duration), never a local array.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "returns valid static strings",
+      "code": "\nCHECK_STR_EQ(badge_for(95), \"gold\");\nCHECK_STR_EQ(badge_for(90), \"gold\");\nCHECK_STR_EQ(badge_for(85), \"silver\");\nCHECK_STR_EQ(badge_for(80), \"silver\");\nCHECK_STR_EQ(badge_for(10), \"bronze\");\n",
+      "hint": "return score >= 90 ? \"gold\" : (score >= 80 ? \"silver\" : \"bronze\"); — literals have static duration."
+    }
+  ],
+  "level": "debugging"
+}

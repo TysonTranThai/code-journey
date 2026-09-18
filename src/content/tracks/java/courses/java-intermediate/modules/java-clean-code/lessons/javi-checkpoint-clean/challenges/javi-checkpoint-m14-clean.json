@@ -1,0 +1,26 @@
+{
+  "id": "javi-checkpoint-m14-clean",
+  "title": "Refactor the Validator",
+  "prompt": "`static String validateOrder(String id, int cents, String coupon)`\nreturns one of `\"OK\"`, `\"BAD_ID\"`, `\"BAD_AMOUNT\"`, `\"BAD_COUPON\"` —\nfirst failure wins. Rules:\n- id: non-null, 3..20 chars → else BAD_ID\n- cents: 1..1_000_000 → else BAD_AMOUNT\n- coupon: null/empty OK; otherwise must match `[A-Z0-9]{4,10}` →\n  else BAD_COUPON\n\nImplement it CLEANLY: extract `static boolean isValidId(String id)`,\n`static boolean isValidAmount(int cents)`, and\n`static boolean isValidCoupon(String coupon)` — validateOrder calls the\nthree helpers, no duplicated rule logic, guard-style.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Provide the three isValid helpers + validateOrder here.\n}\n",
+  "tests": [
+    {
+      "name": "valid order",
+      "code": "\ncheckEq(Solution.validateOrder(\"abc\", 500, null), \"OK\", \"clean order\");\ncheckEq(Solution.validateOrder(\"abc\", 500, \"SAVE10\"), \"OK\", \"coupon ok\");\n",
+      "hint": "Null coupon means none."
+    },
+    {
+      "name": "failure precedence",
+      "code": "\ncheckEq(Solution.validateOrder(\"ab\", -5, \"bad\"), \"BAD_ID\", \"id first\");\ncheckEq(Solution.validateOrder(\"abc\", 0, \"bad\"), \"BAD_AMOUNT\", \"amount second\");\ncheckEq(Solution.validateOrder(\"abc\", 500, \"x!\"), \"BAD_COUPON\", \"coupon last\");\n",
+      "hint": "ID → amount → coupon, first failure wins."
+    },
+    {
+      "name": "boundary values",
+      "code": "\ncheckEq(Solution.validateOrder(\"abc\", 1, null), \"OK\", \"min amount\");\ncheckEq(Solution.validateOrder(\"abc\", 1000000, null), \"OK\", \"max amount\");\ncheckEq(Solution.validateOrder(\"abc\", 1000001, null), \"BAD_AMOUNT\", \"over max\");\n",
+      "hint": "Ranges inclusive at the ends."
+    }
+  ],
+  "level": "independent"
+}

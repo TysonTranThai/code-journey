@@ -1,0 +1,25 @@
+{
+  "id": "i2-prod-checkpoint",
+  "title": "Release Desk",
+  "prompt": "Write THREE functions. 1) `envVerdict(config)` — config is { secretsInEnv: bool, validated: bool, devBuild: bool }. Return \"ready\" when secretsInEnv AND validated AND NOT devBuild; \"unsafe-secrets\" when secretsInEnv is false; \"invalid-config\" when validated is false (when both wrong: \"unsafe-secrets\" first); \"dev-build\" for the devBuild case. 2) `releaseStrategy(risk, users)` — risk \"low\" => \"rolling\"; risk \"high\" && users > 10000 => \"canary\"; risk \"high\" => \"blue-green\". 3) `triage(alert)` — alert is { kind, actionable, urgent }; return \"page\" when actionable && urgent, \"ticket\" when actionable only, \"dashboard\" otherwise (noise).",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function envVerdict(config) {\n  // your code\n}\n\nfunction releaseStrategy(risk, users) {\n  // your code\n}\n\nfunction triage(alert) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "environment readiness gate",
+      "code": "const fn = new Function(code + \"\\nreturn { envVerdict, releaseStrategy, triage };\");\nconst { envVerdict } = fn();\nif (envVerdict({ secretsInEnv: true, validated: true, devBuild: false }) !== \"ready\") throw new Error(\"Fully compliant => ready.\");\nif (envVerdict({ secretsInEnv: false, validated: true, devBuild: false }) !== \"unsafe-secrets\") throw new Error(\"Secrets in repo first.\");\nif (envVerdict({ secretsInEnv: true, validated: false, devBuild: false }) !== \"invalid-config\") throw new Error(\"Unvalidated config fails.\");\nif (envVerdict({ secretsInEnv: true, validated: true, devBuild: true }) !== \"dev-build\") throw new Error(\"Dev build in prod.\");",
+      "hint": "Order: secrets, validated, build."
+    },
+    {
+      "name": "release strategy by blast radius",
+      "code": "const fn = new Function(code + \"\\nreturn { envVerdict, releaseStrategy, triage };\");\nconst { releaseStrategy } = fn();\nif (releaseStrategy(\"low\", 50) !== \"rolling\") throw new Error(\"Everyday deploys roll.\");\nif (releaseStrategy(\"high\", 20000) !== \"canary\") throw new Error(\"Big audience, high risk => canary.\");\nif (releaseStrategy(\"high\", 500) !== \"blue-green\") throw new Error(\"High risk, small audience => blue-green.\");",
+      "hint": "Low risk short-circuits; then audience size picks between canary and blue-green."
+    },
+    {
+      "name": "alerts triage honestly",
+      "code": "const fn = new Function(code + \"\\nreturn { envVerdict, releaseStrategy, triage };\");\nconst { triage } = fn();\nif (triage({ kind: \"5xx-spike\", actionable: true, urgent: true }) !== \"page\") throw new Error(\"Real incident => page.\");\nif (triage({ kind: \"slow-query\", actionable: true, urgent: false }) !== \"ticket\") throw new Error(\"Fixable, not urgent => ticket.\");\nif (triage({ kind: \"noise\", actionable: false, urgent: false }) !== \"dashboard\") throw new Error(\"Noise => dashboard.\");",
+      "hint": "Two booleans, three outcomes."
+    }
+  ]
+}

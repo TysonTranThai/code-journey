@@ -1,0 +1,20 @@
+{
+  "id": "i2-assert-throws",
+  "title": "assertThrows",
+  "prompt": "Write `assertThrows(fn, errClass, msgPart)` — call fn(); if it does NOT throw, fail (return \"no-throw\"). If it throws the wrong error class, return \"wrong-type\". If errClass is given and msgPart is given, the error message must contain msgPart, else return \"wrong-message\". On full success return \"ok\".",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function assertThrows(fn, errClass, msgPart) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "catches absence of throw",
+      "code": "const fn = new Function(code + \"\\nreturn { assertThrows };\");\nconst { assertThrows } = fn();\nif (assertThrows(() => 42) !== \"no-throw\") throw new Error(\"A function that returns is not a thrower.\");\n",
+      "hint": "Wrap the call in try/catch; reaching the end of try means no throw."
+    },
+    {
+      "name": "verifies type and message",
+      "code": "const fn = new Function(code + \"\\nreturn { assertThrows };\");\nconst { assertThrows } = fn();\nif (assertThrows(() => { throw new TypeError(\"bad qty\"); }, TypeError) !== \"ok\") throw new Error(\"Matching type => ok.\");\nif (assertThrows(() => { throw new TypeError(\"bad qty\"); }, RangeError) !== \"wrong-type\") throw new Error(\"Wrong class detected.\");\nif (assertThrows(() => { throw new Error(\"bad qty: -1\"); }, Error, \"bad qty\") !== \"ok\") throw new Error(\"Message substring matches.\");\nif (assertThrows(() => { throw new Error(\"something else\"); }, Error, \"bad qty\") !== \"wrong-message\") throw new Error(\"Message mismatch detected.\");\n",
+      "hint": "instanceof for the class; .includes for the message part."
+    }
+  ]
+}

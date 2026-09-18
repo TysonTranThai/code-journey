@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p1-sum",
+  "title": "Sum of Two Numbers",
+  "prompt": "**Description:** Given two integers a, b. Print their sum.\n\n**Input:** One line: a b (−10^9 ≤ a, b ≤ 10^9).\n**Output:** One integer — a + b.\n\n**Example:** input `2 3` → output `5`.\n\n*Subtask hint:* with these bounds the sum reaches 2·10^9 — which type fits?",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"2 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n\"));",
+      "hint": "The sum of 2 and 3 is 5."
+    },
+    {
+      "name": "two negatives",
+      "code": "std::istringstream in(\"-4 -6\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-10\\n\"));",
+      "hint": "Two negatives sum to a negative."
+    },
+    {
+      "name": "symmetric bounds",
+      "code": "std::istringstream in(\"-1000000000 1000000000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Symmetric values cancel to 0."
+    },
+    {
+      "name": "int overflow",
+      "code": "std::istringstream in(\"2000000000 2000000000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4000000000\\n\"));",
+      "hint": "2·10^9 + 2·10^9 overflows int — long long handles it."
+    }
+  ],
+  "level": "imitation"
+}

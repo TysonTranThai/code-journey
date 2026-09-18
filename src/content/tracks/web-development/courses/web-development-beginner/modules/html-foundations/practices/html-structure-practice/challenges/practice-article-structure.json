@@ -1,0 +1,30 @@
+{
+  "id": "practice-article-structure",
+  "title": "Mini Build: A Complete Article Page",
+  "prompt": "Put it all together: build a complete article page titled `My Weekend Project`.\n\nRequirements:\n- Full document skeleton: doctype, `html lang`, `head` with charset and `title`, `body`.\n- One `h1` with the article title.\n- Two paragraphs of story.\n- One `h2` section called `What I learned` with at least one paragraph.",
+  "difficulty": "beginner",
+  "level": "mini-build",
+  "boilerplate": "<!-- Mini build: a complete article page -->\n",
+  "tests": [
+    {
+      "name": "full skeleton present",
+      "code": "if (!/^\\s*<!DOCTYPE html>/i.test(code)) throw new Error(\"Start with <!DOCTYPE html>.\");\nif (!/<html\\s+lang=[\"']en[\"']\\s*>/i.test(code)) throw new Error(\"<html lang=\\\"en\\\"> is required.\");\nif (!/<head[\\s\\S]*<meta\\s+charset=[\"']UTF-8[\"'][\\s\\S]*<\\/head>/i.test(code)) throw new Error(\"The head needs <meta charset=\\\"UTF-8\\\">.\");\nif (!/<title>[\\s\\S]*?<\\/title>/i.test(code)) throw new Error(\"Add a <title> in the head.\");\nif (!/<body[\\s\\S]*<\\/body>/i.test(code)) throw new Error(\"All visible content goes in the <body>.\");",
+      "hint": "Doctype → html lang=en → head (charset + title) → body. Same skeleton as every page."
+    },
+    {
+      "name": "h1 carries the article title",
+      "code": "const m = code.match(/<h1\\s*>([\\s\\S]*?)<\\/h1\\s*>/i);\nif (!m || m[1].trim() !== \"My Weekend Project\") {\n  throw new Error(\"The h1 text must be exactly: My Weekend Project\");\n}",
+      "hint": "One <h1> containing exactly: My Weekend Project"
+    },
+    {
+      "name": "two story paragraphs before the section",
+      "code": "const h2pos = code.search(/<h2/i) === -1 ? code.length : code.search(/<h2/i);\nconst before = code.slice(0, h2pos).match(/<p>[\\s\\S]*?<\\/p>/gi) ?? [];\nif (before.length < 2) {\n  throw new Error(\"Write two <p> paragraphs of story before the 'What I learned' section.\");\n}",
+      "hint": "The article body needs two <p> elements before the <h2> appears."
+    },
+    {
+      "name": "What I learned section with a paragraph",
+      "code": "if (!/<h2\\s*>What I learned<\\/h2\\s*>/i.test(code)) {\n  throw new Error(\"Add the section heading exactly: <h2>What I learned</h2>\");\n}\nconst h2End = code.search(/<\\/h2>/i) + 5;\nif (!/<p>[\\s\\S]*?<\\/p>/i.test(code.slice(h2End))) {\n  throw new Error(\"The 'What I learned' section needs at least one paragraph after the heading.\");\n}",
+      "hint": "<h2>What I learned</h2> followed by a <p> explaining one takeaway."
+    }
+  ]
+}

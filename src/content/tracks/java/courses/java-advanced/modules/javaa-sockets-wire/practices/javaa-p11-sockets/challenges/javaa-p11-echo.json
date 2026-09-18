@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p11-echo",
+  "title": "A framed echo server",
+  "prompt": "1. `static String frame(String message)` — return the wire form: message + \"\\n\".\n2. `static java.util.List<String> deframe(String received)` — split a received chunk\ninto complete frames: split on \"\\n\" and DROP a trailing fragment that lacks its\nterminator (an incomplete frame is not a frame). Empty input → empty list.\n3. `static byte[] lengthFrame(String payload)` — binary framing: 4-byte big-endian\nlength prefix followed by UTF-8 payload bytes.\n4. `static int prefixLength(byte[] framed)` — read the 4-byte big-endian prefix back.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "newline framing round-trips",
+      "code": "\ncheckEq(Solution.frame(\"hi\"), \"hi\\n\", \"newline appended\");\ncheckEq(Solution.deframe(\"a\\nb\\nc\"), java.util.List.of(\"a\", \"b\"), \"torn tail dropped\");\ncheckEq(Solution.deframe(\"\"), java.util.List.of(), \"empty in, empty out\");\n",
+      "hint": "Frames are terminated or absent."
+    },
+    {
+      "name": "length-prefix framing",
+      "code": "\nbyte[] f = Solution.lengthFrame(\"héllo\");\ncheckEq(Solution.prefixLength(f), f.length - 4, \"prefix counts payload bytes\");\ncheckTrue(new String(f, 4, f.length - 4, java.nio.charset.StandardCharsets.UTF_8).equals(\"héllo\"),\n    \"payload intact\");\n",
+      "hint": "The prefix is arithmetic, not guesswork."
+    }
+  ],
+  "level": "guided"
+}

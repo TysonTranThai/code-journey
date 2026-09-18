@@ -1,0 +1,43 @@
+Một **biến** là một vùng bộ nhớ có tên và có kiểu. Trong C++, bạn khai báo nó một lần và compiler sẽ thực thi kiểu đó mãi mãi:
+
+```cpp
+int score = 0;            // số nguyên
+double price = 19.99;     // số thực
+char grade = 'A';         // một ký tự (nháy đơn!)
+bool passed = true;       // true hoặc false
+std::string name = "Ha";  // text (nháy kép) — cần #include <string>
+```
+
+## Khai báo, khởi tạo và gán
+
+- **Khai báo** tạo ra biến: `int x;`
+- **Khởi tạo** gán giá trị đầu tiên — hãy làm ngay trên cùng một dòng, luôn luôn.
+- **Gán** thay giá trị sau đó: `x = 5;`
+
+Biến chưa khởi tạo chứa dữ liệu rác. Không phải "0", không phải "rỗng" — *rác*: những bit đã nằm sẵn trong vùng nhớ đó. Đọc nó là hành vi không xác định (undefined behavior).
+
+## Khởi tạo bằng ngoặc nhọn — chuẩn hiện đại
+
+```cpp
+int width{10};          // dạng hiện đại được ưa chuộng
+int y = 3.7;            // biên dịch được: y thành 3 — âm thầm!
+int z{3.7};             // lỗi: narrowing conversion — compiler bắt được
+```
+
+Ngoặc nhọn từ chối các phép chuyển kiểu làm mất dữ liệu. Vì vậy khóa này viết `{}` cho biến mới: compiler trở thành lưới an toàn của bạn.
+
+## `auto` — chỉ nói kiểu một lần
+
+```cpp
+auto count = 10;        // int — compiler suy ra từ giá trị khởi tạo
+auto ratio = 0.5;       // double
+auto title = std::string{"Report"};
+```
+
+`auto` không phải "kiểu động" (kiểu vẫn cố định lúc biên dịch); nó chỉ giúp không phải lặp lại. Nguyên tắc trong khóa này: dùng kiểu tường minh cho giá trị đơn giản, dùng `auto` khi kiểu đã hiển nhiên từ vế phải. (Chi tiết ở bài 2C.)
+
+## Tên biến quan trọng
+
+`int x2tmp1;` biên dịch được; `int pending_items;` truyền đạt ý nghĩa. Phong cách C++ hiện đại: `snake_case` cho biến và hàm, `PascalCase` cho kiểu (bạn sẽ gặp ở module 10).
+
+**Luyện tập tiếp theo:** khai báo, khởi tạo và tính toán — compiler sẽ chấm kiểu của bạn.

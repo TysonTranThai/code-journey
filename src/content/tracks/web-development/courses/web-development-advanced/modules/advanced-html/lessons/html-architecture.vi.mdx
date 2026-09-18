@@ -1,0 +1,108 @@
+Ở trình độ Beginner bạn đã học các phần tử cấu trúc. Ở Intermediate bạn học cách quyết
+định xây dựng thế nào. HTML nâng cao bắt đầu từ đó: xem markup của tài liệu như
+**kiến trúc** — một cấu trúc mà trình đọc màn hình, công cụ tìm kiếm, chế độ đọc và
+người bảo trì tương lai đều biên dịch thành bản đồ của trang bạn.
+
+## Thứ tự heading là cột chịu lực
+
+Công nghệ hỗ trợ hiển thị mọi heading dưới dạng điều hướng: người dùng trình đọc màn
+hình có thể mở danh sách tất cả heading và nhảy thẳng tới "Bảng giá" mà không cần đọc
+cả trang. Danh sách đó chỉ hữu ích khi *thứ tự* heading của bạn trung thực. Hai quy tắc
+gánh toàn bộ hệ thống:
+
+- **Đúng một `<h1>`** — tiêu đề của trang. Không phải tên site lặp lại ở mọi trang, và
+  cũng không phải logo trang trí; h1 là chủ đề duy nhất của trang này.
+- **Không bao giờ bỏ cấp khi đi xuống.** `<h1>` → `<h3>` bị đọc là thiếu một mục — như
+  một cuốn sách mà mục 2.1 xuất hiện khi chưa có mục 2.
+
+Đi *lên* lại là điều bình thường và đúng đắn: một `<h2>` mới đóng mục trước đó, dàn ý
+tiếp tục:
+
+```html
+<h1>Cẩm nang ngữ nghĩa Web</h1>   <!-- trang -->
+  <h2>Môi trường sống</h2>        <!-- chương -->
+    <h3>Đồng cỏ</h3>              <!-- mục -->
+      <h4>Chó đồng cỏ</h4>
+    <h3>Đất ngập nước</h3>        <!-- đi lên lại: đúng -->
+  <h2>Di cư</h2>                  <!-- chương mới -->
+```
+
+Heading mô tả cấu trúc — **đừng bao giờ** chọn heading vì cỡ chữ. Heading quá to hay
+quá nhỏ là một dòng CSS, không phải một phần tử khác. `<div class="title">` vô hình
+trước bản đồ tài liệu; `<h2>` *chính là* bản đồ.
+
+## Tiêu đề phụ không phải heading
+
+Một dòng phụ kiểu "Tái bản lần 4" thuộc về `<hgroup>` cùng với heading của nó — nó là
+một phần của heading đó, không phải một cấp dàn ý mới:
+
+```html
+<hgroup>
+  <h1>Cẩm nang ngữ nghĩa Web</h1>
+  <p>Ghi chép thực tế cho lập trình viên đang làm việc</p>
+</hgroup>
+```
+
+## Đặt tên vùng: section + aria-labelledby
+
+Một `<section>` không có heading chỉ là nhiễu vô danh trong dàn ý. Hãy cấp cho nó một
+heading và nối vùng với heading đó bằng `aria-labelledby` để trình đọc màn hình thông
+báo *"Bảng giá, region"* thay vì chỉ "region":
+
+```html
+<section aria-labelledby="pricing-h">
+  <h2 id="pricing-h">Bảng giá</h2>
+  …
+</section>
+```
+
+Heading vẫn là heading thật, vẫn điều hướng được — thuộc tính chỉ mượn nó làm tên cho
+vùng. `<article>` cũng cần xử lý như vậy khi không có tiêu đề hiện trong phần tử heading
+của chính nó.
+
+## Article lồng nhau — và điều đó có ý nghĩa
+
+`<article>` là nội dung *hoàn chỉnh, tự đứng vững về ý nghĩa*: một bài đăng blog, một
+đánh giá, một thẻ sản phẩm. Nó còn có thể lồng nhau, và sự lồng là ngữ nghĩa: một bình
+luận bên trong bài đăng là một mảnh nội dung hoàn chỉnh *bên trong* mảnh khác.
+
+```html
+<article>
+  <h2>Vì sao HTML ngữ nghĩa thắng</h2>
+  <p>…bài viết…</p>
+  <article aria-labelledby="c1-h">
+    <h3 id="c1-h">Ý hay đấy</h3>
+    <p>…bình luận…</p>
+  </article>
+</article>
+```
+
+Trình đọc màn hình thông báo cả sự lồng nhau ("article, cấp 2"), nên người dùng ở giữa
+luồng bình luận biết mình đang ở đâu. Nếu "article" của bạn không thể đứng độc lập —
+chỉ có nghĩa khi nằm trong trang — thì đó là `<section>`, không phải `<article>`.
+
+## Máy làm gì với tất cả những điều này
+
+Công cụ tìm kiếm đánh trọng số heading để mô hình hóa chủ đề; chế độ đọc dựng lại trang
+từ ranh giới `article`/`header`/`footer`; trình duyệt sinh dàn ý heading; feed và máy
+gộp nội dung trích `article`. Kiến trúc không phải trang trí — đó là API của trang bạn
+dành cho mọi thứ không phải là viewport hiển thị pixel.
+
+## Điều gì hay sai
+
+- **Súp heading**: bỏ cấp hoặc khởi lại `<h1>` ở mỗi section. Sửa: một h1, đi xuống đều
+  cấp, đi lên trung thực.
+- **Div-itis lấy ARIA làm miếng dán**: `role="heading"` trên div là triệu chứng. Hãy
+  dùng phần tử thật.
+- **Vùng không tên**: `<section>`/`<article>` không heading — thêm heading hoặc xếp lại
+  loại.
+- **Heading theo phong cách**: chọn h3 vì "nhìn hợp". Chọn theo dàn ý, trình bày bằng
+  CSS.
+
+## Thực hành và điểm nối tiếp
+
+Bộ thực hành tiếp theo giao cho bạn một trang blog hỏng để kiến trúc lại, rồi một trang
+chỉ có yêu cầu để tự dựng. Kiến trúc tài liệu cũng là nền móng cho các chuyên đề kỹ
+thuật accessibility, hiệu năng và kiến trúc component phía sau trong khóa này:
+component, layout và design system đều thừa hưởng cấu trúc từ những quyết định markup
+bạn làm ở đây.

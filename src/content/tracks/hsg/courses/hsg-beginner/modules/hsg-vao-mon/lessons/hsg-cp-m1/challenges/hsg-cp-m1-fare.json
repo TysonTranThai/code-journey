@@ -1,0 +1,30 @@
+{
+  "id": "hsg-cp-m1-fare",
+  "title": "Bus Fare",
+  "prompt": "**Description:** A bus line charges as follows: passengers under 6 or\n70 and older ride free; everyone from 6 to under 70 pays 7000. Given age\nt (0 ≤ t ≤ 120), print the fare.\n\n**Input:** One integer t.\n**Output:** One integer — the fare (0 or 7000).\n\n**Example:** `5` → `0`; `6` → `7000`; `70` → `0`.\n\n**Constraints:** 40% of tests have 6 ≤ t ≤ 69; 100% have 0 ≤ t ≤ 120.",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "young child",
+      "code": "std::istringstream in(\"5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Under 6 rides free."
+    },
+    {
+      "name": "boundary age 6",
+      "code": "std::istringstream in(\"6\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7000\\n\"));",
+      "hint": "Exactly 6 pays 7000."
+    },
+    {
+      "name": "boundary age 70",
+      "code": "std::istringstream in(\"70\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "70 and older ride free."
+    },
+    {
+      "name": "adult",
+      "code": "std::istringstream in(\"35\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7000\\n\"));",
+      "hint": "Ages 6..69 pay 7000."
+    }
+  ]
+}

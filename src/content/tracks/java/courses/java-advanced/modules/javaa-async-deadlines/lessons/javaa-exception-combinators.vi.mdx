@@ -1,0 +1,21 @@
+Các exception-combinator khác nhau ở *cái gì* được truyền và *cái gì* được trả:
+
+- `exceptionally(fn)` — chỉ chạy khi thất bại; fn nhận throwable, trả về RESULT
+  thay thế. Bỏ qua khi thành công.
+- `handle(fn)` — luôn chạy; fn nhận `(result, throwable)` — đúng một cái là
+  null. Phép biến đổi phổ quát.
+- `whenComplete(fn)` — luôn chạy; fn quan sát `(result, throwable)` nhưng
+  KHÔNG THỂ thay kết quả (trả về chính future đó). Dành cho quan sát.
+
+```java
+future.handle((ok, err) -> err == null ? ok : fallback);
+```
+
+Gắn phục hồi lên một stage *phụ thuộc*: `future.thenApply(...).exceptionally(...)`
+phục hồi thất bại từ CẢ HAI stage — gắn phục hồi ở đúng tầng bạn muốn phục hồi.
+Gắn `exceptionally` trước `thenApply` để lộ bước map không được bảo vệ.
+
+**Chặn trên thời gian**: `orTimeout(500, MILLISECONDS)` hoàn thành future một
+cách exceptional (TimeoutException) nếu nó chạy quá lâu;
+`completeOnTimeout(fallback, 500, MILLISECONDS)` thay bằng một giá trị. Cả hai
+lên lịch nội bộ — không có thread nào phải ngủ.

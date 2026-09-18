@@ -1,0 +1,26 @@
+## The brief
+
+You are the engineer of record for an admission service core. There is no
+tutorial for this module — the acceptance battery **is** the specification.
+
+**`AdmissionsCore`** — tag-scoped admission over a deterministic clock:
+
+- `setTagLimit(tag, limit)` accepts only `tag >= 0`, `limit >= 1`, and only
+  the **first** configuration of a tag (re-setting fails, returns `false`).
+- `admit(cls, tag)` — unknown tags are rejected; a tag admits while its
+  in-window usage is under its limit; the winner gets its arrival `ordinal`
+  within the tag for the current window.
+- A **window** is a single clock timestamp: the first `admit` at a new
+  timestamp rolls per-tag counters and ordinals.
+- Running totals: `admittedCount()`, `rejectedCount()`.
+
+**`OpsReport`** — the audit trail, graded as an exact string:
+
+- `record(tMs, code, key)` then `snapshot()` produces `"[ts] CODE key\n"`
+  lines, oldest timestamp first; **at equal timestamps, `REJECT` sorts before
+  `ADMIT`** (an audit reads failures first).
+- Determinism contract: same calls, same clock, byte-identical snapshot.
+
+Everything from this course converges here: the clock seam (M19), per-key
+state with clear ownership (M6/M11), exact-string reporting (M20), and the
+two-sided testing discipline (M15).

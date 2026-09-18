@@ -1,0 +1,21 @@
+{
+  "id": "ca1-pack-swap",
+  "title": "Reorder for Size",
+  "prompt": "The struct\n \n```c\nstruct Blob { char tag; double weight; short qty; char flag; };\n```\n \nmeasures 24 bytes here. Implement `size_t packed_size(void)` returning what `sizeof` would be for the best reordering of the same members (largest-first). Define the reordered struct locally and return its `sizeof` — reasoning made executable.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "expected packed size",
+      "code": "CHECK_EQ((int)packed_size(), 16);",
+      "hint": "double(8) + short(2) + char(1) + char(1) + 4 tail padding = 16."
+    },
+    {
+      "name": "arithmetic matches reality",
+      "code": "struct Packed { double weight; short qty; char tag; char flag; };\nCHECK_EQ((int)packed_size(), (int)sizeof(struct Packed));",
+      "hint": "Your function must measure a real struct with exactly the same member set."
+    }
+  ],
+  "level": "independent"
+}

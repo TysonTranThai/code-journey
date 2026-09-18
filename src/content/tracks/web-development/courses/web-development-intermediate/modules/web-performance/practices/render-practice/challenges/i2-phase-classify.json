@@ -1,0 +1,20 @@
+{
+  "id": "i2-phase-classify",
+  "title": "Property Cost Classifier",
+  "prompt": "Write `phase(prop)` mapping style changes to the most expensive pipeline phase they trigger: \"width\", \"height\", \"top\", \"left\", \"margin\", \"font-size\" => \"layout\"; \"color\", \"background\", \"box-shadow\", \"visibility\" => \"paint\"; \"transform\", \"opacity\" => \"composite\"; anything else => \"unknown\".",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function phase(prop) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "layout properties reflow",
+      "code": "const fn = new Function(code + \"\\nreturn { phase };\");\nconst { phase } = fn();\nif (phase(\"width\") !== \"layout\") throw new Error(\"width reflows.\");\nif (phase(\"font-size\") !== \"layout\") throw new Error(\"font-size reflows everything.\");\nif (phase(\"margin\") !== \"layout\") throw new Error(\"margin reflows.\");\n",
+      "hint": "Three sets, checked layout-first."
+    },
+    {
+      "name": "composite properties are cheapest",
+      "code": "const fn = new Function(code + \"\\nreturn { phase };\");\nconst { phase } = fn();\nif (phase(\"transform\") !== \"composite\") throw new Error(\"transform composites.\");\nif (phase(\"opacity\") !== \"composite\") throw new Error(\"opacity composites.\");\nif (phase(\"cursor\") !== \"unknown\") throw new Error(\"Unlisted => unknown.\");\n",
+      "hint": "The composite set is intentionally tiny — that's the lesson."
+    }
+  ]
+}

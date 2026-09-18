@@ -1,0 +1,32 @@
+## Khai báo trước khi dùng
+
+C đọc từ trên xuống. Gọi một hàm mà trình biên dịch chưa từng thấy tên đó là
+lỗi (trong C23 và với GCC 14 cùng cờ của chúng ta):
+
+```c
+int main(void) {
+    return area(3, 4);        // LỖI: 'area' chưa biết tại đây
+}
+
+int area(int w, int h) { return w * h; }
+```
+
+Sửa bằng **nguyên mẫu** (khai báo) — chỉ chữ ký, không thân:
+
+```c
+int area(int w, int h);       // nguyên mẫu
+
+int main(void) { return area(3, 4); }   // OK rồi
+
+int area(int w, int h) { return w * h; } // định nghĩa
+```
+
+## Quy tắc bạn sẽ dùng
+
+Trong thử thách có chấm điểm, định nghĩa hàm trợ giúp **trên** `main` (hoặc
+nguyên mẫu chúng) để trình biên dịch đã thấy mọi tên trước khi dịch caller.
+
+## Tệp (hương dẫn)
+
+Dự án thật đặt nguyên mẫu trong `.h` và định nghĩa trong `.c` — module 18 sẽ
+làm kỹ phần này. Tạm thời: một tệp, hàm trợ giúp trước, `main` cuối.

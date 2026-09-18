@@ -1,0 +1,16 @@
+{
+  "id": "py-ps-ai-critique",
+  "title": "Critique the AI's Code",
+  "prompt": "An AI produced second_max(nums) which claims to return the second-largest value (duplicates count: [3, 3, 1] -> 3). The shipped version is buggy: it returns min(max(nums), min(nums)). Write audit_second_max() returning a string of EXACTLY one line documenting a concrete failing input, in the form: input=[3, 3, 1] result=1 expected=3 — where result is what the buggy code returns and expected is the true second-largest.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "",
+  "tests": [
+    {
+      "name": "documented counterexample",
+      "code": "import re\n_r = audit_second_max()\nassert isinstance(_r, str) and _r.count(\"input=\") == 1 and \"result=\" in _r and \"expected=\" in _r, f\"one line, three fields, got {_r!r}\"\n_m = re.search(r\"input=\\[([^\\]]*)\\] result=(-?[\\d.]+) expected=(-?[\\d.]+)\", _r)\nassert _m, f\"format: input=[..] result=.. expected=.., got {_r!r}\"\n_nums = [float(x) for x in _m.group(1).split(\",\") if x.strip()]\n_res, _exp = float(_m.group(2)), float(_m.group(3))\nassert len(_nums) >= 2, \"need at least two values\"\n_buggy = min(max(_nums), min(_nums))\nassert _res == _buggy, f\"result must equal what the buggy code returns for your input: {_buggy}\"\nassert _exp == sorted(_nums)[-2], f\"expected must be the true second-largest of your input (duplicates count)\"\nassert _res != _exp, \"result must differ from expected — that is the failure\"",
+      "hint": "Duplicates break it: [3, 3, 1] -> true second-largest is 3, but the buggy min(max, min) reports 1."
+    }
+  ],
+  "level": "real-world"
+}

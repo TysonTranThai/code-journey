@@ -1,0 +1,20 @@
+Một dòng log là một *hàng trong bảng dữ liệu* bạn ghi ra stdout: timestamp,
+level, tên sự kiện, và các cặp key-value. Grep `userId=42` hoạt động khi field
+là dữ liệu bậc nhất; việc phân tích văn xuôi tiếng Anh lúc 3 giờ sáng thì không.
+
+```java
+record LogEvent(Instant ts, String level, String event, Map<String, String> fields)
+```
+
+Level là một hợp đồng: **ERROR** = có người phải hành động (ngưỡng gọi người);
+**WARN** = suy giảm nhưng tự phục hồi (retry, fallback); **INFO** = chuyển
+trạng thái (bắt đầu, xong); **DEBUG** = chi tiết mà bạn ước mình đã log, bật
+theo từng yêu cầu. Tội kinh điển: `catch (Exception e) {}` — exception biến
+mất thì không thể chẩn đoán; hãy log nó cùng stack, ở mức khớp với việc có
+ai đó phải hành động hay không.
+
+Context: các field mà mọi sự kiện trong một yêu cầu cùng chia sẻ — requestId,
+userId — thuộc về một thread-local (các log framework gọi là MDC) được framework
+đóng dấu lên mọi dòng. Truyền qua ranh giới async là nếp nhăn nâng cao: context
+phải được *chụp* lúc nộp tác vụ và áp lại trong tác vụ, vì thread-local không
+vượt qua được các bước nhảy executor.

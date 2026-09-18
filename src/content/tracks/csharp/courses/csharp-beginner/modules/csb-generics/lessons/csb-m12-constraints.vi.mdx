@@ -1,0 +1,17 @@
+## Thao tác cần sự cho phép
+
+Trong một phương thức generic, `T` ban đầu không có năng lực nào — không thể gọi `a.CompareTo(b)` nếu chưa hứa `T` hỗ trợ so sánh. **Ràng buộc** chính là lời hứa đó:
+
+```csharp
+where T : IComparable<T>   // T biết so sánh với chính nó
+where T : class            // T là kiểu tham chiếu
+where T : struct           // T là kiểu giá trị (không nullable)
+where T : new()            // T có constructor không tham số
+where T : SomeBase         // T là (hoặc kế thừa) SomeBase
+```
+
+Với `where T : IComparable<T>`, trình biên dịch *mở khóa* `CompareTo` trên mọi `T` — và *từ chối* các tham số kiểu thiếu nó. Ràng buộc vừa giới hạn người gọi, vừa cấp quyền cho thân phương thức.
+
+## Quy tắc trung thực
+
+Chỉ thêm ràng buộc khi thân phương thức cần năng lực đó. Một `where T : class` "cho an toàn" chỉ giới hạn người gọi vô ích. Hãy bắt đầu từ các thao tác thuật toán cần; danh sách ràng buộc tự viết ra.

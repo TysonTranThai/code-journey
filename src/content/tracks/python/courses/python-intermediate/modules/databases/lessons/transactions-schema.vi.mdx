@@ -1,0 +1,36 @@
+**Transaction** khiến một nhóm câu lệnh hoặc là tất cả hoặc là không có gì.
+Chuyển tiền A → B? Cả hai cập nhật commit cùng nhau hoặc không cái nào:
+
+```python
+try:
+    conn.execute("UPDATE accounts SET balance = balance - ? WHERE id = ?", (100, 1))
+    conn.execute("UPDATE accounts SET balance = balance + ? WHERE id = ?", (100, 2))
+    conn.commit()                    # cả hai được áp dụng
+except sqlite3.Error:
+    conn.rollback()                  # không cái nào được áp dụng
+```
+
+## Ràng buộc: cơ sở dữ liệu tự vệ
+
+Quy tắc ở mức schema bảo đảm tính toàn vẹn ngay cả trước code có lỗi:
+
+```python
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY,
+    email TEXT NOT NULL UNIQUE,
+    age INTEGER CHECK (age >= 0)
+)
+```
+
+`NOT NULL`, `UNIQUE`, `CHECK`, `DEFAULT`, và khóa ngoại khiến dữ liệu xấu
+trở nên bất khả thi ở tầng lưu trữ — `IntegrityError` tốt hơn bảng bị hỏng
+một cách lặng lẽ. **Index** (`CREATE INDEX idx_tasks_done ON tasks(done)`)
+làm truy vấn lọc nhanh lên; mỗi index làm ghi chậm đi một chút, nên hãy index
+các cột bạn thực sự lọc.
+
+## Connection là một tài nguyên
+
+Kỷ luật connection từ module 3 vẫn đúng: mở với ngữ nghĩa `with` khi có thể,
+đóng dứt khoát, và giữ một connection cho mỗi đơn vị công việc logic.
+Connection dùng chung tồn tại lâu cộng với thread là công thức deadlock
+kinh điển — capstone giữ storage đơn luồng vì chính lý do này.

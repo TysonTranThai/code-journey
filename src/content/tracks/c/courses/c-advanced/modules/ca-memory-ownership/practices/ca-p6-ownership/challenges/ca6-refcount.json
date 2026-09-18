@@ -1,0 +1,21 @@
+{
+  "id": "ca6-refcount",
+  "title": "Reference Counting by Hand",
+  "prompt": "A file-scope `int rcs_alive = 0;` is already in your editor. Implement `rc_t *rc_create(void)` (refs = 1, counter++), `void rc_hold(rc_t *r)` (refs++), `void rc_release(rc_t *r)` (refs--; when it reaches 0: counter--, free; NULL is a no-op), and `int rc_refs(const rc_t *r)`.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nint rcs_alive = 0;\n",
+  "tests": [
+    {
+      "name": "ref arithmetic",
+      "code": "rc_t *r = rc_create();\nCHECK_EQ(rc_refs(r), 1);\nrc_hold(r);\nrc_hold(r);\nCHECK_EQ(rc_refs(r), 3);\nrc_release(r);\nCHECK_EQ(rc_refs(r), 2);\nrc_release(r);\nrc_release(r);\nCHECK_EQ(rcs_alive, 0);",
+      "hint": "holds raise, releases lower, the last one frees — the counter proves it."
+    },
+    {
+      "name": "over-release guard",
+      "code": "rc_t *r2 = rc_create();\nrc_release(r2);\nrc_release(NULL);\nCHECK_EQ(rcs_alive, 0);",
+      "hint": "Release on an already-freed object must not be possible through the API; NULL release is a no-op."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "javb-m12-cp-wordstats",
+  "title": "Checkpoint: word stats pipeline",
+  "prompt": "Implement `analyze(words)` returning a `WordStats` record with three parts, each built with streams: `byInitial` maps each lowercase first letter to how many words start with it (case-insensitive); `longest` lists every word whose length equals the maximum length found (original casing, in original order); `joined` is `Optional` of all words joined by `\" & \"`, empty when the input is empty.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public record WordStats(java.util.Map<String, Integer> byInitial,\n                            java.util.List<String> longest,\n                            java.util.Optional<String> joined) {}\n\n    public static WordStats analyze(java.util.List<String> words) {\n        return null;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "initials are counted case-insensitively",
+      "code": "\nSolution.WordStats s = Solution.analyze(java.util.List.of(\"Ada\", \"amy\", \"Bob\", \"grace\"));\nCjTestBase.checkEq(s.byInitial().get(\"a\"), 2, \"a -> 2\");\nCjTestBase.checkEq(s.byInitial().get(\"b\"), 1, \"b -> 1\");\nCjTestBase.checkEq(s.byInitial().get(\"g\"), 1, \"g -> 1\");\nCjTestBase.checkEq(s.byInitial().size(), 3, \"exactly three initials\");\n",
+      "hint": "map(String::toLowerCase) BEFORE groupingBy(w -> w.substring(0, 1))."
+    },
+    {
+      "name": "all ties share the crown",
+      "code": "\nSolution.WordStats s = Solution.analyze(java.util.List.of(\"Ada\", \"amy\", \"Bob\", \"grace\"));\nCjTestBase.checkEq(s.longest(), java.util.List.of(\"grace\"), \"only the 5-letter word\");\nSolution.WordStats t = Solution.analyze(java.util.List.of(\"kiwi\", \"date\", \"fig\"));\nCjTestBase.checkEq(t.longest(), java.util.List.of(\"kiwi\", \"date\"), \"4-letter tie, original order\");\n",
+      "hint": "Two passes are fine: find the max length first, then filter equals."
+    },
+    {
+      "name": "joined is Optional, empty-safe",
+      "code": "\nCjTestBase.checkEq(Solution.analyze(java.util.List.of(\"Ada\", \"Bob\")).joined(),\n    java.util.Optional.of(\"Ada & Bob\"), \"joined with ampersand\");\nCjTestBase.checkEq(Solution.analyze(java.util.List.of()).joined(),\n    java.util.Optional.empty(), \"empty input -> empty Optional\");\nCjTestBase.checkEq(Solution.analyze(java.util.List.of()).byInitial(), java.util.Map.of(), \"no initials either\");\n",
+      "hint": "Collectors.joining(\" & \") over an empty stream yields \"\" - wrap with Optional.ofNullable after filtering that case, or guard it."
+    }
+  ],
+  "level": "real-world"
+}

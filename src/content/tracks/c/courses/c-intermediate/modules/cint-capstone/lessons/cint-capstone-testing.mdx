@@ -1,0 +1,48 @@
+## Test the contract, not the implementation
+
+Every challenge in this course had a **wrong version that almost
+worked**. Your test suite exists to make almost-working fail. The
+capstone's suite targets the four places libraries actually break:
+
+### 1. Round-trip: the state, not the buffer
+
+```
+put k1..k3 → del k2 → save → load into fresh store →
+expect: k1, k3 present; k2 absent; count == 2
+```
+
+This catches the classic persistence lie: saving the raw struct array
+and calling it "state".
+
+### 2. Corruption injection: break one byte, expect one answer
+
+Flip the **last** byte (checksum region) → `KV_EBADSUM`. Truncate the
+file by one byte → `KV_ETRUNC`. Overwrite the magic → `KV_EFORMAT`.
+Each malformed input gets its **own** verdict — a loader that says
+"corrupt" for everything is as useless as one that says "fine".
+
+### 3. Boundaries: capacity is a real state
+
+Fill all 16 slots. The 17th `put` must return `KV_ENOMEM` — and the 16
+stored entries must be **untouched**. Overflow that silently drops, or
+worse corrupts, is the bug this catches.
+
+### 4. Ownership probes: the caller's memory is theirs
+
+```c
+char key[8] = "temp";
+kv_put(&s, key, 1);
+memset(key, 'x', 4);                       /* clobber the caller's buffer */
+CHECK_EQ(kv_get(&s, "temp", &v), KV_OK);   /* store kept its copy */
+```
+
+A store that borrowed the pointer instead of copying the bytes fails
+this probe — deterministically, because you clobbered the buffer on
+purpose. This is the test that made M3's borrow-vs-copy W honest.
+
+### The meta-test: would your suite fail?
+
+For each test, ask the only question that matters: *what wrong
+implementation does this test kill?* If you cannot name it, the test is
+decoration. Every hidden test in this course could answer that
+question; now the answer is yours to write.

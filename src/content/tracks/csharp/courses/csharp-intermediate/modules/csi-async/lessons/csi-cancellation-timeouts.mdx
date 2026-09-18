@@ -1,0 +1,62 @@
+## Sequential awaits vs WhenAll fan-out
+
+Awaits in sequence run one after another. Start all tasks FIRST, then await
+them — they overlap:
+
+```csharp
+Task<int> a = ComputeAsync(1);          // starts now
+Task<int> b = ComputeAsync(2);          // starts now
+int[] both = await Task.WhenAll(a, b);  // total wait = max, not sum
+```
+
+Calling `ComputeAsync` runs the method synchronously until its first
+`await`, then returns the running Task. That's why "start then await" is
+not the same as "await then start" — a fan-out where the first await comes
+before the last start is mostly sequential.
+
+WhenAll re-throws the FIRST exception; inspect each task's status if
+partial results matter.
+
+## CancellationToken: the cooperative contract
+
+Cancellation is COOPERATIVE — the token signals, your code checks:
+
+```csharp
+async Task WorkAsync(CancellationToken ct)
+{
+    for (int i = 0; i < 1000; i++)
+    {
+        ct.ThrowIfCancellationRequested();     // or ct.IsCancellationRequested
+        await StepAsync(i, ct);                // pass the token DOWN
+    }
+}
+```
+
+Pass the token into every async call; a cancellation that never reaches the
+innermost operation is not cancellation. Throwing
+`OperationCanceledException` (the token's job) is the convention callers
+expect.
+
+## Timeouts: WhenAny + Task.Delay, or WaitAsync
+
+```csharp
+string body = await FetchAsync(ct).WaitAsync(TimeSpan.FromSeconds(2), ct);
+```
+
+`Task.WaitAsync(timeout, ct)` (.NET 8+) throws `TimeoutException` when the
+deadline passes — the modern single-task time-box. The classic shape is
+`Task.WhenAny(work, Task.Delay(timeout, ct))` and comparing the winner.
+Either way the underlying operation should also receive the token so it can
+actually STOP.
+
+## Fire-and-forget is a bug factory
+
+An un-awaited Task drops exceptions and races process shutdown. If you
+truly can't await, capture the task and observe its completion explicitly
+with internal try/catch — never a bare discarded call around something that
+can fail.
+
+## Check your understanding
+
+- When does `ComputeAsync(1)` actually begin running? (Synchronously, up to its first await.)
+- Who performs cancellation? (Your code, cooperatively — the token only signals.)

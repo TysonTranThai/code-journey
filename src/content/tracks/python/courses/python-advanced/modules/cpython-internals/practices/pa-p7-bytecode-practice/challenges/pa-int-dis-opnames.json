@@ -1,0 +1,21 @@
+{
+  "id": "pa-int-dis-opnames",
+  "title": "Programmatic disassembly",
+  "prompt": "Implement two helpers using `dis.get_instructions` (NOT `dis.dis`, which prints):\n\n1. `instruction_names(func)` — list of `opname` strings in execution order.\n2. `loop_loads_global(func, name)` — True when the bytecode contains at least two `LOAD_GLOBAL` instructions (i.e. a lookup likely inside a loop rather than one-time setup).\n\nThe graded cases include a function that re-loads a global per iteration and one that binds it to a local first.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import dis\n\n# TODO: instruction_names(func), loop_loads_global(func, name)",
+  "tests": [
+    {
+      "name": "opnames in order",
+      "code": "def twice(x):\n    return helper(x) + helper(x)\n\nnames = instruction_names(twice)\nassert names.count('LOAD_GLOBAL') == 2, f'names: {names}'\nassert 'RETURN_VALUE' in names or 'RETURN' in names\nprint('ok')",
+      "hint": "dis.get_instructions(func) yields instruction objects with .opname."
+    },
+    {
+      "name": "loop-load detection via argrepr",
+      "code": "G = list(range(10))\n\ndef loads_in_loop():\n    out = []\n    for i in range(3):\n        out.append(len(G))\n        out.append(G[i])\n    return out\n\ndef hoisted():\n    g = G\n    out = []\n    for i in range(3):\n        out.append(len(g))\n        out.append(g[i])\n    return out\n\nassert loop_loads_global(loads_in_loop, 'G'), 'loop version must load G inside the loop'\nassert not loop_loads_global(hoisted, 'G'), 'hoisted version loads G only once in setup'\nprint('ok')",
+      "hint": "Two G references inside the loop vs one in setup — argrepr distinguishes G from len/range."
+    }
+  ],
+  "level": "independent"
+}

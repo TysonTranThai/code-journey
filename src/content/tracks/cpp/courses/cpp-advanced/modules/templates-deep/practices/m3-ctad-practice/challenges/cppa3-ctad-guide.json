@@ -1,0 +1,16 @@
+{
+  "id": "cppa3-ctad-guide",
+  "title": "Write the Missing Deduction Guide",
+  "prompt": "`Box`'s iterator-pair constructor deduces the iterator type by default — `Box<int*>` instead of `Box<int>`. Write the deduction guide that steers CTAD to the element type.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <iterator>\n#include <type_traits>\n#include <vector>\n\ntemplate <class T>\nstruct Box {\n    std::vector<T> items;\n    template <class It>\n    Box(It first, It last) : items(first, last) {}\n};\n\n// TODO: write the deduction guide so Box b(begin(arr), end(arr)) deduces\n// Box<int> (the element type), NOT Box<int*> (the iterator type).\n",
+  "tests": [
+    {
+      "name": "CTAD lands on the element type",
+      "code": "int arr[] = {5, 6, 7};\nBox b(std::begin(arr), std::end(arr));\nstatic_assert(std::is_same_v<decltype(b), Box<int>>, \"must deduce element type\");\nCHECK_EQ(b.items.size(), std::size_t{3});\nCHECK_EQ(b.items[1], 6);",
+      "hint": "template <class It>\nBox(It first, It last) -> Box<std::iter_value_t<It>>; (or std::iterator_traits<It>::value_type)."
+    }
+  ]
+}

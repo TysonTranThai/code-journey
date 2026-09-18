@@ -1,0 +1,43 @@
+## Stack: LIFO
+
+Push and pop at ONE end. The most recent push is the next pop — like a stack
+of plates.
+
+```c
+/* array-backed stack */
+static int st[16];
+static int top = 0;               // number of elements
+
+int stack_push(int v) {
+    if (top == 16) return 0;      // overflow
+    st[top++] = v;
+    return 1;
+}
+int stack_pop(int *out) {
+    if (top == 0) return 0;       // underflow
+    *out = st[--top];
+    return 1;
+}
+```
+
+Stacks power undo histories, expression evaluation, and function calls
+themselves — "the call stack" is literally this.
+
+## Queue: FIFO
+
+Push at the back, pop from the front — a waiting line. With an array you
+either shift everything (O(n) pop) or use a ring buffer: `head` and `tail`
+indices that wrap around with `% cap`.
+
+```c
+tail = (tail + 1) % cap;    // wrap after the last slot
+```
+
+Module 18's FIFO module is exactly this; revisit it after this lesson.
+
+## Picking between them
+
+Ask: in what ORDER do items leave?
+- most recent first → stack
+- oldest first → queue
+- by priority → heap (beyond this course)

@@ -1,0 +1,36 @@
+## The four shapes
+
+```csharp
+for (int i = 0; i < 5; i++) { ... }        // counted: known number of passes
+while (queue.Count > 0) { ... }            // pre-test: maybe zero passes
+do { ... } while (again);                  // post-test: at least one pass
+foreach (string name in names) { ... }     // walk a collection
+```
+
+- **for** owns its counter — best when the count is known or derivable.
+- **while** tests first — zero iterations is normal.
+- **do/while** runs the body first — menus and input loops ("ask at least once").
+- **foreach** reads any collection element-by-element — no index, no off-by-one. (Use `for` when you must know *where* you are.)
+
+## Accumulation: the loop's inner state
+
+Every statistics tool is a loop with state:
+
+```csharp
+int total = 0;
+for (int i = 1; i <= 100; i++)
+{
+    total += i;          // state updated once per pass
+}
+// total == 5050
+```
+
+Initialize the accumulator *before* the loop, update it *inside*, read it *after*. Declaring the accumulator inside the loop is the classic beginner bug — it resets every pass.
+
+## break and continue
+
+`break` exits the loop now; `continue` skips to the next pass. Use both sparingly — a `for` with a clear condition plus an occasional `break` for "found it" reads fine; a maze of breaks signals the loop wants restructuring.
+
+## Off-by-one discipline
+
+`i < n` visits n items (indices 0..n-1); `i <= n` visits n+1. Arrays and strings are 0-indexed: a 5-item array's last index is 4. When a loop crashes with `IndexOutOfRangeException`, look at the boundary first.

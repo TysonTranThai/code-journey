@@ -1,0 +1,38 @@
+## Node chứa link đến chính kiểu của nó
+
+```c
+typedef struct Node {
+    int          value;
+    struct Node *next;    /* con trỏ đến cùng kiểu */
+} Node;
+```
+
+Hai chi tiết mang trọng lượng thật:
+
+**1. Tag và typedef là hai tên khác nhau.** Trong ngoặc, typedef chưa
+hoàn tất, nên phải viết `struct Node *next`. Viết `Node *next` tại đó
+không compile.
+
+**2. Phải là con trỏ.** `struct Node next;` yêu cầu struct chứa chính nó —
+kích thước vô hạn. *Con trỏ* đến kiểu của mình thì ổn: con trỏ có kích
+thước cố định.
+
+Cùng thủ thuật mô hình hóa đệ quy hỗ tương với forward declaration:
+
+```c
+struct Edge;                     /* forward: chỉ tên, chưa có body */
+typedef struct Vertex {
+    struct Edge *out;
+} Vertex;
+struct Edge {
+    Vertex *to;
+    struct Edge *next;
+};
+```
+
+## Ownership giờ là câu hỏi của đồ thị
+
+Mỗi node giữ một con trỏ. Trước khi viết API list/tree, hãy ghi vào comment
+header: ai sở hữu `next`? (Câu trả lời khiến bug hiếm: list sở hữu mọi node
+nó truy cập được; free list là free các node; bên mượn không free, không
+lưu con trỏ quá hạn mượn.)

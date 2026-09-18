@@ -1,0 +1,16 @@
+{
+  "id": "cint-p2-ptr-to-ptr",
+  "title": "The Second Level",
+  "prompt": "Demonstrate two-level indirection with a \"cursor\" API. The type is\nprovided in the boilerplate:\n\n```c\ntypedef struct { const int *cur, *end; } IntCursor;\n```\n\nImplement:\n\n```c\n/* initializes the cursor over [a, a+n); NULL args leave it empty\n   (cur == end == NULL). */\nvoid cursor_init(IntCursor *c, const int *a, size_t n);\n/* copies the next value into *out and advances; returns 1, or 0 when exhausted\n   (leaving *out untouched). */\nint cursor_next(IntCursor *c, int *out);\n/* rewinds to the start of the original range (no-op if empty). */\nvoid cursor_reset(IntCursor *c, const int *a, size_t n);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\ntypedef struct { const int *cur, *end; } IntCursor;\n",
+  "tests": [
+    {
+      "name": "cursor protocol",
+      "code": "\nint a[] = {10, 20, 30};\nIntCursor c;\nint v = -999;\ncursor_init(&c, a, 3);\nCHECK_EQ(cursor_next(&c, &v), 1); CHECK_EQ(v, 10);\nCHECK_EQ(cursor_next(&c, &v), 1); CHECK_EQ(v, 20);\nCHECK_EQ(cursor_next(&c, &v), 1); CHECK_EQ(v, 30);\nCHECK_EQ(cursor_next(&c, &v), 0); CHECK_EQ(v, 30);   /* untouched on 0 */\ncursor_reset(&c, a, 3);\nCHECK_EQ(cursor_next(&c, &v), 1); CHECK_EQ(v, 10);\n",
+      "hint": "cur/end pointers; next checks cur != end; reset restores both."
+    }
+  ],
+  "level": "mini-build"
+}

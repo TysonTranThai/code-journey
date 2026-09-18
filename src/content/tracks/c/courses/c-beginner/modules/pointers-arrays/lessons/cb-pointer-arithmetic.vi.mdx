@@ -1,0 +1,50 @@
+## +1 nghĩa là "tới phần tử kế tiếp"
+
+```c
+int a[5] = {5, 10, 15, 20, 25};
+int *p = a;          // &a[0]
+
+printf("%d\n", *p);        // 5
+printf("%d\n", *(p + 1));  // 10 — xa thêm một INT (4 byte), không phải 1 byte
+printf("%d\n", *(p + 2));  // 15
+```
+
+Trình biên dịch nhân số học với `sizeof(type)`: với `int*`, +1 là +4 byte;
+với `double*`, +1 là +8. Đó là lý do kiểu con trỏ quan trọng.
+
+## Đánh chỉ số CHÍNH LÀ số học con trỏ
+
+```c
+a[i]  được định nghĩa là  *(a + i)
+```
+
+`a[3]`, `3[a]`, `*(a+3)` — cùng một địa chỉ. Cú pháp ngoặc vuông tồn tại vì
+tính dễ đọc, không phải vì nó là cơ chế khác.
+
+## Đi bộ bằng con trỏ
+
+```c
+int *p = a;
+int *end = a + 5;          // một vị trí SAU phần tử cuối — giữ thì hợp lệ
+while (p < end) {
+    printf("%d ", *p);
+    p++;                    // tiến một phần tử
+}
+```
+
+Bạn có thể tính và so sánh con trỏ một vị trí sau cuối; giải tham chiếu ở đó
+là hành vi không xác định.
+
+## Phép trừ cho khoảng cách
+
+```c
+int *p = &a[2];
+printf("%ld\\n", (long)(p - a));   // 2 — đếm phần tử, không phải byte
+```
+
+## Điều KHÔNG hợp lệ
+
+- số học giữa hai mảng không liên quan: `p1 - p2` khi chúng trỏ vào hai mảng
+  khác nhau — không xác định
+- giải tham chiếu vị trí sau-cuối, hoặc bất kỳ địa chỉ nào ngoài mảng
+- nhân chia con trỏ trỏ tới đối tượng chưa hoàn chỉnh

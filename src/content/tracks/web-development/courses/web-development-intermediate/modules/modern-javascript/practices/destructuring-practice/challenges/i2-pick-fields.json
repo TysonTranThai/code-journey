@@ -1,0 +1,25 @@
+{
+  "id": "i2-pick-fields",
+  "title": "Pick Fields",
+  "prompt": "Write `pick(obj, keys)` that RETURNS a new object containing only the properties listed in `keys` that actually exist on `obj`. Missing keys are skipped, the input object must never be mutated, and each call returns a fresh object.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function pick(obj, keys) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "picks only the listed keys",
+      "code": "const fn = new Function(code + \"\\nreturn { pick };\");\nconst { pick } = fn();\nconst out = pick({ a: 1, b: 2, c: 3 }, [\"a\", \"c\"]);\nif (out.a !== 1 || out.c !== 3 || \"b\" in out) throw new Error(\"pick({ a: 1, b: 2, c: 3 }, [\\\"a\\\", \\\"c\\\"]) should be exactly { a: 1, c: 3 }.\");",
+      "hint": "Start with an empty object and copy key by key — or destructure with rest and rebuild."
+    },
+    {
+      "name": "skips missing keys",
+      "code": "const fn = new Function(code + \"\\nreturn { pick };\");\nconst { pick } = fn();\nconst out = pick({ a: 1 }, [\"a\", \"z\"]);\nif (out.a !== 1 || \"z\" in out) throw new Error(\"Keys that do not exist on the object must be skipped, not added as undefined.\");",
+      "hint": "Check `k in obj` before copying."
+    },
+    {
+      "name": "returns a new object and does not mutate the input",
+      "code": "const fn = new Function(code + \"\\nreturn { pick };\");\nconst { pick } = fn();\nconst input = { a: 1, b: 2 };\nconst out = pick(input, [\"a\"]);\nif (out === input) throw new Error(\"pick must return a NEW object, not the input.\");\nif (input.b !== 2 || Object.keys(input).length !== 2) throw new Error(\"The input object must stay unchanged.\");",
+      "hint": "Never write to obj — build the result separately."
+    }
+  ]
+}

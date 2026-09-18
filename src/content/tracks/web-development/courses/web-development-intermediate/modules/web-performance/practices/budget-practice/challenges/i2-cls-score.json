@@ -1,0 +1,20 @@
+{
+  "id": "i2-cls-score",
+  "title": "CLS Calculator",
+  "prompt": "Layout shifts arrive as an array of { fraction (0..1 of viewport that moved), distance (fraction of viewport it moved) }; each shift's impact = fraction * distance; shifts within 500ms of the previous count into the same session (gap in ms given per shift as `sincePrev`). CLS = the LARGEST session total. Write `cls(shifts)`.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function cls(shifts) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "sessions cap the score",
+      "code": "const fn = new Function(code + \"\\nreturn { cls };\");\nconst { cls } = fn();\nconst shifts = [\n  { fraction: 0.5, distance: 0.2, sincePrev: null },\n  { fraction: 0.5, distance: 0.2, sincePrev: 100 },\n  { fraction: 0.5, distance: 0.2, sincePrev: 2000 },\n];\n// sessions: [0.1 + 0.1, 0.1] => max 0.2\nif (Math.abs(cls(shifts) - 0.2) > 1e-9) throw new Error(\"Two shifts in one session, one alone after.\");\n",
+      "hint": "Accumulate; when sincePrev > 500, start a new session."
+    },
+    {
+      "name": "no shifts, no score",
+      "code": "const fn = new Function(code + \"\\nreturn { cls };\");\nconst { cls } = fn();\nif (cls([]) !== 0) throw new Error(\"Stable page scores 0.\");\nif (Math.abs(cls([{ fraction: 0.1, distance: 0.1, sincePrev: null }]) - 0.01) > 1e-9) throw new Error(\"Single shift: 0.1 * 0.1.\");\n",
+      "hint": "Impact per shift is fraction * distance."
+    }
+  ]
+}

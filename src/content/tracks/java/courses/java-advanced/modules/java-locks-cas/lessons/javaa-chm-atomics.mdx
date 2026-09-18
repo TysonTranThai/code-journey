@@ -1,0 +1,20 @@
+`ConcurrentHashMap` is not a synchronized HashMap — it is a *concurrent
+object* with its own atomic compound operations. The ones professionals use:
+
+```java
+map.computeIfAbsent(key, k -> expensive(k));   // atomic: at most once per key
+map.compute(key, (k, v) -> mergeInto(v));       // atomic read-modify-write
+map.merge(key, 1, Integer::sum);                // the frequency-counter idiom
+map.putIfAbsent(key, seed);                     // initialize-once
+```
+
+`compute`-family callbacks run under the bin's lock — they must be **short,
+and must not touch other keys of the same map** (nested compute on the same
+key deadlocks; on other keys risks it).
+
+Why not `Collections.synchronizedMap`? Because
+`if (!map.containsKey(k)) map.put(k, v)` is two atomic operations — the
+*check* and the *act* can interleave across threads. CHM's compute family
+makes the whole check-then-act **one** atomic operation. That is the
+difference between a class that is internally consistent and an algorithm
+that is externally correct.

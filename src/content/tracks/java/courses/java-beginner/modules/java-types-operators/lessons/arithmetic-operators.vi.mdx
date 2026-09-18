@@ -1,0 +1,33 @@
+Các toán tử số học của Java: `+ - * / %`, cộng thêm `++` và `--`. Bất ngờ
+nằm ở phép chia và số dư:
+
+```java
+System.out.println(7 / 2);        // 3  — chia nguyên cắt phần lẻ!
+System.out.println(7.0 / 2);      // 3.5 — một số double biến cả phép tính thành double
+System.out.println(7 % 2);        // 1  — số dư ("mod")
+System.out.println(-7 % 2);       // -1 — dấu theo số bị chia trong Java
+```
+
+**Chia nguyên là bug kinh điển của người mới**: `double avg = sum / count;`
+với cả hai là int sẽ cho kết quả int đã cắt *trước khi* gán. Sửa bằng cách
+mở rộng kiểu trước: `(double) sum / count`.
+
+`%` không chỉ để kiểm tra chẵn/lẻ — nó chạy đồng hồ số học
+(`(hour + 3) % 24`), xoay vòng chỉ số, và "mỗi phần tử thứ N".
+
+**Nhận thức về tràn số.** Primitive là hộp có kích thước cố định:
+
+```java
+int max = Integer.MAX_VALUE;   // 2_147_483_647
+System.out.println(max + 1);   // -2_147_483_648 — quay vòng, không báo lỗi!
+```
+
+Phép toán quay vòng im lặng. Với bộ đếm có thể vượt ~2 tỷ (hoặc nơi tính đúng
+quan trọng hơn tốc độ), dùng `long`; từ Java 8 còn có
+`Math.addExact(max, 1)` ném exception thay vì quay vòng.
+
+**Gán mở rộng** cập nhật tại chỗ: `score += 10` là `score = score + 10`;
+tương tự `-=`, `*=`, `/=`, `%=`. Và `++`/`--` cộng hoặc trừ một — `i++` trong
+header của vòng lặp là thành ngữ bạn sẽ thấy khắp nơi.
+
+**Tiếp theo:** so sánh giá trị và kết hợp điều kiện.

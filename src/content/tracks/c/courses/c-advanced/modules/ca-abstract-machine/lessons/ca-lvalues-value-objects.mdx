@@ -1,0 +1,29 @@
+## Lvalue vs value
+
+An **lvalue** is an expression that *refers to an object* — it has an address. A non-lvalue is a value: `x` is an lvalue; `x + 1` is not. Assignment needs an lvalue on the left precisely because storing requires an object to store into.
+
+The subtle corners:
+
+- An array expression *decays* to a pointer to its first element — the value is an address, not the array object.
+- String literals are lvalues (unnamed arrays of char) — you can take their address, but must not modify them.
+- A function designator decays to a function pointer.
+
+```c
+int x = 1;
+int *p = &x;        /* &x: operand must be an lvalue (or function) */
+x + 1 = 3;          /* ERROR: not an lvalue */
+"hi"[0] = 'H';      /* compiles; UB at runtime: modifying a literal */
+```
+
+## Lifetime begins and ends
+
+An object's **lifetime** — the time during which its representation holds stable values — is fixed by storage duration: automatic objects live their enclosing block; static/allocated objects live until program end or `free`. Accessing an object outside its lifetime (after the block, after free, before initialization) is UB.
+
+The classic dangling case is not exotic — it is *this*:
+
+```c
+int *bad(void) {
+    int local = 7;
+    return &local;      /* lifetime ends at the closing brace */
+}
+```

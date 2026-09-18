@@ -1,0 +1,42 @@
+Bên trong một coroutine, `await` đánh dấu các điểm tạm dừng. Hai `await` nối
+nhau chạy **tuần tự**; để chạy chúng *cùng nhau*, hãy lập lịch chúng thành
+**task**:
+
+```python
+import asyncio
+
+async def prepare():
+    await asyncio.sleep(0.1)
+    return "dough"
+
+async def heat():
+    await asyncio.sleep(0.2)
+    return "oven hot"
+
+async def sequential():
+    return await prepare(), await heat()      # tổng 0.3s
+
+async def concurrent():
+    t1 = asyncio.create_task(prepare())       # bắt đầu NGAY
+    t2 = asyncio.create_task(heat())          # cũng bắt đầu NGAY
+    return await t1, await t2                 # ~0.2s tổng
+```
+
+`create_task` đưa coroutine lên event loop **ngay lập tức**; `await task`
+thu kết quả sau. Các await cuối trông tuần tự nhưng các lần chờ đã chồng
+lên nhau từ trước.
+
+## Những cam kết về thứ tự đáng tin
+
+- Task bắt đầu theo thứ tự bạn tạo, nhưng **thứ tự hoàn thành phụ thuộc các
+  lần chờ** của chúng — đừng giả định thứ tự kết quả theo thứ tự lập lịch
+  (ghép kết quả với input tường minh nếu thứ tự quan trọng).
+- Loop chạy trên một thread: giữa các điểm `await` code của bạn là nguyên tử.
+  Hai coroutine không thể chen ngang nhau giữa chừng phép tính — nhưng trạng
+  thái dùng chung *có thể* đổi qua một `await`, đó là nơi async bug cư trú.
+
+## Chống-mẫu
+
+`time.sleep()` trong code async chặn cả loop — dùng `await asyncio.sleep()`.
+Gọi một coroutine mà không await sẽ tạo nó và lặng lẽ không làm gì cả
+(`RuntimeWarning: coroutine was never awaited`).

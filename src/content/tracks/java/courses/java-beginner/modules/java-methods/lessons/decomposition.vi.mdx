@@ -1,0 +1,39 @@
+Bước nhảy từ "viết được phương thức" lên "nghĩ bằng phương thức" là **phân
+rã**: tách bài toán thành các phần có tên, nhỏ đủ để hiểu trong một cái nhìn.
+
+**Một việc cho mỗi phương thức.** Phương thức có chữ "và" trong tên
+(`validateAndSave`) có lẽ là hai phương thức. Tên là hợp đồng; nếu không nói
+một câu được công việc, phương thức đang làm quá nhiều.
+
+**Quy tắc ba-nói-chưa-sát:** viết một lần trực tiếp; viết hai lần với chút
+nhăn mặt; bản sao gần giống thứ ba trở thành phương thức. Trích xuất khi
+các bản sao bắt đầu lệch nhau — những bản sao "cùng một logic" đi hai ngả
+là nơi bug sinh ra.
+
+**Vòng refactor** bạn sẽ thực hành bên dưới:
+
+1. Xác định code lặp hoặc quá dài.
+2. Trích xuất thành phương thức đặt tên theo *công việc* (`formatPrice`,
+   không phải `doStuff1`).
+3. Truyền mọi thứ công việc cần qua tham số; trả kết quả thay vì in ra.
+4. Chạy lại test — hành vi phải giữ nguyên.
+
+**Trả kết quả, đừng in.** Phương thức vừa tính vừa in bị dán chặt vào console;
+phương thức trả kết quả thì ghép được vào chương trình lớn hơn, và quan
+trọng hơn, *kiểm thử được* — grader (và chính bạn sau này) gọi được nó. In
+ra là công việc của tầng ngoài cùng.
+
+```java
+static String line(String item, int qty, double price) {
+    return item + " x" + qty + " = " + formatMoney(qty * price);
+}
+
+static String formatMoney(double amount) {
+    return String.format("$%.2f", amount);
+}
+```
+
+Hai phương thức nhỏ, mỗi cái một câu, ghép thành một hóa đơn. Đó là toàn bộ
+kỷ luật này.
+
+**Tiếp theo:** thực hành — xây và sửa một thư viện tiện ích.

@@ -1,0 +1,17 @@
+## Phương pháp
+
+1. Thiết lập baseline bằng *chỉ số*, không phải cảm giác.
+2. Đặt một giả thuyết ("cấp phát mỗi lần gọi là chiếm ưu thế").
+3. Thay đổi đúng một thứ.
+4. Đo lại cùng một chỉ số.
+5. Giữ hoặc hoàn tác — kèm con số.
+
+Microbenchmark đo thời gian thực nhiễu và phụ thuộc máy; khóa học này chấm các *proxy đếm được* mà kỹ sư trích từ profiler: số lần cấp phát, byte di chuyển, số phép so sánh, phân kỳ nhánh nhận ra được qua mẫu tất định.
+
+## Chương trình C++ thực sự mất thời gian ở đâu
+
+Theo tần suất: bản sao không cần thiết (string, vector), cấp phát không cần thiết (buffer mỗi vòng), bố trí dữ liệu sai (đuổi con trỏ), thuật toán sai (O(n log n) thay vì O(n)), rồi mới tới chuyện vi mô như thứ tự nhánh.
+
+## Định luật Amdahl giữ bạn trung thực
+
+Nếu sort chiếm 90% runtime, làm string format nhanh gấp 2 thay đổi rất ít. Trực giác kiểu profiler: tìm 10% nóng, rồi chỉ tối ưu bên trong đó.

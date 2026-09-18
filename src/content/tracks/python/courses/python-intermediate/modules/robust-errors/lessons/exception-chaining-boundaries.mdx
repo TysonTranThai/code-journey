@@ -1,0 +1,43 @@
+When layer B receives an error from layer A, callers shouldn't need to know
+A's internals. **Translate** errors at boundaries and keep the original as
+context with `raise ... from`:
+
+```python
+class StorageError(AppError):
+    """Persistence layer failed."""
+
+def save_task(task):
+    try:
+        db.execute("INSERT ...", task.as_row())
+    except sqlite3.Error as exc:
+        raise StorageError(f"could not save task {task.id}") from exc
+```
+
+The `from exc` chain shows **both** tracebacks when this fails: the StorageError
+you raised, and the sqlite3 cause that explains it. `raise X from None` is the
+deliberate choice to hide internals when they'd leak secrets — rare, and a
+decision, not a habit.
+
+## else and finally complete the story
+
+```python
+try:
+    value = parse(line)
+except ValueError as exc:
+    log.warning("bad line skipped: %s", exc)
+else:
+    total += value          # runs only when NO exception fired
+finally:
+    lines_seen += 1         # always runs — cleanup
+```
+
+`else` keeps success-path code out of the try block (so its own exceptions
+aren't miscaught); `finally` is the guaranteed-cleanup hook that `with`
+formalizes.
+
+## Retries: the shape to know
+
+Transient failures (network, locks) deserve bounded retries — sleep briefly,
+retry a small number of times, then surface the final error. The pattern to
+internalize is *bounded, with backoff, and the last error preserved*; you'll
+practice the loop shape in this module's checkpoint.

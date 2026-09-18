@@ -1,0 +1,45 @@
+## The string as a stream
+
+```cpp
+#include <sstream>
+
+std::string record = "Linh 20 8.5";
+std::istringstream in(record);
+
+std::string name;
+int age = 0;
+double gpa = 0.0;
+in >> name >> age >> gpa;    // "Linh", 20, 8.5
+```
+
+`istringstream` treats a string like `std::cin`. `>>` skips whitespace and converts — an age arrives as a real `int`, not text. Reading past the end leaves variables untouched and fails the stream: check with `if (in >> x)` or `if (!in) ` after reading.
+
+## Line by line: getline
+
+```cpp
+std::string line;
+while (std::getline(in, line)) {   // in can be a file stream too (module 13)
+    // process one whole line, spaces included
+}
+```
+
+`getline` reads to the newline and strips it. Mixing `>>` and `getline` on the same stream needs care (`>>` leaves the newline behind — `in.ignore()` clears it) — this mixing is the single most common stream bug; the exercises exercise it deliberately.
+
+## The mini-CSV pattern
+
+```cpp
+// line = "pen,2.5,120"
+std::istringstream row{line};
+std::string name, price_s, qty_s;
+std::getline(row, name, ',');          // "pen"
+std::getline(row, price_s, ',');       // "2.5"
+std::getline(row, qty_s);              // "120"
+double price = std::stod(price_s);     // convert text -> double
+int qty = std::stoi(qty_s);
+```
+
+`std::getline(stream, out, ',')` reads up to a delimiter. `std::stoi`/`std::stod` convert text to numbers (they throw on garbage — module 14 handles that properly). This pattern is exactly your module 13 file work and the capstone's storage format, in miniature.
+
+## Why not hand-rolled index arithmetic?
+
+Because the stream tools express *intent* ("read a word", "read to comma") while index math expresses *mechanics* — and mechanics is where off-by-one bugs breed. Use the tools.

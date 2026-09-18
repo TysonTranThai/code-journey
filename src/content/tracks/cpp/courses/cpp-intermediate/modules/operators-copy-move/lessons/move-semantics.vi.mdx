@@ -1,0 +1,50 @@
+**Move semantics** chuyển tài nguyên từ một đối tượng sắp chết thay vì sao
+chép nó. Move constructor "đoạt" pointer của nguồn và làm rỗng nguồn — O(1)
+thay vì O(n).
+
+```cpp
+#include <cstring>
+#include <utility>
+
+class Buffer {
+public:
+    // ... (từ Rule of Three) ...
+
+    Buffer(Buffer&& other) noexcept                    // move ctor
+        : size_{other.size_}, data_{other.data_} {
+        other.data_ = nullptr;                          // để nguồn rỗng
+        other.size_ = 0;
+    }
+
+    Buffer& operator=(Buffer&& other) noexcept {        // move assign
+        if (this == &other) return *this;
+        delete[] data_;
+        data_ = other.data_;
+        size_ = other.size_;
+        other.data_ = nullptr;
+        other.size_ = 0;
+        return *this;
+    }
+    // ...
+};
+
+Buffer make_buffer() { return Buffer{1024}; }
+
+int main_cj_move() {
+    Buffer a{make_buffer()};     // move (hoặc elided): không copy 1024 byte
+    Buffer b{a};                 // copy: a vẫn giữ dữ liệu của nó
+    Buffer c{std::move(a)};      // move: a giờ rỗng-nhưng-hợp-lệ
+    return 0;
+}
+```
+
+## Rule of Five và trạng thái moved-from
+
+Cộng hai thao tác move vào Rule of Three, bạn có năm. Mỗi khi khai báo
+destructor hay bất kỳ thao tác copy nào, hãy xét cả năm. Đối tượng moved-from
+phải **hợp lệ** (hủy được, gán được) — nhưng giá trị của nó là không xác định;
+đừng bao giờ giả sử nó còn giữ dữ liệu.
+
+`noexcept` trên move rất quan trọng: `std::vector` chỉ move phần tử khi tăng
+dung lượng nếu move là `noexcept`, nếu không nó buộc phải copy để giữ bảo đảm
+mạnh.

@@ -1,0 +1,49 @@
+## assert: bản hợp đồng được kiểm tra khi phát triển
+
+```cpp
+#include <cassert>
+
+double average(const std::vector<int>& v) {
+    assert(!v.empty() && "average of empty vector is undefined");
+    // ...
+}
+```
+
+`assert(expr)` hủy chương trình (kèm file/dòng) khi expr sai — trong bản debug. Nó ghi lại và thực thi *lỗi của lập trình viên* (hợp đồng nội bộ hỏng), không phải input của người dùng. Bản release thường biên dịch chúng đi: đừng bao giờ đặt hành vi bắt buộc chỉ trong assert.
+
+## Test viết tay: harness mà bạn đã đọc suốt khóa
+
+Bạn đã đọc chúng cả khóa — giờ hãy tự viết:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int total(const std::vector<int>& v);   // thứ đang được test
+
+void test_total() {
+    if (total({1, 2, 3}) != 6) { std::cerr << "FAIL total basic\n"; std::exit(1); }
+    if (total({}) != 0)        { std::cerr << "FAIL total empty\n"; std::exit(1); }
+}
+
+void test_average() { /* ... */ }
+
+int main() {
+    test_total();
+    test_average();
+    std::cout << "all tests passed\n";
+}
+```
+
+Một bộ test thật: mỗi hành vi một hàm, **đặt tên theo kỳ vọng**, hét to khi hỏng kèm tên test nào vỡ, thoát với mã khác 0 để CI biết. (Các framework như Catch2/GoogleTest tự động hóa phần ống nước — cùng hình dạng, thêm đường; harness C++ của chính nền tảng này cũng là cùng ý tưởng.)
+
+## Test cái gì (checklist cho người mới)
+
+- Trường hợp hiển nhiên (1,2,3 → 6).
+- Các biên: rỗng, một phần tử, số 0, số âm, giá trị lớn nhất.
+- Các lỗi đã ghi nhận: input xấu phải throw / trả về giá trị lỗi.
+- Một "regression": trường hợp từng hỏng và đã được sửa — nó ở lại bộ test mãi mãi.
+
+## Kỷ luật đỏ-xanh
+
+Viết test trước, nhìn nó hỏng (đỏ), cài đặt đến khi pass (xanh). Nghe như nghi lễ; nhưng đó là cách bạn *biết test có thể hỏng* — một test chưa bao giờ hỏng thì chẳng test được gì.

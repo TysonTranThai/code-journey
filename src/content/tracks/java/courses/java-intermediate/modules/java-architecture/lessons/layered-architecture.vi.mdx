@@ -1,0 +1,24 @@
+## Kiến trúc phân lớp
+
+Ba lớp phủ được phần lớn dịch vụ:
+
+```
+Controller/UI  →  phân tích input, gọi service, map kết quả
+        ↓ phụ thuộc
+Service        →  quy tắc nghiệp vụ, điều phối, transaction
+        ↓ phụ thuộc
+Repository     →  persistence (Module 11)
+```
+
+Quy tắc phụ thuộc: **mũi tên chỉ xuống duy nhất.** Service không bao giờ
+gọi controller; repository không bao giờ gọi service. Call xuyên lớp
+chảy qua interface hẹp.
+
+Vì sao các lớp đáng giá:
+- quy tắc nghiệp vụ nằm ở MỘT chỗ (service), không rải trong UI và SQL
+- mỗi lớp test theo kiểu riêng: unit test nhanh cho service, contract
+  test cho repository
+- hoán đổi cổng giao tiếp (CLI → REST) không chạm service
+
+Mode hỏng mà điều này ngăn là *god class* — 1.200 dòng vừa parse, vừa
+kiểm tra, tính toán, lưu trữ, và in ra, chẳng cái gì test riêng được.

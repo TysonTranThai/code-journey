@@ -1,0 +1,18 @@
+{
+  "title": "Checkpoint: API client bền bỉ",
+  "prompt": "Hiện thực client: inject HttpClient; GetUserAsync map 200→\"user:<name>\", 404→\"notfound\", khác→\"failed\"; GetUserWithRetryAsync chỉ retry 5xx với delay không giảm trần 50 ms; 404 không retry; token đã hủy ném OperationCanceledException trước mọi request.",
+  "tests": [
+    {
+      "name": "success and notfound",
+      "hint": "Rẽ nhánh theo mã trạng thái trước khi đọc body; đừng để EnsureSuccess ném lỗi."
+    },
+    {
+      "name": "retry on 5xx only, capped delays",
+      "hint": "Chỉ retry 5xx; delay qua CjStubHandler.DelayAsync(min(10 << (attempt-1), 50))."
+    },
+    {
+      "name": "cancellation wins",
+      "hint": "ct.ThrowIfCancellationRequested() trước khi gửi — và truyền ct vào SendAsync."
+    }
+  ]
+}

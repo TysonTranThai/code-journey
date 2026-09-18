@@ -1,0 +1,26 @@
+{
+  "id": "cb22-txn-biggest",
+  "title": "Biggest Expense",
+  "prompt": "Given the Txn model in scope, implement `int biggest_idx(const Txn *txs, int n)` returning the INDEX of the transaction with the largest cents (ties: lowest index), or -1 for n == 0.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\ntypedef struct { int id; int cents; int cat; } Txn;\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "Txn t[] = {{1, 500, 1}, {2, 900, 2}, {3, 100, 1}};\nCHECK_EQ(biggest_idx(t, 3), 1);",
+      "hint": "Index 1 is largest."
+    },
+    {
+      "name": "tie",
+      "code": "Txn t[] = {{1, 700, 1}, {2, 700, 2}};\nCHECK_EQ(biggest_idx(t, 2), 0);",
+      "hint": "Lowest index wins ties."
+    },
+    {
+      "name": "empty",
+      "code": "Txn t[1];\nCHECK_EQ(biggest_idx(t, 0), -1);",
+      "hint": "n=0: -1."
+    }
+  ],
+  "level": "guided"
+}

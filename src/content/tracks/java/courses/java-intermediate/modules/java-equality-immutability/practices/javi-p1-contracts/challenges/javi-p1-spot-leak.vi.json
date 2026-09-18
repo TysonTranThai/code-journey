@@ -1,0 +1,18 @@
+{
+  "title": "Tìm chỗ rò rỉ tính khả biến",
+  "prompt": "`Badge` lưu một `List<String> log` nội bộ của các sự kiện quét.\nBản hiện tại trả trực tiếp list nội bộ. Caller có thể `clear()` lịch sử của\nbạn mà class không hề hay biết.\n\nSửa `Badge` để:\n- list nội bộ không thể bị sửa từ bên ngoài\n- quét vẫn tích lũy qua `scan(String event)`\n- `history()` trả về view chỉ đọc\n\nConstructor cũng phải phòng thủ: sao chép list nhận vào.",
+  "tests": [
+    {
+      "name": "history không thể sửa",
+      "hint": "history() phải trả Collections.unmodifiableList(...) — một add() phải ném ngoại lệ."
+    },
+    {
+      "name": "constructor sao chép đầu vào",
+      "hint": "Sao chép list nhận vào (List.copyOf) để caller sửa sau không ảnh hưởng badge."
+    },
+    {
+      "name": "quét vẫn tích lũy",
+      "hint": "scan() nối vào list nội bộ (khả biến); history() chỉ bọc lại ở chế độ chỉ đọc."
+    }
+  ]
+}

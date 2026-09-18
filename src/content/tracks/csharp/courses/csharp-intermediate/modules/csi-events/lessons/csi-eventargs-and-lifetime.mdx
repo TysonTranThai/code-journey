@@ -1,0 +1,49 @@
+## The contract: sender + args
+
+`EventHandler<TEventArgs>` is `void(object? sender, TEventArgs e)` with a
+name that says what it is. Custom args carry everything a handler needs —
+and nothing it doesn't:
+
+```csharp
+public sealed record TemperatureChangedEventArgs(
+    string Sensor, double OldValue, double NewValue);
+
+public class Thermometer
+{
+    public event EventHandler<TemperatureChangedEventArgs>? Changed;
+
+    public double Value { get; private set; }
+
+    public void Read(double newValue)
+    {
+        double old = Value;
+        Value = newValue;
+        Changed?.Invoke(this, new TemperatureChangedEventArgs("t1", old, newValue));
+    }
+}
+```
+
+Design rule: args are a snapshot at raise time. Handlers must not mutate the
+publisher through them; if a handler needs to *influence* the outcome, that
+is not an event — that is a callback (use `Func` or `CancelEventArgs`-style
+mutable args deliberately).
+
+## Unsubscribe is part of the contract
+
+`+=` without a matching `-=` pins the subscriber for the publisher's
+lifetime. Long-lived publishers (singletons, static events) + short-lived
+subscribers = the leak:
+
+```csharp
+var t = new Thermometer();
+t.Changed += OnChanged;      // static OnChanged, but t is now pinned by it
+t.Changed -= OnChanged;      // only this releases t
+```
+
+Worse: `SomeStaticClass.Event += handler` holds subscribers *forever*. Static
+events are a deliberate lifetime decision, not a convenience.
+
+## Check your understanding
+
+- Why snapshot args at raise time? (Handlers run later than the state change.)
+- When is a static event acceptable? (When every subscriber lives as long as the process.)

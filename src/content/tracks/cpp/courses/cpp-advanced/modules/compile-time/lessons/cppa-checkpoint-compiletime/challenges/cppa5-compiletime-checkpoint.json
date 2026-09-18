@@ -1,0 +1,20 @@
+{
+  "id": "cppa5-compiletime-checkpoint",
+  "title": "Bake the Sum",
+  "prompt": "Implement `tableSum` so the test computes it at compile time inside a lambda and static_asserts the result.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n\n// TODO: constexpr int tableSum(const int* a, std::size_t n);  // sum via constexpr recursion/loop\n// The graded test builds the sum at compile time via a lambda and static_asserts it.\n",
+  "tests": [
+    {
+      "name": "compile-time sum bakes",
+      "code": "constexpr auto baked = [] { constexpr int d[] = {3, 1, 4, 1, 5}; return tableSum(d, 5); }();\nint live5[] = {3, 1, 4, 1, 5};\nstatic_assert(baked == 14, \"must compute at compile time\");\nCHECK_EQ(tableSum(live5, 5), 14);",
+      "hint": "constexpr int tableSum(const int* a, std::size_t n) { int s = 0; for (std::size_t i = 0; i < n; ++i) s += a[i]; return s; } — loops are fine in constexpr."
+    },
+    {
+      "name": "runtime use still works",
+      "code": "int live[] = {10, 20, 30};\nCHECK_EQ(tableSum(live, 3), 60);",
+      "hint": "Same function serves runtime arrays — constexpr is a capability, not a restriction."
+    }
+  ]
+}

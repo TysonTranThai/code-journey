@@ -1,0 +1,41 @@
+## void* is a promise, not a type
+
+```c
+typedef struct HNode {
+    const char   *key;      /* borrowed: caller keeps it alive */
+    void         *value;    /* OWNERSHIP: decided by the table's policy */
+    struct HNode *next;
+} HNode;
+```
+
+The table cannot know what `value` points at. That is the point — and
+the danger. Every generic container must publish an **ownership policy**,
+and the clean way to make it explicit is a callback:
+
+```c
+typedef void (*FreeFn)(void *value);
+/* destroy_frees: if true, hmap_destroy calls free_value on every value
+   still stored; if false, values are left for their owner. */
+void hmap_destroy(HMap *m, int destroy_frees, FreeFn free_value);
+```
+
+Now the contract is checkable at the call site: a table of malloc'd
+buffers passes `1, free`; a table of borrowed strings passes `0, NULL`.
+The bug class this kills: double frees when two containers both "clean
+up" the same values, and leaks when none does.
+
+## Keys are almost always borrowed
+
+Values may be owned; keys should be *borrowed* — the caller's string
+lives in the caller's storage, the table only compares addresses of
+characters. If the table must own keys (the caller's buffer dies), it
+must `strdup` them — and then it owns two things, and the policy
+multiplies. Borrowed keys keep one rule: the key outlives the entry.
+
+## The iteration contract
+
+Any table that can be walked (`hmap_foreach`) must publish what
+mutations during iteration do. The safe rule: you may *replace* the
+current entry's value; you may not insert or remove while iterating.
+Enforce it or document the undefined behavior — silent corruption is
+the alternative.

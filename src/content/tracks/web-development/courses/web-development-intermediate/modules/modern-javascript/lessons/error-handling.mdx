@@ -1,0 +1,77 @@
+You already know an uncaught error crashes a program. What separates
+intermediate code from beginner code is a **deliberate error strategy**: which
+errors you expect, which you let crash, and how a failure travels between the
+layers of a program.
+
+## Expected vs unexpected errors
+
+An **expected** error is part of the problem domain: a form field is empty, a
+JSON string is malformed, a record does not exist. An **unexpected** error is a
+bug: a typo, a missing function, an impossible state. You _handle_ expected
+errors and you _fix_ unexpected ones. Wrapping your whole program in try/catch
+hides bugs — the worst outcome.
+
+## The shape of an Error
+
+`throw` accepts any value, but always throw `Error` instances — they
+carry a `message`, a `stack` (dev-only detail), and since ES2022 a
+`cause` for chaining:
+
+```js
+try {
+  loadConfig(path);
+} catch (err) {
+  throw new Error("Config failed to load", { cause: err });
+}
+```
+
+The built-in types have meaning: `TypeError` for wrong types,
+`RangeError` for out-of-range values, `SyntaxError` from
+`JSON.parse`. Reach for them before inventing your own.
+
+## Custom errors
+
+When callers need to _react_ differently to a failure, give it a name:
+
+```js
+class ValidationError extends Error {
+  constructor(message, field) {
+    super(message);
+    this.name = "ValidationError";
+    this.field = field;
+  }
+}
+
+throw new ValidationError("age must be non-negative", "age");
+```
+
+Callers can now distinguish it with `err instanceof ValidationError` —
+string-matching messages is how bugs hide.
+
+## Catch deliberately, narrowly
+
+Catch only what you can actually handle, and rethrow the rest:
+
+```js
+try {
+  const user = parseUser(raw);
+  save(user);
+} catch (err) {
+  if (err instanceof ValidationError) {
+    showFieldError(err.field, err.message); // ours: show a message
+  } else {
+    throw err; // not ours: let it propagate
+  }
+}
+```
+
+The optional `finally` block runs whether or not an error occurred — use
+it to release resources, not to return values.
+
+## The result-object pattern
+
+Across module boundaries, expected failures are often better as **values** than
+thrown exceptions. Return `{ ok: true, value }` or
+`{ ok: false, error }` and force the caller to acknowledge the failure —
+this is how the parser practice below is shaped. Rule of thumb: throw for
+programmer-visible failures, return results for ordinary, expected ones.

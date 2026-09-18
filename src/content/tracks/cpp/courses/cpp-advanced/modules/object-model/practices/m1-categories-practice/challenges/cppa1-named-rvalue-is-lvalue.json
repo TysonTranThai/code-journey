@@ -1,0 +1,21 @@
+{
+  "id": "cppa1-named-rvalue-is-lvalue",
+  "title": "The Named-Rvalue Trap",
+  "prompt": "A forwarding function receives `Tracked&& payload`. Return it onward *as an rvalue* so exactly one move happens and no copy — the counters observe what you really did.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <string>\n#include <utility>\n\n// Instrumented payload: the counters observe what passOn really does.\nstruct Tracked {\n    static inline int copies = 0;\n    static inline int moves = 0;\n    std::string tag;\n    explicit Tracked(std::string t) : tag(std::move(t)) {}\n    Tracked(const Tracked& o) : tag(o.tag) { ++copies; }\n    Tracked(Tracked&& o) noexcept : tag(std::move(o.tag)) { ++moves; }\n};\n\nTracked passOn(Tracked&& payload);   // TODO: move it onward, not copy\nstd::size_t consumeTwice(std::string&& payload);\n",
+  "tests": [
+    {
+      "name": "passOn moves, not copies",
+      "code": "Tracked::moves = 0; Tracked::copies = 0;\nTracked out = passOn(Tracked(\"abc\"));\nCHECK_EQ(Tracked::moves, 1);\nCHECK_EQ(Tracked::copies, 0);\nCHECK_EQ(out.tag, std::string(\"abc\"));",
+      "hint": "Inside the function the parameter has a name, so it is an lvalue. Return std::move(payload) — returning the bare name performs a COPY of a Tracked."
+    },
+    {
+      "name": "consumeTwice returns by value",
+      "code": "std::size_t n = consumeTwice(std::string(5, 'z'));\nCHECK_EQ(n, std::size_t{5});",
+      "hint": "Take the parameter by rvalue reference, use its size, and return the size by value — the string itself dies at return."
+    }
+  ]
+}

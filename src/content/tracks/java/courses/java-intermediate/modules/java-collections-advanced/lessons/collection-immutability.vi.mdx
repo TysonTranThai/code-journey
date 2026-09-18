@@ -1,0 +1,24 @@
+## View không thể sửa so với bản sao bất biến
+
+Ba mức bảo đảm "không thể thay đổi" khác nhau:
+
+```java
+List<String> src = new ArrayList<>(List.of("a", "b"));
+
+List<String> view = Collections.unmodifiableList(src);
+// view.set(0, "x") ném ngoại lệ — nhưng src.set(0, "x") đổi cả view!
+
+List<String> copy = List.copyOf(src);
+// copy độc lập: sửa src không chạm tới được nó
+
+List<String> literal = List.of("a", "b");
+// bất biến từ khi sinh ra, không tốn chi phí copy, chặn null
+```
+
+`List.of`/`Set.of`/`Map.of` là mặc định cho hằng số. `List.copyOf` là
+công cụ để niêm phong collection *do caller cung cấp*. View không thể sửa
+dùng để *kiểm soát việc lộ ra ngoài* — chủ sở hữu vẫn giữ khả năng sửa,
+caller thì không.
+
+`Arrays.asList` là bẫy: kích thước cố định nhưng ghi được — `set` chạy,
+`add` ném. Hiếm khi là điều bạn muốn.

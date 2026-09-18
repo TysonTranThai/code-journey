@@ -1,0 +1,15 @@
+## Checkpoint — instrument a class
+
+Write `@timed`, a **class decorator** that wraps every public method
+(not starting with `_`) of the decorated class so that each call's wall time
+is appended to `cls.__timings__[method_name]` (a list, created on demand).
+
+Requirements:
+
+- method names stay correct on the wrapper (`__name__` preserved)
+- private/dunder methods are untouched
+- works for any class (the decorator must not hardcode names)
+- timings must accumulate across instances
+
+This is the exact pattern profilers, metrics libraries, and tracing hooks use
+when they cannot ask you to edit every method.

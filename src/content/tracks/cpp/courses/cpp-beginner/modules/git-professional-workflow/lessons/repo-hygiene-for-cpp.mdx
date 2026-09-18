@@ -1,0 +1,45 @@
+## What never enters version control
+
+```
+# .gitignore for a C++/CMake project
+build/
+build-*/
+cmake-build-*/
+*.o
+*.out
+compile_commands.json
+```
+
+Everything the compiler generates is **regenerable** — committing it bloats history and produces impossible merges. The `build/` directory especially: it can contain thousands of machine-specific files. Anyone can recreate it with two CMake commands.
+
+## What always belongs
+
+- Sources (`src/`, headers), `CMakeLists.txt`
+- Tests and their data
+- README, LICENSE, CI configuration when it exists
+- `.gitignore` itself
+
+## The README contract
+
+A stranger must be able to build in under two minutes:
+
+```markdown
+# Finance CLI
+
+Personal finance manager (C++20, CMake).
+
+## Build
+cmake -B build && cmake --build build
+
+## Run
+./build/finance
+
+## Test
+ctest --test-dir build
+```
+
+If your build needs a special flag, the README is where it lives — not tribal knowledge.
+
+## The workflow
+
+Small commits with imperative messages ("parse csv records"), one logical change each; branches for features; PR-style review even solo — reading your own diff before merging catches a surprising fraction of bugs. Git itself is taught hands-on in the platform's web track; here you learn what is *C++-specific*: ignore build output, commit the CMakeLists, ship the README.

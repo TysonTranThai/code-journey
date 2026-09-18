@@ -1,0 +1,45 @@
+In Beginner you attached listeners and moved on. Now we look at what actually
+happens when you click.
+
+## The event flow has three phases
+
+When you click a `button` inside a `div`, the event does not go
+straight to the button. It **travels down** from `window` through every
+ancestor (the **capture phase**), fires at the button (the **target phase**),
+then **travels back up** through the ancestors (the **bubble phase**):
+
+```text
+window → document → div → button   (capture)
+                        button     (target)
+window ← document ← div ← button   (bubble)
+```
+
+By default, listeners run in the bubble phase. Pass `true` (or
+`{ capture: true }`) as the third argument to run in the capture phase:
+
+```js
+document.addEventListener("click", onCaptureClick, true);
+```
+
+## Three different tools
+
+These are commonly confused — they do different jobs:
+
+- `event.preventDefault()` — cancels the browser's **default action**
+  (a link navigating, a form submitting) without stopping propagation.
+- `event.stopPropagation()` — stops the event moving further along the
+  flow. Ancestors never hear about it.
+- `event.stopImmediatePropagation()` — also stops other listeners on the
+  **same element** from running.
+
+`preventDefault` does not stop propagation, and stopping propagation does
+not cancel defaults. A form handler that calls
+`event.stopPropagation()` but not `preventDefault()` still submits
+the page.
+
+## event.target vs event.currentTarget
+
+Inside a handler, `event.target` is the element the event originated from
+(the button); `event.currentTarget` is the element the listener is
+attached to (the div). When you attach to the target itself they are the same —
+the difference powers the next lesson.

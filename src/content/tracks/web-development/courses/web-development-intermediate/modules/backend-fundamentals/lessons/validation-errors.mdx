@@ -1,0 +1,61 @@
+The API's front door decides whether the rest of the code can be simple. Validate everything there.
+
+## Validate at the boundary
+
+```js
+function validateTask(body) {
+  const errors = [];
+  if (typeof body.title !== "string" || body.title.trim() === "" || body.title.length > 200) {
+    errors.push({ field: "title", message: "title must be a 1-200 char string" });
+  }
+  if (body.due !== undefined && !Number.isInteger(Date.parse(body.due))) {
+    errors.push({ field: "due", message: "due must be an ISO date" });
+  }
+  return errors;
+}
+```
+
+Collect **all** errors, not the first — clients render one form pass, not seven round trips. In production you'd use Zod: schema in, typed data or structured issues out.
+
+## Error responses: honest and uniform
+
+```text
+400  { "error": { "message": "validation failed", "details": [...] } }
+401  { "error": { "message": "authentication required" } }
+404  { "error": { "message": "task not found" } }
+500  { "error": { "message": "internal error" } }     <- nothing internal shown
+```
+
+Two rules:
+
+1. **Same shape for every error** — clients write one parser.
+2. **500 never leaks internals.** No stack traces, no SQL, no file paths in responses. Log the detail server-side (with a request id!), return the generic message. Stack traces in responses are an information-disclosure bug.
+
+## Throwing and catching in a pipeline
+
+Handlers shouldn't each try/catch into their own JSON shape. They throw domain errors; one outer middleware maps them:
+
+```js
+class HttpError extends Error {
+  constructor(status, message, details) {
+    super(message);
+    this.status = status;
+    this.details = details;
+  }
+}
+// handler:
+throw new HttpError(404, "task not found");
+// error middleware:
+res.writeHead(err.status ?? 500, { "Content-Type": "application/json" });
+res.end(
+  JSON.stringify({
+    error: { message: err.expose ? err.message : "internal error", details: err.details },
+  }),
+);
+```
+
+The `expose` flag is the security boundary: 4xx messages are for users, 5xx messages are for logs.
+
+## Async errors don't throw — they reject
+
+In a callback-based or promise-based handler, a rejected promise doesn't reach your catch automatically. Frameworks differ; the mental model to keep: **every async path must have an owner** — await it inside the try, or attach a `.catch`, or let the pipeline's error channel carry it. An unowned rejection in Node used to crash the process; modern versions warn, but your users still see a 500 — or nothing.

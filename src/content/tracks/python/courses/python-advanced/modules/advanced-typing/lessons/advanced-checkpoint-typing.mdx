@@ -1,0 +1,12 @@
+## Checkpoint — a typed repository
+
+Build:
+
+1. `class Repository(Protocol[T])` with `add(item: T) -> None`,
+   `get(key: str) -> Optional[T]`, `all() -> List[T]` (protocol bodies use `...`).
+2. `class MemoryRepository(Generic[T])` implementing it, constructed with a
+   `key_fn` used to derive each item's key.
+3. `seed(repo, users)` adding every user.
+
+Contract detail: `add` keeps the FIRST item for a key (later duplicates are
+ignored — get() and all() still return the first).

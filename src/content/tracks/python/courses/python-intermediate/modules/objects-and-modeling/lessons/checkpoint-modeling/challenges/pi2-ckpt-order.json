@@ -1,0 +1,30 @@
+{
+  "id": "pi2-ckpt-order",
+  "title": "Order with OrderLines",
+  "prompt": "Define a dataclass OrderLine(sku, quantity, unit_price) and a class Order that starts empty. add_line(sku, quantity, unit_price) appends an OrderLine and returns the line count (raise ValueError if quantity <= 0). total() sums quantity * unit_price. repr(Order()) must contain 'Order'.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "from dataclasses import dataclass\n\n@dataclass\nclass OrderLine:\n    pass\n\nclass Order:\n    pass\n",
+  "tests": [
+    {
+      "name": "orderline equality and fields",
+      "code": "assert OrderLine('tea', 2, 3) == OrderLine('tea', 2, 3)",
+      "hint": "A dataclass gives field equality for free."
+    },
+    {
+      "name": "add returns count; total computes",
+      "code": "o = Order()\nassert o.add_line('tea', 2, 3) == 1\nassert o.add_line('cup', 1, 10) == 2\nassert o.total() == 16",
+      "hint": "2*3 + 1*10 = 16."
+    },
+    {
+      "name": "invalid quantity raises",
+      "code": "o = Order()\ntry:\n    o.add_line('x', 0, 5)\n    failed = False\nexcept ValueError:\n    failed = True\nassert failed",
+      "hint": "Validate quantity at the boundary: raise ValueError when <= 0."
+    },
+    {
+      "name": "repr mentions Order",
+      "code": "assert 'Order' in repr(Order())",
+      "hint": "Define __repr__ or reuse a readable default."
+    }
+  ]
+}

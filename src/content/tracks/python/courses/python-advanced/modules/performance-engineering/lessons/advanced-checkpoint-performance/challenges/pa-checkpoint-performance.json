@@ -1,0 +1,20 @@
+{
+  "id": "pa-checkpoint-performance",
+  "title": "N+1 rescue with a query counter",
+  "prompt": "Implement fetch_user_orders using at most 2 db.query calls total; per-user order lists preserve db row order; empty user_ids returns {} with zero queries.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "def fetch_user_orders(user_ids, db):\n    # db.query(sql, params) -> list of (user_id, order_id, total) rows\n    pass",
+  "tests": [
+    {
+      "name": "two queries, all users, ordered rows",
+      "code": "class DB:\n    def __init__(self):\n        self.queries = 0\n    def query(self, sql, params):\n        self.queries += 1\n        rows = [(1, 11, 5.0), (2, 21, 7.5), (1, 12, 3.0), (3, 31, 9.9), (2, 22, 1.0)]\n        ids = set(params[0])\n        return [r for r in rows if r[0] in ids]\n\ndb = DB()\nout = fetch_user_orders([1, 2, 3], db)\nassert db.queries <= 2, f'queries: {db.queries}'\nassert out[1] == [{'id': 11, 'total': 5.0}, {'id': 12, 'total': 3.0}], f'out[1]: {out[1]}'\nassert out[2] == [{'id': 21, 'total': 7.5}, {'id': 22, 'total': 1.0}]\nassert out[3] == [{'id': 31, 'total': 9.9}]\nprint('ok')",
+      "hint": "One query with all ids (IN-clapse style via the db helper) and group rows by user_id in Python."
+    },
+    {
+      "name": "empty input makes zero queries",
+      "code": "class DB:\n    def __init__(self):\n        self.queries = 0\n    def query(self, sql, params):\n        self.queries += 1\n        return []\n\ndb = DB()\nout = fetch_user_orders([], db)\nassert out == {} and db.queries == 0, f'out: {out}, queries: {db.queries}'\nprint('ok')",
+      "hint": "Guard the empty case before any query."
+    }
+  ]
+}

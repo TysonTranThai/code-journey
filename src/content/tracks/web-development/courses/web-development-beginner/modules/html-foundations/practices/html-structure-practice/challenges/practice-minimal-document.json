@@ -1,0 +1,30 @@
+{
+  "id": "practice-minimal-document",
+  "title": "Build a Minimal Document",
+  "prompt": "Write the smallest complete HTML page: a doctype, an `html` element with `lang`, a `head` containing the charset meta, and a `body` with one paragraph saying hello.\n\nRules:\n- Include the doctype declaration.\n- The `html` tag declares `lang=\"en\"`.\n- The `head` contains `<meta charset=\"UTF-8\">`.\n- The `body` contains one `<p>`.",
+  "difficulty": "beginner",
+  "level": "imitation",
+  "boilerplate": "<!-- Build the page skeleton here -->\n",
+  "tests": [
+    {
+      "name": "starts with a doctype",
+      "code": "if (!/^\\s*<!DOCTYPE html>/i.test(code)) {\n  throw new Error(\"Every HTML document starts with <!DOCTYPE html> on the first line.\");\n}",
+      "hint": "The very first line of the file must be <!DOCTYPE html>."
+    },
+    {
+      "name": "has an html element with lang",
+      "code": "if (!/<html\\s+lang=[\"']en[\"']\\s*>/i.test(code)) {\n  throw new Error(\"The <html> tag must declare lang=\\\"en\\\" so browsers and screen readers know the language.\");\n}",
+      "hint": "Write <html lang=\"en\"> as the root element."
+    },
+    {
+      "name": "head declares the charset",
+      "code": "if (!/<head[\\s\\S]*<meta\\s+charset=[\"']UTF-8[\"']\\s*>[\\s\\S]*<\\/head>/i.test(code)) {\n  throw new Error(\"The head must contain <meta charset=\\\"UTF-8\\\"> so every character renders correctly.\");\n}",
+      "hint": "Inside <head>, add <meta charset=\"UTF-8\">."
+    },
+    {
+      "name": "body contains a paragraph",
+      "code": "if (!/<body[\\s\\S]*<p>[\\s\\S]*<\\/p>[\\s\\S]*<\\/body>/i.test(code)) {\n  throw new Error(\"The body must contain at least one <p> element.\");\n}",
+      "hint": "Put a <p>Hello!</p> (or similar) inside the <body>."
+    }
+  ]
+}

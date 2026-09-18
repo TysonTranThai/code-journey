@@ -1,0 +1,20 @@
+Trung cấp đã học equals/hashCode. Kỷ luật Nâng cao là **kiểm soát aliasing**
+— biết chính xác có bao nhiêu tham chiếu trỏ vào một đối tượng mutable và
+không thể hiện được aliasing trái phép:
+
+- **Identity so với equality, có chủ đích**: `==` hỏi "cùng đối tượng?",
+  `equals` hỏi "cùng giá trị?". Collection, cache, và lock đều có quan điểm
+  riêng — `IdentityHashMap` tồn tại vì đôi khi identity *chính là* ngữ nghĩa.
+- **Bản sao phòng thủ ở ranh giới**: constructor nhận collection mutable nên
+  sao chép (`List.copyOf(in)`); accessor exposing trạng thái nội bộ nên trả
+  view bất biến hoặc bản sao. Trung cấp dạy *cái gì*; ở đây quy tắc là *mọi
+  ranh giới, mọi lần*.
+- **Bất biến là câu trả lời mặc định**: kiểu bất biến không có bug aliasing,
+  chia sẻ giữa các thread mà không cần đồng bộ, và là cache key trung thực.
+  Ưu tiên record + `List.copyOf` + trường final.
+- **Escape analysis bắt đầu từ đầu bạn**: trả `this` từ constructor, đăng ký
+  `this` với listener trước khi dựng xong, hay để trường public trỏ mảng nội
+  bộ — đều là đối tượng *thoát ra* trước khi an toàn.
+
+Lợi ích vận hành: đối tượng không bao giờ biến đổi sau khi dựng thì không cần
+phòng thủ đồng bộ ở bất kỳ đâu trong chương trình.

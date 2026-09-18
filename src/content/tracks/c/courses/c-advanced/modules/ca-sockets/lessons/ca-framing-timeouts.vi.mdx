@@ -1,0 +1,49 @@
+## Đóng khung length-prefix trên stream
+
+Một số đếm 4-byte big-endian rồi payload là phong bì nhị phân kinh điển:
+
+```c
+/* phía gửi */
+uint32_t n = htonl((uint32_t)len);
+send(cfd, &n, 4, 0);
+send(cfd, payload, len, 0);
+
+/* phía nhận: lặp đến khi có đủ 4, giải mã, rồi lặp đến khi đủ len */
+```
+
+Máy nhận **phải** lặp: một `recv(fd, buf, 4, 0)` có thể trả 1, 2, hoặc 3 byte. "Đọc đúng N" là một vòng lặp quanh recv, tích lũy vào buffer — viết một lần, dùng mãi mãi.
+
+## Chặn thời gian chờ với SO_RCVTIMEO
+
+`recv` chặn trên socket không bao giờ nhận sẽ treo vĩnh viễn. `SO_RCVTIMEO` chặn thời gian chờ:
+
+```c
+struct timeval tv = { .tv_sec = 0, .tv_usec = 200000 };  /* 200 ms */
+setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof tv);
+
+ssize_t n = recv(fd, buf, sizeof buf, 0);
+if (n < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
+    /* hết giờ không có dữ liệu — thử lại, log, hoặc bỏ cuộc */
+}
+```
+
+Đã kiểm chứng trên ảnh này: socket UDP nhàn rỗi với timeout 200 ms trả -1/`EAGAIN`. Timeout biến "treo" thành lỗi xử lý được — cùng tư tưởng mà `poll()` khái quát hóa.
+
+## UDP: tin nhắn, không đảm bảo
+
+UDP giữ **biên tin nhắn** — một `sendto`, một `recvfrom`, không coalescing — và không đảm bảo gì khác: không giao hàng, không thứ tự, không khử trùng lặp. Trên loopback, giao hàng đáng tin trong thực tế — sân tập trung thực cho API mà không giả vờ internet behaves tương tự.
+
+```c
+sendto(ufd, "ping", 4, 0, (struct sockaddr *)&dest, sizeof dest);
+ssize_t n = recvfrom(ufd, buf, sizeof buf, 0, (struct sockaddr *)&from, &fromlen);
+```
+
+`recvfrom` còn trả về địa chỉ người gửi — mảnh mà server UDP cần để trả lời.
+
+## Chọn cách trung thực
+
+- Cần từng byte, đúng thứ tự, có kiểm soát nghẽn: **TCP**.
+- Cần biên tin nhắn, chịu được mất mát, muốn độ trễ tối thiểu: **UDP** (DNS, game, telemetry).
+- Cần cả biên tin nhắn *lẫn* độ tin cậy: TCP cộng lớp đóng khung, hoặc một protocol đã làm sẵn điều đó.
+
+Tất cả: POSIX, loopback tại đây, ghi nhãn rõ ràng.

@@ -1,0 +1,32 @@
+## Từ mã nguồn tới IL đang thực thi
+
+Tệp `.cs` của bạn không bao giờ được "chạy" trực tiếp. Trình biên dịch
+(Roslyn) phân tích cú pháp thành syntax tree, "bind" từng định danh với các
+assembly được tham chiếu, rồi phát ra một **assembly**: tệp PE chứa **IL**
+(các lệnh dạng stack) và **metadata** mô tả mọi type và member. Khi chạy, IL
+của từng phương thức được JIT dịch thành mã máy — một lần mỗi phương thức
+mỗi tiến trình, được cache, và (ở chế độ tiered mặc định của .NET) được biên
+dịch lại với tối ưu nếu phương thức trở nên "hot".
+
+```csharp
+// Static và literal là metadata; logic là IL:
+static int Add(int a, int b) => a + b;
+// IL: ldarg.0, ldarg.1, add, ret
+```
+
+Ba tầng quyết định khi debug hệ thống thật:
+
+| Tầng | Quyết định điều gì | Bạn cảm thấy ở đâu |
+|---|---|---|
+| Roslyn (biên dịch) | lỗi ngôn ngữ, chọn overload, cảnh báo nullability | build output |
+| JIT (chạy) | chất lượng mã máy, inlining, devirtualization | latency, throughput |
+| CLR runtime | GC, layout, nạp type, exception, thread | bộ nhớ & chế độ lỗi |
+
+**Grading đơn-đơn-vị-dịch**: trong khóa này solution và từng test được biên
+dịch thành MỘT assembly — đúng cách bạn nên hình dung về visibility
+"internal" và định danh type: cùng assembly, cùng type.
+
+Môi trường chấm điểm chạy .NET 10 (SDK 10.0.401) với C# 14. Cùng mô hình ba
+tầng giải thích vì sao một số lỗi là lỗi biên dịch (Roslyn bắt được), một số
+xuất hiện khi nạp type (startup), và một số chỉ lộ dưới áp lực bộ nhớ
+(chính sách runtime) — tầng khác nhau, công cụ khác nhau.

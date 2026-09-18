@@ -1,0 +1,33 @@
+## What a build does
+
+Source code → deployable artifact, via steps you configure:
+
+1. **Compile/transform** — TypeScript → JS, JSX → JS, SCSS → CSS
+2. **Bundle** — many files → few, with an import graph
+3. **Minify** — strip comments/whitespace, shorten names (terser/esbuild)
+4. **Hash & fingerprint** — `app.a83f2c.js` so caches can live forever (module 8)
+5. **Emit source maps** — `.map` files translating minified back to original for debugging prod errors
+
+Modern tools (Vite, Next) fuse these with heavy caching — a rebuild only redoes what changed.
+
+## Source maps: your prod debugger
+
+Minified stack traces are unusable (`a.b is not a function` at 1:88231). Source maps restore names and lines. **Upload them to your error tracker** (Sentry et al.) — don't serve them publicly unless you want your source readable by everyone.
+
+## The artifact is immutable
+
+Build once, deploy everywhere. The same hashed artifact goes to staging and production — "works in staging, differs in prod" then means _environment config_, not build drift. Rebuild-per-server is the anti-pattern: two builds are never identical.
+
+## What "build failed" must tell you
+
+CI output is read at 6pm by someone who wants to go home:
+
+- **Which step failed** (typecheck? tests? bundle?) — one glance
+- **The actual error** with file and line — pasted above, not buried in 4,000 lines
+- **Whether it's yours** — PR-scoped runs prevent "main is broken, not me" confusion
+
+Fast feedback beats thorough feedback: typecheck + unit tests in ~2 minutes on every push; the long E2E suite on PRs and main.
+
+## Environment parity
+
+Same artifact, different config — that's the contract. If staging lacks a service prod has, you will discover the difference in production. Keep environments structurally identical; let config variables be the only delta (and document every one).

@@ -1,0 +1,14 @@
+{
+  "title": "Bàn giao bằng condition variable",
+  "prompt": "Cài hộp thư một ô: `put` lưu giá trị dưới mutex và notify; `take` chờ (có vị từ) tới khi có giá trị, lấy ra và trả về.",
+  "tests": [
+    {
+      "name": "take chặn cho tới khi put",
+      "hint": "put: { std::lock_guard lk(m_); q_.push_back(v); } cv_.notify_one();  take: std::unique_lock lk(m_); cv_.wait(lk, [this]{ return !q_.empty(); }); int v = q_.front(); q_.pop_front(); return v;"
+    },
+    {
+      "name": "fifo qua hai lần put",
+      "hint": "take đang chờ kiểm tra lại vị từ sau mỗi lần đánh thức — hai put nghĩa là hai take thành công đúng thứ tự."
+    }
+  ]
+}

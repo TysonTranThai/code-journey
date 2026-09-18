@@ -1,0 +1,35 @@
+You now own every layer. Time to connect them into one application.
+
+## The journey of one request
+
+1. **Browser** — user submits a form; JS validates cheaply (UX), then `fetch("/api/tasks", { method: "POST", body })`
+2. **API layer** — auth (who is calling?), validation (is the body well-formed?), business rules (module 10)
+3. **Data layer** — parameterized SQL in a transaction where needed; rows out
+4. **Response** — 201 + the created resource as JSON (or 400 + structured errors)
+5. **Browser again** — parse response, update state, render; _optimistic UI_ shows success instantly and rolls back on failure
+
+Each seam has a classic failure: the network call (timeout, offline), the API (500, wrong shape), the DB (constraint violation, connection exhausted), the client (stale cache, double submit).
+
+## The contract is the schema
+
+Frontend and backend drift apart silently — until runtime. The fix is one source of truth: a Zod schema shared by both sides (client validates what it renders, server validates what it stores), or TypeScript types generated from the database schema (Drizzle's superpower). When the DB column changes, the type changes, the client code fails to compile. Breakage moves from runtime to compile time.
+
+## Loading states are part of the contract
+
+Every fetch has four UI states and they all need design: **loading** (skeleton, not spinner-on-blank), **success**, **empty** (a real "nothing here yet" state, not a blank box), **error** (message + retry button). Forgetting one is a UX bug users find before you do.
+
+## The N+1 problem: the full-stack performance bug
+
+```js
+// list 50 tasks, then fetch each author separately = 51 queries
+const tasks = await db.select().from(tasks);
+for (const t of tasks) {
+  t.author = await getUser(t.authorId); // 50 more round trips
+}
+```
+
+Fix: one join, or one `WHERE author_id IN (...)`. Recognize the shape: loop containing an await over per-item data. On the web this multiplies latency × round trips and is the most common "why is this page slow" answer once assets are fine.
+
+## Server-side rendering vs the SPA trade-off
+
+Render HTML on the server (fast first paint, SEO, works before JS loads) vs ship an SPA shell (rich interactions, app-like state). Next.js exists because both have merit. The decision axis: how much of the page is _content_ (SSR) vs _application_ (client). You'll meet frameworks next course — arrive knowing the trade you're asking them to make.

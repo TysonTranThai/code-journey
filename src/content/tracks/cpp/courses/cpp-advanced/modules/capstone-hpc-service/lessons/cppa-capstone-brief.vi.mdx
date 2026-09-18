@@ -1,0 +1,25 @@
+## Đặc tả
+
+Bạn là kỹ sư chịu trách nhiệm cho lõi dịch vụ admission. Không có hướng dẫn
+cho module này — bộ test nghiệm thu **chính là** đặc tả.
+
+**`AdmissionsCore`** — admission theo tag trên clock xác định:
+
+- `setTagLimit(tag, limit)`: chỉ nhận `tag >= 0`, `limit >= 1`, và chỉ cấu
+  hình **lần đầu** cho một tag (set lại thất bại, trả `false`).
+- `admit(cls, tag)` — tag lạ bị từ chối; tag còn hạn mức trong cửa sổ thì
+  được nhận; người thắng nhận `ordinal` theo thứ tự đến trong tag ở cửa sổ hiện tại.
+- Một **cửa sổ** là một mốc timestamp: `admit` đầu tiên ở timestamp mới đặt
+  lại bộ đếm và ordinal theo tag.
+- Tổng cộng: `admittedCount()`, `rejectedCount()`.
+
+**`OpsReport`** — nhật ký kiểm toán, chấm bằng chuỗi chính xác:
+
+- `record(tMs, code, key)` rồi `snapshot()` tạo dòng `"[ts] CODE key\n"`,
+  timestamp cũ trước; **timestamp bằng nhau thì `REJECT` đứng trước `ADMIT`**
+  (bản kiểm tra đọc lỗi trước).
+- Hợp đồng xác định: cùng lệnh gọi, cùng clock, snapshot giống từng byte.
+
+Mọi thứ trong khóa học hội tụ ở đây: clock seam (M19), trạng thái theo key
+với quyền sở hữu rõ (M6/M11), báo cáo chuỗi chính xác (M20), và kỷ luật
+test hai chiều (M15).

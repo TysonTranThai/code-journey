@@ -1,0 +1,44 @@
+An **enum** is a type with a fixed, named set of values — compile-time
+protection against impossible states:
+
+```java
+enum OrderStatus { PENDING, PAID, SHIPPED, CANCELLED }
+
+OrderStatus s = OrderStatus.PAID;
+```
+
+`switch` over an enum is exhaustive-checked: add a status later and every
+switch without it fails to compile — the compiler becomes your checklist.
+
+```java
+boolean isFinal = switch (s) {
+    case PAID, SHIPPED -> false;      // multiple labels share an arm
+    case CANCELLED -> true;
+    case PENDING -> false;
+};
+```
+
+Enums are full classes: they can carry fields, constructors, and methods —
+each constant runs the constructor once:
+
+```java
+enum Planet {
+    MERCURY(0.39), EARTH(1.0), MARS(1.52);   // semicolon after the list!
+
+    private final double auFromSun;
+    Planet(double au) { this.auFromSun = au; }
+    public double au() { return auFromSun; }
+}
+```
+
+Every enum automatically gives you `values()` (all constants in order),
+`valueOf("PAID")` (parse; throws on unknown), `name()`, and `ordinal()`
+(declaration position — avoid using it for logic; reordering constants
+should never change behavior). Comparing enum constants uses `==` safely:
+they are singletons, and this is the one place `==` on objects is idiomatic.
+
+Use an enum whenever a variable's legal values are a closed list — status,
+season, difficulty, compass direction. It replaces `int` codes (what is 3?)
+and stringly-typed checks (typo-safe at compile time).
+
+**Next:** records — data with no ceremony.

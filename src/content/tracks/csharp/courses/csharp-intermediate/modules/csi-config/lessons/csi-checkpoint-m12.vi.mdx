@@ -1,0 +1,19 @@
+## Cổng kiểm tra (mini-build)
+
+Bộ máy cấu hình xếp lớp — hình dáng mọi host thật dùng:
+
+1. `JsonConfig(string json)` — parse `{ "Section": { "Key": "value" } }`;
+   `Get("Section:Key")` trả giá trị hoặc null.
+2. `LayeredConfig(IConfigProvider file, string envPrefix)` — tra env TRƯỚC
+   (`envPrefix__SECTION__KEY`, viết hoa, `:` → `__`), rồi fallback về
+   provider file.
+3. `BindRetry(IConfigProvider config)` → `RetryOptions` có kiểu (mặc định
+   3 / 200), đọc `Retry:MaxAttempts` và `Retry:DelayMs` dạng int, giá trị
+   không phải số ném FormatException.
+4. `Validate(RetryOptions)` — MaxAttempts >= 1, DelayMs >= 0; mọi vấn đề
+   trong một thông điệp: `"Retry: <p1>; <p2>"`.
+5. Quy tắc bí mật có sẵn: `Require(config, key)` trả giá trị hoặc ném
+   `InvalidOperationException("Configuration key <key> is required")` —
+   không fallback.
+
+Được cấp: `IConfigProvider` / `MemoryConfig` (như phần luyện).

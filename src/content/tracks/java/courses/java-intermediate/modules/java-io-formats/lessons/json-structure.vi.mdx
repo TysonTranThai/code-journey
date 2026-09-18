@@ -1,0 +1,22 @@
+## JSON: đọc cấu trúc không cần thư viện
+
+Trong sandbox bạn không có Jackson/Gson — và đó là một lợi thế: viết parser
+tối giản dạy bạn ngữ pháp của định dạng. Tập con ta xử lý:
+
+```json
+{ "name": "ann", "age": 31, "active": true, "tags": ["a", "b"] }
+```
+
+- object: `{` key `:` value (`,` key `:` value)* `}` — key là string
+- string: `"` các ký tự `"` với escape `\"` `\\`
+- number: nguyên hoặc thập phân
+- literal: `true` `false` `null`
+- array: `[` value (`,` value)* `]`
+
+Thay vì parser đệ quy đầy đủ, bạn sẽ luyện *trích xuất object phẳng*:
+tìm `"key"` ở độ sâu 0 và đọc giá trị — đủ cho kiểu object cấu hình,
+trung thực về việc bỏ qua lồng nhau/array-trong-object.
+
+Bài học cần giữ: ngữ pháp JSON rất nhỏ; hầu hết bug JSON là *dấu ngoặc
+chưa escape* và *dấu phẩy thừa* — cả hai đều vi phạm ngữ pháp, nên parser
+viết tay làm chúng lộ rõ.

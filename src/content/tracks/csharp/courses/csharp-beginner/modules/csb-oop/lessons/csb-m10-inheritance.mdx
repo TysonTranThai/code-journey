@@ -1,0 +1,41 @@
+## One class built on another
+
+**Inheritance** declares that one class *is a* kind of another:
+
+```csharp
+class Account
+{
+    public decimal Balance { get; protected set; }
+
+    public void Deposit(decimal amount)
+    {
+        if (amount <= 0) throw new ArgumentException("non-positive deposit");
+        Balance += amount;
+    }
+}
+
+class SavingsAccount : Account
+{
+    public void AddMonthlyInterest(decimal rate)
+    {
+        Balance += Balance * rate;   // reuses the inherited Balance
+    }
+}
+```
+
+`SavingsAccount` carries everything `Account` has — `Deposit` with its validation included — and adds its own behavior. Callers holding a `SavingsAccount` can `Deposit` without knowing the derived type exists.
+
+## Extension, replacement, and `base`
+
+A derived class can add members, or **replace** a non-virtual member with `new` (hiding) — but replacing is a smell for beginners: the hidden base method still runs when called through a base reference.
+
+The honest tool for "same idea, better implementation" is the constructor chain:
+
+```csharp
+class SavingsAccount : Account
+{
+    public SavingsAccount(string owner, decimal opening) : base(owner, opening) { }
+}
+```
+
+`base(...)` forwards construction to the base constructor — the base's invariants run first, always. `base.Member` also reaches the base's implementation from inside an override.

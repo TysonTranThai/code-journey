@@ -1,0 +1,59 @@
+## Composition: đối tượng dựng từ đối tượng
+
+```cpp
+class Engine { /* ... */ };
+
+class Car {
+private:
+    Engine engine_;                    // Car CÓ-MỘT Engine
+    std::vector<std::string> plates_;
+};
+```
+
+Phần lớn "tái sử dụng" là thế này: một đối tượng sở hữu các đối tượng khác và chuyển công việc cho chúng. Nó linh hoạt (đổi thành viên được), trung thực (mối quan hệ nhìn thấy được), và không cần nghi lễ gì.
+
+## Câu hỏi về kế thừa
+
+Hãy hỏi: lớp mới có phải là một **kiểu con** thật sự — cùng khái niệm, hành vi chuyên biệt — mà code nên đối xử *thống nhất qua giao diện lớp cha* không? Nếu có:
+
+```cpp
+class Shape {
+public:
+    virtual ~Shape() = default;                  // LUÔN LUÔN có virtual destructor
+    virtual double area() const = 0;             // pure virtual: không có thân ở đây
+};
+
+class Circle : public Shape {
+public:
+    explicit Circle(double r) : radius_(r) {}
+    double area() const override { return 3.14159265358979 * radius_ * radius_; }
+private:
+    double radius_;
+};
+
+class Square : public Shape {
+public:
+    explicit Square(double s) : side_(s) {}
+    double area() const override { return side_ * side_; }
+private:
+    double side_;
+};
+
+double total_area(const std::vector<std::unique_ptr<Shape>>& shapes) {   // đa hình
+    double total = 0;
+    for (const auto& s : shapes) total += s->area();     // area() đúng được chọn lúc chạy
+    return total;
+}
+```
+
+Đọc các chú thích:
+
+- `virtual` — "lớp con có thể thay thế hàm này".
+- `= 0` — pure virtual; `Shape` trở thành **trừu tượng** (không thể khởi tạo; nó là một bản hợp đồng).
+- `override` — nhờ compiler kiểm tra bạn đang thay thế thứ gì đó có thật (lỗi chính tả thành lỗi biên dịch — luôn viết nó).
+- `virtual ~Shape() = default;` — xóa qua con trỏ lớp cha mà không có virtual destructor là hành vi không xác định. Hãy viết nó, mọi lần, không ngoại lệ.
+- `std::unique_ptr<Shape>` — con trỏ sở hữu tới đối tượng đa hình; câu chuyện an toàn bộ nhớ là module 12, nhưng bạn đang nhìn thấy hình dạng thật của đa hình trong production ngay bây giờ.
+
+## Mặc định trung thực
+
+Code người mới giơ tay đòi kế thừa thường chỉ muốn composition (một `Report` có thành viên `Formatter`) hoặc chẳng cần gì cả. Hãy với tới kế thừa khi bạn thật sự có *nhiều* kiểu con được đối xử thống nhất qua một giao diện — trường hợp các hình, plugin, biến thể chiến lược. Nếu không: composition.

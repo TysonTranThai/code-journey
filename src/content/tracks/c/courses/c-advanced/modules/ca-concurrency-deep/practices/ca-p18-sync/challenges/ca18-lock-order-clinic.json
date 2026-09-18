@@ -1,0 +1,26 @@
+{
+  "id": "ca18-lock-order-clinic",
+  "title": "Deadlock or Safe?",
+  "prompt": "Implement `const char *lock_verdict(int kind)`: 0 two threads acquire mutexes A then B, and B then A → a deadlock risk; 1 all threads acquire A then B → safe; 2 second lock taken with try-lock, released and retried on failure → safe; 3 blocking acquisition of a second lock while an outer lock is held by the same thread that another thread needs first → a deadlock risk; 4 a single mutex, no nesting → safe.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "inversion is the risk",
+      "code": "CHECK_STR_EQ(lock_verdict(0), \"deadlock-risk\");",
+      "hint": "Opposite acquisition orders can form a cycle: the definition of a deadlock risk."
+    },
+    {
+      "name": "consistent order is safe",
+      "code": "CHECK_STR_EQ(lock_verdict(1), \"safe\");\nCHECK_STR_EQ(lock_verdict(4), \"safe\");",
+      "hint": "A global order (or a single lock) cannot cycle."
+    },
+    {
+      "name": "try-lock escapes",
+      "code": "CHECK_STR_EQ(lock_verdict(2), \"safe\");\nCHECK_STR_EQ(lock_verdict(3), \"deadlock-risk\");",
+      "hint": "try-lock converts deadlock into retry; blocking second acquisition while holding the first keeps the risk."
+    }
+  ],
+  "level": "imitation"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "i2-pyramid-pick",
+  "title": "Pyramid Level Picker",
+  "prompt": "Write `testLevel(spec)` mapping test descriptions to pyramid levels: specs mentioning \"user\" or \"click\" or \"browser\" => \"e2e\"; specs mentioning \"with real\" or \"together\" => \"integration\"; otherwise \"unit\". Case-insensitive.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function testLevel(spec) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "user-visible flows are e2e",
+      "code": "const fn = new Function(code + \"\\nreturn { testLevel };\");\nconst { testLevel } = fn();\nif (testLevel(\"User can click checkout in the browser\") !== \"e2e\") throw new Error(\"Full flow => e2e.\");\nif (testLevel(\"CLICK fires the handler\") !== \"e2e\") throw new Error(\"Case-insensitive.\");\n",
+      "hint": "Lowercase the spec once, then substring checks."
+    },
+    {
+      "name": "modules together are integration",
+      "code": "const fn = new Function(code + \"\\nreturn { testLevel };\");\nconst { testLevel } = fn();\nif (testLevel(\"cart service with real storage\") !== \"integration\") throw new Error(\"'with real' => integration.\");\nif (testLevel(\"parsePrice handles empty string\") !== \"unit\") throw new Error(\"Function-scoped => unit.\");\n",
+      "hint": "Integration keywords checked before the unit default."
+    }
+  ]
+}

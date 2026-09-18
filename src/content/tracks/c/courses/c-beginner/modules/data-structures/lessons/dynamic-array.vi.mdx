@@ -1,0 +1,40 @@
+## Ba thành phần
+
+```c
+typedef struct {
+    int *data;      // bộ đệm heap (malloc/realloc)
+    int size;       // số phần tử đang dùng
+    int cap;        // số phần tử đã cấp phát
+} DArray;
+```
+
+Bất biến giữ cho nó trung thực: `0 <= size <= cap`, và `data` hoặc trỏ tới
+một vùng cấp phát hợp lệ gồm `cap` int hoặc là NULL.
+
+## Phóng to bằng nhân đôi
+
+```c
+int da_push(DArray *a, int v) {
+    if (a->size == a->cap) {
+        int newcap = a->cap == 0 ? 4 : a->cap * 2;
+        int *tmp = realloc(a->data, newcap * sizeof(int));
+        if (tmp == NULL) return 0;        // bộ đệm cũ vẫn hợp lệ
+        a->data = tmp;
+        a->cap = newcap;
+    }
+    a->data[a->size++] = v;
+    return 1;
+}
+```
+
+Nhân đôi khiến N lần push tốn tổng cộng O(N) bản sao — push "khuyến mãi
+O(1)".
+
+## Vì sao cấu trúc này thắng phần lớn thời gian
+
+- truy cập theo chỉ số là O(1) — một phép cộng và một phép nhân
+- bộ nhớ liên tiếp — thân thiện với cache
+- phép toán duy nhất đắt là chèn vào GIỮA (O(n) phải dời phần tử)
+
+Đa số mã người mới nên chọn mảng động trước; cấu trúc cầu kỳ hơn phải tự
+chứng minh lý do tồn tại.

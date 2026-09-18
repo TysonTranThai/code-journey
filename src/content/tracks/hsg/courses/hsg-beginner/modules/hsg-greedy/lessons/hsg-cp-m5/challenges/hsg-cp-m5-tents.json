@@ -1,0 +1,30 @@
+{
+  "id": "hsg-cp-m5-tents",
+  "title": "Maximize the Harvest",
+  "prompt": "**Description:** A orchard has n trees in a row; tree i yields fruit[i].\nYou pick from a set of trees with one rule: you may not pick from two\n**adjacent** trees. Maximize the total harvest. (Classic houses-robber.)\n\n**Input:** Line 1: n (1 ≤ n ≤ 10^5). Line 2: n values (0 ≤ each ≤ 10^9).\n**Output:** One integer — the maximum total with no two adjacent picked.\n\n**Example:** `4` / `3 2 5 10` → `13` (trees 3 and 10: indices 0 and 3? No —\n3+10 uses indices 0,3: not adjacent → valid → 13; also 2+10 = 12. Max is 13.)",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"4\\n3 2 5 10\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"13\\n\"));",
+      "hint": "Pick indices 0 and 3: 3 + 10 = 13."
+    },
+    {
+      "name": "all picked",
+      "code": "std::istringstream in(\"3\\n5 5 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"10\\n\"));",
+      "hint": "Pick two non-adjacent of the three: 5 + 5 = 10."
+    },
+    {
+      "name": "single",
+      "code": "std::istringstream in(\"1\\n7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n\"));",
+      "hint": "One tree, no adjacency issue."
+    },
+    {
+      "name": "adjacency forces skip",
+      "code": "std::istringstream in(\"3\\n10 100 10\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"100\\n\"));",
+      "hint": "Any pair includes 100 plus a neighbor... 10+10 are not adjacent? indices 0 and 2 are not adjacent → 20? But 100 alone beats 20. Max = 100."
+    }
+  ]
+}

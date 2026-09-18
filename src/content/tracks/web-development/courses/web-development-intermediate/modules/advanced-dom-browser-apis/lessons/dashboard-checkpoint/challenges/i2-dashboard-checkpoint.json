@@ -1,0 +1,29 @@
+{
+  "id": "i2-dashboard-checkpoint",
+  "title": "Component Logic Check",
+  "prompt": "Implement three component-logic helpers:\n\n1. `findActionable(target, selector)` RETURNS the first element in the chain `target`, `target.parent`, `target.parent.parent`, ... matching `selector` (elements have a `matches(sel)` method), or `null`.\n2. `reduceTabs(state, action)` RETURNS a NEW `{ active, count }` object. Actions: `{ type: \"select\", index }` clamps 0..count-1, `{ type: \"next\" }` and `{ type: \"prev\" }` wrap around. The input state must not be mutated.\n3. `debounce(fn, ms)` RETURNS a debounced wrapper. Calls inside the quiet window cancel the pending one; after `ms` of quiet the LAST call's arguments are used.",
+  "difficulty": "intermediate",
+  "boilerplate": "// 1) findActionable(target, selector)\n\n// 2) reduceTabs(state, action)\n\n// 3) debounce(fn, ms)\n",
+  "tests": [
+    {
+      "name": "findActionable walks up to the matching ancestor",
+      "code": "const fn = new Function(code + \"\\nreturn { findActionable, reduceTabs, debounce };\");\nconst { findActionable } = fn();\nconst matchesSel = (sel) => (s) => s === sel;\nconst grand = { matches: matchesSel(\"table\"), parent: null };\nconst parent = { matches: matchesSel(\"tr\"), parent: grand };\nconst target = { matches: () => false, parent };\nif (findActionable(target, \"table\") !== grand) throw new Error(\"Should find the table ancestor.\");\nif (findActionable(target, \"tr\") !== parent) throw new Error(\"Should stop at the first (nearest) match.\");\nif (findActionable(target, \"nav\") !== null) throw new Error(\"No match anywhere in the chain must return null.\");",
+      "hint": "Loop `for (let el = target; el; el = el.parent)` and return the first el whose matches(sel) is true."
+    },
+    {
+      "name": "reduceTabs clamps select and wraps next/prev",
+      "code": "const fn = new Function(code + \"\\nreturn { findActionable, reduceTabs, debounce };\");\nconst { reduceTabs } = fn();\nconst s = { active: 1, count: 3 };\nif (reduceTabs(s, { type: \"select\", index: 2 }).active !== 2) throw new Error(\"select should set the active tab.\");\nif (reduceTabs(s, { type: \"select\", index: 9 }).active !== 2) throw new Error(\"Out-of-range select must clamp to the last tab (2).\"\n);\nif (reduceTabs(s, { type: \"next\" }).active !== 2) throw new Error(\"next from 1 should be 2.\");\nif (reduceTabs({ active: 2, count: 3 }, { type: \"next\" }).active !== 0) throw new Error(\"next wraps around from the last tab to 0.\");\nif (reduceTabs({ active: 0, count: 3 }, { type: \"prev\" }).active !== 2) throw new Error(\"prev wraps around from the first tab to the last.\");",
+      "hint": "select: Math.min(Math.max(index, 0), count - 1). next: (active + 1) % count. prev: (active - 1 + count) % count."
+    },
+    {
+      "name": "reduceTabs does not mutate the input state",
+      "code": "const fn = new Function(code + \"\\nreturn { findActionable, reduceTabs, debounce };\");\nconst { reduceTabs } = fn();\nconst s = { active: 1, count: 3 };\nreduceTabs(s, { type: \"next\" });\nif (s.active !== 1) throw new Error(\"The original state object must keep active: 1 — return a new object instead of mutating.\");",
+      "hint": "Build the result with spread: { ...state, active: newValue }."
+    },
+    {
+      "name": "debounce delays and collapses rapid calls",
+      "code": "const fn = new Function(code + \"\\nreturn { findActionable, reduceTabs, debounce };\");\nconst { debounce } = fn();\nconst seen = [];\nconst push = (v) => seen.push(v);\nconst debounced = debounce(push, 30);\ndebounced(\"a\"); debounced(\"b\"); debounced(\"c\");\nif (seen.length !== 0) throw new Error(\"Nothing should run while calls keep arriving inside the quiet window.\");\nawait new Promise((r) => setTimeout(r, 70));\nif (seen.length !== 1 || seen[0] !== \"c\") throw new Error(\"Exactly one run should happen after the quiet window, with the LAST arguments ('c').\");",
+      "hint": "clearTimeout the previous handle and setTimeout a new one each call — the timer handle lives in the closure."
+    }
+  ]
+}

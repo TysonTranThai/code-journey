@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { Breadcrumbs } from "@/components/learn/Breadcrumbs";
 import { CourseCard } from "@/components/learn/CourseCard";
-import { getCourse, getTrack, getTracks } from "@/lib/curriculum/loaders";
+import { getLoadedCourses, getTrack, getTracks } from "@/lib/curriculum/loaders";
+import { getServerI18n } from "@/lib/i18n/server";
 import { siteConfig } from "@/lib/site-config";
 
 interface TrackPageProps {
@@ -26,25 +28,40 @@ export async function generateMetadata({ params }: TrackPageProps): Promise<Meta
 
 export default async function TrackPage({ params }: TrackPageProps) {
   const { trackId } = await params;
+  const { d, locale } = await getServerI18n();
   let track;
   try {
-    track = getTrack(trackId);
+    track = getTrack(trackId, undefined, locale);
   } catch {
     notFound();
   }
 
-  const courses = track.courses.map((ref) => getCourse(trackId, ref.reference));
+  // Loaded courses only: a concurrently scaffolded course with an empty
+  // modules list is excluded by the loader (authoring shell) and must not
+  // crash this page with CurriculumNotFoundError (2026-09-13 report).
+  const courses = getLoadedCourses(trackId, undefined, locale);
 
   return (
     <div className="flex flex-col gap-8">
-      <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
+      <Breadcrumbs
+        items={[
+          { label: d.breadcrumb.learn, href: "/learn" },
+          { label: track.title },
+        ]}
+      />
+
+      <header className="conductor-window flex flex-col gap-4 rounded-2xl border border-white/[0.08] bg-[#0c101b] p-6 sm:p-8 shadow-xl">
+        <div className="flex items-center gap-2">
+          <span className="badge-pixel badge-pixel-level font-mono">{d.track.expeditionBadge}</span>
+          <span className="text-emerald-400 text-sm font-mono" aria-hidden="true">✦</span>
+        </div>
+        <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
           {track.title}
         </h1>
-        <p className="max-w-2xl text-zinc-400">{track.description}</p>
+        <p className="max-w-2xl text-base text-zinc-300 leading-relaxed font-normal">{track.description}</p>
       </header>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {courses.map((course) => (
           <CourseCard
             key={course.id}

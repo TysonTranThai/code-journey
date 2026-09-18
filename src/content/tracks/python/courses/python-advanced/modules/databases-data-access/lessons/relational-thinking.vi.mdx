@@ -1,0 +1,45 @@
+Một cơ sở dữ liệu quan hệ không phải một đống bảng tính. Nó là một tập các
+**quan hệ** mà sức mạnh đến từ ba ý tưởng:
+
+## Định danh: primary key
+
+Mỗi dòng là dòng *duy nhất* — được nhận diện bằng primary key, không bao giờ
+bằng vị trí hay trùng lặp. `id` là surrogate tùy ý; email hay ISBN là *natural*
+key. Chọn surrogate key vì sự ổn định và natural key vì tính toàn vẹn (ràng
+buộc `UNIQUE` trên email mới làm công việc thật).
+
+## Sự thật: chuẩn hóa
+
+Dư thừa là một lời nói dối chờ ngày nổ ra. Nếu `orders` lưu `customer_name` và
+khách hàng đổi tên, một nửa dòng của bạn nói thật và nửa còn lại không. Các
+dạng chuẩn kỷ luật hóa điều này:
+
+- **1NF** — giá trị là nguyên tử; không có list-trong-một-cột
+  (`tags = "a,b,c"` là một bug tương lai).
+- **2NF** — mọi cột không phải key phụ thuộc vào *toàn bộ* key (không có cột
+  nào thực ra chỉ thuộc về một phần của khóa ghép).
+- **3NF** — và không phụ thuộc vào gì ngoài key (nếu `zip → city`, thì `city`
+  không thuộc về bảng địa chỉ; bảng zip sở hữu nó).
+
+Câu thần chú: *"the key, the whole key, and nothing but the key."*
+
+## Quan hệ: foreign key
+
+Foreign key là một lời hứa: giá trị này tham chiếu tới một dòng *tồn tại*. Do
+database thực thi, không phải do hy vọng trong code ứng dụng. Các hành động
+tham chiếu mã hóa chính sách — `ON DELETE RESTRICT` (bảo vệ dữ liệu),
+`ON DELETE CASCADE` (con đã được sở hữu chết cùng cha).
+
+## Phi chuẩn hóa là một quyết định, không phải mặc định
+
+Schema chuẩn hóa trả lời mọi câu hỏi bằng join. Khi traffic đọc khiến một join
+chậm đo được (hãy đo trước!), bạn có thể *cache một giá trị suy diễn* — cột
+`comment_count` được duy trì trong cùng transaction với các lần ghi comment.
+Quy tắc giữ cho nó trung thực: **một người ghi, một transaction, nếu không nó
+sẽ lệch.**
+
+## Ràng buộc là tài liệu có thể thực thi
+
+`NOT NULL`, `CHECK (price >= 0)`, `UNIQUE`, foreign key — mỗi cái tuyên bố một
+bất biến mà schema thực thi mãi mãi, với mọi client, kể cả những client bạn
+chưa viết.

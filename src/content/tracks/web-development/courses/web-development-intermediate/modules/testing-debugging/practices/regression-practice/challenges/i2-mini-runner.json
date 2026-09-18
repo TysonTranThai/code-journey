@@ -1,0 +1,20 @@
+{
+  "id": "i2-mini-runner",
+  "title": "Mini Test Runner",
+  "prompt": "Write `runSuite(tests)` — tests is an array of { name, fn }. Run each fn; a test passes when fn doesn't throw. Return { passed, failed, failures } where failures is an array of the failing tests' names (in order). One test throwing must not stop the others.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function runSuite(tests) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "runs every test independently",
+      "code": "const fn = new Function(code + \"\\nreturn { runSuite };\");\nconst { runSuite } = fn();\nconst tests = [\n  { name: \"a\", fn: () => {} },\n  { name: \"b\", fn: () => { throw new Error(\"boom\"); } },\n  { name: \"c\", fn: () => {} },\n];\nconst out = runSuite(tests);\nif (out.passed !== 2 || out.failed !== 1) throw new Error(\"b fails; a and c still run.\");\nif (out.failures[0] !== \"b\") throw new Error(\"Failure recorded by name.\");\n",
+      "hint": "try/catch per test; never rethrow."
+    },
+    {
+      "name": "empty suite is a clean pass",
+      "code": "const fn = new Function(code + \"\\nreturn { runSuite };\");\nconst { runSuite } = fn();\nconst out = runSuite([]);\nif (out.passed !== 0 || out.failed !== 0 || out.failures.length !== 0) throw new Error(\"No tests, no failures.\");\n",
+      "hint": "Initialize counters at zero; the loop simply doesn't run."
+    }
+  ]
+}

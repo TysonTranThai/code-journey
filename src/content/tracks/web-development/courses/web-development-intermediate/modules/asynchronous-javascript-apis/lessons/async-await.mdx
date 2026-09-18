@@ -1,0 +1,39 @@
+`async/await` is promise syntax sugar — same machinery, readable shape.
+
+## The rules
+
+- `async function` **always** returns a promise; returning a value wraps it,
+  throwing rejects it.
+- `await` pauses _only_ the async function, not the thread: the rest of the
+  program keeps running (event loop lesson).
+- `await` works on any thenable — and unwraps in a microtask, so `await` order
+  follows microtask order.
+
+```js
+async function loadDashboard(userId) {
+  try {
+    const user = await getUser(userId); // sequential: needs user.id
+    const orders = await getOrders(user.id);
+    return { user, orders };
+  } catch (err) {
+    return { error: "Could not load dashboard" }; // catches both awaits
+  }
+}
+```
+
+`try/catch` works across `await` — one of its best features. Remember it only
+catches errors _inside the try block at await time_; a forgotten `await` leaks
+a floating promise whose rejection nothing catches.
+
+## The classic trap: await in a loop
+
+```js
+// SLOW: one request at a time (unless each needs the previous)
+for (const id of ids) results.push(await fetchOne(id));
+
+// FAST: all in flight at once
+const results = await Promise.all(ids.map(fetchOne));
+```
+
+Sequential await is _correct_ when step N needs step N-1's output; otherwise it
+is wasted latency. The combinator lesson formalizes this.

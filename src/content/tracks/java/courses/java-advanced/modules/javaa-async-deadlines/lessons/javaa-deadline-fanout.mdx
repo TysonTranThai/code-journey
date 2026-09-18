@@ -1,0 +1,34 @@
+A deadline-scoped fan-out composes three bounds:
+
+1. **Per-branch**: each remote call gets `orTimeout` — one slow dependency
+   degrades to ITS fallback, not the whole request's.
+2. **Aggregate**: `allOf(...).orTimeout(total, ...)` bounds the *sum* —
+   branches can be individually fine while the composition (join order,
+   queueing) still overruns.
+3. **Join with recovery**: collect with `handle` per future, then join in
+   submission order — a map of branch→result where every entry is present
+   and every failure is a *value* ("timeout", "error"), never a thrown
+   exception escaping the aggregator.
+
+```java
+List<CompletableFuture<String>> branches = ids.stream()
+    .map(id -> supplyAsync(() -> call(id), exec)
+        .orTimeout(50, MILLISECONDS)
+        .handle((r, e) -> e == null ? r : "down"))
+    .toList();
+allOf(branches).join();           // bounded aggregate
+return branches.stream().map(CompletableFuture::join).toList();
+```
+
+The result: partial success is a *structured outcome* the caller can reason
+about, not a lottery between one caller's timeout policy and another's.
+
+One JDK subtlety the aggregator must survive: a task's own exception reaches
+`handle` **wrapped** in `CompletionException`, while `orTimeout`'s
+`TimeoutException` arrives **raw**. Robust code unwraps one level before
+classifying:
+
+```java
+Throwable ex = (e instanceof CompletionException && e.getCause() != null)
+    ? e.getCause() : e;
+```

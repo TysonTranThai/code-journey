@@ -1,0 +1,45 @@
+## The problem it solves
+
+Two .c files both need `int add(int, int);`. Without headers, each writes its
+own copy — and when the signature changes, one copy silently rots.
+
+## The split
+
+```c
+/* geom.h — the CONTRACT: what exists */
+#ifndef GEOM_H
+#define GEOM_H
+int add(int a, int b);
+double circle_area(double r);
+#endif
+
+/* geom.c — the IMPLEMENTATION */
+#include "geom.h"
+int add(int a, int b) { return a + b; }
+double circle_area(double r) { return 3.14159265358979 * r * r; }
+```
+
+Any file that #includes "geom.h" may call add and circle_area; the compiler
+checks calls against the declarations, and the linker finds the definitions
+in geom.o.
+
+## Declaration vs definition
+
+A declaration announces a name and type (`...;`). A definition provides the
+body/storage. Declarations may repeat; definitions of a function or global
+must not (that is what guards protect).
+
+## Translation units
+
+Each .c file compiles alone — a translation unit. It sees only its own text
+plus everything its #includes pull in. `static` on a function keeps it
+private to the unit: the C tool for "this is not part of the public API".
+
+## The build line grows
+
+```sh
+gcc -std=c23 main.c geom.c -o app
+```
+
+Two sources, compiled and linked in one command. Make (module 22) automates
+exactly this.

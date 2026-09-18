@@ -1,0 +1,17 @@
+Vườn thú: một lớp cha abstract, ba loài, và một buổi kiểm kê.
+
+Bên trong `Solution`:
+
+1. `static abstract class Animal` — `abstract String sound();` và override
+   `public String toString()` trả `sound()` (để in ra là tiếng kêu).
+2. `static class Dog extends Animal` — tiếng `"woof"`.
+3. `static class Cat extends Animal` — tiếng `"meow"`.
+4. `static class Robot extends Animal` — tiếng `"beep"`, nhưng Robot KHÔNG
+   phải động vật thật, nên nó phải `implements Describable` với
+   `interface Describable { String kind(); }` trả `"machine"`.
+5. `static int countRealAnimals(Animal[] zoo)` — số con trong mảng KHÔNG
+   implement `Describable` (dùng `instanceof` — phép kiểm interface mà bài
+   học cho phép ở đây).
+
+Với `{ new Dog(), new Cat(), new Robot() }`, `countRealAnimals` trả 2.
+Grader cũng kiểm đa hình: mọi `sound()` phải điều phối về class của object.

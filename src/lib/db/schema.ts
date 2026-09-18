@@ -8,6 +8,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  unique,
 } from "drizzle-orm/pg-core";
 import { randomUUID } from "node:crypto";
 
@@ -52,6 +53,13 @@ export const users = pgTable(
     passwordHash: text("password_hash"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+    /**
+     * Last qualifying account activity (sign-in / authenticated session
+     * usage), written throttled by src/lib/auth/activity.ts. Nullable: NULL
+     * means "no confidently-known activity" and the inactive-account cleanup
+     * NEVER deletes such accounts (conservative default).
+     */
+    lastActiveAt: timestamp("last_active_at", { withTimezone: true }),
   },
   (t) => [index("users_email_idx").on(t.email)],
 );
@@ -234,11 +242,10 @@ export const progressEvents = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true, precision: 3 }).notNull().defaultNow(),
   },
   (t) => [
-    // Idempotency: one completion per (user, content). Drizzle composite unique.
-    primaryKey({
-      name: "progress_events_user_content_unique",
-      columns: [t.userId, t.contentType, t.contentId],
-    }),
+    // Idempotency: one completion per (user, content). UNIQUE (not a second
+    // PK — a table can only have one; this defect broke fresh deployments,
+    // found in the Phase 9 deploy rehearsal).
+    unique("progress_events_user_content_unique").on(t.userId, t.contentType, t.contentId),
     index("progress_events_user_created_idx").on(t.userId, t.createdAt),
   ],
 );
@@ -260,12 +267,7 @@ export const achievements = pgTable(
     achievementId: text("achievement_id").notNull(),
     awardedAt: timestamp("awarded_at", { withTimezone: true, precision: 3 }).notNull().defaultNow(),
   },
-  (t) => [
-    primaryKey({
-      name: "achievements_user_achievement_unique",
-      columns: [t.userId, t.achievementId],
-    }),
-  ],
+  (t) => [unique("achievements_user_achievement_unique").on(t.userId, t.achievementId)],
 );
 
 export type ProgressEvent = typeof progressEvents.$inferSelect;

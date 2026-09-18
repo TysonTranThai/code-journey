@@ -1,0 +1,37 @@
+## CSV: những quy tắc cắn người
+
+CSV thật (RFC 4180) có ba quy tắc người mới hay bỏ sót:
+
+1. **Field trong ngoặc kép** — `"hello, world"` là MỘT field chứa dấu phẩy.
+2. **Dấu ngoặc kép được escape** — `""` trong ngoặc là một dấu `"` nghĩa chữ.
+3. **Xuống dòng trong ngoặc** — một row có thể trải nhiều dòng.
+
+Parser split(",") vi phạm cả ba:
+
+```java
+// ngây thơ — vỡ với dấu phẩy trong ngoặc
+String[] fields = line.split(",");
+
+// quét ký tự — parser trung thực
+List<String> parseRow(String line) {
+    List<String> out = new ArrayList<>();
+    StringBuilder cur = new StringBuilder();
+    boolean inQuotes = false;
+    for (int i = 0; i < line.length(); i++) {
+        char c = line.charAt(i);
+        if (inQuotes) {
+            if (c == '"') {
+                if (i + 1 < line.length() && line.charAt(i + 1) == '"') { cur.append('"'); i++; }
+                else inQuotes = false;
+            } else cur.append(c);
+        } else if (c == '"') inQuotes = true;
+        else if (c == ',') { out.add(cur.toString()); cur.setLength(0); }
+        else cur.append(c);
+    }
+    out.add(cur.toString());
+    return out;
+}
+```
+
+Bộ quét xử lý quy tắc 1–2; quy tắc 3 đầy đủ cần gộp row xuyên dòng — ngoài
+phạm vi hôm nay, nhưng giờ bạn biết vì sao thư viện tồn tại.

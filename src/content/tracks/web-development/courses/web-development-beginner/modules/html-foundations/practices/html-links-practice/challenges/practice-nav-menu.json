@@ -1,0 +1,30 @@
+{
+  "id": "practice-nav-menu",
+  "title": "A Three-Link Navigation Menu",
+  "prompt": "Navigation menus are lists of links. Build one inside the `nav` element: a `ul` whose three `li` items each contain an `a` linking to `#about`, `#projects`, and `#contact`. Each link needs visible text.\n\nRules:\n- The links live inside a `nav` element.\n- The list is a `ul` (a menu is an unordered group).\n- Three items, hrefs `#about`, `#projects`, `#contact`, each with text.",
+  "difficulty": "beginner",
+  "level": "guided",
+  "boilerplate": "<nav>\n  <!-- your menu here -->\n</nav>\n",
+  "tests": [
+    {
+      "name": "links are inside a nav element",
+      "code": "const nav = code.match(/<nav[\\s\\S]*?<\\/nav>/i);\nif (!nav || !/<a\\s+[\\s\\S]*href=/i.test(nav[0])) {\n  throw new Error(\"Put your menu inside <nav> … </nav>.\");\n}",
+      "hint": "Wrap the menu in <nav> — it marks the block as major navigation."
+    },
+    {
+      "name": "the menu is an unordered list",
+      "code": "const nav = code.match(/<nav[\\s\\S]*?<\\/nav>/i)[0];\nif (!/<ul[\\s\\S]*<\\/ul>/i.test(nav)) {\n  throw new Error(\"A menu is a list of links — use <ul> around the <li> items.\");\n}",
+      "hint": "Inside <nav>: <ul><li><a …>…</a></li>…</ul>."
+    },
+    {
+      "name": "three items with the right hrefs",
+      "code": "const nav = code.match(/<nav[\\s\\S]*?<\\/nav>/i)[0];\nconst ul = nav.match(/<ul[\\s\\S]*?<\\/ul>/i)[0];\nconst items = (ul.match(/<li[\\s\\S]*?<\\/li>/gi) ?? []).length;\nif (items !== 3) throw new Error(`Expected 3 <li> items, found ${items}.`);\nfor (const target of [\"#about\", \"#projects\", \"#contact\"]) {\n  if (!nav.includes(`href=\"${target}\"`)) {\n    throw new Error(`Missing a link to ${target}.`);\n  }\n}",
+      "hint": "One <li> per link: #about, #projects, #contact."
+    },
+    {
+      "name": "every link has visible text",
+      "code": "const nav = code.match(/<nav[\\s\\S]*?<\\/nav>/i)[0];\nconst links = [...nav.matchAll(/<a\\s[^>]*href=[\"'][^\"']*[\"'][^>]*>([\\s\\S]*?)<\\/a>/gi)];\nif (links.length < 3 || links.some((l) => l[1].trim().length === 0)) {\n  throw new Error(\"Every <a> needs visible text between the tags — empty links are unusable.\");\n}",
+      "hint": "Write a label between <a …> and </a>, like <a href=\"#about\">About</a>."
+    }
+  ]
+}

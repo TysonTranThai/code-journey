@@ -1,0 +1,16 @@
+{
+  "id": "cppa15-config-guards",
+  "title": "Build Configuration Contract",
+  "prompt": "Implement the five `buildcfg` queries using only capability markers (feature-test macros, __has_include, __has_feature) — no compiler-identity sniffing.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <version>\n#include <cstdint>\n\n// Compile-time build configuration contract.\n// Every query answers with a constexpr value the test can prove.\nnamespace buildcfg {\n// 1) true iff the standard library exposes std::format (feature-test, not compiler sniffing).\nconstexpr bool has_format();\n// 2) true iff exception handling is enabled in this TU.\nconstexpr bool exceptions_enabled();\n// 3) the numeric log level: CJ_LOG_LEVEL if defined, else 0.\nconstexpr int log_level();\n// 4) true iff assertions are compiled out (NDEBUG defined).\nconstexpr bool asserts_disabled();\n// 5) true iff an address sanitizer is active in this TU (either vendor's marker).\nconstexpr bool asan_active();\n} // namespace buildcfg\n",
+  "tests": [
+    {
+      "name": "capability markers, not compiler sniffing",
+      "code": "static_assert(buildcfg::has_format() == (bool)__cpp_lib_format,\n              \"has_format must mirror __cpp_lib_format exactly\");\nstatic_assert(buildcfg::exceptions_enabled() ==\n              (bool)(__cpp_exceptions || __EXCEPTIONS),\n              \"exceptions_enabled must match this TU\");\nstatic_assert(!buildcfg::asserts_disabled(), \"NDEBUG is not defined in this TU\");\nstatic_assert(!buildcfg::asan_active(), \"no sanitizer in this TU\");\nstatic_assert(buildcfg::log_level() == 0, \"default log level is 0\");\nCHECK(buildcfg::has_format() || !__cpp_lib_format);",
+      "hint": "Guard with #ifdef __cpp_lib_format (from <version>). ASan: __SANITIZE_ADDRESS__ (GCC) or __has_feature(address_sanitizer) (Clang)."
+    }
+  ]
+}

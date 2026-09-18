@@ -1,0 +1,37 @@
+Container kết hợp đổi *vị trí* lấy *tra cứu*. Hai họ:
+
+```cpp
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
+
+std::map<std::string, int> m;           // cây cân bằng: có thứ tự, O(log n)
+std::unordered_map<std::string, int> u; // bảng băm: không thứ tự, O(1) trung bình
+std::set<std::string> s;                // khoá duy nhất, có thứ tự
+std::unordered_set<std::string> us;     // khoá duy nhất, băm
+```
+
+## Quyết định: bạn có cần thứ tự không?
+
+- Duyệt **theo thứ tự khoá tăng dần** hoặc cần `lower_bound` → họ có thứ tự.
+- Chỉ tra cứu theo khoá, muốn nhanh nhất có thể → họ unordered.
+
+Chèn dữ liệu thống nhất, và `try_emplace` tránh dựng đối tượng vô ích khi
+khoá đã tồn tại:
+
+```cpp
+m[key] += 1;                              // chèn 0 trước nếu chưa có (operator[])
+m.try_emplace(key, 0).first->second += 1; // không tra cứu hai lần
+```
+
+Một bẫy đáng biết sớm: `map[key]` **chèn** khi khoá chưa có. Trên
+`const map&` bạn buộc phải dùng `.at()` hoặc `.find()` — `operator[]` thậm
+chí không biên dịch, và ràng buộc đó bảo vệ bạn.
+
+Structured bindings giúp việc duyệt đọc gọn:
+
+```cpp
+for (const auto& [key, value] : m) {
+    // tại đây các khoá đã theo thứ tự
+}

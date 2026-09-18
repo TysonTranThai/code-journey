@@ -1,0 +1,27 @@
+## ReadLine: luôn là văn bản
+
+```csharp
+Console.Write("Tên của bạn: ");
+string name = Console.ReadLine() ?? "";
+Console.WriteLine($"Xin chào, {name}!");
+```
+
+`Console.ReadLine()` đọc một dòng và đưa cho bạn một `string` — **kể cả khi người dùng gõ số**. `"42"` (văn bản) và `42` (số) là hai thế giới khác nhau: bạn không thể tính toán trên văn bản. `?? ""` xử lý trường hợp input kết thúc trước khi có dòng (ReadLine khi đó trả về `null`).
+
+Mọi chương trình tương tác bạn từng dùng đều là vòng lặp này bên dưới: đọc văn bản → diễn giải → phản hồi.
+
+## Hình dạng của việc xử lý input
+
+```csharp
+Console.Write("Bán kính: ");
+string input = Console.ReadLine() ?? "";
+double radius = double.Parse(input);       // nổ nếu là "abc"!
+double area = Math.PI * radius * radius;
+Console.WriteLine($"Diện tích: {area:F2}");
+```
+
+`double.Parse` chuyển văn bản thành số — và **ném `FormatException`** nếu văn bản không phải số hợp lệ. Người dùng gõ `mười` hay `3,14` hay chỉ nhấn Enter sẽ làm chương trình này sập. Đó là vấn đề hai bài học sau giải quyết đúng mực (TryParse + kiểm tra dữ liệu).
+
+## Lưu ý về sandbox của khoá này
+
+Thử thách ở đây chấm điểm *logic* (phân tích, kiểm tra, phản hồi) thông qua một phương thức nhận chuỗi input thô — cùng hình dạng code mà chương trình ReadLine cần, nhưng xác định và kiểm thử được. Khi bạn mang code này ra console thật, phần bao bọc ReadLine là việc nhỏ.

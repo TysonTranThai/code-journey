@@ -1,0 +1,30 @@
+{
+  "id": "space-the-card",
+  "title": "Modify: Space the Card",
+  "prompt": "The `.card` is cramped. Without changing its width or border:\n\n- Give the card `padding: 1.5rem` (breathing room *inside*).\n- Give it `margin: 0 auto 1.5rem` — centered horizontally (the `auto` does it), with bottom margin for the next section.\n- Give it a `border-radius` of `8px`.",
+  "difficulty": "beginner",
+  "boilerplate": "<style>\n  *, *::before, *::after { box-sizing: border-box; }\n\n  .card {\n    width: 400px;\n    border: 1px solid silver;\n  }\n</style>\n\n<div class=\"card\">\n  <h3>Club membership</h3>\n  <p>Everything a member needs, one flat rate.</p>\n</div>\n",
+  "tests": [
+    {
+      "name": "padding added",
+      "code": "const card = code.match(/\\.card\\s*{([^}]*)}/i);\nif (!card || !/padding\\s*:\\s*1\\.5rem\\s*;/i.test(card[1])) {\n  throw new Error(\"Give .card padding: 1.5rem;\");\n}",
+      "hint": "padding sits between content and border — inside the box."
+    },
+    {
+      "name": "centered with bottom margin",
+      "code": "const card = code.match(/\\.card\\s*{([^}]*)}/i);\nif (!card || !/margin\\s*:\\s*0\\s+auto\\s+1\\.5rem\\s*;/i.test(card[1])) {\n  throw new Error(\"Set margin: 0 auto 1.5rem; on .card (top 0, sides auto, bottom 1.5rem).\");\n}",
+      "hint": "auto horizontal margins + a definite width = centered block."
+    },
+    {
+      "name": "rounded corners",
+      "code": "const card = code.match(/\\.card\\s*{([^}]*)}/i);\nif (!card || !/border-radius\\s*:\\s*8px\\s*;/i.test(card[1])) {\n  throw new Error(\"Add border-radius: 8px;\");\n}",
+      "hint": "border-radius rounds the box's corners."
+    },
+    {
+      "name": "width and border untouched",
+      "code": "const card = code.match(/\\.card\\s*{([^}]*)}/i);\nif (!card || !/width\\s*:\\s*400px/i.test(card[1]) || !/border\\s*:\\s*1px/i.test(card[1])) {\n  throw new Error(\"Do not change the original width or border.\");\n}",
+      "hint": "Modification challenges change only what the brief asks for."
+    }
+  ],
+  "level": "guided"
+}

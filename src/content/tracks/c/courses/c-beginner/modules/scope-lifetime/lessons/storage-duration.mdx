@@ -1,0 +1,48 @@
+## Automatic (the default)
+
+Local variables get fresh storage **per call** and die when the block exits:
+
+```c
+int counter(void) {
+    int n = 0;      // fresh every call
+    n++;
+    return n;       // always returns 1
+}
+```
+
+## Static: born once, lives forever
+
+`static` on a local makes it initialize **once** and persist across calls:
+
+```c
+int counter(void) {
+    static int n = 0;   // initialized once
+    n++;
+    return n;           // 1, 2, 3, ...
+}
+```
+
+Same scope rules as a local (invisible outside the function), different
+lifetime. `static` on a **file-scope** function or variable instead means
+"private to this file" — module 18 uses that for internal helpers.
+
+## File-scope (global) variables
+
+Declared outside all functions; visible from their declaration to the end of
+the file, alive for the whole program:
+
+```c
+int g_attempts = 0;     // every function below can see it
+
+void attempt(void) { g_attempts++; }
+```
+
+Globals are readable state — but mutable global state couples functions
+together in ways that break testing and reuse. The course rule: **pass what a
+function needs as parameters**; reach for a global only for genuinely
+program-wide constants.
+
+## extern (recognition level)
+
+`extern int g;` says "g exists, defined elsewhere" — the linker connects the
+uses to the one definition. You need this at module 18; here, just read it.

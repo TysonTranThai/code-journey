@@ -1,0 +1,26 @@
+{
+  "id": "cb14-total-inventory",
+  "title": "Inventory Value",
+  "prompt": "Given `struct Item { int qty; int unit_cost; };` in scope, implement `long inventory_value(const struct Item *items, int n)` summing qty*unit_cost over n items.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstruct Item { int qty; int unit_cost; };\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "struct Item its[] = {{2, 300}, {1, 500}};\nCHECK_EQ(inventory_value(its, 2), 1100);",
+      "hint": "Accumulate qty*unit_cost."
+    },
+    {
+      "name": "empty",
+      "code": "struct Item its[] = {{0, 0}};\nCHECK_EQ(inventory_value(its, 0), 0);",
+      "hint": "n=0 gives 0."
+    },
+    {
+      "name": "zero qty",
+      "code": "struct Item its[] = {{0, 999}, {3, 100}};\nCHECK_EQ(inventory_value(its, 2), 300);",
+      "hint": "Zero-qty items contribute nothing."
+    }
+  ],
+  "level": "independent"
+}

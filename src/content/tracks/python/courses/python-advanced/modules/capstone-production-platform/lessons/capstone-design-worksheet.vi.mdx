@@ -1,0 +1,41 @@
+Hãy viết những điều này ra *trước* khi cài đặt. Các bài test nghiệm thu chỉ
+kiểm tra hành vi; con người bạn tương lai kiểm tra thiết kế.
+
+## Các port (kiến trúc của bạn, tên của bạn)
+
+Phác thảo các giao diện — không phải bản cài:
+
+- **JobQueue (port)** — `enqueue`, `deliver`, `ack`, `fail`. Ai cài nó? (Trong
+  tiến trình bây giờ; Redis sau. Cái còn lại là port.)
+- **IdempotencyStore (port)** — `get(key)`, `put(key, result)`. Cùng transaction
+  với hiệu ứng, nếu không nó nói dối.
+- **JobStore (port)** — bản ghi kết quả bền vững. Đây là nguồn sự thật của bạn;
+  queue *không phải*.
+- **Clock (port)** — bạn biết lý do.
+- **Notifier/Metrics/Log (port)** — điểm seam quan sát được.
+
+## Mô hình trạng thái
+
+Một job là một máy trạng thái nhỏ:
+`SUBMITTED → IN_FLIGHT → SUCCEEDED | FAILED_RETRYING | DEAD`.
+Hãy viết các chuyển tiếp hợp lệ. Job đang `IN_FLIGHT` thì sao khi worker chết?
+(Trả lời: nó trở nên có thể giao lại — đó chính là lease. Điều gì phải đúng để
+*hiệu ứng* giữ được tính exactly-once? Cổng idempotency.)
+
+## Bảng thất bại
+
+| Thất bại | Phát hiện | Phản hồi | Người dùng thấy? |
+|---|---|---|---|
+| Worker crash | hết hạn lease | giao lại | không (hiệu ứng idempotent) |
+| Dependency chết | exception | breaker mở, fast-fail | tính năng suy giảm |
+| Job độc | dùng hết retry | dead-letter + lý do | có, qua truy vấn trạng thái |
+| Submit trùng | idempotency key | phát lại phản hồi đã ghi | không |
+
+Nếu một dòng của bảng này còn mơ hồ, đó chính là cột mốc cần xây tiếp.
+
+## Các câu hỏi tự review
+
+- Quyết định nào sẽ thay đổi với một queue thật? (Chỉ adapter.)
+- Lớp nào biết về HTTP? (Không lớp nào — đó mới là điểm.)
+- Kiểm tra idempotency nằm ở đâu, và vì sao *ở đó*?
+- Điều gì gãy đầu tiên dưới tải, và bạn biết bằng cách nào? (Metric.)

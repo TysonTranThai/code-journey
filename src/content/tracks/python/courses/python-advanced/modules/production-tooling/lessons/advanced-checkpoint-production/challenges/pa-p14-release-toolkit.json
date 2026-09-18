@@ -1,0 +1,15 @@
+{
+  "id": "pa-p14-release-toolkit",
+  "title": "The release toolkit",
+  "prompt": "Implement three small functions that ship a release:\n\n- `next_release(version, changes)` — `changes` is a list containing any of 'breaking', 'feature', 'fix': bump major for breaking, else minor for feature, else patch; return the new version string (reuse semver rules: strict MAJOR.MINOR.PATCH, lower parts reset)\n- `safe_registry(entries)` — entries are `(group, name, factory)`; return `{group: {name: factory}}`, raising `ValueError('duplicate plugin: <name>')` on any duplicate name within a group\n- `incident_log(correlation_id, events)` — events are `(level, event, fields)` dicts/tuples with possible 'password'/'token' fields; return the list of JSON lines (sorted keys) with `correlation_id` added and sensitive fields replaced by '[REDACTED]'\n\nThe invariants: breaking > feature > fix precedence; no silent plugin shadowing; no secrets in logs.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: next_release + safe_registry + incident_log",
+  "tests": [
+    {
+      "name": "precedence, registry, redaction",
+      "code": "assert next_release('1.2.3', ['fix']) == '1.2.4'\nassert next_release('1.2.3', ['feature', 'fix']) == '1.3.0'\nassert next_release('1.2.3', ['breaking', 'feature']) == '2.0.0'\nreg = safe_registry([('plugins', 'csv', object), ('plugins', 'json', object)])\nassert set(reg['plugins']) == {'csv', 'json'}\nimport json\nlines = incident_log('req-7', [('ERROR', 'payment.failed', {'order': 'o1', 'token': 'tok9'})])\nline = json.loads(lines[0])\nassert line['token'] == '[REDACTED]' and line['correlation_id'] == 'req-7'\nprint('ok')",
+      "hint": "Three contracts, one release: version truth, plugin safety, log hygiene."
+    }
+  ]
+}

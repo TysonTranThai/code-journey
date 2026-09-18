@@ -1,0 +1,20 @@
+{
+  "id": "i2-blocking-audit",
+  "title": "Blocking Audit",
+  "prompt": "Given an array of resources { type, blocking } where type is \"css\" | \"js\" | \"font\" | \"img\" and blocking is true when it blocks first render, write `firstPaintBlockers(resources)` returning the COUNT of blockers, and `byKind(resources)` returning an object mapping type => count (only types present).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function firstPaintBlockers(resources) {\n  // your code\n}\n\nfunction byKind(resources) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "counts what blocks first paint",
+      "code": "const fn = new Function(code + \"\\nreturn { firstPaintBlockers, byKind };\");\nconst { firstPaintBlockers, byKind } = fn();\nconst rs = [\n  { type: \"css\", blocking: true },\n  { type: \"js\", blocking: true },\n  { type: \"font\", blocking: false },\n  { type: \"img\", blocking: false },\n];\nif (firstPaintBlockers(rs) !== 2) throw new Error(\"css + js block; font/img don't.\");\nif (byKind(rs).css !== 1 || byKind(rs).js !== 1 || byKind(rs).font !== 1) throw new Error(\"Counts per kind.\");\n",
+      "hint": "filter + length; reduce into an object."
+    },
+    {
+      "name": "clean pages have zero blockers",
+      "code": "const fn = new Function(code + \"\\nreturn { firstPaintBlockers, byKind };\");\nconst { firstPaintBlockers, byKind } = fn();\nif (firstPaintBlockers([{ type: \"img\", blocking: false }]) !== 0) throw new Error(\"Images never block first paint by default.\");\nif (Object.keys(byKind([])).length !== 0) throw new Error(\"Empty in, empty out.\");\n",
+      "hint": "Defaults matter for empty input."
+    }
+  ]
+}

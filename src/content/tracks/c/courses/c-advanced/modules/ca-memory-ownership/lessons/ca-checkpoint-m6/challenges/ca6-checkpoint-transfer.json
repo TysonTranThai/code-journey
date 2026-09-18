@@ -1,0 +1,26 @@
+{
+  "id": "ca6-checkpoint-transfer",
+  "title": "Checkpoint: Transfer + Failure-Safe Fill",
+  "prompt": "A file-scope `int vecs_alive = 0;` is in your editor. Implement:\n \n```c\ntypedef struct { int *buf; size_t len; size_t cap; } vec_t;\nint vec_push(vec_t *v, int value);\nvoid vec_free(vec_t *v);\nvoid vec_move(vec_t *dst, vec_t *src);\nint vec_fill(vec_t *v, int n, int fail_at);\n```\n \n`vec_push` doubles capacity (starting at 1) and counts as an allocation: while `v->buf` is non-NULL it counts one toward `vecs_alive` — simplest honest model: vec_push sets `vecs_alive = 1` the first time it allocates for this vec. `vec_free` releases and hollows. `vec_move` transfers and hollows the source (without changing the counter — ownership moved, the count did not). `vec_fill` pushes 1..n; if the push that would be number `fail_at` (1-based) cannot proceed because a simulated allocation failure occurs there, free everything and return -1; success returns 0. Simulate the failure deterministically: fail exactly when the next index equals fail_at, before allocating.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nint vecs_alive = 0;\n",
+  "tests": [
+    {
+      "name": "fill then free",
+      "code": "vec_t v = {0, 0, 0};\nCHECK_EQ(vec_fill(&v, 3, 0), 0);\nCHECK_EQ(v.buf[0], 1);\nCHECK_EQ(v.buf[2], 3);\nCHECK_EQ(vecs_alive, 1);\nvec_free(&v);\nCHECK_EQ(vecs_alive, 0);\nCHECK_NULL(v.buf);",
+      "hint": "Fill pushes 1..3; one live buffer while owned; free zeroes both the memory and the counter."
+    },
+    {
+      "name": "failure cleans up",
+      "code": "vec_t w = {0, 0, 0};\nCHECK_EQ(vec_fill(&w, 5, 3), -1);\nCHECK_EQ(vecs_alive, 0);\nCHECK_NULL(w.buf);",
+      "hint": "Failing before the third push releases the first two reallocations — no leak survives."
+    },
+    {
+      "name": "move hollows source",
+      "code": "vec_t s = {0, 0, 0};\nvec_fill(&s, 2, 0);\nvec_t d = {0, 0, 0};\nvec_move(&d, &s);\nCHECK_NULL(s.buf);\nCHECK_EQ(d.buf[1], 2);\nCHECK_EQ(vecs_alive, 1);\nvec_free(&d);\nCHECK_EQ(vecs_alive, 0);",
+      "hint": "The transfer hollows the source; the live count is unchanged by moving; freeing the new owner zeroes it."
+    }
+  ],
+  "level": "mini-build"
+}

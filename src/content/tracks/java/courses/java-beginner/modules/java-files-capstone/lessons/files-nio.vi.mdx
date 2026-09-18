@@ -1,0 +1,47 @@
+Mọi thứ bạn viết từ trước đến nay đều biến mất khi chương trình kết thúc.
+File giúp dữ liệu sống lâu hơn tiến trình. Java hiện đại làm I/O file với
+API `java.nio.file` - hai lớp gánh gần như mọi thứ: `Path` (*tham chiếu*
+đến file) và `Files` (*các thao tác* trên nó).
+
+```java
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+Path notes = Path.of("notes.txt");
+
+// ghi (ghi đè file cũ)
+Files.writeString(notes, "dòng đầu\ndòng hai\n");
+
+// đọc cả file thành một String
+String content = Files.readString(notes);
+
+// đọc thành danh sách các dòng
+java.util.List<String> lines = Files.readAllLines(notes);
+
+// kiểm tra trước khi hành động
+if (Files.exists(notes)) { ... }
+```
+
+Mọi phương thức đọc/ghi khai báo `throws IOException` - checked exception
+từ Module 11 cuối cùng cũng phát huy tác dụng: compiler buộc bạn phải
+quyết định điều gì xảy ra khi ổ đĩa không nghe lời bạn.
+
+## Nối thêm, đi cây thư mục, và các chi tiết nhỏ
+
+```java
+// nối: CREATE trước (nếu chưa có), rồi APPEND
+Files.writeString(notes, "dòng nữa\n",
+    java.nio.file.StandardOpenOption.CREATE,
+    java.nio.file.StandardOpenOption.APPEND);
+
+// thăm mọi file dưới một thư mục
+try (var walk = Files.walk(Path.of("logs"))) {
+    walk.filter(p -> p.toString().endsWith(".txt"))
+        .forEach(System.out::println);
+}
+```
+
+`Files.walk` trả về một stream - khối try-with-resources đóng con trỏ thư
+mục khi xong. Và nhớ các thói quen phòng thủ từ bài parsing: nội dung file
+là *dữ liệu bẩn*. Mỗi dòng đọc được đều trải qua null-guard, trim,
+parse-check như một đợt import CSV.

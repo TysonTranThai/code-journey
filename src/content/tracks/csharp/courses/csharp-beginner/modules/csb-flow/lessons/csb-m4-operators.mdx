@@ -1,0 +1,22 @@
+## Arithmetic and its surprises
+
+`+ - * / %` on numbers. You know `7 / 2 == 3` (integer division truncates). The `%` **remainder** operator completes the toolkit: `n % 2 == 0` reads "n is even", `minutes % 60` is "minutes past the hour". Watch sign behavior: `-7 % 2` is `-1` in C# — the remainder takes the dividend's sign.
+
+Compound assignment `+= -= *= /=` updates in place: `total += price` is `total = total + price`. `++`/`--` add or subtract one; prefer `i += 1` style clarity in expressions, keep `++` for loops.
+
+## Comparison operators
+
+`== != < > <= >=` produce `bool`. On numeric types they compare values. On `string`, `==` compares contents. On most *classes*, `==` compares **references** — two different objects with equal fields are not `==`. (You'll meet records in Module 13, which fix this for data types.)
+
+## Logic and short-circuiting
+
+`&&` (and), `||` (or), `!` (not) combine bools — and they **short-circuit**:
+
+```csharp
+if (count > 0 && total / count > 10) { ... }   // safe: division only when count > 0
+if (name != null && name.Length > 0) { ... }   // safe: dereference only after null check
+```
+
+The right side of `&&` runs *only when* the left side was true; the right side of `||` only when the left was false. This is not an optimization nicety — it's how you write guarded checks. `&` and `|` (single) exist but always evaluate both sides; you want `&&`/`||` for control flow.
+
+**Precedence**: `!` binds tightest, then arithmetic, then comparisons, then `&&`, then `||`. When in doubt, parenthesize — `a && b || c` is `(a && b) || c`, but nobody should have to remember that.

@@ -1,0 +1,40 @@
+## Sáu lời gọi
+
+```c
+#define _POSIX_C_SOURCE 200809L
+#include <sys/socket.h>       /* POSIX */
+#include <netinet/in.h>       /* POSIX */
+#include <arpa/inet.h>        /* POSIX */
+
+int lfd = socket(AF_INET, SOCK_STREAM, 0);
+struct sockaddr_in sa = {0};
+sa.sin_family = AF_INET;
+sa.sin_addr.s_addr = htonl(INADDR_LOOPBACK);  /* chỉ 127.0.0.1 */
+sa.sin_port = 0;                              /* 0 = kernel cấp */
+bind(lfd, (struct sockaddr *)&sa, sizeof sa);
+listen(lfd, 16);
+int cfd = accept(lfd, NULL, NULL);            /* chặn đến khi connect */
+```
+
+Phía client đối xứng: `socket` rồi `connect` tới cùng `sockaddr_in`. Đọc/ghi trên `cfd` là `recv`/`send` — cùng byte đi qua giao diện loopback, không chạm mạng nào.
+
+**Port 0 là siêu năng lực của sandbox.** Bind port 0 khiến kernel cấp một port ephemeral rảnh; `getsockname` báo port nào. Không port cố định nghĩa không xung đột giữa các lần chạy test song song — mọi challenge ở đây dùng pattern này.
+
+## TCP là byte stream, không phải bus tin nhắn
+
+`send(s, "hello", 5, 0)` không tạo ra "tin nhắn hello". TCP có thể dán 5 byte đó vào byte của lần send kế (coalescing) hoặc cắt nhỏ chúng (fragmentation). `recv` của máy nhận trả về *bất cứ gì trong ống* — 1 byte, 5, hoặc 50 từ ba lần send khác nhau.
+
+Một sự thật này sinh ra mọi protocol xây trên TCP:
+
+- **Đóng khung bằng delimiter**: dòng kết thúc bằng newline (HTTP/1, SMTP) — quét tìm byte đó.
+- **Đóng khung bằng length-prefix**: một số đếm độ rộng cố định rồi đúng bấy nhiêu byte (HTTP/2, đa số protocol nhị phân) — đọc số đếm, rồi đọc đúng số byte đó.
+
+## Half-close là một tính năng
+
+`shutdown(cfd, SHUT_WR)` gửi EOF theo hướng client→server trong khi giữ hướng server→client. `recv` trả 0 nghĩa là peer đã đóng *phía ghi của nó* — đó là cách server biết "request đã xong" mà không đóng đường trả lời. Phân biệt: `recv == 0` là EOF trật tự; `recv < 0` với `errno == EAGAIN` là "chưa có gì" khi socket non-blocking hoặc có timeout.
+
+## Nhãn trung thực
+
+- **ISO C**: không có gì trong số này. `<stdio.h>` không biết socket.
+- **POSIX**: tất cả ở trên — feature macro không phải trang trí; thiếu nó musl/glibc ẩn các khai báo.
+- **Sandbox**: chỉ loopback (`--network none` đã kiểm chứng). Host ngoài không with tới by design; code phải tới host ngoài thuộc môi trường thật, không thuộc khóa học này.

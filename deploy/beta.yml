@@ -1,0 +1,128 @@
+# Code Journey — PRIVATE BETA deployment topology (Phase 9).
+#
+# beta.yml = everything that runs on the BETA WEB HOST:
+#   - db      : PostgreSQL 16 (data in the cj_pgdata volume — back this up)
+#   - web     : Next.js app — no Docker socket, no sandbox access, not public
+#               beyond the reverse proxy (port bound to 127.0.0.1)
+#   - worker  : runner worker — default profile assumes the TWO-HOST split
+#               (SANDBOX_DOCKER_HOST points at the sandbox host)
+#   - worker-singlehost : documented fallback when the web host is also the
+#               sandbox host (mounts the local docker socket; acceptable ONLY
+#               for a private beta on a trusted single host)
+#   - migrate : one-shot migration runner (profile: tools)
+#   - backup  : one-shot pg_dump (profile: backup)
+#
+# Secrets live in .env.production next to this file (never committed, never
+# baked into images). See docs/DEPLOYMENT.md for the full runbook.
+
+# Distinct project name so the beta stack never collides with the dev
+# docker-compose.yml stack (same repo folder).
+name: cj-beta
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: codejourney
+      POSTGRES_PASSWORD: ${CJ_PG_PASSWORD:-codejourney}
+      POSTGRES_DB: codejourney
+    volumes:
+      - cj_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U codejourney -d codejourney"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    # No ports published: the database is reachable only inside this network.
+    # (For a remote sandbox-host worker, publish to 127.0.0.1 and front it
+    # with a VPN/wireguard or a scrypted tunnel — never public Postgres.)
+
+  web:
+    image: codejourney-web:latest
+    build:
+      context: ..
+      dockerfile: Dockerfile.web
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      DATABASE_URL: postgresql://codejourney:${CJ_PG_PASSWORD:-codejourney}@db:5432/codejourney
+      # Loopback-only: HTTPS termination happens in the reverse proxy.
+      AUTH_URL: ${AUTH_URL}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/health >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  # Two-host split (RECOMMENDED per docs/PRODUCTION.md): the worker talks to
+  # the sandbox host's Docker daemon over the network (SSH or restricted TCP)
+  # and this host holds no socket this process can use.
+  worker:
+    image: codejourney-web:latest
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      DATABASE_URL: postgresql://codejourney:${CJ_PG_PASSWORD:-codejourney}@db:5432/codejourney
+      # e.g. ssh://sandbox-host or tcp://sandbox-host:2376 (TLS required)
+      SANDBOX_DOCKER_HOST: ${SANDBOX_DOCKER_HOST}
+    command: ["pnpm", "worker"]
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'src/workers/runner.ts' >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  # Single-host fallback (trusted private-beta box only): worker uses the
+  # local Docker socket. The web service still never touches Docker.
+  worker-singlehost:
+    profiles: ["singlehost"]
+    image: codejourney-web:latest
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      DATABASE_URL: postgresql://codejourney:${CJ_PG_PASSWORD:-codejourney}@db:5432/codejourney
+      SANDBOX_IMAGE: ${SANDBOX_IMAGE:-codejourney-sandbox:latest}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: ["pnpm", "worker"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  migrate:
+    profiles: ["tools"]
+    image: codejourney-web:latest
+    env_file: .env.production
+    environment:
+      DATABASE_URL: postgresql://codejourney:${CJ_PG_PASSWORD:-codejourney}@db:5432/codejourney
+    command: ["pnpm", "db:migrate"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  backup:
+    profiles: ["backup"]
+    image: postgres:16-alpine
+    env_file: .env.production
+    environment:
+      PGPASSWORD: ${CJ_PG_PASSWORD:-codejourney}
+    volumes:
+      - ./backups:/backups
+    # One-shot: docker compose --profile backup run --rm backup
+    command: >
+      sh -c 'pg_dump -h db -U codejourney -d codejourney -Fc
+      -f /backups/codejourney-$$(date +%Y%m%d-%H%M%S).dump
+      && echo "backup written"'
+
+volumes:
+  cj_pgdata:

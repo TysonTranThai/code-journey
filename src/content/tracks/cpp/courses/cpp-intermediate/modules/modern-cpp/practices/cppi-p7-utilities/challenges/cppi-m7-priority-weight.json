@@ -1,0 +1,21 @@
+{
+  "id": "cppi-m7-priority-weight",
+  "title": "enum class Priority weights",
+  "prompt": "Define `enum class Priority { Low, Normal, High, Critical }` and implement `int priority_weight(Priority)` returning 0, 1, 5, 20 respectively. Use an exhaustive `switch` (no `default` case) so a future enumerator fails compilation.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\n\n// enum class Priority { Low, Normal, High, Critical };\n// int priority_weight(Priority p)\n",
+  "tests": [
+    {
+      "name": "all-values",
+      "code": "CHECK_EQ(priority_weight(Priority::Low), 0);\nCHECK_EQ(priority_weight(Priority::Normal), 1);\nCHECK_EQ(priority_weight(Priority::High), 5);\nCHECK_EQ(priority_weight(Priority::Critical), 20);",
+      "hint": "One weight per enumerator, exactly."
+    },
+    {
+      "name": "type-safe",
+      "code": "Priority p = Priority::High;\nCHECK_EQ(priority_weight(p), 5);",
+      "hint": "enum class values are passed by name, not as raw ints."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,40 @@
+## Transaction: tất cả hoặc không có gì
+
+```sql
+BEGIN;
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT;   -- hoặc ROLLBACK; nếu có lỗi
+```
+
+Hoặc cả hai cập nhật đều ghi, hoặc không cái nào. Bốn bảo đảm (ACID): **Atomicity** (tất cả-hoặc-không), **Consistency** (ràng buộc được giữ trước và sau), **Isolation** (các transaction song song không nhìn thấy nửa chừng của nhau), **Durability** (đã commit là sống sót qua crash).
+
+Phép chuyển tiền trên là ca kinh điển, nhưng mọi bước nhiều-pha ở tầng ứng dụng cũng vậy: tạo user + tạo profile + gửi email chào mừng — nếu bước 3 hỏng, rollback 1 và 2. Trong Node: `BEGIN` ... chạy các query ... `COMMIT` trong `try`, `ROLLBACK` trong `catch`.
+
+## Migration: thay đổi schema dưới quản lý phiên bản
+
+Schema sống trong repo của bạn dưới dạng file migration có thứ tự:
+
+```text
+migrations/
+  001_create_tasks.sql     CREATE TABLE tasks (...);
+  002_add_due_column.sql   ALTER TABLE tasks ADD COLUMN due timestamptz;
+  003_tasks_tags.sql       CREATE TABLE task_tags (...);
+```
+
+Các quy tắc dân nghề sống theo:
+
+- **Chỉ đi tới trước** — viết migration mới để thay đổi; đừng sửa migration cũ (chúng đã chạy ở nơi khác)
+- **Mỗi migration đi kèm một kế hoạch (đầu óc hoặc ghi chép) rollback**
+- **Expand/contract cho zero-downtime**: thêm cột mới (expand), deploy code ghi cả hai, backfill, xóa cột cũ (contract)
+- Công cụ theo dõi migration nào đã chạy (`drizzle-kit`, `node-pg-migrate`, trình chạy SQL thuần)
+
+## ORM: người giúp việc, không phải nhà tiên tri
+
+ORM (Drizzle, Prisma) ánh xạ bảng thành code có kiểu: `db.select().from(tasks).where(eq(tasks.authorId, 7))`. Lợi: an toàn kiểu từ đầu đến cuối, ít lỗi injection hơn, migration dưới dạng code. Hại: một mô hình tinh thần thứ hai, và cám dỗ quên SQL — thứ bạn _sẽ_ cần khi ORM sinh ra một query chậm mà cách sửa là biết SQL bạn thực sự muốn.
+
+Thái độ chuyên nghiệp: **học SQL trước** (bạn vừa làm xong), rồi để ORM đỡ gõ cho 80% nhàm chán, và hạ xuống SQL thô (`sql\`...\``) cho 20% thú vị. ORM là trình _dựng_ query, không phải bản _thay thế_ database.
+
+## Connection pool
+
+Mỗi query cần một kết nối; mở một kết nối mỗi request giết chết hiệu năng. Pool giữ N kết nối mở và cho mượn (`pg.Pool`, tối đa ~10 cho đa số app). Bug triển khai kinh điển: pool size × số server > max_connections của database — query của mọi người bắt đầu thất bại lúc 5 giờ chiều thứ Sáu.

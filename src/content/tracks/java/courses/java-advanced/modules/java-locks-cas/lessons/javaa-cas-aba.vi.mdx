@@ -1,0 +1,24 @@
+**CAS — compare-and-set** — là lệnh phần cứng dưới mọi lớp atomic: "nếu giá
+trị vẫn là `expected`, gán thành `next` một cách nguyên tử; báo kết quả
+thắng/thua." Kẻ thua thử lại. Không giữ khóa nào; OS không cần can thiệp.
+
+```java
+AtomicReference<State> ref = new AtomicReference<>(initial);
+State cur, next;
+do {
+    cur = ref.get();
+    next = derive(cur);
+} while (!ref.compareAndSet(cur, next));
+```
+
+**Bài toán ABA**: CAS hỏi "vẫn là A chứ?" — không hỏi "có gì xảy ra không?".
+Nếu giá trị đi A→B→A giữa lần đọc và CAS của bạn, phép so sánh *vẫn qua* nhưng
+thế giới đã đổi. Vô hại với bộ đếm, chết người với stack xây trên con trỏ:
+nút A được giải phóng và cấp phát lại trong khi bạn nắm `next` cũ. Câu trả
+lời của Java: `AtomicStampedReference` (giá trị + stamp, CAS cùng lúc) hoặc
+đơn giản là tránh thiết kế nút dùng chung có thể biến đổi.
+
+CAS *lạc quan* (giả định không xung đột, thua thì thử lại); khóa *bi quan*
+(chặn trước). CAS tranh chấp cao đốt CPU để retry; khóa tranh chấp cao cho
+thread ngủ. Mức tranh chấp cao → khóa thường thắng. Tranh chấp thấp, vùng
+nghiêm ngặt ngắn → CAS thắng. Biết *mình đang ở chế độ nào* mới là kỹ năng.

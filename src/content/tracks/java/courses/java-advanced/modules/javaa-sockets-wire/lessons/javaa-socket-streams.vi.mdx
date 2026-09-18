@@ -1,0 +1,23 @@
+Socket TCP là *luồng byte không có ranh giới thông điệp*. Ghi ba đối tượng
+JSON vào socket, người đọc có thể nhận ba khúc, một khúc, hoặc một-rưỡi —
+mạng không nợ bạn ranh giới gửi lẫn kích thước đọc. Mọi thứ hình thông điệp
+là việc của PROTOCOL của bạn: đóng khung.
+
+```java
+Socket s = new Socket("localhost", port);        // loopback: an toàn, tức thì
+s.setSoTimeout(500);                             // read() ném sau 500ms im lặng
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(s.getInputStream(), StandardCharsets.UTF_8));
+in.readLine();                                   // khung = "cho tới newline"
+```
+
+Giao thức newline là khung kinh điển đầu tiên: người gửi thêm `\n`, người đọc
+tách theo nó. Nó chỉ dành cho văn bản và cấm newline lồng bên trong — giao
+thức nhị phân tốt nghiệp sang length prefix (`[4 byte độ dài][payload]`),
+đó là điều HTTP/2 và mọi wire format nghiêm túc làm. Dù cách nào, quy tắc
+đóng khung thuộc về protocol, không thuộc về stream.
+
+**Timeout là sự sống còn**: read vào một peer im lặng sẽ block vĩnh viễn theo
+mặc định. `setSoTimeout` chặn trên mọi lần đọc; server production còn chặn
+*kết nối rảnh* và *tổng thời gian xử lý yêu cầu*. Socket không có timeout là
+một thread-leak có đặt hẹn giờ.

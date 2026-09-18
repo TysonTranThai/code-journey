@@ -1,0 +1,26 @@
+{
+  "id": "ca10-symbol-kinds",
+  "title": "Classify the Symbols",
+  "prompt": "Implement `const char *symbol_kind(char letter)` mapping nm's type letters to names: 'T' → \"text-defined\", 'U' → \"undefined\", 'D' → \"data-defined\", 't' → \"static-text\", 'B' → \"bss-defined\", anything else → \"other\". The letter case distinction between T and t is the external/static boundary.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "T vs t",
+      "code": "CHECK_STR_EQ(symbol_kind('T'), \"text-defined\");\nCHECK_STR_EQ(symbol_kind('t'), \"static-text\");",
+      "hint": "Same section, different visibility: uppercase means externally visible, lowercase means file-local."
+    },
+    {
+      "name": "U means the linker owes you",
+      "code": "CHECK_STR_EQ(symbol_kind('U'), \"undefined\");",
+      "hint": "A U symbol is a request the link step must satisfy or fail on."
+    },
+    {
+      "name": "data sections",
+      "code": "CHECK_STR_EQ(symbol_kind('D'), \"data-defined\");\nCHECK_STR_EQ(symbol_kind('B'), \"bss-defined\");",
+      "hint": "Initialized globals land in D; zero-initialized in B."
+    }
+  ],
+  "level": "imitation"
+}

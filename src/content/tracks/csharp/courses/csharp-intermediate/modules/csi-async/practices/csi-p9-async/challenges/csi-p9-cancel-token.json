@@ -1,0 +1,26 @@
+{
+  "id": "csi-p9-cancel-token",
+  "title": "Cooperative Cancellation",
+  "prompt": "Implement a worker that honors cancellation: it processes items one at a time, checks the token BEFORE each item, and returns how many it completed. When cancelled mid-way, throw OperationCanceledException with the token.\n\n```csharp\nstatic Task<int> ProcessAsync(IEnumerable<int> items, Func<int, Task> work, CancellationToken ct);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\nusing System.Threading;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "completes when not cancelled",
+      "code": "\nint ran = 0;\nCj.Eq(Solution.ProcessAsync(new[] { 1, 2, 3 }, i => { ran++; return System.Threading.Tasks.Task.CompletedTask; }, System.Threading.CancellationToken.None).GetAwaiter().GetResult(), 3, \"all items\");\nCj.Eq(ran, 3, \"work ran for each\");\n",
+      "hint": "Loop items, check ct.ThrowIfCancellationRequested() first, await work(item)."
+    },
+    {
+      "name": "pre-cancelled token aborts immediately",
+      "code": "\nvar cts = new System.Threading.CancellationTokenSource();\ncts.Cancel();\nint ran = 0;\ntry\n{\n    Solution.ProcessAsync(new[] { 1, 2, 3 }, i => { ran++; return System.Threading.Tasks.Task.CompletedTask; }, cts.Token).GetAwaiter().GetResult();\n    Cj.True(false, \"should have thrown\");\n}\ncatch (System.OperationCanceledException) { }\nCj.Eq(ran, 0, \"nothing ran on a pre-cancelled token\");\n",
+      "hint": "Check BEFORE the first item — a pre-cancelled token runs zero items."
+    },
+    {
+      "name": "stops promptly on cancel",
+      "code": "\nvar cts = new System.Threading.CancellationTokenSource();\nint ran = 0;\nvar t = Solution.ProcessAsync(\n    new[] { 1, 2, 3, 4, 5 },\n    i => { ran++; if (i == 2) cts.Cancel(); return System.Threading.Tasks.Task.CompletedTask; },\n    cts.Token);\ntry { t.GetAwaiter().GetResult(); Cj.True(false, \"should have thrown\"); }\ncatch (System.OperationCanceledException) { }\nCj.Eq(ran, 2, \"cancelled before item 3\");\n",
+      "hint": "ThrowIfCancellationRequested BEFORE each work call — item 3 never runs."
+    }
+  ],
+  "level": "guided"
+}

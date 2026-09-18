@@ -1,0 +1,15 @@
+## Reserve trước khi lớn lên
+
+`std::vector` nhân đôi gây log(n) lần reallocate, mỗi lần di chuyển mọi phần tử. `reserve(n)` từ đầu biến vòng nóng thành không cấp phát. Bộ đếm cấp phát (như của module này) bắt thủ phạm ngay lập tức.
+
+## Tái sử dụng buffer giữa các vòng
+
+Buffer cấp phát bên trong vòng lặp là thuế mỗi vòng. Kéo nó ra caller, truyền bằng tham chiếu, xóa bằng `clear()` (giữ capacity).
+
+## Move, đừng copy
+
+`std::move` cho giá trị lần-dùng-cuối, `emplace_back` để dựng tại chỗ, và trả về bằng giá trị (RVO làm nó miễn phí). Một `push_back(x)` sai chỗ cần `push_back(std::move(x))` tốn một bản sao sâu cho mỗi phần tử.
+
+## Copy string một lần
+
+Nối chuỗi lặp lại trong vòng lặp là cấp số nhân. Dựng bằng `reserve` + `append`, hoặc cộng dồn vào một buffer. Các bài tập chấm điểm ở đây đếm cả cấp phát lẫn byte-copy, nên bản cấp số nhân trượt bởi toán học, không phải ý kiến.

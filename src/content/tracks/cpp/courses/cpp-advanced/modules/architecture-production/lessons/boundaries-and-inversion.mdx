@@ -1,0 +1,30 @@
+## The dependency rule
+
+Business logic must not include storage, transport, or vendor headers. It defines the interface it *needs*; an adapter below implements it:
+
+```cpp
+struct Clock {                      // the seam — owned by the logic layer
+    virtual ~Clock() = default;
+    virtual std::int64_t nowMs() const = 0;
+};
+
+struct RateLimiter {                // high-level policy, testable
+    explicit RateLimiter(const Clock* clock) : clock_(clock) {}
+    bool allow(std::int64_t nowMs); // deterministic under a fake clock
+    const Clock* clock_;
+};
+```
+
+Production binds a real clock at composition time; tests bind a fake. The seam is why the logic is deterministic, and determinism is why it is testable — flaky time-based tests are a missing seam, not bad luck.
+
+## Interfaces at boundaries
+
+An abstract interface is also an ABI boundary (module 16): the vtable layout is the contract. Keep them small, stable, and versioned — a wide interface that grows entry-by-entry is how vtables end up "frozen forever".
+
+## What belongs where
+
+- **Domain**: types + rules, no I/O includes.
+- **Adapters**: DB/queue/fs implementations of domain interfaces.
+- **Composition root**: the one place that wires concrete types.
+
+When a new requirement touches three layers, ask which dependency pointed the wrong way.

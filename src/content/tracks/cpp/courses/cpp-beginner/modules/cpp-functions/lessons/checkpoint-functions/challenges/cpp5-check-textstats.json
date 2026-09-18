@@ -1,0 +1,36 @@
+{
+  "id": "cpp5-check-textstats",
+  "title": "Text Stats Functions",
+  "prompt": "Implement three functions over a sentence: `word_count(text)` (space-separated words, non-empty), `longest_word(text)` (first longest on ties), and `contains_digit(text)` (true if any character is a digit).",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n\nint word_count(const std::string& text) {\n    // TODO\n}\nstd::string longest_word(const std::string& text) {\n    // TODO\n}\nbool contains_digit(const std::string& text) {\n    // TODO\n}",
+  "tests": [
+    {
+      "name": "word count",
+      "code": "CHECK_EQ(word_count(std::string{\"the quick brown fox\"}), 4);",
+      "hint": "Count space-separated words."
+    },
+    {
+      "name": "longest",
+      "code": "CHECK(longest_word(std::string{\"I love linked lists\"}) == std::string{\"linked\"});",
+      "hint": "First of the longest words wins (lists/linked are 6; linked is first)."
+    },
+    {
+      "name": "digit detection",
+      "code": "CHECK(contains_digit(std::string{\"room 42\"}));",
+      "hint": "std::isdigit on each char (cast to unsigned char first)."
+    },
+    {
+      "name": "no digits",
+      "code": "CHECK(!contains_digit(std::string{\"no digits here\"}));",
+      "hint": "No digit means false."
+    },
+    {
+      "name": "tie returns first",
+      "code": "CHECK(longest_word(std::string{\"aa bb\"}) == std::string{\"aa\"});",
+      "hint": "On equal length, keep the FIRST word seen (use > not >=)."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,99 @@
+Bạn đã viết function được một thời gian. Bài này nói về điều xảy ra **xung
+quanh** function: biến sống ở đâu, function bên trong truy cập biến bên ngoài
+thế nào, và tại sao một function có thể "ghi nhớ" dữ liệu ngay cả sau khi
+function cha đã chạy xong.
+
+## Scope là một chuỗi
+
+Mỗi function tạo ra một scope mới. Khi JavaScript tìm một tên biến, nó đi ra
+ngoài qua **chuỗi scope** — scope trong cùng trước, rồi các scope bên ngoài,
+cuối cùng là global:
+
+```js
+const rate = 0.2; // global scope
+
+function subtotal(amount) {
+  const fee = 1.5; // function scope
+  return amount + fee; // tìm thấy fee ở đây, amount là tham số
+}
+
+function total(amount) {
+  return subtotal(amount) * (1 + rate); // tìm rate cách hai tầng scope
+}
+```
+
+Một biến khai báo trong scope bên trong sẽ **che (shadow)** biến cùng tên ở
+ngoài — bên trong scope đó, biến trong thắng.
+
+## Closure: function có trí nhớ
+
+Khi một function được tạo bên trong function khác, nó giữ tham chiếu "sống"
+tới các biến bên ngoài mà nó dùng — kể cả sau khi function ngoài đã return.
+Phần dữ liệu được giữ lại đó là **closure**:
+
+```js
+function makeCounter(start = 0) {
+  let count = start; // bị function trả về "bắt giữ"
+  return {
+    increment: () => ++count,
+    value: () => count,
+  };
+}
+
+const c = makeCounter();
+c.increment(); // 1
+c.increment(); // 2
+const d = makeCounter(100); // một count MỚI hoàn toàn
+d.value(); // 100 — c và d không chia sẻ state
+```
+
+Ba điều cần chú ý:
+
+- `count` vô hình từ bên ngoài — không tồn tại `c.count` — nhưng
+  các function trả về vẫn đọc và thay đổi được nó. Đó là **private state**.
+- Mỗi lần gọi `makeCounter` tạo một biến được bắt giữ mới. Factory hoạt
+  động được là vì closure không dùng chung state.
+- Biến tồn tại chừng nào còn có function nào giữ nó.
+
+## Closure xuất hiện ở đâu trong code thực tế
+
+```js
+// Event handler nhớ cấu hình
+function attachZoom(image, factor) {
+  let zoomed = false;
+  image.addEventListener("click", () => {
+    zoomed = !zoomed; // handler đóng giữ zoomed và factor
+    image.style.transform = zoomed ? "scale(" + factor + ")" : "none";
+  });
+}
+
+// Setup chỉ chạy một lần
+function once(fn) {
+  let done = false;
+  return (...args) => {
+    if (done) return;
+    done = true;
+    return fn(...args);
+  };
+}
+
+// Câu hỏi kinh điển: setTimeout trong vòng lặp
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i)); // 3, 3, 3 — một var i dùng chung
+}
+for (let i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i)); // 0, 1, 2 — mỗi vòng một binding riêng
+}
+```
+
+Ví dụ vòng lặp chính là cơ chế closure ở dạng thu nhỏ: `let` tạo một
+binding mới mỗi vòng lặp, nên mỗi timeout giữ `i` của riêng nó. Với
+`var` cả vòng lặp chỉ có một `i`, và đến lúc callback chạy thì nó
+đã là 3.
+
+## Vì sao điều này quan trọng ở Trung cấp
+
+Closure là nền móng của callback có state, module, memoization, event handler
+và mọi "factory" bạn sẽ gặp — kể cả React hooks. Từ đây, câu hỏi không còn là
+"chạy được không" mà là "cấu trúc được không", và closure chính là công cụ
+cấu trúc.

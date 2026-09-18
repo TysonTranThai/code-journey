@@ -1,0 +1,31 @@
+{
+  "id": "ca9-checkpoint-guarded",
+  "title": "Checkpoint: Macros Under Judgment",
+  "level": "mini-build",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#define TAG hello\nstatic int g_side_calls = 0;\nstatic int side(void) { g_side_calls++; return 100; }\nstatic int ca9hello(void) { return 42; }",
+  "prompt": "Consolidate the preprocessor's compile-time powers — and exercise its most famous trap. The starter defines `TAG`, the counting helper `side()`, and the function `ca9hello()`. Implement:\n \n1. `int max_of(int a, int b)` — deliberately a FUNCTION, not a macro: a macro that evaluates each argument exactly once is impossible in ISO C, and `safe_max_probe()` must return 1 after computing `max_of(side(), 4)` because `side()` ran exactly once.\n2. `#define IS_POWER2(n) ...` — true iff n is a positive power of two (the classic (n & (n-1)) == 0 with n > 0). Safe as a macro here because it is only used on literals with no side effects.\n3. `#define CAT(a, b) CAT2(a, b)` with `#define CAT2(a, b) a##b` — the two-level indirection so arguments are expanded before pasting: `CAT(ca9, TAG)` must become the call target `ca9hello`.\n4. `int eval_count(void)` returning the running total of `side()` calls — the observable proof of evaluation discipline.",
+  "tests": [
+    {
+      "name": "value correctness",
+      "code": "CHECK_EQ(max_of(3, 9), 9);\nCHECK_EQ(max_of(-4, -9), -4);",
+      "hint": "Plain values select the larger operand in both directions."
+    },
+    {
+      "name": "single evaluation",
+      "code": "CHECK_EQ(safe_max_probe(), 1);\nCHECK_EQ(eval_count(), 1);",
+      "hint": "side() must run exactly once: as a function it cannot be re-evaluated the way a naive macro is."
+    },
+    {
+      "name": "power-of-two predicate",
+      "code": "CHECK(IS_POWER2(64));\nCHECK(!IS_POWER2(96));\nCHECK(!IS_POWER2(0));\nCHECK(!IS_POWER2(-8));",
+      "hint": "Only positive powers of two pass: 64 yes; 96, 0, and negatives no."
+    },
+    {
+      "name": "token pasting expands first",
+      "code": "CHECK_EQ(CAT(ca9, TAG)(), 42);",
+      "hint": "The two-level CAT expands TAG to hello before pasting, naming ca9hello — callable, returning 42."
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+**Record** (Java 16+) khai báo một kho dữ liệu bất biến trong một dòng:
+
+```java
+record Point(int x, int y) { }
+
+Point p = new Point(3, 4);
+p.x();                    // accessor trùng tên thành phần, không phải getX()
+```
+
+Từ một dòng đó, compiler sinh ra: trường `private final` cho mọi thành phần,
+một accessor cho mỗi thành phần (`x()`, `y()`), constructor nhận mọi thành
+phần theo thứ tự, `equals` và `hashCode` so sánh TẤT CẢ các thành phần, và
+`toString` dạng `Point[x=3, y=4]`. So với 30 dòng class, constructor,
+getter, equals, hashCode, toString bạn từng gõ ở Module 7 — record xóa nghi
+thức, không xóa ý nghĩa.
+
+**Khi nào dùng gì** — cây quyết định mô hình hóa:
+
+- **record**: giá trị bất biến mà danh tính CHÍNH LÀ dữ liệu (hai
+  `Point(3,4)` có thể hoán đổi cho nhau). Tiền, tọa độ, cặp tên, response API.
+- **enum**: tập hằng số có tên đóng kín (OrderStatus).
+- **class**: trạng thái có thể đổi, khởi tạo từng phần, object giàu hành vi
+  (Account với số dư thay đổi), hoặc danh tính duy nhất (tài khoản ngân
+  hàng là số tài khoản, không phải số dư — hai tài khoản cùng số dư
+  KHÔNG phải cùng tài khoản).
+
+Record có thể xác thực: **compact constructor** chạy trước khi các trường
+được gán:
+
+```java
+record Temperature(double celsius) {
+    Temperature {                      // dạng compact: không cần danh sách tham số
+        if (celsius < -273.15) {
+            throw new IllegalArgumentException("below absolute zero");
+        }
+    }
+}
+```
+
+Record không thể extends một class (nó đã extends `java.lang.Record`) nhưng
+implement được interface — và record lồng nhau cho các thử thách của bạn
+những kiểu dữ liệu sạch, dễ đọc.
+
+**Tiếp theo:** đẳng thức và hashing — hợp đồng đứng sau mọi collection.

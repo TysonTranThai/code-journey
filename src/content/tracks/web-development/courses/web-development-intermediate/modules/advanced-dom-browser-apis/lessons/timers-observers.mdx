@@ -1,0 +1,48 @@
+Browsers give you clocks and observers — using them well is what separates a
+smooth app from a janky one.
+
+## Timers are queues, not alarms
+
+`setTimeout(fn, 0)` does not run "immediately" — it queues `fn` to
+run after the current code finishes (the event loop, covered properly in the
+async module). `setInterval(fn, 1000)` fires no faster than every second
+**when the main thread is free** — a slow handler stretches the real interval.
+When you need a repeating action, prefer scheduling the next `setTimeout`
+_after_ the work completes.
+
+## Debounce and throttle
+
+- **Debounce** — react when the user _pauses_: wait for a quiet gap
+  (search-as-you-type).
+- **Throttle** — react at most once per interval: cap the rate
+  (scroll position reporting).
+
+```js
+function debounce(fn, ms) {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), ms);
+  };
+}
+```
+
+Both are closure patterns from Module 1 — the timer handle lives in the closure.
+
+## Observers: the browser watches for you
+
+Instead of polling, subscribe:
+
+```js
+const io = new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    if (e.isIntersecting) loadMore();
+  }
+});
+io.observe(sentinel);
+```
+
+`IntersectionObserver` reports visibility (lazy images, infinite scroll);
+`ResizeObserver` reports size changes (redraw canvases, collapse
+widgets). Both are cheaper and more accurate than scroll or resize handlers —
+and remember `prefers-reduced-motion` when animations are involved.

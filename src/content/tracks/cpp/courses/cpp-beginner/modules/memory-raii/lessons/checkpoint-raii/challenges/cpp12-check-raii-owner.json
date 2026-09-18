@@ -1,0 +1,26 @@
+{
+  "id": "cpp12-check-raii-owner",
+  "title": "RAII Owner",
+  "prompt": "Implement class `IntBox`: constructor `explicit IntBox(int value)` stores a heap `int` (using new — the one sanctioned place), `get() const` returns the value, destructor frees it. Deleting copy construction/assignment is required. Then implement `make_doubled(int)` returning `std::unique_ptr<IntBox>` holding the doubled value.",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <memory>\n\nclass IntBox {\npublic:\n    // TODO\nprivate:\n    // TODO\n};\n\nstd::unique_ptr<IntBox> make_doubled(int v) {\n    // TODO\n}",
+  "tests": [
+    {
+      "name": "stores",
+      "code": "IntBox b{21}; CHECK_EQ(b.get(), 21);",
+      "hint": "Constructor acquires and stores."
+    },
+    {
+      "name": "doubled",
+      "code": "auto p = make_doubled(21); CHECK_EQ(p->get(), 42);",
+      "hint": "make_unique with the doubled value."
+    },
+    {
+      "name": "no copy",
+      "code": "static_assert(!std::is_copy_constructible<IntBox>::value, \"must be non-copyable\"); CHECK(true);",
+      "hint": "Copy construction must be deleted — one owner."
+    }
+  ],
+  "level": "combination"
+}

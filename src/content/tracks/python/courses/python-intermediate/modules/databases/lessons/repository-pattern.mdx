@@ -1,0 +1,33 @@
+Sprinkling SQL through business logic couples everything to storage
+details. A **repository** isolates persistence behind a small interface:
+
+```python
+class TaskRepository:
+    def __init__(self, conn):
+        self._conn = conn
+
+    def add(self, title: str) -> int:
+        cur = self._conn.execute(
+            "INSERT INTO tasks (title) VALUES (?)", (title,)
+        )
+        self._conn.commit()
+        return cur.lastrowid
+
+    def get(self, task_id: int) -> dict | None:
+        row = self._conn.execute(
+            "SELECT id, title, done FROM tasks WHERE id = ?", (task_id,)
+        ).fetchone()
+        return dict(row) if row else None
+
+    def all(self) -> list[dict]:
+        return [dict(r) for r in self._conn.execute("SELECT id, title, done FROM tasks")]
+```
+
+What this buys:
+
+- **The domain stays storage-free**: services call `repo.add(...)`, never SQL. Swap SQLite for Postgres and the domain code doesn't change.
+- **Testing gets easy** (module 7!): a fake in-memory repository satisfies the same calls — no database needed to test business rules.
+- **SQL lives in one layer**, where review, optimization, and auditing actually happen.
+
+This pattern is the module-4 Protocol idea applied to persistence — and it's
+the exact shape of the capstone's storage layer.

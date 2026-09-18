@@ -1,0 +1,14 @@
+{
+  "title": "Metaclass, khi nó đúng là công cụ",
+  "prompt": "Cài `class FrozenMeta(type)` ép rằng instance chỉ có thể set những attribute ĐƯỢC KHAI BÁO bằng annotation trong thân class:\n\n- set attribute chưa khai báo raise `AttributeError` ở MỌI thời điểm (khi init hay sau này)\n- attribute đã khai báo được set và đọc tự do\n- `Vec.brand` phải bằng 'frozen' trên mọi class dùng metaclass này (bản thân metaclass có thể đặt attribute của class)\n- điều này phải áp dụng cho cả subclass — vì thế mới là metaclass chứ không phải __init_subclass__",
+  "tests": [
+    {
+      "name": "Attribute khai báo thì ổn, lạ thì bị chặn",
+      "hint": "Trong Meta.__new__, đọc các key của ns['__annotations__'] và cài một __setattr__ đóng trên tập tên đó."
+    },
+    {
+      "name": "Thừa hưởng qua subclass",
+      "hint": "Namespace của subclass mang __annotations__ riêng; hợp nhất với các tên đã khai báo của cha."
+    }
+  ]
+}

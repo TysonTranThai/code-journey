@@ -1,0 +1,21 @@
+{
+  "id": "cb19-fix-off-by-one",
+  "title": "Fix: Off-by-One",
+  "prompt": "`copy_all(int *dst, const int *src, int n)` writes one element PAST the end. Fix the loop bound (the tests place a sentinel after the array and check it survives).\n\n```c\nvoid copy_all(int *dst, const int *src, int n) {\n    for (int i = 0; i <= n; i++)\n        dst[i] = src[i];\n}\n```",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "content correct",
+      "code": "int s[] = {1, 2, 3};\nint d[3] = {0};\ncopy_all(d, s, 3);\nCHECK_EQ(d[0], 1);\nCHECK_EQ(d[2], 3);",
+      "hint": "All three copied."
+    },
+    {
+      "name": "sentinel intact",
+      "code": "int s[] = {1, 2};\nint d[3];\nd[2] = 777;\ncopy_all(d, s, 2);\nCHECK_EQ(d[2], 777);",
+      "hint": "Element n must NOT be touched."
+    }
+  ],
+  "level": "guided"
+}

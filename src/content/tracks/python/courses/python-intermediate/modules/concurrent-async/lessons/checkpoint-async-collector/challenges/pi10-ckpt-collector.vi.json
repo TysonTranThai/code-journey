@@ -1,0 +1,22 @@
+{
+  "title": "Bộ gom nguồn",
+  "prompt": "Viết sync collect(sources) với sources là list các dict: {'name': str, 'delay': float, 'fail': bool(tùy chọn)}. Mỗi nguồn mô phỏng một lần lấy dữ liệu: async job await delay rồi raise RuntimeError(name) nếu fail, ngược lại trả về (name, 'data'). Chạy TẤT CẢ đồng thời với timeout 0.5s cho từng nguồn (asyncio.wait_for). Trả về dict với key 'ok' (list tên trả về dữ liệu, theo thứ tự input) và 'failed' (list đã sắp các tên bị raise hoặc timeout).",
+  "tests": [
+    {
+      "name": "Nguồn tốt được báo ok",
+      "hint": "Cả hai thành công; kết quả theo thứ tự input."
+    },
+    {
+      "name": "Nguồn lỗi rơi vào failed",
+      "hint": "RuntimeError từ nguồn → danh sách failed."
+    },
+    {
+      "name": "Nguồn chậm timeout vào failed",
+      "hint": "Timeout từng nguồn 0.5s — nguồn 2s không được làm chậm cả lần chạy."
+    },
+    {
+      "name": "Lần chạy kết thúc nhanh dù có nguồn chậm",
+      "hint": "Timeout giữ toàn bộ lần chạy trong giới hạn (~0.5s, không phải 5s)."
+    }
+  ]
+}

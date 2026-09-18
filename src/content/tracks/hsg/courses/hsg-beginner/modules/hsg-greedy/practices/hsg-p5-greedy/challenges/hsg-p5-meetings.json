@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p5-meetings",
+  "title": "One Room, Many Meetings",
+  "prompt": "**Description:** n meetings with start and end times occupy one room.\nA meeting can start exactly when another ends. Maximize the number of\nmeetings scheduled; print that count.\n\n**Input:** Line 1: n (1 ≤ n ≤ 10^5). Each line: s e (0 ≤ s < e ≤ 10^9).\n**Output:** One integer — the maximum number of non-overlapping meetings.\n\n**Example:** `3` / `(1 4) (2 3) (3 5)` → `2` — pick (2 3) and (3 5).",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"3\\n1 4\\n2 3\\n3 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Sort by end: (2,3) then (3,5) → 2 meetings."
+    },
+    {
+      "name": "nested",
+      "code": "std::istringstream in(\"3\\n1 10\\n2 3\\n4 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Skip the long (1,10); take (2,3) and (4,5)."
+    },
+    {
+      "name": "touching",
+      "code": "std::istringstream in(\"2\\n1 2\\n2 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "A meeting may start exactly when another ends."
+    },
+    {
+      "name": "single",
+      "code": "std::istringstream in(\"1\\n0 1000000000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "One meeting always fits."
+    }
+  ],
+  "level": "guided"
+}

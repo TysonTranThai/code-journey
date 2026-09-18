@@ -1,0 +1,50 @@
+## Bất biến chính là thuật toán
+
+```c
+typedef struct TNode {
+    int           value;
+    struct TNode *left, *right;   /* trái < giá trị < phải (không trùng) */
+} TNode;
+```
+
+Cây con trái của mọi node giữ giá trị nhỏ hơn, phải giữ lớn hơn. Search
+đi xuống một đường — O(h) với h là chiều cao:
+
+```c
+int bst_find(const TNode *t, int v) {
+    while (t) {
+        if (v == t->value) return 1;
+        t = (v < t->value) ? t->left : t->right;
+    }
+    return 0;
+}
+```
+
+Insert đi cùng đường và gắn vào chỗ trống. Cả ba phép duyệt là hai dòng
+đệ quy; **in-order** (trái, mình, phải) thăm các giá trị theo *thứ tự
+đã sắp* — tính chất mà cả một họ thuật toán dựa vào.
+
+## Chiều cao là chữ in nhỏ
+
+Cây cân bằng n node có h ≈ log₂ n. Cây dựng từ input đã sắp thoái hóa
+thành linked list — h = n, và mọi tuyên bố O(log n) thành O(n). Cây tự
+cân bằng (AVL, red-black) khôi phục cân bằng sau mỗi thay đổi; hợp đồng
+của BST thuần phải trung thực: nhanh *khi thứ tự chèn hợp tác*.
+
+## Hủy cây: post-order hoặc chết
+
+Free con trước cha — **post-order**. Pre-order free cha và làm mồ côi
+cây con (leak); in-order free con trái, rồi chính cha mà con phải được
+chạm tới *qua đó* (use-after-free).
+
+```c
+void bst_destroy(TNode *t) {
+    if (!t) return;
+    bst_destroy(t->left);     /* con trước */
+    bst_destroy(t->right);
+    free(t);                  /* cha sau */
+}
+```
+
+Độ sâu đệ quy là O(h) — ổn cho cây cân bằng, nguy cơ tràn stack cho cây
+thoái hóa. Rủi ro đó là lý do khác khiến chiều cao là chữ in nhỏ.

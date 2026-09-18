@@ -1,0 +1,55 @@
+## MRO và `super()` hợp tác
+
+Mọi class đều có **method resolution order** — danh sách các class được C3
+linearize mà Python duyệt từ trái sang phải để tìm attribute. Xem bằng
+`Cls.__mro__`; hãy suy luận, đừng học thuộc từng trường hợp riêng lẻ.
+
+Three rules cover almost everything:
+
+1. Children come before parents.
+2. Base classes appear in the order written in the class statement.
+3. The linearization is consistent: no class appears before one of its own
+   bases in a way that would break the first two rules (C3 rejects such
+   hierarchies with a `TypeError` at class-creation time).
+
+`super()` **không** nghĩa là "cha của tôi". Nó nghĩa là "class *tiếp theo* trong
+MRO sau tôi, cho bất cứ ai đang phân giải hiện tại". Đó là điều làm cho mixin
+**hợp tác** được với nhau:
+
+```python
+class ReprMixin:
+    def __repr__(self):
+        return f"{type(self).__name__}({', '.join(f'{k}={v!r}' for k, v in vars(self).items())})"
+
+class JSONMixin:
+    def to_json(self):
+        import json
+        return json.dumps(vars(self))
+
+class Point(ReprMixin, JSONMixin):
+    def __init__(self, x, y):
+        self.x, self.y = x, y
+
+p = Point(1, 2)
+print(p)              # Point(x=1, y=2)
+print(p.to_json())    # {"x": 1, "y": 2}
+```
+
+`__init_subclass__` là móc hợp tác: class *cha* chạy mã mỗi khi có subclass được
+định nghĩa — đăng ký subclass, kiểm tra attribute của class, hoặc tự sinh method.
+Nó chạy mà không cần metaclass nào:
+
+```python
+class Registry:
+    _registry = {}
+
+    def __init_subclass__(cls, key=None, **kw):
+        super().__init_subclass__(**kw)
+        Registry._registry[key or cls.__name__.lower()] = cls
+
+class RedisCache(Registry, key="redis"): pass
+print(Registry._registry)   # {'redis': <class RedisCache>}
+```
+
+Thói quen nâng cao: khi hệ thứ tự trở nên kỳ lạ, in
+`[c.__name__ for c in Cls.__mro__]` và tự hỏi mỗi lời `super()` sẽ chuyển tới đâu.

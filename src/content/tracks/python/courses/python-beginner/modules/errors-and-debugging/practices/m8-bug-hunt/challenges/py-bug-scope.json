@@ -1,0 +1,16 @@
+{
+  "id": "py-bug-scope",
+  "title": "Bug Hunt 1: The Missing Variable",
+  "prompt": "This receipt program crashes with NameError. Reproduce it mentally, find the line, and fix it with the SMALLEST change that restores the intended output (three lines).",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "def add_item(total, price):\n    new_total = total + price\n\nitems = [120, 80, 45]\ntotal = 0\nfor price in items:\n    total = add_item(total, price)\nprint(\"item:\", price)\nprint(\"total:\", total)\nprint(\"thanks for shopping\")\n",
+  "tests": [
+    {
+      "name": "receipt restored",
+      "code": "assert printed == [\"item: 45\", \"total: 245\", \"thanks for shopping\"], f\"got {printed}\"",
+      "hint": "add_item computes new_total but never returns it — total becomes None after the first call. Fix: return new_total."
+    }
+  ],
+  "level": "debugging"
+}

@@ -1,0 +1,20 @@
+A log line is a *database row* you're writing to stdout: timestamp, level,
+event name, and key-value fields. Grep for `userId=42` works when fields are
+first-class; parsing English prose at 3 a.m. does not.
+
+```java
+record LogEvent(Instant ts, String level, String event, Map<String, String> fields)
+```
+
+Levels are a contract: **ERROR** = a human should act (paging threshold);
+**WARN** = degraded but self-healing (retries, fallbacks); **INFO** =
+state transitions (started, finished); **DEBUG** = the details you wish you'd
+logged, enabled per-request. The cardinal sin: `catch (Exception e) {}` —
+an exception that vanishes cannot be diagnosed; log it with its stack, at the
+level that matches whether a human must act.
+
+Context: the fields every event in one request shares — requestId, userId —
+belong in a thread-local (log frameworks call it MDC) that the framework
+stamps onto every line. Propagation across async boundaries is the advanced
+wrinkle: the context must be *captured* at task submission and re-applied in
+the task, because thread-locals do not cross executor hops.

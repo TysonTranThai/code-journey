@@ -1,0 +1,31 @@
+{
+  "id": "ca16-checkpoint-ledger",
+  "title": "Checkpoint: Detection Without Tools",
+  "level": "mini-build",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>",
+  "prompt": "The course's detection discipline, integrated: invariants + reasoning replacing the sanitizers this image cannot run.\n\nImplement a tiny ownership ledger exactly as specified — the tests probe every failure mode by observable state, the way the module taught you to detect bugs without ASan:\n\n```c\n#define LEDGER_CAP 8\ntypedef struct { int ids[LEDGER_CAP]; int count; } ledger_t;\nvoid ledger_init(ledger_t *lg);              /* count = 0, ids zeroed */\nint  ledger_acquire(ledger_t *lg, int id);   /* 1 ok; 0 duplicate; -1 full */\nint  ledger_release(ledger_t *lg, int id);   /* 1 ok; 0 missing */\nint  ledger_live(const ledger_t *lg);        /* number of live ids */\nint  ledger_audit(const ledger_t *lg);       /* 1 if count in [0,CAP] and no duplicate ids; else 0 */\n```",
+  "tests": [
+    {
+      "name": "acquire and release lifecycle",
+      "code": "ledger_t lg;\nledger_init(&lg);\nCHECK_EQ(ledger_acquire(&lg, 7), 1);\nCHECK_EQ(ledger_acquire(&lg, 9), 1);\nCHECK_EQ(ledger_live(&lg), 2);\nCHECK_EQ(ledger_release(&lg, 7), 1);\nCHECK_EQ(ledger_live(&lg), 1);\nCHECK_EQ(ledger_release(&lg, 7), 0);",
+      "hint": "Acquire adds, release removes exactly once; a second release of the same id reports missing."
+    },
+    {
+      "name": "duplicate acquire rejected",
+      "code": "ledger_t lg;\nledger_init(&lg);\nCHECK_EQ(ledger_acquire(&lg, 5), 1);\nCHECK_EQ(ledger_acquire(&lg, 5), 0);\nCHECK_EQ(ledger_live(&lg), 1);",
+      "hint": "A double-acquire is the ledger's use-after-free: it must be rejected, not double-recorded."
+    },
+    {
+      "name": "capacity respected",
+      "code": "ledger_t lg;\nledger_init(&lg);\nfor (int i = 0; i < LEDGER_CAP; i++) CHECK_EQ(ledger_acquire(&lg, i + 1), 1);\nCHECK_EQ(ledger_acquire(&lg, 99), -1);\nCHECK_EQ(ledger_live(&lg), LEDGER_CAP);",
+      "hint": "The ninth acquire reports full without corrupting the eight live entries."
+    },
+    {
+      "name": "audit catches corruption",
+      "code": "ledger_t lg;\nledger_init(&lg);\nCHECK_EQ(ledger_audit(&lg), 1);\nledger_acquire(&lg, 3);\nCHECK_EQ(ledger_audit(&lg), 1);\nlg.ids[1] = 3;\nlg.count = 2;\nCHECK_EQ(ledger_audit(&lg), 0);",
+      "hint": "A healthy ledger audits clean; forcing a second entry to share id 3 is corruption the audit must catch."
+    }
+  ]
+}

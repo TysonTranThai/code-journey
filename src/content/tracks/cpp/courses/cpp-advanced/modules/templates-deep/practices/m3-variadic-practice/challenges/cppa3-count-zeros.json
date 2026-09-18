@@ -1,0 +1,21 @@
+{
+  "id": "cppa3-count-zeros",
+  "title": "Count with a Fold",
+  "prompt": "Implement `countTrue(args...)` returning how many of its boolean-convertible arguments are true, and `hasNone(args...)` returning whether all are false. Both must survive an empty pack.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n\ntemplate <class... A>\nconstexpr int countTrue(A... a);   // count of true-ish elements\n\ntemplate <class... A>\nconstexpr bool hasNone(A... a);    // true iff every element is false (incl. empty)\n",
+  "tests": [
+    {
+      "name": "countTrue counts correctly",
+      "code": "static_assert(countTrue(true, false, true) == 2, \"count\");\nstatic_assert(countTrue() == 0, \"empty count\");\nCHECK_EQ(countTrue(false, false), 0);",
+      "hint": "(0 + ... + (a ? 1 : 0)) — add 1 per true element."
+    },
+    {
+      "name": "hasNone including empty pack",
+      "code": "static_assert(hasNone(false, false), \"all false\");\nstatic_assert(hasNone(), \"empty is vacuously none\");\nstatic_assert(!hasNone(false, true), \"one true breaks it\");",
+      "hint": "(0 + ... + (a ? 1 : 0)) == 0 — reuse the count; the empty pack folds to 0 == 0, true."
+    }
+  ]
+}

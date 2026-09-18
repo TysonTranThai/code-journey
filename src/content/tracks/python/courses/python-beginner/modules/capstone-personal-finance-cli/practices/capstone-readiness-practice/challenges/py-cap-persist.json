@@ -1,0 +1,16 @@
+{
+  "id": "py-cap-persist",
+  "title": "Acceptance: Persistence with Fallback",
+  "prompt": "Build save_expenses(path, expenses) + load_expenses(path): JSON roundtrip with ensure_ascii=False; missing file -> []; corrupt file -> []. Then demonstrate: save one Vietnamese-noted expense (\"cà phê\"), load it back, and print the LOADED amount (one line).",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "",
+  "tests": [
+    {
+      "name": "survives everything",
+      "code": "import json as _j, os as _os\nfor p in (\"cap_probe.json\",):\n    if _os.path.exists(p):\n        _os.remove(p)\nassert load_expenses(\"cap_probe.json\") == [], \"missing -> []\"\nopen(\"cap_probe.json\", \"w\").write(\"{oops\")\nassert load_expenses(\"cap_probe.json\") == [], \"corrupt -> []\"\n_os.remove(\"cap_probe.json\")\nassert printed == [\"3.5\"], f\"print the loaded amount, got {printed}\"\nassert \"ensure_ascii=False\" in code, \"Vietnamese must stay readable\"",
+      "hint": "try/except around json.load catches JSONDecodeError; FileNotFoundError catches missing."
+    }
+  ],
+  "level": "mini-build"
+}

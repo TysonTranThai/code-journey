@@ -1,0 +1,10 @@
+{
+  "title": "Phát hiện N+1 từ query log",
+  "prompt": "Cài `count_queries(request_log)` — `request_log` là list các `(request_id, queries)` với `queries` là list chuỗi:\n\n- `'fetch-all:<entity>'` nạp một bộ sưu tập\n- `'fetch-one:<entity>:<id>'` nạp một thực thể trong vòng lặp\n- trả `(total, offenders)`: `total` đếm mọi truy vấn; `offenders` liệt kê request_id (theo thứ tự xuất hiện đầu) có dấu hiệu N+1 — một `fetch-all` theo sau bởi **3 hoặc nhiều hơn** truy vấn `fetch-one`\n\nRequest có nhiều truy vấn nhưng không theo mẫu fetch-all-rồi-vòng-lặp KHÔNG phải offender (job chạy hàng loạt làm việc lớn hợp pháp).",
+  "tests": [
+    {
+      "name": "Dấu hiệu N+1 phải cụ thể",
+      "hint": "r1 là N+1 kinh điển; r2 là hai lần nạp batch; r3 không có gốc fetch-all."
+    }
+  ]
+}

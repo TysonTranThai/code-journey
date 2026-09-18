@@ -1,0 +1,40 @@
+**Promise** là một giá trị có thể chưa tồn tại. Nó có ba trạng thái:
+**pending** → **fulfilled** (kèm giá trị) hoặc **rejected** (kèm lỗi) — và một
+khi đã settled thì không bao giờ đổi nữa.
+
+## Chuỗi nối
+
+Mỗi `.then` trả về một promise **mới** — chính điều này khiến chuỗi phẳng thay
+vì lồng nhau:
+
+```js
+fetchJSON("/api/user")
+  .then((user) => fetchJSON("/api/orders/" + user.id))
+  .then((orders) => render(orders))
+  .catch((err) => showError(err));   // bắt lỗi ở BẤT KỲ bước nào phía trên
+  .finally(() => hideSpinner());     // chạy theo cả hai hướng
+```
+
+Ba quy tắc đáng nhớ:
+
+- Return một giá trị trong `.then` làm promise kế tiếp fulfilled với giá trị đó.
+- Return một **promise** từ `.then` khiến chuỗi chờ promise đó.
+- Một lỗi bị ném (hoặc promise bị trả về bị reject) sẽ nhảy tới `.catch` gần
+  nhất — lỗi _lan truyền_ như try/catch, xuyên suốt cả chuỗi.
+
+## Lỗi cũng là giá trị
+
+`.catch(onRejected)` chính là `.then(undefined, onRejected)`. Một `.catch`
+return bình thường sẽ _hồi phục_ chuỗi — các `.then` phía sau vẫn chạy. Đây là
+cách logic dự phòng hoạt động:
+
+```js
+getFromCache(id)
+  .catch(() => getFromNetwork(id)) // phương án dự phòng
+  .then(render);
+```
+
+## finally
+
+`.finally(fn)` chạy với cả hai kết quả và không nhận gì — nó dùng để dọn dẹp
+(tắt spinner, nhả lock), không phải để lấy kết quả.

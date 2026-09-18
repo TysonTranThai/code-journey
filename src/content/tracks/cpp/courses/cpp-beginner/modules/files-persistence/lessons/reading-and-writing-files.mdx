@@ -1,0 +1,43 @@
+## Writing a file
+
+```cpp
+#include <fstream>
+
+int main() {
+    std::ofstream out{"notes.txt"};                 // open for writing (creates/truncates)
+    if (!out) {                                     // ALWAYS check the open
+        std::cerr << "cannot open notes.txt\n";
+        return 1;
+    }
+    out << "buy milk\n" << "learn C++\n";
+}                                                    // destructor closes — RAII
+```
+
+No `close()` call: the destructor closes and flushes, even on early returns. That is module 12's RAII paying rent.
+
+## Reading a file line by line
+
+```cpp
+std::ifstream in{"notes.txt"};
+if (!in) { /* same check */ }
+std::string line;
+while (std::getline(in, line)) {
+    std::cout << line << '\n';
+}                                                   // loop ends at EOF
+```
+
+The `getline` loop is THE file-reading pattern; the stream's boolean state ends the loop exactly at end-of-file.
+
+## Append mode and file modes
+
+```cpp
+std::ofstream log{"app.log", std::ios::app};    // append, do not truncate
+```
+
+Other modes exist (`std::ios::binary`, `in|out`) but Beginner lives in text mode.
+
+## The checks that matter
+
+1. **Open check** after construction (`if (!out)`) — missing files, permissions, wrong paths.
+2. **Read check** in the loop condition — handled by `getline` itself.
+3. Rare deep failures (disk full mid-write) are real but Intermediate's exception-safety territory; here, check the open and the loop.

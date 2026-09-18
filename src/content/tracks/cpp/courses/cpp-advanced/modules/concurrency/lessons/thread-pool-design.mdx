@@ -1,0 +1,25 @@
+## The anatomy
+
+1. **Task queue** — `std::deque<std::function<void()>>` under a mutex, with a `condition_variable` to wake idle workers,
+2. **Workers** — N threads looping: wait for a task, run it, repeat,
+3. **Shutdown** — a `stopping` flag; workers drain or abandon the queue per policy, then exit.
+
+```cpp
+class ThreadPool {
+public:
+    explicit ThreadPool(std::size_t n);
+    void submit(std::function<void()> f);   // enqueue + notify_one
+    ~ThreadPool();                          // set stopping, notify_all, join all
+};
+```
+
+## The design decisions that matter
+
+- **Backpressure**: unbounded queues hide overload until memory dies. Production pools bound the queue or shed load.
+- **Worker count**: ~hardware_concurrency for CPU-bound work; more for I/O-bound. Measure, never guess (Module 11).
+- **Futures on submit**: production `submit` returns `std::future<T>` via `std::packaged_task` so callers get results *and* exceptions. The graded build does exactly this.
+- **Exception safety**: a task that throws must not kill a worker — `packaged_task` captures the exception into the future; a bare loop must catch.
+
+## The graded build
+
+You will implement a small pool with future-returning submit and graceful shutdown, then verify: all tasks run, results are correct, exceptions surface through futures, and the destructor joins cleanly.

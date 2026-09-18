@@ -1,0 +1,39 @@
+## Một bố cục có thể lớn lên
+
+```text
+project/
+  include/           # header công khai (các hợp đồng)
+    mathutil.h
+  src/               # phần cài đặt
+    main.c
+    mathutil.c
+  tests/             # chương trình test (một main cho mỗi mối quan tâm)
+  Makefile
+  README.md
+```
+
+Quy tắc: header trong `include/` là thứ NGƯỜI KHÁC được dùng; mọi thứ trong
+`src/` được phép tổ chức lại tự do. Test nằm ngoài `src/` để không bao giờ
+đóng gói vào binary sản phẩm.
+
+## Mức tối thiểu của README
+
+- chương trình làm gì (một đoạn)
+- cách build (lệnh chính xác)
+- cách chạy + đầu ra mong đợi
+- giới hạn đã biết
+
+## Chuẩn chất lượng bạn vừa chạm tới
+
+- mỗi hàm nhỏ đến mức đọc không cần cuộn
+- warning sạch dưới `-Wall -Wextra`
+- mỗi vùng cấp phát có đúng một chủ sở hữu rõ ràng
+- kiểm tra NULL/guard tại mọi ranh giới bạn không kiểm soát
+- test với đáp án đã biết — tái lập bằng một lệnh
+
+## Git trong hai đoạn văn
+
+Commit nhỏ, commit thường, viết message nói rõ VÌ SAO. Không bao giờ commit
+sản phẩm build (`.o`, binary) — `.gitignore` lo việc đó. Một branch cho mỗi
+tính năng; merge khi tính năng qua test. Đó là 90% kỷ luật Git chuyên nghiệp
+cho một dự án cỡ này.

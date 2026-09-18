@@ -22,6 +22,7 @@ export async function executeJob(payload: {
   testFiles: { name: string; code: string }[];
   timeoutMs: number;
   memoryMb: number;
+  language?: "javascript" | "python" | "cpp" | "java" | "c" | "csharp";
 }): Promise<VerdictPayload> {
   const startedAt = Date.now();
   const result = await runSandboxed(payload);
@@ -47,7 +48,7 @@ export async function executeJob(payload: {
       verdict: "error",
       perTestResults: [],
       runtimeMs,
-      output: truncateOutput(result.stderr || result.stdout || "no output produced"),
+      output: truncateOutput(result.stderr || learnerOutput(result.stdout) || "no output produced"),
     };
   }
 
@@ -56,8 +57,25 @@ export async function executeJob(payload: {
     verdict: allPassed ? "passed" : "failed",
     perTestResults,
     runtimeMs,
-    output: truncateOutput(result.stdout),
+    output: truncateOutput(learnerOutput(result.stdout)),
   };
+}
+
+/**
+ * Learner-facing console output: hide the grader's own protocol lines (the
+ * per-test `__TEST_RESULT__ …` markers and the harness's `PASS`
+ * confirmations) so the console shows only what the learner's code printed.
+ * These lines are grading plumbing — displaying them leaked the marker
+ * format to learners and looked like an error even on success.
+ */
+function learnerOutput(stdout: string): string {
+  return stdout
+    .split("\n")
+    .filter((line) => {
+      const trimmed = line.trim();
+      return !trimmed.startsWith(TEST_RESULT_MARKER) && trimmed !== "PASS";
+    })
+    .join("\n");
 }
 
 function parseTestResults(result: { stdout: string; stderr: string }): PerTestResult[] {
@@ -77,10 +95,30 @@ function parseTestResults(result: { stdout: string; stderr: string }): PerTestRe
 
   // Attach educational messages: on failure, the test's stderr line (the
   // thrown Error message) — CHAL-05: never a bare boolean.
+  // CHAL-05 + learner bug report 2026-09-13: the failure hint must be the
+  // human message a learner can act on. When a test snippet itself throws
+  // outside the harness try (author bug) or the file fails to parse, Node
+  // prints a full crash report: `file:///job/test-….mjs:5` location line, an
+  // unprefixed echo of the offending source line, a caret marker, and `at …`
+  // stack frames. None of that is a hint — a filesystem URL as the failure
+  // reason is exactly what the learner complained about. Python/other
+  // runtimes never emit those shapes, so the filters are safe globally.
   const stderrLines = result.stderr
     .split("\n")
     .map((l) => l.trim())
-    .filter((l) => l.length > 0 && !l.startsWith("node:"));
+    .filter((l) => l.length > 0 && !l.startsWith("node:"))
+    .filter((l) => {
+      if (l.startsWith("file://")) return false; // Node location line
+      if (l.startsWith("at ")) return false; // stack frame
+      if (/^[|^\s]*\^/.test(l)) return false; // caret marker
+      // Crash-report tail line: `Node.js v22.17.0` at the very end.
+      if (/^Node\.js v\d+/.test(l)) return false;
+      // Unprefixed source-echo line: looks like JS source (call/keyword
+      // start) rather than a sentence. Exception messages like
+      // "ReferenceError: x is not defined" are kept.
+      if (/^(const|let|var|await|async|function|return|if|for|while|import|export|class|throw|new\s|[a-zA-Z_$][\w$.]*\s*\()/.test(l)) return false;
+      return true;
+    });
 
   const results: PerTestResult[] = [];
   for (const [name, outcome] of perTest) {

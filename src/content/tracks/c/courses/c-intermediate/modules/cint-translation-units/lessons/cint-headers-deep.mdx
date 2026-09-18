@@ -1,0 +1,64 @@
+## A header is an interface document
+
+A `.h` file is the public contract of a component: everything a *user* of the
+component may rely on. A `.c` file is the private implementation. The discipline:
+
+- **Headers**: type definitions the API exposes, function **declarations**,
+  `extern` object declarations, macros that are part of the contract.
+- **Source files**: definitions, file-scope `static` helpers, private macros.
+
+A header should compile on its own — it includes what it needs, never " hopes
+the includer included things first":
+
+```c
+/* vec.h */
+#ifndef CINT_VEC_H
+#define CINT_VEC_H
+#include <stddef.h>       /* for size_t — self-sufficient */
+
+typedef struct Vec Vec;           /* opaque: users hold pointers, not innards */
+Vec *vec_create(size_t initial_capacity);
+int  vec_push(Vec *v, int value);
+size_t vec_len(const Vec *v);
+void vec_destroy(Vec *v);
+#endif
+```
+
+## Include guards, mechanically
+
+`#ifndef/#define/#endif` make a header idempotent: pasting it twice into one TU
+still yields one copy of each declaration. Without guards, two headers that each
+include a common third header would paste its declarations twice — and repeated
+non-`extern` definitions or typedef redefinitions can fail the compile. (C11+
+allows this pattern to be replaced by `#pragma once` in practice, but guards are
+the portable, standard idiom.)
+
+## Declarations never belong with initializers
+
+```c
+/* in a header */
+extern int threshold = 50;   /* WRONG: a definition with storage, in every TU */
+extern int threshold;        /* RIGHT: a promise; one .c defines it */
+```
+
+Const deserves care: `const int limit;` at file scope in a header is a
+*definition in each TU* (internal linkage by default for const) — legal but
+memory-duplicating. Shared mutable constants use `extern const` + one
+definition.
+
+## Designing the boundary
+
+1. **Minimize the surface.** Export functions, not globals. Every global is a
+   hidden parameter and a concurrency hazard.
+2. **Make ownership explicit in signatures** (Module 3 deepens this):
+   `vec_create` returns something the caller must `vec_destroy` — the name says
+   both halves.
+3. **Opaque types for structure freedom.** If users never dereference `Vec *`,
+   you may change the layout without recompiling the world.
+
+## Check your understanding
+
+- Where does the definition of `threshold` live? (Exactly one `.c` file.)
+- What breaks if two headers both define `typedef struct Point Point;` with the
+  same shape? (Duplicate typedef — C23 relaxes this, but the discipline stands:
+  define shared types once in a shared header.)

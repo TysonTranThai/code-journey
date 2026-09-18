@@ -1,0 +1,34 @@
+## Family 1: the crash (segfault)
+
+The process dies with `Segmentation fault`. Usual suspects, in order:
+
+1. NULL or uninitialized pointer dereference
+2. out-of-bounds array index
+3. use-after-free / dangling pointer
+4. writing through a bad pointer in a string function
+
+A segfault tells you WHERE it died (the stack trace) but not WHY — the bad
+address was usually produced much earlier.
+
+## Family 2: wrong output, no crash
+
+The sneakiest. Causes: off-by-one loop bounds, wrong comparison operator,
+accumulating into the wrong variable, format-specifier mismatch, integer
+division where you meant floating division. The defense is tests with known
+answers — exactly what this course's challenges run against your code.
+
+## Family 3: the hang
+
+An infinite loop: the counter never moves toward the bound, or the
+termination condition can never become false. Check that something in the
+loop body changes every iteration.
+
+## The debugging loop
+
+1. reproduce — find the smallest input that fails
+2. predict — say out loud what SHOULD happen
+3. instrument — print the values at each step (printf is the oldest
+   debugger and still a great one)
+4. narrow — binary-search the pipeline: is the input already wrong, or the
+   processing?
+5. fix the cause, not the symptom — a swallowed crash returns as a worse bug

@@ -1,0 +1,26 @@
+## Parameter pack
+
+`template <class... A> void f(A... args);` giữ *số lượng bất kỳ* đối số với *kiểu bất kỳ*. `sizeof...(args)` là số phần tử. Phép mở rộng `args...` triển khai pack tại mỗi nơi dùng.
+
+## Unary fold — thuật toán một dòng
+
+**Fold expression** áp một toán tử trên toàn bộ pack:
+
+```cpp
+template <class... A> constexpr auto sum(A... a)     { return (a + ... + 0); }  // binary right fold, 0 = giá trị khi pack rỗng
+template <class... A> constexpr auto product(A... a) { return (a * ... * 1); }
+template <class... A> constexpr int truthy(A... a)   { return (0 + ... + (a ? 1 : 0)); }
+```
+
+Các dạng: `(pack op ...)` (unary phải), `(... op pack)` (unary trái), `(pack op ... op init)` (binary). Dạng **binary** quan trọng: nó định nghĩa kết quả khi **pack rỗng** — thiếu nó, `sum()` là ill-formed, đúng cái lỗi mà bài kiểm tra của bạn phải bắt được.
+
+## if constexpr — rẽ nhánh lúc biên dịch
+
+Trong thân fold, bạn có thể rẽ nhánh theo kiểu của từng phần tử:
+
+```cpp
+template <class... A> std::string describe(A... a);
+// từng phần tử: if constexpr (std::is_integral_v<decltype(v)>) ... else ...
+```
+
+Nhánh bị loại bỏ thậm chí không được biên dịch — nhờ vậy "chỉ serialize khi có member đó" trở nên sạch sẽ mà không cần SFINAE.

@@ -1,0 +1,32 @@
+## From source to executing IL
+
+Your `.cs` file is never run. The compiler (Roslyn) parses it into a syntax
+tree, binds every identifier against referenced assemblies, and emits an
+**assembly**: a PE file whose payload is **IL** (stack-based instructions)
+plus **metadata** tables describing every type and member. At run time, each
+method's IL is translated to native machine code by the **JIT** — once per
+method per process, cached, and (in .NET's default tiered mode) re-compiled
+later with optimizations if the method turns hot.
+
+```csharp
+// Statics and literals are metadata; logic is IL:
+static int Add(int a, int b) => a + b;
+// IL: ldarg.0, ldarg.1, add, ret
+```
+
+Three layers matter for debugging real systems:
+
+| Layer | What it decides | Where you feel it |
+|---|---|---|
+| Roslyn (compile) | language errors, overload choice, nullability warnings | build output |
+| JIT (run) | native code quality, inlining, devirtualization | latency, throughput |
+| CLR runtime | GC, layout, type loading, exceptions, threads | memory & failure modes |
+
+**Single-translation-unit grading**: in this course your solution and each
+test compile into ONE assembly, exactly how you should mentally model
+"internal" visibility and type identity: same assembly, same types.
+
+The environment you are graded in runs .NET 10 (SDK 10.0.401) with C# 14.
+The same three-layer model explains why some bugs are compile-time (Roslyn
+found them), some are startup-time (type load), and some only appear under
+memory pressure (runtime policy) — different layers, different tools.

@@ -1,0 +1,25 @@
+{
+  "id": "i2-db-checkpoint",
+  "title": "Data Bench",
+  "prompt": "Write THREE functions. 1) `joinPlan(query)` — given a desired query description, return the join type: \"users and their tasks (skip users with none)\" => \"inner\"; \"all users with task counts (zero included)\" => \"left\"; \"all tasks with their tag names\" (many-to-many) => \"inner-two\" (two joins); anything else => \"none\". 2) `txDecision(steps, hasFailureRisk)` — return \"transaction\" when there are 2+ write steps OR hasFailureRisk; \"single\" when exactly one write step and no risk; \"readonly\" when zero write steps. 3) `countQueries(taskCount, pattern)` — pattern \"n+1\" => taskCount + 1 queries; \"join\" => 1; \"in-clause\" => 2.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function joinPlan(query) {\n  // your code\n}\n\nfunction txDecision(steps, hasFailureRisk) {\n  // your code\n}\n\nfunction countQueries(taskCount, pattern) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "join types match intent",
+      "code": "const fn = new Function(code + \"\\nreturn { joinPlan, txDecision, countQueries };\");\nconst { joinPlan } = fn();\nif (joinPlan(\"users and their tasks (skip users with none)\") !== \"inner\") throw new Error(\"Only matched rows => inner.\");\nif (joinPlan(\"all users with task counts (zero included)\") !== \"left\") throw new Error(\"Zeros included => left.\");\nif (joinPlan(\"all tasks with their tag names\") !== \"inner-two\") throw new Error(\"Junction table => two joins.\");",
+      "hint": "Preservation decides inner vs left; junction tables need two hops."
+    },
+    {
+      "name": "transactions where they belong",
+      "code": "const fn = new Function(code + \"\\nreturn { joinPlan, txDecision, countQueries };\");\nconst { txDecision } = fn();\nif (txDecision(1, false) !== \"single\") throw new Error(\"One write, no risk => single.\");\nif (txDecision(2, false) !== \"transaction\") throw new Error(\"Two writes => atomic.\");\nif (txDecision(0, false) !== \"readonly\") throw new Error(\"No writes => readonly.\");\nif (txDecision(1, true) !== \"transaction\") throw new Error(\"Risk => wrap it.\");",
+      "hint": "Order the checks: zero, then multi-or-risk, then single."
+    },
+    {
+      "name": "N+1 counted honestly",
+      "code": "const fn = new Function(code + \"\\nreturn { joinPlan, txDecision, countQueries };\");\nconst { countQueries } = fn();\nif (countQueries(50, \"n+1\") !== 51) throw new Error(\"50 tasks + 1 list query = 51.\");\nif (countQueries(50, \"join\") !== 1) throw new Error(\"A join is one query.\");\nif (countQueries(50, \"in-clause\") !== 2) throw new Error(\"List + batched fetch = 2.\");",
+      "hint": "Three patterns, three formulas."
+    }
+  ]
+}

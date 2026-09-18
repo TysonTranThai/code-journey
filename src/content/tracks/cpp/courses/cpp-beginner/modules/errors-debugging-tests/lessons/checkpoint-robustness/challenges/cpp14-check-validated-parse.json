@@ -1,0 +1,36 @@
+{
+  "id": "cpp14-check-validated-parse",
+  "title": "Validated Parsing",
+  "prompt": "Implement `parse_percent(text)` returning the percentage as a double in [0, 100]: throw `std::invalid_argument` for non-numeric text, `std::out_of_range` for numbers outside the range. Valid values return normally.",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <stdexcept>\n#include <string>\n\ndouble parse_percent(const std::string& text) {\n    // TODO\n}",
+  "tests": [
+    {
+      "name": "valid",
+      "code": "CHECK_NEAR(parse_percent(std::string{\"42.5\"}), 42.5, 0.001);",
+      "hint": "Plain valid input returns the value."
+    },
+    {
+      "name": "bounds inclusive",
+      "code": "CHECK_NEAR(parse_percent(std::string{\"0\"}), 0.0, 0.001); CHECK_NEAR(parse_percent(std::string{\"100\"}), 100.0, 0.001);",
+      "hint": "0 and 100 are inside the range."
+    },
+    {
+      "name": "not a number",
+      "code": "CHECK_THROWS(parse_percent(std::string{\"abc\"}));",
+      "hint": "std::stod throws invalid_argument — let it propagate."
+    },
+    {
+      "name": "out of range",
+      "code": "CHECK_THROWS(parse_percent(std::string{\"150\"}));",
+      "hint": "Above 100 must throw std::out_of_range."
+    },
+    {
+      "name": "negative",
+      "code": "CHECK_THROWS(parse_percent(std::string{\"-1\"}));",
+      "hint": "Below 0 must throw std::out_of_range."
+    }
+  ],
+  "level": "combination"
+}

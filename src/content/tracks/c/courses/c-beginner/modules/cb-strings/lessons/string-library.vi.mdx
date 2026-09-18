@@ -1,0 +1,41 @@
+## strlen — độ dài
+
+```c
+#include <string.h>
+size_t n = strlen("hello");     // 5 — quét đến terminator
+```
+
+Đếm ký tự TRƯỚC '\\0'. Với mảng không có terminator, nó đọc vượt biên —
+terminator là trách nhiệm của bạn.
+
+## strcpy — cái nguy hiểm
+
+```c
+char dst[8];
+strcpy(dst, "hello");           // chép 6 byte (5 + terminator)
+```
+
+strcpy chép đến terminator của nguồn và KHÔNG biết `dst` lớn bao nhiêu. Nguồn
+dài hơn dst = tràn bộ đệm. Quy tắc của khóa cho bài có chấm điểm và cho đời:
+**biết kích thước đích**, và ưu tiên `snprintf` hoặc chép có chặn khi độ dài
+không hiển nhiên:
+
+```c
+char dst[8];
+snprintf(dst, sizeof dst, "%s", src);   // chép nhiều nhất sizeof dst - 1 + '\\0'
+```
+
+## strcmp — so sánh KHÔNG phải ==
+
+```c
+if (a == b)             // so sánh CON TRỎ — hầu như luôn sai
+if (strcmp(a, b) == 0)  // so sánh NỘI DUNG — đúng
+```
+
+strcmp trả về `<0`, `0`, hoặc `>0` (theo thứ tự từ điển). Bằng nhau chính xác là
+`== 0`.
+
+## Thói quen cần hình thành
+
+Trước mọi phép toán chuỗi, hãy trả lời: đích có đủ chỗ không, và nguồn có
+terminator không? Nếu câu nào "chưa chắc", xử lý cái đó trước.

@@ -1,0 +1,18 @@
+{
+  "title": "Tiêm Payment Gateway",
+  "prompt": "Thiết kế luồng checkout quanh một hợp đồng:\n- `interface PaymentGateway { String charge(int cents); }` bên trong `Solution`\n  — trả về id biên nhận như `\"ok-1000\"`.\n- `static class CheckoutService` với constructor nhận `PaymentGateway`\n  và method `static String checkout(PaymentGateway g, int cents)`\n  ủy quyền cho gateway và trả kết quả của nó.\n- Cài `static class FakeGateway implements PaymentGateway` trả\n  `\"ok-\" + cents` — test double mà service sẽ chạy với nó.\n\nTest chạy service với fake (không bao giờ API thanh toán thật): đây là\ndependency inversion thực hành bằng tay. Thêm nữa, một gateway-lambda khác\nhành vi chứng minh service dùng đúng gateway được tiêm — không hard-code.",
+  "tests": [
+    {
+      "name": "Service ủy quyền cho gateway được tiêm",
+      "hint": "checkout phải gọi gateway.charge và trả giá trị của nó không thay đổi."
+    },
+    {
+      "name": "Fake là hiện thực thật của hợp đồng",
+      "hint": "FakeGateway phải hiện thực PaymentGateway.charge(int)."
+    },
+    {
+      "name": "Service dùng ĐÚNG gateway được tiêm",
+      "hint": "checkout phải trả kết quả của gateway nó nhận — lambda gateway chứng minh không hard-code."
+    }
+  ]
+}

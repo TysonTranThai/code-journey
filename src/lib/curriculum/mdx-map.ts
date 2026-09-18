@@ -10,128 +10,4234 @@ import type { ComponentType } from "react";
  */
 export type MdxComponent = ComponentType<Record<string, unknown>>;
 
+import AaaDiscipline from "@/content/tracks/java/courses/java-intermediate/modules/java-testing-deep/lessons/aaa-discipline.mdx";
+import AaaDisciplineVi from "@/content/tracks/java/courses/java-intermediate/modules/java-testing-deep/lessons/aaa-discipline.vi.mdx";
+import AbiStableInterfaces from "@/content/tracks/cpp/courses/cpp-advanced/modules/abi-linking/lessons/abi-stable-interfaces.mdx";
+import AbiStableInterfacesVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/abi-linking/lessons/abi-stable-interfaces.vi.mdx";
+import AccessibleNames from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/accessible-names.mdx";
+import AccessibleNamesVi from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/accessible-names.vi.mdx";
+import AccumulatorPatterns from "@/content/tracks/java/courses/java-beginner/modules/java-loops/lessons/accumulator-patterns.mdx";
+import AccumulatorPatternsVi from "@/content/tracks/java/courses/java-beginner/modules/java-loops/lessons/accumulator-patterns.vi.mdx";
+import AddressesAndPointers from "@/content/tracks/c/courses/c-beginner/modules/pointer-fundamentals/lessons/addresses-and-pointers.mdx";
+import AddressesAndPointersVi from "@/content/tracks/c/courses/c-beginner/modules/pointer-fundamentals/lessons/addresses-and-pointers.vi.mdx";
+import AdvancedCapstoneBrief from "@/content/tracks/python/courses/python-advanced/modules/capstone-production-platform/lessons/advanced-capstone-brief.mdx";
+import AdvancedCapstoneBriefVi from "@/content/tracks/python/courses/python-advanced/modules/capstone-production-platform/lessons/advanced-capstone-brief.vi.mdx";
+import AdvancedCheckpointAlgorithms from "@/content/tracks/cpp/courses/cpp-intermediate/modules/iterators-algorithms/lessons/advanced-checkpoint-algorithms.mdx";
+import AdvancedCheckpointAlgorithmsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/iterators-algorithms/lessons/advanced-checkpoint-algorithms.vi.mdx";
+import AdvancedCheckpointApis from "@/content/tracks/python/courses/python-advanced/modules/production-apis/lessons/advanced-checkpoint-apis.mdx";
+import AdvancedCheckpointApisVi from "@/content/tracks/python/courses/python-advanced/modules/production-apis/lessons/advanced-checkpoint-apis.vi.mdx";
+import AdvancedCheckpointArchitecture from "@/content/tracks/python/courses/python-advanced/modules/architecture-patterns/lessons/advanced-checkpoint-architecture.mdx";
+import AdvancedCheckpointArchitectureVi from "@/content/tracks/python/courses/python-advanced/modules/architecture-patterns/lessons/advanced-checkpoint-architecture.vi.mdx";
+import AdvancedCheckpointAsync from "@/content/tracks/python/courses/python-advanced/modules/structured-async/lessons/advanced-checkpoint-async.mdx";
+import AdvancedCheckpointAsyncVi from "@/content/tracks/python/courses/python-advanced/modules/structured-async/lessons/advanced-checkpoint-async.vi.mdx";
+import AdvancedCheckpointCapstone from "@/content/tracks/python/courses/python-advanced/modules/capstone-production-platform/lessons/advanced-checkpoint-capstone.mdx";
+import AdvancedCheckpointCapstoneVi from "@/content/tracks/python/courses/python-advanced/modules/capstone-production-platform/lessons/advanced-checkpoint-capstone.vi.mdx";
+import AdvancedCheckpointConcurrency from "@/content/tracks/python/courses/python-advanced/modules/concurrency-parallelism/lessons/advanced-checkpoint-concurrency.mdx";
+import AdvancedCheckpointConcurrencyVi from "@/content/tracks/python/courses/python-advanced/modules/concurrency-parallelism/lessons/advanced-checkpoint-concurrency.vi.mdx";
+import AdvancedCheckpointCopyMove from "@/content/tracks/cpp/courses/cpp-intermediate/modules/operators-copy-move/lessons/advanced-checkpoint-copy-move.mdx";
+import AdvancedCheckpointCopyMoveVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/operators-copy-move/lessons/advanced-checkpoint-copy-move.vi.mdx";
+import AdvancedCheckpointDatabases from "@/content/tracks/python/courses/python-advanced/modules/databases-data-access/lessons/advanced-checkpoint-databases.mdx";
+import AdvancedCheckpointDatabasesVi from "@/content/tracks/python/courses/python-advanced/modules/databases-data-access/lessons/advanced-checkpoint-databases.vi.mdx";
+import AdvancedCheckpointDatamodel from "@/content/tracks/python/courses/python-advanced/modules/data-model-protocols/lessons/advanced-checkpoint-datamodel.mdx";
+import AdvancedCheckpointDatamodelVi from "@/content/tracks/python/courses/python-advanced/modules/data-model-protocols/lessons/advanced-checkpoint-datamodel.vi.mdx";
+import AdvancedCheckpointDistributed from "@/content/tracks/python/courses/python-advanced/modules/distributed-systems/lessons/advanced-checkpoint-distributed.mdx";
+import AdvancedCheckpointDistributedVi from "@/content/tracks/python/courses/python-advanced/modules/distributed-systems/lessons/advanced-checkpoint-distributed.vi.mdx";
+import AdvancedCheckpointDsa from "@/content/tracks/cpp/courses/cpp-intermediate/modules/dsa/lessons/advanced-checkpoint-dsa.mdx";
+import AdvancedCheckpointDsaVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/dsa/lessons/advanced-checkpoint-dsa.vi.mdx";
+import AdvancedCheckpointErrors from "@/content/tracks/cpp/courses/cpp-intermediate/modules/errors-and-files/lessons/advanced-checkpoint-errors.mdx";
+import AdvancedCheckpointErrorsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/errors-and-files/lessons/advanced-checkpoint-errors.vi.mdx";
+import AdvancedCheckpointInternals from "@/content/tracks/python/courses/python-advanced/modules/cpython-internals/lessons/advanced-checkpoint-internals.mdx";
+import AdvancedCheckpointInternalsVi from "@/content/tracks/python/courses/python-advanced/modules/cpython-internals/lessons/advanced-checkpoint-internals.vi.mdx";
+import AdvancedCheckpointMemory from "@/content/tracks/cpp/courses/cpp-intermediate/modules/memory-and-lifetime/lessons/advanced-checkpoint-memory.mdx";
+import AdvancedCheckpointMemoryVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/memory-and-lifetime/lessons/advanced-checkpoint-memory.vi.mdx";
+import AdvancedCheckpointMetaprogramming from "@/content/tracks/python/courses/python-advanced/modules/metaprogramming/lessons/advanced-checkpoint-metaprogramming.mdx";
+import AdvancedCheckpointMetaprogrammingVi from "@/content/tracks/python/courses/python-advanced/modules/metaprogramming/lessons/advanced-checkpoint-metaprogramming.vi.mdx";
+import AdvancedCheckpointModern from "@/content/tracks/cpp/courses/cpp-intermediate/modules/modern-cpp/lessons/advanced-checkpoint-modern.mdx";
+import AdvancedCheckpointModernVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/modern-cpp/lessons/advanced-checkpoint-modern.vi.mdx";
+import AdvancedCheckpointOop from "@/content/tracks/cpp/courses/cpp-intermediate/modules/object-oriented-design/lessons/advanced-checkpoint-oop.mdx";
+import AdvancedCheckpointOopVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/object-oriented-design/lessons/advanced-checkpoint-oop.vi.mdx";
+import AdvancedCheckpointPerformance from "@/content/tracks/python/courses/python-advanced/modules/performance-engineering/lessons/advanced-checkpoint-performance.mdx";
+import AdvancedCheckpointPerformanceVi from "@/content/tracks/python/courses/python-advanced/modules/performance-engineering/lessons/advanced-checkpoint-performance.vi.mdx";
+import AdvancedCheckpointPolymorphism from "@/content/tracks/cpp/courses/cpp-intermediate/modules/inheritance-polymorphism/lessons/advanced-checkpoint-polymorphism.mdx";
+import AdvancedCheckpointPolymorphismVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/inheritance-polymorphism/lessons/advanced-checkpoint-polymorphism.vi.mdx";
+import AdvancedCheckpointProduction from "@/content/tracks/python/courses/python-advanced/modules/production-tooling/lessons/advanced-checkpoint-production.mdx";
+import AdvancedCheckpointProductionVi from "@/content/tracks/python/courses/python-advanced/modules/production-tooling/lessons/advanced-checkpoint-production.vi.mdx";
+import AdvancedCheckpointSecurity from "@/content/tracks/python/courses/python-advanced/modules/security-engineering/lessons/advanced-checkpoint-security.mdx";
+import AdvancedCheckpointSecurityVi from "@/content/tracks/python/courses/python-advanced/modules/security-engineering/lessons/advanced-checkpoint-security.vi.mdx";
+import AdvancedCheckpointSmartPointers from "@/content/tracks/cpp/courses/cpp-intermediate/modules/smart-pointers-raii/lessons/advanced-checkpoint-smart-pointers.mdx";
+import AdvancedCheckpointSmartPointersVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/smart-pointers-raii/lessons/advanced-checkpoint-smart-pointers.vi.mdx";
+import AdvancedCheckpointStl from "@/content/tracks/cpp/courses/cpp-intermediate/modules/stl-fundamentals/lessons/advanced-checkpoint-stl.mdx";
+import AdvancedCheckpointStlVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/stl-fundamentals/lessons/advanced-checkpoint-stl.vi.mdx";
+import AdvancedCheckpointTemplates from "@/content/tracks/cpp/courses/cpp-intermediate/modules/templates/lessons/advanced-checkpoint-templates.mdx";
+import AdvancedCheckpointTemplatesVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/templates/lessons/advanced-checkpoint-templates.vi.mdx";
+import AdvancedCheckpointTesting from "@/content/tracks/python/courses/python-advanced/modules/advanced-testing/lessons/advanced-checkpoint-testing.mdx";
+import AdvancedCheckpointTestingVi from "@/content/tracks/python/courses/python-advanced/modules/advanced-testing/lessons/advanced-checkpoint-testing.vi.mdx";
+import AdvancedCheckpointTyping from "@/content/tracks/python/courses/python-advanced/modules/advanced-typing/lessons/advanced-checkpoint-typing.mdx";
+import AdvancedCheckpointTypingVi from "@/content/tracks/python/courses/python-advanced/modules/advanced-typing/lessons/advanced-checkpoint-typing.vi.mdx";
+import AdvancedForms from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/advanced-forms.mdx";
+import AdvancedFormsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/advanced-forms.vi.mdx";
+import AdvancedGridFlexbox from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/advanced-grid-flexbox.mdx";
+import AdvancedGridFlexboxVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/advanced-grid-flexbox.vi.mdx";
+import AdvancedObservability from "@/content/tracks/python/courses/python-advanced/modules/production-tooling/lessons/advanced-observability.mdx";
+import AdvancedObservabilityVi from "@/content/tracks/python/courses/python-advanced/modules/production-tooling/lessons/advanced-observability.vi.mdx";
+import AdvancedThreatModeling from "@/content/tracks/python/courses/python-advanced/modules/security-engineering/lessons/advanced-threat-modeling.mdx";
+import AdvancedThreatModelingVi from "@/content/tracks/python/courses/python-advanced/modules/security-engineering/lessons/advanced-threat-modeling.vi.mdx";
+import AlgorithmicWins from "@/content/tracks/python/courses/python-advanced/modules/performance-engineering/lessons/algorithmic-wins.mdx";
+import AlgorithmicWinsVi from "@/content/tracks/python/courses/python-advanced/modules/performance-engineering/lessons/algorithmic-wins.vi.mdx";
+import AlgorithmsBasics from "@/content/tracks/cpp/courses/cpp-intermediate/modules/iterators-algorithms/lessons/algorithms-basics.mdx";
+import AlgorithmsBasicsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/iterators-algorithms/lessons/algorithms-basics.vi.mdx";
+import AllocationCosts from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-allocators/lessons/allocation-costs.mdx";
+import AllocationCostsVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-allocators/lessons/allocation-costs.vi.mdx";
+import AnatomyOfAProgram from "@/content/tracks/c/courses/c-beginner/modules/cb-first-programs/lessons/anatomy-of-a-program.mdx";
+import AnatomyOfAProgramVi from "@/content/tracks/c/courses/c-beginner/modules/cb-first-programs/lessons/anatomy-of-a-program.vi.mdx";
 import AnatomyOfAWebsite from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/anatomy-of-a-website.mdx";
+import AnatomyOfAWebsiteVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/anatomy-of-a-website.vi.mdx";
+import ApiAppCheckpoint from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/api-app-checkpoint.mdx";
+import ApiAppCheckpointVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/api-app-checkpoint.vi.mdx";
+import ApiBoundaries from "@/content/tracks/c/courses/c-beginner/modules/multi-file/lessons/api-boundaries.mdx";
+import ApiBoundariesVi from "@/content/tracks/c/courses/c-beginner/modules/multi-file/lessons/api-boundaries.vi.mdx";
+import ApiDesignContracts from "@/content/tracks/python/courses/python-advanced/modules/production-apis/lessons/api-design-contracts.mdx";
+import ApiDesignContractsVi from "@/content/tracks/python/courses/python-advanced/modules/production-apis/lessons/api-design-contracts.vi.mdx";
+import ApiVsAbi from "@/content/tracks/cpp/courses/cpp-advanced/modules/abi-linking/lessons/api-vs-abi.mdx";
+import ApiVsAbiVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/abi-linking/lessons/api-vs-abi.vi.mdx";
+import ArgparseLite from "@/content/tracks/python/courses/python-beginner/modules/command-line-applications/lessons/argparse-lite.mdx";
+import ArgparseLiteVi from "@/content/tracks/python/courses/python-beginner/modules/command-line-applications/lessons/argparse-lite.vi.mdx";
+import ArithmeticAndDivision from "@/content/tracks/c/courses/c-beginner/modules/operators-expressions/lessons/arithmetic-and-division.mdx";
+import ArithmeticAndDivisionVi from "@/content/tracks/c/courses/c-beginner/modules/operators-expressions/lessons/arithmetic-and-division.vi.mdx";
+import ArithmeticOperators from "@/content/tracks/java/courses/java-beginner/modules/java-types-operators/lessons/arithmetic-operators.mdx";
+import ArithmeticOperatorsVi from "@/content/tracks/java/courses/java-beginner/modules/java-types-operators/lessons/arithmetic-operators.vi.mdx";
+import ArrayBasics from "@/content/tracks/c/courses/c-beginner/modules/arrays/lessons/array-basics.mdx";
+import ArrayBasicsVi from "@/content/tracks/c/courses/c-beginner/modules/arrays/lessons/array-basics.vi.mdx";
+import ArraysAndBounds from "@/content/tracks/java/courses/java-beginner/modules/java-arrays-strings/lessons/arrays-and-bounds.mdx";
+import ArraysAndBoundsVi from "@/content/tracks/java/courses/java-beginner/modules/java-arrays-strings/lessons/arrays-and-bounds.vi.mdx";
+import ArraysDecay from "@/content/tracks/c/courses/c-beginner/modules/pointers-arrays/lessons/arrays-decay.mdx";
+import ArraysDecayVi from "@/content/tracks/c/courses/c-beginner/modules/pointers-arrays/lessons/arrays-decay.vi.mdx";
+import ArraysLoops from "@/content/tracks/c/courses/c-beginner/modules/arrays/lessons/arrays-loops.mdx";
+import ArraysLoopsVi from "@/content/tracks/c/courses/c-beginner/modules/arrays/lessons/arrays-loops.vi.mdx";
+import AssertAndTesting from "@/content/tracks/cpp/courses/cpp-beginner/modules/errors-debugging-tests/lessons/assert-and-testing.mdx";
+import AssertAndTestingVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/errors-debugging-tests/lessons/assert-and-testing.vi.mdx";
+import AssetsAndCaching from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-performance/lessons/assets-and-caching.mdx";
+import AssetsAndCachingVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-performance/lessons/assets-and-caching.vi.mdx";
+import AssociativeContainers from "@/content/tracks/cpp/courses/cpp-intermediate/modules/stl-fundamentals/lessons/associative-containers.mdx";
+import AssociativeContainersVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/stl-fundamentals/lessons/associative-containers.vi.mdx";
+import AsyncAwait from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/async-await.mdx";
+import AsyncAwaitVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/async-await.vi.mdx";
+import AsyncProtocolPatterns from "@/content/tracks/python/courses/python-advanced/modules/structured-async/lessons/async-protocol-patterns.mdx";
+import AsyncProtocolPatternsVi from "@/content/tracks/python/courses/python-advanced/modules/structured-async/lessons/async-protocol-patterns.vi.mdx";
+import AtomicsOrderings from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-model/lessons/atomics-orderings.mdx";
+import AtomicsOrderingsVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-model/lessons/atomics-orderings.vi.mdx";
+import AttackSurfaceClasses from "@/content/tracks/cpp/courses/cpp-advanced/modules/security/lessons/attack-surface-classes.mdx";
+import AttackSurfaceClassesVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/security/lessons/attack-surface-classes.vi.mdx";
+import AuthSecretsHardening from "@/content/tracks/python/courses/python-advanced/modules/security-engineering/lessons/auth-secrets-hardening.mdx";
+import AuthSecretsHardeningVi from "@/content/tracks/python/courses/python-advanced/modules/security-engineering/lessons/auth-secrets-hardening.vi.mdx";
+import AuthnAuthzSessions from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-security/lessons/authn-authz-sessions.mdx";
+import AuthnAuthzSessionsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-security/lessons/authn-authz-sessions.vi.mdx";
+import AutoAndDeduction from "@/content/tracks/cpp/courses/cpp-intermediate/modules/modern-cpp/lessons/auto-and-deduction.mdx";
+import AutoAndDeductionVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/modern-cpp/lessons/auto-and-deduction.vi.mdx";
+import BackendCheckpoint from "@/content/tracks/web-development/courses/web-development-intermediate/modules/backend-fundamentals/lessons/backend-checkpoint.mdx";
+import BackendCheckpointVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/backend-fundamentals/lessons/backend-checkpoint.vi.mdx";
+import BackpressureAndLifecycles from "@/content/tracks/cpp/courses/cpp-advanced/modules/networking/lessons/backpressure-and-lifecycles.mdx";
+import BackpressureAndLifecyclesVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/networking/lessons/backpressure-and-lifecycles.vi.mdx";
+import BasicAutomatedTests from "@/content/tracks/python/courses/python-beginner/modules/testing-and-code-quality/lessons/basic-automated-tests.mdx";
+import BasicAutomatedTestsVi from "@/content/tracks/python/courses/python-beginner/modules/testing-and-code-quality/lessons/basic-automated-tests.vi.mdx";
+import BeyondUnitTests from "@/content/tracks/cpp/courses/cpp-advanced/modules/testing/lessons/beyond-unit-tests.mdx";
+import BeyondUnitTestsVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/testing/lessons/beyond-unit-tests.vi.mdx";
+import BooleanLogic from "@/content/tracks/java/courses/java-beginner/modules/java-types-operators/lessons/boolean-logic.mdx";
+import BooleanLogicVi from "@/content/tracks/java/courses/java-beginner/modules/java-types-operators/lessons/boolean-logic.vi.mdx";
+import BoundariesAndInversion from "@/content/tracks/cpp/courses/cpp-advanced/modules/architecture-production/lessons/boundaries-and-inversion.mdx";
+import BoundariesAndInversionVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/architecture-production/lessons/boundaries-and-inversion.vi.mdx";
+import BranchingStrategies from "@/content/tracks/web-development/courses/web-development-intermediate/modules/git-workflow/lessons/branching-strategies.mdx";
+import BranchingStrategiesVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/git-workflow/lessons/branching-strategies.vi.mdx";
+import BreakContinueAccumulators from "@/content/tracks/python/courses/python-beginner/modules/loops/lessons/break-continue-accumulators.mdx";
+import BreakContinueAccumulatorsVi from "@/content/tracks/python/courses/python-beginner/modules/loops/lessons/break-continue-accumulators.vi.mdx";
+import BreakContinueGuard from "@/content/tracks/c/courses/c-beginner/modules/cb-loops/lessons/break-continue-guard.mdx";
+import BreakContinueGuardVi from "@/content/tracks/c/courses/c-beginner/modules/cb-loops/lessons/break-continue-guard.vi.mdx";
+import BuildPipeline from "@/content/tracks/web-development/courses/web-development-intermediate/modules/production/lessons/build-pipeline.mdx";
+import BuildPipelineVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/production/lessons/build-pipeline.vi.mdx";
+import BuildWorkflow from "@/content/tracks/c/courses/c-beginner/modules/project-engineering/lessons/build-workflow.mdx";
+import BuildWorkflowVi from "@/content/tracks/c/courses/c-beginner/modules/project-engineering/lessons/build-workflow.vi.mdx";
+import BytecodeFrames from "@/content/tracks/python/courses/python-advanced/modules/cpython-internals/lessons/bytecode-frames.mdx";
+import BytecodeFramesVi from "@/content/tracks/python/courses/python-advanced/modules/cpython-internals/lessons/bytecode-frames.vi.mdx";
+import CStringsBasics from "@/content/tracks/c/courses/c-beginner/modules/cb-strings/lessons/c-strings-basics.mdx";
+import CStringsBasicsVi from "@/content/tracks/c/courses/c-beginner/modules/cb-strings/lessons/c-strings-basics.vi.mdx";
+import CaAbstractMachineModel from "@/content/tracks/c/courses/c-advanced/modules/ca-abstract-machine/lessons/ca-abstract-machine-model.mdx";
+import CaAbstractMachineModelVi from "@/content/tracks/c/courses/c-advanced/modules/ca-abstract-machine/lessons/ca-abstract-machine-model.vi.mdx";
+import CaAliasingConstRestrict from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-pointers/lessons/ca-aliasing-const-restrict.mdx";
+import CaAliasingConstRestrictVi from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-pointers/lessons/ca-aliasing-const-restrict.vi.mdx";
+import CaAlignmentPaddingLayout from "@/content/tracks/c/courses/c-advanced/modules/ca-object-model/lessons/ca-alignment-padding-layout.mdx";
+import CaAlignmentPaddingLayoutVi from "@/content/tracks/c/courses/c-advanced/modules/ca-object-model/lessons/ca-alignment-padding-layout.vi.mdx";
+import CaAllocatorAnatomy from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-allocators/lessons/ca-allocator-anatomy.mdx";
+import CaAllocatorAnatomyVi from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-allocators/lessons/ca-allocator-anatomy.vi.mdx";
+import CaArenaPoolPatterns from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-allocators/lessons/ca-arena-pool-patterns.mdx";
+import CaArenaPoolPatternsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-allocators/lessons/ca-arena-pool-patterns.vi.mdx";
+import CaAtomicsOrderings from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-model/lessons/ca-atomics-orderings.mdx";
+import CaAtomicsOrderingsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-model/lessons/ca-atomics-orderings.vi.mdx";
+import CaBufferedVsRaw from "@/content/tracks/c/courses/c-advanced/modules/ca-performance-io/lessons/ca-buffered-vs-raw.mdx";
+import CaBufferedVsRawVi from "@/content/tracks/c/courses/c-advanced/modules/ca-performance-io/lessons/ca-buffered-vs-raw.vi.mdx";
+import CaCallingConventions from "@/content/tracks/c/courses/c-advanced/modules/ca-abi-layout/lessons/ca-calling-conventions.mdx";
+import CaCallingConventionsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-abi-layout/lessons/ca-calling-conventions.vi.mdx";
+import CaCapstoneDesign from "@/content/tracks/c/courses/c-advanced/modules/ca-portability-capstone/lessons/ca-capstone-design.mdx";
+import CaCapstoneDesignVi from "@/content/tracks/c/courses/c-advanced/modules/ca-portability-capstone/lessons/ca-capstone-design.vi.mdx";
+import CaCasAbaFalseSharing from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-model/lessons/ca-cas-aba-false-sharing.mdx";
+import CaCasAbaFalseSharingVi from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-model/lessons/ca-cas-aba-false-sharing.vi.mdx";
+import CaCheckpointM1 from "@/content/tracks/c/courses/c-advanced/modules/ca-object-model/lessons/ca-checkpoint-m1.mdx";
+import CaCheckpointM10 from "@/content/tracks/c/courses/c-advanced/modules/ca-compilation-pipeline/lessons/ca-checkpoint-m10.mdx";
+import CaCheckpointM10Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-compilation-pipeline/lessons/ca-checkpoint-m10.vi.mdx";
+import CaCheckpointM11 from "@/content/tracks/c/courses/c-advanced/modules/ca-elf-linking/lessons/ca-checkpoint-m11.mdx";
+import CaCheckpointM11Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-elf-linking/lessons/ca-checkpoint-m11.vi.mdx";
+import CaCheckpointM12 from "@/content/tracks/c/courses/c-advanced/modules/ca-abi-layout/lessons/ca-checkpoint-m12.mdx";
+import CaCheckpointM12Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-abi-layout/lessons/ca-checkpoint-m12.vi.mdx";
+import CaCheckpointM13 from "@/content/tracks/c/courses/c-advanced/modules/ca-reading-assembly/lessons/ca-checkpoint-m13.mdx";
+import CaCheckpointM13Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-reading-assembly/lessons/ca-checkpoint-m13.vi.mdx";
+import CaCheckpointM14 from "@/content/tracks/c/courses/c-advanced/modules/ca-build-engineering/lessons/ca-checkpoint-m14.mdx";
+import CaCheckpointM14Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-build-engineering/lessons/ca-checkpoint-m14.vi.mdx";
+import CaCheckpointM15 from "@/content/tracks/c/courses/c-advanced/modules/ca-debugging-forensics/lessons/ca-checkpoint-m15.mdx";
+import CaCheckpointM15Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-debugging-forensics/lessons/ca-checkpoint-m15.vi.mdx";
+import CaCheckpointM16 from "@/content/tracks/c/courses/c-advanced/modules/ca-sanitizer-concepts/lessons/ca-checkpoint-m16.mdx";
+import CaCheckpointM16Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-sanitizer-concepts/lessons/ca-checkpoint-m16.vi.mdx";
+import CaCheckpointM17 from "@/content/tracks/c/courses/c-advanced/modules/ca-posix-processes/lessons/ca-checkpoint-m17.mdx";
+import CaCheckpointM17Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-posix-processes/lessons/ca-checkpoint-m17.vi.mdx";
+import CaCheckpointM18 from "@/content/tracks/c/courses/c-advanced/modules/ca-concurrency-deep/lessons/ca-checkpoint-m18.mdx";
+import CaCheckpointM18Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-concurrency-deep/lessons/ca-checkpoint-m18.vi.mdx";
+import CaCheckpointM19 from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-model/lessons/ca-checkpoint-m19.mdx";
+import CaCheckpointM19Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-model/lessons/ca-checkpoint-m19.vi.mdx";
+import CaCheckpointM1Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-object-model/lessons/ca-checkpoint-m1.vi.mdx";
+import CaCheckpointM2 from "@/content/tracks/c/courses/c-advanced/modules/ca-abstract-machine/lessons/ca-checkpoint-m2.mdx";
+import CaCheckpointM20 from "@/content/tracks/c/courses/c-advanced/modules/ca-sockets/lessons/ca-checkpoint-m20.mdx";
+import CaCheckpointM20Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-sockets/lessons/ca-checkpoint-m20.vi.mdx";
+import CaCheckpointM21 from "@/content/tracks/c/courses/c-advanced/modules/ca-performance-io/lessons/ca-checkpoint-m21.mdx";
+import CaCheckpointM21Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-performance-io/lessons/ca-checkpoint-m21.vi.mdx";
+import CaCheckpointM22 from "@/content/tracks/c/courses/c-advanced/modules/ca-performance-tuning/lessons/ca-checkpoint-m22.mdx";
+import CaCheckpointM22Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-performance-tuning/lessons/ca-checkpoint-m22.vi.mdx";
+import CaCheckpointM23 from "@/content/tracks/c/courses/c-advanced/modules/ca-security/lessons/ca-checkpoint-m23.mdx";
+import CaCheckpointM23Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-security/lessons/ca-checkpoint-m23.vi.mdx";
+import CaCheckpointM24 from "@/content/tracks/c/courses/c-advanced/modules/ca-portability-capstone/lessons/ca-checkpoint-m24.mdx";
+import CaCheckpointM24Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-portability-capstone/lessons/ca-checkpoint-m24.vi.mdx";
+import CaCheckpointM2Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-abstract-machine/lessons/ca-checkpoint-m2.vi.mdx";
+import CaCheckpointM3 from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-pointers/lessons/ca-checkpoint-m3.mdx";
+import CaCheckpointM3Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-pointers/lessons/ca-checkpoint-m3.vi.mdx";
+import CaCheckpointM4 from "@/content/tracks/c/courses/c-advanced/modules/ca-ub-optimizer/lessons/ca-checkpoint-m4.mdx";
+import CaCheckpointM4Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-ub-optimizer/lessons/ca-checkpoint-m4.vi.mdx";
+import CaCheckpointM5 from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-allocators/lessons/ca-checkpoint-m5.mdx";
+import CaCheckpointM5Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-allocators/lessons/ca-checkpoint-m5.vi.mdx";
+import CaCheckpointM6 from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-ownership/lessons/ca-checkpoint-m6.mdx";
+import CaCheckpointM6Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-ownership/lessons/ca-checkpoint-m6.vi.mdx";
+import CaCheckpointM7 from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-data-structures/lessons/ca-checkpoint-m7.mdx";
+import CaCheckpointM7Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-data-structures/lessons/ca-checkpoint-m7.vi.mdx";
+import CaCheckpointM8 from "@/content/tracks/c/courses/c-advanced/modules/ca-generic-programming/lessons/ca-checkpoint-m8.mdx";
+import CaCheckpointM8Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-generic-programming/lessons/ca-checkpoint-m8.vi.mdx";
+import CaCheckpointM9 from "@/content/tracks/c/courses/c-advanced/modules/ca-preprocessor-compile-time/lessons/ca-checkpoint-m9.mdx";
+import CaCheckpointM9Vi from "@/content/tracks/c/courses/c-advanced/modules/ca-preprocessor-compile-time/lessons/ca-checkpoint-m9.vi.mdx";
+import CaCompilerOutput from "@/content/tracks/c/courses/c-advanced/modules/ca-reading-assembly/lessons/ca-compiler-output.mdx";
+import CaCompilerOutputVi from "@/content/tracks/c/courses/c-advanced/modules/ca-reading-assembly/lessons/ca-compiler-output.vi.mdx";
+import CaDeadlockClinic from "@/content/tracks/c/courses/c-advanced/modules/ca-concurrency-deep/lessons/ca-deadlock-clinic.mdx";
+import CaDeadlockClinicVi from "@/content/tracks/c/courses/c-advanced/modules/ca-concurrency-deep/lessons/ca-deadlock-clinic.vi.mdx";
+import CaDetectionByReasoning from "@/content/tracks/c/courses/c-advanced/modules/ca-sanitizer-concepts/lessons/ca-detection-by-reasoning.mdx";
+import CaDetectionByReasoningVi from "@/content/tracks/c/courses/c-advanced/modules/ca-sanitizer-concepts/lessons/ca-detection-by-reasoning.vi.mdx";
+import CaElfSections from "@/content/tracks/c/courses/c-advanced/modules/ca-elf-linking/lessons/ca-elf-sections.mdx";
+import CaElfSectionsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-elf-linking/lessons/ca-elf-sections.vi.mdx";
+import CaErrorCleanup from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-ownership/lessons/ca-error-cleanup.mdx";
+import CaErrorCleanupVi from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-ownership/lessons/ca-error-cleanup.vi.mdx";
+import CaFlagsHardening from "@/content/tracks/c/courses/c-advanced/modules/ca-build-engineering/lessons/ca-flags-hardening.mdx";
+import CaFlagsHardeningVi from "@/content/tracks/c/courses/c-advanced/modules/ca-build-engineering/lessons/ca-flags-hardening.vi.mdx";
+import CaFnptrInterfaces from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-pointers/lessons/ca-fnptr-interfaces.mdx";
+import CaFnptrInterfacesVi from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-pointers/lessons/ca-fnptr-interfaces.vi.mdx";
+import CaFourStages from "@/content/tracks/c/courses/c-advanced/modules/ca-compilation-pipeline/lessons/ca-four-stages.mdx";
+import CaFourStagesVi from "@/content/tracks/c/courses/c-advanced/modules/ca-compilation-pipeline/lessons/ca-four-stages.vi.mdx";
+import CaFramingTimeouts from "@/content/tracks/c/courses/c-advanced/modules/ca-sockets/lessons/ca-framing-timeouts.mdx";
+import CaFramingTimeoutsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-sockets/lessons/ca-framing-timeouts.vi.mdx";
+import CaGenericTechniques from "@/content/tracks/c/courses/c-advanced/modules/ca-generic-programming/lessons/ca-generic-techniques.mdx";
+import CaGenericTechniquesVi from "@/content/tracks/c/courses/c-advanced/modules/ca-generic-programming/lessons/ca-generic-techniques.vi.mdx";
+import CaHardenedApis from "@/content/tracks/c/courses/c-advanced/modules/ca-security/lessons/ca-hardened-apis.mdx";
+import CaHardenedApisVi from "@/content/tracks/c/courses/c-advanced/modules/ca-security/lessons/ca-hardened-apis.vi.mdx";
+import CaHashTables from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-data-structures/lessons/ca-hash-tables.mdx";
+import CaHashTablesVi from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-data-structures/lessons/ca-hash-tables.vi.mdx";
+import CaHeapsPriority from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-data-structures/lessons/ca-heaps-priority.mdx";
+import CaHeapsPriorityVi from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-data-structures/lessons/ca-heaps-priority.vi.mdx";
+import CaImplementationDefined from "@/content/tracks/c/courses/c-advanced/modules/ca-portability-capstone/lessons/ca-implementation-defined.mdx";
+import CaImplementationDefinedVi from "@/content/tracks/c/courses/c-advanced/modules/ca-portability-capstone/lessons/ca-implementation-defined.vi.mdx";
+import CaImplementationDefinedVsUb from "@/content/tracks/c/courses/c-advanced/modules/ca-object-model/lessons/ca-implementation-defined-vs-ub.mdx";
+import CaImplementationDefinedVsUbVi from "@/content/tracks/c/courses/c-advanced/modules/ca-object-model/lessons/ca-implementation-defined-vs-ub.vi.mdx";
+import CaInputBounds from "@/content/tracks/c/courses/c-advanced/modules/ca-security/lessons/ca-input-bounds.mdx";
+import CaInputBoundsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-security/lessons/ca-input-bounds.vi.mdx";
+import CaInvariantMethod from "@/content/tracks/c/courses/c-advanced/modules/ca-debugging-forensics/lessons/ca-invariant-method.mdx";
+import CaInvariantMethodVi from "@/content/tracks/c/courses/c-advanced/modules/ca-debugging-forensics/lessons/ca-invariant-method.vi.mdx";
+import CaLayoutAndCache from "@/content/tracks/c/courses/c-advanced/modules/ca-performance-tuning/lessons/ca-layout-and-cache.mdx";
+import CaLayoutAndCacheVi from "@/content/tracks/c/courses/c-advanced/modules/ca-performance-tuning/lessons/ca-layout-and-cache.vi.mdx";
+import CaLinkerAtWork from "@/content/tracks/c/courses/c-advanced/modules/ca-elf-linking/lessons/ca-linker-at-work.mdx";
+import CaLinkerAtWorkVi from "@/content/tracks/c/courses/c-advanced/modules/ca-elf-linking/lessons/ca-linker-at-work.vi.mdx";
+import CaLocksAndCost from "@/content/tracks/c/courses/c-advanced/modules/ca-concurrency-deep/lessons/ca-locks-and-cost.mdx";
+import CaLocksAndCostVi from "@/content/tracks/c/courses/c-advanced/modules/ca-concurrency-deep/lessons/ca-locks-and-cost.vi.mdx";
+import CaLvaluesValueObjects from "@/content/tracks/c/courses/c-advanced/modules/ca-abstract-machine/lessons/ca-lvalues-value-objects.mdx";
+import CaLvaluesValueObjectsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-abstract-machine/lessons/ca-lvalues-value-objects.vi.mdx";
+import CaMacroMachinery from "@/content/tracks/c/courses/c-advanced/modules/ca-preprocessor-compile-time/lessons/ca-macro-machinery.mdx";
+import CaMacroMachineryVi from "@/content/tracks/c/courses/c-advanced/modules/ca-preprocessor-compile-time/lessons/ca-macro-machinery.vi.mdx";
+import CaMakeDiscipline from "@/content/tracks/c/courses/c-advanced/modules/ca-build-engineering/lessons/ca-make-discipline.mdx";
+import CaMakeDisciplineVi from "@/content/tracks/c/courses/c-advanced/modules/ca-build-engineering/lessons/ca-make-discipline.vi.mdx";
+import CaMeasureFirst from "@/content/tracks/c/courses/c-advanced/modules/ca-performance-tuning/lessons/ca-measure-first.mdx";
+import CaMeasureFirstVi from "@/content/tracks/c/courses/c-advanced/modules/ca-performance-tuning/lessons/ca-measure-first.vi.mdx";
+import CaMmapAndMeasure from "@/content/tracks/c/courses/c-advanced/modules/ca-performance-io/lessons/ca-mmap-and-measure.mdx";
+import CaMmapAndMeasureVi from "@/content/tracks/c/courses/c-advanced/modules/ca-performance-io/lessons/ca-mmap-and-measure.vi.mdx";
+import CaObjectFilesSymbols from "@/content/tracks/c/courses/c-advanced/modules/ca-compilation-pipeline/lessons/ca-object-files-symbols.mdx";
+import CaObjectFilesSymbolsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-compilation-pipeline/lessons/ca-object-files-symbols.vi.mdx";
+import CaObjectsAndRepresentation from "@/content/tracks/c/courses/c-advanced/modules/ca-object-model/lessons/ca-objects-and-representation.mdx";
+import CaObjectsAndRepresentationVi from "@/content/tracks/c/courses/c-advanced/modules/ca-object-model/lessons/ca-objects-and-representation.vi.mdx";
+import CaOptimizationVisible from "@/content/tracks/c/courses/c-advanced/modules/ca-reading-assembly/lessons/ca-optimization-visible.mdx";
+import CaOptimizationVisibleVi from "@/content/tracks/c/courses/c-advanced/modules/ca-reading-assembly/lessons/ca-optimization-visible.vi.mdx";
+import CaOptimizerAssumptions from "@/content/tracks/c/courses/c-advanced/modules/ca-ub-optimizer/lessons/ca-optimizer-assumptions.mdx";
+import CaOptimizerAssumptionsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-ub-optimizer/lessons/ca-optimizer-assumptions.vi.mdx";
+import CaOwnershipContracts from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-ownership/lessons/ca-ownership-contracts.mdx";
+import CaOwnershipContractsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-memory-ownership/lessons/ca-ownership-contracts.vi.mdx";
+import CaPipesSignals from "@/content/tracks/c/courses/c-advanced/modules/ca-posix-processes/lessons/ca-pipes-signals.mdx";
+import CaPipesSignalsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-posix-processes/lessons/ca-pipes-signals.vi.mdx";
+import CaPointerArithmeticRules from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-pointers/lessons/ca-pointer-arithmetic-rules.mdx";
+import CaPointerArithmeticRulesVi from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-pointers/lessons/ca-pointer-arithmetic-rules.vi.mdx";
+import CaProcessBasics from "@/content/tracks/c/courses/c-advanced/modules/ca-posix-processes/lessons/ca-process-basics.mdx";
+import CaProcessBasicsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-posix-processes/lessons/ca-process-basics.vi.mdx";
+import CaReproDiscipline from "@/content/tracks/c/courses/c-advanced/modules/ca-debugging-forensics/lessons/ca-repro-discipline.mdx";
+import CaReproDisciplineVi from "@/content/tracks/c/courses/c-advanced/modules/ca-debugging-forensics/lessons/ca-repro-discipline.vi.mdx";
+import CaSanitizerMindset from "@/content/tracks/c/courses/c-advanced/modules/ca-sanitizer-concepts/lessons/ca-sanitizer-mindset.mdx";
+import CaSanitizerMindsetVi from "@/content/tracks/c/courses/c-advanced/modules/ca-sanitizer-concepts/lessons/ca-sanitizer-mindset.vi.mdx";
+import CaSequencingSideEffects from "@/content/tracks/c/courses/c-advanced/modules/ca-abstract-machine/lessons/ca-sequencing-side-effects.mdx";
+import CaSequencingSideEffectsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-abstract-machine/lessons/ca-sequencing-side-effects.vi.mdx";
+import CaStructLayoutAbi from "@/content/tracks/c/courses/c-advanced/modules/ca-abi-layout/lessons/ca-struct-layout-abi.mdx";
+import CaStructLayoutAbiVi from "@/content/tracks/c/courses/c-advanced/modules/ca-abi-layout/lessons/ca-struct-layout-abi.vi.mdx";
+import CaTcpEcho from "@/content/tracks/c/courses/c-advanced/modules/ca-sockets/lessons/ca-tcp-echo.mdx";
+import CaTcpEchoVi from "@/content/tracks/c/courses/c-advanced/modules/ca-sockets/lessons/ca-tcp-echo.vi.mdx";
+import CaUbTaxonomy from "@/content/tracks/c/courses/c-advanced/modules/ca-ub-optimizer/lessons/ca-ub-taxonomy.mdx";
+import CaUbTaxonomyVi from "@/content/tracks/c/courses/c-advanced/modules/ca-ub-optimizer/lessons/ca-ub-taxonomy.vi.mdx";
+import CaUbTooling from "@/content/tracks/c/courses/c-advanced/modules/ca-ub-optimizer/lessons/ca-ub-tooling.mdx";
+import CaUbToolingVi from "@/content/tracks/c/courses/c-advanced/modules/ca-ub-optimizer/lessons/ca-ub-tooling.vi.mdx";
+import CaUnionFindGraphs from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-data-structures/lessons/ca-union-find-graphs.mdx";
+import CaUnionFindGraphsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-advanced-data-structures/lessons/ca-union-find-graphs.vi.mdx";
+import CaVariadicAssertions from "@/content/tracks/c/courses/c-advanced/modules/ca-preprocessor-compile-time/lessons/ca-variadic-assertions.mdx";
+import CaVariadicAssertionsVi from "@/content/tracks/c/courses/c-advanced/modules/ca-preprocessor-compile-time/lessons/ca-variadic-assertions.vi.mdx";
+import CaVoidstarInterfaces from "@/content/tracks/c/courses/c-advanced/modules/ca-generic-programming/lessons/ca-voidstar-interfaces.mdx";
+import CaVoidstarInterfacesVi from "@/content/tracks/c/courses/c-advanced/modules/ca-generic-programming/lessons/ca-voidstar-interfaces.vi.mdx";
+import CallocRealloc from "@/content/tracks/c/courses/c-beginner/modules/cb-dynamic-memory/lessons/calloc-realloc.mdx";
+import CallocReallocVi from "@/content/tracks/c/courses/c-beginner/modules/cb-dynamic-memory/lessons/calloc-realloc.vi.mdx";
+import CancellationAbort from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/cancellation-abort.mdx";
+import CancellationAbortVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/cancellation-abort.vi.mdx";
+import CancellationTimeouts from "@/content/tracks/python/courses/python-advanced/modules/structured-async/lessons/cancellation-timeouts.mdx";
+import CancellationTimeoutsVi from "@/content/tracks/python/courses/python-advanced/modules/structured-async/lessons/cancellation-timeouts.vi.mdx";
+import CapstoneBrief from "@/content/tracks/python/courses/python-intermediate/modules/capstone-cli-app/lessons/capstone-brief.mdx";
+import CapstoneBriefVi from "@/content/tracks/python/courses/python-intermediate/modules/capstone-cli-app/lessons/capstone-brief.vi.mdx";
 import CapstoneBuildAndShip from "@/content/tracks/web-development/courses/web-development-beginner/modules/final-project/lessons/capstone-build-and-ship.mdx";
+import CapstoneBuildAndShipVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/final-project/lessons/capstone-build-and-ship.vi.mdx";
+import CapstoneDecisions from "@/content/tracks/web-development/courses/web-development-intermediate/modules/capstone/lessons/capstone-decisions.mdx";
+import CapstoneDecisionsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/capstone/lessons/capstone-decisions.vi.mdx";
+import CapstoneDesignWorksheet from "@/content/tracks/python/courses/python-advanced/modules/capstone-production-platform/lessons/capstone-design-worksheet.mdx";
+import CapstoneDesignWorksheetVi from "@/content/tracks/python/courses/python-advanced/modules/capstone-production-platform/lessons/capstone-design-worksheet.vi.mdx";
+import CapstoneFinanceBrief from "@/content/tracks/python/courses/python-beginner/modules/capstone-personal-finance-cli/lessons/capstone-finance-brief.mdx";
+import CapstoneFinanceBriefVi from "@/content/tracks/python/courses/python-beginner/modules/capstone-personal-finance-cli/lessons/capstone-finance-brief.vi.mdx";
+import CapstoneFinanceMilestones from "@/content/tracks/python/courses/python-beginner/modules/capstone-personal-finance-cli/lessons/capstone-finance-milestones.mdx";
+import CapstoneFinanceMilestonesVi from "@/content/tracks/python/courses/python-beginner/modules/capstone-personal-finance-cli/lessons/capstone-finance-milestones.vi.mdx";
+import CapstoneFinanceShip from "@/content/tracks/python/courses/python-beginner/modules/capstone-personal-finance-cli/lessons/capstone-finance-ship.mdx";
+import CapstoneFinanceShipVi from "@/content/tracks/python/courses/python-beginner/modules/capstone-personal-finance-cli/lessons/capstone-finance-ship.vi.mdx";
 import CapstonePlanning from "@/content/tracks/web-development/courses/web-development-beginner/modules/final-project/lessons/capstone-planning.mdx";
+import CapstonePlanningVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/final-project/lessons/capstone-planning.vi.mdx";
+import CapstoneRequirements from "@/content/tracks/web-development/courses/web-development-intermediate/modules/capstone/lessons/capstone-requirements.mdx";
+import CapstoneRequirementsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/capstone/lessons/capstone-requirements.vi.mdx";
+import CapstoneShip from "@/content/tracks/web-development/courses/web-development-intermediate/modules/capstone/lessons/capstone-ship.mdx";
+import CapstoneShipVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/capstone/lessons/capstone-ship.vi.mdx";
+import CascadeLayers from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/cascade-layers.mdx";
+import CascadeLayersVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/cascade-layers.vi.mdx";
+import CbCapstoneBrief from "@/content/tracks/c/courses/c-beginner/modules/project-engineering/lessons/cb-capstone-brief.mdx";
+import CbCapstoneBriefVi from "@/content/tracks/c/courses/c-beginner/modules/project-engineering/lessons/cb-capstone-brief.vi.mdx";
+import CbCheckpointM1 from "@/content/tracks/c/courses/c-beginner/modules/cb-first-programs/lessons/cb-checkpoint-m1.mdx";
+import CbCheckpointM10 from "@/content/tracks/c/courses/c-beginner/modules/cb-strings/lessons/cb-checkpoint-m10.mdx";
+import CbCheckpointM10Vi from "@/content/tracks/c/courses/c-beginner/modules/cb-strings/lessons/cb-checkpoint-m10.vi.mdx";
+import CbCheckpointM11 from "@/content/tracks/c/courses/c-beginner/modules/pointer-fundamentals/lessons/cb-checkpoint-m11.mdx";
+import CbCheckpointM11Vi from "@/content/tracks/c/courses/c-beginner/modules/pointer-fundamentals/lessons/cb-checkpoint-m11.vi.mdx";
+import CbCheckpointM12 from "@/content/tracks/c/courses/c-beginner/modules/pointers-arrays/lessons/cb-checkpoint-m12.mdx";
+import CbCheckpointM12Vi from "@/content/tracks/c/courses/c-beginner/modules/pointers-arrays/lessons/cb-checkpoint-m12.vi.mdx";
+import CbCheckpointM13 from "@/content/tracks/c/courses/c-beginner/modules/cb-dynamic-memory/lessons/cb-checkpoint-m13.mdx";
+import CbCheckpointM13Vi from "@/content/tracks/c/courses/c-beginner/modules/cb-dynamic-memory/lessons/cb-checkpoint-m13.vi.mdx";
+import CbCheckpointM14 from "@/content/tracks/c/courses/c-beginner/modules/structs/lessons/cb-checkpoint-m14.mdx";
+import CbCheckpointM14Vi from "@/content/tracks/c/courses/c-beginner/modules/structs/lessons/cb-checkpoint-m14.vi.mdx";
+import CbCheckpointM15 from "@/content/tracks/c/courses/c-beginner/modules/enums-typedef/lessons/cb-checkpoint-m15.mdx";
+import CbCheckpointM15Vi from "@/content/tracks/c/courses/c-beginner/modules/enums-typedef/lessons/cb-checkpoint-m15.vi.mdx";
+import CbCheckpointM16 from "@/content/tracks/c/courses/c-beginner/modules/file-io/lessons/cb-checkpoint-m16.mdx";
+import CbCheckpointM16Vi from "@/content/tracks/c/courses/c-beginner/modules/file-io/lessons/cb-checkpoint-m16.vi.mdx";
+import CbCheckpointM17 from "@/content/tracks/c/courses/c-beginner/modules/preprocessor/lessons/cb-checkpoint-m17.mdx";
+import CbCheckpointM17Vi from "@/content/tracks/c/courses/c-beginner/modules/preprocessor/lessons/cb-checkpoint-m17.vi.mdx";
+import CbCheckpointM18 from "@/content/tracks/c/courses/c-beginner/modules/multi-file/lessons/cb-checkpoint-m18.mdx";
+import CbCheckpointM18Vi from "@/content/tracks/c/courses/c-beginner/modules/multi-file/lessons/cb-checkpoint-m18.vi.mdx";
+import CbCheckpointM19 from "@/content/tracks/c/courses/c-beginner/modules/cb-debugging/lessons/cb-checkpoint-m19.mdx";
+import CbCheckpointM19Vi from "@/content/tracks/c/courses/c-beginner/modules/cb-debugging/lessons/cb-checkpoint-m19.vi.mdx";
+import CbCheckpointM1Vi from "@/content/tracks/c/courses/c-beginner/modules/cb-first-programs/lessons/cb-checkpoint-m1.vi.mdx";
+import CbCheckpointM2 from "@/content/tracks/c/courses/c-beginner/modules/variables-types/lessons/cb-checkpoint-m2.mdx";
+import CbCheckpointM20 from "@/content/tracks/c/courses/c-beginner/modules/data-structures/lessons/cb-checkpoint-m20.mdx";
+import CbCheckpointM20Vi from "@/content/tracks/c/courses/c-beginner/modules/data-structures/lessons/cb-checkpoint-m20.vi.mdx";
+import CbCheckpointM21 from "@/content/tracks/c/courses/c-beginner/modules/algorithms/lessons/cb-checkpoint-m21.mdx";
+import CbCheckpointM21Vi from "@/content/tracks/c/courses/c-beginner/modules/algorithms/lessons/cb-checkpoint-m21.vi.mdx";
+import CbCheckpointM22 from "@/content/tracks/c/courses/c-beginner/modules/project-engineering/lessons/cb-checkpoint-m22.mdx";
+import CbCheckpointM22Vi from "@/content/tracks/c/courses/c-beginner/modules/project-engineering/lessons/cb-checkpoint-m22.vi.mdx";
+import CbCheckpointM2Vi from "@/content/tracks/c/courses/c-beginner/modules/variables-types/lessons/cb-checkpoint-m2.vi.mdx";
+import CbCheckpointM3 from "@/content/tracks/c/courses/c-beginner/modules/io-formatting/lessons/cb-checkpoint-m3.mdx";
+import CbCheckpointM3Vi from "@/content/tracks/c/courses/c-beginner/modules/io-formatting/lessons/cb-checkpoint-m3.vi.mdx";
+import CbCheckpointM4 from "@/content/tracks/c/courses/c-beginner/modules/operators-expressions/lessons/cb-checkpoint-m4.mdx";
+import CbCheckpointM4Vi from "@/content/tracks/c/courses/c-beginner/modules/operators-expressions/lessons/cb-checkpoint-m4.vi.mdx";
+import CbCheckpointM5 from "@/content/tracks/c/courses/c-beginner/modules/conditionals/lessons/cb-checkpoint-m5.mdx";
+import CbCheckpointM5Vi from "@/content/tracks/c/courses/c-beginner/modules/conditionals/lessons/cb-checkpoint-m5.vi.mdx";
+import CbCheckpointM6 from "@/content/tracks/c/courses/c-beginner/modules/cb-loops/lessons/cb-checkpoint-m6.mdx";
+import CbCheckpointM6Vi from "@/content/tracks/c/courses/c-beginner/modules/cb-loops/lessons/cb-checkpoint-m6.vi.mdx";
+import CbCheckpointM7 from "@/content/tracks/c/courses/c-beginner/modules/cb-functions/lessons/cb-checkpoint-m7.mdx";
+import CbCheckpointM7Vi from "@/content/tracks/c/courses/c-beginner/modules/cb-functions/lessons/cb-checkpoint-m7.vi.mdx";
+import CbCheckpointM8 from "@/content/tracks/c/courses/c-beginner/modules/scope-lifetime/lessons/cb-checkpoint-m8.mdx";
+import CbCheckpointM8Vi from "@/content/tracks/c/courses/c-beginner/modules/scope-lifetime/lessons/cb-checkpoint-m8.vi.mdx";
+import CbCheckpointM9 from "@/content/tracks/c/courses/c-beginner/modules/arrays/lessons/cb-checkpoint-m9.mdx";
+import CbCheckpointM9Vi from "@/content/tracks/c/courses/c-beginner/modules/arrays/lessons/cb-checkpoint-m9.vi.mdx";
+import CbChoosingStructures from "@/content/tracks/c/courses/c-beginner/modules/data-structures/lessons/cb-choosing-structures.mdx";
+import CbChoosingStructuresVi from "@/content/tracks/c/courses/c-beginner/modules/data-structures/lessons/cb-choosing-structures.vi.mdx";
+import CbDefiningFunctions from "@/content/tracks/c/courses/c-beginner/modules/cb-functions/lessons/cb-defining-functions.mdx";
+import CbDefiningFunctionsVi from "@/content/tracks/c/courses/c-beginner/modules/cb-functions/lessons/cb-defining-functions.vi.mdx";
+import CbNestedLoopsPatterns from "@/content/tracks/c/courses/c-beginner/modules/cb-loops/lessons/cb-nested-loops-patterns.mdx";
+import CbNestedLoopsPatternsVi from "@/content/tracks/c/courses/c-beginner/modules/cb-loops/lessons/cb-nested-loops-patterns.vi.mdx";
+import CbPointerArithmetic from "@/content/tracks/c/courses/c-beginner/modules/pointers-arrays/lessons/cb-pointer-arithmetic.mdx";
+import CbPointerArithmeticVi from "@/content/tracks/c/courses/c-beginner/modules/pointers-arrays/lessons/cb-pointer-arithmetic.vi.mdx";
+import CbSearching from "@/content/tracks/c/courses/c-beginner/modules/algorithms/lessons/cb-searching.mdx";
+import CbSearchingVi from "@/content/tracks/c/courses/c-beginner/modules/algorithms/lessons/cb-searching.vi.mdx";
+import CbStackVsHeap from "@/content/tracks/c/courses/c-beginner/modules/cb-dynamic-memory/lessons/cb-stack-vs-heap.mdx";
+import CbStackVsHeapVi from "@/content/tracks/c/courses/c-beginner/modules/cb-dynamic-memory/lessons/cb-stack-vs-heap.vi.mdx";
+import CheckpointAccess from "@/content/tracks/cpp/courses/cpp-beginner/modules/pointers-references/lessons/checkpoint-access.mdx";
+import CheckpointAccessVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/pointers-references/lessons/checkpoint-access.vi.mdx";
+import CheckpointAlgorithms from "@/content/tracks/cpp/courses/cpp-beginner/modules/stl-algorithms/lessons/checkpoint-algorithms.mdx";
+import CheckpointAlgorithmsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/stl-algorithms/lessons/checkpoint-algorithms.vi.mdx";
+import CheckpointApiClient from "@/content/tracks/python/courses/python-intermediate/modules/http-json/lessons/checkpoint-api-client.mdx";
+import CheckpointApiClientVi from "@/content/tracks/python/courses/python-intermediate/modules/http-json/lessons/checkpoint-api-client.vi.mdx";
+import CheckpointArchitecture from "@/content/tracks/cpp/courses/cpp-beginner/modules/architecture-refactoring/lessons/checkpoint-architecture.mdx";
+import CheckpointArchitectureVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/architecture-refactoring/lessons/checkpoint-architecture.vi.mdx";
+import CheckpointAsyncCollector from "@/content/tracks/python/courses/python-intermediate/modules/concurrent-async/lessons/checkpoint-async-collector.mdx";
+import CheckpointAsyncCollectorVi from "@/content/tracks/python/courses/python-intermediate/modules/concurrent-async/lessons/checkpoint-async-collector.vi.mdx";
+import CheckpointCollections from "@/content/tracks/cpp/courses/cpp-beginner/modules/collections/lessons/checkpoint-collections.mdx";
+import CheckpointCollectionsControl from "@/content/tracks/python/courses/python-beginner/modules/loops/lessons/checkpoint-collections-control.mdx";
+import CheckpointCollectionsControlVi from "@/content/tracks/python/courses/python-beginner/modules/loops/lessons/checkpoint-collections-control.vi.mdx";
+import CheckpointCollectionsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/collections/lessons/checkpoint-collections.vi.mdx";
+import CheckpointConditions from "@/content/tracks/cpp/courses/cpp-beginner/modules/conditions/lessons/checkpoint-conditions.mdx";
+import CheckpointConditionsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/conditions/lessons/checkpoint-conditions.vi.mdx";
+import CheckpointDataPipeline from "@/content/tracks/python/courses/python-intermediate/modules/files-and-data/lessons/checkpoint-data-pipeline.mdx";
+import CheckpointDataPipelineVi from "@/content/tracks/python/courses/python-intermediate/modules/files-and-data/lessons/checkpoint-data-pipeline.vi.mdx";
+import CheckpointDatabaseApp from "@/content/tracks/python/courses/python-intermediate/modules/databases/lessons/checkpoint-database-app.mdx";
+import CheckpointDatabaseAppVi from "@/content/tracks/python/courses/python-intermediate/modules/databases/lessons/checkpoint-database-app.vi.mdx";
+import CheckpointFilesModules from "@/content/tracks/python/courses/python-beginner/modules/modules-and-standard-library/lessons/checkpoint-files-modules.mdx";
+import CheckpointFilesModulesVi from "@/content/tracks/python/courses/python-beginner/modules/modules-and-standard-library/lessons/checkpoint-files-modules.vi.mdx";
+import CheckpointFunctions from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-functions/lessons/checkpoint-functions.mdx";
+import CheckpointFunctionsErrors from "@/content/tracks/python/courses/python-beginner/modules/errors-and-debugging/lessons/checkpoint-functions-errors.mdx";
+import CheckpointFunctionsErrorsVi from "@/content/tracks/python/courses/python-beginner/modules/errors-and-debugging/lessons/checkpoint-functions-errors.vi.mdx";
+import CheckpointFunctionsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-functions/lessons/checkpoint-functions.vi.mdx";
+import CheckpointFundamentals from "@/content/tracks/python/courses/python-beginner/modules/variables-and-data-types/lessons/checkpoint-fundamentals.mdx";
+import CheckpointFundamentalsVi from "@/content/tracks/python/courses/python-beginner/modules/variables-and-data-types/lessons/checkpoint-fundamentals.vi.mdx";
+import CheckpointLoops from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-loops/lessons/checkpoint-loops.mdx";
+import CheckpointLoopsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-loops/lessons/checkpoint-loops.vi.mdx";
+import CheckpointModeling from "@/content/tracks/python/courses/python-intermediate/modules/objects-and-modeling/lessons/checkpoint-modeling.mdx";
+import CheckpointModelingVi from "@/content/tracks/python/courses/python-intermediate/modules/objects-and-modeling/lessons/checkpoint-modeling.vi.mdx";
+import CheckpointMultiFile from "@/content/tracks/cpp/courses/cpp-beginner/modules/multi-file-cmake/lessons/checkpoint-multi-file.mdx";
+import CheckpointMultiFileVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/multi-file-cmake/lessons/checkpoint-multi-file.vi.mdx";
+import CheckpointOop from "@/content/tracks/cpp/courses/cpp-beginner/modules/classes-oop/lessons/checkpoint-oop.mdx";
+import CheckpointOopVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/classes-oop/lessons/checkpoint-oop.vi.mdx";
+import CheckpointPersistence from "@/content/tracks/cpp/courses/cpp-beginner/modules/files-persistence/lessons/checkpoint-persistence.mdx";
+import CheckpointPersistenceVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/files-persistence/lessons/checkpoint-persistence.vi.mdx";
+import CheckpointPipelines from "@/content/tracks/python/courses/python-intermediate/modules/pythonic-toolkit/lessons/checkpoint-pipelines.mdx";
+import CheckpointPipelinesVi from "@/content/tracks/python/courses/python-intermediate/modules/pythonic-toolkit/lessons/checkpoint-pipelines.vi.mdx";
+import CheckpointProblemSolving from "@/content/tracks/python/courses/python-beginner/modules/problem-solving-fundamentals/lessons/checkpoint-problem-solving.mdx";
+import CheckpointProblemSolvingVi from "@/content/tracks/python/courses/python-beginner/modules/problem-solving-fundamentals/lessons/checkpoint-problem-solving.vi.mdx";
+import CheckpointProblems from "@/content/tracks/cpp/courses/cpp-beginner/modules/problem-solving/lessons/checkpoint-problems.mdx";
+import CheckpointProblemsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/problem-solving/lessons/checkpoint-problems.vi.mdx";
+import CheckpointRaii from "@/content/tracks/cpp/courses/cpp-beginner/modules/memory-raii/lessons/checkpoint-raii.mdx";
+import CheckpointRaiiVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/memory-raii/lessons/checkpoint-raii.vi.mdx";
+import CheckpointRepair from "@/content/tracks/python/courses/python-intermediate/modules/testing-discipline/lessons/checkpoint-repair.mdx";
+import CheckpointRepairVi from "@/content/tracks/python/courses/python-intermediate/modules/testing-discipline/lessons/checkpoint-repair.vi.mdx";
+import CheckpointRepo from "@/content/tracks/cpp/courses/cpp-beginner/modules/git-professional-workflow/lessons/checkpoint-repo.mdx";
+import CheckpointRepoVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/git-professional-workflow/lessons/checkpoint-repo.vi.mdx";
+import CheckpointResilience from "@/content/tracks/python/courses/python-intermediate/modules/robust-errors/lessons/checkpoint-resilience.mdx";
+import CheckpointResilienceVi from "@/content/tracks/python/courses/python-intermediate/modules/robust-errors/lessons/checkpoint-resilience.vi.mdx";
+import CheckpointRobustness from "@/content/tracks/cpp/courses/cpp-beginner/modules/errors-debugging-tests/lessons/checkpoint-robustness.mdx";
+import CheckpointRobustnessVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/errors-debugging-tests/lessons/checkpoint-robustness.vi.mdx";
+import CheckpointShip from "@/content/tracks/python/courses/python-intermediate/modules/packaging/lessons/checkpoint-ship.mdx";
+import CheckpointShipVi from "@/content/tracks/python/courses/python-intermediate/modules/packaging/lessons/checkpoint-ship.vi.mdx";
+import CheckpointStreams from "@/content/tracks/python/courses/python-intermediate/modules/data-model-iteration/lessons/checkpoint-streams.mdx";
+import CheckpointStreamsVi from "@/content/tracks/python/courses/python-intermediate/modules/data-model-iteration/lessons/checkpoint-streams.vi.mdx";
+import CheckpointStrings from "@/content/tracks/cpp/courses/cpp-beginner/modules/strings/lessons/checkpoint-strings.mdx";
+import CheckpointStringsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/strings/lessons/checkpoint-strings.vi.mdx";
+import CheckpointTypedApp from "@/content/tracks/python/courses/python-intermediate/modules/structure-and-typing/lessons/checkpoint-typed-app.mdx";
+import CheckpointTypedAppVi from "@/content/tracks/python/courses/python-intermediate/modules/structure-and-typing/lessons/checkpoint-typed-app.vi.mdx";
+import CheckpointTypes from "@/content/tracks/cpp/courses/cpp-beginner/modules/variables-and-types/lessons/checkpoint-types.mdx";
+import CheckpointTypesVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/variables-and-types/lessons/checkpoint-types.vi.mdx";
+import ChoosingContainers from "@/content/tracks/cpp/courses/cpp-beginner/modules/collections/lessons/choosing-containers.mdx";
+import ChoosingContainersVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/collections/lessons/choosing-containers.vi.mdx";
+import ChoosingStlContainers from "@/content/tracks/cpp/courses/cpp-intermediate/modules/stl-fundamentals/lessons/choosing-stl-containers.mdx";
+import ChoosingStlContainersVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/stl-fundamentals/lessons/choosing-stl-containers.vi.mdx";
+import ChoosingStructures from "@/content/tracks/cpp/courses/cpp-beginner/modules/problem-solving/lessons/choosing-structures.mdx";
+import ChoosingStructuresVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/problem-solving/lessons/choosing-structures.vi.mdx";
+import CicdLoop from "@/content/tracks/web-development/courses/web-development-intermediate/modules/production/lessons/cicd-loop.mdx";
+import CicdLoopVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/production/lessons/cicd-loop.vi.mdx";
+import CintBinaryHeaps from "@/content/tracks/c/courses/c-intermediate/modules/cint-trees/lessons/cint-binary-heaps.mdx";
+import CintBinaryHeapsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-trees/lessons/cint-binary-heaps.vi.mdx";
+import CintBstBasics from "@/content/tracks/c/courses/c-intermediate/modules/cint-trees/lessons/cint-bst-basics.mdx";
+import CintBstBasicsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-trees/lessons/cint-bst-basics.vi.mdx";
+import CintBstDelete from "@/content/tracks/c/courses/c-intermediate/modules/cint-trees/lessons/cint-bst-delete.mdx";
+import CintBstDeleteVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-trees/lessons/cint-bst-delete.vi.mdx";
+import CintBuffersBoundaries from "@/content/tracks/c/courses/c-intermediate/modules/cint-strings/lessons/cint-buffers-boundaries.mdx";
+import CintBuffersBoundariesVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-strings/lessons/cint-buffers-boundaries.vi.mdx";
+import CintBytesOnDisk from "@/content/tracks/c/courses/c-intermediate/modules/cint-files/lessons/cint-bytes-on-disk.mdx";
+import CintBytesOnDiskVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-files/lessons/cint-bytes-on-disk.vi.mdx";
+import CintCapstoneArch from "@/content/tracks/c/courses/c-intermediate/modules/cint-capstone/lessons/cint-capstone-arch.mdx";
+import CintCapstoneArchVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-capstone/lessons/cint-capstone-arch.vi.mdx";
+import CintCapstoneFormat from "@/content/tracks/c/courses/c-intermediate/modules/cint-capstone/lessons/cint-capstone-format.mdx";
+import CintCapstoneFormatVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-capstone/lessons/cint-capstone-format.vi.mdx";
+import CintCapstoneTesting from "@/content/tracks/c/courses/c-intermediate/modules/cint-capstone/lessons/cint-capstone-testing.mdx";
+import CintCapstoneTestingVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-capstone/lessons/cint-capstone-testing.vi.mdx";
+import CintCheckpointM1 from "@/content/tracks/c/courses/c-intermediate/modules/cint-translation-units/lessons/cint-checkpoint-m1.mdx";
+import CintCheckpointM10 from "@/content/tracks/c/courses/c-intermediate/modules/cint-preproc/lessons/cint-checkpoint-m10.mdx";
+import CintCheckpointM10Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-preproc/lessons/cint-checkpoint-m10.vi.mdx";
+import CintCheckpointM11 from "@/content/tracks/c/courses/c-intermediate/modules/cint-trees/lessons/cint-checkpoint-m11.mdx";
+import CintCheckpointM11Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-trees/lessons/cint-checkpoint-m11.vi.mdx";
+import CintCheckpointM12 from "@/content/tracks/c/courses/c-intermediate/modules/cint-files/lessons/cint-checkpoint-m12.mdx";
+import CintCheckpointM12Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-files/lessons/cint-checkpoint-m12.vi.mdx";
+import CintCheckpointM13 from "@/content/tracks/c/courses/c-intermediate/modules/cint-errors/lessons/cint-checkpoint-m13.mdx";
+import CintCheckpointM13Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-errors/lessons/cint-checkpoint-m13.vi.mdx";
+import CintCheckpointM14 from "@/content/tracks/c/courses/c-intermediate/modules/cint-ub/lessons/cint-checkpoint-m14.mdx";
+import CintCheckpointM14Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-ub/lessons/cint-checkpoint-m14.vi.mdx";
+import CintCheckpointM15 from "@/content/tracks/c/courses/c-intermediate/modules/cint-threads/lessons/cint-checkpoint-m15.mdx";
+import CintCheckpointM15Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-threads/lessons/cint-checkpoint-m15.vi.mdx";
+import CintCheckpointM16 from "@/content/tracks/c/courses/c-intermediate/modules/cint-capstone/lessons/cint-checkpoint-m16.mdx";
+import CintCheckpointM16Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-capstone/lessons/cint-checkpoint-m16.vi.mdx";
+import CintCheckpointM1Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-translation-units/lessons/cint-checkpoint-m1.vi.mdx";
+import CintCheckpointM2 from "@/content/tracks/c/courses/c-intermediate/modules/cint-pointers/lessons/cint-checkpoint-m2.mdx";
+import CintCheckpointM2Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-pointers/lessons/cint-checkpoint-m2.vi.mdx";
+import CintCheckpointM3 from "@/content/tracks/c/courses/c-intermediate/modules/cint-ownership/lessons/cint-checkpoint-m3.mdx";
+import CintCheckpointM3Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-ownership/lessons/cint-checkpoint-m3.vi.mdx";
+import CintCheckpointM4 from "@/content/tracks/c/courses/c-intermediate/modules/cint-function-pointers/lessons/cint-checkpoint-m4.mdx";
+import CintCheckpointM4Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-function-pointers/lessons/cint-checkpoint-m4.vi.mdx";
+import CintCheckpointM5 from "@/content/tracks/c/courses/c-intermediate/modules/cint-structs/lessons/cint-checkpoint-m5.mdx";
+import CintCheckpointM5Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-structs/lessons/cint-checkpoint-m5.vi.mdx";
+import CintCheckpointM6 from "@/content/tracks/c/courses/c-intermediate/modules/cint-strings/lessons/cint-checkpoint-m6.mdx";
+import CintCheckpointM6Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-strings/lessons/cint-checkpoint-m6.vi.mdx";
+import CintCheckpointM7 from "@/content/tracks/c/courses/c-intermediate/modules/cint-linked/lessons/cint-checkpoint-m7.mdx";
+import CintCheckpointM7Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-linked/lessons/cint-checkpoint-m7.vi.mdx";
+import CintCheckpointM8 from "@/content/tracks/c/courses/c-intermediate/modules/cint-hash/lessons/cint-checkpoint-m8.mdx";
+import CintCheckpointM8Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-hash/lessons/cint-checkpoint-m8.vi.mdx";
+import CintCheckpointM9 from "@/content/tracks/c/courses/c-intermediate/modules/cint-generic/lessons/cint-checkpoint-m9.mdx";
+import CintCheckpointM9Vi from "@/content/tracks/c/courses/c-intermediate/modules/cint-generic/lessons/cint-checkpoint-m9.vi.mdx";
+import CintCleanupGoto from "@/content/tracks/c/courses/c-intermediate/modules/cint-errors/lessons/cint-cleanup-goto.mdx";
+import CintCleanupGotoVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-errors/lessons/cint-cleanup-goto.vi.mdx";
+import CintCollisions from "@/content/tracks/c/courses/c-intermediate/modules/cint-hash/lessons/cint-collisions.mdx";
+import CintCollisionsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-hash/lessons/cint-collisions.vi.mdx";
+import CintComparators from "@/content/tracks/c/courses/c-intermediate/modules/cint-function-pointers/lessons/cint-comparators.mdx";
+import CintComparatorsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-function-pointers/lessons/cint-comparators.vi.mdx";
+import CintConditionVars from "@/content/tracks/c/courses/c-intermediate/modules/cint-threads/lessons/cint-condition-vars.mdx";
+import CintConditionVarsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-threads/lessons/cint-condition-vars.vi.mdx";
+import CintConstCorrectness from "@/content/tracks/c/courses/c-intermediate/modules/cint-pointers/lessons/cint-const-correctness.mdx";
+import CintConstCorrectnessVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-pointers/lessons/cint-const-correctness.vi.mdx";
+import CintDefensiveC from "@/content/tracks/c/courses/c-intermediate/modules/cint-ub/lessons/cint-defensive-c.mdx";
+import CintDefensiveCVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-ub/lessons/cint-defensive-c.vi.mdx";
+import CintDispatchTables from "@/content/tracks/c/courses/c-intermediate/modules/cint-function-pointers/lessons/cint-dispatch-tables.mdx";
+import CintDispatchTablesVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-function-pointers/lessons/cint-dispatch-tables.vi.mdx";
+import CintDoublyLists from "@/content/tracks/c/courses/c-intermediate/modules/cint-linked/lessons/cint-doubly-lists.mdx";
+import CintDoublyListsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-linked/lessons/cint-doubly-lists.vi.mdx";
+import CintFpSyntax from "@/content/tracks/c/courses/c-intermediate/modules/cint-function-pointers/lessons/cint-fp-syntax.mdx";
+import CintFpSyntaxVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-function-pointers/lessons/cint-fp-syntax.vi.mdx";
+import CintGenericSelection from "@/content/tracks/c/courses/c-intermediate/modules/cint-generic/lessons/cint-generic-selection.mdx";
+import CintGenericSelectionVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-generic/lessons/cint-generic-selection.vi.mdx";
+import CintGenericValues from "@/content/tracks/c/courses/c-intermediate/modules/cint-hash/lessons/cint-generic-values.mdx";
+import CintGenericValuesVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-hash/lessons/cint-generic-values.vi.mdx";
+import CintHashBasics from "@/content/tracks/c/courses/c-intermediate/modules/cint-hash/lessons/cint-hash-basics.mdx";
+import CintHashBasicsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-hash/lessons/cint-hash-basics.vi.mdx";
+import CintHeadersDeep from "@/content/tracks/c/courses/c-intermediate/modules/cint-translation-units/lessons/cint-headers-deep.mdx";
+import CintHeadersDeepVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-translation-units/lessons/cint-headers-deep.vi.mdx";
+import CintLayeredErrors from "@/content/tracks/c/courses/c-intermediate/modules/cint-errors/lessons/cint-layered-errors.mdx";
+import CintLayeredErrorsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-errors/lessons/cint-layered-errors.vi.mdx";
+import CintLayoutSizeof from "@/content/tracks/c/courses/c-intermediate/modules/cint-structs/lessons/cint-layout-sizeof.mdx";
+import CintLayoutSizeofVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-structs/lessons/cint-layout-sizeof.vi.mdx";
+import CintLifetimeViolations from "@/content/tracks/c/courses/c-intermediate/modules/cint-ownership/lessons/cint-lifetime-violations.mdx";
+import CintLifetimeViolationsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-ownership/lessons/cint-lifetime-violations.vi.mdx";
+import CintLinkageModel from "@/content/tracks/c/courses/c-intermediate/modules/cint-translation-units/lessons/cint-linkage-model.mdx";
+import CintLinkageModelVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-translation-units/lessons/cint-linkage-model.vi.mdx";
+import CintMacroBasics from "@/content/tracks/c/courses/c-intermediate/modules/cint-preproc/lessons/cint-macro-basics.mdx";
+import CintMacroBasicsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-preproc/lessons/cint-macro-basics.vi.mdx";
+import CintMacroHazards from "@/content/tracks/c/courses/c-intermediate/modules/cint-preproc/lessons/cint-macro-hazards.mdx";
+import CintMacroHazardsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-preproc/lessons/cint-macro-hazards.vi.mdx";
+import CintMutexes from "@/content/tracks/c/courses/c-intermediate/modules/cint-threads/lessons/cint-mutexes.mdx";
+import CintMutexesVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-threads/lessons/cint-mutexes.vi.mdx";
+import CintOpaqueHandles from "@/content/tracks/c/courses/c-intermediate/modules/cint-structs/lessons/cint-opaque-handles.mdx";
+import CintOpaqueHandlesVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-structs/lessons/cint-opaque-handles.vi.mdx";
+import CintOwnershipContracts from "@/content/tracks/c/courses/c-intermediate/modules/cint-ownership/lessons/cint-ownership-contracts.mdx";
+import CintOwnershipContractsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-ownership/lessons/cint-ownership-contracts.vi.mdx";
+import CintPointerArithmetic from "@/content/tracks/c/courses/c-intermediate/modules/cint-pointers/lessons/cint-pointer-arithmetic.mdx";
+import CintPointerArithmeticVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-pointers/lessons/cint-pointer-arithmetic.vi.mdx";
+import CintPointerArrays from "@/content/tracks/c/courses/c-intermediate/modules/cint-pointers/lessons/cint-pointer-arrays.mdx";
+import CintPointerArraysVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-pointers/lessons/cint-pointer-arrays.vi.mdx";
+import CintQsortBsearch from "@/content/tracks/c/courses/c-intermediate/modules/cint-generic/lessons/cint-qsort-bsearch.mdx";
+import CintQsortBsearchVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-generic/lessons/cint-qsort-bsearch.vi.mdx";
+import CintRandomAccess from "@/content/tracks/c/courses/c-intermediate/modules/cint-files/lessons/cint-random-access.mdx";
+import CintRandomAccessVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-files/lessons/cint-random-access.vi.mdx";
+import CintReallocGrowth from "@/content/tracks/c/courses/c-intermediate/modules/cint-ownership/lessons/cint-realloc-growth.mdx";
+import CintReallocGrowthVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-ownership/lessons/cint-realloc-growth.vi.mdx";
+import CintReturnCodes from "@/content/tracks/c/courses/c-intermediate/modules/cint-errors/lessons/cint-return-codes.mdx";
+import CintReturnCodesVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-errors/lessons/cint-return-codes.vi.mdx";
+import CintRobustReader from "@/content/tracks/c/courses/c-intermediate/modules/cint-files/lessons/cint-robust-reader.mdx";
+import CintRobustReaderVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-files/lessons/cint-robust-reader.vi.mdx";
+import CintSafeCopying from "@/content/tracks/c/courses/c-intermediate/modules/cint-strings/lessons/cint-safe-copying.mdx";
+import CintSafeCopyingVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-strings/lessons/cint-safe-copying.vi.mdx";
+import CintSelfReferential from "@/content/tracks/c/courses/c-intermediate/modules/cint-structs/lessons/cint-self-referential.mdx";
+import CintSelfReferentialVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-structs/lessons/cint-self-referential.vi.mdx";
+import CintSinglyLists from "@/content/tracks/c/courses/c-intermediate/modules/cint-linked/lessons/cint-singly-lists.mdx";
+import CintSinglyListsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-linked/lessons/cint-singly-lists.vi.mdx";
+import CintStacksQueues from "@/content/tracks/c/courses/c-intermediate/modules/cint-linked/lessons/cint-stacks-queues.mdx";
+import CintStacksQueuesVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-linked/lessons/cint-stacks-queues.vi.mdx";
+import CintStaticAssertXmacro from "@/content/tracks/c/courses/c-intermediate/modules/cint-preproc/lessons/cint-static-assert-xmacro.mdx";
+import CintStaticAssertXmacroVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-preproc/lessons/cint-static-assert-xmacro.vi.mdx";
+import CintStaticExtern from "@/content/tracks/c/courses/c-intermediate/modules/cint-translation-units/lessons/cint-static-extern.mdx";
+import CintStaticExternVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-translation-units/lessons/cint-static-extern.vi.mdx";
+import CintThreadsBasics from "@/content/tracks/c/courses/c-intermediate/modules/cint-threads/lessons/cint-threads-basics.mdx";
+import CintThreadsBasicsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-threads/lessons/cint-threads-basics.vi.mdx";
+import CintTokenizeParse from "@/content/tracks/c/courses/c-intermediate/modules/cint-strings/lessons/cint-tokenize-parse.mdx";
+import CintTokenizeParseVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-strings/lessons/cint-tokenize-parse.vi.mdx";
+import CintUbCatalog from "@/content/tracks/c/courses/c-intermediate/modules/cint-ub/lessons/cint-ub-catalog.mdx";
+import CintUbCatalogVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-ub/lessons/cint-ub-catalog.vi.mdx";
+import CintVoidBytes from "@/content/tracks/c/courses/c-intermediate/modules/cint-generic/lessons/cint-void-bytes.mdx";
+import CintVoidBytesVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-generic/lessons/cint-void-bytes.vi.mdx";
+import CintWhyUbExists from "@/content/tracks/c/courses/c-intermediate/modules/cint-ub/lessons/cint-why-ub-exists.mdx";
+import CintWhyUbExistsVi from "@/content/tracks/c/courses/c-intermediate/modules/cint-ub/lessons/cint-why-ub-exists.vi.mdx";
+import ClassHooksMetaclasses from "@/content/tracks/python/courses/python-advanced/modules/metaprogramming/lessons/class-hooks-metaclasses.mdx";
+import ClassHooksMetaclassesVi from "@/content/tracks/python/courses/python-advanced/modules/metaprogramming/lessons/class-hooks-metaclasses.vi.mdx";
+import ClassTemplates from "@/content/tracks/cpp/courses/cpp-intermediate/modules/templates/lessons/class-templates.mdx";
+import ClassTemplatesVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/templates/lessons/class-templates.vi.mdx";
+import ClassesAndEncapsulation from "@/content/tracks/cpp/courses/cpp-beginner/modules/classes-oop/lessons/classes-and-encapsulation.mdx";
+import ClassesAndEncapsulationVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/classes-oop/lessons/classes-and-encapsulation.vi.mdx";
+import ClassesAndObjects from "@/content/tracks/cpp/courses/cpp-intermediate/modules/object-oriented-design/lessons/classes-and-objects.mdx";
+import ClassesAndObjectsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/object-oriented-design/lessons/classes-and-objects.vi.mdx";
+import ClassesBasics from "@/content/tracks/python/courses/python-intermediate/modules/objects-and-modeling/lessons/classes-basics.mdx";
+import ClassesBasicsVi from "@/content/tracks/python/courses/python-intermediate/modules/objects-and-modeling/lessons/classes-basics.vi.mdx";
+import ClassesObjectsRefs from "@/content/tracks/java/courses/java-beginner/modules/java-classes-objects/lessons/classes-objects-refs.mdx";
+import ClassesObjectsRefsVi from "@/content/tracks/java/courses/java-beginner/modules/java-classes-objects/lessons/classes-objects-refs.vi.mdx";
+import CliInputMenus from "@/content/tracks/python/courses/python-beginner/modules/command-line-applications/lessons/cli-input-menus.mdx";
+import CliInputMenusVi from "@/content/tracks/python/courses/python-beginner/modules/command-line-applications/lessons/cli-input-menus.vi.mdx";
+import CmakeBasics from "@/content/tracks/cpp/courses/cpp-beginner/modules/multi-file-cmake/lessons/cmake-basics.mdx";
+import CmakeBasicsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/multi-file-cmake/lessons/cmake-basics.vi.mdx";
+import CmakeTargetsAndProps from "@/content/tracks/cpp/courses/cpp-advanced/modules/build-systems/lessons/cmake-targets-and-props.mdx";
+import CmakeTargetsAndPropsVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/build-systems/lessons/cmake-targets-and-props.vi.mdx";
+import CollectionImmutability from "@/content/tracks/java/courses/java-intermediate/modules/java-collections-advanced/lessons/collection-immutability.mdx";
+import CollectionImmutabilityVi from "@/content/tracks/java/courses/java-intermediate/modules/java-collections-advanced/lessons/collection-immutability.vi.mdx";
+import CollectorsDepth from "@/content/tracks/java/courses/java-intermediate/modules/java-functional-deep/lessons/collectors-depth.mdx";
+import CollectorsDepthVi from "@/content/tracks/java/courses/java-intermediate/modules/java-functional-deep/lessons/collectors-depth.vi.mdx";
+import CommentsStyle from "@/content/tracks/java/courses/java-beginner/modules/java-first-programs/lessons/comments-style.mdx";
+import CommentsStyleVi from "@/content/tracks/java/courses/java-beginner/modules/java-first-programs/lessons/comments-style.vi.mdx";
+import ComparatorComposition from "@/content/tracks/java/courses/java-intermediate/modules/java-collections-advanced/lessons/comparator-composition.mdx";
+import ComparatorCompositionVi from "@/content/tracks/java/courses/java-intermediate/modules/java-collections-advanced/lessons/comparator-composition.vi.mdx";
+import CompileVsRuntimeErrors from "@/content/tracks/java/courses/java-beginner/modules/java-first-programs/lessons/compile-vs-runtime-errors.mdx";
+import CompileVsRuntimeErrorsVi from "@/content/tracks/java/courses/java-beginner/modules/java-first-programs/lessons/compile-vs-runtime-errors.vi.mdx";
+import CompilerAndLayout from "@/content/tracks/cpp/courses/cpp-advanced/modules/performance/lessons/compiler-and-layout.mdx";
+import CompilerAndLayoutVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/performance/lessons/compiler-and-layout.vi.mdx";
+import CompletablefutureComposition from "@/content/tracks/java/courses/java-intermediate/modules/java-async-http/lessons/completablefuture-composition.mdx";
+import CompletablefutureCompositionVi from "@/content/tracks/java/courses/java-intermediate/modules/java-async-http/lessons/completablefuture-composition.vi.mdx";
+import Complexity from "@/content/tracks/cpp/courses/cpp-intermediate/modules/dsa/lessons/complexity.mdx";
+import ComplexityAi from "@/content/tracks/python/courses/python-beginner/modules/problem-solving-fundamentals/lessons/complexity-ai.mdx";
+import ComplexityAiVi from "@/content/tracks/python/courses/python-beginner/modules/problem-solving-fundamentals/lessons/complexity-ai.vi.mdx";
+import ComplexityVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/dsa/lessons/complexity.vi.mdx";
+import ComponentStatesA11y from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/component-states-a11y.mdx";
+import ComponentStatesA11yVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/component-states-a11y.vi.mdx";
+import Composition from "@/content/tracks/cpp/courses/cpp-intermediate/modules/object-oriented-design/lessons/composition.mdx";
+import CompositionDelegation from "@/content/tracks/java/courses/java-intermediate/modules/java-oop-solid/lessons/composition-delegation.mdx";
+import CompositionDelegationVi from "@/content/tracks/java/courses/java-intermediate/modules/java-oop-solid/lessons/composition-delegation.vi.mdx";
+import CompositionInheritancePolymorphism from "@/content/tracks/cpp/courses/cpp-beginner/modules/classes-oop/lessons/composition-inheritance-polymorphism.mdx";
+import CompositionInheritancePolymorphismVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/classes-oop/lessons/composition-inheritance-polymorphism.vi.mdx";
+import CompositionOverInheritance from "@/content/tracks/python/courses/python-intermediate/modules/objects-and-modeling/lessons/composition-over-inheritance.mdx";
+import CompositionOverInheritanceVi from "@/content/tracks/python/courses/python-intermediate/modules/objects-and-modeling/lessons/composition-over-inheritance.vi.mdx";
+import CompositionVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/object-oriented-design/lessons/composition.vi.mdx";
+import ComprehensionsAndUnpacking from "@/content/tracks/python/courses/python-intermediate/modules/pythonic-toolkit/lessons/comprehensions-and-unpacking.mdx";
+import ComprehensionsAndUnpackingVi from "@/content/tracks/python/courses/python-intermediate/modules/pythonic-toolkit/lessons/comprehensions-and-unpacking.vi.mdx";
+import ConceptsRequires from "@/content/tracks/cpp/courses/cpp-advanced/modules/concepts/lessons/concepts-requires.mdx";
+import ConceptsRequiresVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/concepts/lessons/concepts-requires.vi.mdx";
+import ConditionalCompilation from "@/content/tracks/c/courses/c-beginner/modules/preprocessor/lessons/conditional-compilation.mdx";
+import ConditionalCompilationVi from "@/content/tracks/c/courses/c-beginner/modules/preprocessor/lessons/conditional-compilation.vi.mdx";
+import ConsoleEntryPoints from "@/content/tracks/python/courses/python-intermediate/modules/packaging/lessons/console-entry-points.mdx";
+import ConsoleEntryPointsVi from "@/content/tracks/python/courses/python-intermediate/modules/packaging/lessons/console-entry-points.vi.mdx";
+import ConstAndAuto from "@/content/tracks/cpp/courses/cpp-beginner/modules/variables-and-types/lessons/const-and-auto.mdx";
+import ConstAndAutoVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/variables-and-types/lessons/const-and-auto.vi.mdx";
+import ConstCorrectness from "@/content/tracks/cpp/courses/cpp-intermediate/modules/memory-and-lifetime/lessons/const-correctness.mdx";
+import ConstCorrectnessVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/memory-and-lifetime/lessons/const-correctness.vi.mdx";
+import ConstantsSizeof from "@/content/tracks/c/courses/c-beginner/modules/variables-types/lessons/constants-sizeof.mdx";
+import ConstantsSizeofVi from "@/content/tracks/c/courses/c-beginner/modules/variables-types/lessons/constants-sizeof.vi.mdx";
+import ConstexprConstevalConstinit from "@/content/tracks/cpp/courses/cpp-advanced/modules/compile-time/lessons/constexpr-consteval-constinit.mdx";
+import ConstexprConstevalConstinitVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/compile-time/lessons/constexpr-consteval-constinit.vi.mdx";
+import ConstexprEnums from "@/content/tracks/cpp/courses/cpp-intermediate/modules/modern-cpp/lessons/constexpr-enums.mdx";
+import ConstexprEnumsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/modern-cpp/lessons/constexpr-enums.vi.mdx";
+import Constructors from "@/content/tracks/cpp/courses/cpp-intermediate/modules/object-oriented-design/lessons/constructors.mdx";
+import ConstructorsAndConstMethods from "@/content/tracks/cpp/courses/cpp-beginner/modules/classes-oop/lessons/constructors-and-const-methods.mdx";
+import ConstructorsAndConstMethodsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/classes-oop/lessons/constructors-and-const-methods.vi.mdx";
+import ConstructorsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/object-oriented-design/lessons/constructors.vi.mdx";
+import ContainerAdapters from "@/content/tracks/cpp/courses/cpp-intermediate/modules/stl-fundamentals/lessons/container-adapters.mdx";
+import ContainerAdaptersVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/stl-fundamentals/lessons/container-adapters.vi.mdx";
+import ContainerQueries from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/container-queries.mdx";
+import ContainerQueriesVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/container-queries.vi.mdx";
+import ContextManagers from "@/content/tracks/python/courses/python-intermediate/modules/data-model-iteration/lessons/context-managers.mdx";
+import ContextManagersVi from "@/content/tracks/python/courses/python-intermediate/modules/data-model-iteration/lessons/context-managers.vi.mdx";
+import ConversionCasting from "@/content/tracks/java/courses/java-beginner/modules/java-types-operators/lessons/conversion-casting.mdx";
+import ConversionCastingVi from "@/content/tracks/java/courses/java-beginner/modules/java-types-operators/lessons/conversion-casting.vi.mdx";
+import ConversionsCasts from "@/content/tracks/c/courses/c-beginner/modules/operators-expressions/lessons/conversions-casts.mdx";
+import ConversionsCastsVi from "@/content/tracks/c/courses/c-beginner/modules/operators-expressions/lessons/conversions-casts.vi.mdx";
+import CopyElisionRvo from "@/content/tracks/cpp/courses/cpp-advanced/modules/move-forwarding/lessons/copy-elision-rvo.mdx";
+import CopyElisionRvoVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/move-forwarding/lessons/copy-elision-rvo.vi.mdx";
+import CopySemantics from "@/content/tracks/cpp/courses/cpp-intermediate/modules/operators-copy-move/lessons/copy-semantics.mdx";
+import CopySemanticsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/operators-copy-move/lessons/copy-semantics.vi.mdx";
+import CoroutineMachinery from "@/content/tracks/cpp/courses/cpp-advanced/modules/coroutines/lessons/coroutine-machinery.mdx";
+import CoroutineMachineryVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/coroutines/lessons/coroutine-machinery.vi.mdx";
+import CoroutinesTasks from "@/content/tracks/python/courses/python-intermediate/modules/concurrent-async/lessons/coroutines-tasks.mdx";
+import CoroutinesTasksVi from "@/content/tracks/python/courses/python-intermediate/modules/concurrent-async/lessons/coroutines-tasks.vi.mdx";
+import CorsCsrfHeaders from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-security/lessons/cors-csrf-headers.mdx";
+import CorsCsrfHeadersVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-security/lessons/cors-csrf-headers.vi.mdx";
+import CouplingBoundaries from "@/content/tracks/python/courses/python-advanced/modules/architecture-patterns/lessons/coupling-boundaries.mdx";
+import CouplingBoundariesVi from "@/content/tracks/python/courses/python-advanced/modules/architecture-patterns/lessons/coupling-boundaries.vi.mdx";
+import CppCapstoneBrief from "@/content/tracks/cpp/courses/cpp-beginner/modules/capstone-finance-cli/lessons/cpp-capstone-brief.mdx";
+import CppCapstoneBriefVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/capstone-finance-cli/lessons/cpp-capstone-brief.vi.mdx";
+import CppCapstoneShip from "@/content/tracks/cpp/courses/cpp-beginner/modules/capstone-finance-cli/lessons/cpp-capstone-ship.mdx";
+import CppCapstoneShipVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/capstone-finance-cli/lessons/cpp-capstone-ship.vi.mdx";
+import CppCheckpointFundamentals from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-first-programs/lessons/cpp-checkpoint-fundamentals.mdx";
+import CppCheckpointFundamentalsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-first-programs/lessons/cpp-checkpoint-fundamentals.vi.mdx";
+import CppCheckpointModeling from "@/content/tracks/cpp/courses/cpp-beginner/modules/structs-enums/lessons/cpp-checkpoint-modeling.mdx";
+import CppCheckpointModelingVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/structs-enums/lessons/cpp-checkpoint-modeling.vi.mdx";
+import CppDebuggingMethod from "@/content/tracks/cpp/courses/cpp-beginner/modules/errors-debugging-tests/lessons/cpp-debugging-method.mdx";
+import CppDebuggingMethodVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/errors-debugging-tests/lessons/cpp-debugging-method.vi.mdx";
+import CppIterators from "@/content/tracks/cpp/courses/cpp-intermediate/modules/iterators-algorithms/lessons/cpp-iterators.mdx";
+import CppIteratorsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/iterators-algorithms/lessons/cpp-iterators.vi.mdx";
+import Cppa3Specialization from "@/content/tracks/cpp/courses/cpp-advanced/modules/templates-deep/lessons/cppa3-specialization.mdx";
+import Cppa3SpecializationVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/templates-deep/lessons/cppa3-specialization.vi.mdx";
+import CppaCapstoneBrief from "@/content/tracks/cpp/courses/cpp-advanced/modules/capstone-hpc-service/lessons/cppa-capstone-brief.mdx";
+import CppaCapstoneBriefVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/capstone-hpc-service/lessons/cppa-capstone-brief.vi.mdx";
+import CppaCapstoneDesign from "@/content/tracks/cpp/courses/cpp-advanced/modules/capstone-hpc-service/lessons/cppa-capstone-design.mdx";
+import CppaCapstoneDesignVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/capstone-hpc-service/lessons/cppa-capstone-design.vi.mdx";
+import CppaCheckpointAbi from "@/content/tracks/cpp/courses/cpp-advanced/modules/abi-linking/lessons/cppa-checkpoint-abi.mdx";
+import CppaCheckpointAbiVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/abi-linking/lessons/cppa-checkpoint-abi.vi.mdx";
+import CppaCheckpointAllocators from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-allocators/lessons/cppa-checkpoint-allocators.mdx";
+import CppaCheckpointAllocatorsVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-allocators/lessons/cppa-checkpoint-allocators.vi.mdx";
+import CppaCheckpointArch from "@/content/tracks/cpp/courses/cpp-advanced/modules/architecture-production/lessons/cppa-checkpoint-arch.mdx";
+import CppaCheckpointArchVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/architecture-production/lessons/cppa-checkpoint-arch.vi.mdx";
+import CppaCheckpointBuild from "@/content/tracks/cpp/courses/cpp-advanced/modules/build-systems/lessons/cppa-checkpoint-build.mdx";
+import CppaCheckpointBuildVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/build-systems/lessons/cppa-checkpoint-build.vi.mdx";
+import CppaCheckpointCapstone from "@/content/tracks/cpp/courses/cpp-advanced/modules/capstone-hpc-service/lessons/cppa-checkpoint-capstone.mdx";
+import CppaCheckpointCapstoneVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/capstone-hpc-service/lessons/cppa-checkpoint-capstone.vi.mdx";
+import CppaCheckpointCompiletime from "@/content/tracks/cpp/courses/cpp-advanced/modules/compile-time/lessons/cppa-checkpoint-compiletime.mdx";
+import CppaCheckpointCompiletimeVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/compile-time/lessons/cppa-checkpoint-compiletime.vi.mdx";
+import CppaCheckpointConcepts from "@/content/tracks/cpp/courses/cpp-advanced/modules/concepts/lessons/cppa-checkpoint-concepts.mdx";
+import CppaCheckpointConceptsVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/concepts/lessons/cppa-checkpoint-concepts.vi.mdx";
+import CppaCheckpointConcurrency from "@/content/tracks/cpp/courses/cpp-advanced/modules/concurrency/lessons/cppa-checkpoint-concurrency.mdx";
+import CppaCheckpointConcurrencyVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/concurrency/lessons/cppa-checkpoint-concurrency.vi.mdx";
+import CppaCheckpointCoroutines from "@/content/tracks/cpp/courses/cpp-advanced/modules/coroutines/lessons/cppa-checkpoint-coroutines.mdx";
+import CppaCheckpointCoroutinesVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/coroutines/lessons/cppa-checkpoint-coroutines.vi.mdx";
+import CppaCheckpointDebug from "@/content/tracks/cpp/courses/cpp-advanced/modules/debugging/lessons/cppa-checkpoint-debug.mdx";
+import CppaCheckpointDebugVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/debugging/lessons/cppa-checkpoint-debug.vi.mdx";
+import CppaCheckpointGeneric from "@/content/tracks/cpp/courses/cpp-advanced/modules/templates-deep/lessons/cppa-checkpoint-generic.mdx";
+import CppaCheckpointGenericVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/templates-deep/lessons/cppa-checkpoint-generic.vi.mdx";
+import CppaCheckpointMemmodel from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-model/lessons/cppa-checkpoint-memmodel.mdx";
+import CppaCheckpointMemmodelVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-model/lessons/cppa-checkpoint-memmodel.vi.mdx";
+import CppaCheckpointMove from "@/content/tracks/cpp/courses/cpp-advanced/modules/move-forwarding/lessons/cppa-checkpoint-move.mdx";
+import CppaCheckpointMoveVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/move-forwarding/lessons/cppa-checkpoint-move.vi.mdx";
+import CppaCheckpointNet from "@/content/tracks/cpp/courses/cpp-advanced/modules/networking/lessons/cppa-checkpoint-net.mdx";
+import CppaCheckpointNetVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/networking/lessons/cppa-checkpoint-net.vi.mdx";
+import CppaCheckpointObjectModel from "@/content/tracks/cpp/courses/cpp-advanced/modules/object-model/lessons/cppa-checkpoint-object-model.mdx";
+import CppaCheckpointObjectModelVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/object-model/lessons/cppa-checkpoint-object-model.vi.mdx";
+import CppaCheckpointPerf from "@/content/tracks/cpp/courses/cpp-advanced/modules/performance/lessons/cppa-checkpoint-perf.mdx";
+import CppaCheckpointPerfVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/performance/lessons/cppa-checkpoint-perf.vi.mdx";
+import CppaCheckpointRanges from "@/content/tracks/cpp/courses/cpp-advanced/modules/ranges-views/lessons/cppa-checkpoint-ranges.mdx";
+import CppaCheckpointRangesVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/ranges-views/lessons/cppa-checkpoint-ranges.vi.mdx";
+import CppaCheckpointSec from "@/content/tracks/cpp/courses/cpp-advanced/modules/security/lessons/cppa-checkpoint-sec.mdx";
+import CppaCheckpointSecVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/security/lessons/cppa-checkpoint-sec.vi.mdx";
+import CppaCheckpointTesting from "@/content/tracks/cpp/courses/cpp-advanced/modules/testing/lessons/cppa-checkpoint-testing.mdx";
+import CppaCheckpointTestingVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/testing/lessons/cppa-checkpoint-testing.vi.mdx";
+import CppaCheckpointUb from "@/content/tracks/cpp/courses/cpp-advanced/modules/ub-defensive/lessons/cppa-checkpoint-ub.mdx";
+import CppaCheckpointUbVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/ub-defensive/lessons/cppa-checkpoint-ub.vi.mdx";
+import CppaMeasureFirst from "@/content/tracks/cpp/courses/cpp-advanced/modules/performance/lessons/cppa-measure-first.mdx";
+import CppaMeasureFirstVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/performance/lessons/cppa-measure-first.vi.mdx";
+import CppiCheckpointFinal from "@/content/tracks/cpp/courses/cpp-intermediate/modules/cppi-final-project/lessons/cppi-checkpoint-final.mdx";
+import CppiCheckpointFinalVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/cppi-final-project/lessons/cppi-checkpoint-final.vi.mdx";
+import CrashForensics from "@/content/tracks/cpp/courses/cpp-advanced/modules/debugging/lessons/crash-forensics.mdx";
+import CrashForensicsVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/debugging/lessons/crash-forensics.vi.mdx";
+import CreatingModulesName from "@/content/tracks/python/courses/python-beginner/modules/modules-and-standard-library/lessons/creating-modules-name.mdx";
+import CreatingModulesNameVi from "@/content/tracks/python/courses/python-beginner/modules/modules-and-standard-library/lessons/creating-modules-name.vi.mdx";
+import CsaCheckpointM1 from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-checkpoint-m1.mdx";
+import CsaCheckpointM1Vi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-checkpoint-m1.vi.mdx";
+import CsaM1Boxing from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-boxing.mdx";
+import CsaM1BoxingVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-boxing.vi.mdx";
+import CsaM1ExecutionModel from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-execution-model.mdx";
+import CsaM1ExecutionModelVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-execution-model.vi.mdx";
+import CsaM1NullState from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-null-state.mdx";
+import CsaM1NullStateVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-null-state.vi.mdx";
+import CsaM1Resolution from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-resolution.mdx";
+import CsaM1ResolutionVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-resolution.vi.mdx";
+import CsaM1ValueReference from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-value-reference.mdx";
+import CsaM1ValueReferenceVi from "@/content/tracks/csharp/courses/csharp-advanced/modules/csa-language-semantics/lessons/csa-m1-value-reference.vi.mdx";
+import CsbCheckpointM1 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-welcome/lessons/csb-checkpoint-m1.mdx";
+import CsbCheckpointM10 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-oop/lessons/csb-checkpoint-m10.mdx";
+import CsbCheckpointM10Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-oop/lessons/csb-checkpoint-m10.vi.mdx";
+import CsbCheckpointM11 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-models/lessons/csb-checkpoint-m11.mdx";
+import CsbCheckpointM11Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-models/lessons/csb-checkpoint-m11.vi.mdx";
+import CsbCheckpointM12 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-generics/lessons/csb-checkpoint-m12.mdx";
+import CsbCheckpointM12Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-generics/lessons/csb-checkpoint-m12.vi.mdx";
+import CsbCheckpointM13 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-exceptions/lessons/csb-checkpoint-m13.mdx";
+import CsbCheckpointM13Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-exceptions/lessons/csb-checkpoint-m13.vi.mdx";
+import CsbCheckpointM14 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-files/lessons/csb-checkpoint-m14.mdx";
+import CsbCheckpointM14Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-files/lessons/csb-checkpoint-m14.vi.mdx";
+import CsbCheckpointM15 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-linq/lessons/csb-checkpoint-m15.mdx";
+import CsbCheckpointM15Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-linq/lessons/csb-checkpoint-m15.vi.mdx";
+import CsbCheckpointM16 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-delegates/lessons/csb-checkpoint-m16.mdx";
+import CsbCheckpointM16Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-delegates/lessons/csb-checkpoint-m16.vi.mdx";
+import CsbCheckpointM17 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-testing/lessons/csb-checkpoint-m17.mdx";
+import CsbCheckpointM17Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-testing/lessons/csb-checkpoint-m17.vi.mdx";
+import CsbCheckpointM18 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-cli/lessons/csb-checkpoint-m18.mdx";
+import CsbCheckpointM18Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-cli/lessons/csb-checkpoint-m18.vi.mdx";
+import CsbCheckpointM19 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-git/lessons/csb-checkpoint-m19.mdx";
+import CsbCheckpointM19Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-git/lessons/csb-checkpoint-m19.vi.mdx";
+import CsbCheckpointM1Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-welcome/lessons/csb-checkpoint-m1.vi.mdx";
+import CsbCheckpointM2 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-types/lessons/csb-checkpoint-m2.mdx";
+import CsbCheckpointM20 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-algorithms/lessons/csb-checkpoint-m20.mdx";
+import CsbCheckpointM20Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-algorithms/lessons/csb-checkpoint-m20.vi.mdx";
+import CsbCheckpointM21 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-capstone/lessons/csb-checkpoint-m21.mdx";
+import CsbCheckpointM21Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-capstone/lessons/csb-checkpoint-m21.vi.mdx";
+import CsbCheckpointM2Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-types/lessons/csb-checkpoint-m2.vi.mdx";
+import CsbCheckpointM3 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-io/lessons/csb-checkpoint-m3.mdx";
+import CsbCheckpointM3Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-io/lessons/csb-checkpoint-m3.vi.mdx";
+import CsbCheckpointM4 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-flow/lessons/csb-checkpoint-m4.mdx";
+import CsbCheckpointM4Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-flow/lessons/csb-checkpoint-m4.vi.mdx";
+import CsbCheckpointM5 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-methods/lessons/csb-checkpoint-m5.mdx";
+import CsbCheckpointM5Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-methods/lessons/csb-checkpoint-m5.vi.mdx";
+import CsbCheckpointM6 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-strings/lessons/csb-checkpoint-m6.mdx";
+import CsbCheckpointM6Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-strings/lessons/csb-checkpoint-m6.vi.mdx";
+import CsbCheckpointM7 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-arrays/lessons/csb-checkpoint-m7.mdx";
+import CsbCheckpointM7Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-arrays/lessons/csb-checkpoint-m7.vi.mdx";
+import CsbCheckpointM8 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-collections/lessons/csb-checkpoint-m8.mdx";
+import CsbCheckpointM8Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-collections/lessons/csb-checkpoint-m8.vi.mdx";
+import CsbCheckpointM9 from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-classes/lessons/csb-checkpoint-m9.mdx";
+import CsbCheckpointM9Vi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-classes/lessons/csb-checkpoint-m9.vi.mdx";
+import CsbM10Inheritance from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-oop/lessons/csb-m10-inheritance.mdx";
+import CsbM10InheritanceVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-oop/lessons/csb-m10-inheritance.vi.mdx";
+import CsbM10Interfaces from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-oop/lessons/csb-m10-interfaces.mdx";
+import CsbM10InterfacesVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-oop/lessons/csb-m10-interfaces.vi.mdx";
+import CsbM10Polymorphism from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-oop/lessons/csb-m10-polymorphism.mdx";
+import CsbM10PolymorphismVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-oop/lessons/csb-m10-polymorphism.vi.mdx";
+import CsbM11Enums from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-models/lessons/csb-m11-enums.mdx";
+import CsbM11EnumsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-models/lessons/csb-m11-enums.vi.mdx";
+import CsbM11Records from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-models/lessons/csb-m11-records.mdx";
+import CsbM11RecordsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-models/lessons/csb-m11-records.vi.mdx";
+import CsbM11Structs from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-models/lessons/csb-m11-structs.mdx";
+import CsbM11StructsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-models/lessons/csb-m11-structs.vi.mdx";
+import CsbM12Constraints from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-generics/lessons/csb-m12-constraints.mdx";
+import CsbM12ConstraintsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-generics/lessons/csb-m12-constraints.vi.mdx";
+import CsbM12GenericCollections from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-generics/lessons/csb-m12-generic-collections.mdx";
+import CsbM12GenericCollectionsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-generics/lessons/csb-m12-generic-collections.vi.mdx";
+import CsbM12Generics from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-generics/lessons/csb-m12-generics.mdx";
+import CsbM12GenericsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-generics/lessons/csb-m12-generics.vi.mdx";
+import CsbM13FinallyCleanup from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-exceptions/lessons/csb-m13-finally-cleanup.mdx";
+import CsbM13FinallyCleanupVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-exceptions/lessons/csb-m13-finally-cleanup.vi.mdx";
+import CsbM13ThrowCustom from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-exceptions/lessons/csb-m13-throw-custom.mdx";
+import CsbM13ThrowCustomVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-exceptions/lessons/csb-m13-throw-custom.vi.mdx";
+import CsbM13Trycatch from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-exceptions/lessons/csb-m13-trycatch.mdx";
+import CsbM13TrycatchVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-exceptions/lessons/csb-m13-trycatch.vi.mdx";
+import CsbM14PathFile from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-files/lessons/csb-m14-path-file.mdx";
+import CsbM14PathFileVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-files/lessons/csb-m14-path-file.vi.mdx";
+import CsbM14Persistence from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-files/lessons/csb-m14-persistence.mdx";
+import CsbM14PersistenceVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-files/lessons/csb-m14-persistence.vi.mdx";
+import CsbM14ReadWrite from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-files/lessons/csb-m14-read-write.mdx";
+import CsbM14ReadWriteVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-files/lessons/csb-m14-read-write.vi.mdx";
+import CsbM15Aggregates from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-linq/lessons/csb-m15-aggregates.mdx";
+import CsbM15AggregatesVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-linq/lessons/csb-m15-aggregates.vi.mdx";
+import CsbM15OrderGroup from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-linq/lessons/csb-m15-order-group.mdx";
+import CsbM15OrderGroupVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-linq/lessons/csb-m15-order-group.vi.mdx";
+import CsbM15WhereSelect from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-linq/lessons/csb-m15-where-select.mdx";
+import CsbM15WhereSelectVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-linq/lessons/csb-m15-where-select.vi.mdx";
+import CsbM16Events from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-delegates/lessons/csb-m16-events.mdx";
+import CsbM16EventsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-delegates/lessons/csb-m16-events.vi.mdx";
+import CsbM16FuncAction from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-delegates/lessons/csb-m16-func-action.mdx";
+import CsbM16FuncActionVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-delegates/lessons/csb-m16-func-action.vi.mdx";
+import CsbM16Lambdas from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-delegates/lessons/csb-m16-lambdas.mdx";
+import CsbM16LambdasVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-delegates/lessons/csb-m16-lambdas.vi.mdx";
+import CsbM17Assertions from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-testing/lessons/csb-m17-assertions.mdx";
+import CsbM17AssertionsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-testing/lessons/csb-m17-assertions.vi.mdx";
+import CsbM17EdgeCases from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-testing/lessons/csb-m17-edge-cases.mdx";
+import CsbM17EdgeCasesVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-testing/lessons/csb-m17-edge-cases.vi.mdx";
+import CsbM17ReadErrors from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-testing/lessons/csb-m17-read-errors.mdx";
+import CsbM17ReadErrorsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-testing/lessons/csb-m17-read-errors.vi.mdx";
+import CsbM18Csproj from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-cli/lessons/csb-m18-csproj.mdx";
+import CsbM18CsprojVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-cli/lessons/csb-m18-csproj.vi.mdx";
+import CsbM18DotnetCli from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-cli/lessons/csb-m18-dotnet-cli.mdx";
+import CsbM18DotnetCliVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-cli/lessons/csb-m18-dotnet-cli.vi.mdx";
+import CsbM18Solutions from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-cli/lessons/csb-m18-solutions.mdx";
+import CsbM18SolutionsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-cli/lessons/csb-m18-solutions.vi.mdx";
+import CsbM19Branches from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-git/lessons/csb-m19-branches.mdx";
+import CsbM19BranchesVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-git/lessons/csb-m19-branches.vi.mdx";
+import CsbM19Commits from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-git/lessons/csb-m19-commits.mdx";
+import CsbM19CommitsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-git/lessons/csb-m19-commits.vi.mdx";
+import CsbM19IgnoreHygiene from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-git/lessons/csb-m19-ignore-hygiene.mdx";
+import CsbM19IgnoreHygieneVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-git/lessons/csb-m19-ignore-hygiene.vi.mdx";
+import CsbM1FirstProgram from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-welcome/lessons/csb-m1-first-program.mdx";
+import CsbM1FirstProgramVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-welcome/lessons/csb-m1-first-program.vi.mdx";
+import CsbM1HowGradingWorks from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-welcome/lessons/csb-m1-how-grading-works.mdx";
+import CsbM1HowGradingWorksVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-welcome/lessons/csb-m1-how-grading-works.vi.mdx";
+import CsbM1WhatIsCsharp from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-welcome/lessons/csb-m1-what-is-csharp.mdx";
+import CsbM1WhatIsCsharpVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-welcome/lessons/csb-m1-what-is-csharp.vi.mdx";
+import CsbM20BigO from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-algorithms/lessons/csb-m20-big-o.mdx";
+import CsbM20BigOVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-algorithms/lessons/csb-m20-big-o.vi.mdx";
+import CsbM20Patterns from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-algorithms/lessons/csb-m20-patterns.mdx";
+import CsbM20PatternsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-algorithms/lessons/csb-m20-patterns.vi.mdx";
+import CsbM20Searching from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-algorithms/lessons/csb-m20-searching.mdx";
+import CsbM20SearchingVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-algorithms/lessons/csb-m20-searching.vi.mdx";
+import CsbM21Model from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-capstone/lessons/csb-m21-model.mdx";
+import CsbM21ModelVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-capstone/lessons/csb-m21-model.vi.mdx";
+import CsbM21Plan from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-capstone/lessons/csb-m21-plan.mdx";
+import CsbM21PlanVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-capstone/lessons/csb-m21-plan.vi.mdx";
+import CsbM21Report from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-capstone/lessons/csb-m21-report.mdx";
+import CsbM21ReportVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-capstone/lessons/csb-m21-report.vi.mdx";
+import CsbM2NumericTypes from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-types/lessons/csb-m2-numeric-types.mdx";
+import CsbM2NumericTypesVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-types/lessons/csb-m2-numeric-types.vi.mdx";
+import CsbM2StringsChars from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-types/lessons/csb-m2-strings-chars.mdx";
+import CsbM2StringsCharsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-types/lessons/csb-m2-strings-chars.vi.mdx";
+import CsbM2VarConstNull from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-types/lessons/csb-m2-var-const-null.mdx";
+import CsbM2VarConstNullVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-types/lessons/csb-m2-var-const-null.vi.mdx";
+import CsbM2Variables from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-types/lessons/csb-m2-variables.mdx";
+import CsbM2VariablesVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-types/lessons/csb-m2-variables.vi.mdx";
+import CsbM3Parsing from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-io/lessons/csb-m3-parsing.mdx";
+import CsbM3ParsingVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-io/lessons/csb-m3-parsing.vi.mdx";
+import CsbM3ReadingInput from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-io/lessons/csb-m3-reading-input.mdx";
+import CsbM3ReadingInputVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-io/lessons/csb-m3-reading-input.vi.mdx";
+import CsbM3TryparseValidation from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-io/lessons/csb-m3-tryparse-validation.mdx";
+import CsbM3TryparseValidationVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-io/lessons/csb-m3-tryparse-validation.vi.mdx";
+import CsbM4Conditions from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-flow/lessons/csb-m4-conditions.mdx";
+import CsbM4ConditionsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-flow/lessons/csb-m4-conditions.vi.mdx";
+import CsbM4Loops from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-flow/lessons/csb-m4-loops.mdx";
+import CsbM4LoopsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-flow/lessons/csb-m4-loops.vi.mdx";
+import CsbM4Operators from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-flow/lessons/csb-m4-operators.mdx";
+import CsbM4OperatorsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-flow/lessons/csb-m4-operators.vi.mdx";
+import CsbM5Declare from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-methods/lessons/csb-m5-declare.mdx";
+import CsbM5DeclareVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-methods/lessons/csb-m5-declare.vi.mdx";
+import CsbM5Params from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-methods/lessons/csb-m5-params.mdx";
+import CsbM5ParamsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-methods/lessons/csb-m5-params.vi.mdx";
+import CsbM5Scope from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-methods/lessons/csb-m5-scope.mdx";
+import CsbM5ScopeVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-methods/lessons/csb-m5-scope.vi.mdx";
+import CsbM6Api from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-strings/lessons/csb-m6-api.mdx";
+import CsbM6ApiVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-strings/lessons/csb-m6-api.vi.mdx";
+import CsbM6Char from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-strings/lessons/csb-m6-char.mdx";
+import CsbM6CharVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-strings/lessons/csb-m6-char.vi.mdx";
+import CsbM6Index from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-strings/lessons/csb-m6-index.mdx";
+import CsbM6IndexVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-strings/lessons/csb-m6-index.vi.mdx";
+import CsbM7Declare from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-arrays/lessons/csb-m7-declare.mdx";
+import CsbM7DeclareVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-arrays/lessons/csb-m7-declare.vi.mdx";
+import CsbM7Iterate from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-arrays/lessons/csb-m7-iterate.mdx";
+import CsbM7IterateVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-arrays/lessons/csb-m7-iterate.vi.mdx";
+import CsbM7Stdlib from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-arrays/lessons/csb-m7-stdlib.mdx";
+import CsbM7StdlibVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-arrays/lessons/csb-m7-stdlib.vi.mdx";
+import CsbM8Dict from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-collections/lessons/csb-m8-dict.mdx";
+import CsbM8DictVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-collections/lessons/csb-m8-dict.vi.mdx";
+import CsbM8List from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-collections/lessons/csb-m8-list.mdx";
+import CsbM8ListVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-collections/lessons/csb-m8-list.vi.mdx";
+import CsbM8Set from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-collections/lessons/csb-m8-set.mdx";
+import CsbM8SetVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-collections/lessons/csb-m8-set.vi.mdx";
+import CsbM9Basics from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-classes/lessons/csb-m9-basics.mdx";
+import CsbM9BasicsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-classes/lessons/csb-m9-basics.vi.mdx";
+import CsbM9Constructors from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-classes/lessons/csb-m9-constructors.mdx";
+import CsbM9ConstructorsVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-classes/lessons/csb-m9-constructors.vi.mdx";
+import CsbM9Properties from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-classes/lessons/csb-m9-properties.mdx";
+import CsbM9PropertiesVi from "@/content/tracks/csharp/courses/csharp-beginner/modules/csb-classes/lessons/csb-m9-properties.vi.mdx";
+import CsiAsyncBasics from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-async-basics.mdx";
+import CsiAsyncBasicsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-async-basics.vi.mdx";
+import CsiAsyncStreams from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-async-streams.mdx";
+import CsiAsyncStreamsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-async-streams.vi.mdx";
+import CsiBuildingAContainer from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-di/lessons/csi-building-a-container.mdx";
+import CsiBuildingAContainerVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-di/lessons/csi-building-a-container.vi.mdx";
+import CsiCancellationTimeouts from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-cancellation-timeouts.mdx";
+import CsiCancellationTimeoutsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-cancellation-timeouts.vi.mdx";
+import CsiCheckpointM1 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-checkpoint-m1.mdx";
+import CsiCheckpointM10 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-concurrency/lessons/csi-checkpoint-m10.mdx";
+import CsiCheckpointM10Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-concurrency/lessons/csi-checkpoint-m10.vi.mdx";
+import CsiCheckpointM11 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-di/lessons/csi-checkpoint-m11.mdx";
+import CsiCheckpointM11Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-di/lessons/csi-checkpoint-m11.vi.mdx";
+import CsiCheckpointM1Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-checkpoint-m1.vi.mdx";
+import CsiCheckpointM2 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-checkpoint-m2.mdx";
+import CsiCheckpointM2Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-checkpoint-m2.vi.mdx";
+import CsiCheckpointM3 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-checkpoint-m3.mdx";
+import CsiCheckpointM3Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-checkpoint-m3.vi.mdx";
+import CsiCheckpointM4 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-events/lessons/csi-checkpoint-m4.mdx";
+import CsiCheckpointM4Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-events/lessons/csi-checkpoint-m4.vi.mdx";
+import CsiCheckpointM5 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-generics/lessons/csi-checkpoint-m5.mdx";
+import CsiCheckpointM5Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-generics/lessons/csi-checkpoint-m5.vi.mdx";
+import CsiCheckpointM6 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-collections/lessons/csi-checkpoint-m6.mdx";
+import CsiCheckpointM6Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-collections/lessons/csi-checkpoint-m6.vi.mdx";
+import CsiCheckpointM7 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-iterators/lessons/csi-checkpoint-m7.mdx";
+import CsiCheckpointM7Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-iterators/lessons/csi-checkpoint-m7.vi.mdx";
+import CsiCheckpointM8 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-linq/lessons/csi-checkpoint-m8.mdx";
+import CsiCheckpointM8Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-linq/lessons/csi-checkpoint-m8.vi.mdx";
+import CsiCheckpointM9 from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-checkpoint-m9.mdx";
+import CsiCheckpointM9Vi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-async/lessons/csi-checkpoint-m9.vi.mdx";
+import CsiChoosingStructures from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-collections/lessons/csi-choosing-structures.mdx";
+import CsiChoosingStructuresVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-collections/lessons/csi-choosing-structures.vi.mdx";
+import CsiClosuresCapture from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-closures-capture.mdx";
+import CsiClosuresCaptureVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-closures-capture.vi.mdx";
+import CsiCollectionCosts from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-collections/lessons/csi-collection-costs.mdx";
+import CsiCollectionCostsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-collections/lessons/csi-collection-costs.vi.mdx";
+import CsiCompositionPipelines from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-composition-pipelines.mdx";
+import CsiCompositionPipelinesVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-composition-pipelines.vi.mdx";
+import CsiConstraints from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-generics/lessons/csi-constraints.mdx";
+import CsiConstraintsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-generics/lessons/csi-constraints.vi.mdx";
+import CsiDelegatesShapes from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-delegates-shapes.mdx";
+import CsiDelegatesShapesVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-delegates/lessons/csi-delegates-shapes.vi.mdx";
+import CsiDependencyInversion from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-di/lessons/csi-dependency-inversion.mdx";
+import CsiDependencyInversionVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-di/lessons/csi-dependency-inversion.vi.mdx";
+import CsiEventargsAndLifetime from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-events/lessons/csi-eventargs-and-lifetime.mdx";
+import CsiEventargsAndLifetimeVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-events/lessons/csi-eventargs-and-lifetime.vi.mdx";
+import CsiEventsEncapsulation from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-events/lessons/csi-events-encapsulation.mdx";
+import CsiEventsEncapsulationVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-events/lessons/csi-events-encapsulation.vi.mdx";
+import CsiExecutionModel from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-linq/lessons/csi-execution-model.mdx";
+import CsiExecutionModelVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-linq/lessons/csi-execution-model.vi.mdx";
+import CsiLazyPipelines from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-iterators/lessons/csi-lazy-pipelines.mdx";
+import CsiLazyPipelinesVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-iterators/lessons/csi-lazy-pipelines.vi.mdx";
+import CsiNullability from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-nullability.mdx";
+import CsiNullabilityVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-nullability.vi.mdx";
+import CsiOperatorFamilies from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-linq/lessons/csi-operator-families.mdx";
+import CsiOperatorFamiliesVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-linq/lessons/csi-operator-families.vi.mdx";
+import CsiOverloadsAndMembers from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-overloads-and-members.mdx";
+import CsiOverloadsAndMembersVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-overloads-and-members.vi.mdx";
+import CsiParameterPassing from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-parameter-passing.mdx";
+import CsiParameterPassingVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-parameter-passing.vi.mdx";
+import CsiPatternMatching from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-pattern-matching.mdx";
+import CsiPatternMatchingVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-pattern-matching.vi.mdx";
+import CsiRecursionDesign from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-recursion-design.mdx";
+import CsiRecursionDesignVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-methods/lessons/csi-recursion-design.vi.mdx";
+import CsiSynchronizationPatterns from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-concurrency/lessons/csi-synchronization-patterns.mdx";
+import CsiSynchronizationPatternsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-concurrency/lessons/csi-synchronization-patterns.vi.mdx";
+import CsiThreadsAndLocks from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-concurrency/lessons/csi-threads-and-locks.mdx";
+import CsiThreadsAndLocksVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-concurrency/lessons/csi-threads-and-locks.vi.mdx";
+import CsiTypeSemantics from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-type-semantics.mdx";
+import CsiTypeSemanticsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-modern-types/lessons/csi-type-semantics.vi.mdx";
+import CsiVariance from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-generics/lessons/csi-variance.mdx";
+import CsiVarianceVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-generics/lessons/csi-variance.vi.mdx";
+import CsiYieldSemantics from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-iterators/lessons/csi-yield-semantics.mdx";
+import CsiYieldSemanticsVi from "@/content/tracks/csharp/courses/csharp-intermediate/modules/csi-iterators/lessons/csi-yield-semantics.vi.mdx";
 import CssBoxModel from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-box-model.mdx";
+import CssBoxModelVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-box-model.vi.mdx";
 import CssDisplayFlow from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-display-flow.mdx";
+import CssDisplayFlowVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-display-flow.vi.mdx";
 import CssFlexbox from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-flexbox.mdx";
+import CssFlexboxVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-flexbox.vi.mdx";
 import CssGrid from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-grid.mdx";
+import CssGridVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-grid.vi.mdx";
 import CssPositioning from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-positioning.mdx";
+import CssPositioningVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-positioning.vi.mdx";
 import CssProjectPortfolio from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-project-portfolio.mdx";
+import CssProjectPortfolioVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-project-portfolio.vi.mdx";
 import CssResponsive from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-responsive.mdx";
+import CssResponsiveVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-responsive.vi.mdx";
 import CssTransitions from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-transitions.mdx";
+import CssTransitionsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-transitions.vi.mdx";
 import CssTypography from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-typography.mdx";
+import CssTypographyVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/css-typography.vi.mdx";
+import CsvBasics from "@/content/tracks/python/courses/python-beginner/modules/files-paths-and-data/lessons/csv-basics.mdx";
+import CsvBasicsVi from "@/content/tracks/python/courses/python-beginner/modules/files-paths-and-data/lessons/csv-basics.vi.mdx";
+import CsvJsonRoundtrips from "@/content/tracks/python/courses/python-intermediate/modules/files-and-data/lessons/csv-json-roundtrips.mdx";
+import CsvJsonRoundtripsVi from "@/content/tracks/python/courses/python-intermediate/modules/files-and-data/lessons/csv-json-roundtrips.vi.mdx";
+import CsvParsingRules from "@/content/tracks/java/courses/java-intermediate/modules/java-io-formats/lessons/csv-parsing-rules.mdx";
+import CsvParsingRulesVi from "@/content/tracks/java/courses/java-intermediate/modules/java-io-formats/lessons/csv-parsing-rules.vi.mdx";
+import CtadDeduction from "@/content/tracks/cpp/courses/cpp-advanced/modules/templates-deep/lessons/ctad-deduction.mdx";
+import CtadDeductionVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/templates-deep/lessons/ctad-deduction.vi.mdx";
+import CtorDtorOrder from "@/content/tracks/cpp/courses/cpp-intermediate/modules/inheritance-polymorphism/lessons/ctor-dtor-order.mdx";
+import CtorDtorOrderVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/inheritance-polymorphism/lessons/ctor-dtor-order.vi.mdx";
+import CustomExceptions from "@/content/tracks/cpp/courses/cpp-intermediate/modules/errors-and-files/lessons/custom-exceptions.mdx";
+import CustomExceptionsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/errors-and-files/lessons/custom-exceptions.vi.mdx";
+import CustomHierarchies from "@/content/tracks/java/courses/java-intermediate/modules/java-exception-architecture/lessons/custom-hierarchies.mdx";
+import CustomHierarchiesVi from "@/content/tracks/java/courses/java-intermediate/modules/java-exception-architecture/lessons/custom-hierarchies.vi.mdx";
+import CustomPropertiesTheming from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/custom-properties-theming.mdx";
+import CustomPropertiesThemingVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/custom-properties-theming.vi.mdx";
+import DashboardCheckpoint from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/dashboard-checkpoint.mdx";
+import DashboardCheckpointVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/dashboard-checkpoint.vi.mdx";
+import DataAccessArchitecture from "@/content/tracks/python/courses/python-advanced/modules/databases-data-access/lessons/data-access-architecture.mdx";
+import DataAccessArchitectureVi from "@/content/tracks/python/courses/python-advanced/modules/databases-data-access/lessons/data-access-architecture.vi.mdx";
+import DataExplorerCheckpoint from "@/content/tracks/web-development/courses/web-development-intermediate/modules/modern-javascript/lessons/data-explorer-checkpoint.mdx";
+import DataExplorerCheckpointVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/modern-javascript/lessons/data-explorer-checkpoint.vi.mdx";
+import DataOrientedLayout from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-allocators/lessons/data-oriented-layout.mdx";
+import DataOrientedLayoutVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-allocators/lessons/data-oriented-layout.vi.mdx";
 import DatabasesAndAuth from "@/content/tracks/web-development/courses/web-development-beginner/modules/how-modern-websites-work/lessons/databases-and-auth.mdx";
+import DatabasesAndAuthVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/how-modern-websites-work/lessons/databases-and-auth.vi.mdx";
+import Dataclasses from "@/content/tracks/python/courses/python-intermediate/modules/objects-and-modeling/lessons/dataclasses.mdx";
+import DataclassesVi from "@/content/tracks/python/courses/python-intermediate/modules/objects-and-modeling/lessons/dataclasses.vi.mdx";
+import DatamodelAttributeLookup from "@/content/tracks/python/courses/python-advanced/modules/data-model-protocols/lessons/datamodel-attribute-lookup.mdx";
+import DatamodelAttributeLookupVi from "@/content/tracks/python/courses/python-advanced/modules/data-model-protocols/lessons/datamodel-attribute-lookup.vi.mdx";
+import DbCheckpoint from "@/content/tracks/web-development/courses/web-development-intermediate/modules/databases-full-stack/lessons/db-checkpoint.mdx";
+import DbCheckpointVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/databases-full-stack/lessons/db-checkpoint.vi.mdx";
+import DebuggerDiscipline from "@/content/tracks/cpp/courses/cpp-advanced/modules/debugging/lessons/debugger-discipline.mdx";
+import DebuggerDisciplineVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/debugging/lessons/debugger-discipline.vi.mdx";
+import DebuggingMethod from "@/content/tracks/web-development/courses/web-development-intermediate/modules/testing-debugging/lessons/debugging-method.mdx";
+import DebuggingMethodVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/testing-debugging/lessons/debugging-method.vi.mdx";
+import DecomposeInputsOutputs from "@/content/tracks/python/courses/python-beginner/modules/problem-solving-fundamentals/lessons/decompose-inputs-outputs.mdx";
+import DecomposeInputsOutputsVi from "@/content/tracks/python/courses/python-beginner/modules/problem-solving-fundamentals/lessons/decompose-inputs-outputs.vi.mdx";
+import Decomposition from "@/content/tracks/java/courses/java-beginner/modules/java-methods/lessons/decomposition.mdx";
+import DecompositionAndEdgeCases from "@/content/tracks/cpp/courses/cpp-beginner/modules/problem-solving/lessons/decomposition-and-edge-cases.mdx";
+import DecompositionAndEdgeCasesVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/problem-solving/lessons/decomposition-and-edge-cases.vi.mdx";
+import DecompositionVi from "@/content/tracks/java/courses/java-beginner/modules/java-methods/lessons/decomposition.vi.mdx";
+import DecoratorsDeep from "@/content/tracks/python/courses/python-advanced/modules/metaprogramming/lessons/decorators-deep.mdx";
+import DecoratorsDeepVi from "@/content/tracks/python/courses/python-advanced/modules/metaprogramming/lessons/decorators-deep.vi.mdx";
+import DefaultsScopeDocstrings from "@/content/tracks/python/courses/python-beginner/modules/functions/lessons/defaults-scope-docstrings.mdx";
+import DefaultsScopeDocstringsVi from "@/content/tracks/python/courses/python-beginner/modules/functions/lessons/defaults-scope-docstrings.vi.mdx";
+import DefensiveBoundaries from "@/content/tracks/cpp/courses/cpp-advanced/modules/ub-defensive/lessons/defensive-boundaries.mdx";
+import DefensiveBoundariesVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/ub-defensive/lessons/defensive-boundaries.vi.mdx";
+import DefensiveProgramming from "@/content/tracks/python/courses/python-beginner/modules/errors-and-debugging/lessons/defensive-programming.mdx";
+import DefensiveProgrammingVi from "@/content/tracks/python/courses/python-beginner/modules/errors-and-debugging/lessons/defensive-programming.vi.mdx";
+import DefensiveReadability from "@/content/tracks/java/courses/java-intermediate/modules/java-clean-code/lessons/defensive-readability.mdx";
+import DefensiveReadabilityVi from "@/content/tracks/java/courses/java-intermediate/modules/java-clean-code/lessons/defensive-readability.vi.mdx";
+import DefiningAndCalling from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-functions/lessons/defining-and-calling.mdx";
+import DefiningAndCallingVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-functions/lessons/defining-and-calling.vi.mdx";
+import DefiningFunctions from "@/content/tracks/python/courses/python-beginner/modules/functions/lessons/defining-functions.mdx";
+import DefiningFunctionsVi from "@/content/tracks/python/courses/python-beginner/modules/functions/lessons/defining-functions.vi.mdx";
+import DependencyInjection from "@/content/tracks/python/courses/python-advanced/modules/architecture-patterns/lessons/dependency-injection.mdx";
+import DependencyInjectionVi from "@/content/tracks/python/courses/python-advanced/modules/architecture-patterns/lessons/dependency-injection.vi.mdx";
+import DeployDnsHttps from "@/content/tracks/web-development/courses/web-development-intermediate/modules/production/lessons/deploy-dns-https.mdx";
+import DeployDnsHttpsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/production/lessons/deploy-dns-https.vi.mdx";
 import DeployGithubPages from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/deploy-github-pages.mdx";
+import DeployGithubPagesVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/deploy-github-pages.vi.mdx";
 import DeploymentDnsHttps from "@/content/tracks/web-development/courses/web-development-beginner/modules/how-modern-websites-work/lessons/deployment-dns-https.mdx";
+import DeploymentDnsHttpsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/how-modern-websites-work/lessons/deployment-dns-https.vi.mdx";
+import DequesPriorityQueues from "@/content/tracks/java/courses/java-intermediate/modules/java-collections-advanced/lessons/deques-priority-queues.mdx";
+import DequesPriorityQueuesVi from "@/content/tracks/java/courses/java-intermediate/modules/java-collections-advanced/lessons/deques-priority-queues.vi.mdx";
+import Dereferencing from "@/content/tracks/c/courses/c-beginner/modules/pointer-fundamentals/lessons/dereferencing.mdx";
+import DereferencingVi from "@/content/tracks/c/courses/c-beginner/modules/pointer-fundamentals/lessons/dereferencing.vi.mdx";
+import Descriptors from "@/content/tracks/python/courses/python-advanced/modules/data-model-protocols/lessons/descriptors.mdx";
+import DescriptorsVi from "@/content/tracks/python/courses/python-advanced/modules/data-model-protocols/lessons/descriptors.vi.mdx";
+import DesignToContracts from "@/content/tracks/java/courses/java-intermediate/modules/java-oop-solid/lessons/design-to-contracts.mdx";
+import DesignToContractsVi from "@/content/tracks/java/courses/java-intermediate/modules/java-oop-solid/lessons/design-to-contracts.vi.mdx";
+import Destructors from "@/content/tracks/cpp/courses/cpp-intermediate/modules/object-oriented-design/lessons/destructors.mdx";
+import DestructorsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/object-oriented-design/lessons/destructors.vi.mdx";
+import DestructuringSpread from "@/content/tracks/web-development/courses/web-development-intermediate/modules/modern-javascript/lessons/destructuring-spread.mdx";
+import DestructuringSpreadVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/modern-javascript/lessons/destructuring-spread.vi.mdx";
+import DevVsProd from "@/content/tracks/web-development/courses/web-development-intermediate/modules/production/lessons/dev-vs-prod.mdx";
+import DevVsProdVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/production/lessons/dev-vs-prod.vi.mdx";
+import DevtoolsObservability from "@/content/tracks/web-development/courses/web-development-intermediate/modules/testing-debugging/lessons/devtools-observability.mdx";
+import DevtoolsObservabilityVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/testing-debugging/lessons/devtools-observability.vi.mdx";
+import Diagnostics from "@/content/tracks/cpp/courses/cpp-advanced/modules/concepts/lessons/diagnostics.mdx";
+import DiagnosticsVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/concepts/lessons/diagnostics.vi.mdx";
+import Dictionaries from "@/content/tracks/python/courses/python-beginner/modules/lists-and-collections/lessons/dictionaries.mdx";
+import DictionariesVi from "@/content/tracks/python/courses/python-beginner/modules/lists-and-collections/lessons/dictionaries.vi.mdx";
+import DocsHubProject from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/docs-hub-project.mdx";
+import DocsHubProjectVi from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/docs-hub-project.vi.mdx";
+import DomArchitectureEvents from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/dom-architecture-events.mdx";
+import DomArchitectureEventsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/dom-architecture-events.vi.mdx";
+import DtoBoundaries from "@/content/tracks/java/courses/java-intermediate/modules/java-architecture/lessons/dto-boundaries.mdx";
+import DtoBoundariesVi from "@/content/tracks/java/courses/java-intermediate/modules/java-architecture/lessons/dto-boundaries.vi.mdx";
+import DynamicArray from "@/content/tracks/c/courses/c-beginner/modules/data-structures/lessons/dynamic-array.mdx";
+import DynamicArrayVi from "@/content/tracks/c/courses/c-beginner/modules/data-structures/lessons/dynamic-array.vi.mdx";
+import DynamicMemory from "@/content/tracks/cpp/courses/cpp-intermediate/modules/memory-and-lifetime/lessons/dynamic-memory.mdx";
+import DynamicMemoryVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/memory-and-lifetime/lessons/dynamic-memory.vi.mdx";
+import EdgeCases from "@/content/tracks/java/courses/java-beginner/modules/java-testing-debug/lessons/edge-cases.mdx";
+import EdgeCasesVi from "@/content/tracks/java/courses/java-beginner/modules/java-testing-debug/lessons/edge-cases.vi.mdx";
+import EdgeDeterminism from "@/content/tracks/java/courses/java-intermediate/modules/java-testing-deep/lessons/edge-determinism.mdx";
+import EdgeDeterminismVi from "@/content/tracks/java/courses/java-intermediate/modules/java-testing-deep/lessons/edge-determinism.vi.mdx";
+import ElseFinallyRaise from "@/content/tracks/python/courses/python-beginner/modules/errors-and-debugging/lessons/else-finally-raise.mdx";
+import ElseFinallyRaiseVi from "@/content/tracks/python/courses/python-beginner/modules/errors-and-debugging/lessons/else-finally-raise.vi.mdx";
+import Encapsulation from "@/content/tracks/java/courses/java-beginner/modules/java-classes-objects/lessons/encapsulation.mdx";
+import EncapsulationVi from "@/content/tracks/java/courses/java-beginner/modules/java-classes-objects/lessons/encapsulation.vi.mdx";
+import EnumClassAndAliases from "@/content/tracks/cpp/courses/cpp-beginner/modules/structs-enums/lessons/enum-class-and-aliases.mdx";
+import EnumClassAndAliasesVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/structs-enums/lessons/enum-class-and-aliases.vi.mdx";
+import Enums from "@/content/tracks/java/courses/java-beginner/modules/java-data-modeling/lessons/enums.mdx";
+import EnumsBasics from "@/content/tracks/c/courses/c-beginner/modules/enums-typedef/lessons/enums-basics.mdx";
+import EnumsBasicsVi from "@/content/tracks/c/courses/c-beginner/modules/enums-typedef/lessons/enums-basics.vi.mdx";
+import EnumsVi from "@/content/tracks/java/courses/java-beginner/modules/java-data-modeling/lessons/enums.vi.mdx";
+import EqualityHashcode from "@/content/tracks/java/courses/java-beginner/modules/java-data-modeling/lessons/equality-hashcode.mdx";
+import EqualityHashcodeVi from "@/content/tracks/java/courses/java-beginner/modules/java-data-modeling/lessons/equality-hashcode.vi.mdx";
+import EqualsHashcodeContract from "@/content/tracks/java/courses/java-intermediate/modules/java-equality-immutability/lessons/equals-hashcode-contract.mdx";
+import EqualsHashcodeContractVi from "@/content/tracks/java/courses/java-intermediate/modules/java-equality-immutability/lessons/equals-hashcode-contract.vi.mdx";
+import ErrorHandling from "@/content/tracks/web-development/courses/web-development-intermediate/modules/modern-javascript/lessons/error-handling.mdx";
+import ErrorHandlingVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/modern-javascript/lessons/error-handling.vi.mdx";
+import EventDelegation from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/event-delegation.mdx";
+import EventDelegationVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/event-delegation.vi.mdx";
+import EventLoop from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/event-loop.mdx";
+import EventLoopTasks from "@/content/tracks/python/courses/python-advanced/modules/structured-async/lessons/event-loop-tasks.mdx";
+import EventLoopTasksVi from "@/content/tracks/python/courses/python-advanced/modules/structured-async/lessons/event-loop-tasks.vi.mdx";
+import EventLoopVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/event-loop.vi.mdx";
+import EventsAndConfig from "@/content/tracks/cpp/courses/cpp-advanced/modules/architecture-production/lessons/events-and-config.mdx";
+import EventsAndConfigVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/architecture-production/lessons/events-and-config.vi.mdx";
+import EverydayTypes from "@/content/tracks/web-development/courses/web-development-intermediate/modules/typescript-essentials/lessons/everyday-types.mdx";
+import EverydayTypesVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/typescript-essentials/lessons/everyday-types.vi.mdx";
+import ExceptionBoundaries from "@/content/tracks/java/courses/java-intermediate/modules/java-exception-architecture/lessons/exception-boundaries.mdx";
+import ExceptionBoundariesVi from "@/content/tracks/java/courses/java-intermediate/modules/java-exception-architecture/lessons/exception-boundaries.vi.mdx";
+import ExceptionChainingBoundaries from "@/content/tracks/python/courses/python-intermediate/modules/robust-errors/lessons/exception-chaining-boundaries.mdx";
+import ExceptionChainingBoundariesVi from "@/content/tracks/python/courses/python-intermediate/modules/robust-errors/lessons/exception-chaining-boundaries.vi.mdx";
+import ExceptionDesign from "@/content/tracks/python/courses/python-intermediate/modules/robust-errors/lessons/exception-design.mdx";
+import ExceptionDesignVi from "@/content/tracks/python/courses/python-intermediate/modules/robust-errors/lessons/exception-design.vi.mdx";
+import ExceptionSafety from "@/content/tracks/cpp/courses/cpp-intermediate/modules/errors-and-files/lessons/exception-safety.mdx";
+import ExceptionSafetyVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/errors-and-files/lessons/exception-safety.vi.mdx";
+import Exceptions from "@/content/tracks/cpp/courses/cpp-intermediate/modules/errors-and-files/lessons/exceptions.mdx";
+import ExceptionsAndBoundaries from "@/content/tracks/cpp/courses/cpp-beginner/modules/errors-debugging-tests/lessons/exceptions-and-boundaries.mdx";
+import ExceptionsAndBoundariesVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/errors-debugging-tests/lessons/exceptions-and-boundaries.vi.mdx";
+import ExceptionsBasics from "@/content/tracks/java/courses/java-beginner/modules/java-exceptions-files/lessons/exceptions-basics.mdx";
+import ExceptionsBasicsVi from "@/content/tracks/java/courses/java-beginner/modules/java-exceptions-files/lessons/exceptions-basics.vi.mdx";
+import ExceptionsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/errors-and-files/lessons/exceptions.vi.mdx";
+import ExecutorsFutures from "@/content/tracks/java/courses/java-intermediate/modules/java-concurrency/lessons/executors-futures.mdx";
+import ExecutorsFuturesVi from "@/content/tracks/java/courses/java-intermediate/modules/java-concurrency/lessons/executors-futures.vi.mdx";
+import FStringsFormatting from "@/content/tracks/python/courses/python-beginner/modules/working-with-strings/lessons/f-strings-formatting.mdx";
+import FStringsFormattingVi from "@/content/tracks/python/courses/python-beginner/modules/working-with-strings/lessons/f-strings-formatting.vi.mdx";
+import FencesPatterns from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-model/lessons/fences-patterns.mdx";
+import FencesPatternsVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-model/lessons/fences-patterns.vi.mdx";
+import FetchPatterns from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/fetch-patterns.mdx";
+import FetchPatternsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/fetch-patterns.vi.mdx";
+import FilesAndStreams from "@/content/tracks/c/courses/c-beginner/modules/file-io/lessons/files-and-streams.mdx";
+import FilesAndStreamsVi from "@/content/tracks/c/courses/c-beginner/modules/file-io/lessons/files-and-streams.vi.mdx";
+import FilesNio from "@/content/tracks/java/courses/java-beginner/modules/java-files-capstone/lessons/files-nio.mdx";
+import FilesNioVi from "@/content/tracks/java/courses/java-beginner/modules/java-files-capstone/lessons/files-nio.vi.mdx";
+import FilesStreams from "@/content/tracks/cpp/courses/cpp-intermediate/modules/errors-and-files/lessons/files-streams.mdx";
+import FilesStreamsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/errors-and-files/lessons/files-streams.vi.mdx";
+import FinalReadiness from "@/content/tracks/python/courses/python-beginner/modules/capstone-personal-finance-cli/lessons/final-readiness.mdx";
+import FinalReadinessVi from "@/content/tracks/python/courses/python-beginner/modules/capstone-personal-finance-cli/lessons/final-readiness.vi.mdx";
+import FirstPrograms from "@/content/tracks/python/courses/python-beginner/modules/python-and-your-first-programs/lessons/first-programs.mdx";
+import FirstProgramsVi from "@/content/tracks/python/courses/python-beginner/modules/python-and-your-first-programs/lessons/first-programs.vi.mdx";
+import FlagsModesAndPresets from "@/content/tracks/cpp/courses/cpp-advanced/modules/build-systems/lessons/flags-modes-and-presets.mdx";
+import FlagsModesAndPresetsVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/build-systems/lessons/flags-modes-and-presets.vi.mdx";
+import ForAndForeach from "@/content/tracks/java/courses/java-beginner/modules/java-loops/lessons/for-and-foreach.mdx";
+import ForAndForeachVi from "@/content/tracks/java/courses/java-beginner/modules/java-loops/lessons/for-and-foreach.vi.mdx";
+import ForAndRangeFor from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-loops/lessons/for-and-range-for.mdx";
+import ForAndRangeForVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-loops/lessons/for-and-range-for.vi.mdx";
+import ForLoops from "@/content/tracks/python/courses/python-beginner/modules/loops/lessons/for-loops.mdx";
+import ForLoopsVi from "@/content/tracks/python/courses/python-beginner/modules/loops/lessons/for-loops.vi.mdx";
+import ForWhileDo from "@/content/tracks/c/courses/c-beginner/modules/cb-loops/lessons/for-while-do.mdx";
+import ForWhileDoVi from "@/content/tracks/c/courses/c-beginner/modules/cb-loops/lessons/for-while-do.vi.mdx";
+import ForensicHabits from "@/content/tracks/c/courses/c-beginner/modules/cb-debugging/lessons/forensic-habits.mdx";
+import ForensicHabitsVi from "@/content/tracks/c/courses/c-beginner/modules/cb-debugging/lessons/forensic-habits.vi.mdx";
+import FormatSpecifiers from "@/content/tracks/c/courses/c-beginner/modules/io-formatting/lessons/format-specifiers.mdx";
+import FormatSpecifiersVi from "@/content/tracks/c/courses/c-beginner/modules/io-formatting/lessons/format-specifiers.vi.mdx";
+import ForwardingReferences from "@/content/tracks/cpp/courses/cpp-advanced/modules/move-forwarding/lessons/forwarding-references.mdx";
+import ForwardingReferencesVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/move-forwarding/lessons/forwarding-references.vi.mdx";
+import FramingAndParsing from "@/content/tracks/cpp/courses/cpp-advanced/modules/networking/lessons/framing-and-parsing.mdx";
+import FramingAndParsingVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/networking/lessons/framing-and-parsing.vi.mdx";
 import FrontendBackend from "@/content/tracks/web-development/courses/web-development-beginner/modules/how-modern-websites-work/lessons/frontend-backend.mdx";
+import FrontendBackendVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/how-modern-websites-work/lessons/frontend-backend.vi.mdx";
+import FullstackIntegration from "@/content/tracks/web-development/courses/web-development-intermediate/modules/databases-full-stack/lessons/fullstack-integration.mdx";
+import FullstackIntegrationVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/databases-full-stack/lessons/fullstack-integration.vi.mdx";
+import FunctionTemplates from "@/content/tracks/cpp/courses/cpp-intermediate/modules/templates/lessons/function-templates.mdx";
+import FunctionTemplatesVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/templates/lessons/function-templates.vi.mdx";
+import FunctionalJudgment from "@/content/tracks/java/courses/java-intermediate/modules/java-functional-deep/lessons/functional-judgment.mdx";
+import FunctionalJudgmentVi from "@/content/tracks/java/courses/java-intermediate/modules/java-functional-deep/lessons/functional-judgment.vi.mdx";
+import FunctionsAsValues from "@/content/tracks/python/courses/python-intermediate/modules/pythonic-toolkit/lessons/functions-as-values.mdx";
+import FunctionsAsValuesVi from "@/content/tracks/python/courses/python-intermediate/modules/pythonic-toolkit/lessons/functions-as-values.vi.mdx";
+import FundamentalsReview from "@/content/tracks/cpp/courses/cpp-intermediate/modules/memory-and-lifetime/lessons/fundamentals-review.mdx";
+import FundamentalsReviewVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/memory-and-lifetime/lessons/fundamentals-review.vi.mdx";
+import GatherTimeouts from "@/content/tracks/python/courses/python-intermediate/modules/concurrent-async/lessons/gather-timeouts.mdx";
+import GatherTimeoutsVi from "@/content/tracks/python/courses/python-intermediate/modules/concurrent-async/lessons/gather-timeouts.vi.mdx";
+import GcRefcounting from "@/content/tracks/python/courses/python-advanced/modules/cpython-internals/lessons/gc-refcounting.mdx";
+import GcRefcountingVi from "@/content/tracks/python/courses/python-advanced/modules/cpython-internals/lessons/gc-refcounting.vi.mdx";
+import GeneratorBuild from "@/content/tracks/cpp/courses/cpp-advanced/modules/coroutines/lessons/generator-build.mdx";
+import GeneratorBuildVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/coroutines/lessons/generator-build.vi.mdx";
+import GeneratorLifetimes from "@/content/tracks/cpp/courses/cpp-advanced/modules/coroutines/lessons/generator-lifetimes.mdx";
+import GeneratorLifetimesVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/coroutines/lessons/generator-lifetimes.vi.mdx";
+import Generators from "@/content/tracks/python/courses/python-intermediate/modules/data-model-iteration/lessons/generators.mdx";
+import GeneratorsVi from "@/content/tracks/python/courses/python-intermediate/modules/data-model-iteration/lessons/generators.vi.mdx";
+import GenericBounds from "@/content/tracks/java/courses/java-intermediate/modules/java-generics-deep/lessons/generic-bounds.mdx";
+import GenericBoundsVi from "@/content/tracks/java/courses/java-intermediate/modules/java-generics-deep/lessons/generic-bounds.vi.mdx";
+import GenericDesign from "@/content/tracks/cpp/courses/cpp-intermediate/modules/templates/lessons/generic-design.mdx";
+import GenericDesignVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/templates/lessons/generic-design.vi.mdx";
+import Generics from "@/content/tracks/web-development/courses/web-development-intermediate/modules/typescript-essentials/lessons/generics.mdx";
+import GenericsBounds from "@/content/tracks/java/courses/java-beginner/modules/java-collections-generics/lessons/generics-bounds.mdx";
+import GenericsBoundsVi from "@/content/tracks/java/courses/java-beginner/modules/java-collections-generics/lessons/generics-bounds.vi.mdx";
+import GenericsVariance from "@/content/tracks/python/courses/python-advanced/modules/advanced-typing/lessons/generics-variance.mdx";
+import GenericsVarianceVi from "@/content/tracks/python/courses/python-advanced/modules/advanced-typing/lessons/generics-variance.vi.mdx";
+import GenericsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/typescript-essentials/lessons/generics.vi.mdx";
 import GitBranches from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/git-branches.mdx";
+import GitBranchesVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/git-branches.vi.mdx";
 import GitCheckpoint from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/git-checkpoint.mdx";
+import GitCheckpointVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/git-checkpoint.vi.mdx";
+import GitHistoryInternals from "@/content/tracks/web-development/courses/web-development-intermediate/modules/git-workflow/lessons/git-history-internals.mdx";
+import GitHistoryInternalsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/git-workflow/lessons/git-history-internals.vi.mdx";
 import GitVersionControl from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/git-version-control.mdx";
+import GitVersionControlVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/git-version-control.vi.mdx";
+import GitWorkflowCheckpoint from "@/content/tracks/web-development/courses/web-development-intermediate/modules/git-workflow/lessons/git-workflow-checkpoint.mdx";
+import GitWorkflowCheckpointVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/git-workflow/lessons/git-workflow-checkpoint.vi.mdx";
+import GithubFlowReview from "@/content/tracks/web-development/courses/web-development-intermediate/modules/git-workflow/lessons/github-flow-review.mdx";
+import GithubFlowReviewVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/git-workflow/lessons/github-flow-review.vi.mdx";
 import GithubRemote from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/github-remote.mdx";
+import GithubRemoteVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/github-remote.vi.mdx";
+import HardenedImplementations from "@/content/tracks/cpp/courses/cpp-advanced/modules/security/lessons/hardened-implementations.mdx";
+import HardenedImplementationsVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/security/lessons/hardened-implementations.vi.mdx";
+import HeadersAndTranslationUnits from "@/content/tracks/cpp/courses/cpp-beginner/modules/multi-file-cmake/lessons/headers-and-translation-units.mdx";
+import HeadersAndTranslationUnitsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/multi-file-cmake/lessons/headers-and-translation-units.vi.mdx";
+import HeadersWhy from "@/content/tracks/c/courses/c-beginner/modules/preprocessor/lessons/headers-why.mdx";
+import HeadersWhyVi from "@/content/tracks/c/courses/c-beginner/modules/preprocessor/lessons/headers-why.vi.mdx";
+import HelloCpp from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-first-programs/lessons/hello-cpp.mdx";
+import HelloCppVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-first-programs/lessons/hello-cpp.vi.mdx";
+import HigherOrderFunctions from "@/content/tracks/web-development/courses/web-development-intermediate/modules/modern-javascript/lessons/higher-order-functions.mdx";
+import HigherOrderFunctionsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/modern-javascript/lessons/higher-order-functions.vi.mdx";
+import HotPathOptimization from "@/content/tracks/cpp/courses/cpp-advanced/modules/performance/lessons/hot-path-optimization.mdx";
+import HotPathOptimizationVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/performance/lessons/hot-path-optimization.vi.mdx";
 import HowTheWebWorks from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/how-the-web-works.mdx";
+import HowTheWebWorksVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/how-the-web-works.vi.mdx";
+import HsgCpM1 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-cp-m1.mdx";
+import HsgCpM1Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-cp-m1.vi.mdx";
+import HsgM1Bridge from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-bridge.mdx";
+import HsgM1BridgeVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-bridge.vi.mdx";
+import HsgM1Reading from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-reading.mdx";
+import HsgM1ReadingVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-reading.vi.mdx";
+import HtmlArchitecture from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/html-architecture.mdx";
+import HtmlArchitectureVi from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/html-architecture.vi.mdx";
 import HtmlAttributes from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-attributes.mdx";
+import HtmlAttributesVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-attributes.vi.mdx";
 import HtmlCheckpoint from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-checkpoint.mdx";
+import HtmlCheckpointVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-checkpoint.vi.mdx";
 import HtmlElements from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-elements.mdx";
+import HtmlElementsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-elements.vi.mdx";
 import HtmlForms from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-forms.mdx";
+import HtmlFormsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-forms.vi.mdx";
 import HtmlImages from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-images.mdx";
+import HtmlImagesVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-images.vi.mdx";
 import HtmlLinks from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-links.mdx";
+import HtmlLinksVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-links.vi.mdx";
 import HtmlListsAndTables from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-lists-and-tables.mdx";
+import HtmlListsAndTablesVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-lists-and-tables.vi.mdx";
 import HtmlSemantics from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-semantics.mdx";
+import HtmlSemanticsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-semantics.vi.mdx";
+import HttpFoundations from "@/content/tracks/python/courses/python-intermediate/modules/http-json/lessons/http-foundations.mdx";
+import HttpFoundationsVi from "@/content/tracks/python/courses/python-intermediate/modules/http-json/lessons/http-foundations.vi.mdx";
 import HttpJsonApis from "@/content/tracks/web-development/courses/web-development-beginner/modules/how-modern-websites-work/lessons/http-json-apis.mdx";
+import HttpJsonApisVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/how-modern-websites-work/lessons/http-json-apis.vi.mdx";
+import HttpServerNode from "@/content/tracks/web-development/courses/web-development-intermediate/modules/backend-fundamentals/lessons/http-server-node.mdx";
+import HttpServerNodeVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/backend-fundamentals/lessons/http-server-node.vi.mdx";
+import HttpTransportSeam from "@/content/tracks/java/courses/java-intermediate/modules/java-async-http/lessons/http-transport-seam.mdx";
+import HttpTransportSeamVi from "@/content/tracks/java/courses/java-intermediate/modules/java-async-http/lessons/http-transport-seam.vi.mdx";
+import IdentityVsEquality from "@/content/tracks/java/courses/java-intermediate/modules/java-equality-immutability/lessons/identity-vs-equality.mdx";
+import IdentityVsEqualityVi from "@/content/tracks/java/courses/java-intermediate/modules/java-equality-immutability/lessons/identity-vs-equality.vi.mdx";
+import IfConstexprNttp from "@/content/tracks/cpp/courses/cpp-advanced/modules/templates-deep/lessons/if-constexpr-nttp.mdx";
+import IfConstexprNttpVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/templates-deep/lessons/if-constexpr-nttp.vi.mdx";
+import IfElifElse from "@/content/tracks/python/courses/python-beginner/modules/making-decisions/lessons/if-elif-else.mdx";
+import IfElifElseVi from "@/content/tracks/python/courses/python-beginner/modules/making-decisions/lessons/if-elif-else.vi.mdx";
+import IfElse from "@/content/tracks/java/courses/java-beginner/modules/java-conditions/lessons/if-else.mdx";
+import IfElseAndLogic from "@/content/tracks/cpp/courses/cpp-beginner/modules/conditions/lessons/if-else-and-logic.mdx";
+import IfElseAndLogicVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/conditions/lessons/if-else-and-logic.vi.mdx";
+import IfElseElseIf from "@/content/tracks/c/courses/c-beginner/modules/conditionals/lessons/if-else-else-if.mdx";
+import IfElseElseIfVi from "@/content/tracks/c/courses/c-beginner/modules/conditionals/lessons/if-else-else-if.vi.mdx";
+import IfElseVi from "@/content/tracks/java/courses/java-beginner/modules/java-conditions/lessons/if-else.vi.mdx";
+import ImmutabilityDefensiveCopies from "@/content/tracks/java/courses/java-intermediate/modules/java-equality-immutability/lessons/immutability-defensive-copies.mdx";
+import ImmutabilityDefensiveCopiesVi from "@/content/tracks/java/courses/java-intermediate/modules/java-equality-immutability/lessons/immutability-defensive-copies.vi.mdx";
+import ImportSystem from "@/content/tracks/python/courses/python-advanced/modules/cpython-internals/lessons/import-system.mdx";
+import ImportSystemVi from "@/content/tracks/python/courses/python-advanced/modules/cpython-internals/lessons/import-system.vi.mdx";
+import ImportsModules from "@/content/tracks/python/courses/python-beginner/modules/modules-and-standard-library/lessons/imports-modules.mdx";
+import ImportsModulesVi from "@/content/tracks/python/courses/python-beginner/modules/modules-and-standard-library/lessons/imports-modules.vi.mdx";
+import Inheritance from "@/content/tracks/cpp/courses/cpp-intermediate/modules/inheritance-polymorphism/lessons/inheritance.mdx";
+import InheritanceVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/inheritance-polymorphism/lessons/inheritance.vi.mdx";
+import InitializationSubtleties from "@/content/tracks/cpp/courses/cpp-advanced/modules/object-model/lessons/initialization-subtleties.mdx";
+import InitializationSubtletiesVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/object-model/lessons/initialization-subtleties.vi.mdx";
+import InjectionAndEncoding from "@/content/tracks/python/courses/python-advanced/modules/security-engineering/lessons/injection-and-encoding.mdx";
+import InjectionAndEncodingVi from "@/content/tracks/python/courses/python-advanced/modules/security-engineering/lessons/injection-and-encoding.vi.mdx";
+import InjectionAndValidation from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-security/lessons/injection-and-validation.mdx";
+import InjectionAndValidationVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-security/lessons/injection-and-validation.vi.mdx";
 import InspectingWithDevtools from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/inspecting-with-devtools.mdx";
+import InspectingWithDevtoolsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/inspecting-with-devtools.vi.mdx";
+import Integration from "@/content/tracks/cpp/courses/cpp-intermediate/modules/cppi-final-project/lessons/integration.mdx";
+import IntegrationVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/cppi-final-project/lessons/integration.vi.mdx";
+import Interfaces from "@/content/tracks/java/courses/java-beginner/modules/java-oop-design/lessons/interfaces.mdx";
+import InterfacesVi from "@/content/tracks/java/courses/java-beginner/modules/java-oop-design/lessons/interfaces.vi.mdx";
 import IntroductionToHtml from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/introduction-to-html.mdx";
+import IntroductionToHtmlVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/introduction-to-html.vi.mdx";
+import Iterators from "@/content/tracks/python/courses/python-intermediate/modules/data-model-iteration/lessons/iterators.mdx";
+import IteratorsAndAlgorithms from "@/content/tracks/cpp/courses/cpp-beginner/modules/stl-algorithms/lessons/iterators-and-algorithms.mdx";
+import IteratorsAndAlgorithmsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/stl-algorithms/lessons/iterators-and-algorithms.vi.mdx";
+import IteratorsVi from "@/content/tracks/python/courses/python-intermediate/modules/data-model-iteration/lessons/iterators.vi.mdx";
+import JavaCapstoneBrief from "@/content/tracks/java/courses/java-beginner/modules/java-files-capstone/lessons/java-capstone-brief.mdx";
+import JavaCapstoneBriefVi from "@/content/tracks/java/courses/java-beginner/modules/java-files-capstone/lessons/java-capstone-brief.vi.mdx";
+import JavaCheckpointCapstone from "@/content/tracks/java/courses/java-beginner/modules/java-files-capstone/lessons/java-checkpoint-capstone.mdx";
+import JavaCheckpointCapstoneVi from "@/content/tracks/java/courses/java-beginner/modules/java-files-capstone/lessons/java-checkpoint-capstone.vi.mdx";
+import JavaCheckpointCollections from "@/content/tracks/java/courses/java-beginner/modules/java-collections-generics/lessons/java-checkpoint-collections.mdx";
+import JavaCheckpointCollectionsVi from "@/content/tracks/java/courses/java-beginner/modules/java-collections-generics/lessons/java-checkpoint-collections.vi.mdx";
+import JavaCheckpointConditions from "@/content/tracks/java/courses/java-beginner/modules/java-conditions/lessons/java-checkpoint-conditions.mdx";
+import JavaCheckpointConditionsVi from "@/content/tracks/java/courses/java-beginner/modules/java-conditions/lessons/java-checkpoint-conditions.vi.mdx";
+import JavaCheckpointExceptions from "@/content/tracks/java/courses/java-beginner/modules/java-exceptions-files/lessons/java-checkpoint-exceptions.mdx";
+import JavaCheckpointExceptionsVi from "@/content/tracks/java/courses/java-beginner/modules/java-exceptions-files/lessons/java-checkpoint-exceptions.vi.mdx";
+import JavaCheckpointFirstPrograms from "@/content/tracks/java/courses/java-beginner/modules/java-first-programs/lessons/java-checkpoint-first-programs.mdx";
+import JavaCheckpointFirstProgramsVi from "@/content/tracks/java/courses/java-beginner/modules/java-first-programs/lessons/java-checkpoint-first-programs.vi.mdx";
+import JavaCheckpointLoops from "@/content/tracks/java/courses/java-beginner/modules/java-loops/lessons/java-checkpoint-loops.mdx";
+import JavaCheckpointLoopsVi from "@/content/tracks/java/courses/java-beginner/modules/java-loops/lessons/java-checkpoint-loops.vi.mdx";
+import JavaCheckpointMethods from "@/content/tracks/java/courses/java-beginner/modules/java-methods/lessons/java-checkpoint-methods.mdx";
+import JavaCheckpointMethodsVi from "@/content/tracks/java/courses/java-beginner/modules/java-methods/lessons/java-checkpoint-methods.vi.mdx";
+import JavaCheckpointModeling from "@/content/tracks/java/courses/java-beginner/modules/java-data-modeling/lessons/java-checkpoint-modeling.mdx";
+import JavaCheckpointModelingVi from "@/content/tracks/java/courses/java-beginner/modules/java-data-modeling/lessons/java-checkpoint-modeling.vi.mdx";
+import JavaCheckpointOop from "@/content/tracks/java/courses/java-beginner/modules/java-classes-objects/lessons/java-checkpoint-oop.mdx";
+import JavaCheckpointOopDesign from "@/content/tracks/java/courses/java-beginner/modules/java-oop-design/lessons/java-checkpoint-oop-design.mdx";
+import JavaCheckpointOopDesignVi from "@/content/tracks/java/courses/java-beginner/modules/java-oop-design/lessons/java-checkpoint-oop-design.vi.mdx";
+import JavaCheckpointOopVi from "@/content/tracks/java/courses/java-beginner/modules/java-classes-objects/lessons/java-checkpoint-oop.vi.mdx";
+import JavaCheckpointStreams from "@/content/tracks/java/courses/java-beginner/modules/java-streams-optional/lessons/java-checkpoint-streams.mdx";
+import JavaCheckpointStreamsVi from "@/content/tracks/java/courses/java-beginner/modules/java-streams-optional/lessons/java-checkpoint-streams.vi.mdx";
+import JavaCheckpointStrings from "@/content/tracks/java/courses/java-beginner/modules/java-arrays-strings/lessons/java-checkpoint-strings.mdx";
+import JavaCheckpointStringsVi from "@/content/tracks/java/courses/java-beginner/modules/java-arrays-strings/lessons/java-checkpoint-strings.vi.mdx";
+import JavaCheckpointTesting from "@/content/tracks/java/courses/java-beginner/modules/java-testing-debug/lessons/java-checkpoint-testing.mdx";
+import JavaCheckpointTestingVi from "@/content/tracks/java/courses/java-beginner/modules/java-testing-debug/lessons/java-checkpoint-testing.vi.mdx";
+import JavaCheckpointTypes from "@/content/tracks/java/courses/java-beginner/modules/java-types-operators/lessons/java-checkpoint-types.mdx";
+import JavaCheckpointTypesVi from "@/content/tracks/java/courses/java-beginner/modules/java-types-operators/lessons/java-checkpoint-types.vi.mdx";
+import JavaComposition from "@/content/tracks/java/courses/java-beginner/modules/java-oop-design/lessons/java-composition.mdx";
+import JavaCompositionVi from "@/content/tracks/java/courses/java-beginner/modules/java-oop-design/lessons/java-composition.vi.mdx";
+import JavaConstructors from "@/content/tracks/java/courses/java-beginner/modules/java-classes-objects/lessons/java-constructors.mdx";
+import JavaConstructorsVi from "@/content/tracks/java/courses/java-beginner/modules/java-classes-objects/lessons/java-constructors.vi.mdx";
+import JavaCustomExceptions from "@/content/tracks/java/courses/java-beginner/modules/java-exceptions-files/lessons/java-custom-exceptions.mdx";
+import JavaCustomExceptionsVi from "@/content/tracks/java/courses/java-beginner/modules/java-exceptions-files/lessons/java-custom-exceptions.vi.mdx";
+import JavaDebuggingMethod from "@/content/tracks/java/courses/java-beginner/modules/java-testing-debug/lessons/java-debugging-method.mdx";
+import JavaDebuggingMethodVi from "@/content/tracks/java/courses/java-beginner/modules/java-testing-debug/lessons/java-debugging-method.vi.mdx";
+import JavaInheritance from "@/content/tracks/java/courses/java-beginner/modules/java-oop-design/lessons/java-inheritance.mdx";
+import JavaInheritanceVi from "@/content/tracks/java/courses/java-beginner/modules/java-oop-design/lessons/java-inheritance.vi.mdx";
+import JavaStaticMembers from "@/content/tracks/java/courses/java-beginner/modules/java-methods/lessons/java-static-members.mdx";
+import JavaStaticMembersVi from "@/content/tracks/java/courses/java-beginner/modules/java-methods/lessons/java-static-members.vi.mdx";
+import JavaValidationPatterns from "@/content/tracks/java/courses/java-beginner/modules/java-conditions/lessons/java-validation-patterns.mdx";
+import JavaValidationPatternsVi from "@/content/tracks/java/courses/java-beginner/modules/java-conditions/lessons/java-validation-patterns.vi.mdx";
+import JavaVariablesAssignment from "@/content/tracks/java/courses/java-beginner/modules/java-types-operators/lessons/java-variables-assignment.mdx";
+import JavaVariablesAssignmentVi from "@/content/tracks/java/courses/java-beginner/modules/java-types-operators/lessons/java-variables-assignment.vi.mdx";
+import JavaaAliasing from "@/content/tracks/java/courses/java-advanced/modules/java-object-model/lessons/javaa-aliasing.mdx";
+import JavaaAliasingVi from "@/content/tracks/java/courses/java-advanced/modules/java-object-model/lessons/javaa-aliasing.vi.mdx";
+import JavaaAllocationIdentity from "@/content/tracks/java/courses/java-advanced/modules/javaa-memory-gc/lessons/javaa-allocation-identity.mdx";
+import JavaaAllocationIdentityVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-memory-gc/lessons/javaa-allocation-identity.vi.mdx";
+import JavaaAnnotationsRuntime from "@/content/tracks/java/courses/java-advanced/modules/javaa-reflection-di/lessons/javaa-annotations-runtime.mdx";
+import JavaaAnnotationsRuntimeVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-reflection-di/lessons/javaa-annotations-runtime.vi.mdx";
+import JavaaAsyncExecutors from "@/content/tracks/java/courses/java-advanced/modules/javaa-async-deadlines/lessons/javaa-async-executors.mdx";
+import JavaaAsyncExecutorsVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-async-deadlines/lessons/javaa-async-executors.vi.mdx";
+import JavaaAuthPrimitives from "@/content/tracks/java/courses/java-advanced/modules/javaa-security-threats/lessons/javaa-auth-primitives.mdx";
+import JavaaAuthPrimitivesVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-security-threats/lessons/javaa-auth-primitives.vi.mdx";
+import JavaaBoundedBytecode from "@/content/tracks/java/courses/java-advanced/modules/javaa-perf-measure/lessons/javaa-bounded-bytecode.mdx";
+import JavaaBoundedBytecodeVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-perf-measure/lessons/javaa-bounded-bytecode.vi.mdx";
+import JavaaBytecodeModel from "@/content/tracks/java/courses/java-advanced/modules/java-jvm-bytecode/lessons/javaa-bytecode-model.mdx";
+import JavaaBytecodeModelVi from "@/content/tracks/java/courses/java-advanced/modules/java-jvm-bytecode/lessons/javaa-bytecode-model.vi.mdx";
+import JavaaCanonicalValidation from "@/content/tracks/java/courses/java-advanced/modules/javaa-security-threats/lessons/javaa-canonical-validation.mdx";
+import JavaaCanonicalValidationVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-security-threats/lessons/javaa-canonical-validation.vi.mdx";
+import JavaaCapstoneArchitecture from "@/content/tracks/java/courses/java-advanced/modules/javaa-capstone/lessons/javaa-capstone-architecture.mdx";
+import JavaaCapstoneArchitectureVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-capstone/lessons/javaa-capstone-architecture.vi.mdx";
+import JavaaCapstoneEngines from "@/content/tracks/java/courses/java-advanced/modules/javaa-capstone/lessons/javaa-capstone-engines.mdx";
+import JavaaCapstoneEnginesVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-capstone/lessons/javaa-capstone-engines.vi.mdx";
+import JavaaCapstoneReport from "@/content/tracks/java/courses/java-advanced/modules/javaa-capstone/lessons/javaa-capstone-report.mdx";
+import JavaaCapstoneReportVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-capstone/lessons/javaa-capstone-report.vi.mdx";
+import JavaaCasAba from "@/content/tracks/java/courses/java-advanced/modules/java-locks-cas/lessons/javaa-cas-aba.mdx";
+import JavaaCasAbaVi from "@/content/tracks/java/courses/java-advanced/modules/java-locks-cas/lessons/javaa-cas-aba.vi.mdx";
+import JavaaCfComposition from "@/content/tracks/java/courses/java-advanced/modules/java-executors-vt/lessons/javaa-cf-composition.mdx";
+import JavaaCfCompositionVi from "@/content/tracks/java/courses/java-advanced/modules/java-executors-vt/lessons/javaa-cf-composition.vi.mdx";
+import JavaaCheckpointM1 from "@/content/tracks/java/courses/java-advanced/modules/java-object-model/lessons/javaa-checkpoint-m1.mdx";
+import JavaaCheckpointM10 from "@/content/tracks/java/courses/java-advanced/modules/javaa-files-nio/lessons/javaa-checkpoint-m10.mdx";
+import JavaaCheckpointM10Vi from "@/content/tracks/java/courses/java-advanced/modules/javaa-files-nio/lessons/javaa-checkpoint-m10.vi.mdx";
+import JavaaCheckpointM11 from "@/content/tracks/java/courses/java-advanced/modules/javaa-sockets-wire/lessons/javaa-checkpoint-m11.mdx";
+import JavaaCheckpointM11Vi from "@/content/tracks/java/courses/java-advanced/modules/javaa-sockets-wire/lessons/javaa-checkpoint-m11.vi.mdx";
+import JavaaCheckpointM12 from "@/content/tracks/java/courses/java-advanced/modules/javaa-async-deadlines/lessons/javaa-checkpoint-m12.mdx";
+import JavaaCheckpointM12Vi from "@/content/tracks/java/courses/java-advanced/modules/javaa-async-deadlines/lessons/javaa-checkpoint-m12.vi.mdx";
+import JavaaCheckpointM13 from "@/content/tracks/java/courses/java-advanced/modules/javaa-security-threats/lessons/javaa-checkpoint-m13.mdx";
+import JavaaCheckpointM13Vi from "@/content/tracks/java/courses/java-advanced/modules/javaa-security-threats/lessons/javaa-checkpoint-m13.vi.mdx";
+import JavaaCheckpointM14 from "@/content/tracks/java/courses/java-advanced/modules/javaa-observability/lessons/javaa-checkpoint-m14.mdx";
+import JavaaCheckpointM14Vi from "@/content/tracks/java/courses/java-advanced/modules/javaa-observability/lessons/javaa-checkpoint-m14.vi.mdx";
+import JavaaCheckpointM15 from "@/content/tracks/java/courses/java-advanced/modules/javaa-capstone/lessons/javaa-checkpoint-m15.mdx";
+import JavaaCheckpointM15Vi from "@/content/tracks/java/courses/java-advanced/modules/javaa-capstone/lessons/javaa-checkpoint-m15.vi.mdx";
+import JavaaCheckpointM1Vi from "@/content/tracks/java/courses/java-advanced/modules/java-object-model/lessons/javaa-checkpoint-m1.vi.mdx";
+import JavaaCheckpointM2 from "@/content/tracks/java/courses/java-advanced/modules/java-jvm-bytecode/lessons/javaa-checkpoint-m2.mdx";
+import JavaaCheckpointM2Vi from "@/content/tracks/java/courses/java-advanced/modules/java-jvm-bytecode/lessons/javaa-checkpoint-m2.vi.mdx";
+import JavaaCheckpointM3 from "@/content/tracks/java/courses/java-advanced/modules/java-memory-model/lessons/javaa-checkpoint-m3.mdx";
+import JavaaCheckpointM3Vi from "@/content/tracks/java/courses/java-advanced/modules/java-memory-model/lessons/javaa-checkpoint-m3.vi.mdx";
+import JavaaCheckpointM4 from "@/content/tracks/java/courses/java-advanced/modules/java-locks-cas/lessons/javaa-checkpoint-m4.mdx";
+import JavaaCheckpointM4Vi from "@/content/tracks/java/courses/java-advanced/modules/java-locks-cas/lessons/javaa-checkpoint-m4.vi.mdx";
+import JavaaCheckpointM5 from "@/content/tracks/java/courses/java-advanced/modules/java-executors-vt/lessons/javaa-checkpoint-m5.mdx";
+import JavaaCheckpointM5Vi from "@/content/tracks/java/courses/java-advanced/modules/java-executors-vt/lessons/javaa-checkpoint-m5.vi.mdx";
+import JavaaCheckpointM6 from "@/content/tracks/java/courses/java-advanced/modules/javaa-generics-type-system/lessons/javaa-checkpoint-m6.mdx";
+import JavaaCheckpointM6Vi from "@/content/tracks/java/courses/java-advanced/modules/javaa-generics-type-system/lessons/javaa-checkpoint-m6.vi.mdx";
+import JavaaCheckpointM7 from "@/content/tracks/java/courses/java-advanced/modules/javaa-reflection-di/lessons/javaa-checkpoint-m7.mdx";
+import JavaaCheckpointM7Vi from "@/content/tracks/java/courses/java-advanced/modules/javaa-reflection-di/lessons/javaa-checkpoint-m7.vi.mdx";
+import JavaaCheckpointM8 from "@/content/tracks/java/courses/java-advanced/modules/javaa-memory-gc/lessons/javaa-checkpoint-m8.mdx";
+import JavaaCheckpointM8Vi from "@/content/tracks/java/courses/java-advanced/modules/javaa-memory-gc/lessons/javaa-checkpoint-m8.vi.mdx";
+import JavaaCheckpointM9 from "@/content/tracks/java/courses/java-advanced/modules/javaa-perf-measure/lessons/javaa-checkpoint-m9.mdx";
+import JavaaCheckpointM9Vi from "@/content/tracks/java/courses/java-advanced/modules/javaa-perf-measure/lessons/javaa-checkpoint-m9.vi.mdx";
+import JavaaChmAtomics from "@/content/tracks/java/courses/java-advanced/modules/java-locks-cas/lessons/javaa-chm-atomics.mdx";
+import JavaaChmAtomicsVi from "@/content/tracks/java/courses/java-advanced/modules/java-locks-cas/lessons/javaa-chm-atomics.vi.mdx";
+import JavaaDeadlineFanout from "@/content/tracks/java/courses/java-advanced/modules/javaa-async-deadlines/lessons/javaa-deadline-fanout.mdx";
+import JavaaDeadlineFanoutVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-async-deadlines/lessons/javaa-deadline-fanout.vi.mdx";
+import JavaaDiContainer from "@/content/tracks/java/courses/java-advanced/modules/javaa-reflection-di/lessons/javaa-di-container.mdx";
+import JavaaDiContainerVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-reflection-di/lessons/javaa-di-container.vi.mdx";
+import JavaaExceptionCombinators from "@/content/tracks/java/courses/java-advanced/modules/javaa-async-deadlines/lessons/javaa-exception-combinators.mdx";
+import JavaaExceptionCombinatorsVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-async-deadlines/lessons/javaa-exception-combinators.vi.mdx";
+import JavaaExecutorLifecycle from "@/content/tracks/java/courses/java-advanced/modules/java-executors-vt/lessons/javaa-executor-lifecycle.mdx";
+import JavaaExecutorLifecycleVi from "@/content/tracks/java/courses/java-advanced/modules/java-executors-vt/lessons/javaa-executor-lifecycle.vi.mdx";
+import JavaaGenericsErasure from "@/content/tracks/java/courses/java-advanced/modules/javaa-generics-type-system/lessons/javaa-generics-erasure.mdx";
+import JavaaGenericsErasureVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-generics-type-system/lessons/javaa-generics-erasure.vi.mdx";
+import JavaaGenericsSelftypes from "@/content/tracks/java/courses/java-advanced/modules/javaa-generics-type-system/lessons/javaa-generics-selftypes.mdx";
+import JavaaGenericsSelftypesVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-generics-type-system/lessons/javaa-generics-selftypes.vi.mdx";
+import JavaaGenericsWildcards from "@/content/tracks/java/courses/java-advanced/modules/javaa-generics-type-system/lessons/javaa-generics-wildcards.mdx";
+import JavaaGenericsWildcardsVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-generics-type-system/lessons/javaa-generics-wildcards.vi.mdx";
+import JavaaHappensBefore from "@/content/tracks/java/courses/java-advanced/modules/java-memory-model/lessons/javaa-happens-before.mdx";
+import JavaaHappensBeforeVi from "@/content/tracks/java/courses/java-advanced/modules/java-memory-model/lessons/javaa-happens-before.vi.mdx";
+import JavaaIncidentTriage from "@/content/tracks/java/courses/java-advanced/modules/javaa-observability/lessons/javaa-incident-triage.mdx";
+import JavaaIncidentTriageVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-observability/lessons/javaa-incident-triage.vi.mdx";
+import JavaaInitOrder from "@/content/tracks/java/courses/java-advanced/modules/java-object-model/lessons/javaa-init-order.mdx";
+import JavaaInitOrderVi from "@/content/tracks/java/courses/java-advanced/modules/java-object-model/lessons/javaa-init-order.vi.mdx";
+import JavaaJsonlJournal from "@/content/tracks/java/courses/java-advanced/modules/javaa-files-nio/lessons/javaa-jsonl-journal.mdx";
+import JavaaJsonlJournalVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-files-nio/lessons/javaa-jsonl-journal.vi.mdx";
+import JavaaJvmRuntime from "@/content/tracks/java/courses/java-advanced/modules/java-jvm-bytecode/lessons/javaa-jvm-runtime.mdx";
+import JavaaJvmRuntimeVi from "@/content/tracks/java/courses/java-advanced/modules/java-jvm-bytecode/lessons/javaa-jvm-runtime.vi.mdx";
+import JavaaKvProtocol from "@/content/tracks/java/courses/java-advanced/modules/javaa-sockets-wire/lessons/javaa-kv-protocol.mdx";
+import JavaaKvProtocolVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-sockets-wire/lessons/javaa-kv-protocol.vi.mdx";
+import JavaaMetricPrimitives from "@/content/tracks/java/courses/java-advanced/modules/javaa-observability/lessons/javaa-metric-primitives.mdx";
+import JavaaMetricPrimitivesVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-observability/lessons/javaa-metric-primitives.vi.mdx";
+import JavaaMicroHarness from "@/content/tracks/java/courses/java-advanced/modules/javaa-perf-measure/lessons/javaa-micro-harness.mdx";
+import JavaaMicroHarnessVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-perf-measure/lessons/javaa-micro-harness.vi.mdx";
+import JavaaNanotimeWarmup from "@/content/tracks/java/courses/java-advanced/modules/javaa-perf-measure/lessons/javaa-nanotime-warmup.mdx";
+import JavaaNanotimeWarmupVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-perf-measure/lessons/javaa-nanotime-warmup.vi.mdx";
+import JavaaPathSemantics from "@/content/tracks/java/courses/java-advanced/modules/javaa-files-nio/lessons/javaa-path-semantics.mdx";
+import JavaaPathSemanticsVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-files-nio/lessons/javaa-path-semantics.vi.mdx";
+import JavaaPublication from "@/content/tracks/java/courses/java-advanced/modules/java-memory-model/lessons/javaa-publication.mdx";
+import JavaaPublicationVi from "@/content/tracks/java/courses/java-advanced/modules/java-memory-model/lessons/javaa-publication.vi.mdx";
+import JavaaReachability from "@/content/tracks/java/courses/java-advanced/modules/javaa-memory-gc/lessons/javaa-reachability.mdx";
+import JavaaReachabilityVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-memory-gc/lessons/javaa-reachability.vi.mdx";
+import JavaaRecordsSealed from "@/content/tracks/java/courses/java-advanced/modules/java-object-model/lessons/javaa-records-sealed.mdx";
+import JavaaRecordsSealedVi from "@/content/tracks/java/courses/java-advanced/modules/java-object-model/lessons/javaa-records-sealed.vi.mdx";
+import JavaaReentrantConditions from "@/content/tracks/java/courses/java-advanced/modules/java-locks-cas/lessons/javaa-reentrant-conditions.mdx";
+import JavaaReentrantConditionsVi from "@/content/tracks/java/courses/java-advanced/modules/java-locks-cas/lessons/javaa-reentrant-conditions.vi.mdx";
+import JavaaReflectMetadata from "@/content/tracks/java/courses/java-advanced/modules/javaa-reflection-di/lessons/javaa-reflect-metadata.mdx";
+import JavaaReflectMetadataVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-reflection-di/lessons/javaa-reflect-metadata.vi.mdx";
+import JavaaSocketLifecycle from "@/content/tracks/java/courses/java-advanced/modules/javaa-sockets-wire/lessons/javaa-socket-lifecycle.mdx";
+import JavaaSocketLifecycleVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-sockets-wire/lessons/javaa-socket-lifecycle.vi.mdx";
+import JavaaSocketStreams from "@/content/tracks/java/courses/java-advanced/modules/javaa-sockets-wire/lessons/javaa-socket-streams.mdx";
+import JavaaSocketStreamsVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-sockets-wire/lessons/javaa-socket-streams.vi.mdx";
+import JavaaStackModel from "@/content/tracks/java/courses/java-advanced/modules/java-jvm-bytecode/lessons/javaa-stack-model.mdx";
+import JavaaStackModelVi from "@/content/tracks/java/courses/java-advanced/modules/java-jvm-bytecode/lessons/javaa-stack-model.vi.mdx";
+import JavaaStructuredLogs from "@/content/tracks/java/courses/java-advanced/modules/javaa-observability/lessons/javaa-structured-logs.mdx";
+import JavaaStructuredLogsVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-observability/lessons/javaa-structured-logs.vi.mdx";
+import JavaaThreatModeling from "@/content/tracks/java/courses/java-advanced/modules/javaa-security-threats/lessons/javaa-threat-modeling.mdx";
+import JavaaThreatModelingVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-security-threats/lessons/javaa-threat-modeling.vi.mdx";
+import JavaaTreeWalking from "@/content/tracks/java/courses/java-advanced/modules/javaa-files-nio/lessons/javaa-tree-walking.mdx";
+import JavaaTreeWalkingVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-files-nio/lessons/javaa-tree-walking.vi.mdx";
+import JavaaTtlCacheDesign from "@/content/tracks/java/courses/java-advanced/modules/javaa-memory-gc/lessons/javaa-ttl-cache-design.mdx";
+import JavaaTtlCacheDesignVi from "@/content/tracks/java/courses/java-advanced/modules/javaa-memory-gc/lessons/javaa-ttl-cache-design.vi.mdx";
+import JavaaVirtualThreads from "@/content/tracks/java/courses/java-advanced/modules/java-executors-vt/lessons/javaa-virtual-threads.mdx";
+import JavaaVirtualThreadsVi from "@/content/tracks/java/courses/java-advanced/modules/java-executors-vt/lessons/javaa-virtual-threads.vi.mdx";
+import JavaaVolatileSemantics from "@/content/tracks/java/courses/java-advanced/modules/java-memory-model/lessons/javaa-volatile-semantics.mdx";
+import JavaaVolatileSemanticsVi from "@/content/tracks/java/courses/java-advanced/modules/java-memory-model/lessons/javaa-volatile-semantics.vi.mdx";
+import JaviCapstoneBrief from "@/content/tracks/java/courses/java-intermediate/modules/java-inter-capstone/lessons/javi-capstone-brief.mdx";
+import JaviCapstoneBriefVi from "@/content/tracks/java/courses/java-intermediate/modules/java-inter-capstone/lessons/javi-capstone-brief.vi.mdx";
+import JaviCheckpointAlgorithms from "@/content/tracks/java/courses/java-intermediate/modules/java-algorithms-inter/lessons/javi-checkpoint-algorithms.mdx";
+import JaviCheckpointAlgorithmsVi from "@/content/tracks/java/courses/java-intermediate/modules/java-algorithms-inter/lessons/javi-checkpoint-algorithms.vi.mdx";
+import JaviCheckpointArchitecture from "@/content/tracks/java/courses/java-intermediate/modules/java-architecture/lessons/javi-checkpoint-architecture.mdx";
+import JaviCheckpointArchitectureVi from "@/content/tracks/java/courses/java-intermediate/modules/java-architecture/lessons/javi-checkpoint-architecture.vi.mdx";
+import JaviCheckpointAsync from "@/content/tracks/java/courses/java-intermediate/modules/java-async-http/lessons/javi-checkpoint-async.mdx";
+import JaviCheckpointAsyncVi from "@/content/tracks/java/courses/java-intermediate/modules/java-async-http/lessons/javi-checkpoint-async.vi.mdx";
+import JaviCheckpointCapstone from "@/content/tracks/java/courses/java-intermediate/modules/java-inter-capstone/lessons/javi-checkpoint-capstone.mdx";
+import JaviCheckpointCapstoneVi from "@/content/tracks/java/courses/java-intermediate/modules/java-inter-capstone/lessons/javi-checkpoint-capstone.vi.mdx";
+import JaviCheckpointClean from "@/content/tracks/java/courses/java-intermediate/modules/java-clean-code/lessons/javi-checkpoint-clean.mdx";
+import JaviCheckpointCleanVi from "@/content/tracks/java/courses/java-intermediate/modules/java-clean-code/lessons/javi-checkpoint-clean.vi.mdx";
+import JaviCheckpointCollections from "@/content/tracks/java/courses/java-intermediate/modules/java-collections-advanced/lessons/javi-checkpoint-collections.mdx";
+import JaviCheckpointCollectionsVi from "@/content/tracks/java/courses/java-intermediate/modules/java-collections-advanced/lessons/javi-checkpoint-collections.vi.mdx";
+import JaviCheckpointConcurrency from "@/content/tracks/java/courses/java-intermediate/modules/java-concurrency/lessons/javi-checkpoint-concurrency.mdx";
+import JaviCheckpointConcurrencyVi from "@/content/tracks/java/courses/java-intermediate/modules/java-concurrency/lessons/javi-checkpoint-concurrency.vi.mdx";
+import JaviCheckpointContracts from "@/content/tracks/java/courses/java-intermediate/modules/java-equality-immutability/lessons/javi-checkpoint-contracts.mdx";
+import JaviCheckpointContractsVi from "@/content/tracks/java/courses/java-intermediate/modules/java-equality-immutability/lessons/javi-checkpoint-contracts.vi.mdx";
+import JaviCheckpointExceptions from "@/content/tracks/java/courses/java-intermediate/modules/java-exception-architecture/lessons/javi-checkpoint-exceptions.mdx";
+import JaviCheckpointExceptionsVi from "@/content/tracks/java/courses/java-intermediate/modules/java-exception-architecture/lessons/javi-checkpoint-exceptions.vi.mdx";
+import JaviCheckpointFunctional from "@/content/tracks/java/courses/java-intermediate/modules/java-functional-deep/lessons/javi-checkpoint-functional.mdx";
+import JaviCheckpointFunctionalVi from "@/content/tracks/java/courses/java-intermediate/modules/java-functional-deep/lessons/javi-checkpoint-functional.vi.mdx";
+import JaviCheckpointGenerics from "@/content/tracks/java/courses/java-intermediate/modules/java-generics-deep/lessons/javi-checkpoint-generics.mdx";
+import JaviCheckpointGenericsVi from "@/content/tracks/java/courses/java-intermediate/modules/java-generics-deep/lessons/javi-checkpoint-generics.vi.mdx";
+import JaviCheckpointIo from "@/content/tracks/java/courses/java-intermediate/modules/java-io-formats/lessons/javi-checkpoint-io.mdx";
+import JaviCheckpointIoVi from "@/content/tracks/java/courses/java-intermediate/modules/java-io-formats/lessons/javi-checkpoint-io.vi.mdx";
+import JaviCheckpointOop from "@/content/tracks/java/courses/java-intermediate/modules/java-oop-solid/lessons/javi-checkpoint-oop.mdx";
+import JaviCheckpointOopVi from "@/content/tracks/java/courses/java-intermediate/modules/java-oop-solid/lessons/javi-checkpoint-oop.vi.mdx";
+import JaviCheckpointPersistence from "@/content/tracks/java/courses/java-intermediate/modules/java-persistence/lessons/javi-checkpoint-persistence.mdx";
+import JaviCheckpointPersistenceVi from "@/content/tracks/java/courses/java-intermediate/modules/java-persistence/lessons/javi-checkpoint-persistence.vi.mdx";
+import JaviCheckpointTesting from "@/content/tracks/java/courses/java-intermediate/modules/java-testing-deep/lessons/javi-checkpoint-testing.mdx";
+import JaviCheckpointTestingVi from "@/content/tracks/java/courses/java-intermediate/modules/java-testing-deep/lessons/javi-checkpoint-testing.vi.mdx";
+import JaviRepositoryPattern from "@/content/tracks/java/courses/java-intermediate/modules/java-persistence/lessons/javi-repository-pattern.mdx";
+import JaviRepositoryPatternVi from "@/content/tracks/java/courses/java-intermediate/modules/java-persistence/lessons/javi-repository-pattern.vi.mdx";
+import JdbcShape from "@/content/tracks/java/courses/java-intermediate/modules/java-persistence/lessons/jdbc-shape.mdx";
+import JdbcShapeVi from "@/content/tracks/java/courses/java-intermediate/modules/java-persistence/lessons/jdbc-shape.vi.mdx";
+import JoinsRelationships from "@/content/tracks/web-development/courses/web-development-intermediate/modules/databases-full-stack/lessons/joins-relationships.mdx";
+import JoinsRelationshipsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/databases-full-stack/lessons/joins-relationships.vi.mdx";
 import JsArrays from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-arrays.mdx";
+import JsArraysVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-arrays.vi.mdx";
 import JsAsync from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-async.mdx";
+import JsAsyncVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-async.vi.mdx";
 import JsCheckpoint from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-checkpoint.mdx";
+import JsCheckpointVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-checkpoint.vi.mdx";
 import JsConditionals from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-conditionals.mdx";
+import JsConditionalsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-conditionals.vi.mdx";
 import JsDomCreate from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-dom-create.mdx";
+import JsDomCreateVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-dom-create.vi.mdx";
 import JsDomEvents from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-dom-events.mdx";
+import JsDomEventsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-dom-events.vi.mdx";
 import JsDomSelect from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-dom-select.mdx";
+import JsDomSelectVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-dom-select.vi.mdx";
+import JsExecutionCost from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-performance/lessons/js-execution-cost.mdx";
+import JsExecutionCostVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-performance/lessons/js-execution-cost.vi.mdx";
 import JsFetchAndApis from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-fetch-and-apis.mdx";
+import JsFetchAndApisVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-fetch-and-apis.vi.mdx";
 import JsFormsAndValidation from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-forms-and-validation.mdx";
+import JsFormsAndValidationVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-forms-and-validation.vi.mdx";
 import JsFunctions from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-functions.mdx";
+import JsFunctionsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-functions.vi.mdx";
 import JsLocalStorage from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-local-storage.mdx";
+import JsLocalStorageVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-local-storage.vi.mdx";
 import JsLoops from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-loops.mdx";
+import JsLoopsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-loops.vi.mdx";
 import JsObjects from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-objects.mdx";
+import JsObjectsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-objects.vi.mdx";
 import JsProjectInteractiveApp from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-project-interactive-app.mdx";
+import JsProjectInteractiveAppVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-project-interactive-app.vi.mdx";
 import JsScopeAndArrows from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-scope-and-arrows.mdx";
+import JsScopeAndArrowsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-scope-and-arrows.vi.mdx";
 import JsTypesAndOperators from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-types-and-operators.mdx";
+import JsTypesAndOperatorsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-types-and-operators.vi.mdx";
 import JsVariables from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-variables.mdx";
+import JsVariablesVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/js-variables.vi.mdx";
+import JsonApiClient from "@/content/tracks/python/courses/python-intermediate/modules/http-json/lessons/json-api-client.mdx";
+import JsonApiClientVi from "@/content/tracks/python/courses/python-intermediate/modules/http-json/lessons/json-api-client.vi.mdx";
+import JsonPersistence from "@/content/tracks/python/courses/python-beginner/modules/files-paths-and-data/lessons/json-persistence.mdx";
+import JsonPersistenceVi from "@/content/tracks/python/courses/python-beginner/modules/files-paths-and-data/lessons/json-persistence.vi.mdx";
+import JsonStructure from "@/content/tracks/java/courses/java-intermediate/modules/java-io-formats/lessons/json-structure.mdx";
+import JsonStructureVi from "@/content/tracks/java/courses/java-intermediate/modules/java-io-formats/lessons/json-structure.vi.mdx";
+import L2dArrays from "@/content/tracks/c/courses/c-beginner/modules/arrays/lessons/2d-arrays.mdx";
+import L2dArraysVi from "@/content/tracks/c/courses/c-beginner/modules/arrays/lessons/2d-arrays.vi.mdx";
+import Lambdas from "@/content/tracks/cpp/courses/cpp-intermediate/modules/iterators-algorithms/lessons/lambdas.mdx";
+import LambdasAndPredicates from "@/content/tracks/cpp/courses/cpp-beginner/modules/stl-algorithms/lessons/lambdas-and-predicates.mdx";
+import LambdasAndPredicatesVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/stl-algorithms/lessons/lambdas-and-predicates.vi.mdx";
+import LambdasFunctional from "@/content/tracks/java/courses/java-beginner/modules/java-streams-optional/lessons/lambdas-functional.mdx";
+import LambdasFunctionalVi from "@/content/tracks/java/courses/java-beginner/modules/java-streams-optional/lessons/lambdas-functional.vi.mdx";
+import LambdasVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/iterators-algorithms/lessons/lambdas.vi.mdx";
+import LayeredArchitecture from "@/content/tracks/java/courses/java-intermediate/modules/java-architecture/lessons/layered-architecture.mdx";
+import LayeredArchitectureVi from "@/content/tracks/java/courses/java-intermediate/modules/java-architecture/lessons/layered-architecture.vi.mdx";
+import LinkedList from "@/content/tracks/c/courses/c-beginner/modules/data-structures/lessons/linked-list.mdx";
+import LinkedListVi from "@/content/tracks/c/courses/c-beginner/modules/data-structures/lessons/linked-list.vi.mdx";
+import LinkingAndOdr from "@/content/tracks/cpp/courses/cpp-beginner/modules/multi-file-cmake/lessons/linking-and-odr.mdx";
+import LinkingAndOdrVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/multi-file-cmake/lessons/linking-and-odr.vi.mdx";
+import ListAndArraylist from "@/content/tracks/java/courses/java-beginner/modules/java-collections-generics/lessons/list-and-arraylist.mdx";
+import ListAndArraylistVi from "@/content/tracks/java/courses/java-beginner/modules/java-collections-generics/lessons/list-and-arraylist.vi.mdx";
+import Lists from "@/content/tracks/python/courses/python-beginner/modules/lists-and-collections/lessons/lists.mdx";
+import ListsVi from "@/content/tracks/python/courses/python-beginner/modules/lists-and-collections/lessons/lists.vi.mdx";
+import Logging from "@/content/tracks/python/courses/python-intermediate/modules/robust-errors/lessons/logging.mdx";
+import LoggingVi from "@/content/tracks/python/courses/python-intermediate/modules/robust-errors/lessons/logging.vi.mdx";
+import LogicAndPrecedence from "@/content/tracks/c/courses/c-beginner/modules/operators-expressions/lessons/logic-and-precedence.mdx";
+import LogicAndPrecedenceVi from "@/content/tracks/c/courses/c-beginner/modules/operators-expressions/lessons/logic-and-precedence.vi.mdx";
+import MacrosBasics from "@/content/tracks/c/courses/c-beginner/modules/preprocessor/lessons/macros-basics.mdx";
+import MacrosBasicsVi from "@/content/tracks/c/courses/c-beginner/modules/preprocessor/lessons/macros-basics.vi.mdx";
+import MallocFree from "@/content/tracks/c/courses/c-beginner/modules/cb-dynamic-memory/lessons/malloc-free.mdx";
+import MallocFreeVi from "@/content/tracks/c/courses/c-beginner/modules/cb-dynamic-memory/lessons/malloc-free.vi.mdx";
+import MapSetPair from "@/content/tracks/cpp/courses/cpp-beginner/modules/collections/lessons/map-set-pair.mdx";
+import MapSetPairVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/collections/lessons/map-set-pair.vi.mdx";
+import MapSetStructuredData from "@/content/tracks/web-development/courses/web-development-intermediate/modules/modern-javascript/lessons/map-set-structured-data.mdx";
+import MapSetStructuredDataVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/modern-javascript/lessons/map-set-structured-data.vi.mdx";
+import MapsThinking from "@/content/tracks/java/courses/java-intermediate/modules/java-algorithms-inter/lessons/maps-thinking.mdx";
+import MapsThinkingVi from "@/content/tracks/java/courses/java-intermediate/modules/java-algorithms-inter/lessons/maps-thinking.vi.mdx";
+import MeasureFirst from "@/content/tracks/python/courses/python-advanced/modules/performance-engineering/lessons/measure-first.mdx";
+import MeasureFirstVi from "@/content/tracks/python/courses/python-advanced/modules/performance-engineering/lessons/measure-first.vi.mdx";
+import MeasureOptimizeLoop from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-performance/lessons/measure-optimize-loop.mdx";
+import MeasureOptimizeLoopVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-performance/lessons/measure-optimize-loop.vi.mdx";
+import MemoryStreaming from "@/content/tracks/python/courses/python-advanced/modules/performance-engineering/lessons/memory-streaming.mdx";
+import MemoryStreamingVi from "@/content/tracks/python/courses/python-advanced/modules/performance-engineering/lessons/memory-streaming.vi.mdx";
+import MergeVsRebase from "@/content/tracks/web-development/courses/web-development-intermediate/modules/git-workflow/lessons/merge-vs-rebase.mdx";
+import MergeVsRebaseVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/git-workflow/lessons/merge-vs-rebase.vi.mdx";
+import MethodsParametersReturns from "@/content/tracks/java/courses/java-beginner/modules/java-methods/lessons/methods-parameters-returns.mdx";
+import MethodsParametersReturnsVi from "@/content/tracks/java/courses/java-beginner/modules/java-methods/lessons/methods-parameters-returns.vi.mdx";
+import MiddlewarePipeline from "@/content/tracks/web-development/courses/web-development-intermediate/modules/backend-fundamentals/lessons/middleware-pipeline.mdx";
+import MiddlewarePipelineVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/backend-fundamentals/lessons/middleware-pipeline.vi.mdx";
+import MinimizingRepros from "@/content/tracks/cpp/courses/cpp-advanced/modules/debugging/lessons/minimizing-repros.mdx";
+import MinimizingReprosVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/debugging/lessons/minimizing-repros.vi.mdx";
+import MockingBoundaries from "@/content/tracks/python/courses/python-intermediate/modules/testing-discipline/lessons/mocking-boundaries.mdx";
+import MockingBoundariesVi from "@/content/tracks/python/courses/python-intermediate/modules/testing-discipline/lessons/mocking-boundaries.vi.mdx";
+import ModelChoice from "@/content/tracks/python/courses/python-advanced/modules/concurrency-parallelism/lessons/model-choice.mdx";
+import ModelChoiceVi from "@/content/tracks/python/courses/python-advanced/modules/concurrency-parallelism/lessons/model-choice.vi.mdx";
+import ModelingState from "@/content/tracks/c/courses/c-beginner/modules/enums-typedef/lessons/modeling-state.mdx";
+import ModelingStateVi from "@/content/tracks/c/courses/c-beginner/modules/enums-typedef/lessons/modeling-state.vi.mdx";
+import ModernIdioms from "@/content/tracks/cpp/courses/cpp-intermediate/modules/modern-cpp/lessons/modern-idioms.mdx";
+import ModernIdiomsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/modern-cpp/lessons/modern-idioms.vi.mdx";
+import ModulesImportExport from "@/content/tracks/web-development/courses/web-development-intermediate/modules/modern-javascript/lessons/modules-import-export.mdx";
+import ModulesImportExportVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/modern-javascript/lessons/modules-import-export.vi.mdx";
+import ModulesPackages from "@/content/tracks/python/courses/python-intermediate/modules/structure-and-typing/lessons/modules-packages.mdx";
+import ModulesPackagesVi from "@/content/tracks/python/courses/python-intermediate/modules/structure-and-typing/lessons/modules-packages.vi.mdx";
+import MotionReducedMotion from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/motion-reduced-motion.mdx";
+import MotionReducedMotionVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/motion-reduced-motion.vi.mdx";
+import MoveSemantics from "@/content/tracks/cpp/courses/cpp-intermediate/modules/operators-copy-move/lessons/move-semantics.mdx";
+import MoveSemanticsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/operators-copy-move/lessons/move-semantics.vi.mdx";
+import MroCooperativeInheritance from "@/content/tracks/python/courses/python-advanced/modules/data-model-protocols/lessons/mro-cooperative-inheritance.mdx";
+import MroCooperativeInheritanceVi from "@/content/tracks/python/courses/python-advanced/modules/data-model-protocols/lessons/mro-cooperative-inheritance.vi.mdx";
+import MutationAndFuzzing from "@/content/tracks/cpp/courses/cpp-advanced/modules/testing/lessons/mutation-and-fuzzing.mdx";
+import MutationAndFuzzingVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/testing/lessons/mutation-and-fuzzing.vi.mdx";
+import MutexCvFutures from "@/content/tracks/cpp/courses/cpp-advanced/modules/concurrency/lessons/mutex-cv-futures.mdx";
+import MutexCvFuturesVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/concurrency/lessons/mutex-cv-futures.vi.mdx";
+import NamingFunctions from "@/content/tracks/java/courses/java-intermediate/modules/java-clean-code/lessons/naming-functions.mdx";
+import NamingFunctionsVi from "@/content/tracks/java/courses/java-intermediate/modules/java-clean-code/lessons/naming-functions.vi.mdx";
+import NativeDisclosureDialogs from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/native-disclosure-dialogs.mdx";
+import NativeDisclosureDialogsVi from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/native-disclosure-dialogs.vi.mdx";
+import NestedCollections from "@/content/tracks/python/courses/python-beginner/modules/lists-and-collections/lessons/nested-collections.mdx";
+import NestedCollectionsVi from "@/content/tracks/python/courses/python-beginner/modules/lists-and-collections/lessons/nested-collections.vi.mdx";
+import NestedLoops from "@/content/tracks/java/courses/java-beginner/modules/java-loops/lessons/nested-loops.mdx";
+import NestedLoopsPatterns from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-loops/lessons/nested-loops-patterns.mdx";
+import NestedLoopsPatternsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-loops/lessons/nested-loops-patterns.vi.mdx";
+import NestedLoopsVi from "@/content/tracks/java/courses/java-beginner/modules/java-loops/lessons/nested-loops.vi.mdx";
+import NetworkWaterfall from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-performance/lessons/network-waterfall.mdx";
+import NetworkWaterfallVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-performance/lessons/network-waterfall.vi.mdx";
+import Nio2PathFiles from "@/content/tracks/java/courses/java-intermediate/modules/java-io-formats/lessons/nio2-path-files.mdx";
+import Nio2PathFilesVi from "@/content/tracks/java/courses/java-intermediate/modules/java-io-formats/lessons/nio2-path-files.vi.mdx";
+import NoexceptAndRules from "@/content/tracks/cpp/courses/cpp-advanced/modules/move-forwarding/lessons/noexcept-and-rules.mdx";
+import NoexceptAndRulesVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/move-forwarding/lessons/noexcept-and-rules.vi.mdx";
+import NullAndMistakes from "@/content/tracks/c/courses/c-beginner/modules/pointer-fundamentals/lessons/null-and-mistakes.mdx";
+import NullAndMistakesVi from "@/content/tracks/c/courses/c-beginner/modules/pointer-fundamentals/lessons/null-and-mistakes.vi.mdx";
+import NumbersBooleansNone from "@/content/tracks/python/courses/python-beginner/modules/variables-and-data-types/lessons/numbers-booleans-none.mdx";
+import NumbersBooleansNoneVi from "@/content/tracks/python/courses/python-beginner/modules/variables-and-data-types/lessons/numbers-booleans-none.vi.mdx";
+import Observability from "@/content/tracks/web-development/courses/web-development-intermediate/modules/production/lessons/observability.mdx";
+import ObservabilityVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/production/lessons/observability.vi.mdx";
+import OperatorOverloading from "@/content/tracks/cpp/courses/cpp-intermediate/modules/operators-copy-move/lessons/operator-overloading.mdx";
+import OperatorOverloadingVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/operators-copy-move/lessons/operator-overloading.vi.mdx";
+import OperatorsAndConversion from "@/content/tracks/cpp/courses/cpp-beginner/modules/variables-and-types/lessons/operators-and-conversion.mdx";
+import OperatorsAndConversionVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/variables-and-types/lessons/operators-and-conversion.vi.mdx";
+import OperatorsPrecedence from "@/content/tracks/python/courses/python-beginner/modules/variables-and-data-types/lessons/operators-precedence.mdx";
+import OperatorsPrecedenceVi from "@/content/tracks/python/courses/python-beginner/modules/variables-and-data-types/lessons/operators-precedence.vi.mdx";
+import OptionalBoundaries from "@/content/tracks/java/courses/java-beginner/modules/java-streams-optional/lessons/optional-boundaries.mdx";
+import OptionalBoundariesVi from "@/content/tracks/java/courses/java-beginner/modules/java-streams-optional/lessons/optional-boundaries.vi.mdx";
+import OptionalVariant from "@/content/tracks/cpp/courses/cpp-intermediate/modules/modern-cpp/lessons/optional-variant.mdx";
+import OptionalVariantVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/modern-cpp/lessons/optional-variant.vi.mdx";
+import OrganizingCliApps from "@/content/tracks/python/courses/python-beginner/modules/command-line-applications/lessons/organizing-cli-apps.mdx";
+import OrganizingCliAppsVi from "@/content/tracks/python/courses/python-beginner/modules/command-line-applications/lessons/organizing-cli-apps.vi.mdx";
+import OutputAndInput from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-first-programs/lessons/output-and-input.mdx";
+import OutputAndInputVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-first-programs/lessons/output-and-input.vi.mdx";
+import OverloadingVarargs from "@/content/tracks/java/courses/java-beginner/modules/java-methods/lessons/overloading-varargs.mdx";
+import OverloadingVarargsVi from "@/content/tracks/java/courses/java-beginner/modules/java-methods/lessons/overloading-varargs.vi.mdx";
+import OverloadsAndDecomposition from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-functions/lessons/overloads-and-decomposition.mdx";
+import OverloadsAndDecompositionVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-functions/lessons/overloads-and-decomposition.vi.mdx";
+import OverloadsSubsumption from "@/content/tracks/cpp/courses/cpp-advanced/modules/concepts/lessons/overloads-subsumption.mdx";
+import OverloadsSubsumptionVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/concepts/lessons/overloads-subsumption.vi.mdx";
+import Overriding from "@/content/tracks/cpp/courses/cpp-intermediate/modules/inheritance-polymorphism/lessons/overriding.mdx";
+import OverridingPolymorphism from "@/content/tracks/java/courses/java-beginner/modules/java-oop-design/lessons/overriding-polymorphism.mdx";
+import OverridingPolymorphismVi from "@/content/tracks/java/courses/java-beginner/modules/java-oop-design/lessons/overriding-polymorphism.vi.mdx";
+import OverridingVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/inheritance-polymorphism/lessons/overriding.vi.mdx";
+import OwnershipDesign from "@/content/tracks/cpp/courses/cpp-intermediate/modules/smart-pointers-raii/lessons/ownership-design.mdx";
+import OwnershipDesignVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/smart-pointers-raii/lessons/ownership-design.vi.mdx";
+import OwnershipErrors from "@/content/tracks/c/courses/c-beginner/modules/cb-dynamic-memory/lessons/ownership-errors.mdx";
+import OwnershipErrorsVi from "@/content/tracks/c/courses/c-beginner/modules/cb-dynamic-memory/lessons/ownership-errors.vi.mdx";
+import PackageLayout from "@/content/tracks/python/courses/python-intermediate/modules/structure-and-typing/lessons/package-layout.mdx";
+import PackageLayoutVi from "@/content/tracks/python/courses/python-intermediate/modules/structure-and-typing/lessons/package-layout.vi.mdx";
+import PackagingAndEntryPoints from "@/content/tracks/python/courses/python-advanced/modules/production-tooling/lessons/packaging-and-entry-points.mdx";
+import PackagingAndEntryPointsVi from "@/content/tracks/python/courses/python-advanced/modules/production-tooling/lessons/packaging-and-entry-points.vi.mdx";
+import ParameterizedQueries from "@/content/tracks/python/courses/python-intermediate/modules/databases/lessons/parameterized-queries.mdx";
+import ParameterizedQueriesVi from "@/content/tracks/python/courses/python-intermediate/modules/databases/lessons/parameterized-queries.vi.mdx";
+import ParametersByValueAndConstRef from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-functions/lessons/parameters-by-value-and-const-ref.mdx";
+import ParametersByValueAndConstRefVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-functions/lessons/parameters-by-value-and-const-ref.vi.mdx";
+import ParametersReturn from "@/content/tracks/c/courses/c-beginner/modules/cb-functions/lessons/parameters-return.mdx";
+import ParametersReturnVi from "@/content/tracks/c/courses/c-beginner/modules/cb-functions/lessons/parameters-return.vi.mdx";
+import ParsingInput from "@/content/tracks/c/courses/c-beginner/modules/io-formatting/lessons/parsing-input.mdx";
+import ParsingInputVi from "@/content/tracks/c/courses/c-beginner/modules/io-formatting/lessons/parsing-input.vi.mdx";
+import ParsingRecordsFromFiles from "@/content/tracks/cpp/courses/cpp-beginner/modules/files-persistence/lessons/parsing-records-from-files.mdx";
+import ParsingRecordsFromFilesVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/files-persistence/lessons/parsing-records-from-files.vi.mdx";
+import ParsingWithStringstream from "@/content/tracks/cpp/courses/cpp-beginner/modules/strings/lessons/parsing-with-stringstream.mdx";
+import ParsingWithStringstreamVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/strings/lessons/parsing-with-stringstream.vi.mdx";
+import PathlibMastery from "@/content/tracks/python/courses/python-intermediate/modules/files-and-data/lessons/pathlib-mastery.mdx";
+import PathlibMasteryVi from "@/content/tracks/python/courses/python-intermediate/modules/files-and-data/lessons/pathlib-mastery.vi.mdx";
+import PerfCheckpoint from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-performance/lessons/perf-checkpoint.mdx";
+import PerfCheckpointVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-performance/lessons/perf-checkpoint.vi.mdx";
 import PersonalProfileProject from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/personal-profile-project.mdx";
+import PersonalProfileProjectVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/personal-profile-project.vi.mdx";
+import PipRequirements from "@/content/tracks/python/courses/python-beginner/modules/environments-and-packages/lessons/pip-requirements.mdx";
+import PipRequirementsVi from "@/content/tracks/python/courses/python-beginner/modules/environments-and-packages/lessons/pip-requirements.vi.mdx";
+import PmrAndArenas from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-allocators/lessons/pmr-and-arenas.mdx";
+import PmrAndArenasVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-allocators/lessons/pmr-and-arenas.vi.mdx";
+import PointerParameters from "@/content/tracks/c/courses/c-beginner/modules/pointer-fundamentals/lessons/pointer-parameters.mdx";
+import PointerParametersVi from "@/content/tracks/c/courses/c-beginner/modules/pointer-fundamentals/lessons/pointer-parameters.vi.mdx";
+import Pointers from "@/content/tracks/cpp/courses/cpp-intermediate/modules/memory-and-lifetime/lessons/pointers.mdx";
+import PointersAndNullptr from "@/content/tracks/cpp/courses/cpp-beginner/modules/pointers-references/lessons/pointers-and-nullptr.mdx";
+import PointersAndNullptrVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/pointers-references/lessons/pointers-and-nullptr.vi.mdx";
+import PointersVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/memory-and-lifetime/lessons/pointers.vi.mdx";
+import Polymorphism from "@/content/tracks/cpp/courses/cpp-intermediate/modules/inheritance-polymorphism/lessons/polymorphism.mdx";
+import PolymorphismVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/inheritance-polymorphism/lessons/polymorphism.vi.mdx";
+import PoolsExecutors from "@/content/tracks/python/courses/python-advanced/modules/concurrency-parallelism/lessons/pools-executors.mdx";
+import PoolsExecutorsVi from "@/content/tracks/python/courses/python-advanced/modules/concurrency-parallelism/lessons/pools-executors.vi.mdx";
+import PopoversInvokers from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/popovers-invokers.mdx";
+import PopoversInvokersVi from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/popovers-invokers.vi.mdx";
+import PortsAdapters from "@/content/tracks/python/courses/python-advanced/modules/architecture-patterns/lessons/ports-adapters.mdx";
+import PortsAdaptersVi from "@/content/tracks/python/courses/python-advanced/modules/architecture-patterns/lessons/ports-adapters.vi.mdx";
+import PrefixBinarySearch from "@/content/tracks/java/courses/java-intermediate/modules/java-algorithms-inter/lessons/prefix-binary-search.mdx";
+import PrefixBinarySearchVi from "@/content/tracks/java/courses/java-intermediate/modules/java-algorithms-inter/lessons/prefix-binary-search.vi.mdx";
+import PrimitiveTypes from "@/content/tracks/java/courses/java-beginner/modules/java-types-operators/lessons/primitive-types.mdx";
+import PrimitiveTypesVi from "@/content/tracks/java/courses/java-beginner/modules/java-types-operators/lessons/primitive-types.vi.mdx";
+import PrintingOutput from "@/content/tracks/java/courses/java-beginner/modules/java-first-programs/lessons/printing-output.mdx";
+import PrintingOutputVi from "@/content/tracks/java/courses/java-beginner/modules/java-first-programs/lessons/printing-output.vi.mdx";
+import ProdCheckpoint from "@/content/tracks/web-development/courses/web-development-intermediate/modules/production/lessons/prod-checkpoint.mdx";
+import ProdCheckpointVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/production/lessons/prod-checkpoint.vi.mdx";
+import ProductionConcerns from "@/content/tracks/python/courses/python-advanced/modules/production-apis/lessons/production-concerns.mdx";
+import ProductionConcernsVi from "@/content/tracks/python/courses/python-advanced/modules/production-apis/lessons/production-concerns.vi.mdx";
+import ProfilingToolkit from "@/content/tracks/python/courses/python-advanced/modules/performance-engineering/lessons/profiling-toolkit.mdx";
+import ProfilingToolkitVi from "@/content/tracks/python/courses/python-advanced/modules/performance-engineering/lessons/profiling-toolkit.vi.mdx";
+import ProjectArchitecture from "@/content/tracks/cpp/courses/cpp-intermediate/modules/cppi-final-project/lessons/project-architecture.mdx";
+import ProjectArchitectureVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/cppi-final-project/lessons/project-architecture.vi.mdx";
+import ProjectLayout from "@/content/tracks/c/courses/c-beginner/modules/project-engineering/lessons/project-layout.mdx";
+import ProjectLayoutVi from "@/content/tracks/c/courses/c-beginner/modules/project-engineering/lessons/project-layout.vi.mdx";
+import ProjectionsCustom from "@/content/tracks/cpp/courses/cpp-advanced/modules/ranges-views/lessons/projections-custom.mdx";
+import ProjectionsCustomVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/ranges-views/lessons/projections-custom.vi.mdx";
+import PromiseCombinators from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/promise-combinators.mdx";
+import PromiseCombinatorsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/promise-combinators.vi.mdx";
+import Promises from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/promises.mdx";
+import PromisesVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/promises.vi.mdx";
+import PropertiesValidation from "@/content/tracks/python/courses/python-intermediate/modules/objects-and-modeling/lessons/properties-validation.mdx";
+import PropertiesValidationVi from "@/content/tracks/python/courses/python-intermediate/modules/objects-and-modeling/lessons/properties-validation.vi.mdx";
+import PropertyAndContracts from "@/content/tracks/python/courses/python-advanced/modules/advanced-testing/lessons/property-and-contracts.mdx";
+import PropertyAndContractsVi from "@/content/tracks/python/courses/python-advanced/modules/advanced-testing/lessons/property-and-contracts.vi.mdx";
+import PropertyBasedTesting from "@/content/tracks/cpp/courses/cpp-advanced/modules/testing/lessons/property-based-testing.mdx";
+import PropertyBasedTestingVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/testing/lessons/property-based-testing.vi.mdx";
+import ProtectedMembers from "@/content/tracks/cpp/courses/cpp-intermediate/modules/inheritance-polymorphism/lessons/protected-members.mdx";
+import ProtectedMembersVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/inheritance-polymorphism/lessons/protected-members.vi.mdx";
+import ProtocolsOverloads from "@/content/tracks/python/courses/python-advanced/modules/advanced-typing/lessons/protocols-overloads.mdx";
+import ProtocolsOverloadsVi from "@/content/tracks/python/courses/python-advanced/modules/advanced-typing/lessons/protocols-overloads.vi.mdx";
+import ProtocolsSlots from "@/content/tracks/python/courses/python-advanced/modules/data-model-protocols/lessons/protocols-slots.mdx";
+import ProtocolsSlotsVi from "@/content/tracks/python/courses/python-advanced/modules/data-model-protocols/lessons/protocols-slots.vi.mdx";
+import PrototypesOrganization from "@/content/tracks/c/courses/c-beginner/modules/cb-functions/lessons/prototypes-organization.mdx";
+import PrototypesOrganizationVi from "@/content/tracks/c/courses/c-beginner/modules/cb-functions/lessons/prototypes-organization.vi.mdx";
+import PseudocodeSkills from "@/content/tracks/python/courses/python-beginner/modules/problem-solving-fundamentals/lessons/pseudocode-skills.mdx";
+import PseudocodeSkillsVi from "@/content/tracks/python/courses/python-beginner/modules/problem-solving-fundamentals/lessons/pseudocode-skills.vi.mdx";
+import PyDebuggingMethod from "@/content/tracks/python/courses/python-beginner/modules/errors-and-debugging/lessons/py-debugging-method.mdx";
+import PyDebuggingMethodVi from "@/content/tracks/python/courses/python-beginner/modules/errors-and-debugging/lessons/py-debugging-method.vi.mdx";
+import PyprojectLayout from "@/content/tracks/python/courses/python-intermediate/modules/packaging/lessons/pyproject-layout.mdx";
+import PyprojectLayoutVi from "@/content/tracks/python/courses/python-intermediate/modules/packaging/lessons/pyproject-layout.vi.mdx";
+import QueuesAndWorkers from "@/content/tracks/python/courses/python-advanced/modules/distributed-systems/lessons/queues-and-workers.mdx";
+import QueuesAndWorkersVi from "@/content/tracks/python/courses/python-advanced/modules/distributed-systems/lessons/queues-and-workers.vi.mdx";
+import RacesHappensBefore from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-model/lessons/races-happens-before.mdx";
+import RacesHappensBeforeVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/memory-model/lessons/races-happens-before.vi.mdx";
+import RacesVisibility from "@/content/tracks/java/courses/java-intermediate/modules/java-concurrency/lessons/races-visibility.mdx";
+import RacesVisibilityVi from "@/content/tracks/java/courses/java-intermediate/modules/java-concurrency/lessons/races-visibility.vi.mdx";
+import Raii from "@/content/tracks/cpp/courses/cpp-intermediate/modules/smart-pointers-raii/lessons/raii.mdx";
+import RaiiAndSmartPointers from "@/content/tracks/cpp/courses/cpp-beginner/modules/memory-raii/lessons/raii-and-smart-pointers.mdx";
+import RaiiAndSmartPointersVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/memory-raii/lessons/raii-and-smart-pointers.vi.mdx";
+import RaiiVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/smart-pointers-raii/lessons/raii.vi.mdx";
+import RangeWhile from "@/content/tracks/python/courses/python-beginner/modules/loops/lessons/range-while.mdx";
+import RangeWhileVi from "@/content/tracks/python/courses/python-beginner/modules/loops/lessons/range-while.vi.mdx";
+import ReadWriteFiles from "@/content/tracks/c/courses/c-beginner/modules/file-io/lessons/read-write-files.mdx";
+import ReadWriteFilesVi from "@/content/tracks/c/courses/c-beginner/modules/file-io/lessons/read-write-files.vi.mdx";
+import ReadableCode from "@/content/tracks/python/courses/python-beginner/modules/testing-and-code-quality/lessons/readable-code.mdx";
+import ReadableCodeVi from "@/content/tracks/python/courses/python-beginner/modules/testing-and-code-quality/lessons/readable-code.vi.mdx";
+import ReadingAndWritingFiles from "@/content/tracks/cpp/courses/cpp-beginner/modules/files-persistence/lessons/reading-and-writing-files.mdx";
+import ReadingAndWritingFilesVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/files-persistence/lessons/reading-and-writing-files.vi.mdx";
+import ReadingCompilerErrors from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-first-programs/lessons/reading-compiler-errors.mdx";
+import ReadingCompilerErrorsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-first-programs/lessons/reading-compiler-errors.vi.mdx";
+import ReadingCompilerOutput from "@/content/tracks/c/courses/c-beginner/modules/cb-debugging/lessons/reading-compiler-output.mdx";
+import ReadingCompilerOutputVi from "@/content/tracks/c/courses/c-beginner/modules/cb-debugging/lessons/reading-compiler-output.vi.mdx";
+import ReadingErrors from "@/content/tracks/python/courses/python-beginner/modules/python-and-your-first-programs/lessons/reading-errors.mdx";
+import ReadingErrorsVi from "@/content/tracks/python/courses/python-beginner/modules/python-and-your-first-programs/lessons/reading-errors.vi.mdx";
+import ReadingFiles from "@/content/tracks/python/courses/python-beginner/modules/files-paths-and-data/lessons/reading-files.mdx";
+import ReadingFilesVi from "@/content/tracks/python/courses/python-beginner/modules/files-paths-and-data/lessons/reading-files.vi.mdx";
+import ReadingTheSystem from "@/content/tracks/java/courses/java-intermediate/modules/java-inter-capstone/lessons/reading-the-system.mdx";
+import ReadingTheSystemVi from "@/content/tracks/java/courses/java-intermediate/modules/java-inter-capstone/lessons/reading-the-system.vi.mdx";
+import Records from "@/content/tracks/java/courses/java-beginner/modules/java-data-modeling/lessons/records.mdx";
+import RecordsVi from "@/content/tracks/java/courses/java-beginner/modules/java-data-modeling/lessons/records.vi.mdx";
+import RecoveringCommits from "@/content/tracks/web-development/courses/web-development-intermediate/modules/git-workflow/lessons/recovering-commits.mdx";
+import RecoveringCommitsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/git-workflow/lessons/recovering-commits.vi.mdx";
+import RecursionAndLists from "@/content/tracks/cpp/courses/cpp-intermediate/modules/dsa/lessons/recursion-and-lists.mdx";
+import RecursionAndListsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/dsa/lessons/recursion-and-lists.vi.mdx";
+import RecursionIntro from "@/content/tracks/c/courses/c-beginner/modules/algorithms/lessons/recursion-intro.mdx";
+import RecursionIntroVi from "@/content/tracks/c/courses/c-beginner/modules/algorithms/lessons/recursion-intro.vi.mdx";
+import RefactorAMess from "@/content/tracks/cpp/courses/cpp-beginner/modules/architecture-refactoring/lessons/refactor-a-mess.mdx";
+import RefactorAMessVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/architecture-refactoring/lessons/refactor-a-mess.vi.mdx";
+import RefactoringDecomposition from "@/content/tracks/python/courses/python-beginner/modules/functions/lessons/refactoring-decomposition.mdx";
+import RefactoringDecompositionVi from "@/content/tracks/python/courses/python-beginner/modules/functions/lessons/refactoring-decomposition.vi.mdx";
+import References from "@/content/tracks/cpp/courses/cpp-intermediate/modules/memory-and-lifetime/lessons/references.mdx";
+import ReferencesAndAliasing from "@/content/tracks/cpp/courses/cpp-beginner/modules/pointers-references/lessons/references-and-aliasing.mdx";
+import ReferencesAndAliasingVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/pointers-references/lessons/references-and-aliasing.vi.mdx";
+import ReferencesVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/memory-and-lifetime/lessons/references.vi.mdx";
+import RegistriesPlugins from "@/content/tracks/python/courses/python-advanced/modules/metaprogramming/lessons/registries-plugins.mdx";
+import RegistriesPluginsVi from "@/content/tracks/python/courses/python-advanced/modules/metaprogramming/lessons/registries-plugins.vi.mdx";
+import RelationalModel from "@/content/tracks/web-development/courses/web-development-intermediate/modules/databases-full-stack/lessons/relational-model.mdx";
+import RelationalModelVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/databases-full-stack/lessons/relational-model.vi.mdx";
+import RelationalThinking from "@/content/tracks/python/courses/python-advanced/modules/databases-data-access/lessons/relational-thinking.mdx";
+import RelationalThinkingVi from "@/content/tracks/python/courses/python-advanced/modules/databases-data-access/lessons/relational-thinking.vi.mdx";
+import RelationsIndexes from "@/content/tracks/java/courses/java-intermediate/modules/java-persistence/lessons/relations-indexes.mdx";
+import RelationsIndexesVi from "@/content/tracks/java/courses/java-intermediate/modules/java-persistence/lessons/relations-indexes.vi.mdx";
+import RenderingPipeline from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-performance/lessons/rendering-pipeline.mdx";
+import RenderingPipelineVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-performance/lessons/rendering-pipeline.vi.mdx";
+import RepairCheckpoint from "@/content/tracks/web-development/courses/web-development-intermediate/modules/testing-debugging/lessons/repair-checkpoint.mdx";
+import RepairCheckpointVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/testing-debugging/lessons/repair-checkpoint.vi.mdx";
+import RepoHygieneForCpp from "@/content/tracks/cpp/courses/cpp-beginner/modules/git-professional-workflow/lessons/repo-hygiene-for-cpp.mdx";
+import RepoHygieneForCppVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/git-professional-workflow/lessons/repo-hygiene-for-cpp.vi.mdx";
+import RepositoryPattern from "@/content/tracks/python/courses/python-intermediate/modules/databases/lessons/repository-pattern.mdx";
+import RepositoryPatternVi from "@/content/tracks/python/courses/python-intermediate/modules/databases/lessons/repository-pattern.vi.mdx";
+import ResiliencePatterns from "@/content/tracks/python/courses/python-advanced/modules/distributed-systems/lessons/resilience-patterns.mdx";
+import ResiliencePatternsVi from "@/content/tracks/python/courses/python-advanced/modules/distributed-systems/lessons/resilience-patterns.vi.mdx";
+import ResponsibilitiesAndNaming from "@/content/tracks/cpp/courses/cpp-beginner/modules/architecture-refactoring/lessons/responsibilities-and-naming.mdx";
+import ResponsibilitiesAndNamingVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/architecture-refactoring/lessons/responsibilities-and-naming.vi.mdx";
+import ResponsiveMedia from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/responsive-media.mdx";
+import ResponsiveMediaVi from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/responsive-media.vi.mdx";
+import RobustParsing from "@/content/tracks/java/courses/java-beginner/modules/java-exceptions-files/lessons/robust-parsing.mdx";
+import RobustParsingVi from "@/content/tracks/java/courses/java-beginner/modules/java-exceptions-files/lessons/robust-parsing.vi.mdx";
+import RoutingRest from "@/content/tracks/web-development/courses/web-development-intermediate/modules/backend-fundamentals/lessons/routing-rest.mdx";
+import RoutingRestVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/backend-fundamentals/lessons/routing-rest.vi.mdx";
+import RunningPython from "@/content/tracks/python/courses/python-beginner/modules/python-and-your-first-programs/lessons/running-python.mdx";
+import RunningPythonVi from "@/content/tracks/python/courses/python-beginner/modules/python-and-your-first-programs/lessons/running-python.vi.mdx";
+import RuntimeFailures from "@/content/tracks/c/courses/c-beginner/modules/cb-debugging/lessons/runtime-failures.mdx";
+import RuntimeFailuresVi from "@/content/tracks/c/courses/c-beginner/modules/cb-debugging/lessons/runtime-failures.vi.mdx";
+import SandboxedEmbedsMetadata from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/sandboxed-embeds-metadata.mdx";
+import SandboxedEmbedsMetadataVi from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/sandboxed-embeds-metadata.vi.mdx";
+import SanitizerMindset from "@/content/tracks/cpp/courses/cpp-advanced/modules/ub-defensive/lessons/sanitizer-mindset.mdx";
+import SanitizerMindsetVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/ub-defensive/lessons/sanitizer-mindset.vi.mdx";
+import ScopeClosures from "@/content/tracks/web-development/courses/web-development-intermediate/modules/modern-javascript/lessons/scope-closures.mdx";
+import ScopeClosuresVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/modern-javascript/lessons/scope-closures.vi.mdx";
+import ScopesBlocks from "@/content/tracks/c/courses/c-beginner/modules/scope-lifetime/lessons/scopes-blocks.mdx";
+import ScopesBlocksVi from "@/content/tracks/c/courses/c-beginner/modules/scope-lifetime/lessons/scopes-blocks.vi.mdx";
+import SealedHierarchies from "@/content/tracks/java/courses/java-intermediate/modules/java-oop-solid/lessons/sealed-hierarchies.mdx";
+import SealedHierarchiesVi from "@/content/tracks/java/courses/java-intermediate/modules/java-oop-solid/lessons/sealed-hierarchies.vi.mdx";
+import SeamsDoubles from "@/content/tracks/java/courses/java-intermediate/modules/java-testing-deep/lessons/seams-doubles.mdx";
+import SeamsDoublesVi from "@/content/tracks/java/courses/java-intermediate/modules/java-testing-deep/lessons/seams-doubles.vi.mdx";
+import Searching from "@/content/tracks/cpp/courses/cpp-intermediate/modules/dsa/lessons/searching.mdx";
+import SearchingVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/dsa/lessons/searching.vi.mdx";
+import SecretsAndEnv from "@/content/tracks/web-development/courses/web-development-intermediate/modules/git-workflow/lessons/secrets-and-env.mdx";
+import SecretsAndEnvVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/git-workflow/lessons/secrets-and-env.vi.mdx";
+import SecurityAudit from "@/content/tracks/python/courses/python-intermediate/modules/packaging/lessons/security-audit.mdx";
+import SecurityAuditVi from "@/content/tracks/python/courses/python-intermediate/modules/packaging/lessons/security-audit.vi.mdx";
+import SecurityCheckpoint from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-security/lessons/security-checkpoint.mdx";
+import SecurityCheckpointVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-security/lessons/security-checkpoint.vi.mdx";
 import SelectorsAndCascade from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/selectors-and-cascade.mdx";
+import SelectorsAndCascadeVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/selectors-and-cascade.vi.mdx";
+import SequenceContainers from "@/content/tracks/cpp/courses/cpp-intermediate/modules/stl-fundamentals/lessons/sequence-containers.mdx";
+import SequenceContainersVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/stl-fundamentals/lessons/sequence-containers.vi.mdx";
+import SetMapDeque from "@/content/tracks/java/courses/java-beginner/modules/java-collections-generics/lessons/set-map-deque.mdx";
+import SetMapDequeVi from "@/content/tracks/java/courses/java-beginner/modules/java-collections-generics/lessons/set-map-deque.vi.mdx";
+import SharedWeak from "@/content/tracks/cpp/courses/cpp-intermediate/modules/smart-pointers-raii/lessons/shared-weak.mdx";
+import SharedWeakVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/smart-pointers-raii/lessons/shared-weak.vi.mdx";
+import ShipIt from "@/content/tracks/cpp/courses/cpp-intermediate/modules/cppi-final-project/lessons/ship-it.mdx";
+import ShipItVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/cppi-final-project/lessons/ship-it.vi.mdx";
+import Slicing from "@/content/tracks/python/courses/python-beginner/modules/working-with-strings/lessons/slicing.mdx";
+import SlicingVi from "@/content/tracks/python/courses/python-beginner/modules/working-with-strings/lessons/slicing.vi.mdx";
+import SmellsRefactoring from "@/content/tracks/java/courses/java-intermediate/modules/java-clean-code/lessons/smells-refactoring.mdx";
+import SmellsRefactoringVi from "@/content/tracks/java/courses/java-intermediate/modules/java-clean-code/lessons/smells-refactoring.vi.mdx";
+import SortingBasics from "@/content/tracks/c/courses/c-beginner/modules/algorithms/lessons/sorting-basics.mdx";
+import SortingBasicsVi from "@/content/tracks/c/courses/c-beginner/modules/algorithms/lessons/sorting-basics.vi.mdx";
+import SortingWithKey from "@/content/tracks/python/courses/python-intermediate/modules/pythonic-toolkit/lessons/sorting-with-key.mdx";
+import SortingWithKeyVi from "@/content/tracks/python/courses/python-intermediate/modules/pythonic-toolkit/lessons/sorting-with-key.vi.mdx";
+import Specialization from "@/content/tracks/cpp/courses/cpp-intermediate/modules/templates/lessons/specialization.mdx";
+import SpecializationVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/templates/lessons/specialization.vi.mdx";
+import SqlAndTransactions from "@/content/tracks/python/courses/python-advanced/modules/databases-data-access/lessons/sql-and-transactions.mdx";
+import SqlAndTransactionsVi from "@/content/tracks/python/courses/python-advanced/modules/databases-data-access/lessons/sql-and-transactions.vi.mdx";
+import SqlCrud from "@/content/tracks/web-development/courses/web-development-intermediate/modules/databases-full-stack/lessons/sql-crud.mdx";
+import SqlCrudVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/databases-full-stack/lessons/sql-crud.vi.mdx";
+import SqlFundamentals from "@/content/tracks/python/courses/python-intermediate/modules/databases/lessons/sql-fundamentals.mdx";
+import SqlFundamentalsVi from "@/content/tracks/python/courses/python-intermediate/modules/databases/lessons/sql-fundamentals.vi.mdx";
+import StackHeapLifetime from "@/content/tracks/cpp/courses/cpp-beginner/modules/memory-raii/lessons/stack-heap-lifetime.mdx";
+import StackHeapLifetimeVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/memory-raii/lessons/stack-heap-lifetime.vi.mdx";
+import StackQueue from "@/content/tracks/c/courses/c-beginner/modules/data-structures/lessons/stack-queue.mdx";
+import StackQueueVi from "@/content/tracks/c/courses/c-beginner/modules/data-structures/lessons/stack-queue.vi.mdx";
+import StackVsHeap from "@/content/tracks/cpp/courses/cpp-intermediate/modules/memory-and-lifetime/lessons/stack-vs-heap.mdx";
+import StackVsHeapVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/memory-and-lifetime/lessons/stack-vs-heap.vi.mdx";
+import StatefulComponents from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/stateful-components.mdx";
+import StatefulComponentsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/stateful-components.vi.mdx";
+import StaticInClasses from "@/content/tracks/java/courses/java-beginner/modules/java-classes-objects/lessons/static-in-classes.mdx";
+import StaticInClassesVi from "@/content/tracks/java/courses/java-beginner/modules/java-classes-objects/lessons/static-in-classes.vi.mdx";
+import StaticMembers from "@/content/tracks/cpp/courses/cpp-intermediate/modules/object-oriented-design/lessons/static-members.mdx";
+import StaticMembersVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/object-oriented-design/lessons/static-members.vi.mdx";
+import StaticPrivacy from "@/content/tracks/c/courses/c-beginner/modules/multi-file/lessons/static-privacy.mdx";
+import StaticPrivacyVi from "@/content/tracks/c/courses/c-beginner/modules/multi-file/lessons/static-privacy.vi.mdx";
+import StdlibTour from "@/content/tracks/python/courses/python-beginner/modules/modules-and-standard-library/lessons/stdlib-tour.mdx";
+import StdlibTour2 from "@/content/tracks/python/courses/python-beginner/modules/modules-and-standard-library/lessons/stdlib-tour-2.mdx";
+import StdlibTour2Vi from "@/content/tracks/python/courses/python-beginner/modules/modules-and-standard-library/lessons/stdlib-tour-2.vi.mdx";
+import StdlibTourVi from "@/content/tracks/python/courses/python-beginner/modules/modules-and-standard-library/lessons/stdlib-tour.vi.mdx";
+import StorageDuration from "@/content/tracks/c/courses/c-beginner/modules/scope-lifetime/lessons/storage-duration.mdx";
+import StorageDurationLifetime from "@/content/tracks/cpp/courses/cpp-advanced/modules/object-model/lessons/storage-duration-lifetime.mdx";
+import StorageDurationLifetimeVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/object-model/lessons/storage-duration-lifetime.vi.mdx";
+import StorageDurationVi from "@/content/tracks/c/courses/c-beginner/modules/scope-lifetime/lessons/storage-duration.vi.mdx";
+import StreamOperators from "@/content/tracks/cpp/courses/cpp-intermediate/modules/operators-copy-move/lessons/stream-operators.mdx";
+import StreamOperatorsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/operators-copy-move/lessons/stream-operators.vi.mdx";
+import StreamPipeline from "@/content/tracks/java/courses/java-beginner/modules/java-streams-optional/lessons/stream-pipeline.mdx";
+import StreamPipelineVi from "@/content/tracks/java/courses/java-beginner/modules/java-streams-optional/lessons/stream-pipeline.vi.mdx";
+import StreamingData from "@/content/tracks/python/courses/python-intermediate/modules/files-and-data/lessons/streaming-data.mdx";
+import StreamingDataVi from "@/content/tracks/python/courses/python-intermediate/modules/files-and-data/lessons/streaming-data.vi.mdx";
+import StringBasicsIndexing from "@/content/tracks/python/courses/python-beginner/modules/working-with-strings/lessons/string-basics-indexing.mdx";
+import StringBasicsIndexingVi from "@/content/tracks/python/courses/python-beginner/modules/working-with-strings/lessons/string-basics-indexing.vi.mdx";
+import StringFunctions from "@/content/tracks/c/courses/c-beginner/modules/cb-strings/lessons/string-functions.mdx";
+import StringFunctionsVi from "@/content/tracks/c/courses/c-beginner/modules/cb-strings/lessons/string-functions.vi.mdx";
+import StringLibrary from "@/content/tracks/c/courses/c-beginner/modules/cb-strings/lessons/string-library.mdx";
+import StringLibraryVi from "@/content/tracks/c/courses/c-beginner/modules/cb-strings/lessons/string-library.vi.mdx";
+import StringMethods from "@/content/tracks/python/courses/python-beginner/modules/working-with-strings/lessons/string-methods.mdx";
+import StringMethodsVi from "@/content/tracks/python/courses/python-beginner/modules/working-with-strings/lessons/string-methods.vi.mdx";
+import StringOperations from "@/content/tracks/cpp/courses/cpp-beginner/modules/strings/lessons/string-operations.mdx";
+import StringOperationsVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/strings/lessons/string-operations.vi.mdx";
+import StringToolbox from "@/content/tracks/java/courses/java-beginner/modules/java-arrays-strings/lessons/string-toolbox.mdx";
+import StringToolboxVi from "@/content/tracks/java/courses/java-beginner/modules/java-arrays-strings/lessons/string-toolbox.vi.mdx";
+import Stringbuilder from "@/content/tracks/java/courses/java-beginner/modules/java-arrays-strings/lessons/stringbuilder.mdx";
+import StringbuilderVi from "@/content/tracks/java/courses/java-beginner/modules/java-arrays-strings/lessons/stringbuilder.vi.mdx";
+import StructBasics from "@/content/tracks/c/courses/c-beginner/modules/structs/lessons/struct-basics.mdx";
+import StructBasicsVi from "@/content/tracks/c/courses/c-beginner/modules/structs/lessons/struct-basics.vi.mdx";
+import StructPointers from "@/content/tracks/c/courses/c-beginner/modules/structs/lessons/struct-pointers.mdx";
+import StructPointersVi from "@/content/tracks/c/courses/c-beginner/modules/structs/lessons/struct-pointers.vi.mdx";
+import StructsAndAggregates from "@/content/tracks/cpp/courses/cpp-beginner/modules/structs-enums/lessons/structs-and-aggregates.mdx";
+import StructsAndAggregatesVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/structs-enums/lessons/structs-and-aggregates.vi.mdx";
+import StructsFunctions from "@/content/tracks/c/courses/c-beginner/modules/structs/lessons/structs-functions.mdx";
+import StructsFunctionsVi from "@/content/tracks/c/courses/c-beginner/modules/structs/lessons/structs-functions.vi.mdx";
+import SubtestParametrize from "@/content/tracks/python/courses/python-intermediate/modules/testing-discipline/lessons/subtest-parametrize.mdx";
+import SubtestParametrizeVi from "@/content/tracks/python/courses/python-intermediate/modules/testing-discipline/lessons/subtest-parametrize.vi.mdx";
+import SwitchAndBranches from "@/content/tracks/cpp/courses/cpp-beginner/modules/conditions/lessons/switch-and-branches.mdx";
+import SwitchAndBranchesVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/conditions/lessons/switch-and-branches.vi.mdx";
+import SwitchAndExpressions from "@/content/tracks/java/courses/java-beginner/modules/java-conditions/lessons/switch-and-expressions.mdx";
+import SwitchAndExpressionsVi from "@/content/tracks/java/courses/java-beginner/modules/java-conditions/lessons/switch-and-expressions.vi.mdx";
+import SwitchCases from "@/content/tracks/c/courses/c-beginner/modules/conditionals/lessons/switch-cases.mdx";
+import SwitchCasesVi from "@/content/tracks/c/courses/c-beginner/modules/conditionals/lessons/switch-cases.vi.mdx";
+import SyncVsAsync from "@/content/tracks/python/courses/python-intermediate/modules/concurrent-async/lessons/sync-vs-async.mdx";
+import SyncVsAsyncVi from "@/content/tracks/python/courses/python-intermediate/modules/concurrent-async/lessons/sync-vs-async.vi.mdx";
+import SynchronizationPrimitives from "@/content/tracks/python/courses/python-advanced/modules/concurrency-parallelism/lessons/synchronization-primitives.mdx";
+import SynchronizationPrimitivesVi from "@/content/tracks/python/courses/python-advanced/modules/concurrency-parallelism/lessons/synchronization-primitives.vi.mdx";
+import SystemsProgramming from "@/content/tracks/python/courses/python-advanced/modules/production-tooling/lessons/systems-programming.mdx";
+import SystemsProgrammingVi from "@/content/tracks/python/courses/python-advanced/modules/production-tooling/lessons/systems-programming.vi.mdx";
 import TerminalBasics from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/terminal-basics.mdx";
+import TerminalBasicsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/developer-tools-git-and-github/lessons/terminal-basics.vi.mdx";
+import TestDoubles from "@/content/tracks/web-development/courses/web-development-intermediate/modules/testing-debugging/lessons/test-doubles.mdx";
+import TestDoublesVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/testing-debugging/lessons/test-doubles.vi.mdx";
+import TestStrategy from "@/content/tracks/python/courses/python-advanced/modules/advanced-testing/lessons/test-strategy.mdx";
+import TestStrategyVi from "@/content/tracks/python/courses/python-advanced/modules/advanced-testing/lessons/test-strategy.vi.mdx";
+import TestingInProductionTruths from "@/content/tracks/python/courses/python-advanced/modules/advanced-testing/lessons/testing-in-production-truths.mdx";
+import TestingInProductionTruthsVi from "@/content/tracks/python/courses/python-advanced/modules/advanced-testing/lessons/testing-in-production-truths.vi.mdx";
+import TheNewDeleteLesson from "@/content/tracks/cpp/courses/cpp-beginner/modules/memory-raii/lessons/the-new-delete-lesson.mdx";
+import TheNewDeleteLessonVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/memory-raii/lessons/the-new-delete-lesson.vi.mdx";
+import TheUbZoo from "@/content/tracks/cpp/courses/cpp-advanced/modules/ub-defensive/lessons/the-ub-zoo.mdx";
+import TheUbZooVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/ub-defensive/lessons/the-ub-zoo.vi.mdx";
+import ThisPointer from "@/content/tracks/cpp/courses/cpp-intermediate/modules/object-oriented-design/lessons/this-pointer.mdx";
+import ThisPointerVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/object-oriented-design/lessons/this-pointer.vi.mdx";
+import ThreadPoolDesign from "@/content/tracks/cpp/courses/cpp-advanced/modules/concurrency/lessons/thread-pool-design.mdx";
+import ThreadPoolDesignVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/concurrency/lessons/thread-pool-design.vi.mdx";
+import ThreadsGil from "@/content/tracks/python/courses/python-advanced/modules/concurrency-parallelism/lessons/threads-gil.mdx";
+import ThreadsGilVi from "@/content/tracks/python/courses/python-advanced/modules/concurrency-parallelism/lessons/threads-gil.vi.mdx";
+import ThreadsHappensBefore from "@/content/tracks/java/courses/java-intermediate/modules/java-concurrency/lessons/threads-happens-before.mdx";
+import ThreadsHappensBeforeVi from "@/content/tracks/java/courses/java-intermediate/modules/java-concurrency/lessons/threads-happens-before.vi.mdx";
+import ThreadsJthread from "@/content/tracks/cpp/courses/cpp-advanced/modules/concurrency/lessons/threads-jthread.mdx";
+import ThreadsJthreadVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/concurrency/lessons/threads-jthread.vi.mdx";
+import ThreatModeling from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-security/lessons/threat-modeling.mdx";
+import ThreatModelingVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-security/lessons/threat-modeling.vi.mdx";
+import TimeoutsRetries from "@/content/tracks/java/courses/java-intermediate/modules/java-async-http/lessons/timeouts-retries.mdx";
+import TimeoutsRetriesVi from "@/content/tracks/java/courses/java-intermediate/modules/java-async-http/lessons/timeouts-retries.vi.mdx";
+import TimersObservers from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/timers-observers.mdx";
+import TimersObserversVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/timers-observers.vi.mdx";
+import TracebacksTryExcept from "@/content/tracks/python/courses/python-beginner/modules/errors-and-debugging/lessons/tracebacks-try-except.mdx";
+import TracebacksTryExceptVi from "@/content/tracks/python/courses/python-beginner/modules/errors-and-debugging/lessons/tracebacks-try-except.vi.mdx";
+import TransactionsMigrations from "@/content/tracks/web-development/courses/web-development-intermediate/modules/databases-full-stack/lessons/transactions-migrations.mdx";
+import TransactionsMigrationsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/databases-full-stack/lessons/transactions-migrations.vi.mdx";
+import TransactionsSchema from "@/content/tracks/python/courses/python-intermediate/modules/databases/lessons/transactions-schema.mdx";
+import TransactionsSchemaVi from "@/content/tracks/python/courses/python-intermediate/modules/databases/lessons/transactions-schema.vi.mdx";
+import TransformingAlgorithms from "@/content/tracks/cpp/courses/cpp-intermediate/modules/iterators-algorithms/lessons/transforming-algorithms.mdx";
+import TransformingAlgorithmsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/iterators-algorithms/lessons/transforming-algorithms.vi.mdx";
+import TransportInjection from "@/content/tracks/python/courses/python-intermediate/modules/http-json/lessons/transport-injection.mdx";
+import TransportInjectionVi from "@/content/tracks/python/courses/python-intermediate/modules/http-json/lessons/transport-injection.vi.mdx";
+import TreesAndGraphs from "@/content/tracks/cpp/courses/cpp-intermediate/modules/dsa/lessons/trees-and-graphs.mdx";
+import TreesAndGraphsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/dsa/lessons/trees-and-graphs.vi.mdx";
+import TruthinessBooleanLogic from "@/content/tracks/python/courses/python-beginner/modules/making-decisions/lessons/truthiness-boolean-logic.mdx";
+import TruthinessBooleanLogicVi from "@/content/tracks/python/courses/python-beginner/modules/making-decisions/lessons/truthiness-boolean-logic.vi.mdx";
+import TryWithResources from "@/content/tracks/java/courses/java-intermediate/modules/java-exception-architecture/lessons/try-with-resources.mdx";
+import TryWithResourcesVi from "@/content/tracks/java/courses/java-intermediate/modules/java-exception-architecture/lessons/try-with-resources.vi.mdx";
+import TuplesSets from "@/content/tracks/python/courses/python-beginner/modules/lists-and-collections/lessons/tuples-sets.mdx";
+import TuplesSetsVi from "@/content/tracks/python/courses/python-beginner/modules/lists-and-collections/lessons/tuples-sets.vi.mdx";
+import TwoPointersWindows from "@/content/tracks/java/courses/java-intermediate/modules/java-algorithms-inter/lessons/two-pointers-windows.mdx";
+import TwoPointersWindowsVi from "@/content/tracks/java/courses/java-intermediate/modules/java-algorithms-inter/lessons/two-pointers-windows.vi.mdx";
+import TypeErasure from "@/content/tracks/java/courses/java-intermediate/modules/java-generics-deep/lessons/type-erasure.mdx";
+import TypeErasureVi from "@/content/tracks/java/courses/java-intermediate/modules/java-generics-deep/lessons/type-erasure.vi.mdx";
+import TypeSafeCheckpoint from "@/content/tracks/web-development/courses/web-development-intermediate/modules/typescript-essentials/lessons/type-safe-checkpoint.mdx";
+import TypeSafeCheckpointVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/typescript-essentials/lessons/type-safe-checkpoint.vi.mdx";
+import TypeTraitsIc from "@/content/tracks/cpp/courses/cpp-advanced/modules/compile-time/lessons/type-traits-ic.mdx";
+import TypeTraitsIcVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/compile-time/lessons/type-traits-ic.vi.mdx";
+import TypeddictParamspec from "@/content/tracks/python/courses/python-advanced/modules/advanced-typing/lessons/typeddict-paramspec.mdx";
+import TypeddictParamspecVi from "@/content/tracks/python/courses/python-advanced/modules/advanced-typing/lessons/typeddict-paramspec.vi.mdx";
+import TypedefAliases from "@/content/tracks/c/courses/c-beginner/modules/enums-typedef/lessons/typedef-aliases.mdx";
+import TypedefAliasesVi from "@/content/tracks/c/courses/c-beginner/modules/enums-typedef/lessons/typedef-aliases.vi.mdx";
+import TypesAndLimits from "@/content/tracks/c/courses/c-beginner/modules/variables-types/lessons/types-and-limits.mdx";
+import TypesAndLimitsVi from "@/content/tracks/c/courses/c-beginner/modules/variables-types/lessons/types-and-limits.vi.mdx";
+import TypingApisDom from "@/content/tracks/web-development/courses/web-development-intermediate/modules/typescript-essentials/lessons/typing-apis-dom.mdx";
+import TypingApisDomVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/typescript-essentials/lessons/typing-apis-dom.vi.mdx";
+import TypingEssentials from "@/content/tracks/python/courses/python-intermediate/modules/structure-and-typing/lessons/typing-essentials.mdx";
+import TypingEssentialsVi from "@/content/tracks/python/courses/python-intermediate/modules/structure-and-typing/lessons/typing-essentials.vi.mdx";
+import TypingPhilosophy from "@/content/tracks/python/courses/python-advanced/modules/advanced-typing/lessons/typing-philosophy.mdx";
+import TypingPhilosophyVi from "@/content/tracks/python/courses/python-advanced/modules/advanced-typing/lessons/typing-philosophy.vi.mdx";
+import TypingProtocols from "@/content/tracks/python/courses/python-intermediate/modules/structure-and-typing/lessons/typing-protocols.mdx";
+import TypingProtocolsVi from "@/content/tracks/python/courses/python-intermediate/modules/structure-and-typing/lessons/typing-protocols.vi.mdx";
+import UiSystemCheckpoint from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/ui-system-checkpoint.mdx";
+import UiSystemCheckpointVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/ui-system-checkpoint.vi.mdx";
+import UnionsNarrowing from "@/content/tracks/web-development/courses/web-development-intermediate/modules/typescript-essentials/lessons/unions-narrowing.mdx";
+import UnionsNarrowingVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/typescript-essentials/lessons/unions-narrowing.vi.mdx";
+import UniquePtr from "@/content/tracks/cpp/courses/cpp-intermediate/modules/smart-pointers-raii/lessons/unique-ptr.mdx";
+import UniquePtrVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/smart-pointers-raii/lessons/unique-ptr.vi.mdx";
+import UnitTestingFoundations from "@/content/tracks/web-development/courses/web-development-intermediate/modules/testing-debugging/lessons/unit-testing-foundations.mdx";
+import UnitTestingFoundationsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/testing-debugging/lessons/unit-testing-foundations.vi.mdx";
 import UnitsColorsValues from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/units-colors-values.mdx";
+import UnitsColorsValuesVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/units-colors-values.vi.mdx";
+import UnittestFirst from "@/content/tracks/python/courses/python-intermediate/modules/testing-discipline/lessons/unittest-first.mdx";
+import UnittestFirstVi from "@/content/tracks/python/courses/python-intermediate/modules/testing-discipline/lessons/unittest-first.vi.mdx";
+import UnknownNever from "@/content/tracks/web-development/courses/web-development-intermediate/modules/typescript-essentials/lessons/unknown-never.mdx";
+import UnknownNeverVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/typescript-essentials/lessons/unknown-never.vi.mdx";
+import UrlHistoryApi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/url-history-api.mdx";
+import UrlHistoryApiVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/url-history-api.vi.mdx";
+import ValidationAndErrors from "@/content/tracks/python/courses/python-advanced/modules/production-apis/lessons/validation-and-errors.mdx";
+import ValidationAndErrorsVi from "@/content/tracks/python/courses/python-advanced/modules/production-apis/lessons/validation-and-errors.vi.mdx";
+import ValidationErrors from "@/content/tracks/web-development/courses/web-development-intermediate/modules/backend-fundamentals/lessons/validation-errors.mdx";
+import ValidationErrorsVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/backend-fundamentals/lessons/validation-errors.vi.mdx";
+import ValidationPatterns from "@/content/tracks/python/courses/python-beginner/modules/making-decisions/lessons/validation-patterns.mdx";
+import ValidationPatternsVi from "@/content/tracks/python/courses/python-beginner/modules/making-decisions/lessons/validation-patterns.vi.mdx";
+import ValueCategories from "@/content/tracks/cpp/courses/cpp-advanced/modules/object-model/lessons/value-categories.mdx";
+import ValueCategoriesVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/object-model/lessons/value-categories.vi.mdx";
+import VariablesAndAssignment from "@/content/tracks/c/courses/c-beginner/modules/variables-types/lessons/variables-and-assignment.mdx";
+import VariablesAndAssignmentVi from "@/content/tracks/c/courses/c-beginner/modules/variables-types/lessons/variables-and-assignment.vi.mdx";
+import VariablesAndInitialization from "@/content/tracks/cpp/courses/cpp-beginner/modules/variables-and-types/lessons/variables-and-initialization.mdx";
+import VariablesAndInitializationVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/variables-and-types/lessons/variables-and-initialization.vi.mdx";
+import VariablesAssignment from "@/content/tracks/python/courses/python-beginner/modules/variables-and-data-types/lessons/variables-assignment.mdx";
+import VariablesAssignmentVi from "@/content/tracks/python/courses/python-beginner/modules/variables-and-data-types/lessons/variables-assignment.vi.mdx";
+import VariadicsFolds from "@/content/tracks/cpp/courses/cpp-advanced/modules/templates-deep/lessons/variadics-folds.mdx";
+import VariadicsFoldsVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/templates-deep/lessons/variadics-folds.vi.mdx";
+import VectorAndArray from "@/content/tracks/cpp/courses/cpp-beginner/modules/collections/lessons/vector-and-array.mdx";
+import VectorAndArrayVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/collections/lessons/vector-and-array.vi.mdx";
+import Venv from "@/content/tracks/python/courses/python-beginner/modules/environments-and-packages/lessons/venv.mdx";
+import VenvLockfiles from "@/content/tracks/python/courses/python-intermediate/modules/packaging/lessons/venv-lockfiles.mdx";
+import VenvLockfilesVi from "@/content/tracks/python/courses/python-intermediate/modules/packaging/lessons/venv-lockfiles.vi.mdx";
+import VenvVi from "@/content/tracks/python/courses/python-beginner/modules/environments-and-packages/lessons/venv.vi.mdx";
+import ViewDangling from "@/content/tracks/cpp/courses/cpp-advanced/modules/ranges-views/lessons/view-dangling.mdx";
+import ViewDanglingVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/ranges-views/lessons/view-dangling.vi.mdx";
+import ViewsPipelines from "@/content/tracks/cpp/courses/cpp-advanced/modules/ranges-views/lessons/views-pipelines.mdx";
+import ViewsPipelinesVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/ranges-views/lessons/views-pipelines.vi.mdx";
+import VirtualDestructors from "@/content/tracks/cpp/courses/cpp-intermediate/modules/inheritance-polymorphism/lessons/virtual-destructors.mdx";
+import VirtualDestructorsVi from "@/content/tracks/cpp/courses/cpp-intermediate/modules/inheritance-polymorphism/lessons/virtual-destructors.vi.mdx";
 import WhatCssIs from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/what-css-is.mdx";
+import WhatCssIsVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/css-foundations/lessons/what-css-is.vi.mdx";
+import WhatIsC from "@/content/tracks/c/courses/c-beginner/modules/cb-first-programs/lessons/what-is-c.mdx";
+import WhatIsCVi from "@/content/tracks/c/courses/c-beginner/modules/cb-first-programs/lessons/what-is-c.vi.mdx";
+import WhatIsCpp from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-first-programs/lessons/what-is-cpp.mdx";
+import WhatIsCppVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-first-programs/lessons/what-is-cpp.vi.mdx";
+import WhatIsJava from "@/content/tracks/java/courses/java-beginner/modules/java-first-programs/lessons/what-is-java.mdx";
+import WhatIsJavaVi from "@/content/tracks/java/courses/java-beginner/modules/java-first-programs/lessons/what-is-java.vi.mdx";
 import WhatJavascriptDoes from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/what-javascript-does.mdx";
+import WhatJavascriptDoesVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/javascript-foundations/lessons/what-javascript-does.vi.mdx";
+import WhatPythonIs from "@/content/tracks/python/courses/python-beginner/modules/python-and-your-first-programs/lessons/what-python-is.mdx";
+import WhatPythonIsVi from "@/content/tracks/python/courses/python-beginner/modules/python-and-your-first-programs/lessons/what-python-is.vi.mdx";
+import WhileAndValidation from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-loops/lessons/while-and-validation.mdx";
+import WhileAndValidationVi from "@/content/tracks/cpp/courses/cpp-beginner/modules/cpp-loops/lessons/while-and-validation.vi.mdx";
+import WhileDoAndJumps from "@/content/tracks/java/courses/java-beginner/modules/java-loops/lessons/while-do-and-jumps.mdx";
+import WhileDoAndJumpsVi from "@/content/tracks/java/courses/java-beginner/modules/java-loops/lessons/while-do-and-jumps.vi.mdx";
+import WhyDependencies from "@/content/tracks/python/courses/python-beginner/modules/environments-and-packages/lessons/why-dependencies.mdx";
+import WhyDependenciesVi from "@/content/tracks/python/courses/python-beginner/modules/environments-and-packages/lessons/why-dependencies.vi.mdx";
+import WhyDistributedFails from "@/content/tracks/python/courses/python-advanced/modules/distributed-systems/lessons/why-distributed-fails.mdx";
+import WhyDistributedFailsVi from "@/content/tracks/python/courses/python-advanced/modules/distributed-systems/lessons/why-distributed-fails.vi.mdx";
+import WhyTesting from "@/content/tracks/web-development/courses/web-development-intermediate/modules/testing-debugging/lessons/why-testing.mdx";
+import WhyTestingAssertions from "@/content/tracks/python/courses/python-beginner/modules/testing-and-code-quality/lessons/why-testing-assertions.mdx";
+import WhyTestingAssertionsVi from "@/content/tracks/python/courses/python-beginner/modules/testing-and-code-quality/lessons/why-testing-assertions.vi.mdx";
+import WhyTestingVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/testing-debugging/lessons/why-testing.vi.mdx";
+import WhyTests from "@/content/tracks/java/courses/java-beginner/modules/java-testing-debug/lessons/why-tests.mdx";
+import WhyTestsVi from "@/content/tracks/java/courses/java-beginner/modules/java-testing-debug/lessons/why-tests.vi.mdx";
+import WhyTypes from "@/content/tracks/web-development/courses/web-development-intermediate/modules/typescript-essentials/lessons/why-types.mdx";
+import WhyTypesVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/typescript-essentials/lessons/why-types.vi.mdx";
+import WildcardsPecs from "@/content/tracks/java/courses/java-intermediate/modules/java-generics-deep/lessons/wildcards-pecs.mdx";
+import WildcardsPecsVi from "@/content/tracks/java/courses/java-intermediate/modules/java-generics-deep/lessons/wildcards-pecs.vi.mdx";
+import WiringRefactoring from "@/content/tracks/java/courses/java-intermediate/modules/java-architecture/lessons/wiring-refactoring.mdx";
+import WiringRefactoringVi from "@/content/tracks/java/courses/java-intermediate/modules/java-architecture/lessons/wiring-refactoring.vi.mdx";
+import WritingFilesWith from "@/content/tracks/python/courses/python-beginner/modules/files-paths-and-data/lessons/writing-files-with.mdx";
+import WritingFilesWithVi from "@/content/tracks/python/courses/python-beginner/modules/files-paths-and-data/lessons/writing-files-with.vi.mdx";
+import XssAndEncoding from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-security/lessons/xss-and-encoding.mdx";
+import XssAndEncodingVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/web-security/lessons/xss-and-encoding.vi.mdx";
 import YourFirstHtmlPage from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/your-first-html-page.mdx";
+import YourFirstHtmlPageVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/your-first-html-page.vi.mdx";
 
 export const mdxMap: Record<string, MdxComponent> = {
+  ["ca-abi-layout/ca-calling-conventions.mdx"]: CaCallingConventions,
+  ["ca-abi-layout/ca-calling-conventions.vi.mdx"]: CaCallingConventionsVi,
+  ["ca-abi-layout/ca-struct-layout-abi.mdx"]: CaStructLayoutAbi,
+  ["ca-abi-layout/ca-struct-layout-abi.vi.mdx"]: CaStructLayoutAbiVi,
+  ["ca-abi-layout/ca-checkpoint-m12.mdx"]: CaCheckpointM12,
+  ["ca-abi-layout/ca-checkpoint-m12.vi.mdx"]: CaCheckpointM12Vi,
+  ["ca-abstract-machine/ca-abstract-machine-model.mdx"]: CaAbstractMachineModel,
+  ["ca-abstract-machine/ca-abstract-machine-model.vi.mdx"]: CaAbstractMachineModelVi,
+  ["ca-abstract-machine/ca-sequencing-side-effects.mdx"]: CaSequencingSideEffects,
+  ["ca-abstract-machine/ca-sequencing-side-effects.vi.mdx"]: CaSequencingSideEffectsVi,
+  ["ca-abstract-machine/ca-lvalues-value-objects.mdx"]: CaLvaluesValueObjects,
+  ["ca-abstract-machine/ca-lvalues-value-objects.vi.mdx"]: CaLvaluesValueObjectsVi,
+  ["ca-abstract-machine/ca-checkpoint-m2.mdx"]: CaCheckpointM2,
+  ["ca-abstract-machine/ca-checkpoint-m2.vi.mdx"]: CaCheckpointM2Vi,
+  ["ca-advanced-data-structures/ca-hash-tables.mdx"]: CaHashTables,
+  ["ca-advanced-data-structures/ca-hash-tables.vi.mdx"]: CaHashTablesVi,
+  ["ca-advanced-data-structures/ca-heaps-priority.mdx"]: CaHeapsPriority,
+  ["ca-advanced-data-structures/ca-heaps-priority.vi.mdx"]: CaHeapsPriorityVi,
+  ["ca-advanced-data-structures/ca-union-find-graphs.mdx"]: CaUnionFindGraphs,
+  ["ca-advanced-data-structures/ca-union-find-graphs.vi.mdx"]: CaUnionFindGraphsVi,
+  ["ca-advanced-data-structures/ca-checkpoint-m7.mdx"]: CaCheckpointM7,
+  ["ca-advanced-data-structures/ca-checkpoint-m7.vi.mdx"]: CaCheckpointM7Vi,
+  ["ca-advanced-pointers/ca-pointer-arithmetic-rules.mdx"]: CaPointerArithmeticRules,
+  ["ca-advanced-pointers/ca-pointer-arithmetic-rules.vi.mdx"]: CaPointerArithmeticRulesVi,
+  ["ca-advanced-pointers/ca-aliasing-const-restrict.mdx"]: CaAliasingConstRestrict,
+  ["ca-advanced-pointers/ca-aliasing-const-restrict.vi.mdx"]: CaAliasingConstRestrictVi,
+  ["ca-advanced-pointers/ca-fnptr-interfaces.mdx"]: CaFnptrInterfaces,
+  ["ca-advanced-pointers/ca-fnptr-interfaces.vi.mdx"]: CaFnptrInterfacesVi,
+  ["ca-advanced-pointers/ca-checkpoint-m3.mdx"]: CaCheckpointM3,
+  ["ca-advanced-pointers/ca-checkpoint-m3.vi.mdx"]: CaCheckpointM3Vi,
+  ["ca-build-engineering/ca-make-discipline.mdx"]: CaMakeDiscipline,
+  ["ca-build-engineering/ca-make-discipline.vi.mdx"]: CaMakeDisciplineVi,
+  ["ca-build-engineering/ca-flags-hardening.mdx"]: CaFlagsHardening,
+  ["ca-build-engineering/ca-flags-hardening.vi.mdx"]: CaFlagsHardeningVi,
+  ["ca-build-engineering/ca-checkpoint-m14.mdx"]: CaCheckpointM14,
+  ["ca-build-engineering/ca-checkpoint-m14.vi.mdx"]: CaCheckpointM14Vi,
+  ["ca-compilation-pipeline/ca-four-stages.mdx"]: CaFourStages,
+  ["ca-compilation-pipeline/ca-four-stages.vi.mdx"]: CaFourStagesVi,
+  ["ca-compilation-pipeline/ca-object-files-symbols.mdx"]: CaObjectFilesSymbols,
+  ["ca-compilation-pipeline/ca-object-files-symbols.vi.mdx"]: CaObjectFilesSymbolsVi,
+  ["ca-compilation-pipeline/ca-checkpoint-m10.mdx"]: CaCheckpointM10,
+  ["ca-compilation-pipeline/ca-checkpoint-m10.vi.mdx"]: CaCheckpointM10Vi,
+  ["ca-concurrency-deep/ca-locks-and-cost.mdx"]: CaLocksAndCost,
+  ["ca-concurrency-deep/ca-locks-and-cost.vi.mdx"]: CaLocksAndCostVi,
+  ["ca-concurrency-deep/ca-deadlock-clinic.mdx"]: CaDeadlockClinic,
+  ["ca-concurrency-deep/ca-deadlock-clinic.vi.mdx"]: CaDeadlockClinicVi,
+  ["ca-concurrency-deep/ca-checkpoint-m18.mdx"]: CaCheckpointM18,
+  ["ca-concurrency-deep/ca-checkpoint-m18.vi.mdx"]: CaCheckpointM18Vi,
+  ["ca-debugging-forensics/ca-invariant-method.mdx"]: CaInvariantMethod,
+  ["ca-debugging-forensics/ca-invariant-method.vi.mdx"]: CaInvariantMethodVi,
+  ["ca-debugging-forensics/ca-repro-discipline.mdx"]: CaReproDiscipline,
+  ["ca-debugging-forensics/ca-repro-discipline.vi.mdx"]: CaReproDisciplineVi,
+  ["ca-debugging-forensics/ca-checkpoint-m15.mdx"]: CaCheckpointM15,
+  ["ca-debugging-forensics/ca-checkpoint-m15.vi.mdx"]: CaCheckpointM15Vi,
+  ["ca-elf-linking/ca-elf-sections.mdx"]: CaElfSections,
+  ["ca-elf-linking/ca-elf-sections.vi.mdx"]: CaElfSectionsVi,
+  ["ca-elf-linking/ca-linker-at-work.mdx"]: CaLinkerAtWork,
+  ["ca-elf-linking/ca-linker-at-work.vi.mdx"]: CaLinkerAtWorkVi,
+  ["ca-elf-linking/ca-checkpoint-m11.mdx"]: CaCheckpointM11,
+  ["ca-elf-linking/ca-checkpoint-m11.vi.mdx"]: CaCheckpointM11Vi,
+  ["ca-generic-programming/ca-voidstar-interfaces.mdx"]: CaVoidstarInterfaces,
+  ["ca-generic-programming/ca-voidstar-interfaces.vi.mdx"]: CaVoidstarInterfacesVi,
+  ["ca-generic-programming/ca-generic-techniques.mdx"]: CaGenericTechniques,
+  ["ca-generic-programming/ca-generic-techniques.vi.mdx"]: CaGenericTechniquesVi,
+  ["ca-generic-programming/ca-checkpoint-m8.mdx"]: CaCheckpointM8,
+  ["ca-generic-programming/ca-checkpoint-m8.vi.mdx"]: CaCheckpointM8Vi,
+  ["ca-memory-allocators/ca-allocator-anatomy.mdx"]: CaAllocatorAnatomy,
+  ["ca-memory-allocators/ca-allocator-anatomy.vi.mdx"]: CaAllocatorAnatomyVi,
+  ["ca-memory-allocators/ca-arena-pool-patterns.mdx"]: CaArenaPoolPatterns,
+  ["ca-memory-allocators/ca-arena-pool-patterns.vi.mdx"]: CaArenaPoolPatternsVi,
+  ["ca-memory-allocators/ca-checkpoint-m5.mdx"]: CaCheckpointM5,
+  ["ca-memory-allocators/ca-checkpoint-m5.vi.mdx"]: CaCheckpointM5Vi,
+  ["ca-memory-model/ca-atomics-orderings.mdx"]: CaAtomicsOrderings,
+  ["ca-memory-model/ca-atomics-orderings.vi.mdx"]: CaAtomicsOrderingsVi,
+  ["ca-memory-model/ca-cas-aba-false-sharing.mdx"]: CaCasAbaFalseSharing,
+  ["ca-memory-model/ca-cas-aba-false-sharing.vi.mdx"]: CaCasAbaFalseSharingVi,
+  ["ca-memory-model/ca-checkpoint-m19.mdx"]: CaCheckpointM19,
+  ["ca-memory-model/ca-checkpoint-m19.vi.mdx"]: CaCheckpointM19Vi,
+  ["ca-memory-ownership/ca-ownership-contracts.mdx"]: CaOwnershipContracts,
+  ["ca-memory-ownership/ca-ownership-contracts.vi.mdx"]: CaOwnershipContractsVi,
+  ["ca-memory-ownership/ca-error-cleanup.mdx"]: CaErrorCleanup,
+  ["ca-memory-ownership/ca-error-cleanup.vi.mdx"]: CaErrorCleanupVi,
+  ["ca-memory-ownership/ca-checkpoint-m6.mdx"]: CaCheckpointM6,
+  ["ca-memory-ownership/ca-checkpoint-m6.vi.mdx"]: CaCheckpointM6Vi,
+  ["ca-object-model/ca-objects-and-representation.mdx"]: CaObjectsAndRepresentation,
+  ["ca-object-model/ca-objects-and-representation.vi.mdx"]: CaObjectsAndRepresentationVi,
+  ["ca-object-model/ca-alignment-padding-layout.mdx"]: CaAlignmentPaddingLayout,
+  ["ca-object-model/ca-alignment-padding-layout.vi.mdx"]: CaAlignmentPaddingLayoutVi,
+  ["ca-object-model/ca-implementation-defined-vs-ub.mdx"]: CaImplementationDefinedVsUb,
+  ["ca-object-model/ca-implementation-defined-vs-ub.vi.mdx"]: CaImplementationDefinedVsUbVi,
+  ["ca-object-model/ca-checkpoint-m1.mdx"]: CaCheckpointM1,
+  ["ca-object-model/ca-checkpoint-m1.vi.mdx"]: CaCheckpointM1Vi,
+  ["ca-performance-io/ca-buffered-vs-raw.mdx"]: CaBufferedVsRaw,
+  ["ca-performance-io/ca-buffered-vs-raw.vi.mdx"]: CaBufferedVsRawVi,
+  ["ca-performance-io/ca-mmap-and-measure.mdx"]: CaMmapAndMeasure,
+  ["ca-performance-io/ca-mmap-and-measure.vi.mdx"]: CaMmapAndMeasureVi,
+  ["ca-performance-io/ca-checkpoint-m21.mdx"]: CaCheckpointM21,
+  ["ca-performance-io/ca-checkpoint-m21.vi.mdx"]: CaCheckpointM21Vi,
+  ["ca-performance-tuning/ca-layout-and-cache.mdx"]: CaLayoutAndCache,
+  ["ca-performance-tuning/ca-layout-and-cache.vi.mdx"]: CaLayoutAndCacheVi,
+  ["ca-performance-tuning/ca-measure-first.mdx"]: CaMeasureFirst,
+  ["ca-performance-tuning/ca-measure-first.vi.mdx"]: CaMeasureFirstVi,
+  ["ca-performance-tuning/ca-checkpoint-m22.mdx"]: CaCheckpointM22,
+  ["ca-performance-tuning/ca-checkpoint-m22.vi.mdx"]: CaCheckpointM22Vi,
+  ["ca-portability-capstone/ca-implementation-defined.mdx"]: CaImplementationDefined,
+  ["ca-portability-capstone/ca-implementation-defined.vi.mdx"]: CaImplementationDefinedVi,
+  ["ca-portability-capstone/ca-capstone-design.mdx"]: CaCapstoneDesign,
+  ["ca-portability-capstone/ca-capstone-design.vi.mdx"]: CaCapstoneDesignVi,
+  ["ca-portability-capstone/ca-checkpoint-m24.mdx"]: CaCheckpointM24,
+  ["ca-portability-capstone/ca-checkpoint-m24.vi.mdx"]: CaCheckpointM24Vi,
+  ["ca-posix-processes/ca-process-basics.mdx"]: CaProcessBasics,
+  ["ca-posix-processes/ca-process-basics.vi.mdx"]: CaProcessBasicsVi,
+  ["ca-posix-processes/ca-pipes-signals.mdx"]: CaPipesSignals,
+  ["ca-posix-processes/ca-pipes-signals.vi.mdx"]: CaPipesSignalsVi,
+  ["ca-posix-processes/ca-checkpoint-m17.mdx"]: CaCheckpointM17,
+  ["ca-posix-processes/ca-checkpoint-m17.vi.mdx"]: CaCheckpointM17Vi,
+  ["ca-preprocessor-compile-time/ca-macro-machinery.mdx"]: CaMacroMachinery,
+  ["ca-preprocessor-compile-time/ca-macro-machinery.vi.mdx"]: CaMacroMachineryVi,
+  ["ca-preprocessor-compile-time/ca-variadic-assertions.mdx"]: CaVariadicAssertions,
+  ["ca-preprocessor-compile-time/ca-variadic-assertions.vi.mdx"]: CaVariadicAssertionsVi,
+  ["ca-preprocessor-compile-time/ca-checkpoint-m9.mdx"]: CaCheckpointM9,
+  ["ca-preprocessor-compile-time/ca-checkpoint-m9.vi.mdx"]: CaCheckpointM9Vi,
+  ["ca-reading-assembly/ca-compiler-output.mdx"]: CaCompilerOutput,
+  ["ca-reading-assembly/ca-compiler-output.vi.mdx"]: CaCompilerOutputVi,
+  ["ca-reading-assembly/ca-optimization-visible.mdx"]: CaOptimizationVisible,
+  ["ca-reading-assembly/ca-optimization-visible.vi.mdx"]: CaOptimizationVisibleVi,
+  ["ca-reading-assembly/ca-checkpoint-m13.mdx"]: CaCheckpointM13,
+  ["ca-reading-assembly/ca-checkpoint-m13.vi.mdx"]: CaCheckpointM13Vi,
+  ["ca-sanitizer-concepts/ca-sanitizer-mindset.mdx"]: CaSanitizerMindset,
+  ["ca-sanitizer-concepts/ca-sanitizer-mindset.vi.mdx"]: CaSanitizerMindsetVi,
+  ["ca-sanitizer-concepts/ca-detection-by-reasoning.mdx"]: CaDetectionByReasoning,
+  ["ca-sanitizer-concepts/ca-detection-by-reasoning.vi.mdx"]: CaDetectionByReasoningVi,
+  ["ca-sanitizer-concepts/ca-checkpoint-m16.mdx"]: CaCheckpointM16,
+  ["ca-sanitizer-concepts/ca-checkpoint-m16.vi.mdx"]: CaCheckpointM16Vi,
+  ["ca-security/ca-input-bounds.mdx"]: CaInputBounds,
+  ["ca-security/ca-input-bounds.vi.mdx"]: CaInputBoundsVi,
+  ["ca-security/ca-hardened-apis.mdx"]: CaHardenedApis,
+  ["ca-security/ca-hardened-apis.vi.mdx"]: CaHardenedApisVi,
+  ["ca-security/ca-checkpoint-m23.mdx"]: CaCheckpointM23,
+  ["ca-security/ca-checkpoint-m23.vi.mdx"]: CaCheckpointM23Vi,
+  ["ca-sockets/ca-tcp-echo.mdx"]: CaTcpEcho,
+  ["ca-sockets/ca-tcp-echo.vi.mdx"]: CaTcpEchoVi,
+  ["ca-sockets/ca-framing-timeouts.mdx"]: CaFramingTimeouts,
+  ["ca-sockets/ca-framing-timeouts.vi.mdx"]: CaFramingTimeoutsVi,
+  ["ca-sockets/ca-checkpoint-m20.mdx"]: CaCheckpointM20,
+  ["ca-sockets/ca-checkpoint-m20.vi.mdx"]: CaCheckpointM20Vi,
+  ["ca-ub-optimizer/ca-ub-taxonomy.mdx"]: CaUbTaxonomy,
+  ["ca-ub-optimizer/ca-ub-taxonomy.vi.mdx"]: CaUbTaxonomyVi,
+  ["ca-ub-optimizer/ca-optimizer-assumptions.mdx"]: CaOptimizerAssumptions,
+  ["ca-ub-optimizer/ca-optimizer-assumptions.vi.mdx"]: CaOptimizerAssumptionsVi,
+  ["ca-ub-optimizer/ca-ub-tooling.mdx"]: CaUbTooling,
+  ["ca-ub-optimizer/ca-ub-tooling.vi.mdx"]: CaUbToolingVi,
+  ["ca-ub-optimizer/ca-checkpoint-m4.mdx"]: CaCheckpointM4,
+  ["ca-ub-optimizer/ca-checkpoint-m4.vi.mdx"]: CaCheckpointM4Vi,
+  ["algorithms/cb-searching.mdx"]: CbSearching,
+  ["algorithms/cb-searching.vi.mdx"]: CbSearchingVi,
+  ["algorithms/sorting-basics.mdx"]: SortingBasics,
+  ["algorithms/sorting-basics.vi.mdx"]: SortingBasicsVi,
+  ["algorithms/recursion-intro.mdx"]: RecursionIntro,
+  ["algorithms/recursion-intro.vi.mdx"]: RecursionIntroVi,
+  ["algorithms/cb-checkpoint-m21.mdx"]: CbCheckpointM21,
+  ["algorithms/cb-checkpoint-m21.vi.mdx"]: CbCheckpointM21Vi,
+  ["arrays/array-basics.mdx"]: ArrayBasics,
+  ["arrays/array-basics.vi.mdx"]: ArrayBasicsVi,
+  ["arrays/arrays-loops.mdx"]: ArraysLoops,
+  ["arrays/arrays-loops.vi.mdx"]: ArraysLoopsVi,
+  ["arrays/2d-arrays.mdx"]: L2dArrays,
+  ["arrays/2d-arrays.vi.mdx"]: L2dArraysVi,
+  ["arrays/cb-checkpoint-m9.mdx"]: CbCheckpointM9,
+  ["arrays/cb-checkpoint-m9.vi.mdx"]: CbCheckpointM9Vi,
+  ["cb-debugging/reading-compiler-output.mdx"]: ReadingCompilerOutput,
+  ["cb-debugging/reading-compiler-output.vi.mdx"]: ReadingCompilerOutputVi,
+  ["cb-debugging/runtime-failures.mdx"]: RuntimeFailures,
+  ["cb-debugging/runtime-failures.vi.mdx"]: RuntimeFailuresVi,
+  ["cb-debugging/forensic-habits.mdx"]: ForensicHabits,
+  ["cb-debugging/forensic-habits.vi.mdx"]: ForensicHabitsVi,
+  ["cb-debugging/cb-checkpoint-m19.mdx"]: CbCheckpointM19,
+  ["cb-debugging/cb-checkpoint-m19.vi.mdx"]: CbCheckpointM19Vi,
+  ["cb-dynamic-memory/cb-stack-vs-heap.mdx"]: CbStackVsHeap,
+  ["cb-dynamic-memory/cb-stack-vs-heap.vi.mdx"]: CbStackVsHeapVi,
+  ["cb-dynamic-memory/malloc-free.mdx"]: MallocFree,
+  ["cb-dynamic-memory/malloc-free.vi.mdx"]: MallocFreeVi,
+  ["cb-dynamic-memory/calloc-realloc.mdx"]: CallocRealloc,
+  ["cb-dynamic-memory/calloc-realloc.vi.mdx"]: CallocReallocVi,
+  ["cb-dynamic-memory/ownership-errors.mdx"]: OwnershipErrors,
+  ["cb-dynamic-memory/ownership-errors.vi.mdx"]: OwnershipErrorsVi,
+  ["cb-dynamic-memory/cb-checkpoint-m13.mdx"]: CbCheckpointM13,
+  ["cb-dynamic-memory/cb-checkpoint-m13.vi.mdx"]: CbCheckpointM13Vi,
+  ["cb-first-programs/what-is-c.mdx"]: WhatIsC,
+  ["cb-first-programs/what-is-c.vi.mdx"]: WhatIsCVi,
+  ["cb-first-programs/anatomy-of-a-program.mdx"]: AnatomyOfAProgram,
+  ["cb-first-programs/anatomy-of-a-program.vi.mdx"]: AnatomyOfAProgramVi,
+  ["cb-first-programs/cb-checkpoint-m1.mdx"]: CbCheckpointM1,
+  ["cb-first-programs/cb-checkpoint-m1.vi.mdx"]: CbCheckpointM1Vi,
+  ["cb-functions/cb-defining-functions.mdx"]: CbDefiningFunctions,
+  ["cb-functions/cb-defining-functions.vi.mdx"]: CbDefiningFunctionsVi,
+  ["cb-functions/parameters-return.mdx"]: ParametersReturn,
+  ["cb-functions/parameters-return.vi.mdx"]: ParametersReturnVi,
+  ["cb-functions/prototypes-organization.mdx"]: PrototypesOrganization,
+  ["cb-functions/prototypes-organization.vi.mdx"]: PrototypesOrganizationVi,
+  ["cb-functions/cb-checkpoint-m7.mdx"]: CbCheckpointM7,
+  ["cb-functions/cb-checkpoint-m7.vi.mdx"]: CbCheckpointM7Vi,
+  ["cb-loops/for-while-do.mdx"]: ForWhileDo,
+  ["cb-loops/for-while-do.vi.mdx"]: ForWhileDoVi,
+  ["cb-loops/cb-nested-loops-patterns.mdx"]: CbNestedLoopsPatterns,
+  ["cb-loops/cb-nested-loops-patterns.vi.mdx"]: CbNestedLoopsPatternsVi,
+  ["cb-loops/break-continue-guard.mdx"]: BreakContinueGuard,
+  ["cb-loops/break-continue-guard.vi.mdx"]: BreakContinueGuardVi,
+  ["cb-loops/cb-checkpoint-m6.mdx"]: CbCheckpointM6,
+  ["cb-loops/cb-checkpoint-m6.vi.mdx"]: CbCheckpointM6Vi,
+  ["cb-strings/c-strings-basics.mdx"]: CStringsBasics,
+  ["cb-strings/c-strings-basics.vi.mdx"]: CStringsBasicsVi,
+  ["cb-strings/string-library.mdx"]: StringLibrary,
+  ["cb-strings/string-library.vi.mdx"]: StringLibraryVi,
+  ["cb-strings/string-functions.mdx"]: StringFunctions,
+  ["cb-strings/string-functions.vi.mdx"]: StringFunctionsVi,
+  ["cb-strings/cb-checkpoint-m10.mdx"]: CbCheckpointM10,
+  ["cb-strings/cb-checkpoint-m10.vi.mdx"]: CbCheckpointM10Vi,
+  ["conditionals/if-else-else-if.mdx"]: IfElseElseIf,
+  ["conditionals/if-else-else-if.vi.mdx"]: IfElseElseIfVi,
+  ["conditionals/switch-cases.mdx"]: SwitchCases,
+  ["conditionals/switch-cases.vi.mdx"]: SwitchCasesVi,
+  ["conditionals/cb-checkpoint-m5.mdx"]: CbCheckpointM5,
+  ["conditionals/cb-checkpoint-m5.vi.mdx"]: CbCheckpointM5Vi,
+  ["data-structures/dynamic-array.mdx"]: DynamicArray,
+  ["data-structures/dynamic-array.vi.mdx"]: DynamicArrayVi,
+  ["data-structures/linked-list.mdx"]: LinkedList,
+  ["data-structures/linked-list.vi.mdx"]: LinkedListVi,
+  ["data-structures/stack-queue.mdx"]: StackQueue,
+  ["data-structures/stack-queue.vi.mdx"]: StackQueueVi,
+  ["data-structures/cb-choosing-structures.mdx"]: CbChoosingStructures,
+  ["data-structures/cb-choosing-structures.vi.mdx"]: CbChoosingStructuresVi,
+  ["data-structures/cb-checkpoint-m20.mdx"]: CbCheckpointM20,
+  ["data-structures/cb-checkpoint-m20.vi.mdx"]: CbCheckpointM20Vi,
+  ["enums-typedef/enums-basics.mdx"]: EnumsBasics,
+  ["enums-typedef/enums-basics.vi.mdx"]: EnumsBasicsVi,
+  ["enums-typedef/typedef-aliases.mdx"]: TypedefAliases,
+  ["enums-typedef/typedef-aliases.vi.mdx"]: TypedefAliasesVi,
+  ["enums-typedef/modeling-state.mdx"]: ModelingState,
+  ["enums-typedef/modeling-state.vi.mdx"]: ModelingStateVi,
+  ["enums-typedef/cb-checkpoint-m15.mdx"]: CbCheckpointM15,
+  ["enums-typedef/cb-checkpoint-m15.vi.mdx"]: CbCheckpointM15Vi,
+  ["file-io/files-and-streams.mdx"]: FilesAndStreams,
+  ["file-io/files-and-streams.vi.mdx"]: FilesAndStreamsVi,
+  ["file-io/read-write-files.mdx"]: ReadWriteFiles,
+  ["file-io/read-write-files.vi.mdx"]: ReadWriteFilesVi,
+  ["file-io/cb-checkpoint-m16.mdx"]: CbCheckpointM16,
+  ["file-io/cb-checkpoint-m16.vi.mdx"]: CbCheckpointM16Vi,
+  ["io-formatting/format-specifiers.mdx"]: FormatSpecifiers,
+  ["io-formatting/format-specifiers.vi.mdx"]: FormatSpecifiersVi,
+  ["io-formatting/parsing-input.mdx"]: ParsingInput,
+  ["io-formatting/parsing-input.vi.mdx"]: ParsingInputVi,
+  ["io-formatting/cb-checkpoint-m3.mdx"]: CbCheckpointM3,
+  ["io-formatting/cb-checkpoint-m3.vi.mdx"]: CbCheckpointM3Vi,
+  ["multi-file/api-boundaries.mdx"]: ApiBoundaries,
+  ["multi-file/api-boundaries.vi.mdx"]: ApiBoundariesVi,
+  ["multi-file/static-privacy.mdx"]: StaticPrivacy,
+  ["multi-file/static-privacy.vi.mdx"]: StaticPrivacyVi,
+  ["multi-file/cb-checkpoint-m18.mdx"]: CbCheckpointM18,
+  ["multi-file/cb-checkpoint-m18.vi.mdx"]: CbCheckpointM18Vi,
+  ["operators-expressions/arithmetic-and-division.mdx"]: ArithmeticAndDivision,
+  ["operators-expressions/arithmetic-and-division.vi.mdx"]: ArithmeticAndDivisionVi,
+  ["operators-expressions/logic-and-precedence.mdx"]: LogicAndPrecedence,
+  ["operators-expressions/logic-and-precedence.vi.mdx"]: LogicAndPrecedenceVi,
+  ["operators-expressions/conversions-casts.mdx"]: ConversionsCasts,
+  ["operators-expressions/conversions-casts.vi.mdx"]: ConversionsCastsVi,
+  ["operators-expressions/cb-checkpoint-m4.mdx"]: CbCheckpointM4,
+  ["operators-expressions/cb-checkpoint-m4.vi.mdx"]: CbCheckpointM4Vi,
+  ["pointer-fundamentals/addresses-and-pointers.mdx"]: AddressesAndPointers,
+  ["pointer-fundamentals/addresses-and-pointers.vi.mdx"]: AddressesAndPointersVi,
+  ["pointer-fundamentals/dereferencing.mdx"]: Dereferencing,
+  ["pointer-fundamentals/dereferencing.vi.mdx"]: DereferencingVi,
+  ["pointer-fundamentals/pointer-parameters.mdx"]: PointerParameters,
+  ["pointer-fundamentals/pointer-parameters.vi.mdx"]: PointerParametersVi,
+  ["pointer-fundamentals/null-and-mistakes.mdx"]: NullAndMistakes,
+  ["pointer-fundamentals/null-and-mistakes.vi.mdx"]: NullAndMistakesVi,
+  ["pointer-fundamentals/cb-checkpoint-m11.mdx"]: CbCheckpointM11,
+  ["pointer-fundamentals/cb-checkpoint-m11.vi.mdx"]: CbCheckpointM11Vi,
+  ["pointers-arrays/arrays-decay.mdx"]: ArraysDecay,
+  ["pointers-arrays/arrays-decay.vi.mdx"]: ArraysDecayVi,
+  ["pointers-arrays/cb-pointer-arithmetic.mdx"]: CbPointerArithmetic,
+  ["pointers-arrays/cb-pointer-arithmetic.vi.mdx"]: CbPointerArithmeticVi,
+  ["pointers-arrays/cb-checkpoint-m12.mdx"]: CbCheckpointM12,
+  ["pointers-arrays/cb-checkpoint-m12.vi.mdx"]: CbCheckpointM12Vi,
+  ["preprocessor/macros-basics.mdx"]: MacrosBasics,
+  ["preprocessor/macros-basics.vi.mdx"]: MacrosBasicsVi,
+  ["preprocessor/conditional-compilation.mdx"]: ConditionalCompilation,
+  ["preprocessor/conditional-compilation.vi.mdx"]: ConditionalCompilationVi,
+  ["preprocessor/headers-why.mdx"]: HeadersWhy,
+  ["preprocessor/headers-why.vi.mdx"]: HeadersWhyVi,
+  ["preprocessor/cb-checkpoint-m17.mdx"]: CbCheckpointM17,
+  ["preprocessor/cb-checkpoint-m17.vi.mdx"]: CbCheckpointM17Vi,
+  ["project-engineering/build-workflow.mdx"]: BuildWorkflow,
+  ["project-engineering/build-workflow.vi.mdx"]: BuildWorkflowVi,
+  ["project-engineering/project-layout.mdx"]: ProjectLayout,
+  ["project-engineering/project-layout.vi.mdx"]: ProjectLayoutVi,
+  ["project-engineering/cb-capstone-brief.mdx"]: CbCapstoneBrief,
+  ["project-engineering/cb-capstone-brief.vi.mdx"]: CbCapstoneBriefVi,
+  ["project-engineering/cb-checkpoint-m22.mdx"]: CbCheckpointM22,
+  ["project-engineering/cb-checkpoint-m22.vi.mdx"]: CbCheckpointM22Vi,
+  ["scope-lifetime/scopes-blocks.mdx"]: ScopesBlocks,
+  ["scope-lifetime/scopes-blocks.vi.mdx"]: ScopesBlocksVi,
+  ["scope-lifetime/storage-duration.mdx"]: StorageDuration,
+  ["scope-lifetime/storage-duration.vi.mdx"]: StorageDurationVi,
+  ["scope-lifetime/cb-checkpoint-m8.mdx"]: CbCheckpointM8,
+  ["scope-lifetime/cb-checkpoint-m8.vi.mdx"]: CbCheckpointM8Vi,
+  ["structs/struct-basics.mdx"]: StructBasics,
+  ["structs/struct-basics.vi.mdx"]: StructBasicsVi,
+  ["structs/structs-functions.mdx"]: StructsFunctions,
+  ["structs/structs-functions.vi.mdx"]: StructsFunctionsVi,
+  ["structs/struct-pointers.mdx"]: StructPointers,
+  ["structs/struct-pointers.vi.mdx"]: StructPointersVi,
+  ["structs/cb-checkpoint-m14.mdx"]: CbCheckpointM14,
+  ["structs/cb-checkpoint-m14.vi.mdx"]: CbCheckpointM14Vi,
+  ["variables-types/variables-and-assignment.mdx"]: VariablesAndAssignment,
+  ["variables-types/variables-and-assignment.vi.mdx"]: VariablesAndAssignmentVi,
+  ["variables-types/types-and-limits.mdx"]: TypesAndLimits,
+  ["variables-types/types-and-limits.vi.mdx"]: TypesAndLimitsVi,
+  ["variables-types/constants-sizeof.mdx"]: ConstantsSizeof,
+  ["variables-types/constants-sizeof.vi.mdx"]: ConstantsSizeofVi,
+  ["variables-types/cb-checkpoint-m2.mdx"]: CbCheckpointM2,
+  ["variables-types/cb-checkpoint-m2.vi.mdx"]: CbCheckpointM2Vi,
+  ["cint-capstone/cint-capstone-arch.mdx"]: CintCapstoneArch,
+  ["cint-capstone/cint-capstone-arch.vi.mdx"]: CintCapstoneArchVi,
+  ["cint-capstone/cint-capstone-format.mdx"]: CintCapstoneFormat,
+  ["cint-capstone/cint-capstone-format.vi.mdx"]: CintCapstoneFormatVi,
+  ["cint-capstone/cint-capstone-testing.mdx"]: CintCapstoneTesting,
+  ["cint-capstone/cint-capstone-testing.vi.mdx"]: CintCapstoneTestingVi,
+  ["cint-capstone/cint-checkpoint-m16.mdx"]: CintCheckpointM16,
+  ["cint-capstone/cint-checkpoint-m16.vi.mdx"]: CintCheckpointM16Vi,
+  ["cint-errors/cint-return-codes.mdx"]: CintReturnCodes,
+  ["cint-errors/cint-return-codes.vi.mdx"]: CintReturnCodesVi,
+  ["cint-errors/cint-cleanup-goto.mdx"]: CintCleanupGoto,
+  ["cint-errors/cint-cleanup-goto.vi.mdx"]: CintCleanupGotoVi,
+  ["cint-errors/cint-layered-errors.mdx"]: CintLayeredErrors,
+  ["cint-errors/cint-layered-errors.vi.mdx"]: CintLayeredErrorsVi,
+  ["cint-errors/cint-checkpoint-m13.mdx"]: CintCheckpointM13,
+  ["cint-errors/cint-checkpoint-m13.vi.mdx"]: CintCheckpointM13Vi,
+  ["cint-files/cint-bytes-on-disk.mdx"]: CintBytesOnDisk,
+  ["cint-files/cint-bytes-on-disk.vi.mdx"]: CintBytesOnDiskVi,
+  ["cint-files/cint-random-access.mdx"]: CintRandomAccess,
+  ["cint-files/cint-random-access.vi.mdx"]: CintRandomAccessVi,
+  ["cint-files/cint-robust-reader.mdx"]: CintRobustReader,
+  ["cint-files/cint-robust-reader.vi.mdx"]: CintRobustReaderVi,
+  ["cint-files/cint-checkpoint-m12.mdx"]: CintCheckpointM12,
+  ["cint-files/cint-checkpoint-m12.vi.mdx"]: CintCheckpointM12Vi,
+  ["cint-function-pointers/cint-fp-syntax.mdx"]: CintFpSyntax,
+  ["cint-function-pointers/cint-fp-syntax.vi.mdx"]: CintFpSyntaxVi,
+  ["cint-function-pointers/cint-comparators.mdx"]: CintComparators,
+  ["cint-function-pointers/cint-comparators.vi.mdx"]: CintComparatorsVi,
+  ["cint-function-pointers/cint-dispatch-tables.mdx"]: CintDispatchTables,
+  ["cint-function-pointers/cint-dispatch-tables.vi.mdx"]: CintDispatchTablesVi,
+  ["cint-function-pointers/cint-checkpoint-m4.mdx"]: CintCheckpointM4,
+  ["cint-function-pointers/cint-checkpoint-m4.vi.mdx"]: CintCheckpointM4Vi,
+  ["cint-generic/cint-void-bytes.mdx"]: CintVoidBytes,
+  ["cint-generic/cint-void-bytes.vi.mdx"]: CintVoidBytesVi,
+  ["cint-generic/cint-qsort-bsearch.mdx"]: CintQsortBsearch,
+  ["cint-generic/cint-qsort-bsearch.vi.mdx"]: CintQsortBsearchVi,
+  ["cint-generic/cint-generic-selection.mdx"]: CintGenericSelection,
+  ["cint-generic/cint-generic-selection.vi.mdx"]: CintGenericSelectionVi,
+  ["cint-generic/cint-checkpoint-m9.mdx"]: CintCheckpointM9,
+  ["cint-generic/cint-checkpoint-m9.vi.mdx"]: CintCheckpointM9Vi,
+  ["cint-hash/cint-hash-basics.mdx"]: CintHashBasics,
+  ["cint-hash/cint-hash-basics.vi.mdx"]: CintHashBasicsVi,
+  ["cint-hash/cint-collisions.mdx"]: CintCollisions,
+  ["cint-hash/cint-collisions.vi.mdx"]: CintCollisionsVi,
+  ["cint-hash/cint-generic-values.mdx"]: CintGenericValues,
+  ["cint-hash/cint-generic-values.vi.mdx"]: CintGenericValuesVi,
+  ["cint-hash/cint-checkpoint-m8.mdx"]: CintCheckpointM8,
+  ["cint-hash/cint-checkpoint-m8.vi.mdx"]: CintCheckpointM8Vi,
+  ["cint-linked/cint-singly-lists.mdx"]: CintSinglyLists,
+  ["cint-linked/cint-singly-lists.vi.mdx"]: CintSinglyListsVi,
+  ["cint-linked/cint-doubly-lists.mdx"]: CintDoublyLists,
+  ["cint-linked/cint-doubly-lists.vi.mdx"]: CintDoublyListsVi,
+  ["cint-linked/cint-stacks-queues.mdx"]: CintStacksQueues,
+  ["cint-linked/cint-stacks-queues.vi.mdx"]: CintStacksQueuesVi,
+  ["cint-linked/cint-checkpoint-m7.mdx"]: CintCheckpointM7,
+  ["cint-linked/cint-checkpoint-m7.vi.mdx"]: CintCheckpointM7Vi,
+  ["cint-ownership/cint-ownership-contracts.mdx"]: CintOwnershipContracts,
+  ["cint-ownership/cint-ownership-contracts.vi.mdx"]: CintOwnershipContractsVi,
+  ["cint-ownership/cint-realloc-growth.mdx"]: CintReallocGrowth,
+  ["cint-ownership/cint-realloc-growth.vi.mdx"]: CintReallocGrowthVi,
+  ["cint-ownership/cint-lifetime-violations.mdx"]: CintLifetimeViolations,
+  ["cint-ownership/cint-lifetime-violations.vi.mdx"]: CintLifetimeViolationsVi,
+  ["cint-ownership/cint-checkpoint-m3.mdx"]: CintCheckpointM3,
+  ["cint-ownership/cint-checkpoint-m3.vi.mdx"]: CintCheckpointM3Vi,
+  ["cint-pointers/cint-pointer-arithmetic.mdx"]: CintPointerArithmetic,
+  ["cint-pointers/cint-pointer-arithmetic.vi.mdx"]: CintPointerArithmeticVi,
+  ["cint-pointers/cint-const-correctness.mdx"]: CintConstCorrectness,
+  ["cint-pointers/cint-const-correctness.vi.mdx"]: CintConstCorrectnessVi,
+  ["cint-pointers/cint-pointer-arrays.mdx"]: CintPointerArrays,
+  ["cint-pointers/cint-pointer-arrays.vi.mdx"]: CintPointerArraysVi,
+  ["cint-pointers/cint-checkpoint-m2.mdx"]: CintCheckpointM2,
+  ["cint-pointers/cint-checkpoint-m2.vi.mdx"]: CintCheckpointM2Vi,
+  ["cint-preproc/cint-macro-basics.mdx"]: CintMacroBasics,
+  ["cint-preproc/cint-macro-basics.vi.mdx"]: CintMacroBasicsVi,
+  ["cint-preproc/cint-macro-hazards.mdx"]: CintMacroHazards,
+  ["cint-preproc/cint-macro-hazards.vi.mdx"]: CintMacroHazardsVi,
+  ["cint-preproc/cint-static-assert-xmacro.mdx"]: CintStaticAssertXmacro,
+  ["cint-preproc/cint-static-assert-xmacro.vi.mdx"]: CintStaticAssertXmacroVi,
+  ["cint-preproc/cint-checkpoint-m10.mdx"]: CintCheckpointM10,
+  ["cint-preproc/cint-checkpoint-m10.vi.mdx"]: CintCheckpointM10Vi,
+  ["cint-strings/cint-buffers-boundaries.mdx"]: CintBuffersBoundaries,
+  ["cint-strings/cint-buffers-boundaries.vi.mdx"]: CintBuffersBoundariesVi,
+  ["cint-strings/cint-safe-copying.mdx"]: CintSafeCopying,
+  ["cint-strings/cint-safe-copying.vi.mdx"]: CintSafeCopyingVi,
+  ["cint-strings/cint-tokenize-parse.mdx"]: CintTokenizeParse,
+  ["cint-strings/cint-tokenize-parse.vi.mdx"]: CintTokenizeParseVi,
+  ["cint-strings/cint-checkpoint-m6.mdx"]: CintCheckpointM6,
+  ["cint-strings/cint-checkpoint-m6.vi.mdx"]: CintCheckpointM6Vi,
+  ["cint-structs/cint-layout-sizeof.mdx"]: CintLayoutSizeof,
+  ["cint-structs/cint-layout-sizeof.vi.mdx"]: CintLayoutSizeofVi,
+  ["cint-structs/cint-self-referential.mdx"]: CintSelfReferential,
+  ["cint-structs/cint-self-referential.vi.mdx"]: CintSelfReferentialVi,
+  ["cint-structs/cint-opaque-handles.mdx"]: CintOpaqueHandles,
+  ["cint-structs/cint-opaque-handles.vi.mdx"]: CintOpaqueHandlesVi,
+  ["cint-structs/cint-checkpoint-m5.mdx"]: CintCheckpointM5,
+  ["cint-structs/cint-checkpoint-m5.vi.mdx"]: CintCheckpointM5Vi,
+  ["cint-threads/cint-threads-basics.mdx"]: CintThreadsBasics,
+  ["cint-threads/cint-threads-basics.vi.mdx"]: CintThreadsBasicsVi,
+  ["cint-threads/cint-mutexes.mdx"]: CintMutexes,
+  ["cint-threads/cint-mutexes.vi.mdx"]: CintMutexesVi,
+  ["cint-threads/cint-condition-vars.mdx"]: CintConditionVars,
+  ["cint-threads/cint-condition-vars.vi.mdx"]: CintConditionVarsVi,
+  ["cint-threads/cint-checkpoint-m15.mdx"]: CintCheckpointM15,
+  ["cint-threads/cint-checkpoint-m15.vi.mdx"]: CintCheckpointM15Vi,
+  ["cint-translation-units/cint-linkage-model.mdx"]: CintLinkageModel,
+  ["cint-translation-units/cint-linkage-model.vi.mdx"]: CintLinkageModelVi,
+  ["cint-translation-units/cint-static-extern.mdx"]: CintStaticExtern,
+  ["cint-translation-units/cint-static-extern.vi.mdx"]: CintStaticExternVi,
+  ["cint-translation-units/cint-headers-deep.mdx"]: CintHeadersDeep,
+  ["cint-translation-units/cint-headers-deep.vi.mdx"]: CintHeadersDeepVi,
+  ["cint-translation-units/cint-checkpoint-m1.mdx"]: CintCheckpointM1,
+  ["cint-translation-units/cint-checkpoint-m1.vi.mdx"]: CintCheckpointM1Vi,
+  ["cint-trees/cint-bst-basics.mdx"]: CintBstBasics,
+  ["cint-trees/cint-bst-basics.vi.mdx"]: CintBstBasicsVi,
+  ["cint-trees/cint-bst-delete.mdx"]: CintBstDelete,
+  ["cint-trees/cint-bst-delete.vi.mdx"]: CintBstDeleteVi,
+  ["cint-trees/cint-binary-heaps.mdx"]: CintBinaryHeaps,
+  ["cint-trees/cint-binary-heaps.vi.mdx"]: CintBinaryHeapsVi,
+  ["cint-trees/cint-checkpoint-m11.mdx"]: CintCheckpointM11,
+  ["cint-trees/cint-checkpoint-m11.vi.mdx"]: CintCheckpointM11Vi,
+  ["cint-ub/cint-why-ub-exists.mdx"]: CintWhyUbExists,
+  ["cint-ub/cint-why-ub-exists.vi.mdx"]: CintWhyUbExistsVi,
+  ["cint-ub/cint-ub-catalog.mdx"]: CintUbCatalog,
+  ["cint-ub/cint-ub-catalog.vi.mdx"]: CintUbCatalogVi,
+  ["cint-ub/cint-defensive-c.mdx"]: CintDefensiveC,
+  ["cint-ub/cint-defensive-c.vi.mdx"]: CintDefensiveCVi,
+  ["cint-ub/cint-checkpoint-m14.mdx"]: CintCheckpointM14,
+  ["cint-ub/cint-checkpoint-m14.vi.mdx"]: CintCheckpointM14Vi,
+  ["abi-linking/api-vs-abi.mdx"]: ApiVsAbi,
+  ["abi-linking/api-vs-abi.vi.mdx"]: ApiVsAbiVi,
+  ["abi-linking/abi-stable-interfaces.mdx"]: AbiStableInterfaces,
+  ["abi-linking/abi-stable-interfaces.vi.mdx"]: AbiStableInterfacesVi,
+  ["abi-linking/cppa-checkpoint-abi.mdx"]: CppaCheckpointAbi,
+  ["abi-linking/cppa-checkpoint-abi.vi.mdx"]: CppaCheckpointAbiVi,
+  ["architecture-production/boundaries-and-inversion.mdx"]: BoundariesAndInversion,
+  ["architecture-production/boundaries-and-inversion.vi.mdx"]: BoundariesAndInversionVi,
+  ["architecture-production/events-and-config.mdx"]: EventsAndConfig,
+  ["architecture-production/events-and-config.vi.mdx"]: EventsAndConfigVi,
+  ["architecture-production/cppa-checkpoint-arch.mdx"]: CppaCheckpointArch,
+  ["architecture-production/cppa-checkpoint-arch.vi.mdx"]: CppaCheckpointArchVi,
+  ["build-systems/cmake-targets-and-props.mdx"]: CmakeTargetsAndProps,
+  ["build-systems/cmake-targets-and-props.vi.mdx"]: CmakeTargetsAndPropsVi,
+  ["build-systems/flags-modes-and-presets.mdx"]: FlagsModesAndPresets,
+  ["build-systems/flags-modes-and-presets.vi.mdx"]: FlagsModesAndPresetsVi,
+  ["build-systems/cppa-checkpoint-build.mdx"]: CppaCheckpointBuild,
+  ["build-systems/cppa-checkpoint-build.vi.mdx"]: CppaCheckpointBuildVi,
+  ["capstone-hpc-service/cppa-capstone-brief.mdx"]: CppaCapstoneBrief,
+  ["capstone-hpc-service/cppa-capstone-brief.vi.mdx"]: CppaCapstoneBriefVi,
+  ["capstone-hpc-service/cppa-capstone-design.mdx"]: CppaCapstoneDesign,
+  ["capstone-hpc-service/cppa-capstone-design.vi.mdx"]: CppaCapstoneDesignVi,
+  ["capstone-hpc-service/cppa-checkpoint-capstone.mdx"]: CppaCheckpointCapstone,
+  ["capstone-hpc-service/cppa-checkpoint-capstone.vi.mdx"]: CppaCheckpointCapstoneVi,
+  ["compile-time/constexpr-consteval-constinit.mdx"]: ConstexprConstevalConstinit,
+  ["compile-time/constexpr-consteval-constinit.vi.mdx"]: ConstexprConstevalConstinitVi,
+  ["compile-time/type-traits-ic.mdx"]: TypeTraitsIc,
+  ["compile-time/type-traits-ic.vi.mdx"]: TypeTraitsIcVi,
+  ["compile-time/cppa-checkpoint-compiletime.mdx"]: CppaCheckpointCompiletime,
+  ["compile-time/cppa-checkpoint-compiletime.vi.mdx"]: CppaCheckpointCompiletimeVi,
+  ["concepts/concepts-requires.mdx"]: ConceptsRequires,
+  ["concepts/concepts-requires.vi.mdx"]: ConceptsRequiresVi,
+  ["concepts/overloads-subsumption.mdx"]: OverloadsSubsumption,
+  ["concepts/overloads-subsumption.vi.mdx"]: OverloadsSubsumptionVi,
+  ["concepts/diagnostics.mdx"]: Diagnostics,
+  ["concepts/diagnostics.vi.mdx"]: DiagnosticsVi,
+  ["concepts/cppa-checkpoint-concepts.mdx"]: CppaCheckpointConcepts,
+  ["concepts/cppa-checkpoint-concepts.vi.mdx"]: CppaCheckpointConceptsVi,
+  ["concurrency/threads-jthread.mdx"]: ThreadsJthread,
+  ["concurrency/threads-jthread.vi.mdx"]: ThreadsJthreadVi,
+  ["concurrency/mutex-cv-futures.mdx"]: MutexCvFutures,
+  ["concurrency/mutex-cv-futures.vi.mdx"]: MutexCvFuturesVi,
+  ["concurrency/thread-pool-design.mdx"]: ThreadPoolDesign,
+  ["concurrency/thread-pool-design.vi.mdx"]: ThreadPoolDesignVi,
+  ["concurrency/cppa-checkpoint-concurrency.mdx"]: CppaCheckpointConcurrency,
+  ["concurrency/cppa-checkpoint-concurrency.vi.mdx"]: CppaCheckpointConcurrencyVi,
+  ["coroutines/coroutine-machinery.mdx"]: CoroutineMachinery,
+  ["coroutines/coroutine-machinery.vi.mdx"]: CoroutineMachineryVi,
+  ["coroutines/generator-build.mdx"]: GeneratorBuild,
+  ["coroutines/generator-build.vi.mdx"]: GeneratorBuildVi,
+  ["coroutines/generator-lifetimes.mdx"]: GeneratorLifetimes,
+  ["coroutines/generator-lifetimes.vi.mdx"]: GeneratorLifetimesVi,
+  ["coroutines/cppa-checkpoint-coroutines.mdx"]: CppaCheckpointCoroutines,
+  ["coroutines/cppa-checkpoint-coroutines.vi.mdx"]: CppaCheckpointCoroutinesVi,
+  ["debugging/debugger-discipline.mdx"]: DebuggerDiscipline,
+  ["debugging/debugger-discipline.vi.mdx"]: DebuggerDisciplineVi,
+  ["debugging/crash-forensics.mdx"]: CrashForensics,
+  ["debugging/crash-forensics.vi.mdx"]: CrashForensicsVi,
+  ["debugging/minimizing-repros.mdx"]: MinimizingRepros,
+  ["debugging/minimizing-repros.vi.mdx"]: MinimizingReprosVi,
+  ["debugging/cppa-checkpoint-debug.mdx"]: CppaCheckpointDebug,
+  ["debugging/cppa-checkpoint-debug.vi.mdx"]: CppaCheckpointDebugVi,
+  ["memory-allocators/allocation-costs.mdx"]: AllocationCosts,
+  ["memory-allocators/allocation-costs.vi.mdx"]: AllocationCostsVi,
+  ["memory-allocators/pmr-and-arenas.mdx"]: PmrAndArenas,
+  ["memory-allocators/pmr-and-arenas.vi.mdx"]: PmrAndArenasVi,
+  ["memory-allocators/data-oriented-layout.mdx"]: DataOrientedLayout,
+  ["memory-allocators/data-oriented-layout.vi.mdx"]: DataOrientedLayoutVi,
+  ["memory-allocators/cppa-checkpoint-allocators.mdx"]: CppaCheckpointAllocators,
+  ["memory-allocators/cppa-checkpoint-allocators.vi.mdx"]: CppaCheckpointAllocatorsVi,
+  ["memory-model/races-happens-before.mdx"]: RacesHappensBefore,
+  ["memory-model/races-happens-before.vi.mdx"]: RacesHappensBeforeVi,
+  ["memory-model/atomics-orderings.mdx"]: AtomicsOrderings,
+  ["memory-model/atomics-orderings.vi.mdx"]: AtomicsOrderingsVi,
+  ["memory-model/fences-patterns.mdx"]: FencesPatterns,
+  ["memory-model/fences-patterns.vi.mdx"]: FencesPatternsVi,
+  ["memory-model/cppa-checkpoint-memmodel.mdx"]: CppaCheckpointMemmodel,
+  ["memory-model/cppa-checkpoint-memmodel.vi.mdx"]: CppaCheckpointMemmodelVi,
+  ["move-forwarding/forwarding-references.mdx"]: ForwardingReferences,
+  ["move-forwarding/forwarding-references.vi.mdx"]: ForwardingReferencesVi,
+  ["move-forwarding/copy-elision-rvo.mdx"]: CopyElisionRvo,
+  ["move-forwarding/copy-elision-rvo.vi.mdx"]: CopyElisionRvoVi,
+  ["move-forwarding/noexcept-and-rules.mdx"]: NoexceptAndRules,
+  ["move-forwarding/noexcept-and-rules.vi.mdx"]: NoexceptAndRulesVi,
+  ["move-forwarding/cppa-checkpoint-move.mdx"]: CppaCheckpointMove,
+  ["move-forwarding/cppa-checkpoint-move.vi.mdx"]: CppaCheckpointMoveVi,
+  ["networking/framing-and-parsing.mdx"]: FramingAndParsing,
+  ["networking/framing-and-parsing.vi.mdx"]: FramingAndParsingVi,
+  ["networking/backpressure-and-lifecycles.mdx"]: BackpressureAndLifecycles,
+  ["networking/backpressure-and-lifecycles.vi.mdx"]: BackpressureAndLifecyclesVi,
+  ["networking/cppa-checkpoint-net.mdx"]: CppaCheckpointNet,
+  ["networking/cppa-checkpoint-net.vi.mdx"]: CppaCheckpointNetVi,
+  ["object-model/value-categories.mdx"]: ValueCategories,
+  ["object-model/value-categories.vi.mdx"]: ValueCategoriesVi,
+  ["object-model/storage-duration-lifetime.mdx"]: StorageDurationLifetime,
+  ["object-model/storage-duration-lifetime.vi.mdx"]: StorageDurationLifetimeVi,
+  ["object-model/initialization-subtleties.mdx"]: InitializationSubtleties,
+  ["object-model/initialization-subtleties.vi.mdx"]: InitializationSubtletiesVi,
+  ["object-model/cppa-checkpoint-object-model.mdx"]: CppaCheckpointObjectModel,
+  ["object-model/cppa-checkpoint-object-model.vi.mdx"]: CppaCheckpointObjectModelVi,
+  ["performance/cppa-measure-first.mdx"]: CppaMeasureFirst,
+  ["performance/cppa-measure-first.vi.mdx"]: CppaMeasureFirstVi,
+  ["performance/hot-path-optimization.mdx"]: HotPathOptimization,
+  ["performance/hot-path-optimization.vi.mdx"]: HotPathOptimizationVi,
+  ["performance/compiler-and-layout.mdx"]: CompilerAndLayout,
+  ["performance/compiler-and-layout.vi.mdx"]: CompilerAndLayoutVi,
+  ["performance/cppa-checkpoint-perf.mdx"]: CppaCheckpointPerf,
+  ["performance/cppa-checkpoint-perf.vi.mdx"]: CppaCheckpointPerfVi,
+  ["ranges-views/views-pipelines.mdx"]: ViewsPipelines,
+  ["ranges-views/views-pipelines.vi.mdx"]: ViewsPipelinesVi,
+  ["ranges-views/projections-custom.mdx"]: ProjectionsCustom,
+  ["ranges-views/projections-custom.vi.mdx"]: ProjectionsCustomVi,
+  ["ranges-views/view-dangling.mdx"]: ViewDangling,
+  ["ranges-views/view-dangling.vi.mdx"]: ViewDanglingVi,
+  ["ranges-views/cppa-checkpoint-ranges.mdx"]: CppaCheckpointRanges,
+  ["ranges-views/cppa-checkpoint-ranges.vi.mdx"]: CppaCheckpointRangesVi,
+  ["security/attack-surface-classes.mdx"]: AttackSurfaceClasses,
+  ["security/attack-surface-classes.vi.mdx"]: AttackSurfaceClassesVi,
+  ["security/hardened-implementations.mdx"]: HardenedImplementations,
+  ["security/hardened-implementations.vi.mdx"]: HardenedImplementationsVi,
+  ["security/cppa-checkpoint-sec.mdx"]: CppaCheckpointSec,
+  ["security/cppa-checkpoint-sec.vi.mdx"]: CppaCheckpointSecVi,
+  ["templates-deep/cppa3-specialization.mdx"]: Cppa3Specialization,
+  ["templates-deep/cppa3-specialization.vi.mdx"]: Cppa3SpecializationVi,
+  ["templates-deep/variadics-folds.mdx"]: VariadicsFolds,
+  ["templates-deep/variadics-folds.vi.mdx"]: VariadicsFoldsVi,
+  ["templates-deep/if-constexpr-nttp.mdx"]: IfConstexprNttp,
+  ["templates-deep/if-constexpr-nttp.vi.mdx"]: IfConstexprNttpVi,
+  ["templates-deep/ctad-deduction.mdx"]: CtadDeduction,
+  ["templates-deep/ctad-deduction.vi.mdx"]: CtadDeductionVi,
+  ["templates-deep/cppa-checkpoint-generic.mdx"]: CppaCheckpointGeneric,
+  ["templates-deep/cppa-checkpoint-generic.vi.mdx"]: CppaCheckpointGenericVi,
+  ["testing/beyond-unit-tests.mdx"]: BeyondUnitTests,
+  ["testing/beyond-unit-tests.vi.mdx"]: BeyondUnitTestsVi,
+  ["testing/property-based-testing.mdx"]: PropertyBasedTesting,
+  ["testing/property-based-testing.vi.mdx"]: PropertyBasedTestingVi,
+  ["testing/mutation-and-fuzzing.mdx"]: MutationAndFuzzing,
+  ["testing/mutation-and-fuzzing.vi.mdx"]: MutationAndFuzzingVi,
+  ["testing/cppa-checkpoint-testing.mdx"]: CppaCheckpointTesting,
+  ["testing/cppa-checkpoint-testing.vi.mdx"]: CppaCheckpointTestingVi,
+  ["ub-defensive/the-ub-zoo.mdx"]: TheUbZoo,
+  ["ub-defensive/the-ub-zoo.vi.mdx"]: TheUbZooVi,
+  ["ub-defensive/defensive-boundaries.mdx"]: DefensiveBoundaries,
+  ["ub-defensive/defensive-boundaries.vi.mdx"]: DefensiveBoundariesVi,
+  ["ub-defensive/sanitizer-mindset.mdx"]: SanitizerMindset,
+  ["ub-defensive/sanitizer-mindset.vi.mdx"]: SanitizerMindsetVi,
+  ["ub-defensive/cppa-checkpoint-ub.mdx"]: CppaCheckpointUb,
+  ["ub-defensive/cppa-checkpoint-ub.vi.mdx"]: CppaCheckpointUbVi,
+  ["architecture-refactoring/responsibilities-and-naming.mdx"]: ResponsibilitiesAndNaming,
+  ["architecture-refactoring/responsibilities-and-naming.vi.mdx"]: ResponsibilitiesAndNamingVi,
+  ["architecture-refactoring/refactor-a-mess.mdx"]: RefactorAMess,
+  ["architecture-refactoring/refactor-a-mess.vi.mdx"]: RefactorAMessVi,
+  ["architecture-refactoring/checkpoint-architecture.mdx"]: CheckpointArchitecture,
+  ["architecture-refactoring/checkpoint-architecture.vi.mdx"]: CheckpointArchitectureVi,
+  ["capstone-finance-cli/cpp-capstone-brief.mdx"]: CppCapstoneBrief,
+  ["capstone-finance-cli/cpp-capstone-brief.vi.mdx"]: CppCapstoneBriefVi,
+  ["capstone-finance-cli/cpp-capstone-ship.mdx"]: CppCapstoneShip,
+  ["capstone-finance-cli/cpp-capstone-ship.vi.mdx"]: CppCapstoneShipVi,
+  ["classes-oop/classes-and-encapsulation.mdx"]: ClassesAndEncapsulation,
+  ["classes-oop/classes-and-encapsulation.vi.mdx"]: ClassesAndEncapsulationVi,
+  ["classes-oop/constructors-and-const-methods.mdx"]: ConstructorsAndConstMethods,
+  ["classes-oop/constructors-and-const-methods.vi.mdx"]: ConstructorsAndConstMethodsVi,
+  ["classes-oop/composition-inheritance-polymorphism.mdx"]: CompositionInheritancePolymorphism,
+  ["classes-oop/composition-inheritance-polymorphism.vi.mdx"]: CompositionInheritancePolymorphismVi,
+  ["classes-oop/checkpoint-oop.mdx"]: CheckpointOop,
+  ["classes-oop/checkpoint-oop.vi.mdx"]: CheckpointOopVi,
+  ["collections/vector-and-array.mdx"]: VectorAndArray,
+  ["collections/vector-and-array.vi.mdx"]: VectorAndArrayVi,
+  ["collections/map-set-pair.mdx"]: MapSetPair,
+  ["collections/map-set-pair.vi.mdx"]: MapSetPairVi,
+  ["collections/choosing-containers.mdx"]: ChoosingContainers,
+  ["collections/choosing-containers.vi.mdx"]: ChoosingContainersVi,
+  ["collections/checkpoint-collections.mdx"]: CheckpointCollections,
+  ["collections/checkpoint-collections.vi.mdx"]: CheckpointCollectionsVi,
+  ["conditions/if-else-and-logic.mdx"]: IfElseAndLogic,
+  ["conditions/if-else-and-logic.vi.mdx"]: IfElseAndLogicVi,
+  ["conditions/switch-and-branches.mdx"]: SwitchAndBranches,
+  ["conditions/switch-and-branches.vi.mdx"]: SwitchAndBranchesVi,
+  ["conditions/checkpoint-conditions.mdx"]: CheckpointConditions,
+  ["conditions/checkpoint-conditions.vi.mdx"]: CheckpointConditionsVi,
+  ["cpp-first-programs/what-is-cpp.mdx"]: WhatIsCpp,
+  ["cpp-first-programs/what-is-cpp.vi.mdx"]: WhatIsCppVi,
+  ["cpp-first-programs/hello-cpp.mdx"]: HelloCpp,
+  ["cpp-first-programs/hello-cpp.vi.mdx"]: HelloCppVi,
+  ["cpp-first-programs/output-and-input.mdx"]: OutputAndInput,
+  ["cpp-first-programs/output-and-input.vi.mdx"]: OutputAndInputVi,
+  ["cpp-first-programs/reading-compiler-errors.mdx"]: ReadingCompilerErrors,
+  ["cpp-first-programs/reading-compiler-errors.vi.mdx"]: ReadingCompilerErrorsVi,
+  ["cpp-first-programs/cpp-checkpoint-fundamentals.mdx"]: CppCheckpointFundamentals,
+  ["cpp-first-programs/cpp-checkpoint-fundamentals.vi.mdx"]: CppCheckpointFundamentalsVi,
+  ["cpp-functions/defining-and-calling.mdx"]: DefiningAndCalling,
+  ["cpp-functions/defining-and-calling.vi.mdx"]: DefiningAndCallingVi,
+  ["cpp-functions/parameters-by-value-and-const-ref.mdx"]: ParametersByValueAndConstRef,
+  ["cpp-functions/parameters-by-value-and-const-ref.vi.mdx"]: ParametersByValueAndConstRefVi,
+  ["cpp-functions/overloads-and-decomposition.mdx"]: OverloadsAndDecomposition,
+  ["cpp-functions/overloads-and-decomposition.vi.mdx"]: OverloadsAndDecompositionVi,
+  ["cpp-functions/checkpoint-functions.mdx"]: CheckpointFunctions,
+  ["cpp-functions/checkpoint-functions.vi.mdx"]: CheckpointFunctionsVi,
+  ["cpp-loops/for-and-range-for.mdx"]: ForAndRangeFor,
+  ["cpp-loops/for-and-range-for.vi.mdx"]: ForAndRangeForVi,
+  ["cpp-loops/while-and-validation.mdx"]: WhileAndValidation,
+  ["cpp-loops/while-and-validation.vi.mdx"]: WhileAndValidationVi,
+  ["cpp-loops/nested-loops-patterns.mdx"]: NestedLoopsPatterns,
+  ["cpp-loops/nested-loops-patterns.vi.mdx"]: NestedLoopsPatternsVi,
+  ["cpp-loops/checkpoint-loops.mdx"]: CheckpointLoops,
+  ["cpp-loops/checkpoint-loops.vi.mdx"]: CheckpointLoopsVi,
+  ["errors-debugging-tests/exceptions-and-boundaries.mdx"]: ExceptionsAndBoundaries,
+  ["errors-debugging-tests/exceptions-and-boundaries.vi.mdx"]: ExceptionsAndBoundariesVi,
+  ["errors-debugging-tests/assert-and-testing.mdx"]: AssertAndTesting,
+  ["errors-debugging-tests/assert-and-testing.vi.mdx"]: AssertAndTestingVi,
+  ["errors-debugging-tests/cpp-debugging-method.mdx"]: CppDebuggingMethod,
+  ["errors-debugging-tests/cpp-debugging-method.vi.mdx"]: CppDebuggingMethodVi,
+  ["errors-debugging-tests/checkpoint-robustness.mdx"]: CheckpointRobustness,
+  ["errors-debugging-tests/checkpoint-robustness.vi.mdx"]: CheckpointRobustnessVi,
+  ["files-persistence/reading-and-writing-files.mdx"]: ReadingAndWritingFiles,
+  ["files-persistence/reading-and-writing-files.vi.mdx"]: ReadingAndWritingFilesVi,
+  ["files-persistence/parsing-records-from-files.mdx"]: ParsingRecordsFromFiles,
+  ["files-persistence/parsing-records-from-files.vi.mdx"]: ParsingRecordsFromFilesVi,
+  ["files-persistence/checkpoint-persistence.mdx"]: CheckpointPersistence,
+  ["files-persistence/checkpoint-persistence.vi.mdx"]: CheckpointPersistenceVi,
+  ["git-professional-workflow/repo-hygiene-for-cpp.mdx"]: RepoHygieneForCpp,
+  ["git-professional-workflow/repo-hygiene-for-cpp.vi.mdx"]: RepoHygieneForCppVi,
+  ["git-professional-workflow/checkpoint-repo.mdx"]: CheckpointRepo,
+  ["git-professional-workflow/checkpoint-repo.vi.mdx"]: CheckpointRepoVi,
+  ["memory-raii/stack-heap-lifetime.mdx"]: StackHeapLifetime,
+  ["memory-raii/stack-heap-lifetime.vi.mdx"]: StackHeapLifetimeVi,
+  ["memory-raii/raii-and-smart-pointers.mdx"]: RaiiAndSmartPointers,
+  ["memory-raii/raii-and-smart-pointers.vi.mdx"]: RaiiAndSmartPointersVi,
+  ["memory-raii/the-new-delete-lesson.mdx"]: TheNewDeleteLesson,
+  ["memory-raii/the-new-delete-lesson.vi.mdx"]: TheNewDeleteLessonVi,
+  ["memory-raii/checkpoint-raii.mdx"]: CheckpointRaii,
+  ["memory-raii/checkpoint-raii.vi.mdx"]: CheckpointRaiiVi,
+  ["multi-file-cmake/headers-and-translation-units.mdx"]: HeadersAndTranslationUnits,
+  ["multi-file-cmake/headers-and-translation-units.vi.mdx"]: HeadersAndTranslationUnitsVi,
+  ["multi-file-cmake/linking-and-odr.mdx"]: LinkingAndOdr,
+  ["multi-file-cmake/linking-and-odr.vi.mdx"]: LinkingAndOdrVi,
+  ["multi-file-cmake/cmake-basics.mdx"]: CmakeBasics,
+  ["multi-file-cmake/cmake-basics.vi.mdx"]: CmakeBasicsVi,
+  ["multi-file-cmake/checkpoint-multi-file.mdx"]: CheckpointMultiFile,
+  ["multi-file-cmake/checkpoint-multi-file.vi.mdx"]: CheckpointMultiFileVi,
+  ["pointers-references/references-and-aliasing.mdx"]: ReferencesAndAliasing,
+  ["pointers-references/references-and-aliasing.vi.mdx"]: ReferencesAndAliasingVi,
+  ["pointers-references/pointers-and-nullptr.mdx"]: PointersAndNullptr,
+  ["pointers-references/pointers-and-nullptr.vi.mdx"]: PointersAndNullptrVi,
+  ["pointers-references/checkpoint-access.mdx"]: CheckpointAccess,
+  ["pointers-references/checkpoint-access.vi.mdx"]: CheckpointAccessVi,
+  ["problem-solving/decomposition-and-edge-cases.mdx"]: DecompositionAndEdgeCases,
+  ["problem-solving/decomposition-and-edge-cases.vi.mdx"]: DecompositionAndEdgeCasesVi,
+  ["problem-solving/choosing-structures.mdx"]: ChoosingStructures,
+  ["problem-solving/choosing-structures.vi.mdx"]: ChoosingStructuresVi,
+  ["problem-solving/checkpoint-problems.mdx"]: CheckpointProblems,
+  ["problem-solving/checkpoint-problems.vi.mdx"]: CheckpointProblemsVi,
+  ["stl-algorithms/iterators-and-algorithms.mdx"]: IteratorsAndAlgorithms,
+  ["stl-algorithms/iterators-and-algorithms.vi.mdx"]: IteratorsAndAlgorithmsVi,
+  ["stl-algorithms/lambdas-and-predicates.mdx"]: LambdasAndPredicates,
+  ["stl-algorithms/lambdas-and-predicates.vi.mdx"]: LambdasAndPredicatesVi,
+  ["stl-algorithms/checkpoint-algorithms.mdx"]: CheckpointAlgorithms,
+  ["stl-algorithms/checkpoint-algorithms.vi.mdx"]: CheckpointAlgorithmsVi,
+  ["strings/string-operations.mdx"]: StringOperations,
+  ["strings/string-operations.vi.mdx"]: StringOperationsVi,
+  ["strings/parsing-with-stringstream.mdx"]: ParsingWithStringstream,
+  ["strings/parsing-with-stringstream.vi.mdx"]: ParsingWithStringstreamVi,
+  ["strings/checkpoint-strings.mdx"]: CheckpointStrings,
+  ["strings/checkpoint-strings.vi.mdx"]: CheckpointStringsVi,
+  ["structs-enums/structs-and-aggregates.mdx"]: StructsAndAggregates,
+  ["structs-enums/structs-and-aggregates.vi.mdx"]: StructsAndAggregatesVi,
+  ["structs-enums/enum-class-and-aliases.mdx"]: EnumClassAndAliases,
+  ["structs-enums/enum-class-and-aliases.vi.mdx"]: EnumClassAndAliasesVi,
+  ["structs-enums/cpp-checkpoint-modeling.mdx"]: CppCheckpointModeling,
+  ["structs-enums/cpp-checkpoint-modeling.vi.mdx"]: CppCheckpointModelingVi,
+  ["variables-and-types/variables-and-initialization.mdx"]: VariablesAndInitialization,
+  ["variables-and-types/variables-and-initialization.vi.mdx"]: VariablesAndInitializationVi,
+  ["variables-and-types/operators-and-conversion.mdx"]: OperatorsAndConversion,
+  ["variables-and-types/operators-and-conversion.vi.mdx"]: OperatorsAndConversionVi,
+  ["variables-and-types/const-and-auto.mdx"]: ConstAndAuto,
+  ["variables-and-types/const-and-auto.vi.mdx"]: ConstAndAutoVi,
+  ["variables-and-types/checkpoint-types.mdx"]: CheckpointTypes,
+  ["variables-and-types/checkpoint-types.vi.mdx"]: CheckpointTypesVi,
+  ["cppi-final-project/project-architecture.mdx"]: ProjectArchitecture,
+  ["cppi-final-project/project-architecture.vi.mdx"]: ProjectArchitectureVi,
+  ["cppi-final-project/integration.mdx"]: Integration,
+  ["cppi-final-project/integration.vi.mdx"]: IntegrationVi,
+  ["cppi-final-project/ship-it.mdx"]: ShipIt,
+  ["cppi-final-project/ship-it.vi.mdx"]: ShipItVi,
+  ["cppi-final-project/cppi-checkpoint-final.mdx"]: CppiCheckpointFinal,
+  ["cppi-final-project/cppi-checkpoint-final.vi.mdx"]: CppiCheckpointFinalVi,
+  ["dsa/complexity.mdx"]: Complexity,
+  ["dsa/complexity.vi.mdx"]: ComplexityVi,
+  ["dsa/searching.mdx"]: Searching,
+  ["dsa/searching.vi.mdx"]: SearchingVi,
+  ["dsa/recursion-and-lists.mdx"]: RecursionAndLists,
+  ["dsa/recursion-and-lists.vi.mdx"]: RecursionAndListsVi,
+  ["dsa/trees-and-graphs.mdx"]: TreesAndGraphs,
+  ["dsa/trees-and-graphs.vi.mdx"]: TreesAndGraphsVi,
+  ["dsa/advanced-checkpoint-dsa.mdx"]: AdvancedCheckpointDsa,
+  ["dsa/advanced-checkpoint-dsa.vi.mdx"]: AdvancedCheckpointDsaVi,
+  ["errors-and-files/exceptions.mdx"]: Exceptions,
+  ["errors-and-files/exceptions.vi.mdx"]: ExceptionsVi,
+  ["errors-and-files/custom-exceptions.mdx"]: CustomExceptions,
+  ["errors-and-files/custom-exceptions.vi.mdx"]: CustomExceptionsVi,
+  ["errors-and-files/exception-safety.mdx"]: ExceptionSafety,
+  ["errors-and-files/exception-safety.vi.mdx"]: ExceptionSafetyVi,
+  ["errors-and-files/files-streams.mdx"]: FilesStreams,
+  ["errors-and-files/files-streams.vi.mdx"]: FilesStreamsVi,
+  ["errors-and-files/advanced-checkpoint-errors.mdx"]: AdvancedCheckpointErrors,
+  ["errors-and-files/advanced-checkpoint-errors.vi.mdx"]: AdvancedCheckpointErrorsVi,
+  ["inheritance-polymorphism/inheritance.mdx"]: Inheritance,
+  ["inheritance-polymorphism/inheritance.vi.mdx"]: InheritanceVi,
+  ["inheritance-polymorphism/protected-members.mdx"]: ProtectedMembers,
+  ["inheritance-polymorphism/protected-members.vi.mdx"]: ProtectedMembersVi,
+  ["inheritance-polymorphism/ctor-dtor-order.mdx"]: CtorDtorOrder,
+  ["inheritance-polymorphism/ctor-dtor-order.vi.mdx"]: CtorDtorOrderVi,
+  ["inheritance-polymorphism/overriding.mdx"]: Overriding,
+  ["inheritance-polymorphism/overriding.vi.mdx"]: OverridingVi,
+  ["inheritance-polymorphism/polymorphism.mdx"]: Polymorphism,
+  ["inheritance-polymorphism/polymorphism.vi.mdx"]: PolymorphismVi,
+  ["inheritance-polymorphism/virtual-destructors.mdx"]: VirtualDestructors,
+  ["inheritance-polymorphism/virtual-destructors.vi.mdx"]: VirtualDestructorsVi,
+  ["inheritance-polymorphism/advanced-checkpoint-polymorphism.mdx"]: AdvancedCheckpointPolymorphism,
+  ["inheritance-polymorphism/advanced-checkpoint-polymorphism.vi.mdx"]: AdvancedCheckpointPolymorphismVi,
+  ["iterators-algorithms/cpp-iterators.mdx"]: CppIterators,
+  ["iterators-algorithms/cpp-iterators.vi.mdx"]: CppIteratorsVi,
+  ["iterators-algorithms/algorithms-basics.mdx"]: AlgorithmsBasics,
+  ["iterators-algorithms/algorithms-basics.vi.mdx"]: AlgorithmsBasicsVi,
+  ["iterators-algorithms/transforming-algorithms.mdx"]: TransformingAlgorithms,
+  ["iterators-algorithms/transforming-algorithms.vi.mdx"]: TransformingAlgorithmsVi,
+  ["iterators-algorithms/lambdas.mdx"]: Lambdas,
+  ["iterators-algorithms/lambdas.vi.mdx"]: LambdasVi,
+  ["iterators-algorithms/advanced-checkpoint-algorithms.mdx"]: AdvancedCheckpointAlgorithms,
+  ["iterators-algorithms/advanced-checkpoint-algorithms.vi.mdx"]: AdvancedCheckpointAlgorithmsVi,
+  ["memory-and-lifetime/fundamentals-review.mdx"]: FundamentalsReview,
+  ["memory-and-lifetime/fundamentals-review.vi.mdx"]: FundamentalsReviewVi,
+  ["memory-and-lifetime/references.mdx"]: References,
+  ["memory-and-lifetime/references.vi.mdx"]: ReferencesVi,
+  ["memory-and-lifetime/pointers.mdx"]: Pointers,
+  ["memory-and-lifetime/pointers.vi.mdx"]: PointersVi,
+  ["memory-and-lifetime/dynamic-memory.mdx"]: DynamicMemory,
+  ["memory-and-lifetime/dynamic-memory.vi.mdx"]: DynamicMemoryVi,
+  ["memory-and-lifetime/const-correctness.mdx"]: ConstCorrectness,
+  ["memory-and-lifetime/const-correctness.vi.mdx"]: ConstCorrectnessVi,
+  ["memory-and-lifetime/stack-vs-heap.mdx"]: StackVsHeap,
+  ["memory-and-lifetime/stack-vs-heap.vi.mdx"]: StackVsHeapVi,
+  ["memory-and-lifetime/advanced-checkpoint-memory.mdx"]: AdvancedCheckpointMemory,
+  ["memory-and-lifetime/advanced-checkpoint-memory.vi.mdx"]: AdvancedCheckpointMemoryVi,
+  ["modern-cpp/auto-and-deduction.mdx"]: AutoAndDeduction,
+  ["modern-cpp/auto-and-deduction.vi.mdx"]: AutoAndDeductionVi,
+  ["modern-cpp/constexpr-enums.mdx"]: ConstexprEnums,
+  ["modern-cpp/constexpr-enums.vi.mdx"]: ConstexprEnumsVi,
+  ["modern-cpp/optional-variant.mdx"]: OptionalVariant,
+  ["modern-cpp/optional-variant.vi.mdx"]: OptionalVariantVi,
+  ["modern-cpp/modern-idioms.mdx"]: ModernIdioms,
+  ["modern-cpp/modern-idioms.vi.mdx"]: ModernIdiomsVi,
+  ["modern-cpp/advanced-checkpoint-modern.mdx"]: AdvancedCheckpointModern,
+  ["modern-cpp/advanced-checkpoint-modern.vi.mdx"]: AdvancedCheckpointModernVi,
+  ["object-oriented-design/classes-and-objects.mdx"]: ClassesAndObjects,
+  ["object-oriented-design/classes-and-objects.vi.mdx"]: ClassesAndObjectsVi,
+  ["object-oriented-design/constructors.mdx"]: Constructors,
+  ["object-oriented-design/constructors.vi.mdx"]: ConstructorsVi,
+  ["object-oriented-design/destructors.mdx"]: Destructors,
+  ["object-oriented-design/destructors.vi.mdx"]: DestructorsVi,
+  ["object-oriented-design/static-members.mdx"]: StaticMembers,
+  ["object-oriented-design/static-members.vi.mdx"]: StaticMembersVi,
+  ["object-oriented-design/this-pointer.mdx"]: ThisPointer,
+  ["object-oriented-design/this-pointer.vi.mdx"]: ThisPointerVi,
+  ["object-oriented-design/composition.mdx"]: Composition,
+  ["object-oriented-design/composition.vi.mdx"]: CompositionVi,
+  ["object-oriented-design/advanced-checkpoint-oop.mdx"]: AdvancedCheckpointOop,
+  ["object-oriented-design/advanced-checkpoint-oop.vi.mdx"]: AdvancedCheckpointOopVi,
+  ["operators-copy-move/operator-overloading.mdx"]: OperatorOverloading,
+  ["operators-copy-move/operator-overloading.vi.mdx"]: OperatorOverloadingVi,
+  ["operators-copy-move/copy-semantics.mdx"]: CopySemantics,
+  ["operators-copy-move/copy-semantics.vi.mdx"]: CopySemanticsVi,
+  ["operators-copy-move/move-semantics.mdx"]: MoveSemantics,
+  ["operators-copy-move/move-semantics.vi.mdx"]: MoveSemanticsVi,
+  ["operators-copy-move/stream-operators.mdx"]: StreamOperators,
+  ["operators-copy-move/stream-operators.vi.mdx"]: StreamOperatorsVi,
+  ["operators-copy-move/advanced-checkpoint-copy-move.mdx"]: AdvancedCheckpointCopyMove,
+  ["operators-copy-move/advanced-checkpoint-copy-move.vi.mdx"]: AdvancedCheckpointCopyMoveVi,
+  ["smart-pointers-raii/raii.mdx"]: Raii,
+  ["smart-pointers-raii/raii.vi.mdx"]: RaiiVi,
+  ["smart-pointers-raii/unique-ptr.mdx"]: UniquePtr,
+  ["smart-pointers-raii/unique-ptr.vi.mdx"]: UniquePtrVi,
+  ["smart-pointers-raii/shared-weak.mdx"]: SharedWeak,
+  ["smart-pointers-raii/shared-weak.vi.mdx"]: SharedWeakVi,
+  ["smart-pointers-raii/ownership-design.mdx"]: OwnershipDesign,
+  ["smart-pointers-raii/ownership-design.vi.mdx"]: OwnershipDesignVi,
+  ["smart-pointers-raii/advanced-checkpoint-smart-pointers.mdx"]: AdvancedCheckpointSmartPointers,
+  ["smart-pointers-raii/advanced-checkpoint-smart-pointers.vi.mdx"]: AdvancedCheckpointSmartPointersVi,
+  ["stl-fundamentals/sequence-containers.mdx"]: SequenceContainers,
+  ["stl-fundamentals/sequence-containers.vi.mdx"]: SequenceContainersVi,
+  ["stl-fundamentals/container-adapters.mdx"]: ContainerAdapters,
+  ["stl-fundamentals/container-adapters.vi.mdx"]: ContainerAdaptersVi,
+  ["stl-fundamentals/associative-containers.mdx"]: AssociativeContainers,
+  ["stl-fundamentals/associative-containers.vi.mdx"]: AssociativeContainersVi,
+  ["stl-fundamentals/choosing-stl-containers.mdx"]: ChoosingStlContainers,
+  ["stl-fundamentals/choosing-stl-containers.vi.mdx"]: ChoosingStlContainersVi,
+  ["stl-fundamentals/advanced-checkpoint-stl.mdx"]: AdvancedCheckpointStl,
+  ["stl-fundamentals/advanced-checkpoint-stl.vi.mdx"]: AdvancedCheckpointStlVi,
+  ["templates/function-templates.mdx"]: FunctionTemplates,
+  ["templates/function-templates.vi.mdx"]: FunctionTemplatesVi,
+  ["templates/class-templates.mdx"]: ClassTemplates,
+  ["templates/class-templates.vi.mdx"]: ClassTemplatesVi,
+  ["templates/specialization.mdx"]: Specialization,
+  ["templates/specialization.vi.mdx"]: SpecializationVi,
+  ["templates/generic-design.mdx"]: GenericDesign,
+  ["templates/generic-design.vi.mdx"]: GenericDesignVi,
+  ["templates/advanced-checkpoint-templates.mdx"]: AdvancedCheckpointTemplates,
+  ["templates/advanced-checkpoint-templates.vi.mdx"]: AdvancedCheckpointTemplatesVi,
+  ["csa-language-semantics/csa-m1-execution-model.mdx"]: CsaM1ExecutionModel,
+  ["csa-language-semantics/csa-m1-execution-model.vi.mdx"]: CsaM1ExecutionModelVi,
+  ["csa-language-semantics/csa-m1-value-reference.mdx"]: CsaM1ValueReference,
+  ["csa-language-semantics/csa-m1-value-reference.vi.mdx"]: CsaM1ValueReferenceVi,
+  ["csa-language-semantics/csa-m1-boxing.mdx"]: CsaM1Boxing,
+  ["csa-language-semantics/csa-m1-boxing.vi.mdx"]: CsaM1BoxingVi,
+  ["csa-language-semantics/csa-m1-null-state.mdx"]: CsaM1NullState,
+  ["csa-language-semantics/csa-m1-null-state.vi.mdx"]: CsaM1NullStateVi,
+  ["csa-language-semantics/csa-m1-resolution.mdx"]: CsaM1Resolution,
+  ["csa-language-semantics/csa-m1-resolution.vi.mdx"]: CsaM1ResolutionVi,
+  ["csa-language-semantics/csa-checkpoint-m1.mdx"]: CsaCheckpointM1,
+  ["csa-language-semantics/csa-checkpoint-m1.vi.mdx"]: CsaCheckpointM1Vi,
+  ["csb-algorithms/csb-m20-big-o.mdx"]: CsbM20BigO,
+  ["csb-algorithms/csb-m20-big-o.vi.mdx"]: CsbM20BigOVi,
+  ["csb-algorithms/csb-m20-searching.mdx"]: CsbM20Searching,
+  ["csb-algorithms/csb-m20-searching.vi.mdx"]: CsbM20SearchingVi,
+  ["csb-algorithms/csb-m20-patterns.mdx"]: CsbM20Patterns,
+  ["csb-algorithms/csb-m20-patterns.vi.mdx"]: CsbM20PatternsVi,
+  ["csb-algorithms/csb-checkpoint-m20.mdx"]: CsbCheckpointM20,
+  ["csb-algorithms/csb-checkpoint-m20.vi.mdx"]: CsbCheckpointM20Vi,
+  ["csb-arrays/csb-m7-declare.mdx"]: CsbM7Declare,
+  ["csb-arrays/csb-m7-declare.vi.mdx"]: CsbM7DeclareVi,
+  ["csb-arrays/csb-m7-iterate.mdx"]: CsbM7Iterate,
+  ["csb-arrays/csb-m7-iterate.vi.mdx"]: CsbM7IterateVi,
+  ["csb-arrays/csb-m7-stdlib.mdx"]: CsbM7Stdlib,
+  ["csb-arrays/csb-m7-stdlib.vi.mdx"]: CsbM7StdlibVi,
+  ["csb-arrays/csb-checkpoint-m7.mdx"]: CsbCheckpointM7,
+  ["csb-arrays/csb-checkpoint-m7.vi.mdx"]: CsbCheckpointM7Vi,
+  ["csb-capstone/csb-m21-plan.mdx"]: CsbM21Plan,
+  ["csb-capstone/csb-m21-plan.vi.mdx"]: CsbM21PlanVi,
+  ["csb-capstone/csb-m21-model.mdx"]: CsbM21Model,
+  ["csb-capstone/csb-m21-model.vi.mdx"]: CsbM21ModelVi,
+  ["csb-capstone/csb-m21-report.mdx"]: CsbM21Report,
+  ["csb-capstone/csb-m21-report.vi.mdx"]: CsbM21ReportVi,
+  ["csb-capstone/csb-checkpoint-m21.mdx"]: CsbCheckpointM21,
+  ["csb-capstone/csb-checkpoint-m21.vi.mdx"]: CsbCheckpointM21Vi,
+  ["csb-classes/csb-m9-basics.mdx"]: CsbM9Basics,
+  ["csb-classes/csb-m9-basics.vi.mdx"]: CsbM9BasicsVi,
+  ["csb-classes/csb-m9-constructors.mdx"]: CsbM9Constructors,
+  ["csb-classes/csb-m9-constructors.vi.mdx"]: CsbM9ConstructorsVi,
+  ["csb-classes/csb-m9-properties.mdx"]: CsbM9Properties,
+  ["csb-classes/csb-m9-properties.vi.mdx"]: CsbM9PropertiesVi,
+  ["csb-classes/csb-checkpoint-m9.mdx"]: CsbCheckpointM9,
+  ["csb-classes/csb-checkpoint-m9.vi.mdx"]: CsbCheckpointM9Vi,
+  ["csb-cli/csb-m18-csproj.mdx"]: CsbM18Csproj,
+  ["csb-cli/csb-m18-csproj.vi.mdx"]: CsbM18CsprojVi,
+  ["csb-cli/csb-m18-dotnet-cli.mdx"]: CsbM18DotnetCli,
+  ["csb-cli/csb-m18-dotnet-cli.vi.mdx"]: CsbM18DotnetCliVi,
+  ["csb-cli/csb-m18-solutions.mdx"]: CsbM18Solutions,
+  ["csb-cli/csb-m18-solutions.vi.mdx"]: CsbM18SolutionsVi,
+  ["csb-cli/csb-checkpoint-m18.mdx"]: CsbCheckpointM18,
+  ["csb-cli/csb-checkpoint-m18.vi.mdx"]: CsbCheckpointM18Vi,
+  ["csb-collections/csb-m8-list.mdx"]: CsbM8List,
+  ["csb-collections/csb-m8-list.vi.mdx"]: CsbM8ListVi,
+  ["csb-collections/csb-m8-dict.mdx"]: CsbM8Dict,
+  ["csb-collections/csb-m8-dict.vi.mdx"]: CsbM8DictVi,
+  ["csb-collections/csb-m8-set.mdx"]: CsbM8Set,
+  ["csb-collections/csb-m8-set.vi.mdx"]: CsbM8SetVi,
+  ["csb-collections/csb-checkpoint-m8.mdx"]: CsbCheckpointM8,
+  ["csb-collections/csb-checkpoint-m8.vi.mdx"]: CsbCheckpointM8Vi,
+  ["csb-delegates/csb-m16-func-action.mdx"]: CsbM16FuncAction,
+  ["csb-delegates/csb-m16-func-action.vi.mdx"]: CsbM16FuncActionVi,
+  ["csb-delegates/csb-m16-lambdas.mdx"]: CsbM16Lambdas,
+  ["csb-delegates/csb-m16-lambdas.vi.mdx"]: CsbM16LambdasVi,
+  ["csb-delegates/csb-m16-events.mdx"]: CsbM16Events,
+  ["csb-delegates/csb-m16-events.vi.mdx"]: CsbM16EventsVi,
+  ["csb-delegates/csb-checkpoint-m16.mdx"]: CsbCheckpointM16,
+  ["csb-delegates/csb-checkpoint-m16.vi.mdx"]: CsbCheckpointM16Vi,
+  ["csb-exceptions/csb-m13-trycatch.mdx"]: CsbM13Trycatch,
+  ["csb-exceptions/csb-m13-trycatch.vi.mdx"]: CsbM13TrycatchVi,
+  ["csb-exceptions/csb-m13-throw-custom.mdx"]: CsbM13ThrowCustom,
+  ["csb-exceptions/csb-m13-throw-custom.vi.mdx"]: CsbM13ThrowCustomVi,
+  ["csb-exceptions/csb-m13-finally-cleanup.mdx"]: CsbM13FinallyCleanup,
+  ["csb-exceptions/csb-m13-finally-cleanup.vi.mdx"]: CsbM13FinallyCleanupVi,
+  ["csb-exceptions/csb-checkpoint-m13.mdx"]: CsbCheckpointM13,
+  ["csb-exceptions/csb-checkpoint-m13.vi.mdx"]: CsbCheckpointM13Vi,
+  ["csb-files/csb-m14-path-file.mdx"]: CsbM14PathFile,
+  ["csb-files/csb-m14-path-file.vi.mdx"]: CsbM14PathFileVi,
+  ["csb-files/csb-m14-read-write.mdx"]: CsbM14ReadWrite,
+  ["csb-files/csb-m14-read-write.vi.mdx"]: CsbM14ReadWriteVi,
+  ["csb-files/csb-m14-persistence.mdx"]: CsbM14Persistence,
+  ["csb-files/csb-m14-persistence.vi.mdx"]: CsbM14PersistenceVi,
+  ["csb-files/csb-checkpoint-m14.mdx"]: CsbCheckpointM14,
+  ["csb-files/csb-checkpoint-m14.vi.mdx"]: CsbCheckpointM14Vi,
+  ["csb-flow/csb-m4-operators.mdx"]: CsbM4Operators,
+  ["csb-flow/csb-m4-operators.vi.mdx"]: CsbM4OperatorsVi,
+  ["csb-flow/csb-m4-conditions.mdx"]: CsbM4Conditions,
+  ["csb-flow/csb-m4-conditions.vi.mdx"]: CsbM4ConditionsVi,
+  ["csb-flow/csb-m4-loops.mdx"]: CsbM4Loops,
+  ["csb-flow/csb-m4-loops.vi.mdx"]: CsbM4LoopsVi,
+  ["csb-flow/csb-checkpoint-m4.mdx"]: CsbCheckpointM4,
+  ["csb-flow/csb-checkpoint-m4.vi.mdx"]: CsbCheckpointM4Vi,
+  ["csb-generics/csb-m12-generics.mdx"]: CsbM12Generics,
+  ["csb-generics/csb-m12-generics.vi.mdx"]: CsbM12GenericsVi,
+  ["csb-generics/csb-m12-constraints.mdx"]: CsbM12Constraints,
+  ["csb-generics/csb-m12-constraints.vi.mdx"]: CsbM12ConstraintsVi,
+  ["csb-generics/csb-m12-generic-collections.mdx"]: CsbM12GenericCollections,
+  ["csb-generics/csb-m12-generic-collections.vi.mdx"]: CsbM12GenericCollectionsVi,
+  ["csb-generics/csb-checkpoint-m12.mdx"]: CsbCheckpointM12,
+  ["csb-generics/csb-checkpoint-m12.vi.mdx"]: CsbCheckpointM12Vi,
+  ["csb-git/csb-m19-commits.mdx"]: CsbM19Commits,
+  ["csb-git/csb-m19-commits.vi.mdx"]: CsbM19CommitsVi,
+  ["csb-git/csb-m19-branches.mdx"]: CsbM19Branches,
+  ["csb-git/csb-m19-branches.vi.mdx"]: CsbM19BranchesVi,
+  ["csb-git/csb-m19-ignore-hygiene.mdx"]: CsbM19IgnoreHygiene,
+  ["csb-git/csb-m19-ignore-hygiene.vi.mdx"]: CsbM19IgnoreHygieneVi,
+  ["csb-git/csb-checkpoint-m19.mdx"]: CsbCheckpointM19,
+  ["csb-git/csb-checkpoint-m19.vi.mdx"]: CsbCheckpointM19Vi,
+  ["csb-io/csb-m3-reading-input.mdx"]: CsbM3ReadingInput,
+  ["csb-io/csb-m3-reading-input.vi.mdx"]: CsbM3ReadingInputVi,
+  ["csb-io/csb-m3-parsing.mdx"]: CsbM3Parsing,
+  ["csb-io/csb-m3-parsing.vi.mdx"]: CsbM3ParsingVi,
+  ["csb-io/csb-m3-tryparse-validation.mdx"]: CsbM3TryparseValidation,
+  ["csb-io/csb-m3-tryparse-validation.vi.mdx"]: CsbM3TryparseValidationVi,
+  ["csb-io/csb-checkpoint-m3.mdx"]: CsbCheckpointM3,
+  ["csb-io/csb-checkpoint-m3.vi.mdx"]: CsbCheckpointM3Vi,
+  ["csb-linq/csb-m15-where-select.mdx"]: CsbM15WhereSelect,
+  ["csb-linq/csb-m15-where-select.vi.mdx"]: CsbM15WhereSelectVi,
+  ["csb-linq/csb-m15-order-group.mdx"]: CsbM15OrderGroup,
+  ["csb-linq/csb-m15-order-group.vi.mdx"]: CsbM15OrderGroupVi,
+  ["csb-linq/csb-m15-aggregates.mdx"]: CsbM15Aggregates,
+  ["csb-linq/csb-m15-aggregates.vi.mdx"]: CsbM15AggregatesVi,
+  ["csb-linq/csb-checkpoint-m15.mdx"]: CsbCheckpointM15,
+  ["csb-linq/csb-checkpoint-m15.vi.mdx"]: CsbCheckpointM15Vi,
+  ["csb-methods/csb-m5-declare.mdx"]: CsbM5Declare,
+  ["csb-methods/csb-m5-declare.vi.mdx"]: CsbM5DeclareVi,
+  ["csb-methods/csb-m5-params.mdx"]: CsbM5Params,
+  ["csb-methods/csb-m5-params.vi.mdx"]: CsbM5ParamsVi,
+  ["csb-methods/csb-m5-scope.mdx"]: CsbM5Scope,
+  ["csb-methods/csb-m5-scope.vi.mdx"]: CsbM5ScopeVi,
+  ["csb-methods/csb-checkpoint-m5.mdx"]: CsbCheckpointM5,
+  ["csb-methods/csb-checkpoint-m5.vi.mdx"]: CsbCheckpointM5Vi,
+  ["csb-models/csb-m11-enums.mdx"]: CsbM11Enums,
+  ["csb-models/csb-m11-enums.vi.mdx"]: CsbM11EnumsVi,
+  ["csb-models/csb-m11-records.mdx"]: CsbM11Records,
+  ["csb-models/csb-m11-records.vi.mdx"]: CsbM11RecordsVi,
+  ["csb-models/csb-m11-structs.mdx"]: CsbM11Structs,
+  ["csb-models/csb-m11-structs.vi.mdx"]: CsbM11StructsVi,
+  ["csb-models/csb-checkpoint-m11.mdx"]: CsbCheckpointM11,
+  ["csb-models/csb-checkpoint-m11.vi.mdx"]: CsbCheckpointM11Vi,
+  ["csb-oop/csb-m10-inheritance.mdx"]: CsbM10Inheritance,
+  ["csb-oop/csb-m10-inheritance.vi.mdx"]: CsbM10InheritanceVi,
+  ["csb-oop/csb-m10-polymorphism.mdx"]: CsbM10Polymorphism,
+  ["csb-oop/csb-m10-polymorphism.vi.mdx"]: CsbM10PolymorphismVi,
+  ["csb-oop/csb-m10-interfaces.mdx"]: CsbM10Interfaces,
+  ["csb-oop/csb-m10-interfaces.vi.mdx"]: CsbM10InterfacesVi,
+  ["csb-oop/csb-checkpoint-m10.mdx"]: CsbCheckpointM10,
+  ["csb-oop/csb-checkpoint-m10.vi.mdx"]: CsbCheckpointM10Vi,
+  ["csb-strings/csb-m6-index.mdx"]: CsbM6Index,
+  ["csb-strings/csb-m6-index.vi.mdx"]: CsbM6IndexVi,
+  ["csb-strings/csb-m6-api.mdx"]: CsbM6Api,
+  ["csb-strings/csb-m6-api.vi.mdx"]: CsbM6ApiVi,
+  ["csb-strings/csb-m6-char.mdx"]: CsbM6Char,
+  ["csb-strings/csb-m6-char.vi.mdx"]: CsbM6CharVi,
+  ["csb-strings/csb-checkpoint-m6.mdx"]: CsbCheckpointM6,
+  ["csb-strings/csb-checkpoint-m6.vi.mdx"]: CsbCheckpointM6Vi,
+  ["csb-testing/csb-m17-read-errors.mdx"]: CsbM17ReadErrors,
+  ["csb-testing/csb-m17-read-errors.vi.mdx"]: CsbM17ReadErrorsVi,
+  ["csb-testing/csb-m17-assertions.mdx"]: CsbM17Assertions,
+  ["csb-testing/csb-m17-assertions.vi.mdx"]: CsbM17AssertionsVi,
+  ["csb-testing/csb-m17-edge-cases.mdx"]: CsbM17EdgeCases,
+  ["csb-testing/csb-m17-edge-cases.vi.mdx"]: CsbM17EdgeCasesVi,
+  ["csb-testing/csb-checkpoint-m17.mdx"]: CsbCheckpointM17,
+  ["csb-testing/csb-checkpoint-m17.vi.mdx"]: CsbCheckpointM17Vi,
+  ["csb-types/csb-m2-variables.mdx"]: CsbM2Variables,
+  ["csb-types/csb-m2-variables.vi.mdx"]: CsbM2VariablesVi,
+  ["csb-types/csb-m2-numeric-types.mdx"]: CsbM2NumericTypes,
+  ["csb-types/csb-m2-numeric-types.vi.mdx"]: CsbM2NumericTypesVi,
+  ["csb-types/csb-m2-strings-chars.mdx"]: CsbM2StringsChars,
+  ["csb-types/csb-m2-strings-chars.vi.mdx"]: CsbM2StringsCharsVi,
+  ["csb-types/csb-m2-var-const-null.mdx"]: CsbM2VarConstNull,
+  ["csb-types/csb-m2-var-const-null.vi.mdx"]: CsbM2VarConstNullVi,
+  ["csb-types/csb-checkpoint-m2.mdx"]: CsbCheckpointM2,
+  ["csb-types/csb-checkpoint-m2.vi.mdx"]: CsbCheckpointM2Vi,
+  ["csb-welcome/csb-m1-what-is-csharp.mdx"]: CsbM1WhatIsCsharp,
+  ["csb-welcome/csb-m1-what-is-csharp.vi.mdx"]: CsbM1WhatIsCsharpVi,
+  ["csb-welcome/csb-m1-first-program.mdx"]: CsbM1FirstProgram,
+  ["csb-welcome/csb-m1-first-program.vi.mdx"]: CsbM1FirstProgramVi,
+  ["csb-welcome/csb-m1-how-grading-works.mdx"]: CsbM1HowGradingWorks,
+  ["csb-welcome/csb-m1-how-grading-works.vi.mdx"]: CsbM1HowGradingWorksVi,
+  ["csb-welcome/csb-checkpoint-m1.mdx"]: CsbCheckpointM1,
+  ["csb-welcome/csb-checkpoint-m1.vi.mdx"]: CsbCheckpointM1Vi,
+  ["csi-async/csi-async-basics.mdx"]: CsiAsyncBasics,
+  ["csi-async/csi-async-basics.vi.mdx"]: CsiAsyncBasicsVi,
+  ["csi-async/csi-cancellation-timeouts.mdx"]: CsiCancellationTimeouts,
+  ["csi-async/csi-cancellation-timeouts.vi.mdx"]: CsiCancellationTimeoutsVi,
+  ["csi-async/csi-async-streams.mdx"]: CsiAsyncStreams,
+  ["csi-async/csi-async-streams.vi.mdx"]: CsiAsyncStreamsVi,
+  ["csi-async/csi-checkpoint-m9.mdx"]: CsiCheckpointM9,
+  ["csi-async/csi-checkpoint-m9.vi.mdx"]: CsiCheckpointM9Vi,
+  ["csi-collections/csi-collection-costs.mdx"]: CsiCollectionCosts,
+  ["csi-collections/csi-collection-costs.vi.mdx"]: CsiCollectionCostsVi,
+  ["csi-collections/csi-choosing-structures.mdx"]: CsiChoosingStructures,
+  ["csi-collections/csi-choosing-structures.vi.mdx"]: CsiChoosingStructuresVi,
+  ["csi-collections/csi-checkpoint-m6.mdx"]: CsiCheckpointM6,
+  ["csi-collections/csi-checkpoint-m6.vi.mdx"]: CsiCheckpointM6Vi,
+  ["csi-concurrency/csi-threads-and-locks.mdx"]: CsiThreadsAndLocks,
+  ["csi-concurrency/csi-threads-and-locks.vi.mdx"]: CsiThreadsAndLocksVi,
+  ["csi-concurrency/csi-synchronization-patterns.mdx"]: CsiSynchronizationPatterns,
+  ["csi-concurrency/csi-synchronization-patterns.vi.mdx"]: CsiSynchronizationPatternsVi,
+  ["csi-concurrency/csi-checkpoint-m10.mdx"]: CsiCheckpointM10,
+  ["csi-concurrency/csi-checkpoint-m10.vi.mdx"]: CsiCheckpointM10Vi,
+  ["csi-delegates/csi-delegates-shapes.mdx"]: CsiDelegatesShapes,
+  ["csi-delegates/csi-delegates-shapes.vi.mdx"]: CsiDelegatesShapesVi,
+  ["csi-delegates/csi-closures-capture.mdx"]: CsiClosuresCapture,
+  ["csi-delegates/csi-closures-capture.vi.mdx"]: CsiClosuresCaptureVi,
+  ["csi-delegates/csi-composition-pipelines.mdx"]: CsiCompositionPipelines,
+  ["csi-delegates/csi-composition-pipelines.vi.mdx"]: CsiCompositionPipelinesVi,
+  ["csi-delegates/csi-checkpoint-m3.mdx"]: CsiCheckpointM3,
+  ["csi-delegates/csi-checkpoint-m3.vi.mdx"]: CsiCheckpointM3Vi,
+  ["csi-di/csi-dependency-inversion.mdx"]: CsiDependencyInversion,
+  ["csi-di/csi-dependency-inversion.vi.mdx"]: CsiDependencyInversionVi,
+  ["csi-di/csi-building-a-container.mdx"]: CsiBuildingAContainer,
+  ["csi-di/csi-building-a-container.vi.mdx"]: CsiBuildingAContainerVi,
+  ["csi-di/csi-checkpoint-m11.mdx"]: CsiCheckpointM11,
+  ["csi-di/csi-checkpoint-m11.vi.mdx"]: CsiCheckpointM11Vi,
+  ["csi-events/csi-events-encapsulation.mdx"]: CsiEventsEncapsulation,
+  ["csi-events/csi-events-encapsulation.vi.mdx"]: CsiEventsEncapsulationVi,
+  ["csi-events/csi-eventargs-and-lifetime.mdx"]: CsiEventargsAndLifetime,
+  ["csi-events/csi-eventargs-and-lifetime.vi.mdx"]: CsiEventargsAndLifetimeVi,
+  ["csi-events/csi-checkpoint-m4.mdx"]: CsiCheckpointM4,
+  ["csi-events/csi-checkpoint-m4.vi.mdx"]: CsiCheckpointM4Vi,
+  ["csi-generics/csi-constraints.mdx"]: CsiConstraints,
+  ["csi-generics/csi-constraints.vi.mdx"]: CsiConstraintsVi,
+  ["csi-generics/csi-variance.mdx"]: CsiVariance,
+  ["csi-generics/csi-variance.vi.mdx"]: CsiVarianceVi,
+  ["csi-generics/csi-checkpoint-m5.mdx"]: CsiCheckpointM5,
+  ["csi-generics/csi-checkpoint-m5.vi.mdx"]: CsiCheckpointM5Vi,
+  ["csi-iterators/csi-yield-semantics.mdx"]: CsiYieldSemantics,
+  ["csi-iterators/csi-yield-semantics.vi.mdx"]: CsiYieldSemanticsVi,
+  ["csi-iterators/csi-lazy-pipelines.mdx"]: CsiLazyPipelines,
+  ["csi-iterators/csi-lazy-pipelines.vi.mdx"]: CsiLazyPipelinesVi,
+  ["csi-iterators/csi-checkpoint-m7.mdx"]: CsiCheckpointM7,
+  ["csi-iterators/csi-checkpoint-m7.vi.mdx"]: CsiCheckpointM7Vi,
+  ["csi-linq/csi-operator-families.mdx"]: CsiOperatorFamilies,
+  ["csi-linq/csi-operator-families.vi.mdx"]: CsiOperatorFamiliesVi,
+  ["csi-linq/csi-execution-model.mdx"]: CsiExecutionModel,
+  ["csi-linq/csi-execution-model.vi.mdx"]: CsiExecutionModelVi,
+  ["csi-linq/csi-checkpoint-m8.mdx"]: CsiCheckpointM8,
+  ["csi-linq/csi-checkpoint-m8.vi.mdx"]: CsiCheckpointM8Vi,
+  ["csi-methods/csi-parameter-passing.mdx"]: CsiParameterPassing,
+  ["csi-methods/csi-parameter-passing.vi.mdx"]: CsiParameterPassingVi,
+  ["csi-methods/csi-overloads-and-members.mdx"]: CsiOverloadsAndMembers,
+  ["csi-methods/csi-overloads-and-members.vi.mdx"]: CsiOverloadsAndMembersVi,
+  ["csi-methods/csi-recursion-design.mdx"]: CsiRecursionDesign,
+  ["csi-methods/csi-recursion-design.vi.mdx"]: CsiRecursionDesignVi,
+  ["csi-methods/csi-checkpoint-m2.mdx"]: CsiCheckpointM2,
+  ["csi-methods/csi-checkpoint-m2.vi.mdx"]: CsiCheckpointM2Vi,
+  ["csi-modern-types/csi-type-semantics.mdx"]: CsiTypeSemantics,
+  ["csi-modern-types/csi-type-semantics.vi.mdx"]: CsiTypeSemanticsVi,
+  ["csi-modern-types/csi-nullability.mdx"]: CsiNullability,
+  ["csi-modern-types/csi-nullability.vi.mdx"]: CsiNullabilityVi,
+  ["csi-modern-types/csi-pattern-matching.mdx"]: CsiPatternMatching,
+  ["csi-modern-types/csi-pattern-matching.vi.mdx"]: CsiPatternMatchingVi,
+  ["csi-modern-types/csi-checkpoint-m1.mdx"]: CsiCheckpointM1,
+  ["csi-modern-types/csi-checkpoint-m1.vi.mdx"]: CsiCheckpointM1Vi,
+  ["hsg-vao-mon/hsg-m1-reading.mdx"]: HsgM1Reading,
+  ["hsg-vao-mon/hsg-m1-reading.vi.mdx"]: HsgM1ReadingVi,
+  ["hsg-vao-mon/hsg-m1-bridge.mdx"]: HsgM1Bridge,
+  ["hsg-vao-mon/hsg-m1-bridge.vi.mdx"]: HsgM1BridgeVi,
+  ["hsg-vao-mon/hsg-cp-m1.mdx"]: HsgCpM1,
+  ["hsg-vao-mon/hsg-cp-m1.vi.mdx"]: HsgCpM1Vi,
+  ["java-executors-vt/javaa-executor-lifecycle.mdx"]: JavaaExecutorLifecycle,
+  ["java-executors-vt/javaa-executor-lifecycle.vi.mdx"]: JavaaExecutorLifecycleVi,
+  ["java-executors-vt/javaa-cf-composition.mdx"]: JavaaCfComposition,
+  ["java-executors-vt/javaa-cf-composition.vi.mdx"]: JavaaCfCompositionVi,
+  ["java-executors-vt/javaa-virtual-threads.mdx"]: JavaaVirtualThreads,
+  ["java-executors-vt/javaa-virtual-threads.vi.mdx"]: JavaaVirtualThreadsVi,
+  ["java-executors-vt/javaa-checkpoint-m5.mdx"]: JavaaCheckpointM5,
+  ["java-executors-vt/javaa-checkpoint-m5.vi.mdx"]: JavaaCheckpointM5Vi,
+  ["java-jvm-bytecode/javaa-jvm-runtime.mdx"]: JavaaJvmRuntime,
+  ["java-jvm-bytecode/javaa-jvm-runtime.vi.mdx"]: JavaaJvmRuntimeVi,
+  ["java-jvm-bytecode/javaa-bytecode-model.mdx"]: JavaaBytecodeModel,
+  ["java-jvm-bytecode/javaa-bytecode-model.vi.mdx"]: JavaaBytecodeModelVi,
+  ["java-jvm-bytecode/javaa-stack-model.mdx"]: JavaaStackModel,
+  ["java-jvm-bytecode/javaa-stack-model.vi.mdx"]: JavaaStackModelVi,
+  ["java-jvm-bytecode/javaa-checkpoint-m2.mdx"]: JavaaCheckpointM2,
+  ["java-jvm-bytecode/javaa-checkpoint-m2.vi.mdx"]: JavaaCheckpointM2Vi,
+  ["java-locks-cas/javaa-reentrant-conditions.mdx"]: JavaaReentrantConditions,
+  ["java-locks-cas/javaa-reentrant-conditions.vi.mdx"]: JavaaReentrantConditionsVi,
+  ["java-locks-cas/javaa-chm-atomics.mdx"]: JavaaChmAtomics,
+  ["java-locks-cas/javaa-chm-atomics.vi.mdx"]: JavaaChmAtomicsVi,
+  ["java-locks-cas/javaa-cas-aba.mdx"]: JavaaCasAba,
+  ["java-locks-cas/javaa-cas-aba.vi.mdx"]: JavaaCasAbaVi,
+  ["java-locks-cas/javaa-checkpoint-m4.mdx"]: JavaaCheckpointM4,
+  ["java-locks-cas/javaa-checkpoint-m4.vi.mdx"]: JavaaCheckpointM4Vi,
+  ["java-memory-model/javaa-happens-before.mdx"]: JavaaHappensBefore,
+  ["java-memory-model/javaa-happens-before.vi.mdx"]: JavaaHappensBeforeVi,
+  ["java-memory-model/javaa-volatile-semantics.mdx"]: JavaaVolatileSemantics,
+  ["java-memory-model/javaa-volatile-semantics.vi.mdx"]: JavaaVolatileSemanticsVi,
+  ["java-memory-model/javaa-publication.mdx"]: JavaaPublication,
+  ["java-memory-model/javaa-publication.vi.mdx"]: JavaaPublicationVi,
+  ["java-memory-model/javaa-checkpoint-m3.mdx"]: JavaaCheckpointM3,
+  ["java-memory-model/javaa-checkpoint-m3.vi.mdx"]: JavaaCheckpointM3Vi,
+  ["java-object-model/javaa-init-order.mdx"]: JavaaInitOrder,
+  ["java-object-model/javaa-init-order.vi.mdx"]: JavaaInitOrderVi,
+  ["java-object-model/javaa-records-sealed.mdx"]: JavaaRecordsSealed,
+  ["java-object-model/javaa-records-sealed.vi.mdx"]: JavaaRecordsSealedVi,
+  ["java-object-model/javaa-aliasing.mdx"]: JavaaAliasing,
+  ["java-object-model/javaa-aliasing.vi.mdx"]: JavaaAliasingVi,
+  ["java-object-model/javaa-checkpoint-m1.mdx"]: JavaaCheckpointM1,
+  ["java-object-model/javaa-checkpoint-m1.vi.mdx"]: JavaaCheckpointM1Vi,
+  ["javaa-async-deadlines/javaa-async-executors.mdx"]: JavaaAsyncExecutors,
+  ["javaa-async-deadlines/javaa-async-executors.vi.mdx"]: JavaaAsyncExecutorsVi,
+  ["javaa-async-deadlines/javaa-exception-combinators.mdx"]: JavaaExceptionCombinators,
+  ["javaa-async-deadlines/javaa-exception-combinators.vi.mdx"]: JavaaExceptionCombinatorsVi,
+  ["javaa-async-deadlines/javaa-deadline-fanout.mdx"]: JavaaDeadlineFanout,
+  ["javaa-async-deadlines/javaa-deadline-fanout.vi.mdx"]: JavaaDeadlineFanoutVi,
+  ["javaa-async-deadlines/javaa-checkpoint-m12.mdx"]: JavaaCheckpointM12,
+  ["javaa-async-deadlines/javaa-checkpoint-m12.vi.mdx"]: JavaaCheckpointM12Vi,
+  ["javaa-capstone/javaa-capstone-architecture.mdx"]: JavaaCapstoneArchitecture,
+  ["javaa-capstone/javaa-capstone-architecture.vi.mdx"]: JavaaCapstoneArchitectureVi,
+  ["javaa-capstone/javaa-capstone-engines.mdx"]: JavaaCapstoneEngines,
+  ["javaa-capstone/javaa-capstone-engines.vi.mdx"]: JavaaCapstoneEnginesVi,
+  ["javaa-capstone/javaa-capstone-report.mdx"]: JavaaCapstoneReport,
+  ["javaa-capstone/javaa-capstone-report.vi.mdx"]: JavaaCapstoneReportVi,
+  ["javaa-capstone/javaa-checkpoint-m15.mdx"]: JavaaCheckpointM15,
+  ["javaa-capstone/javaa-checkpoint-m15.vi.mdx"]: JavaaCheckpointM15Vi,
+  ["javaa-files-nio/javaa-path-semantics.mdx"]: JavaaPathSemantics,
+  ["javaa-files-nio/javaa-path-semantics.vi.mdx"]: JavaaPathSemanticsVi,
+  ["javaa-files-nio/javaa-tree-walking.mdx"]: JavaaTreeWalking,
+  ["javaa-files-nio/javaa-tree-walking.vi.mdx"]: JavaaTreeWalkingVi,
+  ["javaa-files-nio/javaa-jsonl-journal.mdx"]: JavaaJsonlJournal,
+  ["javaa-files-nio/javaa-jsonl-journal.vi.mdx"]: JavaaJsonlJournalVi,
+  ["javaa-files-nio/javaa-checkpoint-m10.mdx"]: JavaaCheckpointM10,
+  ["javaa-files-nio/javaa-checkpoint-m10.vi.mdx"]: JavaaCheckpointM10Vi,
+  ["javaa-generics-type-system/javaa-generics-erasure.mdx"]: JavaaGenericsErasure,
+  ["javaa-generics-type-system/javaa-generics-erasure.vi.mdx"]: JavaaGenericsErasureVi,
+  ["javaa-generics-type-system/javaa-generics-wildcards.mdx"]: JavaaGenericsWildcards,
+  ["javaa-generics-type-system/javaa-generics-wildcards.vi.mdx"]: JavaaGenericsWildcardsVi,
+  ["javaa-generics-type-system/javaa-generics-selftypes.mdx"]: JavaaGenericsSelftypes,
+  ["javaa-generics-type-system/javaa-generics-selftypes.vi.mdx"]: JavaaGenericsSelftypesVi,
+  ["javaa-generics-type-system/javaa-checkpoint-m6.mdx"]: JavaaCheckpointM6,
+  ["javaa-generics-type-system/javaa-checkpoint-m6.vi.mdx"]: JavaaCheckpointM6Vi,
+  ["javaa-memory-gc/javaa-reachability.mdx"]: JavaaReachability,
+  ["javaa-memory-gc/javaa-reachability.vi.mdx"]: JavaaReachabilityVi,
+  ["javaa-memory-gc/javaa-allocation-identity.mdx"]: JavaaAllocationIdentity,
+  ["javaa-memory-gc/javaa-allocation-identity.vi.mdx"]: JavaaAllocationIdentityVi,
+  ["javaa-memory-gc/javaa-ttl-cache-design.mdx"]: JavaaTtlCacheDesign,
+  ["javaa-memory-gc/javaa-ttl-cache-design.vi.mdx"]: JavaaTtlCacheDesignVi,
+  ["javaa-memory-gc/javaa-checkpoint-m8.mdx"]: JavaaCheckpointM8,
+  ["javaa-memory-gc/javaa-checkpoint-m8.vi.mdx"]: JavaaCheckpointM8Vi,
+  ["javaa-observability/javaa-structured-logs.mdx"]: JavaaStructuredLogs,
+  ["javaa-observability/javaa-structured-logs.vi.mdx"]: JavaaStructuredLogsVi,
+  ["javaa-observability/javaa-metric-primitives.mdx"]: JavaaMetricPrimitives,
+  ["javaa-observability/javaa-metric-primitives.vi.mdx"]: JavaaMetricPrimitivesVi,
+  ["javaa-observability/javaa-incident-triage.mdx"]: JavaaIncidentTriage,
+  ["javaa-observability/javaa-incident-triage.vi.mdx"]: JavaaIncidentTriageVi,
+  ["javaa-observability/javaa-checkpoint-m14.mdx"]: JavaaCheckpointM14,
+  ["javaa-observability/javaa-checkpoint-m14.vi.mdx"]: JavaaCheckpointM14Vi,
+  ["javaa-perf-measure/javaa-nanotime-warmup.mdx"]: JavaaNanotimeWarmup,
+  ["javaa-perf-measure/javaa-nanotime-warmup.vi.mdx"]: JavaaNanotimeWarmupVi,
+  ["javaa-perf-measure/javaa-bounded-bytecode.mdx"]: JavaaBoundedBytecode,
+  ["javaa-perf-measure/javaa-bounded-bytecode.vi.mdx"]: JavaaBoundedBytecodeVi,
+  ["javaa-perf-measure/javaa-micro-harness.mdx"]: JavaaMicroHarness,
+  ["javaa-perf-measure/javaa-micro-harness.vi.mdx"]: JavaaMicroHarnessVi,
+  ["javaa-perf-measure/javaa-checkpoint-m9.mdx"]: JavaaCheckpointM9,
+  ["javaa-perf-measure/javaa-checkpoint-m9.vi.mdx"]: JavaaCheckpointM9Vi,
+  ["javaa-reflection-di/javaa-reflect-metadata.mdx"]: JavaaReflectMetadata,
+  ["javaa-reflection-di/javaa-reflect-metadata.vi.mdx"]: JavaaReflectMetadataVi,
+  ["javaa-reflection-di/javaa-annotations-runtime.mdx"]: JavaaAnnotationsRuntime,
+  ["javaa-reflection-di/javaa-annotations-runtime.vi.mdx"]: JavaaAnnotationsRuntimeVi,
+  ["javaa-reflection-di/javaa-di-container.mdx"]: JavaaDiContainer,
+  ["javaa-reflection-di/javaa-di-container.vi.mdx"]: JavaaDiContainerVi,
+  ["javaa-reflection-di/javaa-checkpoint-m7.mdx"]: JavaaCheckpointM7,
+  ["javaa-reflection-di/javaa-checkpoint-m7.vi.mdx"]: JavaaCheckpointM7Vi,
+  ["javaa-security-threats/javaa-canonical-validation.mdx"]: JavaaCanonicalValidation,
+  ["javaa-security-threats/javaa-canonical-validation.vi.mdx"]: JavaaCanonicalValidationVi,
+  ["javaa-security-threats/javaa-auth-primitives.mdx"]: JavaaAuthPrimitives,
+  ["javaa-security-threats/javaa-auth-primitives.vi.mdx"]: JavaaAuthPrimitivesVi,
+  ["javaa-security-threats/javaa-threat-modeling.mdx"]: JavaaThreatModeling,
+  ["javaa-security-threats/javaa-threat-modeling.vi.mdx"]: JavaaThreatModelingVi,
+  ["javaa-security-threats/javaa-checkpoint-m13.mdx"]: JavaaCheckpointM13,
+  ["javaa-security-threats/javaa-checkpoint-m13.vi.mdx"]: JavaaCheckpointM13Vi,
+  ["javaa-sockets-wire/javaa-socket-streams.mdx"]: JavaaSocketStreams,
+  ["javaa-sockets-wire/javaa-socket-streams.vi.mdx"]: JavaaSocketStreamsVi,
+  ["javaa-sockets-wire/javaa-socket-lifecycle.mdx"]: JavaaSocketLifecycle,
+  ["javaa-sockets-wire/javaa-socket-lifecycle.vi.mdx"]: JavaaSocketLifecycleVi,
+  ["javaa-sockets-wire/javaa-kv-protocol.mdx"]: JavaaKvProtocol,
+  ["javaa-sockets-wire/javaa-kv-protocol.vi.mdx"]: JavaaKvProtocolVi,
+  ["javaa-sockets-wire/javaa-checkpoint-m11.mdx"]: JavaaCheckpointM11,
+  ["javaa-sockets-wire/javaa-checkpoint-m11.vi.mdx"]: JavaaCheckpointM11Vi,
+  ["java-arrays-strings/arrays-and-bounds.mdx"]: ArraysAndBounds,
+  ["java-arrays-strings/arrays-and-bounds.vi.mdx"]: ArraysAndBoundsVi,
+  ["java-arrays-strings/string-toolbox.mdx"]: StringToolbox,
+  ["java-arrays-strings/string-toolbox.vi.mdx"]: StringToolboxVi,
+  ["java-arrays-strings/stringbuilder.mdx"]: Stringbuilder,
+  ["java-arrays-strings/stringbuilder.vi.mdx"]: StringbuilderVi,
+  ["java-arrays-strings/java-checkpoint-strings.mdx"]: JavaCheckpointStrings,
+  ["java-arrays-strings/java-checkpoint-strings.vi.mdx"]: JavaCheckpointStringsVi,
+  ["java-classes-objects/classes-objects-refs.mdx"]: ClassesObjectsRefs,
+  ["java-classes-objects/classes-objects-refs.vi.mdx"]: ClassesObjectsRefsVi,
+  ["java-classes-objects/java-constructors.mdx"]: JavaConstructors,
+  ["java-classes-objects/java-constructors.vi.mdx"]: JavaConstructorsVi,
+  ["java-classes-objects/encapsulation.mdx"]: Encapsulation,
+  ["java-classes-objects/encapsulation.vi.mdx"]: EncapsulationVi,
+  ["java-classes-objects/static-in-classes.mdx"]: StaticInClasses,
+  ["java-classes-objects/static-in-classes.vi.mdx"]: StaticInClassesVi,
+  ["java-classes-objects/java-checkpoint-oop.mdx"]: JavaCheckpointOop,
+  ["java-classes-objects/java-checkpoint-oop.vi.mdx"]: JavaCheckpointOopVi,
+  ["java-collections-generics/list-and-arraylist.mdx"]: ListAndArraylist,
+  ["java-collections-generics/list-and-arraylist.vi.mdx"]: ListAndArraylistVi,
+  ["java-collections-generics/set-map-deque.mdx"]: SetMapDeque,
+  ["java-collections-generics/set-map-deque.vi.mdx"]: SetMapDequeVi,
+  ["java-collections-generics/generics-bounds.mdx"]: GenericsBounds,
+  ["java-collections-generics/generics-bounds.vi.mdx"]: GenericsBoundsVi,
+  ["java-collections-generics/java-checkpoint-collections.mdx"]: JavaCheckpointCollections,
+  ["java-collections-generics/java-checkpoint-collections.vi.mdx"]: JavaCheckpointCollectionsVi,
+  ["java-conditions/if-else.mdx"]: IfElse,
+  ["java-conditions/if-else.vi.mdx"]: IfElseVi,
+  ["java-conditions/switch-and-expressions.mdx"]: SwitchAndExpressions,
+  ["java-conditions/switch-and-expressions.vi.mdx"]: SwitchAndExpressionsVi,
+  ["java-conditions/java-validation-patterns.mdx"]: JavaValidationPatterns,
+  ["java-conditions/java-validation-patterns.vi.mdx"]: JavaValidationPatternsVi,
+  ["java-conditions/java-checkpoint-conditions.mdx"]: JavaCheckpointConditions,
+  ["java-conditions/java-checkpoint-conditions.vi.mdx"]: JavaCheckpointConditionsVi,
+  ["java-data-modeling/enums.mdx"]: Enums,
+  ["java-data-modeling/enums.vi.mdx"]: EnumsVi,
+  ["java-data-modeling/records.mdx"]: Records,
+  ["java-data-modeling/records.vi.mdx"]: RecordsVi,
+  ["java-data-modeling/equality-hashcode.mdx"]: EqualityHashcode,
+  ["java-data-modeling/equality-hashcode.vi.mdx"]: EqualityHashcodeVi,
+  ["java-data-modeling/java-checkpoint-modeling.mdx"]: JavaCheckpointModeling,
+  ["java-data-modeling/java-checkpoint-modeling.vi.mdx"]: JavaCheckpointModelingVi,
+  ["java-exceptions-files/exceptions-basics.mdx"]: ExceptionsBasics,
+  ["java-exceptions-files/exceptions-basics.vi.mdx"]: ExceptionsBasicsVi,
+  ["java-exceptions-files/robust-parsing.mdx"]: RobustParsing,
+  ["java-exceptions-files/robust-parsing.vi.mdx"]: RobustParsingVi,
+  ["java-exceptions-files/java-custom-exceptions.mdx"]: JavaCustomExceptions,
+  ["java-exceptions-files/java-custom-exceptions.vi.mdx"]: JavaCustomExceptionsVi,
+  ["java-exceptions-files/java-checkpoint-exceptions.mdx"]: JavaCheckpointExceptions,
+  ["java-exceptions-files/java-checkpoint-exceptions.vi.mdx"]: JavaCheckpointExceptionsVi,
+  ["java-files-capstone/files-nio.mdx"]: FilesNio,
+  ["java-files-capstone/files-nio.vi.mdx"]: FilesNioVi,
+  ["java-files-capstone/java-capstone-brief.mdx"]: JavaCapstoneBrief,
+  ["java-files-capstone/java-capstone-brief.vi.mdx"]: JavaCapstoneBriefVi,
+  ["java-files-capstone/java-checkpoint-capstone.mdx"]: JavaCheckpointCapstone,
+  ["java-files-capstone/java-checkpoint-capstone.vi.mdx"]: JavaCheckpointCapstoneVi,
+  ["java-first-programs/what-is-java.mdx"]: WhatIsJava,
+  ["java-first-programs/what-is-java.vi.mdx"]: WhatIsJavaVi,
+  ["java-first-programs/printing-output.mdx"]: PrintingOutput,
+  ["java-first-programs/printing-output.vi.mdx"]: PrintingOutputVi,
+  ["java-first-programs/comments-style.mdx"]: CommentsStyle,
+  ["java-first-programs/comments-style.vi.mdx"]: CommentsStyleVi,
+  ["java-first-programs/compile-vs-runtime-errors.mdx"]: CompileVsRuntimeErrors,
+  ["java-first-programs/compile-vs-runtime-errors.vi.mdx"]: CompileVsRuntimeErrorsVi,
+  ["java-first-programs/java-checkpoint-first-programs.mdx"]: JavaCheckpointFirstPrograms,
+  ["java-first-programs/java-checkpoint-first-programs.vi.mdx"]: JavaCheckpointFirstProgramsVi,
+  ["java-loops/for-and-foreach.mdx"]: ForAndForeach,
+  ["java-loops/for-and-foreach.vi.mdx"]: ForAndForeachVi,
+  ["java-loops/while-do-and-jumps.mdx"]: WhileDoAndJumps,
+  ["java-loops/while-do-and-jumps.vi.mdx"]: WhileDoAndJumpsVi,
+  ["java-loops/accumulator-patterns.mdx"]: AccumulatorPatterns,
+  ["java-loops/accumulator-patterns.vi.mdx"]: AccumulatorPatternsVi,
+  ["java-loops/nested-loops.mdx"]: NestedLoops,
+  ["java-loops/nested-loops.vi.mdx"]: NestedLoopsVi,
+  ["java-loops/java-checkpoint-loops.mdx"]: JavaCheckpointLoops,
+  ["java-loops/java-checkpoint-loops.vi.mdx"]: JavaCheckpointLoopsVi,
+  ["java-methods/methods-parameters-returns.mdx"]: MethodsParametersReturns,
+  ["java-methods/methods-parameters-returns.vi.mdx"]: MethodsParametersReturnsVi,
+  ["java-methods/java-static-members.mdx"]: JavaStaticMembers,
+  ["java-methods/java-static-members.vi.mdx"]: JavaStaticMembersVi,
+  ["java-methods/overloading-varargs.mdx"]: OverloadingVarargs,
+  ["java-methods/overloading-varargs.vi.mdx"]: OverloadingVarargsVi,
+  ["java-methods/decomposition.mdx"]: Decomposition,
+  ["java-methods/decomposition.vi.mdx"]: DecompositionVi,
+  ["java-methods/java-checkpoint-methods.mdx"]: JavaCheckpointMethods,
+  ["java-methods/java-checkpoint-methods.vi.mdx"]: JavaCheckpointMethodsVi,
+  ["java-oop-design/java-inheritance.mdx"]: JavaInheritance,
+  ["java-oop-design/java-inheritance.vi.mdx"]: JavaInheritanceVi,
+  ["java-oop-design/overriding-polymorphism.mdx"]: OverridingPolymorphism,
+  ["java-oop-design/overriding-polymorphism.vi.mdx"]: OverridingPolymorphismVi,
+  ["java-oop-design/interfaces.mdx"]: Interfaces,
+  ["java-oop-design/interfaces.vi.mdx"]: InterfacesVi,
+  ["java-oop-design/java-composition.mdx"]: JavaComposition,
+  ["java-oop-design/java-composition.vi.mdx"]: JavaCompositionVi,
+  ["java-oop-design/java-checkpoint-oop-design.mdx"]: JavaCheckpointOopDesign,
+  ["java-oop-design/java-checkpoint-oop-design.vi.mdx"]: JavaCheckpointOopDesignVi,
+  ["java-streams-optional/lambdas-functional.mdx"]: LambdasFunctional,
+  ["java-streams-optional/lambdas-functional.vi.mdx"]: LambdasFunctionalVi,
+  ["java-streams-optional/stream-pipeline.mdx"]: StreamPipeline,
+  ["java-streams-optional/stream-pipeline.vi.mdx"]: StreamPipelineVi,
+  ["java-streams-optional/optional-boundaries.mdx"]: OptionalBoundaries,
+  ["java-streams-optional/optional-boundaries.vi.mdx"]: OptionalBoundariesVi,
+  ["java-streams-optional/java-checkpoint-streams.mdx"]: JavaCheckpointStreams,
+  ["java-streams-optional/java-checkpoint-streams.vi.mdx"]: JavaCheckpointStreamsVi,
+  ["java-testing-debug/why-tests.mdx"]: WhyTests,
+  ["java-testing-debug/why-tests.vi.mdx"]: WhyTestsVi,
+  ["java-testing-debug/edge-cases.mdx"]: EdgeCases,
+  ["java-testing-debug/edge-cases.vi.mdx"]: EdgeCasesVi,
+  ["java-testing-debug/java-debugging-method.mdx"]: JavaDebuggingMethod,
+  ["java-testing-debug/java-debugging-method.vi.mdx"]: JavaDebuggingMethodVi,
+  ["java-testing-debug/java-checkpoint-testing.mdx"]: JavaCheckpointTesting,
+  ["java-testing-debug/java-checkpoint-testing.vi.mdx"]: JavaCheckpointTestingVi,
+  ["java-types-operators/java-variables-assignment.mdx"]: JavaVariablesAssignment,
+  ["java-types-operators/java-variables-assignment.vi.mdx"]: JavaVariablesAssignmentVi,
+  ["java-types-operators/primitive-types.mdx"]: PrimitiveTypes,
+  ["java-types-operators/primitive-types.vi.mdx"]: PrimitiveTypesVi,
+  ["java-types-operators/conversion-casting.mdx"]: ConversionCasting,
+  ["java-types-operators/conversion-casting.vi.mdx"]: ConversionCastingVi,
+  ["java-types-operators/arithmetic-operators.mdx"]: ArithmeticOperators,
+  ["java-types-operators/arithmetic-operators.vi.mdx"]: ArithmeticOperatorsVi,
+  ["java-types-operators/boolean-logic.mdx"]: BooleanLogic,
+  ["java-types-operators/boolean-logic.vi.mdx"]: BooleanLogicVi,
+  ["java-types-operators/java-checkpoint-types.mdx"]: JavaCheckpointTypes,
+  ["java-types-operators/java-checkpoint-types.vi.mdx"]: JavaCheckpointTypesVi,
+  ["java-algorithms-inter/two-pointers-windows.mdx"]: TwoPointersWindows,
+  ["java-algorithms-inter/two-pointers-windows.vi.mdx"]: TwoPointersWindowsVi,
+  ["java-algorithms-inter/prefix-binary-search.mdx"]: PrefixBinarySearch,
+  ["java-algorithms-inter/prefix-binary-search.vi.mdx"]: PrefixBinarySearchVi,
+  ["java-algorithms-inter/maps-thinking.mdx"]: MapsThinking,
+  ["java-algorithms-inter/maps-thinking.vi.mdx"]: MapsThinkingVi,
+  ["java-algorithms-inter/javi-checkpoint-algorithms.mdx"]: JaviCheckpointAlgorithms,
+  ["java-algorithms-inter/javi-checkpoint-algorithms.vi.mdx"]: JaviCheckpointAlgorithmsVi,
+  ["java-architecture/layered-architecture.mdx"]: LayeredArchitecture,
+  ["java-architecture/layered-architecture.vi.mdx"]: LayeredArchitectureVi,
+  ["java-architecture/dto-boundaries.mdx"]: DtoBoundaries,
+  ["java-architecture/dto-boundaries.vi.mdx"]: DtoBoundariesVi,
+  ["java-architecture/wiring-refactoring.mdx"]: WiringRefactoring,
+  ["java-architecture/wiring-refactoring.vi.mdx"]: WiringRefactoringVi,
+  ["java-architecture/javi-checkpoint-architecture.mdx"]: JaviCheckpointArchitecture,
+  ["java-architecture/javi-checkpoint-architecture.vi.mdx"]: JaviCheckpointArchitectureVi,
+  ["java-async-http/completablefuture-composition.mdx"]: CompletablefutureComposition,
+  ["java-async-http/completablefuture-composition.vi.mdx"]: CompletablefutureCompositionVi,
+  ["java-async-http/http-transport-seam.mdx"]: HttpTransportSeam,
+  ["java-async-http/http-transport-seam.vi.mdx"]: HttpTransportSeamVi,
+  ["java-async-http/timeouts-retries.mdx"]: TimeoutsRetries,
+  ["java-async-http/timeouts-retries.vi.mdx"]: TimeoutsRetriesVi,
+  ["java-async-http/javi-checkpoint-async.mdx"]: JaviCheckpointAsync,
+  ["java-async-http/javi-checkpoint-async.vi.mdx"]: JaviCheckpointAsyncVi,
+  ["java-clean-code/naming-functions.mdx"]: NamingFunctions,
+  ["java-clean-code/naming-functions.vi.mdx"]: NamingFunctionsVi,
+  ["java-clean-code/smells-refactoring.mdx"]: SmellsRefactoring,
+  ["java-clean-code/smells-refactoring.vi.mdx"]: SmellsRefactoringVi,
+  ["java-clean-code/defensive-readability.mdx"]: DefensiveReadability,
+  ["java-clean-code/defensive-readability.vi.mdx"]: DefensiveReadabilityVi,
+  ["java-clean-code/javi-checkpoint-clean.mdx"]: JaviCheckpointClean,
+  ["java-clean-code/javi-checkpoint-clean.vi.mdx"]: JaviCheckpointCleanVi,
+  ["java-collections-advanced/comparator-composition.mdx"]: ComparatorComposition,
+  ["java-collections-advanced/comparator-composition.vi.mdx"]: ComparatorCompositionVi,
+  ["java-collections-advanced/deques-priority-queues.mdx"]: DequesPriorityQueues,
+  ["java-collections-advanced/deques-priority-queues.vi.mdx"]: DequesPriorityQueuesVi,
+  ["java-collections-advanced/collection-immutability.mdx"]: CollectionImmutability,
+  ["java-collections-advanced/collection-immutability.vi.mdx"]: CollectionImmutabilityVi,
+  ["java-collections-advanced/javi-checkpoint-collections.mdx"]: JaviCheckpointCollections,
+  ["java-collections-advanced/javi-checkpoint-collections.vi.mdx"]: JaviCheckpointCollectionsVi,
+  ["java-concurrency/threads-happens-before.mdx"]: ThreadsHappensBefore,
+  ["java-concurrency/threads-happens-before.vi.mdx"]: ThreadsHappensBeforeVi,
+  ["java-concurrency/races-visibility.mdx"]: RacesVisibility,
+  ["java-concurrency/races-visibility.vi.mdx"]: RacesVisibilityVi,
+  ["java-concurrency/executors-futures.mdx"]: ExecutorsFutures,
+  ["java-concurrency/executors-futures.vi.mdx"]: ExecutorsFuturesVi,
+  ["java-concurrency/javi-checkpoint-concurrency.mdx"]: JaviCheckpointConcurrency,
+  ["java-concurrency/javi-checkpoint-concurrency.vi.mdx"]: JaviCheckpointConcurrencyVi,
+  ["java-equality-immutability/identity-vs-equality.mdx"]: IdentityVsEquality,
+  ["java-equality-immutability/identity-vs-equality.vi.mdx"]: IdentityVsEqualityVi,
+  ["java-equality-immutability/equals-hashcode-contract.mdx"]: EqualsHashcodeContract,
+  ["java-equality-immutability/equals-hashcode-contract.vi.mdx"]: EqualsHashcodeContractVi,
+  ["java-equality-immutability/immutability-defensive-copies.mdx"]: ImmutabilityDefensiveCopies,
+  ["java-equality-immutability/immutability-defensive-copies.vi.mdx"]: ImmutabilityDefensiveCopiesVi,
+  ["java-equality-immutability/javi-checkpoint-contracts.mdx"]: JaviCheckpointContracts,
+  ["java-equality-immutability/javi-checkpoint-contracts.vi.mdx"]: JaviCheckpointContractsVi,
+  ["java-exception-architecture/try-with-resources.mdx"]: TryWithResources,
+  ["java-exception-architecture/try-with-resources.vi.mdx"]: TryWithResourcesVi,
+  ["java-exception-architecture/exception-boundaries.mdx"]: ExceptionBoundaries,
+  ["java-exception-architecture/exception-boundaries.vi.mdx"]: ExceptionBoundariesVi,
+  ["java-exception-architecture/custom-hierarchies.mdx"]: CustomHierarchies,
+  ["java-exception-architecture/custom-hierarchies.vi.mdx"]: CustomHierarchiesVi,
+  ["java-exception-architecture/javi-checkpoint-exceptions.mdx"]: JaviCheckpointExceptions,
+  ["java-exception-architecture/javi-checkpoint-exceptions.vi.mdx"]: JaviCheckpointExceptionsVi,
+  ["java-functional-deep/collectors-depth.mdx"]: CollectorsDepth,
+  ["java-functional-deep/collectors-depth.vi.mdx"]: CollectorsDepthVi,
+  ["java-functional-deep/functional-judgment.mdx"]: FunctionalJudgment,
+  ["java-functional-deep/functional-judgment.vi.mdx"]: FunctionalJudgmentVi,
+  ["java-functional-deep/javi-checkpoint-functional.mdx"]: JaviCheckpointFunctional,
+  ["java-functional-deep/javi-checkpoint-functional.vi.mdx"]: JaviCheckpointFunctionalVi,
+  ["java-generics-deep/generic-bounds.mdx"]: GenericBounds,
+  ["java-generics-deep/generic-bounds.vi.mdx"]: GenericBoundsVi,
+  ["java-generics-deep/wildcards-pecs.mdx"]: WildcardsPecs,
+  ["java-generics-deep/wildcards-pecs.vi.mdx"]: WildcardsPecsVi,
+  ["java-generics-deep/type-erasure.mdx"]: TypeErasure,
+  ["java-generics-deep/type-erasure.vi.mdx"]: TypeErasureVi,
+  ["java-generics-deep/javi-checkpoint-generics.mdx"]: JaviCheckpointGenerics,
+  ["java-generics-deep/javi-checkpoint-generics.vi.mdx"]: JaviCheckpointGenericsVi,
+  ["java-inter-capstone/javi-capstone-brief.mdx"]: JaviCapstoneBrief,
+  ["java-inter-capstone/javi-capstone-brief.vi.mdx"]: JaviCapstoneBriefVi,
+  ["java-inter-capstone/reading-the-system.mdx"]: ReadingTheSystem,
+  ["java-inter-capstone/reading-the-system.vi.mdx"]: ReadingTheSystemVi,
+  ["java-inter-capstone/javi-checkpoint-capstone.mdx"]: JaviCheckpointCapstone,
+  ["java-inter-capstone/javi-checkpoint-capstone.vi.mdx"]: JaviCheckpointCapstoneVi,
+  ["java-io-formats/nio2-path-files.mdx"]: Nio2PathFiles,
+  ["java-io-formats/nio2-path-files.vi.mdx"]: Nio2PathFilesVi,
+  ["java-io-formats/csv-parsing-rules.mdx"]: CsvParsingRules,
+  ["java-io-formats/csv-parsing-rules.vi.mdx"]: CsvParsingRulesVi,
+  ["java-io-formats/json-structure.mdx"]: JsonStructure,
+  ["java-io-formats/json-structure.vi.mdx"]: JsonStructureVi,
+  ["java-io-formats/javi-checkpoint-io.mdx"]: JaviCheckpointIo,
+  ["java-io-formats/javi-checkpoint-io.vi.mdx"]: JaviCheckpointIoVi,
+  ["java-oop-solid/design-to-contracts.mdx"]: DesignToContracts,
+  ["java-oop-solid/design-to-contracts.vi.mdx"]: DesignToContractsVi,
+  ["java-oop-solid/sealed-hierarchies.mdx"]: SealedHierarchies,
+  ["java-oop-solid/sealed-hierarchies.vi.mdx"]: SealedHierarchiesVi,
+  ["java-oop-solid/composition-delegation.mdx"]: CompositionDelegation,
+  ["java-oop-solid/composition-delegation.vi.mdx"]: CompositionDelegationVi,
+  ["java-oop-solid/javi-checkpoint-oop.mdx"]: JaviCheckpointOop,
+  ["java-oop-solid/javi-checkpoint-oop.vi.mdx"]: JaviCheckpointOopVi,
+  ["java-persistence/javi-repository-pattern.mdx"]: JaviRepositoryPattern,
+  ["java-persistence/javi-repository-pattern.vi.mdx"]: JaviRepositoryPatternVi,
+  ["java-persistence/jdbc-shape.mdx"]: JdbcShape,
+  ["java-persistence/jdbc-shape.vi.mdx"]: JdbcShapeVi,
+  ["java-persistence/relations-indexes.mdx"]: RelationsIndexes,
+  ["java-persistence/relations-indexes.vi.mdx"]: RelationsIndexesVi,
+  ["java-persistence/javi-checkpoint-persistence.mdx"]: JaviCheckpointPersistence,
+  ["java-persistence/javi-checkpoint-persistence.vi.mdx"]: JaviCheckpointPersistenceVi,
+  ["java-testing-deep/aaa-discipline.mdx"]: AaaDiscipline,
+  ["java-testing-deep/aaa-discipline.vi.mdx"]: AaaDisciplineVi,
+  ["java-testing-deep/seams-doubles.mdx"]: SeamsDoubles,
+  ["java-testing-deep/seams-doubles.vi.mdx"]: SeamsDoublesVi,
+  ["java-testing-deep/edge-determinism.mdx"]: EdgeDeterminism,
+  ["java-testing-deep/edge-determinism.vi.mdx"]: EdgeDeterminismVi,
+  ["java-testing-deep/javi-checkpoint-testing.mdx"]: JaviCheckpointTesting,
+  ["java-testing-deep/javi-checkpoint-testing.vi.mdx"]: JaviCheckpointTestingVi,
+  ["advanced-testing/test-strategy.mdx"]: TestStrategy,
+  ["advanced-testing/test-strategy.vi.mdx"]: TestStrategyVi,
+  ["advanced-testing/property-and-contracts.mdx"]: PropertyAndContracts,
+  ["advanced-testing/property-and-contracts.vi.mdx"]: PropertyAndContractsVi,
+  ["advanced-testing/testing-in-production-truths.mdx"]: TestingInProductionTruths,
+  ["advanced-testing/testing-in-production-truths.vi.mdx"]: TestingInProductionTruthsVi,
+  ["advanced-testing/advanced-checkpoint-testing.mdx"]: AdvancedCheckpointTesting,
+  ["advanced-testing/advanced-checkpoint-testing.vi.mdx"]: AdvancedCheckpointTestingVi,
+  ["advanced-typing/typing-philosophy.mdx"]: TypingPhilosophy,
+  ["advanced-typing/typing-philosophy.vi.mdx"]: TypingPhilosophyVi,
+  ["advanced-typing/generics-variance.mdx"]: GenericsVariance,
+  ["advanced-typing/generics-variance.vi.mdx"]: GenericsVarianceVi,
+  ["advanced-typing/protocols-overloads.mdx"]: ProtocolsOverloads,
+  ["advanced-typing/protocols-overloads.vi.mdx"]: ProtocolsOverloadsVi,
+  ["advanced-typing/typeddict-paramspec.mdx"]: TypeddictParamspec,
+  ["advanced-typing/typeddict-paramspec.vi.mdx"]: TypeddictParamspecVi,
+  ["advanced-typing/advanced-checkpoint-typing.mdx"]: AdvancedCheckpointTyping,
+  ["advanced-typing/advanced-checkpoint-typing.vi.mdx"]: AdvancedCheckpointTypingVi,
+  ["architecture-patterns/coupling-boundaries.mdx"]: CouplingBoundaries,
+  ["architecture-patterns/coupling-boundaries.vi.mdx"]: CouplingBoundariesVi,
+  ["architecture-patterns/ports-adapters.mdx"]: PortsAdapters,
+  ["architecture-patterns/ports-adapters.vi.mdx"]: PortsAdaptersVi,
+  ["architecture-patterns/dependency-injection.mdx"]: DependencyInjection,
+  ["architecture-patterns/dependency-injection.vi.mdx"]: DependencyInjectionVi,
+  ["architecture-patterns/advanced-checkpoint-architecture.mdx"]: AdvancedCheckpointArchitecture,
+  ["architecture-patterns/advanced-checkpoint-architecture.vi.mdx"]: AdvancedCheckpointArchitectureVi,
+  ["capstone-production-platform/advanced-capstone-brief.mdx"]: AdvancedCapstoneBrief,
+  ["capstone-production-platform/advanced-capstone-brief.vi.mdx"]: AdvancedCapstoneBriefVi,
+  ["capstone-production-platform/capstone-design-worksheet.mdx"]: CapstoneDesignWorksheet,
+  ["capstone-production-platform/capstone-design-worksheet.vi.mdx"]: CapstoneDesignWorksheetVi,
+  ["capstone-production-platform/advanced-checkpoint-capstone.mdx"]: AdvancedCheckpointCapstone,
+  ["capstone-production-platform/advanced-checkpoint-capstone.vi.mdx"]: AdvancedCheckpointCapstoneVi,
+  ["concurrency-parallelism/threads-gil.mdx"]: ThreadsGil,
+  ["concurrency-parallelism/threads-gil.vi.mdx"]: ThreadsGilVi,
+  ["concurrency-parallelism/pools-executors.mdx"]: PoolsExecutors,
+  ["concurrency-parallelism/pools-executors.vi.mdx"]: PoolsExecutorsVi,
+  ["concurrency-parallelism/synchronization-primitives.mdx"]: SynchronizationPrimitives,
+  ["concurrency-parallelism/synchronization-primitives.vi.mdx"]: SynchronizationPrimitivesVi,
+  ["concurrency-parallelism/model-choice.mdx"]: ModelChoice,
+  ["concurrency-parallelism/model-choice.vi.mdx"]: ModelChoiceVi,
+  ["concurrency-parallelism/advanced-checkpoint-concurrency.mdx"]: AdvancedCheckpointConcurrency,
+  ["concurrency-parallelism/advanced-checkpoint-concurrency.vi.mdx"]: AdvancedCheckpointConcurrencyVi,
+  ["cpython-internals/bytecode-frames.mdx"]: BytecodeFrames,
+  ["cpython-internals/bytecode-frames.vi.mdx"]: BytecodeFramesVi,
+  ["cpython-internals/gc-refcounting.mdx"]: GcRefcounting,
+  ["cpython-internals/gc-refcounting.vi.mdx"]: GcRefcountingVi,
+  ["cpython-internals/import-system.mdx"]: ImportSystem,
+  ["cpython-internals/import-system.vi.mdx"]: ImportSystemVi,
+  ["cpython-internals/advanced-checkpoint-internals.mdx"]: AdvancedCheckpointInternals,
+  ["cpython-internals/advanced-checkpoint-internals.vi.mdx"]: AdvancedCheckpointInternalsVi,
+  ["data-model-protocols/datamodel-attribute-lookup.mdx"]: DatamodelAttributeLookup,
+  ["data-model-protocols/datamodel-attribute-lookup.vi.mdx"]: DatamodelAttributeLookupVi,
+  ["data-model-protocols/descriptors.mdx"]: Descriptors,
+  ["data-model-protocols/descriptors.vi.mdx"]: DescriptorsVi,
+  ["data-model-protocols/mro-cooperative-inheritance.mdx"]: MroCooperativeInheritance,
+  ["data-model-protocols/mro-cooperative-inheritance.vi.mdx"]: MroCooperativeInheritanceVi,
+  ["data-model-protocols/protocols-slots.mdx"]: ProtocolsSlots,
+  ["data-model-protocols/protocols-slots.vi.mdx"]: ProtocolsSlotsVi,
+  ["data-model-protocols/advanced-checkpoint-datamodel.mdx"]: AdvancedCheckpointDatamodel,
+  ["data-model-protocols/advanced-checkpoint-datamodel.vi.mdx"]: AdvancedCheckpointDatamodelVi,
+  ["databases-data-access/relational-thinking.mdx"]: RelationalThinking,
+  ["databases-data-access/relational-thinking.vi.mdx"]: RelationalThinkingVi,
+  ["databases-data-access/sql-and-transactions.mdx"]: SqlAndTransactions,
+  ["databases-data-access/sql-and-transactions.vi.mdx"]: SqlAndTransactionsVi,
+  ["databases-data-access/data-access-architecture.mdx"]: DataAccessArchitecture,
+  ["databases-data-access/data-access-architecture.vi.mdx"]: DataAccessArchitectureVi,
+  ["databases-data-access/advanced-checkpoint-databases.mdx"]: AdvancedCheckpointDatabases,
+  ["databases-data-access/advanced-checkpoint-databases.vi.mdx"]: AdvancedCheckpointDatabasesVi,
+  ["distributed-systems/why-distributed-fails.mdx"]: WhyDistributedFails,
+  ["distributed-systems/why-distributed-fails.vi.mdx"]: WhyDistributedFailsVi,
+  ["distributed-systems/queues-and-workers.mdx"]: QueuesAndWorkers,
+  ["distributed-systems/queues-and-workers.vi.mdx"]: QueuesAndWorkersVi,
+  ["distributed-systems/resilience-patterns.mdx"]: ResiliencePatterns,
+  ["distributed-systems/resilience-patterns.vi.mdx"]: ResiliencePatternsVi,
+  ["distributed-systems/advanced-checkpoint-distributed.mdx"]: AdvancedCheckpointDistributed,
+  ["distributed-systems/advanced-checkpoint-distributed.vi.mdx"]: AdvancedCheckpointDistributedVi,
+  ["metaprogramming/decorators-deep.mdx"]: DecoratorsDeep,
+  ["metaprogramming/decorators-deep.vi.mdx"]: DecoratorsDeepVi,
+  ["metaprogramming/class-hooks-metaclasses.mdx"]: ClassHooksMetaclasses,
+  ["metaprogramming/class-hooks-metaclasses.vi.mdx"]: ClassHooksMetaclassesVi,
+  ["metaprogramming/registries-plugins.mdx"]: RegistriesPlugins,
+  ["metaprogramming/registries-plugins.vi.mdx"]: RegistriesPluginsVi,
+  ["metaprogramming/advanced-checkpoint-metaprogramming.mdx"]: AdvancedCheckpointMetaprogramming,
+  ["metaprogramming/advanced-checkpoint-metaprogramming.vi.mdx"]: AdvancedCheckpointMetaprogrammingVi,
+  ["performance-engineering/measure-first.mdx"]: MeasureFirst,
+  ["performance-engineering/measure-first.vi.mdx"]: MeasureFirstVi,
+  ["performance-engineering/profiling-toolkit.mdx"]: ProfilingToolkit,
+  ["performance-engineering/profiling-toolkit.vi.mdx"]: ProfilingToolkitVi,
+  ["performance-engineering/algorithmic-wins.mdx"]: AlgorithmicWins,
+  ["performance-engineering/algorithmic-wins.vi.mdx"]: AlgorithmicWinsVi,
+  ["performance-engineering/memory-streaming.mdx"]: MemoryStreaming,
+  ["performance-engineering/memory-streaming.vi.mdx"]: MemoryStreamingVi,
+  ["performance-engineering/advanced-checkpoint-performance.mdx"]: AdvancedCheckpointPerformance,
+  ["performance-engineering/advanced-checkpoint-performance.vi.mdx"]: AdvancedCheckpointPerformanceVi,
+  ["production-apis/api-design-contracts.mdx"]: ApiDesignContracts,
+  ["production-apis/api-design-contracts.vi.mdx"]: ApiDesignContractsVi,
+  ["production-apis/production-concerns.mdx"]: ProductionConcerns,
+  ["production-apis/production-concerns.vi.mdx"]: ProductionConcernsVi,
+  ["production-apis/validation-and-errors.mdx"]: ValidationAndErrors,
+  ["production-apis/validation-and-errors.vi.mdx"]: ValidationAndErrorsVi,
+  ["production-apis/advanced-checkpoint-apis.mdx"]: AdvancedCheckpointApis,
+  ["production-apis/advanced-checkpoint-apis.vi.mdx"]: AdvancedCheckpointApisVi,
+  ["production-tooling/packaging-and-entry-points.mdx"]: PackagingAndEntryPoints,
+  ["production-tooling/packaging-and-entry-points.vi.mdx"]: PackagingAndEntryPointsVi,
+  ["production-tooling/systems-programming.mdx"]: SystemsProgramming,
+  ["production-tooling/systems-programming.vi.mdx"]: SystemsProgrammingVi,
+  ["production-tooling/advanced-observability.mdx"]: AdvancedObservability,
+  ["production-tooling/advanced-observability.vi.mdx"]: AdvancedObservabilityVi,
+  ["production-tooling/advanced-checkpoint-production.mdx"]: AdvancedCheckpointProduction,
+  ["production-tooling/advanced-checkpoint-production.vi.mdx"]: AdvancedCheckpointProductionVi,
+  ["security-engineering/advanced-threat-modeling.mdx"]: AdvancedThreatModeling,
+  ["security-engineering/advanced-threat-modeling.vi.mdx"]: AdvancedThreatModelingVi,
+  ["security-engineering/injection-and-encoding.mdx"]: InjectionAndEncoding,
+  ["security-engineering/injection-and-encoding.vi.mdx"]: InjectionAndEncodingVi,
+  ["security-engineering/auth-secrets-hardening.mdx"]: AuthSecretsHardening,
+  ["security-engineering/auth-secrets-hardening.vi.mdx"]: AuthSecretsHardeningVi,
+  ["security-engineering/advanced-checkpoint-security.mdx"]: AdvancedCheckpointSecurity,
+  ["security-engineering/advanced-checkpoint-security.vi.mdx"]: AdvancedCheckpointSecurityVi,
+  ["structured-async/event-loop-tasks.mdx"]: EventLoopTasks,
+  ["structured-async/event-loop-tasks.vi.mdx"]: EventLoopTasksVi,
+  ["structured-async/cancellation-timeouts.mdx"]: CancellationTimeouts,
+  ["structured-async/cancellation-timeouts.vi.mdx"]: CancellationTimeoutsVi,
+  ["structured-async/async-protocol-patterns.mdx"]: AsyncProtocolPatterns,
+  ["structured-async/async-protocol-patterns.vi.mdx"]: AsyncProtocolPatternsVi,
+  ["structured-async/advanced-checkpoint-async.mdx"]: AdvancedCheckpointAsync,
+  ["structured-async/advanced-checkpoint-async.vi.mdx"]: AdvancedCheckpointAsyncVi,
+  ["capstone-personal-finance-cli/capstone-finance-brief.mdx"]: CapstoneFinanceBrief,
+  ["capstone-personal-finance-cli/capstone-finance-brief.vi.mdx"]: CapstoneFinanceBriefVi,
+  ["capstone-personal-finance-cli/capstone-finance-milestones.mdx"]: CapstoneFinanceMilestones,
+  ["capstone-personal-finance-cli/capstone-finance-milestones.vi.mdx"]: CapstoneFinanceMilestonesVi,
+  ["capstone-personal-finance-cli/capstone-finance-ship.mdx"]: CapstoneFinanceShip,
+  ["capstone-personal-finance-cli/capstone-finance-ship.vi.mdx"]: CapstoneFinanceShipVi,
+  ["capstone-personal-finance-cli/final-readiness.mdx"]: FinalReadiness,
+  ["capstone-personal-finance-cli/final-readiness.vi.mdx"]: FinalReadinessVi,
+  ["command-line-applications/cli-input-menus.mdx"]: CliInputMenus,
+  ["command-line-applications/cli-input-menus.vi.mdx"]: CliInputMenusVi,
+  ["command-line-applications/argparse-lite.mdx"]: ArgparseLite,
+  ["command-line-applications/argparse-lite.vi.mdx"]: ArgparseLiteVi,
+  ["command-line-applications/organizing-cli-apps.mdx"]: OrganizingCliApps,
+  ["command-line-applications/organizing-cli-apps.vi.mdx"]: OrganizingCliAppsVi,
+  ["environments-and-packages/why-dependencies.mdx"]: WhyDependencies,
+  ["environments-and-packages/why-dependencies.vi.mdx"]: WhyDependenciesVi,
+  ["environments-and-packages/venv.mdx"]: Venv,
+  ["environments-and-packages/venv.vi.mdx"]: VenvVi,
+  ["environments-and-packages/pip-requirements.mdx"]: PipRequirements,
+  ["environments-and-packages/pip-requirements.vi.mdx"]: PipRequirementsVi,
+  ["errors-and-debugging/tracebacks-try-except.mdx"]: TracebacksTryExcept,
+  ["errors-and-debugging/tracebacks-try-except.vi.mdx"]: TracebacksTryExceptVi,
+  ["errors-and-debugging/else-finally-raise.mdx"]: ElseFinallyRaise,
+  ["errors-and-debugging/else-finally-raise.vi.mdx"]: ElseFinallyRaiseVi,
+  ["errors-and-debugging/defensive-programming.mdx"]: DefensiveProgramming,
+  ["errors-and-debugging/defensive-programming.vi.mdx"]: DefensiveProgrammingVi,
+  ["errors-and-debugging/py-debugging-method.mdx"]: PyDebuggingMethod,
+  ["errors-and-debugging/py-debugging-method.vi.mdx"]: PyDebuggingMethodVi,
+  ["errors-and-debugging/checkpoint-functions-errors.mdx"]: CheckpointFunctionsErrors,
+  ["errors-and-debugging/checkpoint-functions-errors.vi.mdx"]: CheckpointFunctionsErrorsVi,
+  ["files-paths-and-data/reading-files.mdx"]: ReadingFiles,
+  ["files-paths-and-data/reading-files.vi.mdx"]: ReadingFilesVi,
+  ["files-paths-and-data/writing-files-with.mdx"]: WritingFilesWith,
+  ["files-paths-and-data/writing-files-with.vi.mdx"]: WritingFilesWithVi,
+  ["files-paths-and-data/csv-basics.mdx"]: CsvBasics,
+  ["files-paths-and-data/csv-basics.vi.mdx"]: CsvBasicsVi,
+  ["files-paths-and-data/json-persistence.mdx"]: JsonPersistence,
+  ["files-paths-and-data/json-persistence.vi.mdx"]: JsonPersistenceVi,
+  ["functions/defining-functions.mdx"]: DefiningFunctions,
+  ["functions/defining-functions.vi.mdx"]: DefiningFunctionsVi,
+  ["functions/defaults-scope-docstrings.mdx"]: DefaultsScopeDocstrings,
+  ["functions/defaults-scope-docstrings.vi.mdx"]: DefaultsScopeDocstringsVi,
+  ["functions/refactoring-decomposition.mdx"]: RefactoringDecomposition,
+  ["functions/refactoring-decomposition.vi.mdx"]: RefactoringDecompositionVi,
+  ["lists-and-collections/lists.mdx"]: Lists,
+  ["lists-and-collections/lists.vi.mdx"]: ListsVi,
+  ["lists-and-collections/tuples-sets.mdx"]: TuplesSets,
+  ["lists-and-collections/tuples-sets.vi.mdx"]: TuplesSetsVi,
+  ["lists-and-collections/dictionaries.mdx"]: Dictionaries,
+  ["lists-and-collections/dictionaries.vi.mdx"]: DictionariesVi,
+  ["lists-and-collections/nested-collections.mdx"]: NestedCollections,
+  ["lists-and-collections/nested-collections.vi.mdx"]: NestedCollectionsVi,
+  ["loops/for-loops.mdx"]: ForLoops,
+  ["loops/for-loops.vi.mdx"]: ForLoopsVi,
+  ["loops/range-while.mdx"]: RangeWhile,
+  ["loops/range-while.vi.mdx"]: RangeWhileVi,
+  ["loops/break-continue-accumulators.mdx"]: BreakContinueAccumulators,
+  ["loops/break-continue-accumulators.vi.mdx"]: BreakContinueAccumulatorsVi,
+  ["loops/checkpoint-collections-control.mdx"]: CheckpointCollectionsControl,
+  ["loops/checkpoint-collections-control.vi.mdx"]: CheckpointCollectionsControlVi,
+  ["making-decisions/if-elif-else.mdx"]: IfElifElse,
+  ["making-decisions/if-elif-else.vi.mdx"]: IfElifElseVi,
+  ["making-decisions/truthiness-boolean-logic.mdx"]: TruthinessBooleanLogic,
+  ["making-decisions/truthiness-boolean-logic.vi.mdx"]: TruthinessBooleanLogicVi,
+  ["making-decisions/validation-patterns.mdx"]: ValidationPatterns,
+  ["making-decisions/validation-patterns.vi.mdx"]: ValidationPatternsVi,
+  ["modules-and-standard-library/imports-modules.mdx"]: ImportsModules,
+  ["modules-and-standard-library/imports-modules.vi.mdx"]: ImportsModulesVi,
+  ["modules-and-standard-library/creating-modules-name.mdx"]: CreatingModulesName,
+  ["modules-and-standard-library/creating-modules-name.vi.mdx"]: CreatingModulesNameVi,
+  ["modules-and-standard-library/stdlib-tour.mdx"]: StdlibTour,
+  ["modules-and-standard-library/stdlib-tour.vi.mdx"]: StdlibTourVi,
+  ["modules-and-standard-library/stdlib-tour-2.mdx"]: StdlibTour2,
+  ["modules-and-standard-library/stdlib-tour-2.vi.mdx"]: StdlibTour2Vi,
+  ["modules-and-standard-library/checkpoint-files-modules.mdx"]: CheckpointFilesModules,
+  ["modules-and-standard-library/checkpoint-files-modules.vi.mdx"]: CheckpointFilesModulesVi,
+  ["problem-solving-fundamentals/decompose-inputs-outputs.mdx"]: DecomposeInputsOutputs,
+  ["problem-solving-fundamentals/decompose-inputs-outputs.vi.mdx"]: DecomposeInputsOutputsVi,
+  ["problem-solving-fundamentals/pseudocode-skills.mdx"]: PseudocodeSkills,
+  ["problem-solving-fundamentals/pseudocode-skills.vi.mdx"]: PseudocodeSkillsVi,
+  ["problem-solving-fundamentals/complexity-ai.mdx"]: ComplexityAi,
+  ["problem-solving-fundamentals/complexity-ai.vi.mdx"]: ComplexityAiVi,
+  ["problem-solving-fundamentals/checkpoint-problem-solving.mdx"]: CheckpointProblemSolving,
+  ["problem-solving-fundamentals/checkpoint-problem-solving.vi.mdx"]: CheckpointProblemSolvingVi,
+  ["python-and-your-first-programs/what-python-is.mdx"]: WhatPythonIs,
+  ["python-and-your-first-programs/what-python-is.vi.mdx"]: WhatPythonIsVi,
+  ["python-and-your-first-programs/running-python.mdx"]: RunningPython,
+  ["python-and-your-first-programs/running-python.vi.mdx"]: RunningPythonVi,
+  ["python-and-your-first-programs/first-programs.mdx"]: FirstPrograms,
+  ["python-and-your-first-programs/first-programs.vi.mdx"]: FirstProgramsVi,
+  ["python-and-your-first-programs/reading-errors.mdx"]: ReadingErrors,
+  ["python-and-your-first-programs/reading-errors.vi.mdx"]: ReadingErrorsVi,
+  ["testing-and-code-quality/why-testing-assertions.mdx"]: WhyTestingAssertions,
+  ["testing-and-code-quality/why-testing-assertions.vi.mdx"]: WhyTestingAssertionsVi,
+  ["testing-and-code-quality/basic-automated-tests.mdx"]: BasicAutomatedTests,
+  ["testing-and-code-quality/basic-automated-tests.vi.mdx"]: BasicAutomatedTestsVi,
+  ["testing-and-code-quality/readable-code.mdx"]: ReadableCode,
+  ["testing-and-code-quality/readable-code.vi.mdx"]: ReadableCodeVi,
+  ["variables-and-data-types/variables-assignment.mdx"]: VariablesAssignment,
+  ["variables-and-data-types/variables-assignment.vi.mdx"]: VariablesAssignmentVi,
+  ["variables-and-data-types/numbers-booleans-none.mdx"]: NumbersBooleansNone,
+  ["variables-and-data-types/numbers-booleans-none.vi.mdx"]: NumbersBooleansNoneVi,
+  ["variables-and-data-types/operators-precedence.mdx"]: OperatorsPrecedence,
+  ["variables-and-data-types/operators-precedence.vi.mdx"]: OperatorsPrecedenceVi,
+  ["variables-and-data-types/checkpoint-fundamentals.mdx"]: CheckpointFundamentals,
+  ["variables-and-data-types/checkpoint-fundamentals.vi.mdx"]: CheckpointFundamentalsVi,
+  ["working-with-strings/string-basics-indexing.mdx"]: StringBasicsIndexing,
+  ["working-with-strings/string-basics-indexing.vi.mdx"]: StringBasicsIndexingVi,
+  ["working-with-strings/slicing.mdx"]: Slicing,
+  ["working-with-strings/slicing.vi.mdx"]: SlicingVi,
+  ["working-with-strings/string-methods.mdx"]: StringMethods,
+  ["working-with-strings/string-methods.vi.mdx"]: StringMethodsVi,
+  ["working-with-strings/f-strings-formatting.mdx"]: FStringsFormatting,
+  ["working-with-strings/f-strings-formatting.vi.mdx"]: FStringsFormattingVi,
+  ["capstone-cli-app/capstone-brief.mdx"]: CapstoneBrief,
+  ["capstone-cli-app/capstone-brief.vi.mdx"]: CapstoneBriefVi,
+  ["concurrent-async/sync-vs-async.mdx"]: SyncVsAsync,
+  ["concurrent-async/sync-vs-async.vi.mdx"]: SyncVsAsyncVi,
+  ["concurrent-async/coroutines-tasks.mdx"]: CoroutinesTasks,
+  ["concurrent-async/coroutines-tasks.vi.mdx"]: CoroutinesTasksVi,
+  ["concurrent-async/gather-timeouts.mdx"]: GatherTimeouts,
+  ["concurrent-async/gather-timeouts.vi.mdx"]: GatherTimeoutsVi,
+  ["concurrent-async/checkpoint-async-collector.mdx"]: CheckpointAsyncCollector,
+  ["concurrent-async/checkpoint-async-collector.vi.mdx"]: CheckpointAsyncCollectorVi,
+  ["data-model-iteration/iterators.mdx"]: Iterators,
+  ["data-model-iteration/iterators.vi.mdx"]: IteratorsVi,
+  ["data-model-iteration/generators.mdx"]: Generators,
+  ["data-model-iteration/generators.vi.mdx"]: GeneratorsVi,
+  ["data-model-iteration/context-managers.mdx"]: ContextManagers,
+  ["data-model-iteration/context-managers.vi.mdx"]: ContextManagersVi,
+  ["data-model-iteration/checkpoint-streams.mdx"]: CheckpointStreams,
+  ["data-model-iteration/checkpoint-streams.vi.mdx"]: CheckpointStreamsVi,
+  ["databases/sql-fundamentals.mdx"]: SqlFundamentals,
+  ["databases/sql-fundamentals.vi.mdx"]: SqlFundamentalsVi,
+  ["databases/parameterized-queries.mdx"]: ParameterizedQueries,
+  ["databases/parameterized-queries.vi.mdx"]: ParameterizedQueriesVi,
+  ["databases/transactions-schema.mdx"]: TransactionsSchema,
+  ["databases/transactions-schema.vi.mdx"]: TransactionsSchemaVi,
+  ["databases/repository-pattern.mdx"]: RepositoryPattern,
+  ["databases/repository-pattern.vi.mdx"]: RepositoryPatternVi,
+  ["databases/checkpoint-database-app.mdx"]: CheckpointDatabaseApp,
+  ["databases/checkpoint-database-app.vi.mdx"]: CheckpointDatabaseAppVi,
+  ["files-and-data/pathlib-mastery.mdx"]: PathlibMastery,
+  ["files-and-data/pathlib-mastery.vi.mdx"]: PathlibMasteryVi,
+  ["files-and-data/csv-json-roundtrips.mdx"]: CsvJsonRoundtrips,
+  ["files-and-data/csv-json-roundtrips.vi.mdx"]: CsvJsonRoundtripsVi,
+  ["files-and-data/streaming-data.mdx"]: StreamingData,
+  ["files-and-data/streaming-data.vi.mdx"]: StreamingDataVi,
+  ["files-and-data/checkpoint-data-pipeline.mdx"]: CheckpointDataPipeline,
+  ["files-and-data/checkpoint-data-pipeline.vi.mdx"]: CheckpointDataPipelineVi,
+  ["http-json/http-foundations.mdx"]: HttpFoundations,
+  ["http-json/http-foundations.vi.mdx"]: HttpFoundationsVi,
+  ["http-json/json-api-client.mdx"]: JsonApiClient,
+  ["http-json/json-api-client.vi.mdx"]: JsonApiClientVi,
+  ["http-json/transport-injection.mdx"]: TransportInjection,
+  ["http-json/transport-injection.vi.mdx"]: TransportInjectionVi,
+  ["http-json/checkpoint-api-client.mdx"]: CheckpointApiClient,
+  ["http-json/checkpoint-api-client.vi.mdx"]: CheckpointApiClientVi,
+  ["objects-and-modeling/classes-basics.mdx"]: ClassesBasics,
+  ["objects-and-modeling/classes-basics.vi.mdx"]: ClassesBasicsVi,
+  ["objects-and-modeling/properties-validation.mdx"]: PropertiesValidation,
+  ["objects-and-modeling/properties-validation.vi.mdx"]: PropertiesValidationVi,
+  ["objects-and-modeling/dataclasses.mdx"]: Dataclasses,
+  ["objects-and-modeling/dataclasses.vi.mdx"]: DataclassesVi,
+  ["objects-and-modeling/composition-over-inheritance.mdx"]: CompositionOverInheritance,
+  ["objects-and-modeling/composition-over-inheritance.vi.mdx"]: CompositionOverInheritanceVi,
+  ["objects-and-modeling/checkpoint-modeling.mdx"]: CheckpointModeling,
+  ["objects-and-modeling/checkpoint-modeling.vi.mdx"]: CheckpointModelingVi,
+  ["packaging/pyproject-layout.mdx"]: PyprojectLayout,
+  ["packaging/pyproject-layout.vi.mdx"]: PyprojectLayoutVi,
+  ["packaging/console-entry-points.mdx"]: ConsoleEntryPoints,
+  ["packaging/console-entry-points.vi.mdx"]: ConsoleEntryPointsVi,
+  ["packaging/venv-lockfiles.mdx"]: VenvLockfiles,
+  ["packaging/venv-lockfiles.vi.mdx"]: VenvLockfilesVi,
+  ["packaging/security-audit.mdx"]: SecurityAudit,
+  ["packaging/security-audit.vi.mdx"]: SecurityAuditVi,
+  ["packaging/checkpoint-ship.mdx"]: CheckpointShip,
+  ["packaging/checkpoint-ship.vi.mdx"]: CheckpointShipVi,
+  ["pythonic-toolkit/comprehensions-and-unpacking.mdx"]: ComprehensionsAndUnpacking,
+  ["pythonic-toolkit/comprehensions-and-unpacking.vi.mdx"]: ComprehensionsAndUnpackingVi,
+  ["pythonic-toolkit/functions-as-values.mdx"]: FunctionsAsValues,
+  ["pythonic-toolkit/functions-as-values.vi.mdx"]: FunctionsAsValuesVi,
+  ["pythonic-toolkit/sorting-with-key.mdx"]: SortingWithKey,
+  ["pythonic-toolkit/sorting-with-key.vi.mdx"]: SortingWithKeyVi,
+  ["pythonic-toolkit/checkpoint-pipelines.mdx"]: CheckpointPipelines,
+  ["pythonic-toolkit/checkpoint-pipelines.vi.mdx"]: CheckpointPipelinesVi,
+  ["robust-errors/exception-design.mdx"]: ExceptionDesign,
+  ["robust-errors/exception-design.vi.mdx"]: ExceptionDesignVi,
+  ["robust-errors/exception-chaining-boundaries.mdx"]: ExceptionChainingBoundaries,
+  ["robust-errors/exception-chaining-boundaries.vi.mdx"]: ExceptionChainingBoundariesVi,
+  ["robust-errors/logging.mdx"]: Logging,
+  ["robust-errors/logging.vi.mdx"]: LoggingVi,
+  ["robust-errors/checkpoint-resilience.mdx"]: CheckpointResilience,
+  ["robust-errors/checkpoint-resilience.vi.mdx"]: CheckpointResilienceVi,
+  ["structure-and-typing/modules-packages.mdx"]: ModulesPackages,
+  ["structure-and-typing/modules-packages.vi.mdx"]: ModulesPackagesVi,
+  ["structure-and-typing/package-layout.mdx"]: PackageLayout,
+  ["structure-and-typing/package-layout.vi.mdx"]: PackageLayoutVi,
+  ["structure-and-typing/typing-essentials.mdx"]: TypingEssentials,
+  ["structure-and-typing/typing-essentials.vi.mdx"]: TypingEssentialsVi,
+  ["structure-and-typing/typing-protocols.mdx"]: TypingProtocols,
+  ["structure-and-typing/typing-protocols.vi.mdx"]: TypingProtocolsVi,
+  ["structure-and-typing/checkpoint-typed-app.mdx"]: CheckpointTypedApp,
+  ["structure-and-typing/checkpoint-typed-app.vi.mdx"]: CheckpointTypedAppVi,
+  ["testing-discipline/unittest-first.mdx"]: UnittestFirst,
+  ["testing-discipline/unittest-first.vi.mdx"]: UnittestFirstVi,
+  ["testing-discipline/subtest-parametrize.mdx"]: SubtestParametrize,
+  ["testing-discipline/subtest-parametrize.vi.mdx"]: SubtestParametrizeVi,
+  ["testing-discipline/mocking-boundaries.mdx"]: MockingBoundaries,
+  ["testing-discipline/mocking-boundaries.vi.mdx"]: MockingBoundariesVi,
+  ["testing-discipline/checkpoint-repair.mdx"]: CheckpointRepair,
+  ["testing-discipline/checkpoint-repair.vi.mdx"]: CheckpointRepairVi,
+  ["advanced-html/html-architecture.mdx"]: HtmlArchitecture,
+  ["advanced-html/html-architecture.vi.mdx"]: HtmlArchitectureVi,
+  ["advanced-html/accessible-names.mdx"]: AccessibleNames,
+  ["advanced-html/accessible-names.vi.mdx"]: AccessibleNamesVi,
+  ["advanced-html/native-disclosure-dialogs.mdx"]: NativeDisclosureDialogs,
+  ["advanced-html/native-disclosure-dialogs.vi.mdx"]: NativeDisclosureDialogsVi,
+  ["advanced-html/popovers-invokers.mdx"]: PopoversInvokers,
+  ["advanced-html/popovers-invokers.vi.mdx"]: PopoversInvokersVi,
+  ["advanced-html/responsive-media.mdx"]: ResponsiveMedia,
+  ["advanced-html/responsive-media.vi.mdx"]: ResponsiveMediaVi,
+  ["advanced-html/sandboxed-embeds-metadata.mdx"]: SandboxedEmbedsMetadata,
+  ["advanced-html/sandboxed-embeds-metadata.vi.mdx"]: SandboxedEmbedsMetadataVi,
+  ["advanced-html/docs-hub-project.mdx"]: DocsHubProject,
+  ["advanced-html/docs-hub-project.vi.mdx"]: DocsHubProjectVi,
   ["css-foundations/what-css-is.mdx"]: WhatCssIs,
+  ["css-foundations/what-css-is.vi.mdx"]: WhatCssIsVi,
   ["css-foundations/selectors-and-cascade.mdx"]: SelectorsAndCascade,
+  ["css-foundations/selectors-and-cascade.vi.mdx"]: SelectorsAndCascadeVi,
   ["css-foundations/units-colors-values.mdx"]: UnitsColorsValues,
+  ["css-foundations/units-colors-values.vi.mdx"]: UnitsColorsValuesVi,
   ["css-foundations/css-typography.mdx"]: CssTypography,
+  ["css-foundations/css-typography.vi.mdx"]: CssTypographyVi,
   ["css-foundations/css-box-model.mdx"]: CssBoxModel,
+  ["css-foundations/css-box-model.vi.mdx"]: CssBoxModelVi,
   ["css-foundations/css-display-flow.mdx"]: CssDisplayFlow,
+  ["css-foundations/css-display-flow.vi.mdx"]: CssDisplayFlowVi,
   ["css-foundations/css-positioning.mdx"]: CssPositioning,
+  ["css-foundations/css-positioning.vi.mdx"]: CssPositioningVi,
   ["css-foundations/css-flexbox.mdx"]: CssFlexbox,
+  ["css-foundations/css-flexbox.vi.mdx"]: CssFlexboxVi,
   ["css-foundations/css-grid.mdx"]: CssGrid,
+  ["css-foundations/css-grid.vi.mdx"]: CssGridVi,
   ["css-foundations/css-responsive.mdx"]: CssResponsive,
+  ["css-foundations/css-responsive.vi.mdx"]: CssResponsiveVi,
   ["css-foundations/css-transitions.mdx"]: CssTransitions,
+  ["css-foundations/css-transitions.vi.mdx"]: CssTransitionsVi,
   ["css-foundations/css-project-portfolio.mdx"]: CssProjectPortfolio,
+  ["css-foundations/css-project-portfolio.vi.mdx"]: CssProjectPortfolioVi,
   ["developer-tools-git-and-github/terminal-basics.mdx"]: TerminalBasics,
+  ["developer-tools-git-and-github/terminal-basics.vi.mdx"]: TerminalBasicsVi,
   ["developer-tools-git-and-github/git-version-control.mdx"]: GitVersionControl,
+  ["developer-tools-git-and-github/git-version-control.vi.mdx"]: GitVersionControlVi,
   ["developer-tools-git-and-github/git-branches.mdx"]: GitBranches,
+  ["developer-tools-git-and-github/git-branches.vi.mdx"]: GitBranchesVi,
   ["developer-tools-git-and-github/github-remote.mdx"]: GithubRemote,
+  ["developer-tools-git-and-github/github-remote.vi.mdx"]: GithubRemoteVi,
   ["developer-tools-git-and-github/deploy-github-pages.mdx"]: DeployGithubPages,
+  ["developer-tools-git-and-github/deploy-github-pages.vi.mdx"]: DeployGithubPagesVi,
   ["developer-tools-git-and-github/git-checkpoint.mdx"]: GitCheckpoint,
+  ["developer-tools-git-and-github/git-checkpoint.vi.mdx"]: GitCheckpointVi,
   ["final-project/capstone-planning.mdx"]: CapstonePlanning,
+  ["final-project/capstone-planning.vi.mdx"]: CapstonePlanningVi,
   ["final-project/capstone-build-and-ship.mdx"]: CapstoneBuildAndShip,
+  ["final-project/capstone-build-and-ship.vi.mdx"]: CapstoneBuildAndShipVi,
   ["how-modern-websites-work/frontend-backend.mdx"]: FrontendBackend,
+  ["how-modern-websites-work/frontend-backend.vi.mdx"]: FrontendBackendVi,
   ["how-modern-websites-work/http-json-apis.mdx"]: HttpJsonApis,
+  ["how-modern-websites-work/http-json-apis.vi.mdx"]: HttpJsonApisVi,
   ["how-modern-websites-work/databases-and-auth.mdx"]: DatabasesAndAuth,
+  ["how-modern-websites-work/databases-and-auth.vi.mdx"]: DatabasesAndAuthVi,
   ["how-modern-websites-work/deployment-dns-https.mdx"]: DeploymentDnsHttps,
+  ["how-modern-websites-work/deployment-dns-https.vi.mdx"]: DeploymentDnsHttpsVi,
   ["html-foundations/introduction-to-html.mdx"]: IntroductionToHtml,
+  ["html-foundations/introduction-to-html.vi.mdx"]: IntroductionToHtmlVi,
   ["html-foundations/html-elements.mdx"]: HtmlElements,
+  ["html-foundations/html-elements.vi.mdx"]: HtmlElementsVi,
   ["html-foundations/html-attributes.mdx"]: HtmlAttributes,
+  ["html-foundations/html-attributes.vi.mdx"]: HtmlAttributesVi,
   ["html-foundations/html-links.mdx"]: HtmlLinks,
+  ["html-foundations/html-links.vi.mdx"]: HtmlLinksVi,
   ["html-foundations/html-images.mdx"]: HtmlImages,
+  ["html-foundations/html-images.vi.mdx"]: HtmlImagesVi,
   ["html-foundations/html-lists-and-tables.mdx"]: HtmlListsAndTables,
+  ["html-foundations/html-lists-and-tables.vi.mdx"]: HtmlListsAndTablesVi,
   ["html-foundations/html-semantics.mdx"]: HtmlSemantics,
+  ["html-foundations/html-semantics.vi.mdx"]: HtmlSemanticsVi,
   ["html-foundations/html-forms.mdx"]: HtmlForms,
+  ["html-foundations/html-forms.vi.mdx"]: HtmlFormsVi,
   ["html-foundations/personal-profile-project.mdx"]: PersonalProfileProject,
+  ["html-foundations/personal-profile-project.vi.mdx"]: PersonalProfileProjectVi,
   ["html-foundations/html-checkpoint.mdx"]: HtmlCheckpoint,
+  ["html-foundations/html-checkpoint.vi.mdx"]: HtmlCheckpointVi,
   ["javascript-foundations/what-javascript-does.mdx"]: WhatJavascriptDoes,
+  ["javascript-foundations/what-javascript-does.vi.mdx"]: WhatJavascriptDoesVi,
   ["javascript-foundations/js-variables.mdx"]: JsVariables,
+  ["javascript-foundations/js-variables.vi.mdx"]: JsVariablesVi,
   ["javascript-foundations/js-types-and-operators.mdx"]: JsTypesAndOperators,
+  ["javascript-foundations/js-types-and-operators.vi.mdx"]: JsTypesAndOperatorsVi,
   ["javascript-foundations/js-conditionals.mdx"]: JsConditionals,
+  ["javascript-foundations/js-conditionals.vi.mdx"]: JsConditionalsVi,
   ["javascript-foundations/js-loops.mdx"]: JsLoops,
+  ["javascript-foundations/js-loops.vi.mdx"]: JsLoopsVi,
   ["javascript-foundations/js-functions.mdx"]: JsFunctions,
+  ["javascript-foundations/js-functions.vi.mdx"]: JsFunctionsVi,
   ["javascript-foundations/js-scope-and-arrows.mdx"]: JsScopeAndArrows,
+  ["javascript-foundations/js-scope-and-arrows.vi.mdx"]: JsScopeAndArrowsVi,
   ["javascript-foundations/js-arrays.mdx"]: JsArrays,
+  ["javascript-foundations/js-arrays.vi.mdx"]: JsArraysVi,
   ["javascript-foundations/js-objects.mdx"]: JsObjects,
+  ["javascript-foundations/js-objects.vi.mdx"]: JsObjectsVi,
   ["javascript-foundations/js-dom-select.mdx"]: JsDomSelect,
+  ["javascript-foundations/js-dom-select.vi.mdx"]: JsDomSelectVi,
   ["javascript-foundations/js-dom-create.mdx"]: JsDomCreate,
+  ["javascript-foundations/js-dom-create.vi.mdx"]: JsDomCreateVi,
   ["javascript-foundations/js-dom-events.mdx"]: JsDomEvents,
+  ["javascript-foundations/js-dom-events.vi.mdx"]: JsDomEventsVi,
   ["javascript-foundations/js-forms-and-validation.mdx"]: JsFormsAndValidation,
+  ["javascript-foundations/js-forms-and-validation.vi.mdx"]: JsFormsAndValidationVi,
   ["javascript-foundations/js-local-storage.mdx"]: JsLocalStorage,
+  ["javascript-foundations/js-local-storage.vi.mdx"]: JsLocalStorageVi,
   ["javascript-foundations/js-async.mdx"]: JsAsync,
+  ["javascript-foundations/js-async.vi.mdx"]: JsAsyncVi,
   ["javascript-foundations/js-fetch-and-apis.mdx"]: JsFetchAndApis,
+  ["javascript-foundations/js-fetch-and-apis.vi.mdx"]: JsFetchAndApisVi,
   ["javascript-foundations/js-checkpoint.mdx"]: JsCheckpoint,
+  ["javascript-foundations/js-checkpoint.vi.mdx"]: JsCheckpointVi,
   ["javascript-foundations/js-project-interactive-app.mdx"]: JsProjectInteractiveApp,
+  ["javascript-foundations/js-project-interactive-app.vi.mdx"]: JsProjectInteractiveAppVi,
   ["the-web-and-your-first-website/how-the-web-works.mdx"]: HowTheWebWorks,
+  ["the-web-and-your-first-website/how-the-web-works.vi.mdx"]: HowTheWebWorksVi,
   ["the-web-and-your-first-website/anatomy-of-a-website.mdx"]: AnatomyOfAWebsite,
+  ["the-web-and-your-first-website/anatomy-of-a-website.vi.mdx"]: AnatomyOfAWebsiteVi,
   ["the-web-and-your-first-website/your-first-html-page.mdx"]: YourFirstHtmlPage,
+  ["the-web-and-your-first-website/your-first-html-page.vi.mdx"]: YourFirstHtmlPageVi,
   ["the-web-and-your-first-website/inspecting-with-devtools.mdx"]: InspectingWithDevtools,
+  ["the-web-and-your-first-website/inspecting-with-devtools.vi.mdx"]: InspectingWithDevtoolsVi,
+  ["advanced-css-ui-engineering/custom-properties-theming.mdx"]: CustomPropertiesTheming,
+  ["advanced-css-ui-engineering/custom-properties-theming.vi.mdx"]: CustomPropertiesThemingVi,
+  ["advanced-css-ui-engineering/cascade-layers.mdx"]: CascadeLayers,
+  ["advanced-css-ui-engineering/cascade-layers.vi.mdx"]: CascadeLayersVi,
+  ["advanced-css-ui-engineering/container-queries.mdx"]: ContainerQueries,
+  ["advanced-css-ui-engineering/container-queries.vi.mdx"]: ContainerQueriesVi,
+  ["advanced-css-ui-engineering/advanced-grid-flexbox.mdx"]: AdvancedGridFlexbox,
+  ["advanced-css-ui-engineering/advanced-grid-flexbox.vi.mdx"]: AdvancedGridFlexboxVi,
+  ["advanced-css-ui-engineering/component-states-a11y.mdx"]: ComponentStatesA11y,
+  ["advanced-css-ui-engineering/component-states-a11y.vi.mdx"]: ComponentStatesA11yVi,
+  ["advanced-css-ui-engineering/motion-reduced-motion.mdx"]: MotionReducedMotion,
+  ["advanced-css-ui-engineering/motion-reduced-motion.vi.mdx"]: MotionReducedMotionVi,
+  ["advanced-css-ui-engineering/ui-system-checkpoint.mdx"]: UiSystemCheckpoint,
+  ["advanced-css-ui-engineering/ui-system-checkpoint.vi.mdx"]: UiSystemCheckpointVi,
+  ["advanced-dom-browser-apis/dom-architecture-events.mdx"]: DomArchitectureEvents,
+  ["advanced-dom-browser-apis/dom-architecture-events.vi.mdx"]: DomArchitectureEventsVi,
+  ["advanced-dom-browser-apis/event-delegation.mdx"]: EventDelegation,
+  ["advanced-dom-browser-apis/event-delegation.vi.mdx"]: EventDelegationVi,
+  ["advanced-dom-browser-apis/stateful-components.mdx"]: StatefulComponents,
+  ["advanced-dom-browser-apis/stateful-components.vi.mdx"]: StatefulComponentsVi,
+  ["advanced-dom-browser-apis/advanced-forms.mdx"]: AdvancedForms,
+  ["advanced-dom-browser-apis/advanced-forms.vi.mdx"]: AdvancedFormsVi,
+  ["advanced-dom-browser-apis/url-history-api.mdx"]: UrlHistoryApi,
+  ["advanced-dom-browser-apis/url-history-api.vi.mdx"]: UrlHistoryApiVi,
+  ["advanced-dom-browser-apis/timers-observers.mdx"]: TimersObservers,
+  ["advanced-dom-browser-apis/timers-observers.vi.mdx"]: TimersObserversVi,
+  ["advanced-dom-browser-apis/dashboard-checkpoint.mdx"]: DashboardCheckpoint,
+  ["advanced-dom-browser-apis/dashboard-checkpoint.vi.mdx"]: DashboardCheckpointVi,
+  ["asynchronous-javascript-apis/event-loop.mdx"]: EventLoop,
+  ["asynchronous-javascript-apis/event-loop.vi.mdx"]: EventLoopVi,
+  ["asynchronous-javascript-apis/promises.mdx"]: Promises,
+  ["asynchronous-javascript-apis/promises.vi.mdx"]: PromisesVi,
+  ["asynchronous-javascript-apis/async-await.mdx"]: AsyncAwait,
+  ["asynchronous-javascript-apis/async-await.vi.mdx"]: AsyncAwaitVi,
+  ["asynchronous-javascript-apis/promise-combinators.mdx"]: PromiseCombinators,
+  ["asynchronous-javascript-apis/promise-combinators.vi.mdx"]: PromiseCombinatorsVi,
+  ["asynchronous-javascript-apis/fetch-patterns.mdx"]: FetchPatterns,
+  ["asynchronous-javascript-apis/fetch-patterns.vi.mdx"]: FetchPatternsVi,
+  ["asynchronous-javascript-apis/cancellation-abort.mdx"]: CancellationAbort,
+  ["asynchronous-javascript-apis/cancellation-abort.vi.mdx"]: CancellationAbortVi,
+  ["asynchronous-javascript-apis/api-app-checkpoint.mdx"]: ApiAppCheckpoint,
+  ["asynchronous-javascript-apis/api-app-checkpoint.vi.mdx"]: ApiAppCheckpointVi,
+  ["backend-fundamentals/http-server-node.mdx"]: HttpServerNode,
+  ["backend-fundamentals/http-server-node.vi.mdx"]: HttpServerNodeVi,
+  ["backend-fundamentals/routing-rest.mdx"]: RoutingRest,
+  ["backend-fundamentals/routing-rest.vi.mdx"]: RoutingRestVi,
+  ["backend-fundamentals/middleware-pipeline.mdx"]: MiddlewarePipeline,
+  ["backend-fundamentals/middleware-pipeline.vi.mdx"]: MiddlewarePipelineVi,
+  ["backend-fundamentals/validation-errors.mdx"]: ValidationErrors,
+  ["backend-fundamentals/validation-errors.vi.mdx"]: ValidationErrorsVi,
+  ["backend-fundamentals/backend-checkpoint.mdx"]: BackendCheckpoint,
+  ["backend-fundamentals/backend-checkpoint.vi.mdx"]: BackendCheckpointVi,
+  ["capstone/capstone-requirements.mdx"]: CapstoneRequirements,
+  ["capstone/capstone-requirements.vi.mdx"]: CapstoneRequirementsVi,
+  ["capstone/capstone-decisions.mdx"]: CapstoneDecisions,
+  ["capstone/capstone-decisions.vi.mdx"]: CapstoneDecisionsVi,
+  ["capstone/capstone-ship.mdx"]: CapstoneShip,
+  ["capstone/capstone-ship.vi.mdx"]: CapstoneShipVi,
+  ["databases-full-stack/relational-model.mdx"]: RelationalModel,
+  ["databases-full-stack/relational-model.vi.mdx"]: RelationalModelVi,
+  ["databases-full-stack/sql-crud.mdx"]: SqlCrud,
+  ["databases-full-stack/sql-crud.vi.mdx"]: SqlCrudVi,
+  ["databases-full-stack/joins-relationships.mdx"]: JoinsRelationships,
+  ["databases-full-stack/joins-relationships.vi.mdx"]: JoinsRelationshipsVi,
+  ["databases-full-stack/transactions-migrations.mdx"]: TransactionsMigrations,
+  ["databases-full-stack/transactions-migrations.vi.mdx"]: TransactionsMigrationsVi,
+  ["databases-full-stack/fullstack-integration.mdx"]: FullstackIntegration,
+  ["databases-full-stack/fullstack-integration.vi.mdx"]: FullstackIntegrationVi,
+  ["databases-full-stack/db-checkpoint.mdx"]: DbCheckpoint,
+  ["databases-full-stack/db-checkpoint.vi.mdx"]: DbCheckpointVi,
+  ["git-workflow/git-history-internals.mdx"]: GitHistoryInternals,
+  ["git-workflow/git-history-internals.vi.mdx"]: GitHistoryInternalsVi,
+  ["git-workflow/branching-strategies.mdx"]: BranchingStrategies,
+  ["git-workflow/branching-strategies.vi.mdx"]: BranchingStrategiesVi,
+  ["git-workflow/merge-vs-rebase.mdx"]: MergeVsRebase,
+  ["git-workflow/merge-vs-rebase.vi.mdx"]: MergeVsRebaseVi,
+  ["git-workflow/recovering-commits.mdx"]: RecoveringCommits,
+  ["git-workflow/recovering-commits.vi.mdx"]: RecoveringCommitsVi,
+  ["git-workflow/github-flow-review.mdx"]: GithubFlowReview,
+  ["git-workflow/github-flow-review.vi.mdx"]: GithubFlowReviewVi,
+  ["git-workflow/secrets-and-env.mdx"]: SecretsAndEnv,
+  ["git-workflow/secrets-and-env.vi.mdx"]: SecretsAndEnvVi,
+  ["git-workflow/git-workflow-checkpoint.mdx"]: GitWorkflowCheckpoint,
+  ["git-workflow/git-workflow-checkpoint.vi.mdx"]: GitWorkflowCheckpointVi,
+  ["modern-javascript/scope-closures.mdx"]: ScopeClosures,
+  ["modern-javascript/scope-closures.vi.mdx"]: ScopeClosuresVi,
+  ["modern-javascript/higher-order-functions.mdx"]: HigherOrderFunctions,
+  ["modern-javascript/higher-order-functions.vi.mdx"]: HigherOrderFunctionsVi,
+  ["modern-javascript/destructuring-spread.mdx"]: DestructuringSpread,
+  ["modern-javascript/destructuring-spread.vi.mdx"]: DestructuringSpreadVi,
+  ["modern-javascript/modules-import-export.mdx"]: ModulesImportExport,
+  ["modern-javascript/modules-import-export.vi.mdx"]: ModulesImportExportVi,
+  ["modern-javascript/map-set-structured-data.mdx"]: MapSetStructuredData,
+  ["modern-javascript/map-set-structured-data.vi.mdx"]: MapSetStructuredDataVi,
+  ["modern-javascript/error-handling.mdx"]: ErrorHandling,
+  ["modern-javascript/error-handling.vi.mdx"]: ErrorHandlingVi,
+  ["modern-javascript/data-explorer-checkpoint.mdx"]: DataExplorerCheckpoint,
+  ["modern-javascript/data-explorer-checkpoint.vi.mdx"]: DataExplorerCheckpointVi,
+  ["production/dev-vs-prod.mdx"]: DevVsProd,
+  ["production/dev-vs-prod.vi.mdx"]: DevVsProdVi,
+  ["production/build-pipeline.mdx"]: BuildPipeline,
+  ["production/build-pipeline.vi.mdx"]: BuildPipelineVi,
+  ["production/deploy-dns-https.mdx"]: DeployDnsHttps,
+  ["production/deploy-dns-https.vi.mdx"]: DeployDnsHttpsVi,
+  ["production/observability.mdx"]: Observability,
+  ["production/observability.vi.mdx"]: ObservabilityVi,
+  ["production/cicd-loop.mdx"]: CicdLoop,
+  ["production/cicd-loop.vi.mdx"]: CicdLoopVi,
+  ["production/prod-checkpoint.mdx"]: ProdCheckpoint,
+  ["production/prod-checkpoint.vi.mdx"]: ProdCheckpointVi,
+  ["testing-debugging/why-testing.mdx"]: WhyTesting,
+  ["testing-debugging/why-testing.vi.mdx"]: WhyTestingVi,
+  ["testing-debugging/unit-testing-foundations.mdx"]: UnitTestingFoundations,
+  ["testing-debugging/unit-testing-foundations.vi.mdx"]: UnitTestingFoundationsVi,
+  ["testing-debugging/test-doubles.mdx"]: TestDoubles,
+  ["testing-debugging/test-doubles.vi.mdx"]: TestDoublesVi,
+  ["testing-debugging/debugging-method.mdx"]: DebuggingMethod,
+  ["testing-debugging/debugging-method.vi.mdx"]: DebuggingMethodVi,
+  ["testing-debugging/devtools-observability.mdx"]: DevtoolsObservability,
+  ["testing-debugging/devtools-observability.vi.mdx"]: DevtoolsObservabilityVi,
+  ["testing-debugging/repair-checkpoint.mdx"]: RepairCheckpoint,
+  ["testing-debugging/repair-checkpoint.vi.mdx"]: RepairCheckpointVi,
+  ["typescript-essentials/why-types.mdx"]: WhyTypes,
+  ["typescript-essentials/why-types.vi.mdx"]: WhyTypesVi,
+  ["typescript-essentials/everyday-types.mdx"]: EverydayTypes,
+  ["typescript-essentials/everyday-types.vi.mdx"]: EverydayTypesVi,
+  ["typescript-essentials/unions-narrowing.mdx"]: UnionsNarrowing,
+  ["typescript-essentials/unions-narrowing.vi.mdx"]: UnionsNarrowingVi,
+  ["typescript-essentials/generics.mdx"]: Generics,
+  ["typescript-essentials/generics.vi.mdx"]: GenericsVi,
+  ["typescript-essentials/unknown-never.mdx"]: UnknownNever,
+  ["typescript-essentials/unknown-never.vi.mdx"]: UnknownNeverVi,
+  ["typescript-essentials/typing-apis-dom.mdx"]: TypingApisDom,
+  ["typescript-essentials/typing-apis-dom.vi.mdx"]: TypingApisDomVi,
+  ["typescript-essentials/type-safe-checkpoint.mdx"]: TypeSafeCheckpoint,
+  ["typescript-essentials/type-safe-checkpoint.vi.mdx"]: TypeSafeCheckpointVi,
+  ["web-performance/rendering-pipeline.mdx"]: RenderingPipeline,
+  ["web-performance/rendering-pipeline.vi.mdx"]: RenderingPipelineVi,
+  ["web-performance/network-waterfall.mdx"]: NetworkWaterfall,
+  ["web-performance/network-waterfall.vi.mdx"]: NetworkWaterfallVi,
+  ["web-performance/assets-and-caching.mdx"]: AssetsAndCaching,
+  ["web-performance/assets-and-caching.vi.mdx"]: AssetsAndCachingVi,
+  ["web-performance/js-execution-cost.mdx"]: JsExecutionCost,
+  ["web-performance/js-execution-cost.vi.mdx"]: JsExecutionCostVi,
+  ["web-performance/measure-optimize-loop.mdx"]: MeasureOptimizeLoop,
+  ["web-performance/measure-optimize-loop.vi.mdx"]: MeasureOptimizeLoopVi,
+  ["web-performance/perf-checkpoint.mdx"]: PerfCheckpoint,
+  ["web-performance/perf-checkpoint.vi.mdx"]: PerfCheckpointVi,
+  ["web-security/threat-modeling.mdx"]: ThreatModeling,
+  ["web-security/threat-modeling.vi.mdx"]: ThreatModelingVi,
+  ["web-security/xss-and-encoding.mdx"]: XssAndEncoding,
+  ["web-security/xss-and-encoding.vi.mdx"]: XssAndEncodingVi,
+  ["web-security/injection-and-validation.mdx"]: InjectionAndValidation,
+  ["web-security/injection-and-validation.vi.mdx"]: InjectionAndValidationVi,
+  ["web-security/authn-authz-sessions.mdx"]: AuthnAuthzSessions,
+  ["web-security/authn-authz-sessions.vi.mdx"]: AuthnAuthzSessionsVi,
+  ["web-security/cors-csrf-headers.mdx"]: CorsCsrfHeaders,
+  ["web-security/cors-csrf-headers.vi.mdx"]: CorsCsrfHeadersVi,
+  ["web-security/security-checkpoint.mdx"]: SecurityCheckpoint,
+  ["web-security/security-checkpoint.vi.mdx"]: SecurityCheckpointVi,
 };
 
-export function getLessonMdx(contentPath: string): MdxComponent | undefined {
+export function getLessonMdx(
+  contentPath: string,
+  locale = "en",
+): MdxComponent | undefined {
   // contentPath is "./<lessonId>.mdx" relative to the lesson JSON; the map
-  // key is "<moduleId>/<lessonId>.mdx". Fall back to the bare filename for
-  // legacy single-module content.
-  const normalized = contentPath.replace(/^\.\//, "");
+  // key is "<moduleId>/<lessonId>.mdx" (or "<moduleId>/<lessonId>.vi.mdx"
+  // for the Vietnamese sidecar). Fall back to the bare filename for legacy
+  // single-module content, and to English when no sidecar exists.
+  const suffix = locale === "en" ? ".mdx" : ".vi.mdx";
+  const normalized = contentPath.replace(/^\.\//, "").replace(/.mdx$/, suffix);
   if (mdxMap[normalized]) return mdxMap[normalized];
   const fileName = normalized.split("/").pop() ?? normalized;
-  return mdxMap[Object.keys(mdxMap).find((key) => key.endsWith("/" + fileName)) ?? ""];
+  const byName = mdxMap[Object.keys(mdxMap).find((key) => key.endsWith("/" + fileName)) ?? ""];
+  if (byName) return byName;
+  // Missing vi sidecar → render the English component (matches the loader's
+  // English body fallback, so a partially translated course still renders).
+  if (locale !== "en") return getLessonMdx(contentPath, "en");
+  return undefined;
 }

@@ -1,0 +1,31 @@
+{
+  "id": "cppi-m6-stats",
+  "title": "min/max/sum with std::minmax_element",
+  "prompt": "Implement `Stats stats(const std::vector<int>& v)` where `Stats` has `int min; int max; long sum;`. Return `{0, 0, 0}` for an empty vector. Use `std::minmax_element` for the extremes and accumulate the sum yourself (or with `std::accumulate`).",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <algorithm>\n#include <vector>\n#include <iostream>\n\nstruct Stats {\n    int min;\n    int max;\n    long sum;\n};\n\n// Stats stats(const std::vector<int>& v)\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "auto s = stats({4, 1, 3, 1, 5});\nCHECK_EQ(s.min, 1);\nCHECK_EQ(s.max, 5);\nCHECK_EQ(s.sum, 14);",
+      "hint": "minmax_element returns a pair of iterators into the vector."
+    },
+    {
+      "name": "single",
+      "code": "auto s = stats({7});\nCHECK_EQ(s.min, 7);\nCHECK_EQ(s.max, 7);\nCHECK_EQ(s.sum, 7);",
+      "hint": "One element is both min and max."
+    },
+    {
+      "name": "empty",
+      "code": "auto s = stats({});\nCHECK_EQ(s.min, 0);\nCHECK_EQ(s.sum, 0);",
+      "hint": "The empty case must be handled before dereferencing."
+    },
+    {
+      "name": "negatives",
+      "code": "auto s = stats({-5, -1, -9});\nCHECK_EQ(s.min, -9);\nCHECK_EQ(s.max, -1);\nCHECK_EQ(s.sum, -15);",
+      "hint": "Negatives must not break the extremes."
+    }
+  ],
+  "level": "guided"
+}

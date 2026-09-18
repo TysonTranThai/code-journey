@@ -1,0 +1,16 @@
+Sandbox chạy JavaScript, nên bài kiểm tra này xác minh phần RUNTIME của các
+mẫu trong module — chính là các guard và hình dạng mà type TypeScript của bạn
+sẽ mô tả. Logic đúng thì type tự viết được.
+
+1. `isUser(v)` — một validator chỉ trả true với object user hợp chuẩn.
+2. `parseWith(v, validator, fallback)` — wrapper validate-hoặc-fallback.
+3. `apiGet(kind)` — một client giả trả kết quả discriminated và một handler
+   bắt buộc kiểm tra `ok` trước khi đụng vào data.
+
+## Types là bài kiểm tra cuối
+
+TypeScript chỉ hữu ích khi nó mô tả quyết định, và checkpoint này yêu cầu bạn
+ra bốn quyết định: `unknown` nghĩa là gì ở biên giới API, union biến trạng
+thái sai thành không thể biểu diễn thế nào, generic đáng nhận một tham số ở
+đâu, và vì sao type guard hơn `as` cast. Mỗi cái là một phán đoán bạn sẽ làm
+hàng ngày khi đi làm — giờ bạn đã làm chúng trong điều kiện được chấm điểm.

@@ -1,0 +1,30 @@
+JavaScript tốn tiền ba lần: tải về (byte), parse+compile (CPU trên main thread), và chạy (CPU, mỗi lần chạy). Đa số team chỉ nghĩ về lần đầu.
+
+## Main thread chỉ có một
+
+Trong lúc JS của bạn chạy, trang không phản hồi được. Task 300ms = 300ms UI chết. Các cách sửa:
+
+- **Chia nhỏ công việc**: cắt vòng lặp lớn bằng `await new Promise(r => setTimeout(r))` giữa các mảnh để sự kiện input chen vào được.
+- **Debounce/idle**: `requestIdleCallback` hoặc `setTimeout` cho việc không gấp (đẩy analytics, tạo preview).
+- **Web worker** cho tính toán thực sự nặng — chạy tách khỏi main thread hoàn toàn (truyền tin nhắn, không đụng DOM).
+
+## Ship ít JavaScript hơn
+
+- **Phân tích bundle**: `npx vite-bundle-visualizer` (hoặc webpack-bundle-analyzer) cho thấy bundle của bạn thực sự chứa gì. Thủ phạm quen thuộc: moment.js (+locales!), lodash import nguyên con, dependency bị trùng.
+- **Tree-shaking chỉ chạy với import ESM**: `import { debounce } from "lodash-es"` lấy một hàm; `import _ from "lodash"` lấy cả thế giới.
+- **Code splitting**: tách theo route là 50% dễ — người dùng `/admin` không cần tải code của trang thanh toán.
+- **Ship ít polyfill hơn**: nhắm trình duyệt hiện đại trừ khi analytics của bạn nói điều ngược lại.
+
+## Bộ nhớ: leak khiến trang chậm dần
+
+Leak = bộ nhớ không bao giờ dùng lại nhưng không bao giờ được trả. Các leak JS phổ biến:
+
+- Timer/listener bị bỏ quên: `setInterval` hoặc `addEventListener` trên phần tử đã bị xóa giữ sống mọi thứ nó đóng bên ngoài.
+- Bộ tích lũy toàn cục: cache/mảng chỉ biết lớn.
+- DOM tách rời: một biến giữ cây DOM đã bị xóa (kèm dữ liệu của nó).
+
+Trong DevTools → Memory: chụp một heap snapshot, tương tác, chụp cái nữa, so sánh. "Detached" tăng dần hoặc mảng cứ phình ra = vùng săn. `performance.measureUserAgentSpecificMemory()` và panel Memory biến việc này thành thường trình thay vì huyền bí.
+
+## Đo, luôn luôn
+
+`performance.now()` bọc code trên main thread; panel Performance ghi lại toàn cảnh (script, style, layout, paint). Số liệu trước, ý kiến sau.

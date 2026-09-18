@@ -1,0 +1,22 @@
+## The forms
+
+```csharp
+Func<int, int> square = x => x * x;              // expression lambda
+Func<int, int> step  = x => { return x + 1; };   // statement lambda
+Func<int, int> zero  = _ => 0;                   // ignore the parameter
+Action shout = () => Console.WriteLine("hey!");  // no parameters
+```
+
+`=>` reads "goes to". The compiler infers parameter types from the delegate type. `_` names a parameter you deliberately ignore.
+
+## Closures: lambdas remember
+
+```csharp
+int offset = 10;
+Func<int, int> shift = x => x + offset;   // captures offset
+shift(5);   // 15
+```
+
+A lambda can use variables from the enclosing scope — the compiler wraps them into a hidden object so the lambda outlives the method call. That's a **closure**, and it's how `Where(n => n > min)` works: `min` travels with the lambda.
+
+The classic trap: captured variables are *shared*, not copied. If `offset` changes later, `shift` sees the new value. And capturing a loop variable you mutate gives every lambda the same, final value.

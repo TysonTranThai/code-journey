@@ -1,0 +1,21 @@
+{
+  "id": "cppa13-minimal-repro",
+  "title": "The Minimal Repro",
+  "prompt": "A field incident: `lastUnique` was reported to return the wrong element. The contract: return the last value that appears exactly once (nullopt when none). Implement it correctly — the graded tests encode both the reported failure and the general contract.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <cstdint>\n#include <optional>\n#include <vector>\n\n// The last element that occurs exactly once in v; nullopt if none.\n// INCIDENT REPORT: on {1, 2, 1, 3, 3} the shipped version returned 3\n// (it matched \"the last of a duplicate group\" instead of \"unique\").\nstd::optional<int> lastUnique(const std::vector<int>& v);\n",
+  "tests": [
+    {
+      "name": "the reported case",
+      "code": "CHECK_EQ(lastUnique({1, 2, 1, 3, 3}).value_or(-999), 2);\nCHECK_EQ(lastUnique({5}).value_or(-999), 5);\nCHECK(!lastUnique({7, 7, 7}).has_value());\nCHECK(!lastUnique({}).has_value());",
+      "hint": "Count occurrences (map or nested loop), then scan from the end for the first element whose count is 1."
+    },
+    {
+      "name": "order matters across the whole range",
+      "code": "CHECK_EQ(lastUnique({4, 4, 9, 9, 8}).value_or(-999), 8);\nCHECK_EQ(lastUnique({8, 9, 9, 4, 4}).value_or(-999), 8);\nCHECK_EQ(lastUnique({1, 2, 3, 2, 1}).value_or(-999), 3);\nCHECK(!lastUnique({2, 1, 2, 1, 2}).has_value());",
+      "hint": "Count first, then a single reverse scan — checking only neighbors (v[i] vs v[i-1]) fails these mixed patterns."
+    }
+  ]
+}

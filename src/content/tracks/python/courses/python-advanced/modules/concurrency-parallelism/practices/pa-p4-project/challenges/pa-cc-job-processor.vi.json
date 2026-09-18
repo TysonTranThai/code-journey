@@ -1,0 +1,14 @@
+{
+  "title": "run_jobs có retry",
+  "prompt": "Cài `run_jobs(jobs, workers=3, retries=2)` với `jobs` là danh sách callable không tham số:\n\n- thực thi job đồng thời trên `ThreadPoolExecutor(max_workers=workers)`\n- job raise sẽ được thử lại, tối đa thêm `retries` lần\n- trả về `{'succeeded': {index: value}, 'failed': [các index đã sort]}`\n- job failed là job mà lần thử CUỐI vẫn raise\n\nChấm điểm tất định: test dùng job flaky đếm bằng closure (lỗi một lần rồi thành công) nên không dựa vào timing.",
+  "tests": [
+    {
+      "name": "Retry cứu các lỗi tạm thời",
+      "hint": "Bọc mỗi lần thử trong try/except; nộp lại vào pool cho tới khi vượt số retry."
+    },
+    {
+      "name": "Lỗi vĩnh viễn rơi vào failed, đã sort",
+      "hint": "Chỉ kết quả lần thử cuối quyết định succeeded hay failed; sort các index failed."
+    }
+  ]
+}

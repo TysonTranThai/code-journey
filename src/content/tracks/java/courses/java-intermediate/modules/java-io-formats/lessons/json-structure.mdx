@@ -1,0 +1,22 @@
+## JSON: reading structure without a library
+
+In the sandbox you have no Jackson/Gson — and that is a feature: writing
+a minimal parser teaches the format's grammar. The subset we handle:
+
+```json
+{ "name": "ann", "age": 31, "active": true, "tags": ["a", "b"] }
+```
+
+- object: `{` key `:` value (`,` key `:` value)* `}` — keys are strings
+- string: `"` chars `"` with `\"` `\\` escapes
+- number: integer or decimal
+- literals: `true` `false` `null`
+- array: `[` value (`,` value)* `]`
+
+Rather than a full recursive-descent parser, you'll practice *flat-object
+extraction*: find `"key"` at depth 0 and read its value — enough for
+config-style objects, honest about skipping nesting/arrays-in-objects.
+
+The lesson to keep: JSON's grammar is small; most JSON bugs are
+*unescaped quotes* and *trailing commas* — both are grammar violations,
+so a by-hand parser surfaces them loudly.

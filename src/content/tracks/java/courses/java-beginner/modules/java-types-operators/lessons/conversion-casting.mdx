@@ -1,0 +1,41 @@
+Converting between types comes in two flavors with opposite risk profiles.
+
+**Widening (safe, automatic)** — smaller type into bigger type, no data loss:
+
+```java
+int apples = 12;
+double avg = apples;        // int → double, always fine: 12.0
+long big = apples;          // int → long, fine
+```
+
+**Narrowing (lossy, you must ask for it)** — the compiler refuses silent
+damage; an explicit **cast** takes responsibility:
+
+```java
+double price = 19.99;
+int rounded = (int) price;  // 19 — the fraction is TRUNCATED, not rounded
+long huge = 9_876_543_210L;
+int small = (int) huge;     // compiles; may silently wrap around
+```
+
+`(int)` truncates toward zero — for real rounding use `Math.round`.
+
+**String ↔ number** is the other daily conversion, and it can *fail*:
+
+```java
+int n = Integer.parseInt("42");      // 42
+double d = Double.parseDouble("3.5");// 3.5
+String s = String.valueOf(42);       // "42"
+
+Integer.parseInt("4x2");             // NumberFormatException at runtime
+```
+
+`parseInt` throws when the text is not a number — you will meet the
+try/catch that handles this politely in Module 12; for now, only parse text
+you trust.
+
+**One more trap:** `1 + 2 + "A"` is `"3A"` but `"A" + 1 + 2` is `"A12"` —
+`+` works left to right, and once a `String` appears, everything after it is
+glued as text.
+
+**Next:** arithmetic and its surprises.

@@ -1,0 +1,49 @@
+## Compile-time selection by type
+
+C23's `_Generic` (available since C11) is overloading without functions:
+
+```c
+#define type_name(x) _Generic((x), \
+    int: "int", double: "double", \
+    char *: "char *", default: "other")
+```
+
+The selector `(x)` is *not evaluated* — only its type is examined after
+lvalue conversion. Each association yields a different expression; the
+compiler splices in exactly one. That makes `_Generic` the glue for
+type-safe generic APIs:
+
+```c
+#define vec_push(v, val) _Generic((val), \
+    int:    vpush_i, \
+    double: vpush_d, \
+    default: vpush_i)((v), (val))
+```
+
+The macro dispatches to the right concrete function *at compile time* —
+zero runtime cost, full type checking, no `void*` at the call site.
+The user of the library writes `vec_push(v, 42)` and the compiler
+verifies `42` matches an implemented branch.
+
+## The three layers, honestly ranked
+
+1. **Concretely typed functions** (`vpush_i`) — the real work, fully
+   type-checked.
+2. **`_Generic` dispatch macro** — compile-time selection among them;
+   documents the supported set; `default:` should fail loudly (a
+   `(void)0`-style dead branch or a _Static_assert-friendly error).
+3. **Raw `void *` + size + callback** — the universal engine beneath,
+   needed when the *type itself* is a runtime parameter.
+
+_Generic cannot dispatch on runtime values, cannot list every type, and
+does not work on unresolved pointers-to-incomplete. It kills the
+*common* typos; the engine still handles the general case.
+
+## Static assertions seal the contract
+
+```c
+_Static_assert(sizeof(int) == 4, "vec_i assumes 4-byte int");
+```
+
+Compile-time contracts over representation assumptions: better a failed
+build on an exotic platform than silent corruption shipped to users.

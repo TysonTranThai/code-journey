@@ -1,0 +1,46 @@
+Phần lớn vòng lặp hữu ích mang theo trạng thái: tổng chạy dần, một bộ đếm,
+một giá trị tốt nhất từ trước tới nay. Ba pattern phủ đa số.
+
+**Tích lũy** — tổng hoặc nối chuỗi:
+
+```java
+double total = 0;
+for (double p : prices) {
+    total += p;
+}
+```
+
+**Bộ đếm** — đếm sự kiện, không phải phần tử:
+
+```java
+int passing = 0;
+for (int s : scores) {
+    if (s >= 60) passing++;
+}
+```
+
+**Tốt nhất từ trước tới nay (cực trị)** — theo dõi max hoặc min với giá trị
+hạt giống:
+
+```java
+int max = Integer.MIN_VALUE;   // hạt giống: nhỏ hơn mọi giá trị có thể
+for (int s : scores) {
+    if (s > max) max = s;
+}
+```
+
+Hạt giống quan trọng: `max = 0` là sai khi mọi điểm đều âm. Hạt giống ngược
+lại (`Integer.MAX_VALUE`) tìm min.
+
+**Tìm kiếm vs đếm:** tìm kiếm *dừng sớm* (break khi thấy); đếm hay tổng thì
+phải xem hết mọi thứ. Không `break` một phép tìm kiếm là bỏ phí hiệu năng;
+`break` một phép tích lũy hầu như luôn là bug.
+
+**Lỗi thường gặp, đều gặp trong code review tháng này:**
+- cập nhật biến vòng lặp trong thân (`i++` hai lần mỗi vòng);
+- tích lũy vào biến khai báo *bên trong* vòng lặp (bị reset mỗi vòng);
+- `<` vs `<=` lệch một ở biên;
+- tích lũy số thực cho tiền (`0.1 + 0.2 != 0.3`) — dùng `long` xu hoặc
+  `BigDecimal` cho tiền tệ (thói quen đáng hình thành ngay bây giờ).
+
+**Tiếp theo:** vòng lặp lồng nhau và những hình khối chúng vẽ ra.

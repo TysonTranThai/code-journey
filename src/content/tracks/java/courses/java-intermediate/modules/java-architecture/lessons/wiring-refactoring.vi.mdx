@@ -1,0 +1,26 @@
+## Dây nối phụ thuộc bằng tay
+
+Framework (Spring) làm dependency injection giùm bạn; trình trung cấp học
+tự nối trước — nó giải mã container:
+
+```java
+public static void main(String[] args) {
+    ExpenseRepository repo = new InMemoryExpenseRepository();
+    ReportService reports = new ReportService(repo);
+    CliController cli = new CliController(reports);
+    cli.run();   // composition root — nơi DUY NHẤT biết tất cả
+}
+```
+
+**Composition root** là nơi duy nhất các class cụ thể gặp nhau. Mọi thứ
+dưới nó chỉ thấy interface.
+
+Refactor god class, theo thứ tự:
+1. tìm các seam (đầu vào/đầu ra của mỗi trách nhiệm)
+2. tách một trách nhiệm thành một cộng sự viên
+3. tiêm nó qua constructor
+4. test class vừa tách một mình
+5. lặp lại cho đến khi class gốc chỉ còn *điều phối*
+
+Mỗi bước giữ chương trình chạy được — refactor là chuỗi các nước nhỏ đã
+kiểm chứng, không phải viết lại.

@@ -1,0 +1,21 @@
+{
+  "id": "cppa3-fold-sum",
+  "title": "Folds That Survive Empty Packs",
+  "prompt": "Implement `sumAll` and `sumSquares` as one-line folds. The empty-pack calls in the tests are the graded trap: a unary fold over an empty pack is ill-formed — use a binary fold.",
+  "difficulty": "advanced",
+  "level": "imitation",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n\ntemplate <class... A>\nconstexpr auto sumAll(A... a);        // (a + ... + 0) shape\n\ntemplate <class... A>\nconstexpr auto sumSquares(A... a);    // sum of a*a, empty pack -> 0\n",
+  "tests": [
+    {
+      "name": "sumAll basic and empty",
+      "code": "static_assert(sumAll(1, 2, 3) == 6, \"sum\");\nstatic_assert(sumAll() == 0, \"empty pack sum must be 0\");\nCHECK_EQ(sumAll(10, -3), 7);",
+      "hint": "(a + ... + 0) — the binary fold defines the empty-pack result."
+    },
+    {
+      "name": "sumSquares basic and empty",
+      "code": "static_assert(sumSquares(1, 2, 3) == 14, \"squares\");\nstatic_assert(sumSquares() == 0, \"empty pack squares\");\nCHECK_EQ(sumSquares(5), 25);",
+      "hint": "(0 + ... + (a * a)) — fold the square of each element into an accumulator."
+    }
+  ]
+}

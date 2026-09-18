@@ -1,0 +1,21 @@
+{
+  "id": "csb-p13-atm",
+  "title": "ATM with a custom exception",
+  "prompt": "Implement nested class `Solution.InsufficientFundsException : Exception` with a `public decimal Missing { get; }` (constructor `(decimal missing)` passing a message to base and storing it), plus `static decimal Withdraw(decimal balance, decimal amount)` throwing `ArgumentException` for non-positive amounts and `InsufficientFundsException` when `amount > balance` (Missing = amount − balance); success returns the new balance.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "Cj.Eq(Solution.Withdraw(100m, 40m), 60m, \"normal withdrawal\");\nCj.Eq(Solution.Withdraw(100m, 100m), 0m, \"exact balance is legal\");",
+      "hint": "Withdrawing exactly the balance leaves 0 — legal."
+    },
+    {
+      "name": "custom",
+      "code": "try\n{\n    Solution.Withdraw(50m, 80m);\n    Cj.True(false, \"must throw\");\n}\ncatch (Solution.InsufficientFundsException ex)\n{\n    Cj.Eq(ex.Missing, 30m, \"Missing = shortfall\");\n    Cj.True(ex.Message.Length > 0, \"message present\");\n}\nbool t = false;\ntry { Solution.Withdraw(50m, 0m); } catch (ArgumentException) { t = true; }\nCj.True(t, \"non-positive amount rejected\");",
+      "hint": "The custom type carries structured data (Missing) a generic exception couldn't."
+    }
+  ],
+  "level": "independent"
+}

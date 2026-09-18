@@ -1,0 +1,79 @@
+Bạn đã biết lỗi không được bắt sẽ làm chương trình đổ vỡ. Điều phân biệt code
+trung cấp với code người mới bắt đầu là **chiến lược xử lý lỗi có chủ đích**:
+lỗi nào bạn dự liệu được, lỗi nào để mặc nó đổ vỡ, và một lỗi di chuyển giữa
+các tầng của chương trình như thế nào.
+
+## Lỗi dự liệu được và lỗi bất ngờ
+
+**Lỗi dự liệu được** là một phần của bài toán: trường biểu mẫu bị bỏ trống,
+chuỗi JSON sai định dạng, bản ghi không tồn tại. **Lỗi bất ngờ** là bug: gõ sai
+tên, gọi function không tồn tại, một trạng thái không thể xảy ra. Bạn _xử lý_
+lỗi dự liệu được và _sửa_ lỗi bất ngờ. Bọc cả chương trình trong try/catch chỉ
+giấuđi bug — điều tệ nhất có thể làm.
+
+## Cấu trúc của một Error
+
+`throw` nhận bất kỳ giá trị nào, nhưng hãy luôn throw instance của
+`Error` — nó mang theo `message`, `stack` (chi tiết chỉ dành
+cho dev) và từ ES2022 có thêm `cause` để nối chuỗi lỗi:
+
+```js
+try {
+  loadConfig(path);
+} catch (err) {
+  throw new Error("Config failed to load", { cause: err });
+}
+```
+
+Các loại lỗi có sẵn đều có ý nghĩa: `TypeError` cho sai kiểu,
+`RangeError` cho giá trị ngoài khoảng, `SyntaxError` từ
+`JSON.parse`. Hãy dùng chúng trước khi tự chế loại lỗi riêng.
+
+## Lỗi tùy biến
+
+Khi caller cần _phản ứng_ khác nhau với từng loại thất bại, hãy đặt cho nó một
+cái tên:
+
+```js
+class ValidationError extends Error {
+  constructor(message, field) {
+    super(message);
+    this.name = "ValidationError";
+    this.field = field;
+  }
+}
+
+throw new ValidationError("age must be non-negative", "age");
+```
+
+Caller giờ đây có thể phân biệt bằng `err instanceof ValidationError` —
+so sánh chuỗi message chính là cách giấu bug.
+
+## Bắt lỗi có chọn lọc
+
+Chỉ bắt những lỗi bạn thực sự xử lý được, những lỗi còn lại hãy ném tiếp:
+
+```js
+try {
+  const user = parseUser(raw);
+  save(user);
+} catch (err) {
+  if (err instanceof ValidationError) {
+    showFieldError(err.field, err.message); // lỗi của ta: hiện thông báo
+  } else {
+    throw err; // không phải của ta: để nó lan tiếp
+  }
+}
+```
+
+Khối `finally` (tùy chọn) luôn chạy dù có lỗi hay không — dùng nó để dọn
+dẹp tài nguyên, không dùng để return giá trị.
+
+## Mẫu result object
+
+Khi vượt qua ranh giới module, thất bại dự liệu được thường nên là **giá trị**
+thay vì exception. Hãy return `{ ok: true, value }` hoặc
+`{ ok: false, error }` để buộc caller phải đối diện với thất bại — bài
+luyện tập về parser phía dưới được thiết kế theo đúng mẫu này. Nguyên tắc chung:
+throw cho những lỗi mà lập trình viên cần thấy, return result cho các thất bại
+bình thường, dự liệu được.

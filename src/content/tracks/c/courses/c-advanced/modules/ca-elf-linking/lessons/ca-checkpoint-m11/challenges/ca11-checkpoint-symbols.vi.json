@@ -1,0 +1,24 @@
+{
+  "ca11-checkpoint-symbols": {
+    "title": "Kiểm tra: Đọc tâm trí linker",
+    "prompt": "Tích hợp mô-đun: phân tích bảng ký hiệu và quy tắc thứ tự liên kết trong một tệp.@NL@ @NL@1. `sym_class(line)` — phân loại một dòng đầu ra của `nm`, trả về chữ loại ký hiệu (chỉ có một chữ cái ở trường đầu nghĩa là chưa định nghĩa).@NL@2. `linker_resolves(order)` — chuỗi các ký tự A (archive) và P (object thường) đọc từ trái sang phải. Archive chỉ đáp ứng các symbol còn đang chờ khi quét tới; trả về 1 khi và chỉ khi có archive xuất hiện sau ký tự P đầu tiên.",
+    "tests": [
+      {
+        "name": "phân loại chữ",
+        "hint": "Địa chỉ rồi chữ, hoặc một chữ đơn lẻ cho symbol chưa định nghĩa — trả về chữ đó."
+      },
+      {
+        "name": "archive sau P thì giải quyết được",
+        "hint": "Archive được quét khi nhu cầu còn chờ, nên member được kéo vào."
+      },
+      {
+        "name": "archive trước P thì mất",
+        "hint": "Archive được quét trước khi nhu cầu tồn tại: không gì chờ, không gì được kéo."
+      },
+      {
+        "name": "không có P thì không gì chờ",
+        "hint": "Không có object thường thì không có nhu cầu — archive không kéo gì."
+      }
+    ]
+  }
+}

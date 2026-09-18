@@ -1,0 +1,40 @@
+A **promise** is a value that may not exist yet. It has three states:
+**pending** → **fulfilled** (with a value) or **rejected** (with an error) —
+and once settled, never changes again.
+
+## Chaining
+
+Every `.then` returns a **new** promise, which is what makes chains flat
+instead of nested:
+
+```js
+fetchJSON("/api/user")
+  .then((user) => fetchJSON("/api/orders/" + user.id))
+  .then((orders) => render(orders))
+  .catch((err) => showError(err));   // catches ANY step above
+  .finally(() => hideSpinner());     // runs either way
+```
+
+Three rules worth memorizing:
+
+- Returning a value in `.then` fulfills the next promise with that value.
+- Returning a **promise** from `.then` makes the chain wait for it.
+- A thrown error (or a rejected promise returned) skips forward to the nearest
+  `.catch` — errors _propagate_ like try/catch, through the whole chain.
+
+## Errors are values too
+
+`.catch(onRejected)` is `.then(undefined, onRejected)`. A `.catch` that returns
+normally _recovers_ the chain — later `.then`s run. That is how fallback logic
+works:
+
+```js
+getFromCache(id)
+  .catch(() => getFromNetwork(id)) // fallback
+  .then(render);
+```
+
+## finally
+
+`.finally(fn)` runs on both outcomes and receives nothing — it is for cleanup
+(spinner off, lock released), not for the result.

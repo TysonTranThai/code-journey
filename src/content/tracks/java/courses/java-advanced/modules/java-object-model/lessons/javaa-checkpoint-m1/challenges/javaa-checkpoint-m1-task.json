@@ -1,0 +1,31 @@
+{
+  "id": "javaa-checkpoint-m1-task",
+  "title": "Checkpoint: the hostile-reviewer Session",
+  "prompt": "Implement `static final class Session` + helper:\n1. Constructor `Session(List<String> events)` — defensively copies.\n2. `events()` returns an unmodifiable view; `add(String e)` mutates internal state only.\n3. `String describe()` returns `\"Session[n]\"` with n = current event count.\n4. `static String safeTrace()` — creates a Session from a mutable list, mutates that external list afterwards, then returns the Session's `describe()` value.\nThe tests simulate all three hostile reviewers.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "survives outside-in mutation",
+      "code": "\njava.util.List<String> ext = new java.util.ArrayList<>(List.of(\"e1\"));\nSolution.Session s = new Solution.Session(ext);\next.add(\"injected\");\ncheckEq(s.describe(), \"Session[1]\", \"external mutation ignored\");\n",
+      "hint": "Copy the list in the constructor."
+    },
+    {
+      "name": "survives inside-out mutation",
+      "code": "\nSolution.Session s = new Solution.Session(List.of(\"e1\"));\ntry { s.events().add(\"injected\"); checkTrue(false, \"must reject\"); }\ncatch (UnsupportedOperationException e) { checkTrue(true, \"rejected\"); }\n",
+      "hint": "Expose List.copyOf(events)."
+    },
+    {
+      "name": "describe tracks internal adds",
+      "code": "\nSolution.Session s = new Solution.Session(List.of());\ns.add(\"a\"); s.add(\"b\");\ncheckEq(s.describe(), \"Session[2]\", \"internal adds counted\");\n",
+      "hint": "describe reads the internal list size."
+    },
+    {
+      "name": "safeTrace immune to post-ctor edits",
+      "code": "\ncheckEq(Solution.safeTrace(), \"Session[1]\", \"snapshot taken at construction\");\n",
+      "hint": "safeTrace must copy before the external list is mutated."
+    }
+  ],
+  "level": "real-world"
+}

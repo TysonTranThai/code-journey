@@ -1,0 +1,20 @@
+{
+  "id": "i2-n1-refactor",
+  "title": "N+1 Refactor",
+  "prompt": "Write `countFetches(taskCount, strategy)` — strategy \"naive\" => 1 + taskCount queries; \"join\" => 1; \"batch\" => 2. Then `refactorReport(taskCount, savedMs)` — compute naive vs join query counts and estimate time saved as (naive - join) * savedMs; return { naive, join, msSaved }. This is the arithmetic that convinces teams to fix N+1.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function countFetches(taskCount, strategy) {\n  // your code\n}\n\nfunction refactorReport(taskCount, savedMs) {\n  // your code — use countFetches\n}\n",
+  "tests": [
+    {
+      "name": "counts per strategy",
+      "code": "const fn = new Function(code + \"\\nreturn { countFetches, refactorReport };\");\nconst { countFetches, refactorReport } = fn();\nif (countFetches(50, \"naive\") !== 51) throw new Error(\"1 list + 50 lookups.\");\nif (countFetches(50, \"join\") !== 1) throw new Error(\"One join.\");\nif (countFetches(50, \"batch\") !== 2) throw new Error(\"List + one IN query.\");\n",
+      "hint": "Three formulas."
+    },
+    {
+      "name": "the report makes the case",
+      "code": "const fn = new Function(code + \"\\nreturn { countFetches, refactorReport };\");\nconst { countFetches, refactorReport } = fn();\nconst out = refactorReport(100, 5);\nif (out.naive !== 101 || out.join !== 1) throw new Error(\"Counts correct.\");\nif (out.msSaved !== 500) throw new Error(\"100 extra queries × 5ms each.\");\n",
+      "hint": "(naive - join) * savedMs."
+    }
+  ]
+}

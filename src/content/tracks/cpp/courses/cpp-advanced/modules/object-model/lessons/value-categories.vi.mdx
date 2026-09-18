@@ -1,0 +1,43 @@
+Mỗi **biểu thức** trong C++ có hai thuộc tính độc lập: *kiểu* (type) và *phân loại giá trị* (value category). Phân loại trả lời một câu hỏi: **biểu thức này tham chiếu đến cái gì, và tôi có thể tái sử dụng nó không?**
+
+## Ba phân loại
+
+- **lvalue** — có định danh, *có thể* tái sử dụng: biến có tên, biểu thức `*p`, hàm trả về `T&`.
+- **xvalue** ("expiring") — có định danh nhưng *đánh dấu là có thể lấy tài nguyên*: `std::move(x)`, hàm trả về `T&&`, thành viên của một xvalue.
+- **prvalue** ("pure") — chưa có định danh, chỉ là một giá trị đang được sinh ra: literal, `T{...}`, hàm trả về `T` theo giá trị.
+
+lvalue + xvalue là **glvalue** (chỉ đến một đối tượng). xvalue + prvalue là **rvalue** (có thể move).
+
+```cpp
+std::string a = "hi";        // 'a' là lvalue
+std::move(a);                // std::move(a) là xvalue
+std::string(3, '?');         // prvalue
+a + "!";                     // prvalue (operator+ trả về theo giá trị)
+```
+
+## Vì sao có hệ thống này
+
+Overload resolution quan tâm đến nó: `f(T&)` thắng `f(T&&)` với lvalue, còn `f(T&&)` chỉ *khả dụng* với rvalue. Đó là toàn bộ cơ chế phía sau move-on-return, `emplace_back` và forwarding. `std::move` không move bất cứ thứ gì — nó là một **cast sang xvalue**: "đây là định danh, hãy mổ xẻ nó."
+
+## Đọc phân loại từ kiểu bằng decltype
+
+Chuẩn cung cấp công cụ: với biểu thức `e`, `decltype((e))` là:
+- `T&` nếu `e` là lvalue,
+- `T&&` nếu `e` là xvalue,
+- `T` nếu `e` là prvalue.
+
+```cpp
+static_assert(std::is_same_v<decltype((a)), std::string&>);             // lvalue
+static_assert(std::is_same_v<decltype((std::move(a))), std::string&&>); // xvalue
+static_assert(std::is_same_v<decltype((a + "!")), std::string>);        // prvalue
+```
+
+(`decltype(a)` đơn thuần là kiểu *khai báo*; thêm ngoặc kép để decltype coi nó là biểu thức.)
+
+## Hai bẫy kinh điển
+
+**Bẫy 1 — rvalue reference có tên là lvalue.** Bên trong `void f(T&& x)`, biểu thức `x` là lvalue (nó có tên!). Khi chuyển tiếp, gán hay lưu trữ, nó sẽ bị copy nếu bạn không dùng `std::forward`/`std::move`. Một chỗ compiler tự bù: câu lệnh trơn `return x;` thực hiện *implicit move* cho tham số rvalue reference (C++20 P1825) — đó là tiện lợi, không phải quy tắc để dựa vào. Ở mọi nơi khác, hãy forward tường minh.
+
+**Bẫy 2 — rvalue không có nghĩa là sửa được.** Tham số `const T&&` buộc được rvalue nhưng không thể move; một số API dùng nó có chủ đích để *từ chối* move.
+
+**Kỷ luật luyện tập:** trước mỗi bài tập, *viết ra* phân loại bạn dự đoán. Các bài kiểm tra dùng probe `decltype` — đúng công cụ bạn sẽ dùng khi review code.

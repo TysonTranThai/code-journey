@@ -1,0 +1,31 @@
+{
+  "id": "ca6-ladder",
+  "title": "The Cleanup Ladder",
+  "prompt": "File-scope counters `int a_alive = 0, b_alive = 0, c_alive = 0;` are already in your editor. Implement `int cleanup_ladder(int fail_at)` simulating a three-resource acquisition: allocate A (a_alive++), then B (b_alive++), then C (c_alive++); if fail_at is 1, 2, or 3, simulate failure *before* that resource's allocation, releasing everything acquired so far in reverse order and returning -1; success returns 0 with everything released too. Every path must leave all counters at 0.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nint a_alive = 0, b_alive = 0, c_alive = 0;\n",
+  "tests": [
+    {
+      "name": "fail at 1",
+      "code": "CHECK_EQ(cleanup_ladder(1), -1);\nCHECK_EQ(a_alive, 0);\nCHECK_EQ(b_alive, 0);\nCHECK_EQ(c_alive, 0);",
+      "hint": "Nothing beyond A was acquired; A itself is released on the way out."
+    },
+    {
+      "name": "fail at 2",
+      "code": "CHECK_EQ(cleanup_ladder(2), -1);\nCHECK_EQ(a_alive, 0);\nCHECK_EQ(b_alive, 0);",
+      "hint": "A and B acquired, both released, reverse order."
+    },
+    {
+      "name": "fail at 3",
+      "code": "CHECK_EQ(cleanup_ladder(3), -1);\nCHECK_EQ(a_alive, 0);\nCHECK_EQ(b_alive, 0);\nCHECK_EQ(c_alive, 0);",
+      "hint": "All three acquired, all released."
+    },
+    {
+      "name": "success releases too",
+      "code": "CHECK_EQ(cleanup_ladder(0), 0);\nCHECK_EQ(a_alive, 0);\nCHECK_EQ(c_alive, 0);",
+      "hint": "The success path is also a cleanup path."
+    }
+  ],
+  "level": "combination"
+}

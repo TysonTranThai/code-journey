@@ -1,0 +1,20 @@
+{
+  "id": "i2-query-builder",
+  "title": "Query Builder",
+  "prompt": "Write `buildQuery(base, params)` that RETURNS the full URL string: `base` plus a query string built from the `params` object using URLSearchParams rules — skip keys whose value is `undefined` or `null`, stringify numbers, and encode special characters (spaces become `+` or `%20`). With no surviving params, return `base` unchanged.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function buildQuery(base, params) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "builds an encoded query string",
+      "code": "const fn = new Function(code + \"\\nreturn { buildQuery };\");\nconst { buildQuery } = fn();\nconst url = buildQuery(\"/api/items\", { q: \"web dev\", page: 2 });\nconst parsed = new URL(url, \"https://x.dev\");\nif (parsed.pathname !== \"/api/items\") throw new Error(\"The base path must survive.\");\nif (parsed.searchParams.get(\"q\") !== \"web dev\") throw new Error(\"q must round-trip through URLSearchParams.\");\nif (parsed.searchParams.get(\"page\") !== \"2\") throw new Error(\"Numbers must be stringified.\");",
+      "hint": "new URLSearchParams(entries).toString() — attach with base + '?' + qs when qs is non-empty."
+    },
+    {
+      "name": "skips undefined and null values",
+      "code": "const fn = new Function(code + \"\\nreturn { buildQuery };\");\nconst { buildQuery } = fn();\nconst url = buildQuery(\"/api/items\", { q: \"x\", tag: undefined, sort: null });\nif (!url.startsWith(\"/api/items?\")) throw new Error(\"q survives, so a query string exists.\");\nif (url.includes(\"tag\") || url.includes(\"sort\")) throw new Error(\"undefined/null params must be dropped entirely.\");\nif (buildQuery(\"/api/items\", {}) !== \"/api/items\") throw new Error(\"No surviving params means bare base — no trailing '?'.\");",
+      "hint": "Object.entries + filter on value != null before constructing URLSearchParams."
+    }
+  ]
+}

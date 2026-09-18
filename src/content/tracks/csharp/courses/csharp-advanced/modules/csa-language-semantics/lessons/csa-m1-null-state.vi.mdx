@@ -1,0 +1,35 @@
+## Phân tích null-state và hợp đồng nullable
+
+Từ C# 8, `string` và `string?` là cùng một kiểu lúc chạy — nullability là
+**phân tích luồng** trình biên dịch thực hiện, không phải cơ chế bảo vệ lúc
+chạy. Trong một phương thức, compiler theo dõi trạng thái từng tham chiếu:
+*có-thể-null* hoặc *không-null*. Cảnh báo vang khi giá trị maybe-null bị
+dereference hoặc chảy vào chỗ not-null.
+
+```csharp
+string? name = FindUser();
+Console.WriteLine(name.Length);      // cảnh báo: maybe-null
+if (name is null) return;
+Console.WriteLine(name.Length);      // OK: not-null sau kiểm tra
+```
+
+Hợp đồng trở nên tường minh ở ranh giới nhờ attribute:
+
+```csharp
+[return: NotNullIfNotNull(nameof(input))]
+static string? Clean(string? input) => input?.Trim();
+
+bool TryParse(string s, [NotNullWhen(true)] out Order? order);
+```
+
+`NotNullWhen` giúp pattern `TryX` không còn "nói dối": compiler hiểu rằng
+`order` an toàn đúng khi phương thức trả về true. `[MemberNotNull]` báo cho
+compiler biết một phương thức phụ đã thiết lập trường không-null — thích nó
+hơn `!` (toán tử null-forgiving) chính là khác biệt giữa một hợp đồng và một
+cảnh báo bị tắt.
+
+Null-state KHÔNG làm gì: nó không phải xác thực. Một `string` không-null vẫn
+có thể là `""`. Null-state xóa một lớp *crash*; bất biến miền nghiệp vụ vẫn
+cần kiểm tra tường minh. Và lúc chạy, `default` (ví dụ `default(string)`) vẫn
+là null — phân tích luồng không nhìn xuyên qua reflection, deserialization,
+hay `Unsafe` — chính là nơi NRE production trú ẩn.

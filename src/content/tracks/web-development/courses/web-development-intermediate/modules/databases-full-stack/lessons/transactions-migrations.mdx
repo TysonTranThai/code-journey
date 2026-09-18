@@ -1,0 +1,40 @@
+## Transactions: all or nothing
+
+```sql
+BEGIN;
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT;   -- or ROLLBACK; on any failure
+```
+
+Either both updates land or neither does. The four guarantees (ACID): **Atomicity** (all-or-nothing), **Consistency** (constraints hold before and after), **Isolation** (concurrent transactions don't see each other's half-work), **Durability** (committed data survives crashes).
+
+The transfer above is the canonical case, but so is any app-level multi-step: create user + create profile + send welcome — if step 3 fails, roll back 1 and 2. In Node: `BEGIN` ... run queries ... `COMMIT` in a `try`, `ROLLBACK` in the `catch`.
+
+## Migrations: schema changes under version control
+
+Schema lives in your repo as ordered migration files:
+
+```text
+migrations/
+  001_create_tasks.sql     CREATE TABLE tasks (...);
+  002_add_due_column.sql   ALTER TABLE tasks ADD COLUMN due timestamptz;
+  003_tasks_tags.sql       CREATE TABLE task_tags (...);
+```
+
+Rules the pros live by:
+
+- **Forward only** — write a new migration to change things; don't edit old ones (they've run elsewhere)
+- **Every migration paired with a mental (or written) rollback**
+- **Expand/contract for zero-downtime**: add the new column (expand), deploy code writing both, backfill, remove the old column (contract)
+- The tool tracks which migrations have run (`drizzle-kit`, `node-pg-migrate`, plain SQL runner)
+
+## ORMs: helpers, not oracles
+
+An ORM (Drizzle, Prisma) maps tables to typed code: `db.select().from(tasks).where(eq(tasks.authorId, 7))`. Gains: type safety end-to-end, fewer injection mistakes, migrations-as-code. Costs: a second mental model, and the temptation to forget SQL — which you _will_ need when the ORM generates a slow query and the fix is knowing what SQL you want instead.
+
+The professional stance: **learn SQL first** (you just did), then let the ORM save typing on the boring 80%, and drop to raw SQL (`sql\`...\``) for the interesting 20%. The ORM is a query _builder_, not a database _substitute_.
+
+## Connection pooling
+
+Every query needs a connection; opening one per request kills performance. A pool keeps N connections open and lends them out (`pg.Pool`, max ~10 for most apps). The classic deployment bug: pool size × server count > database's max_connections — everyone's queries start failing at 5pm on a Friday.

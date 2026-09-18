@@ -1,0 +1,32 @@
+Real programs spend more lines refusing bad input than celebrating good
+input. Three habits make validation clean.
+
+**1. Validate at the edge, early.** Check everything the function needs in
+one guard clause at the top, then write the happy path without interruptions:
+
+```java
+static double monthlyPayment(double principal, int months) {
+    if (months <= 0) {
+        throw new IllegalArgumentException("months must be positive");
+    }
+    // happy path, no nested ifs
+}
+```
+
+You met `throw` here for the first time: refusing to continue when the
+contract is broken. Module 12 builds the full machinery; the pattern is
+usable from day one.
+
+**2. Refuse with a message worth reading.** `"invalid input"` helps nobody;
+`"months must be positive, got -3"` lets the caller fix the call in seconds.
+
+**3. Prefer returning a verdict over printing one.** A method that returns
+`"OK"` or the reason it failed is *testable*; a method that just prints can
+only be watched. This module's practice set grades returned verdicts for
+exactly that reason.
+
+A compact validation table reads beautifully as a switch expression over an
+error code, or as a list of guard clauses — whichever makes the contract
+obvious at a glance.
+
+**Next:** practice.

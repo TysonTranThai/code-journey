@@ -1,0 +1,21 @@
+{
+  "id": "ca5-vec-push",
+  "title": "Doubling Growth Policy",
+  "prompt": "Implement a growable vector with an explicit growth contract:\n \n```c\nint vec_push(int **buf, size_t *len, size_t *cap, int v);\n```\n \nStarts at capacity 1; when full, the capacity *doubles*; returns 0 on success, -1 if allocation fails (leave everything unchanged then).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "five pushes, cap 8",
+      "code": "int *buf = NULL;\nsize_t len = 0, cap = 0;\nfor (int i = 1; i <= 5; i++) vec_push(&buf, &len, &cap, i);\nCHECK_EQ((long long)cap, 8);\nCHECK_EQ((long long)len, 5);\nCHECK_EQ(buf[0], 1);\nCHECK_EQ(buf[4], 5);",
+      "hint": "1 doubles to 2, 4, 8; the fifth push triggers the 4-to-8 growth; values survive every move."
+    },
+    {
+      "name": "first push allocates",
+      "code": "int *b = NULL;\nsize_t l = 0, c = 0;\nCHECK_EQ(vec_push(&b, &l, &c, 9), 0);\nCHECK_EQ((long long)c, 1);\nCHECK_EQ(b[0], 9);",
+      "hint": "The NULL/zero start must allocate capacity 1, not 0."
+    }
+  ],
+  "level": "independent"
+}

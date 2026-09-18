@@ -1,0 +1,28 @@
+## Queue, Deque, PriorityQueue
+
+`ArrayDeque` is Java's best stack AND queue — faster than the legacy
+`Stack` class and `LinkedList`:
+
+```java
+Deque<String> stack = new ArrayDeque<>();
+stack.push("a");          // addFirst
+stack.pop();              // removeFirst — LIFO
+
+Deque<String> queue = new ArrayDeque<>();
+queue.offer("a");         // addLast
+queue.poll();             // removeFirst — FIFO
+```
+
+Two method flavors exist for a reason:
+- `add/push/offer` throw or lie differently on capacity failure
+- `element/peek` vs `remove/poll`: the first pair *throws* when empty,
+  the second returns null — choose explicitly, don't mix casually.
+
+`PriorityQueue` is a heap: `poll()` always yields the smallest element
+*according to its comparator*, not insertion order:
+
+```java
+PriorityQueue<Task> q = new PriorityQueue<>(Comparator.comparingInt(Task::priority));
+```
+
+O(log n) insert/poll — the tool for "always process the most urgent next".

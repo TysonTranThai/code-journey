@@ -1,0 +1,39 @@
+## Encapsulation = the client cannot see inside
+
+If a header exposes the struct body, any client can poke `q->data[i]`
+directly — and every invariant you maintain becomes unenforceable. C's
+encapsulation tool is the **opaque type**: declare the name, define the
+body in exactly one .c file:
+
+```c
+/* stack.h — the public contract */
+typedef struct Stack Stack;          /* name without a body */
+Stack *stack_create(void);
+int    stack_push(Stack *s, int v);  /* 0 ok, -1 oom */
+int    stack_pop(Stack *s, int *out);/* 0 ok, -1 empty */
+void   stack_destroy(Stack *s);      /* frees everything it owns */
+```
+
+```c
+/* stack.c — the private truth */
+struct Stack {
+    int  *data;
+    size_t len, cap;
+};
+```
+
+Clients get handles (`Stack *`) they can pass around but cannot
+dereference. Every access goes through your functions — so the invariant
+"`data` is non-NULL while `cap > 0`" is checked in exactly one place.
+
+## The price and the payoff
+
+Price: every field you later want to expose needs a function. Payoff:
+you can *change the representation* — grow policy, structure, even a
+linked implementation — without recompiling one client. That is why real
+libraries (stdio's `FILE`, POSIX's `DIR`) are opaque.
+
+Ownership rule, written on the handle: the creator owns it; functions
+borrow; the destroyer ends the story. If an API hands out a pointer
+*into* the handle (`const char *map_get(...)`), document that the loan
+lives until the next mutating call on the same object.

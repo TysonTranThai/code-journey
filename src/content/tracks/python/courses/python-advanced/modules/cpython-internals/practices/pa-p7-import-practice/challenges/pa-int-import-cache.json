@@ -1,0 +1,16 @@
+{
+  "id": "pa-int-import-cache",
+  "title": "Module identity and once-only bodies",
+  "prompt": "Implement `class ReloadableModule` demonstrating import-cache semantics:\n\n1. `install(name)` creates a `types.ModuleType(name)`, sets `mod.exec_count = 0`, registers it in `sys.modules[name]`, and stores it on `self.modules[name]`.\n2. `import_again(name)` returns `sys.modules[name]` WITHOUT re-executing anything.\n3. `simulate_body_execution(name)` increments that module's `exec_count += 1` (simulating a module body run).\n4. `identity_stable(name)` returns True when repeated `import_again` calls always return the SAME object.\n\nGraded checks: identity is stable; exec_count only changes when simulate_body_execution is explicitly called — mirroring real import-once semantics.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import sys\nimport types\n\n# TODO: ReloadableModule",
+  "tests": [
+    {
+      "name": "identity is stable, body runs once",
+      "code": "rm = ReloadableModule()\nrm.install('demo')\nrm.simulate_body_execution('demo')\nm1 = rm.import_again('demo')\nm2 = rm.import_again('demo')\nm3 = rm.import_again('demo')\nassert m1 is m2 is m3, 'import must return the same module object'\nassert m1.exec_count == 1, f'exec_count: {m1.exec_count}'\nassert rm.identity_stable('demo')\nprint('ok')",
+      "hint": "sys.modules[name] is the cache: import_again is a dict lookup, nothing executes."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,27 @@
+## Đồng nhất so với bằng giá trị
+
+`==` trên đối tượng hỏi: *đây có phải cùng một đối tượng trong bộ nhớ?*
+(đồng nhất — identity). `.equals()` hỏi: *hai đối tượng này có cùng giá trị?*
+(bằng giá trị — equality).
+
+```java
+String a = new String("hi");
+String b = new String("hi");
+a == b        // false — hai đối tượng khác nhau
+a.equals(b)   // true  — cùng giá trị
+```
+
+JVM cache string nhỏ và Integer nhỏ, nên `==` có thể *vô tình* trả về true
+với giá trị bằng nhau — cho đến khi không còn vậy. Không bao giờ dùng `==`
+để so sánh giá trị của đối tượng. Primitive (`int`, `long`, ...) là ngoại lệ:
+`==` đúng ở đó vì không có khái niệm identity.
+
+```java
+Integer x = 127, y = 127;
+Integer p = 128, q = 128;
+x == y   // true — box được cache (đừng dựa vào điều này!)
+p == q   // false — box mới trên 127
+```
+
+Đây là bẫy kinh điển của trình độ trung cấp: code chạy trong test, hỏng ở
+production với số lớn hơn.

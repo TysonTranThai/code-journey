@@ -1,0 +1,20 @@
+{
+  "id": "csb-checkpoint-m7-task",
+  "title": "Signal tools",
+  "prompt": "Implement `MovingAverage` and `IsPalindrome` as described. Watch the window contract (≥1 or throw; result length is Length - window + 1) and the palindrome null/empty distinction.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "moving-average",
+      "code": "var m = Solution.MovingAverage(new[] {1, 2, 3, 4}, 2);\nCj.Eq(m.Length, 3, \"three windows\");\nCj.Near(m[0], 1.5, 1e-9, \"first\");\nCj.Near(m[2], 3.5, 1e-9, \"last\");\nCj.Eq(Solution.MovingAverage(new[] {5}, 3).Length, 0, \"window too big\");\nbool threw = false;\ntry { Solution.MovingAverage(new[] {1, 2}, 0); } catch (ArgumentException) { threw = true; }\nCj.True(threw, \"window 0 throws\");",
+      "hint": "Length contract, exact window means, the too-big-window rule, and the guard."
+    },
+    {
+      "name": "palindrome",
+      "code": "Cj.True(Solution.IsPalindrome(new[] {1, 2, 1}), \"odd palindrome\");\nCj.True(Solution.IsPalindrome(new[] {1, 2, 2, 1}), \"even palindrome\");\nCj.False(Solution.IsPalindrome(new[] {1, 2, 3}), \"not palindrome\");\nCj.True(Solution.IsPalindrome(new int[0]), \"empty IS\");\nCj.False(Solution.IsPalindrome(null), \"null is NOT\");",
+      "hint": "The null/empty asymmetry is the trap: empty is trivially a palindrome, null is no data at all."
+    }
+  ]
+}

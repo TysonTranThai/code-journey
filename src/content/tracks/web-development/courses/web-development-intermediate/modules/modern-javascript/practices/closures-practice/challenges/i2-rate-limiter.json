@@ -1,0 +1,20 @@
+{
+  "id": "i2-rate-limiter",
+  "title": "Closure-Based Rate Limiter",
+  "prompt": "Write `createLimiter(maxCalls)` that returns a function. The returned function returns `true` the first `maxCalls` times it is invoked and `false` after that.\n\nExample with `createLimiter(2)`: `true, true, false, false, ...`\n\nThis is how click-debouncing and API throttling are usually structured — state captured in a closure, no globals.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function createLimiter(maxCalls) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "allows first N calls then blocks",
+      "code": "const fn = new Function(code + \"\\nreturn { createLimiter };\");\nconst { createLimiter } = fn();\nconst gate = createLimiter(2);\nconst results = [gate(), gate(), gate(), gate()];\nif (JSON.stringify(results) !== JSON.stringify([true, true, false, false])) throw new Error(\"With maxCalls=2 expect true, true, false, false.\");",
+      "hint": "Keep a let allowed = maxCalls in the closure; decrement on each call and compare."
+    },
+    {
+      "name": "each limiter has its own budget",
+      "code": "const fn = new Function(code + \"\\nreturn { createLimiter };\");\nconst { createLimiter } = fn();\nconst a = createLimiter(1); const b = createLimiter(1);\na(); if (b() !== true) throw new Error(\"Exhausting limiter a must not affect limiter b.\");",
+      "hint": "State must be created inside createLimiter — per call, not shared."
+    }
+  ]
+}

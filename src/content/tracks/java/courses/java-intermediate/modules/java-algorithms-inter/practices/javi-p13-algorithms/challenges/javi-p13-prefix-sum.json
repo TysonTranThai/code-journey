@@ -1,0 +1,31 @@
+{
+  "id": "javi-p13-prefix-sum",
+  "title": "Prefix Sums & Range Queries",
+  "prompt": "Implement:\n- `static long[] prefixSums(int[] xs)` — length n+1, pre[0]=0,\n  pre[i+1] = pre[i] + xs[i].\n- `static long rangeSum(long[] pre, int l, int r)` — sum of [l, r)\n  via pre[r] - pre[l].\n- `static int countSubarraysWithSum(int[] xs, int target)` — number of\n  contiguous subarrays summing exactly to target, using the prefix map\n  trick (count of earlier prefixes with pre[j] == pre[i] - target).\n\n[-2, 2, -2, 2], target 0 → 5 subarrays (each zero-sum run counts).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "prefix and range",
+      "code": "\nlong[] pre = Solution.prefixSums(new int[]{1, 2, 3, 4});\ncheckEq(Solution.rangeSum(pre, 1, 3), 5L, \"2+3\");\n",
+      "hint": "pre[3] - pre[1] = 6 - 1 = 5."
+    },
+    {
+      "name": "full range",
+      "code": "\nlong[] pre = Solution.prefixSums(new int[]{1, 2, 3, 4});\ncheckEq(Solution.rangeSum(pre, 0, 4), 10L, \"whole array\");\n",
+      "hint": "pre[4] - pre[0] = 10."
+    },
+    {
+      "name": "zero-sum subarray counting",
+      "code": "\ncheckEq(Solution.countSubarraysWithSum(new int[]{-2, 2, -2, 2}, 0), 4, \"four zero-sum runs\");\n",
+      "hint": "[-2,2], [-2,2](middle), [2,-2], [-2,2](last two), [-2,2,-2,2] — count them exactly."
+    },
+    {
+      "name": "target matching single elements",
+      "code": "\ncheckEq(Solution.countSubarraysWithSum(new int[]{5, 1, 5}, 5), 2, \"two fives\");\n",
+      "hint": "Each 5 alone is one subarray; nothing else sums to 5."
+    }
+  ],
+  "level": "independent"
+}

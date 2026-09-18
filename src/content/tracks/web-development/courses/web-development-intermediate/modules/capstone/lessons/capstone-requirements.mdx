@@ -1,0 +1,32 @@
+## Reading requirements like an engineer
+
+A requirement is a promise the product makes. "A user can sign up with email and password" implies, invisibly: an email format rule, a password policy, a uniqueness check, a persistence layer, an error state for "email already taken", and a session afterward. **Your first engineering act is unwrapping the promise into decisions.**
+
+Take each requirement and interrogate it with four questions:
+
+1. **Data**: what must be stored, what shape, what constraints? (email unique, posts belong to a user)
+2. **Behavior**: what are the flows, and what happens on every failure path?
+3. **Interface**: what does the user see, do, and get told — including when things break?
+4. **Boundaries**: what stays client-side, what crosses the network, what only a server may decide?
+
+## The project: ServiceDesk
+
+You will build a small internal ticketing system. The requirements, verbatim:
+
+> **ServiceDesk — requirements**
+>
+> - Staff can sign up and sign in with email and a password of at least 8 characters.
+> - Staff can create tickets with a **title**, a **description**, and a **priority** (low / medium / high).
+> - Tickets are listed newest-first with the author's name; the list can be filtered by priority.
+> - Only the **author** of a ticket can close or edit it; closing records the timestamp.
+> - The list page loads via the API without a full page reload and shows a loading state.
+
+Notice what the requirements do **not** tell you: the schema, the endpoints, the error formats, the CSS architecture, the validation strategy, the deployment plan. Those are yours. That is the job.
+
+## From requirements to a decision backlog
+
+Turn each requirement into a numbered decision with options and a chosen path, for example:
+
+- **R2 (create ticket)** → data: `tickets` table (id, author_id, title, description, priority CHECK IN, status, created_at, closed_at nullable) → behavior: validation server-side AND client-side, 400 with field errors → interface: disabled submit while pending, inline errors → boundary: author_id from the session, never from the request body.
+
+Write your backlog down before any code. In the next lesson you will pressure-test it, and in the practice set you will record your real decisions — they get graded.

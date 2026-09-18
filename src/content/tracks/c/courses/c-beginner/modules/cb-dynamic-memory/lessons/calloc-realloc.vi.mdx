@@ -1,0 +1,46 @@
+## calloc: malloc + phủ zero
+
+```c
+int *p = calloc(n, sizeof(int));   // n phần tử, MỖI phần tử bằng 0
+```
+
+Hai điểm khác `malloc(n * sizeof(int))`: hai đối số (số lượng, kích thước),
+và mọi byte được đặt về 0. Chọn calloc khi "toàn zero" là trạng thái bạn muốn;
+chọn malloc khi bạn sẽ ghi đè ngay lập tức.
+
+## realloc: phóng to hoặc thu nhỏ
+
+```c
+int *q = realloc(p, new_count * sizeof(int));
+```
+
+`realloc` có thể mở rộng ngay tại chỗ hoặc dời khối — nếu dời, nó SAO CHÉP nội
+dung cũ. Dù thế nào bạn cũng nhận địa chỉ mới của khối.
+
+## Cách dùng realloc chuẩn — đừng đánh mất con trỏ duy nhất
+
+```c
+int *tmp = realloc(p, m * sizeof(int));
+if (tmp == NULL) {
+    free(p);                 // khối cũ vẫn hợp lệ; dọn dẹp
+    return 1;
+}
+p = tmp;                     // thành công: nhận địa chỉ mới
+```
+
+Gán thẳng vào `p` (`p = realloc(p, ...)`) là lỗi kinh điển: khi thất bại nó
+trả NULL và địa chỉ GỐC bị mất — rò rỉ không cách nào free.
+
+## Mở rộng mảng động
+
+```c
+int count = 0, cap = 4;
+int *a = malloc(cap * sizeof(int));
+// ... cần thêm chỗ ...
+cap *= 2;
+int *tmp = realloc(a, cap * sizeof(int));
+if (tmp == NULL) { free(a); /* xử lý */ }
+else a = tmp;
+```
+
+Mẫu nhân đôi này là trái tim của mọi mảng động bạn sẽ dựng ở module 20.

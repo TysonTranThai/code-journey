@@ -1,0 +1,26 @@
+{
+  "id": "pi11-entry-dispatch",
+  "title": "Subcommand Router",
+  "prompt": "Implement main(argv) (argv is a list like ['add', 'milk']) returning the exit code int: 'add' with text → prints 'added: <text>' and returns 0; 'list' → prints '2 tasks' and returns 0; unknown command or 'add' without text → prints the error to stderr and returns 2. (The grader captures stdout/stderr.)",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import sys\n\ndef main(argv):\n    pass\n",
+  "tests": [
+    {
+      "name": "add prints and succeeds",
+      "code": "import io, contextlib\nbuf = io.StringIO()\nwith contextlib.redirect_stdout(buf):\n    code = main(['add', 'milk'])\nassert code == 0 and buf.getvalue().strip() == 'added: milk'",
+      "hint": "Print the confirmation; return 0."
+    },
+    {
+      "name": "errors go to stderr with exit 2",
+      "code": "import io, contextlib\nout, err = io.StringIO(), io.StringIO()\nwith contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):\n    code = main(['bogus'])\nassert code == 2\nassert err.getvalue().strip() != ''\nassert out.getvalue() == ''",
+      "hint": "Error message to stderr; nothing on stdout; exit code 2."
+    },
+    {
+      "name": "add without text is an error too",
+      "code": "import io, contextlib\nerr = io.StringIO()\nwith contextlib.redirect_stderr(err):\n    code = main(['add'])\nassert code == 2 and err.getvalue().strip() != ''",
+      "hint": "Missing required argument behaves like an unknown command."
+    }
+  ],
+  "level": "independent"
+}

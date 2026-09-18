@@ -1,0 +1,26 @@
+{
+  "id": "cb19-fix-format",
+  "title": "Fix: Wrong Format Specifier",
+  "prompt": "Implement `void format_price(double p, char *out)` writing `price=<value>` into out with snprintf, where <value> uses printf's %g formatting for the double. The classic bug is %d with a double — yours must be correct.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "char buf[32] = {0};\nformat_price(12.5, buf);\nCHECK_STR_EQ(buf, \"price=12.5\");",
+      "hint": "snprintf(out, 32, \"price=%g\", p)."
+    },
+    {
+      "name": "integer valued",
+      "code": "char buf[32] = {0};\nformat_price(7.0, buf);\nCHECK_STR_EQ(buf, \"price=7\");",
+      "hint": "%g drops the trailing .0."
+    },
+    {
+      "name": "longer",
+      "code": "char buf[32] = {0};\nformat_price(1234.5, buf);\nCHECK_STR_EQ(buf, \"price=1234.5\");",
+      "hint": "Bigger values too."
+    }
+  ],
+  "level": "guided"
+}

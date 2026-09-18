@@ -1,0 +1,18 @@
+{
+  "title": "Writer CSV + round-trip",
+  "prompt": "Cài phía ghi:\n- `static String writeRow(List<String> fields)` — nối bằng dấu phẩy,\n  bọc field trong ngoặc kép chỉ khi nó chứa dấu phẩy hoặc ngoặc; trong\n  field có ngoặc, `\"` thành `\"\"`.\n- `static List<String> roundTrip(List<String> fields)` — trả\n  `parseRow(writeRow(fields))` (có thể viết lại bộ quét hoặc nội tuyến).\n\nDanh tính round-trip là hợp đồng thật: parse(write(x)) == x với mọi nội\ndung field — kể cả dấu phẩy và ngoặc.",
+  "tests": [
+    {
+      "name": "Field thuần không ngoặc",
+      "hint": "Không comma/quote → không bọc."
+    },
+    {
+      "name": "Có comma thì bọc ngoặc",
+      "hint": "Bọc trong \" khi field chứa dấu phẩy."
+    },
+    {
+      "name": "Danh tính round-trip",
+      "hint": "Bộ quét và writer phải nghịch đảo lẫn nhau."
+    }
+  ]
+}

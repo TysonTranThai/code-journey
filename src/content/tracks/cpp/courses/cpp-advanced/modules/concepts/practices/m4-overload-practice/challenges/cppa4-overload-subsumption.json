@@ -1,0 +1,26 @@
+{
+  "id": "cppa4-overload-subsumption",
+  "title": "The Constraint Ladder",
+  "prompt": "Define `Iterable` (begin/end) and `SizedIterable` (refining it with size), then three `category` overloads — sized, iterable-only, and other — and verify subsumption routes each type to the right rung.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <concepts>\n#include <string>\n#include <vector>\n\n// TODO: template <class T> concept Iterable = ...;\n// TODO: template <class T> concept SizedIterable = Iterable<T> && ...;\n// TODO: three overloads:\n//   template <SizedIterable C> std::string category(const C&);  -> \"sized-iterable\"\n//   template <Iterable C> std::string category(const C&);       -> \"iterable\"\n//   template <class C> std::string category(const C&);          -> \"other\"\n",
+  "tests": [
+    {
+      "name": "vector lands on the sized rung",
+      "code": "CHECK_EQ(category(std::vector<int>{}), std::string(\"sized-iterable\"));",
+      "hint": "Subsumption: SizedIterable (more constrained) wins for anything with begin/end/size."
+    },
+    {
+      "name": "begin/end-only lands on iterable",
+      "code": "struct RangeOnly {\n    int* begin() { return nullptr; }\n    int* end() { return nullptr; }\n};\nCHECK_EQ(category(RangeOnly{}), std::string(\"iterable\"));",
+      "hint": "RangeOnly has begin/end but no size — Iterable only."
+    },
+    {
+      "name": "everything else lands on other",
+      "code": "CHECK_EQ(category(42), std::string(\"other\"));",
+      "hint": "The unconstrained overload catches the rest."
+    }
+  ]
+}

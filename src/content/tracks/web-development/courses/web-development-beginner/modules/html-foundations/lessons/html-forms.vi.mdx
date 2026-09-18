@@ -1,0 +1,88 @@
+Biểu mẫu (form) là cách một trang web ngừng chỉ là tấm áp phích và bắt đầu trở thành cuộc hội thoại: đăng ký, ô tìm kiếm, thanh toán, bình luận. Chúng cũng là nơi HTML thiếu khả năng tiếp cận gây tổn thương thật cho con người — nên các quy tắc accessibility ở đây không phải là phần phụ tùy chọn.
+
+## Phần tử form
+
+```html
+<form action="/signup" method="post">…controls…</form>
+```
+
+`action` cho biết dữ liệu đi đến đâu; `method` cho biết cách gửi (`get` gắn dữ liệu vào URL, `post` gửi trong phần thân request). Ở Module 4, JavaScript sẽ chặn việc gửi này và xử lý ngay trong trang — nhưng cấu trúc HTML giữ nguyên.
+
+## Phần tử input và các type của nó
+
+`<input>` là phần tử rỗng (không có thẻ đóng) và `type` của nó quyết định mọi thứ về nó:
+
+```html
+<input type="text" name="email" />
+<input type="email" name="email" />
+<input type="password" name="password" />
+<input type="checkbox" name="newsletter" />
+<input type="radio" name="size" value="m" />
+<input type="date" name="start" />
+<input type="number" name="quantity" />
+```
+
+`type="email"` không chỉ để trang trí: bàn phím trên mobile hiện phím @, và trình duyệt từ chối gửi các địa chỉ rõ ràng không hợp lệ. `name` là định danh của trường — khóa mà giá trị của nó được gửi dưới đó. Không có `name`, không có dữ liệu.
+
+## Mỗi input cần một label
+
+```html
+<label for="email">Email address</label> <input type="email" id="email" name="email" />
+```
+
+Thuộc tính `for` trỏ đến `id` của input, và kết nối này mang tính chức năng:
+
+- Bấm vào label sẽ focus vào input (một vùng chạm lớn hơn — tốt trên màn hình cảm ứng).
+- Trình đọc màn hình đọc "Email address, edit text" thay vì chỉ "edit text". Không có label, người dùng khiếm thị không biết mình cần gõ gì.
+
+Đừng bao giờ dựa vào `placeholder` làm label: nó biến mất ngay khi bắt đầu gõ, thường không đạt yêu cầu tương phản, và không được nhiều công cụ hỗ trợ đọc như một tên. Placeholder dành cho _ví dụ_, label dành cho _tên_.
+
+## Các control khác
+
+**Textarea** cho văn bản nhiều dòng:
+
+```html
+<label for="message">Message</label> <textarea id="message" name="message" rows="4"></textarea>
+```
+
+**Select** để chọn một phương án từ các lựa chọn:
+
+```html
+<label for="topic">Topic</label>
+<select id="topic" name="topic">
+  <option value="">Choose…</option>
+  <option value="order">An order</option>
+  <option value="other">Something else</option>
+</select>
+```
+
+**Button** để gửi — mặc định dễ tiếp cận:
+
+```html
+<button type="submit">Send message</button>
+```
+
+Dùng `<button>` thay vì `<a href>` cho các hành động: button có thể focus, kích hoạt bằng bàn phím, và được đọc là button. Liên kết _đi đến_ một nơi nào đó; button _làm_ một việc gì đó. (`<input type="submit">` cũng hoạt động, nhưng `<button>` chứa được văn bản phong phú hơn và là mặc định hiện đại.)
+
+## Giúp người dùng làm đúng
+
+Hai thuộc tính bao phủ phần cơ bản cho người mới:
+
+- `required` — trình duyệt chặn việc gửi trường trống và giải thích lý do.
+- `minlength` / `maxlength` (và `min`/`max` trên số) — giới hạn độ dài và khoảng giá trị.
+
+```html
+<input type="password" id="pw" name="password" required minlength="8" />
+```
+
+Logic xác thực chuyên sâu sẽ đến ở Module 4 với JavaScript; các kiểm tra có sẵn của trình duyệt là tuyến phòng thủ đầu tiên miễn phí.
+
+## Bạn đã học được gì
+
+- `<form action method>`; `name` là cách giá trị của một control được định danh
+- `type` chuyên biệt hóa `<input>` — email, password, checkbox, radio, date, number
+- Mỗi control đi cặp với một `<label for>` — vùng bấm + tên cho trình đọc màn hình
+- `<textarea>`, `<select>`/`<option>`, `<button type="submit">`
+- `required` và giới hạn độ dài mang lại xác thực tự nhiên, miễn phí
+
+**Tiếp theo:** checkpoint HTML — chứng minh những gì bạn biết.

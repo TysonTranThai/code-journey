@@ -1,0 +1,53 @@
+## Connection pool
+
+Mở một kết nối database tốn một bắt tay mạng, một lượt xác thực, và bộ nhớ
+phía server. Một **pool** sở hữu một tập kết nối cố định và cho mượn chúng:
+
+- `checkout()` — mượn một (chờ hoặc fail nếu cạn: *backpressure*),
+- `checkin(conn)` — trả lại (pool rollback mọi transaction còn mở trước — một
+  kết nối mượn phải trả về sạch sẽ),
+- không bao giờ chia sẻ một kết nối giữa hai đơn vị công việc đồng thời.
+
+Kích thước pool là một sự cân bằng: quá nhỏ thì request xếp hàng; quá lớn thì
+database chết chìm trong context switching. Bắt đầu nhỏ (vài kết nối mỗi
+worker) và đo.
+
+## Repository: từ vựng của domain bạn
+
+Một repository phơi **các bộ sưu tập đối tượng nghiệp vụ**, không phải bảng:
+
+```python
+class OrderRepository:
+    def get(self, order_id) -> Order | None: ...
+    def add(self, order) -> None: ...
+    def for_customer(self, customer_id) -> list[Order]: ...
+```
+
+Hợp đồng của nó: raise *lỗi domain* (`OrderNotFound`), trả về *đối tượng
+domain*, và không bao giờ làm lộ SQL hay row tuple lên phía trên. Ranh giới đó
+cho phép test thay một fake trong bộ nhớ, cho phép schema thay đổi mà không
+đụng tới caller, và — lời cảnh báo trung thực — tốn một tầng dịch. Nó xứng đáng
+với domain phức tạp, không phải CRUD mỏng.
+
+## Unit of work: một transaction, một quyết định
+
+Một unit of work gom các thay đổi và commit chúng **nguyên tử**:
+
+```python
+with uow:
+    uow.orders.add(order)
+    uow.payments.record(payment)
+# commit xảy ra khi thoát; hoặc cả hai được lưu, hoặc không cái nào
+```
+
+Quy tắc từ module API quay trở lại: *handler* khai báo unit of work; cơ chế sở
+hữu kết nối và transaction. Logic nghiệp vụ không bao giờ tự gọi `BEGIN` hay
+`COMMIT`.
+
+## Migration: đổi schema là đổi code
+
+Schema tiến hóa; database phải di chuyển cùng code. Một migration là một bước
+nhỏ, có thứ tự, có phiên bản (tạo bảng, thêm cột với default, backfill, thêm
+ràng buộc). Hai kỷ luật: mọi migration đều đảo ngược được hoặc tường minh là
+một-chiều-và-nguy-h hiểm, và *thêm-rồi-migrate-rồi-bỏ* cho các thay đổi cột phá
+vặng (trước tiên deploy code chịu được cả hai hình dạng).

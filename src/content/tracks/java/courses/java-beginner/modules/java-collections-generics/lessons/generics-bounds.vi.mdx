@@ -1,0 +1,53 @@
+Tham số kiểu generic (`<T>`) là cách collection của Java giữ an toàn kiểu —
+và cách bạn viết container tái sử dụng của riêng mình.
+
+**Dùng**, bạn đã làm rồi: `List<String>`, `Map<String, Integer>`. Compiler
+chặn `list.add(42)` trên một `List<String>` ngay lúc biên dịch, và xóa bỏ
+cast khi đọc ra. Trước thời đại generic (Java 4 trở về trước), mọi thứ là
+`Object` và mọi lần đọc là một cast mạo hiểm — generic chuyển những cú
+ngã đó từ runtime về compiler.
+
+**Viết** chỉ cần một khai báo trong ngoặc nhọn:
+
+```java
+class Box<T> {                       // T: một kiểu sẽ được điền sau
+    private T value;
+
+    public void put(T v) { value = v; }
+    public T get() { return value; }
+}
+
+Box<String> words = new Box<>();
+words.put("hi");                     // được kiểm tra lúc biên dịch
+String s = words.get();              // không cần cast
+```
+
+**Phương thức generic** tự khai báo tham số kiểu ngay trước kiểu trả về:
+
+```java
+static <T> T firstOrNull(List<T> list) {
+    return list.isEmpty() ? null : list.get(0);
+}
+```
+
+Gọi với `List<String>` thì T thành String; với `List<Integer>` thì T thành
+Integer — một phương thức, mọi kiểu phần tử, không sao chép.
+
+**Kiểu có giới hạn (bounded)** ràng buộc T khi hành vi cần một lời bảo đảm:
+
+```java
+static <T extends Comparable<T>> T maxOf(List<T> items) {
+    T best = items.get(0);
+    for (T item : items) {
+        if (item.compareTo(best) > 0) best = item;
+    }
+    return best;
+}
+```
+
+`T extends Comparable<T>` đọc là "bất kỳ kiểu nào biết tự so sánh" — bên
+trong, `compareTo` là hợp lệ. Bounds là nửa an-toàn-người-mới của generic;
+wildcard (`? extends`, `? super`) và variance thuộc về Trung cấp — khóa này
+cố tình dừng ở bounds.
+
+**Tiếp theo:** exception.

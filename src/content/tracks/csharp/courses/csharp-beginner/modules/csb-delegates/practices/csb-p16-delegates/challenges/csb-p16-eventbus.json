@@ -1,0 +1,21 @@
+{
+  "id": "csb-p16-eventbus",
+  "title": "A tiny event bus",
+  "prompt": "Implement nested class `Solution.EventBus`: `event Action<string>? OnMessage;`, `void Publish(string message)` (invokes subscribers with the message; safe when none), `void Subscribe(Action<string> handler)`, `void Unsubscribe(Action<string> handler)`. Subscribers run in subscription order.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "var bus = new Solution.EventBus();\nvar log = new List<string>();\nbus.Subscribe(m => log.Add(\"a:\" + m));\nbus.Subscribe(m => log.Add(\"b:\" + m));\nbus.Publish(\"go\");\nCj.Eq(string.Join(\"|\", log), \"a:go|b:go\", \"both subscribers, in order\");",
+      "hint": "Multicast delivery in subscription order."
+    },
+    {
+      "name": "unsubscribe",
+      "code": "var bus = new Solution.EventBus();\nvar log = new List<string>();\nAction<string> h = m => log.Add(\"h:\" + m);\nbus.Subscribe(h);\nbus.Unsubscribe(h);\nbus.Publish(\"x\");\nCj.Eq(log.Count, 0, \"unsubscribed handler does not fire\");\nbus.Publish(\"y\");\nCj.Eq(log.Count, 0, \"still silent — and no crash with zero subscribers\");",
+      "hint": "Unsubscribe removes exactly that handler; publishing with none must not throw."
+    }
+  ],
+  "level": "independent"
+}

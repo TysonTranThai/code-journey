@@ -1,0 +1,20 @@
+{
+  "id": "i2-gitignore-check",
+  "title": "Gitignore Guard",
+  "prompt": "Write `ignoreCovers(gitignoreLines, filePath)`: return true when any non-comment, non-empty pattern covers the path. Support: exact name (\".env\"), prefix glob (\".env*\"), directory prefix (\"config/\" covers \"config/local.json\" but NOT \"config-local.json\"), and wildcard (\"*.log\" covers \"a.log\", \"b/c.log\").",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function ignoreCovers(lines, filePath) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "exact and glob matches",
+      "code": "const fn = new Function(code + \"\\nreturn { ignoreCovers };\");\nconst { ignoreCovers } = fn();\nconst gi = [\"# local secrets\", \".env\", \".env*\", \"dist/\"];\nif (!ignoreCovers(gi, \".env\")) throw new Error(\"Exact match.\");\nif (!ignoreCovers(gi, \".env.local\")) throw new Error(\"Glob match.\");\nif (!ignoreCovers(gi, \"dist/bundle.js\")) throw new Error(\"Directory prefix.\");",
+      "hint": "Skip lines starting with '#' or empty; then test each pattern shape."
+    },
+    {
+      "name": "no accidental coverage",
+      "code": "const fn = new Function(code + \"\\nreturn { ignoreCovers };\");\nconst { ignoreCovers } = fn();\nconst gi = [\"config/\", \"*.log\"];\nif (ignoreCovers(gi, \"config-local.json\")) throw new Error(\"config/ must not cover config-local.json.\");\nif (!ignoreCovers(gi, \"logs/a.log\")) throw new Error(\"Wildcard reaches nested files.\");\nif (ignoreCovers(gi, \"src/app.js\")) throw new Error(\"Unrelated files are not covered.\");",
+      "hint": "Directory pattern ends with '/': the path must contain that exact directory segment."
+    }
+  ]
+}

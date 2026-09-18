@@ -1,0 +1,26 @@
+{
+  "id": "cb19-fix-uninit",
+  "title": "Fix: Uninitialized Accumulator",
+  "prompt": "`sum_evens(const int *a, int n)` reads `total` before initializing it. Fix the function so it returns the sum of even elements.\n\n```c\nint sum_evens(const int *a, int n) {\n    int total;\n    for (int i = 0; i < n; i++)\n        if (a[i] % 2 == 0) total += a[i];\n    return total;\n}\n```",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "mixed",
+      "code": "int a[] = {1, 2, 3, 4};\nCHECK_EQ(sum_evens(a, 4), 6);",
+      "hint": "2 + 4."
+    },
+    {
+      "name": "none even",
+      "code": "int a[] = {1, 3};\nCHECK_EQ(sum_evens(a, 2), 0);",
+      "hint": "No evens: 0."
+    },
+    {
+      "name": "negative evens",
+      "code": "int a[] = {-2, 4};\nCHECK_EQ(sum_evens(a, 2), 2);",
+      "hint": "-2 + 4."
+    }
+  ],
+  "level": "guided"
+}

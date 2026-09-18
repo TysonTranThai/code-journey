@@ -1,0 +1,21 @@
+{
+  "id": "pa-int-weak-cache",
+  "title": "A cache that does not leak",
+  "prompt": "Implement `class WeakCache`:\n\n- `put(key, obj)` stores a WEAK reference to obj under key\n- `get(key)` returns the live object, or None once it has been garbage-collected (or was never put)\n- optional `default_factory(key)` builds and caches the object on a miss (also weakly)\n\nGraded probe: objects are created with no strong references left; after `gc.collect()`, `get` must return None — a strong-reference cache fails this.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import weakref\n\n# TODO: WeakCache",
+  "tests": [
+    {
+      "name": "collected objects vanish from the cache",
+      "code": "import gc\n\nclass Thing:\n    pass\n\nc = WeakCache()\nt = Thing()\nc.put('k', t)\nassert c.get('k') is t\ndel t\ngc.collect()\nassert c.get('k') is None, 'weak cache must let collected objects go'\nprint('ok')",
+      "hint": "weakref.ref(obj) stored per key; call the ref to get the object or None."
+    },
+    {
+      "name": "default_factory builds on miss",
+      "code": "import gc\n\nclass Payload:\n    def __init__(self, key):\n        self.key = key\n    def __eq__(self, other):\n        return isinstance(other, Payload) and self.key == other.key\n\nmade = []\ndef factory(key):\n    made.append(key)\n    return Payload(key)\n\nc = WeakCache(factory)\nv1 = c.get('a')\nassert v1.key == 'a' and made == ['a']\nassert c.get('a') is v1  # still alive → same object, no rebuild\nassert made == ['a']\nprint('ok')",
+      "hint": "On miss with a factory: build, store weakly, return. (Payload keeps __weakref__ — plain dicts cannot be weak-referenced.)"
+    }
+  ],
+  "level": "combination"
+}

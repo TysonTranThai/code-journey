@@ -1,0 +1,50 @@
+## my_strlen — lượt đi kinh điển
+
+```c
+int my_strlen(const char* s) {
+    int n = 0;
+    while (s[n] != '\\0') n++;
+    return n;
+}
+```
+
+Đọc vòng lặp là: "tiến đến khi gặp terminator". Dạng thành ngữ:
+
+```c
+int my_strlen(const char* s) {
+    const char* p = s;
+    while (*p) p++;
+    return (int)(p - s);
+}
+```
+
+## my_strcmp — so sánh trong khi cả hai còn giống nhau
+
+```c
+int my_strcmp(const char* a, const char* b) {
+    while (*a && *a == *b) {   // dừng ở terminator hoặc khác đầu tiên
+        a++;
+        b++;
+    }
+    return (unsigned char)*a - (unsigned char)*b;
+}
+```
+
+Nếu vòng lặp kết thúc vì cả hai chạm '\\0', hiệu số là 0. Nếu không, đó là
+hiệu mã tại vị trí khác nhau đầu tiên.
+
+## my_strcpy — chép KÈM terminator
+
+```c
+void my_strcpy(char* dst, const char* src) {
+    while (*src) {
+        *dst = *src;
+        dst++;
+        src++;
+    }
+    *dst = '\\0';              // bước người mới hay quên
+}
+```
+
+Chép từng ký tự, rồi chép terminator. Thiếu dòng cuối, đích không phải là
+một chuỗi.

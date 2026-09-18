@@ -1,0 +1,25 @@
+{
+  "id": "i2-canary-cohort",
+  "title": "Canary Cohort Picker",
+  "prompt": "Write `canaryFor(user, rollout)` — user is { id: string, internal: bool, betaOptIn: bool }, rollout is { percent, excludeInternals: bool }. A user is in the canary if: internals are in whenever excludeInternals is false; betaOptIn users are always in; otherwise hash(id) % 100 < percent (hash is provided in the boilerplate). Return true/false.",
+  "difficulty": "advanced",
+  "level": "independent",
+  "boilerplate": "function hash(s) {\n  let h = 0;\n  for (let i = 0; i < s.length; i++) {\n    h = (h * 31 + s.charCodeAt(i)) >>> 0;\n  }\n  return h;\n}\n\nfunction canaryFor(user, rollout) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "opt-in always wins",
+      "code": "const fn = new Function(code + \"\\nreturn { canaryFor };\");\nconst { canaryFor } = fn();\nif (canaryFor({ id: \"u1\", internal: true, betaOptIn: true }, { percent: 0, excludeInternals: true }) !== true) {\n  throw new Error(\"Beta opt-in is in even at 0%.\");\n}\n",
+      "hint": "Check opt-in before anything else."
+    },
+    {
+      "name": "internals respect exclusion",
+      "code": "const fn = new Function(code + \"\\nreturn { canaryFor };\");\nconst { canaryFor } = fn();\nif (canaryFor({ id: \"u2\", internal: true, betaOptIn: false }, { percent: 100, excludeInternals: true }) !== false) {\n  throw new Error(\"Excluded internals are never canary.\");\n}\nif (canaryFor({ id: \"u3\", internal: true, betaOptIn: false }, { percent: 100, excludeInternals: false }) !== true) {\n  throw new Error(\"At 100% with no exclusion, internals are in.\");\n}\n",
+      "hint": "Exclusion only applies to non-opted-in internals."
+    },
+    {
+      "name": "percentage gate is deterministic",
+      "code": "const fn = new Function(code + \"\\nreturn { canaryFor };\");\nconst { canaryFor } = fn();\nconst u = { id: \"abc\", internal: false, betaOptIn: false };\nif (canaryFor(u, { percent: 100, excludeInternals: false }) !== true) throw new Error(\"100% includes everyone not excluded.\");\nif (canaryFor(u, { percent: 0, excludeInternals: false }) !== false) throw new Error(\"0% includes nobody without opt-in.\");\nconst a = canaryFor(u, { percent: 50, excludeInternals: false });\nconst b = canaryFor({ ...u }, { percent: 50, excludeInternals: false });\nif (a !== b) throw new Error(\"Same user, same rollout => same bucket (deterministic).\");\n",
+      "hint": "Edge percents pin the boundaries; calling twice pins determinism."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+`System.nanoTime()` là *đơn điệu*: không bao giờ đi lùi, không bị NTP hay người
+dùng đổi giờ ảnh hưởng, và chỉ có ý nghĩa như một HIỆU giữa hai lần đọc.
+`System.currentTimeMillis()` là đồng hồ tường — nó có thể nhảy. Phép tính thời
+gian dùng nanoTime; hiển thị ngày giờ mới dùng đồng hồ tường. Nhầm hai cái là
+cách bạn "đo" test đúng lúc hệ thống đổi giờ.
+
+```java
+long t0 = System.nanoTime();
+work();
+long nanos = System.nanoTime() - t0;   // thời lượng; chia để ra ms
+```
+
+JIT biên dịch *bất đồng bộ* và theo từng method, dựa trên ngưỡng: trình thông
+dịch đếm số lần gọi/số lần quay lùi, và ở khoảng 10k method được xếp hàng cho
+C1 (biên dịch nhanh) rồi C2 (tối ưu đầy đủ). Đo một method chưa warm là đo
+trình thông dịch cộng cả sự chú ý của compiler, không phải đo code của bạn.
+Vì thế có quy tắc vàng: **đo code đã warm** — chạy workload vài nghìn lần
+trước, vứt số liệu đó, rồi mới đo. `fork()` giữa các JVM benchmark và việc
+tránh dead-code elimination là lý do JMH (@Benchmark) tồn tại: đồng hồ tự chế
+là đồ chơi đo hiệu năng.

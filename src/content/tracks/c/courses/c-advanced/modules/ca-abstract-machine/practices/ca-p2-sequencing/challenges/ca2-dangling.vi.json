@@ -1,0 +1,18 @@
+{
+  "title": "Đọc trong vòng đời",
+  "prompt": "Con trỏ từ leak_local là *không xác định* sau khi local chết: hủy tham chiếu là UB, kể cả so sánh cũng là UB. Cài `int safe_read(void)`: lấy địa chỉ một biến tự động khởi tạo từ g_probe, hủy tham chiếu *khi đối tượng còn sống*, trả về giá trị.",
+  "tests": [
+    {
+      "name": "đọc hợp lệ",
+      "hint": "p = &local; return *p; — phép đọc xảy ra trước khi khối kết thúc."
+    },
+    {
+      "name": "khớp probe",
+      "hint": "Đường hợp lệ phải quan sát đúng g_probe."
+    },
+    {
+      "name": "lặp lại ổn định",
+      "hint": "Đọc đúng vòng đời thì ổn định; UB mới là thứ đến rồi đi."
+    }
+  ]
+}

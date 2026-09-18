@@ -1,0 +1,25 @@
+{
+  "id": "i2-modal-lifecycle",
+  "title": "Modal Lifecycle",
+  "prompt": "Write `createModal()` that RETURNS an object with:\n\n- `open(trigger, root)` — marks the modal open, remembers `trigger` as the element to restore focus to later, stores `root` as the modal content, and returns \"opened\"\n- `close()` — marks it closed and returns \"closed\"; if it was not open, returns \"already-closed\"\n- `restoreFocus()` — returns and clears the remembered trigger (undefined if none)\n- `isOpen()` — boolean state\n\nOpening twice without closing returns \"already-open\" and must NOT overwrite the remembered trigger.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function createModal() {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "open/close cycle with focus restore",
+      "code": "const fn = new Function(code + \"\\nreturn { createModal };\");\nconst { createModal } = fn();\nconst m = createModal();\nif (m.isOpen() !== false) throw new Error(\"A fresh modal starts closed.\");\nif (m.open({ id: \"trigger\" }, {}) !== \"opened\") throw new Error(\"open should return opened.\");\nif (m.isOpen() !== true) throw new Error(\"After open, isOpen() should be true.\");\nif (m.close() !== \"closed\") throw new Error(\"close should return closed.\");\nif (m.isOpen() !== false) throw new Error(\"After close, isOpen() should be false.\");\n",
+      "hint": "Keep state, previousFocus, and root in the closure."
+    },
+    {
+      "name": "restores focus to the opener",
+      "code": "const fn = new Function(code + \"\\nreturn { createModal };\");\nconst { createModal } = fn();\nconst m = createModal();\nconst trigger = { id: \"trigger\" };\nm.open(trigger, {});\nm.close();\nif (m.restoreFocus() !== trigger) throw new Error(\"restoreFocus() returns the remembered opener element.\");\n",
+      "hint": "close() returns the stored previousFocus."
+    },
+    {
+      "name": "guards double open and double close",
+      "code": "const fn = new Function(code + \"\\nreturn { createModal };\");\nconst { createModal } = fn();\nconst m = createModal();\nif (m.open({ id: 1 }, {}) !== \"opened\") throw new Error(\"First open succeeds.\");\nif (m.open({ id: 2 }, {}) !== \"already-open\") throw new Error(\"Second open without close returns already-open.\");\nif (m.close() !== \"closed\") throw new Error(\"close still works after the rejected open.\");\nif (m.close() !== \"already-closed\") throw new Error(\"Closing a closed modal returns already-closed.\");\nif (m.restoreFocus().id !== 1) throw new Error(\"The rejected open must not overwrite the remembered opener.\");\n",
+      "hint": "The opener remembered by the FIRST open must survive the rejected second open."
+    }
+  ]
+}

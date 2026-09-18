@@ -1,0 +1,31 @@
+{
+  "id": "javaa-p5-cf-combine",
+  "title": "Compose, don't block",
+  "prompt": "Implement with CompletableFuture (returned before completion, joined by the test):\n1. `static CompletableFuture<Integer> combined()` — two async supplies (return 20 and 22), combined with `thenCombine` into their sum.\n2. `static CompletableFuture<Integer> chained()` — an async 3, thenCompose to double it, thenApply to add 4 (=> 10).\n3. `static CompletableFuture<Integer> recovered()` — an async that throws, then `exceptionally` returning -1.\n4. `static CompletableFuture<Integer> bounded()` — async sleeping 50ms then returning 7, with `orTimeout(10, MILLISECONDS)` and `exceptionally` returning -1 (timeout path exercised).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "thenCombine joins two",
+      "code": "\ncheckEq(Solution.combined().join(), 42, \"20 + 22 via thenCombine\");\n",
+      "hint": "thenCombine fires when both complete."
+    },
+    {
+      "name": "thenCompose chains",
+      "code": "\ncheckEq(Solution.chained().join(), 10, \"3 doubled + 4\");\n",
+      "hint": "thenCompose for dependent async steps."
+    },
+    {
+      "name": "exceptional recovery",
+      "code": "\ncheckEq(Solution.recovered().join(), -1, \"exceptionally path\");\n",
+      "hint": "exceptionally maps the failure."
+    },
+    {
+      "name": "orTimeout fires",
+      "code": "\ncheckEq(Solution.bounded().join(), -1, \"timeout path taken\");\n",
+      "hint": "10ms timeout vs 50ms sleep."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,49 @@
+## Khóa biến ba bước thành một
+
+```c
+mtx_t m;
+mtx_init(&m, mtx_plain);          /* một lần, trước khi thread tồn tại */
+
+mtx_lock(&m);
+counter++;                        /* giờ bất khả chia: mỗi lúc một thread
+                                     giữ m */
+mtx_unlock(&m);
+```
+
+Mutex là mãnh mốc một thread giữ mỗi lúc một. Giữa `lock` và `unlock`
+là **đoạn găng** (critical section) — code đụng vào state chia sẻ. Khi
+một thread giữ `m`, mọi `mtx_lock(&m)` khác *chặn* cho tới khi nó được
+thả. Quy tắc: **mọi** truy cập vào biến chia sẻ phải diễn ra dưới cùng
+một mutex. Khóa ở một nơi mà quên nơi khác tệ hơn không có mutex — đó
+là lời nói dối trong code.
+
+## Quên unlock là bug kinh điển
+
+Mọi return sớm trong đoạn găng phải unlock trên đường ra — mẫu
+cleanup-goto có việc mới:
+
+```c
+mtx_lock(&m);
+if (bad) { rc = -1; goto out; }   /* out: làm phần unlock */
+/* ... */
+out:
+    mtx_unlock(&m);
+    return rc;
+```
+
+C11 không có RAII và không có destructor cho `mtx_unlock` — thang goto
+(hoặc ghép cặp cẩn trọng) là kỷ luật.
+
+## Deadlock: công thức và cách chữa duy nhất
+
+Hai mutex lấy theo thứ tự khác nhau:
+
+```c
+/* thread A: lock(m1); lock(m2); */
+/* thread B: lock(m2); lock(m1);   — mỗi bên giữ một, chờ vĩnh viễn */
+```
+
+Cách chữa là *thứ tự toàn cục*: mọi thread lấy nhiều khóa theo cùng một
+thứ tự (và thả theo thứ tự ngược). Kinh nghiệm khác: giữ khóa ngắn nhất
+có thể — không bao giờ xuyên I/O, không xuyên `malloc` có thể làm trước
+khi khóa.

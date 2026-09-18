@@ -1,0 +1,112 @@
+For twenty years, "build a modal" meant JavaScript and an accessibility audit. The
+platform has absorbed that job. Disclosure widgets, accordions, and full modals are now
+native HTML — and native beats a component library on every axis that matters:
+keyboard behavior, focus, semantics, and resilience when scripts fail.
+
+## Disclosure: details and summary
+
+```html
+<details>
+  <summary>What is your refund policy?</summary>
+  <p>Full refund within 30 days, no questions asked.</p>
+</details>
+```
+
+Zero JavaScript. The browser provides the toggle semantics, the disclosure state,
+Enter/Space activation on the summary, and screen-reader announcements. Details inside
+details nest naturally for multi-level content.
+
+**The accordion trap:** five sibling `<details>` elements are *not* a coordinated
+accordion — opening one leaves the others open. The `name` attribute — shared between
+siblings — makes the browser close the others for you:
+
+```html
+<details name="faq">
+  <summary>Can I change plan later?</summary>
+  <p>Yes, prorated.</p>
+</details>
+<details name="faq">
+  <summary>Do you offer invoices?</summary>
+  <p>Every account, automatically.</p>
+</details>
+```
+
+One attribute turns independent disclosures into an exclusive accordion. (Reminder from
+Beginner, now with advanced eyes: `summary` computes the details' accessible name —
+never leave it empty.)
+
+## The dialog element
+
+```html
+<dialog id="confirm">
+  <h2 id="confirm-h">Delete this file?</h2>
+  <p>This cannot be undone.</p>
+  <button autofocus>Cancel</button>
+  <button>Delete</button>
+</dialog>
+```
+
+```js
+document.getElementById("confirm").showModal(); // modal
+document.getElementById("confirm").show();      // non-modal
+```
+
+`showModal()` gives you the full modal package from the platform: the rest of the page
+becomes inert, Escape closes, focus is trapped inside, and it closes the browser's top
+layer — above every `z-index` hack you have ever written. `show()` opens it in normal
+flow for non-modal use. Style the backdrop with the `::backdrop` pseudo-element; the
+`autofocus` attribute inside the dialog decides which control receives focus when it
+opens — put it on the safest action ("Cancel"), not the destructive one.
+
+Name the dialog with `aria-labelledby` pointing at its heading, and close it from a
+form or code with `dialog.close()` — or declaratively, with the invoker commands you
+will meet in the next lesson.
+
+## Forms inside dialogs
+
+A `<form method="dialog">` closes its dialog on submit and hands the return value to
+code via `dialog.returnValue`:
+
+```html
+<dialog id="pick">
+  <form method="dialog">
+    <p>Pin this board?</p>
+    <button value="pin">Pin it</button>
+    <button value="cancel" autofocus>Cancel</button>
+  </form>
+</dialog>
+```
+
+This is the constraint-validation knowledge from Intermediate finding a new home:
+`method="dialog"` composes with native validation — an invalid required field blocks
+submission, so the dialog stays open with the error the browser already renders.
+
+## Dialog vs popover vs details — choosing
+
+| Need | Reach for |
+| --- | --- |
+| Must block the page until answered | `<dialog>` + `showModal()` |
+| Transient layer, light-dismiss on outside click | `popover` (next lesson) |
+| In-flow progressive content | `<details>` |
+
+Modal for decisions, popover for tools, details for content that belongs to the page's
+own flow. Reaching for a modal when the content is in-flow is the classic over-engineer
+tell.
+
+## What goes wrong
+
+- **Hand-rolled modals**: `position: fixed` + a `z-index` arms race + a focus trap you
+  wrote yourself and now must maintain. `<dialog>` replaces all of it.
+- **`show()` where `showModal()` was meant**: no inert backdrop, no Escape, no focus
+  containment — "the dialog works but the page is still clickable behind it".
+- **Focus lands on the destructive button** because nobody set `autofocus`.
+- **Accordion by class toggling**: JS closes siblings that `name` would close natively.
+- **Empty `<summary>`** — a disclosure that announces nothing.
+
+## Practice and where this connects
+
+You will build a working FAQ accordion with `name`, then a confirmation dialog with
+backdrop, autofocus, and a `method="dialog"` form — first declaratively, then by fixing
+a broken modal that skipped every one of these details. Native interactive elements are
+the backbone of the accessibility engineering section later: the correct pattern is
+usually the one the platform already ships.

@@ -1,0 +1,16 @@
+{
+  "id": "cint-p2-const-table",
+  "title": "Read-Only Table Queries",
+  "prompt": "Queries over a read-only table of C strings:\n\n```c\n/* returns 1 iff tab contains needle (strcmp equality). */\nint table_contains(char *const *tab, size_t n, const char *needle);\n/* returns the number of entries strictly shorter than len. NULL entries\n   count as length 0. */\nsize_t count_shorter(char *const *tab, size_t n, size_t len);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "membership and length filter",
+      "code": "\nchar *tab[] = {\"red\", \"green\", \"blue\"};\nCHECK_EQ(table_contains(tab, 3, \"green\"), 1);\nCHECK_EQ(table_contains(tab, 3, \"pink\"), 0);\nCHECK_EQ(table_contains(tab, 3, \"ree\"), 0);   /* substring of \"red\"? no such member */\nCHECK_EQ(table_contains(NULL, 0, \"red\"), 0);\nCHECK_EQ(count_shorter(tab, 3, 5), 2);   /* red(3) and blue(4) */\nCHECK_EQ(count_shorter(tab, 3, 4), 1);   /* red(3) */\nCHECK_EQ(count_shorter(tab, 3, 3), 0);\n",
+      "hint": "strcmp == 0 for membership; strlen < len counted."
+    }
+  ],
+  "level": "imitation"
+}

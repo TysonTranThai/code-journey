@@ -1,0 +1,53 @@
+## GroupBy sinh các nhóm cặp
+
+`GroupBy(keySel)` yield `IGrouping<TKey, TElement>` — một Key cùng các phần
+tử theo thứ tự gặp. Đếm, top, pivot đều rút ra được:
+
+```csharp
+var byCity = people.GroupBy(p => p.City);
+foreach (var g in byCity)
+    Console.WriteLine($"{g.Key}: {g.Count()}");
+
+var topOfEach = people
+    .GroupBy(p => p.City)
+    .Select(g => g.OrderByDescending(p => p.Score).First());
+```
+
+`ToLookup(keySel)` là anh em eager của GroupBy: một lượt duyệt, sau đó truy
+theo key O(1), và key thiếu trả nhóm RỖNG thay vì ném lỗi.
+
+## Join và GroupJoin
+
+`Join` ghép inner+outer theo key (hàng phẳng); `GroupJoin` sinh một phần tử
+outer kèm nhóm khớp — hình dạng "khách hàng với đơn hàng của họ, gồm cả
+khách không có đơn":
+
+```csharp
+var q = customers.GroupJoin(orders,
+    c => c.Id, o => o.CustomerId,
+    (c, cs) => (c.Name, Count: cs.Count()));
+```
+
+Left outer join = GroupJoin + SelectMany với mặc định nhóm rỗng.
+
+## Aggregate: gấp chuỗi thành một giá trị
+
+```csharp
+int maxGap = diffs.Aggregate((acc, next) => Math.Max(acc, next));
+```
+
+Dạng có seed `Aggregate(seed, func, resultSelector)` dựng kết quả tùy ý.
+Khi phép gấp cần được giải thích, hãy dùng foreach — Aggregate không phải
+để khoe.
+
+## Cửa sổ và tập hợp
+
+- `Zip(second)` ghép theo cặp (dừng ở chuỗi ngắn hơn).
+- `Chunk(size)` cắt thành các lô cỡ cố định (.NET 6+).
+- `Distinct/Union/Intersect/Except` so sánh bằng equality MẶC ĐỊNH —
+  truyền comparer hoặc project trước để có so sánh theo giá trị.
+
+## Kiểm tra hiểu biết
+
+- GroupBy vs ToLookup — cái nào lười? (GroupBy; ToLookup chạy ngay.)
+- Join nào giữ lại khách hàng không có đơn? (GroupJoin.)

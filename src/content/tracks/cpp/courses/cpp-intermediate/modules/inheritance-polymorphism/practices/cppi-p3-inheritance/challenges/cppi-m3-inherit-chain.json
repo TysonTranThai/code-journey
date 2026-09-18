@@ -1,0 +1,21 @@
+{
+  "id": "cppi-m3-inherit-chain",
+  "title": "Base and derived chain",
+  "prompt": "Implement `class Vehicle` with a constructor `Vehicle(int wheels)` and `int wheels() const` (private `int wheels_;`), and `class Bicycle : public Vehicle` with a constructor `Bicycle()` that passes 2 to the base and adds nothing else.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\\n\\nclass Vehicle {\\n    // ctor + getter\\n};\\n\\nclass Bicycle : public Vehicle {\\n    // ctor chaining to base\\n};\\n",
+  "tests": [
+    {
+      "name": "chain",
+      "code": "Bicycle b;\nCHECK_EQ(b.wheels(), 2);",
+      "hint": "Bicycle's ctor must forward 2 to Vehicle's ctor."
+    },
+    {
+      "name": "direct",
+      "code": "Vehicle v{4};\nCHECK_EQ(v.wheels(), 4);",
+      "hint": "The base stands alone too."
+    }
+  ],
+  "level": "guided"
+}

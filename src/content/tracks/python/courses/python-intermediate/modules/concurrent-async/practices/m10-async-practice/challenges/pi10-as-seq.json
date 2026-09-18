@@ -1,0 +1,21 @@
+{
+  "id": "pi10-as-seq",
+  "title": "Sequential Awaits",
+  "prompt": "Implement async def flow() that awaits two steps in order: step_one() returns 1 (after sleeping 0.01), step_two(n) returns n + 1 (after sleeping 0.01); flow returns step_two(step_one's result) — i.e. 2. Provide a sync run_flow() wrapper using asyncio.run.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import asyncio\n\nasync def step_one():\n    pass\n\nasync def step_two(n):\n    pass\n\nasync def flow():\n    pass\n\ndef run_flow():\n    pass\n",
+  "tests": [
+    {
+      "name": "value flows through steps",
+      "code": "assert run_flow() == 2",
+      "hint": "second = await step_one(); return await step_two(second)."
+    },
+    {
+      "name": "steps are coroutines",
+      "code": "import inspect\nassert inspect.iscoroutinefunction(step_one)\nassert inspect.iscoroutinefunction(step_two)",
+      "hint": "Both declared with async def and awaited inside flow."
+    }
+  ],
+  "level": "guided"
+}

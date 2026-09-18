@@ -1,0 +1,43 @@
+You know both systems from Beginner; now use them deliberately.
+
+## Grid: areas and auto-fit
+
+Template areas make layouts readable as diagrams:
+
+```css
+.dashboard {
+  display: grid;
+  grid-template-areas:
+    "head head"
+    "side main"
+    "side foot";
+  grid-template-columns: 240px 1fr;
+}
+```
+
+For unknown item counts, `repeat(auto-fit, minmax(min, 1fr))` builds columns
+that wrap without media queries:
+
+```css
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+```
+
+`auto-fit` collapses empty tracks (items stretch); `auto-fill` keeps empty
+tracks (items keep max width). Pick per intent.
+
+## Flexbox: grow math
+
+`flex: <grow> <shrink> <basis>` — free space distributes by grow ratios after
+basis is reserved. `flex: 1` is `1 1 0%`: equal split ignoring content width.
+`flex: auto` is `1 1 auto`: split _surplus_ while respecting content width —
+the difference matters with variable-width content.
+
+## Choosing
+
+- One-dimensional flow (toolbars, tag lists, form rows): **flex**.
+- Two-dimensional structure (page shells, galleries, dashboards): **grid**.
+- Component internals often use both: grid for the shell, flex inside cells.

@@ -1,0 +1,21 @@
+{
+  "id": "pa-sec-path-traversal",
+  "title": "Confine the upload path",
+  "prompt": "Implement `resolve_upload(base, name)` returning the joined, normalized path for a user-supplied file name — or raising `ValueError('traversal')` when the name:\n\n- is empty, absolute (`/etc/passwd`), or contains a NUL character\n- contains any `..` component (`../../etc/passwd`)\n- would resolve outside `base` after joining\n\nValid names (`'report.pdf'`, `'sub/dir/img.png'`) resolve to `base/name` strings.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "from pathlib import PurePosixPath\n\n\ndef resolve_upload(base, name):\n    ...",
+  "tests": [
+    {
+      "name": "legitimate names resolve inside base",
+      "code": "assert resolve_upload('/srv/uploads', 'report.pdf') == '/srv/uploads/report.pdf'\nassert resolve_upload('/srv/uploads', 'sub/dir/img.png') == '/srv/uploads/sub/dir/img.png'\nprint('ok')",
+      "hint": "Subdirectories are fine — escaping the root is not."
+    },
+    {
+      "name": "every traversal shape is rejected",
+      "code": "for bad in ['', '/etc/passwd', '../../etc/passwd', 'docs/../../x', 'a\\x00b']:\n    try:\n        resolve_upload('/srv/uploads', bad)\n    except ValueError:\n        pass\n    else:\n        raise AssertionError(f'must reject {bad!r}')\nprint('ok')",
+      "hint": "Empty, absolute, `..`, sneaky prefix, and NUL all fail closed."
+    }
+  ],
+  "level": "debugging"
+}

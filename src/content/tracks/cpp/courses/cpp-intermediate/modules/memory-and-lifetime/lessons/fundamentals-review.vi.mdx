@@ -1,0 +1,39 @@
+Bạn đã hoàn thành Cơ bản: biết viết hàm, dùng `std::vector`, đọc file và suy
+luận về RAII cơ bản. Trung cấp bắt đầu bằng cách siết lại mô hình tư duy mà
+mọi phần sau sẽ dựa vào: **mọi đối tượng đều có vòng đời, và luôn có một chủ
+sở hữu chịu trách nhiệm về nó.**
+
+## Ba câu hỏi cần đặt ra với mọi đối tượng
+
+1. **Nó sống ở đâu?** — tự động (stack), tĩnh (toàn cục), hay động (heap).
+2. **Khi nào nó chết?** — hết phạm vi, kết thúc chương trình, hoặc lệnh `delete`.
+3. **Ai chịu trách nhiệm?** — một chủ sở hữu duy nhất; mọi người khác chỉ mượn.
+
+```cpp
+#include <string>
+#include <vector>
+
+int counter = 42;                 // tĩnh: sống suốt chương trình
+
+struct Session {
+    std::string user;
+    explicit Session(std::string u) : user{std::move(u)} {}
+    ~Session() { /* giải phóng tài nguyên session sở hữu */ }
+};
+
+void demo() {
+    int local = 7;                // tự động: chết khi đóng ngoặc
+    Session s{"ana"};             // tự động; destructor chạy khi ra khỏi phạm vi
+    std::vector<int> v{1, 2, 3};  // vector sở hữu buffer trên heap; tự giải phóng
+}                                 // <- mọi thứ bị hủy theo thứ tự NGƯỢC lại
+```
+
+## Ôn lại kỷ luật bạn đã biết
+
+- Dùng `const` cho mọi thứ không được thay đổi.
+- Truyền đối tượng không tầm thường bằng `const&`; trả về bằng giá trị.
+- Container tự quản lý bộ nhớ — đó là lý do chúng thắng mảng thô.
+- Initializer list và cặp `{}` nhất quán hơn `=`.
+
+Nếu phần nào còn lắt nhắt, hãy ôn lại module tương ứng của Cơ bản trước;
+Trung cấp xây mọi ý mới trên đúng nền tảng này.

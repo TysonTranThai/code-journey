@@ -1,0 +1,99 @@
+You have written functions for a while now. This lesson is about what happens
+**around** them: where variables live, how inner functions reach outer
+variables, and why a function can "remember" things after its parent has
+finished running.
+
+## Scope is a chain
+
+Every function creates a new scope. When JavaScript looks up a name, it walks
+outward through the **scope chain** — inner scope first, then outer scopes,
+then globals:
+
+```js
+const rate = 0.2; // global scope
+
+function subtotal(amount) {
+  const fee = 1.5; // function scope
+  return amount + fee; // finds fee here, amount as a parameter
+}
+
+function total(amount) {
+  return subtotal(amount) * (1 + rate); // finds rate two scopes up
+}
+```
+
+A variable declared in an inner scope **shadows** an outer one with the same
+name — the inner one wins for everything inside it.
+
+## Closures: functions with memory
+
+When a function is created inside another function, it keeps a live reference
+to the outer variables it uses — even after the outer function has returned.
+That captured bundle is a **closure**:
+
+```js
+function makeCounter(start = 0) {
+  let count = start; // captured by the returned function
+  return {
+    increment: () => ++count,
+    value: () => count,
+  };
+}
+
+const c = makeCounter();
+c.increment(); // 1
+c.increment(); // 2
+const d = makeCounter(100); // a NEW closed-over count
+d.value(); // 100 — c and d do not share state
+```
+
+Three things to notice:
+
+- `count` is invisible from outside — no `c.count` — yet the returned
+  functions can read and change it. That is **private state**.
+- Each call to `makeCounter` creates a fresh captured variable. Factories
+  work because closures do not share.
+- The variable lives as long as any function that captured it does.
+
+## Where closures show up in real code
+
+```js
+// Event handler remembering configuration
+function attachZoom(image, factor) {
+  let zoomed = false;
+  image.addEventListener("click", () => {
+    zoomed = !zoomed; // the handler closes over zoomed and factor
+    image.style.transform = zoomed ? "scale(" + factor + ")" : "none";
+  });
+}
+
+// Once-only setup
+function once(fn) {
+  let done = false;
+  return (...args) => {
+    if (done) return;
+    done = true;
+    return fn(...args);
+  };
+}
+
+// The classic setTimeout-in-a-loop question
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i)); // 3, 3, 3 — one shared var i
+}
+for (let i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i)); // 0, 1, 2 — a fresh binding per iteration
+}
+```
+
+The loop example is the closure mechanic in miniature: `let` creates a new
+binding per iteration, so each timeout closes over its own `i`. With
+`var` there is only one `i` for the whole loop, and by the time the
+callbacks run it is 3.
+
+## Why this matters at Intermediate
+
+Closures are the implementation behind callbacks with state, module
+namespacing, memoization, event handlers, and every "factory" you will meet —
+including React hooks. From here on, "can you make it work" becomes "can you
+**structure** it", and closures are the structuring tool.

@@ -1,0 +1,47 @@
+## Dạng chuẩn
+
+```cpp
+double bmi(double weight_kg, double height_m) {
+    return weight_kg / (height_m * height_m);
+}
+
+int main() {
+    std::cout << bmi(70.0, 1.75) << '\n';   // gọi với đối số
+}
+```
+
+Hãy đọc dòng đầu như một bản hợp đồng: "cho tôi cân nặng và chiều cao, tôi trả lại một double". Các **tham số** (`weight_kg`, `height_m`) là biến cục bộ của hàm, được khởi tạo từ **đối số** của người gọi. `return` đưa giá trị trả về và kết thúc hàm ngay lập tức.
+
+## Giá trị trả về, không phải giá trị in ra
+
+Người mới thường in bên trong hàm và không trả về gì cả:
+
+```cpp
+void bad(double w, double h) {
+    std::cout << w / (h * h);   // tính rồi... hiển thị... và BIẾN MẤT
+}
+```
+
+`bad` tính một giá trị mà không ai dùng được. Hàm **trả về** giá trị thì có thể in, lưu, kiểm thử, và kết hợp:
+
+```cpp
+double b = bmi(70, 1.75);
+if (b > 25) { /* ... */ }
+```
+
+Đây cũng chính là cách nền tảng chấm điểm: test gọi hàm của bạn và kiểm tra giá trị trả về. In ra cho người xem; return cho chương trình.
+
+## `void` và return sớm
+
+`void` nghĩa là "không trả về gì" — hàm `void` là một *thủ tục*, một hành động (`print_report()`, `program()`). Bên trong bất kỳ hàm nào, `return;` thoát ngay:
+
+```cpp
+void greet(const std::string& name) {
+    if (name.empty()) return;   // không có gì đáng làm
+    std::cout << "Hi, " << name << '\n';
+}
+```
+
+## Kỷ luật kích thước
+
+Một hàm làm **một việc**, ở kích thước bạn đọc được mà không cần cuộn. Khi bạn viết comment kiểu `// giờ validate input` *bên trong* một hàm, comment đó thường là một hàm mới đang vùng vẫy để ra đời. Phần luyện phân rã ở bài 5C.

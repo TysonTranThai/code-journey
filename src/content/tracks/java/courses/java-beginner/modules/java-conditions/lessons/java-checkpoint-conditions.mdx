@@ -1,0 +1,19 @@
+The Dispatch Desk decides how an order is handled, combining nested logic
+with a switch expression.
+
+Write `public static String dispatch(String tier, int weightKg, boolean fragile)`:
+
+1. If `weightKg <= 0`, return `"rejected: bad weight"`.
+2. Otherwise classify by `tier` using a **switch expression**:
+   - `"standard"` → `"standard-"` + weight class, where weight class is
+     `"light"` (weight < 5) or `"heavy"` (5 and above);
+   - `"express"` → `"express-"` + weight class (same classes);
+   - `"freight"` → `"freight-quoted"` (weight class ignored);
+   - any other tier → `"rejected: unknown tier"` (regardless of weight).
+3. Fragile orders get `"+"` appended at the very end — but ONLY if the
+   result is not a rejection. `dispatch("standard", 3, true)` is
+   `"standard-light+"`; `dispatch("gold", 3, false)` is
+   `"rejected: unknown tier"` with no plus.
+
+The boundary at 5 belongs to `"heavy"`. Build the result with a `String`
+variable, then decide the suffix once.

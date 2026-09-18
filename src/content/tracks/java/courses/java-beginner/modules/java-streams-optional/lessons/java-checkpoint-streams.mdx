@@ -1,0 +1,17 @@
+The word-stats pipeline - three stream stages composing into one record.
+
+Inside the provided `Solution` skeleton, implement `analyze(words)` as the
+checkpoint specifies. Three design notes before you start:
+
+1. **Lowercase before grouping** - `groupingBy` after `map(String::toLowerCase)`,
+   and filter out empty words first (an empty word has no first letter).
+2. **Two passes are idiomatic** - `max()` then `filter(length == max)` is
+   clearer than a clever single-pass fold, and streams are cheap to run
+   twice on an in-memory list.
+3. **Empty input** - `String.join` over nothing yields `""`; the spec wants
+   an *empty Optional*, so guard it. This is exactly the boundary honesty
+   that `Optional` exists for.
+
+The wrong solution shown in the notes fails two ways: it builds
+`Optional.of("")` for empty input, and it crashes on empty input before
+that - `substring(0, 1)` has no first letter to take.

@@ -1,0 +1,25 @@
+{
+  "id": "i2-cached-client",
+  "title": "Caching API Client",
+  "prompt": "Write `createClient(fetchImpl)` — an API client with:\n\n- `get(url)` — uses a per-client cache: the first call fetches and caches the PROMISE; repeat calls return the same promise (one flight per URL until invalidated)\n- `invalidate(url)` — drops the cache entry for that URL (next `get` re-fetches)\n- `invalidateAll()` — clears everything\n- `post(url, body)` — never cached; sends `{ method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'application/json' } }` and resolves with the parsed response\n- all fetches go through the injected `fetchImpl(url, opts)`",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function createClient(fetchImpl) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "get dedupes and caches per URL",
+      "code": "const fn = new Function(code + \"\\nreturn { createClient };\");\nconst { createClient } = fn();\nlet calls = 0;\nconst fake = async (u) => { calls++; await new Promise((r) => setTimeout(r, 5)); return { ok: true, status: 200, json: async () => ({ url: u }) }; };\nconst c = createClient(fake);\nconst [a, b] = await Promise.all([c.get(\"/x\"), c.get(\"/x\")]);\nif (a.url !== \"/x\" || b.url !== \"/x\") throw new Error(\"Both gets resolve with the fetched body.\");\nif (calls !== 1) throw new Error(\"Concurrent gets share one flight.\");\nawait c.get(\"/x\");\nif (calls !== 1) throw new Error(\"The cached promise is reused after completion.\");",
+      "hint": "Same pattern as the checkpoint loader — cache the promise, not the value."
+    },
+    {
+      "name": "invalidate forces a refetch",
+      "code": "const fn = new Function(code + \"\\nreturn { createClient };\");\nconst { createClient } = fn();\nlet calls = 0;\nconst fake = async (u) => { calls++; return { ok: true, status: 200, json: async () => ({ n: calls }) }; };\nconst c = createClient(fake);\nawait c.get(\"/x\");\nc.invalidate(\"/x\");\nconst again = await c.get(\"/x\");\nif (again.n !== 2) throw new Error(\"After invalidate, the next get must re-fetch (n === 2).\");\nc.invalidateAll();\nawait c.get(\"/y\");\nif (calls !== 3) throw new Error(\"invalidateAll drops every entry.\");",
+      "hint": "Map.delete(url) for invalidate; clear() for invalidateAll."
+    },
+    {
+      "name": "post is never cached and sends JSON",
+      "code": "const fn = new Function(code + \"\\nreturn { createClient };\");\nconst { createClient } = fn();\nconst captured = [];\nconst fake = async (u, o) => { captured.push({ u, o }); return { ok: true, status: 201, json: async () => ({ created: true }) }; };\nconst c = createClient(fake);\nconst out = await c.post(\"/tasks\", { title: \"ship it\" });\nif (out.created !== true) throw new Error(\"post resolves with the parsed body.\");\nif (captured[0].o.method !== \"POST\") throw new Error(\"method must be POST.\");\nif (captured[0].o.body !== '{\"title\":\"ship it\"}') throw new Error(\"body must be JSON stringified.\");\nawait c.post(\"/tasks\", { title: \"again\" });\nif (captured.length !== 2) throw new Error(\"A second post must hit the transport again — post is never cached.\");",
+      "hint": "post bypasses the cache entirely; build opts with method/body/headers then parse res.json()."
+    }
+  ]
+}

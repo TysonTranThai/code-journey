@@ -1,0 +1,38 @@
+Hàm của bạn gọi mạng, đồng hồ, hệ thống tệp. Test chạm dịch vụ thật thì
+chậm, hay trục trặc, và đôi khi phá hoại. Hãy **mock** ranh giới:
+
+```python
+from unittest.mock import patch
+
+def fetch_price(url):
+    import urllib.request
+    with urllib.request.urlopen(url) as r:
+        return int(r.read())
+
+class TestPrice(unittest.TestCase):
+    @patch("__main__.urllib.request.urlopen")
+    def test_fetch_price_parses(self, fake_urlopen):
+        fake_urlopen.return_value.__enter__.return_value.read.return_value = b"123"
+        self.assertEqual(fetch_price("http://example.com"), 123)
+```
+
+`patch` hoán đổi đối tượng thật bằng một `Mock` trong thời gian test và khôi
+phục sau đó. Mock **ghi lại cách nó được gọi**, nên bạn có thể assert hành
+vi, không chỉ giá trị trả về:
+
+```python
+fake_send.assert_called_once_with("hello")
+```
+
+## Mock gì — và không bao giờ mock gì
+
+Mock **các cạnh**: mạng, đồng hồ, random, hệ thống tệp, dịch vụ ngoài. Giữ
+**logic miền là thật** — mock chính phép tính của code đang test khiến bài
+test thành đồng nghĩa lặp lại. Nguyên tắc: nếu bạn đang mock nó, nó phải là
+một collaborator, không phải đối tượng chính.
+
+## Dấu hiệu nguy hiểm
+
+Test đầy mock phản chiếu chính bản cài đặt sẽ vỡ trong mọi lần refactor và
+không chứng minh điều gì. Ưu tiên test qua API công khai; chỉ mock những gì
+bạn không dám chạm thật.

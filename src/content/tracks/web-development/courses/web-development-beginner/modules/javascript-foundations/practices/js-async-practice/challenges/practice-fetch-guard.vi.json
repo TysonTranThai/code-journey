@@ -1,0 +1,18 @@
+{
+  "title": "Kiểm tra response.ok trước khi dùng",
+  "prompt": "Viết `async function loadUser()` fetch `https://api.example.com/me`, ném `new Error(\"HTTP \" + response.status)` khi `response.ok` là false, nếu không thì trả về JSON đã giải mã. Rồi gọi nó và log tên người dùng (fetch được cung cấp phân giải với một response hoạt động tốt).\n\nQuy tắc:\n- `await` cả fetch lẫn `.json()`.\n- Bảo vệ bằng `if (!response.ok)`.",
+  "tests": [
+    {
+      "name": "có bảo vệ ok",
+      "hint": "if (!response.ok) throw new Error(\"HTTP \" + response.status);"
+    },
+    {
+      "name": "trả về user đã giải mã",
+      "hint": "return await response.json(); — phần thân đã giải mã là giá trị được phân giải."
+    },
+    {
+      "name": "ném lỗi ở trạng thái thất bại",
+      "hint": "Error ném ra nên đọc là 'HTTP 500' với một response 500."
+    }
+  ]
+}

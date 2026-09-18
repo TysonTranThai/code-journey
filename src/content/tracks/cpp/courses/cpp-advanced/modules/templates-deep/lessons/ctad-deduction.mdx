@@ -1,0 +1,20 @@
+## Class template argument deduction (CTAD)
+
+`std::pair p(1, 2.0);` — no `<int, double>` needed; the constructor's parameters drive deduction. Without CTAD you would write `std::pair<int, double> p(1, 2.0);`.
+
+## Where inference goes wrong: iterator pairs
+
+A constructor `template <class It> Box(It first, It last) : items(first, last) {}` would deduce `Box<int*>` from `Box b(begin(arr), end(arr));` — the *iterator* type, not the *element* type. **Deduction guides** fix the inference without touching the class:
+
+```cpp
+template <class It>
+Box(It first, It last) -> Box<std::iter_value_t<It>>;
+```
+
+The guide says: "when you see this constructor signature, deduce from the *value type* instead." The standard library ships dozens: `std::vector v(begin, end)` deduces the element type this way.
+
+## C++20: alias CTAD
+
+`template <class T> using VecOf = std::vector<T>;` — then `VecOf v{1, 2, 3};` deduces `std::vector<int>`. Aliases became first-class deduction citizens in C++20.
+
+**Review skill:** when a container type comes out "wrong" from a constructor call, suspect the missing guide before suspecting your code.

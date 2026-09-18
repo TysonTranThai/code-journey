@@ -1,0 +1,43 @@
+**Module** là bất kỳ tệp `.py` nào; `import` tìm nó trên `sys.path`, chạy nó
+**một lần duy nhất**, và lưu cache vào `sys.modules`:
+
+```python
+# pricing.py
+DISCOUNT = 0.1            # hằng mức module: UPPER_CASE
+
+def apply(price):
+    return price * (1 - DISCOUNT)
+```
+
+```python
+from pricing import apply     # import hàm, không phải module
+import pricing                # import module; dùng pricing.apply
+```
+
+Hai quy tắc giữ import trong lành:
+
+- **`from x import y` cho tên dùng liên tục; `import x` thường khi module tạo ngữ cảnh** (`csv.reader` đọc rõ hơn `reader` trần trụi).
+- **Không bao giờ `from x import *`** — nó làm ô nhiễm namespace và phá khả năng tìm kiếm.
+
+## __main__ guard
+
+Code chỉ nên chạy khi tệp được chạy trực tiếp — không phải khi bị import —
+đặt dưới guard:
+
+```python
+def main():
+    print("report generated")
+
+if __name__ == "__main__":    # chỉ đúng khi chạy trực tiếp
+    main()
+```
+
+Điều này khiến một tệp vừa là **module tái sử dụng** vừa là **script chạy
+được**. Người import nhận các hàm; không ai vô tình kích hoạt hiệu ứng phụ.
+
+## Circular import: mùi và cách sửa
+
+Nếu `a.py` import `b` trong khi `b` import `a`, một bên sẽ nhận được module
+dở dang. Cách sửa đúng gần như luôn là **cấu trúc**: kéo phần dùng chung (một
+kiểu, một hằng, một helper) ra module thứ ba để cả hai import. Vòng lặp là
+lời phê bình thiết kế, không phải câu đố thứ tự nạp.

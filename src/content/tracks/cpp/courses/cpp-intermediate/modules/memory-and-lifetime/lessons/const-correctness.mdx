@@ -1,0 +1,37 @@
+`const` is a promise you encode in the type system: this thing will not be
+modified. Applied consistently it documents intent, lets the compiler catch
+bugs, and unlocks read-only APIs.
+
+```cpp
+#include <string>
+#include <vector>
+
+long total(const std::vector<long>& prices) {   // promise: no mutation
+    long sum = 0;
+    for (const long& p : prices) sum += p;
+    return sum;
+}
+
+class Cart {
+public:
+    long total() const { return total_; }        // const member: read-only view
+    void add(long cents) { total_ += cents; }    // non-const: mutates
+private:
+    long total_{0};
+};
+```
+
+## The const ladder
+
+- `const T&` parameter — cheap read-only input.
+- `T get() const` — a member function that does not mutate (`const` after `)`).
+- `const` local — write once, never again; intent made explicit.
+- `constexpr` (Module 7) — computable at compile time.
+
+## How to think about it
+
+Start maximal: make everything `const`. Removing `const` when you genuinely
+need mutation is easy and safe; adding it back across a codebase never is.
+Const on a member function is part of the *interface contract* — callers can
+rely on it, and only a `mutable` member (rare, for caches/mutexes) may change
+inside one.

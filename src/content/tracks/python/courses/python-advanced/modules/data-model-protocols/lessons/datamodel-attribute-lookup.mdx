@@ -1,0 +1,38 @@
+## Everything is a namespace lookup
+
+You already know `obj.x` reads an attribute. Advanced Python means knowing the
+**exact order** Python consults when resolving `obj.x`, and using that order as
+a design tool.
+
+For `obj.x` on an instance, Python (conceptually) tries, in order:
+
+1. **Data descriptor** on the type (a descriptor defining `__set__` or
+   `__delete__`) — e.g. `property`, most validators.
+2. **Instance dictionary** — `obj.__dict__`.
+3. **Non-data descriptor** on the type (defines only `__get__`) — e.g. plain
+   functions (that is how bound methods are created!), `staticmethod`,
+   `classmethod`, `functools.cached_property` before first call.
+4. **`__getattr__` fallback** (if defined) — called only when normal lookup
+   fails. Great for delegation, dangerous for hiding typos.
+
+Two consequences worth internalizing:
+
+- A data descriptor **beats** an instance `__dict__` entry. That is why
+  `property` setters can validate even though you could assign `obj.x = 5`.
+- Functions are non-data descriptors; the "bound method" you call is produced
+  at lookup time by `__get__`. Nothing magic is stored on the instance.
+
+```python
+class Loud:
+    def __getattr__(self, name):      # only called on MISS
+        return f"<fallback for {name}>"
+
+loud = Loud()
+loud.real = 1
+print(loud.real)                     # 1  (found normally)
+print(loud.anything)                 # <fallback for anything>
+```
+
+Use `vars(obj)` / `obj.__dict__` to inspect the instance side, and
+`type(obj).__mro__` to see the class side. When behavior surprises you, ask:
+"which step of the lookup produced this?"

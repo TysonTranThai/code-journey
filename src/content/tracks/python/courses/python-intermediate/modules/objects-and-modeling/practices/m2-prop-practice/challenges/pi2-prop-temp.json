@@ -1,0 +1,26 @@
+{
+  "id": "pi2-prop-temp",
+  "title": "Validated Temperature",
+  "prompt": "Create a class Temperature with a celsius property. The setter must raise ValueError for values below -273.15 (absolute zero). Reading celsius returns the stored value.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "class Temperature:\n    def __init__(self, celsius):\n        pass\n",
+  "tests": [
+    {
+      "name": "accepts valid values",
+      "code": "t = Temperature(25)\nassert t.celsius == 25\nt.celsius = -10\nassert t.celsius == -10",
+      "hint": "Store in _celsius via the property setter."
+    },
+    {
+      "name": "rejects below absolute zero",
+      "code": "import unittest\ntry:\n    Temperature(-300)\n    failed = False\nexcept ValueError:\n    failed = True\nassert failed",
+      "hint": "The setter must raise ValueError below -273.15."
+    },
+    {
+      "name": "rejects bad reassignment too",
+      "code": "t = Temperature(0)\ntry:\n    t.celsius = -999\n    failed = False\nexcept ValueError:\n    failed = True\nassert failed",
+      "hint": "Assignment goes through the same setter as __init__."
+    }
+  ],
+  "level": "guided"
+}

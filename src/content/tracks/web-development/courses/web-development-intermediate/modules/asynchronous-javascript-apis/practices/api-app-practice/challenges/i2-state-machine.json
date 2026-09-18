@@ -1,0 +1,25 @@
+{
+  "id": "i2-state-machine",
+  "title": "Async UI State Machine",
+  "prompt": "Write `createViewState()` — a tiny state machine for an async view. It RETURNS `{ get, load }`:\n\n- state starts as `{ status: \"idle\" }`\n- `load(fetchFn)` sets `{ status: \"loading\" }`, awaits `fetchFn()`\n  - success → `{ status: \"success\", data }`\n  - failure → `{ status: \"error\", message }` (err.message)\n- `get()` returns the CURRENT state object (a new object each call is fine)\n- calling `load` again while one is in flight is allowed — the LAST call wins (stale completions must not overwrite the newer state)",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function createViewState() {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "walks idle → loading → success",
+      "code": "const fn = new Function(code + \"\\nreturn { createViewState };\");\nconst { createViewState } = fn();\nconst v = createViewState();\nif (v.get().status !== \"idle\") throw new Error(\"Starts idle.\");\nconst p = v.load(async () => \"payload\");\nif (v.get().status !== \"loading\") throw new Error(\"Immediately after load, status is loading.\");\nawait p;\nconst s = v.get();\nif (s.status !== \"success\" || s.data !== \"payload\") throw new Error(\"After the fetch resolves: { status: 'success', data }.\");",
+      "hint": "Keep the state object in a closure; load mutates then returns the promise it created."
+    },
+    {
+      "name": "failure becomes an error state",
+      "code": "const fn = new Function(code + \"\\nreturn { createViewState };\");\nconst { createViewState } = fn();\nconst v = createViewState();\nawait v.load(async () => { throw new Error(\"503 upstream\"); });\nconst s = v.get();\nif (s.status !== \"error\" || s.message !== \"503 upstream\") throw new Error(\"Rejection maps to { status: 'error', message: err.message }.\");",
+      "hint": "try/catch around the await; catch stores message and must not rethrow."
+    },
+    {
+      "name": "last load wins over a stale one",
+      "code": "const fn = new Function(code + \"\\nreturn { createViewState };\");\nconst { createViewState } = fn();\nconst v = createViewState();\nconst slow = v.load(async () => { await new Promise((r) => setTimeout(r, 60)); return \"slow-data\"; });\nconst fast = v.load(async () => { await new Promise((r) => setTimeout(r, 10)); return \"fast-data\"; });\nawait slow; await fast;\nconst s = v.get();\nif (s.status !== \"success\" || s.data !== \"fast-data\") throw new Error(\"The slow earlier load must not overwrite the newer one's success state.\");",
+      "hint": "Capture a load id when load() is called; only write success/error if the id is still current."
+    }
+  ]
+}

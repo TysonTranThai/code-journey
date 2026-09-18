@@ -1,0 +1,30 @@
+{
+  "id": "i3-name-debug",
+  "title": "Debug: Broken Names",
+  "prompt": "This checkout page's names are quietly broken: the cards image has empty alt, the email label never associates with its field, the promo label's for= points at the wrong id, 'Pay now' is a div role=\"button\", and 'Buy now' hides its visible text behind a conflicting aria-label. Fix every name the right way: real alt text, for/id association, a real <button>, and visible text as the source of truth.",
+  "difficulty": "advanced",
+  "level": "debugging",
+  "boilerplate": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\"><title>Checkout</title></head>\n<body>\n  <h1>Checkout</h1>\n  <img src=\"cards.png\" alt=\"\">\n  <form>\n    <label>Email address</label>\n    <input id=\"email\" type=\"email\">\n    <label for=\"promo\">Promo code</label>\n    <input id=\"promocode\" type=\"text\">\n    <div role=\"button\" tabindex=\"0\" class=\"btn\">Pay now</div>\n    <button aria-label=\"Complete your purchase transaction\">Buy now</button>\n  </form>\n</body>\n</html>\n",
+  "tests": [
+    {
+      "name": "image gets a real name",
+      "code": "const img = code.match(/<img[^>]*>/i);\nif (!img) throw new Error(\"Keep the cards image.\");\nconst alt = (img[0].match(/alt\\s*=\\s*[\"']([^\"']*)[\"']/i) || [])[1] || \"\";\nif (alt.trim().length < 4) {\n  throw new Error(\"The cards image needs meaningful alt text (4+ characters).\");\n}",
+      "hint": "alt=\"\" means decorative — accepted payment logos are content. Describe them."
+    },
+    {
+      "name": "every label is associated",
+      "code": "const labels = [...code.matchAll(/<label([^>]*)>([\\s\\S]*?)<\\/label>/gi)];\nif (labels.length < 2) throw new Error(\"Keep both labels.\");\nfor (const l of labels) {\n  const m = l[1].match(/for\\s*=\\s*[\"']([^\"']+)[\"']/i);\n  if (m) {\n    if (!new RegExp(\"id\\\\s*=\\\\s*[\\\"']\" + m[1] + \"[\\\"']\").test(code)) {\n      throw new Error('Label for=\"' + m[1] + '\" has no matching input id.');\n    }\n  } else if (!/<input|<select|<textarea/i.test(l[2])) {\n    throw new Error(\"A label neither uses for= nor wraps its field.\");\n  }\n}",
+      "hint": "Two association paths: <label for> matching the input's id, or wrapping the input. The email label uses neither."
+    },
+    {
+      "name": "no fake buttons",
+      "code": "if (/<(div|span)[^>]*role\\s*=\\s*[\"']button[\"']/i.test(code)) {\n  throw new Error('Replace the div role=\"button\" with a real <button>.');\n}\nconst realBtns = (code.match(/<button[\\s>]/gi) || []).length;\nif (realBtns < 2) {\n  throw new Error(\"Both actions should be real <button> elements.\");\n}",
+      "hint": "role=\"button\" adds the role but not the behavior — focus, Enter/Space, disabled all come free with <button>."
+    },
+    {
+      "name": "visible text wins on Buy now",
+      "code": "const buy = [...code.matchAll(/<button([^>]*)>([\\s\\S]*?)<\\/button>/gi)].find((b) =>\n  /buy now/i.test(b[2].replace(/<[^>]*>/g, \"\"))\n);\nif (!buy) throw new Error(\"Keep the Buy now button.\");\nif (/aria-label\\s*=/i.test(buy[1])) {\n  throw new Error('Remove the aria-label that overrides the visible text \"Buy now\".');\n}",
+      "hint": "Speech users say what they see. When aria-label disagrees with visible text, the name is wrong — delete the aria-label."
+    }
+  ]
+}

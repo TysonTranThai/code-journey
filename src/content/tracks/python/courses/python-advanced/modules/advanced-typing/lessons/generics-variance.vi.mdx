@@ -1,0 +1,39 @@
+## Generic, TypeVar và variance
+
+**Generic** giữ mối quan hệ kiểu giữa đầu vào và đầu ra luôn hiển thị:
+
+```python
+from typing import TypeVar, Generic, List
+
+T = TypeVar("T")
+
+class Stack(Generic[T]):
+    def __init__(self) -> None:
+        self._items: List[T] = []
+    def push(self, item: T) -> None:
+        self._items.append(item)
+    def pop(self) -> T:
+        return self._items.pop()
+
+def first(xs: List[T]) -> T:
+    return xs[0]
+```
+
+`first(["a", "b"])` có kiểu `str` — checker gán `T = str`. lúc runtime
+`Stack[int]()` cũng chạy được: class `Generic` hỗ trợ subscription, một số thư
+viện dùng điều đó để validate.
+
+**TypeVar có bound** phát biểu một hợp đồng: `T = TypeVar("T", bound="Shape")`
+nghĩa là "bất kỳ subtype nào của Shape" — trong hàm bạn được gọi method của Shape.
+
+**Variance** trả lời câu hỏi "có được dùng Box[Cat] nơi kỳ vọng Box[Animal] không?":
+
+- **Covariant** (`T_co = TypeVar("T_co", covariant=True)`): vị trí chỉ đọc
+  (giá trị được sản xuất). Nhà sản xuất Cat cũng là nhà sản xuất Animal.
+- **Contravariant** (`T_contra`): vị trí chỉ ghi (giá trị bị tiêu thụ). Bộ tiêu
+  thụ Animal có thể tiêu thụ Cat.
+- **Invariant** (mặc định): containermutable — `Box[Cat]` KHÔNG phải `Box[Animal]`
+  vì bạn có thể `put` một Dog vào trong.
+
+Kinh nghiệm: producer thì covariant, consumer thì contravariant, container
+mutable thì invariant. Làm sai và checker chặn đúng một bug thật — đó là mục đích.

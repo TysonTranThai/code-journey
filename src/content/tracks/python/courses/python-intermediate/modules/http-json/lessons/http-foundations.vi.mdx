@@ -1,0 +1,33 @@
+Mỗi tương tác HTTP là một **request** (method, path, header, body tùy chọn)
+được trả lời bằng một **response** (trạng thái, header, body):
+
+```
+GET /api/users?page=2 HTTP/1.1
+Host: api.example.com
+Accept: application/json
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[{"id": 21}, {"id": 22}]
+```
+
+Method là động từ: **GET** đọc (không body, an toàn, cache được), **POST**
+tạo/gửi, **PUT/PATCH** cập nhật, **DELETE** xóa. Mã trạng thái là phán quyết
+của máy:
+
+| Họ | Ý nghĩa | Việc của bạn |
+|---|---|---|
+| 2xx | thành công (200 OK, 201 Created, 204 No Content) | tiếp tục |
+| 3xx | bị chuyển hướng | đi theo hoặc cập nhật URL |
+| 4xx | **bạn** gửi sai điều gì đó (400, 401, 403, 404, 429) | sửa request hoặc báo người dùng |
+| 5xx | **server** gặp sự cố (500, 502, 503) | lùi lại, có thể thử lại |
+
+Sai lầm trung cấp phổ biến nhất: coi mọi mã khác 200 là một. 404 nghĩa là
+"đừng thử lại"; 429 nghĩa là "chậm lại (đọc Retry-After)"; 503 nghĩa là
+"lỗi tạm thời — thử lại có backoff". Client tôn trọng ngữ nghĩa trạng thái
+luôn được chào đón; client đập vào server đang lỗi thì không.
+
+Trong sandbox không có mạng — và chính vì thế khóa học dạy mẫu
+**transport-injection** (các bài kế tiếp): logic bao quanh HTTP kiểm thử
+được mà không cần socket.

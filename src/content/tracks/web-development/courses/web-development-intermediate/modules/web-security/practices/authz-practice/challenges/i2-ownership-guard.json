@@ -1,0 +1,20 @@
+{
+  "id": "i2-ownership-guard",
+  "title": "Ownership Guard",
+  "prompt": "Write `canRead(record, user)` — record is { id, ownerId, visibility } where visibility is \"public\" | \"private\"; user is { id, role } with role \"admin\" | \"user\". Return true when: record is public; OR the user owns it; OR the user is an admin. Otherwise false.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function canRead(record, user) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "public, owner, and admin paths",
+      "code": "const fn = new Function(code + \"\\nreturn { canRead };\");\nconst { canRead } = fn();\nconst rec = { id: 1, ownerId: \"u2\", visibility: \"private\" };\nif (!canRead({ ...rec, visibility: \"public\" }, { id: \"u1\", role: \"user\" })) throw new Error(\"Public is readable by all.\");\nif (!canRead(rec, { id: \"u2\", role: \"user\" })) throw new Error(\"Owner reads own record.\");\nif (!canRead(rec, { id: \"u9\", role: \"admin\" })) throw new Error(\"Admin bypasses (by design here).\");\nif (canRead(rec, { id: \"u1\", role: \"user\" })) throw new Error(\"Stranger denied on private record.\");\n",
+      "hint": "Three or-ed conditions."
+    },
+    {
+      "name": "missing user denies",
+      "code": "const fn = new Function(code + \"\\nreturn { canRead };\");\nconst { canRead } = fn();\nconst rec = { id: 1, ownerId: \"u2\", visibility: \"private\" };\nif (canRead(rec, null)) throw new Error(\"No user => no access.\");\nif (canRead(null, { id: \"u1\", role: \"user\" })) throw new Error(\"No record => no access.\");\n",
+      "hint": "Fail closed on absent inputs."
+    }
+  ]
+}

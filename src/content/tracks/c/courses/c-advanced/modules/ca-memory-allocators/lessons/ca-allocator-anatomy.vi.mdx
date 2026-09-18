@@ -1,0 +1,18 @@
+## Giao diện chỉ ba hàm; công việc khổng lồ
+
+`malloc`, `free`, `realloc` che một hệ thống con phải đạt các mục tiêu mâu thuẫn cùng lúc:
+
+- **thông lượng** — cấp phát nhanh (trường hợp thường chỉ vài lệnh);
+- **hiệu quả bộ nhớ** — metadata và phân mảnh không được ăn hết heap;
+- **phân mảnh thấp** — chương trình dài hạn trộn kích thước khó đoán;
+- **an toàn luồng** — allocator hiện đại làm điều đó không cần khóa toàn cục.
+
+Các allocator thật (glibc, musl, jemalloc) chia heap thành size class, giữ free list theo class, ghép láng giềng khi free, và mmap trực tiếp các yêu cầu rất lớn.
+
+## Tam giác tradeoff
+
+Nhanh + gọn + tổng quát: chọn hai. Arena chọn nhanh + gọn cho *một lô cùng vòng đời* và từ bỏ free riêng lẻ. Pool chọn nhanh cho *một kích thước* và từ bỏ sự linh hoạt. Hiểu *vì sao* mỗi thiết kế từ bỏ thứ gì đó mới là nội dung kỹ thuật của mô-đun này.
+
+## Alignment là một phần hợp đồng
+
+Mọi cấp phát được căn cho mọi kiểu cơ bản (thường 16 byte). Allocator tự viết phải tôn trọng điều đó, nếu không mọi struct cast qua kết quả là một crash tiềm ẩn.

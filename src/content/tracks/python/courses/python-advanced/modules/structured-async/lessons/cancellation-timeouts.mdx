@@ -1,0 +1,34 @@
+## Timeouts and cancellation, done properly
+
+Cancellation in asyncio is **cooperative and exception-based**: cancelling a
+task arranges `CancelledError` to be raised at its current await point.
+
+`asyncio.timeout(seconds)` (3.11+) wraps a block:
+
+```python
+import asyncio
+
+async def slow_api():
+    await asyncio.sleep(10)
+
+async def handler():
+    try:
+        async with asyncio.timeout(0.5):
+            await slow_api()
+    except TimeoutError:
+        return "gave up"          # TimeoutError in 3.11+, asyncio.TimeoutError before
+```
+
+What professionals must know:
+
+- **Timeouts cancel; cancellation propagates.** Inner `finally` blocks and
+  async context managers still run — cleanup code must be cancellation-safe
+  (no unbounded awaits inside cleanup).
+- A coroutine may **shield** a critical section with
+  `asyncio.shield(coro)` — the shielded await still gets CancelledError in the
+  caller, but the inner operation continues.
+- Swallowing `CancelledError` (bare `except Exception` does NOT catch it in
+  3.8+... but `except BaseException` does) is the classic way to break
+  structured concurrency. Only catch it to re-raise after cleanup.
+- `asyncio.call_later`, loop-bound timers, and `asyncio.to_thread` (3.9+) for
+  offloading blocking calls to a thread round out the toolkit.

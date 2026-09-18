@@ -1,0 +1,33 @@
+Rải SQL khắp business logic khiến mọi thứ bị trói vào chi tiết lưu trữ.
+Một **repository** cô lập persistence sau một interface nhỏ:
+
+```python
+class TaskRepository:
+    def __init__(self, conn):
+        self._conn = conn
+
+    def add(self, title: str) -> int:
+        cur = self._conn.execute(
+            "INSERT INTO tasks (title) VALUES (?)", (title,)
+        )
+        self._conn.commit()
+        return cur.lastrowid
+
+    def get(self, task_id: int) -> dict | None:
+        row = self._conn.execute(
+            "SELECT id, title, done FROM tasks WHERE id = ?", (task_id,)
+        ).fetchone()
+        return dict(row) if row else None
+
+    def all(self) -> list[dict]:
+        return [dict(r) for r in self._conn.execute("SELECT id, title, done FROM tasks")]
+```
+
+Những gì điều này mua được:
+
+- **Miền dữ liệu không dính storage**: service gọi `repo.add(...)`, không bao giờ SQL. Đổi SQLite sang Postgres, code miền không đổi.
+- **Test trở nên dễ dàng** (module 7!): một repository giả trong bộ nhớ thỏa mãn cùng các lời gọi — không cần database để test business rule.
+- **SQL sống trong một tầng**, nơi review, tối ưu, và audit thực sự diễn ra.
+
+Mẫu này là ý tưởng Protocol của module 4 áp dụng cho persistence — và chính
+là hình dạng tầng storage của capstone.

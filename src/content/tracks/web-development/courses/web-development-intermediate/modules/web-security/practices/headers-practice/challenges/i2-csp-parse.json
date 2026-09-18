@@ -1,0 +1,20 @@
+{
+  "id": "i2-csp-parse",
+  "title": "CSP Directive Check",
+  "prompt": "Write `cspAllows(policy, kind)` — policy is a CSP string like \"default-src 'self'; img-src 'self' data:\"; kind is \"script\" | \"img\". Scripts need a script-src directive (falling back to default-src); images use img-src or default-src. Return true when the directive's source list contains 'self' or data: — false otherwise (including when no directives exist at all).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function cspAllows(policy, kind) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "explicit directives win",
+      "code": "const fn = new Function(code + \"\\nreturn { cspAllows };\");\nconst { cspAllows } = fn();\nconst p = \"default-src 'self'; img-src 'self' data:\";\nif (!cspAllows(p, \"img\")) throw new Error(\"img-src present, so img allowed.\");\nif (!cspAllows(\"img-src 'self'\", \"img\")) throw new Error(\"img-src alone allows images.\");\nif (!cspAllows(\"default-src 'self'\", \"script\")) throw new Error(\"default-src covers scripts.\");\n",
+      "hint": "Parse into directive => sources; pick the specific one or default."
+    },
+    {
+      "name": "no policy blocks everything",
+      "code": "const fn = new Function(code + \"\\nreturn { cspAllows };\");\nconst { cspAllows } = fn();\nif (cspAllows(\"\", \"script\") !== false) throw new Error(\"Empty policy allows nothing.\");\nif (cspAllows(\"img-src 'self'\", \"script\") !== false) throw new Error(\"No default-src, no script-src => scripts blocked.\");\n",
+      "hint": "Missing directive + missing default = deny."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Giành món hàng cuối cùng",
+  "prompt": "Cài `checkout(rows, requests)` — một hệ thống đặt trước trên `rows` (list dict `{'sku', 'stock', 'version'}`):\n\n- mỗi request là `(sku, conflict_on_attempt_set)` nghĩa là: trừ tồn kho của SKU đó đi 1, trong đó các số lần thử (bắt đầu từ 1) cho trước sẽ thua tranh chấp (writer khác tăng phiên bản trước)\n- áp dụng optimistic concurrency cho từng request: đọc phiên bản, thay đổi, xung đột → retry với dòng đã tăng, tối đa **3 lần thử**; sau đó request thất bại\n- request thất bại ngay nếu stock bằng 0 tại thời điểm ghi thành công: trả sku của nó trong `out_of_stock`\n- trả `{'rows': rows_sau_tất_cả_request, 'applied': [sku theo thứ tự request], 'out_of_stock': [sku thất bại]}`\n\nBất biến: hai request tranh chấp món cuối — đúng một cái thắng, kẻ thua báo `out_of_stock` (hoặc retry rồi báo một cách trung thực).",
+  "tests": [
+    {
+      "name": "Kẻ thua thua một cách trung thực",
+      "hint": "Hai request, một món: đúng một cái thắng; cái kia báo thật."
+    },
+    {
+      "name": "Xung đột tốn lần thử, rồi thành công",
+      "hint": "Thua tranh chấp thì retry với dòng đã tăng; lần ghi hạ xuống trạng thái mới nhất."
+    }
+  ]
+}

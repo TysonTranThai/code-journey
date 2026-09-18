@@ -1,0 +1,50 @@
+A **constructor** is a special method that runs at `new` time, shaping every
+object of the class as it is born:
+
+```java
+class Account {
+    String owner;
+    double balance;
+
+    Account(String owner, double balance) {   // same name as class, no return type
+        this.owner = owner;
+        this.balance = balance;
+    }
+}
+
+Account acc = new Account("Ada", 100.0);   // fields set at birth
+```
+
+Three constructor rules:
+
+- The name matches the class **exactly**, and there is no return type — not
+  even `void`.
+- If you write **no constructor at all**, Java writes you a silent,
+  do-nothing default (fields get `0`/`false`/`null`).
+- If you write ANY constructor, the free default disappears: `new Account()`
+  stops compiling unless you also write it.
+
+**Overloading constructors** gives callers convenience; the classic pattern
+chains with `this(...)` so the real logic lives in exactly one place:
+
+```java
+Account(String owner) {
+    this(owner, 0.0);        // delegate: everyone starts at zero
+}
+
+Account(String owner, double balance) {
+    if (balance < 0) {
+        throw new IllegalArgumentException("balance must be >= 0");
+    }
+    this.owner = owner;
+    this.balance = balance;
+}
+```
+
+Constructors are also the natural place to **validate**: refuse bad births
+(`null` owner, negative balance) immediately, so the rest of the class can
+assume its invariants hold. This "validate at the door" habit is the
+beginner form of what professionals call an *invariant* — a guarantee every
+object keeps for its whole life.
+
+**Next:** guarding fields — encapsulation.

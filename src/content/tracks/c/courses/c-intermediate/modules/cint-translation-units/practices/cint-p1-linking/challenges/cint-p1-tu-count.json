@@ -1,0 +1,21 @@
+{
+  "id": "cint-p1-tu-count",
+  "title": "Count the Translation Units",
+  "prompt": "A build compiles two source files, each including two headers. Read the\n`build_log` string (a multi-line compile log: one `gcc ... -c file.c` line per\ntranslation unit, then one linking line) and implement:\n\n```c\nint count_translation_units(const char *build_log);\nint count_link_errors(const char *build_log);\n```\n\n`count_translation_units` returns how many `-c` compile lines appear.\n`count_link_errors` returns how many lines contain `undefined reference`.\nBoth return 0 for NULL or empty input. Lines are separated by `\\n`.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "counts compile lines",
+      "code": "\nconst char *log1 = \"gcc -std=c23 -c main.c\\ngcc -std=c23 -c util.c\\n\";\nCHECK_EQ(count_translation_units(log1), 2);\nCHECK_EQ(count_translation_units(\"gcc -c a.c\"), 1);\nCHECK_EQ(count_translation_units(\"\"), 0);\nCHECK_EQ(count_translation_units(NULL), 0);\n",
+      "hint": "Scan the string for the substring \"-c \"; each occurrence that starts a line is one TU."
+    },
+    {
+      "name": "counts undefined references",
+      "code": "\nconst char *log2 = \"undefined reference to 'helper'\\nundefined reference to 'util_fn'\\n\";\nCHECK_EQ(count_link_errors(log2), 2);\nCHECK_EQ(count_link_errors(\"all good\\n\"), 0);\nconst char *log3 = \"gcc -c x.c\\nundefined reference to 'y'\\n\";\nCHECK_EQ(count_link_errors(log3), 1);\n",
+      "hint": "Count occurrences of \"undefined reference\" as a substring."
+    }
+  ],
+  "level": "imitation"
+}

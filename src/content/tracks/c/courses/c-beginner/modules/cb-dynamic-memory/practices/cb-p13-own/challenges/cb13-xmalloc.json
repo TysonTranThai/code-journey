@@ -1,0 +1,26 @@
+{
+  "id": "cb13-xmalloc",
+  "title": "Checked Allocate",
+  "prompt": "Implement `int* checked_alloc(int n, int *ok)`: allocate n ints; on success set *ok=1 and return the block; on failure (n <= 0 or malloc NULL) set *ok=0 and return NULL.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "success",
+      "code": "int ok = 0;\nint *p = checked_alloc(4, &ok);\nCHECK_EQ(ok, 1);\nCHECK_NOT_NULL(p);\nfree(p);",
+      "hint": "Both outputs set on success."
+    },
+    {
+      "name": "bad n",
+      "code": "int ok = 1;\nint *p = checked_alloc(0, &ok);\nCHECK_EQ(ok, 0);\nCHECK_EQ(p, NULL);",
+      "hint": "n=0 reports failure."
+    },
+    {
+      "name": "negative n",
+      "code": "int ok = 1;\nCHECK_EQ(checked_alloc(-2, &ok), NULL);\nCHECK_EQ(ok, 0);",
+      "hint": "Negatives too."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,23 @@
+## Coupling: thứ mà kiến trúc thực sự quản lý
+
+Kiến trúc không phải là thư mục và sơ đồ — nó là việc quản lý **coupling**:
+một đoạn code phải biết bao nhiêu về đoạn khác để hoạt động.
+
+Hai triệu chứng cho biết coupling đã quá cao:
+
+- **Khuếch đại thay đổi**: một thay đổi quy tắc nghiệp vụ buộc phải sửa nhiều
+  tệp ("đổi tên một field mà phải đụng 14 tệp").
+- **Không thể kiểm thử**: không thể chạy logic nghiệp vụ nếu không có database
+  thật, HTTP thật, đồng hồ thật.
+
+Coupling không xấu — *hướng* mới là điều quan trọng. Quy tắc nghiệp vụ không
+nên biết về cơ chế giao tiếp (HTTP, CLI), lưu trữ (SQL), hay nhà cung cấp.
+Những chi tiết đó phải phụ thuộc vào domain, không bao giờ ngược lại. Đó là
+toàn bộ ý tưởng của **dependency inversion**: chính sách cấp cao định nghĩa
+interface; chi tiết cấp thấp cài đặt nó; phần nối dây hướng mũi tên phụ thuộc
+vào trong.
+
+Bài thử thực dụng cho mọi abstraction bạn thêm vào: **hãy gọi tên bản cài đặt
+thứ hai.** Nếu chỉ có duy nhất một bản cài và không có nhu cầu kiểm thử hay
+ranh giới, interface đó chỉ là nghi lễ. (Test double trong unit test của bạn
+được tính là bản cài thứ hai.)

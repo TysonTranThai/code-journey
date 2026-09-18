@@ -1,0 +1,38 @@
+## Vấn đề magic-string
+
+Hàm nhận `"admin"`, `"editor"`, `"viewer"` dạng chuỗi là một nhà máy bug: lỗi chính tả vẫn biên dịch được, chữ hoa/thường trôi dạt, và tập giá trị hợp lệ chỉ tồn tại trong tài liệu. Cách sửa là một **tập khép kín có kiểu**:
+
+```cpp
+enum class Role { Viewer, Editor, Admin };
+
+Role role = Role::Editor;
+
+switch (role) {
+    case Role::Viewer: /* ... */ break;
+    case Role::Editor: /* ... */ break;
+    case Role::Admin:  /* ... */ break;
+}
+```
+
+## Vì sao `enum class`, không phải `enum` trần
+
+- **Có scope:** giá trị là `Role::Editor`, không bao giờ là `Editor` trần — không ô nhiễm namespace.
+- **Kiểu mạnh:** `Role` không tự chuyển thành `int`; bạn không thể vô tình so một Role với số hay truyền nó vào chỗ cần int. (enum cổ trước C++11 rò giá trị ra scope bao ngoài và tự chuyển thành int — tương thích code cũ, không phải khuyến nghị.)
+- **Switch được kiểm tra:** với `-Wall -Wextra`, GCC cảnh báo khi switch trên `Role` thiếu case (thêm `default` hoặc xử lý mọi enumerator).
+
+## `using`: biệt danh cho kiểu
+
+```cpp
+using Inventory = std::map<std::string, int>;
+using Scores = std::vector<int>;
+
+Inventory stock;             // đọc như miền vấn đề
+std::vector<std::vector<int>> grid;
+using Grid = std::vector<std::vector<int>>;
+```
+
+`using` (hiện đại; ưu tiên hơn `typedef` của C) đặt tên trung thực cho các kiểu dài. Nó là tài liệu mà compiler thực thi: đổi alias một lần, mọi nơi dùng theo.
+
+## Bài tập mô hình hóa phía trước
+
+Checkpoint yêu cầu bạn thiết kế `struct Order { ... }` với `enum class Status { ... }` — chỉ cần liếc phần định nghĩa kiểu là hiểu cả miền nghiệp vụ.

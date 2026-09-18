@@ -1,0 +1,56 @@
+Vì sao một `<p>` chiếm trọn một dòng trong khi `<strong>` lại chia sẻ dòng với hàng xóm? Câu trả lời là thuộc tính `display` — thuộc tính có hệ lụy lớn nhất trong CSS.
+
+## Hai giá trị mặc định
+
+**display: block** — đoạn văn, heading, div, section. Một hộp block:
+
+- chiếm **toàn bộ chiều rộng** khả dụng theo mặc định,
+- bắt đầu trên một **dòng mới**,
+- tôn trọng mọi thuộc tính box-model (width, height, margin, padding).
+
+**display: inline** — strong, em, a, span, img (phần lớn). Một hộp inline:
+
+- trôi **bên trong dòng chữ**, chỉ chiếm khoảng không gian nó cần,
+- bỏ qua `width`/`height`,
+- chấp nhận padding/margin ngang; padding dọc được vẽ nhưng không đẩy các dòng ra xa nhau (một điểm gây nhầm lẫn kinh điển).
+
+```html
+<p>HTML is <strong>content</strong>, CSS is <em>style</em>.</p>
+```
+
+Cả `strong` lẫn `em` đều trôi bên trong dòng của đoạn văn — đó là inline.
+
+## Dạng lai hữu dụng: inline-block
+
+```css
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  width: auto;
+}
+```
+
+Hộp `inline-block` trôi như các từ _và_ chấp nhận `width`, `height`, padding đầy đủ — badge, tag, hàng nút bấm. Flexbox (sắp đến) thay thế phần lớn công dụng bố cục, nhưng `inline-block` vẫn là câu trả lời trung thực cho "làm cho cái hộp nhỏ này ngồi trong dòng chảy".
+
+## none — và vì sao nó thắng các mẹo visibility
+
+```css
+.mobile-only {
+  display: none;
+}
+```
+
+`display: none` xóa bỏ hộp hoàn toàn: không chiếm chỗ, không render, **không được trình đọc màn hình đọc, không focus được**. (Người họ hàng `visibility: hidden` giữ lại chỗ trống nhưng làm trống nó — và cũng ẩn với công nghệ hỗ trợ. Hãy chọn có chủ đích: bạn đang _xóa bỏ_ nội dung hay _làm mù_ nó? Cho việc ẩn/hiện responsive, `display: none` là đúng.)
+
+## Đổi bản chất
+
+CSS có thể gán lại display: `a { display: block; }` làm cho một liên kết chiếm trọn dòng riêng (liên kết toàn-thẻ trong nav); `li { display: inline; }` xếp hàng các mục danh sách — mẹo thanh-nav ngày xưa. Bạn sẽ gặp cả hai lần nữa.
+
+## Bạn đã học được gì
+
+- Block: toàn bộ chiều rộng, dòng riêng, kiểm soát box-model đầy đủ
+- Inline: trôi trong chữ, không width/height, box-model một phần
+- inline-block: trôi như chữ, kích thước như hộp
+- display: none xóa bỏ hoàn toàn — một quyết định ngữ nghĩa, không chỉ thị giác
+
+**Tiếp theo:** positioning — khi các hệ layout không phải là công cụ phù hợp.

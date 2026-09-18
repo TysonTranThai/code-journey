@@ -1,0 +1,21 @@
+## Một lệnh gọi trả về hai lần
+
+`fork()` (POSIX) nhân đôi tiến trình đang gọi. Nó trả về một lần *trên mỗi tiến trình*: 0 ở con, pid của con ở cha. Mọi thứ khác — bộ nhớ, file mở, cwd — được sao chép hoặc chia sẻ copy-on-write. Con thường gọi ngay một hàm `exec*()`, hàm *thay thế* ảnh tiến trình bằng chương trình mới; exec thành công không bao giờ trả về.
+
+## Thu kết quả
+
+Cha reap con bằng `waitpid(pid, &status, 0)`. Từ `status` *không phải* mã exit — nó là bitfield giải mã bằng macro:
+
+- `WIFEXITED(status)` — con có kết thúc bình thường không?
+- `WEXITSTATUS(status)` — 8 bit thấp mà con truyền cho `exit()`, `_exit()`, hoặc return.
+
+Hai hệ quả cần thấm:
+
+1. **Mã exit chỉ 8 bit.** `_exit(256)` được thấy là 0; `_exit(-1)` là 255. Đừng bao giờ mã hóa dữ liệu ngoài 0–255 vào mã exit.
+2. **Con bị tín hiệu giết thì không 'exit'.** Nếu tín hiệu kết thúc con, `WIFEXITED` sai và `WEXITSTATUS` vô nghĩa — kiểm tra `WIFSIGNALED` và `WTERMSIG`.
+
+Mọi công cụ dòng lệnh bạn từng nối bằng `&&` đều đang điều phối đúng bộ ba này.
+
+## POSIX so với ISO C, lần nữa
+
+Không gì trong bài này tồn tại trong ISO C. `fork`, `exec`, `waitpid`, `_exit` là POSIX. Chương trình chỉ-ISO di động không thể tạo tiến trình — và giới hạn đó là một phần câu chuyện của C: thư viện chuẩn dừng ở `system()` (trả trạng thái do hiện thực định nghĩa), mọi thứ giàu hơn là công việc nền tảng.

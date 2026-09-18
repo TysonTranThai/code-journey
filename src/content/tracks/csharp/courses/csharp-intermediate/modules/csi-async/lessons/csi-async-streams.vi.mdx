@@ -1,0 +1,44 @@
+## Sản xuất: async iterator với yield return
+
+```csharp
+async IAsyncEnumerable<int> PollAsync(CancellationToken ct = default)
+{
+    for (int i = 0; i < 10; i++)
+    {
+        await Task.Delay(10, ct);
+        yield return i;
+    }
+}
+```
+
+`yield return` trong phương thức `async` tạo async iterator (.NET Core
+3.0+). Phần tử chảy ra khi được sản xuất — consumer bắt đầu trước khi
+producer kết thúc.
+
+## Tiêu thụ: await foreach
+
+```csharp
+await foreach (int item in PollAsync(ct))
+    Console.WriteLine(item);
+```
+
+`await foreach` await từng MoveNextAsync — vòng lặp treo chờ phần tử kế
+thay vì chặn thread.
+
+## Vì sao không `Task<List<T>>`?
+
+`Task<List<T>>` nghĩa là "tất cả, sau này" — caller chờ tới HẾT mới xử lý
+phần tử đầu. `IAsyncEnumerable<T>` nghĩa là "phần tử theo thời gian" — xử
+lý khi đến, hủy giữa dòng, giữ bộ nhớ phẳng. Chọn theo kiểu dữ liệu đến,
+không phải phong cách.
+
+## CancellationToken chảy xuyên suốt
+
+`WithCancellation(ct)` gắn token của caller vào stream; bên trong producer,
+tôn trọng token bạn nhận. Thuộc tính `[EnumeratorCancellation]` trên tham
+số mặc định gộp token của caller và cục bộ — pattern BCL dùng.
+
+## Kiểm tra hiểu biết
+
+- Kiểu nào cho log tail? (IAsyncEnumerable — phần tử đến theo thời gian.)
+- await foreach await cái gì? (Sự sẵn có của từng phần tử.)

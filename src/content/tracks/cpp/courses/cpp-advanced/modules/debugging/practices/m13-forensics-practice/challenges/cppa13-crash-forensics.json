@@ -1,0 +1,21 @@
+{
+  "id": "cppa13-crash-forensics",
+  "title": "Classify the Crash",
+  "prompt": "Implement `classifyCrash` per the contract in the boilerplate. This is the first skill of forensics: turning raw frames into a named failure class.",
+  "difficulty": "advanced",
+  "level": "debugging",
+  "language": "cpp",
+  "boilerplate": "#include <cstdint>\n#include <optional>\n#include <string>\n#include <vector>\n\n// A parsed crash-frame from a production stack trace:\n//   \"#2  0x00007f3a in App::handle + 24\"  -> frame 2, module App::handle, offset 24\nstruct Frame {\n    int index = -1;\n    std::string symbol;   // \"\" when unresolved\n    std::uint64_t offset = 0;\n};\n\n// Classify a crash from its frame list:\n//   \"null-deref\"  : frame 0 offset in {0, 8, 16} and symbol empty\n//   \"heap-corrupt\": frame 0 symbol starts with \"memcpy\" or \"malloc\"\n//   \"wild-jump\"   : frame 0 symbol empty and offset > 4096\n//   \"in-app\"      : frame 0 symbol starts with \"App::\"\n//   \"unknown\"     : everything else\n// Frames beyond index 0 are context. Empty list -> \"unknown\".\nstd::string classifyCrash(const std::vector<Frame>& frames);\n",
+  "tests": [
+    {
+      "name": "each class is recognized",
+      "code": "CHECK_EQ(classifyCrash({{0, \"\", 8}}), \"null-deref\");\nCHECK_EQ(classifyCrash({{0, \"memcpy\", 0}}), \"heap-corrupt\");\nCHECK_EQ(classifyCrash({{0, \"malloc\", 4}}), \"heap-corrupt\");\nCHECK_EQ(classifyCrash({{0, \"\", 8192}}), \"wild-jump\");\nCHECK_EQ(classifyCrash({{0, \"App::run\", 12}}), \"in-app\");\nCHECK_EQ(classifyCrash({{0, \"std::string::append\", 40}}), \"unknown\");",
+      "hint": "A single if-chain over frame 0 in the documented priority order; empty-symbol + small-offset means null-deref, big-offset means wild-jump."
+    },
+    {
+      "name": "context frames and empty input",
+      "code": "CHECK_EQ(classifyCrash({}), \"unknown\");\nCHECK_EQ(classifyCrash({{1, \"App::helper\", 4}, {0, \"\", 8}}), \"null-deref\");\nCHECK_EQ(classifyCrash({{3, \"libc\", 0}, {2, \"std::string::append\", 0}, {0, \"memcpy\", 0}}), \"heap-corrupt\");\nCHECK_EQ(classifyCrash({{2, \"App::x\", 0}, {1, \"App::y\", 0}}), \"unknown\");",
+      "hint": "Only the frame with index 0 decides — later frames are context, and a missing index-0 frame is unknown."
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+## Số học
+
+`+ - * / %` hoạt động như mong đợi trên số nguyên và số thực — với một cái bẫy nổi tiếng:
+
+```cpp
+std::cout << 7 / 2;      // 3   — nguyên / nguyên = nguyên!
+std::cout << 7.0 / 2;    // 3.5 — chỉ cần một double để cả biểu thức thành double
+std::cout << 7 % 2;      // 1   — số dư (modulo)
+```
+
+**Chia số nguyên cắt phần thập phân.** Nếu phép tính *phải* có phần lẻ, ít nhất một toán hạng phải là double. `%` chỉ dùng cho số nguyên và xuất hiện khắp nơi trong code thật: kiểm tra chẵn/lẻ, bộ đệm vòng, phân trang.
+
+## So sánh và logic
+
+Phép so sánh cho ra `bool`: `== != < <= > >=`. Kết hợp bằng `&&` (và), `||` (hoặc), `!` (phủ định). Độ ưu tiên hay làm người mới vấp, nên cứ nghi ngờ thì đặt ngoặc:
+
+```cpp
+if ((age >= 18) && (has_ticket)) { /* ... */ }
+```
+
+(Bug thật cần tránh: `=` là gán, `==` là so sánh. `if (x = 5)` vẫn biên dịch được — và hầu như không bao giờ là điều bạn muốn.)
+
+## Chuyển kiểu: ngầm định và tường minh
+
+```cpp
+int small = 3.9;               // ngầm định: 3, âm thầm (vì sao ngoặc nhọn tốt hơn)
+double avg = static_cast<double>(total) / count;   // tường minh, rõ ràng
+```
+
+`static_cast<double>(x)` nói to "tôi muốn phép chia số thực ở đây". Khóa này dùng `static_cast` — không bao giờ dùng kiểu ép kiểu kiểu C `(double)x`, thứ khó tìm kiếm và có thể âm thầm thành công ở nơi đáng ra phải thất bại.
+
+## Overflow trong một câu
+
+Mọi kiểu đều có giới hạn (`int` thường là ±2,1 tỷ). Tính toán vượt giới hạn sẽ **vòng lại một cách âm thầm** — không có exception nào cả. Phòng thủ của người mới chỉ đơn giản là: chọn kiểu hợp lý (`long long` cho số đếm lớn) và biết rằng overflow tồn tại. Xử lý sâu là môn của Trung cấp.
+
+## Trọng tâm luyện tập
+
+Các bài tập ở đây thuần tính toán — đổi đơn vị, chia hóa đơn, điểm trung bình — được chọn vì mỗi bài đều nổi tiếng làm người mới trúng bẫy chia số nguyên ít nhất một lần.

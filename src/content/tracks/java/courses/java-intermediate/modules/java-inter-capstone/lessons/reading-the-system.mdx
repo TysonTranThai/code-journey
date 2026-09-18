@@ -1,0 +1,17 @@
+## Reading the system you built
+
+After the capstone, walk the code like a reviewer:
+
+1. **Where are the rules?** Every money rule should live in the service
+   or the domain type — not the controller, not the repository.
+2. **What does each test net catch?** If you deleted a boundary test,
+   which regression would slip through? (If none, the test is dead.)
+3. **What would change first?** Swapping persistence should be one
+   constructor line. Adding a report should be one service method. If
+   either needs surgery, the boundaries leak.
+4. **Where does it hurt?** The rule you had to duplicate is the next
+   extraction candidate.
+
+This is the intermediate→advanced turn: advanced engineers don't just
+build systems — they read their own systems for the stresses that will
+shape the next refactor.

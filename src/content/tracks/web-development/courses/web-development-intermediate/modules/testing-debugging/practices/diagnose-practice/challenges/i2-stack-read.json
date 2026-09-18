@@ -1,0 +1,20 @@
+{
+  "id": "i2-stack-read",
+  "title": "Stack Trace Decoder",
+  "prompt": "A stack trace is an array of frames, index 0 = top (where it threw). Write `firstOwnFrame(frames)` — frames are objects { fn, file }; return the first frame whose file starts with \"app/\" (your code), skipping framework frames; return null if none. Write `errorKind(message)` mapping: contains \"is not a function\" => \"type\", contains \"Cannot read prop\" => \"shape\", otherwise \"other\".",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function firstOwnFrame(frames) {\n  // your code\n}\n\nfunction errorKind(message) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "skips to your code",
+      "code": "const fn = new Function(code + \"\\nreturn { firstOwnFrame, errorKind };\");\nconst { firstOwnFrame, errorKind } = fn();\nconst frames = [\n  { fn: \"map\", file: \"lib/array.js\" },\n  { fn: \"transform\", file: \"app/transform.js\" },\n  { fn: \"main\", file: \"app/main.js\" },\n];\nif (firstOwnFrame(frames).fn !== \"transform\") throw new Error(\"First app/ frame wins.\");\nif (firstOwnFrame([{ fn: \"x\", file: \"lib/x.js\" }]) !== null) throw new Error(\"No own frame => null.\");\n",
+      "hint": "Simple find on the file prefix."
+    },
+    {
+      "name": "classifies error messages",
+      "code": "const fn = new Function(code + \"\\nreturn { firstOwnFrame, errorKind };\");\nconst { firstOwnFrame, errorKind } = fn();\nif (errorKind(\"x.filter is not a function\") !== \"type\") throw new Error(\"Not-a-function => type.\");\nif (errorKind(\"Cannot read properties of undefined\") !== \"shape\") throw new Error(\"Cannot-read => shape.\");\nif (errorKind(\"Unexpected token < in JSON\") !== \"other\") throw new Error(\"Everything else => other.\");\n",
+      "hint": "Two includes checks, then the default."
+    }
+  ]
+}

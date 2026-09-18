@@ -1,0 +1,24 @@
+Lambda là một function object không tên, viết ngay tại nơi sử dụng. Cú pháp
+có bốn phần: capture, tham số, kiểu trả về (thường được suy luận), thân hàm.
+
+```cpp
+auto square = [](int x) { return x * x; };           // không capture
+int factor = 3;
+auto scale = [factor](int x) { return x * factor; }; // capture bằng giá trị
+auto push  = [&out](int x) { out.push_back(x); };    // capture bằng reference
+```
+
+Ngữ nghĩa capture vừa là câu hỏi phỏng vấn vừa là nguồn bug:
+
+- `[factor]` copy tại thời điểm tạo lambda — thay đổi `factor` sau đó
+  không ảnh hưởng lambda.
+- `[&factor]` lưu reference — lambda không được sống lâu hơn `factor`.
+  Trả về lambda capture-bằng-reference từ một hàm đồng nghĩa trả về
+  reference treo lơ lửng.
+- `[this]` capture con trỏ của đối tượng bao ngoài; `[this, factor]` là
+  kết hợp đúng thường gặp nhất.
+- Trạng thái mutable cần `mutable`: `[n]() mutable { return ++n; }`.
+
+Capture-mặc-định-theo-giá-trị (`[=]`) bị deprecated trong C++20 cho các
+tình huống `this`; hãy liệt kê rõ bạn capture gì — danh sách đó chính là
+tài liệu về phụ thuộc của lambda.

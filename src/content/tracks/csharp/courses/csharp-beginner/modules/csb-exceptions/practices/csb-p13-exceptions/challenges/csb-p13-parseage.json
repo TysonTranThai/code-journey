@@ -1,0 +1,21 @@
+{
+  "id": "csb-p13-parseage",
+  "title": "ParseAge with layered validation",
+  "prompt": "Implement `static int ParseAge(string input)`: null/whitespace → `ArgumentException`; not a number → `FormatException`; outside 0–150 → `ArgumentOutOfRangeException`; otherwise the parsed age.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "Cj.Eq(Solution.ParseAge(\"25\"), 25, \"valid age\");\nCj.Eq(Solution.ParseAge(\"0\"), 0, \"zero is legal\");\nCj.Eq(Solution.ParseAge(\"150\"), 150, \"upper bound is legal\");",
+      "hint": "Both boundaries are inclusive."
+    },
+    {
+      "name": "failure-types",
+      "code": "bool t1 = false;\ntry { Solution.ParseAge(\"  \"); } catch (ArgumentException) { t1 = true; }\nbool t2 = false;\ntry { Solution.ParseAge(\"abc\"); } catch (FormatException) { t2 = true; }\nbool t3 = false;\ntry { Solution.ParseAge(\"999\"); } catch (ArgumentOutOfRangeException) { t3 = true; }\nbool t4 = false;\ntry { Solution.ParseAge(\"-1\"); } catch (ArgumentOutOfRangeException) { t4 = true; }\nCj.True(t1 && t2 && t3 && t4, \"each failure maps to its own exception type\");",
+      "hint": "The exception TYPE is the contract — callers branch on it."
+    }
+  ],
+  "level": "guided"
+}

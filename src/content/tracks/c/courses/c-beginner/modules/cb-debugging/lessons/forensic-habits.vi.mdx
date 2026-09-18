@@ -1,0 +1,37 @@
+## Sanitizer: biết tên, lưu ý nền tảng
+
+AddressSanitizer và UBSan bắt lỗi bộ nhớ và hành vi không xác định ngay lúc
+chạy. Ảnh sandbox của khóa này KHÔNG có chúng, nên ở đây ta không dùng —
+nhưng trên máy dev Linux, đây là những công cụ đầu tiên nên chạm tới:
+
+```sh
+gcc -fsanitize=address,undefined ...   # hoạt động trên chuỗi công cụ glibc
+```
+
+Ở đây, sanitizer của bạn là **build warning cộng với đọc cẩn thận**.
+
+## Pháp y chỉ từ warning
+
+Một build nghiêm ngặt trên mã lỗi ồn ào một cách đáng ngạc nhiên:
+
+- so sánh bằng `=` thay vì `==` → `assignment in condition`
+- đọc biến cục bộ chưa khởi tạo → `may be used uninitialized`
+- kiểu/định dạng không khớp → `-Wformat`
+- thiếu đường trả về → `control reaches end of non-void function`
+- một kết quả đáng lẽ phải lưu lại → `unused value`
+
+Khi chương trình cư xử sai, hãy biên dịch lại với `-Wall -Wextra` TRƯỚC.
+Một nửa lỗi người mới tự thú ngay lập tức.
+
+## Thẩm vấn một đáp án sai
+
+- in đầu vào tại ranh giới (hàm nhận được chính xác cái gì?)
+- in sau mỗi lần biến đổi (dữ liệu tốt trở thành xấu từ đâu?)
+- tự tay kiểm tra biên vòng lặp trên ví dụ 3 phần tử
+- xác minh kiểu: `a/b` đang là chia số nguyên trong khi ý bạn là chia double?
+
+## Ngăn xép thói quen
+
+Sửa xong, chạy lại TẤT CẢ (không chỉ case đang fail) — bản sửa thường làm
+hỏng hàng xóm. Và khi tìm ra lỗi, hãy hỏi "điều gì đã cho phép loại lỗi này
+lọt vào?" — câu trả lời thường là một test còn thiếu, và bạn sẽ viết nó ra.

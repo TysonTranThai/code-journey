@@ -1,0 +1,26 @@
+{
+  "id": "javi-checkpoint-m11-persistence",
+  "title": "Transactional Outbox",
+  "prompt": "An outbox records pending side effects atomically with data changes.\nImplement in `Solution`:\n- `record OutboxEntry(String id, String topic, String payload)`\n- `static class OutboxStore`:\n  - `boolean offer(OutboxEntry e)` — appends if the id is new, returns\n    true; duplicate id returns false (idempotent producer).\n  - `List<OutboxEntry> drain(String topic)` — removes and returns ALL\n    entries for that topic in insertion order.\n  - `int pending()` — total across topics.\n- `static int deliverAll(OutboxStore store, String topic,\n  java.util.function.Consumer<OutboxEntry> sink)` — drains the topic,\n  feeding each entry to sink, returning the count delivered.\n\nThe transactional property under test: an entry is delivered exactly\nonce even if offer() was called multiple times.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\nimport java.util.function.Consumer;\n\npublic class Solution {\n    public record OutboxEntry(String id, String topic, String payload) {}\n    // Provide OutboxStore + deliverAll here.\n}\n",
+  "tests": [
+    {
+      "name": "offer is idempotent",
+      "code": "\nSolution.OutboxStore s = new Solution.OutboxStore();\nSolution.OutboxEntry e = new Solution.OutboxEntry(\"1\", \"mail\", \"hi\");\ncheckEq(s.offer(e), true, \"first accepted\");\ncheckEq(s.offer(e), false, \"duplicate refused\");\ncheckEq(s.pending(), 1, \"still one\");\n",
+      "hint": "Duplicate ids never double-deliver."
+    },
+    {
+      "name": "drain empties the topic in order",
+      "code": "\nSolution.OutboxStore s = new Solution.OutboxStore();\ns.offer(new Solution.OutboxEntry(\"1\", \"mail\", \"a\"));\ns.offer(new Solution.OutboxEntry(\"2\", \"mail\", \"b\"));\ns.offer(new Solution.OutboxEntry(\"3\", \"audit\", \"c\"));\nList<Solution.OutboxEntry> got = s.drain(\"mail\");\ncheckEq(got.size(), 2, \"two mail entries\");\ncheckEq(got.get(0).id(), \"1\", \"insertion order\");\ncheckEq(s.pending(), 1, \"audit remains\");\n",
+      "hint": "drain removes only its topic, preserving order."
+    },
+    {
+      "name": "deliverAll feeds the sink exactly once",
+      "code": "\nSolution.OutboxStore s = new Solution.OutboxStore();\ns.offer(new Solution.OutboxEntry(\"1\", \"mail\", \"a\"));\ns.offer(new Solution.OutboxEntry(\"1\", \"mail\", \"a\"));   // duplicate offer\nList<String> seen = new ArrayList<>();\nint n = Solution.deliverAll(s, \"mail\", e -> seen.add(e.payload()));\ncheckEq(n, 1, \"one delivery\");\ncheckEq(seen, List.of(\"a\"), \"sink got payload\");\ncheckEq(s.pending(), 0, \"store empty\");\n",
+      "hint": "Exactly-once semantics across duplicate offers."
+    }
+  ],
+  "level": "real-world"
+}

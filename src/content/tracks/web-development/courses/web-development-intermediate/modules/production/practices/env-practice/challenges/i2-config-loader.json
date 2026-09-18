@@ -1,0 +1,25 @@
+{
+  "id": "i2-config-loader",
+  "title": "Typed Config Loader",
+  "prompt": "Write `loadConfig(env)` that converts raw env strings into a typed config object: port (number, default 3000 when absent), databaseUrl (string), debug (boolean — true only for exactly the string \"true\"), and features (array from a comma-separated FEATURES value; absent => []). Throw on a non-numeric PORT rather than silently defaulting.",
+  "difficulty": "advanced",
+  "level": "independent",
+  "boilerplate": "function loadConfig(env) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "coerces types with the documented rules",
+      "code": "const fn = new Function(code + \"\\nreturn { loadConfig };\");\nconst { loadConfig } = fn();\nconst c = loadConfig({ PORT: \"8080\", DATABASE_URL: \"postgres://x\", DEBUG: \"true\", FEATURES: \"dark-mode,export\" });\nif (c.port !== 8080 || typeof c.port !== \"number\") throw new Error(\"PORT becomes a number.\");\nif (c.debug !== true) throw new Error('DEBUG is true only for the exact string \"true\".');\nif (c.features.length !== 2 || c.features[1] !== \"export\") throw new Error(\"FEATURES splits on commas.\");\n",
+      "hint": "Number(), === \"true\", split(\",\") — each field states its own rule."
+    },
+    {
+      "name": "defaults without lying",
+      "code": "const fn = new Function(code + \"\\nreturn { loadConfig };\");\nconst { loadConfig } = fn();\nconst c = loadConfig({});\nif (c.port !== 3000) throw new Error(\"Absent PORT defaults to 3000.\");\nif (c.debug !== false) throw new Error(\"Absent DEBUG is false.\");\nif (!Array.isArray(c.features) || c.features.length !== 0) throw new Error(\"Absent FEATURES => empty array.\");\n",
+      "hint": "Defaults are part of the contract — they must be explicit and consistent."
+    },
+    {
+      "name": "rejects garbage instead of guessing",
+      "code": "const fn = new Function(code + \"\\nreturn { loadConfig };\");\nconst { loadConfig } = fn();\ntry {\n  loadConfig({ PORT: \"eight-thousand\" });\n  throw new Error(\"should have thrown\");\n} catch (e) {\n  if (!/port/i.test(e.message)) throw new Error(\"Error must mention PORT.\");\n}\n",
+      "hint": "Number(\"eight-thousand\") is NaN — catch it and say which field broke."
+    }
+  ]
+}

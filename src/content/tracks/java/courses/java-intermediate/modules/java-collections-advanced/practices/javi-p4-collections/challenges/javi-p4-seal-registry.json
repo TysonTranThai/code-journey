@@ -1,0 +1,31 @@
+{
+  "id": "javi-p4-seal-registry",
+  "title": "Seal the Registry",
+  "prompt": "`Registry` keeps a mutable index but exposes it safely.\nImplement in `Solution`:\n- `static class Registry` with `put(String k, int v)`,\n  `int get(String k)` (missing → throw NoSuchElementException),\n  `Map<String, Integer> snapshot()` (unmodifiable view),\n  and `Map<String, Integer> frozenCopy()` (independent immutable copy).\n- `static int totalOf(Map<String, Integer> values)` summing the values —\n  it must compile against either of the two exposure styles.\n\nThe test mutates the registry after taking a snapshot to prove the copy\nstays independent.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "snapshot reflects live state",
+      "code": "\nSolution.Registry r = new Solution.Registry();\nr.put(\"a\", 1);\ncheckEq(r.snapshot(), Map.of(\"a\", 1), \"live view\");\n",
+      "hint": "snapshot() returns an unmodifiable view of the live map."
+    },
+    {
+      "name": "frozenCopy independent of later writes",
+      "code": "\nSolution.Registry r = new Solution.Registry();\nr.put(\"a\", 1);\nMap<String, Integer> copy = r.frozenCopy();\nr.put(\"b\", 2);\ncheckEq(copy, Map.of(\"a\", 1), \"copy frozen\");\ncheckEq(r.snapshot(), Map.of(\"a\", 1, \"b\", 2), \"registry moved on\");\n",
+      "hint": "frozenCopy() must be Map.copyOf(...) — later puts cannot reach it."
+    },
+    {
+      "name": "missing key throws",
+      "code": "\nSolution.Registry r = new Solution.Registry();\ntry { r.get(\"nope\"); checkTrue(false, \"must throw\"); }\ncatch (java.util.NoSuchElementException e) { checkTrue(true, \"threw\"); }\n",
+      "hint": "get on a missing key throws NoSuchElementException."
+    },
+    {
+      "name": "totalOf sums values",
+      "code": "\ncheckEq(Solution.totalOf(Map.of(\"a\", 2, \"b\", 3)), 5, \"sum of values\");\n",
+      "hint": "Iterate values() and add."
+    }
+  ],
+  "level": "independent"
+}

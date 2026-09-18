@@ -1,0 +1,37 @@
+A **pointer** stores the address of an object (or nothing, when `nullptr`).
+Unlike a reference, a pointer can be reseated, compared, and incremented —
+and it can be null, which makes it the tool for "maybe no object".
+
+```cpp
+int main_cj_pointer() {
+    int value = 41;
+    int* p = &value;          // p holds the address of value
+    *p += 1;                  // dereference: value is now 42
+    p = nullptr;              // p now points at nothing
+
+    if (p) {                  // ALWAYS check before dereferencing
+        std::cout << *p;
+    }
+    return 0;
+}
+```
+
+## Reading pointer declarations out loud
+
+- `int* p` — "p is a pointer to int".
+- `const int* p` — pointer to const int: the *pointee* is read-only.
+- `int* const p` — const pointer to int: the *pointer* cannot reseat.
+- `const int* const p` — neither pointer nor pointee may change.
+
+Read the declaration from right to left and `const` never surprises you.
+
+## Pointer + const& decide most interfaces
+
+```cpp
+void rename(std::string* out, const std::string& fallback);
+// out: optional (caller may pass nullptr) and written through
+// fallback: required, read-only
+```
+
+A reference says "I need an object". A pointer says "I might not get one".
+Document which contract each parameter has.

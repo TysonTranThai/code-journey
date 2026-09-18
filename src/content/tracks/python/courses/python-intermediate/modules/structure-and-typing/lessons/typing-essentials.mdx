@@ -1,0 +1,49 @@
+Type annotations describe **what a function consumes and returns**. They are
+checked by external tools (mypy, pyright — run on your own machine), but they
+cost nothing at runtime and serve three audiences at once: callers, editors,
+and future-you.
+
+```python
+def average(values: list[float]) -> float:
+    return sum(values) / len(values)
+
+def find_user(user_id: int) -> dict | None:      # modern union (3.10+)
+    ...
+
+def set_level(level: Literal["debug", "info", "error"]) -> None:
+    ...
+```
+
+## The vocabulary you need daily
+
+- **Containers**: `list[str]`, `dict[str, int]`, `tuple[int, ...]` (variadic), `set[str]`.
+- **Unions**: `int | None` replaces `Optional[int]`; `str | bytes` means exactly one of them.
+- **`Any`** means "checked-free zone" — contagious and to be avoided; **`object`** means "any value, but handle it carefully".
+- **`TypedDict`** types a dict's keys for when a dataclass is overkill (e.g., mirroring a JSON payload):
+
+```python
+from typing import TypedDict
+
+class ProductDict(TypedDict):
+    sku: str
+    price: float
+```
+
+## Narrowing
+
+Type checkers understand control flow — check a type and it narrows:
+
+```python
+def total(value: int | list[int]) -> int:
+    if isinstance(value, list):
+        return sum(value)        # here value: list[int]
+    return value                 # here value: int
+```
+
+## Why annotate at all?
+
+At three thousand lines, "what does this take?" stops being guessable.
+Annotations catch real bugs before runtime (passing a `str` where seconds
+were expected), make signatures searchable, and let editors autocomplete
+correctly. You verify them here by **behavior and by `get_type_hints`
+inspection**; on your own machine, run `mypy` for the full static check.

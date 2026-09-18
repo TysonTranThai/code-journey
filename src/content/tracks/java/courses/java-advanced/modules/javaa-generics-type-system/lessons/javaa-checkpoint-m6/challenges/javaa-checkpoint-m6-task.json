@@ -1,0 +1,21 @@
+{
+  "id": "javaa-checkpoint-m6-task",
+  "title": "Checkpoint: Class-token container",
+  "prompt": "Inside Solution, implement `public static class Types` — the type-safe\nheterogeneous container:\n1. Private `Map<Class<?>, Object> data = new HashMap<>()`.\n2. `public <T> void put(Class<T> type, T value)` — store under the token.\n3. `public <T> T get(Class<T> type)` — retrieve via `type.cast(...)` so the\nreturned value is genuinely a T (no unchecked warnings).\n4. `public <T> boolean has(Class<T> type)` — true iff a value was put for that token.\nRetrieval must be exact: two different tokens hold two different values, and each\nget() returns the value stored under ITS OWN token.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "two tokens, two values, exact retrieval",
+      "code": "\nSolution.Types box = new Solution.Types();\nbox.put(String.class, \"hi\");\nbox.put(Integer.class, 7);\ncheckEq(box.get(String.class), \"hi\", \"string by its token\");\ncheckEq(box.get(Integer.class), 7, \"integer by its token\");\ncheckTrue(box.has(String.class) && !box.has(Double.class), \"has reflects tokens\");\n",
+      "hint": "Each token retrieves exactly what it stored."
+    },
+    {
+      "name": "subtype tokens are honored",
+      "code": "\nSolution.Types box = new Solution.Types();\nbox.put(Number.class, 42);\ncheckEq(box.get(Number.class), 42, \"Number token holds an Integer value\");\ncheckTrue(box.get(Number.class) instanceof Number, \"cast via token\");\n",
+      "hint": "type.cast works through the hierarchy."
+    }
+  ],
+  "level": "real-world"
+}

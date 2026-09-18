@@ -1,0 +1,45 @@
+Beginner code catches `Exception` and hopes. Intermediate code defines a
+**hierarchy** so callers choose their precision:
+
+```python
+class AppError(Exception):
+    """Base for every error this application raises."""
+
+
+class ValidationError(AppError):
+    """Input rejected before touching storage."""
+
+class StorageError(AppError):
+    """Persistence layer failed."""
+
+try:
+    save(record)
+except ValidationError:
+    ...   # tell the user, retry is pointless
+except StorageError:
+    ...   # back off, retry may help
+except AppError:
+    ...   # our family: log and surface
+```
+
+Order matters: Python picks the **first matching** except, so specific
+classes come before their base. Catching the base `AppError` is a deliberate
+safety net — never a reflex.
+
+## Raise specific, message-rich
+
+```python
+def set_quantity(q):
+    if q <= 0:
+        raise ValidationError(f"quantity must be positive, got {q}")
+```
+
+The exception message is documentation at the moment of failure. Include the
+offending value; a bare `raise ValueError()` wastes everyone's next hour.
+
+## What NOT to catch
+
+Don't catch `KeyboardInterrupt`/`SystemExit` (they're not `Exception`
+subclasses for exactly this reason), and don't catch what you can't handle —
+an unhandled exception with a good traceback beats a silently swallowed one.
+Bare `except:` is a bug in waiting.

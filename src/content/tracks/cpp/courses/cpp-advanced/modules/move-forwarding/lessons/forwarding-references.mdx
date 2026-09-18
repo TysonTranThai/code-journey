@@ -1,0 +1,34 @@
+A `T&&` parameter is usually an rvalue reference — unless `T` is a **deduced** template parameter. Then it is a **forwarding reference**, which binds *everything*:
+
+```cpp
+template <class T> void sink(T&& x);   // forwarding reference
+void sink2(Widget&& x);                // plain rvalue reference: rvalues only
+```
+
+## Deduction and collapsing
+
+For a call `sink(expr)`, the compiler deduces `T` from the *value category* of `expr`:
+- lvalue `Widget x` -> `T = Widget&`,
+- rvalue -> `T = Widget` (plain).
+
+Then **reference collapsing** builds the parameter type — the only rule that exists: `& &`, `& &&`, `&& &` all collapse to `&`; only `&& &&` stays `&&`.
+
+| Call | T deduced | T&& becomes |
+| --- | --- | --- |
+| `sink(x)` (lvalue) | `Widget&` | `Widget& &&` -> `Widget&` |
+| `sink(std::move(x))` | `Widget` | `Widget&&` |
+
+## std::forward: restore what was lost
+
+Inside the function, `x` is an lvalue (it has a name). `std::forward<T>(x)` casts it back to exactly what the caller had — an xvalue only when the original argument was an rvalue:
+
+```cpp
+template <class T, class... A>
+auto makeUnique(A&&... a) {
+    return std::unique_ptr<T>(new T(std::forward<A>(a)...));
+}
+```
+
+## The greedy-constructor trap
+
+A `template <class... A> Widget(A&&...)` constructor binds non-const lvalues *exactly*, while the copy constructor needs a qualification conversion — so on **direct initialization** (`Widget w{other};`) the forwarding constructor wins and hijacks the copy. Copy initialization (`Widget w = other;`) is safe because explicit constructors are excluded there. Standard fixes: constrain the template (`requires !std::same_as<std::decay_t<A>, Widget> && ...`) or provide unambiguous overloads. You will meet this trap as a graded exercise.

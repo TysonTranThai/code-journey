@@ -1,0 +1,13 @@
+## Vì sao struct có lỗ
+
+Mọi kiểu đều có **yêu cầu căn chỉnh**; trình biên dịch chèn **đệm** để mỗi thành phần ngồi đúng căn chỉnh tự nhiên của nó.
+
+Quy tắc có thể dựa vào (ISO C): thành phần theo thứ tự khai báo, mỗi thành phần căn theo căn chỉnh kiểu của nó, căn chỉnh của struct = max của các thành phần, `sizeof` là bội của căn chỉnh struct.
+
+## Đo, đừng học thuộc
+
+`offsetof` cho biết offset byte của từng thành phần. Sắp xếp thành phần lớn-trước là mẹo thu nhỏ kích thước kinh điển. Bố cục chính xác là implementation-defined — nhưng trên một nền tảng cố định như sandbox này, nó **ổn định và đo được**.
+
+## Vì sao quan trọng
+
+Đệm lọt vào file và giao thức mạng; so sánh struct bằng `==` đọc cả byte đệm; `memcpy` struct sao chép cả lỗ.

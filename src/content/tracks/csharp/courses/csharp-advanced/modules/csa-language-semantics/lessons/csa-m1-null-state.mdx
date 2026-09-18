@@ -1,0 +1,35 @@
+## Null-state analysis and the nullable contract
+
+Since C# 8, `string` and `string?` are the same runtime type — nullability
+is **flow analysis** the compiler performs, not a runtime guard. Inside a
+method, the compiler tracks each reference's state: *maybe-null* or
+*not-null*. Warnings fire when a maybe-null value is dereferenced or flows
+into a not-null slot.
+
+```csharp
+string? name = FindUser();
+Console.WriteLine(name.Length);      // warning: maybe-null
+if (name is null) return;
+Console.WriteLine(name.Length);      // OK: not-null after the check
+```
+
+The contract becomes explicit at boundaries with attributes:
+
+```csharp
+[return: NotNullIfNotNull(nameof(input))]
+static string? Clean(string? input) => input?.Trim();
+
+bool TryParse(string s, [NotNullWhen(true)] out Order? order);
+```
+
+`NotNullWhen` is how `TryX` patterns stop lying: the compiler learns that
+`order` is safe exactly when the method returned true. `[MemberNotNull]`
+tells the compiler a helper method established a field's non-nullness —
+preferring that over `!` (the null-forgiving operator) is the difference
+between a contract and a silenced check.
+
+What null-state does NOT do: it is not validation. A non-null `string` can
+still be `""`. Null-state removes a class of *crashes*; domain invariants
+still need explicit checks. And at runtime, `default` (e.g. `default(string)`)
+is still null — flow analysis cannot see across reflection, deserialization,
+or `Unsafe` code, which is precisely where production NREs hide.

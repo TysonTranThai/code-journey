@@ -1,0 +1,13 @@
+## The gate (mini-build)
+
+A `DataStore<TId, TEntity>` where `TEntity : Entity<TId>` and
+`TId : IComparable<TId>`:
+
+- `Add(TEntity)` / `Get(TId)` (null when missing) / `Delete(TId)` (bool).
+- `AllOrdered()` returns entities ordered by Id — the constraint makes the
+  ordering possible without casts.
+- `FirstMatching(Predicate<TEntity>)` returns `TEntity?` (default when none).
+
+Supporting type: `public abstract class Entity<TId> { public abstract TId Id { get; } }`.
+The graded test drives two different entity types through one store type —
+the whole point of generic design.

@@ -1,0 +1,27 @@
+Real programs check inputs before trusting them. **Validation** is just
+decisions with a job:
+
+```python
+hour = 25          # from user input somewhere
+if not 0 <= hour <= 23:
+    print("invalid hour")
+```
+
+## The validation pattern
+
+1. Check the shape of the data (is it present? the right type?).
+2. Check the range/domain (is it sensible?).
+3. Fail early with a clear message; otherwise proceed.
+
+```python
+username = "ab"
+if len(username) < 3:
+    print("too short: need at least 3 characters")
+elif " " in username:
+    print("no spaces allowed")
+else:
+    print("welcome,", username)
+```
+
+A validator is the perfect mini project: pure decisions, immediate feedback,
+and it is exactly what every real backend does before touching a database.

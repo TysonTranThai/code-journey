@@ -1,0 +1,34 @@
+## char là một số nguyên nhỏ
+
+```csharp
+char c = 'A';
+Console.WriteLine((int)c);     // 65 — mã ký tự
+char next = (char)(c + 1);     // 'B'
+```
+
+Một `char` chứa một đơn vị mã UTF-16 — với công việc ASCII thường ngày, hãy nghĩ "một số nhỏ khoác trang phục." Ép kiểu sang `int` lộ ra mã; phép toán dịch mã. Đó là cách đổi chữ hoa/thường và kiểm tra chữ cái hoạt động bên dưới.
+
+## Các escape bạn sẽ thực sự dùng
+
+```csharp
+"a\tb"      // tab
+"line\n"    // xuống dòng
+"quote: \"" // dấu nháy kép literal
+"backslash: \\" 
+'a'         // char literal: nháy đơn, không cần escape
+```
+
+Bên trong một literal `char`, `'\n'` và `'\t'` hoạt động như vậy; `'\'''` escape một nháy đơn. (`"\u00e9"` cho 'é' theo mã ký tự — biết nó tồn tại là được.)
+
+## Bộ phân loại: hộp công cụ của trình kiểm tra hợp lệ
+
+```csharp
+char.IsDigit(c)      // '0'..'9'
+char.IsLetter(c)     // chữ cái, kể cả có dấu
+char.IsLetterOrDigit(c)
+char.IsWhiteSpace(c) // khoảng trắng, tab, xuống dòng
+char.IsUpper(c) / char.IsLower(c)
+char.ToLower(c) / char.ToUpper(c)
+```
+
+Chúng trả `bool` và nhận một `char`. Trình kiểm tra tên người dùng, bộ đếm chữ số, câu hỏi "dòng này có bắt đầu bằng khoảng trắng không" — tất cả là một dòng lặp với các bộ phân loại này. Ưu tiên `char.IsDigit` hơn `'0' <= c && c <= '9'`: nó nói rõ việc nó làm, và đúng cho nhiều hơn ASCII.

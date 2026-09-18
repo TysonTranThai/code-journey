@@ -1,0 +1,30 @@
+{
+  "id": "i3-dialog-debug",
+  "title": "Debug: The Hand-Rolled Modal",
+  "prompt": "This page's 'modal' is a div with role=\"dialog\" toggled by a class, and its FAQ accordions are <details> whose name attributes disagree, one with an empty summary. Rebuild properly: a real <dialog> opened via a button using commandfor/command (or form method=\"dialog\"/script showModal with its id), accordions sharing ONE name, and no empty summaries.",
+  "difficulty": "advanced",
+  "level": "debugging",
+  "boilerplate": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\"><title>Settings</title></head>\n<body>\n  <h1>Workspace settings</h1>\n  <div class=\"modal\" role=\"dialog\" aria-label=\"Danger zone\">\n    <h2>Delete workspace?</h2>\n    <button onclick=\"closeModal()\">Cancel</button>\n  </div>\n  <details name=\"faq-open\"><summary>Can I undo?</summary><p>No.</p></details>\n  <details name=\"faq-closed\"><summary></summary><p>Maybe.</p></details>\n  <script>\n    function closeModal(){ document.querySelector('.modal').classList.remove('open'); }\n  </script>\n</body>\n</html>\n",
+  "tests": [
+    {
+      "name": "real dialog replaces the div",
+      "code": "if (/<div[^>]*role\\s*=\\s*[\"']dialog[\"']/i.test(code)) {\n  throw new Error('Replace the div role=\"dialog\" with a real <dialog> element.');\n}\nif (!/<dialog[\\s>]/i.test(code)) {\n  throw new Error(\"Add a <dialog> element for the modal.\");\n}",
+      "hint": "role=\"dialog\" on a div gets none of the platform: no top layer, no inert page, no Escape."
+    },
+    {
+      "name": "dialog is actually openable",
+      "code": "const dlg = code.match(/<dialog[^>]*\\bid\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>/i);\nif (!dlg) throw new Error(\"Give the <dialog> an id.\");\nconst id = dlg[1];\nconst wired =\n  new RegExp(\"commandfor\\\\s*=\\\\s*[\\\"']\" + id + \"[\\\"']\").test(code) ||\n  new RegExp(\"showModal\\\\s*\\\\(\\\\s*\\\\)?[\\\\s\\\\S]{0,120}\" + id + \"|\" + id + \"[\\\\s\\\\S]{0,120}showModal\").test(code) ||\n  new RegExp(\"getElementById\\\\([\\\"']\" + id + \"[\\\"']\\\\)[\\\\s\\\\S]{0,40}showModal\").test(code);\nif (!wired) {\n  throw new Error('Wire an opener to the dialog: commandfor=\"' + id + '\" or showModal() on it.');\n}",
+      "hint": "Either the 2026 way (command/commandfor) or one showModal() line — but something must open it."
+    },
+    {
+      "name": "accordions share one name",
+      "code": "const names = [...code.matchAll(/<details([^>]*)>/gi)].map((m) => {\n  const a = m[1].match(/name\\s*=\\s*[\"']([^\"']*)[\"']/i);\n  return a ? a[1] : null;\n});\nif (names.length < 2) throw new Error(\"Keep both <details> accordions.\");\nif (names.some((n) => !n)) throw new Error(\"Every <details> needs a name.\");\nif ([...new Set(names)].length !== 1) {\n  throw new Error(\"Both accordions must share the SAME name value.\");\n}",
+      "hint": "'faq-open' vs 'faq-closed' are two separate groups — pick one name for both."
+    },
+    {
+      "name": "no empty summaries",
+      "code": "const sums = [...code.matchAll(/<summary[^>]*>([\\s\\S]*?)<\\/summary>/gi)].map((m) =>\n  m[1].replace(/<[^>]*>/g, \"\").trim()\n);\nif (sums.some((s) => !s)) {\n  throw new Error(\"An empty <summary> announces nothing — write the question in it.\");\n}",
+      "hint": "The summary is the accessible name of the disclosure — empty means invisible to users."
+    }
+  ]
+}

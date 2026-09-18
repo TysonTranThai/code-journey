@@ -1,0 +1,47 @@
+A **method** is a named, reusable unit of behavior: it takes inputs
+(**parameters**), does work, and may hand back a result (**return value**).
+
+```java
+static double withTax(double price) {
+    return price * 1.1;
+}
+```
+
+Read the signature: `static` (belongs to the class itself — the word behind
+why `main` can run without creating an object), `double` (the type it
+returns), `withTax` (the name), `double price` (one parameter, typed).
+
+Calling it: `double total = withTax(19.99);` — the value `19.99` is the
+**argument**, copied into the parameter. Two rules the compiler enforces:
+
+- The returned value's type must match the declared return type (or be
+  convertible).
+- A method that declares a return type must `return` on **every path**
+  through its body. `void` methods return nothing and may skip `return`
+  (or use a bare `return;` to exit early).
+
+```java
+static String verdict(int score) {
+    if (score >= 60) {
+        return "pass";
+    }
+    return "fail";     // needed! the if-path alone would not cover all cases
+}
+```
+
+**Parameters are copies** — primitive arguments are copied by value, so
+changing a parameter inside a method never changes the caller's variable:
+
+```java
+static void bump(int n) { n = n + 1; }
+
+int x = 5;
+bump(x);
+System.out.println(x);   // still 5
+```
+
+(Objects are references-copied-by-value — the method can *modify the object
+it was given* but not re-point the caller's variable. Module 7 returns to
+this; for now, primitives-are-copies is the whole story.)
+
+**Next:** the `static` word, demystified.

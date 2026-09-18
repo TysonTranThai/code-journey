@@ -1,0 +1,20 @@
+{
+  "id": "i2-exhaustive",
+  "title": "Exhaustive Switch",
+  "prompt": "Write `describeShape(v)` where `v` is `null | string | number | boolean | array`. RETURN: `\"nothing\"` for null, `\"text\"` for strings, `\"number\"` for numbers, `\"flag\"` for booleans, `\"list of N\"` (with the length) for arrays, and for ANYTHING ELSE throw `new Error(\"Unhandled shape\")` — the runtime twin of the never-check.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function describeShape(v) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "known shapes map correctly",
+      "code": "const fn = new Function(code + \"\\nreturn { describeShape };\");\nconst { describeShape } = fn();\nif (describeShape(null) !== \"nothing\") throw new Error(\"null → nothing.\");\nif (describeShape(\"x\") !== \"text\") throw new Error(\"string → text.\");\nif (describeShape(5) !== \"number\") throw new Error(\"number → number.\");\nif (describeShape(false) !== \"flag\") throw new Error(\"boolean → flag.\");\nif (describeShape([1, 2, 3]) !== \"list of 3\") throw new Error(\"array → list of N.\");",
+      "hint": "Array.isArray after the typeof checks."
+    },
+    {
+      "name": "unknown shapes throw",
+      "code": "const fn = new Function(code + \"\\nreturn { describeShape };\");\nconst { describeShape } = fn();\nlet threw = false;\ntry { describeShape({ surprise: true }); } catch { threw = true; }\nif (!threw) throw new Error(\"An unhandled shape must throw 'Unhandled shape' — the default case is not optional.\");",
+      "hint": "End with throw new Error('Unhandled shape') as the exhaustive fallback."
+    }
+  ]
+}

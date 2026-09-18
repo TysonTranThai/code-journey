@@ -1,0 +1,22 @@
+{
+  "title": "Lỗi domain mang dữ liệu",
+  "prompt": "Mô hình hóa thanh toán trong `Solution`:\n- `static class PaymentException extends RuntimeException`\n- `static final class InsufficientFundsException extends PaymentException`\n  mang `int shortfallCents` với getter.\n- `static void withdraw(int balance, int amount)`: ném\n  IllegalArgumentException cho amount âm; ném\n  InsufficientFundsException với shortfall `amount - balance` khi\n  amount > balance; còn lại hoàn tất (no-op).\n- `static int shortfallOf(RuntimeException e)`: trả\n  `((InsufficientFundsException) e).shortfallCents()` khi áp dụng được,\n  nếu không -1.\n\nTest catch ở cả hai độ mịn.",
+  "tests": [
+    {
+      "name": "Amount âm là lỗi lập trình",
+      "hint": "Amount âm ném IllegalArgumentException."
+    },
+    {
+      "name": "Shortfall mang theo dữ liệu",
+      "hint": "250 - 100 = 150 shortfall, gắn trên exception."
+    },
+    {
+      "name": "Catch ở độ mịn cha",
+      "hint": "Catch PaymentException phủ kiểu lá."
+    },
+    {
+      "name": "Helper shortfallOf",
+      "hint": "Cast khi có thể, -1 khi không."
+    }
+  ]
+}

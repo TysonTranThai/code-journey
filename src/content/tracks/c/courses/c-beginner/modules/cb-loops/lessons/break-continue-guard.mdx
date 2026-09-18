@@ -1,0 +1,31 @@
+## break and continue
+
+- `break` — leave the loop NOW (innermost one only).
+- `continue` — skip to the next iteration.
+
+```c
+for (int i = 0; i < 10; i++) {
+    if (i % 2 == 0) continue;   // skip evens
+    if (i > 7) break;           // stop after 7
+    printf("%d ", i);           // 1 3 5 7
+}
+```
+
+## Off-by-one
+
+The classic: `<=` vs `<` with a 0-based index.
+
+```c
+int a[5] = {1, 2, 3, 4, 5};
+for (int i = 0; i <= 5; i++) printf("%d ", a[i]);   // BUG: a[5] is out of bounds
+for (int i = 0; i < 5; i++)  printf("%d ", a[i]);   // correct
+```
+
+Out-of-bounds access is undefined behavior — the module 9 rule is born here:
+**the last valid index is size - 1.**
+
+## The runaway condition
+
+If the update step moves AWAY from the exit condition (`for (int i = 0; i < 5; i--)`),
+or nothing in the body changes the tested variable, the loop never ends.
+When a loop misbehaves, print the loop variable each pass and watch.

@@ -1,0 +1,20 @@
+{
+  "id": "i2-diff-scan",
+  "title": "Diff Scanner",
+  "prompt": "Write `scanDiff(diff)` — diff is an array of lines. Only ADDED lines (starting with \"+\" but not \"+++\") can introduce secrets. Return an array of { line, secrets } for each added line where findSecrets-style detection finds anything, in order.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function scanDiff(diff) {\n  // your code — use the same detection rules as findSecrets\n}\n",
+  "tests": [
+    {
+      "name": "scans only added lines",
+      "code": "const fn = new Function(code + \"\\nreturn { scanDiff };\");\nconst { scanDiff } = fn();\nconst d = [\n  \"+++ b/config.js\",\n  \"+const KEY = \\\"AKIAIOSFODNN7EXAMPLE\\\";\",\n  \"-const OLD = \\\"AKIAIOSFODNN7EXAMPLE\\\";\",\n  \" context line with AKIAIOSFODNN7EXAMPLE\",\n];\nconst out = scanDiff(d);\nif (out.length !== 1) throw new Error(\"Only the + line is new. Removed/context lines can't leak.\");\nif (out[0].secrets[0] !== \"AKIAIOSFODNN7EXAMPLE\") throw new Error(\"Secret extracted from the added line.\");",
+      "hint": "startsWith('+') && !startsWith('+++')."
+    },
+    {
+      "name": "multiple secrets on one line",
+      "code": "const fn = new Function(code + \"\\nreturn { scanDiff };\");\nconst { scanDiff } = fn();\nconst d = [\"+const a = \\\"AKIAIOSFODNN7EXAMPLE\\\"; const b = \\\"ghp_\" + \"x\".repeat(36) + \"\\\";\"];\nconst out = scanDiff(d);\nif (out.length !== 1 || out[0].secrets.length !== 2) throw new Error(\"Both credentials on one line are found.\");",
+      "hint": "Run every pattern; concatenate matches."
+    }
+  ]
+}

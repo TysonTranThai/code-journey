@@ -1,0 +1,21 @@
+{
+  "id": "csb-p19-graph",
+  "title": "Commit graph traversal",
+  "prompt": "Implement `static List<string> History(Dictionary<string, string> parent, string head)` — given `parent[commit] = parentCommit` (root commits have parent null), return the history from head back to the root, newest first. Unknown head → `ArgumentException`.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "var parent = new Dictionary<string, string> { [\"c\"] = \"b\", [\"b\"] = \"a\" };\nparent[\"a\"] = null;\nCj.Eq(string.Join(\",\", Solution.History(parent, \"c\")), \"c,b,a\", \"newest first\");",
+      "hint": "Walk parents from the head; the root terminates the walk."
+    },
+    {
+      "name": "edges",
+      "code": "var parent = new Dictionary<string, string>();\nparent[\"lonely\"] = null;\nCj.Eq(string.Join(\",\", Solution.History(parent, \"lonely\")), \"lonely\", \"single-commit repo\");\nbool t = false;\ntry { Solution.History(new Dictionary<string, string>(), \"ghost\"); } catch (ArgumentException) { t = true; }\nCj.True(t, \"unknown head rejected\");",
+      "hint": "A one-commit history and the unknown-head contract."
+    }
+  ],
+  "level": "guided"
+}

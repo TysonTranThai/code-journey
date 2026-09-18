@@ -1,0 +1,31 @@
+{
+  "id": "cpp19-capstone-core",
+  "title": "Finance Ledger Core",
+  "prompt": "Implement `struct Transaction` (name, category, amount) and class `Ledger` with: `bool add(name, category, amount)` (rejects empty name, empty category, and amount == 0; stores and returns true), `double balance() const` (sum of amounts), and `std::map<std::string,double> category_totals() const`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <map>\n#include <string>\n#include <vector>\n\n// TODO: Transaction struct + Ledger class",
+  "tests": [
+    {
+      "name": "add and balance",
+      "code": "Ledger l; CHECK(l.add(std::string{\"salary\"}, std::string{\"work\"}, 500.0)); CHECK(l.add(std::string{\"food\"}, std::string{\"life\"}, -120.0)); CHECK_NEAR(l.balance(), 380.0, 0.001);",
+      "hint": "Records accumulate; balance is the signed sum."
+    },
+    {
+      "name": "rejections",
+      "code": "Ledger l; CHECK(!l.add(std::string{\"\"}, std::string{\"work\"}, 5.0)); CHECK(!l.add(std::string{\"x\"}, std::string{\"\"}, 5.0)); CHECK(!l.add(std::string{\"x\"}, std::string{\"life\"}, 0.0)); CHECK_NEAR(l.balance(), 0.0, 0.001);",
+      "hint": "Invalid records never enter the ledger."
+    },
+    {
+      "name": "categories",
+      "code": "Ledger l; l.add(std::string{\"a\"}, std::string{\"life\"}, 10.0); l.add(std::string{\"b\"}, std::string{\"life\"}, 5.0); l.add(std::string{\"c\"}, std::string{\"work\"}, 100.0); auto t = l.category_totals(); CHECK_NEAR(t.at(std::string{\"life\"}), 15.0, 0.001); CHECK_NEAR(t.at(std::string{\"work\"}), 100.0, 0.001);",
+      "hint": "Per-category aggregation via map."
+    },
+    {
+      "name": "empty ledger",
+      "code": "Ledger l; CHECK_NEAR(l.balance(), 0.0, 0.001); CHECK(l.category_totals().empty());",
+      "hint": "Edge: nothing recorded yet — 0 and empty map."
+    }
+  ],
+  "level": "real-world"
+}

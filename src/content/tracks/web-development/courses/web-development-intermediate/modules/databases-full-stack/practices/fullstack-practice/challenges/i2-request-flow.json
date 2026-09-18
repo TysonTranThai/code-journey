@@ -1,0 +1,20 @@
+{
+  "id": "i2-request-flow",
+  "title": "Request Flow State Machine",
+  "prompt": "Write `uiStateFor(event)` — a fetch's UI state machine. States: \"idle\", \"loading\", \"success\", \"empty\", \"error\". Transitions: (\"fetch\" => \"loading\"), (\"resolve-with-data\" => \"success\"), (\"resolve-empty\" => \"empty\"), (\"reject\" => \"error\"), (\"reset\" => \"idle\"). Invalid transitions (e.g. \"success\" from \"idle\") return \"idle-state-invalid\".",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function uiStateFor(event) {\n  // your code — event is { from, on }\n}\n",
+  "tests": [
+    {
+      "name": "happy path transitions",
+      "code": "const fn = new Function(code + \"\\nreturn { uiStateFor };\");\nconst { uiStateFor } = fn();\nif (uiStateFor({ from: \"idle\", on: \"fetch\" }) !== \"loading\") throw new Error(\"Fetch starts loading.\");\nif (uiStateFor({ from: \"loading\", on: \"resolve-with-data\" }) !== \"success\") throw new Error(\"Data arrives.\");\nif (uiStateFor({ from: \"loading\", on: \"resolve-empty\" }) !== \"empty\") throw new Error(\"Empty is its own state.\");\nif (uiStateFor({ from: \"loading\", on: \"reject\" }) !== \"error\") throw new Error(\"Failure is a state.\");\n",
+      "hint": "A lookup keyed by from+on."
+    },
+    {
+      "name": "invalid transitions rejected",
+      "code": "const fn = new Function(code + \"\\nreturn { uiStateFor };\");\nconst { uiStateFor } = fn();\nif (uiStateFor({ from: \"idle\", on: \"resolve-with-data\" }) !== \"idle-state-invalid\") throw new Error(\"No data without a request.\");\nif (uiStateFor({ from: \"success\", on: \"fetch\" }) !== \"loading\") throw new Error(\"Refetching from success is fine.\");\n",
+      "hint": "Unknown from+on pairs are invalid; known ones include refetching."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "i2-stale-branches",
+  "title": "Stale Branch Report",
+  "prompt": "Given `branches` — array of { name, ageDays, ahead } (ahead = commits main doesn't have) — write `staleReport(branches)`: return names of branches that are stale, where stale = ageDays > 14 AND ahead > 5. Sort alphabetically. This is the exact check a bot runs on real repos.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function staleReport(branches) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "flags only genuinely stale branches",
+      "code": "const fn = new Function(code + \"\\nreturn { staleReport };\");\nconst { staleReport } = fn();\nconst bs = [\n  { name: \"feat/old-big\", ageDays: 30, ahead: 9 },\n  { name: \"feat/fresh\", ageDays: 2, ahead: 3 },\n  { name: \"fix/tiny\", ageDays: 20, ahead: 1 },\n];\nconst out = staleReport(bs);\nif (out.length !== 1 || out[0] !== \"feat/old-big\") throw new Error(\"Only old AND big branches are stale.\");",
+      "hint": "Filter with both conditions."
+    },
+    {
+      "name": "sorts output alphabetically",
+      "code": "const fn = new Function(code + \"\\nreturn { staleReport };\");\nconst { staleReport } = fn();\nconst bs = [\n  { name: \"feat/zeta\", ageDays: 20, ahead: 6 },\n  { name: \"feat/alpha\", ageDays: 20, ahead: 6 },\n];\nif (staleReport(bs).join(\",\") !== \"feat/alpha,feat/zeta\") throw new Error(\"Alphabetical, not input order.\");",
+      "hint": "sort() after filter."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+Annotations are typed metadata attached to program elements. Their power
+depends entirely on **retention**:
+
+- `SOURCE` — compiler-only (like `@Override`); gone in the class file.
+- `CLASS` — in the class file, invisible at runtime (the default, rarely used).
+- `RUNTIME` — readable via reflection; this is what frameworks use.
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Route { String value(); }
+```
+
+Reading them back is the whole trick behind every routing table, validator,
+and injection engine:
+
+```java
+for (Method m : obj.getClass().getDeclaredMethods()) {
+    Route r = m.getAnnotation(Route.class);
+    if (r != null) table.put(r.value(), m);
+}
+```
+
+An annotation with no reader is a comment. The *reader* is the framework —
+which means you can write one.

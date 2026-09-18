@@ -1,0 +1,35 @@
+## Trade a range for a slot
+
+An array gives O(1) by *index*. A hash table gives O(1) *on average* by
+*key*: a hash function maps the key to a bucket index:
+
+```c
+size_t idx = hash(key) % nbuckets;
+```
+
+Two properties divide good hash functions from bad: **determinism**
+(same key → same bucket, always) and **uniformity** (keys spread evenly;
+clusters become linear scans). For integers, multiplicative hashing is
+the honest floor:
+
+```c
+/* Knuth multiplicative: fine for teaching, not for adversarial keys */
+size_t h = (size_t)key * 2654435761u;
+```
+
+For strings, FNV-1a is the standard simple choice — multiply-then-xor
+over every byte, so "ab" and "ba" differ.
+
+## Load factor is the whole performance story
+
+`load = n_entries / n_buckets`. With separate chaining, expected chain
+length *is* the load factor — lookups are O(1 + load). Past ~1.0,
+chains grow and the "constant" quietly becomes linear. The fix is
+**resizing**: when load crosses a threshold (commonly 0.75), allocate a
+bigger bucket array and *rehash every entry* — their indices change,
+because the modulus changed. Resize is O(n) but amortized O(1) per
+insertion, exactly like a growing dynamic array.
+
+With open addressing, load must stay *lower* (0.5–0.7): probing clusters
+degrade quadratically-ish as the table fills, and at 1.0 the table is
+full — an insert can fail even though keys differ.

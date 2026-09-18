@@ -1,0 +1,42 @@
+Two serialization formats cover most day-to-day work. **CSV** is rows of
+fields (spreadsheets, exports); **JSON** is nested structures (APIs, configs).
+
+```python
+import csv, json
+from pathlib import Path
+
+# CSV: always newline="" on open, always DictReader/DictWriter
+with Path("people.csv").open(newline="", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))          # each row: dict[str, str]
+
+with Path("people.csv").open("w", newline="", encoding="utf-8") as f:
+    writer = csv.DictWriter(f, fieldnames=["name", "age"])
+    writer.writeheader()
+    writer.writerows(rows)
+```
+
+```python
+# JSON: dumps/loads for strings, dump/load for files
+record = {"name": "An", "tags": ["admin", "staff"]}
+text = json.dumps(record, ensure_ascii=False, indent=2)
+back = json.loads(text)
+
+path = Path("record.json")
+path.write_text(json.dumps(record), encoding="utf-8")
+loaded = json.loads(path.read_text(encoding="utf-8"))
+```
+
+## Round-trip honesty
+
+Notice what each format does NOT preserve: CSV cells are **strings** —
+`"30"` must be converted back to `int` yourself. JSON has no tuples, no
+dates, and no Python-specific types. A "round trip" means **designing the
+schema** (what types, what's required) and **validating at the boundary**
+(module 5's discipline). Never feed untrusted JSON straight into your logic:
+check keys and types first.
+
+## Security footnote
+
+`json` is safe for untrusted data. `pickle` is NOT — loading a malicious
+pickle executes code. Rule: `json` for anything that crosses a trust
+boundary, `pickle` only for your own trusted, local caches.

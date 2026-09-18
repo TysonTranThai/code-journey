@@ -1,0 +1,26 @@
+{
+  "id": "pi6-validate-payload",
+  "title": "Boundary Validation",
+  "prompt": "Implement load_users(path) that reads a JSON file and VALIDATES: must be a list of dicts, each with string 'name' and int 'age' >= 0. Raise ValidationError listing the first problem found; return cleaned dicts otherwise.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import json\nfrom pathlib import Path\n\nclass ValidationError(Exception):\n    pass\n\ndef load_users(path):\n    pass\n",
+  "tests": [
+    {
+      "name": "valid data passes",
+      "code": "from pathlib import Path\nimport tempfile\np = Path(tempfile.mkdtemp()) / 'u.json'\np.write_text('[{\"name\": \"An\", \"age\": 30}]', encoding='utf-8')\nassert load_users(p) == [{'name': 'An', 'age': 30}]",
+      "hint": "Check list-of-dicts, name str, age int >= 0."
+    },
+    {
+      "name": "bad shape raises with a reason",
+      "code": "from pathlib import Path\nimport tempfile\np = Path(tempfile.mkdtemp()) / 'bad.json'\np.write_text('[{\"name\": \"An\", \"age\": -5}]', encoding='utf-8')\ntry:\n    load_users(p)\n    failed = False\nexcept ValidationError:\n    failed = True\nassert failed",
+      "hint": "Negative age violates the contract — raise ValidationError."
+    },
+    {
+      "name": "non-list raises",
+      "code": "from pathlib import Path\nimport tempfile\np = Path(tempfile.mkdtemp()) / 'x.json'\np.write_text('{\"name\": \"An\"}', encoding='utf-8')\ntry:\n    load_users(p)\n    failed = False\nexcept ValidationError:\n    failed = True\nassert failed",
+      "hint": "Top level must be a list."
+    }
+  ],
+  "level": "combination"
+}

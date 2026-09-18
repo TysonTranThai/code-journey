@@ -1,0 +1,27 @@
+Iterator là chất keo nối container với algorithm: một đối tượng trỏ vào
+trong dãy và có thể chuyển sang phần tử kế. Mỗi container đều có `begin()`
+và `end()`, với `end()` là vị trí sau-phần-tử-cuối — một mốc đánh dấu,
+không bao giờ được dereference.
+
+```cpp
+#include <vector>
+#include <iostream>
+
+std::vector<int> v{10, 20, 30};
+for (auto it = v.begin(); it != v.end(); ++it) {
+    std::cout << *it << " ";           // dereference để đọc phần tử
+}
+*v.begin() = 11;                        // iterator không const có thể ghi
+```
+
+Các cấp iterator, từ yếu đến mạnh:
+
+- **input/output** — một lượt duyệt (stream iterator)
+- **forward** — đọc lại được, nhiều lượt (`forward_list`, `unordered_map`)
+- **bidirectional** — thêm `--it` (`list`, `map`, `set`)
+- **random access** — thêm `it + n`, `it1 - it2`, `it[n]` (`vector`, `deque`, `array`)
+
+Cấp iterator quyết định thuật toán bạn được phép gọi: `std::sort` cần random
+access, nên chạy được trên `vector` nhưng không chạy trên `list` (list có
+member `l.sort()` riêng). Container `const` trả về `const_iterator` — đọc
+được, không ghi được.

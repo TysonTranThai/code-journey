@@ -1,0 +1,44 @@
+Bạn đã biết cả hai hệ từ khóa Người mới bắt đầu; giờ hãy dùng chúng một cách
+chủ đích.
+
+## Grid: areas và auto-fit
+
+Template areas làm layout đọc được như sơ đồ:
+
+```css
+.dashboard {
+  display: grid;
+  grid-template-areas:
+    "head head"
+    "side main"
+    "side foot";
+  grid-template-columns: 240px 1fr;
+}
+```
+
+Với số lượng phần tử không biết trước, `repeat(auto-fit, minmax(min, 1fr))`
+dựng các cột tự xuống dòng mà không cần media query:
+
+```css
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+```
+
+`auto-fit` gộp các track rỗng (phần tử giãn hết); `auto-fill` giữ track rỗng
+(phần tử giữ chiều rộng tối đa). Chọn theo ý đồ.
+
+## Flexbox: phép tính grow
+
+`flex: <grow> <shrink> <basis>` — không gian dư được phân theo tỷ lệ grow sau
+khi basis đã được giữ chỗ. `flex: 1` là `1 1 0%`: chia đều bất kể độ rộng nội
+dung. `flex: auto` là `1 1 auto`: chia phần _thừa_ trong khi tôn trọng độ rộng
+nội dung — khác biệt này quan trọng với nội dung có độ rộng thay đổi.
+
+## Cách chọn
+
+- Luồng một chiều (toolbar, danh sách tag, hàng form): **flex**.
+- Cấu trúc hai chiều (khung trang, gallery, dashboard): **grid**.
+- Bên trong component thường dùng cả hai: grid cho khung, flex trong từng ô.

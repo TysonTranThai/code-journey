@@ -1,0 +1,20 @@
+{
+  "id": "i2-capstone-states",
+  "title": "The Async States Decision",
+  "prompt": "Declare `states` for the list page: loading (boolean — does a visible loading state exist while fetching?), errorState (boolean — is there a visible error state when the API fails?), emptyState (boolean — is there a designed zero-tickets view?), and optimisticWrite (boolean — do you block re-submission while a create request is in flight?).",
+  "difficulty": "advanced",
+  "level": "independent",
+  "boilerplate": "const states = {\n  loading: false,\n  errorState: false,\n  emptyState: false,\n  optimisticWrite: false,\n};\n",
+  "tests": [
+    {
+      "name": "R5: no reload, loading shown",
+      "code": "const fn = new Function(code + \"\\nreturn { states };\");\nconst { states } = fn();\nif (states.loading !== true) throw new Error(\"R5 requires a loading state — fetches are not instant.\");\n",
+      "hint": "The requirement literally names it."
+    },
+    {
+      "name": "failure and emptiness are designed",
+      "code": "const fn = new Function(code + \"\\nreturn { states };\");\nconst { states } = fn();\nif (states.errorState !== true) throw new Error(\"The API will fail sometimes — what does the user see?\");\nif (states.emptyState !== true) throw new Error(\"A brand-new account has zero tickets — design that screen.\");\nif (states.optimisticWrite !== true) {\n  throw new Error(\"While a create is in flight, the submit control must be disabled (no double tickets).\");\n}\n",
+      "hint": "Loading, error, empty — the three states tutorials skip."
+    }
+  ]
+}

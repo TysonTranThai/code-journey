@@ -1,0 +1,41 @@
+Security for intermediates is a habit of **mistrusting inputs and defaults**.
+Three bugs cover most of what you'll meet:
+
+## 1. Unsafe deserialization
+
+```python
+# NEVER on data from users/network:
+import pickle
+obj = pickle.loads(blob)          # executing attacker-chosen code
+
+# YES for untrusted data:
+import json
+obj = json.loads(text)            # data only, no code execution
+```
+
+## 2. Shell injection
+
+```python
+# NEVER:
+import subprocess
+subprocess.run(f"convert {filename}.png", shell=True)   # filename='x; rm -rf ~'
+
+# YES:
+import shlex, subprocess
+subprocess.run(["convert", f"{filename}.png"])          # argv list, no shell
+```
+
+The list form never lets metacharacters through; `shlex.quote()`/`shlex.join()`
+are for the rare case you truly need a shell string.
+
+## 3. Secrets and paths
+
+Secrets come from **environment variables** (`os.environ["API_KEY"]`), never
+hard-coded and never logged. User-supplied paths go through the
+`safe_join` discipline from module 6 (resolve + containment check).
+
+## Audit method
+
+Read code asking one question: **what input can reach this line, and what is
+the worst thing it can do there?** The practice set gives you vulnerable
+functions to repair — the same exercise security reviewers run on real PRs.

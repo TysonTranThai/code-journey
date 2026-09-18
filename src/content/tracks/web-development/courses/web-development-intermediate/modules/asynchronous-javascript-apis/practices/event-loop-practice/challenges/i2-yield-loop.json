@@ -1,0 +1,20 @@
+{
+  "id": "i2-yield-loop",
+  "title": "Chunked Processing",
+  "prompt": "Write `async function processChunks(items, handler, chunkSize)` that processes `items` in groups of `chunkSize`: call `await handler(batch)` for each batch, and between batches `await` one macrotask tick (`await new Promise((r) => setTimeout(r, 0))`) so the browser can paint. RETURN an array of every handler result in order.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "async function processChunks(items, handler, chunkSize) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "processes every item in batches, in order",
+      "code": "const fn = new Function(code + \"\\nreturn { processChunks };\");\nconst { processChunks } = fn();\nconst batches = [];\nconst out = await processChunks([1,2,3,4,5], async (b) => { batches.push([...b]); return b.length; }, 2);\nif (out.join() !== \"2,2,1\") throw new Error(\"Results should be the batch sizes in order (2,2,1).\");\nif (batches.length !== 3) throw new Error(\"Five items at size 2 make three batches.\");\nif (batches[0].join() !== \"1,2\" || batches[1].join() !== \"3,4\" || batches[2].join() !== \"5\") throw new Error(\"Batches must slice the input in order.\");",
+      "hint": "for (let i = 0; i < items.length; i += chunkSize), slice, await handler, push result, then await the tick."
+    },
+    {
+      "name": "yields to the macrotask queue between batches",
+      "code": "const fn = new Function(code + \"\\nreturn { processChunks };\");\nconst { processChunks } = fn();\nlet timerRanDuring = false;\nsetTimeout(() => { timerRanDuring = true; }, 0);\nconst seen = [];\nawait processChunks([1,2,3,4], async (b) => { seen.push(b.length); return 0; }, 1);\nif (!timerRanDuring) throw new Error(\"The setTimeout callback should have run BETWEEN batch handlers — you must await a macrotask tick between batches.\");\nif (seen.length !== 4) throw new Error(\"Every batch should be handled.\");",
+      "hint": "After each handler call: await new Promise((r) => setTimeout(r, 0))."
+    }
+  ]
+}

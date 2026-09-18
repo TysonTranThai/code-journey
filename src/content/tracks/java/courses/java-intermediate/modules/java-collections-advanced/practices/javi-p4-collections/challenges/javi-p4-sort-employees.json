@@ -1,0 +1,21 @@
+{
+  "id": "javi-p4-sort-employees",
+  "title": "Compose Comparators",
+  "prompt": "Work with records inside `Solution`:\n- `record Employee(String name, String dept, int salary)`\n- `static List<String> topPaidByDept(List<Employee> staff, int n)`:\n  group employees by dept, sort each group by salary DESCENDING (ties by\n  name ASCENDING), and return `dept + \":\" + name` for the top n of each\n  group, with depts in alphabetical order.\n\nUse Comparator.comparing/thenComparing — no anonymous classes.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "groups sorted, salaries descending",
+      "code": "\nList<Object> staff = List.of(\n    new Solution.Employee(\"ann\", \"eng\", 120),\n    new Solution.Employee(\"bob\", \"ops\", 90),\n    new Solution.Employee(\"cid\", \"eng\", 150),\n    new Solution.Employee(\"dee\", \"eng\", 150));\nList<String> out = Solution.topPaidByDept((List) staff, 1);\ncheckEq(out, List.of(\"eng:cid\", \"ops:bob\"), \"top1 per dept\");\n",
+      "hint": "eng's top is cid or dee — the tie must break by name ascending → cid."
+    },
+    {
+      "name": "tie-break by name",
+      "code": "\nList<Object> staff = List.of(\n    new Solution.Employee(\"ann\", \"eng\", 120),\n    new Solution.Employee(\"cid\", \"eng\", 150),\n    new Solution.Employee(\"dee\", \"eng\", 150));\nList<String> out = Solution.topPaidByDept((List) staff, 2);\ncheckEq(out, List.of(\"eng:cid\", \"eng:dee\"), \"tie by name asc\");\n",
+      "hint": "Equal salaries → name ascending."
+    }
+  ],
+  "level": "independent"
+}

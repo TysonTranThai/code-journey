@@ -1,0 +1,21 @@
+The Zoo: one abstract base, three species, and a census.
+
+Inside `Solution`:
+
+1. `static abstract class Animal` — `abstract String sound();` and a
+   `public String toString()` override returning `sound()` (so printing
+   shows the sound).
+2. `static class Dog extends Animal` — sound `"woof"`.
+3. `static class Cat extends Animal` — sound `"meow"`.
+4. `static class Robot extends Animal` — sound `"beep"`, but Robot is NOT
+   really an animal, so it must also `implements Describable` where
+   `interface Describable { String kind(); }` returns `"machine"`.
+5. `static int countRealAnimals(Animal[] zoo)` — the number of animals in
+   the array that implement `Describable`... **is zero logic**: instead
+   count the ones whose `sound()` is a real animal sound. Simpler and
+   honest: count entries that are NOT instanceof `Describable` (that is
+   exactly the interface check the lesson allows here).
+
+So for `{ new Dog(), new Cat(), new Robot() }`, `countRealAnimals` returns 2.
+The grader also checks polymorphism: every `sound()` must dispatch to the
+object's own class.

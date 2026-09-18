@@ -1,0 +1,43 @@
+JavaScript fails at runtime: `user.nmae` is `undefined` three screens away
+from the typo. TypeScript moves whole classes of those failures to the editor,
+before the code ever runs.
+
+## What types buy you
+
+```ts
+function subtotal(items: CartItem[]): number {
+  return items.reduce((sum, i) => sum + i.price * i.qty, 0);
+}
+subtotal("cart"); // ✗ compile error
+subtotal([{ price: 5, qty: 2 }]); // ✓ — and price/qty autocomplete
+```
+
+Renaming a field updates every usage; a missed callsite turns red. That is not
+ceremony — it is a searchable, checkable contract.
+
+## Inference first, annotations at boundaries
+
+TypeScript infers most types — annotate where inference cannot help:
+
+```ts
+const rates = [0.2, 0.15];            // inferred: number[]
+function tax(amount: number) { ... }  // boundary: parameters
+const total = tax(100);               // inferred: number
+```
+
+Annotating every local is noise; annotating nothing pushes surprises to call
+sites. The convention: annotate function parameters and exported APIs, let
+locals infer.
+
+## Structural typing
+
+TypeScript types by **shape**, not name — any object with the right members
+fits, no inheritance required:
+
+```ts
+type Point = { x: number; y: number };
+const p = { x: 1, y: 2, label: "origin" }; // OK: has x and y (extra is fine here)
+```
+
+Run `tsc --noEmit` as your gate: it checks without emitting. Strict mode
+(`strict: true`) enables the checks that matter — null checking above all.

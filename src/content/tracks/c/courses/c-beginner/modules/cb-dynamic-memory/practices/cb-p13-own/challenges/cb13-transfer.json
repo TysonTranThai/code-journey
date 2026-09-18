@@ -1,0 +1,21 @@
+{
+  "id": "cb13-transfer",
+  "title": "Ownership Transfer",
+  "prompt": "Implement `int* take(int **slot)` that returns the pointer currently in *slot and sets *slot to NULL — handing ownership to the caller without leaving a dangling alias.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "handover",
+      "code": "int *p = malloc(4 * sizeof(int));\np[0] = 9;\nint *got = take(&p);\nCHECK_NOT_NULL(got);\nCHECK_EQ(got[0], 9);\nCHECK_EQ(p, NULL);\nfree(got);",
+      "hint": "The old name becomes NULL."
+    },
+    {
+      "name": "empty slot",
+      "code": "int *p = NULL;\nCHECK_EQ(take(&p), NULL);",
+      "hint": "Taking from NULL yields NULL."
+    }
+  ],
+  "level": "independent"
+}

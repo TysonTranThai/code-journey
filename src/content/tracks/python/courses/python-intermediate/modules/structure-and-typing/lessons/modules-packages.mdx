@@ -1,0 +1,43 @@
+A **module** is any `.py` file; `import` finds it on `sys.path`, executes it
+**once**, and caches it in `sys.modules`:
+
+```python
+# pricing.py
+DISCOUNT = 0.1            # module-level constant: UPPER_CASE
+
+def apply(price):
+    return price * (1 - DISCOUNT)
+```
+
+```python
+from pricing import apply     # import the function, not the module
+import pricing                # import the module; use pricing.apply
+```
+
+Two rules keep imports sane:
+
+- **`from x import y` for names you use constantly; plain `import x` when the module gives context** (`csv.reader` reads better than a bare `reader`).
+- **Never do `from x import *`** — it pollutes the namespace and defeats searchability.
+
+## The __main__ guard
+
+Code that should run only when a file is executed directly — not when
+imported — belongs under the guard:
+
+```python
+def main():
+    print("report generated")
+
+if __name__ == "__main__":    # true only for direct execution
+    main()
+```
+
+This is what makes a file both a **reusable module and a runnable script**.
+Importers get the functions; nobody accidentally triggers side effects.
+
+## Circular imports: the smell and the fix
+
+If `a.py` imports `b` while `b` imports `a`, one of them receives a
+half-built module. The real fix is almost always **structure**: pull the
+shared thing (a type, a constant, a helper) into a third module both can
+import. Cycles are a design complaint, not a loading-order puzzle.

@@ -1,0 +1,28 @@
+## Thread và GIL: thực chất điều gì xảy ra
+
+Một **thread** chia sẻ bộ nhớ với mọi thread khác trong process. Thread Python
+là thread của hệ điều hành thật — nhưng trong bản CPython chuẩn, **GIL**
+(Global Interpreter Lock) chỉ cho phép một thread thực thi *bytecode* Python
+tại một thời điểm.
+
+Hệ quả, nói cho chính xác:
+
+- **Việc thuần CPU bằng Python thuần không được lợi gì từ thread.** Cộng một
+  list khổng lồ bằng 4 thread tốn thời gian như 1 thread — thực thi bytecode
+  bị tuần tự hóa.
+- **Việc I/O được lợi nhiều.** Khi một thread chờ network, đĩa, hay
+  `time.sleep`, GIL được nhả ra và thread khác chạy. Thread vẫn là mô hình tốt
+  cho I/O đồng thời.
+- **C extension** (NumPy, hashlib trên buffer lớn, engine regex) thường nhả GIL
+  trong các call nặng — nên thread CÓ thể song song hóa một số mã native.
+- **`time.sleep` nhả GIL.** Chờ trên `queue.Queue`, `Lock`, `Event`,
+  `Barrier` cũng nhả GIL.
+
+Ghi chú phiên bản (văn bản): CPython 3.13 phát hành bản **free-threaded**
+thử nghiệm (PEP 703) không có GIL, nơi các thread CPU-bound song song hóa thật.
+Kỹ năng kỹ thuật — đo, chọn, kiểm chứng — vẫn y như cũ dù ở phương án nào.
+
+Một điều nữa cần chính xác: GIL **không** làm code của bạn đúng. N chỉ đảm bảo
+tính nguyên tử của từng lệnh bytecode, nhưng `counter += 1` là *ba* thao tác
+(load, add, store) — thread khác có thể chen giữa. Đó chính là race bạn sẽ sửa
+trong bài luyện đầu tiên.

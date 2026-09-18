@@ -1,0 +1,31 @@
+## The idea
+
+Every container hands out **iterators** — generalised positions — via `begin()` and `end()`. `begin()` points at the first element; `end()` points *one past the last* (a half-open range `[begin, end)`; `end` is never dereferenced). Algorithms speak this language, which is why they work identically on vector, array, string...
+
+```cpp
+#include <algorithm>
+#include <numeric>
+#include <vector>
+
+std::vector<int> v{5, 3, 9, 1};
+
+std::sort(v.begin(), v.end());                    // {1, 3, 5, 9}
+auto it = std::find(v.begin(), v.end(), 5);       // iterator to 5, or v.end()
+bool has = (it != v.end());
+int n_odd  = std::count_if(v.begin(), v.end(), [](int x){ return x % 2 != 0; });
+int sum    = std::accumulate(v.begin(), v.end(), 0);
+std::reverse(v.begin(), v.end());
+auto smallest = *std::min_element(v.begin(), v.end());
+```
+
+## Why prefer algorithms over hand-rolled loops
+
+1. **Intent.** `std::sort` announces its purpose; a loop must be *read* to be understood.
+2. **Correctness.** `std::sort` is battle-tested; your quicksort is a weekend project.
+3. **Range-for can't do everything.** Sorting, searching, folding — range-for has no answer; algorithms do.
+
+When a loop you write is just `for (auto& x : c) if (p(x)) ++n;`, the algorithm version (`std::count_if`) says the same thing in one line that cannot be misread.
+
+## Ranges: the C++20 evolution (a glance)
+
+C++20 adds `std::ranges::sort(v)` — same algorithms, container passed directly, fewer `.begin()`s. Know the name; this course teaches the iterator form because it underlies both and remains the lingua franca of documentation and real code.

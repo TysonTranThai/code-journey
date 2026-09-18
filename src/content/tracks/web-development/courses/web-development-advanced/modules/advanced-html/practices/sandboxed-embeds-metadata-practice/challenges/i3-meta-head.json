@@ -1,0 +1,30 @@
+{
+  "id": "i3-meta-head",
+  "title": "Build the Complete Head",
+  "prompt": "Write the full <head> of the article page 'Kite CLI — Getting started' (https://docs.example.com/kite/getting-started): charset, viewport, title, meta description, canonical link, og:title + og:description + og:image (absolute URL), hreflang alternates for en and vi, and the same English version marked x-default.",
+  "difficulty": "advanced",
+  "level": "independent",
+  "boilerplate": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <!-- build the rest of the head -->\n</head>\n<body></body>\n</html>\n",
+  "tests": [
+    {
+      "name": "basics first",
+      "code": "if (!/<meta[^>]*charset/i.test(code)) throw new Error(\"charset comes first.\");\nif (!/<meta[^>]*name\\s*=\\s*[\"']viewport[\"'][^>]*content\\s*=\\s*[\"'][^\"']*width\\s*=\\s*device-width/i.test(code)) {\n  throw new Error(\"viewport needs width=device-width.\");\n}\nconst t = code.match(/<title>([\\s\\S]*?)<\\/title>/i);\nif (!t || !t[1].trim()) throw new Error(\"Add a non-empty <title>.\");",
+      "hint": "Encoding, viewport, title — the three tags every page needs before anything else."
+    },
+    {
+      "name": "canonical names this URL",
+      "code": "const can = code.match(/<link[^>]*rel\\s*=\\s*[\"']canonical[\"'][^>]*>/i);\nif (!can) throw new Error(\"Add a canonical link.\");\nif (!/https:\\/\\/docs\\.example\\.com\\/kite\\/getting-started/i.test(can[0])) {\n  throw new Error(\"Canonical must point at THIS page's URL, not the site root.\");\n}",
+      "hint": "A canonical that points at the homepage consolidates the page away — name the page itself."
+    },
+    {
+      "name": "open graph trio with absolute image",
+      "code": "if (!/<meta[^>]*property\\s*=\\s*[\"']og:title[\"']/i.test(code)) throw new Error(\"og:title missing.\");\nif (!/<meta[^>]*property\\s*=\\s*[\"']og:description[\"']/i.test(code)) throw new Error(\"og:description missing.\");\nconst img = code.match(/<meta[^>]*property\\s*=\\s*[\"']og:image[\"'][^>]*content\\s*=\\s*[\"']([^\"']+)[\"']/i);\nif (!img) throw new Error(\"og:image missing.\");\nif (!/^https:\\/\\//i.test(img[1])) {\n  throw new Error(\"og:image must be an absolute URL — crawlers fetch it out of context.\");\n}",
+      "hint": "Three OG tags, and the image URL must stand on its own: absolute, not relative."
+    },
+    {
+      "name": "hreflang alternates plus x-default",
+      "code": "const en = [...code.matchAll(/<link[^>]*>/gi)].filter((m) => /hreflang\\s*=\\s*[\"']en[\"']/i.test(m[0]));\nconst vi = [...code.matchAll(/<link[^>]*>/gi)].filter((m) => /hreflang\\s*=\\s*[\"']vi[\"']/i.test(m[0]));\nconst xd = [...code.matchAll(/<link[^>]*>/gi)].filter((m) => /hreflang\\s*=\\s*[\"']x-default[\"']/i.test(m[0]));\nif (en.length === 0) throw new Error('Add <link rel=\"alternate\" hreflang=\"en\">.');\nif (vi.length === 0) throw new Error('Add <link rel=\"alternate\" hreflang=\"vi\">.');\nif (xd.length === 0) throw new Error('Mark the default version with hreflang=\"x-default\".');",
+      "hint": "Each locale declares itself, and x-default names the version for unmatched languages."
+    }
+  ]
+}

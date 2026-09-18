@@ -1,0 +1,39 @@
+Inheritance là công cụ bị lạm dụng nhất trong OOP. Trước khi viết `class
+Admin(User)`, hãy hỏi: **Admin có thật sự là *một loại* User trong mọi hành
+vi — mãi mãi không?** Thường điều bạn cần là *has-a*: đối tượng **sử dụng**
+một bộ phận.
+
+```python
+class Engine:
+    def start(self):
+        return "vroom"
+
+class Car:                      # Car HAS-An Engine — không kế thừa
+    def __init__(self, engine):
+        self.engine = engine    # tiêm từ bên ngoài
+
+    def start(self):
+        return self.engine.start()
+
+Car(Engine()).start()           # "vroom"
+Car(LoudEngine()).start()       # hoán đổi bộ phận thoải mái — duck typing
+```
+
+Engine được **tiêm vào**, nên test có thể thay bằng engine giả, và loại
+engine mới hoạt động không cần sửa `Car`. Đó là composition: các phần nhỏ,
+lắp với nhau, mỗi phần thay thế được.
+
+## Khi nào inheritance ĐÚNG
+
+Các phân loại thật mà mọi hành vi đều phải chảy qua: `AppError → Exception`
+trong hệ thống exception của bạn, base class của framework, `enum.Enum`.
+Hãy để ý mẫu chung: quan hệ là vĩnh viễn và mã ở khắp nơi phụ thuộc vào nó.
+Việc tái dùng bản ghi ("Sinh viên và Giáo viên đều có tên nên một bên kế
+thừa bên kia") thường **không phải** trường hợp đó.
+
+## Duck typing: phương án của Python thay cho interface
+
+Python không hỏi "nó là gì?" mà hỏi "nó làm được gì?" Bất kỳ đối tượng nào
+có `start()` đều dùng được như engine. Các protocol nhỏ như vậy là lý do
+composition rẻ đến thế trong Python — và nó dẫn thẳng tới `Protocol` trong
+module typing kế tiếp.

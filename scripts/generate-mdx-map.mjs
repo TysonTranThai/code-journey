@@ -46,6 +46,19 @@ function collectModule(moduleDir, moduleId, out) {
       .split(path.sep)
       .join("/");
     out.push({ key: `${moduleId}/${lessonId}.mdx`, relFromSrc, lessonId });
+    // Vietnamese sidecar beside the English body, when it exists.
+    const viPath = path.join(moduleDir, "lessons", `${lessonId}.vi.mdx`);
+    if (existsSync(viPath)) {
+      const viRelFromSrc = path
+        .relative(path.join(process.cwd(), "src"), viPath)
+        .split(path.sep)
+        .join("/");
+      out.push({
+        key: `${moduleId}/${lessonId}.vi.mdx`,
+        relFromSrc: viRelFromSrc,
+        lessonId,
+      });
+    }
   }
 }
 
@@ -74,7 +87,9 @@ function main() {
   const imports = [];
   const entries = [];
   for (const lesson of lessons) {
-    let name = componentName(lesson.lessonId);
+    // vi sidecar entries arrive as their own items (key ends in .vi.mdx).
+    const isVi = lesson.key.endsWith(".vi.mdx");
+    let name = componentName(lesson.lessonId) + (isVi ? "Vi" : "");
     while (used.has(name)) name += "_";
     used.add(name);
     imports.push(`import ${name} from "@/${lesson.relFromSrc}";`);
@@ -99,14 +114,24 @@ export const mdxMap: Record<string, MdxComponent> = {
 ${entries.join("\n")}
 };
 
-export function getLessonMdx(contentPath: string): MdxComponent | undefined {
+export function getLessonMdx(
+  contentPath: string,
+  locale = "en",
+): MdxComponent | undefined {
   // contentPath is "./<lessonId>.mdx" relative to the lesson JSON; the map
-  // key is "<moduleId>/<lessonId>.mdx". Fall back to the bare filename for
-  // legacy single-module content.
-  const normalized = contentPath.replace(/^\\.\\//, "");
+  // key is "<moduleId>/<lessonId>.mdx" (or "<moduleId>/<lessonId>.vi.mdx"
+  // for the Vietnamese sidecar). Fall back to the bare filename for legacy
+  // single-module content, and to English when no sidecar exists.
+  const suffix = locale === "en" ? ".mdx" : ".vi.mdx";
+  const normalized = contentPath.replace(/^\\.\\//, "").replace(/\.mdx$/, suffix);
   if (mdxMap[normalized]) return mdxMap[normalized];
   const fileName = normalized.split("/").pop() ?? normalized;
-  return mdxMap[Object.keys(mdxMap).find((key) => key.endsWith("/" + fileName)) ?? ""];
+  const byName = mdxMap[Object.keys(mdxMap).find((key) => key.endsWith("/" + fileName)) ?? ""];
+  if (byName) return byName;
+  // Missing vi sidecar → render the English component (matches the loader's
+  // English body fallback, so a partially translated course still renders).
+  if (locale !== "en") return getLessonMdx(contentPath, "en");
+  return undefined;
 }
 `;
 

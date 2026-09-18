@@ -1,0 +1,18 @@
+Concept errors fail with *candidate diagnostics*: the compiler lists every overload, why each was rejected, and which requirement in which concept failed. Reading them is a filter, not a parse.
+
+## The three-scan method
+
+1. **Scan for the word "constraint" / "unsatisfied"** — find the concept that failed,
+2. **scan for "because" / "note"** — the first note usually names the exact expression that did not type-check (`c.size()` on a const object, a missing `value_type`),
+3. **only then** look at the call site.
+
+A 40-line diagnostic is typically 2 lines of signal: *which concept*, *which atomic requirement*.
+
+## The errors that mean you, not the caller
+
+- `no matching function` + `constraints not satisfied` + `the required type 'typename C::value_type' is invalid` — your concept demands a member type the caller's type lacks. Either the caller's type is wrong or your concept over-demands.
+- `ambiguous` overloads after adding a concept — your two constrained overloads are **not** subsumed (independent constraints). Tie them: make one a refinement of the other.
+
+## Contract-first habit
+
+Write the concept *before* the implementation; the concept is the API's contract, and the compiler enforces it at every call site. The graded exercise hands you a diagnostic and asks which requirement failed — the same skill as triaging a teammate's template error.

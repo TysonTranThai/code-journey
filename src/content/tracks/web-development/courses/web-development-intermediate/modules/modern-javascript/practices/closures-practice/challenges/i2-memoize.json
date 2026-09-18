@@ -1,0 +1,20 @@
+{
+  "id": "i2-memoize",
+  "title": "Memoize with a Map",
+  "prompt": "Write `memoize(fn)` that returns a cached version of a single-argument function. Calling the returned function with an argument it has seen before must return the remembered result **without calling `fn` again**.\n\nStore previous results in a `Map` closed over by the wrapper.",
+  "difficulty": "intermediate",
+  "level": "combination",
+  "boilerplate": "function memoize(fn) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "repeats return the cached result",
+      "code": "const fn = new Function(code + \"\\nreturn { memoize };\");\nconst { memoize } = fn();\nlet calls = 0;\nconst slow = memoize((n) => { calls++; return n * 2; });\nslow(4); slow(4); slow(4);\nif (calls !== 1) throw new Error(\"fn should run once; the other calls must hit the cache.\");\nif (slow(4) !== 8) throw new Error(\"Cached value must equal the computed one.\");",
+      "hint": "const cache = new Map() inside memoize; check cache.has(key) before calling fn."
+    },
+    {
+      "name": "different arguments compute separately",
+      "code": "const fn = new Function(code + \"\\nreturn { memoize };\");\nconst { memoize } = fn();\nlet calls = 0;\nconst f = memoize((n) => { calls++; return n + 1; });\nf(1); f(2);\nif (calls !== 2) throw new Error(\"Two distinct arguments must each compute once.\");",
+      "hint": "Key the Map by the argument itself — that is exactly what Map is better at than a plain object."
+    }
+  ]
+}

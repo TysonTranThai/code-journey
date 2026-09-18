@@ -1,0 +1,26 @@
+{
+  "id": "javi-checkpoint-m9-concurrency",
+  "title": "Parallel Word Counter",
+  "prompt": "Build `Solution`:\n- `static Map<String, Integer> countWords(List<String> chunks, int threads)`:\n  - split the chunk list into `threads` sublists (like parallelSum)\n  - each thread counts words in its chunks into its OWN local\n    `HashMap<String, Integer>`\n  - after joining all threads, MERGE the maps into one\n  - return the merged map\n\nThe merge must happen after every join — before that, thread-local maps\nare confined and safe. threads <= 0 → empty map; empty chunks fine.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\nimport java.util.concurrent.atomic.*;\n\npublic class Solution {\n    // Provide countWords here.\n}\n",
+  "tests": [
+    {
+      "name": "exact counts across threads",
+      "code": "\nList<String> chunks = List.of(\"a b\", \"b c\", \"c a\");\nMap<String, Integer> out = Solution.countWords(chunks, 3);\ncheckEq(out.get(\"a\"), 2, \"a count\");\ncheckEq(out.get(\"b\"), 2, \"b count\");\ncheckEq(out.get(\"c\"), 2, \"c count\");\n",
+      "hint": "Three threads, then merge — totals must be exact."
+    },
+    {
+      "name": "chunk order does not matter",
+      "code": "\nList<String> chunks = List.of(\"x\", \"x y\", \"y\");\nMap<String, Integer> out = Solution.countWords(chunks, 2);\ncheckEq(out.get(\"x\"), 2, \"x\");\ncheckEq(out.get(\"y\"), 2, \"y\");\n",
+      "hint": "Same totals regardless of the split."
+    },
+    {
+      "name": "guards",
+      "code": "\ncheckEq(Solution.countWords(List.of(), 4).size(), 0, \"empty input\");\ncheckEq(Solution.countWords(List.of(\"w\"), 0).size(), 0, \"no threads\");\n",
+      "hint": "Empty input or threads <= 0 → empty map."
+    }
+  ],
+  "level": "real-world"
+}

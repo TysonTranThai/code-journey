@@ -1,0 +1,38 @@
+## Throwing deliberately
+
+Your own code throws when its contract is broken:
+
+```csharp
+static decimal Withdraw(decimal balance, decimal amount)
+{
+    if (amount <= 0)
+        throw new ArgumentException("amount must be positive");
+    if (amount > balance)
+        throw new InvalidOperationException("insufficient funds");
+    return balance - amount;
+}
+```
+
+Two rules make throw messages useful:
+
+- **ArgumentException** (and friends) for bad *arguments* right now — with the argument's name if possible.
+- **InvalidOperationException** for a bad *operation given the current state* — withdrawing from an overdrawn account.
+
+## Custom exceptions
+
+When callers must tell your failures apart from the framework's, define a type:
+
+```csharp
+class PaymentDeclinedException : Exception
+{
+    public PaymentDeclinedException(string message) : base(message) { }
+}
+
+static void Pay(decimal amount)
+{
+    if (amount > 1000m)
+        throw new PaymentDeclinedException("over the single-payment limit");
+}
+```
+
+Now a caller can `catch (PaymentDeclinedException)` and know exactly whose rule fired. The convention: name ends in `Exception`, derive from `Exception`, pass the message to `base`.

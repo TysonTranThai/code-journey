@@ -1,0 +1,48 @@
+## bịt mắt của compiler
+
+Compiler biên dịch **từng translation unit một** — một file `.cpp` sau tiền xử lý. Nó *hoàn toàn không biết* các file `.cpp` khác chứa gì. Mọi thứ nó cần phải hiện diện: hoặc định nghĩa ngay trong file, hoặc được **khai báo** qua một header.
+
+```cpp
+// math_utils.h — LỜI HỨA (khai báo)
+#pragma once
+#include <string>
+
+int add(int a, int b);
+std::string shout(std::string text);
+```
+
+```cpp
+// math_utils.cpp — PHẦN THỰC HIỆN (định nghĩa)
+#include "math_utils.h"
+
+int add(int a, int b) { return a + b; }
+std::string shout(std::string text) { return text + "!"; }
+```
+
+```cpp
+// main.cpp — NGƯỜI DÙNG
+#include <iostream>
+#include "math_utils.h"     // dấu nháy: header "của ta"; ngoặc nhọn: thư viện chuẩn
+
+int main() {
+    std::cout << add(2, 3) << '\n';
+}
+```
+
+**Khai báo nói cái gì tồn tại; định nghĩa nói làm thế nào.** Một hàm có thể được khai báo nhiều lần nhưng chỉ được định nghĩa một lần (trên toàn chương trình). Class trong header là định nghĩa (compiler cần biết kích thước); *thân* hàm của chúng có thể nằm trong `.cpp`.
+
+## Vì sao lại tách riêng?
+
+Sửa phần cài đặt trong `math_utils.cpp` và chỉ *file đó* biên dịch lại, rồi **linker** khâu lại chương trình. Trong dự án lớn, đó là khác biệt giữa build 1 giây và 30 phút. Nó cũng là cách nhóm chia việc: header là bản hợp đồng; không ai cần file `.cpp` của bạn để dùng code của bạn.
+
+## `#pragma once` (và kiểu bảo vệ cổ điển)
+
+Header không được bị dán vào một translation unit hai lần. `#pragma once` (mọi compiler lớn đều hỗ trợ) hoặc dạng bảo vệ cổ điển `#ifndef MATH_UTILS_H / #define / #endif`. Code hiện đại viết `#pragma once`; hãy biết dạng cổ để đọc code cũ.
+
+## Liên hệ với thế giới có chấm điểm
+
+Nền tảng này chấm từng file đơn — `#include "solution.cpp"` chính là harness khâu code của bạn vào translation unit của test. Cùng cơ chế, dự án nhỏ hơn. Trên máy của bạn, câu lệnh là:
+
+```
+g++ -std=c++20 -Wall -Wextra main.cpp math_utils.cpp -o app
+```

@@ -1,0 +1,39 @@
+Vài phương thức có thể dùng chung một tên khi **danh sách tham số khác
+nhau** — khác kiểu, khác số lượng, hoặc khác thứ tự. Đây là **overloading**,
+và compiler của Java chọn ứng viên khớp nhất tại chỗ gọi:
+
+```java
+static int    max(int a, int b)        { return a >= b ? a : b; }
+static double max(double a, double b)  { return a >= b ? a : b; }
+static int    max(int a, int b, int c) { return max(max(a, b), c); }
+```
+
+Cả ba đều là `max`; compiler đọc danh sách đối số và điều phối: `max(3, 9)`
+gọi cái đầu, `max(2.5, 1.5)` cái thứ hai, `max(1, 5, 3)` cái thứ ba. Thân
+hàm thứ ba hé ý tưởng sâu hơn — các overload có thể *ủy quyền* cho nhau thay
+vì sao chép logic.
+
+Cái gì KHÔNG tính là khác nhau: **một mình kiểu trả về**. Bạn không thể thêm
+`static String max(int a, int b)` — compiler không thể biết gọi cái nào cho
+`max(3, 9)`. Chỉ danh sách tham số tạo ra overload khác biệt.
+
+**Khi nào nên overload, khi nào không.** Overload khi một khái niệm nhận
+nhiều hình dạng đầu vào (`parse(String)`, `parse(File)`). Đừng overload khi
+ý nghĩa thay đổi — hàm trả max và một overload trả min là hai khái niệm
+khác nhau mặc một cái tên gây nhiễu.
+
+**Varargs** — một tham số nhận số lượng đối số bất kỳ:
+
+```java
+static int sum(int... numbers) {         // gọi: sum(), sum(1), sum(1, 2, 3)
+    int t = 0;
+    for (int n : numbers) { t += n; }    // numbers thực chất là int[]
+    return t;
+}
+```
+
+Varargs là đường (sugar) cho tham số mảng và phải là tham số CUỐI. Đó là
+công cụ đúng khi số lượng thật sự thay đổi ("cộng các số này lại"); danh
+sách đầu vào bắt buộc, cố định thì xứng với tham số cố định.
+
+**Tiếp theo:** thiết kế bằng phương thức — phân rã.

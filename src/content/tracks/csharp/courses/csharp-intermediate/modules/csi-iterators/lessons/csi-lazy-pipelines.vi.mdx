@@ -1,0 +1,43 @@
+## Pipeline ghép miễn phí
+
+Một iterator tiêu thụ IEnumerable là một tầng; các tầng xích thành pipeline
+nơi từng phần tử chảy qua mọi tầng trước khi phần tử kế tiếp bắt đầu:
+
+```csharp
+static IEnumerable<string> ReadLines(string path) { /* yield từng dòng */ }
+IEnumerable<string> NonEmpty(IEnumerable<string> src)
+{ foreach (var l in src) if (l.Trim().Length > 0) yield return l; }
+IEnumerable<int> ParseAll(IEnumerable<string> src)
+{ foreach (var l in src) yield return int.Parse(l); }
+
+var total = ParseAll(NonEmpty(ReadLines(path))).Sum();   // một lượt, bộ nhớ O(1)
+```
+
+Phương án thay thế — ba lần `ToList()` — giữ ba bản sao đầy đủ trong bộ nhớ.
+Với file triệu dòng đó là khác biệt giữa hằng số và hàng gigabyte.
+
+## Nguồn có chặn và nguồn vô hạn
+
+Iterator có thể vô hạn về logic vì người tiêu dùng điều khiển nhịp:
+
+```csharp
+static IEnumerable<long> Naturals()
+{
+    for (long i = 0; ; i++) yield return i;
+}
+var first10 = Naturals().Take(10);     // người tiêu dùng chặn nó
+```
+
+`Take`/`Skip`/`TakeWhile` là phanh phía người tiêu dùng. Đây là hình dạng
+đằng sau `IAsyncEnumerable` (Module 9) và mọi API streaming bạn sẽ gặp.
+
+## Cái bẫy: nhiều lần liệt kê
+
+Pipeline trên nguồn có tác dụng phụ (lời gọi mạng, random, đọc file) sẽ
+kích hoạt lại chúng theo mỗi lần liệt kê. Query chạy hai lần thì nguồn chạy
+hai lần — hóa rắn một lần ở ranh giới và truyền danh sách đi tiếp.
+
+## Kiểm tra hiểu biết
+
+- Vì sao `file.ReadLines` (lười) thường tốt hơn `File.ReadAllLines`? (Bộ nhớ hằng số.)
+- Nên hóa rắn Ở ĐÂU? (Ở ranh giới: mỗi đơn vị công việc logic một lần.)

@@ -1,0 +1,50 @@
+Unit test phải fail vì _code của bạn_ sai — chứ không phải vì mạng chập chờn, đồng hồ trôi, hay database trống. Test double thay thế các cộng sự bằng bản đứng thay điều khiển được.
+
+## Phân loại (chính xác)
+
+- **Stub** — trả về câu trả lời đóng hộp. `stubFetch` luôn resolve `{"ok": true}`. Bạn không assert trên nó; code của bạn gọi nó và bạn assert trên _kết quả_.
+- **Spy** — bọc một hàm thật (hoặc giả) và ghi lại các lần gọi: tham số, số lần, thứ tự. Bạn assert trên _cách code của bạn dùng nó_.
+- **Mock** — stub kèm kỳ vọng nạp sẵn: "phải được gọi một lần với X, không thì test fail." Mạnh; lạm dụng sẽ ghim test vào hiện thực.
+- **Fake** — một hiện thực nhẹ nhưng thật: Map trong bộ nhớ thay cho database, queue xếp hàng thật.
+
+## Đường nối (seam) cho dependency
+
+Chỉ thay thế được thứ mà code của bạn _chạm tới từ bên ngoài_. Đây là lý do dependency hardcode là mùi hiểm độc khi test:
+
+```js
+// không test được như unit — fetch bị hàn cứng
+export async function loadUser(id) {
+  const res = await fetch(`/api/users/${id}`);
+  return res.json();
+}
+
+// test được — cộng sự đi vào bằng tham số
+export function makeUserLoader(fetchLike) {
+  return async (id) => {
+    const res = await fetchLike(`/api/users/${id}`);
+    return res.json();
+  };
+}
+```
+
+Constructor injection, tham số hàm, hay gián tiếp qua module — seam nào cũng được. Mô hình mới là điểm mấu chốt, không phải cơ chế.
+
+## Cây spy kinh điển, làm tay
+
+```js
+function makeSpy(impl) {
+  const calls = [];
+  const spy = (...args) => {
+    calls.push(args);
+    return impl?.(...args);
+  };
+  spy.calls = calls;
+  return spy;
+}
+```
+
+Rồi: `spy.calls.length === 2`, `spy.calls[0][0] === "/api/users/42"`. Đây chính xác là thứ mà `vi.fn()` / `jest.fn()` làm.
+
+## Điều KHÔNG nên double
+
+Đừng stub logic thuần của chính hàm đang test — chỉ double cộng sự có side effect (mạng, đồng hồ, storage, random). Test mock dư thừa pass trong khi production cháy: chúng xác minh _giả định_ của bạn, không phải code của bạn. Khi một test cần năm mock mới chạy được, code đang kêu xin tái cấu trúc (ít cộng sự hơn, nhiều seam hơn, unit nhỏ hơn).

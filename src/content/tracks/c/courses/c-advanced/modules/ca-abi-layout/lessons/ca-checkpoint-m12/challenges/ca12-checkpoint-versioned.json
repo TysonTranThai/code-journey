@@ -1,0 +1,26 @@
+{
+  "id": "ca12-checkpoint-versioned",
+  "title": "Checkpoint: Append-Only Packet",
+  "prompt": "In your editor: `struct frame { unsigned char tag; unsigned short seq; unsigned int payload; };`. Implement:\n1. `void frame_report(size_t *off_seq, size_t *off_payload, size_t *size)` — offsetof/sizeof measured, not hardcoded.\n2. Define `struct frame_v2 { unsigned char tag; unsigned short seq; unsigned int payload; unsigned long long ts; };` and `int frame_prefix_stable(void)` — 1 iff tag/seq/payload offsets are identical between the versions (offsetof-verified).\n3. `unsigned long long sum_upto(int n, ...)` — totals n unsigned ints passed variadic.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstruct frame { unsigned char tag; unsigned short seq; unsigned int payload; };\n#include <stddef.h>\n#include <stdarg.h>\n",
+  "tests": [
+    {
+      "name": "measured layout",
+      "code": "size_t s1 = 0, p1 = 0, z1 = 0;\nframe_report(&s1, &p1, &z1);\nCHECK_EQ((long long)s1, 2);\nCHECK_EQ((long long)p1, 4);\nCHECK_EQ((long long)z1, 8);",
+      "hint": "tag at 0; seq at 2 (2-aligned); payload at 4; size rounds to the 4-alignment."
+    },
+    {
+      "name": "prefix survives the bump",
+      "code": "CHECK_EQ(frame_prefix_stable(), 1);",
+      "hint": "Appending ts after payload cannot move the earlier members — verified, not assumed."
+    },
+    {
+      "name": "variadic totals",
+      "code": "CHECK_EQ((long long)sum_upto(3, 7u, 8u, 9u), 24);",
+      "hint": "va_arg(unsigned int) walks the argument window; 7+8+9 = 24."
+    }
+  ],
+  "level": "mini-build"
+}

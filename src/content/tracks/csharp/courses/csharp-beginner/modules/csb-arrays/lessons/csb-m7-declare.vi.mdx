@@ -1,0 +1,30 @@
+## Một khối, nhiều giá trị
+
+```csharp
+int[] scores = new int[5];              // 5 số 0
+int[] primes = { 2, 3, 5, 7, 11 };      // suy từ bộ khởi tạo
+string[] names = new[] { "an", "binh" };
+```
+
+Một mảng là khối phần tử **cố định kích thước** cùng một kiểu. `new int[5]` cấp phát 5 phần tử và điền kiểu giá trị bằng mặc định của kiểu (`0`, `false`); mảng kiểu tham chiếu (`string[]`) điền bằng `null`. Độ dài được chọn lúc tạo và không bao giờ thay đổi — cần thêm chỗ, bạn cấp phát mảng mới (`List<T>` ở Module 10 tồn tại chính vì điều đó).
+
+## Chỉ số và biên
+
+```csharp
+primes[0]      // 2 — đầu
+primes[^1]     // 11 — cuối (mũ đếm từ cuối)
+primes[5]      // ném IndexOutOfRangeException — chỉ số hợp lệ là 0..4
+```
+
+Việc kiểm tra biên là thật và tức thời. Lỗi lệch-một (`<=` trong vòng lặp, `arr[arr.Length]`) là crash kinh điển; `Length` là kích thước, chỉ số hợp lệ cuối là `Length - 1`.
+
+## Ngữ nghĩa tham chiếu: bẫy aliasing
+
+```csharp
+int[] a = { 1, 2, 3 };
+int[] b = a;          // b là TÊN KHÁC của cùng mảng
+b[0] = 99;
+Console.WriteLine(a[0]);   // 99 — a cũng đổi
+```
+
+Mảng là **kiểu tham chiếu**. Phép gán sao chép *tham chiếu*, không phải các phần tử — hai biến trỏ vào một khối. Đây là mô hình cho class (Module 11) gặp sớm, nơi nó có thể gây hại: đưa một mảng cho phương thức và phương thức có thể biến đổi dữ liệu của bạn. Để có bản sao độc lập: `a.Clone()`, `a.ToArray()` (LINQ), hoặc sao chép trong vòng lặp.

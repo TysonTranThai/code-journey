@@ -1,0 +1,21 @@
+{
+  "id": "cppa14-property-roundtrip",
+  "title": "Property: Round-Trip Codec",
+  "prompt": "Implement both halves of a tiny codec and prove the round-trip property: `decode(encode(v)) == v` for every vector. Encoding: run-length, e.g. {3,3,3,5} -> \"3x3,1x5\". Decode parses that exact format back. Empty vector encodes to the empty string and decodes back to empty.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <cstdint>\n#include <string>\n#include <vector>\n\n// Run-length encode: {3,3,3,5} -> \"3x3,1x5\"  (count 'x' value, comma-separated)\nstd::string encode(const std::vector<int>& v);\n\n// Inverse of encode for any string produced by encode.\nstd::vector<int> decode(const std::string& s);\n",
+  "tests": [
+    {
+      "name": "encode format",
+      "code": "CHECK_EQ(encode({}), \"\");\nCHECK_EQ(encode({7}), \"1x7\");\nCHECK_EQ(encode({3, 3, 3, 5}), \"3x3,1x5\");\nCHECK_EQ(encode({1, 1, 1, 1, 1}), \"5x1\");\nCHECK_EQ(encode({2, 3}), \"1x2,1x3\");",
+      "hint": "Walk the vector, count consecutive equal runs, emit \"<count>x<value>\" joined with commas."
+    },
+    {
+      "name": "the round-trip property",
+      "code": "std::vector<std::vector<int>> cases = {\n    {}, {9}, {1, 2}, {5, 5, 5, 5}, {1, 2, 2, 1, 1},\n    {0, 0, 0}, {-3, -3, 4}, {100, -100, 100}};\nfor (const auto& v : cases) {\n    auto back = decode(encode(v));\n    CHECK(back == v);\n}",
+      "hint": "decode splits on commas, parses \"<count>x<value>\", and expands each run — round-trip then holds for all inputs including empty."
+    }
+  ]
+}

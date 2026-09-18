@@ -1,0 +1,47 @@
+Pull request là một _tài liệu đối thoại_, không chỉ là nút merge.
+
+## Bố cục của một PR dễ review
+
+- **Một PR một ý tưởng.** "Thêm bộ lọc tìm kiếm" — không phải "thêm bộ lọc, nâng bundler, sửa ba lỗi chính tả."
+- **Nhỏ.** Chất lượng review sụp đổ khi vượt ~400 dòng thay đổi; lớn hơn thì tách ra.
+- **Mô tả làm sẵn phần bài tập của người review:** đổi gì, vì sao, test thế nào, ảnh chụp cho UI, "những gì tôi cố tình KHÔNG làm và vì sao."
+
+## Reviewing: nhiệm vụ của người đọc là cải thiện code lẫn người viết
+
+Review theo thứ tự ưu tiên: **tính đúng đắn** (có làm đúng như mô tả, kể cả edge case), **test** (regression có bị phát hiện không), **khả năng đọc** (đặt tên, cấu trúc), **bảo mật/hiệu năng** (qua lăng kính module 8–9). Nit về style nên để cho linter tự động, không phải review tay.
+
+Cách bình luận hiệu quả:
+
+- "Đoạn này có thể hỏng khi `query` rỗng — bạn có cân nhắc X không?" (câu hỏi, không phải phán xét)
+- "nit: đổi tên `d` → `duration`" (nói rõ là không chặn)
+- Bình luận chặn merge phải nói rõ **tại sao**: "Đoạn này log token — phải xóa trước khi merge."
+
+**Người viết:** phản hồi mọi bình luận (sửa, hoặc giải thích vì sao không), yêu cầu review lại sau khi push. Không bao giờ force-push một PR đang có thảo luận mà không báo trước.
+
+## Conventional Commits
+
+Một định dạng giúp lịch sử máy đọc được:
+
+```text
+<type>(<scope>)?: <mô tả>
+
+feat(auth): add password reset
+fix(cart): prevent negative quantities
+refactor(search): extract debounce hook
+docs: update contribution guide
+chore(deps): bump zod to 4.5.4
+```
+
+Các type phổ biến: `feat`, `fix`, `refactor`, `perf`, `test`, `docs`, `chore`, `ci`. Breaking change dùng `!` (`feat!:`) hoặc footer `BREAKING CHANGE:`. Lợi ích: changelog tự động, bump version theo loại commit, lịch sử grep được.
+
+## Semantic Versioning
+
+`MAJOR.MINOR.PATCH` — tăng MAJOR khi breaking change, MINOR khi thêm tính năng, PATCH khi sửa lỗi. Thư viện sống bằng semver; ứng dụng thì đa phần không cần (chúng được ship chứ không bị import). Hãy biết bạn đang viết loại nào.
+
+## Quy trình khóa học này dùng
+
+1. Branch `feat/<tên-ngắn>` từ main
+2. Commit conventional nhỏ trong lúc làm
+3. PR có mô tả + test
+4. Tự review diff của chính mình _trước khi_ mời review — bạn sẽ tự phát hiện một nửa vấn đề
+5. Merge, xóa branch, pull main về máy

@@ -1,0 +1,50 @@
+## Two execution modes, one rule of thumb
+
+Most operators are DEFERRED — they record a plan. `Count()`, `ToList()`,
+`ToArray()`, `ToDictionary()`, `First()`, `Sum()`, `Any()` are IMMEDIATE —
+they pull. Composition chains stay lazy until one of those fires:
+
+```csharp
+var big = nums.Where(n => n > 10).Select(n => n * 2);   // no work yet
+var total = big.Sum();                                  // NOW the pipeline runs
+```
+
+Sources matter: an array re-iterates cheaply, but a query built on a
+method with side effects re-triggers them on EVERY enumeration.
+
+## The multiple-enumeration bug
+
+```csharp
+var expensive = LoadAndParse();          // IEnumerable — lazy
+if (expensive.Any())                     // pass 1
+    Render(expensive.Where(x => x.Ok)); // pass 2: LoadAndParse again!
+```
+
+Fix: materialize once at the boundary — `var data = LoadAndParse().ToList();`
+— then query the list freely. Materialize EAGER data sparingly (memory),
+LAZY side-effecting sources always.
+
+## Captured variables: the plan is not a snapshot
+
+A deferred query closes over VARIABLES, so changing them before execution
+changes the result:
+
+```csharp
+int threshold = 10;
+var q = nums.Where(n => n > threshold);
+threshold = 100;            // q now uses 100 — queries see current state
+```
+
+This is the same capture semantics as lambdas (Module 3) applied to plans.
+
+## IEnumerable vs IQueryable (concept)
+
+`IEnumerable<T>` composes delegates; filtering happens in memory.
+`IQueryable<T>` composes EXPRESSION TREES a provider can translate (to SQL).
+You use IQueryable against a database in Advanced/data work — but the
+discipline here (look at the source, know when it runs) is the same.
+
+## Check your understanding
+
+- Which operator makes the whole chain run? (Any immediate operator.)
+- Why materialize a side-effecting source once? (Every enumeration re-runs the side effects.)

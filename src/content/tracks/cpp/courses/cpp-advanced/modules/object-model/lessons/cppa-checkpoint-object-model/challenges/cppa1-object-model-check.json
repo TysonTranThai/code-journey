@@ -1,0 +1,25 @@
+{
+  "id": "cppa1-object-model-check",
+  "title": "Object Model Gauntlet",
+  "prompt": "Implement the three functions so every check passes: a by-value factory, a reference-returning accessor with persistent storage, and a destruction-order reporter.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <type_traits>\n\nstd::string makeTag();                       // prvalue factory\nstd::string& registry();                     // lvalue accessor with storage\nstd::string pops(int n);                     // destruction order of n scoped guards: \"n,n-1,...,1\"\n",
+  "tests": [
+    {
+      "name": "factory is prvalue",
+      "code": "static_assert(std::is_same_v<decltype((makeTag())), std::string>, \"must be prvalue\");\nCHECK_CONTAINS(makeTag(), \"tag\");",
+      "hint": "Return a std::string by value containing \"tag\"."
+    },
+    {
+      "name": "registry is lvalue with persistence",
+      "code": "registry() = \"written\";\nCHECK_EQ(registry(), std::string(\"written\"));",
+      "hint": "Back it with a function-local static std::string and return std::string&."
+    },
+    {
+      "name": "pops reports reverse destruction",
+      "code": "CHECK_EQ(pops(4), std::string(\"4,3,2,1\"));",
+      "hint": "Destruction is reverse construction order; join with commas, no spaces."
+    }
+  ]
+}

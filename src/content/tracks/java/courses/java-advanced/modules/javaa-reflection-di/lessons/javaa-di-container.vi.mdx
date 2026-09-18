@@ -1,0 +1,27 @@
+Một DI container là ba quy tắc đệ quy:
+
+1. **Resolve(type)**: tìm constructor, resolve từng kiểu tham số, rồi khởi tạo.
+2. **Memoize**: một instance mỗi kiểu (singleton scope) — nếu không, mỗi lần
+   resolve dựng lại toàn bộ đồ thị đối tượng mới.
+3. **Phát hiện chu trình**: resolve A cần B cần A — không có tập "đang xử lý",
+   đệ quy không bao giờ dừng (bạn nhận `StackOverflowError` trong production,
+   lúc 3 giờ sáng).
+
+```java
+public <T> T resolve(Class<T> type) {
+    if (cache.containsKey(type)) return type.cast(cache.get(type));
+    if (!inProgress.add(type)) throw new IllegalStateException("circular dependency: " + type);
+    Constructor<?> ctor = type.getDeclaredConstructors()[0];
+    Object[] args = Arrays.stream(ctor.getParameterTypes())
+                          .map(this::resolve).toArray();
+    T instance = type.cast(ctor.newInstance(args));
+    inProgress.remove(type);
+    cache.put(type, instance);
+    return instance;
+}
+```
+
+Bốn mươi dòng, không phụ thuộc nào — và giờ `@Autowired` của Spring chỉ là
+*người tiêu dùng* những ý tưởng bạn sở hữu. Constructor injection giữ đồ thị
+trung thực: dependency hiện trong chữ ký, final mặc định, không thể dựng dở
+dang.

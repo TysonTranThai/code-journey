@@ -1,0 +1,18 @@
+{
+  "title": "Bộ reducer phân tích",
+  "prompt": "Xây `Solution` phân tích trên `record Event(String user, String type, int ms)`:\n- `static Map<String, Long> eventsByType(List<Event> events)` — đếm theo\n  type (giá trị Long).\n- `static Map<String, Integer> msByUser(List<Event> events)` — tổng ms\n  theo user (merge trùng bằng sum).\n- `static Map<Boolean, List<String>> slowVsFast(List<Event> events,\n  int threshold)` — phân loại *type* sự kiện theo việc trung bình ms của\n  nó có vượt ngưỡng không (nhóm true = chậm hơn). Type trong mỗi nhóm\n  sắp theo bảng chữ cái.",
+  "tests": [
+    {
+      "name": "Đếm theo type",
+      "hint": "groupingBy(Event::type, counting())."
+    },
+    {
+      "name": "Tổng ms merge theo user",
+      "hint": "toMap(Event::user, Event::ms, Integer::sum)."
+    },
+    {
+      "name": "Chậm vs nhanh theo trung bình",
+      "hint": "Trung bình theo type: quick=5 ≤ 40 (false), slow=60 > 40 (true)."
+    }
+  ]
+}

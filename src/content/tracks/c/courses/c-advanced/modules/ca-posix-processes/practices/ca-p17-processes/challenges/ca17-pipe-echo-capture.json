@@ -1,0 +1,26 @@
+{
+  "id": "ca17-pipe-echo-capture",
+  "title": "Capture Child Output Through a Pipe",
+  "prompt": "POSIX. Implement `int capture_child(const char *cmd, char *out, size_t cap)` — fork, redirect the child's stdout into a pipe created before the fork, exec `/bin/sh -c cmd`, read until EOF into out (at most cap-1 bytes, NUL-terminate), waitpid, and return the child's exit code (or -1 on any setup failure).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define _POSIX_C_SOURCE 200809L\n#include <unistd.h>\n#include <sys/wait.h>\n#include <fcntl.h>\n#include <signal.h>\n#include <string.h>\n#include <errno.h>\n",
+  "tests": [
+    {
+      "name": "captures stdout",
+      "code": "char buf[64] = {0};\nCHECK_EQ(capture_child(\"echo pipe-ok\", buf, 64), 0);\nCHECK(strstr(buf, \"pipe-ok\") != NULL);",
+      "hint": "Pipe before fork, dup2 in the child, read to EOF in the parent: the child's stdout lands in buf."
+    },
+    {
+      "name": "propagates exit code",
+      "code": "char buf2[64] = {0};\nCHECK_EQ(capture_child(\"exit 3\", buf2, 64), 3);",
+      "hint": "The shell exits 3; waitpid + WEXITSTATUS report it."
+    },
+    {
+      "name": "empty output on silent child",
+      "code": "char buf3[16] = {0};\nCHECK_EQ(capture_child(\"exit 0\", buf3, 16), 0);\nCHECK_EQ((int)strlen(buf3), 0);",
+      "hint": "A child that writes nothing yields an empty, terminated buffer."
+    }
+  ],
+  "level": "combination"
+}

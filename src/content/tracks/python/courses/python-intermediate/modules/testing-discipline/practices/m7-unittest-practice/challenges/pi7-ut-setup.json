@@ -1,0 +1,26 @@
+{
+  "id": "pi7-ut-setup",
+  "title": "Fixture Discipline",
+  "prompt": "Implement class Cart with add(item, price) and total(). Then write TestCart whose setUp creates a fresh self.cart with one item ('tea', 3) and whose tests add more and assert totals. Assign the class to SUITE_TEST.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import unittest\n\nclass Cart:\n    pass\n\nclass TestCart(unittest.TestCase):\n    pass\n\nSUITE_TEST = None\n",
+  "tests": [
+    {
+      "name": "cart works",
+      "code": "c = Cart()\nc.add('tea', 3)\nassert c.total() == 3\nc.add('cup', 4)\nassert c.total() == 7",
+      "hint": "add accumulates prices; total sums them."
+    },
+    {
+      "name": "setUp runs per test",
+      "code": "import unittest, io\nassert 'def setUp' in code, 'give the suite a setUp'\nassert code.count('def test_') >= 2, 'at least two test methods'\nresult = unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(unittest.TestLoader().loadTestsFromTestCase(SUITE_TEST))\nassert result.wasSuccessful(), 'cart tests failed'",
+      "hint": "setUp method plus at least two tests using self.cart."
+    },
+    {
+      "name": "suite passes",
+      "code": "import unittest, io\nstream = io.StringIO()\nresult = unittest.TextTestRunner(stream=stream, verbosity=0).run(unittest.TestLoader().loadTestsFromTestCase(SUITE_TEST))\nassert result.wasSuccessful(), stream.getvalue()",
+      "hint": "Independent, green tests — no shared state leaks."
+    }
+  ],
+  "level": "independent"
+}

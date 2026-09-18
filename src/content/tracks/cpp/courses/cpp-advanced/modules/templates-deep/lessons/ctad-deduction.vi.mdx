@@ -1,0 +1,20 @@
+## Class template argument deduction (CTAD)
+
+`std::pair p(1, 2.0);` — không cần `<int, double>`; tham số của constructor dẫn phép suy diễn. Không có CTAD bạn phải viết `std::pair<int, double> p(1, 2.0);`.
+
+## Chỗ suy luận hay sai: cặp iterator
+
+Constructor `template <class It> Box(It first, It last) : items(first, last) {}` sẽ suy ra `Box<int*>` từ `Box b(begin(arr), end(arr));` — kiểu *iterator*, không phải kiểu *phần tử*. **Deduction guide** sửa phép suy luận mà không đụng vào lớp:
+
+```cpp
+template <class It>
+Box(It first, It last) -> Box<std::iter_value_t<It>>;
+```
+
+Guide nói rằng: "gặp chữ ký constructor này thì suy từ *kiểu giá trị* thay vì kiểu iterator." Thư viện chuẩn có hàng chục guide như vậy: `std::vector v(begin, end)` suy được kiểu phần tử theo đúng cách này.
+
+## C++20: alias CTAD
+
+`template <class T> using VecOf = std::vector<T>;` — sau đó `VecOf v{1, 2, 3};` suy ra `std::vector<int>`. Từ C++20, alias trở thành công dân đầy đủ của cơ chế suy luận.
+
+**Kỹ năng review:** khi kiểu container trả về "sai" sau một lời gọi constructor, hãy nghi ngờ thiếu guide trước khi nghi ngờ code của bạn.

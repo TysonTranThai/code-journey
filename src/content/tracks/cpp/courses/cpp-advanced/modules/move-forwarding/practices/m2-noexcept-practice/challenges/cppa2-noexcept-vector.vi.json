@@ -1,0 +1,14 @@
+{
+  "title": "noexcept mở khóa move khi lớn lên",
+  "prompt": "Hoàn thiện move constructor và move assignment của `Buffer` **noexcept** bằng `std::exchange`. Bài kiểm tra làm `std::vector<Buffer>` lớn lên 8 phần tử bằng push_back và đòi bộ đếm copy phải giữ ở 0 — bằng chứng vector chuyển chỗ bằng move.",
+  "tests": [
+    {
+      "name": "move là noexcept",
+      "hint": "Buffer(Buffer&& o) noexcept : payload(o.payload), id(std::exchange(o.id, 0)) {} — cùng hình dáng cho phép gán."
+    },
+    {
+      "name": "vector lớn lên không copy lần nào",
+      "hint": "Với move noexcept, việc cấp phát lại chuyển chỗ phần tử bằng move — bộ đếm copy không bao giờ tăng."
+    }
+  ]
+}

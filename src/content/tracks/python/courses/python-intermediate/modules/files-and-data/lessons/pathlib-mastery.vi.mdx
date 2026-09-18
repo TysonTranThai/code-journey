@@ -1,0 +1,31 @@
+Code tệp của người mới ghép chuỗi bằng `/` hoặc `os.path.join`. `pathlib` coi
+đường dẫn là một **đối tượng** có hành vi:
+
+```python
+from pathlib import Path
+
+data_dir = Path("data")
+config = data_dir / "settings.json"     # toán tử / nối một cách an toàn
+config.name          # "settings.json"
+config.stem          # "settings"
+config.suffix        # ".json"
+config.parent        # data
+config.exists()
+```
+
+Những tính năng đắt giá:
+
+```python
+data_dir.mkdir(parents=True, exist_ok=True)   # tạo thư mục không lo trùng
+for csv_file in data_dir.glob("*.csv"):       # so mẫu, iterator lười biếng
+    print(csv_file)
+
+text = config.read_text(encoding="utf-8")     # đọc nhanh (tệp nhỏ!)
+config.write_text("{}", encoding="utf-8")     # ghi nhanh
+```
+
+## Thói quen an toàn với đường dẫn
+
+- **Không bao giờ tin đường dẫn do người dùng cung cấp.** `Path(user_input).resolve()` rồi xác minh nó nằm trong thư mục bạn mong đợi — nếu không, `../../etc/passwd` sẽ đi ra ngoài sandbox của bạn. Đó là path traversal, và module 11 sẽ audit lại chủ đề này.
+- **Luôn truyền `encoding=` khi đọc/ghi văn bản.** Mã hóa mặc định thay đổi theo nền tảng; UTF-8 tường minh là hợp đồng tính di động.
+- **`resolve()`** biến đường dẫn tương đối thành tuyệt đối (và thu gọn `..`) — chuẩn hóa trước, so sánh sau.

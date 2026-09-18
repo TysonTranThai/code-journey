@@ -1,0 +1,15 @@
+Một micro-benchmark defendable trong 30 dòng:
+
+1. **Warmup**: chạy workload W lần; vứt toàn bộ số liệu.
+2. **Đo**: chạy R vòng, mỗi vòng đo N phép toán bằng nanoTime.
+3. **Giảm dữ liệu**: lấy MEDIAN của trung bình các vòng — median chịu nhiễu
+   (một đợt tạm dừng GC) tốt hơn mean nhiều.
+4. **So sánh với epsilon**: chỉ tuyên bố A nhanh hơn B khi
+   `medianB - medianA > epsilon`, với epsilon là một phần đáng kể (ví dụ 10%)
+   của median chậm hơn. Mọi thứ trong epsilon là "không khác biệt đo được".
+
+Bản thân benchmark cũng là code và có thể bị lừa: nếu JIT chứng minh kết quả
+đo không được dùng, nó xóa luôn công việc (dead-code elimination) và bạn đo
+một khoảng không. Hãy tiêu thụ kết quả — cộng vào biến, in ra ở chế độ verbose,
+kiểm tra nó. Benchmark trả về void và bỏ qua output là benchmark của optimizer,
+không phải của code bạn.

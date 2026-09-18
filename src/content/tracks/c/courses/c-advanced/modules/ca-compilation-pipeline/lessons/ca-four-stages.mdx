@@ -1,0 +1,20 @@
+## gcc is a driver, not one program
+
+One `gcc hello.c` command orchestrates four stages:
+
+1. **Preprocessor** (cpp): expands macros and includes → still C text.
+2. **Compiler proper** (cc1): C text → assembly text.
+3. **Assembler** (as): assembly → object file (machine code + symbol table).
+4. **Linker** (ld): objects + libraries → executable.
+
+`gcc -E` stops after preprocessing, `-S` after compiling, `-c` after assembling. Each flag hands you an intermediate artifact you can actually read.
+
+## Why the boundaries matter
+
+- `-E` output shows what macros *really* did — the ground truth of module 9.
+- `-S` output is where you watch optimization happen (module 4's claims become visible).
+- `-c` produces the .o whose symbol table the linker resolves — and whose collisions and missing definitions produce link errors.
+
+## The linking step defines C's programming model
+
+Undefined reference, multiple definition, and static-vs-external linkage are all linker concepts. Declaring a function without defining it compiles fine (the compiler trusts you) and fails only at link — which is why header/implementation drift surfaces so late.

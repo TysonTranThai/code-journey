@@ -1,0 +1,29 @@
+## Projection: transform cho thuật toán
+
+Hầu hết thuật toán range nhận một **projection** ở cuối — callable áp lên phần tử trước khi thuật toán nhìn thấy:
+
+```cpp
+std::vector<Student> roster = ...;
+std::ranges::sort(roster, std::ranges::less{}, &Student::score);   // sort theo score
+auto oldest = std::ranges::max_element(roster, {}, &Student::age);
+```
+
+Không copy, không lượt biến đổi trước, không vector khóa riêng. `{}` là comparator mặc định; projection đi cuối.
+
+## Giao diện view — "tùy biến" nghĩa là gì
+
+Một view tối thiểu cần: `begin`/`end` (iterator), và `empty`/`size` khi có sẵn rẻ. Công thức thực tế: lưu một tham chiếu `std::ranges::range` + tham số của bạn, phơi ra một iterator mà `operator++` và `operator*` cài đặt phép biến đổi của bạn, và đánh dấu lớp bọc tương thích `std::ranges::view` (hoặc đơn giản là kế thừa `std::ranges::view_interface`).
+
+```cpp
+template <std::ranges::view V>
+class SquaredView : public std::ranges::view_interface<SquaredView<V>> {
+    V base_;
+public:
+    SquaredView() = default;
+    explicit SquaredView(V v) : base_(std::move(v)) {}
+    auto begin() const { return std::ranges::begin(base_); }   // đơn giản hóa: iterator transform
+    auto end() const   { return std::ranges::end(base_); }
+};
+```
+
+View tùy biến *đúng nghĩa* dùng kiểu thích ứng iterator theo phong cách `std::views::transform`; bài tập chấm điểm thay vào đó yêu cầu dựng một **stride view** (mỗi phần tử thứ K) với iterator viết tay — vừa đủ nhỏ để hoàn thành, vừa đủ đầy để dạy cơ chế.

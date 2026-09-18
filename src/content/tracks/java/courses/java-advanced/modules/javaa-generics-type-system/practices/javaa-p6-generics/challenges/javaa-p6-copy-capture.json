@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p6-copy-capture",
+  "title": "The copy API, typed correctly",
+  "prompt": "1. `static <T> void copy(List<? extends T> src, List<? super T> dst)` — append every\nelement of src to the end of dst. Must NOT disturb existing dst content.\n2. `static void swap(List<?> list, int i, int j)` — swap two elements. Because `?`\ncannot be written to, implement via a private generic capture helper\n`static <E> void swapHelper(List<E> list, int i, int j)` and call it.\nBoth must compile with exactly these signatures (wildcards in the public API).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "copy appends without disturbing",
+      "code": "\njava.util.List<Number> dst = new java.util.ArrayList<>(java.util.List.<Number>of(999));\nSolution.copy(java.util.List.of(1, 2), dst);\ncheckEq(dst, java.util.List.of(999, 1, 2), \"existing content preserved\");\n",
+      "hint": "PECS: src produces, dst consumes."
+    },
+    {
+      "name": "swap via wildcard capture",
+      "code": "\njava.util.List<String> xs = new java.util.ArrayList<>(java.util.List.of(\"a\", \"b\", \"c\"));\nSolution.swap(xs, 0, 2);\ncheckEq(xs, java.util.List.of(\"c\", \"b\", \"a\"), \"captured helper swaps\");\n",
+      "hint": "The unknown becomes a named E inside the helper."
+    }
+  ],
+  "level": "independent"
+}

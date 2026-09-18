@@ -1,0 +1,20 @@
+{
+  "id": "i2-store-create",
+  "title": "Task Store: Create",
+  "prompt": "Write `makeStore()` returning an object with `create(body, userId)` — validates: title (string, 1-200 chars) and due (optional ISO-parseable date). Valid => { ok: true, task: { id: \"t1\", title, due: due ?? null, ownerId: userId, done: false } }; invalid => { ok: false, errors: [{field, message}...] } (collect all errors). IDs increment: t1, t2...",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function makeStore() {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "creates valid tasks with auto ids",
+      "code": "const fn = new Function(code + \"\\nreturn { makeStore };\");\nconst { makeStore } = fn();\nconst store = makeStore();\nconst r1 = store.create({ title: \"Ship it\" }, \"u1\");\nif (!r1.ok || r1.task.id !== \"t1\" || r1.task.ownerId !== \"u1\") throw new Error(\"First task t1 owned by u1.\");\nconst r2 = store.create({ title: \"Again\" }, \"u2\");\nif (r2.task.id !== \"t2\") throw new Error(\"Ids increment.\");",
+      "hint": "A counter closure; stamp ownerId and done: false."
+    },
+    {
+      "name": "collects all validation errors",
+      "code": "const fn = new Function(code + \"\\nreturn { makeStore };\");\nconst { makeStore } = fn();\nconst store = makeStore();\nconst bad = store.create({ title: \"\", due: \"not-a-date\" }, \"u1\");\nif (bad.ok !== false) throw new Error(\"Invalid => ok false.\");\nif (bad.errors.length !== 2) throw new Error(\"Both errors collected.\");\nif (!bad.errors.some((e) => e.field === \"title\") || !bad.errors.some((e) => e.field === \"due\")) throw new Error(\"Each failing field named.\");",
+      "hint": "Push into an array through both checks; return it."
+    }
+  ]
+}

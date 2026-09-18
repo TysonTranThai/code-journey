@@ -1,0 +1,15 @@
+{
+  "id": "cint-p13-two-phase",
+  "title": "Two-Phase Init, Provable",
+  "prompt": "Implement a two-phase connection object. The boilerplate\ndeclares:\n\n```c\ntypedef enum { C_NEW, C_READY, C_CONNECTED, C_FAILED } CState;\ntypedef struct {\n    CState state;\n    char target[32];\n    int attempts;\n} Conn;\nint conn_init(Conn *c);                       /* -> C_READY; 0 ok, -1 NULL */\nint conn_connect(Conn *c, const char *target);/* 0 ok, -1 bad; -> C_CONNECTED\n                                                 or C_FAILED (attempts counted) */\nvoid conn_close(Conn *c);                     /* -> C_READY from CONNECTED/FAILED;\n                                                 no-op from NEW/READY */\nint conn_destroy(Conn *c);                    /* safe from EVERY state; 0 ok, -1 NULL */\n```\n\nconnect fails (state C_FAILED) iff target is NULL/empty or longer than\n31 chars. destroy must succeed from every reachable state.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\n#include <string.h>\ntypedef enum { C_NEW, C_READY, C_CONNECTED, C_FAILED } CState;\ntypedef struct {\n    CState state;\n    char target[32];\n    int attempts;\n} Conn;\nint conn_init(Conn *c);\nint conn_connect(Conn *c, const char *target);\nvoid conn_close(Conn *c);\nint conn_destroy(Conn *c);\n",
+  "tests": [
+    {
+      "name": "every state is destroyable",
+      "code": "\nConn c;\nCHECK_EQ(conn_destroy(NULL), -1);\nCHECK_EQ(conn_init(NULL), -1);\nCHECK_EQ(conn_init(&c), 0);\nCHECK_EQ(conn_destroy(&c), 0);               /* destroy from READY */\nCHECK_EQ(conn_init(&c), 0);                  /* reusable */\nCHECK_EQ(conn_connect(&c, NULL), -1);\nCHECK_EQ(c.state, C_FAILED);\nCHECK_EQ(c.attempts, 1);\nCHECK_EQ(conn_destroy(&c), 0);               /* destroy from FAILED */\nCHECK_EQ(conn_init(&c), 0);\nCHECK_EQ(conn_connect(&c, \"\"), -1);\nCHECK_EQ(conn_connect(&c, \"host\"), 0);\nCHECK_EQ(c.state, C_CONNECTED);\nconn_close(&c);\nCHECK_EQ(c.state, C_READY);\nCHECK_EQ(conn_destroy(&c), 0);\n",
+      "hint": "init sets state C_READY and zeroes everything; destroy works by inspection of nothing — it just returns 0 (no resources)."
+    }
+  ]
+}

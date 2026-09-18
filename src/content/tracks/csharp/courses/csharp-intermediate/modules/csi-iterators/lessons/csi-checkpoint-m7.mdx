@@ -1,0 +1,17 @@
+## The gate (mini-build)
+
+A text-processing pipeline over a fixed in-memory "log":
+
+1. `ParseLines(IEnumerable<string> lines)` → yields `(int Level, string Msg)`
+   for lines shaped `"INFO|started"` / `"WARN|disk"`.
+2. `FilterLevel(IEnumerable<(int, string)>, int minLevel)` → yields entries
+   with Level >= minLevel.
+3. `Format(IEnumerable<(int, string)>)` → yields `"[LVL] msg"` strings.
+4. `CountingSource` — a minimal `IEnumerable<string>` that counts how many
+   lines were actually read (its enumerator increments on every MoveNext
+   that yields).
+5. `Run(IEnumerable<string> lines, int minLevel, int maxResults)` composes
+   1→2→3 and returns at most maxResults formatted entries — and stops
+   PULLING from the source the moment the cap is reached (observable: a
+   CountingSource passed to Run reports how many lines were read; a capped
+   run must not drain the source).

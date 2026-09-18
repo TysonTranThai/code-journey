@@ -1,0 +1,21 @@
+{
+  "id": "javb-m9-set-equality",
+  "title": "hashCode/equals in action",
+  "prompt": "Inside `Solution`, write `static java.util.HashSet<String> dedupe(java.util.List<String> words)` returning a HashSet of the distinct words. Then write `record Slug(String raw)` whose compact constructor lowercases and trims the raw value — so that `new Slug(\"  A \")` equals `new Slug(\"a\")` and both collapse to one entry in a HashSet.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static java.util.HashSet<String> dedupe(java.util.List<String> words) {\n        return null;\n    }\n\n    public record Slug(String raw) {\n        public Slug {\n            // normalize raw here\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "string dedupe",
+      "code": "\nCjTestBase.checkEq(Solution.dedupe(java.util.List.of(\"a\", \"b\", \"a\")).size(), 2, \"two distinct\");\n",
+      "hint": "HashSet collapses equal values."
+    },
+    {
+      "name": "normalized record collapses",
+      "code": "\njava.util.HashSet<Solution.Slug> set = new java.util.HashSet<>();\nset.add(new Solution.Slug(\"  A \"));\nset.add(new Solution.Slug(\"a\"));\nCjTestBase.checkEq(set.size(), 1, \"normalization + record equals\");\n",
+      "hint": "The compact constructor normalizes BEFORE equals/hashCode use it."
+    }
+  ],
+  "level": "combination"
+}

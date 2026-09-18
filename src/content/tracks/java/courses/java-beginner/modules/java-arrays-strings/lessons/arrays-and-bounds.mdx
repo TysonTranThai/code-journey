@@ -1,0 +1,36 @@
+An **array** is a fixed-length row of same-typed values, accessed by index:
+
+```java
+int[] temps = {18, 21, 19, 25};       // literal: length fixed at creation
+double[] prices = new double[10];     // 10 slots, all 0.0
+temps[0] = 17;                        // index 0 is the FIRST element
+int last = temps[temps.length - 1];   // length is a field, not a method
+```
+
+The rules that shape everything:
+
+- **Fixed size.** An array cannot grow. `temps.length` never changes. When
+  your data must grow, that is the sign to reach for `ArrayList` (Module 10).
+- **Zero-based indexing.** Valid indexes run `0` .. `length-1`. Outside that
+  range throws `ArrayIndexOutOfBoundsException` the moment it happens.
+- **Homogeneous and typed.** An `int[]` holds ints — nothing else. Java
+  checks at compile time.
+
+Iterating is the module-4 loop with `length` as the boundary; the enhanced
+`for` covers the common read-everything case. **Bounds thinking** is the
+skill: every index you compute (`i`, `i + 1`, `length - 1`, midpoints) must
+be re-checked against `0` and `length - 1` in your head. Swapping neighbors
+`a[i]` with `a[i + 1]` only works while `i + 1 <= length - 1` — one
+comparison mistake and the JVM throws.
+
+**2D arrays** are arrays of arrays — a grid:
+
+```java
+int[][] grid = { {1, 2}, {3, 4} };
+System.out.println(grid[1][0]);      // 3 — row 1, column 0
+for (int[] row : grid) {
+    for (int cell : row) { /* ... */ }
+}
+```
+
+**Next:** Java's most-used class — String.

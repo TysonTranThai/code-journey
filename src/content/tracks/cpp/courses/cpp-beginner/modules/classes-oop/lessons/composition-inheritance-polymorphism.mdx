@@ -1,0 +1,59 @@
+## Composition: objects built from objects
+
+```cpp
+class Engine { /* ... */ };
+
+class Car {
+private:
+    Engine engine_;                    // Car HAS-AN Engine
+    std::vector<std::string> plates_;
+};
+```
+
+Most "reuse" is this: an object that owns others and forwards work to them. It is flexible (swap the member), honest (the relationship is visible), and needs no ceremony.
+
+## The inheritance question
+
+Ask: is the new class a genuine **subtype** — same concept, specialized behavior — that code should treat *uniformly through the base interface*? If yes:
+
+```cpp
+class Shape {
+public:
+    virtual ~Shape() = default;                  // ALWAYS a virtual destructor
+    virtual double area() const = 0;             // pure virtual: no body here
+};
+
+class Circle : public Shape {
+public:
+    explicit Circle(double r) : radius_(r) {}
+    double area() const override { return 3.14159265358979 * radius_ * radius_; }
+private:
+    double radius_;
+};
+
+class Square : public Shape {
+public:
+    explicit Square(double s) : side_(s) {}
+    double area() const override { return side_ * side_; }
+private:
+    double side_;
+};
+
+double total_area(const std::vector<std::unique_ptr<Shape>>& shapes) {   // polymorphism
+    double total = 0;
+    for (const auto& s : shapes) total += s->area();     // the right area() is chosen at runtime
+    return total;
+}
+```
+
+Read the annotations:
+
+- `virtual` — "subclasses may replace this".
+- `= 0` — pure virtual; `Shape` becomes **abstract** (cannot be instantiated; it is a contract).
+- `override` — ask the compiler to verify you are actually replacing something (typos become errors — always write it).
+- `virtual ~Shape() = default;` — deleting through a base pointer without a virtual destructor is undefined behavior. Write it, every time, no exceptions.
+- `std::unique_ptr<Shape>` — owning pointers to polymorphic objects; the memory-safety story is module 12, but you are seeing the real shape of production polymorphism now.
+
+## The honest default
+
+Beginner code that reaches for inheritance usually wanted composition (a `Report` with a `Formatter` member) or nothing at all. Reach for inheritance when you genuinely have *many* subtypes treated uniformly through one interface — the shapes case, plugins, strategy variants. Otherwise: composition.

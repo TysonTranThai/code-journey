@@ -1,0 +1,50 @@
+When an object is copied (by value, from a container growth, pass-by-value),
+C++ uses the **copy constructor**; on assignment, the **copy assignment
+operator**. The compiler generates member-wise copies by default — correct
+for value members, deeply wrong for raw owning pointers.
+
+```cpp
+#include <cstring>
+#include <iostream>
+
+class Buffer {
+public:
+    explicit Buffer(std::size_t n) : size_{n}, data_{new char[n]{}} {}
+    ~Buffer() { delete[] data_; }
+
+    Buffer(const Buffer& other)                       // copy ctor: deep copy
+        : size_{other.size_}, data_{new char[other.size_]} {
+        std::memcpy(data_, other.data_, size_);
+    }
+
+    Buffer& operator=(const Buffer& other) {           // copy assign
+        if (this == &other) return *this;              // self-assignment guard
+        char* fresh = new char[other.size_];           // allocate FIRST
+        std::memcpy(fresh, other.data_, other.size_);
+        delete[] data_;                                // only then release
+        data_ = fresh;
+        size_ = other.size_;
+        return *this;
+    }
+
+    std::size_t size() const { return size_; }
+    char& at(std::size_t i) { return data_[i]; }
+
+private:
+    std::size_t size_;
+    char* data_;
+};
+```
+
+## Rule of Three
+
+If you write any of: destructor, copy constructor, copy assignment — you
+almost certainly need all three. A destructor signals the type *owns* a
+resource; default member-wise copying then creates two owners of one
+resource (double-free), which is the classic crash.
+
+## The copy-and-swap alternative
+
+`Buffer& operator=(Buffer other) { swap(*this, other); return *this; }`
+handles self-assignment, gives the strong exception guarantee, and is hard
+to get wrong — at the cost of one extra copy.

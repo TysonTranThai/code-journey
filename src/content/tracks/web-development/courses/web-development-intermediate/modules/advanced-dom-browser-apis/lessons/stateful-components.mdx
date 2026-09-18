@@ -1,0 +1,45 @@
+Beginner scripts grow into tangles: every feature reaches into the DOM from
+everywhere. The intermediate move is to give each widget a **component shape**:
+private state, a render function that draws state to the DOM, and events that
+only update state.
+
+## The factory pattern
+
+```js
+function createTabs(root) {
+  const state = { active: 0 }; // 1. private state (a closure)
+  const buttons = [...root.querySelectorAll("[role=tab]")];
+
+  function render() {
+    // 2. state → DOM
+    buttons.forEach((b, i) => {
+      b.setAttribute("aria-selected", String(i === state.active));
+    });
+  }
+
+  root.addEventListener("click", (e) => {
+    // 3. events → state
+    const b = e.target.closest("[role=tab]");
+    if (!b) return;
+    state.active = buttons.indexOf(b);
+    render();
+  });
+
+  render(); // initial draw
+}
+```
+
+The rules that keep it clean:
+
+- Events **never** edit the DOM directly — they update `state` and call
+  `render()`. One source of truth, no drift.
+- `state` is closed over: nothing outside can poke it. Changes flow
+  through the component's own API.
+- `render()` is idempotent — call it ten times, get the same UI.
+
+## Accessibility is part of the pattern
+
+Components carry semantics: `role`, `aria-selected`,
+`aria-expanded`, focus moved into modals and back. Doing accessibility at
+the component layer means every instance inherits it — retrofitting it later is
+the expensive path.

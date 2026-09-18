@@ -1,0 +1,16 @@
+{
+  "id": "cppa18-checked-math",
+  "title": "Checked Allocation Math",
+  "prompt": "Implement `checkedTotal(a,b,c)` returning `a*b*c` or nullopt on ANY intermediate overflow. The battery uses SIZE_MAX-class extremes.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <cstdint>\n#include <optional>\n#include <string>\n#include <vector>\n\n// --- checked allocation math: fail closed on overflow ---\nstd::optional<std::size_t> checkedTotal(std::size_t a, std::size_t b, std::size_t c);\n\n// --- canonicalizing path sandboxer ---\n// Resolves '.', '..', redundant separators; then requires the result to stay\n// under the trusted root \"/data\". Returns nullopt on escape attempt.\nstd::optional<std::string> sandboxPath(const std::string& userPath);\n\n// --- shell-argument quoting: result cannot change token structure ---\nstd::string shellQuote(const std::string& arg);\n",
+  "tests": [
+    {
+      "name": "overflow extremes",
+      "code": "CHECK_EQ(checkedTotal(2, 3, 4).value_or(0), std::size_t{24});\nCHECK_EQ(checkedTotal(1, 1, SIZE_MAX).value_or(0), SIZE_MAX);\nCHECK(!checkedTotal(SIZE_MAX, 2, 1).has_value());\nCHECK(!checkedTotal(2, SIZE_MAX / 2 + 1, 1).has_value());\nCHECK(!checkedTotal(0, SIZE_MAX, SIZE_MAX).has_value() ? true : checkedTotal(0, SIZE_MAX, SIZE_MAX).value_or(1) == 0);\nCHECK_EQ(checkedTotal(0, 0, 0).value_or(1), std::size_t{0});",
+      "hint": "Two steps: !__builtin_mul_overflow(a, b, &t) then !__builtin_mul_overflow(t, c, out). Multiply by zero can never overflow — let it succeed naturally."
+    }
+  ]
+}

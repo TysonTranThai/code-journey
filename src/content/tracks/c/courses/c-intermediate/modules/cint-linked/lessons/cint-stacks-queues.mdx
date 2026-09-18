@@ -1,0 +1,30 @@
+## Constraints are the feature
+
+A stack is a list you may only touch at one end. A queue is a list you
+may only append at one end and remove from the other. The constraint is
+what makes reasoning possible — and the implementation is where the
+costs live:
+
+- **Stack**: head-insert, head-remove. O(1) with a singly-linked list.
+  Nothing else needed.
+- **Queue**: append at tail, remove at head. With a singly-linked list
+  that means keeping a *tail pointer too* — and the discipline that
+  every append updates it (`tail->next = n; tail = n;` and when the
+  queue was empty, `head = tail = n`).
+- **Deque**: both ends. A singly-linked list cannot remove from the
+  tail in O(1) — you need a doubly-linked list (or sentinel ring).
+
+## The empty/one-element boundary, again
+
+Every queue bug in the wild is one of: append to empty queue forgetting
+to set head; pop to empty forgetting to clear tail; or popping the last
+element leaving a stale tail. Write the two-element invariant in a
+comment — `head == NULL  <=>  tail == NULL` — and test the boundary:
+push one, pop one, push again.
+
+## Ownership stays the same
+
+The container owns its nodes; values are copied in and out by value
+(or borrowed pointers with documented loans). `destroy` walks and frees
+exactly once — the same discipline as any list, now wrapped in the
+constrained API.

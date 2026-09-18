@@ -1,0 +1,14 @@
+{
+  "title": "Optimistic concurrency, mô phỏng",
+  "prompt": "Cài `apply_update(row, mutate, conflict_on_attempt=())` — một lần cập nhật optimistic-concurrency trên `row` (dict chứa `'id'` và `'version'`):\n\n- lặp tối đa 3 lần thử; mỗi lần: `seen = row['version']`, copy row, áp dụng `mutate(copy)`\n- nếu số lần thử nằm trong `conflict_on_attempt`, mô phỏng việc thua tranh chấp: phiên bản của dòng lưu trữ tăng lên (writer khác đã commit) và bạn thử lại\n- ngược lại lần ghi thành công: dòng mới giữ các thay đổi và có `version = seen + 1`; trả `{'ok': True, 'row': new_row, 'attempts': n}`\n- sau 3 lần thử thất bại: trả `{'ok': False, 'attempts': 3}`\n\nPhép kiểm phân biệt: một xung đột phải đọc lại phiên bản đã tăng, không được ghi đè mù quáng bằng bản cũ.",
+  "tests": [
+    {
+      "name": "Ghi sạch tăng phiên bản đúng một lần",
+      "hint": "Copy-mutate-commit; phiên bản đã thấy là thứ được tăng."
+    },
+    {
+      "name": "Xung đột đọc lại rồi cuối cùng thành công",
+      "hint": "Mỗi xung đột tốn một lần thử; kẻ thắng dựa trên phiên bản mới nhất."
+    }
+  ]
+}

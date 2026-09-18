@@ -1,0 +1,40 @@
+## Ba yêu cầu
+
+Mọi đệ quy đúng đều có:
+
+1. một **trường hợp nền** — đầu vào được trả lời ngay, không gọi thêm
+2. một **trường hợp đệ quy** — đáp án dựng từ lời gọi trên đầu vào NHỎ HƠN
+3. **sự tiến triển** — mỗi lời gọi tiến gần trường hợp nền
+
+```c
+long fact(int n) {
+    if (n <= 1) return 1;        // trường hợp nền
+    return n * fact(n - 1);      // đầu vào nhỏ hơn, tiến triển chắc chắn
+}
+```
+
+Thiếu trường hợp nền hoặc sự tiến triển là ra đệ quy vô hạn — crash với
+**stack overflow**: mỗi lời gọi chiếm một khung ngăn xếp, và ngăn xếp có hạn.
+
+## Bức tranh call stack
+
+`fact(4)` → `fact(3)` → `fact(2)` → `fact(1)`: sâu bốn khung, rồi các đáp án
+nhân ngược trở lên. Độ sâu = n, nên đừng thử fact(100000).
+
+## Đệ quy tỏa sáng ở đâu
+
+Dữ liệu có cấu trúc đệ quy: cây, danh sách lồng nhau, chia-để-trị. Với vòng
+lặp phẳng trên mảng, đệ quy thường chỉ thêm khung mà không thêm sự rõ ràng —
+dạng lặp mới là công cụ trung thực ở đó.
+
+## Một vết trace để thuộc
+
+```c
+int sum_digits(int n) {
+    if (n < 10) return n;             // một chữ số
+    return n % 10 + sum_digits(n / 10);
+}
+// sum_digits(472) = 2 + sum_digits(47)
+//                 = 2 + (7 + sum_digits(4))
+//                 = 2 + (7 + 4) = 13
+```,

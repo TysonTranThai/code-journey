@@ -1,0 +1,46 @@
+Most useful loops carry state: a running total, a count, a best-so-far.
+Three patterns cover the majority.
+
+**Accumulator** — total or concatenate:
+
+```java
+double total = 0;
+for (double p : prices) {
+    total += p;
+}
+```
+
+**Counter** — count events, not elements:
+
+```java
+int passing = 0;
+for (int s : scores) {
+    if (s >= 60) passing++;
+}
+```
+
+**Best-so-far (extremum)** — track the max or min with its seed value:
+
+```java
+int max = Integer.MIN_VALUE;   // seed: smaller than any possible value
+for (int s : scores) {
+    if (s > max) max = s;
+}
+```
+
+Seeding matters: `max = 0` is wrong when all scores are negative. The
+opposite seed (`Integer.MAX_VALUE`) finds the minimum.
+
+**Searching vs counting:** a search *stops early* (break when found); a
+count or total must see everything. Choosing not to `break` a search is
+leaving performance on the table; `break`ing an accumulation is almost
+always a bug.
+
+**Common mistakes, all seen in real code review this month:**
+- updating the loop variable inside the body (`i++` twice per pass);
+- accumulating into a variable declared *inside* the loop (reset every pass);
+- `<` vs `<=` off-by-one at the boundary;
+- floating-point accumulation for money (`0.1 + 0.2 != 0.3`) — use `long`
+  cents or `BigDecimal` for currency (a habit worth forming now).
+
+**Next:** nested loops and the shapes they draw.

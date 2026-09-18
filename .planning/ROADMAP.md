@@ -21,6 +21,13 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 5: Community & AI Mentor** - Discussions anchored to content plus guarded AI hints
 - [x] **Phase 6: Hardening, Accessibility & Launch Readiness** - WCAG 2.1 AA, security review, observability, E2E coverage
 - [x] **Phase 8: Course 1 — Web Development Beginner** - First full production course: research → curriculum → 56 lessons / 51 challenges across 7 modules, all test-verified
+- [x] **Phase 9: Private Beta Deployment** - Beta live loopback-only with invite gate, hardened sandbox timeout fix, backup/restore + container rehearsal verified
+- [x] **Phase 10: Course 1 Revision** - Learn/Practice separation as first-class PracticeSet content type; 91 challenges; deliberate-practice level model
+- [x] **Phase 11: Course 2 — Web Development Intermediate** - Genuine Beginner progression: research → curriculum → 13 modules / 80 lessons / 181 challenges (EN+VI), all test-verified in both locales
+- [x] **Phase 12: Course 3 — Web Development Advanced (Section 1: Advanced HTML)** - Advanced HTML section: 1 module / 7 lessons / 7 practice sets / 21 challenges (EN+VI), Documentation Hub project with decision-verification checkpoints, prerequisite on Course 2 enforced
+- [x] **Phase 13: Python Beginner** - First Python course: research → curriculum → 15 modules / 57 lessons / 40 practice sets / 134 challenges (EN+VI), Python added to the sandbox runtime, all test-verified
+- [x] **Phase 14: Python Intermediate** - Genuine Python Beginner progression: 12 modules / 49 lessons / 36 practice sets / 93 challenges (EN+VI), sandbox-shaped design (stdlib-only grading), all test-verified
+- [x] **Phase 15: C++ Beginner** - New cpp track: research → curriculum → 19 modules / 66 lessons / 27 practice sets / 46 challenges (EN+VI), C++20 added to the sandbox runtime (g++ 14.2, exec-able /tmp), modern ownership-first C++, all test-verified
 
 ## Phase Details
 
@@ -129,6 +136,94 @@ Plans:
 - [x] 06-02: Accessibility pass (keyboard, contrast, focus states, reduced motion) + a11y tests
 - [x] 06-03: Security review + observability (logging, error tracking hook, health endpoint) + docs refresh
 
+### Phase 11: Course 2 — Web Development Intermediate
+**Goal**: Genuine progression from Beginner: build, debug, test, secure, optimize, and deploy more complex web applications (EN+VI)
+**Mode:** mvp
+**Depends on**: Phase 8 (Course 1) + Phase 10 (practice architecture)
+**Success Criteria** (what must be TRUE):
+  1. Every challenge verified two-sided by harness: reference solution passes, wrong solution fails (181/181 intermediate; beginner regression 91/91)
+  2. EN and VI content structurally synchronized and loadable through schema-validating loaders in both locales
+  3. Beginner course intact: full beginner regression gates green
+  4. Full gate: typecheck, lint, unit/integration, E2E (mobile + a11y + keyboard), production build, content validation
+**Waves**: research → curriculum spec → content authoring (13 modules) → practice → projects → localization → validation → QA
+
+Waves:
+- [x] 11-01: Research + curriculum spec (docs/CURRICULUM-RESEARCH-WEB-DEVELOPMENT-INTERMEDIATE.md, docs/COURSE-2-...md)
+- [x] 11-02: Content authoring 13 modules via Python authoring pipeline (lessons, practices, checkpoints, capstone)
+- [x] 11-03: Localization (VI sidecars + practice overlays, EN/VI structural sync validation)
+- [x] 11-04: QA + hardening (challenge harness, both-locale loader sweep in validate-content.ts, unit/E2E updates, VI 404 fix)
+
+### Phase 12: Course 3 — Web Development Advanced (Section 1: Advanced HTML)
+**Goal**: Begin Course 3 with genuine advanced HTML: document architecture, ARIA-first accessibility, native interactive elements, responsive media, secure embeds, metadata, progressive enhancement (EN+VI)
+**Mode:** mvp
+**Depends on**: Phase 11 (Course 2 verified complete before starting — independently audited)
+**Success Criteria** (what must be TRUE):
+  1. Every challenge verified two-sided by harness (21/21; beginner 91/91 + intermediate 181/181 regression)
+  2. EN and VI structurally synchronized, schema-valid in both locales
+  3. Advanced course enforces prerequisite on Course 2; project graded via decision-verification (not gameable)
+  4. Full gate: typecheck, lint, unit/integration, E2E, production build, content validation
+**Waves**: audit Intermediate → research (WHATWG/MDN/WAI/web.dev) → authoring → localization → QA
+
+Waves:
+- [x] 12-01: Research (docs/CURRICULUM-RESEARCH-WEB-DEVELOPMENT-ADVANCED.md) + Course 3 docs (docs/COURSE-3-WEB-DEVELOPMENT-ADVANCED.md)
+- [x] 12-02: Advanced HTML authoring — 7 lessons + 7 practice sets + 21 challenges + Documentation Hub project (EN)
+- [x] 12-03: VI localization, synchronized structures, shared grading code
+- [x] 12-04: QA — harness 21/21, both-locale validation, regression harnesses, full gates (blocked mid-session by Python track co-authoring; unblocked and closed 2026-09-13)
+
+### Phase 13: Python Beginner
+**Goal**: First full Python course on the platform: fundamentals through files, modules, environments, testing, CLIs, and a finance capstone (EN+VI)
+**Mode:** mvp
+**Depends on**: Phase 3 (sandbox execution) — extends the worker contract with a Python runtime
+**Success Criteria** (what must be TRUE):
+  1. Python execution in the sandboxed worker (same heredoc-data job protocol, isolation preserved)
+  2. Every challenge verified two-sided (134/134; web regression 91+181+21 green)
+  3. EN and VI synchronized and schema-valid in both locales
+  4. Full gate green including production build with the new course
+**Waves**: research → sandbox runtime → authoring (15 modules) → practice → localization → validation → QA
+
+Waves:
+- [x] 13-01: Research + curriculum design (docs/COURSE-PYTHON-BEGINNER.md)
+- [x] 13-02: Python runtime in sandbox worker (`src/workers/python-runtime.ts`, Dockerfile.sandbox python3)
+- [x] 13-03: Content authoring — 15 modules, 57 lessons, 40 practice sets, 134 challenges + capstone (EN)
+- [x] 13-04: VI localization (134 VI sidecars + overlays); QA — harness 134/134, validator all-courses green, E2E 36/36
+
+### Phase 14: Python Intermediate
+**Goal**: Genuine Python Beginner progression: larger, cleaner, testable Python — OOP/data model, typing, robust errors, files/streaming, testing (unittest+mock), SQLite with parameterized security, HTTP via transport injection, asyncio, packaging + security audit, CLI capstone (EN+VI)
+**Mode:** mvp
+**Depends on**: Phase 13 (Python Beginner; ran concurrently under multi-agent safety, prerequisite wired after Beginner landed)
+**Success Criteria** (what must be TRUE):
+  1. Every challenge verified two-sided (93/93)
+  2. Grading honest to the platform contract: exec + `code` source variable + boilerplate-as-submission (no `inspect.getsource` tests)
+  3. EN and VI synchronized (227 nodes per locale), schema-valid
+  4. Prerequisite on python-beginner enforced; Beginner course untouched throughout
+  5. Full gate: validator, unit/integration, E2E, typecheck, lint, production build
+**Waves**: audit Beginner state → research → authoring (12 modules) → localization → challenge verification → QA
+
+Waves:
+- [x] 14-01: Research + spec (docs/CURRICULUM-RESEARCH-PYTHON-INTERMEDIATE.md, docs/COURSE-PYTHON-INTERMEDIATE.md) — boundary aligned to actual Beginner scope
+- [x] 14-02: Authoring — 12 modules, 49 lessons, 36 practice sets, 93 challenges (EN) via pi.py pipeline
+- [x] 14-03: VI localization, synchronized, shared grading code
+- [x] 14-04: QA — 93/93 two-sided after root-causing 24 harness failures (exec-contract rewrites, sqlite row_factory/commit fixes, 7 accidentally-correct wrong solutions replaced); unit 160/160; E2E 36/36; build 986 pages
+
+### Phase 15: C++ Beginner
+**Goal**: First C++ course on a brand-new cpp track: modern C++ (C++20, GCC 14.2) taught ownership-first for true beginners and Python/Web converts — fundamentals, STL, OOP, pointers/references, RAII & memory safety, files, debugging/testing, multi-file+CMake, architecture, git workflow, problem solving, finance-CLI capstone (EN+VI)
+**Mode:** mvp
+**Depends on**: none (independent track; ran alongside the active Python Advanced agent under multi-agent safety)
+**Success Criteria** (what must be TRUE):
+  1. C++ execution proven end-to-end through the real sandbox path before any content
+  2. Every challenge verified two-sided (46/46) with byte-identical test files (harness imports buildCppTestFile)
+  3. Modern C++ throughout: RAII/ownership core, raw new/delete never normalized, warnings always on
+  4. EN and VI synchronized (184 nodes per locale), schema-valid, globally unique IDs
+  5. Full gate: validator, unit/integration, E2E, typecheck, lint, production build; no regression in any existing course
+**Waves**: capability probe → research → authoring (19 modules) → localization → challenge verification → QA
+
+Waves:
+- [x] 15-01: Multi-agent inspection + capability probe (sandbox had no C++ — added cpp-runtime.ts, g++ to Dockerfile.sandbox, exec-able /tmp tmpfs; 4/4 hard-path probes)
+- [x] 15-02: Research + spec (docs/CURRICULUM-RESEARCH-CPP-BEGINNER.md, docs/COURSE-CPP-BEGINNER.md) — C++20 baseline, modern-practices ordering
+- [x] 15-03: Authoring — 19 modules, 66 lessons (17 checkpoints), 27 practice sets, 46 challenges (EN) via cppb.py pipeline
+- [x] 15-04: VI localization synchronized; global-ID collision renames (7, my side only)
+- [x] 15-05: QA — 46/46 two-sided after root-causing 11 first-run failures (variadic CHECK_LINES/CHECK_THROWS after preprocessor comma discovery, 3 accidentally-correct wrong solutions replaced, broken authored snippets fixed, missing }; in capstone solutions); systemic over-escape repair (48 challenge JSONs + ledger); MDX JSX traps fixed; unit 160/160; E2E 36/36; typecheck ✓; lint 0 errors; build 1125 pages
+
 ## Progress
 
 **Execution Order:**
@@ -144,3 +239,10 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 6. Hardening, Accessibility & Launch Readiness | 3/3 | Complete (6/6 E2E green incl. critical path; axe AA audits green; pnpm audit clean; observability seam) | 2026-09-03 |
 | 7. Beta Readiness & Hardening | 11/11 | **Complete (2026-09-03)** — grade integrity, auth-to-run + submission authz, atomic rate limits, reset email seam, mobile editor + run flow fixed (E2E at 7 viewports), static public curriculum (SSG), breadcrumb/prompt polish, sandbox host scoping + Judge0 production doc | 2026-09-03 |
 | 8. Course 1 — Web Development Beginner | 8 waves | **Complete (2026-09-04)** — research + spec docs; 7 modules, 56 lessons, 51 challenges (every challenge ref-verified pass/fail by harness); course landing metadata + outcomes; data-driven module achievement; curriculum integrity suite (34 checks); QA found and fixed 7 grading defects; full gate green (124 unit/integration, 33 E2E, lint/typecheck/format/build) | 2026-09-04 |
+| 9. Private Beta Deployment | deploy waves | **Complete (2026-09-05)** — PRIVATE BETA LIVE loopback-only (user decision); invite-code gate; sandbox container-timeout leak fix; backup/restore verified; tunnel E2E 30/30 then stood down | 2026-09-05 |
+| 10. Course 1 Revision | 1 phase | **Complete (2026-09-05)** — Learn/Practice separation (PracticeSet content type, afterLesson interleaving); 52 sets / 88 practice challenges / 91 total; deliberate-practice level model surfaced in UX; harness 107/107; unit 136/136; E2E 36/36 | 2026-09-05 |
+| 11. Course 2 — Web Development Intermediate | 4 waves | **Complete (2026-09-12)** — 13 modules, 80 lessons (EN+VI), 63 practice sets, 181 challenges (169 practice + 12 checkpoint); prerequisite enforced; harness 181/181 + beginner 91/91; validate-content.ts extended to both courses × both locales; VI loader 404 fixed + gated; unit 160/160; E2E 36/36; build 538 pages | 2026-09-12 |
+| 12. Course 3 — Web Development Advanced (Advanced HTML) | 4 waves | **Complete (2026-09-13)** — Advanced HTML section: 1 module, 7 lessons, 7 practice sets, 21 challenges (EN+VI); Documentation Hub project via 3 decision-verification checkpoints; prerequisite on Course 2 enforced; harness 21/21; validator 3 courses × 2 locales; unit 160/160; E2E 36/36; build 694 pages | 2026-09-13 |
+| 13. Python Beginner | 4 waves | **Complete (2026-09-13)** — 15 modules, 57 lessons, 40 practice sets, 134 challenges (EN+VI); Python sandbox runtime added to worker contract; harness 134/134; validator all-courses green; unit 124/124 (later re-runs green); E2E 36/36 | 2026-09-13 |
+| 14. Python Intermediate | 4 waves | **Complete (2026-09-13)** — 12 modules, 49 lessons, 36 practice sets, 93 challenges (EN+VI); prerequisite on python-beginner; harness 93/93 after root-causing 24 failures (platform exec-contract, sqlite, accidentally-correct wrong solutions); unit 160/160; E2E 36/36; build 986 pages | 2026-09-13 |
+| 15. C++ Beginner | 5 waves | **Complete (2026-09-13)** — new cpp track: 19 modules, 66 lessons (17 checkpoints), 27 practice sets, 46 challenges (EN+VI); C++20 sandbox runtime added (cpp-runtime.ts, g++ 14.2, exec-able /tmp tmpfs); modern ownership-first C++; harness 46/46 after root-causing 11 failures (variadic CHECK_LINES/CHECK_THROWS, 3 accidentally-correct wrong solutions, broken authored snippets); systemic over-escape repair; unit 160/160; E2E 36/36; build 1125 pages | 2026-09-13 |

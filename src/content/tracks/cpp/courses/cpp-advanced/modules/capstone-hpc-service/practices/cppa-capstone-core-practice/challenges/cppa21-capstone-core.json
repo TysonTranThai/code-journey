@@ -1,0 +1,21 @@
+{
+  "id": "cppa21-capstone-core",
+  "title": "Admission Core",
+  "prompt": "Implement `AdmissionsCore` exactly to spec: first-config tag limits, per-window usage and ordinals, unknown-tag rejection, running totals.",
+  "difficulty": "advanced",
+  "level": "real-world",
+  "language": "cpp",
+  "boilerplate": "#include <cstdint>\n#include <map>\n#include <optional>\n#include <string>\n#include <tuple>\n#include <vector>\n\n// ---- FixedClock: the deterministic time seam (module 19) ----\nstruct FixedClock {\n    std::int64_t nowMs_ = 0;\n    std::int64_t nowMs() const { return nowMs_; }\n    void advance(std::int64_t ms) { nowMs_ += ms; }\n};\n\n// ---- Domain ----\nenum class ClassId : int { Regular = 0, Premium = 1 };\n\nstruct Admission {\n    bool admitted = false;\n    int tag = -1;\n    int ordinal = -1;   // arrival order within the winning tag this window\n};\n\nclass AdmissionsCore {\npublic:\n    explicit AdmissionsCore(const FixedClock* clock);\n    // tag limits: tag >= 0, limit >= 1; re-setting an existing tag fails.\n    bool setTagLimit(int tag, int limit);\n    Admission admit(ClassId cls, int tag);   // unknown tags are rejected\n    std::int64_t admittedCount() const { return admitted_; }\n    std::int64_t rejectedCount() const { return rejected_; }\n\nprivate:\n    const FixedClock* clock_;\n    std::map<int, int> limits_;\n    std::map<int, int> used_;\n    std::map<int, int> nextOrd_;\n    std::int64_t window_ = -1;\n    std::int64_t admitted_ = 0;\n    std::int64_t rejected_ = 0;\n};\n\nclass OpsReport {\npublic:\n    explicit OpsReport(const FixedClock* clock);\n    void record(std::int64_t tMs, std::string code, std::string key);\n    // exact lines \"[ts] CODE key\\n\" sorted by ts; at equal ts REJECT before ADMIT; oldest first\n    std::string snapshot() const;\n\nprivate:\n    const FixedClock* clock_;\n    std::vector<std::tuple<std::int64_t, std::string, std::string>> rows_;\n};\n",
+  "tests": [
+    {
+      "name": "limits battery",
+      "code": "{\n    FixedClock clk;\n    AdmissionsCore core(&clk);\n    CHECK(core.setTagLimit(1, 2));\n    CHECK(core.setTagLimit(2, 1));\n    CHECK(!core.setTagLimit(1, 0));      // limit must be >= 1\n    CHECK(!core.setTagLimit(1, -1));\n    CHECK(!core.setTagLimit(-3, 1));     // tag must be >= 0\n    CHECK(!core.setTagLimit(1, 5));      // first configuration wins\n}",
+      "hint": "setTagLimit returns false for tag < 0, limit < 1, or a re-set of an existing tag; true only on first successful configuration."
+    },
+    {
+      "name": "admission + window rollover battery",
+      "code": "{\n    FixedClock clk;\n    AdmissionsCore core(&clk);\n    CHECK(core.setTagLimit(1, 2));\n    Admission a = core.admit(ClassId::Premium, 1);\n    CHECK(a.admitted);\n    CHECK(a.ordinal == 1);\n    Admission b = core.admit(ClassId::Regular, 1);\n    CHECK(b.admitted);\n    CHECK(b.ordinal == 2);\n    Admission c = core.admit(ClassId::Regular, 1);\n    CHECK(!c.admitted);                  // limit reached\n    Admission d = core.admit(ClassId::Regular, 9);\n    CHECK(!d.admitted);                  // unknown tag\n    CHECK(core.admittedCount() == 2);\n    CHECK(core.rejectedCount() == 2);\n    clk.advance(1000);\n    Admission e = core.admit(ClassId::Premium, 1);   // window rolls here\n    CHECK(e.admitted);\n    CHECK(e.ordinal == 1);               // ordinals restart per window\n}",
+      "hint": "admit rejects unknown tags and over-limit tags; the first admit at a new timestamp clears usage and ordinals (next ordinal is 1 again)."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "pi6-path-organize",
+  "title": "Group by Extension",
+  "prompt": "Implement by_suffix(paths) returning a dict mapping suffix (including the dot, lowercase) to a sorted list of path names. Files without a suffix go under ''.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "from pathlib import Path\n\ndef by_suffix(paths):\n    pass\n",
+  "tests": [
+    {
+      "name": "groups by suffix",
+      "code": "ps = [Path('a.txt'), Path('b.py'), Path('c.txt')]\nassert by_suffix(ps) == {'.py': ['b.py'], '.txt': ['a.txt', 'c.txt']}\nps2 = [Path('b.txt'), Path('D.TXT')]\nassert by_suffix(ps2)['.txt'] == ['D.TXT', 'b.txt'], 'suffix keys are lowercase and names come out sorted'\n",
+      "hint": "Group by p.suffix; sort each list."
+    },
+    {
+      "name": "no suffix bucket",
+      "code": "ps = [Path('LICENSE'), Path('a.txt')]\nassert by_suffix(ps)[''] == ['LICENSE']",
+      "hint": "p.suffix is '' when there is no extension."
+    }
+  ],
+  "level": "guided"
+}

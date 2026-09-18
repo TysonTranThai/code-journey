@@ -1,0 +1,26 @@
+{
+  "id": "ca18-checkpoint-pool",
+  "title": "Checkpoint: Pool Work Queue",
+  "prompt": "Given: `static task_fn pending[8]; static void *pending_arg[8]; static size_t n_pending;` (typedef for `void (*task_fn)(void *)` included). Implement `int pool_submit(task_fn fn, void *arg)` (append; 0 on success, -1 when full or fn NULL) and `size_t pool_execute(void)` (run every pending task in FIFO order, empty the queue, return how many ran).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#include <stdint.h>\ntypedef void (*task_fn)(void *);\nstatic task_fn pending[8];\nstatic void *pending_arg[8];\nstatic size_t n_pending = 0;\n",
+  "tests": [
+    {
+      "name": "submit and drain in order",
+      "code": "CHECK_EQ(pool_submit(log_task, (void *)1), 0);\nCHECK_EQ(pool_submit(log_task, (void *)2), 0);\nCHECK_EQ(pool_submit(log_task, (void *)3), 0);\nCHECK_EQ((int)pool_execute(), 3);\nCHECK_EQ(g_log_n, 3);\nCHECK_EQ(g_log[0], 1);\nCHECK_EQ(g_log[2], 3);",
+      "hint": "FIFO: the drain runs tasks in submission order \u2014 a pool that reorders work breaks consumers."
+    },
+    {
+      "name": "drain empties the queue",
+      "code": "CHECK_EQ((int)pool_execute(), 0);",
+      "hint": "A second drain finds nothing: the queue was emptied by the first run."
+    },
+    {
+      "name": "refuse bad submissions",
+      "code": "CHECK_EQ(pool_submit(NULL, (void *)1), -1);\nCHECK_EQ((int)pool_execute(), 0);",
+      "hint": "A NULL task is refused and the queue stays consistent."
+    }
+  ],
+  "level": "mini-build"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "cppa6-ranges-checkpoint",
+  "title": "Pipeline Gauntlet",
+  "prompt": "Implement `thirdEven` and `lastLongWord` with view pipelines. No intermediate containers, no manual index loops.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <ranges>\n#include <string>\n#include <vector>\n\n// Third even number in [start, end) — or -1 if there are fewer than three.\nint thirdEven(int start, int end);\n\n// Last word longer than n characters — or the empty string.\nstd::string lastLongWord(const std::vector<std::string>& words, std::size_t n);\n",
+  "tests": [
+    {
+      "name": "thirdEven with early exit",
+      "code": "CHECK_EQ(thirdEven(1, 10), 6);\nCHECK_EQ(thirdEven(2, 6), -1);\nCHECK_EQ(thirdEven(10, 11), -1);\nCHECK_EQ(thirdEven(10, 12), -1);",
+      "hint": "rv::iota(start, end) | rv::filter(even) | rv::take(3) — then check whether 3 elements arrived (the take stops the pipeline; an empty result means -1)."
+    },
+    {
+      "name": "lastLongWord walks backwards",
+      "code": "std::vector<std::string> words{\"a\", \"longer\", \"longest!\", \"tiny\"};\nCHECK_EQ(lastLongWord(words, 4), std::string(\"longest!\"));\nCHECK_EQ(lastLongWord(words, 100), std::string(\"\"));",
+      "hint": "words | rv::filter(...) | rv::reverse | rv::take(1) — first element of the reversed filtered range, or \"\" when none."
+    }
+  ]
+}

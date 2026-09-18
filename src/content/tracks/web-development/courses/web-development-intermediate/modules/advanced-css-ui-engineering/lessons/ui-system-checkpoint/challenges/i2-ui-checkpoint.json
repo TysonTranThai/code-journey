@@ -1,0 +1,24 @@
+{
+  "id": "i2-ui-checkpoint",
+  "title": "UI System Logic Check",
+  "prompt": "Implement three UI-system helpers:\n\n1. `resolveTokens(scopes)` — `scopes` is an array of token objects applied in order (earliest first). RETURN one merged object; later scopes override earlier ones token by token.\n2. `applyTheme(state, action)` — state is `{ mode: \"light\" | \"dark\" | \"system\", explicit: boolean }`. Actions: `{ type: \"set\", mode }` sets an explicit mode, `{ type: \"reset\" }` returns to `{ mode: \"system\", explicit: false }`. RETURN the new state; never mutate the input.\n3. `motionPolicy(prefersReducedMotion, userSetting)` — `userSetting` is `\"system\" | \"reduced\" | \"full\"`. RETURN `\"reduced\"` when the user explicitly chose reduced OR (user chose system AND prefersReducedMotion is true); otherwise `\"full\"`.",
+  "difficulty": "intermediate",
+  "boilerplate": "// 1) resolveTokens(scopes)\n\n// 2) applyTheme(state, action)\n\n// 3) motionPolicy(prefersReducedMotion, userSetting)\n",
+  "tests": [
+    {
+      "name": "later scopes override token by token",
+      "code": "const fn = new Function(code + \"\\nreturn { resolveTokens, applyTheme, motionPolicy };\");\nconst { resolveTokens, applyTheme, motionPolicy } = fn();\nconst out = resolveTokens([\n  { \"--color-bg\": \"white\", \"--color-fg\": \"black\" },\n  { \"--color-bg\": \"navy\" },\n]);\nif (out[\"--color-bg\"] !== \"navy\") throw new Error(\"Later scopes win per token.\");\nif (out[\"--color-fg\"] !== \"black\") throw new Error(\"Tokens absent from later scopes survive.\");\nconst input = { a: 1 };\nresolveTokens([input]);\nif (input.a !== 1 || Object.keys(input).length !== 1) throw new Error(\"Input scopes must not be mutated.\");",
+      "hint": "Reduce with { ...acc, ...scope }."
+    },
+    {
+      "name": "theme reducer sets, resets, and never mutates",
+      "code": "const fn = new Function(code + \"\\nreturn { resolveTokens, applyTheme, motionPolicy };\");\nconst { resolveTokens, applyTheme, motionPolicy } = fn();\nconst s = { mode: \"system\", explicit: false };\nconst set = applyTheme(s, { type: \"set\", mode: \"dark\" });\nif (set.mode !== \"dark\" || set.explicit !== true) throw new Error(\"set makes the mode explicit.\");\nif (s.mode !== \"system\" || s.explicit !== false) throw new Error(\"The input state must not be mutated.\");\nconst reset = applyTheme(set, { type: \"reset\" });\nif (reset.mode !== \"system\" || reset.explicit !== false) throw new Error(\"reset returns to the system default.\");",
+      "hint": "Return new objects: { ...state, mode: action.mode, explicit: true }."
+    },
+    {
+      "name": "motion policy respects explicit and system choices",
+      "code": "const fn = new Function(code + \"\\nreturn { resolveTokens, applyTheme, motionPolicy };\");\nconst { resolveTokens, applyTheme, motionPolicy } = fn();\nif (motionPolicy(true, \"full\") !== \"full\") throw new Error(\"An explicit 'full' choice beats the OS preference.\");\nif (motionPolicy(true, \"reduced\") !== \"reduced\") throw new Error(\"Explicit reduced always reduces.\");\nif (motionPolicy(true, \"system\") !== \"reduced\") throw new Error(\"System + prefers-reduced-motion reduces.\");\nif (motionPolicy(false, \"system\") !== \"full\") throw new Error(\"System without the OS preference is full.\");",
+      "hint": "userSetting === 'reduced' || (userSetting === 'system' && prefersReducedMotion) ? 'reduced' : 'full'."
+    }
+  ]
+}

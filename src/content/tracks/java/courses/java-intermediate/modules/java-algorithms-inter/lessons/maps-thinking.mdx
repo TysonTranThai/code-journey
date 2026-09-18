@@ -1,0 +1,23 @@
+## Maps as thinking tools
+
+Many "hard" problems collapse once you choose the right auxiliary map:
+
+- **counting** — `freq.merge(x, 1, Integer::sum)` turns "how many" into
+  O(1) lookups (anagram detection, majority element)
+- **indexing** — `Map<Value, Index>` remembers *where* you saw something
+  (two-sum in one pass; last-seen index for window problems)
+- **grouping** — `groupingBy` turns equivalence classes into buckets
+  (group anagrams by their sorted-letter signature)
+
+```java
+// two-sum, one pass — O(n)
+Map<Integer, Integer> seen = new HashMap<>();
+for (int i = 0; i < xs.length; i++) {
+    Integer j = seen.get(target - xs[i]);
+    if (j != null) return new int[]{j, i};
+    seen.put(xs[i], i);
+}
+```
+
+The pattern to internalize: *trade space for a cheaper question*. If a
+loop exists only to answer "have I seen X?", the map already knows.

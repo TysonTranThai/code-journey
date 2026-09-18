@@ -1,0 +1,25 @@
+{
+  "id": "practice-fix-the-image",
+  "title": "Debug: The Invisible Image",
+  "prompt": "This image never loads and means nothing to screen readers: the file is named `team-photo.jpg` in the same folder, and the picture shows the five founders at a whiteboard. Repair the element.\n\nRules:\n- `src` points at `team-photo.jpg` (relative).\n- `alt` describes the actual picture.\n- The element is otherwise unchanged.",
+  "difficulty": "beginner",
+  "level": "debugging",
+  "boilerplate": "<h2>The team</h2>\n<img src=\"images/teamphoto.JPG\" alt=\"image\">\n",
+  "tests": [
+    {
+      "name": "src points at the real file",
+      "code": "const img = code.match(/<img\\s[^>]*>/i)[0];\nconst src = img.match(/src=[\"']([^\"']*)[\"']/i);\nif (!src || src[1] !== \"team-photo.jpg\") {\n  throw new Error(\"The src must be exactly team-photo.jpg — the current file name doesn't exist.\");\n}",
+      "hint": "Fix the file name and extension: src=\"team-photo.jpg\"."
+    },
+    {
+      "name": "alt describes the picture",
+      "code": "const img = code.match(/<img\\s[^>]*>/i)[0];\nconst alt = img.match(/alt=[\"']([^\"']*)[\"']/i);\nif (!alt || alt[1].trim() !== \"The five founders at a whiteboard\") {\n  throw new Error(\"Alt text must describe the picture: The five founders at a whiteboard\");\n}",
+      "hint": "'image' describes nothing. Write what someone would see: The five founders at a whiteboard."
+    },
+    {
+      "name": "still a single img element",
+      "code": "const imgs = code.match(/<img\\s[^>]*>/gi) ?? [];\nif (imgs.length !== 1) {\n  throw new Error(\"Repair the existing <img> — don't replace it with a new one.\");\n}",
+      "hint": "Edit the attributes in place rather than adding a second image."
+    }
+  ]
+}

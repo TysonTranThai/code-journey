@@ -1,0 +1,21 @@
+{
+  "id": "pa-api-router",
+  "title": "A router that says 404 vs 405 correctly",
+  "prompt": "Implement `Router` with `add(method, path, handler)` and `dispatch(method, path)`:\n\n- paths are `/`-separated segments; a segment like `'{id}'` matches exactly one segment of any value and binds it as a string param\n- `dispatch` returns `handler(params)` where params is a dict (empty for static routes)\n- if some pattern matches the path with a DIFFERENT method → raise `RouterError(405, ...)`\n- if no pattern matches the path at all → raise `RouterError(404, ...)`\n- `RouterError` carries `.status`",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class RouterError(Exception):\n    def __init__(self, status, message):\n        super().__init__(message)\n        self.status = status\n\n\nclass Router:\n    def __init__(self):\n        ...\n\n    def add(self, method, path, handler):\n        ...\n\n    def dispatch(self, method, path):\n        ...",
+  "tests": [
+    {
+      "name": "static routes, params, and binding",
+      "code": "r = Router()\nr.add('GET', '/users/{id}', lambda p: f\"user:{p['id']}\")\nr.add('GET', '/health', lambda p: 'ok')\nassert r.dispatch('GET', '/users/42') == 'user:42'\nassert r.dispatch('GET', '/health') == 'ok'\nprint('ok')",
+      "hint": "Split into segments; a {param} segment matches anything and binds it."
+    },
+    {
+      "name": "405 vs 404 are different diagnoses",
+      "code": "r = Router()\nr.add('GET', '/users/{id}', lambda p: 'x')\ntry:\n    r.dispatch('POST', '/users/42')\nexcept RouterError as e:\n    assert e.status == 405\nelse:\n    raise AssertionError('expected 405')\ntry:\n    r.dispatch('GET', '/nope/zz')\nexcept RouterError as e:\n    assert e.status == 404\nelse:\n    raise AssertionError('expected 404')\nprint('ok')",
+      "hint": "Path matched but method didn't → 405. No pattern matched → 404."
+    }
+  ],
+  "level": "mini-build"
+}

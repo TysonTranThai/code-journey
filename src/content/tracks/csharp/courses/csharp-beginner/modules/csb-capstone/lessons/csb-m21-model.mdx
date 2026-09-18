@@ -1,0 +1,16 @@
+## The types
+
+```csharp
+public enum Direction { Income, Expense }
+
+public record Transaction(int Id, Direction Dir, decimal Amount,
+                          string Category, string Description, DateTime Date);
+
+public record AddResult(bool Ok, string Error);
+```
+
+The `record` gives value equality for free (Module 11); the enum makes invalid directions unrepresentable — `Direction.Expense` beats a magic `"out"` string the compiler can't check. `decimal` for money (Module 2): exact base-10 arithmetic, no binary-rounding surprises.
+
+## Validation as data
+
+`AddResult` returns *why* an entry was rejected instead of throwing: `Ok = false, Error = "amount-must-be-positive"`. Callers branch on the result; no exception cost, no control flow by crash. The error strings are the API — tests pin them.

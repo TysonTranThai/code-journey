@@ -1,0 +1,21 @@
+{
+  "id": "cppa9-parallel-sum",
+  "title": "Split, Spawn, Join",
+  "prompt": "Implement `parallelSum`: split [0, n) into nThreads contiguous chunks, sum each chunk on its own std::thread into a shared atomic, join everything, return the total.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <atomic>\n#include <numeric>\n#include <thread>\n#include <vector>\n\n// Sum [0, n) using nThreads threads splitting the range evenly.\nlong long parallelSum(int n, int nThreads);\n",
+  "tests": [
+    {
+      "name": "even split sums exactly",
+      "code": "CHECK_EQ(parallelSum(1000, 4), 1000LL * 999 / 2);\nCHECK_EQ(parallelSum(10, 3), 45);",
+      "hint": "Chunk [lo, hi) per thread: lo = i * n / nThreads, hi = (i+1) * n / nThreads — the rounding splits contiguously without gaps or overlap."
+    },
+    {
+      "name": "more threads than elements",
+      "code": "CHECK_EQ(parallelSum(2, 8), 1);",
+      "hint": "Empty chunks (lo == hi) must simply add 0 — never spawn on an empty range or guard the loop."
+    }
+  ]
+}

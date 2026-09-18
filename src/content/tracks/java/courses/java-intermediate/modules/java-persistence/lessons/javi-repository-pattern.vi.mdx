@@ -1,0 +1,30 @@
+## Mẫu repository
+
+Repository khiến persistence *trông như* một collection các đối tượng
+domain, giấu công nghệ lưu trữ phía sau:
+
+```java
+public interface ExpenseRepository {
+    Expense save(Expense e);            // insert hoặc update
+    Optional<Expense> findById(String id);
+    List<Expense> findAll();
+    List<Expense> findByCategory(String category);
+    boolean deleteById(String id);
+}
+```
+
+Code service phụ thuộc interface. Production gắn hiện thực JDBC; test
+gắn bản trong bộ nhớ. Đó là dependency inversion áp dụng cho dữ liệu:
+
+```java
+final class InMemoryExpenseRepository implements ExpenseRepository {
+    private final Map<String, Expense> store = new LinkedHashMap<>();
+    public Expense save(Expense e) { store.put(e.id(), e); return e; }
+    public Optional<Expense> findById(String id) { return Optional.ofNullable(store.get(id)); }
+    ...
+}
+```
+
+Lợi ích: service unit test với hạ tầng bằng không; hoán đổi storage chỉ
+là một tham số constructor; truy vấn là thao tác domain có tên, không
+phải chuỗi SQL rải khắp nơi.

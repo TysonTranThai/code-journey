@@ -1,0 +1,23 @@
+## The ladder
+
+| Type | Size | Range / use | Literal |
+|---|---|---|---|
+| `int` | 32-bit | whole numbers ±~2.1 billion | `int n = 42;` |
+| `long` | 64-bit | big counts, timestamps | `long t = 9_876_543_210L;` |
+| `double` | 64-bit | general decimals, science | `double d = 0.5;` |
+| `decimal` | 128-bit | **money**, exact base-10 | `decimal m = 19.99m;` |
+
+Two traps the ladder hides:
+
+**1. Integer division truncates.** `7 / 2` is `3`, not `3.5` — both operands are `int`, so the result is `int`. Write `7 / 2.0` (one operand makes the expression `double`) when you want the fraction. This is the most common numeric bug in beginner code.
+
+**2. `double` is base-2; money is base-10.** `double x = 0.1 + 0.2;` gives `0.30000000000000004`. Binary floats can't represent most decimal fractions exactly — fine for measurements, wrong for money. Use `decimal` (note the `m` suffix) for currency:
+
+```csharp
+decimal price = 19.99m;
+decimal total = price * 3;    // 59.97 exactly
+```
+
+**Overflow is silent by default**: `int.MaxValue + 1` wraps around in unchecked context (the default for constants is checked at compile time, but runtime arithmetic is not). Don't reach for `checked` yet — know that the boundary exists and that `long` is the escape hatch when counts can exceed ~2.1 billion.
+
+**Conversion rules**: small → big is implicit (`int` → `long` → `double`); big → small needs an explicit cast `(int)`, which **truncates** (`(int)3.9` is `3`). Casting `double` → `int` also throws away, never rounds. Use `Math.Round` first when you need rounding.

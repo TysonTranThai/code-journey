@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 
 import { addReply } from "@/server/actions/discussions";
+import { useI18n } from "@/lib/i18n/provider";
 
 type ActionState = { ok: true } | { ok: false; error: string } | null;
 
@@ -15,14 +16,15 @@ export function ReplyForm({ threadId, signedIn }: { threadId: string; signedIn: 
     },
     null,
   );
+  const { d } = useI18n();
 
   if (!signedIn) {
     return (
       <p className="rounded-lg border border-zinc-800 bg-zinc-900/60 px-4 py-3 text-sm text-zinc-400">
-        <Link href="/login" className="text-sky-400 underline underline-offset-2">
-          Sign in
+        <Link href="/login" className="text-emerald-400 underline underline-offset-2 hover:text-emerald-300">
+          {d.discussion.signIn}
         </Link>{" "}
-        to reply.
+        {d.discussion.signInToReply}
       </p>
     );
   }
@@ -34,9 +36,9 @@ export function ReplyForm({ threadId, signedIn }: { threadId: string; signedIn: 
         required
         maxLength={4000}
         rows={3}
-        placeholder="Write a helpful reply…"
-        aria-label="Your reply"
-        className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+        placeholder={d.discussion.replyPlaceholder}
+        aria-label={d.discussion.replyFieldAria}
+        className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400"
       />
       {state && !state.ok && (
         <p role="alert" className="text-sm text-rose-400">
@@ -46,9 +48,9 @@ export function ReplyForm({ threadId, signedIn }: { threadId: string; signedIn: 
       <button
         type="submit"
         disabled={pending}
-        className="self-start rounded-lg bg-sky-500 px-4 py-2 text-sm font-semibold text-zinc-950 hover:bg-sky-400 disabled:opacity-60"
+        className="self-start rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-zinc-950 hover:bg-emerald-400 shadow-sm shadow-emerald-500/20 disabled:opacity-60"
       >
-        {pending ? "Posting…" : "Post reply"}
+        {pending ? d.discussion.posting : d.discussion.postReply}
       </button>
     </form>
   );

@@ -1,0 +1,16 @@
+{
+  "id": "py-test-report-runner",
+  "title": "Mini Build: Test Report Runner",
+  "prompt": "Write run_suite(cases) — cases is a list of (label, callable, expected). For each, call it with NO arguments, compare to expected, and RETURN a dict {\"passed\": n, \"failed\": m, \"failures\": [labels of failed cases in order]}.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "",
+  "tests": [
+    {
+      "name": "report computed",
+      "code": "cases = [\n    (\"add ok\", lambda: 2 + 2, 4),\n    (\"bad math\", lambda: 2 + 2, 5),\n    (\"upper ok\", lambda: \"ok\".upper(), \"OK\"),\n]\nr = run_suite(cases)\nassert r == {\"passed\": 2, \"failed\": 1, \"failures\": [\"bad math\"]}, f\"got {r}\"\nassert run_suite([]) == {\"passed\": 0, \"failed\": 0, \"failures\": []}, \"empty suite\"",
+      "hint": "loop, call the callable, compare, accumulate — failures keep their order."
+    }
+  ],
+  "level": "mini-build"
+}

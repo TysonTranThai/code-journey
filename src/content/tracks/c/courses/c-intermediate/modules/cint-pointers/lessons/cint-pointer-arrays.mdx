@@ -1,0 +1,65 @@
+## Two levels of indirection
+
+`char **` means: follow me to a `char *`, follow that to a `char`. The iconic
+example is `main`'s second parameter:
+
+```c
+int main(int argc, char **argv)   /* argv[i] is a char* — one string each */
+```
+
+`argv` is an array (here: a pointer to its first element) of pointers, each
+pointing to a string. Drawing it is half of understanding it:
+
+```
+argv ──► [0] ──► "./program"
+         [1] ──► "--verbose"
+         [2] ──► NULL (conventionally argv[argc] == NULL)
+```
+
+Each string owns its own storage (from the OS); the array holds the addresses.
+
+## Out-parameters that return pointers
+
+The strongest everyday use of `char **` (or `T **`) is the **out-parameter**:
+a function that wants to hand you a pointer must write through a pointer to
+that pointer:
+
+```c
+/* try to allocate; return 1 and set *out on success */
+int make_buffer(size_t n, char **out) {
+    char *b = malloc(n);
+    if (!b) return 0;
+    *out = b;          /* write the pointer itself through the second level */
+    return 1;
+}
+```
+
+Why not return the pointer? Because you often need to signal failure *and*
+produce a value. C has one return channel; the out-parameter is the second.
+Module 3 pairs this with the ownership rule: `make_buffer`'s caller owns `*out`
+and must `free` it.
+
+## Modifying an array of pointers
+
+```c
+void sort_strings(char **tab, size_t n);   /* rearranges POINTERS, not chars */
+```
+
+Sorting an array of strings moves the `char *` values inside the array — the
+string bytes never move. This is why `qsort` on `char *` tables is cheap and
+why the compare function receives `char *const *` (pointers to the elements).
+
+## The ownership ladder
+
+Two levels means two ownership questions, always:
+1. Who owns the array of pointers? (Frees the array itself.)
+2. Who owns each pointed-to string? (Frees each.)
+
+Different answers create different freeing loops. Module 3 turns this into a
+checklist; Module 10 (hash tables) makes you live it.
+
+## Check your understanding
+
+- In `char *tab[4]`, what is `tab[i]`'s type? (`char *` — a single string.)
+- To let a callee change which string `tab[0]` points to, what do you pass?
+  (`&tab[0]`, i.e. a `char **`.)

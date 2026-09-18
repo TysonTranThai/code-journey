@@ -1,0 +1,48 @@
+## A field-like event is a delegate field with rules
+
+A public delegate field lets ANYONE overwrite the list, clear it, or invoke
+it. The `event` keyword keeps the field private and grants outsiders exactly
+two operations: `+=` and `-=`.
+
+```csharp
+public class Order
+{
+    public event EventHandler<OrderEventArgs>? Placed;   // private backing field
+
+    public void Place()
+    {
+        OnPlaced(new OrderEventArgs("ord-1", 42m));
+    }
+
+    protected virtual void OnPlaced(OrderEventArgs args) =>
+        Placed?.Invoke(this, args);        // null-safe raise: nobody subscribed is fine
+}
+```
+
+The raise goes through an instance method so derived classes can hook in
+(`protected virtual`) — the .NET convention since day one.
+
+## Publisher/subscriber roles
+
+The publisher defines the event and *decides when* to raise it. Subscribers
+attach handlers and *react* — they never raise, never reorder, never clear.
+This one-way arrow is what makes event-driven systems debuggable: state
+changes flow one direction.
+
+```csharp
+order.Placed += (sender, args) => Console.WriteLine($"order {args.Id} for {args.Total}");
+order.Placed += Emailer.OnOrderPlaced;      // method group works too
+order.Place();                               // both handlers run, in order
+```
+
+## Raising safely, always
+
+`Placed?.Invoke(...)` — the `?.` snapshots the delegate list; a handler that
+unsubscribes concurrently cannot null your call mid-flight. Never write
+`if (Placed != null) Placed(...)` — check-then-call is a classic race.
+
+## Check your understanding
+
+- What can subscriber code do with an `event` that it can't with a public
+  delegate field? (Only += and -=; no invoke, no clear, no overwrite.)
+- Why `?.Invoke` instead of null-check + call? (Atomic snapshot of the list.)

@@ -1,0 +1,31 @@
+{
+  "id": "ca7-checkpoint-select",
+  "title": "Checkpoint: Choosing Structures",
+  "level": "mini-build",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>",
+  "prompt": "Final module integration. Two problems, one file:\n \n1. `int structure_penalty(int n_ops, int lookups, int inserts)` — a candidate stores n_ops records in an unordered array and answers lookups by linear scan. Return the total elementary operations: lookups * n_ops + inserts (each append is O(1)). Then implement `int sorted_penalty(int n_ops, int lookups, int inserts)` where a sorted array answers lookups in log2 steps (use the ceiling of log2(n_ops), and 0 steps when n_ops == 0) but inserts cost n_ops shifts: lookups * ceil_log2(n_ops) + inserts * n_ops.\n \n2. `const char *choose(int lookups, int inserts)` — return \"hash\" when lookups >= inserts, otherwise \"sorted\". The penalty functions are the evidence; the chooser is the decision.",
+  "tests": [
+    {
+      "name": "unordered vs sorted penalties",
+      "code": "CHECK_EQ(structure_penalty(1000, 100, 10), 100010);",
+      "hint": "100 lookups scanning 1000 records each is 100000 operations; 10 appends add 10."
+    },
+    {
+      "name": "sorted array penalty",
+      "code": "CHECK_EQ(sorted_penalty(1024, 8, 2), 8 * 10 + 2 * 1024);",
+      "hint": "1024 records need ceil(log2(1024)) == 10 steps per lookup; each insert shifts all 1024."
+    },
+    {
+      "name": "chooser flips at balance",
+      "code": "CHECK_STR_EQ(choose(50, 5), \"hash\");\nCHECK_STR_EQ(choose(5, 50), \"sorted\");",
+      "hint": "Lookup-heavy workloads favor hashing; insert-heavy favors the sorted array."
+    },
+    {
+      "name": "empty table edge",
+      "code": "CHECK_EQ(sorted_penalty(0, 3, 0), 0);",
+      "hint": "No records: zero lookup steps regardless of query count."
+    }
+  ]
+}

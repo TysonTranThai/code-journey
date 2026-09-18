@@ -1,0 +1,72 @@
+A demo handles the happy path. A service survives Tuesday at 10:00. The gap is
+a handful of small mechanisms — each one a function, not a framework.
+
+## Rate limiting: the token bucket
+
+The classic algorithm is small enough to memorize:
+
+```python
+class TokenBucket:
+    def __init__(self, rate, capacity):
+        self.rate, self.capacity = rate, capacity      # tokens/sec, burst size
+        self.tokens, self.updated = capacity, 0.0
+
+    def allow(self, now):
+        self.tokens = min(self.capacity,
+                          self.tokens + (now - self.updated) * self.rate)
+        self.updated = now
+        if self.tokens >= 1:
+            self.tokens -= 1
+            return True
+        return False
+```
+
+Requests refill capacity `rate` tokens per second; each request spends one.
+Bursts up to `capacity` pass instantly, sustained load is capped at `rate`, and
+the answer for "too fast" is **429**. Note the design trick: `now` is a
+parameter — the bucket is *deterministic* and testable, because time is
+injected.
+
+## Health checks: liveness vs readiness
+
+- **Liveness** (`/healthz`): "is the process alive?" — always 200 unless the
+  process is wedged. Restart me if not.
+- **Readiness** (`/readyz`): "can I serve *right now*?" — checks each
+  dependency (database ping, cache ping). Any failure → 503, and the load
+  balancer stops routing traffic here *without killing the process*.
+
+A readiness probe that crashes on a failed dependency defeats its own purpose:
+it must catch, record, and report — `{"ready": false, "checks": {"db": false}}`.
+
+## Graceful degradation
+
+When a non-critical dependency dies, the service should lose a feature, not its
+life. Recommendations unavailable? Serve the product page anyway. The pattern:
+classify dependencies as critical (fail the request) or optional (fail the
+feature), and make the *classification* explicit in code.
+
+## Idempotent writes with an idempotency store
+
+```python
+class IdempotencyStore:
+    def __init__(self):
+        self._done = {}
+
+    def execute(self, key, fn):
+        if key not in self._done:
+            self._done[key] = fn()
+        return self._done[key]
+```
+
+First call with a key runs `fn`; every retry with the same key replays the
+recorded response. `fn` must run *exactly once* — that's the entire contract,
+and it is worth writing a test that counts invocations.
+
+## Transactions & the pool (a look ahead)
+
+Two handlers sharing one connection corrupt each other's transactions; a
+connection *pool* lends short-lived connections out. And any multi-write
+operation belongs in a transaction — all its writes commit together or none do.
+We go deep on this in the databases module; here the takeaway is architectural:
+*the handler declares the unit of work, the pool/transaction machinery owns the
+connection.*

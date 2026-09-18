@@ -1,0 +1,16 @@
+{
+  "id": "pa-test-mailer-spy",
+  "title": "The interaction contract",
+  "prompt": "Implement `MailerSpy` and `send_welcome(mailer, user)`:\n\n- MailerSpy: `send(to, subject, body)` records the call and returns True; if `fail_next` is set, it raises `ConnectionError` once (and clears the flag) instead\n- `send_welcome`: sends `('Welcome!', 'Hi <name>')` to `user['email']`; returns True on success, False when the mailer raised `ConnectionError` — and on failure it must NOT retry inside the call\n\nThe spy makes the contract observable: exactly one send on success, exactly zero on failure.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class MailerSpy:\n    def __init__(self):\n        ...\n\n    def send(self, to, subject, body):\n        ...\n\n\ndef send_welcome(mailer, user):\n    ...",
+  "tests": [
+    {
+      "name": "one send on success, zero on failure",
+      "code": "spy = MailerSpy()\nassert send_welcome(spy, {'email': 'a@x.y', 'name': 'Lan'}) is True\nassert spy.sent == [{'to': 'a@x.y', 'subject': 'Welcome!', 'body': 'Hi Lan'}]\nspy.fail_next = True\nassert send_welcome(spy, {'email': 'b@x.y', 'name': 'Minh'}) is False\nassert len(spy.sent) == 1  # the failed attempt recorded nothing, and did not loop\nprint('ok')",
+      "hint": "Failure surfaces as a return value, not an infinite retry."
+    }
+  ],
+  "level": "guided"
+}

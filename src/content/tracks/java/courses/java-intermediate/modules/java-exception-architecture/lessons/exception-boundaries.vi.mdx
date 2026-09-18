@@ -1,0 +1,26 @@
+## Ranh giới exception và chuyển dịch
+
+Codebase trình trung cấp *chuyển dịch* exception tại ranh giới kiến trúc
+thay vì để chúng rò ra ngoài:
+
+```java
+// tầng repository
+public User findUser(String id) {
+    try {
+        return db.lookup(id);
+    } catch (SQLException e) {
+        throw new StorageException("user lookup failed", e);  // chuyển dịch + móc nối
+    }
+}
+```
+
+Quy tắc sống sót qua review:
+- **chỉ catch những gì bạn xử lý được** — không thì chuyển dịch hoặc khai báo
+- **luôn móc cause** (`new X("...", e)`) để stack trace giữ nguyên câu chuyện gốc
+- **không catch Throwable/Error** — OutOfMemoryError không phải việc của bạn
+- **không nuốt** — khối catch rỗng là một bug được giấu kỹ
+- kiểu cấp thấp (SQLException, IOException) không được xuyên vào API tầng service
+
+Checked so với unchecked tại ranh giới: dùng *checked* cho điều kiện có
+thể phục hồi, caller bắt buộc xử lý (lỗi parse); *unchecked* cho lỗi lập
+trình và trạng thái không thể phục hồi (IllegalArgument, IllegalState).

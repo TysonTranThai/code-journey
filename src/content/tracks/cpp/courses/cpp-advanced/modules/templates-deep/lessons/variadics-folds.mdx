@@ -1,0 +1,26 @@
+## Parameter packs
+
+`template <class... A> void f(A... args);` captures *any number* of arguments of *any* types. `sizeof...(args)` is the count. Expansion `args...` unfolds the pack at each use site.
+
+## Unary folds — the one-line algorithms
+
+A **fold expression** applies an operator across a pack:
+
+```cpp
+template <class... A> constexpr auto sum(A... a)     { return (a + ... + 0); }  // binary right fold, 0 = empty-pack value
+template <class... A> constexpr auto product(A... a) { return (a * ... * 1); }
+template <class... A> constexpr int truthy(A... a)   { return (0 + ... + (a ? 1 : 0)); }
+```
+
+Forms: `(pack op ...)` (unary right), `(... op pack)` (unary left), `(pack op ... op init)` (binary). The **binary** forms matter: they define the result for an **empty pack** — without one, `sum()` is ill-formed, which is exactly the bug your tests should catch.
+
+## if constexpr — compile-time branching
+
+Inside the fold body you can branch on each element's type:
+
+```cpp
+template <class... A> std::string describe(A... a);
+// per element: if constexpr (std::is_integral_v<decltype(v)>) ... else ...
+```
+
+The discarded branch is not even compiled — which is what makes "serialize this only if it has that member" clean without SFINAE.

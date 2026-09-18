@@ -1,0 +1,36 @@
+## Một mảng, đánh chỉ số theo giá trị
+
+Để trả lời "giá trị v có xuất hiện?", quét tuyến tính tốn O(n) mỗi truy
+vấn. **Mảng đánh dấu** trả lời trong O(1):
+
+```cpp
+const int MAXV = 100000;
+vector<bool> seen(MAXV + 1, false);
+int x; in >> x;
+seen[x] = true;                 // đánh dấu
+if (seen[v]) ...                // tra cứu O(1)
+```
+
+### Mảng tần suất (đếm phân phối)
+
+```cpp
+vector<int> freq(MAXV + 1, 0);
+++freq[x];                      // x xuất hiện thêm một lần
+```
+
+- Giá trị xuất hiện nhiều nhất: duyệt `freq`, lấy max.
+- Phần tử trùng: bất kỳ `freq[v] > 1`.
+- Giá trị thiếu: bất kỳ `freq[v] == 0` trong đoạn.
+
+### Ví dụ làm mẫu — hai mảng có cùng đa tập không?
+
+```cpp
+vector<int> f1(MAXV + 1, 0), f2(MAXV + 1, 0);
+// tăng f1 cho phần tử của a, f2 cho phần tử của b
+bool same = true;
+for (int v = 0; v <= MAXV && same; ++v) same = (f1[v] == f2[v]);
+out << (same ? "SAME" : "DIFF") << "\n";
+```
+
+Sắp xếp cả hai mảng rồi so sánh cũng được (O(n log n)); đánh dấu là
+O(n + MAXV). Kỹ thuật này tốn bộ nhớ — và đó chính là cái bẫy ở bài sau.

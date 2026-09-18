@@ -1,0 +1,41 @@
+## Các lệnh
+
+```sh
+gcc -std=c23 -Wall -Wextra -c mathutil.c -o mathutil.o    # chỉ biên dịch
+gcc -std=c23 main.c mathutil.o -o app                      # liên kết
+gcc -std=c23 -Wall -Wextra main.c mathutil.c -o app        # cả hai một bước
+```
+
+`-c` dừng sau khi biên dịch (tệp object, chưa liên kết). Lệnh cuối biên dịch
+VÀ liên kết cùng lúc — ổn khi dự án còn nhỏ.
+
+## Từ vựng cờ
+
+| cờ | nghĩa |
+|------|---------|
+| `-std=c23` | bắt buộc chuẩn C nào |
+| `-Wall -Wextra` | mức warning khóa này mặc định |
+| `-Werror` | warning biến thành lỗi (build CI) |
+| `-O2` | tối ưu tốc độ (khi xuất bản) |
+| `-g` | nhúng thông tin debug (cho gdb) |
+| `-Iinclude` | thêm đường tìm header |
+| `-lm` | liên kết thư viện toán |
+
+Build debug: `-g` (cộng sanitizer trên glibc). Build release: `-O2 -DNDEBUG`.
+Đừng bao giờ xuất bản thứ bạn chưa từng build với warning bật.
+
+## Make trong một màn hình
+
+```make
+app: main.o mathutil.o
+	gcc main.o mathutil.o -o app
+
+main.o: main.c mathutil.h
+	gcc -std=c23 -Wall -Wextra -c main.c
+
+mathutil.o: mathutil.c mathutil.h
+	gcc -std=c23 -Wall -Wextra -c mathutil.c
+```
+
+Make chỉ dựng lại cái đã đổi — đồ thị phụ thuộc chính là Makefile. Thụt lề
+bằng TAB là bắt buộc và nổi tiếng là không khoan nhượng.

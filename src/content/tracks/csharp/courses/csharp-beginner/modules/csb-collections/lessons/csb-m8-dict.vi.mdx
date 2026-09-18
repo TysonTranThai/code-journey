@@ -1,0 +1,36 @@
+## Khóa ánh xạ giá trị
+
+```csharp
+var ages = new Dictionary<string, int>();
+ages["an"] = 30;               // chèn hoặc ghi đè
+ages.Add("binh", 25);          // NÉM nếu "binh" đã tồn tại
+Console.WriteLine(ages["an"]); // 30 — NÉM nếu "an" vắng mặt
+```
+
+Indexer **tạo hoặc ghi đè**; `Add` từ chối trùng lặp. Đọc `ages["missing"]` ném `KeyNotFoundException` — crash dictionary phổ biến nhất. Hai cách đọc an toàn:
+
+```csharp
+if (ages.TryGetValue("missing", out int age))
+    Console.WriteLine(age);    // out param chỉ được gán khi thấy
+
+if (ages.ContainsKey("missing")) { ... }   // kiểm tra mà không đọc
+```
+
+`TryGetValue` được ưa chuộng: một lần tra cứu thay vì hai (`ContainsKey` rồi indexer), và nó cho luôn giá trị.
+
+## Đếm — mẫu kinh điển
+
+```csharp
+var votes = new Dictionary<string, int>();
+foreach (string ballot in ballots)
+{
+    votes.TryGetValue(ballot, out int n);
+    votes[ballot] = n + 1;      // đọc-biến đổi-ghi
+}
+```
+
+`TryGetValue` với `out` tiện lợi vì cho `0` khi khóa vắng, nên mẫu này xử lý phiếu đầu tiên mà không cần rẽ nhánh. Đếm, nhóm, và khử trùng lặp (bài sau) là ba siêu năng lực của dictionary — mọi thử thách ở đây là một trong ba.
+
+## Duyệt
+
+`foreach (var kv in ages)` cho `KeyValuePair<string,int>` — đọc `kv.Key`/`kv.Value`. Dictionary **không có thứ tự xác định**; đừng viết logic dựa vào thứ tự duyệt.

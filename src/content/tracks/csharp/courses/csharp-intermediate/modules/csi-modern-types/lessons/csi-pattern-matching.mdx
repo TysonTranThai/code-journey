@@ -1,0 +1,73 @@
+## From if-chains to patterns
+
+Pattern matching tests a value's *shape* and binds pieces of it. The switch
+expression turns classification into data:
+
+```csharp
+public static string Describe(object o) => o switch
+{
+    int n when n < 0            => "negative int",
+    int n and > 100             => "big int",
+    int                         => "small int",
+    string { Length: 0 }        => "empty string",
+    string s                    => $"string of {s.Length}",
+    null                        => "nothing",
+    _                           => "unknown"
+};
+```
+
+Building blocks, composable everywhere:
+
+- **Type pattern** `int n` — test + bind.
+- **Property pattern** `string { Length: 0 }`, `Point { X: > 0, Y: > 0 }`.
+- **Relational** `> 100`, **logical** `and/or/not`.
+- **Constant** `null`, enum values, literals.
+- **List patterns** (C# 11): `[1, .., var last]` matches a sequence's shape.
+
+## Exhaustiveness and hierarchy
+
+With enums and closed hierarchies, the compiler can prove you covered every
+case — miss one and you get a warning, not a runtime bug. That is why
+switching on a `Shape` union beats `if/else` chains: the type system
+participates in correctness. Add `_` too early and you *silence* that
+protection — reach for it last.
+
+```csharp
+public enum LoadState { Idle, Loading, Ready, Failed }
+public static bool IsBusy(LoadState s) => s switch
+{
+    LoadState.Loading => true,
+    LoadState.Idle or LoadState.Ready or LoadState.Failed => false,
+    _ => throw new ArgumentOutOfRangeException(nameof(s))  // future-proofing
+};
+```
+
+## Tuples and deconstruction
+
+Tuples group ad-hoc values; deconstruction unpacks anything with a
+`Deconstruct` method (all records have one):
+
+```csharp
+(string name, int score) = ("ann", 92);
+var (min, max) = (nums.Min(), nums.Max());
+foreach (var (key, count) in dict)   // KeyValuePair deconstructs too
+    Console.WriteLine($"{key}: {count}");
+```
+
+Switch on tuples for decision tables that read like tables:
+
+```csharp
+public static string Grade(int score, bool attended) => (score, attended) switch
+{
+    ( >= 90, true)  => "A+",
+    ( >= 90, false) => "A",
+    ( >= 80, _)     => "B",
+    _               => "C"
+};
+```
+
+## Check your understanding
+
+- Why is `_ => ...` a double-edged sword? (Catches future cases silently.)
+- When does a property pattern beat a guard clause? (When classifying, not validating.)
+- What does `foreach (var (k, v) in dict)` rely on? (KeyValuePair.Deconstruct.)

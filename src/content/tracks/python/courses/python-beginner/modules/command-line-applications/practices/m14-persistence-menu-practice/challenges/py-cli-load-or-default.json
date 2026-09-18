@@ -1,0 +1,21 @@
+{
+  "id": "py-cli-load-or-default",
+  "title": "load_tasks with a Default",
+  "prompt": "Write load_tasks(path) that returns the parsed JSON list when the file exists and [] when it does not (use pathlib + json).",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "",
+  "tests": [
+    {
+      "name": "missing file tolerated",
+      "code": "import json as _j, os as _os\nif _os.path.exists(\"tm_probe.json\"):\n    _os.remove(\"tm_probe.json\")\nassert load_tasks(\"tm_probe.json\") == [], \"missing file -> []\"\n_j.dump([{\"text\": \"x\", \"done\": True}], open(\"tm_probe.json\", \"w\"))\nassert load_tasks(\"tm_probe.json\") == [{\"text\": \"x\", \"done\": True}], \"existing file is parsed\"\n_os.remove(\"tm_probe.json\")\nassert \"Path\" in code or \"os.path\" in code or \"exists\" in code, \"check existence\"",
+      "hint": "from pathlib import Path; if not Path(path).exists(): return []; then json.load."
+    },
+    {
+      "name": "bad json tolerated (stretch)",
+      "code": "import os as _os\nopen(\"tm_bad.json\", \"w\").write(\"{not json\")\n_ok = False\ntry:\n    r = load_tasks(\"tm_bad.json\")\n    _ok = r == []\nexcept Exception:\n    _ok = True\n_os.remove(\"tm_bad.json\")\nassert _ok, \"corrupt file must either fall back to [] or raise a handled json error\"",
+      "hint": "wrap json.load in try/except and return [] — a strict load is also acceptable."
+    }
+  ],
+  "level": "guided"
+}

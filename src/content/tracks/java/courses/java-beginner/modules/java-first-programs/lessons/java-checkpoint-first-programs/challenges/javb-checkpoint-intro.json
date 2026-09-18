@@ -1,0 +1,25 @@
+{
+  "id": "javb-checkpoint-intro",
+  "title": "Checkpoint: Personal Introduction Program",
+  "prompt": "\nThis checkpoint proves you can take a program from nothing to running.\n\n**The task — Personal Introduction Program.** Print a short, well-formatted\nintroduction of yourself:\n\n1. A header line: `=== ABOUT ME ===`\n2. At least three fact lines in the form `key: value` — for example\n   `name: Thao`, `goal: build Android apps`, `favorite number: 7`. The\n   `favorite number` must come from an `int` variable; the key names are up\n   to you but every line must contain a colon followed by a space.\n3. A footer line: `=================`\n\nFormat the number with `%d` (or simple concatenation). The grader checks the\nheader, the footer, that at least three lines contain `\": \"`, and that one\nof them ends with your favorite number. Everything else is your personality.\n",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static void main(String[] args) {\n        // Your printing code goes here.\n    }\n}\n",
+  "tests": [
+    {
+      "name": "header and footer",
+      "code": "\nString out = CjTestBase.capture(() -> Solution.main(new String[0]));\nCjTestBase.checkContains(out, \"=== ABOUT ME ===\");\nCjTestBase.checkContains(out, \"=================\");\n",
+      "hint": "The header and footer lines must appear exactly as given."
+    },
+    {
+      "name": "three fact lines",
+      "code": "\nString out = CjTestBase.capture(() -> Solution.main(new String[0]));\nlong facts = out.lines().filter(l -> l.contains(\": \")).count();\nCjTestBase.checkTrue(facts >= 3, \"at least 3 lines contain \\\": \\\"\");\n",
+      "hint": "Count lines containing \": \" — you need at least three."
+    },
+    {
+      "name": "favorite number from a variable",
+      "code": "\nString out = CjTestBase.capture(() -> Solution.main(new String[0]));\nCjTestBase.checkTrue(\n    out.lines().anyMatch(l -> l.startsWith(\"favorite number: \")),\n    \"a line 'favorite number: <n>' exists\");\nString line = out.lines().filter(l -> l.startsWith(\"favorite number: \")).findFirst().orElse(\"\");\nString n = line.substring(\"favorite number: \".length()).trim();\ntry {\n    Integer.parseInt(n);\n} catch (NumberFormatException e) {\n    CjTestBase.fail(\"favorite number is not a whole number: \" + n);\n}\n",
+      "hint": "The line must start 'favorite number: ' and end with a whole number that was stored in an int."
+    }
+  ]
+}

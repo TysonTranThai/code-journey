@@ -1,0 +1,41 @@
+## Two kinds of macros
+
+```c
+#define MAX_SCORE 100                  // object macro: a named constant
+#define SQUARE(x) ((x) * (x))          // function-like macro
+```
+
+The preprocessor replaces text BEFORE compilation. `SQUARE(a+b)` becomes
+`((a+b) * (a+b))` — the compiler never sees the name SQUARE.
+
+## The parenthesis trap
+
+```c
+#define BAD_SQUARE(x) (x * x)
+BAD_SQUARE(2 + 3)     // becomes (2 + 3 * 2 + 3) = 11 — not 25!
+```
+
+Every parameter AND the whole expansion get parentheses. This is not style;
+it is correctness.
+
+## The double-evaluation trap
+
+```c
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+int i = 5;
+MAX(i++, 3);    // i++ may be evaluated TWICE — side effects multiply
+```
+
+Macros paste text; arguments with side effects are dangerous. A do-while
+wrapper gives statement-like macros sane semantics:
+
+```c
+#define LOG(msg) do { fprintf(stderr, "%s\n", msg); } while (0)
+```
+
+## #undef and scope
+
+Macros live from their #define to the end of the file (or #undef). They do
+not respect C scopes — a macro named SIZE will clobber any SIZE in every
+header included after it. Name them deliberately (or not at all: a `const`
+or `static const` is often the better tool).

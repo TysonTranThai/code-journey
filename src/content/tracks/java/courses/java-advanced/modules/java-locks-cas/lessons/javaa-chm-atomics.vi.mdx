@@ -1,0 +1,19 @@
+`ConcurrentHashMap` không phải HashMap có synchronized — nó là *đối tượng
+concurrent* với các phép toán ghép nguyên tử riêng. Nhóm chuyên nghiệp dùng:
+
+```java
+map.computeIfAbsent(key, k -> expensive(k));   // nguyên tử: tối đa một lần mỗi key
+map.compute(key, (k, v) -> mergeInto(v));       // nguyên tử read-modify-write
+map.merge(key, 1, Integer::sum);                // idiom bộ đếm tần suất
+map.putIfAbsent(key, seed);                     // khởi tạo một lần
+```
+
+Callback của họ `compute` chạy dưới khóa của bin — phải **ngắn, và không được
+đụng key khác của cùng map** (compute lồng trên cùng key là deadlock; trên
+key khác là rủi ro).
+
+Vì sao không dùng `Collections.synchronizedMap`? Vì
+`if (!map.containsKey(k)) map.put(k, v)` là hai phép nguyên tử — *kiểm tra*
+và *hành động* có thể chen ngang giữa các thread. Họ compute của CHM biến
+toàn bộ check-then-act thành **một** phép nguyên tử. Đó là khoảng cách giữa
+lớp có tính nhất quán nội bộ và thuật toán đúng đắn bên ngoài.

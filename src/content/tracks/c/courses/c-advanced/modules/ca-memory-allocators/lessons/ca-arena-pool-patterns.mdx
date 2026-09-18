@@ -1,0 +1,26 @@
+## Arena (region) allocation
+
+Allocate a big block; hand out consecutive slices; free them *all at once* by discarding the block. An arena is a bump pointer plus a capacity:
+
+```c
+void *arena_alloc(arena_t *a, size_t n) {
+    if (a->used + n > a->cap) return NULL;
+    void *p = a->mem + a->used;
+    a->used += n;
+    return p;
+}
+```
+
+No per-object free, no fragmentation, near-zero overhead per allocation. The discipline: every object in the arena must share one lifetime. Compilers arena per-function IR; servers arena per-request.
+
+## Pool allocation
+
+Same block size everywhere: keep a free list of slots. get() pops a slot; put() pushes it back. O(1) with zero searching, and no size-class machinery at all.
+
+## realloc growth policies
+
+Growing a buffer by doubling gives amortized O(1) per element; growing by +1 gives O(n^2) total copies. The policy lives in *your* code — `realloc` just moves bytes when told.
+
+```c
+size_t newcap = cap ? cap * 2 : 1;
+```

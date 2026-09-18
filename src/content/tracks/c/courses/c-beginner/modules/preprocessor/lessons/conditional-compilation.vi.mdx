@@ -1,0 +1,46 @@
+## Include guard
+
+Mọi header đều mặc bộ giáp này:
+
+```c
+#ifndef GEOM_H
+#define GEOM_H
+
+/* khai báo nằm ở đây */
+
+#endif
+```
+
+Nếu header bị include hai lần, lượt thứ hai thấy GEOM_H đã định nghĩa và bỏ
+qua phần thân — không có định nghĩa trùng. Không có guard, hai lần #include
+cùng một header định nghĩa gì đó = lỗi biên dịch.
+
+## #ifdef / #ifndef cho các công tắc nền tảng hoặc debug
+
+```c
+#define DEBUG 1
+
+#ifdef DEBUG
+    fprintf(stderr, "x=%d\n", x);
+#endif
+```
+
+Dòng debug chỉ tồn tại trong chương trình đã biên dịch KHI DEBUG được định
+nghĩa. Đây là cách các code base C hỗ trợ nhiều nền tảng và cấu hình từ một
+cây mã nguồn.
+
+## #if với biểu thức hằng
+
+```c
+#if MAX_SCORE > 50
+#   define GRADE_SCALE "percent"
+#else
+#   define GRADE_SCALE "raw"
+#endif
+```
+
+## Những gì bộ tiền xử lý KHÔNG làm
+
+Nó không biết gì về kiểu, biến, hay phạm vi của C. Nó là một cỗ máy văn bản.
+Mọi thứ nó tạo ra vẫn phải là C hợp lệ — lỗi bạn thấy sau khi mở rộng chỉ vào
+kết quả, không chỉ vào lời gọi macro.

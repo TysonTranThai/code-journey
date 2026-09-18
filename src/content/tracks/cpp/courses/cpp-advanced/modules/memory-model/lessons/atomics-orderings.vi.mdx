@@ -1,0 +1,34 @@
+## Atomic mua được gì
+
+`std::atomic<int> x;` — mọi read-modify-write là không thể chia cắt, và truy cập đồng thời **không** còn là UB. Nhưng atomicity là phần rẻ. Phần sâu là **xếp thứ tự**: các thread khác thấy *bộ nhớ xung quanh* thế nào khi phép chuyển atomic này xảy ra?
+
+## Ba mức, từ yếu tới mạnh
+
+**`memory_order_relaxed`** — chỉ atomicity. Không đồng bộ bộ nhớ khác, không hứa hẹn thứ tự ngoài chính biến này. Hoàn hảo cho bộ đếm sự kiện, thống kê — khi "con số cuối cùng đúng" là toàn bộ yêu cầu:
+
+```cpp
+std::atomic<int> hits{0};
+// operator++ là seq_cst; muốn relaxed thì ghi tường minh:
+hits.fetch_add(1, std::memory_order_relaxed);
+```
+
+**`memory_order_acquire` / `memory_order_release`** — cặp lao động chính. Một **release** store khiến mọi thứ thread này làm *trước* đó hiển thị với bất kỳ thread nào sau này thực hiện **acquire** load và đọc được giá trị đó:
+
+```cpp
+std::atomic<bool> ready{false};
+int payload = 0;
+
+// producer
+payload = 42;                                   // ghi thường
+ready.store(true, std::memory_order_release);   // công bố
+
+// consumer
+while (!ready.load(std::memory_order_acquire)) {}
+// payload == 42 được BẢO ĐẢM — acquire/release đã xếp thứ tự phép ghi thường
+```
+
+**`memory_order_seq_cst`** — mặc định, mạnh nhất: mọi thao tác seq_cst trên mọi thread thống nhất một thứ tự toàn cục. Dễ suy luận nhất, đắt nhất. Không chắc thì dùng mặc định; chỉ nới lỏng khi có lý do bằng văn bản.
+
+## Quy tắc luyện tập
+
+Phần chấm điểm theo kỷ luật chuyên nghiệp: relaxed nơi chỉ cần atomicity, acquire/release cho việc công bố-tiêu thụ dữ liệu payload, seq_cst khi các thread phải thống nhất một thứ tự toàn cục.

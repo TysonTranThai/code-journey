@@ -1,0 +1,33 @@
+## Luôn biên dịch với warning bật
+
+```sh
+gcc -std=c23 -Wall -Wextra -o app main.c
+```
+
+`-Wall -Wextra` cũng là tư thế mặc định cho các challenge của khóa này:
+warning build bạn thấy chính là warning bộ chấm thấy.
+
+## Những warning đánh dấu lỗi thật
+
+- `unused variable` — bạn tính một thứ mà không dùng: thường là một bước bị
+  quên
+- `uninitialized` — giá trị được đọc trước khi gán: hành vi không xác định
+  chực chờ
+- `wrong format specifier` — `printf("%d", 3.14)` in ra rác: kiểu và định
+  dạng phải khớp
+- `control reaches end of non-void function` — một đường đi trong hàm không
+  trả về gì cả
+- `assignment in condition` — `if (x = 5)` gán rồi kiểm tra 5; có lẽ bạn định
+  `==`
+
+## Đọc lỗi từ trên xuống... nói đúng hơn, từ lỗi đầu tiên
+
+Lỗi ĐẦU TIÊN mới là lỗi thật; các lỗi sau thường chỉ là sóng xung kích. Sửa
+lỗi đầu, biên dịch lại, lặp lại. Và đọc dòng mũi (`^`) — trình biên dịch chỉ
+thẳng vào token khiến nó nghẹn.
+
+## Error vs warning
+
+Warning vẫn biên dịch được — chương trình chạy, nhưng chạy sai. Kỷ luật:
+**coi mọi warning là lỗi**. `-Werror` (biến warning thành lỗi) là cách các
+build chuyên nghiệp bắt buộc điều đó.

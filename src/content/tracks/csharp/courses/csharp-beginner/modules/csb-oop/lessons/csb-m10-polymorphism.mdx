@@ -1,0 +1,42 @@
+## The dispatch problem
+
+A method that processes many kinds must behave per-kind. Without language help you write type checks everywhere; with `virtual`/`override` the runtime does it:
+
+```csharp
+class Shape
+{
+    public virtual double Area() => 0.0;
+}
+
+class Circle : Shape
+{
+    private double r;
+    public Circle(double radius) { r = radius; }
+    public override double Area() => Math.PI * r * r;
+}
+
+class Rect : Shape
+{
+    private double w, h;
+    public Rect(double w, double h) { this.w = w; this.h = h; }
+    public override double Area() => w * h;
+}
+```
+
+Now one loop handles every shape — including kinds written *after* this loop existed:
+
+```csharp
+var shapes = new List<Shape> { new Circle(1), new Rect(2, 3) };
+double total = 0;
+foreach (Shape s in shapes) total += s.Area();   // actual type decides
+```
+
+`s.Area()` dispatches on the object's **runtime type**: Circle's override for circles, Rect's for rectangles. Adding `Triangle : Shape` needs zero changes to the loop — that is the payoff.
+
+## The rules that make it safe
+
+- `virtual` says "subclasses may replace this"; without it, `override` doesn't compile.
+- An override keeps the base's signature. Callers can't tell override from original at the call site.
+- `sealed override` stops further replacement.
+
+Missing override is not an error — the base implementation runs. That makes `virtual` a promise: the base version must be a sane default.

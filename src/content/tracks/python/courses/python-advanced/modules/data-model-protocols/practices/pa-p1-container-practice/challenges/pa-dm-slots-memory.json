@@ -1,0 +1,21 @@
+{
+  "id": "pa-dm-slots-memory",
+  "title": "Slotted points",
+  "prompt": "Implement `class Point` with `__slots__ = ('x', 'y')`:\n\n- constructor takes x, y\n- instances must NOT support arbitrary attributes (`p.z = 1` raises `AttributeError`)\n- `__eq__`/`__hash__` consistent: equal points share a hash (define both)\n- `distance_to(other)` returns the Euclidean distance (use math.hypot)",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import math\n\nclass Point:\n    __slots__ = ('x', 'y')\n\n    # TODO: __init__, __eq__, __hash__, distance_to",
+  "tests": [
+    {
+      "name": "slots enforce the shape",
+      "code": "p = Point(1, 2)\nassert p.x == 1 and p.y == 2\ntry:\n    p.z = 9\nexcept AttributeError:\n    pass\nelse:\n    raise AssertionError('arbitrary attributes must fail with __slots__')\nassert not hasattr(p, '__dict__')\nprint('ok')",
+      "hint": "__slots__ removes the per-instance __dict__ — that is the point."
+    },
+    {
+      "name": "eq/hash/distance",
+      "code": "assert Point(1, 2) == Point(1, 2)\nassert hash(Point(1, 2)) == hash(Point(1, 2))\nassert Point(1, 2) != Point(2, 1)\nassert abs(Point(0, 0).distance_to(Point(3, 4)) - 5.0) < 1e-9\nassert hash(Point(1, 2)) in {hash(Point(1, 2))}\nprint('ok')",
+      "hint": "Define __eq__ and __hash__ together (tuple hash of the coordinates)."
+    }
+  ],
+  "level": "independent"
+}

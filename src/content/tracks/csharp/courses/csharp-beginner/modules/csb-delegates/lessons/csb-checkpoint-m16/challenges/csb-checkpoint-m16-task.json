@@ -1,0 +1,20 @@
+{
+  "id": "csb-checkpoint-m16-task",
+  "title": "AlarmSystem",
+  "prompt": "Implement `AlarmSystem`, `LevelsAbove`, and `MakeAverager` — arming state, filtered readings, and a stateful closure.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "alarm",
+      "code": "var sys = new Solution.AlarmSystem();\nvar fired = new List<string>();\nsys.Triggered += (s, v) => fired.Add(s + \":\" + v);\nsys.Arm(\"door\", 5);\nsys.Reading(\"door\", 3);\nsys.Reading(\"window\", 9);\nsys.Reading(\"door\", 7);\nCj.Eq(string.Join(\"|\", fired), \"door:7\", \"only armed sensor over threshold fires\");\nsys.Disarm(\"door\");\nsys.Reading(\"door\", 10);\nCj.Eq(fired.Count, 1, \"disarmed sensor is silent\");",
+      "hint": "Arm/disarm gates the event; unknown sensors never fire."
+    },
+    {
+      "name": "lambda-and-closure",
+      "code": "var lv = Solution.LevelsAbove(new List<int> { 1, 5, 7, 2 }, 4);\nCj.Eq(string.Join(\",\", lv), \"5,7\", \"strictly above, order kept\");\nvar avg = Solution.MakeAverager();\nCj.Eq(avg(10), 10, \"first call is the first value\");\nCj.Eq(avg(20), 15, \"running average so far\");\nvar avg2 = Solution.MakeAverager();\nCj.Eq(avg2(4), 4, \"fresh averager starts empty\");\nCj.Eq(avg(30), 20, \"independent closures keep their own totals\");",
+      "hint": "Lambda filter plus a per-call closure."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "cint-p11-heapsort",
+  "title": "Heapify & Heapsort",
+  "prompt": "Two classic builds on the heap idea:\n\n```c\n/* transforms a[0..n) into a min-heap in place — O(n) bottom-up heapify */\nvoid heapify(long *a, size_t n);\n/* sorts a[0..n) ASCENDING using a MAX-heap built in place:\n   heapify as max-heap, repeatedly swap root with end and shrink.\n   (Classic heapsort: max-heap gives ascending order in place.) */\nvoid heapsort_asc(long *a, size_t n);\n```\n\nNo extra arrays: both are in-place.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\nvoid heapify(long *a, size_t n);\nvoid heapsort_asc(long *a, size_t n);\n",
+  "tests": [
+    {
+      "name": "bottom-up heapify, in-place sort",
+      "code": "\nlong a[] = {9, 4, 7, 1, 8, 2};\nheapify(a, 6);\n/* min-heap property: parent <= children */\nCHECK(a[0] == 1);                        /* min at root */\nfor (size_t i = 1; i < 6; i++) {\n    size_t p = (i - 1) / 2;\n    CHECK(a[p] <= a[i]);\n}\nlong b[] = {5, 3, 8, 1, 9, 2, 7};\nheapsort_asc(b, 7);\nfor (int i = 0; i < 6; i++) CHECK(b[i] <= b[i + 1]);\nCHECK(b[0] == 1 && b[6] == 9);\nlong one[] = {42};\nheapify(one, 1);\nCHECK(one[0] == 42);\nheapsort_asc(one, 1);\nCHECK(one[0] == 42);\n",
+      "hint": "Heapify: sift_down from i = n/2 backwards to 0. Heapsort: build a MAX-heap, swap a[0] with a[end], shrink, sift down."
+    }
+  ]
+}

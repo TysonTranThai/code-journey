@@ -1,0 +1,20 @@
+## The guarantee you build on
+
+Observable behavior — reads of volatile objects, writes to files, calls to I/O functions — must be preserved exactly. Everything not observable may be reordered, merged, or deleted *provided the observable results are unchanged*. UB anywhere removes the 'provided'.
+
+## Folding in practice
+
+```c
+int folded(void)     { int a = 21; int b = 2; return a * b; }
+int unfolded(void)   { volatile int a = 21; volatile int b = 2; return a * b; }
+```
+
+At -O2 the first returns the constant 42 without executing a multiply; the second must load, multiply, and store at runtime. Same observable result — that is the contract working.
+
+## Why guards disappear
+
+```c
+if (p != NULL && *p > 0) use(*p);
+```
+
+The null check survives because dereferencing NULL is UB *only if it happens* — here it is guarded. But a write `*p = 1` earlier in the function without a check licenses the optimizer to delete a *later* `p != NULL` test: a null pointer cannot have been dereferenced, so either p is not null or the program is already meaningless. Learning to *see* these deletions in disassembly (module 13) is what makes the rule concrete.

@@ -1,0 +1,21 @@
+{
+  "id": "javb-m7-bank-account",
+  "title": "Bank Account with guarded money",
+  "prompt": "Inside `Solution`, write `static class Account` with a `private final String owner`, `private double balance`, constructor `Account(String owner, double startingBalance)` (negative start → IllegalArgumentException), `public void deposit(double)` (must be positive, else IAE), `public void withdraw(double)` (must be positive AND not exceed balance, else IAE), and `public double getBalance()`.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Account {\n        public Account(String owner, double startingBalance) {\n        }\n\n        public void deposit(double amount) {\n        }\n\n        public void withdraw(double amount) {\n        }\n\n        public double getBalance() {\n            return 0;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "happy path",
+      "code": "\nSolution.Account acc = new Solution.Account(\"Ada\", 100);\nacc.deposit(50);\nacc.withdraw(30);\nCjTestBase.checkNear(acc.getBalance(), 120.0, 1e-9, \"100 + 50 - 30\");\n",
+      "hint": "Deposit adds, withdraw subtracts, getter reports."
+    },
+    {
+      "name": "rules are enforced",
+      "code": "\nSolution.Account acc = new Solution.Account(\"Ada\", 100);\nCjTestBase.checkThrows(() -> acc.deposit(-5), \"negative deposit\");\nCjTestBase.checkThrows(() -> acc.withdraw(1e9), \"overdraft\");\nCjTestBase.checkThrows(() -> new Solution.Account(\"Bo\", -1), \"negative start\");\n",
+      "hint": "All three violations must throw IllegalArgumentException."
+    }
+  ],
+  "level": "independent"
+}

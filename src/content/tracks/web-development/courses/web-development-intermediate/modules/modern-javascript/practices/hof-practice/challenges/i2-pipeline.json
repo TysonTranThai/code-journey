@@ -1,0 +1,20 @@
+{
+  "id": "i2-pipeline",
+  "title": "Build a Reusable Pipeline",
+  "prompt": "Write two functions and compose them:\n\n- `topSpenders(orders, min)` — returns users whose order total is at least `min`, deduplicated, in first-seen order\n- `countBy(orders, keyFn)` — returns an object counting items by the key returned from `keyFn(item)`\n\nBoth must be built on `filter`/`map`/`reduce`.",
+  "difficulty": "intermediate",
+  "level": "combination",
+  "boilerplate": "const orders = [\n  { user: \"ada\", total: 120 },\n  { user: \"linh\", total: 35 },\n  { user: \"ada\", total: 80 },\n  { user: \"sam\", total: 200 },\n];\n\nfunction topSpenders(orders, min) {\n  // your code\n}\n\nfunction countBy(orders, keyFn) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "topSpenders filters and dedupes",
+      "code": "const fn = new Function(code + \"\\nreturn { topSpenders, countBy };\");\nconst { topSpenders } = fn();\nconst orders = [{ user: \"ada\", total: 120 }, { user: \"linh\", total: 35 }, { user: \"ada\", total: 80 }, { user: \"sam\", total: 200 }];\nconst out = topSpenders(orders, 100);\nif (JSON.stringify(out) !== JSON.stringify([\"ada\", \"sam\"])) throw new Error(\"Expected [ada, sam], got \" + JSON.stringify(out));",
+      "hint": "filter by total >= min, then map to user, then dedupe with a Set or reduce."
+    },
+    {
+      "name": "countBy counts by derived key",
+      "code": "const fn = new Function(code + \"\\nreturn { topSpenders, countBy };\");\nconst { countBy } = fn();\nconst orders = [{ user: \"ada\", total: 120 }, { user: \"linh\", total: 35 }, { user: \"ada\", total: 80 }];\nconst out = countBy(orders, (o) => (o.total >= 100 ? \"big\" : \"small\"));\nif (out.big !== 1 || out.small !== 2) throw new Error(\"Expected { big: 1, small: 2 }, got \" + JSON.stringify(out));",
+      "hint": "reduce with acc[key] = (acc[key] ?? 0) + 1."
+    }
+  ]
+}

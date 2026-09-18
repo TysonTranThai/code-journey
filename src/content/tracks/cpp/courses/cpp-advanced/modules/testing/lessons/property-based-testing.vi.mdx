@@ -1,0 +1,16 @@
+## Từ ví dụ đến tính chất
+
+Test ví dụ: `sort({3,1,2}) == {1,2,3}`. Tính chất: *với mọi vector, sort cho cùng multiset, không giảm*. Một tính chất đáng giá trăm ví dụ vì nó phủ cả những đầu vào bạn quên. Các tính chất kinh điển của C++:
+
+- **Khép kín vòng**: parse(serialize(x)) == x (parser, codec, format chuỗi).
+- **Áp hai lần bằng một**: `reverse(reverse(v)) == v`, dedup áp hai lần bằng áp một.
+- **Idempotence**: `sort(sort(v)) == sort(v)`.
+- **Oracle**: so với bản cài chậm-nhưng-hiển-đúng.
+
+## Ngẫu nhiên cần cấu trúc
+
+Byte ngẫu nhiên thuần hiếm khi chạm code thú vị. Hãy sinh *ngẫu nhiên có cấu trúc*: đầu vào gần-hợp-lệ thỉnh thoảng kèm giá trị biên (0, 1, INT_MAX, rỗng). Seed tất định giữ CI tái lập được; trường hợp fail được in ra và thu nhỏ thành bằng chứng tối thiểu.
+
+## Tính chất như tài liệu
+
+Một tính chất phát biểu hợp đồng đủ chính xác để đọc test chính là đọc đặc tả — "với mọi n >= 0: buildRange(n).size() == n" dạy yêu cầu tốt hơn văn xuôi. Bài tập chấm điểm ở đây chấm bản cài tính chất: hàm kiểm tra của bạn phải chấp nhận bản cài đúng và từ chối bản cài hỏng tinh vi.

@@ -1,0 +1,47 @@
+## Cây không cần con trỏ
+
+Binary heap là cây nhị phân *đầy đủ* với tính chất heap (cha ≤ con với
+min-heap). Tính đầy đủ cho phép cây sống trong mảng với phép tính chỉ số
+thuần túy:
+
+```c
+/* với phần tử tại chỉ số i: */
+size_t parent = (i - 1) / 2;
+size_t left   = 2 * i + 1;
+size_t right  = 2 * i + 2;
+```
+
+Không con trỏ, không malloc từng node, locality bộ nhớ của mảng rất tốt —
+vì sao heapsort và priority queue trong mọi thư viện thật đều dựa trên
+mảng.
+
+## Sift lên, sift xuống
+
+**Insert** nối vào cuối (giữ tính đầy đủ), rồi *sift up*: khi nhỏ hơn
+cha, đổi chỗ với cha. O(log n).
+
+**Extract-min** bỏ gốc (phần tử nhỏ nhất), đưa *phần tử cuối* vào chỗ
+gốc, thu ngắn, rồi *sift down*: đổi chỗ với con nhỏ hơn khi con còn nhỏ
+hơn. O(log n). **Peek** là `a[0]` — O(1).
+
+```c
+void sift_down(long *a, size_t n, size_t i) {
+    while (1) {
+        size_t l = 2*i + 1, r = 2*i + 2, smallest = i;
+        if (l < n && a[l] < a[smallest]) smallest = l;
+        if (r < n && a[r] < a[smallest]) smallest = r;
+        if (smallest == i) return;
+        long t = a[i]; a[i] = a[smallest]; a[smallest] = t;
+        i = smallest;
+    }
+}
+```
+
+## Các bug số học chỉ số, phân loại
+
+- `parent = (i-1)/2` tại i == 0 wrap thành SIZE_MAX — chặn gốc.
+- Quên `left < n` — tầng cuối lưng lửng đọc con ma.
+- Sift down chỉ so với một con — tính chất heap gãy âm thầm.
+
+Bất biến cần test sau mọi thao tác: mọi cha ≤ cả hai con. Một hàm kiểm
+`heap_ok` năm dòng bắt được tất cả.

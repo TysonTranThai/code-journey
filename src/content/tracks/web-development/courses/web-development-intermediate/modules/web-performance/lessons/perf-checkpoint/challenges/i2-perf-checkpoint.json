@@ -1,0 +1,25 @@
+{
+  "id": "i2-perf-checkpoint",
+  "title": "Performance Clinic",
+  "prompt": "Write THREE functions. 1) `phaseOf(prop)` — map a CSS/JS property to its cheapest affected pipeline phase: \"transform\" and \"opacity\" => \"composite\"; \"color\", \"background\", \"box-shadow\" => \"paint\"; \"width\", \"height\", \"top\", \"left\", \"font-size\" => \"layout\"; unknown => \"style\". 2) `budgetVerdict(actual, limit)` — return \"ok\" when actual <= limit, \"over\" when over by up to 10% (limit * 1.1), else \"fail\". 3) `pickFix(symptom)` — map symptoms to fixes: \"slow-ttfb\" => \"server\", \"huge-image\" => \"image-optimization\", \"long-task\" => \"chunking\", \"layout-shift\" => \"dimensions\", \"render-blocking-css\" => \"critical-css\", unknown => \"profile-first\".",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function phaseOf(prop) {\n  // your code\n}\n\nfunction budgetVerdict(actual, limit) {\n  // your code\n}\n\nfunction pickFix(symptom) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "classifies pipeline costs correctly",
+      "code": "const fn = new Function(code + \"\\nreturn { phaseOf, budgetVerdict, pickFix };\");\nconst { phaseOf } = fn();\nif (phaseOf(\"transform\") !== \"composite\") throw new Error(\"transform stops at composite.\");\nif (phaseOf(\"opacity\") !== \"composite\") throw new Error(\"opacity too.\");\nif (phaseOf(\"color\") !== \"paint\") throw new Error(\"color repaints but no layout.\");\nif (phaseOf(\"width\") !== \"layout\") throw new Error(\"width reflows.\");\nif (phaseOf(\"z-index\") !== \"style\") throw new Error(\"Unknown => style.\");",
+      "hint": "Three whitelists in cost order, then the default."
+    },
+    {
+      "name": "budgets tolerate small overruns",
+      "code": "const fn = new Function(code + \"\\nreturn { phaseOf, budgetVerdict, pickFix };\");\nconst { budgetVerdict } = fn();\nif (budgetVerdict(150, 170) !== \"ok\") throw new Error(\"Under budget => ok.\");\nif (budgetVerdict(180, 170) !== \"over\") throw new Error(\"180 <= 187 => over, not fail.\");\nif (budgetVerdict(200, 170) !== \"fail\") throw new Error(\"200 > 187 => fail.\");",
+      "hint": "Two comparisons: against limit, then against limit * 1.1."
+    },
+    {
+      "name": "fixes match their symptoms",
+      "code": "const fn = new Function(code + \"\\nreturn { phaseOf, budgetVerdict, pickFix };\");\nconst { pickFix } = fn();\nif (pickFix(\"slow-ttfb\") !== \"server\") throw new Error(\"TTFB is a server problem.\");\nif (pickFix(\"long-task\") !== \"chunking\") throw new Error(\"Long tasks want chunking.\");\nif (pickFix(\"mystery\") !== \"profile-first\") throw new Error(\"No evidence => measure first.\");",
+      "hint": "A lookup object; the default is the lesson's moral."
+    }
+  ]
+}

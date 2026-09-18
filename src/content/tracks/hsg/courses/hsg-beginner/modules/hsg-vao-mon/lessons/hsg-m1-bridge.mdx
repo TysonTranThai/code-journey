@@ -1,0 +1,49 @@
+## The minimal C++ for contests
+
+This course assumes you know variables, loops, and functions from a first
+programming course (or you are taking `cpp-beginner` alongside). This is
+*exactly the slice contest problems need*.
+
+### Data types — the golden rule
+
+```cpp
+int a;        // up to ~2.1 * 10^9 — LIMITED
+long long x;  // up to ~9.2 * 10^18 — THE CONTEST DEFAULT
+```
+
+On scratch paper: 10^9 + 10^9 = 2·10^9 overflows `int`. If a sum can pass
+2.1·10^9, **the whole computation must be `long long`**. This is the #1
+wrong-answer cause for beginners.
+
+### Fast input/output
+
+```cpp
+ios_base::sync_with_stdio(false);
+cin.tie(nullptr);
+```
+
+The two standard contest lines: disable C-stdio synchronization and the
+per-read flush. With million-number inputs the difference is dramatic.
+
+### vector — every problem's array
+
+```cpp
+int n; in >> n;
+vector<long long> a(n);
+for (long long& x : a) in >> x;   // read n elements
+sort(a.begin(), a.end());          // STL sort (sorting module)
+```
+
+`for (long long& x : a)` — the `&` makes it writable and avoids copies.
+
+### The solve convention
+
+```cpp
+void solve(istream& in, ostream& out) {
+    long long a, b;
+    in >> a >> b;
+    out << a + b << "\n";
+}
+```
+
+All contest logic lives in `solve`; the system calls `solve(cin, cout)`.

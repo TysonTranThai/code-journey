@@ -1,0 +1,25 @@
+{
+  "id": "cppi-checkpoint-stl",
+  "title": "Checkpoint: Top-K frequent words",
+  "prompt": "Implement `std::vector<std::string> top_k(const std::vector<std::string>& words, std::size_t k)` returning the k most frequent words ordered by count descending; ties are broken lexicographically (smaller word first). If there are fewer than k distinct words, return all of them (still ordered). Combine a counting `std::map` with a sort (or a `std::priority_queue`) — the tie-break rule is the part most solutions get wrong.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <algorithm>\n#include <map>\n#include <string>\n#include <vector>\n#include <iostream>\n\n// std::vector<std::string> top_k(const std::vector<std::string>& words, std::size_t k)\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "auto r = top_k({\"apple\",\"banana\",\"apple\",\"cherry\",\"banana\",\"apple\"}, 2);\nCHECK_EQ(r.size(), 2);\nCHECK_EQ(r[0], std::string(\"apple\"));\nCHECK_EQ(r[1], std::string(\"banana\"));",
+      "hint": "Counts 3, 2, 1 — order follows the counts."
+    },
+    {
+      "name": "tie-break",
+      "code": "auto r = top_k({\"b\",\"a\",\"c\"}, 2);\nCHECK_EQ(r.size(), 2);\nCHECK_EQ(r[0], std::string(\"a\"));\nCHECK_EQ(r[1], std::string(\"b\"));",
+      "hint": "All tied at 1: lexicographic order decides."
+    },
+    {
+      "name": "k-beyond-distinct",
+      "code": "auto r = top_k({\"x\",\"x\",\"y\"}, 10);\nCHECK_EQ(r.size(), 2);\nCHECK_EQ(r[0], std::string(\"x\"));\nCHECK_EQ(r[1], std::string(\"y\"));",
+      "hint": "Fewer distinct words than k: return them all."
+    }
+  ]
+}

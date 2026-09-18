@@ -1,0 +1,16 @@
+{
+  "id": "cint-p3-leak-arith",
+  "title": "Leak Arithmetic",
+  "prompt": "Implement a model of a function's allocation paths and predict balance:\n\n```c\n/* ops string: 'A' = allocate (success), 'a' = allocate (FAILED),\n   'F' = free, 'R' = early return on this path.\n   For ONE path (prefix up to 'R', or whole string if no 'R'):\n   return 1 if the path is balanced (no leak), 0 if it leaks. */\nint path_leaks(const char *ops);\n```\n\nAn allocation that failed ('a') needs no free. An allocation that succeeded\n('A') must be freed ('F') before the path ends. NULL/empty: balanced (1).",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "path balance verdicts",
+      "code": "\nCHECK_EQ(path_leaks(\"AF\"), 1);\nCHECK_EQ(path_leaks(\"AR\"), 0);     /* returned holding a live allocation */\nCHECK_EQ(path_leaks(\"aFR\"), 1);    /* failed alloc needs no free */\nCHECK_EQ(path_leaks(\"AAF\"), 0);    /* two allocs, one free */\nCHECK_EQ(path_leaks(\"AFAF\"), 1);\nCHECK_EQ(path_leaks(\"a\"), 1);      /* a failed alloc owes nothing */\nCHECK_EQ(path_leaks(\"\"), 1);\nCHECK_EQ(path_leaks(NULL), 1);\n",
+      "hint": "Count successful allocs minus frees up to 'R' or end; balanced iff zero."
+    }
+  ],
+  "level": "guided"
+}

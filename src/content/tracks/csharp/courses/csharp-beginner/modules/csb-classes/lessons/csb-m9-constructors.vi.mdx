@@ -1,0 +1,38 @@
+## Hàm khởi tạo thiết lập bất biến
+
+Một **hàm khởi tạo** chạy khi `new` tạo đối tượng. Nhiệm vụ của nó là để đối tượng ở trạng thái *hợp lệ* — chặn dữ liệu vô lý ngay lập tức, không bao giờ lưu nó:
+
+```csharp
+class Ticket
+{
+    public string Event;
+    public int Price;
+
+    public Ticket(string event_, int price)
+    {
+        Event = event_;
+        if (price < 0) throw new ArgumentException("negative price");
+        Price = price;
+    }
+}
+
+var t = new Ticket("Concert", 250);   // hợp lệ ngay từ đầu
+```
+
+Tên hàm khởi tạo trùng tên lớp và không có kiểu trả về. Khi bạn khai báo bất kỳ hàm khởi tạo nào, hàm không-tham-số vô hình biến mất — `new Ticket()` không còn biên dịch trừ khi bạn tự viết nó.
+
+## Overload và initializer
+
+Nhiều hàm khởi tạo cho người gọi nhiều lựa chọn, và một hàm có thể **xích** sang hàm khác bằng `this(...)` để phần kiểm tra tồn tại đúng một nơi:
+
+```csharp
+public Ticket(string event_) : this(event_, 0) { }   // vé miễn phí, cùng luật
+```
+
+Với thiết lập phẳng đơn giản, **object initializer** gán trường/thuộc tính ngay sau `new`:
+
+```csharp
+var t2 = new Ticket { Event = "Play", Price = 180 };
+```
+
+Initializer chỉ là cách viết gọn cho "khởi tạo, rồi gán". Nó không thể kiểm tra — nếu trạng thái xấu phải bị *từ chối*, hãy đặt kiểm tra trong hàm khởi tạo.

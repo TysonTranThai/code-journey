@@ -4,7 +4,12 @@ import { and, eq, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { achievements, progressEvents, submissions, type StoredVerdict } from "@/lib/db/schema";
-import { getCurriculumModule, getLesson, getLessonChallenges } from "@/lib/curriculum/loaders";
+import {
+  getCurriculumModule,
+  getLesson,
+  getLessonChallenges,
+  getLessonPractices,
+} from "@/lib/curriculum/loaders";
 import { getAchievementDefs } from "./achievement-defs";
 
 /**
@@ -35,24 +40,29 @@ export async function recordLessonCompletion(
   // (a) the lesson must exist in content-as-data
   const lesson = getLesson(trackId, courseId, moduleId, lessonId);
 
-  // (b) all of the lesson's challenges must have a passing submission by
-  // this user in the DB — the client cannot assert completion (PROG-02).
-  const challenges = getLessonChallenges(trackId, courseId, moduleId, lessonId);
-  for (const challenge of challenges) {
+  // (b) every coding challenge that gates this lesson must have a passing
+  // submission by this user in the DB — the client cannot assert completion
+  // (PROG-02). Gates = lesson-attached challenge ids (checkpoints) + every
+  // challenge id in the practice sets anchored to this lesson.
+  const challengeIds = [
+    ...getLessonChallenges(trackId, courseId, moduleId, lessonId).map((c) => c.id),
+    ...getLessonPractices(trackId, courseId, moduleId, lessonId).flatMap((set) => set.challenges),
+  ];
+  for (const challengeId of challengeIds) {
     const passed = await db
       .select({ id: submissions.id })
       .from(submissions)
       .where(
         and(
           eq(submissions.userId, userId),
-          eq(submissions.challengeId, challenge.id),
+          eq(submissions.challengeId, challengeId),
           eq(submissions.verdict, "passed"),
         ),
       )
       .limit(1);
     if (passed.length === 0) {
       throw new ProgressVerificationError(
-        `Lesson "${lessonId}" cannot be completed: challenge "${challenge.id}" has no passing submission`,
+        `Lesson "${lessonId}" cannot be completed: challenge "${challengeId}" has no passing submission`,
       );
     }
   }

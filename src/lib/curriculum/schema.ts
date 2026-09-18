@@ -35,27 +35,80 @@ export const challengeTestSchema = z.object({
   hint: z.string().min(1).max(400),
 });
 
+/**
+ * Deliberate-practice levels (Course 1 revision). A practice set orders its
+ * challenges so learners climb from imitation to real-world builds instead
+ * of repeating one difficulty forever.
+ */
+export const practiceLevelSchema = z.enum([
+  "imitation",
+  "guided",
+  "independent",
+  "combination",
+  "real-world",
+  "debugging",
+  "mini-build",
+]);
+export type PracticeLevel = z.infer<typeof practiceLevelSchema>;
+
+/** Learner-facing label for a deliberate-practice level. */
+export const PRACTICE_LEVEL_LABELS: Record<PracticeLevel, string> = {
+  imitation: "Imitation",
+  guided: "Guided",
+  independent: "Independent",
+  combination: "Combination",
+  "real-world": "Real-world",
+  debugging: "Debugging",
+  "mini-build": "Mini build",
+};
+
 export const challengeSchema = z.object({
   id: slugSchema,
   title: titleSchema,
-  prompt: z.string().min(1).max(4000),
+  prompt: z.union([
+    z.string().min(1).max(4000),
+    z.array(z.string()).transform((lines) => lines.join("\n")),
+  ]),
   difficulty: difficultySchema,
+  /**
+   * Deliberate-practice level (Course 1 revision). Required on practice-set
+   * challenges so a set visibly climbs imitation → mini-build; legacy lesson
+   * challenges (checkpoints) may omit it.
+   */
+  level: practiceLevelSchema.optional(),
+  /**
+   * Language the sandbox executes (Python, C++, Java, C, and C# tracks).
+   * Defaults to "javascript" so every existing web-development challenge is
+   * unchanged.
+   */
+  language: z.enum(["javascript", "python", "cpp", "java", "c", "csharp"]).default("javascript"),
   /** Starter code pre-filled in the editor. */
   boilerplate: z.string().max(20_000),
   tests: z.array(challengeTestSchema).min(1, "challenge must define at least one test"),
+});
+
+export const practiceSetSchema = z.object({
+  id: slugSchema,
+  title: titleSchema,
+  /** What concept this set drills, in learner-facing language. */
+  description: descriptionSchema,
+  /** The lesson this practice follows in the module flow. */
+  afterLesson: slugSchema.optional(),
+  /** Estimated hands-on coding time in minutes (1–240). */
+  minutes: z.number().int().min(1).max(240),
+  difficulty: difficultySchema,
+  challenges: z.array(slugSchema).min(1, "practice set must contain at least one challenge"),
 });
 
 export const lessonSchema = z.object({
   id: slugSchema,
   title: titleSchema,
   description: descriptionSchema,
-  /** Estimated reading/practice time in minutes (1–240). */
+  /** Estimated reading time in minutes (1–240). */
   minutes: z.number().int().min(1).max(240),
   difficulty: difficultySchema,
   /** Path to the lesson body (.mdx), relative to the lesson JSON file. */
   contentPath: z.string().min(1),
-  /** Challenge ids attached to this lesson. Empty in Phase 2 (Phase 3 fills it). */
-  challenges: z.array(slugSchema).max(50).default([]),
 });
 
 export const moduleSchema = z.object({
@@ -63,6 +116,8 @@ export const moduleSchema = z.object({
   title: titleSchema,
   summary: summarySchema,
   lessons: z.array(referenceSchema).min(1, "module must contain at least one lesson"),
+  /** Practice sets in this module (Course 1 revision) — interleaved after lessons. */
+  practices: z.array(referenceSchema).default([]),
 });
 
 export const courseSchema = z.object({
@@ -71,39 +126,52 @@ export const courseSchema = z.object({
   description: descriptionSchema,
   modules: z.array(referenceSchema).min(1, "course must contain at least one module"),
   /** Who this course is for, in learner-facing language (course landing). */
-  audience: z.string().max(400).optional(),
-  /** Concrete, verifiable completion outcomes — must match what is taught. */
-  outcomes: z.array(z.string().min(1).max(200)).max(12).optional(),
+  audience: z.string().min(1).max(400),
+  /** What a learner can do after finishing (course landing). */
+  outcomes: z.array(z.string().min(1).max(200)).min(1, "course must list learning outcomes"),
+  /**
+   * Course ids that must be completed first (Course 2+). Empty for the
+   * entry course. The course page renders a prerequisite callout when set.
+   */
+  prerequisites: z.array(slugSchema).default([]),
 });
 
 export const trackSchema = z.object({
   id: slugSchema,
   title: titleSchema,
   description: descriptionSchema,
+  image: z.string().startsWith("/").optional(),
   courses: z.array(referenceSchema).min(1, "track must contain at least one course"),
 });
 
-export type Track = z.infer<typeof trackSchema>;
-export type Course = z.infer<typeof courseSchema>;
-export type CurriculumModule = z.infer<typeof moduleSchema>;
-export type Lesson = z.infer<typeof lessonSchema>;
 export type Challenge = z.infer<typeof challengeSchema>;
 export type ChallengeTest = z.infer<typeof challengeTestSchema>;
-export type Difficulty = z.infer<typeof difficultySchema>;
+export type Lesson = z.infer<typeof lessonSchema>;
+export type PracticeSet = z.infer<typeof practiceSetSchema>;
+export type Course = z.infer<typeof courseSchema>;
+export type CurriculumModule = z.infer<typeof moduleSchema>;
+export type Track = z.infer<typeof trackSchema>;
 
-/** A lesson joined with its resolved position in the track. */
-export interface ResolvedLesson extends Lesson {
-  trackId: string;
-  courseId: string;
-  moduleId: string;
-  /** Zero-based position in the track's linear lesson order. */
-  linearIndex: number;
-}
-
-/** A challenge joined with its fully-resolved curriculum location. */
+/** A challenge resolved to its curriculum location. */
 export interface ResolvedChallenge extends Challenge {
   trackId: string;
   courseId: string;
   moduleId: string;
   lessonId: string;
+}
+
+/** A practice set resolved to its curriculum location. */
+export interface ResolvedPracticeSet extends PracticeSet {
+  trackId: string;
+  courseId: string;
+  moduleId: string;
+  practiceIndex: number;
+}
+
+/** A lesson resolved to its curriculum location. */
+export interface ResolvedLesson extends Lesson {
+  trackId: string;
+  courseId: string;
+  moduleId: string;
+  linearIndex: number;
 }

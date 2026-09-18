@@ -1,0 +1,47 @@
+## Bộ ba phổ quát
+
+Mỗi hàm generic trên mảng trong C có cùng bộ khung:
+
+```c
+void *my_lsearch(const void *key, const void *base, size_t n,
+                 size_t size, int (*cmp)(const void *, const void *));
+```
+
+`base` trỏ vào phần tử 0, `n` đếm phần tử, `size` là số byte của một
+phần tử, `cmp` biết kiểu thật. Bên trong, phần tử `i` nằm tại:
+
+```c
+const char *p = (const char *)base + i * size;
+```
+
+Phép cộng trên `char*` là phép cộng theo byte — đó là đơn vị địa chỉ
+bảo đảm duy nhất. Hai kỷ luật giữ nó an toàn:
+
+**1. Không bao giờ cast sang kiểu sai — cast sang `char *` rồi chuyển
+byte.** Copy một phần tử là `memcpy(dst, src, size)`, không bao giờ là
+dereference struct hay con trỏ. `void *` đổi qua/lại với con trỏ object
+bất kỳ *tự động* trong C — không cần cast về hai phía — nhưng bạn vẫn
+không được dereference nó.
+
+**2. Alignment được thừa kế, không tự chế.** Nếu `base` thực sự trỏ vào
+mảng `T`, mọi offset `i * size` là địa chỉ `T` hợp lệ. Kiểu của caller
+giữ alignment vì bạn không tự tạo kho lưu trữ nào của riêng mình.
+
+## Nguyên thủy swap
+
+Thuật toán generic chạm đáy ở swap theo byte:
+
+```c
+static void swap_bytes(char *a, char *b, size_t size) {
+    while (size--) {
+        char t = *a;
+        *a++ = *b;
+        *b++ = t;
+    }
+}
+```
+
+Từng byte là chậm nhưng đúng phổ quát; `memcpy` qua buffer nhỏ trên
+stack là dạng kinh điển nhanh hơn. Các phần tử chồng lấn sẽ là UB — hợp
+đồng của caller (các slot phần tử khác nhau) mới là thứ khiến nguyên thủy
+này hợp pháp.

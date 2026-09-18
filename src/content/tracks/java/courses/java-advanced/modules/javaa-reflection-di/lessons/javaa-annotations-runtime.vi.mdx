@@ -1,0 +1,25 @@
+Annotation là metadata có kiểu gắn lên phần tử chương trình. Sức mạnh phụ thuộc
+hoàn toàn vào **retention**:
+
+- `SOURCE` — chỉ cho compiler (như `@Override`); mất trong class file.
+- `CLASS` — có trong class file, vô hình lúc chạy (mặc định, hiếm dùng).
+- `RUNTIME` — đọc được qua reflection; đây là thứ framework dùng.
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Route { String value(); }
+```
+
+Đọc ngược lại là toàn bộ trò đằng sau mọi bảng định tuyến, validator, và engine
+inject:
+
+```java
+for (Method m : obj.getClass().getDeclaredMethods()) {
+    Route r = m.getAnnotation(Route.class);
+    if (r != null) table.put(r.value(), m);
+}
+```
+
+Annotation không có người đọc chỉ là bình luận. *Người đọc* mới là framework —
+nghĩa là bạn hoàn toàn có thể tự viết một cái.

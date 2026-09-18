@@ -1,0 +1,24 @@
+**Các mẫu publication** trong thực tế — mỗi mẫu kèm cơ chế hb:
+
+- **Bất biến + static final**: nhóm "hằng đối tượng". Được khởi tạo bởi chính
+  cơ chế class-init của JVM (có sẵn cạnh hb ngầm cho mọi reader), an toàn với
+  mọi thread vĩnh viễn. Ưu tiên cho cấu hình.
+- **Volatile holder**: `static volatile Config current;` — hoán đổi cấu hình
+  với visibility nguyên tử; reader thấy cũ hoặc mới, không bao giờ rách.
+- **Cấu trúc concurrent**: `ConcurrentHashMap.put`, `BlockingQueue.offer`,
+  `executor.submit` đều thiết lập hb giữa hành động sản xuất và tiêu thụ.
+
+**Điểm mấu chốt cho bài kiểm tra** (và cách khóa này chấm điểm): bạn không
+bao giờ cần race *có thể* xuất hiện. Điệuursa latch tạo kịch bản tất định:
+
+```java
+var started = new CountDownLatch(1);
+var done    = new CountDownLatch(1);
+// t1: chuẩn bị dữ liệu → started.countDown() → await(done) → đọc
+// t2: await(started) → biến đổi → done.countDown()
+```
+
+Mỗi await là một cạnh hb *được bảo đảm*. Nếu protocol của bạn sai, test fail
+tất định (timeout/latch lệch) — không bao giờ "hỏng trên máy tôi". Đây chính
+là cách viết concurrency test chuyên nghiệp: đồ thị latch CHÍNH LÀ đồ thị
+happens-before.

@@ -1,0 +1,15 @@
+{
+  "id": "cint-p15-bounded-queue",
+  "title": "The Bounded Queue",
+  "prompt": "Implement the bounded queue. The boilerplate declares:\n\n```c\n#define QCAP 4\ntypedef struct {\n    long items[QCAP];\n    size_t head, count;\n    mtx_t m;\n    cnd_t not_full, not_empty;\n} BQ;\nvoid bq_init(BQ *q);            /* inits mutex + cnds */\nvoid bq_destroy(BQ *q);\n/* push: blocks while full; 0 ok */\nint bq_push(BQ *q, long v);\n/* pop: blocks while empty; 0 ok */\nint bq_pop(BQ *q, long *out);\nsize_t bq_count(BQ *q);         /* call only when no workers run */\n```\n\nProducers/consumers will run against it in tests — the predicate\nre-check MUST be a while loop.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <threads.h>\n#include <stddef.h>\n#define QCAP 4\ntypedef struct {\n    long items[QCAP];\n    size_t head, count;\n    mtx_t m;\n    cnd_t not_full, not_empty;\n} BQ;\nvoid bq_init(BQ *q);\nvoid bq_destroy(BQ *q);\nint bq_push(BQ *q, long v);\nint bq_pop(BQ *q, long *out);\nsize_t bq_count(BQ *q);\n",
+  "tests": [
+    {
+      "name": "bounded handoff",
+      "code": "\nBQ q;\nbq_init(&q);\n/* single-threaded sanity: push 4 = full capacity */\nfor (long i = 0; i < 4; i++) CHECK_EQ(bq_push(&q, i), 0);\nCHECK_EQ(bq_count(&q), 4u);\nlong v;\nCHECK_EQ(bq_pop(&q, &v), 0); CHECK_EQ(v, 0);   /* FIFO */\nCHECK_EQ(bq_push(&q, 99), 0);\nCHECK_EQ(bq_count(&q), 4u);\nCHECK_EQ(bq_pop(&q, &v), 0); CHECK_EQ(v, 1);\nCHECK_EQ(bq_pop(&q, &v), 0); CHECK_EQ(v, 2);\nCHECK_EQ(bq_pop(&q, &v), 0); CHECK_EQ(v, 3);\nCHECK_EQ(bq_pop(&q, &v), 0); CHECK_EQ(v, 99);\nCHECK_EQ(bq_count(&q), 0u);\nbq_destroy(&q);\n",
+      "hint": "push: lock, while (count == QCAP) cnd_wait(not_full), store at (head+count)%QCAP, count++, cnd_signal(not_empty), unlock. Mirror for pop."
+    }
+  ]
+}

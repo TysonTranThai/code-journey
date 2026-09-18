@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m9-max-of",
+  "title": "Function template: max_of",
+  "prompt": "Implement `template <typename T> const T& max_of(const T& a, const T& b)` returning a const reference to the larger element (ties: return either — `b` is fine). It must instantiate for int, double, and std::string alike.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <iostream>\n\n// template <typename T> const T& max_of(const T& a, const T& b)\n",
+  "tests": [
+    {
+      "name": "ints",
+      "code": "CHECK_EQ(max_of(3, 7), 7);\nCHECK_EQ(max_of(9, 2), 9);",
+      "hint": "Deduction picks T = int from the arguments."
+    },
+    {
+      "name": "doubles",
+      "code": "CHECK(max_of(2.5, 1.5) > 2.49);\nCHECK(max_of(2.5, 1.5) < 2.51);",
+      "hint": "T = double works without spelling it."
+    },
+    {
+      "name": "strings",
+      "code": "CHECK_EQ(max_of(std::string{\"apple\"}, std::string{\"banana\"}), std::string(\"banana\"));",
+      "hint": "std::string has operator<, lexicographic — the contract holds."
+    }
+  ],
+  "level": "imitation"
+}

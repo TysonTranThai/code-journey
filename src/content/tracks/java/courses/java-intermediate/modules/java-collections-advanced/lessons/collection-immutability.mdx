@@ -1,0 +1,24 @@
+## Unmodifiable views vs immutable copies
+
+Three different "cannot change" guarantees:
+
+```java
+List<String> src = new ArrayList<>(List.of("a", "b"));
+
+List<String> view = Collections.unmodifiableList(src);
+// view.set(0, "x") throws — but src.set(0, "x") changes the view too!
+
+List<String> copy = List.copyOf(src);
+// copy is independent: mutating src cannot reach it
+
+List<String> literal = List.of("a", "b");
+// immutable since birth, no copy cost, rejects nulls
+```
+
+`List.of`/`Set.of`/`Map.of` are the default for constants. `List.copyOf`
+is the tool for sealing *caller-provided* collections. Unmodifiable views
+are for *controlled exposure* — the owner keeps mutability, the caller
+doesn't get it.
+
+`Arrays.asList` is a trap: fixed-size but writable — `set` works, `add`
+throws. Rarely what you mean.

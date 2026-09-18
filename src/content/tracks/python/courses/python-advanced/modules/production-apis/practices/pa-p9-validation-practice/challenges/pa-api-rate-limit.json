@@ -1,0 +1,21 @@
+{
+  "id": "pa-api-rate-limit",
+  "title": "The token bucket",
+  "prompt": "Implement `TokenBucket(rate, capacity)` with `allow(now)`:\n\n- refills `rate` tokens per second of elapsed time, capped at `capacity` (first call initializes the clock without refilling)\n- a request succeeds iff at least 1 full token is available; it consumes exactly 1\n- `now` is a float timestamp — never call time functions yourself (the bucket must be deterministic)\n\nBurst of `capacity` at t=0 passes instantly; sustained throughput never exceeds `rate` per second.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class TokenBucket:\n    def __init__(self, rate, capacity):\n        ...\n\n    def allow(self, now):\n        ...",
+  "tests": [
+    {
+      "name": "burst then throttle",
+      "code": "b = TokenBucket(rate=2, capacity=5)\nassert [b.allow(0.0) for _ in range(5)] == [True] * 5\nassert b.allow(0.0) is False\nassert b.allow(0.4) is False   # only 0.8 tokens accrued\nassert b.allow(0.5) is True    # 1.0 tokens accrued\nprint('ok')",
+      "hint": "Refill = elapsed * rate, capped at capacity; spend whole tokens only."
+    },
+    {
+      "name": "sustained rate holds",
+      "code": "b = TokenBucket(rate=10, capacity=1)\nallowed = sum(b.allow(t / 100) for t in range(100))\nassert allowed == 10, allowed\nprint('ok')",
+      "hint": "One token per 0.1s — 100 ticks of 0.01s yield exactly 10."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,37 @@
+## Mẫu duyệt
+
+```c
+int a[5] = {4, 8, 15, 16, 23};
+int sum = 0;
+for (int i = 0; i < 5; i++) {
+    sum += a[i];
+}
+```
+
+Ba lượt đi kinh điển: tính một giá trị từ mọi phần tử (tổng/max), biến đổi
+tại chỗ (`a[i] = a[i] * 2`), và dựng mảng mới từ mảng cũ.
+
+## Đẳng thức: chỉ số cuối là size-1
+
+```c
+int a[5];
+for (int i = 0; i <= 5; i++) {   // LỖI: i == 5 vượt biên
+    a[i] = i;
+}
+```
+
+`i < size` là điều kiện vòng lặp cho mảng. `i <= size` ghi một phần tử sau
+cuối — đôi khi "chạy được", đôi khi hỏng biến bên cạnh, và luôn luôn là hành
+vi không xác định.
+
+## Đếm và tìm
+
+```c
+int count = 0, found = -1;
+for (int i = 0; i < 5; i++) {
+    if (a[i] > 10) count++;          // đếm phần tử khớp
+    if (a[i] == 15) found = i;       // nhớ lại chỉ số
+}
+```
+
+`found = -1` nghĩa là "không có" — một thành ngữ C bạn sẽ dùng khắp nơi.

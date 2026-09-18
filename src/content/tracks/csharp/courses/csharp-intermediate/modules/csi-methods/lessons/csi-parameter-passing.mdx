@@ -1,0 +1,52 @@
+## The default: by value, always
+
+C# passes arguments by value. For value types that means a copy of the data;
+for reference types, a copy of the *reference* — which is why a method can
+mutate the object you passed but can never repoint your variable:
+
+```csharp
+static void Replace(List<int> list) => list = new List<int>();  // caller unaffected
+static void Fill(List<int> list) => list.Add(1);                // caller sees the item
+```
+
+## The modifiers, each with one job
+
+- `out` — "this method will definitely assign your variable." The compiler
+  enforces assignment-on-all-paths. One output (plus a bool success in
+  `TryX` patterns). Declare inline: `int.TryParse(s, out int n)`.
+- `ref` — "your variable's *storage* is shared." The method may read, write,
+  or repoint it; the variable must be initialized first. Use for swap-like
+  semantics or interlocked state — rarely.
+- `in` — `ref` for reading: a readonly reference to (usually) a large struct.
+  The compiler guards against mutation. Use when copying a big struct costs
+  measurably more than the indirection.
+- `params` — variadic tail: `params int[] values`, or `params ReadOnlySpan<int>`
+  in modern code. Zero-or-more arguments; must be last.
+
+```csharp
+static bool TryDivide(int a, int b, out int result)
+{
+    if (b == 0) { result = 0; return false; }   // MUST assign on all paths
+    result = a / b;
+    return true;
+}
+
+static void Swap(ref int a, ref int b) => (a, b) = (b, a);
+
+readonly struct Big { public readonly long A, B, C, D, E, F, G, H; }
+static long Sum(in Big b) => b.A + b.B + b.C + b.D + b.E + b.F + b.G + b.H;
+```
+
+## Return what you mean
+
+Before reaching for `out`, ask: would a tuple return read better?
+`(bool Ok, int Value)` carries the same information without aliasing — but
+`out` + `TryX` is the idiomatic .NET shape for parse-style operations, and
+`ref` returns (`ref T this[int i]`) exist for genuinely in-place structures.
+Choose deliberately; document the choice.
+
+## Check your understanding
+
+- Why must `out` assign on every path? (The caller's variable is trusted initialized.)
+- When is `in` a real win? (Large structs passed in hot paths; it skips the copy.)
+- What does `params` expand to? (An array allocation per call — or a span.)

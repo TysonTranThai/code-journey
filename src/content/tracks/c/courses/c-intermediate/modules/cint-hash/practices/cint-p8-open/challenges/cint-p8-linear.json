@@ -1,0 +1,20 @@
+{
+  "id": "cint-p8-linear",
+  "title": "Linear Probe + Tombstone",
+  "prompt": "Implement an open-addressing table, long keys, int values.\nThe boilerplate declares:\n\n```c\n#define OTAB_CAP 16\n/* status: 0 empty, 1 occupied, 2 tombstone */\ntypedef struct { long key; int value; int status; } OSlot;\ntypedef struct { OSlot slots[OTAB_CAP]; size_t count; } OTab;\nvoid otab_init(OTab *t);                       /* all empty */\n/* returns bucket index probed... no: 0 ok, 1 already-present\n   (value updated), -1 table full (no empty AND no tombstone slot) */\nint otab_put(OTab *t, long key, int value);\nint otab_get(const OTab *t, long key, int *out);  /* 0 found, -1 absent */\n/* marks a tombstone; 1 removed, 0 absent */\nint otab_del(OTab *t, long key);\nsize_t otab_size(const OTab *t);               /* live entries only */\n```\n\nHash: `(size_t)key % OTAB_CAP`, linear probing. Deleted slots become\ntombstones — they are skipped by get, reused by put.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\n#define OTAB_CAP 16\ntypedef struct { long key; int value; int status; } OSlot;\ntypedef struct { OSlot slots[OTAB_CAP]; size_t count; } OTab;\nvoid otab_init(OTab *t);\nint otab_put(OTab *t, long key, int value);\nint otab_get(const OTab *t, long key, int *out);\nint otab_del(OTab *t, long key);\nsize_t otab_size(const OTab *t);\n",
+  "tests": [
+    {
+      "name": "put/get/update",
+      "code": "\nOTab t;\notab_init(&t);\nint v;\nCHECK_EQ(otab_size(&t), 0);\nCHECK_EQ(otab_get(&t, 42, &v), -1);          /* absent */\nCHECK_EQ(otab_put(&t, 42, 1), 0);\nCHECK_EQ(otab_put(&t, 42 + 16, 7), 0);       /* same bucket: probe */\nCHECK_EQ(otab_get(&t, 42, &v), 0); CHECK_EQ(v, 1);\nCHECK_EQ(otab_get(&t, 42 + 16, &v), 0); CHECK_EQ(v, 7);\nCHECK_EQ(otab_put(&t, 42, 99), 1);           /* update, not duplicate */\nCHECK_EQ(otab_size(&t), 2);\nCHECK_EQ(otab_get(&t, 42, &v), 0); CHECK_EQ(v, 99);\n",
+      "hint": "put walks: occupied && same key -> update; empty -> insert; tombstone -> remember first, keep probing for the key."
+    },
+    {
+      "name": "delete leaves a probe path",
+      "code": "\nOTab t;\notab_init(&t);\n/* collide deliberately: keys k, k+16, k+32 share a bucket */\nCHECK_EQ(otab_put(&t, 5, 10), 0);\nCHECK_EQ(otab_put(&t, 21, 20), 0);\nCHECK_EQ(otab_put(&t, 37, 30), 0);\nCHECK_EQ(otab_del(&t, 21), 1);               /* middle of the chain */\nCHECK_EQ(otab_del(&t, 21), 0);\nCHECK_EQ(otab_size(&t), 2);\nint v;\nCHECK_EQ(otab_get(&t, 37, &v), 0);           /* probe THROUGH tombstone */\nCHECK_EQ(v, 30);\nCHECK_EQ(otab_get(&t, 5, &v), 0); CHECK_EQ(v, 10);\nCHECK_EQ(otab_put(&t, 21, 55), 0);           /* tombstone reused */\nCHECK_EQ(otab_get(&t, 21, &v), 0); CHECK_EQ(v, 55);\n",
+      "hint": "The classic bug: delete sets the slot empty and 37 becomes unreachable. Tombstone keeps get working; put may reuse it."
+    }
+  ]
+}

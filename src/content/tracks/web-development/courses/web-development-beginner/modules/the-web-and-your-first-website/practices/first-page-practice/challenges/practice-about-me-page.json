@@ -1,0 +1,25 @@
+{
+  "id": "practice-about-me-page",
+  "title": "Mini Build: About Me Page",
+  "prompt": "Build your first complete personal page — everything from this module in one small build.\n\nRequirements:\n- Full skeleton: doctype, `html lang`, `head` with charset and a `title` of `About Me`.\n- One `h1` with your name.\n- Two paragraphs about you.\n- A `ul` with three `li` items: things you want to build one day.",
+  "difficulty": "beginner",
+  "level": "mini-build",
+  "boilerplate": "<!-- Your About Me page -->\n",
+  "tests": [
+    {
+      "name": "skeleton with charset and title",
+      "code": "if (!/^\\s*<!DOCTYPE html>/i.test(code)) throw new Error(\"Start with <!DOCTYPE html>.\");\nif (!/<html\\s+lang=[\"']en[\"']\\s*>/i.test(code)) throw new Error(\"<html lang=\\\"en\\\"> is required.\");\nif (!/<head[\\s\\S]*<meta\\s+charset=[\"']UTF-8[\"'][\\s\\S]*<\\/head>/i.test(code)) throw new Error(\"Add <meta charset=\\\"UTF-8\\\"> to the head.\");\nconst t = code.match(/<title>([\\s\\S]*?)<\\/title>/i);\nif (!t || t[1].trim() !== \"About Me\") throw new Error(\"The title must read exactly: About Me\");",
+      "hint": "Same skeleton as before — but the <title> text must be exactly 'About Me'."
+    },
+    {
+      "name": "name heading and two paragraphs",
+      "code": "const h1 = (code.match(/<h1\\s*>[\\s\\S]*?<\\/h1\\s*>/gi) ?? []).length;\nif (h1 !== 1) throw new Error(\"Exactly one <h1> with your name.\");\nconst ps = code.match(/<p\\s*>[\\s\\S]*?<\\/p\\s*>/gi) ?? [];\nif (ps.length < 2) throw new Error(\"Write two <p> paragraphs about yourself.\");",
+      "hint": "<h1>Your Name</h1> then two <p> elements introducing yourself."
+    },
+    {
+      "name": "a wish list unordered list",
+      "code": "if (!/<ul[\\s\\S]*<\\/ul>/i.test(code)) throw new Error(\"Add a <ul> for your wish list.\");\nconst ul = code.match(/<ul[\\s\\S]*?<\\/ul>/i)[0];\nconst items = (ul.match(/<li[\\s\\S]*?<\\/li>/gi) ?? []).length;\nif (items < 3) throw new Error(`The wish list needs at least three <li> items, found ${items}.`);",
+      "hint": "<ul> with three <li> children — things you want to build one day."
+    }
+  ]
+}

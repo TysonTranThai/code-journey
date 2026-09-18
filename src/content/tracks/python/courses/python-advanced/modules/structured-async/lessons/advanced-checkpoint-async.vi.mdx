@@ -1,0 +1,11 @@
+## Checkpoint — fan-out bản gia cố
+
+Kết hợp cả module: `async def fetch_all(jobs)` chạy các job async không tham số
+dưới timeout 0.05s cho từng job, bên trong MỘT TaskGroup:
+
+- thành công → `(index, value)` vào slot đó
+- job vượt 0.05s → `(index, 'timeout:0.05')`
+- job raise lỗi THẬT → fetch_all vẫn raise (chỉ timeout được quy đổi)
+
+Probe phản chủ làm điều này bằng `except BaseException` tràn lan — thứ cũng nuốt
+CancelledError và che mất lỗi thật. Kỷ luật dọn dẹp của bạn là kỹ năng được chấm.

@@ -1,0 +1,16 @@
+## Three static classes
+
+- **`Path`** — string surgery on file names: `Combine`, `GetFileName`, `GetExtension`. It touches no disk.
+- **`File`** — one-shot operations: `WriteAllText`, `ReadAllText`, `AppendAllText`, `Exists`, `Delete`.
+- **`Directory`** — folders: `CreateDirectory`, `GetFiles`, `Exists`.
+
+```csharp
+string path = Path.Combine("/tmp", "cj", "notes.txt");
+Directory.CreateDirectory(Path.GetDirectoryName(path));   // /tmp/cj
+File.WriteAllText(path, "hello\n");
+string again = File.ReadAllText(path);
+```
+
+## The rules that prevent bugs
+
+`Path.Combine("a", "/b")` — an absolute second argument **replaces** the first; that's defined behavior, not a bug, but it surprises people. And `File.WriteAllText` **overwrites** without asking: a save-one-line bug can destroy yesterday's data. Check `File.Exists` when history matters, and prefer `AppendAllText` for logs.

@@ -1,0 +1,20 @@
+{
+  "id": "i2-role-gate",
+  "title": "Role Gate (deny by default)",
+  "prompt": "Write `authorize(user, action, resource)` — a permission table maps role => allowed actions: admin: all; editor: [\"read\", \"write\"]; viewer: [\"read\"]. Unknown roles and unknown actions must be DENIED (default deny). Return \"allow\" or \"deny\".",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function authorize(user, action, resource) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "known roles get their actions",
+      "code": "const fn = new Function(code + \"\\nreturn { authorize };\");\nconst { authorize } = fn();\nif (authorize({ role: \"admin\" }, \"delete\", \"doc\") !== \"allow\") throw new Error(\"Admin: all actions.\");\nif (authorize({ role: \"editor\" }, \"write\", \"doc\") !== \"allow\") throw new Error(\"Editor writes.\");\nif (authorize({ role: \"viewer\" }, \"write\", \"doc\") !== \"deny\") throw new Error(\"Viewer cannot write.\");\n",
+      "hint": "Table lookup, then membership."
+    },
+    {
+      "name": "unknown roles/actions deny",
+      "code": "const fn = new Function(code + \"\\nreturn { authorize };\");\nconst { authorize } = fn();\nif (authorize({ role: \"ghost\" }, \"read\", \"doc\") !== \"deny\") throw new Error(\"Unknown role denied.\");\nif (authorize({ role: \"viewer\" }, \"teleport\", \"doc\") !== \"deny\") throw new Error(\"Unknown action denied.\");\nif (authorize(null, \"read\", \"doc\") !== \"deny\") throw new Error(\"Anonymous denied.\");\n",
+      "hint": "Default deny covers every gap."
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+## An unconstrained T promises nothing
+
+Inside `class Box<T>`, the compiler knows only "T is a type." You cannot
+compare, construct, or order it. Constraints are how you buy abilities:
+
+```csharp
+public static T Max<T>(T a, T b) where T : IComparable<T> =>
+    a.CompareTo(b) >= 0 ? a : b;
+
+public static T New<T>() where T : new() => new T();   // constructible
+
+public class Repo<T> where T : class, IEntity, new()
+{
+    // can use T.Id (IEntity), null-check like a class (class), new T() (new())
+}
+
+public static T Pick<T>(T[] items, int i) where T : struct
+    => items[i];   // value-type-only: no nulls possible
+```
+
+Constraint vocabulary: `where T : class`, `struct`, `new()`, `IComparable<T>`,
+`SomeBaseClass`, `IEnumerable<T>`, and combinations (comma-separated; multiple
+`where` lines for multiple parameters). Constraints are *requirements you can
+read* — an API with `where T : IComparable<T>` documents itself.
+
+## Default values for T
+
+`default(T)` (or just `default`): null for reference types, zeroed for value
+types. In generic code that returns "nothing yet":
+
+```csharp
+public T? Find(Predicate<T> match)
+{
+    foreach (T item in _items)
+        if (match(item)) return item;
+    return default;          // null or zero — honest per T's kind
+}
+```
+
+The `default!` escape (`= null!` on a field) tells the compiler "trust me" —
+legitimate only when construction is guaranteed elsewhere (DI containers,
+serializers) and a lie anywhere else.
+
+## Generic algorithms
+
+Write the algorithm ONCE over shapes:
+
+```csharp
+public static int CountWhile<T>(IEnumerable<T> source, Func<T, bool> ok)
+{
+    int n = 0;
+    foreach (T item in source) if (ok(item)) n++;
+    return n;
+}
+```
+
+The algorithm never boxes, never casts — type safety end to end, which is
+exactly what `ArrayList`-era code could not promise.
+
+## Check your understanding
+
+- Why `IComparable<T>` and not `IComparable`? (The non-generic one boxes and needs casts.)
+- What is `default` for `int`? For `string`? `bool`? (0, null, false.)

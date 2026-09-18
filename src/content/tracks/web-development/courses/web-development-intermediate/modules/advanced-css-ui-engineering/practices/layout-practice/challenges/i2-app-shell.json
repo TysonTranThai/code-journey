@@ -1,0 +1,15 @@
+{
+  "id": "i2-app-shell",
+  "title": "Dashboard Shell with Areas",
+  "prompt": "Lay out `.shell` with named grid areas: `head head` on top, `side main` in the middle row, `side foot` at the bottom; sidebar fixed at `220px`, main column flexible.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "<div class=\"shell\">\n  <header>h</header>\n  <aside>s</aside>\n  <main>m</main>\n  <footer>f</footer>\n</div>\n\n<style>\n.shell { /* areas + columns */ }\nheader { grid-area: head; }\naside { grid-area: side; }\nmain { grid-area: main; }\nfooter { grid-area: foot; }\n</style>\n",
+  "tests": [
+    {
+      "name": "areas and columns defined",
+      "code": "const css = code;\nif (!/\\.shell\\s*{[^}]*display\\s*:\\s*grid/i.test(css)) throw new Error(\"The shell must be a grid.\");\nif (!/\\.shell\\s*{[^}]*grid-template-areas\\s*:[^;}]*head\\s+head/i.test(css)) throw new Error(\"Rows start with \\\"head head\\\".\");\nif (!/\\.shell\\s*{[^}]*grid-template-areas\\s*:[^;}]*side\\s+main/i.test(css)) throw new Error(\"Middle row: \\\"side main\\\".\");\nif (!/\\.shell\\s*{[^}]*grid-template-areas\\s*:[^;}]*side\\s+foot/i.test(css)) throw new Error(\"Bottom row: \\\"side foot\\\".\");\nif (!/\\.shell\\s*{[^}]*grid-template-columns\\s*:[^;}]*220px/i.test(css)) throw new Error(\"Sidebar column fixed at 220px.\");\nif (!/\\.shell\\s*{[^}]*grid-template-columns\\s*:[^;}]*1fr/i.test(css)) throw new Error(\"Main column takes the rest (1fr).\");",
+      "hint": "grid-template-areas: \"head head\" \"side main\" \"side foot\"; grid-template-columns: 220px 1fr;"
+    }
+  ]
+}

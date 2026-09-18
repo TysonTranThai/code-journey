@@ -1,0 +1,21 @@
+{
+  "id": "pa-mt-decorator-factory",
+  "title": "Retry decorator factory",
+  "prompt": "Implement `retry(times, exceptions=(Exception,))` — a decorator FACTORY that returns a decorator making `fn` retry up to `times` total attempts:\n\n- only the given exception types trigger a retry; anything else propagates immediately\n- if all attempts fail, re-raise the LAST exception\n- preserve the function's metadata: `wrapped.__name__ == fn.__name__`\n- track attempts for observability: expose `wrapped.attempts` (list of ints, one entry per call)",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import functools\n\ndef retry(times, exceptions=(Exception,)):\n    # TODO: return a decorator\n    pass",
+  "tests": [
+    {
+      "name": "retries transient failures only",
+      "code": "@retry(times=3, exceptions=(ValueError,))\ndef flaky(counter):\n    counter.append(1)\n    if len(counter) < 3:\n        raise ValueError('transient')\n    return 'ok'\n\nc = []\nassert flaky(c) == 'ok' and len(c) == 3, f'calls: {len(c)}'\nprint('ok')",
+      "hint": "Loop attempts inside the wrapper; return on success, re-raise the last error when attempts run out."
+    },
+    {
+      "name": "foreign exceptions propagate; metadata kept",
+      "code": "calls = []\n@retry(times=5, exceptions=(ValueError,))\ndef boom():\n    calls.append(1)\n    raise KeyError('nope')\ntry:\n    boom()\nexcept KeyError:\n    pass\nelse:\n    raise AssertionError('KeyError must propagate immediately')\nassert len(calls) == 1, f'calls: {len(calls)}'\nassert boom.__name__ == 'boom'\n\n@retry(times=2, exceptions=(ValueError,))\ndef always_bad():\n    raise ValueError('dead')\ntry:\n    always_bad()\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('exhausted retries must re-raise the last error')\nassert always_bad.attempts == [1, 2], f'attempts: {always_bad.attempts}'\nprint('ok')",
+      "hint": "Catch only the declared exception tuple; functools.wraps for metadata; re-raise when attempts run out."
+    }
+  ],
+  "level": "combination"
+}

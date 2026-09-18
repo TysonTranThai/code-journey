@@ -1,0 +1,25 @@
+{
+  "id": "csi-checkpoint-m6-task",
+  "title": "Checkpoint: Collections in Anger",
+  "prompt": "Implement the four tools described in the checkpoint:\n\n```csharp\nstatic IReadOnlyDictionary<string, int> Frequency(string text);\nstatic string? FirstUnique(string text);\nstatic string ProcessOrders(IEnumerable<string> commands);\npublic sealed class EvictCache\n{\n    public EvictCache(int capacity);\n    public void Put(string key, int value);\n    public int Get(string key);\n}\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "frequency + first unique",
+      "code": "\nvar freq = Solution.Frequency(\"the cat the dog the bird\");\nCj.Eq(freq[\"the\"], 3, \"the x3\");\nCj.Eq(freq[\"cat\"], 1, \"cat x1\");\nCj.Eq(freq[\"bird\"], 1, \"bird x1\");\nCj.Eq(Solution.FirstUnique(\"the cat the dog the bird\"), \"cat\", \"first count-1 in order\");\nCj.Eq(Solution.FirstUnique(\"a a b b\"), null, \"no unique word\");\nCj.Eq(Solution.FirstUnique(\"\"), null, \"empty text -> null\");\n",
+      "hint": "Split on whitespace, lowercase, one Dictionary pass; FirstUnique re-walks in original order."
+    },
+    {
+      "name": "queue processing",
+      "code": "\nCj.Eq(Solution.ProcessOrders(new[] { \"push a\", \"push b\", \"pop\", \"push c\", \"pop\", \"pop\" }), \"a,b,c\", \"FIFO order\");\nCj.Eq(Solution.ProcessOrders(new[] { \"pop\", \"pop\" }), \"\", \"pop empty queue is fine\");\nCj.Eq(Solution.ProcessOrders(new[] { \"push x\" }), \"\", \"no pops, empty result\");\n",
+      "hint": "Queue<string>.Enqueue/Dequeue — Dequeue returns the OLDEST."
+    },
+    {
+      "name": "eviction cache",
+      "code": "\nvar cache = new Solution.EvictCache(2);\ncache.Put(\"a\", 1); cache.Put(\"b\", 2);\nCj.Eq(cache.Get(\"a\"), 1, \"hit a\");\ncache.Put(\"c\", 3);                       // evicts b (a refreshed by Get)\nCj.Eq(cache.Get(\"b\"), -1, \"b evicted\");\nCj.Eq(cache.Get(\"a\"), 1, \"a survives\");\ncache.Put(\"a\", 10);                      // update refreshes recency too\ncache.Put(\"d\", 4);                       // evicts c\nCj.Eq(cache.Get(\"c\"), -1, \"c evicted\");\nCj.Eq(cache.Get(\"a\"), 10, \"a updated value\");\n",
+      "hint": "Dictionary for values + a recency list updated on both Get-hit and Put; evict the tail."
+    }
+  ]
+}

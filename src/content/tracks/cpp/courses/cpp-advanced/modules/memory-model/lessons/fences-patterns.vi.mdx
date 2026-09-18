@@ -1,0 +1,25 @@
+## Mẫu 1 — publish/consume (acquire + release)
+
+Hình `ready`/`payload` ở trên là *mẫu hình* kinh điển: dữ liệu được bảo vệ bằng cờ atomic thay vì mutex. Rẻ hơn khóa khi payload được ghi một lần và đọc nhiều lần; đòi kỷ luật giữ mọi truy cập payload được xếp thứ tự bởi cờ.
+
+## Mẫu 2 — đếm relaxed
+
+```cpp
+void onEvent() { stats.fetch_add(1, std::memory_order_relaxed); }
+```
+
+Bộ đếm trên đường nóng dùng relaxed: chúng chỉ cần atomicity. Bộ đếm tham chiếu của `shared_ptr` tăng bằng relaxed (phép giảm cần release/acquire để xếp thứ tự destructor — việc của thư viện chuẩn, không phải của bạn).
+
+## Mẫu 3 — đúng một lần
+
+```cpp
+std::once_flag flag;
+std::call_once(flag, [] { /* init */ });   // hoặc
+static Config cfg;   // "magic static" C++11: khởi tạo lười an toàn thread — ưu tiên cách này
+```
+
+Với cờ: `test_and_set` với acquire ở vòng kiểm tra, release khi xóa — hoặc chỉ cần `std::call_once`/magic static và khỏi tự quản vi mô.
+
+## KHÔNG được tự chế những gì
+
+Double-checked locking không có atomic (racy), vòng quay không `yield`/`wait` (đốt nhân), và lock-free stack lấy từ blog (ABA + reclamation — Module 10). Phần chấm điểm yêu cầu *cài đặt* ba mẫu an toàn ở trên — đó là nền tảng chuyên nghiệp.

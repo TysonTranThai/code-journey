@@ -1,0 +1,21 @@
+{
+  "id": "ca15-shrink-repro",
+  "title": "Shrink the Repro",
+  "prompt": "Given a boolean test over a bitmask (bit i = keep element i), implement `unsigned int shrink(unsigned int failing, size_t width, pred_fn pred)` — pred(bits) returns true iff the masked element subset still fails; return the smallest subset (as bits) that still fails. Simple greedy: try removing each kept element from the highest index down; keep the removal if it still fails. Never reduce below a single element — a repro must still exercise the failure.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\ntypedef bool (*pred_fn)(unsigned int);\n",
+  "tests": [
+    {
+      "name": "shrinks to minimal failing subset",
+      "code": "CHECK_EQ((int)shrink(0b1111u, 4, pred_all_fail), 1);",
+      "hint": "pred_all_fail always returns true, so deletion proceeds until a single element remains — a repro keeps one; the lowest bit survives, value 1."
+    },
+    {
+      "name": "irreducible case",
+      "code": "CHECK_EQ((int)shrink(0b101u, 3, pred_pair_fail), 0b101u);",
+      "hint": "pred_pair_fail only fails with both bits set — neither removal still fails, so the repro is already minimal."
+    }
+  ],
+  "level": "combination"
+}

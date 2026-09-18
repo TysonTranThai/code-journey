@@ -1,0 +1,30 @@
+{
+  "id": "hsg-cp-m2-palindrome",
+  "title": "Palindrome Number",
+  "prompt": "**Description:** Given a positive integer n, print `PALIN` if its\ndecimal digits read the same left-to-right and right-to-left, else `NO`.\n\n**Input:** One integer n (1 ≤ n ≤ 10^18).\n**Output:** `PALIN` or `NO`.\n\n**Example:** `12321` → `PALIN`; `1234` → `NO`.\n\n**Constraints:** 50% of tests have n ≤ 10^9; 100% have n ≤ 10^18.",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "odd length",
+      "code": "std::istringstream in(\"12321\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"PALIN\\n\"));",
+      "hint": "12321 reversed is 12321."
+    },
+    {
+      "name": "not palindrome",
+      "code": "std::istringstream in(\"1234\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NO\\n\"));",
+      "hint": "4321 differs from 1234."
+    },
+    {
+      "name": "single digit",
+      "code": "std::istringstream in(\"9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"PALIN\\n\"));",
+      "hint": "One digit is always a palindrome."
+    },
+    {
+      "name": "trailing zeros",
+      "code": "std::istringstream in(\"100000000000000001\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"PALIN\\n\"));",
+      "hint": "18-digit palindrome — must not overflow the reversal."
+    }
+  ]
+}

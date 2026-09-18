@@ -1,0 +1,15 @@
+## One array, no pointers per entry
+
+Chaining stores a linked list per bucket — pointer-chasing that misses cache on every step. Open addressing keeps *all entries in one array*: on collision, probe the next slot (linear probing), until an empty one appears.
+
+## The load factor governs everything
+
+`alpha = used / capacity`. As alpha approaches 1, probe runs get long; the standard discipline is to resize (rehash into a bigger table) at alpha ~ 0.7. Amortized insert stays O(1) — the occasional rehash is paid for by many cheap inserts.
+
+## Deletion needs tombstones
+
+An empty slot ends a probe run — so simply emptying a deleted slot breaks lookups for entries that probed past it. The fix: mark deletions with a *tombstone* state that probes continue through. Tombstones accumulate; periodic rehash cleans them.
+
+## Layout is performance
+
+One array of entries is cache-friendly: a probe is a linear scan. This is why fast hash tables (and this whole course) treat *memory layout* as part of the data-structure design, not an afterthought.

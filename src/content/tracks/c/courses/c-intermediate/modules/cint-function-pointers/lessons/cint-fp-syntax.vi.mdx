@@ -1,0 +1,57 @@
+## Hàm cũng có địa chỉ
+
+Code nằm trong bộ nhớ. Con trỏ hàm lưu địa chỉ của code — đó là tất cả những
+gì callback là: "gọi code nào mà địa chỉ này chỉ tới."
+
+Cú pháp đọc từ trong ra ngoài:
+
+```c
+int (*fp)(int, int);        /* fp là con trỏ đến hàm nhận hai int
+                               và trả về int */
+int *fp(int, int);          /* KHÔNG có ngoặc: hàm trả int* —
+                               hoàn toàn khác! */
+```
+
+Cặp ngoặc quanh `(*fp)` không phải trang trí; chúng gắn `fp` với "con trỏ"
+trước khi `int` kịp gắn với "giá trị trả về". Độ ưu tiên toán tử của C có ý
+kiến riêng.
+
+## `typedef` làm chúng dễ đọc
+
+```c
+typedef int (*Compare)(const void *, const void *);
+Compare cmp = my_compare;   /* giờ đọc như mọi kiểu khác */
+```
+
+Mọi codebase C có callback đều định nghĩa typedef. Cú pháp con-trỏ-hàm thô
+trong API là dấu hiệu code nặng mùi.
+
+## Tên hàm suy biến thành con trỏ
+
+```c
+int add(int a, int b) { return a + b; }
+int (*fp)(int, int) = add;     /* &add là cùng địa chỉ */
+int v = fp(3, 4);              /* gọi qua con trỏ: 7 */
+int w = (*fp)(3, 4);           /* giống hệt: deref tường minh không bắt buộc */
+```
+
+Cả `fp(...)` và `(*fp)(...)` đều chạy — chuẩn định nghĩa toán tử gọi để xử lý
+cả hai. Chọn một phong cách; trộn lẫn khiến code khó đọc.
+
+## Chúng sống ở đâu
+
+Con trỏ hàm là công dân đủ quyền: tham số, thành viên struct, phần tử mảng,
+giá trị trả về:
+
+```c
+typedef struct {
+    const char *name;
+    int (*op)(int, int);
+} BinOp;
+```
+
+## Kiểm tra hiểu biết
+
+- `char *(*maker)(size_t)` là gì? (Con trỏ đến hàm nhận size_t, trả char*.)
+- `fp == &fp` có hợp lệ? (Bẫy: không — `&fp` là địa chỉ của biến con trỏ;
+  `fp` là địa chỉ code mà nó giữ. Nhưng `fp == add` và `*fp == add` đều đúng.)

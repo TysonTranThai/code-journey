@@ -1,0 +1,24 @@
+A **coroutine** is any function containing `co_await`, `co_yield`, or `co_return`. Calling one does not run its body — it builds a **frame** (heap storage holding parameters, locals, and state) and hands you an object the promise constructs.
+
+## The three players
+
+1. **The coroutine body** — your code with suspension points,
+2. **`promise_type`** — the customization point: controls what calling the coroutine produces, what `co_yield`/`co_return` store, and what happens at the start/end of the frame,
+3. **`std::coroutine_handle<P>`** — the steering wheel: `resume()` continues the body until the next suspension; `done()` reports completion; the handle is what your **return object** wraps so callers can drive the coroutine.
+
+## What co_yield compiles into
+
+`co_yield expr;` is exactly:
+
+```cpp
+promise.yield_value(expr);      // store the value
+co_await promise.yield_value(expr);  // suspend here; resume continues AFTER this line
+```
+
+On resume, execution continues at the statement after the `co_yield`. That resumption point is why generators are lazy: nothing after the current suspension runs until someone asks.
+
+## The required promise members
+
+For a plain generator: `get_return_object()` (builds what the call returns), `initial_suspend()` (usually `std::suspend_always` — laziness), `final_suspend()` (must be **noexcept** and usually `std::suspend_always` so the frame survives until you destroy it), `return_void()` or `return_value(v)` (co_return handling), and `unhandled_exception()` (store or rethrow).
+
+That is the whole contract. Next lesson: the ~40-line generator that implements it.

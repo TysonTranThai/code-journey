@@ -1,0 +1,18 @@
+{
+  "title": "Retry với Backoff",
+  "prompt": "Hiện thực GetWithRetryAsync: tối đa maxAttempts lần; retry khi 5xx và HttpRequestException; KHÔNG retry các mã khác. Delay giữa các lần với backoff (baseMs << (attempt-1), trần capMs — harness cấp bộ ghi delay giả). Trả thành công đầu tiên; hết lượt trả \"failed\".",
+  "tests": [
+    {
+      "name": "retries 5xx then succeeds",
+      "hint": "Vòng attempt; gặp 5xx (hoặc HttpRequestException) delay baseMs << (attempt-1) rồi tiếp tục."
+    },
+    {
+      "name": "4xx is never retried",
+      "hint": "Mã không-retryable -> trả \"failed\" ngay (không delay, một lần gọi)."
+    },
+    {
+      "name": "backoff grows and caps",
+      "hint": "Math.Min(baseMs << (attempt-1), capMs) — 10, 20, 25(trần), …"
+    }
+  ]
+}

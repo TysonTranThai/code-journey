@@ -1,0 +1,46 @@
+Từ vựng bạn sẽ dùng mỗi ngày.
+
+## Object, optional, readonly
+
+```ts
+type User = {
+  id: number;
+  email: string;
+  displayName?: string; // có thể vắng mặt — kiểu là string | undefined
+  readonly createdAt: Date; // không thể gán lại
+};
+```
+
+Dấu `?` đổi cả kiểu lẫn phép kiểm tra hình dạng: chỗ gọi được phép bỏ qua.
+`readonly` chặn việc gán lại (không phải đóng băng sâu).
+
+## Alias và interface
+
+```ts
+type ID = string | number; // alias: union, primitive, generics
+interface Repo {
+  url: string;
+} // interface: hình dạng object, có thể extends
+interface Repo {
+  stars: number;
+} // declaration merging (tính năng hay bẫy)
+```
+
+Cả hai đều dùng được cho object; chọn `type` khi cần union, mapped type hay
+utility; chọn `interface` khi thư viện muốn extends hình dạng của bạn. Tính
+nhất quán quan trọng hơn lựa chọn.
+
+## Literal type
+
+Literal type là một giá trị duy nhất — kết hợp với union, nó trở thành enum mà
+không cần enum:
+
+```ts
+type Direction = "north" | "east" | "south" | "west";
+type Size = "sm" | "md" | "lg";
+function move(dir: Direction, by: Size) { ... }
+move("up", "md"); // ✗ "up" không thuộc Direction
+```
+
+Mảng và tuple: `string[]` là nhiều chuỗi; `[string, number]` là đúng hai phần
+tử, từng vị trí một kiểu — hữu ích cho cặp key/value và kết quả cố định.

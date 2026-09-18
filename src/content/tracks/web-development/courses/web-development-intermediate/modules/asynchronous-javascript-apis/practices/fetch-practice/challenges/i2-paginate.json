@@ -1,0 +1,20 @@
+{
+  "id": "i2-paginate",
+  "title": "Paginated Lister",
+  "prompt": "Write `async function fetchAllPages(fetchPage, maxPages)` — `fetchPage(n)` returns a promise for `{ items, hasMore }`. Collect items page by page STARTING AT PAGE 1, stopping when `hasMore` is false or `maxPages` pages have been fetched (safety bound). RETURN all collected items in page order. Sequential is correct here: each request needs the previous page's verdict.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "async function fetchAllPages(fetchPage, maxPages) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "collects every page until hasMore is false",
+      "code": "const fn = new Function(code + \"\\nreturn { fetchAllPages };\");\nconst { fetchAllPages } = fn();\nconst pages = { 1: { items: [\"a\"], hasMore: true }, 2: { items: [\"b\"], hasMore: true }, 3: { items: [\"c\"], hasMore: false } };\nlet requested = [];\nconst out = await fetchAllPages(async (n) => { requested.push(n); return pages[n]; }, 10);\nif (out.join() !== \"a,b,c\") throw new Error(\"All three pages' items in order.\");\nif (requested.join() !== \"1,2,3\") throw new Error(\"Pages 1..3 requested in order — page 3 said hasMore: false so stop.\");",
+      "hint": "Loop do { page = await fetchPage(n); items.push(...page.items); n++; } while (page.hasMore && n <= maxPages)."
+    },
+    {
+      "name": "maxPages is a hard safety bound",
+      "code": "const fn = new Function(code + \"\\nreturn { fetchAllPages };\");\nconst { fetchAllPages } = fn();\nconst endless = async (n) => ({ items: [n], hasMore: true });\nlet calls = 0;\nconst wrapped = async (n) => { calls++; return endless(n); };\nconst out = await fetchAllPages(wrapped, 5);\nif (calls !== 5) throw new Error(\"With hasMore always true, exactly maxPages pages may be fetched.\");\nif (out.length !== 5) throw new Error(\"Five items collected.\");",
+      "hint": "Count fetched pages; break at maxPages even when hasMore is still true."
+    }
+  ]
+}

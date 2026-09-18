@@ -1,0 +1,41 @@
+## Hai loại macro
+
+```c
+#define MAX_SCORE 100                  // macro đối tượng: hằng số có tên
+#define SQUARE(x) ((x) * (x))          // macro kiểu hàm
+```
+
+Bộ tiền xử lý thay thế văn bản TRƯỚC khi biên dịch. `SQUARE(a+b)` trở thành
+`((a+b) * (a+b))` — trình biên dịch không bao giờ thấy tên SQUARE.
+
+## Cái bẫy dấu ngoặc
+
+```c
+#define BAD_SQUARE(x) (x * x)
+BAD_SQUARE(2 + 3)     // trở thành (2 + 3 * 2 + 3) = 11 — chứ không phải 25!
+```
+
+Mỗi tham số VÀ toàn bộ biểu thức mở rộng đều cần ngoặc. Đây không phải chuyện
+phong cách; đó là tính đúng đắn.
+
+## Cái bẫy đánh giá hai lần
+
+```c
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+int i = 5;
+MAX(i++, 3);    // i++ có thể bị đánh giá HAI LẦN — tác dụng phụ nhân đôi
+```
+
+Macro dán văn bản; đối số có tác dụng side-effect rất nguy hiểm. Bao bọc
+do-while cho macro kiểu câu lệnh một ngữ nghĩa lành lành:
+
+```c
+#define LOG(msg) do { fprintf(stderr, "%s\n", msg); } while (0)
+```
+
+## #undef và phạm vi
+
+Macro sống từ #define đến cuối tệp (hoặc #undef). Chúng không tôn trọng phạm
+vi của C — một macro tên SIZE sẽ đè mọi SIZE trong mọi header được include
+sau nó. Hãy đặt tên có chủ đích (hoặc đừng dùng macro: `const` hoặc
+`static const` thường là công cụ tốt hơn).

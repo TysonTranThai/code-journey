@@ -16,25 +16,32 @@ export const achievementDefSchema = z.object({
 
 export type AchievementDef = z.infer<typeof achievementDefSchema>;
 
-let cachedDefs: AchievementDef[] | undefined;
+let cachedDefsEn: AchievementDef[] | undefined;
+let cachedDefsVi: AchievementDef[] | undefined;
 
-export function getAchievementDefs(): AchievementDef[] {
-  cachedDefs ??= (() => {
-    const filePath = path.join(process.cwd(), "src", "content", "achievements.json");
-    const raw: unknown = JSON.parse(readFileSync(filePath, "utf8"));
-    const parsed = z.array(achievementDefSchema).parse(raw);
-    const seen = new Set<string>();
-    for (const def of parsed) {
-      if (seen.has(def.id)) {
-        throw new Error(`Duplicate achievement id: ${def.id}`);
-      }
-      seen.add(def.id);
+function loadDefs(filename: string): AchievementDef[] {
+  const filePath = path.join(process.cwd(), "src", "content", filename);
+  const raw: unknown = JSON.parse(readFileSync(filePath, "utf8"));
+  const parsed = z.array(achievementDefSchema).parse(raw);
+  const seen = new Set<string>();
+  for (const def of parsed) {
+    if (seen.has(def.id)) {
+      throw new Error(`Duplicate achievement id: ${def.id}`);
     }
-    return parsed;
-  })();
-  return cachedDefs;
+    seen.add(def.id);
+  }
+  return parsed;
 }
 
-export function getAchievementDef(id: string): AchievementDef | undefined {
-  return getAchievementDefs().find((d) => d.id === id);
+export function getAchievementDefs(locale?: string): AchievementDef[] {
+  if (locale === "vi") {
+    cachedDefsVi ??= loadDefs("achievements.vi.json");
+    return cachedDefsVi;
+  }
+  cachedDefsEn ??= loadDefs("achievements.json");
+  return cachedDefsEn;
+}
+
+export function getAchievementDef(id: string, locale?: string): AchievementDef | undefined {
+  return getAchievementDefs(locale).find((d) => d.id === id);
 }

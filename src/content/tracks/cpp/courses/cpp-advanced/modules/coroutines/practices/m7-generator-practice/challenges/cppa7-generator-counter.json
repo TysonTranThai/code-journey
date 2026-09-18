@@ -1,0 +1,26 @@
+{
+  "id": "cppa7-generator-counter",
+  "title": "Build Generator<int> from Scratch",
+  "prompt": "Implement the full `Generator<T>` from the lesson (promise, handle wrapper, RAII) and the `counter(from, to)` coroutine with `co_yield`. The graded checks resume it exactly and expect exact values.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <coroutine>\n#include <cstddef>\n#include <exception>\n#include <utility>\n\n// TODO: implement the Generator<T> class from the lesson:\n//   promise_type with current_, get_return_object, initial/final suspend_always,\n//   yield_value storing by move, return_void, unhandled_exception -> std::terminate;\n//   move-only wrapper owning the handle; next() resume+done check; value() read.\ntemplate <class T>\nclass Generator;\n\n// TODO: implement with co_yield: from, from+1, ..., to (inclusive; empty if from > to).\nGenerator<int> counter(int from, int to);\n",
+  "tests": [
+    {
+      "name": "counter yields an inclusive range",
+      "code": "Generator<int> g = counter(1, 4);\nstd::string got;\nwhile (g.next()) got += std::to_string(g.value()) + \",\";\nCHECK_EQ(got, std::string(\"1,2,3,4,\"));",
+      "hint": "for (int i = from; i <= to; ++i) co_yield i; — with from > to the loop never runs and every next() returns false."
+    },
+    {
+      "name": "empty range is truly empty",
+      "code": "Generator<int> e = counter(5, 4);\nCHECK_EQ(e.next(), false);",
+      "hint": "The body runs once (resume), the for-condition fails immediately, final_suspend pauses, done() is true — no value ever stored."
+    },
+    {
+      "name": "two generators do not interfere",
+      "code": "Generator<int> a = counter(1, 2);\nGenerator<int> b = counter(10, 11);\nCHECK_EQ(a.value() + b.value(), 0);  // values only valid after first next()\nCHECK_EQ(a.next(), true);\nCHECK_EQ(a.value(), 1);\nCHECK_EQ(b.next(), true);\nCHECK_EQ(b.value(), 10);",
+      "hint": "Each coroutine has its own frame and promise — frames are independent by construction."
+    }
+  ]
+}

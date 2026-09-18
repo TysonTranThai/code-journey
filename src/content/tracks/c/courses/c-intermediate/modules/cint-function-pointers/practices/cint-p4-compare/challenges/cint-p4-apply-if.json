@@ -1,0 +1,16 @@
+{
+  "id": "cint-p4-apply-if",
+  "title": "Callbacks with a Predicate",
+  "prompt": "Implement a small algorithm library:\n\n```c\n/* applies fn to every element of arr (n elements) in place */\nvoid map_i(int *arr, size_t n, int (*fn)(int));\n/* counts elements where pred returns nonzero */\nsize_t count_if(const int *arr, size_t n, int (*pred)(int));\n/* removes elements failing pred (keeping order); returns new length */\nsize_t filter_i(int *arr, size_t n, int (*pred)(int));\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <limits.h>\nint double_it(int v) { return v * 2; }\nint is_even(int v) { return v % 2 == 0; }\n",
+  "tests": [
+    {
+      "name": "map, count, filter",
+      "code": "\nint a[] = {1, 2, 3, 4, 5};\nmap_i(a, 5, &double_it);\nCHECK_EQ(a[0], 2); CHECK_EQ(a[4], 10);\nCHECK_EQ(count_if(a, 5, &is_even), 5);   /* doubled values are all even */\nint c[] = {1, 2, 3, 4, 5};\nCHECK_EQ(count_if(c, 5, &is_even), 2);\nint b[] = {1, 2, 3, 4, 5, 6};\nCHECK_EQ(filter_i(b, 6, &is_even), 3);\nCHECK_EQ(b[0], 2); CHECK_EQ(b[2], 6);\nCHECK_EQ(count_if(NULL, 0, &is_even), 0);\nCHECK_EQ(filter_i(NULL, 0, &is_even), 0);\n",
+      "hint": "Boilerplate provides double_it and is_even; map writes through, filter compacts in place."
+    }
+  ],
+  "level": "imitation"
+}

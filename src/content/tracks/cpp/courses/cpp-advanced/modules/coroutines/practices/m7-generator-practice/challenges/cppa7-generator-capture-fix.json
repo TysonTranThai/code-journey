@@ -1,0 +1,16 @@
+{
+  "id": "cppa7-generator-capture-fix",
+  "title": "Repair the Dangling Capture",
+  "prompt": "This starter's generator captures a local **by reference** and dangles. Repair `makeCounter` so the state lives inside the coroutine frame (by-value parameter) — the graded check forces a resumption that would read dead memory in the original.",
+  "difficulty": "advanced",
+  "level": "debugging",
+  "language": "cpp",
+  "boilerplate": "#include <coroutine>\n#include <cstddef>\n#include <exception>\n#include <utility>\n\n// TODO: implement the Generator<T> class from the lesson:\n//   promise_type with current_, get_return_object, initial/final suspend_always,\n//   yield_value storing by move, return_void, unhandled_exception -> std::terminate;\n//   move-only wrapper owning the handle; next() resume+done check; value() read.\ntemplate <class T>\nclass Generator;\n\n// TODO: implement with co_yield: from, from+1, ..., to (inclusive; empty if from > to).\nGenerator<int> counter(int from, int to);\n\n// TODO: repair — the parameter must travel inside the frame.\nGenerator<int> makeCounter(int start);\n",
+  "tests": [
+    {
+      "name": "state survives the return",
+      "code": "Generator<int> g = makeCounter(10);\nstd::string got;\nwhile (g.next()) got += std::to_string(g.value()) + \",\";\nCHECK_EQ(got, std::string(\"10,11,12,\"));",
+      "hint": "Generator<int> makeCounter(int start) { for (int i = 0; i < 3; ++i) co_yield start + i; } — start lives in the frame; no captures at all."
+    }
+  ]
+}

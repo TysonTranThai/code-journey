@@ -1,0 +1,53 @@
+## GroupBy produces groups of pairs
+
+`GroupBy(keySel)` yields `IGrouping<TKey, TElement>` — a Key plus the
+members in encounter order. Counts, tops, and pivots all fall out:
+
+```csharp
+var byCity = people.GroupBy(p => p.City);
+foreach (var g in byCity)
+    Console.WriteLine($"{g.Key}: {g.Count()}");
+
+var topOfEach = people
+    .GroupBy(p => p.City)
+    .Select(g => g.OrderByDescending(p => p.Score).First());
+```
+
+`ToLookup(keySel)` is GroupBy's eager sibling: one pass, then O(1)
+indexing by key, and missing keys yield EMPTY groups instead of throwing.
+
+## Join and GroupJoin
+
+`Join` pairs inner+outer on keys (flat rows); `GroupJoin` produces one
+outer item with a group of matches — the shape of "customers with their
+orders, including zero-order customers":
+
+```csharp
+var q = customers.GroupJoin(orders,
+    c => c.Id, o => o.CustomerId,
+    (c, cs) => (c.Name, Count: cs.Count()));
+```
+
+Left outer join = GroupJoin + SelectMany with an empty-group default.
+
+## Aggregate: fold a sequence into one value
+
+```csharp
+int maxGap = diffs.Aggregate((acc, next) => Math.Max(acc, next));
+```
+
+Seed form `Aggregate(seed, func, resultSelector)` builds arbitrary results.
+Prefer a plain foreach when the fold needs explanation — Aggregate is not a
+flex.
+
+## Windowing and sets
+
+- `Zip(second)` pairs element-wise (stops at shorter).
+- `Chunk(size)` splits into fixed-size batches (.NET 6+).
+- `Distinct/Union/Intersect/Except` compare by DEFAULT equality —
+  pass a comparer or project first for value semantics.
+
+## Check your understanding
+
+- GroupBy vs ToLookup — which is lazy? (GroupBy; ToLookup runs immediately.)
+- Which join keeps customers with zero orders? (GroupJoin.)

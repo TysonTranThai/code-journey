@@ -8,6 +8,7 @@ import GitHub from "next-auth/providers/github";
 
 import { db } from "@/lib/db";
 import { accounts, sessions, users, verificationTokens } from "@/lib/db/schema";
+import { touchLastActive } from "@/lib/auth/activity";
 import { verifyPassword } from "./password";
 
 /**
@@ -94,6 +95,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         ) {
           session.user.role = token.role;
         }
+      }
+      // Qualifying account activity: any authenticated request that resolves
+      // a session. Fire-and-forget + internally throttled (see activity.ts);
+      // never awaited so session resolution stays fast.
+      if (typeof token.id === "string" && token.id) {
+        void touchLastActive(token.id);
       }
       return session;
     },

@@ -1,0 +1,29 @@
+## From one callback to many
+
+A `Func` parameter holds exactly **one** method. The **event** pattern removes that limit:
+
+```csharp
+class Thermometer
+{
+    public event Action<int>? Boiling;   // subscribers collect here
+
+    public void Check(int celsius)
+    {
+        if (celsius >= 100)
+            Boiling?.Invoke(celsius);    // broadcast: all subscribers run
+    }
+}
+
+var t = new Thermometer();
+t.Boiling += c => Console.WriteLine($"alarm: {c}");
+t.Boiling += c => Stats.Record(c);
+t.Check(101);   // both run
+```
+
+`+=` subscribes, `-=` unsubscribes. `?.Invoke` broadcasts only when someone listens — null when the list is empty.
+
+## The contract
+
+The publisher defines the event's delegate type; subscribers conform. Outside the class, an event is subscribe-only — you can't invoke or clear someone else's event. That's the difference from a plain delegate field: **encapsulation on the invocation**, which is what makes pub/sub safe at scale.
+
+Unsubscribing matters too: a subscriber the publisher outlives leaks memory until `-=` runs.

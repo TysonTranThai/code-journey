@@ -1,0 +1,25 @@
+{
+  "id": "cppi-checkpoint-polymorphism",
+  "title": "Checkpoint: Polymorphism",
+  "prompt": "Build a tiny notification system: `class Notifier` with a pure virtual `void send(const std::string& message) const`, a public virtual destructor, and a pure virtual `const char* channel() const`. Implement `EmailNotifier` (channel \"email\", send captures its message) and `SmsNotifier` (channel \"sms\"). The test dispatches through `std::vector<std::unique_ptr<Notifier>>`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <vector>\\n#include <memory>\\n#include <string>\\n#include <iostream>\\n\\nclass Notifier {\\n    // pure virtuals + virtual dtor\\n};\\n",
+  "tests": [
+    {
+      "name": "channels",
+      "code": "std::vector<std::unique_ptr<Notifier>> v;\nv.push_back(std::make_unique<EmailNotifier>());\nv.push_back(std::make_unique<SmsNotifier>());\nCHECK_EQ(std::string(v[0]->channel()), std::string(\"email\"));\nCHECK_EQ(std::string(v[1]->channel()), std::string(\"sms\"));",
+      "hint": "channel() dispatches per element."
+    },
+    {
+      "name": "send-dispatch",
+      "code": "std::vector<std::unique_ptr<Notifier>> v;\nv.push_back(std::make_unique<EmailNotifier>());\nv[0]->send(\"hi\");\nCHECK_EQ(EmailNotifier::sent_email_, std::string(\"hi\"));",
+      "hint": "send() runs through the base interface."
+    },
+    {
+      "name": "virtual-dtor",
+      "code": "static_assert(std::has_virtual_destructor<Notifier>::value, \"Notifier needs a virtual destructor\");",
+      "hint": "Polymorphic deletion requires the virtual dtor."
+    }
+  ]
+}

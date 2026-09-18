@@ -1,0 +1,45 @@
+## Counting: the classic for
+
+```cpp
+for (int i = 1; i <= 5; ++i) {
+    std::cout << i << ' ';
+}
+// prints: 1 2 3 4 5
+```
+
+Three parts: initialize (`int i = 1`), condition (`i <= 5`, checked *before* each pass), step (`++i`, after each pass). Prefer `++i` over `i++` as a style habit (never slower, occasionally faster).
+
+## Off-by-one discipline
+
+Counting 1..N uses `i = 1; i <= N`. Indexing positions 0..N-1 uses `i = 0; i < N`. Mixing the two habits produces the classic off-by-one bug: one extra or one missing iteration. Decide *why* you are looping, then pick the shape deliberately.
+
+## Range-based for — the modern default
+
+```cpp
+#include <vector>
+#include <string>
+
+std::vector<int> scores{9, 7, 10};
+
+for (int s : scores) {          // one pass, no index bookkeeping
+    std::cout << s << ' ';
+}
+
+for (const auto& name : names) { // const& = read-only, no copy (module 11 explains &)
+    std::cout << name << '\n';
+}
+```
+
+Use range-for whenever you just *visit* every element — it cannot run off the end. Use the classic for when you need the index (positions, strides, two-at-a-time).
+
+## break and continue
+
+`break` exits the loop now; `continue` skips to the next iteration. Use them to keep the happy path unindented:
+
+```cpp
+for (const auto& line : lines) {
+    if (line.empty() || line[0] == '#') continue;  // skip noise
+    if (line == "STOP") break;                     // early exit
+    process(line);
+}
+```

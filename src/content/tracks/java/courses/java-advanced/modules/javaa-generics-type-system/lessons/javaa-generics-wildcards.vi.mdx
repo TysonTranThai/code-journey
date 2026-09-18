@@ -1,0 +1,27 @@
+**PECS** từ Intermediate, áp dụng ở độ sâu thiết kế API. API *copy* đọc từ một
+list và ghi vào list khác:
+
+```java
+static <T> void copy(List<? extends T> src, List<? super T> dst) {
+    for (T t : src) dst.add(t);
+}
+```
+
+Hai wildcard, một điểm suy diễn: `T` cố định theo lời gọi, `src` *sản xuất*
+`T`, `dst` *tiêu thụ* chúng. Khi kiểu tham số là `List<?>` *không* có biến
+kiểu, bạn cần **wildcard capture** — một helper private đặt tên cho cái chưa
+biết:
+
+```java
+static void swap(List<?> list, int i, int j) {
+    swapHelper(list, i, j);
+}
+private static <E> void swapHelper(List<E> list, int i, int j) {
+    list.set(i, list.set(j, list.get(i)));   // chỉ hợp lệ với E thật
+}
+```
+
+`list.set(...)` trên `List<?>` thô không biên dịch được — compiler không chứng
+minh được an toàn của cái chưa biết; trong helper, `E` là kiểu *thật* và cùng
+một phép toán trở nên chứng minh được. Capture không phải mẹo; đó là cách nói
+với compiler "kiểu phần tử chưa biết này *cố định* trong suốt lời gọi".

@@ -1,0 +1,16 @@
+## Ba lớp tĩnh
+
+- **`Path`** — phẫu thuật chuỗi trên tên tệp: `Combine`, `GetFileName`, `GetExtension`. Nó không chạm vào đĩa.
+- **`File`** — thao tác một-lần: `WriteAllText`, `ReadAllText`, `AppendAllText`, `Exists`, `Delete`.
+- **`Directory`** — thư mục: `CreateDirectory`, `GetFiles`, `Exists`.
+
+```csharp
+string path = Path.Combine("/tmp", "cj", "notes.txt");
+Directory.CreateDirectory(Path.GetDirectoryName(path));   // /tmp/cj
+File.WriteAllText(path, "hello\n");
+string again = File.ReadAllText(path);
+```
+
+## Các luật chống bug
+
+`Path.Combine("a", "/b")` — đối số thứ hai tuyệt đối sẽ **thay thế** đối số đầu; đó là hành vi được định nghĩa, không phải bug, nhưng gây bất ngờ. Và `File.WriteAllText` **ghi đè** không hỏi: một bug lưu-một-dòng có thể phá dữ liệu hôm qua. Hãy kiểm tra `File.Exists` khi lịch sử quan trọng, và ưu tiên `AppendAllText` cho nhật ký.

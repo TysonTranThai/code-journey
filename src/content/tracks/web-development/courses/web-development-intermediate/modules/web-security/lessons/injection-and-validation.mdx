@@ -1,0 +1,41 @@
+Injection is the same bug as XSS wearing different clothes: **data interpreted as code**, here on the server.
+
+## SQL injection: the five-line classic
+
+```js
+// VULNERABLE: string concatenation into SQL
+const q = "SELECT * FROM users WHERE email = '" + email + "'";
+db.query(q);
+// email = "' OR 1=1 --"  ->  returns every user
+// email = "'; DROP TABLE users; --"  ->  exactly what it says
+```
+
+The database can't distinguish your SQL from the attacker's suffix. The fix is **parameterized queries** — data travels as data, never as SQL source:
+
+```js
+// SAFE: the driver binds values; structure is fixed by the code
+db.query("SELECT * FROM users WHERE email = ?", [email]);
+```
+
+This is not optional. Any string interpolation into SQL (`+`, template literals, sprintf) is a vulnerability — including "harmless" internal admin tools.
+
+## Command injection
+
+```js
+// VULNERABLE: user input becomes shell
+exec(`convert ${filename} thumb.png`);
+// filename = "a.jpg; rm -rf /" (or worse, subtler)
+```
+
+Fixes: avoid shells (`execFile` with an argument array), allowlist filenames, never pass user data as shell syntax.
+
+## Input validation posture
+
+- **Validate at the boundary** — the moment data enters (route handler, form submit), with a schema (Zod): type, length, format, range. Reject what you didn't expect rather than hunting what you banned.
+- **Allowlists > denylists**: "must match `^[a-z0-9-]{1,40}$`" beats "must not contain semicolon" — attackers have infinite encodings; you have finite ban lists.
+- **Validation is not encoding**: validating that input is a clean string doesn't excuse encoding it on output. Both layers, always.
+- **Server-side, always.** Client-side validation is UX. The API re-validates everything.
+
+## The same lesson everywhere
+
+Template injection, header injection, LDAP injection, path traversal (`../../etc/passwd`) — the pattern is identical: identify where data enters a structured language, keep data out of the structure, validate shape at the door.

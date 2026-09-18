@@ -1,0 +1,16 @@
+Giải quyết sự cố là đọc ngược luồng log từ một triệu chứng:
+
+1. **Định vị**: tìm các sự kiện lỗi, nhóm theo field context (requestId,
+   endpoint) — một yêu cầu độc hay cả một endpoint?
+2. **Tương quan**: với mỗi yêu cầu bị ảnh hưởng, kéo ra toàn bộ dòng thời gian
+   sự kiện — chuyện gì xảy ra trước lỗi? Timeout sau retry sau suy giảm là một
+   *thác đổ*, không phải bug đơn lẻ.
+3. **Định lượng**: bao nhiêu yêu cầu, endpoint nào, từ khi nào? Một người dùng
+   là chuyện support; một quy luật là sự cố.
+4. **Giả thuyết**: đề xuất thay đổi nhỏ nhất khớp với TOÀN BỘ bằng chứng — và
+   nêu quan sát sẽ BÁC BỎ nó.
+
+Sản phẩm của việc giải sự cố không phải "bản sửa" — mà là *không gian tìm kiếm
+thu hẹp* và một truy vấn giám sát để theo dõi. Checkpoint lắp cả bốn bước thành
+các hàm thuần trên luồng sự kiện có cấu trúc: không grep, không đoán, chỉ dữ
+liệu vào, câu hỏi được trả lời.

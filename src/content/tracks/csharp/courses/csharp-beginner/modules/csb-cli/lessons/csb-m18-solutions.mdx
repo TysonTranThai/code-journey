@@ -1,0 +1,21 @@
+## The solution file
+
+```bash
+dotnet new sln -n Shop
+dotnet new console -o Shop.App
+dotnet new classlib -o Shop.Core
+dotnet sln add Shop.App Shop.Core
+```
+
+`.sln` is a manifest listing projects — open it in an IDE and every project loads together. The layering is a *dependency direction*: `Shop.App` uses `Shop.Core`'s code, not the reverse.
+
+## ProjectReference
+
+```xml
+<!-- Shop.App/Shop.App.csproj -->
+<ItemGroup>
+  <ProjectReference Include="..\Shop.Core\Shop.Core.csproj" />
+</ItemGroup>
+```
+
+With that line, `Shop.App` can `using Shop.Core;` and the build system compiles Core first, then App. The difference between `ProjectReference` and `PackageReference` matters: a project reference is *your* source, rebuilt with the solution; a package reference is someone else's published binary from NuGet, versioned and immutable.

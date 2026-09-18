@@ -1,0 +1,20 @@
+{
+  "id": "i2-inject-seam",
+  "title": "Injection Seam",
+  "prompt": "Write `makeGreeter(clock)` — clock is `() => integer hour` (0–23). Returns `greet(name)`: before 12 => \"Good morning, NAME\", 12–17 => \"Good afternoon, NAME\", otherwise \"Good evening, NAME\". The point: behavior depends on time, so time MUST arrive by injection — greet must produce all three outcomes with a controlled clock.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function makeGreeter(clock) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "produces all outcomes with a fake clock",
+      "code": "const fn = new Function(code + \"\\nreturn { makeGreeter };\");\nconst { makeGreeter } = fn();\nconst g = makeGreeter(() => 8);\nif (g(\"Ada\") !== \"Good morning, Ada\") throw new Error(\"Morning branch.\");\nconst g2 = makeGreeter(() => 14);\nif (g2(\"Ada\") !== \"Good afternoon, Ada\") throw new Error(\"Afternoon branch.\");\nconst g3 = makeGreeter(() => 21);\nif (g3(\"Ada\") !== \"Good evening, Ada\") throw new Error(\"Evening branch.\");\n",
+      "hint": "One if-chain; the seam makes every branch reachable."
+    },
+    {
+      "name": "boundary hours hit the right branch",
+      "code": "const fn = new Function(code + \"\\nreturn { makeGreeter };\");\nconst { makeGreeter } = fn();\nif (makeGreeter(() => 11)(\"A\") !== \"Good morning, A\") throw new Error(\"11 is still morning.\");\nif (makeGreeter(() => 12)(\"A\") !== \"Good afternoon, A\") throw new Error(\"12 starts afternoon.\");\nif (makeGreeter(() => 18)(\"A\") !== \"Good evening, A\") throw new Error(\"18 starts evening.\");\n",
+      "hint": "Boundaries: <12 morning; <18 afternoon."
+    }
+  ]
+}

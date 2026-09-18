@@ -1,0 +1,29 @@
+## constexpr — "có thể là hằng"
+
+Trên biến: initializer phải là constant expression. Trên hàm: hàm *có thể* chạy lúc biên dịch khi nhận đối số hằng — và vẫn chạy lúc runtime nếu không. Một cài đặt, hai thế giới:
+
+```cpp
+constexpr int fib(int n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
+constexpr int F = fib(10);          // compile time
+int x = fib(runtimeInput);          // runtime, cùng phần thân
+```
+
+## consteval — "bắt buộc ngay lập tức"
+
+**Immediate function**: mọi lời gọi cho ra hằng compile-time; gọi lúc runtime là lỗi cứng. Dùng cho constructor của các kiểu "chỉ tồn tại lúc biên dịch" và các hàm mà kết quả phải được nướng sẵn:
+
+```cpp
+consteval int square(int n) { return n * n; }
+constexpr int S = square(9);        // OK
+// int y = square(runtimeVal);      // lỗi: không phải constant expression
+```
+
+## constinit — "khởi tạo tĩnh, kiểm tra lúc biên dịch"
+
+`constinit` bảo đảm **static initialization** (không có constructor lúc chạy, không SIOF — static initialization order fiasco) trong khi biến vẫn *được phép thay đổi*:
+
+```cpp
+constinit std::atomic<unsigned> requests{0};   // zero-init khi nạp, đổi được sau
+```
+
+Nguyên tắc nhớ nhanh: `constexpr` = giá trị cố định; `constinit` = cách khởi tạo cố định, giá trị thì không.

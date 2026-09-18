@@ -1,0 +1,21 @@
+{
+  "id": "cppa7-generator-take",
+  "title": "A Consuming take() Adapter",
+  "prompt": "With your `Generator<T>` intact, implement `take(Generator<int> src, int n)` — a **move-only** function returning a Generator that yields at most n values from src. This grades the ownership rule: the adapter must own src by move.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <coroutine>\n#include <cstddef>\n#include <exception>\n#include <utility>\n\n// TODO: implement the Generator<T> class from the lesson:\n//   promise_type with current_, get_return_object, initial/final suspend_always,\n//   yield_value storing by move, return_void, unhandled_exception -> std::terminate;\n//   move-only wrapper owning the handle; next() resume+done check; value() read.\ntemplate <class T>\nclass Generator;\n\n// TODO: implement with co_yield: from, from+1, ..., to (inclusive; empty if from > to).\nGenerator<int> counter(int from, int to);\n\n// TODO: yield at most n values of src (src is consumed by move).\nGenerator<int> take(Generator<int> src, int n);\n",
+  "tests": [
+    {
+      "name": "take limits the count",
+      "code": "Generator<int> t = take(counter(1, 100), 3);\nstd::string got;\nwhile (t.next()) got += std::to_string(t.value()) + \",\";\nCHECK_EQ(got, std::string(\"1,2,3,\"));",
+      "hint": "Inside the coroutine, loop i in [0, n): if (!src.next()) break; co_yield src.value(); — src is a coroutine parameter, so it lives inside the frame (the safe home from the lesson)."
+    },
+    {
+      "name": "take of more than available",
+      "code": "Generator<int> t = take(counter(1, 2), 10);\nstd::string got;\nwhile (t.next()) got += std::to_string(t.value()) + \",\";\nCHECK_EQ(got, std::string(\"1,2,\"));",
+      "hint": "The break on !src.next() handles exhaustion before n is reached."
+    }
+  ]
+}

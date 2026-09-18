@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p1-bmi",
+  "title": "BMI Category",
+  "prompt": "**Description:** Given a BMI value n (real number), print:\n- `GAO` if n < 18.5\n- `BINH` if 18.5 ≤ n < 25.0\n- `CAO` if n ≥ 25.0\n\n**Input:** One real number n (10.0 ≤ n ≤ 40.0).\n**Output:** One word from {GAO, BINH, CAO}.\n\n**Example:** `17.0` → `GAO`; `18.5` → `BINH`; `25.0` → `CAO`.\n\n*Mind the boundaries:* exactly 18.5 is BINH, exactly 25.0 is CAO.",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "under",
+      "code": "std::istringstream in(\"17.0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"GAO\\n\"));",
+      "hint": "< 18.5 is GAO."
+    },
+    {
+      "name": "lower boundary",
+      "code": "std::istringstream in(\"18.5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"BINH\\n\"));",
+      "hint": "Exactly 18.5 belongs to BINH (≥)."
+    },
+    {
+      "name": "middle",
+      "code": "std::istringstream in(\"22.7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"BINH\\n\"));",
+      "hint": "18.5 ≤ n < 25.0 is BINH."
+    },
+    {
+      "name": "upper boundary",
+      "code": "std::istringstream in(\"25.0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"CAO\\n\"));",
+      "hint": "Exactly 25.0 belongs to CAO (≥)."
+    }
+  ],
+  "level": "guided"
+}

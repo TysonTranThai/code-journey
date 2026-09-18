@@ -1,0 +1,28 @@
+## ExecutorService và Future
+
+Executor tách *việc nộp task* khỏi *quản lý thread*:
+
+```java
+ExecutorService pool = Executors.newFixedThreadPool(4);
+Future<Integer> f = pool.submit(() -> expensive());
+Integer result = f.get();      // chặn đến khi xong
+pool.shutdown();               // luôn luôn — nếu không JVM không thoát
+```
+
+Hành vi then chốt:
+- `submit` trả `Future` ngay lập tức; `get()` chờ đúng task đó
+- task chạy trên thread của pool — ngoại lệ bên trong KHÔNG làm vỡ thread
+  của bạn; `get()` ném lại chúng bọc trong `ExecutionException`
+- `invokeAll` nộp một lô; các Future trả về hoàn tất theo thứ tự
+- luôn luôn `shutdown()` — try/finally hoặc `close()` (ExecutorService
+  là AutoCloseable từ Java 19)
+
+Mẫu kiểm thử xác định: nộp N task, `get()` từng cái — sau khi mọi get
+trả về, mọi side effect đã visible. Latch là công cụ khi các task phải
+*hoàn tất hết* trước một assertion:
+
+```java
+CountDownLatch done = new CountDownLatch(n);
+// mỗi task: work(); done.countDown();
+done.await();   // chờ đủ n countDown
+```

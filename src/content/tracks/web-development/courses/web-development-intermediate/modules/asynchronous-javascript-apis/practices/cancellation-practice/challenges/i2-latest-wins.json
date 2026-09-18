@@ -1,0 +1,20 @@
+{
+  "id": "i2-latest-wins",
+  "title": "Latest Search Wins",
+  "prompt": "Write `createSearcher(runQuery)` that mimics search-as-you-type. It RETURNS `{ search, result }`. `search(term)` starts `runQuery(term)` (returning a promise), aborts/cancels any PREVIOUS in-flight search by marking it stale, and remembers this call as current. `result` is an async function awaiting the CURRENT search and returning its value — a stale (superseded) search must never update the result.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function createSearcher(runQuery) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "result follows the latest search",
+      "code": "const fn = new Function(code + \"\\nreturn { createSearcher };\");\nconst { createSearcher } = fn();\nconst s = createSearcher(async (t) => { await new Promise((r) => setTimeout(r, 10)); return \"results:\" + t; });\ns.search(\"a\");\ns.search(\"ab\");\ns.search(\"abc\");\nconst out = await s.result();\nif (out !== \"results:abc\") throw new Error(\"The most recent search's value must win.\");",
+      "hint": "Keep a currentId counter; each search captures its id and only writes the result if id === currentId."
+    },
+    {
+      "name": "a superseded search never updates the result",
+      "code": "const fn = new Function(code + \"\\nreturn { createSearcher };\");\nconst { createSearcher } = fn();\nconst finished = [];\nconst s = createSearcher(async (t) => {\n  await new Promise((r) => setTimeout(r, t === \"slow\" ? 40 : 5));\n  finished.push(t);\n  return \"results:\" + t;\n});\ns.search(\"slow\");\ns.search(\"fast\");\nconst out = await s.result();\nawait new Promise((r) => setTimeout(r, 60));\nif (out !== \"results:fast\") throw new Error(\"The slow first search must not overwrite the fast second one.\");",
+      "hint": "The classic race: the guard is comparing ids at completion time, not cancelling the timer."
+    }
+  ]
+}

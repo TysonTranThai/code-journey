@@ -1,0 +1,61 @@
+## Header là văn bản giao kèo
+
+Tệp `.h` là hợp đồng công khai của một thành phần: mọi thứ người *dùng* thành
+phần có thể dựa vào. Tệp `.c` là phần hiện thực riêng tư. Nguyên tắc:
+
+- **Header**: định nghĩa kiểu mà API công bố, **khai báo** hàm, khai báo
+  đối tượng `extern`, macro thuộc hợp đồng.
+- **Tệp nguồn**: định nghĩa, helper `static` phạm vi tệp, macro riêng tư.
+
+Header phải tự biên dịch được một mình — nó include những gì nó cần, không bao
+giờ "mong người include đã include trước":
+
+```c
+/* vec.h */
+#ifndef CINT_VEC_H
+#define CINT_VEC_H
+#include <stddef.h>       /* cho size_t — tự đủ */
+
+typedef struct Vec Vec;           /* opaque: người dùng giữ con trỏ, không phải ruột */
+Vec *vec_create(size_t initial_capacity);
+int  vec_push(Vec *v, int value);
+size_t vec_len(const Vec *v);
+void vec_destroy(Vec *v);
+#endif
+```
+
+## Include guard, về mặt cơ chế
+
+`#ifndef/#define/#endif` làm header trở nên idempotent: dán nó hai lần vào một
+TU vẫn cho một bản duy nhất của mỗi khai báo. Không có guard, hai header cùng
+include một header thứ ba sẽ dán khai báo của nó hai lần — và định nghĩa lặp
+không phải `extern` hay typedef lặp có thể làm biên dịch fail. (C11+ thực tế
+cho phép `#pragma once`, nhưng guard mới là chuẩn mới mang tính di động.)
+
+## Khai báo không bao giờ đi kèm bộ khởi tạo
+
+```c
+/* trong header */
+extern int threshold = 50;   /* SAI: định nghĩa có ô nhớ, trong mọi TU */
+extern int threshold;        /* ĐÚNG: một lời hứa; đúng một .c định nghĩa */
+```
+
+Const cần cẩn thận: `const int limit;` ở phạm vi tệp trong header là *định nghĩa
+trong mỗi TU* (const mặc định có liên kết nội bộ) — hợp lệ nhưng nhân bản bộ
+nhớ. Hằng chia sẻ, có thể thay đổi dùng `extern const` + một định nghĩa.
+
+## Thiết kế ranh giới
+
+1. **Thu nhỏ bề mặt.** Xuất hàm, không xuất biến toàn cục. Mỗi biến toàn cục là
+   một tham số ẩn và một rủi ro concurrency.
+2. **Làm cho quyền sở hữu hiện rõ trong chữ ký** (Module 3 đào sâu):
+   `vec_create` trả về thứ mà caller phải `vec_destroy` — tên hàm nói cả hai nửa.
+3. **Kiểu opaque để tự do cấu trúc.** Nếu người dùng không bao giờ dereference
+   `Vec *`, bạn có thể đổi layout mà không cần biên dịch lại tất cả.
+
+## Kiểm tra hiểu biết
+
+- Định nghĩa của `threshold` nằm ở đâu? (Đúng một tệp `.c`.)
+- Hai header cùng định nghĩa `typedef struct Point Point;` với hình dáng giống
+  nhau thì sao? (Typedef trùng — C23 nới lỏng, nhưng nguyên tắc vẫn giữ: định
+  nghĩa kiểu dùng chung một lần trong một header chung.)

@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m2-class-counter",
+  "title": "A class with an invariant",
+  "prompt": "Implement `class BoundedCounter` with a private `int value_{0};` and private `int max_;`, a constructor `BoundedCounter(int max)` that stores `max` (assume positive), `void increment()` that increments unless doing so would exceed `max`, and `int value() const` / `int max() const` getters.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\n\nclass BoundedCounter {\n    // declarations\n};\n",
+  "tests": [
+    {
+      "name": "stops-at-max",
+      "code": "BoundedCounter c{3};\nc.increment(); c.increment(); c.increment(); c.increment();\nCHECK_EQ(c.value(), 3);",
+      "hint": "The fourth increment would exceed max 3 → invariant forbids it."
+    },
+    {
+      "name": "starts-at-zero",
+      "code": "BoundedCounter c{5};\nCHECK_EQ(c.value(), 0);",
+      "hint": "New counters start at 0."
+    },
+    {
+      "name": "getters-const",
+      "code": "BoundedCounter c{5};\nc.increment();\nconst BoundedCounter& view = c;\nCHECK_EQ(view.value(), 1);\nCHECK_EQ(view.max(), 5);",
+      "hint": "Both getters must work through a const reference."
+    }
+  ],
+  "level": "combination"
+}

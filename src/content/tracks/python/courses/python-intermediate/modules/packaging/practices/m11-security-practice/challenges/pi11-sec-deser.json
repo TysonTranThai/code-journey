@@ -1,0 +1,26 @@
+{
+  "id": "pi11-sec-deser",
+  "title": "Defuse Deserialization",
+  "prompt": "Implement load_payload(data: bytes) that safely decodes untrusted payloads: try JSON (utf-8) and return the object; on any failure raise ValueError('unsafe payload'). The docstring must promise never to use pickle (graders check json is used and pickle is NOT).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import json\n\ndef load_payload(data):\n    pass\n",
+  "tests": [
+    {
+      "name": "json payloads load",
+      "code": "assert load_payload(b'{\"a\": 1}') == {'a': 1}",
+      "hint": "json.loads(bytes) works directly in 3.12."
+    },
+    {
+      "name": "non-json raises safely",
+      "code": "try:\n    load_payload(b'not json')\n    failed = False\nexcept ValueError:\n    failed = True\nassert failed",
+      "hint": "Any decode failure → ValueError('unsafe payload')."
+    },
+    {
+      "name": "pickle is not used",
+      "code": "assert 'pickle' not in code, 'pickle.loads executes embedded code'",
+      "hint": "Untrusted bytes must never reach a pickle loader."
+    }
+  ],
+  "level": "guided"
+}

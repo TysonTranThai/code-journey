@@ -1,0 +1,36 @@
+A **transaction** makes a group of statements all-or-nothing. Money moves A
+→ B? Both updates commit together or neither does:
+
+```python
+try:
+    conn.execute("UPDATE accounts SET balance = balance - ? WHERE id = ?", (100, 1))
+    conn.execute("UPDATE accounts SET balance = balance + ? WHERE id = ?", (100, 2))
+    conn.commit()                    # both applied
+except sqlite3.Error:
+    conn.rollback()                  # neither applied
+```
+
+## Constraints: the database defends itself
+
+Schema-level rules enforce integrity even against buggy code:
+
+```python
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY,
+    email TEXT NOT NULL UNIQUE,
+    age INTEGER CHECK (age >= 0)
+)
+```
+
+`NOT NULL`, `UNIQUE`, `CHECK`, `DEFAULT`, and foreign keys make bad data
+impossible at the storage layer — `IntegrityError` beats silently corrupted
+tables. **Indexes** (`CREATE INDEX idx_tasks_done ON tasks(done)`) make
+filtered queries fast; every index slightly slows writes, so index the
+columns you actually filter on.
+
+## Connections are resources
+
+Connection discipline from module 3 applies: open with `with` semantics where
+possible, close deterministically, and keep one connection per logical unit
+of work. Long-lived shared connections plus threads is a classic deadlock
+recipe — the capstone keeps storage single-threaded for exactly this reason.

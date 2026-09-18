@@ -1,0 +1,15 @@
+{
+  "id": "cint-p13-cleanup",
+  "title": "The Cleanup Ladder",
+  "prompt": "Implement a multi-resource pipeline with the cleanup-goto\npattern. The boilerplate declares a tiny fake-resource stack:\n\n```c\n/* resources must be acquired in order and released in REVERSE order;\n   the tracker records acquire/release for verification */\nvoid tr_reset(void);\nint  tr_acquire(int id);        /* 0 ok; -1 if id already held */\nvoid tr_release(int id);        /* no-op if not held */\nint  tr_holds(int id);\n/* your function: acquire 1, 2, 3; fail if any acquire fails;\n   \"work\" = return 0; release in reverse order — ALWAYS, on every path */\nint pipeline(int fail_at);      /* 0 = no failure; 1..3 = fail that acquire */\n/* the tracker's record of events, as a string like \"a1a2a3r3r2r1\" */\nconst char *tr_log(void);\n```\n\npipeline(fail_at) must leave NO resources held — whatever happens.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\nstatic char LOG[64]; static int held[4];\nvoid tr_reset(void) { LOG[0] = 0; for (int i = 0; i < 4; i++) held[i] = 0; }\nstatic void log_ev(char c, int id) { size_t n = 0; while (LOG[n]) n++; LOG[n++] = c; LOG[n++] = (char)('0' + id); LOG[n] = 0; }\nint  tr_acquire(int id) { if (id < 1 || id > 3 || held[id]) return -1; held[id] = 1; log_ev('a', id); return 0; }\nvoid tr_release(int id) { if (id >= 1 && id <= 3 && held[id]) { held[id] = 0; log_ev('r', id); } }\nint  tr_holds(int id) { return id >= 1 && id <= 3 ? held[id] : 0; }\nconst char *tr_log(void) { return LOG; }\nint pipeline(int fail_at);\n",
+  "tests": [
+    {
+      "name": "every path cleans up",
+      "code": "\ntr_reset();\nCHECK_EQ(pipeline(0), 0);\nCHECK(!strcmp(tr_log(), \"a1a2a3r3r2r1\"));   /* full reverse release */\nCHECK(!tr_holds(1) && !tr_holds(2) && !tr_holds(3));\ntr_reset();\nCHECK_EQ(pipeline(2), -1);                  /* acquire 2 fails */\nCHECK(!strcmp(tr_log(), \"a1r1\"));           /* 1 was released */\nCHECK(!tr_holds(1));\ntr_reset();\nCHECK_EQ(pipeline(3), -1);\nCHECK(!strcmp(tr_log(), \"a1a2r2r1\"));\ntr_reset();\nCHECK_EQ(pipeline(1), -1);\nCHECK(!strcmp(tr_log(), \"\"));               /* nothing acquired */\n",
+      "hint": "goto cleanup with all pointers pre-nulled; release 3, 2, 1 unconditionally at the label."
+    }
+  ]
+}

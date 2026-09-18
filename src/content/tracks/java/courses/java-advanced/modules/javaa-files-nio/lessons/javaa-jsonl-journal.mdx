@@ -1,0 +1,17 @@
+An append-only journal is the honest way to persist events: writes are cheap
+appends, corruption cannot destroy history (only tail it), and replay
+reconstructs state deterministically.
+
+```java
+Files.writeString(file, line + "\n",
+    StandardCharsets.UTF_8, CREATE, APPEND);
+for (String line : Files.readAllLines(file, StandardCharsets.UTF_8)) { ... }
+```
+
+Three disciplines: (1) **explicit charset everywhere** — UTF-8 in and out;
+the platform-default overloads are deprecated precisely because "default"
+differs between machines. (2) **one record per line** (JSONL): the newline is
+the frame, so a truncated final line is detectable and skippable. (3) rotation
+by policy — when the file exceeds a bound, `Files.move` it aside atomically
+and keep appending to a fresh file. Kafka, databases, and every log shipper
+in existence run on this shape.

@@ -1,0 +1,15 @@
+## qsort is the master class
+
+```c
+void qsort(void *base, size_t nmemb, size_t size, int (*compar)(const void *, const void *));
+```
+
+Four ingredients make it generic: a byte-addressed base, an element *size* (so the algorithm can move elements with memcpy), a count, and a comparison callback supplied by the caller. Every generic C API you will design mixes some subset of these.
+
+## What the cost is
+
+Inside a void* container, elements are bytes: `elem_at(base, i, size)` is `(char *)base + i * size`. The compiler no longer knows element types — wrong casts, wrong sizes, and wrong comparators are all silent until runtime. Genericity in C trades compile-time checking for flexibility; document and test accordingly.
+
+## Alignment still applies
+
+A void* handed back to the caller must be as aligned as the data it represents. If your container allocates raw bytes, align them — a double stored at an odd address is UB the moment it is loaded.

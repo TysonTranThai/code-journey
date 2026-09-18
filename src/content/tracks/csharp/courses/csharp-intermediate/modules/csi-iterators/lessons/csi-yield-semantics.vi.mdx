@@ -1,0 +1,49 @@
+## Phương thức iterator được viết lại, không được gọi
+
+Đánh dấu phương thức `IEnumerable<T>` với `yield return` và compiler sinh một
+lớp máy-trạng-thái: mỗi `yield return` là một điểm dừng, mỗi MoveNext là một
+lần tiếp diễn:
+
+```csharp
+static IEnumerable<int> Evens(int upto)
+{
+    for (int i = 0; i <= upto; i += 2)
+        yield return i;          // dừng: đưa một giá trị ra, chờ
+}
+```
+
+Không gì chạy khi `Evens(10)` được GỌI — thân phương thức chỉ bắt đầu khi
+MoveNext đầu tiên xảy ra (bước foreach đầu tiên). Tác dụng phụ trước yield
+đầu tiên cũng bị trì hoãn:
+
+```csharp
+static IEnumerable<int> Logged()
+{
+    Console.WriteLine("start");        // cũng bị trì hoãn!
+    yield return 1;
+    Console.WriteLine("middle");
+    yield return 2;
+}
+```
+
+`yield break` kết thúc sớm (một iterator rỗng chỉ là `yield break`). Bên trong
+phương thức iterator: không `yield return` trong try-catch (chỉ try-finally),
+không tham số `ref`/`out`, một đường yield cho mỗi lần tiếp diễn.
+
+## Trì hoãn ≠ được cache
+
+Mỗi `foreach` trên một iterator CHẠY LẠI nó:
+
+```csharp
+var seq = Logged();
+foreach (var x in seq) { }   // in start, middle
+foreach (var x in seq) { }   // in start, middle LẦN NỮA
+```
+
+Hóa rắn bằng `ToList()` khi cần ngữ nghĩa một-lần hoặc nhiều lượt qua công
+việc đắt — và chấp nhận đánh đổi (bộ nhớ lấy thời gian).
+
+## Kiểm tra hiểu biết
+
+- Code trước `yield` đầu tiên chạy khi nào? (Ở MoveNext đầu tiên, không phải lúc gọi.)
+- Vì sao phương thức iterator không nhận được tham số `ref`? (Máy trạng thái là đối tượng heap; ref local không thể tồn tại qua các lần đình chỉ.)

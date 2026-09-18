@@ -1,0 +1,26 @@
+{
+  "id": "javi-p2-payment-gateway",
+  "title": "Inject the Payment Gateway",
+  "prompt": "Design a checkout flow around a contract:\n- `interface PaymentGateway { String charge(int cents); }` inside `Solution`\n  — returns a receipt id like `\"ok-1000\"`.\n- `static class CheckoutService` with a constructor taking a\n  `PaymentGateway` and a method `static String checkout(PaymentGateway g, int cents)`\n  that delegates to the gateway and returns its result.\n- Implement `static class FakeGateway implements PaymentGateway` that\n  returns `\"ok-\" + cents` — the test double the service will run against.\n\nThe tests run the service against the fake (never a real payment API):\nthis is dependency inversion exercised by hand.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "service delegates to injected gateway",
+      "code": "\nSolution.PaymentGateway gw = new Solution.FakeGateway();\ncheckEq(Solution.checkout(gw, 2500), \"ok-2500\", \"delegation result\");\n",
+      "hint": "checkout must call gateway.charge and return its value unchanged."
+    },
+    {
+      "name": "fake is a real implementation of the contract",
+      "code": "\nSolution.PaymentGateway gw = new Solution.FakeGateway();\ncheckEq(gw.charge(99), \"ok-99\", \"fake implements interface\");\n",
+      "hint": "FakeGateway must implement PaymentGateway.charge(int)."
+    },
+    {
+      "name": "service uses WHATEVER gateway is injected",
+      "code": "\nSolution.PaymentGateway alt = c -> \"off-\" + c;   // a different gateway\ncheckEq(Solution.checkout(alt, 250), \"off-250\", \"delegation, not hard-coding\");\n",
+      "hint": "checkout must return the result of the gateway it was handed — a lambda gateway proves it cannot hard-code the receipt."
+    }
+  ],
+  "level": "independent"
+}

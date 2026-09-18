@@ -1,0 +1,22 @@
+Everything you have learned converges into an application shape:
+
+```
+todo/
+  app.py        # menu loop, argparse — the "controller"
+  storage.py    # load_tasks() / save_tasks() — JSON file I/O
+  models.py     # the task dict shape + validation helpers
+  tests.py      # asserts over add/complete/delete logic
+```
+
+Rules that keep it sane:
+
+- **Functions take data in and return data out** — `add_task(tasks, text)`,
+  never a function that reaches into globals.
+- **All file access lives in storage.** Swap JSON for a database later; nothing
+  else changes.
+- **Validate at the edges.** Bad input is rejected once, at the boundary, with
+  a clear message.
+- **The menu loop is the dumbest part of the program.** Logic belongs below.
+
+The capstone asks you to invent this structure yourself. This module is the
+rehearsal.

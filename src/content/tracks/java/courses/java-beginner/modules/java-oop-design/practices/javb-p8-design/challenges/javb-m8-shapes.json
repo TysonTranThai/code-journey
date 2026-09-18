@@ -1,0 +1,21 @@
+{
+  "id": "javb-m8-shapes",
+  "title": "Polymorphic shapes",
+  "prompt": "Inside `Solution`, write `static abstract class Shape` with abstract `double area()` and `String name()`; plus `static class Circle extends Shape` (constructor takes radius), `static class Rect extends Shape` (width, height). Implement `static double totalArea(Shape[] shapes)` that works for ANY mix of shapes.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static abstract class Shape {\n        public abstract double area();\n        public abstract String name();\n    }\n\n    public static class Circle extends Shape {\n        public Circle(double r) {\n        }\n\n        public double area() { return 0; }\n        public String name() { return \"circle\"; }\n    }\n\n    public static class Rect extends Shape {\n        public Rect(double w, double h) {\n        }\n\n        public double area() { return 0; }\n        public String name() { return \"rect\"; }\n    }\n\n    public static double totalArea(Shape[] shapes) {\n        return 0;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "individual areas",
+      "code": "\nSolution.Shape c = new Solution.Circle(1);\nCjTestBase.checkNear(c.area(), Math.PI, 1e-9, \"unit circle\");\nSolution.Shape r = new Solution.Rect(3, 4);\nCjTestBase.checkNear(r.area(), 12.0, 1e-9, \"3x4 rect\");\n",
+      "hint": "Each subclass computes its own formula."
+    },
+    {
+      "name": "polymorphic total",
+      "code": "\nSolution.Shape[] mix = { new Solution.Circle(2), new Solution.Rect(2, 3), new Solution.Circle(1) };\nCjTestBase.checkNear(Solution.totalArea(mix), Math.PI * 4 + 6 + Math.PI, 1e-9, \"mixed shapes\");\nCjTestBase.checkNear(Solution.totalArea(new Solution.Shape[]{}), 0.0, 1e-9, \"empty\");\n",
+      "hint": "totalArea must dispatch through the abstract method — no instanceof chains."
+    }
+  ],
+  "level": "guided"
+}

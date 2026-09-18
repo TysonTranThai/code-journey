@@ -1,0 +1,47 @@
+Mỗi đối tượng tồn tại theo một trong bốn **storage duration** — bốn chiếc đồng hồ khác nhau:
+
+1. **static** — sinh lúc chương trình khởi động, chết khi thoát: biến toàn cục, `static` cục bộ, thành viên `static`. Khởi tạo static cục bộ là thread-safe và lười (C++11 "magic statics").
+2. **thread** — `thread_local`: một thực thể mỗi thread, sinh lúc thread bắt đầu, chết khi thread kết thúc.
+3. **automatic** — biến cục bộ: sinh tại dòng khai báo, bị hủy khi ra khỏi phạm vi (theo **thứ tự ngược**).
+4. **dynamic** — `new`/`delete` trực tiếp (hiếm trong code hiện đại; quyền sở hữu nên nằm trong các kiểu RAII).
+
+## Thứ tự hủy là một hợp đồng
+
+Trong cùng phạm vi, hủy chạy theo **thứ tự khai báo ngược**. Thành viên bị hủy theo thứ tự khai báo ngược — *sau* phần thân destructor. Cơ chế khóa, phạm vi mutex và mã dọn dẹp đều dựa vào điều này:
+
+```cpp
+struct Job {
+    std::ofstream log;              // khai báo trước  -> hủy sau
+    std::lock_guard<std::mutex> g;  // khai báo sau    -> hủy trước
+    Job(std::mutex& m) : log("job.log"), g(m) {}
+};
+```
+
+## Dangling: họ lỗi vòng đời
+
+Một reference/pointer/view sống lâu hơn đối tượng của nó là **dangling** — sử dụng nó là hành vi không xác định, và compiler thường không cản bạn:
+
+- trả về reference/pointer trỏ vào biến cục bộ,
+- lưu `string_view` hoặc `span` trỏ vào một đối tượng tạm,
+- iterator bị vô hiệu sau khi container thay đổi,
+- lambda bắt theo reference nhưng sống ngoài phạm vi.
+
+```cpp
+std::string_view bad() {
+    std::string local = "temporary";
+    return local;            // biên dịch được; view sẽ dangling khi return
+}
+```
+
+## Lifetime extension — ngoại lệ hẹp
+
+**const reference buộc vào một đối tượng tạm** sẽ kéo dài đời đối tượng tạm bằng đời reference (và range-for trên container tạm cũng sống trong suốt vòng lặp). Nhưng cơ chế này **không** chuyển tiếp qua return của hàm hay qua member initializer vào thành viên reference sau thân constructor — bẫy nổi tiếng nhất của C++:
+
+```cpp
+struct Holder {
+    const std::string& s;
+    Holder() : s("dangles!") {}   // đối tượng tạm chết ngay tại dấu }
+};
+```
+
+**Thói quen phòng thủ:** view là mượn — đừng bao giờ lưu `string_view`/`span`/`&` trong một kiểu mà bạn không chứng minh được nó chết *trước* đối tượng bị mượn. Trong phần luyện tập bạn sẽ sửa code dangling và dự đoán thứ tự hủy chính xác từng bước.

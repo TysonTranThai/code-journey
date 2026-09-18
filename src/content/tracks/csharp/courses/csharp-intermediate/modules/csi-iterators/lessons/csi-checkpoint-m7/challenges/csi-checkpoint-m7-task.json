@@ -1,0 +1,25 @@
+{
+  "id": "csi-checkpoint-m7-task",
+  "title": "Checkpoint: Lazy by Observation",
+  "prompt": "Implement the pipeline described in the checkpoint. Level names: DEBUG=0, INFO=1, WARN=2, ERROR=3.\n\n```csharp\nstatic IEnumerable<(int Level, string Msg)> ParseLines(IEnumerable<string> lines);\nstatic IEnumerable<(int Level, string Msg)> FilterLevel(IEnumerable<(int Level, string Msg)> src, int minLevel);\nstatic IEnumerable<string> Format(IEnumerable<(int Level, string Msg)> src);\npublic sealed class CountingSource : IEnumerable<string>\n{\n    public CountingSource(params string[] lines);\n    public int ReadCount { get; }        // lines actually pulled by consumers\n}\nstatic List<string> Run(IEnumerable<string> lines, int minLevel, int maxResults);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "stages compose",
+      "code": "\nstring[] lines = { \"INFO|started\", \"DEBUG|noise\", \"ERROR|disk full\", \"WARN|slow\" };\nvar outp = Solution.Run(lines, 1, 10);\nCj.Eq(string.Join(\"|\", outp), \"[1] started|[3] disk full|[2] slow\", \"levels >= 1, source order\");\n",
+      "hint": "Split on '|', map names to levels, filter, format — three lazy stages."
+    },
+    {
+      "name": "cap stops pulling",
+      "code": "\nvar counter = new Solution.CountingSource(\"INFO|a\", \"INFO|b\", \"INFO|c\", \"INFO|d\", \"INFO|e\");\nvar capped = Solution.Run(counter, 0, 2);\nCj.Eq(capped.Count, 2, \"capped at 2\");\nCj.Eq(counter.ReadCount, 2, \"source read exactly 2 lines — laziness proven\");\n",
+      "hint": "foreach + a counter; break (or return from inside foreach) the moment the cap hits — no ToList up front."
+    },
+    {
+      "name": "cap larger than data",
+      "code": "\nstring[] few = { \"WARN|only\" };\nvar all = Solution.Run(few, 0, 100);\nCj.Eq(all.Count, 1, \"short pipeline fine\");\nvar none = Solution.Run(new string[0], 0, 5);\nCj.Eq(none.Count, 0, \"empty input\");\n",
+      "hint": "Empty and short inputs flow through the same lazy path."
+    }
+  ]
+}

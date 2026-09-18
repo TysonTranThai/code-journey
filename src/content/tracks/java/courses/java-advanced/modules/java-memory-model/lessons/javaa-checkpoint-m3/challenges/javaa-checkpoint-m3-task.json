@@ -1,0 +1,16 @@
+{
+  "id": "javaa-checkpoint-m3-task",
+  "title": "Checkpoint: the named-edge protocol",
+  "prompt": "Implement `static List<String> audit()` that runs this exact protocol and returns the audit log:\n1. `ready` latch; worker (virtual thread) publishes `List.of(\"v1\",\"v2\")` through a `SynchronousQueue` and counts down `ready` FIRST (so the put happens after the signal).\n2. Main awaits `ready`, `take()`s the payload, sets `run=false`, then counts down `done`.\n3. Worker awaits `done`, then reads `run` into its log and finishes.\nLog entries (in order): `\"taken:\" + payload`, `\"run-seen:\" + run`, prefixed `\"worker-started\"` before anything and `\"worker-done\"` after the read.\nReturn the main-side and worker-side logs concatenated: main's entries first (\"taken:...\"), then worker's (\"worker-started\", \"run-seen:false\", \"worker-done\").\nEvery await here is a named hb edge — be ready to say which is which.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "audit shows the full hb chain",
+      "code": "\njava.util.List<String> log = Solution.audit();\ncheckEq(log, java.util.List.of(\"taken:[v1, v2]\", \"worker-started\", \"run-seen:false\", \"worker-done\"),\n    \"every transition is connected by a latch hb edge\");\n",
+      "hint": "start → ready → put/take → done → read: five named edges."
+    }
+  ],
+  "level": "real-world"
+}

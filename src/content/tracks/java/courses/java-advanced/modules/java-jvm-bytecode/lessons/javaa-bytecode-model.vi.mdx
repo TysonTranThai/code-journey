@@ -1,0 +1,35 @@
+`javac` biên dịch ra **class file** (JVM spec §4): một constant pool các ký
+hiệu cộng bytecode cho mỗi phương thức chạy trên **máy xếp chồng**. Sandbox
+này không có shell nên `javap -c` chỉ trình bày trong văn bản — nhưng *hậu
+quả* của constant pool thì chạy kiểm chứng được:
+
+**Identity của String** — literal sống trong pool, được khử trùng lặp:
+
+```java
+String a = "adv";                 // entry trong pool
+String b = "adv";                 // cùng entry
+String c = new String("adv");     // đối tượng mới trên heap
+a == b      // true  — cùng hằng
+a == c      // false — khác đối tượng
+a == c.intern()  // true — intern() trả về entry trong pool
+```
+
+**Boxing cache** — `Integer.valueOf` cache -128..127 (JLS §5.1.7):
+
+```java
+Integer.valueOf(127) == Integer.valueOf(127)  // true  (cùng box cache)
+Integer.valueOf(128) == Integer.valueOf(128)  // false (box mới mỗi lần)
+```
+
+**Thành phần synthetic** — compiler sinh ra thành viên bạn không hề viết.
+Lambda bị desugar thành một phương thức private synthetic cộng một call site
+`invokedynamic`. Reflection nhìn thấy phương thức synthetic đó:
+
+```java
+Runnable r = () -> {};
+Arrays.stream(Solution.class.getDeclaredMethods())
+      .anyMatch(Method::isSynthetic)   // true khi lớp có lambda
+```
+
+Đọc bytecode là một kỹ năng, nhưng *suy luận về identity và thành phần sinh
+tự động* mới là thứ bạn dùng hằng tuần.

@@ -1,0 +1,45 @@
+## Why structs have holes
+
+Every complete object type has an **alignment requirement**: addresses at which objects of that type may *validly* start. The compiler inserts **padding** between and after members so each member sits at its natural alignment.
+
+```c
+struct S {
+    char  c;   /* offset 0        */
+    /* 3 bytes padding  */
+    int   i;   /* offset 4        */
+    char  d;   /* offset 8        */
+    /* 7 bytes padding  */
+};             /* sizeof == 16    */
+```
+
+Rules you can rely on (ISO C):
+
+- Members appear in declaration order.
+- Each member is aligned to its type's alignment.
+- The struct's alignment is the max of its members'.
+- `sizeof` is a multiple of the struct's alignment (arrays must still work).
+
+## Measuring, not memorizing
+
+`offsetof` gives the byte offset of each member:
+
+```c
+#include <stddef.h>
+#include <stdio.h>
+
+struct S { char c; int i; char d; };
+
+int main(void) {
+    printf("c at %zu\n", offsetof(struct S, c));
+    printf("i at %zu\n", offsetof(struct S, i));
+    printf("d at %zu\n", offsetof(struct S, d));
+    printf("sizeof = %zu\n", sizeof(struct S));
+    return 0;
+}
+```
+
+Reordering members largest-first (`int i; char c; char d;` → sizeof 8) is the classic size win. The exact layout is implementation-defined — but on a fixed platform, like this sandbox, it is *stable and inspectable*, which is what the practice set does.
+
+## Why you care
+
+Padding leaks into files and network protocols; comparing structs with `==` reads padding bytes (unspecified values); `memcpy` of a struct copies the holes. Layout literacy is a systems-programming survival skill.

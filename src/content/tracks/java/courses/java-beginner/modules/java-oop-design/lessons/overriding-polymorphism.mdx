@@ -1,0 +1,59 @@
+**Polymorphism** = one call site, many behaviors. An object of a subclass
+can be used anywhere the superclass is expected, and the *object's own*
+version of an overridden method runs:
+
+```java
+class Shape {
+    public double area() { return 0; }
+    public String describe() { return "a shape"; }
+}
+
+class Circle extends Shape {
+    private final double r;
+    Circle(double r) { this.r = r; }
+
+    @Override
+    public double area() { return Math.PI * r * r; }
+
+    @Override
+    public String describe() { return "a circle"; }
+}
+
+class Rectangle extends Shape {
+    private final double w, h;
+    Rectangle(double w, double h) { this.w = w; this.h = h; }
+
+    @Override
+    public double area() { return w * h; }
+
+    @Override
+    public String describe() { return "a rectangle"; }
+}
+```
+
+Now the payoff — one loop, many behaviors:
+
+```java
+Shape[] shapes = { new Circle(2), new Rectangle(3, 4) };
+for (Shape s : shapes) {
+    System.out.println(s.describe() + " area=" + s.area());
+}
+// a circle area=12.566...
+// a rectangle area=12.0
+```
+
+The variable is a `Shape`; the behavior is the *object's* class. The JVM
+picks the right override at run time — this dispatch is the machinery that
+makes frameworks possible.
+
+**`@Override` is a contract with the compiler.** The annotation is optional
+in syntax but mandatory in this course: with it, a typo'd signature
+(`area(Shape this)`, a misspelled name) becomes a compile ERROR instead of
+a silently-new method. Without it, "overriding" that fails to override is
+one of the quietest bug classes in Java.
+
+**A subclass may keep the parent's behavior**: `super.method()` calls the
+parent version from inside an override — useful for "do what you did, plus
+this".
+
+**Next:** interfaces — contracts without implementation.

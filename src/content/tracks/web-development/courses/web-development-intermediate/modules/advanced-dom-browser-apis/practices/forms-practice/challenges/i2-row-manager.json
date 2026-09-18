@@ -1,0 +1,25 @@
+{
+  "id": "i2-row-manager",
+  "title": "Dynamic Row Manager",
+  "prompt": "Write `createRowManager()` that RETURNS an object managing rows (`{ id, label }`):\n\n- `add(label)` — appends a row with a unique **increasing** id starting at 1 and returns the id\n- `remove(id)` — removes that row; returns `true` if it existed, `false` otherwise\n- `list()` — returns the rows in insertion order\n- `move(id, toIndex)` — moves the row to `toIndex` in the list; returns `true` on success, `false` when the id is unknown or `toIndex` is out of range",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function createRowManager() {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "add assigns increasing unique ids",
+      "code": "const fn = new Function(code + \"\\nreturn { createRowManager };\");\nconst { createRowManager } = fn();\nconst m = createRowManager();\nconst a = m.add(\"first\");\nconst b = m.add(\"second\");\nif (a !== 1 || b !== 2) throw new Error(\"Ids must start at 1 and increase.\");\nif (m.list().length !== 2) throw new Error(\"Both rows should be listed.\");",
+      "hint": "Keep a nextId counter and a rows array in the closure."
+    },
+    {
+      "name": "remove reports existence",
+      "code": "const fn = new Function(code + \"\\nreturn { createRowManager };\");\nconst { createRowManager } = fn();\nconst m = createRowManager();\nconst id = m.add(\"x\");\nif (m.remove(id) !== true) throw new Error(\"Removing an existing row returns true.\");\nif (m.remove(id) !== false) throw new Error(\"Removing it again returns false.\");\nif (m.list().length !== 0) throw new Error(\"The row is gone.\");",
+      "hint": "findIndex, then splice when found."
+    },
+    {
+      "name": "move reorders or fails safely",
+      "code": "const fn = new Function(code + \"\\nreturn { createRowManager };\");\nconst { createRowManager } = fn();\nconst m = createRowManager();\nconst a = m.add(\"a\");\nconst b = m.add(\"b\");\nconst c = m.add(\"c\");\nif (m.move(c, 0) !== true) throw new Error(\"Moving c to index 0 succeeds.\");\nif (m.list().map((r) => r.id).join() !== [c, a, b].join()) throw new Error(\"Order should now be c, a, b.\");\nif (m.move(999, 0) !== false) throw new Error(\"Unknown id fails.\");\nif (m.move(a, 7) !== false) throw new Error(\"Out-of-range index fails.\");",
+      "hint": "Find the row's current index; splice it out; splice it back at the target."
+    }
+  ]
+}

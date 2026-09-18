@@ -1,0 +1,20 @@
+{
+  "id": "i2-vitals-grade",
+  "title": "Vitals Grader",
+  "prompt": "Write `grade(vitals)` — vitals is { lcp, inp, cls } in seconds/ms/score. Thresholds (good limits): LCP 2.5s, INP 200ms, CLS 0.1. Return \"good\" when all three meet the limits, \"needs-improvement\" when exactly one or two exceed, \"poor\" when all three exceed.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function grade(vitals) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "all good passes",
+      "code": "const fn = new Function(code + \"\\nreturn { grade };\");\nconst { grade } = fn();\nif (grade({ lcp: 2.0, inp: 150, cls: 0.05 }) !== \"good\") throw new Error(\"Everything within limits.\");\n",
+      "hint": "Count the failures, then map 0/1-2/3 to grades."
+    },
+    {
+      "name": "partial and full failures",
+      "code": "const fn = new Function(code + \"\\nreturn { grade };\");\nconst { grade } = fn();\nif (grade({ lcp: 3.0, inp: 150, cls: 0.05 }) !== \"needs-improvement\") throw new Error(\"One miss => needs-improvement.\");\nif (grade({ lcp: 3.0, inp: 250, cls: 0.05 }) !== \"needs-improvement\") throw new Error(\"Two misses still needs-improvement.\");\nif (grade({ lcp: 4.0, inp: 300, cls: 0.2 }) !== \"poor\") throw new Error(\"Three misses => poor.\");\n",
+      "hint": "Boundaries: lcp <= 2.5, inp <= 200, cls <= 0.1 are good."
+    }
+  ]
+}

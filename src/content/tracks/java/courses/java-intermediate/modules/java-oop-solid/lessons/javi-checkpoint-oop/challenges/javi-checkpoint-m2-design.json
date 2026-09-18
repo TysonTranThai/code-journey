@@ -1,0 +1,36 @@
+{
+  "id": "javi-checkpoint-m2-design",
+  "title": "Swappable Discount Policy",
+  "prompt": "Design a discount engine behind a contract:\n- `sealed interface Discount permits None, Percent, Flat` inside `Solution`\n- `record None()`, `record Percent(int pct)`, `record Flat(int cents)`\n- `static int apply(Discount d, int priceCents)` dispatching with a\n  pattern switch:\n  - None → price unchanged\n  - Percent(pct) → price - price*pct/100 (integer division)\n  - Flat(cents) → price - cents, but never below 0\n- `static Discount best(List<Discount> options, int priceCents)` returning\n  the policy that yields the LOWEST final price.\n\nFail fast: Percent outside 0..100 throws IllegalArgumentException.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Provide Discount hierarchy + apply + best here.\n}\n",
+  "tests": [
+    {
+      "name": "percent discount",
+      "code": "\ncheckEq(Solution.apply(new Solution.Percent(25), 400), 300, \"25% off 400\");\n",
+      "hint": "400 - 400*25/100 = 400 - 100 = 300."
+    },
+    {
+      "name": "flat discount floors at zero",
+      "code": "\ncheckEq(Solution.apply(new Solution.Flat(500), 300), 0, \"flat never negative\");\n",
+      "hint": "Max(0, price - cents)."
+    },
+    {
+      "name": "none leaves price",
+      "code": "\ncheckEq(Solution.apply(new Solution.None(), 777), 777, \"none passthrough\");\n",
+      "hint": "None returns price unchanged."
+    },
+    {
+      "name": "best picks the lowest",
+      "code": "\nList<Object> ds = List.of(new Solution.Percent(10), new Solution.Flat(50));\ncheckEq(Solution.apply(Solution.best((List) ds, 400), 400), 350, \"flat wins at 400\");\n",
+      "hint": "Evaluate each option at the price, return the discount with the minimal result."
+    },
+    {
+      "name": "percent bounds enforced",
+      "code": "\ntry { new Solution.Percent(150); checkTrue(false, \"must throw\"); }\ncatch (IllegalArgumentException e) { checkTrue(true, \"threw\"); }\n",
+      "hint": "Constructor validates 0..100, throwing IllegalArgumentException."
+    }
+  ],
+  "level": "real-world"
+}

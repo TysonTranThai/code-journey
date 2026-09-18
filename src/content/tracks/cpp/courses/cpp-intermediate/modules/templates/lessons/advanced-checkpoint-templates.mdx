@@ -1,0 +1,15 @@
+`Serializer` is the exam because it requires all three template forms in
+one small system:
+
+- the **primary** handles anything `std::to_string` accepts
+- the **full specialization** for `std::string` stops numbers-only
+  behavior from mangling text
+- the **partial specialization** for `std::vector<T>` recurses: element
+  serialization goes back through the chooser, so nested vectors compose
+
+The recursion is the concept being tested: `Serializer<vector<T>>::to`
+calls `Serializer<T>::to` without knowing what T is. That single line is
+how the whole standard library composes.
+
+Watch the exact output format: `[1,2,3]` — no spaces, brackets included.
+Off-by-one separators are the classic specialization bug.

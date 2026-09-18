@@ -1,0 +1,19 @@
+Mỗi lần gọi phương thức đẩy một **frame** (locals + operand stack + địa chỉ
+trả về). Hai hậu quả bạn *kiểm chứng được*:
+
+**Độ sâu có hạn.** Đệ quy vô hạn ném `StackOverflowError` — và nó chỉ là một
+`Error` bạn có thể catch (dù gần như không bao giờ nên làm vậy):
+
+```java
+static int forever(int n) { return forever(n + 1); }
+try { forever(0); }
+catch (StackOverflowError e) { /* chạm giới hạn độ sâu */ }
+```
+
+**Frame được unwound chính xác.** Khi exception đi qua nhiều frame, mỗi
+`finally`/catch chạy từ trong ra ngoài. Kết hợp với mô hình operand trên
+stack, đây là lý do JVM luôn in được stack trace chính xác tại mọi thời điểm.
+
+Đệ quy sâu trong code production là mùi thiết kế — hãy dùng vòng lặp hoặc
+stack tường minh — nhưng dev chuyên nghiệp phải nhận ra *chữ ký* của từng kiểu
+lỗi: SOE = độ sâu, OOM = tập sống, Metaspace OOM = sinh lớp quá nhiều.

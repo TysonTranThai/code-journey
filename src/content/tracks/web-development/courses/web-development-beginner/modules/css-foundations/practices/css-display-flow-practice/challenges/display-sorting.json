@@ -1,0 +1,25 @@
+{
+  "id": "display-sorting",
+  "title": "Prediction: Block or Inline?",
+  "prompt": "Predict, then prove. The boilerplate has three elements and empty predictions in CSS comments. Replace each prediction comment with the property that makes the statement true:\n\n1. Make the `.badge` keep its padding AND width while flowing beside the text → set `display` on `.badge`.\n2. Make the span-sized `.spacer` disappear entirely → set `display` on `.spacer`.\n3. Keep `.para` as a block — but prove it by setting `display` explicitly on `.para`.",
+  "difficulty": "beginner",
+  "boilerplate": "<style>\n  .badge {\n    /* display value here */\n    padding: 2px 8px;\n    width: 80px;\n  }\n\n  .spacer {\n    /* display value here */\n  }\n\n  .para {\n    /* display value here */\n  }\n</style>\n\n<p>Score: <span class=\"badge\">99 points</span> and counting.</p>\n<p class=\"para\">Blocks claim their own line.</p>\n",
+  "tests": [
+    {
+      "name": "badge is inline-block",
+      "code": "const badge = code.match(/\\.badge\\s*{([^}]*)}/i);\nif (!badge || !/display\\s*:\\s*inline-block\\s*;/i.test(badge[1])) {\n  throw new Error(\"Set display: inline-block; on .badge — flows like text, sizes like a box.\");\n}",
+      "hint": "inline keeps width ignored; block breaks the line — the hybrid is inline-block."
+    },
+    {
+      "name": "spacer is none",
+      "code": "const spacer = code.match(/\\.spacer\\s*{([^}]*)}/i);\nif (!spacer || !/display\\s*:\\s*none\\s*;/i.test(spacer[1])) {\n  throw new Error(\"Set display: none; on .spacer — fully removed from rendering.\");\n}",
+      "hint": "display: none removes the box entirely — no space, not rendered."
+    },
+    {
+      "name": "para is explicitly block",
+      "code": "const para = code.match(/\\.para\\s*{([^}]*)}/i);\nif (!para || !/display\\s*:\\s*block\\s*;/i.test(para[1])) {\n  throw new Error(\"Set display: block; on .para explicitly.\");\n}",
+      "hint": "Paragraphs are block by default — here you state it to prove the concept."
+    }
+  ],
+  "level": "guided"
+}

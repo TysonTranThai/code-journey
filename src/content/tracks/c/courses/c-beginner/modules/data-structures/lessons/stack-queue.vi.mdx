@@ -1,0 +1,43 @@
+## Ngăn xếp: LIFO
+
+Push và pop tại MỘT đầu. Lần push gần nhất sẽ được pop tiếp theo — như một
+xếp đĩa.
+
+```c
+/* ngăn xếp dựng trên mảng */
+static int st[16];
+static int top = 0;               // số phần tử
+
+int stack_push(int v) {
+    if (top == 16) return 0;      // tràn
+    st[top++] = v;
+    return 1;
+}
+int stack_pop(int *out) {
+    if (top == 0) return 0;       // hụt
+    *out = st[--top];
+    return 1;
+}
+```
+
+Ngăn xếp nuôi lệnh undo, việc tính biểu thức, và chính các lời gọi hàm —
+"call stack" theo đúng nghĩa là cái này.
+
+## Hàng đợi: FIFO
+
+Push ở đuôi, pop ở đầu — một hàng chờ. Với mảng, bạn hoặc dời toàn bộ (pop
+O(n)) hoặc dùng ring buffer: hai chỉ số `head` và `tail` quay vòng bằng
+`% cap`.
+
+```c
+tail = (tail + 1) % cap;    // quay lại ô đầu sau ô cuối
+```
+
+Module FIFO ở module 18 chính là cái này; xem lại sau bài học này.
+
+## Chọn giữa chúng
+
+Hãy hỏi: các phần tử RỜI KHỎI theo thứ tự nào?
+- mới nhất trước → ngăn xếp
+- cũ nhất trước → hàng đợi
+- theo độ ưu tiên → heap (ngoài phạm vi khóa này)

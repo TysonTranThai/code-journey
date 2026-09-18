@@ -1,0 +1,34 @@
+## Đọc ràng buộc trước khi đánh dấu
+
+Kích thước mảng đánh dấu là **miền giá trị**, không phải n:
+
+- Giá trị 0..10^6 → `vector<int> freq(1000001)` ≈ 4 MB. Ổn (512 MB).
+- Giá trị 0..10^9 → mảng 10^9 int ≈ 4 GB. **Bất khả thi.**
+- Giá trị tới 10^18 → không thể thành mảng.
+
+**Quy tắc:** miền giá trị, chứ không phải số phần tử, quyết định mảng
+đánh dấu có dùng được không.
+
+### Khi giá trị quá lớn — sắp xếp hoặc map
+
+| Giá trị | Cấu trúc |
+| --- | --- |
+| miền nhỏ | mảng đánh dấu / tần suất |
+| miền lớn, cần đếm | `sort` + chạy đoạn, hoặc `map<long long,int>` |
+| chỉ cần hiện diện, miền lớn | `set<long long>` (module STL) |
+
+```cpp
+map<long long, int> freq;       // dùng được cho mọi miền giá trị
+++freq[x];                      // O(log n) mỗi phép, bộ nhớ O(số phân biệt)
+```
+
+### Phép tính bộ nhớ — thói quen thi đấu
+
+`10^6` int = 4 MB. `10^7` int = 40 MB. `10^8` int = 400 MB — sát trần
+512 MB. Nhân phép này trên giấy nháp *trước* khi code.
+
+### Đánh dấu bool hay int?
+
+`vector<bool>` đóng gói bit — đủ cho hiện diện. Cần đếm thì dùng
+`vector<int>` (hoặc `long long` nếu số đếm có thể vượt 2^31 — đọc giới
+hạn).

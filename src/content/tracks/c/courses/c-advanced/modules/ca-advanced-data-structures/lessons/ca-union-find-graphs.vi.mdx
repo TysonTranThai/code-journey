@@ -1,0 +1,17 @@
+## Tập hợp rời nhau trong hai mảng
+
+Union-find theo dõi *mỗi phần tử thuộc tập nào*, qua mảng cha:
+
+- **find(x)**: đi theo cha tới gốc.
+- **union(a, b)**: gắn một gốc dưới gốc kia.
+
+Hai tối ưu biến chuỗi xấu nhất thành gần hằng số:
+
+- **path compression**: sau find, trỏ mọi node đã đi qua thẳng về gốc;
+- **union by rank/size**: gắn cây nhỏ dưới cây lớn.
+
+Có cả hai, chi phí khấu trừ mỗi phép toán gần như hằng số — giới hạn inverse-Ackermann nổi tiếng. Cấu trúc này chạy Kruskal MST và truy vấn liên thông trong cả code thi đấu lẫn production.
+
+## Danh sách kề từ mảng cạnh
+
+Đếm sắp xếp các cạnh theo nguồn vào mảng offset (bố cục CSR): `offset[v]` cho biết láng giềng của v bắt đầu ở đâu. Bộ nhớ: đúng V + E phần tử. Đây là bố cục của code GPU và graph engine vì nó gọn và vòng lặp chỉ là đi mảng.

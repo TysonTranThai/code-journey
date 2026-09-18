@@ -1,0 +1,28 @@
+A DI container is three recursive rules:
+
+1. **Resolve(type)**: find the constructor, resolve each parameter type, then
+   instantiate.
+2. **Memoize**: one instance per type (singleton scope) — otherwise every
+   resolution builds a fresh object graph.
+3. **Detect cycles**: resolving A needs B needs A — without an "in progress"
+   set, recursion never terminates (you get a `StackOverflowError` in
+   production, at 3 a.m.).
+
+```java
+public <T> T resolve(Class<T> type) {
+    if (cache.containsKey(type)) return type.cast(cache.get(type));
+    if (!inProgress.add(type)) throw new IllegalStateException("circular dependency: " + type);
+    Constructor<?> ctor = type.getDeclaredConstructors()[0];
+    Object[] args = Arrays.stream(ctor.getParameterTypes())
+                          .map(this::resolve).toArray();
+    T instance = type.cast(ctor.newInstance(args));
+    inProgress.remove(type);
+    cache.put(type, instance);
+    return instance;
+}
+```
+
+Forty lines, zero dependencies — and now Spring's `@Autowired` is a
+*consumer* of ideas you own. Constructor injection keeps the graph honest:
+dependencies are visible in the signature, final by default, and impossible
+to construct half-baked.

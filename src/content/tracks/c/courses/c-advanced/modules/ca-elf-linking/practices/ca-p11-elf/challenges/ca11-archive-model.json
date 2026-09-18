@@ -1,0 +1,21 @@
+{
+  "id": "ca11-archive-model",
+  "title": "Model Archive Resolution",
+  "prompt": "Implement the linker's archive scan as a function:\\n \\n```c\\ntypedef struct { int defines[8]; size_t ndefs; } member_t;\\nint member_pulls(const member_t *m, const int *pending, size_t npending);\\n```\\n \\nReturn 1 iff any of the member's defined symbols appears in the pending list — the pull-in rule from module 10, now executable against arbitrary tables.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "resolving member is pulled",
+      "code": "member_t m = {{0}};\nint d[2] = {30, 31};\nm.ndefs = 2;\nm.defines[0] = 30;\nm.defines[1] = 31;\nint pend[2] = {31, 44};\nCHECK_EQ(member_pulls(&m, pend, 2), 1);",
+      "hint": "The member defines 31, which is pending: pull it in."
+    },
+    {
+      "name": "useless member stays",
+      "code": "member_t m2 = {{0}};\nint d2[1] = {90};\nm2.ndefs = 1;\nm2.defines[0] = 90;\nint pend2[1] = {31};\nCHECK_EQ(member_pulls(&m2, pend2, 1), 0);",
+      "hint": "No overlap: the member is never copied into the binary."
+    }
+  ],
+  "level": "combination"
+}

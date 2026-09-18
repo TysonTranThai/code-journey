@@ -1,0 +1,34 @@
+## Read the constraint before you mark
+
+The marking array's size is the **value range**, not n:
+
+- Values 0..10^6 → `vector<int> freq(1000001)` ≈ 4 MB. Fine (512 MB).
+- Values 0..10^9 → an array of 10^9 ints ≈ 4 GB. **Impossible.**
+- Values up to 10^18 → hopeless as an array.
+
+**The rule:** the value range, not the element count, decides whether a
+marking array is possible.
+
+### When values are too large — sort or map
+
+| Values | Structure |
+| --- | --- |
+| small range | marking / frequency array |
+| big range, need counts | `sort` + runs, or `map<long long,int>` |
+| need presence only, big range | `set<long long>` (module STL) |
+
+```cpp
+map<long long, int> freq;       // works for any value range
+++freq[x];                      // O(log n) per op, but memory O(distinct)
+```
+
+### Memory arithmetic — a contest habit
+
+`10^6` ints = 4 MB. `10^7` ints = 40 MB. `10^8` ints = 400 MB — at the
+512 MB ceiling. Do this multiplication on scratch paper *before* coding.
+
+### Two-value marking: bool vs int
+
+`vector<bool>` packs bits (1 byte per bit in practice) — fine for presence.
+For counts you need `vector<int>` (or `int` if counts can exceed 2^31 —
+read the constraint).

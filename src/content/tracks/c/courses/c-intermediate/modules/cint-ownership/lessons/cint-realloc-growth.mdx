@@ -1,0 +1,77 @@
+## The trap `realloc` sets
+
+`realloc(p, new_size)` may: extend in place, move the block (copying contents,
+freeing the old), or fail — **returning NULL and leaving the original block
+valid**. That last case is the trap:
+
+```c
+p = realloc(p, n * 2);      /* BUG: on failure the old block leaks —
+                               p no longer points at it */
+```
+
+The safe idiom keeps the old pointer until success is confirmed:
+
+```c
+void *tmp = realloc(p, n * 2);
+if (!tmp) {
+    /* p is still valid: recover, retry with smaller growth, or fail cleanly */
+    return 0;
+}
+p = tmp;
+```
+
+## The standard growth loop
+
+```c
+typedef struct {
+    int *data;
+    size_t len, cap;
+} Vec;
+
+int vec_push(Vec *v, int value) {
+    if (v->len == v->cap) {
+        size_t ncap = v->cap ? v->cap * 2 : 8;      /* amortized doubling */
+        if (ncap < v->cap) return 0;                 /* overflow guard */
+        int *nd = realloc(v->data, ncap * sizeof *nd);
+        if (!nd) return 0;
+        v->data = nd;
+        v->cap = ncap;
+    }
+    v->data[v->len++] = value;
+    return 1;
+}
+```
+
+**Amortized doubling** is why dynamic arrays are "O(1) push": most pushes
+write one slot; every doubling copies, but copies become geometrically rarer.
+Total copy work across n pushes is O(n).
+
+## Shrinking and emptying
+
+```c
+/* shrink: realloc to a smaller size cannot fail in practice, but the
+   idiom does not hurt */
+void *tmp = realloc(v->data, v->len * sizeof *v->data);
+if (tmp) v->data = tmp;
+v->cap = v->len;
+
+/* the capacity invariant: len <= cap, always */
+```
+
+`free` a NULL member is fine (`free(v->data)` when data == NULL is a no-op),
+so a "destroy" function needs no special empty case:
+
+```c
+void vec_destroy(Vec *v) {
+    free(v->data);      /* free(NULL) is fine */
+    v->data = NULL;
+    v->len = v->cap = 0;
+}
+```
+
+## Check your understanding
+
+- Why does the naive `p = realloc(p, n)` leak? (On failure, the old block's
+  only pointer is overwritten.)
+- Why double rather than grow by a fixed 10? (Fixed growth makes n pushes
+  O(n²) copies; doubling is O(n).)

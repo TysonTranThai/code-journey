@@ -1,0 +1,14 @@
+{
+  "title": "Vượt chướng ngại Hashable",
+  "prompt": "Cài `Hashable` (std::hash chạy trên **const** T, kết quả chuyển được sang std::size_t), `hashOf` có ràng buộc trả về hash thật, và fallback trả về 0.",
+  "tests": [
+    {
+      "name": "kiểu hashable hash được",
+      "hint": "template <class T> concept Hashable = requires(const T& t) { { std::hash<T>{}(t) } -> std::convertible_to<std::size_t>; };"
+    },
+    {
+      "name": "kiểu không hash được về 0",
+      "hint": "Overload không ràng buộc trả về 0 — std::hash<NoHash> không tồn tại nên concept từ chối nó."
+    }
+  ]
+}

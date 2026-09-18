@@ -1,0 +1,31 @@
+{
+  "id": "cb5-eligibility",
+  "title": "Eligibility Rules",
+  "prompt": "Implement `int can_rent_car(int age, int license_years)`: eligible when age >= 21 AND license_years >= 1; a driver under 21 is never eligible, no matter the years. Return 1/0.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "young no license",
+      "code": "CHECK_EQ(can_rent_car(22, 0), 0);",
+      "hint": "Under 25 needs at least 1 license year."
+    },
+    {
+      "name": "young with license",
+      "code": "CHECK_EQ(can_rent_car(22, 1), 1);\nCHECK_EQ(can_rent_car(22, 2), 1);",
+      "hint": "age >= 21 && license_years >= 1 — one year is enough."
+    },
+    {
+      "name": "too young entirely",
+      "code": "CHECK_EQ(can_rent_car(19, 5), 0);",
+      "hint": "age < 21 is never eligible."
+    },
+    {
+      "name": "senior shortcut",
+      "code": "CHECK_EQ(can_rent_car(25, 1), 1);\nCHECK_EQ(can_rent_car(30, 1), 1);",
+      "hint": "25+ with >= 1 year is eligible."
+    }
+  ],
+  "level": "independent"
+}

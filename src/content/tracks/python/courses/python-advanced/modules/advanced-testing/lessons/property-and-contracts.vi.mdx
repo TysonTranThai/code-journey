@@ -1,0 +1,46 @@
+## Test ví dụ ghim; property test khái quát hóa
+
+Test ví dụ nói: `sort([3,1,2]) == [1,2,3]`. Một property nói: *với mọi list*,
+sắp xếp trả cùng một multiset, theo thứ tự không giảm. Property là nơi bug
+thật sự sống, vì con người viết ví dụ cho các trường hợp họ tưởng tượng được
+và bug sống ở những trường hợp họ không.
+
+Các property kinh điển đáng thuộc lòng:
+
+- **Khứ hồi**: `decode(encode(x)) == x` (serialize/deserialize, escape/unescape).
+- **Bảo toàn bất biến**: kết quả đã sắp / cân bằng / trong khoảng.
+- **Oracle**: so với một bản cài chậm nhưng hiển nhiên đúng.
+- **Idempotence**: `f(f(x)) == f(x)` (bộ chuẩn hóa, khử trùng lặp).
+- **Quan hệ metamorphic**: cùng truy vấn theo thứ tự khác trả cùng tập; thêm
+  một phần tử thì tổng tăng đúng một.
+
+## Framework property-based hoạt động thế nào
+
+Dòng chảy kiểu Hypothesis, bốn động từ:
+
+1. **Sinh** — rút đầu vào từ một strategy (int, chuỗi, list của chính strategy
+   của bạn, và các strategy bạn kết hợp).
+2. **Thu nhỏ** — khi thất bại, tự động giảm về đầu vào thất bại *tối tiểu*
+   (list rỗng, chuỗi xấu duy nhất). Ví dụ đã thu nhỏ chính là báo cáo bug.
+3. **Phát lại** — các thất bại được cache và chạy lại trước các ca mới, để
+   bug đã sửa không tái xuất.
+4. **Khử ngẫu nhiên** — một seed xác định một lượt chạy; CI phát lại chính xác.
+
+Property test bổ sung chứ không thay thế kim tự tháp: đây là kỹ thuật cấp unit
+với tầm tìm kiếm sâu hơn nhiều.
+
+## Hợp đồng tại các ranh giới
+
+Design-by-contract biến property thành thứ *thực thi được*: tiền điều kiện (điều
+gì phải đúng khi vào), hậu điều kiện (caller nhận được gì), bất biến (điều gì
+không bao giờ đổi). Trong Python, `assert` tài liệu hóa và thực thi rẻ (bật
+trong test, chỉ bật trong đường nóng của production nếu đã đo). Mánh đáng tiền:
+**tái sử dụng hợp đồng làm property** — hậu điều kiện bạn viết một lần trở
+thành oracle của bài property test.
+
+## Kiểu dữ liệu là bài test chạy miễn phí
+
+Type hint loại bỏ cả một lớp thất bại property (sai hình dạng, sai tính
+None-ness) trước khi bất kỳ đầu vào nào được rút ra. `mypy --strict` trong CI
+cộng property test cho hành vi là mặc định hiện đại: kiểu cho cấu trúc,
+property cho logic, ví dụ cho hồi quy.

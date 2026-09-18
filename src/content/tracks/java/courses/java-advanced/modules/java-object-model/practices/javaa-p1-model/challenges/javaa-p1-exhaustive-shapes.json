@@ -1,0 +1,26 @@
+{
+  "id": "javaa-p1-exhaustive-shapes",
+  "title": "Sealed hierarchy with exhaustive dispatch",
+  "prompt": "Given `sealed interface Shape permits Circle, Rect`, implement:\n1. `record Circle(double r) implements Shape` and `record Rect(double w, double h) implements Shape`\n2. `static double area(Shape s)` using a pattern switch with NO default clause\n3. `record Box(Shape shape)` — a record *containing* a sealed type\nThe switch must stay exhaustive: the compiler must guarantee that adding a new Shape variant breaks compilation until `area` handles it.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "areas compute",
+      "code": "\ncheckNear(Solution.area(new Solution.Circle(2.0)), Math.PI * 4, 1e-9, \"circle area\");\ncheckNear(Solution.area(new Solution.Rect(3.0, 4.0)), 12.0, 1e-9, \"rect area\");\n",
+      "hint": "Use Math.PI * r * r and w * h."
+    },
+    {
+      "name": "nested record holds shapes",
+      "code": "\nSolution.Box b = new Solution.Box(new Solution.Circle(1.0));\ncheckTrue(b.shape() instanceof Solution.Circle, \"box wraps a Circle\");\n",
+      "hint": "A record component can itself be a sealed type."
+    },
+    {
+      "name": "scale invariance",
+      "code": "\ncheckNear(Solution.area(new Solution.Rect(2.0, 8.0)), Solution.area(new Solution.Rect(8.0, 2.0)), 1e-9,\n    \"area is orientation-independent\");\n",
+      "hint": "w*h == h*w."
+    }
+  ],
+  "level": "independent"
+}

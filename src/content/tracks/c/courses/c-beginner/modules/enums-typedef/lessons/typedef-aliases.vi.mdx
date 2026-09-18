@@ -1,0 +1,38 @@
+## Dạng cơ bản
+
+```c
+typedef unsigned long ulong;    // 'ulong' giờ là tên của unsigned long
+typedef int Score;              // Score là int, nhưng có ý đồ
+```
+
+`typedef` không tạo kiểu mới — nó tạo TÊN MỚI cho kiểu có sẵn. `Score` và
+`int` thay thế cho nhau được.
+
+## Kinh điển: typedef struct
+
+```c
+typedef struct {
+    int x;
+    int y;
+} Point;                 // giờ là 'Point', không phải 'struct Point'
+
+Point p = {1, 2};        // không cần từ khóa struct
+```
+
+Hoặc đặt tên cho struct có tag để nó tự tham chiếu:
+
+```c
+typedef struct Node Node;
+struct Node {
+    int value;
+    Node *next;          // tự tham chiếu cần tag
+};
+```
+
+Bạn sẽ dựng Node này ở module 20.
+
+## Khi nào nên tạo bí danh
+
+- che `unsigned long long` đằng sau `u64`
+- `typedef struct {...} Config;` — thành ngữ C phổ biến nhất
+- đặt tên cho vai trò ngữ nghĩa: `typedef int UserId;`

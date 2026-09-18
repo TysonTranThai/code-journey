@@ -1,0 +1,25 @@
+{
+  "id": "practice-default-parameter",
+  "title": "A Sensible Default",
+  "prompt": "Write `function greet(name, greeting = \"Hello\")` that returns `${greeting}, ${name}!`. `greet(\"Ada\")` returns `Hello, Ada!`; `greet(\"Ada\", \"Bonjour\")` returns `Bonjour, Ada!`.\n\nRules:\n- The second parameter has a default value — no if-check.",
+  "difficulty": "beginner",
+  "level": "guided",
+  "boilerplate": "function greet(name, greeting) {\n  // use a default parameter\n}\nconsole.log(greet(\"Ada\"));\nconsole.log(greet(\"Ada\", \"Bonjour\"));\n",
+  "tests": [
+    {
+      "name": "default kicks in",
+      "code": "const fn = new Function(code + \"\\nreturn greet;\");\nif (fn()(\"Ada\") !== \"Hello, Ada!\") throw new Error(\"greet('Ada') should be 'Hello, Ada!'.\");",
+      "hint": "function greet(name, greeting = \"Hello\") — the default fills in when the argument is missing."
+    },
+    {
+      "name": "override works",
+      "code": "const fn = new Function(code + \"\\nreturn greet;\");\nif (fn()(\"Ada\", \"Bonjour\") !== \"Bonjour, Ada!\") throw new Error(\"greet('Ada', 'Bonjour') should be 'Bonjour, Ada!'.\");",
+      "hint": "A passed argument replaces the default."
+    },
+    {
+      "name": "default in the signature, not an if",
+      "code": "const sig = code.match(/function\\s+greet\\s*\\(([^)]*)\\)/)[1];\nif (!/=/i.test(sig)) throw new Error(\"Put the default in the parameter list: greeting = \\\"Hello\\\".\");\nif (/if\\s*\\([^)]*greeting/i.test(code)) throw new Error(\"No if needed — the default parameter handles it.\");",
+      "hint": "The = goes right in the signature. No branching required."
+    }
+  ]
+}

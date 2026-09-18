@@ -1,0 +1,48 @@
+## Descriptors: the machinery behind properties, methods, and ORM fields
+
+A **descriptor** is any object whose class defines `__get__` (and optionally
+`__set__`/`__delete__`). Python calls it automatically during attribute access
+on *instances* of the class that holds it.
+
+- **Data descriptor** = defines `__set__` or `__delete__` (takes priority over
+  `obj.__dict__`). Think `property`, validation fields.
+- **Non-data descriptor** = only `__get__` (loses to `obj.__dict__`). Think
+  methods, `cached_property`.
+
+```python
+class Positive:
+    def __set_name__(self, owner, name):
+        self.name = "_" + name          # runs ONCE at class creation
+
+    def __get__(self, obj, objtype=None):
+        if obj is None:                 # accessed on the class itself
+            return self
+        return getattr(obj, self.name)
+
+    def __set__(self, obj, value):
+        if value <= 0:
+            raise ValueError(f"{self.name[1:]} must be positive")
+        setattr(obj, self.name, value)
+
+class Order:
+    qty = Positive()
+    price = Positive()
+
+    def __init__(self, qty, price):
+        self.qty = qty                  # goes through Positive.__set__
+        self.price = price
+```
+
+`Order(0, 5)` raises immediately. One descriptor, reused across every field —
+this is exactly how SQLAlchemy columns, pydantic fields, and Django's
+`IntegerField` work (their real versions add metaclass bookkeeping, but the
+attribute magic is the descriptor protocol).
+
+Key details professionals rely on:
+
+- `__set_name__` receives the owning class and attribute name at class-body
+  time — no metaclass needed for most field machinery.
+- Returning `self` when `obj is None` makes `Order.qty` on the *class* return
+  the descriptor — useful for ORMs building queries.
+- Store per-instance state under a mangled name (`_qty`) so the descriptor
+  keeps control of the public name.

@@ -1,0 +1,8 @@
+**Câu hỏi thi:** hai worker cập nhật cùng một dòng tồn kho cùng lúc. Cả hai đọc
+`stock = 1`. Cả hai trừ đi. Khách hàng mua bao nhiêu cái? Một — nếu bạn xây
+đúng phần ghi.
+
+Thử thách checkpoint kết hợp optimistic concurrency và quy tắc unit-of-work:
+áp một loạt phép trừ lên một bảng mô phỏng, nơi các writer đồng thời (mô phỏng
+`conflict_on_attempt` từ bài tập) tranh chấp với bạn, và mỗi đơn vị công việc
+phải hoặc thành công trọn vẹn hoặc retry sạch sẽ.

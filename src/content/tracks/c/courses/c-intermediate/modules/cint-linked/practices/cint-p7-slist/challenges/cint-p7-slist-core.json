@@ -1,0 +1,20 @@
+{
+  "id": "cint-p7-slist-core",
+  "title": "List Surgery",
+  "prompt": "Implement the singly list core. The boilerplate declares:\n\n```c\ntypedef struct SNode { int value; struct SNode *next; } SNode;\n/* all take/return the caller's head pointer by address */\nint  s_push(SNode **head, int v);              /* 0 ok, -1 oom */\nint  s_pop(SNode **head, int *out);            /* 0 ok, -1 empty */\nint  s_remove(SNode **head, int v);            /* 1 removed, 0 absent */\nsize_t s_len(const SNode *head);\nint  s_sum(const SNode *head);\nvoid s_clear(SNode **head);                    /* frees all, head becomes NULL */\n/* insert keeping ascending order; 0 ok, -1 oom */\nint  s_insert_sorted(SNode **head, int v);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\ntypedef struct SNode { int value; struct SNode *next; } SNode;\nint  s_push(SNode **head, int v);\nint  s_pop(SNode **head, int *out);\nint  s_remove(SNode **head, int v);\nsize_t s_len(const SNode *head);\nint  s_sum(const SNode *head);\nvoid s_clear(SNode **head);\nint  s_insert_sorted(SNode **head, int v);\n",
+  "tests": [
+    {
+      "name": "push/pop/remove/clear",
+      "code": "\nSNode *head = NULL;\nint v;\nCHECK_EQ(s_len(head), 0);\nCHECK_EQ(s_pop(&head, &v), -1);              /* empty */\nCHECK_EQ(s_push(&head, 3), 0);\nCHECK_EQ(s_push(&head, 1), 0);\nCHECK_EQ(s_push(&head, 2), 0);               /* list: 2 1 3 */\nCHECK_EQ(s_len(head), 3);\nCHECK_EQ(s_sum(head), 6);\nCHECK_EQ(s_pop(&head, &v), 0); CHECK_EQ(v, 2);\nCHECK_EQ(s_remove(&head, 3), 1);\nCHECK_EQ(s_remove(&head, 3), 0);             /* already gone */\nCHECK_EQ(s_remove(&head, 1), 1);             /* removes last node */\nCHECK_EQ(s_len(head), 0);\nCHECK_EQ(s_push(&head, 9), 0);               /* reusable after drain */\nCHECK_EQ(s_sum(head), 9);\ns_clear(&head);\nCHECK(head == NULL);\n",
+      "hint": "pop: save next, free, update head. remove: the **link walk avoids special cases."
+    },
+    {
+      "name": "sorted insert",
+      "code": "\nSNode *head = NULL;\nint vals[] = {5, 1, 3, 9, 7};\nfor (int i = 0; i < 5; i++) CHECK_EQ(s_insert_sorted(&head, vals[i]), 0);\n/* expect: 1 3 5 7 9 */\nconst SNode *p = head;\nCHECK(p && p->value == 1);\nCHECK(p->next && p->next->value == 3);\nCHECK(p->next->next && p->next->next->value == 5);\nCHECK(p->next->next->next && p->next->next->next->value == 7);\nCHECK(p->next->next->next->next && p->next->next->next->next->value == 9);\nCHECK_EQ(s_len(head), 5);\ns_clear(&head);\n",
+      "hint": "Walk until the first node with value > v; insert before it. Empty list inserts at head."
+    }
+  ]
+}

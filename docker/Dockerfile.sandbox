@@ -11,6 +11,50 @@ FROM node:22.17.0-alpine3.22
 # Non-root user (matches the runner's uid/gid mapping).
 RUN addgroup -S sandbox && adduser -S sandbox -G sandbox
 
+# Python execution support (Python — Beginner track): pinned Alpine python3
+# with no extras — the image stays minimal and offline. Rebuild via
+# `pnpm sandbox:build` after changing this file.
+RUN apk add --no-cache python3=3.12.14-r0
+
+# C++ execution support (C++ — Beginner track): pinned Alpine g++ (GCC).
+# Compiler + standard library only — the image stays minimal and offline.
+RUN apk add --no-cache g++=14.2.0-r6
+
+# Java execution support (Java — Beginner track): pinned Alpine OpenJDK 21
+# (LTS). Challenges compile with --release 21 so the QA harness (host JDK 25)
+# and the sandbox (JDK 21) enforce identical language semantics. Rebuild via
+# `pnpm sandbox:build` after changing this file.
+RUN apk add --no-cache openjdk21-jdk=21.0.11_p10-r0
+
+# .NET needs ICU for faithful globalization (string casing/culture behavior
+# that C# courses teach). Pinned Alpine icu-libs; without it the runtime
+# FailFasts (or must run invariant, which would NOT match real-world .NET).
+RUN apk add --no-cache icu-libs=76.1-r1
+
+# C# execution support (C# — Beginner track): pinned Microsoft .NET SDK,
+# linux-musl binaries from the official builds.dotnet.microsoft.com release
+# metadata (Alpine ships no dotnet package, so the SDK is vendored the same
+# way the JDK above is). URL + SHA512 pinned to the channel's published
+# manifest, per-TARGETARCH (x64 for amd hosts, arm64 for Apple Silicon). The
+# SDK is self-contained on musl — no extra apk packages required. Extracted
+# to /usr/share/dotnet with a PATH shim. Rebuild via `pnpm sandbox:build`.
+ARG TARGETARCH
+ADD https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.401/dotnet-sdk-10.0.401-linux-musl-x64.tar.gz /tmp/dotnet-sdk-x64.tar.gz
+RUN set -eu; \
+    case "$TARGETARCH" in \
+      amd64) \
+        echo "7f51b39f92066b6955fdf63764c799bfa6f7d63683893af8972706cbd8bcff5db95b784c06f0bd4a4cd439e22d17c75fd8f51da99246c46a316b3e9cc081c7a1  /tmp/dotnet-sdk-x64.tar.gz" | sha512sum -c -; \
+        mv /tmp/dotnet-sdk-x64.tar.gz /tmp/dotnet-sdk.tar.gz ;; \
+      arm64) \
+        wget -q -O /tmp/dotnet-sdk.tar.gz https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.401/dotnet-sdk-10.0.401-linux-musl-arm64.tar.gz; \
+        echo "01ea3f0b673ef1745140754f91a500ecfd37f2342d778995ff4c7df9c9d415211c724c0d02ed73da3bcf858e9074fbadbf6f07f0067b58072bca1cabb31aa88b  /tmp/dotnet-sdk.tar.gz" | sha512sum -c - ;; \
+      *) echo "unsupported arch: $TARGETARCH" >&2; exit 1 ;; \
+    esac; \
+    mkdir -p /usr/share/dotnet; \
+    tar -xzf /tmp/dotnet-sdk.tar.gz -C /usr/share/dotnet; \
+    rm /tmp/dotnet-sdk.tar.gz; \
+    ln -s /usr/share/dotnet/dotnet /usr/local/bin/dotnet
+
 # No npm updates, no cache, nothing else — the image stays minimal.
 ENV NODE_ENV=production \
     npm_config_update_notifier=false \

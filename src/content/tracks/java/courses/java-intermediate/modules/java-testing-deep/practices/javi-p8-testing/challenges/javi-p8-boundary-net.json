@@ -1,0 +1,26 @@
+{
+  "id": "javi-p8-boundary-net",
+  "title": "Build the Boundary Net",
+  "prompt": "`static int clamp(int v, int lo, int hi)` needs a real test net.\nImplement clamp, then write the net via `static List<String> selfCheck()`\nreturning one line per property it satisfies, in this exact order:\n- `\"low\"` — clamp(5, 10, 20) == 10\n- `\"high\"` — clamp(25, 10, 20) == 20\n- `\"in-range\"` — clamp(15, 10, 20) == 15\n- `\"identity-at-bounds\"` — clamp(10, 10, 20) == 10 && clamp(20, 10, 20) == 20\n\nThe grader verifies both the implementation AND that the net exists —\ntests are deliverables here.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "clamp behavior",
+      "code": "\ncheckEq(Solution.clamp(5, 10, 20), 10, \"below lo\");\ncheckEq(Solution.clamp(25, 10, 20), 20, \"above hi\");\ncheckEq(Solution.clamp(15, 10, 20), 15, \"in range\");\n",
+      "hint": "Math.max(lo, Math.min(v, hi))."
+    },
+    {
+      "name": "bounds are inclusive",
+      "code": "\ncheckEq(Solution.clamp(10, 10, 20), 10, \"lo inclusive\");\ncheckEq(Solution.clamp(20, 10, 20), 20, \"hi inclusive\");\n",
+      "hint": "Both endpoints pass through unchanged."
+    },
+    {
+      "name": "selfCheck reports the net",
+      "code": "\nList<String> net = Solution.selfCheck();\ncheckEq(net, List.of(\"low\", \"high\", \"in-range\", \"identity-at-bounds\"), \"net present\");\n",
+      "hint": "One label per boundary property, in order."
+    }
+  ],
+  "level": "independent"
+}

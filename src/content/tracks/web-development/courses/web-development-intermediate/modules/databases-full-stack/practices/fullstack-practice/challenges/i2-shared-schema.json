@@ -1,0 +1,20 @@
+{
+  "id": "i2-shared-schema",
+  "title": "Shared Contract",
+  "prompt": "Write `makeContract()` returning `{ validateTask, toApiShape }`: validateTask(body) returns { ok: true, value } when title is a non-empty string <= 200 and done is a boolean (missing done defaults false), else { ok: false, issues: [{field, message}] }; toApiShape(task) maps the internal { id, title, done, ownerId } to the public shape { id, title, done, author: ownerId } — ownerId never leaves the server under its real name.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function makeContract() {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "validation both ways",
+      "code": "const fn = new Function(code + \"\\nreturn { makeContract };\");\nconst { makeContract } = fn();\nconst c = makeContract();\nconst good = c.validateTask({ title: \"Ship\" });\nif (!good.ok || good.value.done !== false) throw new Error(\"done defaults to false.\");\nconst bad = c.validateTask({ title: \"\", done: \"yes\" });\nif (bad.ok !== false || bad.issues.length !== 2) throw new Error(\"Both issues reported.\");",
+      "hint": "Two checks, both pushing issues."
+    },
+    {
+      "name": "internal names stay internal",
+      "code": "const fn = new Function(code + \"\\nreturn { makeContract };\");\nconst { makeContract } = fn();\nconst c = makeContract();\nconst pub = c.toApiShape({ id: \"t1\", title: \"A\", done: true, ownerId: \"u9\" });\nif (pub.author !== \"u9\") throw new Error(\"ownerId exposed as author.\");\nif (\"ownerId\" in pub) throw new Error(\"The internal name must not leak.\");",
+      "hint": "Rename on the way out; delete the internal key."
+    }
+  ]
+}

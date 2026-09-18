@@ -1,0 +1,21 @@
+## Two phases, two tools
+
+1. **Compile** each `.cpp` → an object file (`.o`): machine code with *unresolved* names ("I call a function named `add` — somebody has it").
+2. **Link** all object files + libraries → one executable: every unresolved name finds its definition.
+
+## The linker's two famous errors
+
+**`undefined reference to 'add'`** — you promised (declared) it, nobody delivered (no definition anywhere). Usual causes: forgot to compile the `.cpp`, misspelled the definition's signature, forgot a library flag.
+
+**`multiple definition of 'add'`** — the definition appears twice. Classic cause: defining a non-inline function *in a header* that several `.cpp` files include. Each translation unit gets its own copy; the linker refuses to choose.
+
+## The rules that keep headers linkable
+
+- Functions: declare in headers, define in a `.cpp`.
+- One exception you will see: small functions defined inside the class body in a header are implicitly `inline` — the linker merges them.
+- Global constants: `constexpr`/`const` at namespace scope have internal linkage by default (each file gets its own — fine), or use `inline constexpr` in headers for one shared copy.
+- Never put `using namespace std;` in a header — it leaks into every includer (module 1's warning, now you know the blast radius).
+
+## Why "undefined reference" mentions no line number
+
+The linker works on object files — your line numbers are gone. Read the *mangled name* in the message (`add(int, int)`) and compare against your declaration character by character; a signature mismatch compiles fine and fails only here. This is the error that teaches you that C++ has two compilers' worth of failure modes.

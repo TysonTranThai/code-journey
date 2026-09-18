@@ -1,0 +1,52 @@
+# Production/beta web + worker image (Phase 9).
+#
+# One image, two roles (selected by compose command):
+#   web    → `pnpm start` (next start) — NEVER mounts a Docker socket
+#   worker → `pnpm worker` — the only role allowed to reach a Docker daemon
+#
+# Includes the docker CLI (and ssh client) so the worker can target a daemon
+# via SANDBOX_DOCKER_HOST (-H syntax) per the beta host split in
+# docs/PRODUCTION.md. The web service never gets that access.
+#
+# Build: docker build -f Dockerfile.web -t codejourney-web:latest .
+
+FROM node:22.17.0-alpine3.22
+
+# docker-cli: sandbox worker needs `docker -H <host>` for execution.
+# openssh-client: SANDBOX_DOCKER_HOST=ssh://... support (beta two-host split).
+# tini: correct signal handling so `docker stop` drains the worker cleanly.
+RUN apk add --no-cache docker-cli openssh-client tini
+
+WORKDIR /app
+RUN corepack enable
+
+# Dependency layer (cached until the lockfile changes).
+# pnpm installs dev deps by default (NODE_ENV is unset at build time).
+COPY pnpm-lock.yaml package.json ./
+RUN pnpm fetch
+
+# Source + build (content map + monaco sync run via package scripts).
+COPY . .
+# Build-stage placeholders: module evaluation requires DATABASE_URL/AUTH_SECRET
+# to be present, but NO connection or crypto use happens at build time. Real
+# values are injected at runtime (compose env_file / orchestrator env) and
+# never baked into the image.
+RUN export DATABASE_URL="postgresql://build@127.0.0.1:5432/build" \
+    AUTH_SECRET=build-stage-placeholder \
+  && pnpm install --offline \
+  && pnpm monaco:sync \
+  && pnpm build
+# NOTE (beta): devDependencies are kept because the worker role executes the
+# TypeScript runner via tsx at runtime. Precompiling the worker (esbuild →
+# plain node) is the follow-up that allows a --prod prune.
+
+ENV NODE_ENV=production \
+    PORT=3000 \
+    HOSTNAME=0.0.0.0
+
+EXPOSE 3000
+
+# next start binds 0.0.0.0:3000 inside the container; compose maps it to
+# 127.0.0.1 on the host so only the reverse proxy can reach it.
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["pnpm", "start"]

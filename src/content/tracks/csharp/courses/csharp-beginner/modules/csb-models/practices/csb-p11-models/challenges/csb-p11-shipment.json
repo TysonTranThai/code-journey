@@ -1,0 +1,21 @@
+{
+  "id": "csb-p11-shipment",
+  "title": "Shipment with enum + record",
+  "prompt": "Implement in `Solution`: `enum Carrier { Air, Sea, Ground }` with a method `static int Days(Carrier c)` returning 1, 5, 3 respectively (unknown/undefined carrier values throw `ArgumentException`), and record `Shipment(string Id, Carrier Via)` plus `static Carrier Fastest(Carrier a, Carrier b)` returning whichever has fewer `Days`.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "Cj.Eq(Solution.Days(Solution.Carrier.Air), 1, \"air\");\nCj.Eq(Solution.Days(Solution.Carrier.Sea), 5, \"sea\");\nCj.Eq(Solution.Days(Solution.Carrier.Ground), 3, \"ground\");\nCj.True(Solution.Fastest(Solution.Carrier.Sea, Solution.Carrier.Ground) == Solution.Carrier.Ground, \"ground beats sea\");",
+      "hint": "Days is a pure lookup; Fastest compares through Days."
+    },
+    {
+      "name": "edge",
+      "code": "bool threw = false;\ntry { Solution.Days((Solution.Carrier)77); } catch (ArgumentException) { threw = true; }\nCj.True(threw, \"undefined carrier rejected\");\nCj.True(Solution.Fastest(Solution.Carrier.Air, Solution.Carrier.Air) == Solution.Carrier.Air, \"tie returns either (air)\");",
+      "hint": "Enum.IsDefined is the honest guard for cast-in values; ties are unconstrained."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,29 @@
+Before writing a line: the shape of the thing you are building. A small
+library manager with four responsibilities, each in its own class:
+
+```
+┌─────────────────────────────────────────────┐
+│  App            — the CLI loop (menu, I/O)  │
+│    │ owned by unique_ptr                        │
+│  Library        — the rules (add, borrow)   │
+│    │ owns                                       │
+│  vector<Book>   — the state (records)       │
+│    └ serialized to                             │
+│  string content — the persistence (M10)     │
+└─────────────────────────────────────────────┘
+```
+
+Three architecture decisions worth making consciously:
+
+1. **The App knows menus; the Library knows rules.** The app loop parses
+   input and prints; it never edits the book vector directly. When you
+   later swap a CLI for a GUI, the Library survives untouched.
+2. **State is one collection, not five globals.** A `Library` owns a
+   `std::vector<Book>`; nothing else touches it. Modules 2-4 gave you the
+   class, Module 8 the ownership vocabulary for who holds it.
+3. **Persistence is a boundary, not a sprinkle.** Exactly two functions
+   (`serialize`, `deserialize`) convert between records and text. Module
+   10's parsing discipline lives *here*, and nowhere else.
+
+This layering is a miniature of real systems: presentation, domain,
+storage. The names change; the seams do not.

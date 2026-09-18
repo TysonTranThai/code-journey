@@ -1,0 +1,21 @@
+{
+  "id": "cb3-parse-rgb",
+  "title": "Parse RGB",
+  "prompt": "Implement `int parse_rgb(const char* text, int* r, int* g, int* b)` parsing decimal colors like `\"12, 200, 3\"` (comma-separated, optional spaces). Return 1 only when all three parsed, else 0.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "valid rgb",
+      "code": "int r, g, b;\nCHECK_EQ(parse_rgb(\"12, 200, 3\", &r, &g, &b), 1);\nCHECK_EQ(r, 12);\nCHECK_EQ(g, 200);\nCHECK_EQ(b, 3);",
+      "hint": "sscanf(text, \"%d , %d , %d\", r, g, b) — spaces in the format match any whitespace."
+    },
+    {
+      "name": "two fields fail",
+      "code": "int r, g, b;\nCHECK_EQ(parse_rgb(\"12, 200\", &r, &g, &b), 0);",
+      "hint": "Only 2 items read -> return 0."
+    }
+  ],
+  "level": "independent"
+}

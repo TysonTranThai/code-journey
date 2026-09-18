@@ -1,0 +1,113 @@
+Hai mươi năm qua, "làm một cái modal" đồng nghĩa với JavaScript cộng một vòng audit
+khả năng tiếp cận. Nền tảng đã tiếp quản công việc đó. Disclosure widget, accordion và
+modal đầy đủ đều là HTML gốc bây giờ — và bản gốc thắng mọi thư viện component ở mọi
+trục quan trọng: hành vi bàn phím, focus, ngữ nghĩa, và khả năng sống sót khi script
+gặp sự cố.
+
+## Disclosure: details và summary
+
+```html
+<details>
+  <summary>Chính sách hoàn tiền của bạn là gì?</summary>
+  <p>Hoàn đủ trong 30 ngày, không hỏi lý do.</p>
+</details>
+```
+
+Không một dòng JavaScript. Trình duyệt cung cấp sẵn ngữ nghĩa bật/tắt, trạng thái mở
+đóng, kích hoạt Enter/Space trên summary, và thông báo cho trình đọc màn hình. Details
+lồng trong details hoạt động tự nhiên cho nội dung nhiều tầng.
+
+**Bẫy accordion:** năm `<details>` đứng cạnh nhau *không phải* một accordion phối hợp —
+mở một cái thì những cái khác vẫn mở. Thuộc tính `name` — dùng chung giữa các phần tử
+anh em — bảo trình duyệt đóng những cái còn lại thay bạn:
+
+```html
+<details name="faq">
+  <summary>Tôi đổi gói sau được không?</summary>
+  <p>Được, tính theo tỷ lệ còn lại.</p>
+</details>
+<details name="faq">
+  <summary>Có xuất hóa đơn không?</summary>
+  <p>Mọi tài khoản đều có, tự động.</p>
+</details>
+```
+
+Một thuộc tính biến các disclosure độc lập thành accordion loại trừ nhau. (Nhắc lại từ
+Beginner, giờ nhìn bằng mắt nâng cao: `summary` chính là nguồn accessible name của
+details — đừng bao giờ bỏ trống nó.)
+
+## Phần tử dialog
+
+```html
+<dialog id="confirm">
+  <h2 id="confirm-h">Xóa file này?</h2>
+  <p>Thao tác này không thể hoàn tác.</p>
+  <button autofocus>Cancel</button>
+  <button>Delete</button>
+</dialog>
+```
+
+```js
+document.getElementById("confirm").showModal(); // modal
+document.getElementById("confirm").show();      // không phải modal
+```
+
+`showModal()` trao trọn gói modal từ nền tảng: phần còn lại của trang trở nên inert,
+Escape đóng được, focus bị giữ bên trong, và dialog mở trên top layer của trình duyệt —
+trên mọi trò `z-index` bạn từng viết. `show()` mở ở luồng bình thường cho mục đích
+không chặn. Trang trí nền tối bằng pseudo-element `::backdrop`; thuộc tính `autofocus`
+bên trong dialog quyết định control nào nhận focus khi mở — hãy đặt nó vào hành động an
+toàn nhất ("Cancel"), không phải hành động phá hủy.
+
+Đặt tên cho dialog bằng `aria-labelledby` trỏ vào heading của nó, và đóng nó từ một
+form hoặc từ code bằng `dialog.close()` — hoặc khai báo hoàn toàn bằng invoker commands
+bạn sẽ gặp ở bài kế tiếp.
+
+## Form bên trong dialog
+
+`<form method="dialog">` tự đóng dialog khi submit và trao giá trị trả về cho code qua
+`dialog.returnValue`:
+
+```html
+<dialog id="pick">
+  <form method="dialog">
+    <p>Ghim board này?</p>
+    <button value="pin">Ghim</button>
+    <button value="cancel" autofocus>Cancel</button>
+  </form>
+</dialog>
+```
+
+Đây là nơi kiến thức constraint validation từ Intermediate tìm được mái nhà mới:
+`method="dialog"` kết hợp được với kiểm thực gốc — một trường required không hợp lệ sẽ
+chặn submit, nên dialog còn mở kèm lỗi mà trình duyệt tự hiển thị sẵn.
+
+## Dialog hay popover hay details — chọn cái nào
+
+| Nhu cầu | Công cụ |
+| --- | --- |
+| Phải chặn trang cho tới khi có câu trả lời | `<dialog>` + `showModal()` |
+| Lớp tạm thời, tự đóng khi bấm ra ngoài | `popover` (bài kế tiếp) |
+| Nội dung tăng tiến ngay trong luồng trang | `<details>` |
+
+Modal cho quyết định, popover cho công cụ nhanh, details cho nội dung thuộc về luồng
+của chính trang. Đòi làm modal cho nội dung vốn nằm trong luồng là dấu hiệu thừa kế
+cổ điển của kỹ sư chưa đủ kinh nghiệm.
+
+## Điều gì hay sai
+
+- **Modal tự chế**: `position: fixed` + cuộc chiến `z-index` + một focus trap tự viết
+  và phải tự bảo trì. `<dialog>` thay tất cả.
+- **`show()` trong khi ý là `showModal()`**: không backdrop inert, không Escape, không
+  giữ focus — "dialog vẫn chạy nhưng trang sau lưng vẫn bấm được".
+- **Focus rơi vào nút phá hủy** vì chẳng ai đặt `autofocus`.
+- **Accordion bằng toggle class**: JS đóng các phần tử anh em mà `name` đóng tự nhiên.
+- **`<summary>` rỗng** — một disclosure không thông báo gì cả.
+
+## Thực hành và điểm nối tiếp
+
+Bạn sẽ dựng một accordion FAQ chạy thật với `name`, rồi một dialog xác nhận với
+backdrop, autofocus và form `method="dialog"` — trước bằng khai báo thuần, sau bằng
+cách sửa một modal hỏng đã bỏ sót từng chi tiết như trên. Các phần tử tương tác gốc là
+xương sống của chuyên đề kỹ thuật accessibility phía sau: pattern đúng thường là pattern
+mà nền tảng đã ship sẵn.

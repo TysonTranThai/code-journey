@@ -1,0 +1,21 @@
+{
+  "id": "csb-p9-player",
+  "title": "Player with clamped health",
+  "prompt": "Implement nested class `Solution.Player`: constructor `(string name)` throws `ArgumentException` for null/whitespace names; read-only `Name`; `Health` starts at 100; `TakeDamage(int)` and `Heal(int)` throw `ArgumentException` for negative amounts, otherwise health stays clamped to [0, 100]; `IsAlive` is true exactly when Health > 0.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "lifecycle",
+      "code": "var p = new Solution.Player(\"An\");\nCj.Eq(p.Health, 100, \"starts full\");\np.TakeDamage(30);\nCj.Eq(p.Health, 70, \"damaged to 70\");\nCj.True(p.IsAlive, \"alive at 70\");\np.TakeDamage(70);\nCj.Eq(p.Health, 0, \"floors at zero\");\nCj.False(p.IsAlive, \"dead at exactly 0\");",
+      "hint": "Health floors at 0; IsAlive uses strictly greater-than, so 0 is dead."
+    },
+    {
+      "name": "bounds-and-validation",
+      "code": "var p = new Solution.Player(\"Binh\");\np.Heal(50);\nCj.Eq(p.Health, 100, \"heal caps at 100\");\nbool t1 = false;\ntry { p.TakeDamage(-5); } catch (ArgumentException) { t1 = true; }\nbool t2 = false;\ntry { p.Heal(-1); } catch (ArgumentException) { t2 = true; }\nbool t3 = false;\ntry { new Solution.Player(\"   \"); } catch (ArgumentException) { t3 = true; }\nCj.True(t1 && t2 && t3, \"negative damage/heal and blank name all rejected\");",
+      "hint": "Both clamps matter: no negatives in, no values outside [0, 100] out."
+    }
+  ],
+  "level": "independent"
+}

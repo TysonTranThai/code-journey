@@ -1,0 +1,21 @@
+{
+  "id": "csb-p9-temperature",
+  "title": "Temperature scale",
+  "prompt": "Implement nested class `Solution.Temperature`: constructor `(double celsius)` throws `ArgumentException` below absolute zero (-273.15, exact boundary allowed); read-only `Celsius`; static factory `FromFahrenheit(double f)` converting with C = (F − 32) × 5⁄9 and applying the same validation after conversion.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "var t = new Solution.Temperature(25.0);\nCj.Near(t.Celsius, 25.0, 1e-9, \"celsius kept\");\nvar boil = Solution.Temperature.FromFahrenheit(212.0);\nCj.Near(boil.Celsius, 100.0, 1e-9, \"water boils at 100C\");\nvar freeze = Solution.Temperature.FromFahrenheit(32.0);\nCj.Near(freeze.Celsius, 0.0, 1e-9, \"water freezes at 0C\");",
+      "hint": "The conversion is (F − 32) × 5⁄9 — check both anchor points."
+    },
+    {
+      "name": "validation",
+      "code": "bool t1 = false;\ntry { new Solution.Temperature(-273.16); } catch (ArgumentException) { t1 = true; }\nvar edge = new Solution.Temperature(-273.15);\nCj.Near(edge.Celsius, -273.15, 1e-9, \"exact absolute zero is legal\");\nbool t2 = false;\ntry { Solution.Temperature.FromFahrenheit(-500.0); } catch (ArgumentException) { t2 = true; }\nCj.True(t1 && t2, \"below absolute zero rejected on both paths\");",
+      "hint": "−273.15 exactly is legal; anything lower throws — via the constructor OR after conversion."
+    }
+  ],
+  "level": "independent"
+}

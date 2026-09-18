@@ -1,0 +1,61 @@
+## Bốn câu hỏi
+
+Mọi con trỏ heap trong chương trình C phải có lời giải cho:
+
+1. **Ai sở hữu nó?** (Ai chịu trách nhiệm free?)
+2. **Sống bao lâu?** (Cho đến khi owner free — hay mãi mãi?)
+3. **Ai được ghi?** (Một owner, hay chia sẻ?)
+4. **Thất bại cấp phát thì sao?** (Trả NULL? Dừng? Thử lại?)
+
+C không trả lời giúp bạn. Thiết kế API trả lời — qua chữ ký, tài liệu, và
+cách đặt tên.
+
+## Thất bại là một hợp đồng
+
+```c
+/* Hợp đồng: trả về buffer heap mà caller phải free, hoặc NULL khi thất bại.
+   Hai kết cục là toàn bộ hợp đồng; không được bỏ qua cái nào. */
+char *greeting(const char *name);
+```
+
+Code sơ cấp thường giả định `malloc` không bao giờ thất bại. Code trung cấp xử
+lý nó, vì **sandbox giới hạn bộ nhớ** và hệ thống chạy lâu bị phân mảnh:
+
+```c
+char *copy = strdup(name);        /* có thể trả NULL */
+if (!copy) return 0;              /* truyền lên, đừng dereference */
+```
+
+Mỗi chỗ cấp phát cần một nhánh thất bại, và mỗi hàm có thể thất bại cần một
+cách được ghi chú để báo điều đó. Mẫu out-parameter của Module 2 ghép tự
+nhiên: `int make(int n, T **out)` — trả trạng thái, chỉ ghi con trỏ khi thành công.
+
+## NULL sau free, và chuyển giao sở hữu
+
+```c
+free(p);
+p = NULL;      /* giờ tái sử dụng vô tình là no-op vô hại */
+```
+
+Đặt con trỏ về NULL sau free biến lớp bug khó chịu nhất (use-after-free)
+thành lành tính cho biến đó. Bảo hiểm rẻ ở mọi nơi biến sống lâu hơn lời free.
+
+**Chuyển giao** sở hữu: hàm như `takeover(char *s)` lưu hoặc free tham số thì
+*từ giờ sở hữu* nó — caller không được free thêm lần nữa. Ghi chú mọi chuyển
+giao; nhầm lẫn sở hữu là gốc của double-free.
+
+## Bậc thang sở hữu trong chữ ký
+
+| Chữ ký | Thỏa thuận |
+|---|---|
+| `size_t len(const char *s)` | mượn; không giữ, không free |
+| `int dup_str(const char *s, char **out)` | tạo bộ nhớ mới; caller sở hữu |
+| `void consume(char *s)` | nhận sở hữu; caller không được dùng lại |
+| `void store(struct Table *t, char *s)` | nhận sở hữu vào trong bảng |
+
+## Kiểm tra hiểu biết
+
+- Ai free kết quả của `strdup`? (Caller — nó tạo bộ nhớ heap mới.)
+- `free(p); free(p);` có hợp lệ? (Không — double free là undefined behavior.)
+- Sau `free(p); p = NULL;` thì `free(p)` làm gì? (Không gì cả — free(NULL)
+  là no-op được chuẩn ghi rõ.)

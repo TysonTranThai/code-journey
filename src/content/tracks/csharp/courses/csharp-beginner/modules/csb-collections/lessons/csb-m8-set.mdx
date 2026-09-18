@@ -1,0 +1,30 @@
+## One of each, no order
+
+```csharp
+var seen = new HashSet<string>();
+seen.Add("a");          // True  — new
+bool dup = seen.Add("a");   // False — already there
+Console.WriteLine(seen.Count);   // 1
+```
+
+`Add` returns **whether anything changed** — a one-call duplicate check. `Contains` is O(1) (hash-based), unlike `List.Contains`'s O(n) scan. Set math is built in: `seen.UnionWith(other)`, `IntersectWith`, `ExceptWith` mutate the set; `Overlaps`/`IsSubsetOf` answer questions.
+
+## The dedup-and-count pair
+
+```csharp
+var distinct = new HashSet<string>(words);   // copies + dedups
+Console.WriteLine(distinct.Count);           // number of unique words
+```
+
+Constructing from an existing collection is the fastest dedup in the language — and combining a `HashSet` (uniqueness) with a `Dictionary` (counts) covers frequency tables.
+
+## Choosing the shape
+
+| Need | Shape |
+| --- | --- |
+| Ordered values, duplicates OK, index access | `List<T>` |
+| Unique values, fast membership | `HashSet<T>` |
+| Look up by a key | `Dictionary<TKey,TValue>` |
+| Fixed size, index access | array |
+
+The wrong shape forces manual workarounds — deduping a List by hand, or searching a Dictionary's Values. Decide from the *operations* you need, not habit: "do I need duplicates? do I need positions? do I need keys?" Those three questions pick the container in almost every beginner program.

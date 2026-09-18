@@ -1,0 +1,25 @@
+## From magic numbers to names
+
+```csharp
+// before: what is 2?
+if (status == 2) { ... }
+
+// after: the set IS the documentation
+enum OrderStatus { Pending, Paid, Shipped, Cancelled }
+
+if (status == OrderStatus.Paid) { ... }
+```
+
+`OrderStatus.Paid` is a named constant of the enum type. Under the hood each member is an `int` (0, 1, 2, 3 by default), but the variable's *type* restricts what it can hold: an `OrderStatus` can't silently become `42`.
+
+## Casting and safety
+
+The escape hatch is explicit casting — and C# will happily cast an out-of-range number into the enum type, because enums are thin wrappers over ints:
+
+```csharp
+OrderStatus s = OrderStatus.Shipped;
+int raw = (int)s;                     // 2
+OrderStatus bogus = (OrderStatus)99;  // compiles! not a member
+```
+
+So a method receiving an enum can still receive a bogus cast value; if the set must be enforced, validate: `Enum.IsDefined(typeof(OrderStatus), 99)` is false. For beginners the rule that matters: **use enums to name fixed sets; never rely on them to reject arbitrary ints.**

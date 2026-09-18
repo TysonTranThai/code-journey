@@ -1,0 +1,25 @@
+## Pressure-testing your design
+
+A design you never attack is a wish. Run your decision backlog through three attacks:
+
+**The empty-input attack.** Every field that can be empty will be empty. What does "create ticket" do with `title: ""`? What does the list page render with zero tickets? The answer "it will never happen" is how production incidents are born.
+
+**The malicious-user attack.** What happens if the request says `author_id: someone-else`? If a script posts 10,000 tickets a minute? If the description contains `<script>` markup? You are not attacking yourself — you are checking the _boundaries_ hold: server-side authorization, server-side validation, output encoding.
+
+**The broken-network attack.** The API can fail. Where does your UI show an error state? Can a user double-submit while a request is in flight? Does a retry duplicate the ticket? Asynchrony is part of the design, not an afterthought.
+
+## Deciding the API before the code
+
+Write the API contract as a table and keep it next to you while you build:
+
+| Method | Path                   | Input                              | 200                      | 4xx                        |
+| ------ | ---------------------- | ---------------------------------- | ------------------------ | -------------------------- |
+| POST   | /api/tickets           | `{ title, description, priority }` | 201 + ticket             | 400 field errors, 401      |
+| GET    | /api/tickets?priority= | —                                  | 200 + list, newest first | 401                        |
+| PATCH  | /api/tickets/:id       | `{ status?, title? }`              | 200 + updated            | 400, 401, 403 (not author) |
+
+Three rows already force a dozen decisions: where validation lives, what 403 means versus 401, how "newest first" is guaranteed (ORDER BY created_at DESC in the query, not sort-in-JS-after-fetch).
+
+## The skill you are practicing
+
+You are not building ServiceDesk. You are building the ability to walk from _vague human wants_ to _unambiguous technical commitments_ — the skill that separates someone who follows tutorials from someone who can be handed a ticket board. The design doc is the deliverable; the app is the evidence.

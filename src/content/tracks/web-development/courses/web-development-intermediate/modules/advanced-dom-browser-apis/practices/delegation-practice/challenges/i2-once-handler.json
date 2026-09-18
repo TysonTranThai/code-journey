@@ -1,0 +1,20 @@
+{
+  "id": "i2-once-handler",
+  "title": "Once-Only Handler",
+  "prompt": "Write `once(fn)` that RETURNS a wrapper which calls `fn` with the FIRST invocation's arguments and returns its result; every later call RETURNS that same first result without running `fn` again. `fn`'s `this` need not be preserved.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function once(fn) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "runs the function exactly once",
+      "code": "const fn = new Function(code + \"\\nreturn { once };\");\nconst { once } = fn();\nlet calls = 0;\nconst g = once((x) => { calls++; return x * 2; });\nconst a = g(21);\nconst b = g(100);\nif (a !== 42) throw new Error(\"First call should return fn's result (42).\");\nif (b !== 42) throw new Error(\"Later calls must return the FIRST result, not re-run.\");\nif (calls !== 1) throw new Error(\"fn should have run exactly once.\");",
+      "hint": "Store both the result and a done flag in the closure."
+    },
+    {
+      "name": "remembers the first arguments",
+      "code": "const fn = new Function(code + \"\\nreturn { once };\");\nconst { once } = fn();\nconst seen = [];\nconst g = once((x) => seen.push(x));\ng(\"first\");\ng(\"second\");\ng(\"third\");\nif (seen.join() !== \"first\") throw new Error(\"Only the first invocation arguments should reach fn.\");",
+      "hint": "Guard the body with if (done) return result; before doing anything."
+    }
+  ]
+}

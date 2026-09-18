@@ -1,0 +1,56 @@
+An **interface** is a pure contract: method signatures (and constants) with
+no fields and, traditionally, no bodies. A class *implements* an interface
+and promises to provide every method:
+
+```java
+interface Describable {
+    String describe();          // implicitly public and abstract
+}
+
+interface Priceable {
+    double price();
+}
+
+class Book implements Describable, Priceable {
+    private final String title;
+    private final double cost;
+
+    Book(String title, double cost) { this.title = title; this.cost = cost; }
+
+    @Override
+    public String describe() { return "Book: " + title; }
+
+    @Override
+    public double price() { return cost; }
+}
+```
+
+**A class can implement MANY interfaces** — that is the escape hatch from
+single inheritance. Interfaces state *capability* ("can be described",
+"has a price"); inheritance states *identity* ("is a Vehicle"). Modern
+design leans on capabilities: accept `Describable`, and your method works
+with Books, Movies, and everything your users invent later.
+
+Interfaces already in your life: `Comparable` (has `compareTo` — sorting),
+`Runnable` (has `run` — threads), `Iterable` (has `iterator` — for-each
+works on anything implementing it).
+
+**Polymorphism works through interfaces** exactly as through superclasses:
+
+```java
+Describable[] items = { new Book("Dune", 12.5) };
+for (Describable d : items) {
+    System.out.println(d.describe());
+}
+```
+
+Since Java 8 an interface may also carry `default` methods (bodies usable
+by implementors as-is) and `static` methods — handy for evolving contracts
+without breaking every implementor. Beginners should still think of an
+interface as "a promise list"; defaults are a migration tool.
+
+**Choosing between them:** extends for shared identity and state; implements
+for shared capability. When unsure, prefer the interface — it costs less
+and promises less.
+
+**Next:** composition, the quiet workhorse.

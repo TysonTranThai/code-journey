@@ -1,0 +1,26 @@
+{
+  "id": "pi7-sub-matrix",
+  "title": "Case Matrix",
+  "prompt": "Implement is_leap(year) (divisible by 4, except centuries unless divisible by 400). Then write TestLeap using subTest over at least 6 year/expected pairs including 2000, 1900, 2024, 2023. Assign the class to SUITE_TEST.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import unittest\n\ndef is_leap(year):\n    pass\n\nclass TestLeap(unittest.TestCase):\n    pass\n\nSUITE_TEST = None\n",
+  "tests": [
+    {
+      "name": "leap logic correct",
+      "code": "assert is_leap(2000) is True\nassert is_leap(1900) is False\nassert is_leap(2024) is True\nassert is_leap(2023) is False",
+      "hint": "y % 4 == 0 and (y % 100 != 0 or y % 400 == 0)."
+    },
+    {
+      "name": "subTest structure",
+      "code": "import unittest, io\nassert 'subTest' in code, 'use self.subTest in the suite'\nresult = unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(unittest.TestLoader().loadTestsFromTestCase(SUITE_TEST))\nassert result.wasSuccessful(), 'leap tests failed'",
+      "hint": "The test body must use self.subTest in a loop."
+    },
+    {
+      "name": "at least 6 cases and all pass",
+      "code": "import unittest, io\nsuite = unittest.TestLoader().loadTestsFromTestCase(SUITE_TEST)\nresult = unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(suite)\nassert result.wasSuccessful(), 'leap tests failed'\nassert result.testsRun >= 1",
+      "hint": "Six+ cases including the four anchor years."
+    }
+  ],
+  "level": "guided"
+}

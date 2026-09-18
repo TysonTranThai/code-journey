@@ -1,0 +1,25 @@
+{
+  "id": "i2-validate-field",
+  "title": "Field Validator",
+  "prompt": "Write `validateField(name, value)` that RETURNS `null` when valid or an error-message string when not:\n\n- `name` — required, 2–40 characters after trim\n- `email` — must contain `@` with non-empty parts on both sides\n- `age` — a number 16–120 inclusive (accept numeric strings)\n\nAny other field name returns `null`.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function validateField(name, value) {\n  // returns null or an error message\n}\n",
+  "tests": [
+    {
+      "name": "name rules",
+      "code": "const fn = new Function(code + \"\\nreturn { validateField };\");\nconst { validateField } = fn();\nif (validateField(\"name\", \"  Ada  \") !== null) throw new Error(\"Trimmed Ada has length 3 - valid.\");\nif (validateField(\"name\", \" a \") === null) throw new Error(\"A 1-character name must produce an error message.\");\nif (validateField(\"name\", \"\") === null) throw new Error(\"An empty name is required-missing.\");",
+      "hint": "const v = value.trim(); check v.length >= 2 && v.length <= 40."
+    },
+    {
+      "name": "email rules",
+      "code": "const fn = new Function(code + \"\\nreturn { validateField };\");\nconst { validateField } = fn();\nif (validateField(\"email\", \"ada@example.com\") !== null) throw new Error(\"ada@example.com is valid.\");\nif (validateField(\"email\", \"ada@\") === null) throw new Error(\"No domain part.\");\nif (validateField(\"email\", \"@x.com\") === null) throw new Error(\"No local part.\");\nif (validateField(\"email\", \"no-at-sign\") === null) throw new Error(\"Missing at-sign.\");",
+      "hint": "Split on '@' — exactly one @, both sides non-empty."
+    },
+    {
+      "name": "age rules",
+      "code": "const fn = new Function(code + \"\\nreturn { validateField };\");\nconst { validateField } = fn();\nif (validateField(\"age\", 30) !== null) throw new Error(\"30 is in range.\");\nif (validateField(\"age\", \"30\") !== null) throw new Error(\"Numeric strings are accepted.\");\nif (validateField(\"age\", 15) === null) throw new Error(\"15 is below the range.\");\nif (validateField(\"age\", \"abc\") === null) throw new Error(\"Non-numeric input must fail.\");\nif (validateField(\"unknown\", 5) !== null) throw new Error(\"Unknown fields always pass.\");",
+      "hint": "Number(value) then Number.isFinite + range check; NaN fails the finite check for you."
+    }
+  ]
+}

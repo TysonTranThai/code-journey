@@ -1,0 +1,26 @@
+{
+  "id": "pi7-mock-api",
+  "title": "Fake the API",
+  "prompt": "Implement fetch_json(url, opener=None): opener defaults to a real-ish callable; the function calls opener(url) expecting an object with .read() returning bytes of JSON, and returns the parsed dict. Write TestFetch using unittest.mock to pass a fake opener returning b'{\"ok\": true}' and assert the parsed result AND that the fake was called exactly once with the URL. Assign to SUITE_TEST.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import unittest\nimport json\n\ndef fetch_json(url, opener=None):\n    pass\n\nclass TestFetch(unittest.TestCase):\n    pass\n\nSUITE_TEST = None\n",
+  "tests": [
+    {
+      "name": "parses the fake payload",
+      "code": "from unittest.mock import Mock\nfake = Mock()\nfake.read.return_value = b'{\"ok\": true}'\nassert fetch_json('http://x', opener=lambda u: fake) == {'ok': True}",
+      "hint": "read() bytes → json.loads → dict."
+    },
+    {
+      "name": "opener called once with the url",
+      "code": "from unittest.mock import Mock\ncalls = []\ndef rec(u):\n    calls.append(u)\n    class R:\n        def read(self):\n            return b'{}'\n    return R()\nfetch_json('http://y', opener=rec)\nassert calls == ['http://y']",
+      "hint": "The transport receives exactly the URL passed."
+    },
+    {
+      "name": "test uses mocking and passes",
+      "code": "import unittest, io\nassert 'mock' in code.lower(), 'use unittest.mock in the test suite'\nresult = unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(unittest.TestLoader().loadTestsFromTestCase(SUITE_TEST))\nassert result.wasSuccessful(), 'fetch tests failed'",
+      "hint": "Your suite must use a Mock and stay green."
+    }
+  ],
+  "level": "combination"
+}

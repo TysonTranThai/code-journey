@@ -1,0 +1,45 @@
+**Đóng gói (encapsulation)** = trường private, hành vi public. Đánh dấu
+trường là `private` để không ai bên ngoài chạm vào trực tiếp, và mở các
+*phương thức* canh gác lối vào:
+
+```java
+public class Account {
+    private String owner;
+    private double balance;      // ẩn: không có acc.balance từ bên ngoài
+
+    public Account(String owner, double balance) {
+        this.owner = owner;
+        this.balance = Math.max(0, balance);
+    }
+
+    public double getBalance() {          // đọc an toàn: chỉ là báo cáo
+        return balance;
+    }
+
+    public void deposit(double amount) {  // ghi được canh gác: một quy tắc ở đây
+        if (amount <= 0) {
+            throw new IllegalArgumentException("deposit must be positive");
+        }
+        balance += amount;
+    }
+}
+```
+
+Vì sao phải ẩn trường khi để public ngắn gọn hơn? Vì **trường là quá khứ
+của class; phương thức là tương lai của nó**. Với `balance` private, sau này
+bạn thêm log, đổi sang lưu bằng xu, hoặc thêm hạn mức giao dịch — và mọi
+quy tắc có đúng một ngôi nhà. Để public, mọi người gọi bỏ qua mọi quy tắc
+và bạn không bao giờ đổi được gì.
+
+**Getter/setter** không phải mục tiêu — *quyền kiểm soát* mới là. Getter
+chỉ trả về trường là tiện lợi vô hại; `setBalance(double)` chấp nhận mọi
+thứ là đóng kịch đóng gói. Hãy ưu tiên **động từ** mô tả thao tác thật:
+`deposit`, `withdraw`, `transfer` — không phải `setBalance`. Account trên
+không có setter nào cả, và đó là thiết kế tốt, không phải bỏ sót.
+
+`private` và `public` là **access modifier**: `private` = chỉ class này;
+`public` = mọi người. (Hai cái nữa, `protected` và package-private, sẽ tới
+cùng kế thừa và package sau này.) Thói quen mặc định: trường `private`,
+vài cánh cửa thế giới cần thì `public`.
+
+**Tiếp theo:** composition — object chứa object.

@@ -1,0 +1,20 @@
+## Threads, Runnables, and what the JVM promises
+
+A `Thread` runs a `Runnable` concurrently; `start()` begins it, `join()`
+waits for completion:
+
+```java
+Thread worker = new Thread(() -> System.out.println("work"));
+worker.start();
+worker.join();   // deterministic again — everything before join happened-before after
+```
+
+After `join()` returns, you may read everything the thread wrote — that
+is the *happens-before* edge you'll use in every deterministic exercise.
+
+The classic beginner bug is calling `run()` instead of `start()`: that
+executes the Runnable on the *current* thread — sequential, no
+concurrency at all.
+
+Threads are expensive (each carries ~1MB stack by default); that is why
+executors exist — Module-level coverage, Advanced goes deeper.

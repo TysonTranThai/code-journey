@@ -1,0 +1,43 @@
+## Pay two pointers, delete in O(1)
+
+```c
+typedef struct DNode {
+    int            value;
+    struct DNode  *prev, *next;
+} DNode;
+```
+
+With `prev`, a node carries its own "who points at me" — unlinking needs
+no search:
+
+```c
+void unlink(DNode *n) {
+    if (n->prev) n->prev->next = n->next; else /* was head */;
+    if (n->next) n->next->prev = n->prev; else /* was tail */;
+    n->prev = n->next = NULL;      /* node is now detached */
+}
+```
+
+The price is **four pointer updates per insert/delete instead of two**,
+and a whole class of new bugs: forgetting one side leaves a node that
+thinks it is detached while the list still reaches it — or worse, a
+*prev* chain that disagrees with the *next* chain. After any structural
+change, a forward walk and a backward walk must visit the same nodes in
+reverse order. Tests should verify both directions.
+
+## Sentinels: trading one node for zero special cases
+
+Keep a dummy node that is never stored-to; the real list runs between
+its two links. Head and tail operations stop having NULL cases:
+
+```c
+DNode sentinel;                     /* never holds data */
+sentinel.next = &sentinel;
+sentinel.prev = &sentinel;          /* empty list: both point home */
+```
+
+Insertion becomes one statement regardless of position; iteration is
+`for (DNode *p = s.next; p != &s; p = p->next)`. The cost: one extra node
+and the discipline that *nothing* may dereference the sentinel's value.
+Production list implementations (Linux `list_head` among them) are
+sentinel-based.

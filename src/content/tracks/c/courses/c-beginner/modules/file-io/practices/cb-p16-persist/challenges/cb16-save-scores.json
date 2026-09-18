@@ -1,0 +1,21 @@
+{
+  "id": "cb16-save-scores",
+  "title": "Save Scores",
+  "prompt": "Implement `int save_scores(const char *path, const int *scores, int n)`: write one integer per line (fprintf \"%d\\n\") and return n. Open failure returns -1.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "round trip",
+      "code": "int sc[] = {10, 20, 30};\nCHECK_EQ(save_scores(\"/tmp/cj16-s.txt\", sc, 3), 3);\nFILE *f = fopen(\"/tmp/cj16-s.txt\", \"r\");\nint a, b, c;\nfscanf(f, \"%d %d %d\", &a, &b, &c);\nfclose(f);\nCHECK_EQ(a, 10);\nCHECK_EQ(c, 30);\nremove(\"/tmp/cj16-s.txt\");",
+      "hint": "One number per line."
+    },
+    {
+      "name": "empty",
+      "code": "CHECK_EQ(save_scores(\"/tmp/cj16-t.txt\", NULL, 0), 0);\nremove(\"/tmp/cj16-t.txt\");",
+      "hint": "n=0 writes nothing."
+    }
+  ],
+  "level": "guided"
+}

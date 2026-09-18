@@ -1,0 +1,16 @@
+{
+  "id": "cint-p1-stateful-counter",
+  "title": "The Stateful Function",
+  "prompt": "Implement `int next_id(void)` using a function-scope static: first call\nreturns 1, then 2, 3, ... forever. Also implement `void reseed_ids(int n)` which\nsets the counter so the next `next_id()` returns `n` (n >= 1).",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "ids increment and reseed",
+      "code": "\nCHECK_EQ(next_id(), 1);\nCHECK_EQ(next_id(), 2);\nCHECK_EQ(next_id(), 3);\nreseed_ids(100);\nCHECK_EQ(next_id(), 100);\nCHECK_EQ(next_id(), 101);\n",
+      "hint": "static int counter; ++counter; return counter; — reseed sets counter = n - 1."
+    }
+  ],
+  "level": "imitation"
+}

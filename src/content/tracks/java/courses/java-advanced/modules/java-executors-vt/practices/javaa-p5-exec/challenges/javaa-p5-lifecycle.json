@@ -1,0 +1,16 @@
+{
+  "id": "javaa-p5-lifecycle",
+  "title": "Executor lifecycle, executed",
+  "prompt": "Implement `static List<String> lifecycle()` — choreography over a `newFixedThreadPool(1)` with `CountDownLatch start/proceed/blocked` and a `CopyOnWriteArrayList<String> log`:\n1. Submit task A: log \"A-running\"; `blocked.countDown()`; `proceed.await()` — if interrupted log \"A-interrupted\" and return; otherwise log \"A-done\".\n2. Main: `blocked.await()` (A is parked; the only thread is busy), then submit task B that logs \"B-done\" — B is now QUEUED.\n3. `shutdown()`.\n4. Try submitting task C; catch `RejectedExecutionException` and log \"rejected-after-shutdown\".\n5. `proceed.countDown()`; `awaitTermination(5, SECONDS)`; return the log.\nWith shutdown(), queued B must still run: [A-running, rejected-after-shutdown, A-done, B-done].",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "queued work completes after shutdown; new submits rejected",
+      "code": "\njava.util.List<String> log = Solution.lifecycle();\ncheckEq(log, java.util.List.of(\"A-running\", \"rejected-after-shutdown\", \"A-done\", \"B-done\"),\n    \"graceful shutdown runs the queue, rejects the rest\");\n",
+      "hint": "shutdown() drains nothing: A finishes, queued B runs, C is rejected."
+    }
+  ],
+  "level": "guided"
+}

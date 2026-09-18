@@ -1,0 +1,34 @@
+## What atomic buys
+
+`std::atomic<int> x;` — every read-modify-write is indivisible, and concurrent access is **not** UB. But atomicity is the cheap part. The deep part is **ordering**: what do other threads see of *surrounding* memory when this atomic transfer happens?
+
+## The three orderings, least to most
+
+**`memory_order_relaxed`** — atomicity only. No synchronization of other memory, no ordering promises beyond this one variable. Perfect for event counters, statistics — where "the number is right eventually" is the whole requirement:
+
+```cpp
+std::atomic<int> hits{0};
+++hits;   // fetch_add 1, relaxed by default via operator form? no — operator++ IS seq_cst;
+          // pass the order explicitly: hits.fetch_add(1, std::memory_order_relaxed);
+```
+
+**`memory_order_acquire` / `memory_order_release`** — the workhorse pair. A **release** store makes everything this thread did *before* the store visible to any thread that later does an **acquire** load reading that value:
+
+```cpp
+std::atomic<bool> ready{false};
+int payload = 0;
+
+// producer
+payload = 42;                                   // ordinary write
+ready.store(true, std::memory_order_release);   // publish
+
+// consumer
+while (!ready.load(std::memory_order_acquire)) {}
+// payload == 42 is GUARANTEED here — acquire/release ordered the ordinary write
+```
+
+**`memory_order_seq_cst`** — the default, strongest: all seq_cst operations across all threads agree on one global order. Easiest to reason about, most expensive. Default when unsure; relax only with a written reason.
+
+## The exercise rule
+
+The graded work follows the professional discipline: relaxed where only atomicity matters, acquire/release for publish-consume of payload data, seq_cst when threads must agree on a total order.

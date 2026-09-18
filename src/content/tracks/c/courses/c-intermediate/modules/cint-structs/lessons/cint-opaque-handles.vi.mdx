@@ -1,0 +1,39 @@
+## Encapsulation = client không nhìn thấy bên trong
+
+Nếu header lộ body của struct, client nào cũng có thể đụng `q->data[i]`
+trực tiếp — và mọi invariant bạn giữ trở nên không thể bảo vệ. Công cụ
+encapsulation của C là **opaque type**: khai báo tên, định nghĩa body
+trong đúng một file .c:
+
+```c
+/* stack.h — hợp đồng công khai */
+typedef struct Stack Stack;
+Stack *stack_create(void);
+int    stack_push(Stack *s, int v);  /* 0 ok, -1 oom */
+int    stack_pop(Stack *s, int *out);/* 0 ok, -1 empty */
+void   stack_destroy(Stack *s);      /* free mọi thứ nó sở hữu */
+```
+
+```c
+/* stack.c — sự thật riêng tư */
+struct Stack {
+    int  *data;
+    size_t len, cap;
+};
+```
+
+Client chỉ có handle (`Stack *`) để truyền qua lại chứ không dereference
+được. Mọi truy cập đi qua hàm của bạn — invariant "`data` khác NULL khi
+`cap > 0`" được kiểm ở đúng một nơi.
+
+## Giá và lợi
+
+Giá: mỗi field muốn lộ ra cần một hàm. Lợi: bạn có thể *đổi cách biểu
+diễn* — chiến lược grow, cấu trúc, thậm chí chuyển sang linked — mà không
+phải recompile một client nào. Vì thế các thư viện thật (stdio's `FILE`,
+POSIX's `DIR`) đều opaque.
+
+Quy tắc ownership ghi trên handle: người tạo sở hữu; hàm chỉ mượn; hàm
+destroy kết thúc câu chuyện. Nếu API trả con trỏ *vào trong* handle
+(`const char *map_get(...)`), hãy ghi rõ khoản mượn sống đến lần gọi
+mutating kế tiếp trên cùng object.

@@ -1,0 +1,40 @@
+## Two directions of safe conversion
+
+**Covariance** (`out T`): if `string : object`, then `IEnumerable<string>`
+converts to `IEnumerable<object>`. Output positions only — you can pull a
+string out and hand it over as object.
+
+```csharp
+IEnumerable<object> shapes = new List<string> { "a" };   // legal: out T
+```
+
+**Contravariance** (`in T`): `Action<object>` converts to `Action<string>`.
+Input positions only — a delegate that accepts any object can serve where a
+string-eater is needed.
+
+```csharp
+Action<object> logAny = o => Console.WriteLine(o);
+Action<string> logStr = logAny;                          // legal: in T
+```
+
+Both are compile-time guarantees the compiler checks for you: a `T` in an
+output position makes the parameter covariant-eligible; in input positions,
+contravariant. Mutating interfaces (`IList<T>`, `Dictionary<K,V>`) are
+**invariant** — a list you can insert into must reject the conversion, or
+`shapes.Add(42)` would corrupt a `List<string>`.
+
+## The mental model
+
+- `out T` = "I only produce T" → covariant (more specific collection is-a
+  less specific one).
+- `in T` = "I only consume T" → contravariant (a general consumer is-a
+  specific one).
+- Both = invariant (I do both; no safe direction).
+
+`Func<in T, out TResult>` has both annotations — read it as a promise about
+each position.
+
+## Check your understanding
+
+- Why is `IList<string>` → `IList<object>` illegal? (Add(object) would insert non-strings.)
+- `Comparison<in T>` — which variance and why? (Contravariant: it consumes T.)

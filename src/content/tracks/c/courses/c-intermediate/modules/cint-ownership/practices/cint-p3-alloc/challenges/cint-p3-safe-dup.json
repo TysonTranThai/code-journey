@@ -1,0 +1,21 @@
+{
+  "id": "cint-p3-safe-dup",
+  "title": "Allocation Failure Contracts",
+  "prompt": "Implement the documented-contract pair:\n\n```c\n/* duplicates s into fresh heap memory; sets *out and returns 1 on success.\n   Returns 0 WITHOUT touching *out on: NULL s, NULL out, or allocation\n   failure. */\nint safe_dup(const char *s, char **out);\n/* joins two strings into fresh memory \"a/b\" (separator always present);\n   same contract as safe_dup. */\nint path_join(const char *a, const char *b, char **out);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "success path",
+      "code": "\nchar *s = NULL;\nCHECK_EQ(safe_dup(\"abc\", &s), 1);\nCHECK_STR_EQ(s, \"abc\");\nCHECK_EQ(safe_dup(\"\", &s), 1);\nCHECK_STR_EQ(s, \"\");\nfree(s);\nCHECK_EQ(path_join(\"usr\", \"bin\", &s), 1);\nCHECK_STR_EQ(s, \"usr/bin\");\nfree(s);\n",
+      "hint": "malloc(len+1), memcpy, NUL-terminate; path_join allocates la+lb+2."
+    },
+    {
+      "name": "failure paths leave *out untouched",
+      "code": "\nchar *keep = (char *)0x1;   /* sentinel: must remain unchanged */\nCHECK_EQ(safe_dup(NULL, &keep), 0);\nCHECK(keep == (char *)0x1);\nCHECK_EQ(safe_dup(\"x\", NULL), 0);\nchar *s2 = NULL;\nCHECK_EQ(safe_dup(\"x\", &s2), 1);\nfree(s2);\nCHECK_EQ(path_join(NULL, \"b\", &s2), 0);\nCHECK_EQ(path_join(\"a\", NULL, &s2), 0);\n",
+      "hint": "Validate arguments BEFORE any allocation; never write *out on failure."
+    }
+  ],
+  "level": "imitation"
+}

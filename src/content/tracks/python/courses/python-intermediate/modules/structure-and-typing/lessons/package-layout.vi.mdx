@@ -1,0 +1,37 @@
+**Package** là một thư mục các module (truyền thống phải có `__init__.py`).
+Package cho bạn tên dạng chấm và chỗ đặt cấu hình chung:
+
+```python
+# tasknoter/
+#   pyproject.toml
+#   src/
+#     tasknoter/
+#       __init__.py        # biến 'tasknoter' thành package
+#       storage.py
+#       cli.py
+
+from tasknoter.storage import load_tasks
+```
+
+**Bố cục src/** (thư mục package nằm trong `src/`) là khuyến nghị của cộng
+đồng packaging: nó khiến việc vô tình import bản local thay vì bản đã cài trở
+nên bất khả thi, vì test chạy trên package đã cài.
+
+## Phân tầng ứng dụng lớn dần
+
+Codebase Python chuyên nghiệp thường tách ba mối quan tâm:
+
+- **domain** — dữ liệu và quy tắc (`Task`, `complete()`, kiểm tra hợp lệ). Không biết gì về IO.
+- **storage** — lưu/nạp (tệp, sqlite). Nói chuyện với domain.
+- **interface** — CLI hoặc web handler. Nói chuyện với cả hai, không chứa business rule.
+
+Mũi tên đi một chiều: `interface → domain ← storage`. Khoảnh khắc hàm CLI của
+bạn chứa cả SQL và validation trong cùng 100 dòng, test trở nên khó khăn và
+thay đổi trở nên rủi ro. Phân tầng là thứ khiến module 7 (testing) và capstone
+dễ thở thay vì đau đầu.
+
+## Absolute vs relative import
+
+Trong package, ưu tiên **absolute** (`from tasknoter.storage import load`).
+Relative import (`from .storage import load`) cũng hoạt động nhưng thường gây
+rối khi tệp được di chuyển. Mặc định chọn absolute.

@@ -1,0 +1,20 @@
+{
+  "id": "i2-conflict-parse",
+  "title": "Conflict Parser",
+  "prompt": "A conflicted file contains lines `<<<<<<< HEAD`, `=======`, `>>>>>>> other`. Write `parseConflict(text)` returning `{ mine, theirs }` — the lines between the markers, joined with \"\\n\" (mine = HEAD side, theirs = the other side). Assume exactly one conflict block.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function parseConflict(text) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "extracts both sides",
+      "code": "const fn = new Function(code + \"\\nreturn { parseConflict };\");\nconst { parseConflict } = fn();\nconst text = \"const a = 1;\\n<<<<<<< HEAD\\nconst total = subtotal * 1.1;\\n=======\\nconst total = subtotal + fee;\\n>>>>>>> main\\n\";\nconst { mine, theirs } = parseConflict(text);\nif (mine !== \"const total = subtotal * 1.1;\") throw new Error(\"HEAD side extracted.\");\nif (theirs !== \"const total = subtotal + fee;\") throw new Error(\"Incoming side extracted.\");",
+      "hint": "Split into lines; track which side you're inside of between the three markers."
+    },
+    {
+      "name": "keeps multi-line sides intact",
+      "code": "const fn = new Function(code + \"\\nreturn { parseConflict };\");\nconst { parseConflict } = fn();\nconst text = \"<<<<<<< HEAD\\nline1\\nline2\\n=======\\nx\\n>>>>>>> main\\n\";\nconst { mine, theirs } = parseConflict(text);\nif (mine !== \"line1\\nline2\") throw new Error(\"All HEAD lines, joined.\");\nif (theirs !== \"x\") throw new Error(\"Theirs side joined too.\");",
+      "hint": "Collect arrays of lines, join at the end."
+    }
+  ]
+}

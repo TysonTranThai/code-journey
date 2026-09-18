@@ -1,0 +1,21 @@
+{
+  "id": "javaa-checkpoint-m11-task",
+  "title": "Checkpoint: KV over TCP",
+  "prompt": "Inside Solution, implement the protocol engine and prove it over loopback:\n1. `static String handle(String line, java.util.Map<String, String> store)` — one\nprotocol turn: parse the command, mutate/query the store, return the response LINE\n(no newline included). Rules: `PUT k v` → \"OK\"; `GET k` → \"VALUE v\" or \"MISSING\";\n`QUIT` → \"BYE\"; anything else (including empty and unknown commands) → \"ERR\".\nPUT with a value containing spaces: store everything after the second token.\n2. `static int serveOnce(int port)` — full loop: open ServerSocket on the port,\naccept ONE client, serve handle() per received line (store persists across lines\nwithin the session), write each response with \"\\n\" framing, stop after BYE, close\neverything in finally, return the number of protocol turns served. Use a 5s\nsoTimeout so a wedged client cannot hang the run. Runs in the calling thread —\nthe TEST connects from the same JVM via loopback.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "the protocol engine",
+      "code": "\njava.util.Map<String, String> store = new java.util.HashMap<>();\ncheckEq(Solution.handle(\"PUT a 1\", store), \"OK\", \"put accepted\");\ncheckEq(Solution.handle(\"GET a\", store), \"VALUE 1\", \"get returns stored\");\ncheckEq(Solution.handle(\"GET zz\", store), \"MISSING\", \"absent key\");\ncheckEq(Solution.handle(\"NONSENSE\", store), \"ERR\", \"unknown command\");\ncheckEq(Solution.handle(\"QUIT\", store), \"BYE\", \"session ends\");\n",
+      "hint": "Every command has exactly one answer."
+    },
+    {
+      "name": "over real loopback bytes",
+      "code": "\nint port = 45321 + (int) (System.nanoTime() % 1000);\nThread server = Thread.ofVirtual().start(() -> {\n    try { Solution.serveOnce(port); } catch (Exception ignored) { }\n});\nThread.sleep(300);   // let the server bind\ntry (java.net.Socket s = new java.net.Socket(\"localhost\", port)) {\n    s.setSoTimeout(5000);\n    var out = new java.io.PrintWriter(s.getOutputStream(), true, java.nio.charset.StandardCharsets.UTF_8);\n    var in = new java.io.BufferedReader(new java.io.InputStreamReader(s.getInputStream(), java.nio.charset.StandardCharsets.UTF_8));\n    out.println(\"PUT name buffy\");\n    checkEq(in.readLine(), \"OK\", \"server answered OK\");\n    out.println(\"GET name\");\n    checkEq(in.readLine(), \"VALUE buffy\", \"value over the wire\");\n    out.println(\"QUIT\");\n    checkEq(in.readLine(), \"BYE\", \"clean goodbye\");\n}\nserver.join(5000);\ncheckTrue(true, \"session complete\");\n",
+      "hint": "The full stack: sockets, framing, protocol, state."
+    }
+  ],
+  "level": "real-world"
+}

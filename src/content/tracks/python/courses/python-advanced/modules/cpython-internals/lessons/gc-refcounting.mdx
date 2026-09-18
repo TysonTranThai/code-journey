@@ -1,0 +1,35 @@
+## Reference counting and the garbage collector
+
+CPython's primary memory management is **refcounting**: every object counts
+its references; hitting zero frees it immediately (hence the instant
+`__del__`-less determinism CPython is known for).
+
+Refcounting alone cannot free **cycles** (a→b→a). A supplementary **cycle
+detector** — the generational `gc` module — periodically scans container
+objects for unreachable cycles:
+
+```python
+import gc, sys
+
+class Node:
+    def __init__(self):
+        self.partner = None
+
+a, b = Node(), Node()
+a.partner, b.partner = b, a
+del a, b                       # refcounts never hit zero — cycle!
+gc.collect()                   # cycle detector frees them
+```
+
+Practitioner takeaways:
+
+- `sys.getrefcount(x)` shows the count (always +1 for the argument itself).
+- Most "memory leaks" in Python are *reference leaks*: caches, registries,
+  closures, or loggers holding objects forever. Find them with
+  `gc.get_referrers(obj)` — who still points at this?
+- `gc.garbage` collects objects the collector could not free (usually
+  `__del__`-bearing cycles) — its growth is a design smell.
+- `weakref` lets a cache reference objects without keeping them alive — the
+  standard fix for registry-induced leaks.
+- `gc.disable()` can speed allocation-heavy batch jobs slightly, at the cost of
+  cycle leaks — measure before adopting.

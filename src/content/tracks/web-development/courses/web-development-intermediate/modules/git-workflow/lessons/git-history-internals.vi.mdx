@@ -1,0 +1,38 @@
+Bạn dùng `git commit` mỗi ngày. Giờ hãy xem nó thực sự tạo ra gì.
+
+## Commit là snapshot, không phải diff
+
+Mỗi commit lưu toàn bộ cây (snapshot) của mọi file, một message, tác giả, và một con trỏ trỏ tới commit **cha**. Lịch sử là một đồ thị có hướng:
+
+```text
+A ← B ← C        (main, tuyến tính)
+      \
+       D ← E      (feature, tách ra từ B)
+```
+
+`HEAD` trỏ tới một branch; branch chỉ là một con trỏ di động trỏ vào một commit. Branch _chỉ_ có vậy — 41 byte trong `.git/refs`.
+
+## Đọc đồ thị
+
+```bash
+git log --oneline --graph --all
+```
+
+Hãy học đọc thành thạo. Những câu hỏi dân chuyên nghề hỏi về lịch sử:
+
+- **Hai nhánh này tách nhau từ đâu?** `git merge-base main feature`
+- **Commit nào có trên main mà nhánh này chưa có?** `git log main ^feature` (đọc: commit với tới được từ main, loại trừ feature)
+- **Commit X chính xác thay đổi gì?** `git show X`
+- **Dòng này thay đổi lần cuối khi nào?** `git blame -L 10,20 file` — và `git log -S "chuỗi đó"` để tìm commit _đã đưa vào_ chuỗi đó (pickaxe search).
+
+## Con trỏ branch di chuyển; commit gần như là vĩnh viễn
+
+Khi bạn "xóa" một commit khỏi branch, commit object vẫn tồn tại — con trỏ branch đơn giản là ngừng trỏ tới nó. `git reflog` ghi lại mọi chuyển động của HEAD trong ~90 ngày, đó là lý do gần như không gì trong Git bị mất thật sự.
+
+## Ba trạng thái, một mô hình tinh thần
+
+- **working directory** — file của bạn ngay bây giờ
+- **staging area (index)** — snapshot _tiếp theo_, được dựng bằng `git add`
+- **repository (HEAD)** — lịch sử đã commit
+
+`git diff` (working vs index), `git diff --staged` (index vs HEAD), `git diff main` (working vs main). Người chuyên nghiệp luôn kiểm tra `git status` trước bất kỳ lệnh nào thay đổi lịch sử.

@@ -1,0 +1,21 @@
+{
+  "id": "cppa1-lifetime-extension",
+  "title": "Lifetime Extension — and Where It Fails",
+  "prompt": "Returning a reference to a temporary can never be safe, so `extended()` must back its reference with *static* storage. And `holderTrap()` returns the value a correct `Holder` would have captured **by value** instead of by reference.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n\n// Return content that remains valid after the call: back it with static storage.\nconst std::string& extended();\n\n// Simulate Holder { const std::string& s; Holder() : s(\"dangles!\") {} }\n// by returning the value the constructor *copied* into safety.\nstd::string holderTrap();\n",
+  "tests": [
+    {
+      "name": "extended stays valid",
+      "code": "const std::string& e = extended();\nCHECK_CONTAINS(e, \"static\");",
+      "hint": "Only static/dynamic storage survives; return a reference to a function-local static string containing \"static\"."
+    },
+    {
+      "name": "holderTrap returns the salvageable value",
+      "code": "std::string t = holderTrap();\nCHECK_CONTAINS(t, \"salvaged\");",
+      "hint": "Copy the temporary into a return value — return std::string(\"salvaged ...\"); — that is what a correct Holder does with a value member instead of a reference."
+    }
+  ]
+}

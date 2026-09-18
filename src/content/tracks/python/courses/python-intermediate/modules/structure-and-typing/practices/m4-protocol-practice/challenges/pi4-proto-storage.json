@@ -1,0 +1,21 @@
+{
+  "id": "pi4-proto-storage",
+  "title": "Two Storages, One Interface",
+  "prompt": "Implement MemoryStorage (dict-backed) and class PrefixedStorage wrapping another storage and adding 'p:' to every key on save and load (delegation + composition). Both satisfy the Storage protocol from the lesson.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "class MemoryStorage:\n    pass\n\nclass PrefixedStorage:\n    def __init__(self, inner):\n        pass\n",
+  "tests": [
+    {
+      "name": "memory storage round-trips",
+      "code": "m = MemoryStorage()\nm.save('k', 'v')\nassert m.load('k') == 'v'\nassert m.load('nope') is None",
+      "hint": "dict-backed save/load; missing key loads None."
+    },
+    {
+      "name": "prefixed storage delegates",
+      "code": "m = MemoryStorage()\np = PrefixedStorage(m)\np.save('k', 'v')\nassert m.load('p:k') == 'v'\nassert p.load('k') == 'v'",
+      "hint": "Prefixed adds 'p:' on the way in and reads through with the prefix."
+    }
+  ],
+  "level": "combination"
+}

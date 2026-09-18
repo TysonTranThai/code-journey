@@ -1,0 +1,21 @@
+{
+  "id": "pi2-dc-config",
+  "title": "Frozen Config",
+  "prompt": "Define a frozen dataclass Config(host='localhost', port=8080). Verify: two defaults are equal, and attempting to set config.port raises an exception (dataclasses.FrozenInstanceError).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "from dataclasses import dataclass\n\n@dataclass\nclass Config:\n    pass\n",
+  "tests": [
+    {
+      "name": "defaults are equal",
+      "code": "assert Config() == Config()\nassert Config(host='api.example.com').host == 'api.example.com'",
+      "hint": "Give host and port defaults in the class body."
+    },
+    {
+      "name": "frozen cannot be mutated",
+      "code": "import dataclasses\nc = Config()\ntry:\n    c.port = 9999\n    failed = False\nexcept dataclasses.FrozenInstanceError:\n    failed = True\nassert failed",
+      "hint": "frozen=True makes assignment raise FrozenInstanceError."
+    }
+  ],
+  "level": "independent"
+}

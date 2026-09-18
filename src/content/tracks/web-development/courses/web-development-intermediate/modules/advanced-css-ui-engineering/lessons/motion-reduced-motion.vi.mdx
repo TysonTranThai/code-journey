@@ -1,0 +1,48 @@
+Chuyển động truyền tải thay đổi trạng thái; làm thiếu cẩn thận, nó cũng truyền
+tải cả cơn say xe.
+
+## Chỉ animate các thuộc tính rẻ
+
+Chỉ có `transform` và `opacity` được animate trên compositor mà không gây
+layout hay paint. Mọi thứ khác (width, top, margin) làm trang re-flow từng
+khung hình:
+
+```css
+.drawer {
+  transition: transform 0.25s ease;
+}
+.drawer.is-closed {
+  transform: translateX(-100%);
+}
+```
+
+Di chuyển bằng transform; mờ dần bằng opacity; đổi kích thước bằng `scale()`
+khi hình học cho phép. Thời lượng dưới ~300ms cho tương tác; animation xuất
+hiện có thể dài hơn chút.
+
+## Tôn trọng tùy chọn của người dùng
+
+Một số người tắt animation ở cấp hệ điều hành. Hãy tôn trọng điều đó trên toàn
+site:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+Trạng thái vẫn đổi ngay lập tức — thông tin được giữ nguyên, chuyển động không
+bị ép lên ai.
+
+## Transition so với animation
+
+`transition` phản ứng với một thay đổi trạng thái giữa hai giá trị — hợp với
+hover, mở/đóng. Animation `@keyframes` chạy theo timeline riêng — vòng lặp,
+chuỗi nhiều bước. Nếu bạn đang viết JS để bật một transition, có lẽ bạn chỉ cần
+đổi class; nếu cần biên đạo nhiều bước, hãy dùng keyframes hoặc Web Animations
+API.

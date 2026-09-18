@@ -1,0 +1,30 @@
+{
+  "id": "i3-project-media-layer",
+  "title": "Project Grade: Interactive + Media",
+  "prompt": "GRADED PROJECT CHECKPOINT — add the interactive and media layers to your Documentation Hub: an FAQ of 3+ sibling <details name=\"faq\"> with non-empty summaries; a <dialog> destructive-action with aria-labelledby, autofocus on the safe button and a method=\"dialog\" form; a hero <picture> with avif + webp sources, JPEG fallback <img> with width/height and alt; a demo <iframe src=\"https://demo.kite.dev/embed\" sandbox=\"allow-scripts\" title loading=\"lazy\">.",
+  "difficulty": "advanced",
+  "level": "real-world",
+  "boilerplate": "<!-- Documentation Hub: interactive + media layer -->\n\n",
+  "tests": [
+    {
+      "name": "named FAQ accordion",
+      "code": "const ds = [...code.matchAll(/<details([^>]*)>/gi)];\nif (ds.length < 3) throw new Error(\"The FAQ needs at least three <details> items.\");\nconst names = ds.map((m) => (m[1].match(/name\\s*=\\s*[\"']([^\"']*)[\"']/i) || [])[1]);\nif (names.some((n) => !n)) throw new Error(\"Every FAQ item needs a name attribute.\");\nif ([...new Set(names)].length !== 1) {\n  throw new Error(\"All FAQ items must share ONE name value.\");\n}\nconst sums = [...code.matchAll(/<summary[^>]*>([\\s\\S]*?)<\\/summary>/gi)].map((m) =>\n  m[1].replace(/<[^>]*>/g, \"\").trim()\n);\nif (sums.length < 3 || sums.some((s) => !s)) {\n  throw new Error(\"Every <details> needs a non-empty <summary>.\");\n}",
+      "hint": "One shared name makes them an exclusive accordion; summaries carry the questions."
+    },
+    {
+      "name": "safe destructive dialog",
+      "code": "if (!/<dialog[\\s>]/i.test(code)) throw new Error(\"Add the destructive-action <dialog>.\");\nconst dlg = code.match(/<dialog[^>]*>([\\s\\S]*?)<\\/dialog>/i);\nif (!dlg) throw new Error(\"Keep the <dialog>.\");\nif (!/aria-labelledby\\s*=\\s*[\"'][^\"']+[\"']/i.test(dlg[0])) {\n  throw new Error(\"Name the dialog with aria-labelledby.\");\n}\nif (!/<form[^>]*method\\s*=\\s*[\"']dialog[\"']/i.test(dlg[0])) {\n  throw new Error('Include a form method=\"dialog\" inside it.');\n}\nconst af = [...dlg[0].matchAll(/<button([^>]*)>([\\s\\S]*?)<\\/button>/gi)].find((b) => /autofocus/i.test(b[1]));\nif (!af) throw new Error(\"One button needs autofocus.\");\nif (/delete|remove/i.test(af[2].replace(/<[^>]*>/g, \"\"))) {\n  throw new Error(\"autofocus belongs on the safe (Cancel) button.\");\n}",
+      "hint": "Named, form-closing, and focused on the safe action — the three dialog requirements."
+    },
+    {
+      "name": "format-fallback hero",
+      "code": "const pic = code.match(/<picture[\\s>][\\s\\S]*?<\\/picture>/i);\nif (!pic) throw new Error(\"The hero needs a <picture>.\");\nif (!/<source[^>]*type\\s*=\\s*[\"']image\\/avif[\"']/i.test(pic[0])) throw new Error(\"AVIF source missing.\");\nif (!/<source[^>]*type\\s*=\\s*[\"']image\\/webp[\"']/i.test(pic[0])) throw new Error(\"WebP source missing.\");\nconst img = pic[0].match(/<img[^>]*>/i);\nif (!img) throw new Error(\"The <picture> needs its fallback <img>.\");\nif (!/width\\s*=\\s*[\"']\\d+[\"']/i.test(img[0]) || !/height\\s*=\\s*[\"']\\d+[\"']/i.test(img[0])) {\n  throw new Error(\"The fallback <img> needs width and height.\");\n}\nconst alt = (img[0].match(/alt\\s*=\\s*[\"']([^\"']*)[\"']/i) || [])[1] || \"\";\nif (alt.trim().length < 4) throw new Error(\"The hero <img> needs meaningful alt.\");",
+      "hint": "Two modern sources, one honest fallback — dimensions and alt on the <img> only."
+    },
+    {
+      "name": "sandboxed demo embed",
+      "code": "const f = [...code.matchAll(/<iframe[^>]*>/gi)].find((m) => /demo\\.kite\\.dev/i.test(m[0]));\nif (!f) throw new Error('Add the demo iframe (src=\"https://demo.kite.dev/embed\").');\nconst s = (f[0].match(/sandbox\\s*=\\s*[\"']([^\"']*)[\"']/i) || [])[1] || \"\";\nif (!/allow-scripts/i.test(s)) throw new Error(\"The demo needs allow-scripts.\");\nif (/allow-same-origin/i.test(s)) {\n  throw new Error(\"Drop allow-same-origin — third-party demo content never keeps its origin.\");\n}\nif (!/title\\s*=\\s*[\"'][^\"']{4,}[\"']/i.test(f[0])) throw new Error(\"The iframe needs a title.\");\nif (!/loading\\s*=\\s*[\"']lazy[\"']/i.test(f[0])) throw new Error('The demo embed needs loading=\"lazy\".');",
+      "hint": "Scripts only, named, lazy — the least-privilege third-party embed from the lesson."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "csb-p17-boundary",
+  "title": "Boundary contract",
+  "prompt": "Implement `static bool IsAdult(int age)` — true for 18 and above (throws `ArgumentOutOfRangeException` for negative ages) — and `static string Grade(int score)` mapping 90+ → \"A\", 80–89 → \"B\", 70–79 → \"C\", 60–69 → \"D\", below 60 → \"F\" (each boundary inclusive at the bottom of its band; score outside 0–100 → `ArgumentOutOfRangeException`).",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "Cj.True(Solution.IsAdult(18), \"exactly 18\");\nCj.True(Solution.IsAdult(25), \"adult\");\nCj.False(Solution.IsAdult(17), \"still minor\");\nCj.Eq(Solution.Grade(90), \"A\", \"A starts at 90\");\nCj.Eq(Solution.Grade(89), \"B\", \"89 is B\");\nCj.Eq(Solution.Grade(60), \"D\", \"D starts at 60\");\nCj.Eq(Solution.Grade(59), \"F\", \"59 is F\");",
+      "hint": "Every band edge is asserted — both sides of each boundary."
+    },
+    {
+      "name": "rejects",
+      "code": "bool t1 = false;\ntry { Solution.IsAdult(-1); } catch (ArgumentOutOfRangeException) { t1 = true; }\nbool t2 = false;\ntry { Solution.Grade(101); } catch (ArgumentOutOfRangeException) { t2 = true; }\nbool t3 = false;\ntry { Solution.Grade(-5); } catch (ArgumentOutOfRangeException) { t3 = true; }\nCj.True(t1 && t2 && t3, \"out-of-range inputs rejected\");\nCj.Eq(Solution.Grade(0), \"F\", \"0 is a legal F\");",
+      "hint": "Rejects are explicit; the legal extremes still classify."
+    }
+  ],
+  "level": "guided"
+}

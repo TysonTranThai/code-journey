@@ -1,0 +1,37 @@
+## Khai báo và đánh chỉ số
+
+```c
+int grid[3][4];                    // 3 hàng, 4 cột
+grid[1][2] = 7;                    // hàng 1, cột 2
+int diag[2][2] = {{1, 0}, {0, 1}};
+```
+
+Mảng 2 chiều là một khối liền, lưu theo **hàng-trước**: bốn int của hàng 0,
+rồi hàng 1, rồi hàng 2. `[r][c]` là phần tử ở hàng r, cột c.
+
+## Lượt đi bằng vòng lặp lồng
+
+```c
+int grid[3][4] = {0};
+for (int r = 0; r < 3; r++) {
+    for (int c = 0; c < 4; c++) {
+        grid[r][c] = r * 10 + c;
+    }
+}
+```
+
+Vòng ngoài = hàng, vòng trong = cột. Tổng phần tử = 3 × 4 = 12.
+
+## Tổng theo hàng
+
+```c
+int row_sum(const int g[][4], int rows) {   // số cột là một phần của kiểu
+    int total = 0;
+    for (int r = 0; r < rows; r++)
+        for (int c = 0; c < 4; c++)
+            total += g[r][c];
+    return total;
+}
+```
+
+Chú ý dạng tham số: ngoặc đầu có thể trống, ngoặc thứ hai thì không.

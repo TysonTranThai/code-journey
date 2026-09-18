@@ -1,0 +1,20 @@
+{
+  "ca22-checkpoint-clinic": {
+    "title": "Kiểm tra: Phán quyết phòng khám bố cục",
+    "prompt": "ISO C. Cho `struct fat { int id; int score; char name[60]; };` (đã khai báo), cài `size_t touched_bytes(const char *layout, size_t n)` — layout 'interleaved' trả n * sizeof(struct fat); 'split' trả n * 2 * sizeof(int) (chỉ trường nóng: id + score, nằm trong mảng riêng); layout khác (hoặc NULL) trả (size_t)-1. n == 0 trả 0 với layout hợp lệ.",
+    "tests": [
+      {
+        "name": "trộn lẫn trả giá cho tên",
+        "hint": "Mọi bản ghi kéo mảng tên 60 byte qua lượt quét: n lần cỡ béo."
+      },
+      {
+        "name": "tách riêng chỉ trả giá cho nóng",
+        "hint": "Điểm và id nằm trong mảng riêng: 8 byte mỗi bản ghi, tên không bị đụng."
+      },
+      {
+        "name": "không và không rõ",
+        "hint": "Không bản ghi thì không chạm gì; layout không rõ là lỗi người gọi, bị từ chối."
+      }
+    ]
+  }
+}

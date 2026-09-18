@@ -1,0 +1,30 @@
+{
+  "id": "practice-input-types",
+  "title": "The Right Type for Each Field",
+  "prompt": "Input `type` changes everything: mobile keyboards, validation, semantics. Fill the three gaps: a password field, an email field, and a field for choosing a date of birth (use `type=\"date\"`). Each keeps its existing `id`.\n\nRules:\n- `password` for the secret, `email` for the address, `date` for the birthday.\n- Don't touch ids, labels, or anything else.",
+  "difficulty": "beginner",
+  "level": "guided",
+  "boilerplate": "<form>\n  <label for=\"pw\">Password</label>\n  <input id=\"pw\" type=\"text\">\n\n  <label for=\"mail\">Email</label>\n  <input id=\"mail\" type=\"text\">\n\n  <label for=\"dob\">Date of birth</label>\n  <input id=\"dob\" type=\"text\">\n</form>\n",
+  "tests": [
+    {
+      "name": "password field hides its characters",
+      "code": "if (!/<input[^>]*id=[\"']pw[\"'][^>]*type=[\"']password[\"']|<input[^>]*type=[\"']password[\"'][^>]*id=[\"']pw[\"']/i.test(code)) {\n  throw new Error(\"The Password field must use type=\\\"password\\\" so characters are masked.\");\n}",
+      "hint": "Change the pw input's type to \"password\" — it masks what is typed."
+    },
+    {
+      "name": "email field validates addresses",
+      "code": "if (!/<input[^>]*id=[\"']mail[\"'][^>]*type=[\"']email[\"']|<input[^>]*type=[\"']email[\"'][^>]*id=[\"']mail[\"']/i.test(code)) {\n  throw new Error(\"The Email field must use type=\\\"email\\\" — browsers then check the address shape.\");\n}",
+      "hint": "type=\"email\" on the mail input gives free validation and the right keyboard."
+    },
+    {
+      "name": "date field uses the date picker",
+      "code": "if (!/<input[^>]*id=[\"']dob[\"'][^>]*type=[\"']date[\"']|<input[^>]*type=[\"']date[\"'][^>]*id=[\"']dob[\"']/i.test(code)) {\n  throw new Error(\"The date of birth must use type=\\\"date\\\" — the browser supplies a date picker.\");\n}",
+      "hint": "type=\"date\" turns the dob input into a real date picker."
+    },
+    {
+      "name": "ids and labels untouched",
+      "code": "for (const id of [\"pw\", \"mail\", \"dob\"]) {\n  if (!new RegExp(`id=[\"']${id}[\"']`, \"i\").test(code)) {\n    throw new Error(`The id \"${id}\" disappeared — change only the type attributes.`);\n  }\n}",
+      "hint": "Only the three type values change; ids stay exactly as they are."
+    }
+  ]
+}

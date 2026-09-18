@@ -1,0 +1,18 @@
+{
+  "title": "Giữ cho index trung thực",
+  "prompt": "Mở rộng ý tưởng repository: một store có index trong đó mọi lần ghi\nduy trì một index phụ. Cài trong `Solution`:\n- `record Book(String isbn, String genre)`\n- `static class IndexedStore` với `save(Book b)` (upsert),\n  `List<Book> byGenre(String genre)` (thứ tự chèn), `int size()`,\n  và `remove(String isbn)` (boolean).\n\nIndex là hợp đồng: `byGenre` KHÔNG BAO GIỜ được trả một cuốn sách đã đổi\ngenre, re-save, hoặc bị xóa. Upsert phải dời sách giữa các bucket của\nindex — đúng bug trong bài học.",
+  "tests": [
+    {
+      "name": "Index genre nhóm đúng",
+      "hint": "Các bucket phản chiếu dữ liệu đã lưu."
+    },
+    {
+      "name": "Upsert dời bucket",
+      "hint": "Bug index cũ: bucket cũ phải mất entry."
+    },
+    {
+      "name": "Remove dọn index",
+      "hint": "Xóa phải chạm cả index."
+    }
+  ]
+}

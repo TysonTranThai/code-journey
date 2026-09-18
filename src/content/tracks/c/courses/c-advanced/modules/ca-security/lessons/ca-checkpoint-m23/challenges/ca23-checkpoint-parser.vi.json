@@ -1,0 +1,24 @@
+{
+  "ca23-checkpoint-parser": {
+    "title": "Kiểm tra: Bộ phân tích trường được gia cố",
+    "prompt": "ISO C. Một bản ghi là `name:score` (tên tối đa 15 ký tự, score là số nguyên thập phân). Cài `int parse_record(const char *line, char *name, size_t namesz, int *score)` — tách tại dấu ':' ĐẦU TIÊN; sao tên vào name chỉ khi vừa (tính NUL), phân tích score với độ nghiêm ngặt của strtol (chỉ chữ số, cho phép +/- đầu; rỗng hoặc rác phía sau thì từ chối). Trả 0 khi thành công; -1 khi bất kỳ từ chối nào (NULL, không có dấu hai chấm, tên quá dài, score xấu). Output khi bị từ chối không bị đụng.",
+    "tests": [
+      {
+        "name": "đường vui",
+        "hint": "world:42 phân tích sạch vào cả hai output."
+      },
+      {
+        "name": "tên tràn",
+        "hint": "Tên 5 ký tự không vừa 4 byte: từ chối, score không bị đụng."
+      },
+      {
+        "name": "score xấu từ chối",
+        "hint": "exit:3 không có chữ số sau tiền tố dấu hai chấm — từ chối, không bao giờ zero câm lặng của atoi."
+      },
+      {
+        "name": "không có dấu hai chấm",
+        "hint": "Dòng không có dấu hai chấm không phải bản ghi: từ chối."
+      }
+    ]
+  }
+}

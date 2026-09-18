@@ -1,0 +1,20 @@
+{
+  "id": "badge-the-card",
+  "title": "Badge the Card",
+  "prompt": "Put a 'NEW' badge over the offer card's top-right corner:\n\n- Give `.card` the position value that makes it an anchor for absolutely-positioned children.\n- Give `.badge` absolute positioning, 8px from the top and right of the card.\n- The badge must be positioned against the CARD — not the page.",
+  "difficulty": "beginner",
+  "boilerplate": "<style>\n  .card {\n    width: 280px;\n    padding: 24px;\n    border: 1px solid silver;\n    margin: 48px;\n  }\n\n  .badge {\n    padding: 2px 8px;\n    background: gold;\n  }\n</style>\n\n<div class=\"card\">\n  <span class=\"badge\">NEW</span>\n  <h3>Spring offer</h3>\n  <p>Three months half price.</p>\n</div>\n",
+  "tests": [
+    {
+      "name": "card is the anchor",
+      "code": "const card = code.match(/\\.card\\s*{([^}]*)}/i);\nif (!card || !/position\\s*:\\s*relative\\s*;/i.test(card[1])) {\n  throw new Error(\"Give .card position: relative; — it becomes the coordinate system for the badge.\");\n}",
+      "hint": "An absolutely-positioned child looks for the nearest positioned ancestor — make the card one."
+    },
+    {
+      "name": "badge is absolute with offsets",
+      "code": "const badge = code.match(/\\.badge\\s*{([^}]*)}/i);\nif (!badge) {\n  throw new Error(\"Keep the .badge rule.\");\n}\nif (!/position\\s*:\\s*absolute\\s*;/i.test(badge[1])) {\n  throw new Error(\"Set .badge to position: absolute;\");\n}\nif (!/top\\s*:\\s*8px\\s*;/i.test(badge[1]) || !/right\\s*:\\s*8px\\s*;/i.test(badge[1])) {\n  throw new Error(\"Offset the badge 8px from top and right.\");\n}",
+      "hint": "top: 8px; right: 8px; measure from the positioned ancestor's edges."
+    }
+  ],
+  "level": "guided"
+}

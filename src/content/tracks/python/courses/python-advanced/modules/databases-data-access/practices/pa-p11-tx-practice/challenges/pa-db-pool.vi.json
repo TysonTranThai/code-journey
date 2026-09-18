@@ -1,0 +1,14 @@
+{
+  "title": "Pool biết kích thước của chính nó",
+  "prompt": "Cài `ConnectionPool(size)` với `PoolExhausted`:\n\n- khởi tạo với `size` kết nối rảnh (`'conn-0'` … `'conn-(size-1)'`)\n- `checkout()` trả một kết nối rảnh, hoặc raise `PoolExhausted('pool exhausted')` khi không còn — dung lượng không bao giờ bị vượt\n- `checkin(conn, dirty=False)` trả kết nối về tập rảnh; nếu `dirty` là True thì tên trả về được thêm `':clean'` (mô phỏng ROLLBACK trước khi tái sử dụng) — tên đó là thứ lần checkout kế tiếp trao đi\n- property `in_use`: bao nhiêu kết nối đang được cho mượn\n\nQuy tắc bị kiểm: pool N không bao giờ cho mượn quá N.",
+  "tests": [
+    {
+      "name": "Dung lượng là trần cứng, tái sử dụng hoạt động",
+      "hint": "Chỉ cho mượn từ tập rảnh; kết nối đã trả quay lại phục vụ."
+    },
+    {
+      "name": "Kết nối bẩn được rollback trước khi tái sử dụng",
+      "hint": "Một kết nối mượn phải trả về sạch sẽ."
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+Hai định dạng tuần tự hóa phủ phần lớn công việc hằng ngày. **CSV** là các
+dòng gồm nhiều trường (bảng tính, file xuất); **JSON** là cấu trúc lồng nhau
+(API, cấu hình).
+
+```python
+import csv, json
+from pathlib import Path
+
+# CSV: luôn newline="" khi mở, luôn DictReader/DictWriter
+with Path("people.csv").open(newline="", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))          # mỗi dòng: dict[str, str]
+
+with Path("people.csv").open("w", newline="", encoding="utf-8") as f:
+    writer = csv.DictWriter(f, fieldnames=["name", "age"])
+    writer.writeheader()
+    writer.writerows(rows)
+```
+
+```python
+# JSON: dumps/loads cho chuỗi, dump/load cho tệp
+record = {"name": "An", "tags": ["admin", "staff"]}
+text = json.dumps(record, ensure_ascii=False, indent=2)
+back = json.loads(text)
+
+path = Path("record.json")
+path.write_text(json.dumps(record), encoding="utf-8")
+loaded = json.loads(path.read_text(encoding="utf-8"))
+```
+
+## Sự trung thực của vòng khép
+
+Hãy để ý mỗi định dạng KHÔNG giữ lại gì: ô của CSV là **chuỗi** — `"30"`
+phải tự chuyển lại thành `int`. JSON không có tuple, không có ngày tháng, và
+không có kiểu riêng của Python. Một "vòng khép" nghĩa là **thiết kế schema**
+(những kiểu nào, bắt buộc gì) và **kiểm tra hợp lệ tại ranh giới** (kỷ luật
+của module 5). Đừng bao giờ nạp JSON không tin cậy thẳng vào logic của bạn:
+hãy kiểm tra key và kiểu trước.
+
+## Chú thích an ninh
+
+`json` an toàn với dữ liệu không tin cậy. `pickle` thì KHÔNG — nạp một
+pickle độc hại là chạy mã của kẻ tấn công. Quy tắc: `json` cho bất cứ thứ gì
+vượt ranh giới tin cậy, `pickle` chỉ cho cache cục bộ tin cậy của chính bạn.

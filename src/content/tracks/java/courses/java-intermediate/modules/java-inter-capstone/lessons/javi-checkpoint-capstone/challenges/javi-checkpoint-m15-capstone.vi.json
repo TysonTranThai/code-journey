@@ -1,0 +1,22 @@
+{
+  "title": "Bộ theo dõi tích hợp",
+  "prompt": "Lắp ráp TOÀN BỘ tracker trong `Solution` (được tái dùng code cột\nmốc của bạn):\n- `record Expense(String id, String category, int cents)` với kiểm tra\n  constructor (id/category rỗng, cents không dương ném\n  `IllegalArgumentException` kèm message cụ thể)\n- `interface ExpenseStore { void save(Expense e); Optional<Expense> find(String id);\n  List<Expense> all(); }` + `InMemoryExpenseStore`\n- `static class ExpenseService` với constructor `(ExpenseStore store)`:\n  - `void add(String id, String category, int cents)` — dựng record (để\n    phần kiểm tra ném), rồi save\n  - `Map<String, Integer> totalsByCategory()` — tổng hợp bằng stream\n  - `Optional<String> topExpense()` — cents cao nhất, hòa → id nhỏ hơn\n\nTest checkpoint điều khiển ba lớp cùng lúc, đúng như các cột mốc hứa.",
+  "tests": [
+    {
+      "name": "Thêm và tổng trọn vẹn",
+      "hint": "Service → record có kiểm tra → store → báo cáo stream."
+    },
+    {
+      "name": "Kiểm tra chặn xuyên suốt stack",
+      "hint": "Dữ liệu xấu không bao giờ chạm store."
+    },
+    {
+      "name": "topExpense với tie-break",
+      "hint": "Phân định hòa mang tính xác định."
+    },
+    {
+      "name": "Cập nhật chảy qua",
+      "hint": "Upsert hiện rõ ở tầng báo cáo."
+    }
+  ]
+}

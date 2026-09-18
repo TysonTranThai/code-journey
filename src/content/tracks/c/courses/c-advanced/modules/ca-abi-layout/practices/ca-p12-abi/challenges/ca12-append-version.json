@@ -1,0 +1,21 @@
+{
+  "id": "ca12-append-version",
+  "title": "Append-Only Versioning",
+  "prompt": "Old struct in your editor: `struct cfg_v1 { int mode; int level; };`. Implement `size_t cfg_v1_size(void)` returning sizeof(struct cfg_v1), and — defining `struct cfg_v2 { int mode; int level; int flags; int reserved; };` — `int cfg_v2_prefix_compatible(void)` returning 1 iff the v2 members that v1 knew sit at identical offsets (verify with offsetof, do not hardcode 1).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstruct cfg_v1 { int mode; int level; };\n#include <stddef.h>\n",
+  "tests": [
+    {
+      "name": "prefix stability",
+      "code": "CHECK_EQ(cfg_v2_prefix_compatible(), 1);",
+      "hint": "offsetof(mode) and offsetof(level) agree across v1 and v2 — appending never moves the prefix."
+    },
+    {
+      "name": "new tail adds size",
+      "code": "CHECK_EQ(cfg_v1_size() <= 8, 1);",
+      "hint": "The v1 struct is its two ints; v2 grows only by appended members."
+    }
+  ],
+  "level": "combination"
+}

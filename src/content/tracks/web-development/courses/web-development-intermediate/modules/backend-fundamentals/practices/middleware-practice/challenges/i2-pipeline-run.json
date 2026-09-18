@@ -1,0 +1,20 @@
+{
+  "id": "i2-pipeline-run",
+  "title": "Pipeline Runner",
+  "prompt": "Write `runPipeline(middlewares, handler)` — middlewares is an array of functions (req, next); handler is (req). Each middleware may mutate req then must call next(). Return the final req after the full chain ran. If a middleware never calls next, the chain stops (and you still return the req as-is).",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function runPipeline(middlewares, handler) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "layers run in order",
+      "code": "const fn = new Function(code + \"\\nreturn { runPipeline };\");\nconst { runPipeline } = fn();\nconst order = [];\nconst req = runPipeline(\n  [\n    (r, next) => { order.push(\"a\"); r.a = 1; next(); },\n    (r, next) => { order.push(\"b\"); r.b = 2; next(); },\n  ],\n  (r) => { order.push(\"handler\"); r.done = true; }\n);\nif (order.join(\",\") !== \"a,b,handler\") throw new Error(\"Onion order.\");\nif (req.done !== true || req.a !== 1 || req.b !== 2) throw new Error(\"Mutations accumulate.\");\n",
+      "hint": "Closure over an index; next advances it."
+    },
+    {
+      "name": "chain can stop early",
+      "code": "const fn = new Function(code + \"\\nreturn { runPipeline };\");\nconst { runPipeline } = fn();\nconst order = [];\nconst req = runPipeline(\n  [\n    (r, next) => { order.push(\"guard\"); r.blocked = true; },  // no next()\n    (r, next) => { order.push(\"handler\"); },\n  ],\n  (r) => { order.push(\"never\"); }\n);\nif (order.join(\",\") !== \"guard\") throw new Error(\"A guard that doesn't call next ends the chain.\");\nif (req.blocked !== true) throw new Error(\"Req still returned.\");\n",
+      "hint": "next is only called by the middleware — respect its choice."
+    }
+  ]
+}

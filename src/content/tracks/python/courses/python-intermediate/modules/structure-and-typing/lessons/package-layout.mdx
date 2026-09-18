@@ -1,0 +1,38 @@
+A **package** is a directory of modules (historically one containing
+`__init__.py`). Packages give you dotted names and a place for shared setup:
+
+```python
+# tasknoter/
+#   pyproject.toml
+#   src/
+#     tasknoter/
+#       __init__.py        # makes 'tasknoter' a package
+#       storage.py
+#       cli.py
+
+from tasknoter.storage import load_tasks
+```
+
+The **src/ layout** (a package directory inside `src/`) is the packaging
+community's recommendation: it makes it impossible to accidentally import
+the local copy instead of the installed one, because tests run against the
+installed package.
+
+## Layering a growing application
+
+Professional Python codebases tend to separate three concerns:
+
+- **domain** — the data and rules (`Task`, `complete()`, validation). Knows nothing about IO.
+- **storage** — saving/loading (files, sqlite). Talks to the domain.
+- **interface** — CLI or web handlers. Talks to both, contains no business rules.
+
+Arrows point one way: `interface → domain ← storage`. The moment your CLI
+function contains SQL and validation in the same 100 lines, tests get hard
+and changes get risky. Layering is what makes module 7's testing and the
+capstone enjoyable instead of painful.
+
+## Absolute vs relative imports
+
+Inside a package prefer **absolute** imports (`from tasknoter.storage import
+load`). Relative imports (`from .storage import load`) work too but are a
+frequent source of confusion when files move. Pick absolute by default.

@@ -1,0 +1,18 @@
+{
+  "title": "Checkpoint: Pipeline fetch bền bỉ",
+  "prompt": "Hiện thực pipeline: fan-out mọi fetch, timeout từng lời gọi (abandon), ghi \"key=ok\"/\"key=timeout\", hủy caller dừng ngay với OperationCanceledException, Report xếp theo key.",
+  "tests": [
+    {
+      "name": "fan-out with per-call timeout",
+      "hint": "Khởi tạo mọi CjFlaky.FetchAsync; await từng cái với task.WaitAsync(perCall, ct), bắt TimeoutException -> \"key=timeout\"."
+    },
+    {
+      "name": "caller cancel aborts",
+      "hint": "ct.ThrowIfCancellationRequested() trước fan-out VÀ truyền ct cho mỗi WaitAsync — hủy đến ngay."
+    },
+    {
+      "name": "report sorted by key",
+      "hint": "results.OrderBy(phần key).Join bằng '|'."
+    }
+  ]
+}

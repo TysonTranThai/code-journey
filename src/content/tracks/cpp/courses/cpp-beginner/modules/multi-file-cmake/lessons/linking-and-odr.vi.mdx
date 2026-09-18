@@ -1,0 +1,21 @@
+## Hai pha, hai công cụ
+
+1. **Biên dịch** từng `.cpp` → một file đối tượng (`.o`): mã máy với các tên *chưa giải quyết* ("tôi gọi một hàm tên `add` — ai đó đang giữ nó").
+2. **Liên kết** tất cả file đối tượng + thư viện → một file thực thi: mọi tên chưa giải quyết tìm thấy định nghĩa của nó.
+
+## Hai lỗi nổi tiếng của linker
+
+**`undefined reference to 'add'`** — bạn đã hứa (khai báo), nhưng không ai thực hiện (không có định nghĩa ở đâu cả). Nguyên nhân thường gặp: quên biên dịch file `.cpp`, đánh vần sai chữ ký của định nghĩa, quên cờ thư viện.
+
+**`multiple definition of 'add'`** — định nghĩa xuất hiện hai lần. Nguyên nhân kinh điển: định nghĩa một hàm non-inline *ngay trong header* mà nhiều file `.cpp` include. Mỗi translation unit có một bản sao; linker từ chối lựa chọn thay bạn.
+
+## Các quy tắc giữ header "link được"
+
+- Hàm: khai báo trong header, định nghĩa trong một `.cpp`.
+- Một ngoại lệ bạn sẽ thấy: các hàm nhỏ định nghĩa ngay trong thân class trong header là `inline` ngầm — linker tự gộp chúng.
+- Hằng toàn cục: `constexpr`/`const` ở phạm vi namespace mặc định có liên kết nội bộ (mỗi file một bản riêng — ổn), hoặc dùng `inline constexpr` trong header để có một bản dùng chung.
+- Đừng bao giờ đặt `using namespace std;` trong header — nó rò ra mọi nơi include nó (cảnh báo của module 1, giờ bạn biết tầm sát thương).
+
+## Vì sao "undefined reference" không nêu số dòng
+
+Linker làm việc với file đối tượng — số dòng của bạn đã biến mất. Hãy đọc *tên xáo trộn* trong thông báo (`add(int, int)`) và so với khai báo của bạn từng ký tự; một chữ ký lệch nhau vẫn biên dịch ngon lành và chỉ vỡ ở đây. Đây là lỗi dạy bạn rằng C++ có hai tầng kiểu lỗi khác nhau.

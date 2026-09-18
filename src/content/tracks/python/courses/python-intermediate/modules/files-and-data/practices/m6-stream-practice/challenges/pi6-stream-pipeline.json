@@ -1,0 +1,26 @@
+{
+  "id": "pi6-stream-pipeline",
+  "title": "Streaming Word Count",
+  "prompt": "Implement count_words(paths) where paths is a list of text files. Stream every file line by line (never read_text the whole file) and return the total count of whitespace-separated tokens across all files.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "from pathlib import Path\n\ndef count_words(paths):\n    pass\n",
+  "tests": [
+    {
+      "name": "counts across files",
+      "code": "from pathlib import Path\nimport tempfile\nd = Path(tempfile.mkdtemp())\na = d / 'a.txt'; a.write_text('one two three', encoding='utf-8')\nb = d / 'b.txt'; b.write_text('four' + chr(10) + 'five six', encoding='utf-8')\nassert count_words([a, b]) == 6",
+      "hint": "Iterate each file line by line; split and accumulate."
+    },
+    {
+      "name": "empty files contribute zero",
+      "code": "from pathlib import Path\nimport tempfile\np = Path(tempfile.mkdtemp()) / 'e.txt'; p.write_text('', encoding='utf-8')\nassert count_words([p]) == 0",
+      "hint": "No tokens in an empty stream."
+    },
+    {
+      "name": "streams instead of slurping",
+      "code": "from pathlib import Path\nimport tempfile\np = Path(tempfile.mkdtemp()) / 'big.txt'\np.write_text('a b c' + chr(10) + 'd e', encoding='utf-8')\ndef _no_slurp(self, *a, **k):\n    raise AssertionError('read_text() slurps the whole file - stream line by line instead')\nPath.read_text = _no_slurp\nassert count_words([p]) == 5\n",
+      "hint": "read_text() loads the entire file into memory; iterate the file object line by line."
+    }
+  ],
+  "level": "independent"
+}

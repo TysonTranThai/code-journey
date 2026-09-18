@@ -1,0 +1,20 @@
+{
+  "id": "i2-rollback-or-fix",
+  "title": "Rollback or Fix-Forward",
+  "prompt": "Write `respond(incident)` — incident is { dataLoss: bool, fixReady: bool, mitigationWorks: bool }. Rules: if dataLoss => \"rollback\" always (protect data first). Otherwise if mitigationWorks && fixReady => \"fix-forward\". Otherwise if mitigationWorks && !fixReady => \"feature-off\" (ship the mitigation now, fix later). Otherwise => \"rollback\".",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function respond(incident) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "data loss always rolls back",
+      "code": "const fn = new Function(code + \"\\nreturn { respond };\");\nconst { respond } = fn();\nif (respond({ dataLoss: true, fixReady: true, mitigationWorks: true }) !== \"rollback\") {\n  throw new Error(\"Data loss => rollback, no exceptions.\");\n}\nif (respond({ dataLoss: true, fixReady: false, mitigationWorks: false }) !== \"rollback\") {\n  throw new Error(\"Even with nothing ready — protect the data.\");\n}\n",
+      "hint": "The first rule has no exceptions."
+    },
+    {
+      "name": "healthy incidents resolve forward",
+      "code": "const fn = new Function(code + \"\\nreturn { respond };\");\nconst { respond } = fn();\nif (respond({ dataLoss: false, fixReady: true, mitigationWorks: true }) !== \"fix-forward\") {\n  throw new Error(\"Mitigation works and fix ready => fix forward.\");\n}\nif (respond({ dataLoss: false, fixReady: false, mitigationWorks: true }) !== \"feature-off\") {\n  throw new Error(\"Mitigation only => disable the feature now, fix later.\");\n}\nif (respond({ dataLoss: false, fixReady: true, mitigationWorks: false }) !== \"rollback\") {\n  throw new Error(\"Nothing mitigates => roll back.\");\n}\n",
+      "hint": "Mitigation is the pivot: works => forward-ish, does not => rollback."
+    }
+  ]
+}

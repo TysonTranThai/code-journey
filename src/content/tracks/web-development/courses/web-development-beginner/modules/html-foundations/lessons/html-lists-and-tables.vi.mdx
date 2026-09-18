@@ -1,0 +1,80 @@
+Các trang thật luôn nhóm mọi thứ lại: các bước của một công thức, nguyên liệu, một lịch trình, một bảng giá. HTML có những cấu trúc được chế tạo riêng cho từng việc đó.
+
+## Ba loại danh sách
+
+**Danh sách không thứ tự** (`<ul>`) — thứ tự không quan trọng:
+
+```html
+<ul>
+  <li>Flour</li>
+  <li>Water</li>
+  <li>Salt</li>
+</ul>
+```
+
+**Danh sách có thứ tự** (`<ol>`) — thứ tự _có_ quan trọng. Phần đánh số do trình duyệt tự sinh, nên bạn không bao giờ phải tự gõ số:
+
+```html
+<ol>
+  <li>Preheat the oven to 220°C.</li>
+  <li>Mix the dry ingredients.</li>
+  <li>Add water and knead.</li>
+</ol>
+```
+
+**Danh sách mô tả** (`<dl>`) — các cặp thuật ngữ/mô tả, dùng cho bảng chú giải và siêu dữ liệu:
+
+```html
+<dl>
+  <dt>HTML</dt>
+  <dd>Structure and content of a page</dd>
+  <dt>CSS</dt>
+  <dd>Appearance and layout</dd>
+</dl>
+```
+
+Quy tắc áp dụng cho cả ba: mỗi mục là một `<li>` (hoặc `dt`/`dd`), và danh sách chỉ được chứa trực tiếp các phần tử con của riêng nó — một `<p>` không thể nằm trực tiếp trong `<ul>`; nó phải nằm trong một `<li>`.
+
+## Chọn đúng loại danh sách
+
+Hãy hỏi một câu: _liệu ý nghĩa có thay đổi nếu các mục bị xáo trộn thứ tự?_ Danh sách đi chợ — không, vậy dùng `<ul>`. Các bước công thức — có, vậy dùng `<ol>`. Đây không phải là quỷ tinh tế: trình đọc màn hình đọc "danh sách với 5 mục" và, với danh sách có thứ tự, đọc cả vị trí — lựa chọn đúng là một dạng accessibility vô hình.
+
+## Bảng dùng cho dữ liệu, không bao giờ dùng cho bố cục
+
+Một `<table>` hiển thị một lưới _dữ liệu liên quan_ trong đó hàng và cột có ý nghĩa:
+
+```html
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Plan</th>
+      <th scope="col">Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Free</td>
+      <td>$0</td>
+    </tr>
+    <tr>
+      <td>Pro</td>
+      <td>$9</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+- `<tr>` là một hàng; `<th>` là ô tiêu đề; `<td>` là ô dữ liệu.
+- `<thead>`/`<tbody>` nhóm các phần (mỗi bảng một cái).
+- `scope="col"` trên một `<th>` cho công nghệ hỗ trợ biết tiêu đề áp dụng cho cái gì — đó là cách trình đọc màn hình có thể đọc "Price: $9" thay vì đọc lưới từng ô một.
+
+Trước khi CSS ra đời, người ta lạm dụng bảng để bố trí cả trang. Đừng bao giờ làm vậy: nó phá hủy khả năng tiếp cận và vỡ trên mọi kích thước màn hình. Nếu nó không phải là dữ liệu thực sự dạng bảng, nó không phải là bảng.
+
+## Bạn đã học được gì
+
+- `<ul>`, `<ol>`, `<dl>` và khi nào mỗi loại là đúng
+- Đánh số do trình duyệt sinh; các mục là `<li>`
+- Danh sách chỉ được chứa phần tử con của riêng nó
+- `<table>` với `thead`/`tbody`, `th scope`, và quy tắc không dùng bảng để bố cục
+
+**Tiếp theo:** HTML ngữ nghĩa — chọn phần tử theo ý nghĩa.

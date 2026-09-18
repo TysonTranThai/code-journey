@@ -1,0 +1,22 @@
+## Các dạng
+
+```csharp
+Func<int, int> square = x => x * x;              // expression lambda
+Func<int, int> step  = x => { return x + 1; };   // statement lambda
+Func<int, int> zero  = _ => 0;                   // bỏ qua tham số
+Action shout = () => Console.WriteLine("hey!");  // không tham số
+```
+
+`=>` đọc là "đi tới". Trình biên dịch suy ra kiểu tham số từ kiểu delegate. `_` là tên cho tham số bạn cố ý bỏ qua.
+
+## Closure: lambda có trí nhớ
+
+```csharp
+int offset = 10;
+Func<int, int> shift = x => x + offset;   // chụp offset
+shift(5);   // 15
+```
+
+Lambda có thể dùng biến từ phạm vi bao quanh — trình biên dịch bọc chúng vào một đối tượng ẩn để lambda sống lâu hơn lời gọi phương thức. Đó là **closure**, và đó là lý do `Where(n => n > min)` hoạt động: `min` đi cùng lambda.
+
+Bẫy kinh điển: biến bị chụp được *dùng chung*, không phải sao chép. Nếu `offset` đổi sau này, `shift` thấy giá trị mới. Và chụp biến vòng lặp mà bạn thay đổi sẽ cho mọi lambda cùng một giá trị-cuối-cùng.

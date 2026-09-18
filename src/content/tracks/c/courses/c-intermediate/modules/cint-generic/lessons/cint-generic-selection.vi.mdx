@@ -1,0 +1,46 @@
+## Chọn tại compile-time theo kiểu
+
+`_Generic` (có từ C11) là overloading không cần hàm:
+
+```c
+#define type_name(x) _Generic((x), \
+    int: "int", double: "double", \
+    char *: "char *", default: "other")
+```
+
+Bộ chọn `(x)` *không được tính giá trị* — chỉ kiểu của nó được xét sau
+lvalue conversion. Mỗi liên kết cho một biểu thức khác nhau; compiler
+ghép vào đúng một. Điều đó biến `_Generic` thành keo dán cho API generic
+type-safe:
+
+```c
+#define vec_push(v, val) _Generic((val), \
+    int:    vpush_i, \
+    double: vpush_d, \
+    default: vpush_i)((v), (val))
+```
+
+Macro dispatch tới đúng hàm cụ thể *lúc compile* — không tốn runtime,
+kiểm kiểu đầy đủ, không `void*` ở chỗ gọi. Người dùng viết
+`vec_push(v, 42)` và compiler kiểm chứng `42` khớp một nhánh đã cài.
+
+## Ba tầng, xếp hạng trung thực
+
+1. **Hàm kiểu cụ thể** (`vpush_i`) — việc thật, kiểm kiểu đầy đủ.
+2. **Macro dispatch `_Generic`** — chọn lúc compile; liệt kê tập được
+   hỗ trợ; `default:` nên hỏng ồn ào.
+3. **`void *` thô + size + callback** — động cơ phổ quát bên dưới, cần
+   khi *bản thân kiểu* là tham số runtime.
+
+_Generic không dispatch trên giá trị runtime, không liệt kê được mọi
+kiểu, và không chạy với pointer-to-incomplete. Nó giết các typo *thường
+gặp*; động cơ vẫn xử lý trường hợp tổng quát.
+
+## _Static_assert chốt hợp đồng
+
+```c
+_Static_assert(sizeof(int) == 4, "vec_i assumes 4-byte int");
+```
+
+Hợp đồng compile-time trên giả định biểu diễn: build gãy trên platform
+lạ tốt hơn hỏng âm thầm tới tay người dùng.

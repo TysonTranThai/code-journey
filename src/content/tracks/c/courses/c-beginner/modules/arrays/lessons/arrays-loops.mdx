@@ -1,0 +1,37 @@
+## The visit pattern
+
+```c
+int a[5] = {4, 8, 15, 16, 23};
+int sum = 0;
+for (int i = 0; i < 5; i++) {
+    sum += a[i];
+}
+```
+
+Three canonical walks: compute a value from all elements (sum/max), transform
+in place (`a[i] = a[i] * 2`), and build a new array from an old one.
+
+## The identity: last index is size-1
+
+```c
+int a[5];
+for (int i = 0; i <= 5; i++) {   // BUG: i == 5 is out of bounds
+    a[i] = i;
+}
+```
+
+`i < size` is the loop condition for arrays. `i <= size` writes one element
+past the end — sometimes it "works", sometimes it corrupts a neighbor,
+always it is undefined behavior.
+
+## Counting and finding
+
+```c
+int count = 0, found = -1;
+for (int i = 0; i < 5; i++) {
+    if (a[i] > 10) count++;          // count matches
+    if (a[i] == 15) found = i;       // remember the index
+}
+```
+
+`found = -1` as "not present" is a C idiom you will use everywhere.

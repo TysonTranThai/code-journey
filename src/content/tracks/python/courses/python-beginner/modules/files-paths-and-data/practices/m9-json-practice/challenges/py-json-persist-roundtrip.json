@@ -1,0 +1,16 @@
+{
+  "id": "py-json-persist-roundtrip",
+  "title": "Mini Build: Save Then Load",
+  "prompt": "The persistence cycle in one program: build a list of two dicts (task, done) for tasks \"write report\" (done) and \"send email\" (not done), save it to tasks.json, then load it back and print the COUNT of unfinished tasks (one line, just the number).",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "",
+  "tests": [
+    {
+      "name": "unfinished count printed",
+      "code": "assert printed[0] == \"1\", f\"got {printed}\"\nimport json as _j\nwith open(\"tasks.json\", encoding=\"utf-8\") as _f:\n    _d = _j.load(_f)\nassert isinstance(_d, list) and len(_d) == 2 and all(\"task\" in t and \"done\" in t for t in _d), f\"bad file {_d}\"",
+      "hint": "save with json.dump; load with json.load; count entries where not done."
+    }
+  ],
+  "level": "mini-build"
+}

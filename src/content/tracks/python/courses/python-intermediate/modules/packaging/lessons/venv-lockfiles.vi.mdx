@@ -1,0 +1,14 @@
+Khóa Beginner của bạn đã dùng `venv` + `pip install` + `requirements.txt`.
+Intermediate thêm phần *vì sao* và tầng *tái lập*:
+
+- **venv cách ly theo từng dự án** để phiên bản gói không xung đột giữa các dự án và Python hệ thống giữ sạch. Không bao giờ `pip install` toàn cục.
+- **requirements.txt ghim những gì bạn cài**, nhưng không nói gì về *các bản build mà build của bạn phụ thuộc* (pin bậc thang).
+- **Lockfile** (kết quả `pip-compile`, `uv.lock`, `pdm.lock`) ghi lại toàn bộ đồ thị đã phân giải để bản cài hôm nay và năm sau giống hệt nhau. Quy tắc: sửa ràng buộc trong `pyproject.toml` (lỏng, dễ đọc: `httpx>=0.27`); để lockfile đóng băng thực tế.
+
+Quy trình chuyên nghiệp: ràng buộc sống trong `pyproject.toml`, lockfile được
+sinh ra và commit (chính xác), và CI cài từ lockfile để test chạy trên đúng
+thứ production chạy.
+
+Sandbox này không có mạng và không có pip — nên kỹ năng được chấm ở đây là
+*suy luận về các tệp*: đọc khai báo phụ thuộc, phát hiện dải chưa ghim, và
+viết quy trình biết-dùng-lockfile. Buổi audit ở bài kế tiếp luyện đúng điều đó.

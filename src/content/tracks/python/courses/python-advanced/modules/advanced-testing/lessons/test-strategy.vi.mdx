@@ -1,0 +1,56 @@
+## Kim tự tháp, nói thẳng
+
+- **Unit test** — một hàm/lớp, dependency bị làm giả. Hàng nghìn; mỗi cái chạy
+  trong mili giây. Chúng ghim hành vi *bên trong* code.
+- **Integration test** — nhiều mảnh thật ghép với nhau (repository với database
+  thật, handler với validation thật). Hàng trăm. Chúng ghim các *điểm nối* —
+  nơi unit test vốn không thể nhìn thấy.
+- **System/end-to-end test** — toàn bộ dịch vụ nhìn từ bên ngoài. Hàng chục.
+  Chậm và dễ gãy; dành cho các hành trình quan trọng (đăng ký, thanh toán,
+  đăng nhập).
+
+Kim tự tháp ngược (chủ yếu E2E) thì chậm, dễ rung, và chẩn đoán ngược từ trên
+xuống. Kem-ly (chủ yếu thủ công) không phải là kiểm thử.
+
+## Fake, stub, mock — và cái giá của từng loại
+
+- **Stub**: câu trả lời cứng cho các lời gọi ("đồng hồ说 12 giờ").
+- **Fake**: một bản cài nhẹ hoạt động được (repository trong bộ nhớ).
+- **Mock**: ghi lại các tương tác và khẳng định trên chúng.
+
+Thứ tự ưu tiên cho dependency *có trạng thái*: **fake trước** — nó test hành
+vi, sống sót qua refactor, và đọc như chính domain. Mock tỏa sáng với hợp đồng
+*tương tác* không có trạng thái đáng kể (dịch vụ email có được gọi không?).
+Suite bị quá nhiều mock xác minh bản cài đặt chứ không phải hành vi — và fail
+trong mọi lần refactor.
+
+## Test flaky là bug nằm trong bài test
+
+Bài test pass khi chạy lại đang nói dối về điều gì đó: thời gian, tính ngẫu
+nhiên, thứ tự mạng, trạng thái chia sẻ. Các nghi phạm kinh điển và thuốc của
+chúng:
+
+- **thời gian** — tiêm một đồng hồ; không bao giờ `datetime.now()` sâu trong
+  logic được test,
+- **tính ngẫu nhiên** — seed tường minh (`random.Random(42)`),
+- **fixture chia sẻ** — mỗi bài test tự dựng thế giới của mình (hàm factory),
+- **phụ thuộc thứ tự** — nếu test B chỉ pass sau test A, B đã hỏng.
+
+`pytest-randomly` và các thói quen tương tự khiến sự phụ thuộc thứ tự hiện
+hình. Một suite bạn không thể tin ở lần chạy đầu còn tệ hơn không có suite:
+nó dạy cả đội phớt lờ màu đỏ.
+
+## Kiến trúc fixture
+
+Fixture mở rộng bằng *kết hợp*, không phải kế thừa: các fixture nhỏ (đồng hồ,
+repository rỗng) kết hợp thành fixture lớn (thế giới có dữ liệu), và
+`conftest.py` chia sẻ chúng theo phạm vi thư mục. Hàm factory
+(`make_order(customer=..., total=...)` với default hợp lý) đánh bại fixture
+khổng lồ: mỗi test chỉ nêu những sự thật nó quan tâm.
+
+## Coverage: một đầu báo khói, không phải mục tiêu
+
+90% coverage với assertion yếu chỉ đo công sức gõ phím. Hãy phủ các *nhánh mang
+rủi ro*: đường lỗi, biên (rỗng, một, nhiều), và mọi bug từng ship (bài test
+hồi quy). Mutation testing — lật một toán tử và kiểm tra có test nào fail không
+— đo xem assertion của bạn thực sự phát hiện thay đổi được hay không.

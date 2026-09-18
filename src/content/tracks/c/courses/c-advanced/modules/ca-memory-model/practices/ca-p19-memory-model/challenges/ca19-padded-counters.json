@@ -1,0 +1,26 @@
+{
+  "id": "ca19-padded-counters",
+  "title": "Split the Cache Lines",
+  "prompt": "ISO C11 + hardware reality. Two counters sit in one struct: `struct hot { atomic_int a; atomic_int b; };` Given a padded variant `struct padded { atomic_int a; char pad[60]; atomic_int b; };` (sizeof(atomic_int)==4 on this target), implement `int same_line(const void *p, size_t offset_a, size_t offset_b)` — return 1 when the two byte offsets share the same 64-byte cache line, 0 otherwise. Then the checkpoint question: which member offsets in `struct hot` are same-line?",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#include <stdatomic.h>\n#include <stddef.h>\n",
+  "tests": [
+    {
+      "name": "adjacent members share a line",
+      "code": "struct hot h = {0};\nsize_t oa = (size_t)((char *)&h.a - (char *)&h);\nsize_t ob = (size_t)((char *)&h.b - (char *)&h);\nCHECK_EQ(same_line(&h, oa, ob), 1);",
+      "hint": "4-byte atomics at offsets 0 and 4: same 64-byte line — the false-sharing setup."
+    },
+    {
+      "name": "padded members differ",
+      "code": "struct padded p = {0};\nsize_t pa = (size_t)((char *)&p.a - (char *)&p);\nsize_t pb = (size_t)((char *)&p.b - (char *)&p);\nCHECK_EQ(same_line(&p, pa, pb), 0);",
+      "hint": "The 56-byte pad pushes b past offset 64: separate lines."
+    },
+    {
+      "name": "same offset is same line",
+      "code": "struct hot h2 = {0};\nCHECK_EQ(same_line(&h2, 0, 0), 1);",
+      "hint": "An offset against itself is trivially same-line — the degenerate case must not crash."
+    }
+  ],
+  "level": "combination"
+}

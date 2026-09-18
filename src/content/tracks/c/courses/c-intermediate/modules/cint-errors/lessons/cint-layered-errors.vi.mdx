@@ -1,0 +1,55 @@
+## Nuốt lỗi là tội gốc
+
+```c
+int load_config(Config *c) {
+    if (read_file(c) != 0) return 0;      /* thất bại nhưng báo thành công */
+    return 0;
+}
+```
+
+Một tầng biến thất bại thành thành công không xóa được thất bại — nó
+*giấu* nó, để bug nổi lên cách nguyên nhân ba tầng. Tội ngược lại là
+gộp chung: cùng một code cho "thiếu tệp" và "tệp không đọc được", nên
+caller không thể phản ứng khác nhau. Đường giữa là **bọc và thêm ngữ
+cảnh**:
+
+```c
+/* tầng 1 trả: 0 ok, -1 lỗi io */
+/* tầng 2 thêm nghĩa mà không nói dối: */
+int load_app(App *app) {
+    if (load_config(&app->cfg) != 0) return CFG_ERR;     /* code riêng */
+    if (load_assets(&app->art) != 0) return ASSET_ERR;   /* code riêng */
+    return OK;
+}
+```
+
+Mỗi tầng dịch các code bên dưới thành code có nghĩa ở mức trừu tượng của
+chính nó. Caller của `load_app` không quan tâm *tệp nào* đọc lỗi — nó
+quan tâm rằng cấu hình, cụ thể, đã hỏng.
+
+## Construction có thể thất bại: init hai pha
+
+Constructor trong C không thể trả lỗi bên trong object — nên idiom là
+constructor trả NULL hoặc **init hai pha**:
+
+```c
+/* pha 1: hợp lệ-nhưng-rỗng; trả error code */
+int conn_init(Conn *c);
+/* pha 2: gắn tài nguyên; trả error code */
+int conn_connect(Conn *c, const char *target);
+/* teardown luôn an toàn, từ mọi trạng thái */
+void conn_destroy(Conn *c);
+```
+
+Quy tắc khiến nó chạy: `destroy` phải an toàn từ *mọi* trạng thái chạm
+được — vừa init, đã connect, hoặc connect-thất-bại. Bất biến đó kiểm
+được: init, destroy; init, connect-lỗi, destroy; init, connect, destroy
+— không leak, không crash với bất kỳ thứ tự nào.
+
+## Ranh giới panic
+
+Một số thất bại không thể phục hồi ở tầng nhìn thấy nó: tham số *self*
+NULL là *vi phạm hợp đồng bởi caller* — lỗi lập trình, không phải điều
+kiện runtime. API thật hoặc crash nhanh (assert) với thông báo nêu
+file/dòng, hoặc ghi UB trung thực. "Xử lý" lặng lẽ một self NULL giấu
+bug khỏi người duy nhất sửa được nó: lập trình viên đã gọi.

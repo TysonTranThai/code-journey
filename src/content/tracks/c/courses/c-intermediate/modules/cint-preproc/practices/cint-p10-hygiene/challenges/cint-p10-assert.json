@@ -1,0 +1,15 @@
+{
+  "id": "cint-p10-assert",
+  "title": "Compile-Time Contracts",
+  "prompt": "The boilerplate contains `_Static_assert`s your code must not\nviolate — and functions that RELY on them. Implement:\n\n```c\n/* packs two nibbles into a byte — relies on the static assert that\n   unsigned char is exactly 8 bits */\nunsigned char pack_nibbles(unsigned lo, unsigned hi);\n/* returns the table capacity; the static assert guarantees it is a\n   power of two, so capacity-1 is a mask */\nsize_t tab_mask(void);\n/* returns 1 if v is a power of two (v > 0), using the bit trick */\nint is_pow2(size_t v);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\n_Static_assert(sizeof(unsigned char) * 8 == 8, \"byte is 8 bits\");\n#define TAB_CAP 16\n_Static_assert(TAB_CAP > 0 && (TAB_CAP & (TAB_CAP - 1)) == 0, \"power of two\");\nunsigned char pack_nibbles(unsigned lo, unsigned hi);\nsize_t tab_mask(void);\nint is_pow2(size_t v);\n",
+  "tests": [
+    {
+      "name": "asserts hold, functions deliver",
+      "code": "\nCHECK_EQ(pack_nibbles(0xF, 0xA), 0xAF);\nCHECK_EQ(pack_nibbles(0x0, 0x7), 0x70);\nCHECK_EQ(tab_mask(), 15);\nCHECK_EQ(is_pow2(1), 1);\nCHECK_EQ(is_pow2(16), 1);\nCHECK_EQ(is_pow2(0), 0);\nCHECK_EQ(is_pow2(3), 0);\nCHECK_EQ(is_pow2(6), 0);\n",
+      "hint": "pack: (hi << 4) | (lo & 0xF). mask: TAB_CAP - 1. pow2: v && !(v & (v-1))."
+    }
+  ]
+}

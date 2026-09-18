@@ -1,0 +1,18 @@
+{
+  "title": "Giải pháp erasure: Class token",
+  "prompt": "Vì generic bị erase, method phải *tạo* instance của T cần thông tin\nkiểu lúc runtime. Cài:\n- `static <T> List<T> fill(int n, Class<T> type, Function<Object, T> maker)`:\n  dựng List n phần tử, mỗi phần tử do maker tạo, được định kiểu bởi token\n  (dùng `java.util.function.Function`).\n- `static <T> List<T> nCopiesOf(int n, T value)` — sao chép thân thiện\n  erasure, không cần token.\n\nTest cho thấy thao tác nào sống sót qua erasure và thao tác nào cần giúp.",
+  "tests": [
+    {
+      "name": "Tạo kiểu bởi token",
+      "hint": "maker nhận placeholder; tạo ba giá trị bằng nhau."
+    },
+    {
+      "name": "nCopiesOf không cần token",
+      "hint": "Sao chép theo giá trị erase sạch sẽ."
+    },
+    {
+      "name": "Class runtime trùng nhau",
+      "hint": "Erasure: hai list dùng chung một class runtime."
+    }
+  ]
+}

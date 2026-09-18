@@ -1,0 +1,54 @@
+You will build **TaskFlow** — a production-style job processing platform — from
+this brief alone. There are no step-by-step instructions, because there are no
+step-by-step jobs.
+
+## What TaskFlow does
+
+- **Ingests jobs** through a submit function: a client submits a payload with
+  an idempotency key and receives a job ID immediately (accept/reject, never
+  block on the work).
+- **Processes jobs with workers** that pull from a queue. Workers are
+  unreliable by nature: they crash, they are killed mid-job, they come back.
+- **Records every outcome** durably: succeeded jobs with results, failed jobs
+  with reasons, and a dead-letter tier for jobs that exhausted their retries.
+- **Exposes status**: a client asks "what happened to job X?" and gets an
+  honest answer from durable state, not memory.
+
+## Hard requirements (graded, non-negotiable)
+
+1. **At-least-once delivery with exactly-once effects.** A job delivered twice
+   produces one effect. Every worker action is idempotent — keyed by the job's
+   idempotency key.
+2. **Retry with backoff and a budget.** Failing jobs retry with exponential
+   backoff ceilings (computed, not slept), capped at 3 attempts, then land in
+   the dead-letter store *with the failure reason attached*.
+3. **Graceful shutdown.** A shutdown call stops intake, requeues in-flight
+   work, and leaves the platform restartable with no lost jobs and no double
+   effects.
+4. **Observability.** A metrics snapshot: submitted/succeeded/failed/dead
+   counts, in-flight gauge, and every log line correlated by job ID with
+   secrets redacted.
+5. **Authorization.** Job status queries check ownership from the *principal*,
+   never from a client-supplied parameter; strangers get not-found, not
+   forbidden.
+6. **Resilience.** A failing dependency is tripped by a circuit breaker and
+   reported by a readiness check — never propagated raw.
+
+## Constraints
+
+- Standard library only. The queue is in-process (the semantics are what's
+  graded); a real deployment would swap the port, not the contract.
+- Python 3.11. Type-annotate the public surface.
+- You own every decision: module layout, class boundaries, error taxonomy.
+
+## Suggested milestones (not a checklist — a shape)
+
+1. **Core loop**: submit → deliver → process → ack, with the idempotency gate.
+2. **Failure paths**: retries with backoff, dead-lettering with reasons.
+3. **Lifecycle**: graceful shutdown and restart without loss or duplication.
+4. **Operations**: metrics snapshot, structured+redacted logs, readiness,
+   breaker.
+5. **Interface**: status queries with authorization.
+
+Each milestone is graded below by executable acceptance tests — write code
+until the tests pass, then keep going until the *design* is one you can defend.

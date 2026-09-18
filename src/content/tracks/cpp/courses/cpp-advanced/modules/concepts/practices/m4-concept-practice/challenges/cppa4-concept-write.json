@@ -1,0 +1,21 @@
+{
+  "id": "cppa4-concept-write",
+  "title": "Write Your First Concept",
+  "prompt": "Define `Numeric` (arithmetic types only) and a constrained `maxOf(a, b)`; provide a fallback `maxOfAny` returning a sentinel for non-numeric pairs.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <type_traits>\n\n// TODO: template <class T> concept Numeric = ...;\n// TODO: template <Numeric T> T maxOf(T a, T b);\n// TODO: fallback for anything else\nstd::string maxOfAny(const void*, const void*);  // sentinel path\n",
+  "tests": [
+    {
+      "name": "maxOf works on numerics",
+      "code": "CHECK_EQ(maxOf(3, 7), 7);\nCHECK_EQ(maxOf(2.5, 1.5), 2.5);\nCHECK_EQ(maxOf(1, -1), 1);",
+      "hint": "template <class T> concept Numeric = std::is_arithmetic_v<T>; then maxOf returns b if a < b else a."
+    },
+    {
+      "name": "fallback engages for non-numerics",
+      "code": "CHECK_EQ(maxOfAny(nullptr, nullptr), std::string(\"sentinel\"));",
+      "hint": "An unconstrained overload with different arity/types is the fallback — keep maxOf constrained so it never claims non-numerics."
+    }
+  ]
+}

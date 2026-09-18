@@ -1,0 +1,35 @@
+## Bộ nhớ như những ngôi nhà được đánh số
+
+Mọi byte bộ nhớ đều có một **địa chỉ** — một con số, như số nhà trên một con
+đường rất dài. Biến `int x = 42;` chiếm vài "ngôi nhà" đó. **Toán tử
+lấy địa chỉ** `&` hỏi "x sống ở đâu?"
+
+```c
+int x = 42;
+printf("%p\n", (void*)&x);   // vd 0x7ffe... — một địa chỉ, mỗi lần chạy khác nhau
+```
+
+## Con trỏ lưu một địa chỉ
+
+**Con trỏ** chỉ là biến mà giá trị của nó là một địa chỉ:
+
+```c
+int x = 42;
+int *p = &x;        // p giữ địa chỉ của x
+```
+
+Đọc `int *p` là "p là con trỏ tới int". Kiểu rất quan trọng: `int*` hứa
+"đối tượng tại địa chỉ này là một int". `double*` hứa một double. Con trỏ tới
+các kiểu khác nhau không thể thay thế cho nhau.
+
+## Hai cách viết, một ý nghĩa
+
+```c
+int *p;             // ngữ cảnh khai báo: * nói "p là con trỏ"
+*p = 7;             // ngữ cảnh biểu thức:  * nghĩa là "đối tượng p trỏ tới"
+```
+
+## Địa chỉ không phải giá trị
+
+`x` là 42. `&x` là nơi 42 sống. `p` là bản sao của cái "nơi" đó. Ba thứ khác
+nhau. Phân biệt được ba thứ này là 80% của việc hiểu con trỏ.

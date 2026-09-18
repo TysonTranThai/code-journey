@@ -1,0 +1,25 @@
+## Sealed hierarchy và switch đầy đủ
+
+Trước sealed class, một interface có vô số hiện thực, nên switch qua các
+subtype luôn cần `default`. Sealed interface khiến tập hiện thực hữu hạn và
+được compiler kiểm tra:
+
+```java
+public sealed interface Shape permits Circle, Rect {}
+public record Circle(double r) implements Shape {}
+public record Rect(double w, double h) implements Shape {}
+
+static double area(Shape s) {
+    return switch (s) {                 // pattern matching cho switch
+        case Circle c -> Math.PI * c.r() * c.r();
+        case Rect r  -> r.w() * r.h();
+    };                                  // không default — compiler biết hết case
+}
+```
+
+Thêm permit thứ ba mà không sửa switch thì code **không biên dịch** —
+compiler biến case bị quên thành lỗi build thay vì sự cố runtime.
+
+Chọn sealed khi tập biến thể là *quyết định domain* của bạn (shape, phương
+thức thanh toán, kết quả parse). Giữ interface mở khi bên thứ ba cần cắm vào
+được.

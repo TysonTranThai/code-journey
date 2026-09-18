@@ -1,0 +1,18 @@
+Lỗi concept thất bại với *diagnostics dạng candidate*: compiler liệt kê mọi overload, lý do từng cái bị từ chối, và requirement nào trong concept nào thất bại. Đọc chúng là phép lọc, không phải phép phân tích nguyên văn.
+
+## Phương pháp ba lượt quét
+
+1. **Quét chữ "constraint" / "unsatisfied"** — tìm concept đã thất bại,
+2. **quét chữ "because" / "note"** — note đầu tiên thường chỉ ra đúng biểu thức không type-check (`c.size()` trên đối tượng const, thiếu `value_type`),
+3. **sau đó** mới xem chỗ gọi.
+
+Diagnostic 40 dòng thường chỉ có 2 dòng tín hiệu: *concept nào*, *requirement nguyên tử nào*.
+
+## Những lỗi nghĩa là lỗi của bạn, không phải của caller
+
+- `no matching function` + `constraints not satisfied` + `the required type 'typename C::value_type' is invalid` — concept của bạn đòi một member type mà kiểu của caller không có. Hoặc caller sai kiểu, hoặc concept của bạn đòi quá mức.
+- Overload `ambiguous` sau khi thêm concept — hai overload có ràng buộc của bạn **không** subsume nhau (ràng buộc độc lập). Hãy buộc chúng thành quan hệ tinh chỉnh: một cái là mở rộng của cái kia.
+
+## Thói quen hợp đồng trước
+
+Viết concept *trước* phần cài đặt; concept là hợp đồng của API, và compiler thực thi nó tại mọi điểm gọi. Bài tập chấm điểm đưa cho bạn một diagnostic và hỏi requirement nào đã thất bại — đúng kỹ năng xử lý lỗi template của đồng nghiệp.

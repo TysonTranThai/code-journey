@@ -1,0 +1,44 @@
+## Tham số chạy hai lần
+
+```c
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+int i = 0;
+int m = MAX(i++, 5);      /* mở rộng: ((i++) > (5) ? (i++) : (5)) */
+```
+
+`i++` xuất hiện hai lần trong phần mở rộng — ternary đánh giá bên thắng
+*lần thứ hai*. Undefined behavior, kết quả sai, và compile sạch. Cách
+chữa không phải "thêm ngoặc"; tham số phải được đánh giá *đúng một lần*:
+
+```c
+/* ISO C, câu trả lời trung thực: static inline function */
+static inline int max_int(int a, int b) { return a > b ? a : b; }
+```
+
+Inline function kiểm kiểu, đánh giá tham số một lần, debug bình thường —
+là câu trả lời mặc định. Macro còn lại cho trường hợp kiểu phải mở
+(`MAX` trên mọi kiểu số) — và khi đó *hợp đồng được ghi rõ* là "tham số
+phải không có tác dụng phụ."
+
+## Bẫy độ ưu tiên ngoài mép macro
+
+```c
+#define DOUBLE(x) (x) + (x)      /* sai tại mép */
+int r = 2 * DOUBLE(3);           /* 2 * (3) + (3) == 9, không phải 12 */
+```
+
+Thân macro phải được bọc ngoặc *tổng thể*:
+`#define DOUBLE(x) ((x) + (x))`. Quy tắc máy móc: bọc mọi vị trí tham số
+và toàn bộ phần mở rộng.
+
+## Vệ sinh: tên thoát ra ngoài
+
+Tên "cục bộ" của macro không cục bộ — chúng có thể đụng biến của caller:
+
+```c
+#define SWAP(a, b) do { int tmp_ = a; a = b; b = tmp_; } while (0)
+/* caller có biến tên tmp_? hỏng âm thầm */
+```
+
+Quy ước: tên nội bộ có hậu tố gạch dưới (`tmp_`, `i_`) giảm — không loại
+trừ — va chạm. Dán token với tên độc nhất là công cụ của bài sau.

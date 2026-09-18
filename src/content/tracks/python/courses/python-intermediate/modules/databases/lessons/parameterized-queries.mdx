@@ -1,0 +1,38 @@
+The single most important database habit, stated as a law: **SQL and data
+travel separately.** Placeholders (`?` in sqlite3) hand values to the driver,
+which binds them safely:
+
+```python
+# GOOD: the value is data, never executable SQL
+conn.execute("SELECT * FROM users WHERE name = ?", (user_input,))
+
+# NEVER: string formatting builds executable SQL from input
+conn.execute(f"SELECT * FROM users WHERE name = '{user_input}'")
+```
+
+Why the f-string version is catastrophic: input `' OR '1'='1` turns the query
+into `WHERE name = '' OR '1'='1'` — matching **every user**. That is SQL
+injection, and it has topped vulnerability lists for two decades. A parameter
+binds `' OR '1'='1` as a *literal string to compare*, defusing it completely.
+
+## What parameters cannot do
+
+Placeholders only work where a **value** belongs: after `=`, `IN (...)`,
+`VALUES`. Identifiers (table names, column names) cannot be parameterized —
+if those must be dynamic, validate against a whitelist:
+
+```python
+ALLOWED_SORTS = {"title": "title", "created": "id"}
+column = ALLOWED_SORTS.get(user_choice)      # None → reject
+if column is None:
+    raise ValueError("invalid sort column")
+```
+
+## executemany for batches
+
+```python
+conn.executemany("INSERT INTO tasks (title) VALUES (?)", [("a",), ("b",)])
+```
+
+One round trip for many rows — and one more place the driver handles the
+escaping for you.

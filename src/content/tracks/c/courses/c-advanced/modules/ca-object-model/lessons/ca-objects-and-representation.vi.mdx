@@ -1,0 +1,21 @@
+## Mọi đối tượng đều là byte
+
+Trong C, một **đối tượng** là vùng bộ nhớ chứa giá trị của một kiểu nào đó. Chuẩn C không nói `int` là "số bù 2 32-bit" — nó nói `int` có *biểu diễn đối tượng* gồm `sizeof(int)` byte, mỗi byte ít nhất 8 bit (`CHAR_BIT`).
+
+Ba khái niệm riêng biệt:
+
+| Khái niệm | Câu hỏi | Trả lời khả chuyển? |
+| --- | --- | --- |
+| Kiểu | Giữ được giá trị nào? | Có — theo chuẩn |
+| Biểu diễn đối tượng | Có byte nào? | Chỉ `sizeof` |
+| Biểu diễn giá trị | Bit nào mã hóa giá trị? | Không — do hiện thực định nghĩa |
+
+C23 bắt buộc bù 2 cho số nguyên có dấu, nhưng độ rộng vẫn do hiện thực định nghĩa.
+
+## Đo nền tảng của bạn một cách trung thực
+
+Dùng `CHAR_BIT`, `sizeof`, `INT_MIN` để in sự thật của nền tảng thay vì giả định.
+
+## Biểu diễn ≠ giá trị
+
+Với `unsigned char`, mọi bit pattern đều là giá trị hợp lệ. Số nguyên có dấu C23 vẫn cho phép padding bits — bit tồn tại trong đối tượng nhưng không tham gia giá trị.

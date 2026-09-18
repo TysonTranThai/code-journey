@@ -1,0 +1,24 @@
+## Memory & streaming: generators over lists
+
+Materializing data you could stream is the silent memory bug. A function that
+reads a 10 GB log "into a list" dies; the same function that *yields* parsed
+lines runs in constant memory.
+
+```python
+def parse(lines):                      # lines: any iterable of str
+    for line in lines:
+        if not line.strip() or line.startswith("#"):
+            continue
+        key, _, value = line.partition("=")
+        yield (key.strip(), value.strip())
+```
+
+The graded way to prove streaming (as used in this module's challenges): pass
+an **iterator that has no `len()` and explodes if materialized** — a custom
+iterable whose `__iter__` yields millions of values would take forever to
+`list()` — no, the practical probe is simpler: an object that raises inside
+`__iter__` after N values proves the consumer pulls lazily and stops early.
+
+Combinators compose: `map`, `filter`, `itertools.islice`, `itertools.chain`,
+`sum(...)`, `any(...)` all consume iterables lazily. `sorted(...)` and
+`max(...)` consume fully (necessarily). Know which is which.

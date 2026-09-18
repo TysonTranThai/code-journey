@@ -1,0 +1,14 @@
+{
+  "title": "Chuyển dịch tại ranh giới",
+  "prompt": "Cài một ranh giới lưu trữ bên trong `Solution`:\n- `static class StorageException extends RuntimeException` với\n  constructor `(String message, Throwable cause)`.\n- `static class FlakyStore` với `static String fetch(String key)`:\n  trả `\"data-\" + key`, nhưng ném `IllegalStateException(\"boom\")` khi key\n  bắt đầu bằng `\"!\"`.\n- `static String repositoryGet(String key)` — gọi fetch và chuyển dịch\n  mọi IllegalStateException thành StorageException(\"lookup failed for \" + key, e),\n  móc cause gốc.\n\nCaller của repositoryGet không bao giờ thấy IllegalStateException.",
+  "tests": [
+    {
+      "name": "Key sạch đi xuyên suốt",
+      "hint": "Không ngoại lệ với key hợp lệ."
+    },
+    {
+      "name": "Key lỗi được chuyển dịch kèm cause",
+      "hint": "Chuyển thành StorageException, giữ cause, nhắc key trong message."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+## The stream, not the message
+
+`recv()` returns *some* bytes — not "a message". Ten calls might deliver one request; one call might deliver three and a half. Before any parsing, you need **framing**: a rule for where messages end.
+
+- **Delimiter-based** (`\n`): simple, but payload cannot contain the delimiter without escaping — and naive `find('\n')` on attacker input is how request smuggling starts.
+- **Length-prefixed** (4-byte length then payload): O(1) framing, but the length field is *attacker input*: read it as `uint32_t`, validate against a sane maximum *before* allocating, and only then reserve. `std::string(len, 'x')` with `len = 0xFFFFFFFF` from a hostile peer is an OOM you shipped.
+
+## Parsing in an incremental world
+
+Robust parsers are **state machines**: feed bytes, keep leftover state, return "need more" or "one frame + consumed N". A parser that assumes the whole frame arrived in one buffer is a bug on day one. The same accumulator must also reject garbage: bad magic, absurd lengths, over-long lines — with distinguishable errors, because operators debug by error class.
+
+## The security lens early
+
+Every length is untrusted. Every delimiter can be spoofed by content. Frame limits (max size, max count) are not performance tuning — they are the difference between a service and a DoS amplifier.

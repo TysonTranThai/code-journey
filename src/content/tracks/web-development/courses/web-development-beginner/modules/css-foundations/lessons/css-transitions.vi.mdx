@@ -1,0 +1,72 @@
+Chuyển động là một dạng giao tiếp: một nút sáng lên khi hover đang nói "tôi bấm được". CSS transitions làm cho phản hồi đó mượt mà — rẻ, và đúng cách.
+
+## Thuộc tính transition
+
+```css
+.button {
+  background-color: #4b2e83;
+  transition: background-color 0.2s ease;
+}
+.button:hover {
+  background-color: #6a4bb0;
+}
+```
+
+`transition` nêu rõ: _thuộc tính nào_ được hoạt hình, _bao lâu_, và _hàm thời gian_ (`ease` là mặc định thân thiện; `linear` là con robot). Transition nằm trên **trạng thái nền** — rồi bất kỳ thay đổi nào (hover, focus, đổi class) đều được hoạt hình.
+
+Nhiều thuộc tính, phân tách bằng dấu phẩy:
+
+```css
+transition:
+  background-color 0.2s ease,
+  transform 0.2s ease,
+  box-shadow 0.2s ease;
+```
+
+## Cặp đôi hover + focus
+
+```css
+.button:hover,
+.button:focus-visible {
+  background-color: #6a4bb0;
+}
+```
+
+Hai quy tắc từ cẩm nang accessibility:
+
+1. **Focus phải hiển thị rõ như hover.** Người dùng bàn phím không có hover — nếu hover thay đổi diện mạo, focus cũng phải vậy. (`:focus-visible` hiện vòng focus cho người dùng bàn phím mà không quát lên với người dùng chuột.)
+2. **Không bao giờ xóa viền focus nếu không có thứ thay thế** (một mình `outline: none` phá navigation bằng bàn phím). Nếu không thích vòng focus, hãy định kiểu lại nó; đừng xóa nó.
+
+## transform: những người hoạt hình giá rẻ
+
+```css
+.card:hover {
+  transform: translateY(-4px);
+}
+```
+
+`translateY/X`, `scale`, `rotate` — transform được GPU tăng tốc và không làm méo layout. Hoạt hình hóa `top`/`left`/`width` buộc trang tính lại bố cục từng khung hình; hoạt hình hóa `transform` thì chỉ tổng hợp hình ảnh. Hãy ưu tiên transform cho chuyển động.
+
+## prefers-reduced-motion
+
+Với một số người dùng — rối loạn tiền đình, say chuyển động — hoạt hình không phải trang trí, mà là cơn buồn nôn. CSS lắng nghe:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+```
+
+Chuyển động vẫn _hoạt động_ (trạng thái vẫn thay đổi) nhưng không còn chuyển dịch. Hai dòng, phủ mọi hoạt hình của bạn. Đây là phép lịch sự đánh dấu CSS chuyên nghiệp.
+
+## Bạn đã học được gì
+
+- `transition: property duration timing;` trên trạng thái nền
+- Đi cặp `:hover` với `:focus-visible`; không bao giờ `outline: none` trần trụi
+- Hoạt hình hóa `transform`, không phải các thuộc tính layout
+- `prefers-reduced-motion: reduce` là mặc định accessibility cho chuyển động
+
+**Dự án module:** lắp ráp tất cả thành một portfolio responsive.

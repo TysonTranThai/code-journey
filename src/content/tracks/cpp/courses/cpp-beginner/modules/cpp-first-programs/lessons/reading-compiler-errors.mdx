@@ -1,0 +1,45 @@
+The single most valuable beginner skill in C++ is not syntax — it is **reading compiler errors calmly**. The compiler is not scolding you; it is the only tool that reads your code *before* it runs, and it quotes your mistakes with a line number.
+
+## The habit: read the FIRST error, fix it, recompile
+
+GCC reports many errors per build, but they cascade: error #2 is often a *consequence* of error #1. Always fix the top one first.
+
+## The classic five (and what they actually mean)
+
+**1. Missing semicolon** — `error: expected ';' before '}' token`
+
+```cpp
+int x = 5      // oops
+```
+The fix is obvious, but notice the error points at the `}` *after* the mistake. The line number is where the compiler gave up, not where you sinned.
+
+**2. Undeclared identifier** — `error: 'cont' was not declared in this scope`
+
+Usually a typo (`cont` for `count`) or a missing `#include`. The compiler echoes the exact spelling it could not find — compare it letter by letter with your code.
+
+**3. Undeclared in `std`** — `error: 'cout' was not declared in this scope; did you mean 'std::cout'?`
+
+Modern GCC even suggests the fix. `std::` is required unless you `using namespace std;` — which this course deliberately avoids in headers and larger files (it pollutes every file that includes them; in small exercises it is tolerable, but we practice the professional habit).
+
+**4. Type mismatch** — `error: invalid conversion from 'const char*' to 'int'`
+
+```cpp
+int age = "twenty";
+```
+Static typing working *for* you: the compiler caught at build time what Python would crash on at runtime. Read what it says it found and what it expected.
+
+**5. Uninitialized variable (a warning, not an error!)** — `'x' is used uninitialized`
+
+```cpp
+int x;
+std::cout << x;   // garbage value
+```
+This *compiles*. The value printed is whatever bytes happened to sit in memory — a real bug that often "works" on your machine and crashes elsewhere. Turn warnings into your routine: in this course the sandbox already compiles with `-Wall -Wextra -Wpedantic`, and graded code that triggers them still runs, but the warnings are shown — read them.
+
+## The fix loop
+
+```
+compile → read first error → fix that one thing → recompile
+```
+
+Small, frequent fixes beat giant rewrites. By module 3 you will skim an error and know its *class* before reading the details — that is when C++ stops feeling hostile.

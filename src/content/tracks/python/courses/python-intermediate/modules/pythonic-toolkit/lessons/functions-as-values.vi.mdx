@@ -1,0 +1,55 @@
+Trong Python, hàm là một **giá trị** — bạn có thể lưu nó, truyền đi, trả về:
+
+```python
+def shout(text):
+    return text.upper() + "!"
+
+def whisper(text):
+    return text.lower() + "..."
+
+actions = [shout, whisper]          # hàm nằm trong list
+for act in actions:
+    print(act("hello"))             # gọi qua biến
+```
+
+Hàm nhận hoặc trả về hàm khác gọi là **hàm bậc cao** — nền tảng của callback,
+decorator, và hệ thống plugin:
+
+```python
+def apply_twice(fn, value):
+    return fn(fn(value))
+
+apply_twice(lambda n: n * 2, 3)     # 12
+```
+
+`lambda` là hàm ẩn danh một biểu thức — hợp với hành vi nhỏ dùng một lần,
+không dùng cho logic phức tạp.
+
+## zip và enumerate: bộ đôi đi cùng nhau
+
+```python
+names = ["An", "Binh", "Chi"]
+scores = [8, 9, 7]
+for name, score in zip(names, scores):      # đi hai dãy song song
+    print(name, score)
+
+for i, name in enumerate(names, start=1):   # chỉ số + giá trị, sạch sẽ
+    print(i, name)
+```
+
+## Closure: hàm nhớ bối cảnh của nó
+
+Hàm bên trong có thể "bắt" biến từ hàm đã tạo ra nó:
+
+```python
+def make_adder(n):
+    def add(x):
+        return x + n        # nhớ n
+    return add
+
+add5 = make_adder(5)
+add5(10)                    # 15
+```
+
+Mẫu "nhà máy trả về hàm đã cấu hình sẵn" này là nền của cấu hình, middleware,
+và lắp ráp phụ thuộc trong codebase thật.

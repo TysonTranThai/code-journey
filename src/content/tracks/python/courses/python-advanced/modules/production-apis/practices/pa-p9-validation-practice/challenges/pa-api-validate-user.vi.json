@@ -1,0 +1,14 @@
+{
+  "title": "Gom đủ mọi lỗi",
+  "prompt": "Cài `validate_user(payload)` trả `(clean, errors)`:\n\n- `name`: chuỗi không rỗng bắt buộc → lưu đã strip\n- `email`: chuỗi chứa '@' bắt buộc → lưu đã strip và viết thường\n- `age`: int 0..150 — chuỗi toàn chữ số như `'42'` được coerce thành int trước (bool KHÔNG tính là int ở đây)\n- mọi key khác trong payload sinh lỗi `{'field': k, 'detail': 'unknown field'}`, sắp xếp theo tên field\n- mỗi lỗi có dạng `{'field': ..., 'detail': ...}`; khi errors khác rỗng, `clean` chỉ được chứa các field đã pass\n\nHợp đồng: báo TẤT CẢ vấn đề trong một lần gọi (gom, đừng dừng ở lỗi đầu tiên).",
+  "tests": [
+    {
+      "name": "Payload hợp lệ được chuẩn hóa",
+      "hint": "Strip và viết thường trước khi kiểm tra; coerce chuỗi số."
+    },
+    {
+      "name": "Báo đủ mọi vấn đề đúng một lần",
+      "hint": "Một lượt duy nhất, kiểm tra mọi field, unknowns sắp theo tên."
+    }
+  ]
+}

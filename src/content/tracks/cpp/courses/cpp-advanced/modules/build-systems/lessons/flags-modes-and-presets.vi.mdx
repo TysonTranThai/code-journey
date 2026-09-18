@@ -1,0 +1,26 @@
+## Chế độ build nhìn thấy được từ trong code
+
+Compiler định nghĩa các marker bạn có thể test:
+
+- `__OPTIMIZE__` — GCC/Clang định nghĩa khi tối ưu (-O1+); MSVC thì không.
+- `NDEBUG` — được định nghĩa bởi cấu hình *Release/RelWithDebInfo* của CMake; nó **tắt `assert`**. Debug/RelWithDebInfo/Release không chỉ là tốc độ: nó thay đổi assertion nào tồn tại trong binary.
+- Macro của bạn: `-DCJ_LOG_LEVEL=2` thành `#if CJ_LOG_LEVEL >= 2` trong code.
+
+## Kỷ luật feature-test
+
+Không bao giờ test danh tính compiler (`#ifdef _MSC_VER`) khi ý bạn là capability. `<version>` / `__has_include` / feature-test macro hỏi toolchain *cung cấp gì*:
+
+```cpp
+#include <version>
+#ifdef __cpp_lib_format        // câu hỏi capability
+#  include <format>
+#endif
+#ifdef __cpp_exceptions        // exception handling có bật?
+#endif
+```
+
+`__has_feature` (Clang) và `__SANITIZE_ADDRESS__` (GCC) báo trạng thái sanitizer — code có thể biết ASan có đang theo dõi không.
+
+## Sandbox cố định chấm gì
+
+Sandbox của khóa này biên dịch với `-std=c++20 -Wall -Wextra -Wpedantic`, không chuyển chế độ — nên bài graded ở đây test *phía code*: guard `__cpp_*` đúng, logic độc lập với `NDEBUG` đúng, và phép tính cấu hình mà một translation unit chứng minh được. Toàn bộ câu chuyện Debug/Release/CI nằm trong bài học và các project, không nằm trong sandbox.

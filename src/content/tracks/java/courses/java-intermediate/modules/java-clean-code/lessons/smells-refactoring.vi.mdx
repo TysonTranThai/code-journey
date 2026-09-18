@@ -1,0 +1,26 @@
+## Code smell và phản xạ refactor
+
+Smell không chứng minh có bug — chúng *mời bạn nhìn vào*:
+
+- **Method dài** — nhiều dòng trống và nhiều cấp; tách method
+- **Nghiện primitive** — tiền là `int`, điện thoại là `String` khắp nơi;
+  giới thiệu value type tí hon
+- **Cục dữ liệu ríu nhau** — `city, street, zip` đi cùng nhau vĩnh viễn;
+  làm một record `Address`
+- **Ghen feature** — một method chộp getter của đối tượng khác nhiều
+  hơn field của chính nó; dời nó sang đó
+- **Phẫu thuật tán loạn** — một thay đổi chạm mười file; khái niệm cần
+  một ngôi nhà
+- **Comment giải thích WHAT** — code phải nói được cái gì; comment nói
+  *tại sao* (ràng buộc, liên kết, tradeoff)
+
+```java
+// trước — nghiện primitive + method dài
+static boolean ok(String u, String p) { ... }
+
+// sau — tên và kiểu mang theo thiết kế
+static boolean isPasswordValid(Password candidate, PasswordPolicy policy) { ... }
+```
+
+Kỷ luật refactor (từ Module 12): các bước nhỏ đã kiểm chứng, test xanh
+giữa các bước, hành vi không đổi do cấu trúc.

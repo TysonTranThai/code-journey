@@ -1,0 +1,21 @@
+{
+  "id": "cppa10-pool-acquire",
+  "title": "Pool Acquire and Exhaust",
+  "prompt": "Complete the fixed-size `BytePool` declared in the boilerplate. `acquire()` hands out block pointers and calls `AllocTracker::noteAlloc()` on success; it must return `nullptr` when the pool is exhausted. This challenge only tests acquire/exhaust behavior — release comes next.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <cstdint>\n#include <vector>\n\n// Deterministic allocation tracker the tests drive.\n// (No real heap calls: the challenge models allocation behavior.)\nclass AllocTracker {\npublic:\n    static int& allocs()   { static int n = 0; return n; }\n    static int& frees()    { static int n = 0; return n; }\n    static int& live()     { static int n = 0; return n; }\n    static void noteAlloc(){ ++allocs(); ++live(); }\n    static void noteFree() { ++frees(); --live(); }\n    static void reset()    { allocs() = frees() = live() = 0; }\n};\n\n// A fixed-size pool of 'blocks' blocks of 'blockSize' bytes.\n// acquire() returns a byte pointer or nullptr when exhausted;\n// release(p) returns the block to the pool (p must be from this pool).\nclass BytePool {\npublic:\n    BytePool(std::size_t blocks, std::size_t blockSize);\n    ~BytePool();\n    std::uint8_t* acquire();          // AllocTracker::noteAlloc() on success\n    void release(std::uint8_t* p);    // AllocTracker::noteFree() on success\n    std::size_t available() const;\nprivate:\n    std::size_t blocks_, blockSize_;\n    std::uint8_t* storage_ = nullptr;   // your bookkeeping here\n    std::vector<std::uint8_t*> freeList_;\n};\n",
+  "tests": [
+    {
+      "name": "acquire hands out distinct blocks",
+      "code": "AllocTracker::reset();\nBytePool pool{3, 16};\nstd::uint8_t* a = pool.acquire();\nstd::uint8_t* b = pool.acquire();\nCHECK(a != nullptr);\nCHECK(b != nullptr);\nCHECK(a != b);\nCHECK_EQ(AllocTracker::live(), 2);",
+      "hint": "Keep a free-list (stack) of block pointers initialized with all blocks; acquire pops one, calls AllocTracker::noteAlloc(), and returns nullptr when empty."
+    },
+    {
+      "name": "exhausted pool returns nullptr",
+      "code": "AllocTracker::reset();\nBytePool pool{2, 8};\nCHECK(pool.acquire() != nullptr);\nCHECK(pool.acquire() != nullptr);\nCHECK_EQ(pool.acquire(), nullptr);\nCHECK_EQ(AllocTracker::live(), 2);",
+      "hint": "The free-list is empty after two acquires — the third must not underflow the stack or increment the tracker."
+    }
+  ]
+}

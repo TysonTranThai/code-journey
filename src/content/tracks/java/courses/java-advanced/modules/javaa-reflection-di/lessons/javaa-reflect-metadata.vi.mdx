@@ -1,0 +1,21 @@
+`Class<?>` là cánh cửa đến mọi thứ JVM biết về một kiểu:
+
+```java
+Class<?> c = Widget.class;
+for (Field f : c.getDeclaredFields()) { }   // TẤT CẢ khai báo, mọi visibility
+for (Method m : c.getDeclaredMethods()) { }
+c.getConstructors();  c.getDeclaredConstructors();
+c.isInstance(obj);    c.isInterface();      c.getSuperclass();
+```
+
+Nhóm `getDeclared*` bỏ qua kế thừa và visibility — đó là bản kê khai trung
+thực. `getFields()`/`getMethods()` chỉ trả về thành viên *truy cập được*
+(public, kể cả kế thừa). Nhầm hai nhóm này là bug reflection kinh điển: field
+private của bạn có tồn tại nhưng "không tìm thấy".
+
+**Chi phí lúc chạy có thật nhưng hiện đại**: JIT có thể inline xuyên qua lời
+gọi reflective sau warmup, nên reflection trên đường nóng không còn tự động
+chậm. Chi phí *thật* là cấu trúc: không có kiểm tra lúc biên dịch (lỗi chính
+tả lộ ra lúc chạy), phá vỡ encapsulation (`setAccessible`), và ma sát với
+module (JDK 17+ chặn deep reflection xuyên module mặc định). Quy tắc:
+reflection ở *ranh giới framework*, kiểu ở *ranh giới domain*.

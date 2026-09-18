@@ -1,0 +1,43 @@
+Module 2 ended with duck typing: anything with a `start()` works as an
+engine. **`typing.Protocol`** gives that idea a name and type-checkable
+shape — an interface matched *structurally*, not by inheritance:
+
+```python
+from typing import Protocol
+
+class Storage(Protocol):
+    def save(self, key: str, value: str) -> None: ...
+    def load(self, key: str) -> str | None: ...
+
+class MemoryStorage:                 # no inheritance from Storage!
+    def __init__(self):
+        self._data: dict[str, str] = {}
+
+    def save(self, key: str, value: str) -> None:
+        self._data[key] = value
+
+    def load(self, key: str) -> str | None:
+        return self._data.get(key)
+
+def backup(store: Storage) -> None:      # accepts anything Storage-shaped
+    store.save("backup", "2026-09-13")
+```
+
+`MemoryStorage` never mentions `Storage`, yet any type checker accepts it
+where a `Storage` is expected — because it has the right **shape**. This is
+structural typing, and it's how big Python codebases keep components swappable
+without inheritance forests.
+
+## When to write a Protocol
+
+Write one when a **consumer** needs to promise a capability: "I need anything
+that can `save`/`load`." The protocol lives with the consumer, not the
+implementations — that keeps dependencies pointing the right way (module 4's
+layering again). Reserve ABCs/inheritance for when you also want shared
+implementation, not just shape.
+
+## Runtime checking
+
+Protocols are static by default; `isinstance` needs `@runtime_checkable` —
+and even then it only checks method *names*. Design with protocols for the
+type checker and humans; don't lean on runtime checks.

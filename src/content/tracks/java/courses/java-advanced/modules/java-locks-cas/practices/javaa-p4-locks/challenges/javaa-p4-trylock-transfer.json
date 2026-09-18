@@ -1,0 +1,26 @@
+{
+  "id": "javaa-p4-trylock-transfer",
+  "title": "Deadlock-free transfers with tryLock",
+  "prompt": "Implement `static boolean transfer(Account from, Account to, int amount)` that can NEVER deadlock, using the tryLock-backoff pattern:\n1. Acquire both account locks with `tryLock()` (use a small retry loop with backoff or a ordered attempt).\n2. On success: check `from.balance() >= amount`, then move funds, release both locks, return true.\n3. If either lock cannot be acquired: release whatever you hold and return false.\n4. `record Account(int id, int balance)` won't do — accounts must expose `ReentrantLock lock()` and be mutable; build a small static Account class inside Solution (id, balance, lock).\n5. `static boolean unsafeTransfer(...)` doing the same with plain `synchronized(from)` nested `synchronized(to)` — intentionally deadlock-prone in *structure* (tests only call it with distinct orderings to keep the suite deterministic; the lesson explains the hazard).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "successful transfer moves funds",
+      "code": "\nSolution.Account a = new Solution.Account(1, 100);\nSolution.Account b = new Solution.Account(2, 0);\ncheckTrue(Solution.transfer(a, b, 30), \"transfer accepted\");\ncheckEq(a.balance(), 70, \"debit applied\");\ncheckEq(b.balance(), 30, \"credit applied\");\n",
+      "hint": "Debit and credit under both locks."
+    },
+    {
+      "name": "insufficient funds rejected atomically",
+      "code": "\nSolution.Account a = new Solution.Account(1, 10);\nSolution.Account b = new Solution.Account(2, 0);\ncheckTrue(!Solution.transfer(a, b, 999), \"rejected\");\ncheckEq(a.balance(), 10, \"nothing taken on reject\");\n",
+      "hint": "Balance check under both locks; no partial moves."
+    },
+    {
+      "name": "tryLock backs off a CROSS-THREAD held lock",
+      "code": "\nSolution.Account a = new Solution.Account(1, 50);\nSolution.Account b = new Solution.Account(2, 50);\nvar held = new java.util.concurrent.CountDownLatch(1);\nvar release = new java.util.concurrent.CountDownLatch(1);\nThread holder = Thread.ofVirtual().start(() -> {\n    a.lock().lock();          // a DIFFERENT thread holds a's lock\n    held.countDown();\n    try { release.await(); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }\n    a.lock().unlock();\n});\nheld.await();\nboolean moved = Solution.transfer(a, b, 10);\nrelease.countDown();\nholder.join(5000);\ncheckTrue(!moved, \"tryLock must back off, never block forever\");\ncheckEq(a.balance(), 50, \"no funds moved while blocked\");\n",
+      "hint": "Holder runs on another thread, so tryLock (R) backs off; a blocking lock() would deadlock the test."
+    }
+  ],
+  "level": "independent"
+}

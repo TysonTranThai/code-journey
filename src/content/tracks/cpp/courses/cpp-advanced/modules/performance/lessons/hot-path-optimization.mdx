@@ -1,0 +1,15 @@
+## Reserve before you grow
+
+`std::vector` doubling causes log(n) reallocations, each moving every element. `reserve(n)` up front makes the hot loop allocation-free. Allocation counters (like this module's) catch offenders instantly.
+
+## Reuse buffers across iterations
+
+A buffer allocated inside a loop is a per-iteration tax. Hoist it to the caller, pass by reference, clear with `clear()` (keeps capacity).
+
+## Move, don't copy
+
+`std::move` for last-use values, `emplace_back` in-place construction, and returning by value (RVO makes it free). A wrong `push_back(x)` where `push_back(std::move(x))` was meant costs a full deep copy per element.
+
+## Copy strings once
+
+Repeated concatenation in a loop is quadratic. Build with `reserve` + `append`, or accumulate into a single buffer. The graded exercises here count both allocations and byte-copies, so the quadratic version fails by arithmetic, not by opinion.

@@ -1,0 +1,20 @@
+{
+  "id": "i2-status-classify",
+  "title": "Status Code Selector",
+  "prompt": "Write `respond(handler)` — handler is one of \"create-ok\", \"create-duplicate\", \"get-ok\", \"get-missing\", \"update-invalid\", \"delete-ok\", \"boom\". Return { status, body } where: create-ok => 201 + { ok: true }; create-duplicate => 409 + { error: \"duplicate\" }; get-ok => 200 + { ok: true }; get-missing => 404 + { error: \"not-found\" }; update-invalid => 400 + { error: \"validation\" }; delete-ok => 204 + null body; boom => 500 + { error: \"internal\" }.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function respond(handler) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "maps situations to truthful codes",
+      "code": "const fn = new Function(code + \"\\nreturn { respond };\");\nconst { respond } = fn();\nif (respond(\"create-ok\").status !== 201) throw new Error(\"Created => 201.\");\nif (respond(\"create-duplicate\").status !== 409) throw new Error(\"Conflict => 409.\");\nif (respond(\"get-missing\").status !== 404) throw new Error(\"Missing => 404.\");\nif (respond(\"update-invalid\").status !== 400) throw new Error(\"Validation => 400.\");\n",
+      "hint": "A lookup table of { status, body }."
+    },
+    {
+      "name": "204 has no body",
+      "code": "const fn = new Function(code + \"\\nreturn { respond };\");\nconst { respond } = fn();\nconst r = respond(\"delete-ok\");\nif (r.status !== 204) throw new Error(\"Delete => 204.\");\nif (r.body !== null) throw new Error(\"204 means no content.\");\n",
+      "hint": "204 No Content — the name says it."
+    }
+  ]
+}

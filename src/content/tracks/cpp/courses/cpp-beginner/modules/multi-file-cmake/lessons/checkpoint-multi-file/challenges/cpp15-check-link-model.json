@@ -1,0 +1,31 @@
+{
+  "id": "cpp15-check-link-model",
+  "title": "Header Contract Model",
+  "prompt": "Model a multi-file project in one file: implement `int add(int, int)` (the \"math_utils.cpp\" definition), a `bool declared_only(int)` that must exist so the \"main.cpp\" side links (declare-and-define pattern), and `int call_add(int, int)` which calls `add` through its declaration-style usage. Then fix the classic bug: `kMaxRetries` must be a shared constant usable from \"several files\" — define it correctly for a header.",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n\n// TODO: implement add, declared_only, call_add\n// TODO: define kMaxRetries the header-safe way (inline constexpr int)",
+  "tests": [
+    {
+      "name": "add works",
+      "code": "CHECK_EQ(add(2, 3), 5);",
+      "hint": "The definition side of the contract."
+    },
+    {
+      "name": "declared_and_defined",
+      "code": "CHECK(declared_only(1));",
+      "hint": "A function that exists so the other file's call links."
+    },
+    {
+      "name": "call through",
+      "code": "CHECK_EQ(call_add(2, 3), 5);",
+      "hint": "Calls add — the linking pattern in miniature."
+    },
+    {
+      "name": "header constant",
+      "code": "static_assert(kMaxRetries == 3);\nCHECK_EQ(kMaxRetries, 3);",
+      "hint": "inline constexpr at namespace scope: one shared definition, no ODR problem."
+    }
+  ],
+  "level": "combination"
+}

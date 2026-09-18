@@ -1,0 +1,20 @@
+{
+  "id": "cppa3-generic-checkpoint",
+  "title": "Generic Gauntlet",
+  "prompt": "Implement `sumSquares` (binary fold over squares, empty pack -> 0) and `countPack` (sizeof...).",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n\ntemplate <class... A>\nconstexpr int sumSquares(A... a);   // empty pack -> 0\n\ntemplate <class... A>\nconstexpr std::size_t countPack(A... a);   // element count\n",
+  "tests": [
+    {
+      "name": "sumSquares folds squares",
+      "code": "static_assert(sumSquares(1, 2, 3) == 14, \"squares\");\nstatic_assert(sumSquares() == 0, \"empty\");\nCHECK_EQ(sumSquares(4), 16);",
+      "hint": "(0 + ... + (a * a)) — the binary fold handles the empty pack."
+    },
+    {
+      "name": "countPack is sizeof...",
+      "code": "static_assert(countPack(1, 2, 3, 4) == 4, \"count\");\nstatic_assert(countPack() == 0, \"empty count\");",
+      "hint": "return sizeof...(a);"
+    }
+  ]
+}

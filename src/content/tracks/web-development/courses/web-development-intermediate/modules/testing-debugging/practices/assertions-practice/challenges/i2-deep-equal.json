@@ -1,0 +1,20 @@
+{
+  "id": "i2-deep-equal",
+  "title": "Deep Equality",
+  "prompt": "Write `deepEqual(a, b)`: primitives compare with Object.is; arrays compare element-wise (same order); objects compare by having exactly the same keys with deeply equal values; null compares only to null. Arrays are not equal to objects.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function deepEqual(a, b) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "primitives and null",
+      "code": "const fn = new Function(code + \"\\nreturn { deepEqual };\");\nconst { deepEqual } = fn();\nif (!deepEqual(1, 1) || !deepEqual(\"x\", \"x\")) throw new Error(\"Primitives compare by value.\");\nif (!deepEqual(NaN, NaN)) throw new Error(\"Object.is treats NaN as NaN.\");\nif (deepEqual(null, {}) || deepEqual(null, 0)) throw new Error(\"null equals only null.\");\n",
+      "hint": "Object.is first; if both are non-null objects, recurse."
+    },
+    {
+      "name": "structures compare structurally",
+      "code": "const fn = new Function(code + \"\\nreturn { deepEqual };\");\nconst { deepEqual } = fn();\nif (!deepEqual([1, [2, 3]], [1, [2, 3]])) throw new Error(\"Nested arrays match by value.\");\nif (deepEqual([1, 2], [2, 1])) throw new Error(\"Order matters.\");\nif (!deepEqual({ a: 1, b: { c: 2 } }, { b: { c: 2 }, a: 1 })) throw new Error(\"Key order is irrelevant.\");\nif (deepEqual({ a: 1 }, { a: 1, b: 2 })) throw new Error(\"Different key sets differ.\");\nif (deepEqual([], {})) throw new Error(\"An array is not an object here.\");\n",
+      "hint": "Array.isArray check before the object branch; compare Object.keys lengths, then each key recursively."
+    }
+  ]
+}

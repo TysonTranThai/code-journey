@@ -1,0 +1,21 @@
+{
+  "id": "pa-perf-cache-rescue",
+  "title": "Cache the expensive backend",
+  "prompt": "Implement `class CachedApi` wrapping an expensive `backend` (any object with `.fetch(key)`):\n\n- `get(key)` returns `backend.fetch(key)` at most ONCE per distinct key (memoize)\n- the backend's fetch counter (injected via `Backend` class in the test) must show exactly one call per distinct key, however many `get` calls repeat\n- `invalidate(key)` forces the next `get(key)` to re-fetch",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class CachedApi:\n    def __init__(self, backend):\n        self._backend = backend\n\n    # TODO: get(key), invalidate(key)",
+  "tests": [
+    {
+      "name": "one fetch per distinct key",
+      "code": "class Backend:\n    def __init__(self):\n        self.calls = {}\n    def fetch(self, key):\n        self.calls[key] = self.calls.get(key, 0) + 1\n        return f'data:{key}'\n\nb = Backend()\napi = CachedApi(b)\nassert api.get('a') == 'data:a'\nassert api.get('a') == 'data:a'\nassert api.get('b') == 'data:b'\nassert api.get('a') == 'data:a'\nassert b.calls == {'a': 1, 'b': 1}, f'calls: {b.calls}'\nprint('ok')",
+      "hint": "Memoize in a dict keyed by the argument — check before delegating."
+    },
+    {
+      "name": "invalidate forces a refetch",
+      "code": "class Backend:\n    def __init__(self):\n        self.calls = {}\n    def fetch(self, key):\n        self.calls[key] = self.calls.get(key, 0) + 1\n        return f'data:{key}'\n\nb = Backend()\napi = CachedApi(b)\napi.get('x')\napi.invalidate('x')\napi.get('x')\nassert b.calls == {'x': 2}, f'calls: {b.calls}'\nprint('ok')",
+      "hint": "invalidate removes the memo entry only for that key."
+    }
+  ],
+  "level": "debugging"
+}

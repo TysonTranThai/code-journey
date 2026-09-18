@@ -1,0 +1,16 @@
+{
+  "id": "cppa19-token-bucket",
+  "title": "Token Bucket on a Fake Clock",
+  "prompt": "Implement `TokenBucket` (refill proportional to elapsed ms, capped at capacity, floor at consumption time) so the whole battery is deterministic under `FixedClock`.",
+  "difficulty": "advanced",
+  "level": "real-world",
+  "language": "cpp",
+  "boilerplate": "#include <algorithm>\n#include <cstdint>\n#include <map>\n#include <functional>\n#include <optional>\n#include <string>\n#include <vector>\n\n// --- deterministic time seam ---\nstruct Clock {\n    virtual ~Clock() = default;\n    virtual std::int64_t nowMs() const = 0;\n};\nstruct FixedClock : Clock {                 // test double\n    explicit FixedClock(std::int64_t t) : t_(t) {}\n    std::int64_t nowMs() const override { return t_; }\n    void advance(std::int64_t ms) { t_ += ms; }\nprivate:\n    std::int64_t t_;\n};\n\n// --- token bucket over the seam ---\nstruct TokenBucket {\n    TokenBucket(const Clock* clock, std::int64_t capacity, std::int64_t refillPerSec);\n    // true and consumes one token if allowed; false otherwise.\n    bool tryConsume();\n    std::int64_t tokens() const;\n\nprivate:\n    const Clock* clock_;\n    std::int64_t capacity_;\n    std::int64_t refillPerSec_;   // tokens per second\n    double tokens_ = 0.0;\n    std::int64_t lastMs_ = 0;\n};\n\n// --- sync event bus, registration-order dispatch ---\nstruct EventBus {\n    using Handler = std::function<void(const std::string&)>;\n\n    int subscribe(Handler h);          // returns a subscription id\n    bool unsubscribe(int id);          // true if it existed\n    void emit(const std::string& event) const;   // calls handlers in subscription order\n\nprivate:\n    std::vector<std::pair<int, Handler>> handlers_;\n    int nextId_ = 1;\n};\n\n// --- configuration ladder: defaults < file < env < flag ---\nenum class Layer { Default, File, Env, Flag };\n\nstruct ConfigLadder {\n    void set(Layer l, const std::string& key, const std::string& value);\n    std::optional<std::string> get(const std::string& key) const;   // highest layer wins\n    std::optional<Layer> source(const std::string& key) const;      // which layer set it\n\nprivate:\n    std::map<std::string, std::pair<Layer, std::string>> entries_;\n};\n",
+  "tests": [
+    {
+      "name": "deterministic refill battery",
+      "code": "{\n    FixedClock clk(0);\n    TokenBucket b(&clk, 3, 1);       // cap 3, +1/sec\n    clk.advance(1000);               // construction at t=0 -> now t=1s, bucket full\n    CHECK(b.tryConsume());\n    CHECK(b.tryConsume());\n    CHECK(b.tryConsume());\n    CHECK(!b.tryConsume());          // empty\n    clk.advance(500);\n    CHECK(!b.tryConsume());          // half a second: no whole token yet\n    clk.advance(500);\n    CHECK(b.tryConsume());           // one token refilled\n    CHECK(!b.tryConsume());\n}\n{\n    FixedClock clk(0);\n    TokenBucket b(&clk, 2, 10);      // fast refill\n    clk.advance(200);                // 2 tokens worth\n    CHECK(b.tryConsume());\n    CHECK(b.tryConsume());\n    CHECK(!b.tryConsume());\n}",
+      "hint": "On construction: tokens_ = capacity_, lastMs_ = now. tryConsume: tokens_ = min(capacity_, tokens_ + elapsedMs/1000.0 * refillPerSec_); if tokens_ >= 1, --tokens_ and true. Store tokens_ as double; test uses whole-second windows so results are exact."
+    }
+  ]
+}

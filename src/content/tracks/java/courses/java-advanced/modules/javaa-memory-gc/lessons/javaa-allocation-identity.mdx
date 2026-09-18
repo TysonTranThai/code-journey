@@ -1,0 +1,19 @@
+`new` = a heap allocation: address, header, initialized fields. Every
+allocation produces an object with *identity* distinct from its *state*:
+
+```java
+Integer a = 100, b = 100;    // a == b  — small-value cache shares one object
+Integer c = 500, d = 500;    // c != d  — outside the cache: two allocations
+```
+
+`==` compares identity (same allocation?); `equals` compares state. The
+small-Integer cache (-128..127) is an implementation choice, not a contract —
+comparing boxed numerics with `==` is a latent bug that passes on small
+numbers and detonates on large ones.
+
+An object's *address* is observable only weakly (`identityHashCode` is not
+the address, but its stability reflects the same object) — yet the *fact* of
+allocation is very observable: memory consumed, GC pressure, allocation
+rate. Advanced Java allocates deliberately: escape analysis can stack-allocate
+non-escaping objects, and scalar replacement can dissolve them entirely —
+which is why "allocation is expensive" is a claim to *measure*, not assume.

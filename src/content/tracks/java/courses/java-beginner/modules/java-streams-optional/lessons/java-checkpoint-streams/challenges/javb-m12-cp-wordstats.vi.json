@@ -1,0 +1,18 @@
+{
+  "title": "Checkpoint: pipeline thống kê từ",
+  "prompt": "Cài đặt `analyze(words)` trả về record `WordStats` với ba phần, mỗi phần dựng bằng stream: `byInitial` ánh xạ mỗi chữ cái đầu (viết thường) sang số từ bắt đầu bằng nó (không phân biệt hoa thường); `longest` liệt kê mọi từ có độ dài bằng độ dài lớn nhất (giữ nguyên hoa thường, theo thứ tự gốc); `joined` là `Optional` của mọi từ nối bằng `\" & \"`, rỗng khi input rỗng.",
+  "tests": [
+    {
+      "name": "chữ cái đầu được đếm không phân biệt hoa thường",
+      "hint": "map(String::toLowerCase) TRƯỚC khi groupingBy(w -> w.substring(0, 1))."
+    },
+    {
+      "name": "mọi người đồng hạng cùng nhận vương miện",
+      "hint": "Hai lượt cũng được: tìm độ dài max trước, rồi filter bằng equals."
+    },
+    {
+      "name": "joined là Optional, an toàn với rỗng",
+      "hint": "Collectors.joining(\" & \") trên stream rỗng cho ra \"\" - hãy chặn trường hợp đó."
+    }
+  ]
+}

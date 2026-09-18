@@ -1,0 +1,16 @@
+{
+  "id": "py-cli-save-roundtrip",
+  "title": "save_tasks Roundtrip",
+  "prompt": "Write save_tasks(path, tasks) writing JSON (ensure_ascii=False, indent=2), then a test-visible roundtrip: after calling save_tasks(\"tm_rt.json\", tasks) with tasks = [{\"text\": \"viết báo cáo\", \"done\": False}], load_tasks(\"tm_rt.json\") must equal tasks. Print the loaded task count (one line).",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "",
+  "tests": [
+    {
+      "name": "roundtrip holds",
+      "code": "import json as _j\nwith open(\"tm_rt.json\", encoding=\"utf-8\") as _f:\n    _d = _j.load(_f)\nassert _d == [{\"text\": \"viết báo cáo\", \"done\": False}], f\"got {_d}\"\nassert printed[0] == \"1\", f\"got {printed}\"\nassert \"ensure_ascii=False\" in code, \"keep Vietnamese readable\"",
+      "hint": "save with json.dump(..., ensure_ascii=False, indent=2); load and print len()."
+    }
+  ],
+  "level": "guided"
+}

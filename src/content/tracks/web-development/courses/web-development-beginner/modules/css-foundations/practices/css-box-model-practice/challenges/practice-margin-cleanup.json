@@ -1,0 +1,25 @@
+{
+  "id": "practice-margin-cleanup",
+  "title": "Debug: The Mystery Gap",
+  "prompt": "Two cards sit side by side but there's an unwanted 2rem gap between them. One card carries `margin-right: 2rem` — remove that declaration entirely (don't set it to 0; delete the line). Leave everything else alone.\n\nRules:\n- The `.card + .card` rule keeps its `margin-left: 1rem`.\n- The `margin-right: 2rem` line is gone.",
+  "difficulty": "beginner",
+  "level": "debugging",
+  "boilerplate": "<style>\n.card {\n  width: 200px;\n  background: lavender;\n}\n\n.card + .card {\n  margin-left: 1rem;\n}\n</style>\n\n<div class=\"card\">One</div>\n<div class=\"card\">Two</div>\n",
+  "tests": [
+    {
+      "name": "unwanted margin-right removed",
+      "code": "if (/margin-right\\s*:\\s*2rem/i.test(code)) {\n  throw new Error(\"margin-right: 2rem is still there — delete the declaration.\");\n}",
+      "hint": "Delete the whole margin-right: 2rem; line from the first card's rule."
+    },
+    {
+      "name": "adjacent-sibling spacing survives",
+      "code": "if (!/\\.card\\s*\\+\\s*\\.card\\s*\\{[^}]*margin-left\\s*:\\s*1rem\\s*;/i.test(code)) {\n  throw new Error(\"Keep .card + .card { margin-left: 1rem; } — that's the intended spacing.\");\n}",
+      "hint": "The .card + .card rule with margin-left: 1rem stays exactly as it is."
+    },
+    {
+      "name": "card base rule intact",
+      "code": "if (!/\\.card\\s*\\{[^}]*width\\s*:\\s*200px\\s*;[^}]*background\\s*:\\s*lavender\\s*;/i.test(code)) {\n  throw new Error(\"The .card base rule changed — only the stray margin-right line should disappear.\");\n}",
+      "hint": "width: 200px and background: lavender stay on .card."
+    }
+  ]
+}

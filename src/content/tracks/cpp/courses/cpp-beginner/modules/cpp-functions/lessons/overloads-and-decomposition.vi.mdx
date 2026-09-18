@@ -1,0 +1,36 @@
+## Nạp chồng: một tên, nhiều bản hợp đồng
+
+```cpp
+int area(int side);                      // hình vuông
+int area(int width, int height);         // hình chữ nhật
+double area(double radius);              // hình tròn
+```
+
+Ba hàm `area` cùng tồn tại; compiler chọn theo **kiểu và số lượng tham số** (theo *signature*). Riêng kiểu trả về không đủ để phân biệt các overload. Nạp chồng có ở khắp nơi trong thư viện chuẩn — đó là cách một cái tên `std::to_string` phục vụ int, double và hơn thế nữa.
+
+Dùng overload khi *ý tưởng* thực sự là một thứ được đo theo cách khác. Nếu các phần thân chia sẻ logic, hãy để các overload mỏng gọi về phần cài đặt thật thay vì copy-paste.
+
+## Phân rã: nước đi refactor
+
+Điểm bắt đầu (một "nguyên khối" người mới điển hình):
+
+```cpp
+int main() {
+    // đọc 3 điểm thi, in trung bình, cao nhất, và đậu/rớt
+    // ... 40 dòng std::cout và vòng lặp rối bời ...
+}
+```
+
+Sau khi refactor:
+
+```cpp
+double average(const std::vector<int>& scores);
+int highest(const std::vector<int>& scores);
+bool passed(double avg);
+```
+
+`main` còn lại bốn dòng dễ đọc; mỗi hàm có thể kiểm thử độc lập (test của nền tảng có thể gọi thẳng `average({9,7,10})`); và mỗi hàm *dùng lại được* cho tính năng kế tiếp. Điểm cuối cùng đó mới là siêu năng lực thầm lặng: chỉ code đã phân rã mới lớn lên một cách duyên dáng.
+
+## Bài test đặt tên
+
+Nếu bạn không đặt được tên hàm mà không có chữ "và" (`doc_va_validate_va_tinh_tong`), thì đó là hai hàm. Hãy tách ngay tại chữ "và".

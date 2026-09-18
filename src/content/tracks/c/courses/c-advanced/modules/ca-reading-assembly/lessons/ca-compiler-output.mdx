@@ -1,0 +1,15 @@
+## Every function has a shape
+
+A typical prologue pushes callee-saved registers it will use, adjusts the stack pointer for locals, and sometimes keeps a frame pointer. The epilogue reverses it. Recognizing this shape is 80% of reading any dump: everything between the prologue and epilogue is *your* function's logic.
+
+## Mapping C to instructions
+
+```c
+int tri(int n) { return n * (n + 1) / 2; }
+```
+
+The emitted code may never touch a multiply in the way you wrote it — compilers turn `n * (n + 1) / 2` into shifts and adds when profitable. The lesson is not 'assembly is hard'; it is *the compiler is already optimizing*, and reading its output shows you the transformations modules 4 and 10 only described.
+
+## How to look, honestly
+
+`gcc -S` (assembly text), `gcc -c` + `objdump -d` (disassembly of the object). Output differs across architectures (aarch64 vs x86-64) and across optimization levels. Professional practice: read *your own* function's dump, compare -O0 against -O2, and explain each difference. Never memorize one platform's mnemonics as 'the truth'.

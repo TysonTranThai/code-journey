@@ -1,0 +1,23 @@
+Ba primitive metric bao phủ phần lớn hệ thống:
+
+- **Counter** — chỉ tăng: số yêu cầu, lỗi, retry.
+- **Gauge** — giá trị tại một thời điểm: độ sâu hàng đợi, kết nối hoạt động,
+  kích thước cache.
+- **Timer** — phân phối thời lượng: latency p50/p95/p99.
+
+```java
+long p95(List<Long> sortedMicros) {
+    int idx = (int) Math.ceil(0.95 * sortedMicros.size()) - 1;
+    return sortedMicros.get(Math.max(0, idx));
+}
+```
+
+Phân vị trả lời "trải nghiệm của người dùng *tệ nhất* tệ đến mức nào" — trung
+bình che giấu họ (một nửa người dùng của bạn luôn dưới trung bình). Một timer
+cho thấy p99 cao trong khi trung bình đẹp là đang nói: đa số yêu cầu nhanh,
+và có ai đó đang có một ngày tồi tệ.
+
+Cardinality là cái bẫy: một label cho mỗi user id tạo ra một time series mỗi
+người dùng — hàng triệu series mà không backend nào lưu nổi. Label liệt kê
+*lớp* (endpoint, trạng thái, vùng), không bao giờ *thực thể* (người dùng,
+yêu cầu, URL có chứa id).

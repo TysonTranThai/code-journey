@@ -1,0 +1,54 @@
+Untrusted bytes arrive at your edge; your core logic deserves typed, verified
+values. The boundary's whole job is that translation — and doing it *once*.
+
+## Parse, don't validate
+
+Anti-pattern: every function re-checks `if user is not None` because nobody is
+sure where validation happened. The fix is a boundary function that returns
+either a **clean, typed value** or a **complete set of problems**:
+
+```python
+def validate_user(payload: dict) -> tuple[dict, list[dict]]:
+    clean, errors = {}, []
+    # ... normalize + check every field ...
+    return clean, errors   # errors == []  <=>  payload accepted
+```
+
+Inside the application, `clean` carries a guarantee: every field present,
+normalized (`email` lowercased and stripped), typed. No core function ever
+re-validates. The guarantee *is* the architecture.
+
+## Collect all the errors
+
+A form that reports one error per submit is a form users submit ten times.
+Validate every field, gather everything, report once. The envelope from the
+previous lesson carries one entry per problem:
+
+```json
+{"error": {"status": 422, "title": "validation_failed",
+           "detail": "3 fields invalid",
+           "fields": [{"field": "email", "detail": "..."}, ...]}}
+```
+
+## Normalization is half of validation
+
+`"  A@Example.COM "` and `"a@example.com"` are the same address. Normalize
+*before* checking (strip, case-fold, coerce numeric strings) so the check sees
+canonical data — and so equal inputs can't sneak past as unequal.
+
+## Fail closed, loudly
+
+- Unknown fields: reject (they're probably typos of real fields) — or at minimum
+  never *trust* them.
+- Exceptions at the boundary become 422/400 envelopes, never 500s. A 500 means
+  *your* bug; a 422 means *their* input. Blurring that trains clients to ignore
+  your errors.
+- Log validation failures at debug level without the full payload — payloads
+  contain passwords.
+
+## The DI seam
+
+Handlers should receive their dependencies (repositories, mailers, clocks) as
+**parameters**, not import singletons. That single decision makes the handler
+unit-testable: the test passes a fake repository and no database exists anywhere.
+We'll exercise that seam in the checkpoint.

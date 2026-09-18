@@ -1,0 +1,22 @@
+## Cái lỗi
+
+```cpp
+auto bad = std::string{"data"} | std::views::transform(f);   // dangling: chuỗi chết ngay dòng này
+```
+
+View lưu tham chiếu đến nguồn. Nếu nguồn là **container** tạm, view sống lâu hơn nó — mọi lần dùng sau là UB.
+
+## Quy tắc
+
+- C++20 **từ chối lúc biên dịch** ca kinh điển: nối một rvalue *container* vào view (quy tắc owning-rvalue). Nó không bắt được tất cả: `auto v = std::views::iota(0) | std::views::take(5);` là an toàn (iota tự giữ trạng thái), nhưng nối một *view* vốn đang mượn một đối tượng tạm vẫn lọt qua.
+- C++23 nới lỏng các ca khó chịu nhất (owning rvalue được phép ở nhiều vị trí adaptor hơn). Với `-std=c++20`, hãy học quy tắc bảo thủ:
+
+**Quy tắc bảo thủ: view chỉ được mượn từ những thứ sống lâu hơn biến view.** Container có tên, static, hoặc một view khác có vòng đời chứng minh được. Nếu cần dữ liệu của đối tượng tạm, hãy cụ thể hóa: `auto owned = src | ... | std::ranges::to<std::vector>();` (C++23) hoặc copy vào một vector có tên trong C++20.
+
+## Nhận diện khi review
+
+- `auto v = getContainer() | views::filter(...)` — dangling (getContainer trả về đối tượng tạm),
+- `for (auto x : makeVec() | views::take(3))` — thực ra an toàn: đối tượng tạm sống suốt câu range-for, ngoại lệ kinh điển,
+- `class C { std::span<int> s_; ... };` lưu span của biến cục bộ trong constructor — dangling khi constructor kết thúc.
+
+Các bài tập chấm điểm là phòng khám nhận diện: dán nhãn an toàn/dangling cho từng đoạn, rồi sửa đoạn dangling bằng cách cụ thể hóa.

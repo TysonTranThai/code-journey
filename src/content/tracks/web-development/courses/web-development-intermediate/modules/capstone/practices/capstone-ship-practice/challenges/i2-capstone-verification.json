@@ -1,0 +1,25 @@
+{
+  "id": "i2-capstone-verification",
+  "title": "Capstone Verification",
+  "prompt": "Final audit object `capstone` — declare what your build actually does: dataModel (boolean: a relational schema with a real primary key and the author relationship), apiValidates (server-side validation on writes), apiAuthorizes (author-only close enforced server-side), asyncStates (loading + error + empty designed in the UI), accessibilityPass (keyboard-only pass done, labels on every control), testsWritten (unit tests for your validation/authorization logic), and readme (documents how to run, env vars, migrations).",
+  "difficulty": "advanced",
+  "level": "guided",
+  "boilerplate": "const capstone = {\n  dataModel: false,\n  apiValidates: false,\n  apiAuthorizes: false,\n  asyncStates: false,\n  accessibilityPass: false,\n  testsWritten: false,\n  readme: false,\n};\n",
+  "tests": [
+    {
+      "name": "the full-stack core is real",
+      "code": "const fn = new Function(code + \"\\nreturn { capstone };\");\nconst { capstone } = fn();\nif (capstone.dataModel !== true) throw new Error(\"Declare a real relational schema: PK + author relation.\");\nif (capstone.apiValidates !== true) throw new Error(\"Writes must be validated server-side.\");\nif (capstone.apiAuthorizes !== true) throw new Error(\"Author-only close must be enforced server-side.\");\n",
+      "hint": "Modules 10–11: schema, validation, authorization."
+    },
+    {
+      "name": "the UX layer is real",
+      "code": "const fn = new Function(code + \"\\nreturn { capstone };\");\nconst { capstone } = fn();\nif (capstone.asyncStates !== true) throw new Error(\"Loading + error + empty states designed in (R5).\");\nif (capstone.accessibilityPass !== true) throw new Error(\"Keyboard-only pass, labels on every control.\");\n",
+      "hint": "Modules 2, 4 and the accessibility thread."
+    },
+    {
+      "name": "the engineering layer is real",
+      "code": "const fn = new Function(code + \"\\nreturn { capstone };\");\nconst { capstone } = fn();\nif (capstone.testsWritten !== true) throw new Error(\"Unit-test your validation and authorization logic.\");\nif (capstone.readme !== true) throw new Error(\"The README: how to run, env vars, migrations.\");\n",
+      "hint": "Modules 7 and 12: tests and handover docs."
+    }
+  ]
+}

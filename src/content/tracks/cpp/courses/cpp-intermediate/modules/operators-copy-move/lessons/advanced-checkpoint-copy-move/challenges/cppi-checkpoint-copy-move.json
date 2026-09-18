@@ -1,0 +1,25 @@
+{
+  "id": "cppi-checkpoint-copy-move",
+  "title": "Checkpoint: Copy & Move",
+  "prompt": "Implement `class Sentence` owning a `std::vector<std::string> words_` (rule of three/five, deep semantics). Provide `void add(std::string w)`, `std::size_t size() const`, and `std::string joined() const` returning words separated by single spaces. The test copies one Sentence, mutates the copy, and verifies independence, then moves a temporary into a vector.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <vector>\n#include <iostream>\n\nclass Sentence {\n    // rule of three/five\n};\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "Sentence s;\ns.add(\"hello\");\ns.add(\"world\");\nCHECK_EQ(s.joined(), std::string(\"hello world\"));",
+      "hint": "joined() separates with single spaces."
+    },
+    {
+      "name": "independent",
+      "code": "Sentence a;\na.add(\"x\");\nSentence b{a};\nb.add(\"y\");\nCHECK_EQ(a.size(), 1);\nCHECK_EQ(b.size(), 2);",
+      "hint": "The copy must not share storage with the original."
+    },
+    {
+      "name": "moved",
+      "code": "Sentence a;\na.add(\"q\");\nSentence c{std::move(a)};\nCHECK_EQ(c.size(), 1);\nCHECK_EQ(c.joined(), std::string(\"q\"));",
+      "hint": "A moved-from Sentence is empty but the moved-to keeps the words."
+    }
+  ]
+}

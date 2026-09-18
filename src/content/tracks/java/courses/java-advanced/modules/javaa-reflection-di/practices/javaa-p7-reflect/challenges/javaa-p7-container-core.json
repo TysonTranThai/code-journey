@@ -1,0 +1,26 @@
+{
+  "id": "javaa-p7-container-core",
+  "title": "The container core",
+  "prompt": "Inside Solution, write `public static class Container`:\n1. `public <T> T resolve(Class<T> type)` — recursive constructor injection: pick the\nfirst declared constructor, resolve EVERY parameter type the same way, instantiate\nwith `ctor.newInstance(...)`, cast back via `type.cast(...)`.\n2. Singleton scope: resolving the same type twice returns the SAME instance (cache\nby Class token — Module 6's heterogeneous map).\n3. Cycle detection: if resolution of A reaches A again, throw\n`IllegalStateException` with a message containing \"circular\".\nSupports: nested classes you define are resolved through their constructors.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "recursive construction",
+      "code": "\nSolution.Container c = new Solution.Container();\nSolution.Service s = c.resolve(Solution.Service.class);\ncheckTrue(s.repo != null, \"dependency injected\");\ncheckTrue(c.resolve(Solution.Facade.class).svc.repo != null, \"two-level graph\");\n",
+      "hint": "Params resolved depth-first."
+    },
+    {
+      "name": "singleton identity",
+      "code": "\nSolution.Container c = new Solution.Container();\ncheckTrue(c.resolve(Solution.Repo.class) == c.resolve(Solution.Repo.class), \"same instance\");\ncheckTrue(c.resolve(Solution.Facade.class).svc == c.resolve(Solution.Service.class), \"graph shares one Service\");\n",
+      "hint": "One object graph per container."
+    },
+    {
+      "name": "cycle detected, not a stack overflow",
+      "code": "\nSolution.Container c = new Solution.Container();\ntry {\n    c.resolve(Solution.CycleA.class);\n    checkTrue(false, \"must throw\");\n} catch (IllegalStateException e) {\n    checkTrue(e.getMessage().contains(\"circular\"), \"message says circular: \" + e.getMessage());\n}\n",
+      "hint": "In-progress set ends the recursion with a real diagnostic."
+    }
+  ],
+  "level": "real-world"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "javaa-p4-cas-counter",
+  "title": "Write the CAS retry loop yourself",
+  "prompt": "Do NOT use AtomicInteger's incrementAndGet. Build the loop from CAS:\n1. `static int casIncrement(AtomicInteger n)` — read, add 1, `compareAndSet(read, read+1)`; retry the whole read on failure; return the NEW value.\n2. `static int concurrentCasSum(AtomicInteger n, int threads)` — start `threads` virtual threads each calling `casIncrement` 1000 times via a latch go-signal; join all; return n.get().\n3. `static String explainAba()` returns exactly:\n   \"CAS compares values, not history: A->B->A passes the compare but the state changed\".",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "single increment",
+      "code": "\nvar n = new java.util.concurrent.atomic.AtomicInteger(5);\ncheckEq(Solution.casIncrement(n), 6, \"read-add-CAS\");\ncheckEq(n.get(), 6, \"stored\");\n",
+      "hint": "Loop: cur = n.get(); until n.compareAndSet(cur, cur+1)."
+    },
+    {
+      "name": "1000 x threads, zero lost updates",
+      "code": "\nvar n = new java.util.concurrent.atomic.AtomicInteger(0);\ncheckEq(Solution.concurrentCasSum(n, 8), 8000, \"CAS loop is atomic under contention\");\n",
+      "hint": "Each of 8 threads adds 1000; CAS retries absorb contention."
+    },
+    {
+      "name": "ABA explanation exact",
+      "code": "\ncheckEq(Solution.explainAba(),\n  \"CAS compares values, not history: A->B->A passes the compare but the state changed\",\n  \"the one-line truth\");\n",
+      "hint": "Copy the sentence exactly."
+    }
+  ],
+  "level": "independent"
+}

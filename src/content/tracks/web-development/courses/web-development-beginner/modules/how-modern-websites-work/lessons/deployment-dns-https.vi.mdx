@@ -1,0 +1,25 @@
+## Điều gì xảy ra khi bạn nhấn Enter
+
+1. **Tra cứu DNS.** Trình duyệt hỏi danh bạ của internet: _địa chỉ IP của `example.com` là gì?_ DNS dịch tên → số, toàn cầu, được cache ở nhiều tầng để tăng tốc.
+2. **Bắt tay TCP + TLS.** Trình duyệt kết nối đến địa chỉ đó và thống nhất các khóa mã hóa với server.
+3. **HTTP request/response.** `GET /` trở về dưới dạng HTML.
+4. **Trang tải xong.** Trình duyệt phân tích HTML, phát hiện CSS và JavaScript, tải chúng về, render — code của bạn từ Module 1, khép lại trọn vẹn vòng tròn.
+
+## HTTPS — ổ khóa không thể thương lượng
+
+**HTTPS** là HTTP bọc trong mã hóa TLS. Bất cứ thứ gì gửi qua HTTP thuần đều có thể bị đọc hoặc sửa bởi bất kỳ ai ở giữa bạn và server — mật khẩu, cookie, tất cả.
+
+HTTPS mang lại ba cam kết: **mã hóa** (không ai đọc được lưu lượng), **toàn vẹn** (không ai sửa được trên đường truyền), và **danh tính** (chứng chỉ chứng minh server đúng là những gì nó tự nhận). Chứng chỉ miễn phí và tự động trong năm 2026 (Let's Encrypt và mọi nhà host lớn) — một site không có HTTPS ngày nay là một dấu hiệu đỏ, hết truyện.
+
+## Code được triển khai như thế nào
+
+- **Site tĩnh** (các dự án Module 1–5 của bạn): các tệp được sao chép lên một host có CDN hỗ trợ. Nhanh, rẻ, lý tưởng khi trình duyệt làm toàn bộ công việc.
+- **App full-stack** (như Code Journey): một tiến trình server đang chạy cộng với một cơ sở dữ liệu, triển khai lên một nền tảng quản lý máy móc, khởi động lại, và mở rộng.
+
+Cách nào cũng vậy, nhịp điệu giống hệt: push code → pipeline triển khai nó → người dùng nhận phiên bản mới. Bạn đã làm phiên bản tĩnh rồi với GitHub Pages.
+
+## Toàn cảnh — và vị trí của bạn trong đó
+
+DNS biến một cái tên thành một cỗ máy. HTTP mang một request đến cỗ máy đó. Backend của server truy vấn cơ sở dữ liệu và trả lời bằng JSON. Frontend của trình duyệt render nó. Giờ đây bạn đã viết frontend, tiêu thụ API với tư cách client, và hiểu bộ máy đằng sau mọi mảnh còn lại.
+
+**Tiếp theo:** lắp ráp tất cả lại với nhau — dự án cuối khóa.

@@ -1,0 +1,10 @@
+{
+  "title": "Bản thể module và thân hàm chạy một lần",
+  "prompt": "Cài `class ReloadableModule` mô phỏng ngữ nghĩa cache của import:\n\n1. `install(name)` tạo `types.ModuleType(name)`, đặt `mod.exec_count = 0`, đăng ký vào `sys.modules[name]`, và lưu vào `self.modules[name]`.\n2. `import_again(name)` trả về `sys.modules[name]` mà KHÔNG thực thi lại gì cả.\n3. `simulate_body_execution(name)` tăng `exec_count += 1` của module đó (mô phỏng một lần chạy thân module).\n4. `identity_stable(name)` trả True khi các lần `import_again` liên tiếp luôn trả về CÙNG đối tượng.\n\nKiểm tra chấm: bản thể ổn định; exec_count chỉ đổi khi simulate_body_execution được gọi tường minh — đúng ngữ nghĩa import-một-lần thật.",
+  "tests": [
+    {
+      "name": "Bản thể ổn định, thân chạy một lần",
+      "hint": "sys.modules[name] là cache: import_again chỉ tra dict, không gì được thực thi."
+    }
+  ]
+}

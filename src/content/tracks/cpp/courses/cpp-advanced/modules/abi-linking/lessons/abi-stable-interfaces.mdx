@@ -1,0 +1,36 @@
+## Pattern 1 — pimpl (pointer to implementation)
+
+```cpp
+// engine.hpp — shipped, frozen
+class Engine {
+public:
+    Engine();
+    ~Engine();                       // must be out-of-line! (see below)
+    void tick(int units);
+private:
+    struct Impl;                     // never defined in the header
+    Impl* impl_;                     // or std::unique_ptr<Impl> with out-of-line dtor
+};
+```
+
+All private state hides behind one pointer. Adding members, changing algorithms, even swapping data structures: the header never changes, the layout of `Engine` stays one-pointer-wide, old binaries keep working. The destructor must live in the .cpp — the compiler generates the deleter there, where `Impl` is complete. (With `unique_ptr<Impl>` as a member, an in-header inline dtor would instantiate `default_delete<Impl>` on an incomplete type — a compile error; with a raw pointer plus out-of-line dtor, it is just a delete you owe once.)
+
+## Pattern 2 — extern "C" factory + opaque handle
+
+`extern "C"` disables mangling: one fixed symbol name, callable from any language, immune to C++ signature drift. Combined with an opaque pointer it is the classic plugin boundary:
+
+```cpp
+extern "C" Engine* engine_create();
+extern "C" void    engine_tick(Engine*, int units);
+extern "C" void    engine_destroy(Engine*);
+```
+
+Implementation can be rewritten completely; the three symbols are the contract.
+
+## Pattern 3 — versioned function tables
+
+New capability without breaking old callers: append function pointers at the end of a struct and bump a version field. Old callers read v1 fields and stop; new callers check `version >= 2` before touching later entries. This is how OS and driver ABIs stay stable for decades.
+
+## What the fixed sandbox grades
+
+Real .so linking is not gradeable in a single-TU harness, so the exercises grade the patterns' *logic*: pimpl lifecycle with the correct out-of-line destructor discipline, opaque-handle factory/destroy contracts, table versioning arithmetic, and ODR-safe constant scoping. Documented limitation, deliberately chosen.

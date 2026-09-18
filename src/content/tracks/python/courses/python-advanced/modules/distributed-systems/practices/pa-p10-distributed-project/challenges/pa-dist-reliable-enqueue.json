@@ -1,0 +1,21 @@
+{
+  "id": "pa-dist-reliable-enqueue",
+  "title": "Reliable enqueue over an unreliable network",
+  "prompt": "Implement `enqueue_with_retry(queue, payload, max_attempts=5, base=0.01, cap=0.1)`:\n\n- call `queue.put(payload)`; `ConnectionError` means the attempt failed\n- between attempts, the backoff ceiling `min(cap, base * 2**attempt)` must be computed (you may sleep or not — tests measure calls, not time)\n- succeed → return `attempts_used` (1-based)\n- exhaust all attempts → raise `RuntimeError` whose message contains 'exhausted'\n\n`queue` may be any object with `.put` — the test uses one that fails a fixed number of times then succeeds.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "def enqueue_with_retry(queue, payload, max_attempts=5, base=0.01, cap=0.1):\n    ...",
+  "tests": [
+    {
+      "name": "recovers within the budget",
+      "code": "class Flaky:\n    def __init__(self, fails):\n        self.fails = fails\n        self.calls = 0\n    def put(self, p):\n        self.calls += 1\n        if self.calls <= self.fails:\n            raise ConnectionError('down')\n\nq = Flaky(3)\nattempts = enqueue_with_retry(q, {'job': 1})\nassert attempts == 4 and q.calls == 4\nprint('ok')",
+      "hint": "Each ConnectionError consumes one attempt; the 4th succeeds."
+    },
+    {
+      "name": "honest exhaustion",
+      "code": "class Always:\n    def __init__(self):\n        self.calls = 0\n    def put(self, p):\n        self.calls += 1\n        raise ConnectionError('down')\n\nq = Always()\ntry:\n    enqueue_with_retry(q, 'x', max_attempts=3)\nexcept RuntimeError as e:\n    assert 'exhausted' in str(e) and q.calls == 3\nelse:\n    raise AssertionError('must raise after exhausting')\nprint('ok')",
+      "hint": "Give up loudly after the budget; no fake success."
+    }
+  ],
+  "level": "real-world"
+}

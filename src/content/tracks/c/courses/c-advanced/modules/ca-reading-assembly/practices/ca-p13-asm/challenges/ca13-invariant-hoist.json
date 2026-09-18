@@ -1,0 +1,21 @@
+{
+  "id": "ca13-invariant-hoist",
+  "title": "Invariant Leaves the Loop",
+  "prompt": "Implement `long long hoisted(int base, size_t n)` totaling base*2 + i for i in 0..n-1, computed with the invariant `base*2` *outside* the loop (store it in a local first). Implement `long long naive(int base, size_t n)` recomputing base*2 inside the loop. Both return the same value — the optimizer may hoist the naive one anyway; the discipline is yours to keep.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "identical totals",
+      "code": "CHECK_EQ(hoisted(5, 4), naive(5, 4));\nCHECK_EQ(hoisted(3, 100), naive(3, 100));",
+      "hint": "Reordering an invariant out of a loop cannot change the sum — only the instruction count."
+    },
+    {
+      "name": "sum value is right",
+      "code": "CHECK_EQ((long long)hoisted(5, 4), 2 * 5 + 0 + 2 * 5 + 1 + 2 * 5 + 2 + 2 * 5 + 3);",
+      "hint": "n=4, base=5: each term is base*2 + i."
+    }
+  ],
+  "level": "independent"
+}

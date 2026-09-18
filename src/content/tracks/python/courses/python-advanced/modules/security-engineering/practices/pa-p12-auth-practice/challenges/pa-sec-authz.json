@@ -1,0 +1,21 @@
+{
+  "id": "pa-sec-authz",
+  "title": "Own the object check",
+  "prompt": "Implement `get_order(session, order_id, admin=False)` with `NotFound`/`Forbidden` exceptions and the module-level `ORDERS` dict (owners 'alice' and 'bob'):\n\n- unknown id → `NotFound('no such order')`\n- `admin=True` → any order\n- owner (from `session['user']`) → their order\n- everyone else → **`NotFound('no such order')`** — never `Forbidden` and never the data: a 404 doesn't confirm the resource exists (no enumeration oracle)\n- the check must use the session user only; a client-supplied `as_user` key must be IGNORED\n\nThis is IDOR as executable specification.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class Forbidden(Exception):\n    pass\n\n\nclass NotFound(Exception):\n    pass\n\n\nORDERS = {\n    'o1': {'owner': 'alice', 'total': 100},\n    'o2': {'owner': 'bob', 'total': 50},\n}\n\n\ndef get_order(session, order_id, admin=False):\n    ...",
+  "tests": [
+    {
+      "name": "owners read their own, strangers see nothing",
+      "code": "alice = {'user': 'alice'}\nassert get_order(alice, 'o1')['owner'] == 'alice'\ntry:\n    get_order(alice, 'o2')\nexcept NotFound:\n    pass\nelse:\n    raise AssertionError('stranger must get NotFound')\nassert get_order(alice, 'o2', admin=True)['owner'] == 'bob'\nprint('ok')",
+      "hint": "Owner yes, stranger 404, admin everything."
+    },
+    {
+      "name": "the parameter is not the principal",
+      "code": "alice = {'user': 'alice', 'as_user': 'bob'}\ntry:\n    get_order(alice, 'o2')\nexcept NotFound:\n    pass\nelse:\n    raise AssertionError('as_user must be ignored')\ntry:\n    get_order({'user': 'mallory'}, 'nope')\nexcept NotFound:\n    pass\nelse:\n    raise AssertionError('unknown id is NotFound')\nprint('ok')",
+      "hint": "Identity comes from the session; params are data, not authority."
+    }
+  ],
+  "level": "debugging"
+}

@@ -1,0 +1,21 @@
+**Validate the canonical form, never the input string.** Path traversal:
+`..%2F..%2Fetc%2Fpasswd` decoded and normalized is `/etc/passwd` — a filter
+that rejects `..` on the RAW string sees neither the dots nor the slashes.
+
+```java
+Path root = baseDir.toAbsolutePath().normalize();
+Path target = root.resolve(userPath).normalize();
+if (!target.startsWith(root)) throw new SecurityException("traversal");
+```
+
+`resolve` + `normalize` produce the canonical path; the *containment check*
+then answers the only question that matters: is the result still inside the
+root? Note what this rejects that string filters miss: `docs/../secrets`,
+absolute escapes, encoding tricks (already decoded by the time you see the
+String), symlinks resolved by the filesystem itself.
+
+The same shape applies to SSRF: never blacklist bad hosts (infinite), allowlist
+the hosts you mean (finite). `URL.openStream()` on a user-supplied URL can
+reach `http://169.254.169.254/` (cloud metadata) or `http://localhost:8080/`
+(your own admin) — the fix is resolving the host against an allowlist BEFORE
+any I/O.

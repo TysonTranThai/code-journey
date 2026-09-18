@@ -1,0 +1,43 @@
+## Từ struct sang class: khác biệt nằm ở cánh cửa
+
+`struct` để mọi thứ public. `class` mặc định các thành viên **private** — và đó chính là điểm mấu chốt:
+
+```cpp
+class BankAccount {
+public:                                  // giao diện — những gì người khác được dùng
+    void deposit(long long cents) {
+        if (cents <= 0) return;          // đối tượng tự thực thi luật của nó
+        balance_cents_ += cents;
+    }
+
+    long long balance() const { return balance_cents_; }
+
+private:                                 // trạng thái — không ai đụng trực tiếp
+    long long balance_cents_{0};
+};
+```
+
+Một **bất biến** là luật phải luôn đúng ("số dư không bao giờ âm"). Giấu trạng thái sau một giao diện kỷ luật nghĩa là bất biến được thực thi ở *một nơi duy nhất* thay vì được hi vọng ở mọi điểm gọi.
+
+## Đóng gói không phải là getter-và-setter-cho-mọi-thứ
+
+```cpp
+// CHỐNG-MẪU: một struct với thêm các bước thừa
+class Bad {
+public:
+    void set_balance(long long b) { balance_ = b; }   // ai cũng set được mọi thứ
+    long long get_balance() const { return balance_; }
+private:
+    long long balance_{};
+};
+```
+
+Nếu mọi thành viên đều có getter *và* setter tầm thường, chẳng có gì được bảo vệ — bạn vừa dựng một struct với công thái học tệ hơn. Hãy phơi ra các **thao tác** (deposit, withdraw), không phải các trường. Hãy hỏi "người khác có thể *làm* gì?" chứ không phải "người khác có thể *đọc* gì?"
+
+## Quy ước gạch dưới đuôi
+
+`balance_cents_` đánh dấu thành viên private bằng thị giác; nhiều phong cách dùng `m_` hoặc tên trần. Chọn một quy ước và giữ nguyên — điều quan trọng là người đọc không bao giờ phải tự hỏi một cái tên là thành viên hay biến cục bộ.
+
+## Composition vẫn là mặc định
+
+Một `class` có `std::vector<Transaction> history_` làm thành viên là *composition* — đối tượng sở hữu đối tượng khác. Nó vẫn sẽ là công cụ bạn dùng nhiều nhất; các bài sau thêm constructor và (chỉ sau đó) kế thừa.

@@ -1,0 +1,73 @@
+## `static` có ba gương mặt
+
+`static` là một từ khóa với ba nghĩa tùy vị trí. Nhầm lẫn giữa chúng là gốc của
+nhiều bug:
+
+| Vị trí | Nghĩa |
+|---|---|
+| Phạm vi tệp (`static int x;`) | **Liên kết nội bộ** — riêng tư trong TU này |
+| Trong hàm (`static int c = 0;`) | **Thời gian sống tĩnh** — một đối tượng duy nhất, sống suốt chương trình, khởi tạo một lần |
+| Trên tham số/hàm (hiếm) | về cơ bản là liên kết nội bộ cho hàm |
+
+Trong hàm, biến `static` *không* nằm trên stack. Mọi lời gọi thấy — và có thể
+thay đổi — cùng một đối tượng:
+
+```c
+int next_id(void) {
+    static int counter = 0;   /* sinh một lần, sống qua mọi lời gọi */
+    return ++counter;
+}
+```
+
+Mạnh và nguy hiểm: nó làm hàm **có trạng thái**, phá vỡ khả năng re-entrant.
+Hai lần dùng "đồng thời" (từ thread, hay thậm chí đệ quy) cùng biến đổi một ô
+nhớ. Nguyên tắc Trung cấp: chỉ dùng `static` trong hàm cho trạng thái toàn cục,
+một-thực-thể-thật, và ghi chú rõ.
+
+## `extern` là một lời hứa
+
+`extern int attempts;` nói: "tồn tại một đối tượng tên `attempts` với liên kết
+bên ngoài — định nghĩa của nó ở TU nào đó, không nhất thiết là TU này." Đây là
+cầu nối để nhiều tệp chia sẻ một đối tượng:
+
+```c
+/* stats.c */
+int attempts = 0;            /* ĐỊNH NGHĨA duy nhất (mặc định bên ngoài) */
+
+/* stats.h */
+extern int attempts;         /* khai báo mà mọi người include đều thấy */
+```
+
+Mỗi TU include header đều khai báo cùng một đối tượng bên ngoài; đúng một TU
+định nghĩa nó. Quên định nghĩa, linker sẽ nói: `undefined reference to 'attempts'`.
+
+## Thời gian sống: đối tượng sống ở đâu
+
+- **Tự động** — biến cục bộ, kể cả tham số. Sinh tại `{`, chết tại `}`.
+  Con trỏ trỏ vào đối tượng tự động vô hiệu ngay khi khối kết thúc.
+- **Tĩnh** — đối tượng phạm vi tệp và `static` trong hàm. Một thực thể,
+  sống cả chương trình, tự động về 0 nếu bạn không khởi tạo.
+- **Cấp phát** — `malloc`/`calloc`/`realloc`. Sống đến khi bạn `free`.
+  Module 3 sẽ làm cho quyền sở hữu của nhóm này nghiêm ngặt.
+
+Bug kinh điển mà mô hình này giải thích:
+
+```c
+char *badge(const char *name) {
+    char buf[64];                       /* tự động */
+    snprintf(buf, sizeof buf, "%s!", name);
+    return buf;                         /* BUG: lơ lửng khi return */
+}
+```
+
+Con trỏ trả về trỏ vào khung stack đã chết. `static char buf[64];` "sửa" được
+bằng cách cho buffer sống qua lời gọi — nhưng giờ mọi caller chia sẻ một buffer,
+lần gọi thứ hai ghi đè kết quả lần đầu. Cách sửa đúng là caller sở hữu bộ nhớ
+(Module 3).
+
+## Kiểm tra hiểu biết
+
+- Gọi `next_id()` ba lần in ra gì? (1, 2, 3 — static được giữ lại.)
+- `extern int x;` có phải định nghĩa không? (Không — chỉ là khai báo.)
+- Chuỗi ký tự literal có thời gian sống nào? (Tĩnh — sống cả chương trình;
+  vì vậy trả về literal là an toàn, khác với trả về mảng cục bộ.)

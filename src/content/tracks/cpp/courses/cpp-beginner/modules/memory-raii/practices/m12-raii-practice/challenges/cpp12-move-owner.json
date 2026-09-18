@@ -1,0 +1,26 @@
+{
+  "id": "cpp12-move-owner",
+  "title": "Ownership Transfer",
+  "prompt": "Implement `make_counter()` returning `std::unique_ptr<int>` holding 0, and `take_and_bump(std::unique_ptr<int> p)` that increments the value and RETURNS the same pointer onward.",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <memory>\n\nstd::unique_ptr<int> make_counter() {\n    // TODO\n}\nstd::unique_ptr<int> take_and_bump(std::unique_ptr<int> p) {\n    // TODO: bump the int, then return p (ownership flows on)\n}",
+  "tests": [
+    {
+      "name": "create",
+      "code": "auto p = make_counter(); CHECK(p && *p == 0);",
+      "hint": "make_unique, not new."
+    },
+    {
+      "name": "bump",
+      "code": "auto p = make_counter();\nauto q = take_and_bump(std::move(p));\nCHECK(q && *q == 1);",
+      "hint": "Ownership moves in and straight back out; the value is incremented."
+    },
+    {
+      "name": "source emptied",
+      "code": "auto p = make_counter(); auto q = take_and_bump(std::move(p)); CHECK(p == nullptr);",
+      "hint": "After the move, the source unique_ptr is null — ownership moved."
+    }
+  ],
+  "level": "independent"
+}

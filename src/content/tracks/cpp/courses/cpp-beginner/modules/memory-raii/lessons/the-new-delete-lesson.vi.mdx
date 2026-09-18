@@ -1,0 +1,46 @@
+## Mẫu legacy bạn SẼ gặp
+
+```cpp
+// Kiểu legacy — chỉ để đọc. Đừng bao giờ viết thế này trong code mới.
+Report* make_report() {
+    Report* r = new Report("legacy");    // cấp phát heap, sở hữu thủ công
+    return r;
+}
+
+void use() {
+    Report* r = make_report();
+    if (r->is_empty()) return;           // LEAK: return sớm bỏ qua delete phía dưới
+    r->render();
+    delete r;                            // giải phóng thủ công — một đường trong nhiều đường
+}
+```
+
+Mỗi dòng là một quyết định mà con người phải nhớ mãi mãi. Các kiểu lỗi đúng bằng danh sách của bài 12A, và hàm 12 dòng này đã rò rỉ ngay: lệnh return sớm. Hàm thật có vòng lặp, exception, và mười đường return — dọn dẹp thủ công không sống sót trước luồng điều khiển thật.
+
+## Cùng đoạn code, phiên bản hiện đại
+
+```cpp
+std::unique_ptr<Report> make_report() {
+    return std::make_unique<Report>("modern");
+}
+
+void use() {
+    auto r = make_report();
+    if (r->is_empty()) return;     // không leak: destructor của unique_ptr chạy
+    r->render();
+}                                   // giải phóng ở đây — mọi đường đi, kể cả khi ném exception
+```
+
+Sở hữu trở thành một *kiểu dữ liệu*. Compiler giờ thực thi điều mà phiên bản legacy chỉ có thể cầu xin con người ghi nhớ.
+
+## Bài tập của bạn: dịch, không phải sáng tác
+
+Các challenge của module này đưa cho bạn code legacy `new`/`delete` và yêu cầu bạn (1) gọi tên bug, (2) viết lại bằng RAII. Bạn sẽ viết `new`/`delete` đúng một lần trong khóa này — trong bài "tìm bug", với tư cách bệnh nhân trên bàn mổ. Điều đó là chủ ý: Core Guidelines R.11 khuyến cáo tránh `new`/`delete` ngoài code sở hữu cấp thấp, và ngay cả ở đó, cũng phải được bọc lại.
+
+## Khi nào con trỏ thô TỒN TẠI trong code hiện đại?
+
+- **Observer không-owning**: tham số hàm `const Report*` có thể null, hoặc thành viên lớp nhìn một đối tượng khác mà không sở hữu nó.
+- **Tương thích** với API kiểu C.
+- **Bên trong thư viện chuẩn và code sở hữu cấp thấp** bạn sẽ học ở Trung cấp.
+
+Sở hữu chảy qua các kiểu (`unique_ptr`, container, thành viên theo giá trị); truy cập chảy qua tham chiếu và con trỏ không-owning. Câu đó chính là toàn bộ module này.

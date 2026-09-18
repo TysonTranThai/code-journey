@@ -1,0 +1,26 @@
+{
+  "id": "javi-checkpoint-m10-async",
+  "title": "Parallel Aggregator",
+  "prompt": "Build `Solution`:\n- `interface Shard { int fetch(String key); }` — a data shard.\n- `static int totalFromAll(List<Shard> shards, String key)` — call every\n  shard (sequentially is fine), treating a shard that throws\n  RuntimeException as contributing 0 (fault isolation).\n- `static CompletableFuture<Integer> asyncTotal(List<Shard> shards,\n  String key)` — same semantics via completedFuture/thenApply chains with\n  one exceptionally per shard, joined with allOf + sum.\n\nFailures in one shard must not poison the others — that's the contract.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\nimport java.util.concurrent.*;\n\npublic class Solution {\n    public interface Shard { int fetch(String key); }\n    // Provide totalFromAll + asyncTotal here.\n}\n",
+  "tests": [
+    {
+      "name": "healthy shards sum",
+      "code": "\nList<Solution.Shard> shards = List.of(\n    k -> 10, k -> 20, k -> 12);\ncheckEq(Solution.totalFromAll(shards, \"k\"), 42, \"sum of all\");\n",
+      "hint": "10 + 20 + 12."
+    },
+    {
+      "name": "failing shard contributes 0",
+      "code": "\nList<Solution.Shard> shards = List.of(\n    k -> 10, k -> { throw new RuntimeException(\"down\"); }, k -> 12);\ncheckEq(Solution.totalFromAll(shards, \"k\"), 22, \"fault isolated\");\n",
+      "hint": "The broken shard is skipped, others still count."
+    },
+    {
+      "name": "async version matches",
+      "code": "\nList<Solution.Shard> shards = List.of(\n    k -> 10, k -> { throw new RuntimeException(\"down\"); }, k -> 12);\ncheckEq(Solution.asyncTotal(shards, \"k\").join(), 22, \"async == sync\");\n",
+      "hint": "Same contract through CompletableFuture chains."
+    }
+  ],
+  "level": "real-world"
+}

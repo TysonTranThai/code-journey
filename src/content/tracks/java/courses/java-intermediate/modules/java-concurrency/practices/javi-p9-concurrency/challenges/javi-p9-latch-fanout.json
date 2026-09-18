@@ -1,0 +1,26 @@
+{
+  "id": "javi-p9-latch-fanout",
+  "title": "Latch-Synchronized Fan-Out",
+  "prompt": "Implement `static List<String> fanOut(int n)`:\n- create a `CountDownLatch(n)` and a thread-safe list\n  (`Collections.synchronizedList` or `CopyOnWriteArrayList`)\n- start n threads; each appends `\"t\" + its_index` to the list, then\n  counts down the latch\n- the main thread awaits the latch, SORTS the list, and returns it\n\nEvery returned list must contain exactly `t0..t(n-1)` — the latch\nguarantees completion before the read. n <= 0 returns an empty list.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\nimport java.util.concurrent.atomic.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "all workers complete",
+      "code": "\nList<String> out = Solution.fanOut(5);\ncheckEq(out.size(), 5, \"five results\");\ncheckEq(out, List.of(\"t0\", \"t1\", \"t2\", \"t3\", \"t4\"), \"sorted complete set\");\n",
+      "hint": "The latch + sort makes the result deterministic."
+    },
+    {
+      "name": "single worker",
+      "code": "\ncheckEq(Solution.fanOut(1), List.of(\"t0\"), \"one result\");\n",
+      "hint": "n=1 edge."
+    },
+    {
+      "name": "zero or negative",
+      "code": "\ncheckEq(Solution.fanOut(0), List.of(), \"zero → empty\");\n",
+      "hint": "n <= 0 → empty list."
+    }
+  ],
+  "level": "independent"
+}

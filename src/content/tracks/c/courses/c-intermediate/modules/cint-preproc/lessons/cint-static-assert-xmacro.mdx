@@ -1,0 +1,51 @@
+## Fail the build, not the customer
+
+`_Static_assert` (C11, no-message form in C23) checks a constant
+expression at compile time:
+
+```c
+_Static_assert(sizeof(int) == 4, "protocol assumes 32-bit int");
+_Static_assert(OTAB_CAP > 0 && (OTAB_CAP & (OTAB_CAP - 1)) == 0,
+               "capacity must be a power of two");
+```
+
+When the assumption breaks — a new platform, a refactored constant —
+the build fails with your message, at the site of the assumption. That
+is the cheapest possible bug: one that never ships. Static asserts
+document *invariants the compiler can check*, complementing the runtime
+checks you already write.
+
+## X-macros: one data, many views
+
+The pattern keeps parallel lists (enum ↔ name ↔ table row) in lockstep
+by defining the list once:
+
+```c
+/* commands.def — the single source of truth */
+X(ADD,  cmd_add,  "adds")
+X(SUB,  cmd_sub,  "subs")
+
+/* the enum: */
+#define X(id, fn, desc) CMD_##id,
+enum cmd_id { CMD_NONE, X_ROWS CMD_COUNT };
+#undef X
+
+/* the dispatch table: */
+#define X(id, fn, desc) { CMD_##id, fn, desc },
+static const struct { int id; int (*fn)(int, int); const char *desc; }
+CMDS[] = { X_ROWS };
+#undef X
+```
+
+Add a command by editing **one file** — the enum, the table, and the
+name-to-string helpers all update together, and forgetting one is
+impossible because there is only one list. `#X` (stringize) and
+`X##Y` (paste) are the token operators that make it work. Real codebases
+use X-macros for opcodes, error codes, config keys — anywhere two or
+more parallel lists would otherwise drift.
+
+## #undef is part of the pattern
+
+Each use-site defines `X`, uses it, then undefines. This keeps the
+macro's scope one screen wide and makes accidental reuse a compile
+error rather than a silent surprise.

@@ -1,0 +1,41 @@
+## Three cases, one recursion
+
+Deleting a value from a BST:
+
+1. **Leaf** — no children: free it, set the parent's link to NULL.
+2. **One child** — splice: the child takes the deleted node's place.
+3. **Two children** — the hard case. You cannot just remove the node;
+   two subtrees would hang loose. The trick: replace the node's value
+   with its **in-order successor** (the smallest value in the right
+   subtree), then delete *that* successor — which, by definition, has
+   no left child, reducing the problem to case 1 or 2.
+
+```c
+TNode *bst_delete(TNode *t, int v) {
+    if (!t) return NULL;
+    if (v < t->value)      t->left  = bst_delete(t->left, v);
+    else if (v > t->value) t->right = bst_delete(t->right, v);
+    else {
+        if (!t->left)  { TNode *r = t->right; free(t); return r; }
+        if (!t->right) { TNode *l = t->left;  free(t); return l; }
+        TNode *s = t->right;                   /* successor: leftmost of right */
+        while (s->left) s = s->left;
+        t->value = s->value;                   /* copy the value up */
+        t->right = bst_delete(t->right, s->value);  /* delete the successor */
+    }
+    return t;
+}
+```
+
+The `return`-based recursion reassigns the *parent's link* (`t->left =
+bst_delete(...)`) — the same pointer-to-link idea from lists, in tree
+form. The in-order traversal after any delete must still come out
+sorted; that is the test.
+
+## The double-deletion trap
+
+Case 3 copies the successor's value then recurses to delete it. If the
+recursion is written against the wrong subtree (or the value compare
+uses `<=`), the same node can be visited for deletion twice — the first
+frees it, the second reads freed memory. The successor search and the
+deletion must agree on *which* node dies.

@@ -1,0 +1,31 @@
+{
+  "id": "ca10-checkpoint-pipeline",
+  "title": "Checkpoint: Pipeline Arithmetic",
+  "prompt": "Implement four small functions:\n1. `int expansion_math(void)` — given `#define TWICE(x) ((x) * 2)` already in your editor, return TWICE(TWICE(3)) (12) and be able to say why it is not 18.\n2. `int link_outcome(int helper_is_static)` — return 1 (undefined reference) if helper_is_static, else 0 (links).\n3. `int nm_visible(char letter)` — return 1 iff the nm type letter denotes an externally visible symbol (T, D, B).\n4. `int archive_would_pull(int resolves_pending_ref)` — return 1 iff the member resolves a pending undefined reference.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define TWICE(x) ((x) * 2)\n",
+  "tests": [
+    {
+      "name": "double expansion arithmetic",
+      "code": "CHECK_EQ(expansion_math(), 12);",
+      "hint": "TWICE(TWICE(3)) = TWICE(3) * 2 = 6 * 2 = 12 — arguments expand before substitution."
+    },
+    {
+      "name": "static vs exported",
+      "code": "CHECK_EQ(link_outcome(1), 1);\nCHECK_EQ(link_outcome(0), 0);",
+      "hint": "A static helper never satisfies an external call; a non-static one does."
+    },
+    {
+      "name": "visibility letters",
+      "code": "CHECK_EQ(nm_visible('T'), 1);\nCHECK_EQ(nm_visible('t'), 0);\nCHECK_EQ(nm_visible('D'), 1);\nCHECK_EQ(nm_visible('B'), 1);\nCHECK_EQ(nm_visible('U'), 0);",
+      "hint": "Uppercase letters are exported; lowercase and U are not definitions."
+    },
+    {
+      "name": "pull-in decision",
+      "code": "CHECK_EQ(archive_would_pull(1), 1);\nCHECK_EQ(archive_would_pull(0), 0);",
+      "hint": "Pull-in is exactly 'resolves something pending'."
+    }
+  ],
+  "level": "mini-build"
+}

@@ -1,0 +1,42 @@
+A **destructor** (`~ClassName`) runs automatically when an object dies —
+scope exit for automatic objects, `delete` for heap objects, container
+shrinking for elements. It is the "~" half of RAII: acquire in the
+constructor, release in the destructor.
+
+```cpp
+#include <cstdio>
+
+class FileLog {
+public:
+    explicit FileLog(const char* path) : handle_{std::fopen(path, "a")} {}
+    ~FileLog() { if (handle_) std::fclose(handle_); }   // ALWAYS runs
+
+    FileLog(const FileLog&) = delete;            // (Module 4: copy control)
+    FileLog& operator=(const FileLog&) = delete;
+
+private:
+    std::FILE* handle_;
+};
+
+void use() {
+    FileLog log{"app.log"};   // acquire
+    // ... write via log ...
+}                             // destructor closes the file — even on throw
+```
+
+## What belongs in a destructor
+
+Only releasing what the object **owns**: file handles, locks, sockets,
+heap memory. Members that own themselves (a `std::string` member, a
+`std::vector` member) destroy themselves — you never write
+`delete member_` for a value member.
+
+## The two rules for now
+
+1. If the class holds a raw resource it acquired, it needs a destructor.
+2. If it does not hold one, **write no destructor at all** — the implicit one
+   is correct, and a hand-written empty one only invites mistakes.
+
+Deletion order: members destroy in reverse declaration order, then the
+body runs... actually the body runs *first*, then members destroy in
+reverse order. Base parts (Module 3) destroy after the derived body.

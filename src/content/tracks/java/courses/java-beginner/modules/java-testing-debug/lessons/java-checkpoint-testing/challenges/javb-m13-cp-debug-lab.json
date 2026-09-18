@@ -1,0 +1,26 @@
+{
+  "id": "javb-m13-cp-debug-lab",
+  "title": "Checkpoint: debug & repair lab",
+  "prompt": "Three customers report: `changeFor(0)` prints `\"0q 0d 0n 0p\"` (good), `changeFor(97)` prints `\"3q 2d 1n 2p\"` (good), but `changeFor(-5)` prints `\"0q 0d -1n 0p\"` (nonsense) and `changeFor(41)` prints `\"1q 1d 1n 2p\"`... except one of these two reports is a lie. Reproduce with `main`, find the real defect, and fix it so: negative input throws `IllegalArgumentException` with a message containing \"negative\", and every amount 0..99 produces the exact correct breakdown (verified by your own main and by the tests).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String changeFor(int cents) {\n        int quarters = cents / 25;\n        cents %= 25;\n        int dimes = cents / 10;\n        cents %= 10;\n        int nickels = cents / 5;\n        int pennies = cents % 5;\n        return quarters + \"q \" + dimes + \"d \" + nickels + \"n \" + pennies + \"p\";\n    }\n}\n",
+  "tests": [
+    {
+      "name": "documented cases stay exact",
+      "code": "\nCjTestBase.checkEq(Solution.changeFor(0), \"0q 0d 0n 0p\", \"zero is all zeros\");\nCjTestBase.checkEq(Solution.changeFor(97), \"3q 2d 0n 2p\", \"97c = 3q 2d 0n 2p\");\nCjTestBase.checkEq(Solution.changeFor(41), \"1q 1d 1n 1p\", \"41c = 1q 1d 1n 1p\");\n",
+      "hint": "41 cents: 1 quarter (25) leaves 16 -> 1 dime (10) leaves 6 -> 1 nickel (5) leaves 1 penny."
+    },
+    {
+      "name": "the negative report was true",
+      "code": "\ntry {\n    Solution.changeFor(-5);\n    CjTestBase.checkTrue(false, \"negative must throw\");\n} catch (IllegalArgumentException e) {\n    CjTestBase.checkTrue(e.getMessage().contains(\"negative\"), \"message says negative\");\n}\n",
+      "hint": "Guard at the top: if (cents < 0) throw new IllegalArgumentException(...)."
+    },
+    {
+      "name": "every amount 0..99 breaks down exactly",
+      "code": "\nfor (int c = 0; c <= 99; c++) {\n    String s = Solution.changeFor(c);\n    String[] parts = s.split(\" \");\n    int q = Integer.parseInt(parts[0].replace(\"q\", \"\"));\n    int d = Integer.parseInt(parts[1].replace(\"d\", \"\"));\n    int n = Integer.parseInt(parts[2].replace(\"n\", \"\"));\n    int p = Integer.parseInt(parts[3].replace(\"p\", \"\"));\n    if (q * 25 + d * 10 + n * 5 + p != c) {\n        CjTestBase.checkTrue(false, \"changeFor(\" + c + \") wrong: \" + s);\n    }\n}\nCjTestBase.checkEq(Solution.changeFor(25), \"1q 0d 0n 0p\", \"quarter boundary\");\nCjTestBase.checkEq(Solution.changeFor(5), \"0q 0d 1n 0p\", \"nickel boundary\");\nCjTestBase.checkEq(Solution.changeFor(99), \"3q 2d 0n 4p\", \"top of range\");\n",
+      "hint": "When one coin type is wrong, the exhaustive sweep finds exactly where."
+    }
+  ],
+  "level": "debugging"
+}

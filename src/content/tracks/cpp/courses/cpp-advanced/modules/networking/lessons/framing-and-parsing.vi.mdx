@@ -1,0 +1,10 @@
+## Dòng byte, không phải tin nhắn
+
+`recv()` trả về *một số* byte — không phải "một tin nhắn". Mười lần gọi có thể gom thành một request; một lần gọi có thể chứa ba và một nửa. Trước khi parse bất cứ gì, bạn cần **framing**: một quy tắc cho biết tin nhắn kết thúc ở đâu.
+
+- **Dựa trên delimiter** (`\n`): đơn giản, nhưng payload không được chứa delimiter nếu không escape — và `find('\n')` ngây thơ trên đầu vào kẻ tấn công là cách request smuggling bắt đầu.
+- **Độ dài đặt trước** (4 byte length rồi payload): framing O(1), nhưng trường độ dài là *đầu vào của kẻ tấn công*: đọc dưới dạng `uint32_t`, kiểm tra với giới hạn hợp lý *trước khi* cấp phát, rồi mới reserve. `std::string(len, 'x')` với `len = 0xFFFFFFFF` từ peer thù địch là cú OOM bạn tự giao.
+
+## Parsing trong thế giới tăng dần
+
+Parser bền bỉ là **máy trạng thái**: nạp byte, giữ trạng thái dư, trả về "cần thêm" hoặc "một frame + đã tiêu N byte". Parser giả định cả frame đến trong một buffer là bug ngay ngày đầu. Bộ tích lũy đó cũng phải chặn rác: magic sai, độ dài phi lý, dòng quá dài — với lỗi phân loại được, vì vận hành hệ thống debug theo lớp lỗi.

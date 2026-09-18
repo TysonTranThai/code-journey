@@ -1,0 +1,47 @@
+Type annotation mô tả **hàm nhận gì và trả về gì**. Công cụ ngoài (mypy,
+pyright — chạy trên máy của bạn) kiểm tra chúng, nhưng chúng không tốn chi phí
+runtime và phục vụ ba đối tượng cùng lúc: người gọi, editor, và bạn của tương lai.
+
+```python
+def average(values: list[float]) -> float:
+    return sum(values) / len(values)
+
+def find_user(user_id: int) -> dict | None:      # union hiện đại (3.10+)
+    ...
+
+def set_level(level: Literal["debug", "info", "error"]) -> None:
+    ...
+```
+
+## Từ vựng cần dùng hằng ngày
+
+- **Container**: `list[str]`, `dict[str, int]`, `tuple[int, ...]` (biến đổi), `set[str]`.
+- **Union**: `int | None` thay cho `Optional[int]`; `str | bytes` nghĩa là đúng một trong hai.
+- **`Any`** nghĩa là "vùng miễn kiểm tra" — lây lan và nên tránh; **`object`** nghĩa là "bất kỳ giá trị nào, nhưng phải xử lý cẩn thận".
+- **`TypedDict`** gán kiểu cho các key của dict khi dataclass là quá mức cần (ví dụ: phản chiếu payload JSON):
+
+```python
+from typing import TypedDict
+
+class ProductDict(TypedDict):
+    sku: str
+    price: float
+```
+
+## Narrowing (thu hẹp kiểu)
+
+Trình kiểm tra kiểu hiểu luồng điều khiển — kiểm tra kiểu rồi kiểu được thu hẹp:
+
+```python
+def total(value: int | list[int]) -> int:
+    if isinstance(value, list):
+        return sum(value)        # tại đây value: list[int]
+    return value                 # tại đây value: int
+```
+
+## Vì sao phải chú thích?
+
+Đến ba nghìn dòng, "hàm này nhận gì?" không còn đoán được. Annotation bắt lỗi
+thật trước runtime (truyền `str` nơi kỳ vọng giây), giúp chữ ký tìm kiếm được,
+và cho editor autocomplete đúng. Bạn kiểm chứng chúng ở đây bằng **hành vi và
+qua `get_type_hints`**; trên máy riêng, chạy `mypy` để kiểm tra tĩnh đầy đủ.

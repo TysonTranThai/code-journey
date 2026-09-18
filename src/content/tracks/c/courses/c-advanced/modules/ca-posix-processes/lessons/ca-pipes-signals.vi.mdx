@@ -1,0 +1,23 @@
+## Pipe là một cặp fd
+
+`pipe(int fds[2])` (POSIX) tạo kênh một chiều: ghi vào `fds[1]`, đọc từ `fds[0]`. Mẫu kinh điển:
+
+1. `pipe()` *trước* `fork()` — cả hai tiến trình thừa kế cả hai đầu.
+2. Con: `dup2(fds[1], STDOUT_FILENO)`, exec — stdout của nó chảy vào pipe.
+3. Cha: đóng đầu ghi (nếu không `read` không bao giờ trả 0), đọc đến EOF, rồi `waitpid`.
+
+Quên đóng phía cha là bug kinh điển: reader chặn vĩnh viễn vì còn một đầu ghi mở đâu đó.
+
+## Tín hiệu: kỷ luật cờ bất đồng bộ
+
+Handler chạy giữa hai lệnh tùy ý của chương trình. Hợp đồng: handler chỉ đụng cờ `volatile sig_atomic_t` và các hàm async-signal-safe. Mọi thứ khác — cấp phát, stdio, khóa — bị cấm. Hình dạng production luôn như sau:
+
+```c
+static volatile sig_atomic_t shutdown_requested = 0;
+static void on_term(int sig) { (void)sig; shutdown_requested = 1; }
+/* vòng lặp chính: while (!shutdown_requested) { ... } */
+```
+
+## Môi trường là trạng thái được thừa kế
+
+`getenv` (ISO C) đọc môi trường tiến trình mà mỗi con thừa kế từ cha. Đó là toàn bộ cơ chế đằng sau `PATH`, `HOME`, và mọi cấu hình 12-factor: môi trường là *trạng thái theo tiến trình, sao chép lúc fork và truyền qua exec*.

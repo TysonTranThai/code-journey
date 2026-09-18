@@ -17,9 +17,9 @@ test("anonymous visitors can read curriculum and challenges", async ({ page }) =
   await expect(page.getByText(/practice/i).first()).toBeVisible();
 
   await page.goto(
-    "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html/challenge/fix-the-heading",
+    "/learn/web-development/web-development-beginner/html-foundations/practice/introduction-to-html-practice/fix-the-heading",
   );
-  await expect(page.getByRole("button", { name: /run code/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /submit/i })).toBeVisible();
 });
 
 test("anonymous users can open a lesson discussion and read", async ({ page }) => {

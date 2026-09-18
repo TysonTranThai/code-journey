@@ -1,0 +1,28 @@
+## Arrays that grow
+
+```csharp
+var names = new List<string>();     // empty
+names.Add("an");
+names.Add("binh");
+Console.WriteLine(names.Count);     // 2 — actual elements
+names[0] = "An";                    // index like an array
+names.Remove("binh");               // removes first equal element
+Console.WriteLine(names.Contains("An"));   // True
+```
+
+`List<T>` wraps an array it reallocates behind your back: `Add` is amortized O(1), `Count` is the real element count. `Capacity` is the internal array's size — you almost never need to touch it. **`Count`, not `Length`,** is the beginner tell that a list isn't an array.
+
+## Removal, insertion, searching
+
+```csharp
+names.Insert(0, "cuong");       // O(n) — everything shifts
+names.RemoveAt(names.Count - 1);   // remove last
+int at = names.IndexOf("An");   // -1 when absent, like arrays
+names.Sort();                   // in-place, same contract as Array.Sort
+```
+
+`Remove` and `RemoveAt` shift everything after the removed slot — cheap at the end, expensive at the front. If you find yourself doing front-heavy insertion, the list may be the wrong shape (a deque/stack model fits better).
+
+## Iterating safely
+
+`foreach` over a list while `Add`/`Remove`-ing throws `InvalidOperationException` — the list is being modified during enumeration. Collect the changes and apply after the loop, or use a `for` loop backwards when removing by index.

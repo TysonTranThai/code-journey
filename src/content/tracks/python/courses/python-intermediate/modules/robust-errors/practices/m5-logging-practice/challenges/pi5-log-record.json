@@ -1,0 +1,26 @@
+{
+  "id": "pi5-log-record",
+  "title": "Emit and Verify",
+  "prompt": "Configure a logger named 'app.checkpoint' with a StreamHandler writing to a StringIO and a formatter '%(levelname)s:%(name)s:%(message)s' (assign it to LOG_OUTPUT so the grader can read it). Then implement warn_twice(msg) that emits msg twice at WARNING level using lazy %-formatting.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import io, logging\n\nLOG_OUTPUT = io.StringIO()\n\nlog = logging.getLogger('app.checkpoint')\n# configure handler + formatter here\n\ndef warn_twice(msg):\n    pass\n",
+  "tests": [
+    {
+      "name": "warning appears with level and name",
+      "code": "warn_twice('disk 80%')\nout = LOG_OUTPUT.getvalue()\nassert 'WARNING:app.checkpoint:disk 80%' in out",
+      "hint": "The formatter string decides the shape: LEVEL:NAME:MESSAGE."
+    },
+    {
+      "name": "exactly two emissions",
+      "code": "LOG_OUTPUT.seek(0); LOG_OUTPUT.truncate(0)\nwarn_twice('x')\nassert LOG_OUTPUT.getvalue().count('x') == 2",
+      "hint": "Call log.warning twice, not a loop of four."
+    },
+    {
+      "name": "uses lazy formatting (no f-string in the call)",
+      "code": "assert \"f'\" not in code and 'f\"' not in code, 'pass values as logging args, not interpolated strings'\nassert 'log.warning(' in code",
+      "hint": "log.warning('... %s', value) defers string building."
+    }
+  ],
+  "level": "guided"
+}

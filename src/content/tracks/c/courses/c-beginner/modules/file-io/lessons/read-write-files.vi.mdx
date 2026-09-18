@@ -1,0 +1,49 @@
+## Ghi văn bản
+
+```c
+FILE *f = fopen("log.txt", "w");
+if (f == NULL) return 1;
+fprintf(f, "score=%d\n", 42);
+fputs("plain line\n", f);
+fclose(f);
+```
+
+## Đọc từng dòng
+
+```c
+char line[128];
+FILE *f = fopen("log.txt", "r");
+if (f == NULL) return 1;
+while (fgets(line, sizeof line, f) != NULL) {
+    // line có cả '\n' ở cuối (khi vừa đủ chỗ)
+    fputs(line, stdout);
+}
+fclose(f);
+```
+
+`fgets` trả NULL khi hết tệp hoặc lỗi — đó là điều kiện của vòng lặp. Kích
+thước bộ đệm được tôn trọng: không tràn.
+
+## Phân tích cái bạn đọc
+
+```c
+int score;
+if (sscanf(line, "score=%d", &score) == 1) {
+    // khớp đúng một phép chuyển đổi
+}
+```
+
+Hãy kiểm tra giá trị trả về của sscanf — nó đếm số chuyển đổi thành công.
+
+## Gia đình EOF
+
+- `fgets` trả NULL: tín hiệu kết thúc của vòng lặp dòng
+- `feof(f)`: đúng SAU KHI một lần đọc chạm cuối tệp — đừng bao giờ lặp chỉ
+  dựa trên feof
+- `ferror(f)`: đúng nếu có lỗi I/O
+
+## Mẫu cho việc lưu trữ
+
+ghi → fclose → fopen("r") → đọc → fclose. Đóng lúc ghi đẩy dữ liệu xuống đĩa;
+mở lại để đọc sẽ thấy nó. Bạn sẽ dùng đúng mẫu này trong phần luyện tập: ghi
+một tệp nhỏ, rồi đọc lại và đếm.

@@ -1,0 +1,26 @@
+{
+  "id": "cb20-da-push-grow",
+  "title": "Push with Grow",
+  "prompt": "Given `int da_push(DArray *a, int v)` exists in spirit, implement `int da_push2(DArray *a, int v)`: append v; when size == cap, DOUBLE cap (cap 0 becomes 4) via realloc; return 1 on success, 0 on realloc failure (leaving the array intact).",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#include <stdlib.h>\ntypedef struct { int *data; int size; int cap; } DArray;\n",
+  "tests": [
+    {
+      "name": "fill within cap",
+      "code": "DArray a = {NULL, 0, 0};\nCHECK_EQ(da_push2(&a, 7), 1);\nCHECK_EQ(a.size, 1);\nCHECK_EQ(a.data[0], 7);\nfree(a.data);",
+      "hint": "Empty array grows to cap 4."
+    },
+    {
+      "name": "grows when full",
+      "code": "DArray a = {NULL, 0, 0};\nfor (int i = 0; i < 5; i++) da_push2(&a, i);\nCHECK_EQ(a.size, 5);\nCHECK_EQ(a.cap, 8);\nCHECK_EQ(a.data[4], 4);\nfree(a.data);",
+      "hint": "Fifth push doubles 4 -> 8."
+    },
+    {
+      "name": "contents survive growth",
+      "code": "DArray a = {NULL, 0, 0};\nfor (int i = 0; i < 9; i++) da_push2(&a, i * 10);\nCHECK_EQ(a.data[0], 0);\nCHECK_EQ(a.data[8], 80);\nfree(a.data);",
+      "hint": "realloc preserved every element."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "cppa12-incident-repair",
+  "title": "Incident Repair: The Truncated Report",
+  "prompt": "Incident report: `averageOf` returned garbage for a one-element report. The broken function divides by `v.size() - 1` (a `size_t`), so an empty/one-element vector underflows the unsigned size. Repair it: return `std::nullopt` for an empty vector, and the correct mean otherwise.",
+  "difficulty": "advanced",
+  "level": "debugging",
+  "language": "cpp",
+  "boilerplate": "#include <cstdint>\n#include <optional>\n#include <vector>\n\n// Mean of the values, or nullopt for an empty vector.\n// INCIDENT: the previous version computed v.size() - 1 on unsigned size_t,\n// underflowing to a gigantic divisor for empty input and returning garbage\n// for one-element input. Repaired version must never underflow.\nstd::optional<double> averageOf(const std::vector<int>& v);\n",
+  "tests": [
+    {
+      "name": "the incident inputs are correct now",
+      "code": "CHECK(!averageOf({}).has_value());\nCHECK_EQ(averageOf({7}).value_or(-1.0), 7.0);\nCHECK_EQ(averageOf({2, 4}).value_or(-1.0), 3.0);",
+      "hint": "Guard empty first (return nullopt), then sum with a signed/wider accumulator and divide by v.size()."
+    },
+    {
+      "name": "mean survives extreme magnitudes",
+      "code": "CHECK_EQ(averageOf({INT_MAX, INT_MIN}).value_or(0.0), -0.5);\nCHECK_EQ(averageOf({INT_MAX, INT_MAX}).value_or(0.0), INT_MAX * 1.0);\nCHECK_EQ(averageOf({-1000000, 1000000}).value_or(0.0), 0.0);",
+      "hint": "Sum in long long (or double) BEFORE dividing — an int accumulator overflows on the INT_MAX+INT_MIN pair."
+    }
+  ]
+}

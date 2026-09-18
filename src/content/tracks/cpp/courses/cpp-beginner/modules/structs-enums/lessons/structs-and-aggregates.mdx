@@ -1,0 +1,44 @@
+## The problem structs solve
+
+A student is not three unrelated variables floating around — it is one thing:
+
+```cpp
+struct Student {
+    std::string name;
+    int age{};
+    double gpa{};
+};
+```
+
+Now `Student` is a type, exactly like `int`:
+
+```cpp
+Student s{"Linh", 20, 3.8};                    // aggregate initialization
+Student t{.name = "Minh", .age = 21, .gpa = 3.5};   // C++20 designated initializers
+s.name = "Linh Nguyen";                        // member access with .
+Student older = older_of(s, t);                // passes and returns by value like any type
+```
+
+The `{}` member initializers (`int age{}`) give every new Student sane defaults — no garbage members, ever.
+
+## Structs are values
+
+Assignment copies every member; passing by value copies; `==` does NOT work automatically (compare members yourself, or write `operator==` — module 10's neighbor topic). The value semantics you learned in module 2 apply to your own types now.
+
+## A taste of member functions
+
+```cpp
+struct Rectangle {
+    double width{};
+    double height{};
+
+    double area() const { return width * height; }   // const: reads, never writes
+};
+r.area()
+```
+
+A function inside the struct operates on the members of whichever object it is called on. The `const` suffix promises it does not modify the object — the same const-correctness as module 2, now per-object. Member functions are the door to module 10.
+
+## Design hint: model the domain, not the storage
+
+`struct Account { std::string owner; long long cents; };` beats `struct AccountData2 { ... };` — name things what they ARE. And when two values always travel together (module 7's hint), that pair deserves a struct with a real name, not `std::pair`.

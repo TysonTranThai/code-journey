@@ -1,0 +1,29 @@
+## The equals/hashCode contract
+
+Write `equals()` and you **must** write `hashCode()`. The contract:
+
+1. Equal objects must have equal hash codes.
+2. Unequal objects *may* share a hash code (collision) — but shouldn't, or
+   hash-based collections degrade toward lists.
+
+Break the pairing and `HashSet`/`HashMap` silently misbehave. The loudest
+failure is the **mutable key trap**: put a mutable object in a `HashSet`,
+then mutate a field it hashes on — the object stays in its *old* bucket,
+so `contains` returns false even though `equals` says it should be there:
+
+```java
+Set<Point> pts = new HashSet<>();   // mutable Point
+pts.add(p);
+p.x = 99;                           // hashCode changes under the set
+pts.contains(p);                    // false! — searches the wrong bucket
+```
+
+That is why hash keys should be immutable.
+
+Rules for hand-written `equals`:
+- parameter is `Object`, then narrow with `instanceof`
+- reflexive, symmetric, transitive, consistent, never `null == true`
+- `@Override` so a typo like `equals(Point)` fails the build
+
+`hashCode` should mix all fields used in `equals`:
+`Objects.hash(x, y)` does it correctly and consistently.

@@ -1,0 +1,20 @@
+{
+  "id": "i2-idor-scan",
+  "title": "IDOR Detector",
+  "prompt": "Write `findIdor(routes)` — routes is an array of { path, hasOwnershipCheck, method }. A route is an IDOR risk when its path contains \":id\" (or \"/:id/\") and hasOwnershipCheck is false. Return the risky paths sorted alphabetically. GET routes count too — reads leak data.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function findIdor(routes) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "flags unguarded id routes",
+      "code": "const fn = new Function(code + \"\\nreturn { findIdor };\");\nconst { findIdor } = fn();\nconst routes = [\n  { path: \"/api/orders/:id\", hasOwnershipCheck: false, method: \"GET\" },\n  { path: \"/api/orders/:id\", hasOwnershipCheck: true, method: \"GET\" },\n  { path: \"/api/profile\", hasOwnershipCheck: false, method: \"GET\" },\n];\nif (findIdor(routes).join(\",\") !== \"/api/orders/:id\") throw new Error(\"Only the unguarded id route.\");\n",
+      "hint": "Both conditions: id in path, no check."
+    },
+    {
+      "name": "sorted output, empty when clean",
+      "code": "const fn = new Function(code + \"\\nreturn { findIdor };\");\nconst { findIdor } = fn();\nconst routes = [\n  { path: \"/api/b/:id\", hasOwnershipCheck: false, method: \"GET\" },\n  { path: \"/api/a/:id\", hasOwnershipCheck: false, method: \"GET\" },\n];\nif (findIdor(routes).join(\",\") !== \"/api/a/:id,/api/b/:id\") throw new Error(\"Alphabetical.\");\nif (findIdor([]).length !== 0) throw new Error(\"No routes, no risks.\");\n",
+      "hint": "filter, map, sort."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "cb16-append-log",
+  "title": "Append Log",
+  "prompt": "Implement `int append_line(const char *path, const char *line)`: append line + '\\n' to path (mode \"a\", creating it if needed) and return 0; return -1 on open failure. Two consecutive appends must BOTH survive.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "two appends",
+      "code": "remove(\"/tmp/cj16-g.txt\");\nappend_line(\"/tmp/cj16-g.txt\", \"one\");\nappend_line(\"/tmp/cj16-g.txt\", \"two\");\nFILE *f = fopen(\"/tmp/cj16-g.txt\", \"r\");\nchar buf[64] = {0};\nfgets(buf, 64, f);\nCHECK_STR_EQ(buf, \"one\\n\");\nfgets(buf, 64, f);\nCHECK_STR_EQ(buf, \"two\\n\");\nfclose(f);\nremove(\"/tmp/cj16-g.txt\");",
+      "hint": "\"a\" never truncates."
+    },
+    {
+      "name": "creates file",
+      "code": "remove(\"/tmp/cj16-h.txt\");\nCHECK_EQ(append_line(\"/tmp/cj16-h.txt\", \"seed\"), 0);\nremove(\"/tmp/cj16-h.txt\");",
+      "hint": "Missing file is created."
+    }
+  ],
+  "level": "independent"
+}

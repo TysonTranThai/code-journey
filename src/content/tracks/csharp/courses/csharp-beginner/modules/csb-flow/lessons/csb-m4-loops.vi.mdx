@@ -1,0 +1,36 @@
+## Bốn dạng
+
+```csharp
+for (int i = 0; i < 5; i++) { ... }        // đếm được: số lượt đã biết
+while (queue.Count > 0) { ... }            // kiểm tra trước: có thể chạy 0 lượt
+do { ... } while (again);                  // kiểm tra sau: chạy ít nhất một lượt
+foreach (string name in names) { ... }     // đi qua một collection
+```
+
+- **for** sở hữu biến đếm — hợp khi số lượt đã biết hoặc suy ra được.
+- **while** kiểm tra trước — chạy 0 lượt là bình thường.
+- **do/while** chạy thân trước — menu và vòng nhập liệu ("hỏi ít nhất một lần").
+- **foreach** đọc từng phần tử của collection — không cần chỉ số, không lệch một. (Dùng `for` khi bạn cần biết mình đang *ở đâu*.)
+
+## Tích lũy: trạng thái bên trong vòng lặp
+
+Mọi công cụ thống kê là một vòng lặp có trạng thái:
+
+```csharp
+int total = 0;
+for (int i = 1; i <= 100; i++)
+{
+    total += i;          // trạng thái cập nhật mỗi lượt
+}
+// total == 5050
+```
+
+Khởi tạo biến tích lũy *trước* vòng lặp, cập nhật *bên trong*, đọc *sau*. Khai báo biến tích lũy bên trong vòng lặp là bug kinh điển của người mới — nó bị đặt lại mỗi lượt.
+
+## break và continue
+
+`break` thoát vòng lặp ngay; `continue` bỏ qua phần còn lại, sang lượt kế. Dùng cả hai tiết chế — một `for` với điều kiện rõ cộng thêm một `break` kiểu "tìm thấy rồi" vẫn đọc tốt; một mê cung các break báo hiệu vòng lặp cần tái cấu trúc.
+
+## Kỷ luật lệch-một
+
+`i < n` thăm n phần tử (chỉ số 0..n-1); `i <= n` thăm n+1. Mảng và chuỗi đánh số từ 0: mảng 5 phần tử có chỉ số cuối là 4. Khi vòng lặp nổ `IndexOutOfRangeException`, hãy nhìn vào biên giới trước.

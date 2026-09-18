@@ -1,0 +1,21 @@
+{
+  "id": "csb-p14-csv",
+  "title": "Delimiter CSV",
+  "prompt": "Implement `static void SaveScores(string path, List<(int Id, string Name, int Score)> rows)` writing one `id|name|score` line per row, and `static List<(int Id, string Name, int Score)> LoadScores(string path)` parsing them back (missing file → empty list).",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "roundtrip",
+      "code": "var path = Path.Combine(Path.GetTempPath(), \"cj-p14e\", Guid.NewGuid().ToString() + \".csv\");\nvar rows = new List<(int, string, int)> { (1, \"An\", 90), (2, \"Binh\", 75) };\nSolution.SaveScores(path, rows);\nvar back = Solution.LoadScores(path);\nCj.Eq(back.Count, 2, \"two rows\");\nCj.Eq(back[0].Item1, 1, \"id\");\nCj.Eq(back[0].Item2, \"An\", \"name\");\nCj.Eq(back[1].Item3, 75, \"score\");",
+      "hint": "Save then load must reproduce the data — the round-trip contract."
+    },
+    {
+      "name": "empty",
+      "code": "var path = Path.Combine(Path.GetTempPath(), \"cj-p14f\", Guid.NewGuid().ToString() + \".csv\");\nCj.Eq(Solution.LoadScores(path).Count, 0, \"missing file -> empty\");\nSolution.SaveScores(path, new List<(int, string, int)>());\nCj.Eq(Solution.LoadScores(path).Count, 0, \"empty save -> empty load\");",
+      "hint": "Both empty cases normalize to an empty list."
+    }
+  ],
+  "level": "independent"
+}

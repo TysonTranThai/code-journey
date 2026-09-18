@@ -1,0 +1,27 @@
+The `<algorithm>` header is a vocabulary of loops other people have already
+written — tested, named, and complexity-documented. Reading code that uses
+it is faster than reading hand-rolled loops.
+
+```cpp
+#include <algorithm>
+#include <vector>
+
+std::vector<int> v{4, 1, 3, 1, 5};
+
+auto it = std::find(v.begin(), v.end(), 3);      // iterator or end()
+int n = std::count(v.begin(), v.end(), 1);       // how many 1s
+bool has = std::any_of(v.begin(), v.end(),
+                       [](int x) { return x > 4; });
+std::sort(v.begin(), v.end());                   // O(n log n), ascending
+std::reverse(v.begin(), v.end());
+auto mx = *std::max_element(v.begin(), v.end());
+```
+
+Three habits that make algorithms safe:
+
+1. **Check before dereferencing.** `std::find` returns `end()` when nothing
+   matches; comparing against `end()` is the only safe move.
+2. **Prefer the `_if` family with a predicate** instead of transforming
+   data to fit a non-`_if` version.
+3. **Read the complexity line.** `sort` is O(n log n); `count` is O(n);
+   nothing here is free.

@@ -1,0 +1,26 @@
+{
+  "id": "ca13-checkpoint-emitted",
+  "title": "Checkpoint: What the Compiler Emits",
+  "level": "mini-build",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>",
+  "prompt": "Model what the optimizer emits — as executable predicates, faithful to the transformations the module verified with -S output.\n \n1. `int emitted_ops_sum(int n)` — the compiler emits the closed form n*(n+1)/2 for the loop sum 1..n, not a multiply chain: return that value (use long long internally; n >= 0).\n2. `int strength_steps(int n)` — count the machine steps to compute n*13 by strength reduction on a positive int: while n_left > 1, halve it (integer divide by 2) and count one step; then add one for the final shift-add. Return 0 for n <= 1.\n3. `int would_elide(int pure, int calls, int observed)` — a pure computation whose result is never used may be removed entirely: return calls * pure when observed is nonzero, else 0.",
+  "tests": [
+    {
+      "name": "closed form replaces the loop",
+      "code": "CHECK_EQ(emitted_ops_sum(100), 5050);\nCHECK_EQ(emitted_ops_sum(1), 1);\nCHECK_EQ(emitted_ops_sum(0), 0);",
+      "hint": "Gauss' identity, not the loop: 100 -> 5050; single element and empty both trivial."
+    },
+    {
+      "name": "strength reduction count",
+      "code": "CHECK_EQ(strength_steps(13), 4);\nCHECK_EQ(strength_steps(16), 5);\nCHECK_EQ(strength_steps(1), 0);",
+      "hint": "13 -> 6 -> 3 -> 1 is three halvings plus the final add = 4; 16 needs four halvings plus the add = 5."
+    },
+    {
+      "name": "dead pure code elides",
+      "code": "CHECK_EQ(would_elide(5, 3, 0), 0);\nCHECK_EQ(would_elide(5, 3, 1), 15);",
+      "hint": "Unobserved pure work contributes nothing to the emitted program; observed work must still be computed."
+    }
+  ]
+}

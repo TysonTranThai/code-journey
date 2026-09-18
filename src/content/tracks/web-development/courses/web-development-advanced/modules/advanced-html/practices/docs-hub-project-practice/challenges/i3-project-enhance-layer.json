@@ -1,0 +1,30 @@
+{
+  "id": "i3-project-enhance-layer",
+  "title": "Project Grade: Enhancement + Metadata",
+  "prompt": "GRADED PROJECT CHECKPOINT — finish your Documentation Hub: (1) a 'copy install command' affordance as progressive enhancement — a <details> disclosure containing the command in a <code> block (readable without JS) plus a button inside it with popovertarget-less text 'Copy' marked aria-label=\"Copy install command\"; (2) hreflang alternates for en and vi pointing at https://docs.example.com/en/ and /vi/ paths; (3) a <meta name=\"robots\"> that allows indexing.",
+  "difficulty": "advanced",
+  "level": "real-world",
+  "boilerplate": "<!-- Documentation Hub: enhancement + metadata layer -->\n\n",
+  "tests": [
+    {
+      "name": "install command readable without JS",
+      "code": "const det = code.match(/<details[\\s>][\\s\\S]*?<\\/details>/i);\nif (!det) throw new Error(\"Wrap the install command in a <details> disclosure.\");\nif (!/<code\\b[^>]*>[^<]*(npm|npx|brew|pip|kite)[\\s\\S]*?<\\/code>/i.test(det[0])) {\n  throw new Error(\"Put the install command inside a <code> block in the disclosure.\");\n}\nconst sum = det[0].match(/<summary[^>]*>([\\s\\S]*?)<\\/summary>/i);\nif (!sum || !sum[1].replace(/<[^>]*>/g, \"\").trim()) {\n  throw new Error(\"The disclosure needs a non-empty <summary>.\");\n}",
+      "hint": "A disclosure with the command in <code> works for everyone, script or no script."
+    },
+    {
+      "name": "copy affordance is named",
+      "code": "const copy = [...code.matchAll(/<button([^>]*)>([\\s\\S]*?)<\\/button>/gi)].find((b) =>\n  /copy/i.test(b[2].replace(/<[^>]*>/g, \"\")) || /copy/i.test(b[1])\n);\nif (!copy) throw new Error(\"Add the Copy button.\");\nif (!/aria-label\\s*=\\s*[\"'][^\"']*copy[^\"']*[\"']/i.test(copy[1])) {\n  throw new Error('Give the Copy button aria-label=\"Copy install command\".');\n}",
+      "hint": "A short 'Copy' button benefits from a fuller name — this is the one aria-label that adds information."
+    },
+    {
+      "name": "bilingual alternates declared",
+      "code": "const en = [...code.matchAll(/<link[^>]*>/gi)].some((m) =>\n  /hreflang\\s*=\\s*[\"']en[\"']/i.test(m[0]) && /docs\\.example\\.com\\/en\\//i.test(m[0])\n);\nconst vi = [...code.matchAll(/<link[^>]*>/gi)].some((m) =>\n  /hreflang\\s*=\\s*[\"']vi[\"']/i.test(m[0]) && /docs\\.example\\.com\\/vi\\//i.test(m[0])\n);\nif (!en) throw new Error('Add hreflang=\"en\" pointing at the /en/ path.');\nif (!vi) throw new Error('Add hreflang=\"vi\" pointing at the /vi/ path.');",
+      "hint": "Each alternate names its locale AND its path — both must be right."
+    },
+    {
+      "name": "indexable",
+      "code": "const r = code.match(/<meta[^>]*name\\s*=\\s*[\"']robots[\"'][^>]*content\\s*=\\s*[\"']([^\"']*)[\"']/i);\nif (r && /noindex/i.test(r[1])) {\n  throw new Error(\"Docs are public — the robots meta must not say noindex.\");\n}",
+      "hint": "Either omit robots entirely or write index, follow — public documentation wants to be found."
+    }
+  ]
+}

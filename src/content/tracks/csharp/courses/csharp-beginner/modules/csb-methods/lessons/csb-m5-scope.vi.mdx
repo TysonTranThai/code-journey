@@ -1,0 +1,42 @@
+## Phạm vi: một cái tên tồn tại ở đâu
+
+Biến cục bộ tồn tại từ dòng khai báo đến ngoặc nhọn đóng của khối chứa nó:
+
+```csharp
+static double Tip(double bill)
+{
+    double rate = 0.15;          // sinh ra ở đây
+    double tip = bill * rate;    // nhìn thấy rate
+    return tip;
+}                                // rate và tip đã biến mất
+```
+
+Hai khối có thể mỗi bên tự khai báo `rate` riêng; đó là hai biến không liên quan. Tham số cũng là biến cục bộ — khai báo lại `double bill` bên trong `Tip` là lỗi (`CS0136`). Một cảnh báo: phương thức có thể *đọc* field của lớp nó thuộc về, nên biến cục bộ trùng tên field một cách âm thầm là nguồn nhầm lặp kinh điển — giữ tên cục bộ khác biệt.
+
+## Refactor: từ bức tường Main thành các bước có tên
+
+```csharp
+// trước: 40 dòng Main làm mọi thứ
+// sau:
+static void Main()
+{
+    var items = ReadItems();
+    var total = TotalWithTax(items);
+    PrintReceipt(items, total);
+}
+```
+
+Main trở thành mục lục. Mỗi hàm phụ làm **một việc**, và tên của nó cho biết việc gì mà không cần đọc thân. Tín hiệu đến lúc tách phương thức: một comment bạn viết để giải thích một khối (khối đó muốn thành phương thức có tên); cùng ba dòng xuất hiện hai lần; mức lồng sâu hơn ba.
+
+## Return sớm, bảo vệ trước
+
+```csharp
+static double Price(int qty, double unit)
+{
+    if (qty <= 0) return 0;              // guard clause
+    if (unit < 0) throw new ArgumentException("negative unit price");
+    return qty * unit;                   // logic chính, không thụt lề
+}
+```
+
+Xử lý các trường hợp lạ trước rồi return (hoặc throw) giữ logic chính phẳng. So với việc lồng đường vui bên trong `if (qty > 0) { if (unit >= 0) { ... } }` — cùng kết quả, thêm một mức thụt lề cho mỗi nỗi lo. Điều kiện tiên quyết ở đầu còn ghi lại hợp đồng: phương thức này mong đợi số lượng không âm, và nó nói điều đó bằng code.

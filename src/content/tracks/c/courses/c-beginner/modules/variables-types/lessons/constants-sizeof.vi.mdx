@@ -1,0 +1,31 @@
+## Hằng số
+
+Biến `const` không thể gán sau khi khởi tạo:
+
+```c
+const int MAX_USERS = 100;
+MAX_USERS = 5;   // lỗi biên dịch
+```
+
+`#define` là thay thế văn bản của bộ tiền xử lý — cơ chế khác, cùng mục tiêu
+cho hằng đơn giản:
+
+```c
+#define MAX_USERS 100   // không chấm phẩy, không dấu bằng
+```
+
+Ưu tiên `const` cho hằng có kiểu; bạn sẽ gặp tiền xử lý kỹ ở mô-đun 17.
+
+## sizeof hỏi trình biên dịch
+
+`sizeof` cho kích thước của một kiểu hoặc biểu thức **tính bằng byte**; kết quả
+thuộc kiểu `size_t`, in bằng `%zu`:
+
+```c
+printf("%zu\n", sizeof(int));      // thường là 4
+printf("%zu\n", sizeof(double));   // thường là 8
+char c = 'x';
+printf("%zu\n", sizeof(c));        // 1
+```
+
+`sizeof` được tính lúc biên dịch cho kiểu — không tốn chi phí chạy.

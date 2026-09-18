@@ -1,0 +1,39 @@
+## A layout that scales
+
+```text
+project/
+  include/           # public headers (the contracts)
+    mathutil.h
+  src/               # implementations
+    main.c
+    mathutil.c
+  tests/             # test programs (a main per concern)
+  Makefile
+  README.md
+```
+
+The rule: `include/` headers are what OTHERS may use; everything in `src/`
+is free to reorganize. Tests live outside `src/` so they never ship inside
+the product binary.
+
+## The README's minimum
+
+- what the program does (one paragraph)
+- how to build (the exact commands)
+- how to run + expected output
+- known limitations
+
+## The quality bar you have now reached
+
+- every function small enough to read without scrolling
+- warnings clean under `-Wall -Wextra`
+- every allocation has one obvious owner
+- NULL/guard checks at every boundary you cannot control
+- tests with known answers — reproducible with one command
+
+## Git in two paragraphs
+
+Commit small, commit often, write messages that say WHY. Never commit build
+artifacts (`.o`, binaries) — a `.gitignore` handles it. A branch per feature;
+merge when the feature passes its tests. That is 90% of professional Git
+discipline for a project this size.

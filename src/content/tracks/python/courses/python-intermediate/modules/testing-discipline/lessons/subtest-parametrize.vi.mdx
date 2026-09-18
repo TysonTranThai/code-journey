@@ -1,0 +1,29 @@
+Kiểm thử một hàm với hai mươi input bằng cách dán hai mươi method là nhiễu.
+`subTest` chạy một vòng các ca **bên trong một test method** — và tiếp tục
+sau một lần fail để bạn thấy mọi ca lỗi cùng lúc:
+
+```python
+import unittest
+
+class TestParse(unittest.TestCase):
+    def test_parse_counts(self):
+        cases = [
+            ("42", 42),        # thuần
+            ("  7 ", 7),       # khoảng trắng
+            ("0", 0),          # số không
+        ]
+        for text, expected in cases:
+            with self.subTest(text=text):
+                self.assertEqual(parse_count(text), expected)
+```
+
+Không có `subTest`, ca lỗi đầu che giấu phần còn lại. Với `subTest`, một lần
+chạy cho thấy `text='  7 '` lỗi VÀ `text='0'` lỗi — toàn cảnh trong một lần
+chạy. Đây là câu trả lời thuần unittest cho `parametrize` của pytest (pytest
+là lựa chọn yêu thích của hệ sinh thái; hình dạng của nó chuyển giao trực tiếp).
+
+## Các ca biên xứng đáng có dòng riêng
+
+Giữ một checklist trong đầu khi viết danh sách ca: rỗng, số không, một, âm,
+to, unicode, khoảng trắng, sai kiểu. Mỗi mục thành một dòng. Danh sách ca
+còn là **tài liệu chạy được** cho những gì hàm của bạn chấp nhận.

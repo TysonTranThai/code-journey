@@ -1,0 +1,56 @@
+## Circuit breaker
+
+Gọi một dịch vụ đã chết có cái giá: mỗi lời gọi đốt một timeout, một thread,
+và sự kiên nhẫn của người dùng. **Circuit breaker** (mượn từ kỹ thuật điện)
+theo dõi các lỗi gần đây và nhảy sang OPEN sau một ngưỡng:
+
+- **CLOSED** — bình thường; lời gọi đi qua; lỗi tăng bộ đếm.
+- **OPEN** — lời gọi fail *ngay lập tức* (fast-fail) không đụng vào mạng; điều
+  này cũng cho dependency thời gian hồi phục. Sau một giai đoạn nguội, cho một
+  lời gọi thăm dò đi qua.
+- **HALF-OPEN** — lời gọi thăm dò quyết định: thành công đóng mạch lại, thất
+  bại mở lại mạch.
+
+```python
+class CircuitBreaker:
+    def __init__(self, threshold=5, cooldown=30.0):
+        ...
+    def allow(self, now): ...      # chúng ta có được gọi ngay lúc này không?
+    def record(self, now, ok): ... # kết quả của một lời gọi thật
+```
+
+Chú ý cả hai method đều nhận `now` — thời gian xác định được, test được, tiêm
+được. Đó là chủ đề lặp lại: mọi cơ chế resilience là một máy trạng thái mà các
+chuyển tiếp phụ thuộc vào thời gian, vậy hãy biến thời gian thành tham số.
+
+## Nhất quán: cái giá của việc sao chép
+
+Khi dữ liệu nằm trên hai máy, việc lan truyền bản cập nhật cần thời gian. Trong
+cửa sổ đó, các lần đọc không đồng tình: **eventual consistency**. Ba hệ quả
+thường ngày:
+
+1. **Read-your-writes:** sau khi người dùng cập nhật hồ sơ, lần đọc ngay sau đó
+   phải phản ánh điều đó — route lần đọc đó tới primary, hoặc đánh phiên bản
+   cho lần đọc.
+2. **Đọc cũ là một quyết định sản phẩm:** số người theo dõi hơi cũ thì được;
+   số dư tài khoản hơi cũ thì không. Phân loại dữ liệu theo mức chịu được độ
+   cũ.
+3. **Optimistic concurrency:** thay vì khóa, hãy ghi kèm phiên bản: `UPDATE ...
+   WHERE version = :seen` — 0 dòng được cập nhật nghĩa là có người vừa tranh
+   chấp với bạn; đọc lại và thử lại. Rẻ, và đúng dưới tranh chấp.
+
+## Distributed lock: cần thiết, và nguy hiểm
+
+Một dịch vụ khóa có thể cấp cùng một khóa hai lần (GC pause, phân vùng mạng).
+Vì vậy: đừng bao giờ để tính đúng đắn phụ thuộc chỉ riêng vào distributed lock
+— ghép nó với idempotency token hoặc fencing token (một số tăng dần theo mỗi
+lần cấp; holder cũ hơn sẽ bị từ chối). Khóa là một tối ưu hóa; fencing mới là
+tính đúng đắn.
+
+## Health check và graceful shutdown (vệ sinh dịch vụ)
+
+- `/readyz` phản ánh trạng thái dependency thật cho phép load balancer rút một
+  instance ốm thay vì tiếp tục cho nó ăn traffic.
+- Nhận SIGTERM: ngừng nhận công việc mới, hoàn tất (hoặc trả job về queue) các
+  job đang chạy, *rồi* thoát. Kill-9 giữa chừng job chỉ an toàn khi job là
+  idempotent — vốn là thiết kế bạn đã có sẵn.

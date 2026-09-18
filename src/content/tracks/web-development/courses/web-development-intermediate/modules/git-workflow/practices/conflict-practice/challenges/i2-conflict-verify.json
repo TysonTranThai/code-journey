@@ -1,0 +1,20 @@
+{
+  "id": "i2-conflict-verify",
+  "title": "Resolution Verifier",
+  "prompt": "Real repos contain multiple conflicts. Write `hasUnresolved(text)` returning true if any conflict markers remain. Markers to detect: a line starting `<<<<<<< `, a line exactly `=======` (7 equals), a line starting `>>>>>>> `. A line of code containing `===` (like `if (a === b)`) is NOT a marker.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function hasUnresolved(text) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "detects leftover markers",
+      "code": "const fn = new Function(code + \"\\nreturn { hasUnresolved };\");\nconst { hasUnresolved } = fn();\nif (!hasUnresolved(\"ok\\n<<<<<<< HEAD\\nx\\n\")) throw new Error(\"Opening marker detected.\");\nif (!hasUnresolved(\"x\\n=======\\ny\")) throw new Error(\"Separator detected.\");\nif (!hasUnresolved(\"x\\n>>>>>>> main\")) throw new Error(\"Closing marker detected.\");",
+      "hint": "Per line: startsWith checks for the arrows, exact equality for the separator."
+    },
+    {
+      "name": "code that resembles markers passes",
+      "code": "const fn = new Function(code + \"\\nreturn { hasUnresolved };\");\nconst { hasUnresolved } = fn();\nif (hasUnresolved(\"if (a === b) { return; }\\nconst s = \\\"=====\\\";\\n\")) throw new Error(\"Inline === is code, not a marker.\");\nif (hasUnresolved(\"clean file, no conflicts\")) throw new Error(\"Clean is clean.\");",
+      "hint": "The separator must be a line containing exactly seven '=' and nothing else."
+    }
+  ]
+}

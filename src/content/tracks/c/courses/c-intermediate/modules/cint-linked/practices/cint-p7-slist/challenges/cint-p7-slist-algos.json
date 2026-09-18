@@ -1,0 +1,15 @@
+{
+  "id": "cint-p7-slist-algos",
+  "title": "List Algorithms",
+  "prompt": "Extend the list with the classic interview algorithms:\n\n```c\n/* reverses the list in place; head updated through the pointer */\nvoid s_reverse(SNode **head);\n/* returns the middle node's value; for even lengths returns the\n   FIRST of the two middles; -1 if empty. Does not modify the list. */\nint s_middle(const SNode *head);\n/* returns 1 if the list's values are in nondecreasing order */\nint s_is_sorted(const SNode *head);\n/* removes every node whose value equals v (possibly many) */\nvoid s_remove_all(SNode **head, int v);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\n#include <stdlib.h>\ntypedef struct SNode { int value; struct SNode *next; } SNode;\nvoid s_reverse(SNode **head);\nint s_middle(const SNode *head);\nint s_is_sorted(const SNode *head);\nvoid s_remove_all(SNode **head, int v);\n/* support helpers provided (implement only the four above) */\nstatic void s_push(SNode **head, int v) { SNode *n = malloc(sizeof *n); if (!n) return; n->value = v; n->next = *head; *head = n; }\nstatic size_t s_len(const SNode *head) { size_t n = 0; for (const SNode *p = head; p; p = p->next) n++; return n; }\nstatic void s_clear(SNode **head) { SNode *cur = *head; while (cur) { SNode *nx = cur->next; free(cur); cur = nx; } *head = NULL; }\n",
+  "tests": [
+    {
+      "name": "reverse, middle, remove_all",
+      "code": "\nSNode *head = NULL;\nfor (int i = 1; i <= 5; i++) s_push(&head, i);   /* 5 4 3 2 1 */\ns_reverse(&head);\n/* now 1 2 3 4 5 */\nCHECK(head->value == 1);\nCHECK(head->next->value == 2);\nCHECK(head->next->next->next->next->value == 5);\nCHECK_EQ(s_middle(head), 3);\nCHECK_EQ(s_is_sorted(head), 1);\ns_remove_all(&head, 3);\nCHECK_EQ(s_len(head) == 0 ? 0 : head->value, 1);  /* survived */\n/* rebuild: 5 3 3 1 */\nSNode *h2 = NULL;\ns_push(&h2, 1); s_push(&h2, 3); s_push(&h2, 3); s_push(&h2, 5);\ns_remove_all(&h2, 3);\nCHECK_EQ(s_len(h2), 2);\nCHECK(h2->value == 5 && h2->next->value == 1);\ns_clear(&h2);\ns_clear(&head);\n",
+      "hint": "Middle: two pointers, slow/fast — slow lands on the first middle for even lengths. remove_all: **link walk."
+    }
+  ]
+}

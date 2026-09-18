@@ -1,0 +1,59 @@
+Real data is dirty. A CSV line that should be `name,age` might arrive as
+`"An,abc"`, `"   "`, or not arrive at all. Robust importers **validate
+every field, skip what they cannot trust, and report what they skipped.**
+
+## The parse-check pattern
+
+```java
+static Integer parseAge(String field) {
+    if (field == null) return null;
+    try {
+        int age = Integer.parseInt(field.trim());
+        if (age < 0 || age > 150) return null;   // out of range
+        return age;
+    } catch (NumberFormatException e) {
+        return null;                             // not a number
+    }
+}
+```
+
+Three defenses in eight lines:
+
+1. **Null guard** - `field` may be missing entirely.
+2. **`try/catch`** - `"abc"` throws; we convert the crash into a `null`.
+3. **Range check** - `"999"` parses fine but is not a plausible age.
+
+## The line-level pipeline
+
+```java
+static int importLines(java.util.List<String> lines,
+                       java.util.List<String> errors,
+                       java.util.List<String> valid) {
+    for (int i = 0; i < lines.size(); i++) {
+        String line = lines.get(i);
+        String[] parts = line.split(",");
+        if (parts.length != 2) {
+            errors.add((i + 1) + ": expected 2 fields, got " + parts.length);
+            continue;
+        }
+        Integer age = parseAge(parts[1]);
+        if (age == null) {
+            errors.add((i + 1) + ": bad age '" + parts[1] + "'");
+            continue;
+        }
+        valid.add(parts[0].trim() + " (" + age + ")");
+    }
+    return valid.size();
+}
+```
+
+Note the habits:
+
+- **1-based line numbers** in error messages (editors count from 1; raw
+  loop indexes from 0 - translate for the human reading the log).
+- **Collect errors, keep going** - one bad line shouldn't hide the six
+  good ones behind it.
+- **`continue` after recording** - never let a bad row flow onward.
+
+This collect-and-continue style is how real import tools behave: you get
+both your data *and* a to-do list of what went wrong.

@@ -1,0 +1,20 @@
+{
+  "id": "i2-make-spy",
+  "title": "Hand-Rolled Spy",
+  "prompt": "Write `makeSpy(impl)` returning a function that records every call: `spy.calls` is an array of argument-arrays, newest last. If impl is provided, each call forwards to it and returns its result; without impl it returns undefined. Also record return values in `spy.results`, and add `spy.reset()` which clears calls.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function makeSpy(impl) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "records calls with args",
+      "code": "const fn = new Function(code + \"\\nreturn { makeSpy };\");\nconst { makeSpy } = fn();\nconst spy = makeSpy((x) => x * 2);\nspy(21); spy(3, 4);\nif (spy.calls.length !== 2) throw new Error(\"Both calls recorded.\");\nif (spy.calls[0][0] !== 21) throw new Error(\"Arguments captured.\");\nif (spy.results === undefined || spy.results[0] !== 42) throw new Error(\"Impl result forwarded.\");\n",
+      "hint": "Push args (and results) inside the wrapper before returning."
+    },
+    {
+      "name": "reset clears history",
+      "code": "const fn = new Function(code + \"\\nreturn { makeSpy };\");\nconst { makeSpy } = fn();\nconst spy = makeSpy();\nspy(1); spy(2);\nspy.reset();\nif (spy.calls.length !== 0) throw new Error(\"reset empties calls.\");\nif (makeSpy()(9) !== undefined) throw new Error(\"No impl => undefined result.\");\n",
+      "hint": "reset is just calls.length = 0."
+    }
+  ]
+}

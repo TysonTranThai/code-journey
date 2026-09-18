@@ -1,0 +1,26 @@
+{
+  "id": "javi-p13-sliding-window",
+  "title": "Longest Window with K Distinct",
+  "prompt": "Implement `static int longestWindow(int[] xs, int k)` — the length\nof the longest contiguous run containing at most k distinct values.\nk <= 0 → 0. Use the sliding-window pattern with a frequency map.\n\n[1,2,1,2,3], k=2 → 4 (the run [1,2,1,2]).\n[1,1,1], k=1 → 3. Empty → 0.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "window shrinks on overflow",
+      "code": "\ncheckEq(Solution.longestWindow(new int[]{1, 2, 1, 2, 3}, 2), 4, \"at most two distinct\");\n",
+      "hint": "The 3 forces a shrink; best is the earlier 4-length run."
+    },
+    {
+      "name": "single value",
+      "code": "\ncheckEq(Solution.longestWindow(new int[]{7, 7, 7}, 1), 3, \"all same\");\n",
+      "hint": "One distinct value, whole array qualifies."
+    },
+    {
+      "name": "edge guards",
+      "code": "\ncheckEq(Solution.longestWindow(new int[]{1, 2, 3}, 0), 0, \"k=0\");\ncheckEq(Solution.longestWindow(new int[]{}, 2), 0, \"empty\");\n",
+      "hint": "k <= 0 or empty input → 0."
+    }
+  ],
+  "level": "independent"
+}

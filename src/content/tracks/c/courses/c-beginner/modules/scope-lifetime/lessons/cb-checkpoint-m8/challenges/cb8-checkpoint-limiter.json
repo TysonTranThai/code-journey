@@ -1,0 +1,20 @@
+{
+  "id": "cb8-checkpoint-limiter",
+  "title": "Rate Limiter",
+  "prompt": "Implement `int allow_request(void)` using a static local: it returns 1 for the first 3 calls and 0 for every call after (a fixed budget of 3). Also implement `void limiter_reset(void)` that makes the next 3 calls allowed again — two functions sharing one file-scope `static int used;`.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "full cycle",
+      "code": "CHECK_EQ(allow_request(), 1);\nCHECK_EQ(allow_request(), 1);\nCHECK_EQ(allow_request(), 1);\nCHECK_EQ(allow_request(), 0);\nCHECK_EQ(allow_request(), 0);",
+      "hint": "used < 3 allows; after 3, blocked. One test = one process, so the whole cycle lives in a single test."
+    },
+    {
+      "name": "reset refills",
+      "code": "CHECK_EQ(allow_request(), 1);\nlimiter_reset();\nCHECK_EQ(allow_request(), 1);\nCHECK_EQ(allow_request(), 1);\nCHECK_EQ(allow_request(), 1);\nCHECK_EQ(allow_request(), 0);",
+      "hint": "After one spent call, reset refills the budget: three allowed again, then blocked."
+    }
+  ]
+}

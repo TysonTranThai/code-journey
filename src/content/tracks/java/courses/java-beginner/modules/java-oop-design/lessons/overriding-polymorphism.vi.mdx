@@ -1,0 +1,57 @@
+**Đa hình (polymorphism)** = một chỗ gọi, nhiều hành vi. Object của subclass
+có thể được dùng ở bất cứ nơi nào superclass được mong đợi, và phiên bản
+phương thức *của chính object* sẽ chạy:
+
+```java
+class Shape {
+    public double area() { return 0; }
+    public String describe() { return "a shape"; }
+}
+
+class Circle extends Shape {
+    private final double r;
+    Circle(double r) { this.r = r; }
+
+    @Override
+    public double area() { return Math.PI * r * r; }
+
+    @Override
+    public String describe() { return "a circle"; }
+}
+
+class Rectangle extends Shape {
+    private final double w, h;
+    Rectangle(double w, double h) { this.w = w; this.h = h; }
+
+    @Override
+    public double area() { return w * h; }
+
+    @Override
+    public String describe() { return "a rectangle"; }
+}
+```
+
+Và đây là phần thưởng — một vòng lặp, nhiều hành vi:
+
+```java
+Shape[] shapes = { new Circle(2), new Rectangle(3, 4) };
+for (Shape s : shapes) {
+    System.out.println(s.describe() + " area=" + s.area());
+}
+// a circle area=12.566...
+// a rectangle area=12.0
+```
+
+Biến có kiểu `Shape`; hành vi thuộc về class của *object*. JVM chọn đúng
+bản override lúc chạy — cơ chế điều phối này là thứ làm nên các framework.
+
+**`@Override` là một hợp đồng với compiler.** Về cú pháp annotation này là
+tùy chọn nhưng trong khóa học này là bắt buộc: với nó, một chữ ký gõ sai
+(tên thiếu ký tự, sai đối số) thành lỗi BIÊN DỊCH thay vì một phương thức
+mới lặng lẽ không ai gọi. Không có nó, "override" thất bại là một trong
+những dòng bug thầm lặng nhất của Java.
+
+**Subclass có thể giữ hành vi của cha**: `super.method()` gọi phiên bản cha
+từ bên trong một override — tiện cho dạng "làm như cũ, cộng thêm điều này".
+
+**Tiếp theo:** interface — hợp đồng không kèm cài đặt.

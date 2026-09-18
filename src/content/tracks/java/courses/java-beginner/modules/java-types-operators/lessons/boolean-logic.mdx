@@ -1,0 +1,41 @@
+Comparisons produce `boolean` values, and booleans combine with
+`&&` (AND), `||` (OR), `!` (NOT):
+
+```java
+int age = 20;
+boolean adult   = age >= 18;          // true
+boolean teen    = age >= 13 && age < 18;  // AND: both sides true
+boolean weekend = isSat || isSun;     // OR: either side true
+boolean invalid = !adult;             // NOT: flips it
+```
+
+**`&&` and `||` short-circuit**: the right side is skipped when the left side
+already decides the answer. That is not an optimization footnote — it is how
+you write safe checks:
+
+```java
+// && guards the right side: if s is null, the length is never asked
+if (s != null && s.length() > 0) { ... }
+
+// Dangerous reversal: asks length() of null → NullPointerException
+if (s.length() > 0 && s != null) { ... }
+```
+
+Equality has a trap of its own:
+
+- Primitives compare by value: `x == 5` is exactly right.
+- **Objects (including String) compare by identity with `==`** — "is this
+  the same object", not "same contents". Two different `String` objects
+  holding `"yes"` can fail `==`. Always compare *contents* with `.equals`:
+
+```java
+String a = new String("yes");
+String b = "yes";
+a == b          // false — different objects!
+a.equals(b)     // true  — same characters
+```
+
+Write `.equals` as a reflex for Strings and every other object; make `==`
+mean "primitives only" in your head.
+
+**Next:** practice — the calculator, the converter, the grade book.

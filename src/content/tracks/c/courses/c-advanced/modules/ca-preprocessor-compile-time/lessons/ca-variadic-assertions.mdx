@@ -1,0 +1,20 @@
+## Variadic macros for logging
+
+```c
+#define logf(fmt, ...) fprintf(stderr, fmt __VA_OPT__(,) __VA_ARGS__)
+```
+
+C23's `__VA_OPT__` handles the trailing-comma problem that plagued `##__VA_ARGS__` hacks: with no variadic arguments, the comma disappears too. A `fmt` string and portable argument forwarding is all a logging layer needs.
+
+## Compile-time refusals
+
+```c
+_Static_assert(sizeof(int) >= 4, "int must be at least 32 bits");
+_Static_assert(__STDC_VERSION__ >= 202311L, "C23 required");
+```
+
+The condition is an integer constant expression — evaluated by the compiler, failing the build with your message. Everything the code *assumes* about the platform should appear as an assertion; assumptions that never fail loudly become wrong silently.
+
+## Feature detection without lies
+
+`#if defined(__GNUC__)` tells you the compiler; `__has_include(<stdatomic.h>)` tells you headers; `__STDC_NO_THREADS__` tells you what is missing. What they do NOT tell you is behavior — probing at compile time gates *declarations*, while behavior claims still need runtime verification.

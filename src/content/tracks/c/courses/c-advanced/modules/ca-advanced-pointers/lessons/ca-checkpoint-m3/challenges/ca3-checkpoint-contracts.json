@@ -1,0 +1,26 @@
+{
+  "id": "ca3-checkpoint-contracts",
+  "title": "Checkpoint: Pointer Contracts",
+  "prompt": "A file-scope `static double dvals[4];` is already in your editor. Implement three things:\n \n1. `size_t span(void)` — how many pointer values `dvals + k` are computable (including one past the end).\n2. `unsigned long long dbytes(void)` — the 8 bytes of `dvals[0]`'s representation, read via `memcpy` into an `unsigned long long` (dvals[0] is 1.5, set it in an initializer).\\n3. `typedef struct counter counter_t;` with `counter_t *counter_create(void)`, `void counter_visit(counter_t *c, void (*fn)(void *ctx), void *ctx)` (calls fn once, per visit), and `int counter_count(counter_t *c)` returning total visits so far.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstatic double dvals[4] = {1.5, 0, 0, 0};\n",
+  "tests": [
+    {
+      "name": "span includes the end",
+      "code": "CHECK_EQ((int)span(), 5);",
+      "hint": "4 element pointers plus the one-past-the-end pointer."
+    },
+    {
+      "name": "bits of 1.5",
+      "code": "CHECK_EQ((long long)dbytes(), 0x3FF8000000000000LL);",
+      "hint": "1.5 = 1.1b x 2^0: exponent 1023, mantissa 0x8...; memcpy keeps it byte-legal."
+    },
+    {
+      "name": "ctx callback counting",
+      "code": "counter_t *c = counter_create();\ncounter_visit(c, bump_ctx_probe, &hits);\ncounter_visit(c, bump_ctx_probe, &hits);\nCHECK_EQ(counter_count(c), 2);\nCHECK_EQ(hits, 2);",
+      "hint": "fn runs once per visit; hits lives at file scope in your source and the ctx pointer carries it in."
+    }
+  ],
+  "level": "mini-build"
+}

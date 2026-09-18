@@ -1,0 +1,21 @@
+`Class<?>` is the door to everything the JVM knows about a type:
+
+```java
+Class<?> c = Widget.class;
+for (Field f : c.getDeclaredFields()) { }   // ALL declared, any visibility
+for (Method m : c.getDeclaredMethods()) { }
+c.getConstructors();  c.getDeclaredConstructors();
+c.isInstance(obj);    c.isInterface();      c.getSuperclass();
+```
+
+The `getDeclared*` family ignores inheritance and visibility — it is the
+honest inventory. `getFields()`/`getMethods()` return only *accessible*
+members (public, including inherited). Confusing the two is the classic
+reflection bug: your private fields exist but "aren't found".
+
+**Runtime cost is real but modern**: the JIT can inline through reflective
+calls after warmup, so hot-path reflection is no longer automatically slow.
+The *real* costs are structural: no compile-time checking (a typo surfaces at
+runtime), broken encapsulation (`setAccessible`), and friction with modules
+(JDK 17+ blocks deep reflection across module boundaries by default). Rule:
+reflection at *framework* boundaries, types at *domain* boundaries.

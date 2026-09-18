@@ -1,0 +1,20 @@
+{
+  "id": "i2-findings-report",
+  "title": "Findings Prioritizer",
+  "prompt": "Write `prioritize(findings)` — findings is an array of { id, severity } where severity is \"critical\" | \"high\" | \"medium\" | \"low\". Return the ids sorted by severity (critical first), stable within the same severity (preserve input order). Include `summary(findings)` returning counts per severity as { critical, high, medium, low } (zeros included).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function prioritize(findings) {\n  // your code\n}\n\nfunction summary(findings) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "sorts by severity, stable within",
+      "code": "const fn = new Function(code + \"\\nreturn { prioritize, summary };\");\nconst { prioritize, summary } = fn();\nconst fs = [\n  { id: \"a\", severity: \"low\" },\n  { id: \"b\", severity: \"critical\" },\n  { id: \"c\", severity: \"high\" },\n  { id: \"d\", severity: \"critical\" },\n];\nif (prioritize(fs).join(\",\") !== \"b,d,c,a\") throw new Error(\"critical (b,d in order), high, low.\");\n",
+      "hint": "Map severity to a rank, stable-sort by it."
+    },
+    {
+      "name": "summary counts all buckets",
+      "code": "const fn = new Function(code + \"\\nreturn { prioritize, summary };\");\nconst { prioritize, summary } = fn();\nconst fs = [{ id: \"a\", severity: \"critical\" }, { id: \"b\", severity: \"low\" }];\nconst s = summary(fs);\nif (s.critical !== 1 || s.high !== 0 || s.medium !== 0 || s.low !== 1) throw new Error(\"Zeros included.\");\n",
+      "hint": "Four fixed keys, default 0."
+    }
+  ]
+}

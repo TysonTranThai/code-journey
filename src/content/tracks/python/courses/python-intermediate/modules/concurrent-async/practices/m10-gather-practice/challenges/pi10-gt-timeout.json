@@ -1,0 +1,21 @@
+{
+  "id": "pi10-gt-timeout",
+  "title": "Bounded Waits",
+  "prompt": "Implement async def with_deadline(coro, seconds) awaiting asyncio.wait_for(coro, timeout=seconds) and returning ('ok', result) on success or ('timeout', None) on asyncio.TimeoutError. Provide sync wrapper run_deadline(coro, seconds).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import asyncio\n\nasync def with_deadline(coro, seconds):\n    pass\n\ndef run_deadline(coro, seconds):\n    pass\n",
+  "tests": [
+    {
+      "name": "fast job succeeds",
+      "code": "async def quick():\n    await asyncio.sleep(0.01)\n    return 'done'\nassert run_deadline(quick(), 1) == ('ok', 'done')",
+      "hint": "wait_for passes results through."
+    },
+    {
+      "name": "slow job times out",
+      "code": "async def slow():\n    await asyncio.sleep(5)\n    return 'late'\nstatus, value = run_deadline(slow(), 0.05)\nassert status == 'timeout' and value is None",
+      "hint": "TimeoutError becomes ('timeout', None) — never a hang."
+    }
+  ],
+  "level": "independent"
+}

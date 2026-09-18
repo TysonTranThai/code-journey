@@ -1,0 +1,31 @@
+{
+  "id": "cppi-m7-parse-positive",
+  "title": "Parse a positive integer into a variant",
+  "prompt": "Implement `std::variant<int, std::string> parse_positive(const std::string& s)`. On success (a syntactically valid integer literal greater than 0, fitting int) return the value; otherwise return the error string `\"invalid: <s>\"`. An optional leading `+` is allowed; `-5`, `abc`, an empty string, and 0 are invalid. Overflow beyond INT_MAX is invalid.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <variant>\n#include <iostream>\n\n// std::variant<int, std::string> parse_positive(const std::string& s)\n",
+  "tests": [
+    {
+      "name": "valid",
+      "code": "auto r = parse_positive(\"42\");\nCHECK(std::holds_alternative<int>(r));\nCHECK_EQ(std::get<int>(r), 42);",
+      "hint": "Success branch holds an int."
+    },
+    {
+      "name": "plus-sign",
+      "code": "auto r = parse_positive(\"+7\");\nCHECK(std::holds_alternative<int>(r));\nCHECK_EQ(std::get<int>(r), 7);",
+      "hint": "A single leading + is permitted."
+    },
+    {
+      "name": "negative",
+      "code": "auto r = parse_positive(\"-5\");\nCHECK(std::holds_alternative<std::string>(r));\nCHECK_EQ(std::get<std::string>(r), std::string(\"invalid: -5\"));",
+      "hint": "Negatives are not positive — the error string includes the input."
+    },
+    {
+      "name": "zero-and-garbage",
+      "code": "CHECK(std::holds_alternative<std::string>(parse_positive(\"0\")));\nCHECK(std::holds_alternative<std::string>(parse_positive(\"1x2\")));",
+      "hint": "0 fails the positivity rule; mixed chars fail syntax."
+    }
+  ],
+  "level": "combination"
+}

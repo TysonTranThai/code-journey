@@ -1,0 +1,16 @@
+{
+  "id": "pa-test-fake-clock",
+  "title": "Move time by hand",
+  "prompt": "Implement `FakeClock(start=0.0)` and a `RateLimiter(rate, window, clock)` that uses it:\n\n- FakeClock: `now()` returns the current value; `advance(seconds)` moves it forward (negative advance asserts)\n- RateLimiter: `allow()` permits at most `rate` events in any window of `window` seconds, using ONLY the injected clock (never `time.*`); events older than the window stop counting\n\nDeterminism under test: the suite must be able to replay any scenario exactly.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class FakeClock:\n    def __init__(self, start=0.0):\n        ...\n\n    def now(self):\n        ...\n\n    def advance(self, seconds):\n        ...\n\n\nclass RateLimiter:\n    def __init__(self, rate, window, clock):\n        ...\n\n    def allow(self):\n        ...",
+  "tests": [
+    {
+      "name": "the window slides with the injected clock",
+      "code": "clock = FakeClock()\nrl = RateLimiter(rate=2, window=10, clock=clock)\nassert rl.allow() and rl.allow()\nassert not rl.allow()\nclock.advance(10)      # boundary: events at t=0 are exactly 10s old -> expired\nassert rl.allow() and rl.allow()\nassert not rl.allow()  # the fresh pair fills the window again\nclock.advance(9.9)\nassert not rl.allow()  # only 9.9s passed: the t=10 events are still inside\nprint('ok')",
+      "hint": "Events strictly older than the window expire; boundary is exclusive."
+    }
+  ],
+  "level": "guided"
+}

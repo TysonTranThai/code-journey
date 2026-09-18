@@ -1,0 +1,26 @@
+{
+  "id": "cpp9-check-order-model",
+  "title": "Order Model",
+  "prompt": "Define `struct Order` with `std::string id`, `int quantity`, `double unit_price`, and `enum class Status { Pending, Shipped, Cancelled }` (nested) plus a `status` member (default Pending). Implement `total(order)` (quantity × unit_price) and `cancellable(order)` (true only when status is Pending).",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n\n// TODO: define Order here\n\ndouble total(const Order& order) {\n    // TODO\n}\nbool cancellable(const Order& order) {\n    // TODO\n}",
+  "tests": [
+    {
+      "name": "total",
+      "code": "Order o{.id = \"A1\", .quantity = 3, .unit_price = 2.5}; CHECK_NEAR(total(o), 7.5, 0.001);",
+      "hint": "3 × 2.5 — members via designated initializers."
+    },
+    {
+      "name": "default status",
+      "code": "Order o{.id = \"A2\", .quantity = 1, .unit_price = 1.0}; CHECK(cancellable(o));",
+      "hint": "Default-constructed status must be Pending."
+    },
+    {
+      "name": "shipped not cancellable",
+      "code": "Order o{.id = \"A3\", .quantity = 1, .unit_price = 1.0}; o.status = Order::Status::Shipped; CHECK(!cancellable(o));",
+      "hint": "Only Pending orders can cancel."
+    }
+  ],
+  "level": "real-world"
+}

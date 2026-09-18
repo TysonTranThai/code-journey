@@ -1,0 +1,43 @@
+## The shape
+
+```cpp
+auto is_even = [](int x) { return x % 2 == 0; };
+```
+
+A **lambda** is a nameless function you write inline: `[]` (capture clause), parameters, body. They exist so algorithms can carry their logic with them:
+
+```cpp
+std::count_if(v.begin(), v.end(), [](int x){ return x >= 60; });
+```
+
+## Capture: what the lambda can see
+
+`[]` is empty → the lambda sees nothing outside. To use outside variables, list them:
+
+```cpp
+int limit = 60;
+auto below = [limit](int x) { return x < limit; };   // copy limit in
+auto bump  = [&total](int x) { total += x; };        // by reference (can modify)
+```
+
+Default to capturing by value `[limit]` — a snapshot is easy to reason about. `[&]` (capture everything by reference) is convenient and a footgun: it keeps *references* that can dangle if the lambda outlives the variables (module 11's theme, again). In this course: name what you capture.
+
+## The comparator pattern
+
+`std::sort`'s optional third argument answers "smaller how?":
+
+```cpp
+std::sort(v.begin(), v.end(), [](int a, int b){ return a > b; });   // descending
+```
+
+The comparator must be a *strict weak ordering* — practically: return true when `a` must come strictly before `b`. Returning `a <= b` breaks sorting in subtle ways (and UB in some algorithms). Compare `<`, never `<=`.
+
+## Words with `std::string`
+
+```cpp
+std::sort(words.begin(), words.end(), [](const std::string& a, const std::string& b){
+    return a.size() < b.size();      // by length
+});
+```
+
+The same pattern scales to any "key": by length, by last character, by mapped-to value in a map. This comparator + a struct (module 9) is the exact shape of "sort my records by field".

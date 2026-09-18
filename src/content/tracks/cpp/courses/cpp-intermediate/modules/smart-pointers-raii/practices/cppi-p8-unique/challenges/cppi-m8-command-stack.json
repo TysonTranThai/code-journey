@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m8-command-stack",
+  "title": "unique_ptr command stack",
+  "prompt": "Complete `CommandStack`: `void push(std::unique_ptr<Command> c)` stores the command by transferring ownership (std::move), and `void run_all()` runs each command then pops it. A `Command` base with a virtual destructor is given. Implement a derived `EchoCommand` that records a message when run — the tests define a `Recorder` the EchoCommand must call.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <memory>\n#include <stack>\n#include <string>\n#include <vector>\n#include <iostream>\n\nclass Recorder {\npublic:\n    void record(const std::string& s) { lines_.push_back(s); }\n    const std::vector<std::string>& lines() const { return lines_; }\nprivate:\n    std::vector<std::string> lines_;\n};\n\n// Implement: Command (virtual dtor + virtual void run()), EchoCommand\n// (takes Recorder& and a message; run() records it), and CommandStack\n// { push(unique_ptr<Command>), run_all(), size() }.\n",
+  "tests": [
+    {
+      "name": "push-and-run",
+      "code": "Recorder rec;\nCommandStack stack;\nstack.push(std::make_unique<EchoCommand>(rec, \"hello\"));\nCHECK_EQ(stack.size(), 1);\nstack.run_all();\nCHECK_EQ(stack.size(), 0);\nCHECK_EQ(rec.lines().size(), 1);",
+      "hint": "push transfers ownership; run_all drains the stack."
+    },
+    {
+      "name": "both-run",
+      "code": "Recorder rec;\nCommandStack stack;\nstack.push(std::make_unique<EchoCommand>(rec, \"first\"));\nstack.push(std::make_unique<EchoCommand>(rec, \"second\"));\nstack.run_all();\nCHECK_EQ(rec.lines().size(), 2);\nCHECK(rec.lines()[0] == std::string(\"first\") || rec.lines()[0] == std::string(\"second\"));\nCHECK(rec.lines()[1] != rec.lines()[0]);",
+      "hint": "Both commands run exactly once, in stack order (LIFO for std::stack)."
+    },
+    {
+      "name": "moved-in",
+      "code": "Recorder rec;\nCommandStack stack;\nauto c = std::make_unique<EchoCommand>(rec, \"moved\");\nstack.push(std::move(c));\nCHECK_EQ(c == nullptr, true);\nstack.run_all();\nCHECK_EQ(rec.lines().size(), 1);",
+      "hint": "After std::move, the caller's unique_ptr is null."
+    }
+  ],
+  "level": "independent"
+}

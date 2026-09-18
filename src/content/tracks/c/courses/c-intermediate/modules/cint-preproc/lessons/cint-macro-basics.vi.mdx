@@ -1,0 +1,51 @@
+## Hai loại, một quy tắc
+
+Object-like macro định nghĩa hằng:
+
+```c
+#define MAX_USERS 100
+#define ARRAY_LEN(a) (sizeof(a) / sizeof((a)[0]))
+```
+
+Function-like macro nhận tham số — và mọi thứ là *văn bản*:
+
+```c
+#define SQUARE(x) ((x) * (x))
+```
+
+Một quy tắc: **preprocessor không biết gì về C.** Nó tokenize và thay
+thế. Không kiểm kiểu, không scope, không thứ tự đánh giá — chỉ thay thế,
+rồi compiler nhìn kết quả. `ARRAY_LEN` chạy với mảng nào vì nó compile
+thành `sizeof(a)/sizeof(a[0])` — là biểu thức, không phải vòng lặp.
+
+## Vỏ bọc do-while
+
+Macro nhiều câu lệnh cần dạng chạy được trong `if/else` không ngoặc:
+
+```c
+#define LOG(msg) do { log_write((msg)); log_count++; } while (0)
+
+if (bad)
+    LOG("bad input");        /* mở rộng thành MỘT câu lệnh, không phải
+                                    khối nuốt else */
+else
+    ...
+```
+
+Không `do { } while (0)`, dạng mở rộng `if (bad) { ...; count++; }` cộng
+dấu `;` đuôi làm gãy `else`. Vỏ bọc là phản xạ chuyên nghiệp — và
+`log_count++` ở đây là *tác dụng phụ trong macro*, chính là cách code
+thật bị đốt (bài sau).
+
+## Compiler không bao giờ thấy tên macro
+
+Debugger bước qua phần mở rộng; thông báo lỗi trích dòng 1 của #define.
+Ưu tiên inline function và enum khi đủ:
+
+```c
+enum { MAX_USERS = 100 };                 /* có kiểu, có scope, debug được */
+static inline int square_int(int x) { return x * x; }   /* kiểm kiểu */
+```
+
+Macro vẫn là công cụ duy nhất cho: dán token, biên dịch có điều kiện,
+`ARRAY_LEN`, và bất cứ thứ gì phải chạy trên *kiểu*.

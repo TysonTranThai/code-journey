@@ -41,6 +41,8 @@ export interface JobPayload {
   testFiles: { name: string; code: string }[];
   timeoutMs: number;
   memoryMb: number;
+  /** Execution language (Python, C++, Java, C, and C# tracks). Default "javascript". */
+  language?: "javascript" | "python" | "cpp" | "java" | "c" | "csharp";
 }
 
 /** Hard cap so a runaway console.log can't flood the verdict payload. */

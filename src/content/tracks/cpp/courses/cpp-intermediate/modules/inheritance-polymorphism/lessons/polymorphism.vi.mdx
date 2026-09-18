@@ -1,0 +1,55 @@
+**Đa hình**: qua reference hoặc pointer của base, phần override *đúng* cho
+đối tượng thực tế sẽ chạy — được chọn lúc chạy qua bảng hàm ảo.
+
+```cpp
+#include <iostream>
+#include <memory>
+#include <vector>
+
+class Shape {
+public:
+    virtual ~Shape() = default;
+    virtual double area() const = 0;              // pure virtual
+    virtual const char* name() const = 0;
+};
+
+class Square : public Shape {
+public:
+    explicit Square(double s) : side_{s} {}
+    double area() const override { return side_ * side_; }
+    const char* name() const override { return "square"; }
+private:
+    double side_;
+};
+
+class Circle : public Shape {
+public:
+    explicit Circle(double r) : radius_{r} {}
+    double area() const override { return 3.14159265358979 * radius_ * radius_; }
+    const char* name() const override { return "circle"; }
+private:
+    double radius_;
+};
+
+double total_area(const std::vector<std::unique_ptr<Shape>>& shapes) {
+    double sum = 0;
+    for (const auto& s : shapes) sum += s->area();   // dispatch động từng phần tử
+    return sum;
+}
+```
+
+## Hai điều kiện để dispatch động
+
+1. Lời gọi đi qua **reference hoặc pointer** tới base.
+2. Hàm là **virtual** trong base.
+
+Gọi bằng giá trị sẽ cắt xén đối tượng (một bản copy `Shape` của `Square` mất
+phần derived) và dispatch không bao giờ xảy ra. Lưu các shape bằng pointer
+(smart pointer, Module 8) hoặc reference, không bao giờ bằng giá trị, trong
+container đa hình.
+
+## Pure virtual và kiểu trừu tượng
+
+`area() const = 0` biến `Shape` thành **trừu tượng**: không thể tạo instance,
+chỉ có thể kế thừa. Lớp dẫn xuất phải override mọi pure virtual hoặc vẫn
+trừu tượng. Đây là cách C++ diễn đạt "interface".

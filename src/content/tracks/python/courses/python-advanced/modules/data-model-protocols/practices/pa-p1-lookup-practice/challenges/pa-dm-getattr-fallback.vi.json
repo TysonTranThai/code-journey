@@ -1,0 +1,14 @@
+{
+  "title": "Proxy ủy quyền bằng __getattr__",
+  "prompt": "Cài `class Proxy` bao bọc bất kỳ đối tượng nào truyền vào `__init__`:\n\n- những lần đọc attribute thất bại trên Proxy phải được **ủy quyền** cho đối tượng được bao qua `__getattr__`\n- `Proxy.real(obj)` trả về đối tượng bên trong\n- gọi method được ủy quyền phải hoạt động (ví dụ `Proxy('hi').upper()` trả về 'HI')\n- đọc attribute mà Proxy tự định nghĩa thì KHÔNG được ủy quyền (định nghĩa `sniff` trên Proxy trả về 'proxy')",
+  "tests": [
+    {
+      "name": "Ủy quyền attribute còn thiếu",
+      "hint": "__getattr__ chỉ được gọi khi tra cứu thường thất bại; hãy ủy quyền ở đó."
+    },
+    {
+      "name": "real() bóc lớp bao",
+      "hint": "Giữ đối tượng bên trong __dict__ dưới tên không thể trùng, ví dụ '_target'."
+    }
+  ]
+}

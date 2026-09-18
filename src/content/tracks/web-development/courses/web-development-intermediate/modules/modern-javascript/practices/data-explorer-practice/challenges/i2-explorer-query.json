@@ -1,0 +1,25 @@
+{
+  "id": "i2-explorer-query",
+  "title": "Query Pipeline",
+  "prompt": "Write `createQuery(records)` that RETURNS a function `query(opts)`. Each record has `{ id, score }`. `opts` may contain:\n\n- `minScore`, `maxScore` — inclusive score range; missing bounds are ignored\n- `sortBy` — `\"score\"` (default) or `\"id\"`\n- `order` — `\"asc\"` (default) or `\"desc\"`; ties keep original order\n- `page` (1-based, default 1), `perPage` (default 2)\n\n`query` RETURNS `{ items, total, page, pages }` where `items` is the current page of results (empty array when the page is out of range) and `pages` is `Math.ceil(total / perPage)` (0 when there are no results).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function createQuery(records) {\n  return function query(opts) {\n    // filter -> sort -> paginate\n  };\n}\n",
+  "tests": [
+    {
+      "name": "filters by the inclusive score range",
+      "code": "const fn = new Function(code + \"\\nreturn { createQuery };\");\nconst { createQuery } = fn();\nconst recs = [{ id: \"a\", score: 1 }, { id: \"b\", score: 5 }, { id: \"c\", score: 9 }];\nconst q = createQuery(recs);\nconst out = q({ minScore: 5, maxScore: 9 });\nif (out.total !== 2) throw new Error(\"Both bounds are inclusive: scores 5 and 9 must both survive (total 2).\");\nif (q({}).total !== 3) throw new Error(\"With no bounds, every record passes the filter.\");",
+      "hint": "Filter first: keep records where each present bound is satisfied with <= and >=."
+    },
+    {
+      "name": "sorts by field and order, stably",
+      "code": "const fn = new Function(code + \"\\nreturn { createQuery };\");\nconst { createQuery } = fn();\nconst recs = [\n  { id: \"a\", score: 5 },\n  { id: \"b\", score: 9 },\n  { id: \"c\", score: 5 },\n];\nconst q = createQuery(recs);\nconst desc = q({ sortBy: \"score\", order: \"desc\", perPage: 10 });\nif (desc.items.map((r) => r.id).join(\",\") !== \"b,a,c\") throw new Error(\"Score desc with ties: b (9) first, then a before c (stable).\");\nconst idAsc = q({ sortBy: \"id\", perPage: 10 });\nif (idAsc.items.map((r) => r.id).join(\",\") !== \"a,b,c\") throw new Error(\"Sorting by id ascending gives a,b,c.\");",
+      "hint": "Sort a copy — compare values, flip the sign for desc, and break ties with the original index."
+    },
+    {
+      "name": "paginates and reports pages",
+      "code": "const fn = new Function(code + \"\\nreturn { createQuery };\");\nconst { createQuery } = fn();\nconst recs = [\n  { id: \"a\", score: 1 }, { id: \"b\", score: 2 }, { id: \"c\", score: 3 },\n  { id: \"d\", score: 4 }, { id: \"e\", score: 5 },\n];\nconst q = createQuery(recs);\nconst p2 = q({ page: 2, perPage: 2 });\nif (p2.items.length !== 2 || p2.items[0].id !== \"c\") throw new Error(\"Page 2 of 5 records at 2 per page holds records 3 and 4 (ids c, d).\");\nif (p2.total !== 5 || p2.pages !== 3 || p2.page !== 2) throw new Error(\"Expect total 5, pages 3, page 2.\");\nconst far = q({ page: 9, perPage: 2 });\nif (far.items.length !== 0) throw new Error(\"A page beyond the range must return an empty items array.\");\nif (createQuery([])({}).pages !== 0) throw new Error(\"Zero results means pages: 0.\");",
+      "hint": "Slice with (page - 1) * perPage; pages is Math.ceil(total / perPage) but 0 for an empty set."
+    }
+  ]
+}

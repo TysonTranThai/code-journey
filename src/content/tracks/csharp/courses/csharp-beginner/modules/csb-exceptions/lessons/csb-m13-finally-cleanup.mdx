@@ -1,0 +1,42 @@
+## finally: always runs
+
+```csharp
+try
+{
+    OpenConnection();
+    DoWork();          // may throw
+}
+finally
+{
+    CloseConnection(); // runs on success AND on failure
+}
+```
+
+`finally` executes whether the try block succeeds, throws, or returns. Put cleanup there — resource release must never depend on luck.
+
+In modern C#, files/streams take that shape for you:
+
+```csharp
+using (var reader = new StringReader(text))
+{
+    ... // disposed automatically, even on exception
+}
+```
+
+## Validate early, fail fast
+
+The strongest error-handling pattern isn't a catch — it's refusing bad input before any work happens:
+
+```csharp
+static int ParseAge(string input)
+{
+    if (input == null) throw new ArgumentException("input required");
+    if (!int.TryParse(input, out int age))
+        throw new FormatException("not a number");
+    if (age < 0 || age > 150)
+        throw new ArgumentOutOfRangeException("implausible age");
+    return age;
+}
+```
+
+Compare with catching errors *after* half the work is done: state is now inconsistent, cleanup is complicated, and the failure message is vague. Validate at the door.

@@ -1,0 +1,15 @@
+## Backpressure is a feature
+
+Unbounded queues convert slow consumers into OOM kills. The design answer is **bounds with policy**: a queue with `capacity`, `push` that returns `false` when full, and an explicit policy — drop-new, drop-oldest, or reject-the-connection. The policy is a product decision; the bound is not optional.
+
+## Timeouts are part of the contract
+
+Every blocking operation needs a deadline: connect, read, idle-connection reaping. Half-open connections (peer vanished mid-request) are the default state of the internet; a service without read/idle timeouts accumulates dead sockets until the fd limit arrives.
+
+## Layered degradation
+
+Production services degrade by layer: per-connection limits first, then global limits, then shedding. Each layer must be measurable — counters for accepted/rejected/dropped — because "the service felt slow" is not an incident report.
+
+## What the sandbox grades
+
+Real sockets are not gradeable in a single-TU harness (and the sandbox has no network by design). The graded exercises build the layer *above* sockets: a frame decoder fed arbitrary byte chunks, a parser state machine with attack inputs, and a bounded queue with policy — all deterministic, all real.

@@ -1,0 +1,26 @@
+## The build mode is visible from inside the code
+
+Compilers define markers you can test:
+
+- `__OPTIMIZE__` — GCC/Clang define it when optimizing (-O1+); MSVC does not.
+- `NDEBUG` — defined by CMake's *Release/RelWithDebInfo* configurations; it **disables `assert`**. Debug/RelWithDebInfo/Release is not just speed: it changes which assertions exist in the binary.
+- Your own macros: `-DCJ_LOG_LEVEL=2` becomes `#if CJ_LOG_LEVEL >= 2` in code.
+
+## Feature-test discipline
+
+Never test compiler identity (`#ifdef _MSC_VER`) when you mean capability. `<version>` / `__has_include` / feature-test macros ask what the toolchain *provides*:
+
+```cpp
+#include <version>
+#ifdef __cpp_lib_format        // capability question
+#  include <format>
+#endif
+#ifdef __cpp_exceptions        // is exception handling on?
+#endif
+```
+
+`__has_feature` (Clang) and `__SANITIZE_ADDRESS__` (GCC) report sanitizer state — the code can know whether ASan is watching.
+
+## What the fixed sandbox grades
+
+This course's sandbox compiles with `-std=c++20 -Wall -Wextra -Wpedantic` and no mode toggles — so the graded exercises here test the *code side*: correct `__cpp_*` guards, correct `NDEBUG`-independent logic, and configuration arithmetic that a single translation unit can prove. The full Debug/Release/CI story is in the lesson text, exercised in the projects, not the sandbox.

@@ -1,0 +1,15 @@
+{
+  "id": "cint-p9-typed-facade",
+  "title": "A Type-Safe Stack Facade",
+  "prompt": "The boilerplate provides an int-stack and a double-stack with\nconcrete functions (`si_push`, `sd_push`, ...). Implement ONLY the\n_Generic dispatch macros:\n\n```c\n#define stack_push(st, val)  /* dispatches to si_push/sd_push by val's type */\n#define stack_pop(st, out)   /* dispatches to si_pop/sd_pop by *out's type */\n```\n\nthe type checking\n(no void*, no runtime tag).",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\ntypedef struct { int data[32]; size_t n; } IStack;\ntypedef struct { double data[32]; size_t n; } DStack;\nstatic int si_push(IStack *s, int v) { if (s->n == 32) return -1; s->data[s->n++] = v; return 0; }\nstatic int sd_push(DStack *s, double v) { if (s->n == 32) return -1; s->data[s->n++] = v; return 0; }\nstatic int si_pop(IStack *s, int *out) { if (s->n == 0) return -1; *out = s->data[--s->n]; return 0; }\nstatic int sd_pop(DStack *s, double *out) { if (s->n == 0) return -1; *out = s->data[--s->n]; return 0; }\n",
+  "tests": [
+    {
+      "name": "compile-time dispatch",
+      "code": "\nIStack is = {0}; DStack ds = {0};\nCHECK_EQ(stack_push(&is, 42), 0);\nCHECK_EQ(stack_push(&ds, 2.5), 0);\nint iv; double dv;\nCHECK_EQ(stack_pop(&is, &iv), 0); CHECK_EQ(iv, 42);\nCHECK_EQ(stack_pop(&ds, &dv), 0); CHECK(dv == 2.5);\nCHECK_EQ(stack_pop(&is, &iv), -1);\nCHECK_EQ(stack_push(&is, 1), 0);\nCHECK_EQ(stack_pop(&is, &iv), 0);\n",
+      "hint": "_Generic((val), int: si_push, double: sd_push) selects the function at compile time; the call stays fully checked."
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+Đệ quy là hàm tự gọi chính nó trên input nhỏ hơn. Mỗi hàm đệ quy cần một
+**base case** (khi nào dừng) và một **recursive case** (cách thu nhỏ).
+Thiếu hoặc sai base case nghĩa là tràn stack.
+
+```cpp
+long long factorial(int n) {
+    if (n <= 1) return 1;          // base case
+    return n * factorial(n - 1);   // thu nhỏ về phía base
+}
+```
+
+Danh sách liên kết là cấu trúc đệ quy kinh điển: một node giữ giá trị và
+một con trỏ tới phần còn lại của danh sách.
+
+```cpp
+struct Node {
+    int value;
+    Node* next;
+};
+
+int length(const Node* head) {
+    if (!head) return 0;                 // base: danh sách rỗng
+    return 1 + length(head->next);       // thu nhỏ: phần còn lại
+}
+```
+
+Phẫu thuật danh sách thủ công — các thao tác mà `std::list` của STL làm
+giúp bạn:
+
+```cpp
+Node* push_front(Node* head, int v) {
+    return new Node{v, head};            // caller sở hữu các node
+}
+
+// đảo ngược tại chỗ: ba con trỏ, một lượt duyệt
+Node* reverse(Node* head) {
+    Node* prev = nullptr;
+    while (head) {
+        Node* next = head->next;
+        head->next = prev;
+        prev = head;
+        head = next;
+    }
+    return prev;
+}
+```
+
+`new`/`delete` thủ công ở đây là để *hiểu* — code sản phẩm bọc node trong
+`unique_ptr` (Module 8) hoặc dùng `std::forward_list`. Độ sâu đệ quy cũng
+là quyết định bộ nhớ: 10⁵ khung hàm sâu có thể làm tràn stack trong khi
+một vòng lặp không.

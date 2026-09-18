@@ -1,0 +1,17 @@
+## Bộ cơ sở
+
+- `-Wall -Wextra` — radar tiêu chuẩn: dùng chưa khởi tạo, so sánh dấu, kết quả không dùng, thiếu return.
+- `-Werror` — cảnh báo thành lỗi build; tồn đọng cảnh báo không thể tích tụ.
+- `-Wpedantic` — từ chối cấu trúc phi chuẩn, bảo vệ tuyên bố khả chuyển.
+- `-Wshadow` — biến cục bộ che tên ngoài là một bug đọc-sai-biến đang chờ.
+- `-Wconversion` — thu hẹp ngầm (int sang char, size_t sang int) trở nên thấy được.
+
+Mỗi cờ là một *lớp* lỗi, không phải ý kiến phong cách. Các bài của chính khóa học này biên dịch dưới -Wall -Wextra -Wpedantic — code bạn viết ở đây đạt baseline nghiêm ngặt ngay từ đầu.
+
+## Tăng cường cho lúc chạy
+
+- `-D_FORTIFY_SOURCE` — thư viện kiểm tra kích thước buffer ở nơi chứng minh được.
+- `-fstack-protector-strong` — canary trước return address trên frame có mảng.
+- Cờ position-independent cộng ASLR (mô-đun 24) khiến khai thác hủy hoại bộ nhớ khó hơn hẳn.
+
+Cờ tăng cường không thay thế code đúng; chúng là lưới an toàn biến hủy hoại tiềm ẩn thành abort ầm ầm trong lúc kiểm thử.

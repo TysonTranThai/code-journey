@@ -1,0 +1,27 @@
+## Arithmetic
+
+`+ - * / %` — add, subtract, multiply, divide, remainder. `%` (modulo) is
+integer-only and gives the remainder: `7 % 3` is `1`.
+
+## The trap: int / int is int
+
+```c
+printf("%d\n", 1 / 2);        // 0  — integer division truncates
+printf("%f\n", 1.0 / 2);      // 0.500000 — one double promotes all
+printf("%d\n", 7 % 3);        // 1
+```
+
+When both operands are integers, `/` truncates toward zero. This single rule
+explains a huge share of beginner bugs (averages that print 0, percentages
+stuck at 100).
+
+## Increment and decrement
+
+```c
+int i = 5;
+i++;   // i is 6 (post-increment: value of i++ is the OLD 5)
+++i;   // pre-increment: value is the NEW 6
+```
+
+Prefer standalone `i++` statements; the difference between pre/post only
+matters when the expression's value is used.

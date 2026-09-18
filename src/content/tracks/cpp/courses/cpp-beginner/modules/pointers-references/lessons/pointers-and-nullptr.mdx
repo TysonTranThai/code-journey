@@ -1,0 +1,41 @@
+## An address you can hold
+
+```cpp
+int score = 90;
+int* p = &score;      // p holds score's ADDRESS ("pointer to int")
+CHECK(*p == 90);      // * dereferences: read/write through the address
+*p = 95;
+CHECK(score == 95);
+```
+
+`&x` takes an address; `*p` follows one. A pointer is a *value* (an address) — it can be copied, compared, and, unlike a reference, **reseated**:
+
+```cpp
+int a = 1, b = 2;
+int* p = &a;
+p = &b;               // now points at b — references can never do this
+```
+
+## nullptr: pointing at nothing, honestly
+
+```cpp
+int* p = nullptr;         // explicitly "no object"
+if (p) { use(*p); }       // ALWAYS check before dereferencing
+```
+
+Dereferencing `nullptr` is a crash (undefined behavior, actually). Never initialize pointers to `0`/`NULL` (legacy); write `nullptr`. Never leave a pointer uninitialized.
+
+## Pointer vs reference — choosing
+
+| Question | Use |
+| --- | --- |
+| Must it always name an object? | reference (`&`) |
+| Does "no object" need representing? | pointer + `nullptr` |
+| Must the target be changeable later (reseat)? | pointer |
+| Passing big read-only data? | `const&` (the everyday choice) |
+
+In modern application code, **non-owning pointers appear far less than references** — mostly for optional targets and reseat-able observers (and as the thing you will meet in C-style APIs).
+
+## The ownership boundary (say it out loud)
+
+A raw pointer in modern C++ is a **non-owning view**: "I can *see* that object; its lifetime is someone else's business." The moment a pointer is expected to *keep the object alive*, raw pointers are the wrong tool — that is `std::unique_ptr`/`std::shared_ptr` (module 12). Core Guidelines R.3: "a raw pointer (a `T*`) is non-owning" — make your code say the same.

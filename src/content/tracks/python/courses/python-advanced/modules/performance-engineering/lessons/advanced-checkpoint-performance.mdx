@@ -1,0 +1,11 @@
+## Checkpoint — the N+1 rescue
+
+`db` records every `db.query(sql, params)` call. The naive implementation
+makes one query PER user (N+1). Batch it:
+
+- `fetch_user_orders(user_ids, db)` returns `{user_id: [{'id':…, 'total':…}, …]}`
+- with **at most 2 queries total** (regardless of user count)
+- order lists per user keep the row order returned by the db
+
+This is the exact shape you will meet again in the database module — learned
+here as a performance pattern, applied there as SQL.

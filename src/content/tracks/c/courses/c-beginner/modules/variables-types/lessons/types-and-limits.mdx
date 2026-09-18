@@ -1,0 +1,33 @@
+## The everyday types
+
+| Type | Typical size | Holds |
+|---|---|---|
+| `int` | 4 bytes | whole numbers, about ±2.1 billion |
+| `char` | 1 byte | one character — and a small integer (-128..127) |
+| `float` | 4 bytes | approximate real numbers, ~7 significant digits |
+| `double` | 8 bytes | approximate real numbers, ~15 significant digits |
+
+Sizes are *typical*, not guaranteed — that is what `sizeof` (next lesson) is
+for. `%zu` prints a `size_t` (what `sizeof` returns).
+
+## char is a number
+
+```c
+char c = 'A';        // character literal — a single quote
+printf("%d\n", c);   // 65 — the ASCII code
+printf("%c\n", c);   // A
+```
+
+`'A' + 1` is `'B'`. This identity between characters and small integers powers
+text processing in C.
+
+## signed and unsigned
+
+An `int` is **signed** by default: it can be negative. `unsigned int` drops the
+sign and doubles the positive range. Mixing them in one expression is a classic
+bug source — for now, keep arithmetic in signed types.
+
+## float vs double
+
+`float` rounds sooner. Default your real-number work to `double`
+(`printf("%f", ...)` prints a double).

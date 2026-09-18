@@ -1,0 +1,16 @@
+Incident triage is reading a log stream backwards from a symptom:
+
+1. **Localize**: find the error events, group by the context fields
+   (requestId, endpoint) — one poisoned request or an entire endpoint?
+2. **Correlate**: for each affected request, pull its complete event
+   timeline — what happened before the error? Timeout after retry after
+   degradation is a *cascade*, not an isolated bug.
+3. **Quantify**: how many requests, which endpoints, since when? One user is
+   support; a pattern is an incident.
+4. **Hypothesize**: propose the smallest change consistent with ALL evidence —
+   and name the observation that would REFUTE it.
+
+The output of triage is not "the fix" — it's a *narrowed search space* and a
+monitoring query you can watch. The checkpoint assembles all four steps as
+pure functions over a structured event stream: no grep, no guessing, just
+data in, questions answered.

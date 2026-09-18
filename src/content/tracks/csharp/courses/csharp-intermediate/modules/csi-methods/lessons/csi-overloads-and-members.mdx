@@ -1,0 +1,67 @@
+## Overload resolution: betterness, not cleverness
+
+Given a call, the compiler picks the *best* candidate: exact matches beat
+implicit numeric conversions, which beat object boxing. Ambiguity is a
+compile error — the fix is in your API design, not the call site:
+
+```csharp
+static void Log(int n) { }
+static void Log(double n) { }
+static void Log(object o) { }
+
+Log(5);        // Log(int) — exact
+Log(5.0);      // Log(double) — exact
+Log((short)5); // Log(int) — short->int beats short->double and boxing
+Log(null);     // Log(object)? ambiguous with string overloads if present!
+```
+
+Two rules prevent most pain: never overload on *boxed* types only, and keep
+overload sets so the same intent is expressible — overloads are synonyms,
+not different behaviors.
+
+## Optional and named arguments
+
+Defaults collapse overload explosions; named arguments make call sites
+self-documenting:
+
+```csharp
+static void Send(string to, string subject = "(no subject)", bool cc = false) { }
+
+Send("a@b.c");
+Send("a@b.c", cc: true);              // skip the middle default
+Send(to: "a@b.c", subject: "hi");     // reads like a sentence
+```
+
+Pitfall: changing a default value is a *binary-breaking* change — callers
+compile the constant in. Version carefully.
+
+## Expression-bodied members
+
+For members that are one computation, the arrow removes ceremony:
+
+```csharp
+public static int Square(int x) => x * x;
+public string Name => _name?.Trim() ?? "";
+public static bool IsVowel(char c) =>
+    c is 'a' or 'e' or 'i' or 'o' or 'u';
+```
+
+The limit is readability: if the body needs two thoughts, use a block with a
+name. Local functions complete the toolbox — named helpers scoped to one
+method, closing over its parameters, zero ceremony:
+
+```csharp
+static int CircleOps(double r)
+{
+    double Area() => Math.PI * r * r;      // closes over r
+    double Circ() => 2 * Math.PI * r;
+    return Area() > 100 ? 1 : (Circ() > 10 ? 2 : 0);
+}
+```
+
+## Check your understanding
+
+- Why is `Log(null)` ambiguous with `Log(string)` + `Log(object)`?
+  (string is "better" but null fits both; compiler refuses to guess.)
+- Optional parameter vs overload: which is binary-compatible to extend?
+  (Overloads — new defaults bake into callers.)

@@ -1,0 +1,19 @@
+`new` = một cấp phát heap: địa chỉ, header, field khởi tạo. Mỗi lần cấp phát
+tạo ra đối tượng có *identity* khác *trạng thái*:
+
+```java
+Integer a = 100, b = 100;    // a == b  — cache giá trị nhỏ dùng chung một đối tượng
+Integer c = 500, d = 500;    // c != d  — ngoài cache: hai lần cấp phát
+```
+
+`==` so identity (cùng một lần cấp phát?); `equals` so trạng thái. Cache
+Integer nhỏ (-128..127) là lựa chọn cài đặt, không phải hợp đồng — so sánh
+boxed numeric bằng `==` là bug tiềm ẩn: qua được với số nhỏ, nổ với số lớn.
+
+*Địa chỉ* của đối tượng chỉ quan sát được một cách gián tiếp
+(`identityHashCode` không phải địa chỉ, nhưng độ ổn định của nó phản ánh cùng
+một đối tượng) — còn *sự thật* của việc cấp phát thì quan sát được rõ ràng:
+bộ nhớ tiêu thụ, áp lực GC, tốc độ cấp phát. Java nâng cao cấp phát một cách
+cố ý: escape analysis có thể cấp phát trên stack cho đối tượng không thoát
+ra, scalar replacement có thể hòa tan chúng hoàn toàn — vì thế "cấp phát đắt"
+là một mệnh đề cần *đo*, không phải giả định.

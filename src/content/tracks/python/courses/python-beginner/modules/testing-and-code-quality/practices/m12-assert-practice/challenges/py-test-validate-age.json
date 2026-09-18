@@ -1,0 +1,16 @@
+{
+  "id": "py-test-validate-age",
+  "title": "Assert with a Message",
+  "prompt": "Write validate_age(age): raise AssertionError('age must be an int') when age is not an int (booleans are NOT ints here), AssertionError('age out of range') when outside 0..150, and return the string ok otherwise.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "",
+  "tests": [
+    {
+      "name": "asserts fire correctly",
+      "code": "assert validate_age(30) == \"ok\"\ntry:\n    validate_age(\"30\")\n    _ok = False\nexcept AssertionError as e:\n    _ok = True\n    assert \"int\" in str(e), f\"message must mention int, got {e}\"\nassert _ok, \"str must raise AssertionError\"\n\n_raised = False\ntry:\n    validate_age(True)\nexcept AssertionError:\n    _raised = True\nassert _raised, \"bool must raise (bool is not an int here)\"\n\ntry:\n    validate_age(200)\n    _ok2 = False\nexcept AssertionError as e:\n    _ok2 = True\n    assert \"range\" in str(e), f\"message must mention range, got {e}\"\nassert _ok2, \"200 must raise AssertionError\"",
+      "hint": "isinstance(age, bool) check FIRST (bool is a subclass of int!), then isinstance(age, int), then 0 <= age <= 150."
+    }
+  ],
+  "level": "guided"
+}

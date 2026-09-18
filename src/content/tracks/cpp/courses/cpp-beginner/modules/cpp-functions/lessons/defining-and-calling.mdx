@@ -1,0 +1,47 @@
+## The shape
+
+```cpp
+double bmi(double weight_kg, double height_m) {
+    return weight_kg / (height_m * height_m);
+}
+
+int main() {
+    std::cout << bmi(70.0, 1.75) << '\n';   // call with arguments
+}
+```
+
+Read the first line as a contract: "given a weight and a height, I give back a double". The **parameters** (`weight_kg`, `height_m`) are the function's local variables, initialized from the caller's **arguments**. `return` hands the value back and ends the function immediately.
+
+## Return values, not printed values
+
+Beginners often print inside a function and return nothing:
+
+```cpp
+void bad(double w, double h) {
+    std::cout << w / (h * h);   // computed, shown... and GONE
+}
+```
+
+`bad` computed a value nobody can use. A function that **returns** can be printed, stored, tested, and combined:
+
+```cpp
+double b = bmi(70, 1.75);
+if (b > 25) { /* ... */ }
+```
+
+This is also exactly how the platform grades: tests call your functions and check returns. Print for humans; return for programs.
+
+## `void` and early return
+
+`void` means "returns nothing" — a `void` function is a *procedure*, an action (`print_report()`, `program()`). Inside any function, `return;` exits early:
+
+```cpp
+void greet(const std::string& name) {
+    if (name.empty()) return;   // nothing sensible to do
+    std::cout << "Hi, " << name << '\n';
+}
+```
+
+## Size discipline
+
+A function does **one thing**, at a size you can read without scrolling. When you write a comment like `// now validate the input` *inside* a function, that comment is usually a new function struggling to be born. Decomposition practice comes in 5C.

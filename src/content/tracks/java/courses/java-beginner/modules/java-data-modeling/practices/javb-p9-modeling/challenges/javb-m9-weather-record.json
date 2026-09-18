@@ -1,0 +1,26 @@
+{
+  "id": "javb-m9-weather-record",
+  "title": "A validated record",
+  "prompt": "Inside `Solution`, write `record Weather(String city, double celsius)` with a compact constructor that rejects `null`/blank city and celsius below -273.15 (IllegalArgumentException). Add `static double average(Weather[] readings)` returning the mean celsius of a non-empty array.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public record Weather(String city, double celsius) {\n        public Weather {\n            // validate here\n        }\n    }\n\n    public static double average(Weather[] readings) {\n        return 0;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "record equality is free",
+      "code": "\nSolution.Weather a = new Solution.Weather(\"Hanoi\", 30);\nSolution.Weather b = new Solution.Weather(\"Hanoi\", 30);\nCjTestBase.checkTrue(a.equals(b), \"same data -> equal\");\nCjTestBase.checkEq(a.celsius(), 30.0, \"accessor\");\n",
+      "hint": "Records compare by all components — no hand-written equals."
+    },
+    {
+      "name": "validation fires",
+      "code": "\nCjTestBase.checkThrows(() -> new Solution.Weather(\"\", 20), \"blank city\");\nCjTestBase.checkThrows(() -> new Solution.Weather(\"Hanoi\", -300), \"below absolute zero\");\n",
+      "hint": "The compact constructor runs at every construction."
+    },
+    {
+      "name": "average",
+      "code": "\ndouble avg = Solution.average(new Solution.Weather[]{\n    new Solution.Weather(\"Hanoi\", 30), new Solution.Weather(\"Da Lat\", 20)});\nCjTestBase.checkNear(avg, 25.0, 1e-9, \"mean of 30 and 20\");\n",
+      "hint": "Average over the components."
+    }
+  ],
+  "level": "independent"
+}

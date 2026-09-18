@@ -1,0 +1,39 @@
+## Bắt đầu từ mẫu truy cập, không phải kiểu
+
+Hỏi theo thứ tự: (1) tra theo khóa? (2) tính duy nhất? (3) thứ tự quan trọng?
+(4) FIFO/LIFO? (5) truy chỉ số? Mỗi câu trả lời loại một nửa thực đơn.
+
+- Đếm tần suất → `Dictionary<K,int>` (hoặc `Dictionary<K, List<T>>` để nhóm).
+  Đây là **bảng tần suất**, cấu trúc trung gian được tái sử dụng nhiều nhất
+  trong code ứng dụng.
+- "Đã thấy chưa?" → `HashSet<T>`.
+- Xử lý theo thứ tự đến → `Queue<T>`; undo → `Stack<T>`.
+- "Top N theo điểm" → sắp một lần, hoặc hướng tiếp cận kiểu-heap; sort trọn
+  vẹn ổn dưới hàng nghìn phần tử — đo trước khi uốn éo.
+
+## Bảo vệ bất biến bằng bề mặt readonly
+
+Phương thức không nên biến đổi thì nhận (và trả) view chỉ đọc:
+
+```csharp
+private readonly Dictionary<string, int> _scores = new();
+
+public IReadOnlyDictionary<string, int> Scores => _scores;   // caller không Add được
+public IReadOnlyList<string> Names => _names.AsReadOnly();
+```
+
+`IReadOnly*` là VIEW, không phải bản sao — caller thấy dữ liệu sống nhưng
+không biến đổi được qua tham chiếu đó. Trả thẳng `Dictionary` trao cho mọi
+caller chìa khóa của bất biến của bạn.
+
+## Hình dạng đẩy-ra (tư duy LRU)
+
+Cache LRU ghép `Dictionary<K, LinkedListNode<(K,V)>>` với `LinkedList`:
+dictionary cho tra O(1), list cho thứ tự dùng-gần-đây, node handle nối chúng.
+Checkpoint sẽ cho bạn dựng bản đơn giản — điểm mấu chốt là *kết hợp* hai cấu
+trúc mua được thứ mà không cấu trúc nào cung cấp một mình.
+
+## Kiểm tra hiểu biết
+
+- Vì sao trả `IReadOnlyDictionary` thay vì bản sao? (View chi phí-zero; bản sao che trạng thái cũ.)
+- Nhóm 10k dòng theo danh mục: cấu trúc nào? (`Dictionary<string, List<Row>>`, một lượt duyệt.)

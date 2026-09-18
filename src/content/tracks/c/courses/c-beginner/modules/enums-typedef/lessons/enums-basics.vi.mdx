@@ -1,0 +1,36 @@
+## Khai báo và dùng
+
+```c
+enum Color { RED, GREEN, BLUE };
+
+enum Color c = GREEN;
+```
+
+Trình biên dịch gán giá trị bắt đầu từ 0: RED=0, GREEN=1, BLUE=2. Bạn có thể
+định hoặc dịch giá trị:
+
+```c
+enum Level { LOW = 1, MEDIUM, HIGH };   // 1, 2, 3
+enum Mask  { BIT0 = 1, BIT2 = 4 };      // chỉ định rõ
+```
+
+## Tại sao không dùng int cho nhanh?
+
+Số ma thuật (`if (s == 2)`) che giấu ý nghĩa; tên enum mang nó
+(`if (s == STATE_PAUSED)`). Trình biên dịch còn kiểm tra kiểu theo ý định,
+và cảnh báo bao phủ switch bắt được các case bị thiếu.
+
+## Enum và switch
+
+```c
+enum Color invert(enum Color c) {
+    switch (c) {
+        case RED:   return BLUE;
+        case BLUE:  return RED;
+        case GREEN: return GREEN;
+    }
+    return c;   // phòng thủ: chỉ đến được khi đầu vào không hợp lệ
+}
+```
+
+Mỗi `case` là một hằng số có tên — không còn phải đoán số 1 nghĩa là gì.

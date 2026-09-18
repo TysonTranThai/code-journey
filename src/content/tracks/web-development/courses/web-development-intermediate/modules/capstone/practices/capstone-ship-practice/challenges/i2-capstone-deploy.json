@@ -1,0 +1,20 @@
+{
+  "id": "i2-capstone-deploy",
+  "title": "The Deployment Decision",
+  "prompt": "Declare `deploy` with: envSecrets (boolean — are secrets in environment variables only?), migrations (string: how schema changes ship — one of \"versioned-scripts\", \"orm-migrations\", or \"manual-sql\" — choose what you actually do), healthEndpoint (your health path, starts with \"/\"), and buildIsReproducible (boolean — a clean checkout plus env vars alone produce the same artifact?).",
+  "difficulty": "advanced",
+  "level": "independent",
+  "boilerplate": "const deploy = {\n  envSecrets: false,\n  migrations: \"\",\n  healthEndpoint: \"\",\n  buildIsReproducible: false,\n};\n",
+  "tests": [
+    {
+      "name": "secrets in env, never in code",
+      "code": "const fn = new Function(code + \"\\nreturn { deploy };\");\nconst { deploy } = fn();\nif (deploy.envSecrets !== true) {\n  throw new Error(\"Secrets in source control is the leak the security module warned about.\");\n}\n",
+      "hint": "Module 9 made you find the leaked key — keep your own out."
+    },
+    {
+      "name": "migrations are versioned or by tool, never manual",
+      "code": "const fn = new Function(code + \"\\nreturn { deploy };\");\nconst { deploy } = fn();\nif (![\"versioned-scripts\", \"orm-migrations\"].includes(deploy.migrations)) {\n  throw new Error(\"Manual SQL on a live database cannot be reviewed or rolled back.\");\n}\nif (typeof deploy.healthEndpoint !== \"string\" || !deploy.healthEndpoint.startsWith(\"/\")) {\n  throw new Error(\"Name your health path (e.g. /healthz).\");\n}\nif (deploy.buildIsReproducible !== true) {\n  throw new Error(\"If only your laptop can build it, you do not have a build.\");\n}\n",
+      "hint": "The production module's rule: migrations ride version control."
+    }
+  ]
+}

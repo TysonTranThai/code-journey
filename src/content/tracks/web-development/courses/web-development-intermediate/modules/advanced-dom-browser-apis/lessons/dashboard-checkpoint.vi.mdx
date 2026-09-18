@@ -1,0 +1,25 @@
+Các bài luyện trình duyệt của module này chạy trong DOM thật. Bài kiểm tra kiến
+thức bên dưới xác minh cùng các mẫu đó ở tầng logic — để kiểm tra sự hiểu của
+bạn, chứ không phải kỹ năng copy-paste.
+
+Ba bài toán, lấy thẳng từ các bài học:
+
+1. **Bộ phân giải ủy quyền** — cho click target và một cây, tìm tổ tiên có thể
+   hành động đúng như `closest` làm.
+2. **Bộ giảm trạng thái tabs** — `reduceTabs(state, action)` trả về trạng
+   thái mới cho select/next/prev. Không bao giờ làm thay đổi state đầu vào.
+3. **Debounce** — cài đặt kinh điển closure + timer, xác minh cả hành vi ngay
+   lập tức lẫn hành vi chạy sau.
+
+## Vì sao ở mức logic?
+
+Trình duyệt là nơi component của bạn sống, nhưng phần _khó_ nằm ở các quyết
+định: phần tử nào xử lý sự kiện nào, trạng thái tiếp theo là gì, khi nào một
+lời gọi được đi qua. Những quyết định đó sống sót qua mọi công nghệ render —
+vì thế cả phỏng vấn lẫn code review đều hỏi thẳng vào đó.
+
+Hãy coi ba bài toán như checklist cho dự án dashboard: nếu resolver của bạn
+đúng, bảng sortable của bạn vẫn nhanh; nếu tab reducer không bao giờ mutate
+state, việc chuyển sang React (hoặc thuần vanilla) sau này gần như là miễn phí;
+nếu debounce của bạn đúng ở cả hai cạnh, ô tìm kiếm ngừng bắn một request cho
+mỗi phím gõ.

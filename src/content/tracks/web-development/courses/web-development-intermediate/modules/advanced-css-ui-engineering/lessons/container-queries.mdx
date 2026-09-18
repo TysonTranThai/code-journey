@@ -1,0 +1,43 @@
+Media queries ask "how wide is the _viewport_?" Container queries ask "how wide
+is _my box_?" — which is what components actually need.
+
+## Setup
+
+```css
+.card-wrapper {
+  container-type: inline-size;
+}
+
+@container (min-width: 400px) {
+  .card {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+  }
+}
+```
+
+`container-type: inline-size` marks the element as a size container on the
+inline axis. The `@container` rule applies its styles **based on the nearest
+ancestor container** — the same `.card` can be horizontal in a wide sidebar slot
+and vertical in a narrow one, with no JavaScript and no viewport assumptions.
+
+## Why this changes architecture
+
+With media queries, a component's looks depend on where the _page_ is — so
+reusing a card in two layouts means duplicating breakpoints. With containers,
+the component owns its responsive behavior; drop it anywhere and it adapts.
+This is the foundation of design systems built from independent parts.
+
+## Fluid type with clamp()
+
+Between fixed breakpoints, `clamp()` interpolates smoothly:
+
+```css
+h1 {
+  font-size: clamp(1.75rem, 1rem + 3vw, 3.5rem);
+}
+/* min, preferred (grows with viewport), max */
+```
+
+Pair `clamp()` with container-query layout and components stay readable from
+320px to ultrawide without a single extra breakpoint.

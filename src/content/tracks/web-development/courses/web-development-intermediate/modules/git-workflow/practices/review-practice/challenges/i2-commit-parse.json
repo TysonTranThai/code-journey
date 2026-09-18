@@ -1,0 +1,25 @@
+{
+  "id": "i2-commit-parse",
+  "title": "Commit Message Parser",
+  "prompt": "Write `parseCommit(msg)` for conventional commits `<type>(<scope>)?: <desc>`. Return `{ type, scope, breaking, desc }` — scope null when absent, breaking true when `!` precedes the colon or a BREAKING CHANGE footer exists (msg contains \"BREAKING CHANGE\"). Return null for malformed messages (no valid type, no colon, empty desc).",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function parseCommit(msg) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "parses the standard forms",
+      "code": "const fn = new Function(code + \"\\nreturn { parseCommit };\");\nconst { parseCommit } = fn();\nconst p = parseCommit(\"feat(auth): add password reset\");\nif (p.type !== \"feat\" || p.scope !== \"auth\" || p.breaking !== false || p.desc !== \"add password reset\") throw new Error(\"Full form parsed.\");\nconst q = parseCommit(\"docs: update guide\");\nif (q.type !== \"docs\" || q.scope !== null) throw new Error(\"Scope-less form: scope is null.\");",
+      "hint": "One regex: /^(\\w+)(?:\\(([^)]*)\\))?!?: (.+)$/."
+    },
+    {
+      "name": "flags breaking changes",
+      "code": "const fn = new Function(code + \"\\nreturn { parseCommit };\");\nconst { parseCommit } = fn();\nif (parseCommit(\"feat!: new api\").breaking !== true) throw new Error(\"! marks breaking.\");\nif (parseCommit(\"fix: x\\n\\nBREAKING CHANGE: y\").breaking !== true) throw new Error(\"Footer marks breaking.\");\nif (parseCommit(\"fix: normal\")?.breaking !== false) throw new Error(\"Normal commits are not breaking.\");",
+      "hint": "Check the '!' before the colon OR search the whole message for the footer string."
+    },
+    {
+      "name": "rejects malformed messages",
+      "code": "const fn = new Function(code + \"\\nreturn { parseCommit };\");\nconst { parseCommit } = fn();\nif (parseCommit(\"updated stuff\") !== null) throw new Error(\"No type, no colon.\");\nif (parseCommit(\"feat\") !== null) throw new Error(\"Type alone is not a commit.\");\nif (parseCommit(\"feat:\" ) !== null) throw new Error(\"Empty description.\");\nif (parseCommit(\"blah: desc\") !== null) throw new Error(\"Unknown type => null.\");",
+      "hint": "Whitelist types: feat fix refactor perf test docs chore ci."
+    }
+  ]
+}

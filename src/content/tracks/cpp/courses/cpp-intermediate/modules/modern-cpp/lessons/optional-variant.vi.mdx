@@ -1,0 +1,37 @@
+`std::optional<T>` là một T có thể vắng mặt — kiểu từ vựng cho "có thể
+không có giá trị" thay cho các giá trị-sentinel (`-1`, `nullptr`, chuỗi rỗng).
+
+```cpp
+#include <optional>
+
+std::optional<int> find_index(const std::vector<int>& v, int target) {
+    for (std::size_t i = 0; i < v.size(); ++i)
+        if (v[i] == target) return static_cast<int>(i);
+    return std::nullopt;
+}
+
+auto idx = find_index(v, 7);
+if (idx.has_value()) use(*idx);      // hoặc idx.value() (ném ngoại lệ nếu rỗng)
+int fallback = idx.value_or(-1);     // đọc kèm giá trị mặc định
+```
+
+`std::variant<A, B>` là union an toàn kiểu: nó giữ đúng một trong các phương
+án, và `std::visit` điều phối theo phương án đang giữ:
+
+```cpp
+#include <variant>
+
+std::variant<int, std::string> result = 42;
+result = std::string{"overflow"};
+
+auto text = std::visit([](auto&& x) {
+    using T = std::decay_t<decltype(x)>;
+    if constexpr (std::is_same_v<T, int>) return std::to_string(x);
+    else return x;
+}, result);
+```
+
+Chọn `optional` khi câu hỏi là "có giá trị không?"; chọn `variant` khi câu
+trả lời là "một trong vài kiểu khác nhau" — kết quả parse, máy trạng thái,
+kết quả có nhãn. Cả hai thay thế tham-chiếu-ra kênh-báo-lỗi và làm chữ ký
+hàm trung thực hơn.

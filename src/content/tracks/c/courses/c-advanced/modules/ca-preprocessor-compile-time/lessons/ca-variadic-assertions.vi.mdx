@@ -1,0 +1,20 @@
+## Macro variadic cho logging
+
+```c
+#define logf(fmt, ...) fprintf(stderr, fmt __VA_OPT__(,) __VA_ARGS__)
+```
+
+`__VA_OPT__` của C23 giải quyết vấn đề dấu phẩy thừa từng phải dùng mẹo `##__VA_ARGS__`: khi không có đối số variadic, dấu phẩy cũng biến mất. Chuỗi `fmt` và chuyển tiếp đối số khả chuyển là tất cả những gì một lớp logging cần.
+
+## Từ chối lúc biên dịch
+
+```c
+_Static_assert(sizeof(int) >= 4, "int must be at least 32 bits");
+_Static_assert(__STDC_VERSION__ >= 202311L, "C23 required");
+```
+
+Điều kiện là biểu thức hằng số nguyên — trình biên dịch đánh giá, hụt thì phá build kèm thông báo của bạn. Mọi thứ code *giả định* về nền tảng nên xuất hiện dưới dạng assertion; giả định không bao giờ hụt to sẽ sai một cách im lặng.
+
+## Phát hiện tính năng không nói dối
+
+`#if defined(__GNUC__)` cho biết trình biên dịch; `__has_include(<stdatomic.h>)` cho biết header; `__STDC_NO_THREADS__` cho biết cái gì vắng mặt. Nhưng chúng KHÔNG cho biết hành vi — thăm dò lúc biên dịch chỉ gate *khai báo*, còn tuyên bố hành vi vẫn phải xác minh lúc chạy.

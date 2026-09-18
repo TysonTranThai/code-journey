@@ -1,0 +1,26 @@
+{
+  "id": "cppa2-forward-wrapper",
+  "title": "Forward Like make_unique",
+  "prompt": "Implement `makeOwned` that constructs `T` from perfectly forwarded arguments, and `restore` that forwards a single argument with the right collapse.",
+  "difficulty": "advanced",
+  "level": "independent",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <string>\n#include <utility>\n\n// Instrumented type: counts copies and moves for the graded checks.\nstruct Tracked {\n    static inline int copies = 0;\n    static inline int moves = 0;\n    std::string tag;\n    Tracked() : tag(\"empty\") {}\n    explicit Tracked(std::string t) : tag(std::move(t)) {}\n    Tracked(const Tracked& o) : tag(o.tag) { ++copies; }\n    Tracked(Tracked&& o) noexcept : tag(std::move(o.tag)) { ++moves; }\n    Tracked& operator=(const Tracked& o) { tag = o.tag; ++copies; return *this; }\n    Tracked& operator=(Tracked&& o) noexcept { tag = std::move(o.tag); ++moves; return *this; }\n};\n\n#include <memory>\n\n// Construct T from perfectly forwarded arguments.\ntemplate <class T, class... A>\nstd::unique_ptr<T> makeOwned(A&&... a);\n\n// Forward a single argument with the right reference collapsing.\ntemplate <class T>\nT&& restore(T&& x);\n",
+  "tests": [
+    {
+      "name": "rvalues stay rvalues",
+      "code": "Tracked::moves = 0; Tracked::copies = 0;\nauto p = makeOwned<Tracked>(Tracked(\"hot\"));\nCHECK_EQ(Tracked::moves, 1);\nCHECK_EQ(Tracked::copies, 0);\nCHECK_EQ(p->tag, std::string(\"hot\"));",
+      "hint": "new T(std::forward<A>(a)...) — the temporary is moved once into T; a copy here (missing forward) counts 0 moves and fails."
+    },
+    {
+      "name": "lvalues stay lvalues (copied, not moved)",
+      "code": "Tracked::copies = 0; Tracked::moves = 0;\nTracked src(\"cold\");\nauto q = makeOwned<Tracked>(src);\nCHECK_EQ(Tracked::copies, 1);\nCHECK_EQ(Tracked::moves, 0);\nCHECK_EQ(q->tag, std::string(\"cold\"));",
+      "hint": "The lvalue src must be copied exactly once into T — forward preserves the caller's category."
+    },
+    {
+      "name": "restore collapses correctly",
+      "code": "Tracked base(\"seed\");\nTracked& lref = restore(base);\nCHECK_EQ(lref.tag, std::string(\"seed\"));\nstd::string rv = restore(std::string(\"tmp\"));\nCHECK_EQ(rv, std::string(\"tmp\"));",
+      "hint": "return std::forward<T>(x); — collapsing restores the original category for both calls."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+Chuyển đổi kiểu có hai hương vị với mức độ rủi ro ngược nhau.
+
+**Mở rộng (an toàn, tự động)** — kiểu nhỏ sang kiểu lớn, không mất dữ liệu:
+
+```java
+int apples = 12;
+double avg = apples;        // int → double, luôn ổn: 12.0
+long big = apples;          // int → long, ổn
+```
+
+**Thu hẹp (mất dữ liệu, bạn phải chủ động xin)** — compiler từ chối phá hỏng
+một cách âm thầm; phép **cast** tường minh nghĩa là bạn chịu trách nhiệm:
+
+```java
+double price = 19.99;
+int rounded = (int) price;  // 19 — phần lẻ bị CẮT, không phải làm tròn
+long huge = 9_876_543_210L;
+int small = (int) huge;     // biên dịch được; có thể âm thầm tràn số
+```
+
+`(int)` cắt về phía 0 — muốn làm tròn thật thì dùng `Math.round`.
+
+**String ↔ số** là phép chuyển đổi hằng ngày thứ hai, và nó có thể *thất bại*:
+
+```java
+int n = Integer.parseInt("42");      // 42
+double d = Double.parseDouble("3.5");// 3.5
+String s = String.valueOf(42);       // "42"
+
+Integer.parseInt("4x2");             // NumberFormatException lúc chạy
+```
+
+`parseInt` ném exception khi chữ không phải số — bạn sẽ gặp try/catch xử lý
+lịch sự việc này ở Module 12; tạm thời chỉ parse văn bản bạn tin được.
+
+**Một cái bẫy nữa:** `1 + 2 + "A"` cho `"3A"` nhưng `"A" + 1 + 2` cho `"A12"`
+— `+` chạy từ trái sang phải, và khi một `String` xuất hiện, mọi thứ phía sau
+được nối thành chữ.
+
+**Tiếp theo:** số học và những điều bất ngờ của nó.

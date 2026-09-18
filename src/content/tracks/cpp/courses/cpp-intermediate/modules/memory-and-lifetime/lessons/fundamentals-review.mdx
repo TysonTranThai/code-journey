@@ -1,0 +1,39 @@
+You finished Beginner, so you can already write functions, use `std::vector`,
+read files, and reason about basic RAII. Intermediate starts by tightening the
+mental model you will rely on for everything that follows: **every object has
+a lifetime, and someone is responsible for it.**
+
+## The three questions to ask about any object
+
+1. **Where does it live?** — automatic (stack), static (global), or dynamic (heap).
+2. **When does it die?** — end of scope, end of program, or an explicit `delete`.
+3. **Who is responsible?** — one owner, always; everyone else borrows.
+
+```cpp
+#include <string>
+#include <vector>
+
+int counter = 42;                 // static: lives for the whole program
+
+struct Session {
+    std::string user;
+    explicit Session(std::string u) : user{std::move(u)} {}
+    ~Session() { /* release anything the session owns */ }
+};
+
+void demo() {
+    int local = 7;                // automatic: dies at the closing brace
+    Session s{"ana"};             // automatic; destructor runs at scope exit
+    std::vector<int> v{1, 2, 3};  // the vector owns its heap buffer; frees it
+}                                 // <- everything destroyed in REVERSE order
+```
+
+## Review: the discipline you already know
+
+- Prefer `const` on anything that should not change.
+- Pass non-trivial objects by `const&`; return by value.
+- Containers manage their own memory — that is why they beat raw arrays.
+- Initializer lists and `{}` braces beat `=` for consistency.
+
+If any of those feel shaky, revisit the relevant Beginner module before
+continuing; Intermediate builds every new idea on exactly these foundations.

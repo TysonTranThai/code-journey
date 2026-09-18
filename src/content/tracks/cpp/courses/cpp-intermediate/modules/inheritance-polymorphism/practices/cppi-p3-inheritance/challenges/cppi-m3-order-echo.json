@@ -1,0 +1,21 @@
+{
+  "id": "cppi-m3-order-echo",
+  "title": "Predict construction order",
+  "prompt": "Implement `class Parent` with a constructor printing `parent` and a destructor printing `~parent`, and `class Child : public Parent` whose constructor prints `child` and destructor prints `~child`. Use std::cout exactly (no extra text). The test captures construction/destruction inside a scope.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\\n\\nclass Parent { /* print in ctor and dtor */ };\\n\\nclass Child : public Parent { /* same */ };\\n",
+  "tests": [
+    {
+      "name": "order",
+      "code": "std::string out = capture([]() { Child c; });\nCHECK_LINES(out, \"parent\", \"child\", \"~child\", \"~parent\");",
+      "hint": "capture() returns what was printed; construction is base-first, destruction reversed."
+    },
+    {
+      "name": "reverse",
+      "code": "std::string out;\n{ std::string block = capture([]() { Child c; }); out = block; }\nCHECK_LINES(out, \"parent\", \"child\");",
+      "hint": "The captured order is exactly the construction order."
+    }
+  ],
+  "level": "independent"
+}

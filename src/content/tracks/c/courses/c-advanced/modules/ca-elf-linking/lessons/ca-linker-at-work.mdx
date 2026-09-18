@@ -1,0 +1,16 @@
+## A two-file program linked by hand
+
+```c
+/* counter.c */  int counter = 5; int bump(void) { return ++counter; }
+/* main.c   */  int bump(void); int main(void) { return bump(); }
+```
+
+`gcc -c counter.c main.c` produces two objects; `gcc main.o counter.o -o prog` resolves `bump` across the boundary. Reverse the link order with an archive and resolution semantics show their teeth: `ar rcs libcnt.a counter.o` then `gcc main.o -L. -lcnt -o prog` works, while `gcc -L. -lcnt main.o` can fail — the archive is scanned when the linker reaches it, and `main.o`'s undefined `bump` must already be pending.
+
+## What the linker does for you
+
+Merges like sections, assigns final addresses, patches relocations, and drops archive members that resolve nothing. Static libraries are not 'included' — they are *searched*, member by member, for currently-undefined symbols.
+
+## Shared objects versus static archives
+
+A .so is loaded at runtime and symbol-lookup happens then (or at load with binding); a .a is copied into the binary at link time. The sandbox links statically here — but the resolution model you practice (pending U, defining T) is the same machine both use.

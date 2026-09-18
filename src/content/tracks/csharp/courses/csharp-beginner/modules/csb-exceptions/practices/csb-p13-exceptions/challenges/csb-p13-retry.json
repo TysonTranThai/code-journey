@@ -1,0 +1,21 @@
+{
+  "id": "csb-p13-retry",
+  "title": "Retry with attempt budget",
+  "prompt": "Implement `static int ReadWithRetry(Func<int> reader, int attempts)`: calls `reader()` until it succeeds (returns its value) or the attempts run out — then throws `InvalidOperationException`. Counts every attempt, including the successful one. `attempts <= 0` → `ArgumentException` without calling reader.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "int calls = 0;\nint v = Solution.ReadWithRetry(() => { calls++; return calls >= 3 ? 42 : throw new InvalidOperationException(\"flaky\"); }, 5);\nCj.Eq(v, 42, \"succeeded on attempt 3\");\nCj.Eq(calls, 3, \"three attempts made\");",
+      "hint": "The reader throws twice, then succeeds — retry must return the success value."
+    },
+    {
+      "name": "exhaustion",
+      "code": "int calls = 0;\nbool t = false;\ntry { Solution.ReadWithRetry(() => { calls++; throw new InvalidOperationException(\"always\"); }, 3); } catch (InvalidOperationException) { t = true; }\nCj.True(t, \"exhaustion throws\");\nCj.Eq(calls, 3, \"exactly the attempt budget used\");\nbool t2 = false;\nbool called = false;\ntry { Solution.ReadWithRetry(() => { called = true; return 1; }, 0); } catch (ArgumentException) { t2 = true; }\nCj.True(t2 && !called, \"zero attempts rejected before any call\");",
+      "hint": "Exactly `attempts` calls happen on exhaustion; the budget is validated up front."
+    }
+  ],
+  "level": "independent"
+}

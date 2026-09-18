@@ -1,0 +1,31 @@
+## Sorting in place
+
+```csharp
+int[] nums = { 5, 3, 9, 1 };
+Array.Sort(nums);            // nums is now { 1, 3, 5, 9 }
+Array.Reverse(nums);         // { 9, 5, 3, 1 }
+```
+
+`Array.Sort` mutates the array — **in place** — using an introsort; average O(n log n). There's no "sorted copy" overload; if you must keep the original, copy first (`(int[])nums.Clone()`). Strings sort with culture-aware comparison by default — for code-like ordering say `Array.Sort(names, StringComparer.Ordinal)`.
+
+## Searching
+
+```csharp
+int at = Array.IndexOf(nums, 5);      // index or -1 when absent
+bool has = Array.Exists(nums, n => n > 8);   // predicate search
+int first = Array.Find(nums, n => n > 8);    // element or 0/""/null default
+```
+
+`IndexOf` returns **-1 when absent** — a sentinel you must check before indexing with it. The predicate family (`Exists`/`Find`/`FindAll`) takes a lambda; you met lambdas briefly, they get a full module later.
+
+## Copying without aliasing
+
+```csharp
+int[] src = { 1, 2, 3, 4 };
+int[] dst = new int[src.Length];
+src.CopyTo(dst, 0);          // dst is independent
+int[] head = new int[2];
+src.CopyTo(head, 0);         // first two elements only
+```
+
+`CopyTo(target, startInTarget)` writes elements into an existing array (which must be long enough). Now aliasing and copying are two visible paths: `b = a` shares, `CopyTo`/`Clone` duplicates. Every time you hand an array to a method or store it in a field, ask: do I want the alias or a copy?

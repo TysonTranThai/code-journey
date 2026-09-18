@@ -1,0 +1,15 @@
+`Serializer` là bài kiểm tra vì nó đòi hỏi cả ba dạng template trong một hệ
+thống nhỏ:
+
+- **bản gốc** xử lý mọi thứ `std::to_string` nhận được
+- **specialization toàn phần** cho `std::string` ngăn hành vi chỉ-số-hủy
+  làm hỏng văn bản
+- **specialization riêng phần** cho `std::vector<T>` đệ quy: serialize
+  phần tử quay lại bộ chọn, nên vector lồng nhau tự kết hợp
+
+Đệ quy là khái niệm được kiểm tra: `Serializer<vector<T>>::to` gọi
+`Serializer<T>::to` mà không cần biết T là gì. Một dòng đó là cách toàn bộ
+thư viện chuẩn kết hợp với nhau.
+
+Chú ý định dạng đầu ra chính xác: `[1,2,3]` — không dấu cách, đủ dấu ngoặc.
+Sai lệch dấu phân cách là bug kinh điển của specialization.

@@ -1,0 +1,109 @@
+Beginner taught you the structural elements. Intermediate taught you to decide how to
+build. Advanced HTML starts where those leave off: treating a document's markup as
+**architecture** — a structure that screen readers, search engines, reader modes, and
+future maintainers all compile into a map of your page.
+
+## Heading order is the load-bearing wall
+
+Assistive technology exposes every heading as navigation: a screen-reader user can pull
+up a list of all headings and jump straight to "Pricing" without reading the page. That
+list is only as useful as your heading *order* is honest. Two rules carry the whole
+system:
+
+- **Exactly one `<h1>`** — the page's title. Not the site name on every page, not a
+  decorative logo; the one thing this page is about.
+- **Never skip a level on the way down.** `<h1>` → `<h3>` reads as a missing section —
+  like a book whose chapter 2.1 appears without a chapter 2.
+
+Going back *up* is expected and correct: a new `<h2>` closes the previous one, and the
+outline continues:
+
+```html
+<h1>Field Guide to Web Semantics</h1>   <!-- page -->
+  <h2>Habitats</h2>                     <!-- chapter -->
+    <h3>Grasslands</h3>                 <!-- section -->
+      <h4>Prairie dogs</h4>
+    <h3>Wetlands</h3>                   <!-- back up: correct -->
+  <h2>Migrations</h2>                   <!-- new chapter -->
+```
+
+Headings describe structure — **never** choose one for its font size. If a heading is
+too big or too small, that is one line of CSS, not a different element. `<div
+class="title">` is invisible to the document map; `<h2>` *is* the map.
+
+## Subtitles are not headings
+
+A subtitle like "The definite guide, 4th edition" belongs in an `<hgroup>` with its
+heading — it is part of the same heading, not a new outline level:
+
+```html
+<hgroup>
+  <h1>Field Guide to Web Semantics</h1>
+  <p>Field notes for working developers</p>
+</hgroup>
+```
+
+## Naming regions: section + aria-labelledby
+
+A `<section>` without a heading is unlabelled noise to the outline. Give it a heading
+and wire the region to that heading with `aria-labelledby` so assistive tech announces
+*"Pricing, region"* instead of just "region":
+
+```html
+<section aria-labelledby="pricing-h">
+  <h2 id="pricing-h">Pricing</h2>
+  …
+</section>
+```
+
+The heading stays a real, navigable heading — the attribute only borrows it as the
+region's name. `<article>` needs the same treatment when it lacks visible text in its
+own heading element.
+
+## Articles nest — and that means something
+
+`<article>` is *complete, independently meaningful* content: a blog post, a review, a
+product card. It also nests, and the nesting is semantic: a comment inside a blog post
+is a complete piece of content *within* another.
+
+```html
+<article>
+  <h2>Why semantic HTML wins</h2>
+  <p>…the post…</p>
+  <article aria-labelledby="c1-h">
+    <h3 id="c1-h">Great point</h3>
+    <p>…the comment…</p>
+  </article>
+</article>
+```
+
+Screen readers announce the nesting ("article, level 2"), so a user inside a comment
+thread knows where they are. If your "article" cannot stand alone — it only makes sense
+inside the page — it is a `<section>`, not an `<article>`.
+
+## What machines do with all this
+
+Search engines weight headings for topic modelling; reader modes rebuild the page from
+`article`/`header`/`footer` boundaries; browsers generate "reader" and heading
+outlines; feed readers and aggregators extract `article` content. Architecture is not
+decoration — it is the API of your page for everything that is not a pixel-rendering
+browser viewport.
+
+## What goes wrong
+
+- **Heading soup**: skipping levels or restarting `<h1>` per section. Fix: one h1,
+  monotone descent, honest ascent.
+- **Div-itis with ARIA band-aids**: `role="heading"` on a div is a symptom. Use the
+  real element.
+- **Unlabelled regions**: `<section>`/`<article>` without headings — add headings or
+  reclassify.
+- **Styling-driven headings**: picking h3 because it "looks right". Pick by outline,
+  style in CSS.
+
+## Practice and where this connects
+
+The practice set that follows hands you a broken blog page to re-architect, then a
+blank requirements page to build. Document architecture is also the foundation of the
+accessibility engineering, performance, and component-architecture sections later in
+this course: components, layouts, and design systems all inherit their structure from
+the markup decisions you make here.

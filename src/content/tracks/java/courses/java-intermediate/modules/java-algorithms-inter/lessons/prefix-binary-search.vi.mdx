@@ -1,0 +1,27 @@
+## Prefix sum và biên của binary search
+
+**Prefix sum** biến mọi tổng đoạn thành O(1) sau khi chuẩn bị O(n):
+
+```java
+long[] pre = new long[n + 1];
+for (int i = 0; i < n; i++) pre[i + 1] = pre[i] + xs[i];
+// tổng đoạn [l, r) = pre[r] - pre[l]
+```
+
+**Binary search** không chỉ là "tìm x" — sức mạnh thật là tìm *biên* trên
+một predicate: chỉ số đầu tiên mà điều gì đó trở thành đúng.
+
+```java
+// chỉ số đầu với xs[i] >= target (lower bound kinh điển)
+int lo = 0, hi = xs.length;          // hi loại trừ
+while (lo < hi) {
+    int mid = (lo + hi) >>> 1;
+    if (xs[mid] >= target) hi = mid; else lo = mid + 1;
+}
+return lo;   // == xs.length nghĩa là "không tìm thấy"
+```
+
+Bất biến khoảng nửa mở `[lo, hi)` + `hi = mid` / `lo = mid + 1` tiêu diệt
+cả họ lỗi lệch một. `(lo + hi) >>> 1` tránh tràn int. Nếu diễn đạt được
+câu hỏi thành "chỉ số đầu/cuối mà P đúng", bạn có thể binary search nó
+trong O(log n) — predicate phải đơn điệu.

@@ -1,0 +1,20 @@
+{
+  "id": "practice-request-trace",
+  "title": "Trace a Protected Request",
+  "prompt": "A logged-out visitor opens a members-only page. Order the steps: put the strings `\"browser requests page\"`, `\"server checks session\"`, `\"no session found\"`, `\"redirect to login\"` into the array in the order they happen.",
+  "difficulty": "beginner",
+  "level": "real-world",
+  "boilerplate": "const trace = [\n  // four steps, in order\n];\n",
+  "tests": [
+    {
+      "name": "all four steps present",
+      "code": "const fn = new Function(code + \"\\nreturn trace;\");\nconst t = fn();\nconst expected = [\"browser requests page\", \"server checks session\", \"no session found\", \"redirect to login\"];\nfor (const step of expected) {\n  if (!t.includes(step)) throw new Error(`Missing step: ${step}`);\n}",
+      "hint": "All four strings must appear in the array."
+    },
+    {
+      "name": "steps in the right order",
+      "code": "const fn = new Function(code + \"\\nreturn trace;\");\nconst t = fn();\nconst expected = [\"browser requests page\", \"server checks session\", \"no session found\", \"redirect to login\"];\nif (JSON.stringify(t) !== JSON.stringify(expected)) {\n  throw new Error(\"Order: request → session check → no session → redirect.\");\n}",
+      "hint": "The browser asks first; the server decides last. Check before redirect."
+    }
+  ]
+}

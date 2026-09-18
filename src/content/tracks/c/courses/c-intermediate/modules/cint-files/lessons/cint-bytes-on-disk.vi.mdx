@@ -1,0 +1,50 @@
+## fwrite chuyển byte — kể cả padding
+
+```c
+struct Rec { long id; int qty; };
+struct Rec r = {7, 3};
+fwrite(&r, sizeof r, 1, f);   /* ghi 16 byte trên libc 64-bit:
+                                 8 (id) + 4 (qty) + 4 (padding!) */
+```
+
+Bốn byte padding là *rác mang lên đĩa* — tệ hơn, chúng không portable:
+compiler hoặc ABI khác bố trí struct khác đi và định dạng tệp của bạn
+gãy. Record I/O portable ghi **từng trường, không phải struct**:
+
+```c
+/* từng trường, độ rộng cố định, do BẠN định nghĩa */
+uint32_t id = (uint32_t)r.id;
+fwrite(&id, sizeof id, 1, f);
+```
+
+## Endianness là loại thuế trả một lần
+
+Máy little-endian lưu byte thấp trước. Nếu tệp ghi `uint32_t` thô, máy
+viết x86 và máy đọc big-endian bất đồng ở mọi trường nhiều byte. Định
+dạng sống qua nhiều máy định nghĩa thứ tự byte (network order =
+big-endian) và đổi tại biên giới:
+
+```c
+/* ghi 32-bit little-endian, từng byte */
+unsigned char b[4] = { v & 0xFF, (v >> 8) & 0xFF, (v >> 16) & 0xFF, (v >> 24) & 0xFF };
+fwrite(b, 4, 1, f);
+```
+
+I/O từng byte chậm hơn nhưng *định nghĩa* định dạng — không platform nào
+bất đồng với bạn về nó.
+
+## Header tự mô tả
+
+Mọi định dạng nhị phân không tầm thường mở đầu bằng header: magic number
+(chữ ký định dạng), version, count. Reader kiểm cả ba *trước khi* tin
+bất cứ gì khác:
+
+```c
+unsigned char hdr[8];
+fread(hdr, 1, 8, f) == 8 || die();
+memcmp(hdr, "CJR1", 4) == 0 || die("wrong magic");
+/* hdr[4..7] = số record, little-endian */
+```
+
+`fread` trả ít byte hơn yêu cầu là *chế độ thất bại bình thường* của tệp
+ngắn — không phải sự kiện lạ. Đếm byte của bạn là kỷ luật.

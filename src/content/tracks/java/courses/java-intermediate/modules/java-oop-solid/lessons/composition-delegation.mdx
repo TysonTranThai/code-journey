@@ -1,0 +1,30 @@
+## Composition, inheritance, and delegation
+
+Inheritance is the strongest coupling Java offers: the subclass depends on
+superclass internals and survives every superclass change. Prefer
+**composition**: hold a collaborator and *delegate*.
+
+```java
+// inheritance-flavored
+class CountingList extends ArrayList<String> {
+    int count = 0;
+    @Override public boolean add(String s) { count++; return super.add(s); }
+    // broken: addAll() bypasses add(), remove() desyncs count...
+}
+
+// composition-flavored
+final class CountingList {
+    private final List<String> inner = new ArrayList<>();
+    int count = 0;
+    void add(String s) { count++; inner.add(s); }
+    int size() { return inner.size(); }
+}
+```
+
+The inheritance version inherits behavior it never asked for (addAll skips
+the override — a classic bug). The composition version exposes exactly the
+surface it wants, and counting cannot desync.
+
+Rule of thumb: `is-a` that survives every future change → inheritance.
+`has-a`, wrapping, decorating, adapting → composition. When in doubt,
+compose and delegate.

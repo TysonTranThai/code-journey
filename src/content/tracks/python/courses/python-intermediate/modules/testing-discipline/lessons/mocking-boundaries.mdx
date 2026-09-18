@@ -1,0 +1,39 @@
+Your function calls the network, the clock, the filesystem. Tests that hit
+real services are slow, flaky, and sometimes destructive. **Mock** the
+boundary:
+
+```python
+from unittest.mock import patch
+
+def fetch_price(url):
+    import urllib.request
+    with urllib.request.urlopen(url) as r:
+        return int(r.read())
+
+class TestPrice(unittest.TestCase):
+    @patch("__main__.urllib.request.urlopen")
+    def test_fetch_price_parses(self, fake_urlopen):
+        fake_urlopen.return_value.__enter__.return_value.read.return_value = b"123"
+        self.assertEqual(fetch_price("http://example.com"), 123)
+```
+
+`patch` swaps the real object for a `Mock` for the duration of the test and
+restores it afterwards. The mock records **how it was called**, so you can
+assert behavior, not just return values:
+
+```python
+fake_send.assert_called_once_with("hello")
+```
+
+## What to mock — and what never to mock
+
+Mock **edges**: network, clock, random, filesystem, external services. Keep
+**domain logic real** — mocking the code under test's own calculations makes
+the test a tautology. Rule of thumb: if you're mocking it, it should be a
+collaborator, not the subject.
+
+## The danger sign
+
+Tests full of mocks that mirror the implementation break on every refactor
+and prove nothing. Prefer testing through the public API; mock only what you
+cannot afford to touch for real.

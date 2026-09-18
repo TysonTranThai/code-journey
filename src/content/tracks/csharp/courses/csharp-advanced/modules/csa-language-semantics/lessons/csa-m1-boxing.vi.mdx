@@ -1,0 +1,31 @@
+## Boxing, unboxing, và các cấp phát ẩn
+
+**Boxing** bọc một value type vào một object trên heap để nó đi được dưới
+dạng `object`, qua interface, hoặc vào collection không generic. Unboxing
+sao chép nó ra ngoài. Box là một cấp phát thật — áp lực gen0, không phải chi
+phí lý thuyết:
+
+```csharp
+int x = 42;
+object o = x;          // BOX: object heap 24 byte (header + value)
+int y = (int)o;        // UNBOX: sao chép ra
+```
+
+Những trường hợp âm thầm mới là thứ cắn bạn trong production:
+
+```csharp
+IComparable c = 5;           // box tại interface
+string.Join(",", list);      // box từng phần tử struct
+Func<int> f = s.GetHashCode; // struct receiver bị sao chép/bắt giữ
+list.Add(structPoint);       // ArrayList: box mỗi phần tử
+```
+
+Ở khóa này, boxing CHẤP NHẬN được khi: ranh giới `object` bạn cố ý thiết kế
+(serialization, lưu trữ đồng nhất), và một lần mỗi phép toán hợp lý — không
+phải mỗi phần tử trong vòng lặp nóng. `ToString()` trên struct sẽ box nếu
+không được override. Coi chừng pattern `enum` bị box qua `Enum.HasFlag` trên
+đường nóng.
+
+Hãy chấm code của mình như runtime làm: `GC.GetAllocatedBytesForCurrentThread()`
+trước và sau vòng lặp. Số byte tăng theo vòng lặp là sự thật; ý định của bạn
+không phải.

@@ -1,0 +1,46 @@
+## std::map: key → value
+
+```cpp
+#include <map>
+#include <string>
+
+std::map<std::string, int> stock;
+stock["pen"] = 120;                 // insert or overwrite
+stock["ink"] += 5;                  // reads 0 if absent, then adds — subtle!
+int pens = stock.at("pen");         // throws if key missing
+if (stock.count("ink")) { /* present */ }
+for (const auto& [item, qty] : stock) {   // C++17 structured binding, sorted by key
+    std::cout << item << ": " << qty << '\n';
+}
+```
+
+`operator[]` **inserts a zero** when the key is absent — a legendary source of bugs in counting code. Use `[]` when you intend to insert/overwrite; use `.at()` or `find`/`count` when merely reading.
+
+`std::map` keeps keys **sorted** (a tree underneath). `std::unordered_map` is the hash-table sibling: faster on average, no ordering. Default to `map` while learning (predictable order helps debugging); choose `unordered_map` when profiling says lookup is hot.
+
+## std::set: uniqueness
+
+```cpp
+#include <set>
+std::set<int> seen;
+seen.insert(3);            // returns <iterator, bool inserted>
+seen.insert(3);            // second insert does nothing
+CHECK(seen.size() == 1);
+bool has = seen.count(3);  // 1 = present
+```
+
+A `set` is a bag of unique, sorted keys — the direct answer to "have I seen this before?" and "which distinct values are there?".
+
+## std::pair: a two-slot box
+
+```cpp
+#include <utility>
+std::pair<std::string, int> entry{"pen", 120};
+entry.first; entry.second;
+```
+
+Pairs show up naturally with maps (each entry is a pair) and as cheap two-value returns (`find` returns an iterator, `insert` returns `pair<`iterator`bool>`). The structured binding `auto [k, v]` unpacks them elegantly.
+
+## Coming up
+
+Three containers is a *toolbox*, not a rulebook. Next: how to actually choose.

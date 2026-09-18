@@ -1,0 +1,28 @@
+## Mảng tự lớn
+
+```csharp
+var names = new List<string>();     // rỗng
+names.Add("an");
+names.Add("binh");
+Console.WriteLine(names.Count);     // 2 — số phần tử thật
+names[0] = "An";                    // truy chỉ số như mảng
+names.Remove("binh");               // xóa phần tử đầu bằng nhau
+Console.WriteLine(names.Contains("An"));   // True
+```
+
+`List<T>` bọc một mảng mà nó tự cấp phát lại phía sau: `Add` là O(1) khấu trừ, `Count` là số phần tử thật. `Capacity` là kích thước mảng nội bộ — gần như không bao giờ cần đụng. **`Count`, không phải `Length`,** là dấu hiệu nhận biết list không phải mảng.
+
+## Xóa, chèn, tìm kiếm
+
+```csharp
+names.Insert(0, "cuong");       // O(n) — mọi thứ dịch chuyển
+names.RemoveAt(names.Count - 1);   // xóa cuối
+int at = names.IndexOf("An");   // -1 khi vắng, như mảng
+names.Sort();                   // tại chỗ, cùng hợp đồng Array.Sort
+```
+
+`Remove` và `RemoveAt` dịch mọi thứ sau vị trí xóa — rẻ ở cuối, đắt ở đầu. Nếu bạn cứ chèn ở đầu hoài, list có thể là dạng sai (mô hình deque/stack hợp hơn).
+
+## Duyệt an toàn
+
+`foreach` trên một list đang `Add`/`Remove` sẽ ném `InvalidOperationException` — list bị biến đổi trong khi liệt kê. Thu thập thay đổi rồi áp dụng sau vòng lặp, hoặc dùng `for` đi ngược khi xóa theo chỉ số.

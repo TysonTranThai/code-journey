@@ -1,0 +1,48 @@
+## Fail build, không fail khách hàng
+
+`_Static_assert` (C11) kiểm biểu thức hằng lúc compile:
+
+```c
+_Static_assert(sizeof(int) == 4, "protocol assumes 32-bit int");
+_Static_assert(OTAB_CAP > 0 && (OTAB_CAP & (OTAB_CAP - 1)) == 0,
+               "capacity must be a power of two");
+```
+
+Khi giả định gãy — platform mới, hằng bị refactor — build gãy với thông
+điệp của bạn, ngay tại nơi giả định. Đó là bug rẻ nhất có thể: bug không
+bao giờ ship. Static assert ghi *bất biến compiler kiểm được*, bổ sung
+cho các kiểm runtime bạn đã viết.
+
+## X-macros: một dữ liệu, nhiều góc nhìn
+
+Mẫu giữ các danh sách song song (enum ↔ tên ↔ dòng bảng) đồng bộ bằng
+cách định nghĩa danh sách đúng một lần:
+
+```c
+/* commands.def — nguồn sự thật duy nhất */
+X(ADD,  cmd_add,  "adds")
+X(SUB,  cmd_sub,  "subs")
+
+/* enum: */
+#define X(id, fn, desc) CMD_##id,
+enum cmd_id { CMD_NONE, X_ROWS CMD_COUNT };
+#undef X
+
+/* bảng dispatch: */
+#define X(id, fn, desc) { CMD_##id, fn, desc },
+static const struct { int id; int (*fn)(int, int); const char *desc; }
+CMDS[] = { X_ROWS };
+#undef X
+```
+
+Thêm lệnh bằng cách sửa **một file** — enum, bảng, name-to-string cùng
+cập nhật, và quên một nơi là bất khả vì chỉ có một danh sách. `#X`
+(stringize) và `X##Y` (dán) là toán tử token khiến nó chạy. Codebase thật
+dùng X-macro cho opcode, mã lỗi, config key — mọi nơi có từ hai danh sách
+song song trở lên mà không được phép lệch nhau.
+
+## #undef là một phần của mẫu
+
+Mỗi nơi dùng định nghĩa `X`, dùng, rồi undefine. Điều này giữ scope của
+macro trong một màn hình và biến việc tái dùng nhầm thành lỗi compile
+thay vì bất ngờ âm thầm.

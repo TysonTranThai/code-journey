@@ -1,0 +1,44 @@
+## Test code async
+
+Quy tắc: tự lái event loop. `asyncio.run(coro())` trong test là ổn; điều *không*
+ổn là `time.sleep` — nó đóng băng loop và không test được gì. Dùng
+`await asyncio.sleep(0)` để nhường quyền điều khiển một cách xác định, fake
+clock cho các timeout, và khẳng định trên *trạng thái task* (`task.done()`,
+`task.cancelled()`) thay vì phỏng đoán theo đồng hồ.
+
+## Test nhạy thời gian
+
+Không bao giờ khẳng định `elapsed < X` trên máy đang tải — máy CI hay nói dối.
+Những lựa chọn ổn định:
+
+- **Đồng hồ được tiêm** (mọi module trong khóa học này): truyền `now` vào,
+  tự tay đẩy nó lên.
+- **Đếm số lần gọi**: khẳng định "tối đa N lần thử" thay vì "xong trong Y ms".
+- **Bộ lập lịch xác định**: với logic queue/worker, điều khiển bộ lập lịch
+  tường minh (lượt quét `deliver()` từ module distributed).
+
+## Test double cho I/O
+
+Một dependency mạng trong unit test là một bài test flaky với các bước thừa.
+Fake *port* (giao diện bạn đã định nghĩa ở module kiến trúc): một queue trong
+bộ nhớ, một đồng hồ đóng gói, một fake repository. Giữ một suite integration
+mỏng chạy các adapter thật, và để nó là nơi duy nhất mạng được phép rung.
+
+## Điều bộ test không nói được
+
+- Hiệu năng có giữ vững với khối lượng dữ liệu *production* không — load test
+  riêng.
+- Bảo mật có giữ vững trước một đối thủ có động cơ không — audit riêng.
+- Người dùng có muốn tính năng không — đó không phải việc của bộ test.
+
+Phạm vi trung thực: bộ test xác minh hành vi bạn đã đặc tả, một cách xác định.
+Mọi thứ khác cần công cụ khác.
+
+## Hợp đồng bảo trì
+
+Test cũng là code: đặt tên, chống trùng lặp, xóa test chết, tách helper. Một
+test suite là *một hệ thống được bảo trì tích cực* — dành ngân sách cho nó,
+review nó, refactor nó. Hình dáng kim tự tháp là một chính sách: khi tầng
+integration phình to, đẩy logic xuống phần lõi unit-test được; khi unit test
+nhân lên trên một tầng mỏng, thiết kế đang nói với bạn rằng logic thuộc về
+nơi khác.

@@ -1,0 +1,16 @@
+{
+  "id": "py-test-write-tests",
+  "title": "Test the Palindrome",
+  "prompt": "Write test_palindrome(fn) that receives a palindrome checker and RETURNS a list of failure-message strings (empty list = your tests all passed). Your tests must cover: 'radar' -> True, 'Racecar' -> True (case-insensitive), 'hello' -> False, '' -> True. The grader runs your tests against a correct AND a subtly broken implementation — both must be caught appropriately.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "",
+  "tests": [
+    {
+      "name": "your tests judge correctly",
+      "code": "def _ok(s):\n    s = s.lower()\n    return s == s[::-1]\n\ndef _broken(s):\n    s = s.lower()\n    return s == s[::-1] and len(s) > 0\n\nassert test_palindrome(_ok) == [], f\"correct impl must pass your tests, got {test_palindrome(_ok)}\"\n_fails = test_palindrome(_broken)\nassert len(_fails) >= 1, \"your tests must catch the broken impl (empty string)\"\nassert all(isinstance(f, str) for f in _fails), \"failures are message strings\"",
+      "hint": "call fn(...) inside try/except AssertionError, or assert and collect — return the list of what failed."
+    }
+  ],
+  "level": "mini-build"
+}

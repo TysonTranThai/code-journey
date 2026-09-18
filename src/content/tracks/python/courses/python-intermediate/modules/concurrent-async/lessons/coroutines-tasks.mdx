@@ -1,0 +1,41 @@
+Inside a coroutine, `await` marks the pause points. Two `await`s in a row run
+**in sequence**; to run things *together*, schedule them as **tasks**:
+
+```python
+import asyncio
+
+async def prepare():
+    await asyncio.sleep(0.1)
+    return "dough"
+
+async def heat():
+    await asyncio.sleep(0.2)
+    return "oven hot"
+
+async def sequential():
+    return await prepare(), await heat()      # 0.3s total
+
+async def concurrent():
+    t1 = asyncio.create_task(prepare())       # starts NOW
+    t2 = asyncio.create_task(heat())          # starts NOW too
+    return await t1, await t2                 # ~0.2s total
+```
+
+`create_task` schedules the coroutine on the event loop **immediately**;
+`await task` collects its result later. The awaits at the end may look
+sequential but the waits already overlapped.
+
+## Ordering guarantees to rely on
+
+- Tasks start in the order you create them, but their **completion order
+  depends on their waits** — never assume result order from scheduling order
+  (pair results with their inputs explicitly if order matters).
+- The loop runs on one thread: between `await` points your code is atomic.
+  Two coroutines cannot interrupt each other mid-arithmetic — but shared
+  state *can* change across an `await`, which is where async bugs live.
+
+## Anti-patterns
+
+`time.sleep()` inside async code blocks the whole loop — use
+`await asyncio.sleep()`. Calling a coroutine without awaiting it creates it
+and silently does nothing (`RuntimeWarning: coroutine was never awaited`).

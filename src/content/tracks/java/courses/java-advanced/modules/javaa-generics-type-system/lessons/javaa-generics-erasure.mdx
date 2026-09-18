@@ -1,0 +1,25 @@
+**Type erasure**: generics exist at *compile time only*. `ArrayList<String>`
+and `ArrayList<Integer>` are the *same class* at runtime — one `ArrayList`
+class, checked at the door by the compiler, unverified inside. The compiler
+inserts casts where values leave generic boundaries and generates **bridge
+methods** when overrides need to match an erased signature.
+
+```java
+List<String> a = new ArrayList<>();
+List<Integer> b = new ArrayList<>();
+a.getClass() == b.getClass()   // true — one erased class
+```
+
+**Arrays are the opposite**: reified and covariant.
+
+```java
+Object[] objs = new String[1];   // legal — arrays are covariant
+objs[0] = 42;                    // ArrayStoreException AT RUNTIME
+```
+
+The array knows its element type and enforces it with a runtime check; the
+generic list cannot even know its type argument. This is why
+`new T[]` is illegal, why `instanceof List<String>` cannot be written, and
+why `String[].class != Integer[].class` while the two lists share a class.
+Covariance + reification = the runtime store check; invariance + erasure =
+the compile-time door check. Two different safety strategies.

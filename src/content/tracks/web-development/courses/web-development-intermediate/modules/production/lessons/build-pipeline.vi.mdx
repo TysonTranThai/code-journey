@@ -1,0 +1,33 @@
+## Build làm những gì
+
+Mã nguồn → artifact có thể triển khai, qua các bước bạn cấu hình:
+
+1. **Biên dịch/biến đổi** — TypeScript → JS, JSX → JS, SCSS → CSS
+2. **Bundle** — nhiều file → ít file, theo đồ thị import
+3. **Minify** — bỏ comment/khoảng trắng, rút gọn tên (terser/esbuild)
+4. **Hash & fingerprint** — `app.a83f2c.js` để cache sống mãi (module 8)
+5. **Sinh source map** — file `.map` dịch ngược minified về bản gốc để debug lỗi prod
+
+Các công cụ hiện đại (Vite, Next) gộp các bước này với cache mạnh — build lại chỉ làm lại phần thay đổi.
+
+## Source map: debugger của prod
+
+Stack trace đã minify không dùng được (`a.b is not a function` tại 1:88231). Source map khôi phục tên và số dòng. **Tải chúng lên error tracker** (Sentry và bạn bè) — đừng serve công khai nếu không muốn cả thế giới đọc mã nguồn của bạn.
+
+## Artifact là bất biến
+
+Build một lần, triển khai mọi nơi. Cùng một artifact đã hash được đưa lên staging và production — khi đó "chạy ở staging, khác ở prod" nghĩa là _cấu hình môi trường_, không phải lệch build. Build-mỗi-server là anti-pattern: hai lần build không bao giờ giống hệt nhau.
+
+## "Build failed" phải nói cho bạn điều gì
+
+Output CI được đọc lúc 6 giờ tối bởi người muốn về nhà:
+
+- **Bước nào hỏng** (typecheck? test? bundle?) — nhìn một cái là biết
+- **Lỗi thật** kèm file và dòng — hiện lên ngay, không chôn trong 4,000 dòng
+- **Có phải lỗi của người đó không** — chạy theo phạm vi PR tránh trò "main hỏng, không phải tôi"
+
+Phản hồi nhanh hơn phản hồi kỹ: typecheck + unit test trong ~2 phút cho mỗi push; bộ E2E dài chạy trên PR và main.
+
+## Đồng nhất môi trường
+
+Cùng artifact, khác config — đó là hợp đồng. Nếu staging thiếu một dịch vụ mà prod có, bạn sẽ phát hiện sự khác biệt này trong production. Giữ các môi trường giống nhau về cấu trúc; biến config là độ chênh duy nhất (và ghi chép từng biến).

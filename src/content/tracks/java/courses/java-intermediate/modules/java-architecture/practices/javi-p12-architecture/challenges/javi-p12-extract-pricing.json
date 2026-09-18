@@ -1,0 +1,26 @@
+{
+  "id": "javi-p12-extract-pricing",
+  "title": "Extract the Pricing Collaborator",
+  "prompt": "`static class GodCart` (provided in the starter comments — recreate\nit fixed) computes totals, applies discounts, and formats receipts in\none method. Refactor by extraction:\n\n- `static class Pricing` with `static int total(List<Integer> centsList,\n  int discountPercent)` — sum minus percentage discount (integer math).\n- `static class GodCart` now takes `Pricing` as a constructor dependency\n  (any object works — you accept `Object` and call the static method,\n  or accept nothing; keep it simple: the cart delegates to\n  `Pricing.total`) and exposes `String receipt(List<Integer> centsList,\n  int discountPercent)` returning `\"TOTAL: $\" + viewTotal(total)` using\n  your Module-12 `viewTotal` from the previous challenge — define it\n  again here.\n\nThe seam test: `receipt(List.of(1000, 500), 10)` → total 1350 →\n`\"TOTAL: $13.50\"`.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "pricing computes discounted total",
+      "code": "\ncheckEq(Solution.Pricing.total(List.of(1000, 500), 10), 1350, \"1500 - 10%\");\n",
+      "hint": "Sum 1500, minus 10% = 1350 (integer division)."
+    },
+    {
+      "name": "cart delegates through the seam",
+      "code": "\nSolution.GodCart cart = new Solution.GodCart();\ncheckEq(cart.receipt(List.of(1000, 500), 10), \"TOTAL: $13.50\", \"formatted via collaborator\");\n",
+      "hint": "The cart must route math through Pricing and format via viewTotal."
+    },
+    {
+      "name": "empty cart",
+      "code": "\nSolution.GodCart cart = new Solution.GodCart();\ncheckEq(cart.receipt(List.of(), 0), \"TOTAL: $0.00\", \"empty receipt\");\n",
+      "hint": "Zero items → $0.00."
+    }
+  ],
+  "level": "independent"
+}

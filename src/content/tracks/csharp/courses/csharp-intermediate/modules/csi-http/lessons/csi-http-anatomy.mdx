@@ -1,0 +1,59 @@
+## The request/response contract
+
+A request = method (GET reads, POST creates/submits, PUT replaces, DELETE
+removes) + URL + headers + optional body. A response = status code + headers
++ optional body. The codes you must internalize:
+
+- 2xx success (200 OK, 201 Created — response carries the new resource,
+  204 No Content — success with an empty body),
+- 4xx the CALLER's problem (400 bad input, 401 unauthenticated,
+  403 unauthorized, 404 missing, 409 conflict, 429 rate-limited),
+- 5xx the SERVER's problem (500, 502, 503).
+
+The rule: 4xx usually means fix your request; 5xx means the other side had
+a bad day — that's the one you retry.
+
+## HttpClient: create once, use everywhere
+
+```csharp
+public sealed class ApiClient
+{
+    private readonly HttpClient _http;
+    public ApiClient(HttpClient http) => _http = http;   // injected
+
+    public async Task<string> GetNameAsync(int id, CancellationToken ct)
+    {
+        using var resp = await _http.GetAsync($"/names/{id}", ct);
+        resp.EnsureSuccessStatusCode();
+        return await resp.Content.ReadAsStringAsync(ct);
+    }
+}
+```
+
+One client per APP lifetime (it pools connections); new-per-call sockets
+exhaust the connection pool. Inject it (Module 11) or use a typed client.
+
+## Handlers: the pipeline
+
+HttpClient sends requests through an `HttpMessageHandler` chain — each
+handler transforms or observes the request/response. That's where logging,
+auth headers, retries, and stubs live:
+
+```csharp
+public sealed class StubHandler : HttpMessageHandler
+{
+    protected override Task<HttpResponseMessage> SendAsync(
+        HttpRequestMessage req, CancellationToken ct)
+        => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent("{ \"ok\": true }")
+        });
+}
+
+var http = new HttpClient(new StubHandler()) { BaseAddress = new Uri("https://api.test") };
+```
+
+## Check your understanding
+
+- Which status says "you sent something wrong"? (4xx — e.g. 400/404/429.)
+- Why not `new HttpClient()` per call? (Socket exhaustion — pool per app, inject one.)

@@ -1,0 +1,49 @@
+## Length-prefix framing on a stream
+
+A 4-byte big-endian length then the payload is the classic binary envelope:
+
+```c
+/* sender */
+uint32_t n = htonl((uint32_t)len);
+send(cfd, &n, 4, 0);
+send(cfd, payload, len, 0);
+
+/* receiver: loop until you have exactly 4, decode, then loop until len */
+```
+
+The receiver **must** loop: a single `recv(fd, buf, 4, 0)` may return 1, 2, or 3 bytes. "Read exactly N" is a loop around recv, accumulating into a buffer — write it once, use it forever.
+
+## Bounding waits with SO_RCVTIMEO
+
+A blocking `recv` on a socket that never receives hangs forever. `SO_RCVTIMEO` bounds the wait:
+
+```c
+struct timeval tv = { .tv_sec = 0, .tv_usec = 200000 };  /* 200 ms */
+setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof tv);
+
+ssize_t n = recv(fd, buf, sizeof buf, 0);
+if (n < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
+    /* timed out with no data — retry, log, or give up */
+}
+```
+
+Verified on this image: an idle UDP socket with a 200 ms timeout returns -1/`EAGAIN`. Timeouts turn "hang" into an error you can handle — the same idea `poll()` generalizes.
+
+## UDP: messages, unguaranteed
+
+UDP preserves **message boundaries** — one `sendto`, one `recvfrom`, no coalescing — and guarantees nothing else: no delivery, no order, no duplicates-removed. On loopback, delivery is reliable in practice, which makes it honest practice ground for the API without pretending the internet behaves the same.
+
+```c
+sendto(ufd, "ping", 4, 0, (struct sockaddr *)&dest, sizeof dest);
+ssize_t n = recvfrom(ufd, buf, sizeof buf, 0, (struct sockaddr *)&from, &fromlen);
+```
+
+`recvfrom` also hands back the sender's address — the piece a UDP server needs to reply.
+
+## Choosing honestly
+
+- Need every byte, in order, with congestion control: **TCP**.
+- Need message boundaries, can tolerate loss, want minimum latency: **UDP** (DNS, games, telemetry).
+- Need both message boundaries *and* reliability: TCP plus a framing layer, or a protocol that already did that for you.
+
+All of it: POSIX, loopback here, labeled as such.

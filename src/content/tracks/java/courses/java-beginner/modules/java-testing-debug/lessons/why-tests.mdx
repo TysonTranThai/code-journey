@@ -1,0 +1,74 @@
+You already test - every time you run a program and squint at the output,
+you're testing. The problem: **you** have to rerun everything after every
+change, and you eventually get lazy. Automated tests are programs whose
+only job is to run your other code and complain loudly when it's wrong.
+
+## What the compiler cannot catch
+
+```java
+static double average(int[] scores) {
+    int sum = 0;
+    for (int s : scores) sum += s;
+    return sum / scores.length;        // compiles. runs. wrong.
+}
+```
+
+Integer division silently truncates: `average({1, 2})` is `1.0`, not
+`1.5`. The compiler saw valid types and valid syntax - the *logic* is your
+problem. Tests are how logic bugs get caught, ideally before your users
+find them.
+
+## JUnit: the shape
+
+JUnit 5 is the standard Java test framework. In real Maven projects the
+tests live in `src/test/java`, one test class per production class:
+
+```java
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class ScoreAverageTest {
+
+    @Test
+    void averagesTwoScores() {
+        assertEquals(1.5, ScoreAverage.average(new int[]{1, 2}));
+    }
+
+    @Test
+    void emptyScoresThrow() {
+        assertThrows(IllegalArgumentException.class,
+            () -> ScoreAverage.average(new int[0]));
+    }
+}
+```
+
+The vocabulary:
+
+- `@Test` - marks a method the runner executes. Each test is independent
+  and runs in a fresh instance.
+- `assertEquals(expected, actual)` - the workhorse. Note the order:
+  **expected first**. The failure message prints both, so order makes
+  failures readable.
+- `assertTrue` / `assertFalse`, `assertNull` / `assertNotNull`,
+  `assertThrows` - the rest of the everyday set.
+- `@BeforeEach` - a method run before *each* test: build fresh fixtures
+  there instead of copy-pasting setup.
+
+## Arrange, Act, Assert
+
+Read every test as three beats:
+
+```java
+@Test
+void withdrawReducesBalance() {
+    // Arrange
+    Account a = new Account(100);
+    // Act
+    a.withdraw(30);
+    // Assert
+    assertEquals(70, a.balance());
+}
+```
+
+One behavior per test. If you can't name the test's single behavior in a
+sentence, it's two tests.

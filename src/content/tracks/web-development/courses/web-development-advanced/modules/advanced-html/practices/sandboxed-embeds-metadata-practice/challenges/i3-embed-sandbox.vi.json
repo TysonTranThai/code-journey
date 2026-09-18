@@ -1,0 +1,22 @@
+{
+  "title": "Sandbox một widget bên thứ ba",
+  "prompt": "Nhúng một widget chat (https://chat.example.com/widget) chỉ cần script và gửi form: iframe với sandbox=\"allow-scripts allow-forms\", một title, loading=\"lazy\", và width/height tường minh. Sau đó, bên dưới, nhúng một báo cáo tĩnh tin cậy từ CHÍNH ORIGIN CỦA BẠN dạng <iframe src=\"report.html\" sandbox=\"allow-scripts allow-same-origin\"> (an toàn vì nó là first-party).",
+  "tests": [
+    {
+      "name": "widget không tin cậy ở mức quyền tối thiểu",
+      "hint": "Đặc quyền tối thiểu: script + form là nhu cầu nêu ra; same-origin, top-navigation và popup thì không."
+    },
+    {
+      "name": "widget có tên và kích thước",
+      "hint": "Khung không tên chỉ được đọc là 'frame'; lazy loading không có kích thước cũng gây layout shift."
+    },
+    {
+      "name": "báo cáo first-party giữ origin của nó",
+      "hint": "Tin cậy là tiêu chí: nội dung first-party có thể giữ origin; bên thứ ba thì không bao giờ."
+    },
+    {
+      "name": "lazy đúng chỗ",
+      "hint": "Embed bên thứ ba là ứng viên hàng đầu cho lazy loading — khung ngoài màn hình không nên tốn byte."
+    }
+  ]
+}

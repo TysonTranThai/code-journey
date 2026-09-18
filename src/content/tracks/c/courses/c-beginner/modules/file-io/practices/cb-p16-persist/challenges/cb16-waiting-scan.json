@@ -1,0 +1,26 @@
+{
+  "id": "cb16-waiting-scan",
+  "title": "Bad Line Scanner",
+  "prompt": "Implement `int count_bad(const char *path)` counting lines that do NOT start with 'ok' (a line starting with \"ok\" is fine). Missing file returns -1.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "mixed",
+      "code": "FILE *f = fopen(\"/tmp/cj16-w.txt\", \"w\");\nfputs(\"ok one\\nok two\\nBAD\\nok three\\n\", f);\nfclose(f);\nCHECK_EQ(count_bad(\"/tmp/cj16-w.txt\"), 1);\nremove(\"/tmp/cj16-w.txt\");",
+      "hint": "fgets + strncmp(line, \"ok\", 2)."
+    },
+    {
+      "name": "all ok",
+      "code": "FILE *f = fopen(\"/tmp/cj16-x.txt\", \"w\");\nfputs(\"ok\\nok\\n\", f);\nfclose(f);\nCHECK_EQ(count_bad(\"/tmp/cj16-x.txt\"), 0);\nremove(\"/tmp/cj16-x.txt\");",
+      "hint": "Zero bad lines."
+    },
+    {
+      "name": "missing",
+      "code": "CHECK_EQ(count_bad(\"/tmp/cj16-nope3.txt\"), -1);",
+      "hint": "Same -1 contract."
+    }
+  ],
+  "level": "independent"
+}

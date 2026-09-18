@@ -1,0 +1,21 @@
+{
+  "id": "cb20-da-create",
+  "title": "Create and Destroy",
+  "prompt": "Implement `DArray* da_create(int cap)` returning a heap-allocated DArray whose data is a heap array of cap ints (size 0), or NULL for cap <= 0 or allocation failure. Implement `void da_destroy(DArray *a)` freeing data and the struct itself (NULL-safe).",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\ntypedef struct { int *data; int size; int cap; } DArray;\n",
+  "tests": [
+    {
+      "name": "usable",
+      "code": "DArray *a = da_create(4);\nCHECK_NOT_NULL(a);\nCHECK_EQ(a->size, 0);\nCHECK_EQ(a->cap, 4);\nCHECK_NOT_NULL(a->data);\nda_destroy(a);",
+      "hint": "Two allocations: the struct and its buffer."
+    },
+    {
+      "name": "bad cap",
+      "code": "CHECK_EQ(da_create(0), NULL);",
+      "hint": "Non-positive capacity is rejected."
+    }
+  ],
+  "level": "guided"
+}

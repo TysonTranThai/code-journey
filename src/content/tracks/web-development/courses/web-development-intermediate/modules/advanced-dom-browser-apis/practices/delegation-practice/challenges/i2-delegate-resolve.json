@@ -1,0 +1,25 @@
+{
+  "id": "i2-delegate-resolve",
+  "title": "Delegation Resolver",
+  "prompt": "Write `resolveAction(event, root)` for a plain-object event model. `event` is `{ target }` and elements are objects with `matches(sel)` and a `parent` chain ending in `null`. RETURN the first element from `target` walking up (including `root` itself? no — stop before `root`) that `matches(\"[data-action]\")`; RETURN `null` when none matches before reaching `root`.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function resolveAction(event, root) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "finds the nearest data-action ancestor",
+      "code": "const fn = new Function(code + \"\\nreturn { resolveAction };\");\nconst { resolveAction } = fn();\nconst root = { matches: (s) => s === \"[data-action]\", parent: null };\nconst row = { matches: (s) => s === \"[data-action]\", parent: root };\nconst target = { matches: () => false, parent: row };\nconst out = resolveAction({ target }, root);\nif (out !== row) throw new Error(\"The nearest matching element (row) should win over the root.\");",
+      "hint": "Walk from event.target up through .parent, stopping when el === root."
+    },
+    {
+      "name": "returns null when the click misses every action",
+      "code": "const fn = new Function(code + \"\\nreturn { resolveAction };\");\nconst { resolveAction } = fn();\nconst root = { matches: (s) => s === \"[data-action]\", parent: null };\nconst target = { matches: () => false, parent: root };\nif (resolveAction({ target }, root) !== null) throw new Error(\"A click on nothing actionable must return null.\");",
+      "hint": "After the walk ends without a match, return null."
+    },
+    {
+      "name": "works when the target itself is actionable",
+      "code": "const fn = new Function(code + \"\\nreturn { resolveAction };\");\nconst { resolveAction } = fn();\nconst root = { matches: (s) => s === \"[data-action]\", parent: null };\nconst target = { matches: (s) => s === \"[data-action]\", parent: root };\nif (resolveAction({ target }, root) !== target) throw new Error(\"A click on the button itself should return the button.\");",
+      "hint": "The walk starts at target — check it before climbing."
+    }
+  ]
+}

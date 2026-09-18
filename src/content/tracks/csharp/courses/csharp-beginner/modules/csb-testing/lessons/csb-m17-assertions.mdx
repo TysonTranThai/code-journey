@@ -1,0 +1,20 @@
+## The pattern
+
+```csharp
+// Arrange: build the world
+var items = new List<int> { 3, 1, 2 };
+// Act: one behavior
+items.Sort();
+// Assert: the claim
+// items should be 1,2,3
+```
+
+A test has one job: prove one claim about one behavior. When it fails, the message should name the claim, the actual value, and the expected value — that trio is what makes failures diagnosable at a glance.
+
+## Good tests share three traits
+
+- **Fast** — milliseconds, so nobody skips running them.
+- **Deterministic** — same input, same result, every run. No clocks, no randomness, no "sometimes fails".
+- **Isolated** — each test builds its own world; no test depends on another having run first.
+
+The habit this course drills: when a bug appears, don't just fix it — **write the test that would have caught it**, then fix. The test is the regression guard; the fix is temporary without it.

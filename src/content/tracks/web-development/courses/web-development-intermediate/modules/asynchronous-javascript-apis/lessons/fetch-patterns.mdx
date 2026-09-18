@@ -1,0 +1,45 @@
+`fetch` resolves on **any** response — 404 and 500 included. Only network
+failure rejects. The first professional habit: check `response.ok`.
+
+## The shape every call should have
+
+```js
+async function getUser(id) {
+  const res = await fetch("/api/users/" + id);
+  if (!res.ok) {
+    throw new Error("HTTP " + res.status + " for user " + id);
+  }
+  return res.json(); // also a promise
+}
+```
+
+- `res.ok` is `status` in 200–299.
+- `res.json()` parses the body; `res.text()` for anything else.
+- Request options: `method`, `headers`, `body` (JSON needs `JSON.stringify`
+  plus `Content-Type: application/json`).
+
+```js
+fetch("/api/tasks", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ title: "write tests" }),
+});
+```
+
+## Query params and pagination
+
+Build queries with `URLSearchParams` — it encodes for free:
+
+```js
+const qs = new URLSearchParams({ page: String(page), perPage: "20", q: term });
+const res = await fetch("/api/items?" + qs);
+```
+
+Paginated loops continue while a _has-more_ signal exists (a `next` link, or
+`page * perPage < total`) — never blindly until an empty page without a bound.
+
+## The UI contract
+
+Every async view owes the user three states: **loading** (spinner/skeleton),
+**error** (message + retry affordance), **data** (or a polite empty state).
+Design the component around `{ status: "idle" | "loading" | "error" | "success", data, error }` and rendering becomes trivial.

@@ -1,0 +1,38 @@
+## Constructors establish invariants
+
+A **constructor** runs when `new` creates the object. Its job is to leave the object in a *valid* state — reject nonsense immediately, never store it:
+
+```csharp
+class Ticket
+{
+    public string Event;
+    public int Price;
+
+    public Ticket(string event_, int price)
+    {
+        Event = event_;
+        if (price < 0) throw new ArgumentException("negative price");
+        Price = price;
+    }
+}
+
+var t = new Ticket("Concert", 250);   // valid at birth
+```
+
+The constructor's name matches the class and has no return type. Declaring any constructor removes the invisible parameterless one — `new Ticket()` no longer compiles unless you write it yourself.
+
+## Overloads and initializers
+
+Several constructors give callers choices, and one can **chain** another with `this(...)` so the validation lives in exactly one place:
+
+```csharp
+public Ticket(string event_) : this(event_, 0) { }   // free tickets, same rules
+```
+
+For simple flat setup, an **object initializer** sets fields/properties right after `new`:
+
+```csharp
+var t2 = new Ticket { Event = "Play", Price = 180 };
+```
+
+The initializer is sugar for "construct, then assign". It cannot validate — if bad state must be *rejected*, put that in the constructor.

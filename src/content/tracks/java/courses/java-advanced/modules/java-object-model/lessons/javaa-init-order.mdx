@@ -1,0 +1,30 @@
+You already know constructors from Intermediate. Advanced Java asks a sharper
+question: **in what exact order does anything initialize at all?** The rules
+(JLS §12.2–12.4) are mechanical, and you can observe every one of them:
+
+1. **Static** fields and `static {}` blocks of a class run **once**, in source
+   order, at class initialization (first active use).
+2. **Instance** field initializers and instance initializer blocks run **every
+   time an object is created**, in source order, *before* the constructor body.
+3. `super(...)` runs before the subclass's field initializers — so a superclass
+   constructor that calls an overridable method sees **subclass fields still
+   null/0**. This is the classic initialization trap.
+4. `final` fields must be definitely assigned by the end of every constructor.
+
+```java
+class Base {
+    Base() { log("Base ctor"); }
+}
+class Derived extends Base {
+    static String S = log("Derived static");
+    int x = log("Derived field");
+    Derived() { super(); log("Derived ctor"); }
+}
+// new Derived() prints: Derived static → Base ctor → Derived field → Derived ctor
+```
+
+The dangerous case is **virtual calls from constructors**. A superclass
+constructor that calls an overridden method runs the override before subclass
+fields exist. Effective Java Item 19: *constructors must not invoke overridable
+methods, directly or indirectly.* When you need shared setup, prefer a static
+factory that wires fully-constructed objects.

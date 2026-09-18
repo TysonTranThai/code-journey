@@ -1,0 +1,20 @@
+{
+  "id": "i2-critical-chain",
+  "title": "Critical Chain Length",
+  "prompt": "Requests form a dependency chain: each request may name the request it waited on (\"after\"). Write `chainLength(requests, id)` returning how many hops from the initial request to `id` inclusive. requests is an array of { id, after: null | otherId }. Root requests have after null.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function chainLength(requests, id) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "counts hops along the chain",
+      "code": "const fn = new Function(code + \"\\nreturn { chainLength };\");\nconst { chainLength } = fn();\nconst reqs = [\n  { id: \"html\", after: null },\n  { id: \"css\", after: \"html\" },\n  { id: \"font\", after: \"css\" },\n];\nif (chainLength(reqs, \"html\") !== 1) throw new Error(\"The root is 1 request deep.\");\nif (chainLength(reqs, \"font\") !== 3) throw new Error(\"html -> css -> font is 3 deep.\");\n",
+      "hint": "Walk the after pointers back to null, counting."
+    },
+    {
+      "name": "handles missing links",
+      "code": "const fn = new Function(code + \"\\nreturn { chainLength };\");\nconst { chainLength } = fn();\nconst reqs = [{ id: \"a\", after: null }];\nif (chainLength(reqs, \"ghost\") === undefined || chainLength(reqs, \"ghost\") === null) {\n  // acceptable: error, null, or 0 — just don't crash with a wrong number\n}\nif (chainLength(reqs, \"a\") !== 1) throw new Error(\"Single root still counts as 1.\");\n",
+      "hint": "Build an id -> request map first."
+    }
+  ]
+}

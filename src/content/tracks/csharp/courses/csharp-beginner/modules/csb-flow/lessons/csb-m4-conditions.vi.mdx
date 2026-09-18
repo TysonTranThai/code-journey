@@ -1,0 +1,42 @@
+## if / else if / else
+
+```csharp
+if (temp >= 30)
+{
+    Console.WriteLine("nóng");
+}
+else if (temp >= 20)
+{
+    Console.WriteLine("mát");
+}
+else
+{
+    Console.WriteLine("mát hơn");
+}
+```
+
+Điều kiện là `bool` — không bao giờ là số. Thứ tự quan trọng: nhánh đúng đầu tiên thắng, nên các khoảng giá trị phải đi từ cao xuống (kiểm tra `>= 20` trước `>= 30` sẽ phân loại sai). Có ngoặc nhọn kể cả một dòng: bạn-tương-lai sẽ thêm dòng thứ hai và lời nói dối thụt lề trở thành bug.
+
+## Ternary: biểu thức điều kiện
+
+```csharp
+string label = score >= 50 ? "pass" : "fail";
+int max = a > b ? a : b;
+```
+
+`điều_kiện ? khi_đúng : khi_sai` là một *biểu thức* — nó tạo ra giá trị. Dùng cho lựa chọn đơn giản; ternary lồng nhau là nơi độ dễ đọc chết.
+
+## switch expression với pattern
+
+```csharp
+static string Grade(int score) => score switch
+{
+    >= 90 => "A",
+    >= 80 => "B",
+    >= 70 => "C",
+    >= 0 => "F",
+    _ => "invalid"
+};
+```
+
+Switch expression so khớp giá trị với **pattern** — ở đây là relational pattern (`>= 90`) — và tạo ra giá trị sau `=>`. Các nhánh được thử từ trên xuống; `_` là nhánh gom hết. So với chuỗi if: mỗi nhánh là một giá trị, compiler cảnh báo khi bạn bỏ sót case mà nó chứng minh được (với enum), và các khoảng giá trị đọc như dữ liệu chứ không phải luồng điều khiển. Cả hai dạng đều idiomatic; switch expression tỏa sáng khi phân loại.

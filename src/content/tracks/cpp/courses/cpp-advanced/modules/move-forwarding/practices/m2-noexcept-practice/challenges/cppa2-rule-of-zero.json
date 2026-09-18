@@ -1,0 +1,26 @@
+{
+  "id": "cppa2-rule-of-zero",
+  "title": "Rule of Zero vs Rule of Five",
+  "prompt": "`Config0` already obeys the Rule of Zero — leave it alone. Implement all five special members of `Lease` over its owning `int*`: deep copy, guarded assignment, noexcept steals.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <utility>\n\nstruct Config0 {\n    // Rule of Zero: members manage themselves; add NO special members.\n    int level{0};\n};\n\nstruct Lease {\n    int* resource_ = nullptr;   // owning pointer — Rule of Five territory\n    Lease() = default;\n    explicit Lease(int v);\n    ~Lease();                                   // delete\n    Lease(const Lease& o);                      // deep copy\n    Lease& operator=(const Lease& o);           // guarded assignment\n    Lease(Lease&& o) noexcept;                  // steal + null\n    Lease& operator=(Lease&& o) noexcept;       // steal + null\n};\n",
+  "tests": [
+    {
+      "name": "Rule of Zero needs nothing",
+      "code": "Config0 a; a.level = 3;\nConfig0 b = a;\nCHECK_EQ(b.level, 3);",
+      "hint": "Do nothing — the implicit members copy the int correctly. Do not add any special member declarations."
+    },
+    {
+      "name": "Lease deep-copies",
+      "code": "Lease l1(7);\nLease l2 = l1;\n*l2.resource_ = 9;\nCHECK_EQ(*l1.resource_, 7);",
+      "hint": "new int(*o.resource_) — deep copy, never share the pointer."
+    },
+    {
+      "name": "Lease steals on move",
+      "code": "Lease l3(5);\nLease l4 = std::move(l3);\nCHECK_NE(l4.resource_, nullptr);\nCHECK_EQ(l3.resource_, nullptr);",
+      "hint": "Steal the pointer, null the source: resource_(std::exchange(o.resource_, nullptr))."
+    }
+  ]
+}

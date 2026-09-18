@@ -1,0 +1,14 @@
+{
+  "title": "CLOSED → OPEN → HALF-OPEN → CLOSED",
+  "prompt": "Cài `CircuitBreaker(threshold=3, cooldown=30.0)` với `allow(now)` và `record(now, ok)`:\n\n- khởi tạo CLOSED; `allow` trả True\n- mỗi `record(now, False)` khi CLOSED tăng số lỗi; đạt `threshold` thì chuyển sang OPEN và ghi `_opened_at = now`\n- khi OPEN, `allow` trả False cho tới `now - _opened_at >= cooldown`, rồi chuyển sang HALF-OPEN và trả True đúng một lần (lời thăm dò)\n- `record(now, True)` ở bất kỳ trạng thái nào: reset số lỗi và đóng mạch\n- `record(now, False)` khi HALF-OPEN: mở lại mạch (ghi `_opened_at = now`)\n\n`now` luôn là tham số float — không dùng hàm thời gian bên trong.",
+  "tests": [
+    {
+      "name": "Chạm ngưỡng là bật mạch, chặn trong thời gian nguội",
+      "hint": "Circuit breaker là một máy trạng thái nhỏ dẫn động bằng đồng hồ."
+    },
+    {
+      "name": "Thành công đóng mạch và reset",
+      "hint": "Một lần thành công xóa bộ đếm lỗi, không chỉ đổi trạng thái."
+    }
+  ]
+}

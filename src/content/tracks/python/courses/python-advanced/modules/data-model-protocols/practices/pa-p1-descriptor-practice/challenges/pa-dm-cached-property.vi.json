@@ -1,0 +1,14 @@
+{
+  "title": "Tự cài cached_property",
+  "prompt": "Cài non-data descriptor `CachedProperty` tính một lần và cache theo từng instance:\n\n- khởi tạo bằng hàm tính: `CachedProperty(fn)`\n- lần truy cập đầu gọi `fn(instance)` và cache kết quả trong `instance.__dict__` dưới tên attribute (dùng `__set_name__` để biết tên)\n- những lần sau trả về giá trị cache KHÔNG gọi lại `fn`\n- vì là non-data, gán trực tiếp `obj.name = x` sau đó sẽ ghi đè cache — hành vi này phải hoạt động",
+  "tests": [
+    {
+      "name": "Tính một lần rồi tái sử dụng",
+      "hint": "Lưu cache vào obj.__dict__[self.name]; __dict__ được tra trước non-data descriptor."
+    },
+    {
+      "name": "Gán trên instance ghi đè cache",
+      "hint": "Đó chính là định nghĩa của non-data: chỉ có __get__."
+    }
+  ]
+}

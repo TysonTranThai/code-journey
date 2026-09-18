@@ -1,0 +1,23 @@
+`auto` nhờ compiler suy luận kiểu từ initializer. Dùng nó ở chỗ kiểu *hiển
+nhiên hoặc không quan trọng*, và giấu nó ở chỗ *chính kiểu là ý nghĩa*.
+
+```cpp
+auto it = v.begin();            // kiểu iterator là chi tiết ồn ào — auto phát huy
+auto n = words.size();          // std::size_t, viết đúng tự động
+for (const auto& [key, value] : m) { ... }   // structured bindings
+```
+
+Những quy tắc quan trọng:
+
+- `auto x = expr;` copy và mất reference/const — `auto&` và `const auto&`
+  thêm lại. `auto x = v[0];` trên vector object lớn âm thầm copy.
+- `auto` với initializer_list suy ra `std::initializer_list`, không phải
+  kiểu phần tử.
+- Kiểu trả về của hàm được suy luận được (`auto f() { return 42; }`), nhưng
+  API công khai nên viết rõ kiểu trả về: chữ ký hàm chính là tài liệu.
+- `decltype(expr)` cho ra kiểu của biểu thức mà không đánh giá nó — công cụ
+  cho khai báo "cùng kiểu với cái kia".
+
+Bài kiểm tra mùi: nếu xóa `auto` và viết kiểu thật làm code *dễ đọc hơn*,
+hãy viết kiểu. Nếu điều đó biến dòng code thành một chính tả template dài
+70 ký tự, `auto` đang phục vụ bạn.

@@ -1,0 +1,15 @@
+## Cache mới là cái máy
+
+Một core hiện đại thực thi 4+ lệnh/chu kỳ nhưng một lần miss tới bộ nhớ chính tốn ~100 chu kỳ. Bố trí dữ liệu quyết định tần suất điều đó xảy ra. Hai chương trình cùng big-O có thể khác nhau 10 lần thuần vì bố trí.
+
+## AoS vs SoA
+
+Array-of-structs: `struct P { float x, y, z; bool active; };  std::vector<P> ps;` — chỉ cập nhật x vẫn kéo cả cache line qua y, z, active. Struct-of-arrays: `struct Ps { std::vector<float> x, y, z; std::vector<char> active; };` — vòng lặp cập nhật x chỉ đọc duy nhất x. Nếu vòng nóng chỉ đụng một tập trường con, SoA thắng. Nếu luôn đụng cả bản ghi, AoS ổn.
+
+## Tách nóng/lạnh
+
+Trường dùng mỗi vòng lặp nên nằm cạnh nhau; trường dùng mỗi nghìn vòng nên nằm chỗ khác. Tách cờ `active` khỏi bản ghi 64-byte biến việc quét-tất-cả thành quét bitmap.
+
+## Hợp đồng đường nóng
+
+Codebase advanced biến đường nóng thành *không cấp phát và nhánh ổn định*: buffer cấp phát sẵn, chỉ số thay vì con trỏ, vector đã reserve. Các bài tập ở đây làm điều này đo được: bộ đếm cấp phát và mẫu stride nhận ra được qua cache — không cần microbenchmark.

@@ -1,0 +1,25 @@
+{
+  "id": "practice-descendant-selector",
+  "title": "Style Only the Links in the Nav",
+  "prompt": "The page has links everywhere, but only the ones inside `nav` should look like nav links. Write ONE rule using a descendant selector: links inside `nav` get `color: teal` and `text-decoration: none`. Links elsewhere must not be affected by your rule.\n\nRules:\n- Exactly one rule.\n- Descendant selector: `nav a`.",
+  "difficulty": "beginner",
+  "level": "guided",
+  "boilerplate": "<!-- One descendant-selector rule -->\n",
+  "tests": [
+    {
+      "name": "one rule with a descendant selector",
+      "code": "const rules = code.match(/[^{}]+\\{[^}]*\\}/g) ?? [];\nif (rules.length !== 1) throw new Error(`Exactly one rule expected, found ${rules.length}.`);\nif (!/nav\\s+a(?!\\w)/i.test(rules[0])) {\n  throw new Error(\"Use the descendant selector: nav a { … }\");\n}",
+      "hint": "nav a { … } reads 'every a inside nav'."
+    },
+    {
+      "name": "teal and no underline",
+      "code": "const rule = code.match(/\\{[^}]*\\}/)[0];\nif (!/color\\s*:\\s*teal\\s*;/i.test(rule)) throw new Error(\"The rule needs color: teal;\");\nif (!/text-decoration\\s*:\\s*none\\s*;/i.test(rule)) throw new Error(\"The rule needs text-decoration: none;\");",
+      "hint": "Both declarations inside the one rule: color: teal; text-decoration: none;"
+    },
+    {
+      "name": "no bare a selector",
+      "code": "if (/(^|[^.\\w])a\\s*\\{/i.test(code.replace(/\\w+\\s*a\\s*\\{/g, \"\"))) {\n  throw new Error(\"Found a bare a { … } rule — that would style every link on the page.\");\n}",
+      "hint": "A bare a { … } styles all links. Scope it: nav a { … }"
+    }
+  ]
+}

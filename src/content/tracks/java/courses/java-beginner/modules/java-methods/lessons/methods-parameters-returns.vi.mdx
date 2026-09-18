@@ -1,0 +1,47 @@
+**Phương thức** là một đơn vị hành vi có tên, dùng lại được: nó nhận đầu vào
+(**tham số**), làm việc, và có thể trả lại kết quả (**giá trị trả về**).
+
+```java
+static double withTax(double price) {
+    return price * 1.1;
+}
+```
+
+Đọc chữ ký: `static` (thuộc về class chứ không cần object — từ đứng sau việc
+`main` chạy được mà không cần tạo object), `double` (kiểu trả về), `withTax`
+(tên), `double price` (một tham số, có kiểu).
+
+Gọi nó: `double total = withTax(19.99);` — giá trị `19.99` là **đối số**,
+được sao chép vào tham số. Hai quy tắc compiler bắt buộc:
+
+- Kiểu giá trị trả về phải khớp kiểu đã khai báo (hoặc chuyển đổi được).
+- Phương thức khai báo kiểu trả về phải `return` trên **mọi đường đi** của
+  thân hàm. Phương thức `void` không trả gì và có thể bỏ `return` (hoặc dùng
+  `return;` trống để thoát sớm).
+
+```java
+static String verdict(int score) {
+    if (score >= 60) {
+        return "pass";
+    }
+    return "fail";     // cần thiết! chỉ nhánh if chưa phủ hết các trường hợp
+}
+```
+
+**Tham số là bản sao** — đối số kiểu primitive được sao chép theo giá trị,
+nên việc đổi tham số bên trong phương thức không bao giờ đổi biến của bên
+gọi:
+
+```java
+static void bump(int n) { n = n + 1; }
+
+int x = 5;
+bump(x);
+System.out.println(x);   // vẫn là 5
+```
+
+(Object là tham-chiệu-được-sao-chép-theo-giá-trị — phương thức có thể *sửa
+object mà nó nhận được* nhưng không thể trỏ lại biến của bên gọi. Module 7
+sẽ quay lại; hiện tại, primitive-là-bản-sao là toàn bộ câu chuyện.)
+
+**Tiếp theo:** từ `static`, được giải mã.

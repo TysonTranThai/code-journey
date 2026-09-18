@@ -1,0 +1,16 @@
+{
+  "id": "cint-p1-tentative-trap",
+  "title": "Tentative Definitions",
+  "prompt": "C allows a file-scope `int x;` (a \"tentative definition\") that merges with\na later real definition. Implement a tiny analyzer:\n\n```c\n/* events: 'T' tentative (`int x;`), 'D' real definition (`int x = 0;`),\n   'E' extern declaration. n events across TUs. */\nint is_valid_program(const char *events);\n```\n\nValid iff there is exactly one 'D' and zero or more 'T's before or after it, or\nzero 'D' and at least one 'E' somewhere (definition lives in another TU).\nAny other combination is invalid (return 0; valid returns 1). NULL or empty\nreturns 0.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "tentative analysis",
+      "code": "\nCHECK_EQ(is_valid_program(\"TD\"), 1);\nCHECK_EQ(is_valid_program(\"DT\"), 1);\nCHECK_EQ(is_valid_program(\"E\"), 1);\nCHECK_EQ(is_valid_program(\"T\"), 0);      /* tentative never completed */\nCHECK_EQ(is_valid_program(\"DD\"), 0);     /* two definitions */\nCHECK_EQ(is_valid_program(\"\"), 0);\nCHECK_EQ(is_valid_program(NULL), 0);\n",
+      "hint": "Count Ds and Es: valid = (one D) or (no D and >=1 E)."
+    }
+  ],
+  "level": "guided"
+}

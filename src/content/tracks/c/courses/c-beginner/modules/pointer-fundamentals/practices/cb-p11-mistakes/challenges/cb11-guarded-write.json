@@ -1,0 +1,21 @@
+{
+  "id": "cb11-guarded-write",
+  "title": "Guarded Write",
+  "prompt": "Implement `int try_set(int *p, int value)`: if p is NULL return 0 and change nothing; otherwise store value and return 1.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "success",
+      "code": "int x = 0;\nCHECK_EQ(try_set(&x, 9), 1);\nCHECK_EQ(x, 9);",
+      "hint": "Report success as 1."
+    },
+    {
+      "name": "null rejected",
+      "code": "int ok = try_set(NULL, 9);\nCHECK_EQ(ok, 0);",
+      "hint": "Return 0, write nothing."
+    }
+  ],
+  "level": "independent"
+}

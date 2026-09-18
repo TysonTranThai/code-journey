@@ -1,0 +1,47 @@
+Bạn đã gọi API hàng tháng trời. Giờ hãy dựng phía nhận — không dùng framework nào, để biết chúng thực sự làm gì.
+
+## Server tối thiểu
+
+```js
+import http from "node:http";
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ ok: true }));
+});
+
+server.listen(3000, () => console.log("on :3000"));
+```
+
+`createServer` đăng ký một callback chạy cho **mọi request**. Hai tham số là tất cả:
+
+- **req** (IncomingMessage): `req.method` ("GET", "POST"...), `req.url` (path + query), `req.headers`, và body dưới dạng stream (body POST đến thành từng khối — bạn phải ghép lại).
+- **res** (ServerResponse): `res.writeHead(status, headers)`, `res.end(body)`. Quên `res.end` là client treo vĩnh viễn.
+
+## Đọc request body
+
+```js
+let body = "";
+req.on("data", (chunk) => {
+  body += chunk;
+});
+req.on("end", () => {
+  const data = JSON.parse(body); // bọc try/catch: JSON xấu cũng là user input
+  res.end(JSON.stringify({ got: data }));
+});
+```
+
+Đây là điệu dance stream mà mọi framework giấu sau `req.json()`.
+
+## Mã trạng thái phải có ý nghĩa
+
+- **200** OK — thành công kèm body · **201** Created — sau POST tạo thành công thứ gì đó (set header `Location` trỏ tới tài nguyên mới)
+- **400** Bad Request — client gửi rác (validation thất bại)
+- **401** Unauthorized — bạn là ai? · **403** Forbidden — tôi biết bạn; không.
+- **404** Not Found · **409** Conflict (email trùng) · **500** — lỗi của chúng ta, log lại
+
+Mã trạng thái đúng là một phần của hợp đồng API. Trả `404` cho "validation thất bại" khiến client xây error handling trên lời nói dối.
+
+## Framework mua cho bạn điều gì
+
+Routing theo mẫu (`app.get("/users/:id")`), parse body, chuỗi middleware, chuẩn hóa lỗi. Express/Fastify chỉ là tiện ích trên callback này — hiểu callback nghĩa là debug được qua bất kỳ framework nào.

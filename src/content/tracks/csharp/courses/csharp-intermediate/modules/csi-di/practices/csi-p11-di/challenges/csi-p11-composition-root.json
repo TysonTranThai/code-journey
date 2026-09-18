@@ -1,0 +1,21 @@
+{
+  "id": "csi-p11-composition-root",
+  "title": "Wire the Composition Root",
+  "prompt": "Build an app object with a BuildApp(config) method that registers an IClock (singleton, provided FakeClock), an IPriceCalculator (transient, provided), and returns the fully-resolved App. The App must be able to quote a price with the current time.\n\n```csharp\npublic interface IClock { DateTime Now { get; } }\npublic sealed class FakeClock : IClock { public FakeClock(DateTime now); public DateTime Now { get; } }\npublic interface IPriceCalculator { decimal Quote(decimal basePrice, DateTime at); }\npublic sealed class RushCalculator : IPriceCalculator { /* +10% before 9am */ }\npublic sealed class App { public App(IPriceCalculator calc, IClock clock); public string Quote(decimal p); }\nstatic Solution.App BuildApp(Solution.FakeClock clock);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n\n// Provided infrastructure — do not modify.\npublic sealed class TinyContainer\n{\n    private readonly System.Collections.Generic.Dictionary<System.Type, Func<object>> _factories = new();\n\n    public void Register<TService>(Func<TService> factory) =>\n        RegisterTransient(factory);\n\n    public void RegisterTransient<TService>(Func<TService> factory) =>\n        _factories[typeof(TService)] = () => factory()!;\n\n    public void RegisterSingleton<TService>(Func<TService> factory)\n    {\n        object? instance = null;\n        _factories[typeof(TService)] = () =>\n        {\n            if (instance is null) instance = factory()!;\n            return instance;\n        };\n    }\n\n    public TService Resolve<TService>()\n    {\n        if (!_factories.TryGetValue(typeof(TService), out var factory))\n            throw new System.InvalidOperationException(\"no registration for \" + typeof(TService).Name);\n        return (TService)factory();\n    }\n}\n",
+  "tests": [
+    {
+      "name": "wiring resolves transitively",
+      "code": "\nvar clock = new Solution.FakeClock(new DateTime(2026, 1, 1, 8, 0, 0));\nvar app = Solution.BuildApp(clock);\nCj.True(app.Quote(100m).Contains(\"110\"), \"rush pricing from wired calculator\");\n",
+      "hint": "Register clock singleton + calculator transient whose factory resolves the clock; Resolve<IPriceCalculator>, pass into App."
+    },
+    {
+      "name": "singleton clock shared",
+      "code": "\nvar clock = new Solution.FakeClock(new DateTime(2026, 1, 1, 12, 0, 0));\nvar app = Solution.BuildApp(clock);\nCj.True(app.Quote(50m).Contains(\"50\"), \"noon quote has no rush surcharge\");\n",
+      "hint": "The same clock instance flows to whoever resolves IClock — the singleton guarantee."
+    }
+  ],
+  "level": "guided"
+}

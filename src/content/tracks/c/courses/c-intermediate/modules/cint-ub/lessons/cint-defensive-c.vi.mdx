@@ -1,0 +1,41 @@
+## Kiểm trước thay vì phát hiện sau
+
+Mọi bẫy UB có phép kiểm phía-có-định-nghĩa:
+
+```c
+/* tràn */   if (a > 0 && b > INT_MAX - a) ...
+/* shift */  if (k < 32) x = (unsigned)x << k;
+/* biên */   if (i < n) use(a[i]);
+/* null */   if (p && p->next) ...
+```
+
+Phép kiểm và phép dùng phải là *hai thao tác khác nhau* — kiểm
+`a + b < 0` trước khi tính `a + b` là kiểm bằng chính UB.
+
+## Bounded theo mặc định
+
+Mọi lời gọi mang buffer nêu capacity. `snprintf` thay `sprintf`;
+`memcpy(dst, src, n)` với n tính từ *capacity của đích*, không phải lời
+hứa của nguồn. Lời gọi bounded không chậm hơn đáng kể và không bao giờ
+là nguồn gốc bug.
+
+## Khởi tạo ngay tại khai báo
+
+```c
+int x = 0;                     /* không phải "int x;" */
+TNode *n = calloc(1, sizeof *n);   /* zeroed: các field có giá trị xác định */
+char buf[64] = {0};
+```
+
+`calloc` cho struct cần field khởi đầu xác định; initializer tường minh
+cho mảng stack. Giá phí không đo được; nhóm UB nó xóa là thật.
+
+## Tư thế test trung thực
+
+Vì UB không thể *tin được* là sẽ fail (nó có thể chạy đúng trên máy bạn
+hôm nay), test khẳng định hành vi của *dạng thay thế có định nghĩa*:
+sat_add trả INT_MAX tại biên, parse từ chối input tràn, helper shift
+kẹp số bit. Mẫu W-solution trong khóa học đúng là vậy: W là *có định
+nghĩa nhưng sai* — misparse, rơi, hoặc hỏng theo cách test bắt được
+một cách all định. Code chấm điểm không bao giờ dựa vào UB sẽ fail; nó
+dựa vào hành vi đúng được kiểm chứng.

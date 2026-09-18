@@ -1,0 +1,14 @@
+{
+  "title": "Bộ đếm không mất góp",
+  "prompt": "Hiện thực Counter CHÍNH XÁC dưới tranh chấp đồng thời. Increment phải gọi CjConcurrency.Pause() một lần (công việc mô phỏng) — vị trí của nó so với phép cập nhật quyết định tất cả. Thêm Drain() trả số đếm và reset về 0 nguyên tử.",
+  "tests": [
+    {
+      "name": "single-threaded baseline",
+      "hint": "Interlocked.Increment(ref _count) cho Increment; Drain bằng Interlocked.Exchange(ref _count, 0)."
+    },
+    {
+      "name": "exact under 4 concurrent workers",
+      "hint": "Với Pause() giữa đọc và ghi trần, thread khác đọc cùng giá trị cũ — Interlocked giữ read-modify-write nguyên tử."
+    }
+  ]
+}

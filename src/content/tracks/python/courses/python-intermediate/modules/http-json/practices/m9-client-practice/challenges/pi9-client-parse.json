@@ -1,0 +1,26 @@
+{
+  "id": "pi9-client-parse",
+  "title": "Defensive Parsing",
+  "prompt": "Implement parse_response(status, body) where body is bytes: 204 → {}; non-JSON body → raise ApiError('non-JSON response'); status >= 400 → raise ApiError containing the status; else return parsed JSON.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import json\n\nclass ApiError(Exception):\n    pass\n\ndef parse_response(status, body):\n    pass\n",
+  "tests": [
+    {
+      "name": "happy path parses",
+      "code": "assert parse_response(200, b'{\"a\": 1}') == {'a': 1}\nassert parse_response(204, b'') == {}",
+      "hint": "json.loads for data; 204 short-circuits to {}."
+    },
+    {
+      "name": "garbage body raises",
+      "code": "try:\n    parse_response(200, b'<html>not json</html>')\n    failed = False\nexcept ApiError:\n    failed = True\nassert failed",
+      "hint": "Decode before use — HTML where JSON was promised is an error."
+    },
+    {
+      "name": "error status raises with code",
+      "code": "try:\n    parse_response(404, b'{\"error\": \"nope\"}')\n    failed = False\nexcept ApiError as e:\n    failed = '404' in str(e)\nassert failed",
+      "hint": "4xx/5xx must raise even when the body is valid JSON."
+    }
+  ],
+  "level": "guided"
+}

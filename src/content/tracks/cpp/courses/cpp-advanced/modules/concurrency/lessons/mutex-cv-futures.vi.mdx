@@ -1,0 +1,35 @@
+## Mutex + RAII guard
+
+`std::mutex` với `std::lock_guard` (khóa theo phạm vi) hoặc `std::unique_lock` (di chuyển được, có điều kiện). Quy tắc: construction của guard sở hữu khóa; không bao giờ gọi mutex trực tiếp khi guard còn tồn tại. Dữ liệu đọc-nhiều dùng `std::shared_mutex` với `shared_lock` cho người đọc / `unique_lock` cho người ghi.
+
+## Condition variable: chờ thay đổi trạng thái
+
+```cpp
+std::mutex m;
+std::condition_variable cv;
+bool ready = false;
+
+// người chờ
+std::unique_lock lk(m);
+cv.wait(lk, [] { return ready; });   // nhả m khi chờ; giữ lại trước khi trả về
+
+// người báo
+{ std::lock_guard lk(m); ready = true; }
+cv.notify_one();
+```
+
+**Dạng vị từ** không phải trang trí — nó chống mất đánh thức và đánh thức giả. Mọi wait phải có vị từ; mọi thay đổi trạng thái phải giữ mutex và notify.
+
+## std::future / std::promise: bàn giao một lần
+
+`std::promise` là đầu ghi, `std::future` là đầu đọc của một lần chuyển giá trị — kể cả ngoại lệ:
+
+```cpp
+std::promise<int> p;
+std::future<int> f = p.get_future();
+std::thread t([&p] { p.set_value(compute()); });
+int result = f.get();   // chặn cho tới khi set — hoặc ném lại ngoại lệ của worker
+t.join();
+```
+
+`std::async` bọc cơ chế này; `std::packaged_task` bọc một callable. Chúng phục vụ *kết quả một lần*; hàng đợi công việc là việc của thread pool (bài kế tiếp).

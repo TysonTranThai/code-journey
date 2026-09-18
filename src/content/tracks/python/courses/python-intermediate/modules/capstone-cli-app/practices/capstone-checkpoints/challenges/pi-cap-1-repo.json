@@ -1,0 +1,30 @@
+{
+  "id": "pi-cap-1-repo",
+  "title": "Milestone 1: Storage and Repository",
+  "prompt": "Build init_tasks(conn) (create the tasks table from the brief) and TaskRepository(conn) with add(title) -> int, get(task_id) -> dict | None ({id, title, done}), complete(task_id) -> bool, list_open() -> list[dict] (done=0, by id). Duplicate titles raise TaskError('duplicate title'). ALL SQL parameterized.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import sqlite3\n\nclass TaskError(Exception):\n    pass\n\ndef init_tasks(conn):\n    pass\n\nclass TaskRepository:\n    def __init__(self, conn):\n        pass\n\n    def add(self, title):\n        pass\n\n    def get(self, task_id):\n        pass\n\n    def complete(self, task_id):\n        pass\n\n    def list_open(self):\n        pass\n",
+  "tests": [
+    {
+      "name": "schema + add + get",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.row_factory = sqlite3.Row\ninit_tasks(conn)\nrepo = TaskRepository(conn)\ntid = repo.add('ship it')\nassert repo.get(tid) == {'id': tid, 'title': 'ship it', 'done': 0}\nassert repo.get(999) is None",
+      "hint": "Parameterized insert/select; missing id → None."
+    },
+    {
+      "name": "complete flips state once",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.row_factory = sqlite3.Row\ninit_tasks(conn)\nrepo = TaskRepository(conn)\ntid = repo.add('x')\nassert repo.complete(tid) is True\nassert repo.complete(tid) is False\nassert repo.get(tid)['done'] == 1",
+      "hint": "Second complete reports False — no row changed."
+    },
+    {
+      "name": "list_open filters",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.row_factory = sqlite3.Row\ninit_tasks(conn)\nrepo = TaskRepository(conn)\na = repo.add('a'); b = repo.add('b')\nrepo.complete(a)\nassert [t['title'] for t in repo.list_open()] == ['b']",
+      "hint": "done=0 rows only, ordered by id."
+    },
+    {
+      "name": "duplicate translated to TaskError",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.row_factory = sqlite3.Row\ninit_tasks(conn)\nrepo = TaskRepository(conn)\nrepo.add('dupe')\ntry:\n    repo.add('dupe')\n    failed = False\nexcept TaskError as e:\n    failed = 'duplicate title' in str(e)\nassert failed",
+      "hint": "UNIQUE violation → TaskError('duplicate title')."
+    }
+  ]
+}

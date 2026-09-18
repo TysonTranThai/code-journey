@@ -1,0 +1,40 @@
+**Destructor** (`~ClassName`) chạy tự động khi đối tượng chết — hết phạm vi
+với đối tượng tự động, khi `delete` với đối tượng heap, khi container co lại
+với phần tử. Nó là nửa "~" của RAII: lấy tài nguyên trong constructor, giải
+phóng trong destructor.
+
+```cpp
+#include <cstdio>
+
+class FileLog {
+public:
+    explicit FileLog(const char* path) : handle_{std::fopen(path, "a")} {}
+    ~FileLog() { if (handle_) std::fclose(handle_); }   // LUÔN chạy
+
+    FileLog(const FileLog&) = delete;            // (Module 4: copy control)
+    FileLog& operator=(const FileLog&) = delete;
+
+private:
+    std::FILE* handle_;
+};
+
+void use() {
+    FileLog log{"app.log"};   // lấy tài nguyên
+    // ... ghi qua log ...
+}                             // destructor đóng file — kể cả khi có exception
+```
+
+## Điều gì thuộc về destructor
+
+Chỉ giải phóng những gì đối tượng **sở hữu**: file handle, lock, socket, bộ
+nhớ heap. Member tự sở hữu mình (member `std::string`, member `std::vector`)
+tự hủy — bạn không bao giờ viết `delete member_` cho member kiểu giá trị.
+
+## Hai quy tắc cho hiện tại
+
+1. Nếu class giữ tài nguyên thô nó tự lấy, nó cần một destructor.
+2. Nếu không giữ, **đừng viết destructor** — bản ngầm định đã đúng, còn một
+   destructor rỗng tay chỉ mời gọi sai sót.
+
+Thứ tự hủy: thân hàm chạy *trước*, rồi member hủy theo thứ tự ngược khai báo.
+Phần base (Module 3) hủy sau thân của derived.

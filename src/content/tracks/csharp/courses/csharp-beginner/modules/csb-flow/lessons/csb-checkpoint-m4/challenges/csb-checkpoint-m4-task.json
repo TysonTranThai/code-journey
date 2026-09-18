@@ -1,0 +1,20 @@
+{
+  "id": "csb-checkpoint-m4-task",
+  "title": "Grade report",
+  "prompt": "Implement `Letter` and `Histogram` as described. `Histogram` always prints five lines A..F; each line is `X: ` + `#` * count + newline.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "letters",
+      "code": "Cj.Eq(Solution.Letter(95), 'A', \"95\");\nCj.Eq(Solution.Letter(60), 'D', \"60\");\nCj.Eq(Solution.Letter(0), 'F', \"0\");\nbool threw = false;\ntry { Solution.Letter(101); } catch (ArgumentException) { threw = true; }\nCj.True(threw, \"101 throws\");",
+      "hint": "Boundaries inclusive; out-of-range throws."
+    },
+    {
+      "name": "histogram",
+      "code": "Cj.Eq(Solution.Histogram(new[] {95, 82, 71, 64, 30}), \"A: #\\nB: #\\nC: #\\nD: #\\nF: #\\n\", \"spread\");\nCj.Eq(Solution.Histogram(new int[0]), \"A: \\nB: \\nC: \\nD: \\nF: \\n\", \"empty\");\nCj.Eq(Solution.Histogram(null), \"A: \\nB: \\nC: \\nD: \\nF: \\n\", \"null\");\nCj.Eq(Solution.Histogram(new[] {95, -5, 82, 101}), \"A: #\\nB: #\\nC: \\nD: \\nF: \\n\", \"skips out-of-range\");",
+      "hint": "Five fixed lines; empty buckets print the letter with no hashes. Out-of-range scores are ignored, not thrown into a bucket."
+    }
+  ]
+}

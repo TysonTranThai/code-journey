@@ -1,0 +1,20 @@
+{
+  "id": "i2-motion-reduced",
+  "title": "Motion That Respects Preferences",
+  "prompt": "Give `.panel` a transform-based open/close transition (`transform 0.25s`), then add a `prefers-reduced-motion: reduce` block that effectively disables animation and transition durations globally.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "<style>\n  .panel {\n    /* transition on transform */\n  }\n  .panel.is-closed {\n    /* closed state */\n  }\n\n  /* reduced motion block */\n</style>\n",
+  "tests": [
+    {
+      "name": "transform transition with a duration",
+      "code": "const css = code;\nif (!/\\.panel\\s*{[^}]*transition\\s*:[^;}]*transform/i.test(css)) throw new Error(\"Transition the transform property.\");\nif (!/\\.panel\\s*{[^}]*transition\\s*:[^;}]*0?\\.?\\d+m?s/i.test(css)) throw new Error(\"The transition needs a duration (e.g. 0.25s).\");\nif (!/\\.panel\\.is-closed\\s*{[^}]*transform\\s*:/i.test(css)) throw new Error(\"The closed state moves via transform (e.g. translateX(-100%)).\");",
+      "hint": ".panel { transition: transform 0.25s ease; } .panel.is-closed { transform: translateX(-100%); }"
+    },
+    {
+      "name": "reduced-motion block neutralizes durations",
+      "code": "const css = code;\nif (!/@media\\s*\\(\\s*prefers-reduced-motion\\s*:\\s*reduce\\s*\\)/i.test(css)) throw new Error(\"Add the prefers-reduced-motion: reduce media query.\");\nif (!/@media\\s*\\(\\s*prefers-reduced-motion\\s*:\\s*reduce\\s*\\)[^{]*{[\\s\\S]*animation-duration/i.test(css)) throw new Error(\"Neutralize animation-duration inside the block.\");\nif (!/@media\\s*\\(\\s*prefers-reduced-motion\\s*:\\s*reduce\\s*\\)[^{]*{[\\s\\S]*transition-duration/i.test(css)) throw new Error(\"Neutralize transition-duration inside the block.\");",
+      "hint": "@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }"
+    }
+  ]
+}

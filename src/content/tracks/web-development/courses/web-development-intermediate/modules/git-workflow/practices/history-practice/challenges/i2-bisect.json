@@ -1,0 +1,20 @@
+{
+  "id": "i2-bisect",
+  "title": "Bisect Simulator",
+  "prompt": "`bisect(commits, isBad)` — commits is an ordered array of ids oldest-first; isBad(id) returns a boolean. Simulate binary search: probe the middle, discard the half that cannot contain the FIRST bad commit, repeat. Return the id of the first bad commit (probe count must not exceed ceil(log2(n)) + 2 — efficiency matters).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function bisect(commits, isBad) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "finds the first bad commit",
+      "code": "const fn = new Function(code + \"\\nreturn { bisect };\");\nconst { bisect } = fn();\nconst cs = [\"c1\", \"c2\", \"c3\", \"c4\", \"c5\", \"c6\", \"c7\", \"c8\"];\nconst badAt = (n) => (id) => Number(id.slice(1)) >= n;\nif (bisect(cs, badAt(6)) !== \"c6\") throw new Error(\"Found c6, the first bad one.\");\nif (bisect(cs, badAt(1)) !== \"c1\") throw new Error(\"Everything bad => c1.\");",
+      "hint": "Classic binary search on the good/bad boundary."
+    },
+    {
+      "name": "probes logarithmically, not linearly",
+      "code": "const fn = new Function(code + \"\\nreturn { bisect };\");\nconst { bisect } = fn();\nlet probes = 0;\nconst cs = Array.from({ length: 1024 }, (_, i) => \"c\" + (i + 1));\nconst found = bisect(cs, (id) => { probes++; return Number(id.slice(1)) >= 777; });\nif (found !== \"c777\") throw new Error(\"Correct answer first.\");\nif (probes > 12) throw new Error(\"1024 commits need ~10 probes, not 777.\");",
+      "hint": "Each probe must halve the candidate range."
+    }
+  ]
+}

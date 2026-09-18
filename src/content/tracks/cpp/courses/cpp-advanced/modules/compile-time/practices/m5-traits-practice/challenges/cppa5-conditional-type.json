@@ -1,0 +1,26 @@
+{
+  "id": "cppa5-conditional-type",
+  "title": "std::conditional_t Type Selection",
+  "prompt": "Implement `Storage<T>` whose `value_type` is `T` for small types (<= 8 bytes) but `std::shared_ptr<T>` for large ones — via `std::conditional_t` — plus `biggest(a, b)` returning the larger by reference using `std::conditional_t` on a comparison trait is overkill; just use std::conditional_t<std::is_integral_v<T>, int, double> fallback semantics in `numberKind<T>()`.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <memory>\n#include <string>\n#include <type_traits>\n\ntemplate <class T>\nstruct Storage {\n    // TODO: using value_type = ...;   // T if sizeof(T) <= 8 else std::shared_ptr<T>\n};\n\n// TODO: template <class T> using Scalar = std::conditional_t<std::is_integral_v<T>, long long, double>;\ntemplate <class T>\nusing Scalar;   // finish the alias\n",
+  "tests": [
+    {
+      "name": "small types store inline",
+      "code": "static_assert(std::is_same_v<Storage<int>::value_type, int>, \"small stays inline\");",
+      "hint": "using value_type = std::conditional_t<sizeof(T) <= 8, T, std::shared_ptr<T>>;"
+    },
+    {
+      "name": "large types store via shared_ptr",
+      "code": "struct Big { char pad[64]; };\nstatic_assert(std::is_same_v<Storage<Big>::value_type, std::shared_ptr<Big>>, \"big goes indirect\");",
+      "hint": "Same conditional — sizeof(Big) is 64, so the shared_ptr branch selects."
+    },
+    {
+      "name": "Scalar alias switches on integrality",
+      "code": "static_assert(std::is_same_v<Scalar<int>, long long>, \"integral -> long long\");\nstatic_assert(std::is_same_v<Scalar<double>, double>, \"floating -> double\");",
+      "hint": "template <class T> using Scalar = std::conditional_t<std::is_integral_v<T>, long long, double>;"
+    }
+  ]
+}

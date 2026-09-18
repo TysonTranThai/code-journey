@@ -1,0 +1,14 @@
+{
+  "title": "Xử lý theo chunk",
+  "prompt": "Viết `async function processChunks(items, handler, chunkSize)` xử lý `items` theo nhóm `chunkSize` phần tử: gọi `await handler(batch)` cho từng nhóm, và giữa các nhóm `await` một nhịp macrotask (`await new Promise((r) => setTimeout(r, 0))`) để trình duyệt kịp vẽ. RETURN một mảng gồm mọi kết quả của handler theo đúng thứ tự.",
+  "tests": [
+    {
+      "name": "xử lý hết mọi phần tử theo nhóm, đúng thứ tự",
+      "hint": "for (let i = 0; i < items.length; i += chunkSize), slice, await handler, push kết quả, rồi await một nhịp."
+    },
+    {
+      "name": "nhường macrotask giữa các nhóm",
+      "hint": "Sau mỗi lần gọi handler: await new Promise((r) => setTimeout(r, 0))."
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Curriculum Research — Web Development Beginner
 
-**Internal research document** · Phase 8 · 2026-09-04
+**Internal research document** · Phase 8 (2026-09-04) · **revised Phase 10 (2026-09-05): Learn/Practice separation + practice density**
 **Purpose:** evidence base for the first complete Code Journey course. Sources are surveyed for
 structure and pedagogy; **no lesson text is copied** — all Code Journey content is original.
 
@@ -109,3 +109,71 @@ async/await), browser DevTools, Git + GitHub + GitHub Pages.
 Foundations (theodinproject.com/paths/foundations); MDN Learn Web Development
 (developer.mozilla.org/en-US/docs/Learn); W3C WAI Introduction to Web Accessibility + WCAG 2.1
 (w3.org/WAI, w3.org/TR/WCAG21); web.dev Learn.
+
+---
+
+## 9. Revision research (Phase 10): practice density, deliberate practice, and Learn/Practice separation
+
+**Trigger:** live private-beta learner feedback — "too much theory, not enough hands-on coding".
+The original course averaged ~0.9 challenges per lesson and left 9 lessons with **zero** coding
+after them; learners read for long stretches before writing code.
+
+### 9.1 What the evidence says
+
+- **Deliberate practice beats re-reading** (Ericsson et al. 1993; *Make It Stick*, Brown/Roediger/McDaniel 2014):
+  skill grows from repeatedly _retrieving and applying_ a specific skill just beyond comfort, with
+  immediate feedback — exactly what an auto-graded, hint-supported coding challenge provides.
+- **Testing/retrieval effect**: actively producing code (recall + construction) produces far better
+  retention than re-watching or re-reading examples. Auto-graded practice converts every concept
+  into a retrieval event.
+- **Spacing + interleaving within a skill**: practice is most effective when it follows the
+  concept _immediately_ (micro-practice), then recurs later at higher difficulty (climb), rather
+  than being batched at a module's end.
+- **Cognitive load theory (Sweller)**: worked examples help novices, but the worked-example effect
+  fades — learners must move to problem-solving quickly. This supports the
+  **imitation → guided → independent → combination** climb inside each practice set: scaffold
+  early, remove it deliberately, then require synthesis and transfer (debugging, real-world,
+  mini-build).
+- **Project-based learning anchoring**: curated practice that directly precedes a project
+  (the same constructs the project needs) measurably improves project completion for novices —
+  the origin of our "project preparation" sets before each project.
+- **Benchmark curricula in practice**: fCC's RWD cert has ~70+ coding steps for ~30 hours of
+  content; The Odin Project intersperses exercises throughout rather than at section ends; Exercism
+  and Codecademy structure learning as concept → small exercise → larger exercise. The consistent
+  shape is **concept → tiny practice**, not **concept-block → practice-block**.
+
+### 9.2 Information-architecture decision
+
+Three candidate models were evaluated against the existing architecture (track → course → module
+→ lesson → challenges, zod-validated, progress events typed by content kind):
+
+1. *Practice section per module* (all practice at module end) — rejected: separates concept from
+   practice by hours of reading; contradicts micro-practice evidence.
+2. *Challenges bolted onto lessons* (status quo) — rejected: practice is invisible in the IA and
+   UX; learners perceive it as "the bottom of a lesson", and it cannot carry its own difficulty
+   arc or progress display.
+3. **Practice set as a first-class content type, interleaved via `afterLesson` anchors** (chosen):
+   module flow renders Lesson → Practice → Lesson → Practice, practice gets dedicated pages,
+   difficulty levels, and progress, and lessons stay pure theory. It reuses the existing
+   challenge-execution/progress machinery (no second grading system) and keeps all 51 original
+   lesson challenges and URLs intact.
+
+### 9.3 Difficulty model (deliberate-practice levels)
+
+The seven levels (imitation, guided, independent, combination, real-world, debugging, mini-build)
+operationalize the scaffold-fading sequence above; every practice set is ordered as a climb.
+Distribution shipped in this revision: 52 guided · 10 imitation · 10 debugging · 7 independent ·
+6 mini-build · 2 real-world · 1 combination (88 practice challenges). Debugging is treated as
+first-class practice per the learner-feedback directive: beginners should practice _fixing_ code,
+not only writing it.
+
+### 9.4 Practice-density outcome (rationale for 91 challenges)
+
+Target range from the phase directive was 100–150 meaningful challenges, to be set by research,
+not a quota. The revision lands at **91** (3 checkpoint challenges stay lesson-attached; 88
+practice challenges across 52 sets, including the 48 original lesson challenges migrated into
+their lesson's practice set): every lesson is now followed by coding practice (was: 9 lessons with
+none), every set climbs the level model, and 16 near-duplicate challenges that the interim
+expansion added on top of migrated ones were culled — each remaining challenge has a distinct
+retrieval target, no "create h1…h6" padding. Estimated learner time rises from ~13 h to ~21 h with
+essentially all of the increase spent coding.

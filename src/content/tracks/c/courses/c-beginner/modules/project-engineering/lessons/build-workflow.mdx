@@ -1,0 +1,41 @@
+## The commands
+
+```sh
+gcc -std=c23 -Wall -Wextra -c mathutil.c -o mathutil.o    # compile only
+gcc -std=c23 main.c mathutil.o -o app                      # link
+gcc -std=c23 -Wall -Wextra main.c mathutil.c -o app        # both at once
+```
+
+`-c` stops after compiling (object file, no linking). The final command
+compiles AND links in one step — fine while projects are small.
+
+## The flag vocabulary
+
+| flag | meaning |
+|------|---------|
+| `-std=c23` | which C standard to enforce |
+| `-Wall -Wextra` | the warning level this course assumes |
+| `-Werror` | warnings become errors (CI builds) |
+| `-O2` | optimize for speed (shipping) |
+| `-g` | embed debug info (for gdb) |
+| `-Iinclude` | add a header search path |
+| `-lm` | link the math library |
+
+Debug build: `-g` (plus sanitizers on glibc). Release build: `-O2 -DNDEBUG`.
+Never ship what you have not also built with warnings on.
+
+## Make in one screen
+
+```make
+app: main.o mathutil.o
+	gcc main.o mathutil.o -o app
+
+main.o: main.c mathutil.h
+	gcc -std=c23 -Wall -Wextra -c main.c
+
+mathutil.o: mathutil.c mathutil.h
+	gcc -std=c23 -Wall -Wextra -c mathutil.c
+```
+
+Make rebuilds only what changed — the dependency graph is the Makefile.
+Tab indentation is mandatory and famously unforgiving.

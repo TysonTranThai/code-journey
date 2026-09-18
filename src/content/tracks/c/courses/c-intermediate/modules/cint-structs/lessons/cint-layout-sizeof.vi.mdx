@@ -1,0 +1,28 @@
+## Trình biên dịch có thể chèn lỗ
+
+Mỗi member phải nằm ở offset chia hết cho alignment của nó. Trình biên dịch
+chèn padding vô hình để đảm bảo điều đó, và pad tổng kích thước struct để
+mảng của nó vẫn alignment:
+
+```c
+struct Packed {
+    char  c;      /* offset 0 */
+                  /* 3 byte padding */
+    int   i;      /* offset 4 */
+    char  d;      /* offset 8 */
+                  /* 3 byte padding */
+};                /* sizeof == 12, không phải 6 */
+```
+
+Sắp xếp member từ lớn đến nhỏ thường làm struct nhỏ đi. Nhưng **đừng học
+thuộc layout — hãy đo**:
+
+```c
+#include <stddef.h>
+offsetof(struct Packed, i)   /* == 4 */
+sizeof(struct Packed)        /* == 12 */
+```
+
+`offsetof` trả lời "member này thực sự nằm đâu" dưới compiler/flags hiện tại.
+Code ghi file nhị phân dùng nó — hoặc dùng `_Static_assert` để fail build
+nếu layout đổi.

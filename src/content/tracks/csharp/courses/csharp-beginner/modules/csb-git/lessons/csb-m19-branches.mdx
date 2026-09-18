@@ -1,0 +1,19 @@
+## Branch = label
+
+```text
+        D --- E   (feature)
+       /
+A --- B --- C   (main)
+```
+
+`git switch feature` moves your working copy; `main` stays parked at C. Commits on a branch don't affect main until you merge — cheap experimentation is the whole point.
+
+## Merge = two-parent commit
+
+```text
+        D --- E
+       /       \
+A --- B --- C --- F   (main, after merge)
+```
+
+F has both C and E as parents; the histories join. When both sides edited the same lines differently, git refuses to guess — a **conflict**. Resolution is a human decision recorded in the merge commit: keep theirs, keep yours, or write the version that's actually correct. Conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`) mark the two candidate texts; delete the markers, keep the intended code, stage, commit.

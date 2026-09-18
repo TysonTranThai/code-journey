@@ -1,0 +1,41 @@
+Write these down *before* implementing. The graded acceptance tests only check
+behavior; your future self checks the design.
+
+## The ports (your architecture, your names)
+
+Sketch the interfaces — not implementations:
+
+- **JobQueue (port)** — `enqueue`, `deliver`, `ack`, `fail`. Who implements it?
+  (In-process now; Redis later. The port is what stays.)
+- **IdempotencyStore (port)** — `get(key)`, `put(key, result)`. Same
+  transaction as the effect, or it lies.
+- **JobStore (port)** — durable outcome records. This is your source of truth;
+  the queue is *not*.
+- **Clock (port)** — you know why.
+- **Notifier/Metrics/Log (ports)** — the observability seam.
+
+## The state model
+
+A job is a small state machine:
+`SUBMITTED → IN_FLIGHT → SUCCEEDED | FAILED_RETRYING | DEAD`.
+Write the legal transitions. What happens to a job in `IN_FLIGHT` when the
+worker dies? (Answer: it becomes deliverable again — that's the lease. What
+must be true for the *effect* to stay exactly-once? The idempotency gate.)
+
+## The failure table
+
+| Failure | Detection | Response | User-visible? |
+|---|---|---|---|
+| Worker crash | lease expiry | redeliver | no (effect idempotent) |
+| Dependency down | exceptions | breaker opens, fast-fail | degraded feature |
+| Poison job | retry exhaustion | dead-letter + reason | yes, on status query |
+| Duplicate submit | idempotency key | replay recorded response | no |
+
+If a row of this table is hand-wavy, that's the milestone to build next.
+
+## The self-review questions
+
+- Which decisions would change with a real queue? (Only the adapter.)
+- Which class knows about HTTP? (None — that's the point.)
+- Where does the idempotency check live, and why *there*?
+- What breaks first under load, and how would you know? (Metrics.)

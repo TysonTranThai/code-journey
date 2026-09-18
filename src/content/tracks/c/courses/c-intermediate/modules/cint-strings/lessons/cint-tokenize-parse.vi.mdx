@@ -1,0 +1,47 @@
+## strtok sở hữu state toàn cục — bạn không nhìn thấy
+
+```c
+char *tok = strtok(line, ",");     /* biến đổi line, nhớ vị trí
+                                      trong static state ẩn */
+while (tok) { use(tok); tok = strtok(NULL, ","); }
+```
+
+Hai vấn đề: vị trí ẩn khiến hàm không dùng được cho hai lần parse song
+song, và nó *ghi `'\0'` vào buffer của bạn* — input bị tiêu thụ. ISO C
+không có gì reentrant ở đây (`strtok_r` là POSIX, không phải chuẩn). Mẫu
+chuẩn-C trung thực là con trỏ cursor bạn tự kiểm soát:
+
+```c
+/* tách theo ',' không biến đổi input: báo các span [start,end) */
+const char *p = line;
+while (*p) {
+    const char *start = p;
+    while (*p && *p != ',') p++;
+    /* token = start..p, độ dài p-start */
+    if (*p) p++;
+}
+```
+
+Span, không biến đổi: caller quyết định làm gì với từng token, input
+nguyên vẹn, vòng lặp không có state ẩn.
+
+## Số từ người lạ
+
+`atoi("12abc")` trả 12 và nhún vai. `atoi` không báo gì về rác, tràn số,
+hay input rỗng. Mẫu có kiểm chứng:
+
+```c
+/* parse int không âm trong [0..999999]; 0 ok, -1 xấu */
+int parse_bounded(const char *s, long *out) {
+    if (!s || !*s) return -1;
+    char *end;
+    long v = strtol(s, &end, 10);
+    if (*end != '\0') return -1;          /* rác phía sau */
+    if (v < 0 || v > 999999) return -1;   /* khoảng */
+    *out = v;
+    return 0;
+}
+```
+
+`strtol` cho bạn end pointer; kỷ luật là kiểm mọi chế độ lỗi: rỗng, đuôi
+không số, tràn (`errno == ERANGE` khi cần), và khoảng domain của bạn.

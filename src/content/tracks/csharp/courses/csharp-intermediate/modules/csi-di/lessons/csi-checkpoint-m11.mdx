@@ -1,0 +1,18 @@
+## The gate (mini-build)
+
+Assemble the pieces into one composable order pipeline:
+
+1. `IOrderValidator.IsValid(decimal amount)` — business rule (amount > 0).
+2. `IOrderRepository.Save(Order order)` — persistence boundary.
+3. `IAuditLog.Record(string message)` — audit trail.
+4. `OrderProcessor(IOrderValidator, IOrderRepository, IAuditLog)` —
+   constructor-injected; `Process(decimal amount)` returns
+   `"ok:<id>"` when valid (repository saves, audit records), else
+   `"rejected"`.
+5. `BuildProcessor(IOrderRepository repo, IAuditLog audit)` — the
+   composition root: registers a singleton validator and transient
+   processor using the provided `TinyContainer`, resolves and returns the
+   processor.
+
+Order: `record Order(int Id, decimal Amount)`. Repository generates ids
+starting at 1.

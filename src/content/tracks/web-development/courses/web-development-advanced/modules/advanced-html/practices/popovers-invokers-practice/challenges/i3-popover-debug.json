@@ -1,0 +1,30 @@
+{
+  "id": "i3-popover-debug",
+  "title": "Debug: JS Dialog → Invoker Commands",
+  "prompt": "This delete-confirmation dialog is driven by onclick handlers calling showModal()/close(). Convert it to 2026-standard invoker commands: the open button uses commandfor=\"delete-confirm\" command=\"show-modal\", the close button inside the dialog uses commandfor=\"delete-confirm\" command=\"close\", and every onclick attribute is gone. Keep the <dialog id=\"delete-confirm\">.",
+  "difficulty": "advanced",
+  "level": "debugging",
+  "boilerplate": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\"><title>Danger zone</title></head>\n<body>\n  <h1>Danger zone</h1>\n  <button onclick=\"openDelete()\">Delete project…</button>\n  <dialog id=\"delete-confirm\">\n    <h2>Delete this project?</h2>\n    <p>All issues and labels go with it.</p>\n    <button onclick=\"closeDelete()\">Cancel</button>\n    <button onclick=\"deleteProject()\">Delete forever</button>\n  </dialog>\n  <script>\n    function openDelete(){ document.getElementById('delete-confirm').showModal(); }\n    function closeDelete(){ document.getElementById('delete-confirm').close(); }\n    function deleteProject(){ /* … */ }\n  </script>\n</body>\n</html>\n",
+  "tests": [
+    {
+      "name": "open button uses show-modal command",
+      "code": "if (!/<button[^>]*commandfor\\s*=\\s*[\"']delete-confirm[\"'][^>]*command\\s*=\\s*[\"']show-modal[\"']/i.test(code) &&\n    !/<button[^>]*command\\s*=\\s*[\"']show-modal[\"'][^>]*commandfor\\s*=\\s*[\"']delete-confirm[\"']/i.test(code)) {\n  throw new Error('The open button needs commandfor=\"delete-confirm\" command=\"show-modal\".');\n}",
+      "hint": "command=\"show-modal\" on a button is the declarative showModal() — same platform behavior, no JS."
+    },
+    {
+      "name": "close button uses close command",
+      "code": "const dlg = code.match(/<dialog[^>]*>([\\s\\S]*?)<\\/dialog>/i);\nif (!dlg) throw new Error(\"Keep the <dialog>.\");\nconst inside = dlg[1].match(/<button[^>]*commandfor\\s*=\\s*[\"']delete-confirm[\"'][^>]*command\\s*=\\s*[\"']close[\"']/i) ||\n  dlg[1].match(/<button[^>]*command\\s*=\\s*[\"']close[\"'][^>]*commandfor\\s*=\\s*[\"']delete-confirm[\"']/i);\nif (!inside) {\n  throw new Error('A button inside the dialog needs command=\"close\" targeting delete-confirm.');\n}",
+      "hint": "The Cancel button keeps working without its onclick — command=\"close\" does the job."
+    },
+    {
+      "name": "no onclick handlers remain",
+      "code": "const handlers = (code.match(/\\sonclick\\s*=/gi) || []).length;\nif (handlers > 1) {\n  throw new Error(\"Remove the open/close onclick handlers — only the real action may keep custom JS.\");\n}",
+      "hint": "Open and close are platform commands now; only the destructive action itself may still call code."
+    },
+    {
+      "name": "dialog intact",
+      "code": "if (!/<dialog[^>]*\\bid\\s*=\\s*[\"']delete-confirm[\"'][^>]*>/i.test(code)) {\n  throw new Error('Keep <dialog id=\"delete-confirm\">.');\n}",
+      "hint": "The invoker model drives the same dialog element — nothing about the dialog itself changes."
+    }
+  ]
+}

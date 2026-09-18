@@ -1,0 +1,23 @@
+`std::unique_ptr<T>` is the default smart pointer: exclusive ownership,
+zero overhead over a raw pointer, deleted when the `unique_ptr` dies.
+
+```cpp
+#include <memory>
+
+auto p = std::make_unique<Widget>(arg1, arg2);  // prefer make_unique
+p->draw();
+auto q = std::move(p);       // ownership transfers; p is now nullptr
+// p->draw();                // UB: p is empty — check it first
+```
+
+The rules:
+
+- **Always `make_unique`**, not `new`: one allocation, exception safety,
+  no naked `new` in application code.
+- Non-copyable, movable. Copying would create two owners — the exact bug
+  the type exists to prevent.
+- Arrays: `std::unique_ptr<T[]>` exists but `std::vector<T>` is almost
+  always the right answer.
+- Pass `unique_ptr` when you transfer ownership; pass `T&` or `T*` when
+  you merely use the object. Functions that *observe* should not name
+  smart pointers in their signatures.

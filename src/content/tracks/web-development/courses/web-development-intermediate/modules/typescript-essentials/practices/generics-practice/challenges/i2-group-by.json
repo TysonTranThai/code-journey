@@ -1,0 +1,20 @@
+{
+  "id": "i2-group-by",
+  "title": "Keyed Group-By",
+  "prompt": "Write `groupBy(items, keyFn)` RETURNing an object mapping each key to the array of items with that key (order preserved within groups). Write `keyCount(groups)` that takes the result and returns the number of distinct keys.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function groupBy(items, keyFn) {\n  // your code\n}\n\nfunction keyCount(groups) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "groups preserve item order",
+      "code": "const fn = new Function(code + \"\\nreturn { groupBy, keyCount };\");\nconst { groupBy, keyCount } = fn();\nconst items = [\n  { t: \"a\", kind: \"x\" }, { t: \"b\", kind: \"y\" },\n  { t: \"c\", kind: \"x\" }, { t: \"d\", kind: \"x\" },\n];\nconst g = groupBy(items, (i) => i.kind);\nif (g.x.map((i) => i.t).join() !== \"a,c,d\") throw new Error(\"Group x keeps insertion order.\");\nif (g.y.length !== 1) throw new Error(\"Group y holds one item.\");\nif (keyCount(g) !== 2) throw new Error(\"Two distinct keys.\");",
+      "hint": "Push into (acc[k] ??= []).push(item) while walking the array once."
+    },
+    {
+      "name": "empty input yields empty groups",
+      "code": "const fn = new Function(code + \"\\nreturn { groupBy, keyCount };\");\nconst { groupBy, keyCount } = fn();\nconst g = groupBy([], (i) => i);\nif (Object.keys(g).length !== 0 || keyCount(g) !== 0) throw new Error(\"No items, no keys.\");",
+      "hint": "The loop simply never runs."
+    }
+  ]
+}

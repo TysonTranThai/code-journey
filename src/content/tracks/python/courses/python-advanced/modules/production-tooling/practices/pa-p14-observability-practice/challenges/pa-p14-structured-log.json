@@ -1,0 +1,16 @@
+{
+  "id": "pa-p14-structured-log",
+  "title": "Logs a machine can query, a lawyer can read",
+  "prompt": "Implement `StructuredLogger(correlation_id)`:\n\n- `log(level, event, **fields)` appends a JSON line (sorted keys) containing `level`, `event`, `correlation_id`, and the fields\n- any field named in `SENSITIVE = {'password', 'token', 'secret', 'card_number'}` is emitted as `'[REDACTED]'` — redaction happens at emit time\n- convenience methods `info(event, **fields)` and `error(event, **fields)` map to levels 'INFO' and 'ERROR'\n- expose the lines as a `lines` list\n\nThe redaction test is the point: a login event carrying a password must never emit the password.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class StructuredLogger:\n    SENSITIVE = {'password', 'token', 'secret', 'card_number'}\n\n    def __init__(self, correlation_id):\n        ...\n\n    def log(self, level, event, **fields):\n        ...\n\n    def info(self, event, **fields):\n        ...\n\n    def error(self, event, **fields):\n        ...",
+  "tests": [
+    {
+      "name": "structured, correlated, and redacted",
+      "code": "import json\nlg = StructuredLogger('req-42')\nlg.info('login.attempt', user='lan', password='hunter2')\nlg.error('login.failed', user='lan', token='abc123')\nline = json.loads(lg.lines[0])\nassert line['event'] == 'login.attempt' and line['correlation_id'] == 'req-42'\nassert line['password'] == '[REDACTED]' and line['user'] == 'lan'\nline2 = json.loads(lg.lines[1])\nassert line2['level'] == 'ERROR' and line2['token'] == '[REDACTED]'\nprint('ok')",
+      "hint": "Redaction is by field name, applied at emit, never stored raw."
+    }
+  ],
+  "level": "guided"
+}

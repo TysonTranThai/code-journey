@@ -1,0 +1,31 @@
+Bug production không mang theo tên test. Bạn quan sát hệ thống đang sống bằng DevTools — đây là bảng điều khiển.
+
+## Panel Sources: debugger ngoài tự nhiên
+
+- Đặt breakpoint trên code được serve (Sources → file của bạn → bấm số dòng).
+- **Event listener breakpoint**: dừng ở mọi `click` hoặc `submit` — lập tức tìm ra handler nào sở hữu hành vi đó.
+- **XHR/fetch breakpoint**: dừng khi URL request khớp mẫu — tóm được code phát request bất ngờ.
+- **Debug on exception** (dừng ở caught/uncaught): đứng đúng chỗ mọi thứ sai thay vì đuổi theo sau đó.
+
+## Panel Network: sự thật về request
+
+Các cột quan trọng: **status** (304 so với 200 so với 404 — cache có chạy, endpoint có tồn tại), **size** (transfer thực so với đã giải nén), **time** (chờ đợi? TTFB? download?), và **thứ tự waterfall** (cái gì chặn cái gì). Bấm vào request → tab Response/Preview để thấy payload code của bạn thực sự nhận. Cột "Initiator" nêu tên dòng chính xác đã bắn request — con đường nhanh nhất từ request bí ẩn đến code sở hữu nó.
+
+## Kỷ luật console
+
+`console.log` vẫn ổn; ba nâng cấp:
+
+- `console.table(rows)` — mảng object, thẳng hàng, quét nhanh được
+- `console.error`/`warn` cho dị thường thật — chúng kèm stack trace và lọc riêng được
+- **Log point** (chuột phải một dòng trong Sources → "Add logpoint"): log mà không sửa code, sống sót qua reload
+
+Và console _là một REPL_: inspect mọi object đang sống, chạy thử `document.querySelectorAll`, gọi hàm thủ công. Console không chỉ để in những gì bạn lường trước.
+
+## Sơ cứu hiệu năng (đào sâu = module 8)
+
+- **Panel Performance**: ghi lại một tương tác, tìm chỗ đỏ — long task chặn main thread, forced synchronous layout (bão "Recalculate Style" màu tím), giật giữa các frame.
+- **Lighthouse**: audit nhanh điểm số hiệu năng/khả năng tiếp cận; là _kim chỉ nam_, không phải bản đồ — nó gợi ý, bạn chẩn đoán.
+
+## Khi DevTools nói dối
+
+Code production đã minify đổi tên mọi thứ; dùng source map (hoặc tái hiện local). Và nhớ _heisenbug_: thêm log có thể đổi thời điểm chạy và giấu race condition. Khi một bug không chịu lộ diện dưới quan sát, hãy nghi ngờ các giả định về thứ tự/thời điểm — module 3 đã dạy bạn vì sao chúng tồn tại.

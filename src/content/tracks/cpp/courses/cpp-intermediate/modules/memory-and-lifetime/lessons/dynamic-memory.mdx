@@ -1,0 +1,44 @@
+`new` allocates an object on the heap; `delete` destroys it. The pair is the
+last resort in modern C++ — containers and smart pointers own heap memory for
+you — but you must understand it because every tool you use is built on it.
+
+```cpp
+#include <string>
+
+int main_cj_dynamic() {
+    int* single = new int{7};            // one int on the heap
+    delete single;                        // exactly one delete
+
+    std::string* word = new std::string{"hi"};
+    delete word;                          // destructor runs here
+
+    int* arr = new int[5]{};              // array of 5 zeros
+    delete[] arr;                         // NOTE the [] — must match new[]
+    return 0;
+}
+```
+
+## The three ways to leak
+
+1. `new` without any `delete` — ownership forgotten.
+2. Early `return` or thrown exception between `new` and `delete`.
+3. `delete` on a pointer someone else also deletes — double free.
+
+```cpp
+void risky() {
+    int* p = new int{1};
+    if (p == nullptr) { /* cannot happen, but imagine an early return here */ }
+    may_throw();                          // if this throws, p leaks
+    delete p;
+}
+```
+
+That second leak is the killer: it happens *rarely*, exactly when the program
+is misbehaving. RAII (Module 8) removes the entire class of bugs by making a
+destructor do the `delete` — and `std::vector` already does it for buffers.
+
+## new/delete vs new[]/delete[]
+
+They are different operators with different layouts. Mixing them is undefined
+behavior. Rule of thumb: **you should almost never need either** — reach for
+`std::vector`, `std::string`, or (Module 8) smart pointers first.

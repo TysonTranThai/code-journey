@@ -1,0 +1,21 @@
+{
+  "id": "cppa3-uniform-print",
+  "title": "describe(...) with if constexpr",
+  "prompt": "Implement `describe(args...)`: fold over the pack, and use `if constexpr` on each element's type to pick its prefix — `int(...)`, `dbl(...)` (via `std::to_string`), or `str(...)` for anything else. Elements join with single spaces.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <string>\n#include <type_traits>\n\ntemplate <class... A>\nstd::string describe(A... a);\n// One token per argument, space-separated:\n//   integral  -> int(5)\n//   floating  -> dbl(2.500000)\n//   string    -> str(text)\n// describe(1, 2.5, std::string(\"x\")) == \"int(1) dbl(2.500000) str(x)\"\n",
+  "tests": [
+    {
+      "name": "mixed pack described",
+      "code": "CHECK_EQ(describe(1, 2.5, std::string(\"x\")), std::string(\"int(1) dbl(2.500000) str(x)\"));",
+      "hint": "Inside the fold: using U = std::decay_t<decltype(v)>; then if constexpr (std::is_integral_v<U>) -> int(...), else if constexpr (std::is_floating_point_v<U>) -> dbl(...), else str(std::string(v)...). Traits are false for references — decay first!"
+    },
+    {
+      "name": "single elements",
+      "code": "CHECK_EQ(describe(7), std::string(\"int(7)\"));\nCHECK_EQ(describe(0.5), std::string(\"dbl(0.500000)\"));\nCHECK_EQ(describe(std::string(\"hi\")), std::string(\"str(hi)\"));",
+      "hint": "The else-if chain must classify each type exactly once — no trailing space after the last element."
+    }
+  ]
+}

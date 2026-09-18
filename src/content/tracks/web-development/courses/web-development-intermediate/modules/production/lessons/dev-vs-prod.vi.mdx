@@ -1,0 +1,30 @@
+Cùng một codebase chạy trong (ít nhất) hai thế giới, và chúng tối ưu cho hai điều khác nhau.
+
+## Điều gì khác nhau giữa các môi trường
+
+| Mối quan tâm | Development                      | Production                                     |
+| ------------ | -------------------------------- | ---------------------------------------------- |
+| Tốc độ       | hot reload, không minify         | minified, hash, cache vĩnh viễn                |
+| Lỗi          | stack trace đầy đủ trên màn hình | message chung chung cho user, chi tiết vào log |
+| Dữ liệu      | seed fixture                     | thật, có backup, được tôn trọng                |
+| Secret       | file `.env`, key giả             | bơm qua vault/biến môi trường, key thật        |
+| HTTPS        | tùy chọn trên localhost          | bắt buộc, mọi nơi                              |
+| Debug        | bạn, tương tác                   | log, metric, alert                             |
+
+`NODE_ENV` (hoặc tương đương) chuyển bundle: dev ship code chưa minify với hook devtools; prod ship bản build tối ưu. Tai nạn kinh điển: production chạy bản build development — JS chậm hơn 3–10×, các endpoint chỉ-dev bị phơi ra.
+
+## Cấu hình, lần nữa
+
+Quy tắc của module 6 mở rộng: **cấu hình nằm trong biến môi trường**, đọc lúc khởi động, validate (Zod) trước khi app nhận traffic. Fail fast khi thiếu config ngay lúc boot — đừng đợi 2 giờ sáng khi user đầu tiên đụng vào đường chưa cấu hình.
+
+```js
+const env = EnvSchema.parse(process.env); // ném lỗi lúc startup kèm key còn thiếu
+```
+
+## Feature flag: tách deploy khỏi release
+
+Deploy code ≠ bật tính năng. Flag cho phép merge công việc dang dở (ẩn), bật dần dần (1% → 10% → 100%), và tắt tính năng hỏng mà không cần rollback deploy. Kỷ luật: flag là nợ — dọn sạch khi đã bật đủ 100%, nếu không codebase sẽ chìm trong nhánh chết.
+
+## Tư duy 12-factor
+
+Checklist ngành cho dịch vụ production (12factor.net) — bốn điều quan trọng nhất ở đây: **config trong env** (cùng một image, mọi môi trường), **dịch vụ hậu cần là tài nguyên gắn vào** (đổi DB URL, không đổi code), **log là dòng sự kiện** (ghi ra stdout; nền tảng quyết định nơi chứa), **khả năng vứt bỏ** (app khởi động nhanh và tắt sạch sẽ — xử lý kill -TERM, xả kết nối).

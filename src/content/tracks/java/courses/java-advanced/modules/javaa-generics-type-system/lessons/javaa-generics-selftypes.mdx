@@ -1,0 +1,23 @@
+**Recursive generics** (the CRTP idiom) make fluent APIs return the *subclass*
+type:
+
+```java
+abstract static class Node<Self extends Node<Self>> {
+    private final List<String> labels = new ArrayList<>();
+    @SuppressWarnings("unchecked")
+    public Self label(String l) { labels.add(l); return (Self) this; }
+}
+static class Task extends Node<Task> { }
+```
+
+`new Task().label("a").label("b")` stays a `Task` — every link in the chain
+returns `Self`. The cast `(Self) this` is safe *by convention*: the subclass
+promises `Self` is itself. Its known cost: self-types do not survive
+*re-parenting* — `Job extends Task` cannot also be `Node<Job>`; a class has
+one generic parent.
+
+**Class tokens**: generics are erased, but a `Class<T>` object *is* the
+runtime type. `type.cast(value)` and `type.isInstance(value)` turn erased
+storage into checked retrieval — the foundation of type-safe registries,
+DI containers, and JSON binders. Where erasure loses the type, an explicit
+token carries it.

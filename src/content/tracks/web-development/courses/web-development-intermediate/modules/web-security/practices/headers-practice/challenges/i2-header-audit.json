@@ -1,0 +1,20 @@
+{
+  "id": "i2-header-audit",
+  "title": "Header Auditor",
+  "prompt": "Write `auditHeaders(headers)` — headers is an object of response headers. Return an array of missing-hardening findings, checked in this order: no \"Content-Security-Policy\" => \"missing-csp\"; no \"Strict-Transport-Security\" => \"missing-hsts\"; no \"X-Content-Type-Options\" => \"missing-nosniff\"; \"X-Frame-Options\" not \"DENY\" (absent counts) => \"clickjackable\". Empty array = hardened.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function auditHeaders(headers) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "reports each gap in order",
+      "code": "const fn = new Function(code + \"\\nreturn { auditHeaders };\");\nconst { auditHeaders } = fn();\nif (auditHeaders({}).join(\",\") !== \"missing-csp,missing-hsts,missing-nosniff,clickjackable\") throw new Error(\"All four findings on an empty set.\");\nif (auditHeaders({ \"Content-Security-Policy\": \"default-src 'self'\" }).join(\",\") !== \"missing-hsts,missing-nosniff,clickjackable\") throw new Error(\"CSP clears its finding.\");\n",
+      "hint": "Sequential checks, each pushing a label."
+    },
+    {
+      "name": "hardened headers pass clean",
+      "code": "const fn = new Function(code + \"\\nreturn { auditHeaders };\");\nconst { auditHeaders } = fn();\nconst h = {\n  \"Content-Security-Policy\": \"default-src 'self'\",\n  \"Strict-Transport-Security\": \"max-age=31536000\",\n  \"X-Content-Type-Options\": \"nosniff\",\n  \"X-Frame-Options\": \"DENY\",\n};\nif (auditHeaders(h).length !== 0) throw new Error(\"Fully hardened => no findings.\");\n",
+      "hint": "Every check has a positive case."
+    }
+  ]
+}

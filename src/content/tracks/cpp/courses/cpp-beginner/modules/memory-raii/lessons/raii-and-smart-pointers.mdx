@@ -1,0 +1,46 @@
+## RAII in one sentence
+
+**Wrap every resource in an object whose destructor releases it.** Acquire in the constructor, release in the destructor. Since destructors run deterministically at scope exit — even during exceptions — resources can no longer leak in normal, well-written code.
+
+You have used RAII all along: `std::vector` owns its heap buffer; `std::ifstream` owns its file handle (module 13); `std::lock_guard` owns a lock (Intermediate). Now make it conscious:
+
+```cpp
+class FileGuard {                 // a hand-rolled RAII wrapper (for understanding)
+public:
+    explicit FileGuard(std::FILE* f) : f_(f) {}
+    ~FileGuard() { if (f_) std::fclose(f_); }        // THE release happens here — always
+    FileGuard(const FileGuard&) = delete;            // one owner: copying forbidden
+    FileGuard& operator=(const FileGuard&) = delete;
+    std::FILE* get() const { return f_; }
+private:
+    std::FILE* f_;
+};
+```
+
+## std::unique_ptr: the default owner
+
+```cpp
+#include <memory>
+
+auto owned = std::make_unique<Report>("q3");   // heap object, ONE owner
+owned->render();                                // use like a pointer: ->
+// no delete anywhere — the destructor frees it automatically
+```
+
+- Exactly one owner; copying is deleted (moving *transfers* ownership and nulls the source).
+- Zero overhead over a raw pointer.
+- `std::make_unique<T>(args...)` is how you create it — never `new`.
+
+## std::shared_ptr: when there really are several owners
+
+```cpp
+auto shared = std::make_shared<Sensor>();      // reference-counted ownership
+auto alias = shared;                            // both keep it alive; last one out cleans up
+CHECK_EQ(alias.use_count(), 2);
+```
+
+Shared ownership has real costs (atomic counters, surprise-persistence lifetimes, cycles that leak). Beginner rule: default `unique_ptr`, reach for `shared_ptr` only when a genuine multi-owner *lifetime* exists — and even then, hold non-owning views as raw pointers/references (observers), never as extra shared copies.
+
+## weak_ptr (a glance)
+
+`std::weak_ptr` observes a shared_ptr without owning — the tool for breaking ownership cycles (parent↔child). Know it exists; the capstone never needs it.

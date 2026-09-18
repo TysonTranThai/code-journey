@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m2-composition-engine",
+  "title": "Composition: a Car HAS an Engine",
+  "prompt": "Implement `class Engine` with `void start()`, `bool running() const` (private `bool running_{false};`), and `class Car` that owns an `Engine engine_` member plus `std::string model_;`, with `void drive()` (starts the engine) and `bool ready() const` (engine running).",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <iostream>\n\nclass Engine { /* ... */ };\n\nclass Car { /* owns an Engine */ };\n",
+  "tests": [
+    {
+      "name": "delegation",
+      "code": "Car c{\"kia\"};\nc.drive();\nCHECK(c.ready());",
+      "hint": "Car exposes Engine's effect without exposing the Engine."
+    },
+    {
+      "name": "fresh-car",
+      "code": "Car c{\"honda\"};\nCHECK(!c.ready());",
+      "hint": "A new car's engine is not running."
+    },
+    {
+      "name": "model",
+      "code": "Car c{\"kia\"};\nCHECK_EQ(c.model(), \"kia\");",
+      "hint": "Car carries its own state too."
+    }
+  ],
+  "level": "mini-build"
+}

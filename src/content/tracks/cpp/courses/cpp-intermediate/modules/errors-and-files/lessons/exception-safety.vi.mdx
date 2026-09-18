@@ -1,0 +1,26 @@
+Exception safety là mức đảm bảo một hàm đưa ra về trạng thái của nó khi
+một ngoại lệ bay xuyên qua. Ba cấp hữu ích:
+
+- **basic**: bất biến được giữ; không rò rỉ; đối tượng vẫn hủy được —
+  nhưng giá trị có thể là bất cứ giá trị hợp lệ nào.
+- **strong**: lời gọi hoặc hoàn tất hoặc không có tác dụng gì
+  (commit/rollback).
+- **noexcept**: không bao giờ ném; move và destructor nên ở cấp này.
+
+Idiom kinh điển cho đảm bảo strong là *copy-and-swap*: làm phần việc rủi ro
+trên một bản copy, rồi commit bằng move không ném.
+
+```cpp
+Config& operator=(const Config& other) {
+    Config tmp{other};            // có thể ném — *this nguyên vẹn
+    std::swap(data_, tmp.data_);  // commit không ném
+    return *this;
+}
+```
+
+Ngoại lệ bay ra từ đâu mới là vấn đề: giữa `new` và `delete`, một cú ném
+làm rò rỉ; RAII (Module 8) đóng khung cửa đó bằng cách gắn giải phóng vào
+phạm vi. Destructor phải `noexcept` — một `throw` trong lúc unwinding sẽ
+gọi `std::terminate`. Vì vậy `std::vector::erase` với kiểu move-only đòi
+hỏi move constructor có `noexcept`: nếu không, reallocation sẽ rẽ sang
+con đường copy.

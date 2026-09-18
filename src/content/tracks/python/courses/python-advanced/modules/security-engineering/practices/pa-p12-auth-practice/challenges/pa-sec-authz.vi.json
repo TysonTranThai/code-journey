@@ -1,0 +1,14 @@
+{
+  "title": "Sở hữu phép kiểm tra đối tượng",
+  "prompt": "Cài `get_order(session, order_id, admin=False)` với các exception `NotFound`/`Forbidden` và dict `ORDERS` ở mức module (owner 'alice' và 'bob'):\n\n- id lạ → `NotFound('no such order')`\n- `admin=True` → mọi order\n- owner (từ `session['user']`) → order của họ\n- mọi người khác → **`NotFound('no such order')`** — không bao giờ `Forbidden` và không bao giờ trả dữ liệu: một 404 không xác nhận tài nguyên tồn tại (không có oracle dò tìm)\n- phép kiểm tra chỉ được dùng session user; key `as_user` do client cung cấp phải bị BỎ QUA\n\nĐây là IDOR dưới dạng đặc tả thực thi được.",
+  "tests": [
+    {
+      "name": "Owner đọc của mình, người lạ không thấy gì",
+      "hint": "Owner có, người lạ 404, admin tất cả."
+    },
+    {
+      "name": "Tham số không phải chủ thể",
+      "hint": "Danh tính đến từ session; params là dữ liệu, không phải quyền hạn."
+    }
+  ]
+}

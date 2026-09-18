@@ -1,0 +1,29 @@
+## constexpr — "can be constant"
+
+On variables: the initializer must be a constant expression. On functions: the function *may* run at compile time when given constant arguments — and still runs at runtime otherwise. One implementation, both worlds:
+
+```cpp
+constexpr int fib(int n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
+constexpr int F = fib(10);          // compile time
+int x = fib(runtimeInput);          // runtime, same body
+```
+
+## consteval — "must be immediate"
+
+An **immediate function**: every call produces a compile-time constant; a runtime call is a hard error. Use for constructors of "compile-time-only" types and for functions whose result must be baked in:
+
+```cpp
+consteval int square(int n) { return n * n; }
+constexpr int S = square(9);        // OK
+// int y = square(runtimeVal);      // error: not a constant expression
+```
+
+## constinit — "initialized statically, checked at compile time"
+
+`constinit` guarantees **static initialization** (no runtime constructor, no SIOF — static initialization order fiasco) while keeping the variable *mutable*:
+
+```cpp
+constinit std::atomic<unsigned> requests{0};   // zero-init at load, mutable later
+```
+
+The rule of thumb: `constexpr` = value is fixed; `constinit` = initialization is fixed, value is not.

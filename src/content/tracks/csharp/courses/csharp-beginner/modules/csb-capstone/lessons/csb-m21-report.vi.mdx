@@ -1,0 +1,17 @@
+## Số dư và tổng
+
+```csharp
+decimal balance = ledger.Sum(t => t.Dir == Direction.Income ? t.Amount : -t.Amount);
+
+var byCategory = ledger
+    .GroupBy(t => t.Category)
+    .Select(g => new { Category = g.Key, Total = g.Sum(t => t.Amount) })
+    .OrderByDescending(x => x.Total)
+    .ToList();
+```
+
+Phép gập có dấu cho số dư luỹ kế; pipeline GroupBy là báo cáo danh mục. Cả hai đều một lượt qua dữ liệu — các mẫu của bài tổng hợp áp dụng vào miền thật.
+
+## Sao kê
+
+Sao kê tháng ghép chúng lại: lọc tháng, tính thu/chi/số dư, tìm danh mục lớn nhất, lấy 3 mục nổi bật theo số tiền giảm dần. Không gì mới — `Where`/`Sum`/`GroupBy`/`OrderByDescending` của Module 15 phối hợp, và đó là ý nghĩa: capstone kiểm chứng các module trước đã thành phản xạ.

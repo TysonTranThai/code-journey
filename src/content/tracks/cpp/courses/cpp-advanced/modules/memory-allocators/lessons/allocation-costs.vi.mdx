@@ -1,0 +1,18 @@
+## Một phép cấp phát heap thực sự làm gì
+
+`new T[n]` xin bộ cấp phát n*sizeof(T) byte. Tùy bộ cấp phát: tra tìm size-class, có thể khóa, có thể gọi hệ điều hành (mmap/sbrk), và ghi sổ metadata. *Chi phí CPU* là có thật nhưng *chi phí ẩn* lớn hơn: đối tượng mới cấp phát là đối tượng lạnh cache, và vector reallocate thì di chuyển hoặc sao chép mọi phần tử.
+
+## Bốn loại chi phí, theo mức đau
+
+1. **Độ trễ** — chục ns khi nóng, trăm ns khi lạnh, microsecond nếu OS nhúng tay.
+2. **Phân mảnh** — nhiều cấp phát nhỏ với thời điểm sống ngẫu nhiên làm phân mảnh heap; dung lượng tăng dù byte sống không tăng.
+3. **Cache miss** — đuổi con trỏ qua các node rải rác có thể tốn 100+ chu kỳ mỗi bước.
+4. **Giải phóng** — free cũng tốn, và free từng đối tượng với hàng triệu phần tử là đo được.
+
+## Bước nhảy từ beginner sang advanced
+
+Người mới hỏi "new có chậm không?" — không trả lời được. Kỹ sư advanced hỏi: *mỗi thao tác cấp phát bao nhiêu lần, kích thước nào, thời điểm sống ra sao?* Rồi họ đếm. Bộ đếm kiểu `malloc_count` (như trong bài tập module này) biến hành vi cấp phát thành thuộc tính kiểm thử được.
+
+## Cấu trúc thời điểm sống đánh bài sự khéo léo
+
+Nếu 10.000 đối tượng sống và chết cùng nhau: một lần cấp phát arena + một lần free thay cho 20.000 thao tác. Nếu vòng lặp nóng cấp phát mỗi vòng, kéo buffer ra ngoài vòng lặp thường là cả bài tối ưu. Object pool có lợi khi thời điểm sống đan xen khó đoán nhưng kích thước đồng nhất.

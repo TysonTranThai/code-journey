@@ -1,0 +1,49 @@
+## Five problems, five transferable tricks
+
+### Count above threshold — O(n), one pass
+
+```cpp
+int cnt = 0;
+for (long long x : a) if (x > t) ++cnt;
+```
+
+### Second maximum — track two values
+
+```cpp
+long long best = LLONG_MIN, second = LLONG_MIN;
+for (long long x : a) {
+    if (x > best) { second = best; best = x; }
+    else if (x > second && x != best) second = x;
+}
+```
+
+The order matters: promote before comparing the newcomer to `second`.
+Duplicates make `x != best` necessary.
+
+### Unique-in-sorted — the write pointer
+
+For a **sorted** array, keep unique values in place with a write index:
+
+```cpp
+sort(a.begin(), a.end());
+int w = 0;
+for (int i = 0; i < n; ++i)
+    if (i == 0 || a[i] != a[w - 1]) a[w++] = a[i];
+// a[0 .. w-1] are the unique values; w = distinct count
+```
+
+This is the in-place core of many "count distinct" answers (module 4
+shows the marking alternative).
+
+### Two-pointer reverse
+
+```cpp
+for (int i = 0, j = n - 1; i < j; ++i, --j) swap(a[i], a[j]);
+```
+
+Two indices closing in — the pattern returns in module 17.
+
+### Prefix max — the running champion
+
+`pre[i] = max(pre[i-1], a[i])` — a one-line loop that becomes a building
+block for many harder problems.

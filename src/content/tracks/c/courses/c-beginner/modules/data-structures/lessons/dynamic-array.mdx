@@ -1,0 +1,39 @@
+## The three ingredients
+
+```c
+typedef struct {
+    int *data;      // heap buffer (malloc/realloc)
+    int size;       // elements used
+    int cap;        // elements allocated
+} DArray;
+```
+
+The invariant that keeps it honest: `0 <= size <= cap`, and `data` either
+points at a valid allocation of `cap` ints or is NULL.
+
+## Growing by doubling
+
+```c
+int da_push(DArray *a, int v) {
+    if (a->size == a->cap) {
+        int newcap = a->cap == 0 ? 4 : a->cap * 2;
+        int *tmp = realloc(a->data, newcap * sizeof(int));
+        if (tmp == NULL) return 0;        // old buffer still valid
+        a->data = tmp;
+        a->cap = newcap;
+    }
+    a->data[a->size++] = v;
+    return 1;
+}
+```
+
+Doubling makes N pushes cost O(N) copies TOTAL — the "amortized O(1)" push.
+
+## Why this structure wins most of the time
+
+- index access is O(1) — a single addition and multiply
+- memory is contiguous — cache-friendly
+- the only expensive operation is insertion in the MIDDLE (O(n) shifting)
+
+Most beginner code should reach for a dynamic array first; fancier structures
+must justify themselves.

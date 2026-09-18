@@ -1,0 +1,16 @@
+## Bảo đảm bạn xây dựng trên đó
+
+Hành vi quan sát được — đọc volatile, ghi file, gọi hàm I/O — phải được giữ nguyên xác. Mọi thứ không quan sát được được sắp xếp lại, gộp, hoặc xóa *miễn là kết quả quan sát được không đổi*. UB ở bất kỳ đâu xóa bỏ chữ 'miễn là'.
+
+## Gập hằng trong thực tế
+
+```c
+int folded(void)     { int a = 21; int b = 2; return a * b; }
+int unfolded(void)   { volatile int a = 21; volatile int b = 2; return a * b; }
+```
+
+Ở -O2 hàm đầu trả hằng 42 không cần lệnh nhân; hàm hai phải load, nhân, store lúc chạy. Kết quả quan sát được như nhau — hợp đồng đang hoạt động.
+
+## Vì sao kiểm tra biến mất
+
+Kiểm tra NULL sống sót vì hủy tham chiếu NULL chỉ là UB *nếu nó xảy ra* — ở đây có chặn. Nhưng một lệnh ghi `*p = 1` không kiểm tra trước đó cho phép trình tối ưu hóa xóa phép thử `p != NULL` về sau: con trỏ NULL không thể đã bị hủy tham chiếu. Học *nhìn thấy* các phép xóa này trong assembly (mô-đun 13) là lúc luật trở nên cụ thể.

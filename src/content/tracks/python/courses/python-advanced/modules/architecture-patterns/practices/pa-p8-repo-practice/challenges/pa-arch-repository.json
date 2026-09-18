@@ -1,0 +1,21 @@
+{
+  "id": "pa-arch-repository",
+  "title": "InMemoryOrderRepository",
+  "prompt": "Implement `InMemoryOrderRepository`:\n\n- nested exception `OrderNotFound`\n- `save(order)` stores a COPY of the order dict (keyed by `order['id']`)\n- `get(order_id)` returns a COPY; unknown id raises `OrderNotFound`\n- `all()` returns a list of copies\n\nGraded probe: mutating the dict you received from `get()` must NOT change repository state — storage leaks through shared references are the classic repository bug.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class InMemoryOrderRepository:\n    # TODO",
+  "tests": [
+    {
+      "name": "copy semantics on the way in and out",
+      "code": "repo = InMemoryOrderRepository()\norder = {'id': 'o1', 'total': 10}\nrepo.save(order)\norder['total'] = 999  # caller mutates their own dict\nstored = repo.get('o1')\nassert stored['total'] == 10, f'stored: {stored}'\nstored['total'] = 42   # caller mutates the returned copy\nassert repo.get('o1')['total'] == 10, 'repository state must not leak'\nprint('ok')",
+      "hint": "dict(order) on save and on get — defensive copies both ways."
+    },
+    {
+      "name": "domain error for unknown ids",
+      "code": "repo = InMemoryOrderRepository()\ntry:\n    repo.get('nope')\nexcept InMemoryOrderRepository.OrderNotFound:\n    pass\nelse:\n    raise AssertionError('unknown id must raise OrderNotFound')\nassert repo.all() == []\nprint('ok')",
+      "hint": "Translate KeyError into the domain exception."
+    }
+  ],
+  "level": "guided"
+}

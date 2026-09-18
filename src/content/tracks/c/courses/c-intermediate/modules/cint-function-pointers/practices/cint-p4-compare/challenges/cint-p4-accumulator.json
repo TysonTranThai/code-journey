@@ -1,0 +1,16 @@
+{
+  "id": "cint-p4-accumulator",
+  "title": "Reduce, the C Way",
+  "prompt": "Implement folds over int arrays:\n\n```c\n/* left fold: acc = fn(acc, arr[i]) for i in [0, n), starting from init */\nint fold_i(const int *arr, size_t n, int init, int (*fn)(int acc, int v));\n/* convenience: sum via fold_i */\nint sum_i(const int *arr, size_t n);\n/* max via fold_i (n == 0 returns INT_MIN) */\nint max_i(const int *arr, size_t n);\n```\n\nThe boilerplate provides fn_add, fn_max as fold functions.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <limits.h>\nint fn_add(int acc, int v) { return acc + v; }\nint fn_max(int acc, int v) { return acc > v ? acc : v; }\nint double_it(int v) { return v * 2; }\nint is_even(int v) { return v % 2 == 0; }\n",
+  "tests": [
+    {
+      "name": "fold semantics",
+      "code": "\nint a[] = {1, 2, 3, 4};\nCHECK_EQ(fold_i(a, 4, 0, &fn_add), 10);\nCHECK_EQ(fold_i(a, 4, 100, &fn_add), 110);\nCHECK_EQ(fold_i(a, 4, INT_MIN, &fn_max), 4);\nCHECK_EQ(sum_i(a, 4), 10);\nCHECK_EQ(max_i(a, 4), 4);\nCHECK_EQ(sum_i(NULL, 0), 0);\nCHECK_EQ(max_i(NULL, 0), INT_MIN);\n",
+      "hint": "fold_i is a for loop carrying acc; sum/max delegate with the right fn and init."
+    }
+  ],
+  "level": "mini-build"
+}

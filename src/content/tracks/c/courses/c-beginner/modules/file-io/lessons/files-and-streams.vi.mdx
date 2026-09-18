@@ -1,0 +1,31 @@
+## Mở và đóng
+
+```c
+#include <stdio.h>
+
+FILE *f = fopen("notes.txt", "r");   // chế độ: bạn định dùng thế nào
+if (f == NULL) {
+    perror("notes.txt");             // TẠI SAO thất bại, ra stderr
+    return 1;
+}
+// ... dùng f ...
+fclose(f);                           // mỗi lần mở ứng một lần đóng
+```
+
+`fopen` trả NULL khi thất bại — thiếu tệp, không quyền, đường dẫn sai. Giả
+định thành công vô điều kiện là dấu hiệu của người mới; hãy kiểm tra.
+
+## Các chế độ quan trọng lúc này
+
+| chế độ | nghĩa | nếu tệp đã có | nếu thiếu |
+|--------|-------|----------------|------------|
+| "r"  | đọc    | đọc từ đầu | NULL |
+| "w"  | ghi    | BỊ CẮT RỖNG | tạo mới |
+| "a"  | nối    | ghi vào cuối | tạo mới |
+
+"w" phá hủy nội dung cũ ngay khi mở. "a" giữ nguyên nó.
+
+## Những luồng bạn đã dùng
+
+`stdout` và `stderr` cũng là FILE*. `printf(...)` là
+`fprintf(stdout, ...)`. Vì thế họ fprintf/ffgets dùng được ở khắp nơi.

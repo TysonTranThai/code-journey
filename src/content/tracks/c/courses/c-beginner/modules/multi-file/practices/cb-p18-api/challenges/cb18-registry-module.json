@@ -1,0 +1,31 @@
+{
+  "id": "cb18-registry-module",
+  "title": "Name Registry",
+  "prompt": "Build a registry of up to 16 names: private storage, public `int reg_add(const char *name)` (1 = added, 0 = full or NULL), `int reg_has(const char *name)` (1 if present), `int reg_count(void)`.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <string.h>\n",
+  "tests": [
+    {
+      "name": "add and has",
+      "code": "reg_clear();\nCHECK_EQ(reg_add(\"ana\"), 1);\nCHECK_EQ(reg_has(\"ana\"), 1);\nCHECK_EQ(reg_has(\"bob\"), 0);",
+      "hint": "Add then query."
+    },
+    {
+      "name": "duplicate rejected",
+      "code": "reg_clear();\nreg_add(\"ana\");\nCHECK_EQ(reg_add(\"ana\"), 0);\nCHECK_EQ(reg_count(), 1);",
+      "hint": "Same name twice: the second fails."
+    },
+    {
+      "name": "null name",
+      "code": "CHECK_EQ(reg_add(NULL), 0);",
+      "hint": "NULL is never stored."
+    },
+    {
+      "name": "count",
+      "code": "reg_clear();\nreg_add(\"a\"); reg_add(\"b\");\nCHECK_EQ(reg_count(), 2);",
+      "hint": "Count tracks additions."
+    }
+  ],
+  "level": "independent"
+}

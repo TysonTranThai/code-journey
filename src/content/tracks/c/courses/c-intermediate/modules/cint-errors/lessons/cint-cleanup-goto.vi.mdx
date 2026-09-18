@@ -1,0 +1,55 @@
+## Vấn đề: N tài nguyên, 2^N đường thoát
+
+```c
+int process(const char *in, const char *out) {
+    FILE *fi = fopen(in, "rb");
+    if (!fi) return -1;
+    unsigned char *buf = malloc(SIZE);
+    if (!buf) { fclose(fi); return -1; }        /* lặp lại cho mỗi tài nguyên */
+    FILE *fo = fopen(out, "wb");
+    if (!fo) { free(buf); fclose(fi); return -1; }
+    /* ... thân: mọi return sớm phải free đúng các thứ đã lấy ... */
+}
+```
+
+Ba tài nguyên nghĩa là mỗi return sớm mới phải nhớ chính xác danh sách
+dọn dẹp của mọi thứ đã lấy — trò chơi chuột chũi trong code review. Câu
+trả lời idiomatic của C là **một lối vào, một lối ra, dọn dẹp ngược thứ
+tự ở đáy**:
+
+```c
+int process(const char *in, const char *out) {
+    int rc = -1;
+    FILE *fi = NULL, *fo = NULL;
+    unsigned char *buf = NULL;
+
+    fi = fopen(in, "rb");
+    if (!fi) goto cleanup;
+    buf = malloc(SIZE);
+    if (!buf) goto cleanup;
+    fo = fopen(out, "wb");
+    if (!fo) goto cleanup;
+
+    rc = do_work(fi, buf, fo);     /* đường hạnh phúc */
+
+cleanup:
+    free(buf);                     /* free(NULL) là no-op: an toàn */
+    if (fo) fclose(fo);
+    if (fi) fclose(fi);
+    return rc;
+}
+```
+
+`goto` ở đây không phải từ xấu: xử lý lỗi của Linux kernel xây trên đúng
+mẫu này, mọi tầng, mọi nơi. Kỷ luật nằm ở *hướng* — nhảy tới trước tới
+một label dọn dẹp duy nhất, không bao giờ nhảy ngược, không bao giờ nhảy
+ra khỏi ngữ cảnh cấp phát. Biến được khởi tạo về trạng thái rỗng
+(`NULL`, 0) để khối dọn dẹp đúng ngay cả khi thất bại xảy ra trước khi
+lấy tài nguyên.
+
+## Sao không lồng if?
+
+Lồng if chạy với hai tài nguyên và sụp ở bốn. Khối cleanup còn là *nơi
+duy nhất để soát*: mỗi tài nguyên xuất hiện đúng một lần, theo thứ tự
+ngược lúc lấy — phép ghép cặp soát bằng mắt được. Tính chất đó chính là
+nghĩa của "API bền vững" trong C.

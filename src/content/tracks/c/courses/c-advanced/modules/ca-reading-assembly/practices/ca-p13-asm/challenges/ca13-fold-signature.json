@@ -1,0 +1,21 @@
+{
+  "id": "ca13-fold-signature",
+  "title": "Folding Leaves No Multiply",
+  "prompt": "Implement `int folded_const(void)` returning 21 * 2 via two automatic locals, and `int folded_param(int x)` returning x * 2. The first's dump must contain no runtime multiply (the test verifies the *value* 42 and that repeated calls agree — folding is transparent to behavior); the second cannot fold (its argument is runtime data). Explain the difference in your hint text.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "constant folds to immediate",
+      "code": "CHECK_EQ(folded_const(), 42);\nCHECK_EQ(folded_const(), folded_const());",
+      "hint": "21 * 2 with automatic locals is compile-time constant — behavior identical, dump smaller."
+    },
+    {
+      "name": "parameter cannot fold",
+      "code": "CHECK_EQ(folded_param(21), 42);\nCHECK_EQ(folded_param(-3), -6);",
+      "hint": "The multiply must happen at runtime; the dump carries a real instruction for it."
+    }
+  ],
+  "level": "guided"
+}

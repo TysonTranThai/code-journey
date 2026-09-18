@@ -1,0 +1,39 @@
+`static` means "belongs to the class, not to any object". It shows up in
+three places a beginner touches immediately.
+
+**Static methods** are callable without an instance:
+`Math.max(3, 9)` works because `max` is static; every utility-style method
+in this module is static for the same reason. Inside a `static` method you
+can call other static methods of the same class directly — but NOT instance
+members, because there is no instance yet. That is the real rule behind the
+beginner error `"non-static method cannot be referenced from a static
+context"`: `main` is static, so it can only reach static things (or objects
+it creates).
+
+**Static fields** are class-wide values:
+
+```java
+static final double VAT_RATE = 0.1;      // constant shared by everyone
+static int invocationCount = 0;          // mutable class-wide state (careful!)
+```
+
+`static final` is Java's way to spell a constant: fixed at creation, shared
+by all, named in SCREAMING_SNAKE_CASE by convention. Mutable static fields
+are global variables wearing a suit — a handful of honest uses (counters,
+shared configuration) and a universe of trouble; avoid them in application
+code.
+
+**Static import** lets you skip the class name for heavily used utilities:
+
+```java
+import static java.lang.Math.max;
+...
+int m = max(a, b);
+```
+
+Use sparingly — readability first. The decision rule: something is static
+when it needs no per-object memory — it transforms its inputs, consults
+constants, and returns. The moment behavior depends on per-object state, it
+belongs to objects (Module 7).
+
+**Next:** overloading — one name, several signatures.

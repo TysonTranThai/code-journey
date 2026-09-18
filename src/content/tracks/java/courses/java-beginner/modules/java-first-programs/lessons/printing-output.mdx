@@ -1,0 +1,51 @@
+`System.out.println` prints and moves to a new line; `System.out.print`
+prints without one. You can print values of any type, and join text with
+values using the `+` operator:
+
+```java
+String name = "Ada";
+int age = 36;
+System.out.println("Name: " + name);
+System.out.println("Age next year: " + (age + 1));
+System.out.print("no newline here");
+System.out.println(" ...this continues the same line");
+```
+
+Output:
+
+```text
+Name: Ada
+Age next year: 37
+no newline here ...this continues the same line
+```
+
+Two details worth noticing:
+
+- `"Age next year: " + (age + 1)` — the parentheses matter. Without them,
+  `+` is read left-to-right and `1` would be glued onto the text as the
+  *character* 1 (`...: 361`).
+- Java has a modern formatting option, `String.formatted(...)` (Java 15+),
+  and the older `System.out.printf`:
+
+```java
+System.out.printf("Total: $%.2f%n", 19.991);   // Total: $19.99
+System.out.println("Hi %s, you are %d".formatted("Ada", 36));
+```
+
+`%.2f` means "a decimal number with 2 places", `%s` a string, `%d` a whole
+number, `%n` a newline. Format strings are the tool of choice when output
+needs to line up in columns.
+
+For a multi-line piece of text, a **text block** (Java 15+) keeps the shape
+of the text in your source:
+
+```java
+String menu = """
+    1) Coffee
+    2) Tea
+    3) Exit
+    """;
+System.out.println(menu);
+```
+
+**Next:** a tour of Java's data types.

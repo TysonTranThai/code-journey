@@ -1,0 +1,26 @@
+{
+  "id": "javi-p3-generic-max",
+  "title": "Generic max() with a Bound",
+  "prompt": "Implement `static <T extends Comparable<T>> T max(List<T> xs)` —\nreturns the largest element per natural ordering. Empty or null list\nthrows IllegalArgumentException. Then two call sites:\n- `static Integer maxInt(List<Integer> xs)` delegating to max\n- `static String maxString(List<String> xs)` delegating to max\n\nThis is the bound doing real work: compareTo would not compile without\n`T extends Comparable<T>`.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "max of integers",
+      "code": "\ncheckEq(Solution.maxInt(List.of(3, 9, 4)), 9, \"max int\");\n",
+      "hint": "Natural ordering through the Comparable bound."
+    },
+    {
+      "name": "max of strings",
+      "code": "\ncheckEq(Solution.maxString(List.of(\"pear\", \"apple\", \"plum\")), \"plum\", \"max string\");\n",
+      "hint": "String is Comparable<String> — the bound admits it."
+    },
+    {
+      "name": "empty input fails fast",
+      "code": "\ntry { Solution.maxInt(List.of()); checkTrue(false, \"must throw\"); }\ncatch (IllegalArgumentException e) { checkTrue(true, \"threw\"); }\n",
+      "hint": "Empty (or null) list throws IllegalArgumentException."
+    }
+  ],
+  "level": "independent"
+}

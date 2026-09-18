@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m12-validation",
+  "title": "Capstone seam 3: the validation boundary",
+  "prompt": "Complete `Catalog::validate(const NewBook&) const` returning `std::optional<AddError>`: `EmptyTitle` for an empty title, `BadQuantity` for quantity <= 0, `Duplicate` when the title already exists in the catalog, and `std::nullopt` when the book may be added. Check in that order — a test feeds an empty title with quantity 0 and expects EmptyTitle.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <optional>\n#include <string>\n#include <vector>\n#include <iostream>\n\nstruct NewBook {\n    std::string title;\n    int quantity;\n};\n\nenum class AddError { EmptyTitle, BadQuantity, Duplicate };\n\n// Complete class Catalog { validate }\n",
+  "tests": [
+    {
+      "name": "order-matters",
+      "code": "Catalog c{std::vector<std::string>{\"existing\"}};\nauto e = c.validate(NewBook{\"\", 0});\nCHECK(e.has_value());\nCHECK(e.value() == AddError::EmptyTitle);",
+      "hint": "Empty title wins over bad quantity — order is the contract."
+    },
+    {
+      "name": "duplicate",
+      "code": "Catalog c{std::vector<std::string>{\"existing\"}};\nauto e = c.validate(NewBook{\"existing\", 1});\nCHECK(e.has_value());\nCHECK(e.value() == AddError::Duplicate);",
+      "hint": "Existing titles are refused."
+    },
+    {
+      "name": "valid",
+      "code": "Catalog c{std::vector<std::string>{\"a\"}};\nCHECK(!c.validate(NewBook{\"fresh\", 2}).has_value());",
+      "hint": "A clean book yields nullopt — nothing blocks the add."
+    }
+  ],
+  "level": "independent"
+}

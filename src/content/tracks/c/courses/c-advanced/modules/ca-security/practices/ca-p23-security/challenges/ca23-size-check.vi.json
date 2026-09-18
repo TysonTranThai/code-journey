@@ -1,0 +1,18 @@
+{
+  "title": "Số học kích thước được kiểm",
+  "prompt": "ISO C. Cài `int alloc_safe(size_t count, size_t elemsz, size_t *out_bytes)` — tính count*elemsz để cấp phát; khi phép nhân tràn, hoặc count/elemsz bằng 0 (từ chối yêu cầu cỡ không), trả -1 và không đụng *out_bytes; ngược lại lưu tích và trả 0. (Trên nền tảng này có thể phát hiện tràn qua phép chia: count > SIZE_MAX / elemsz.)",
+  "tests": [
+    {
+      "name": "tính cỡ thường",
+      "hint": "Phép nhân thuần: 100 phần tử, mỗi phần tử 64 byte."
+    },
+    {
+      "name": "phát hiện tràn",
+      "hint": "(size_t)-1 nhân 2 sẽ wrap: kiểm tra bằng chia chặn được và *out_bytes không bị đụng."
+    },
+    {
+      "name": "không từ chối",
+      "hint": "Cấp phát cỡ không là lỗi người gọi: từ chối, không bao giờ phát con trỏ 0 byte cho vòng lặp."
+    }
+  ]
+}

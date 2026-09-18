@@ -1,0 +1,15 @@
+## Cổng kiểm tra (mini-build)
+
+Pipeline fetch đồng thời bền bỉ trên `CjFlaky.FetchAsync(key, delayMs, ct)`
+(có sẵn trong code khởi đầu; key `slow*` treo 5 s):
+
+1. `FetchAll(IEnumerable<string> keys, TimeSpan perCall, CancellationToken ct)`
+   → khởi tạo MỌI fetch mô phỏng cùng lúc (fan-out).
+2. Mỗi lời gọi được time-box bằng `perCall` — backend treo bị BỎ, không chờ.
+   Kết quả: `"key=ok"` hoặc `"key=timeout"`.
+3. Caller hủy thì dừng ngay với `OperationCanceledException` dù fetch vẫn
+   đang treo.
+4. `Report(results)` định dạng kết quả xếp theo key: `"a=ok|b=timeout"`.
+
+Test đo thời gian hào phóng (< 1 s cho treo 5 s) — cái được chấm là cấu
+trúc: start-all-then-await, WaitAsync từng lời gọi, token xuyên suốt.

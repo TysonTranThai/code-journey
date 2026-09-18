@@ -1,0 +1,21 @@
+{
+  "id": "pi8-tx-unique",
+  "title": "Unique Means Unique",
+  "prompt": "Implement add_user(conn, email) inserting into users(id INTEGER PRIMARY KEY, email TEXT NOT NULL UNIQUE). A duplicate email must raise ValueError('duplicate email') — translate the sqlite3.IntegrityError (module 5 chaining!).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import sqlite3\n\ndef add_user(conn, email):\n    pass\n",
+  "tests": [
+    {
+      "name": "first insert succeeds",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE users (id INTEGER PRIMARY KEY, email TEXT NOT NULL UNIQUE)')\nassert add_user(conn, 'a@x.io') == 1",
+      "hint": "Plain parameterized insert; return lastrowid."
+    },
+    {
+      "name": "duplicate translated",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE users (id INTEGER PRIMARY KEY, email TEXT NOT NULL UNIQUE)')\nadd_user(conn, 'a@x.io')\ntry:\n    add_user(conn, 'a@x.io')\n    failed = False\nexcept ValueError as e:\n    failed = 'duplicate email' in str(e)\nassert failed",
+      "hint": "Catch sqlite3.IntegrityError, raise ValueError from it."
+    }
+  ],
+  "level": "independent"
+}

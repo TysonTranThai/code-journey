@@ -1,0 +1,48 @@
+Beginners write `obj.age = 300` and hope for the best. Intermediate
+developers make **invalid states impossible** — without giving up the simple
+attribute syntax. That is exactly what `@property` is for:
+
+```python
+class Person:
+    def __init__(self, age):
+        self.age = age          # goes through the setter below!
+
+    @property
+    def age(self):
+        return self._age
+
+    @age.setter
+    def age(self, value):
+        if not (0 <= value <= 150):
+            raise ValueError(f"age must be 0..150, got {value}")
+        self._age = value
+```
+
+Now `Person(-5)` raises immediately, and so does `p.age = -1`. The
+convention: the public name `age` is a property; the raw value lives in
+`_age` (single underscore = internal).
+
+## Read-only computed properties
+
+A property with only a getter is **read-only** — perfect for values derived
+from real state:
+
+```python
+class Rectangle:
+    def __init__(self, w, h):
+        self.w, self.h = w, h
+
+    @property
+    def area(self):
+        return self.w * self.h      # no setter: cannot assign
+```
+
+`r.area = 99` now raises `AttributeError` — a good kind of error, because
+area was never independent state.
+
+## Why properties instead of get_x()/set_x()?
+
+Python style is to expose attributes directly and *upgrade to properties
+later if rules appear* — callers never change. Java-style getters/setters on
+every field are noise. Validate at the boundary where bad data enters, and
+keep the rest plain.

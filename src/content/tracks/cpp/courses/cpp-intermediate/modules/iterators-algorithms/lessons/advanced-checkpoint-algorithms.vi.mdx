@@ -1,0 +1,10 @@
+`running_avg` là bài kiểm tra của module vì nó gộp mọi thứ: một
+`std::transform` ghi vào kết quả đã cấp phát sẵn, một lambda capture prefix
+chạy dần **bằng reference**, và phép chia đúng cho số phần tử đã thấy —
+không phải tổng kích thước.
+
+Capture-bằng-reference là quyết định chịu lực: lambda phải nhớ trạng thái
+giữa các lần gọi. Câu trả lời sai kinh điển là chia prefix cho `v.size()`
+mọi lần — nghe hợp lý và fail đúng một test.
+
+Trước khi code: vector rỗng trả về gì? Hãy quyết định, rồi để test chứng minh.

@@ -1,0 +1,12 @@
+## Every byte of a program lives in a section
+
+- **.text** — executable code. Read-only at runtime; self-modifying it is UB and modern kernels enforce it.
+- **.data** — initialized globals (`int x = 5;`). Occupies file space.
+- **.bss** — zero-initialized globals (`int y;`). Occupies *no file space*: the loader simply zeroes pages at load. A million-byte `static char big[1000000];` costs nothing on disk.
+- **.rodata** — string literals and const data. Your `"hello"` literals live here; writing to them is the UB from module 2.
+
+`size a.out` prints the totals; `nm a.out` lists which symbol landed where (the T/D/B letters from module 10).
+
+## Relocation: why .o files are not runnable
+
+An object file's calls and global references are *placeholders* — the final addresses do not exist until the linker lays sections out. Relocation entries record 'patch this byte sequence with the address of that symbol'. That is why linking two objects fixes what compiling them separately could not.

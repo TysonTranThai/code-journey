@@ -1,0 +1,26 @@
+{
+  "id": "pi8-repo-tasks",
+  "title": "Task Repository",
+  "prompt": "Implement TaskRepository(conn) with methods: add(title) -> int (insert, return id), get(task_id) -> dict | None ({id, title, done}), complete(task_id) -> bool (mark done, True if a row changed), and all() -> list[dict] ordered by id. All SQL parameterized.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import sqlite3\n\nclass TaskRepository:\n    def __init__(self, conn):\n        pass\n\n    def add(self, title):\n        pass\n\n    def get(self, task_id):\n        pass\n\n    def complete(self, task_id):\n        pass\n\n    def all(self):\n        pass\n",
+  "tests": [
+    {
+      "name": "add and get round-trip",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.row_factory = sqlite3.Row\nconn.execute('CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT NOT NULL, done INTEGER DEFAULT 0)')\nconn.row_factory = sqlite3.Row\nrepo = TaskRepository(conn)\ntid = repo.add('write docs')\nassert repo.get(tid) == {'id': tid, 'title': 'write docs', 'done': 0}\ntid2 = repo.add(\"it's a trap\")\nassert repo.get(tid2)['title'] == \"it's a trap\", 'a quote in the title must be stored, not break the SQL'\n",
+      "hint": "INSERT returning lastrowid; SELECT one row → dict."
+    },
+    {
+      "name": "complete flips and reports",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.row_factory = sqlite3.Row\nconn.execute('CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT NOT NULL, done INTEGER DEFAULT 0)')\nconn.row_factory = sqlite3.Row\nrepo = TaskRepository(conn)\ntid = repo.add('x')\nassert repo.complete(tid) is True\nassert repo.complete(tid) is False\nassert repo.get(tid)['done'] == 1",
+      "hint": "UPDATE ... WHERE id = ?; rowcount tells whether a row changed (already-done → False)."
+    },
+    {
+      "name": "all ordered by id",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.row_factory = sqlite3.Row\nconn.execute('CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT NOT NULL, done INTEGER DEFAULT 0)')\nconn.row_factory = sqlite3.Row\nrepo = TaskRepository(conn)\nrepo.add('a'); repo.add('b')\nassert [t['title'] for t in repo.all()] == ['a', 'b']",
+      "hint": "SELECT ... ORDER BY id, mapped to dicts."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "pi6-stream-longest",
+  "title": "Longest Line, Streaming",
+  "prompt": "Implement longest_line(path) returning the longest line (stripped of the trailing newline) of a text file WITHOUT loading the whole file — iterate lazily. Empty file returns ''.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "from pathlib import Path\n\ndef longest_line(path):\n    pass\n",
+  "tests": [
+    {
+      "name": "finds the longest",
+      "code": "from pathlib import Path\nimport tempfile\np = Path(tempfile.mkdtemp()) / 'log.txt'\np.write_text('short' + chr(10) + 'a much longer line here' + chr(10) + 'mid', encoding='utf-8')\nassert longest_line(p) == 'a much longer line here'",
+      "hint": "Track the max while iterating the file object directly."
+    },
+    {
+      "name": "empty file",
+      "code": "from pathlib import Path\nimport tempfile\np = Path(tempfile.mkdtemp()) / 'empty.txt'\np.write_text('', encoding='utf-8')\nassert longest_line(p) == ''",
+      "hint": "No lines → default ''."
+    },
+    {
+      "name": "streams instead of slurping",
+      "code": "from pathlib import Path\nimport tempfile\np = Path(tempfile.mkdtemp()) / 'big.txt'\np.write_text(chr(10).join(['l' * i for i in range(1, 2000)]), encoding='utf-8')\ndef _no_slurp(self, *a, **k):\n    raise AssertionError('read_text() slurps the whole file - stream line by line instead')\nPath.read_text = _no_slurp\nassert longest_line(p) == 'l' * 1999\n",
+      "hint": "Track the longest line as you read; never load the whole file at once."
+    }
+  ],
+  "level": "guided"
+}

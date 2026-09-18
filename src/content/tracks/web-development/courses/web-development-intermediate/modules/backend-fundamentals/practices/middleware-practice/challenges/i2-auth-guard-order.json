@@ -1,0 +1,20 @@
+{
+  "id": "i2-auth-guard-order",
+  "title": "Guard Ordering",
+  "prompt": "Write `securePipeline(config)` returning the correctly ordered middleware names for an authenticated API from this pool: \"logger\", \"bodyParser\", \"auth\", \"rateLimiter\", \"router\". Rules: logger runs before everything; bodyParser before auth (auth may read tokens from a parsed body); auth before router; rateLimiter before auth (cheap rejection first).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function securePipeline(config) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "canonical order produced",
+      "code": "const fn = new Function(code + \"\\nreturn { securePipeline };\");\nconst { securePipeline } = fn();\nconst out = securePipeline({});\nif (out.join(\",\") !== \"logger,bodyParser,rateLimiter,auth,router\") throw new Error(\"The lesson's order.\");\n",
+      "hint": "It's a fixed answer — but justify each adjacent pair to yourself."
+    },
+    {
+      "name": "optional pieces are omitted",
+      "code": "const fn = new Function(code + \"\\nreturn { securePipeline };\");\nconst { securePipeline } = fn();\nconst out = securePipeline({ public: true });\nif (!out.includes(\"auth\") === false && out.includes(\"auth\")) {\n  // public routes keep auth in the list only if config asks; default keeps it\n}\nif (out[0] !== \"logger\") throw new Error(\"Logger always first.\");\n",
+      "hint": "Public config drops nothing here — just don't reorder."
+    }
+  ]
+}

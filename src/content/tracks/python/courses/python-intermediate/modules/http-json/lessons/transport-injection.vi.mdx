@@ -1,0 +1,41 @@
+Đây là hình dạng chuyên nghiệp khiến code HTTP kiểm thử được mà không cần
+mạng — chính ý tưởng dependency-injection của module 2 và 7, áp dụng cho
+transport:
+
+```python
+import json
+import urllib.request
+
+def fetch_json(url: str, opener=None) -> dict:
+    """opener(url) -> đối tượng có .read() -> bytes. Mặc định là urllib thật."""
+    if opener is None:
+        opener = urllib.request.urlopen     # transport thật, mạng thật
+    with opener(url) as response:
+        return json.loads(response.read())
+```
+
+Trong production, người gọi bỏ qua `opener` và mạng thật được dùng. Trong
+test, một transport giả chỉ là hai dòng:
+
+```python
+class FakeResponse:
+    def __init__(self, payload: bytes):
+        self._payload = payload
+    def read(self):
+        return self._payload
+
+def test_fetch():
+    data = fetch_json("http://x", opener=lambda url: FakeResponse(b'{"ok": true}'))
+    assert data == {"ok": True}
+```
+
+## Vì sao cách này hơn mock nội bộ
+
+Với injection, hàm đang được test không bao giờ biết mình đang trong test —
+không phải nhớ đường patch, không vỡ khi refactor bố cục module. Nó còn ép
+thiết kế trung thực: nếu bạn *không thể* tiêm transport, hàm đó đang làm
+quá nhiều việc.
+
+Các công cụ trong ngành (`requests`, `httpx`) xây trên cùng ý tưởng này với
+nhiều tính năng hơn (session, retry, base URL). Mẫu hình chuyển giao trọn
+vẹn — trên máy của bạn, `pip install httpx` và kiến trúc vẫn y nguyên.

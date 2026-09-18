@@ -1,0 +1,41 @@
+Xóa một đối tượng derived qua pointer của base mà không có **virtual
+destructor** là hành vi không xác định — thường thì destructor của derived
+không bao giờ chạy và tài nguyên bị rò rỉ.
+
+```cpp
+#include <iostream>
+
+class BaseBad {
+public:
+    ~BaseBad() { std::cout << "BaseBad dtor\n"; }       // KHÔNG virtual
+};
+
+class DerivedBad : public BaseBad {
+public:
+    ~DerivedBad() { std::cout << "DerivedBad dtor\n"; } // không bao giờ chạy qua Base*
+};
+
+class BaseGood {
+public:
+    virtual ~BaseGood() = default;                       // virtual: chuỗi đúng
+};
+
+class DerivedGood : public BaseGood {
+public:
+    ~DerivedGood() { std::cout << "DerivedGood dtor\n"; }
+};
+```
+
+## Quy tắc, nói một lần
+
+**Bất kỳ class nào định bị xóa đa hình phải có destructor ảo public.** Nếu
+một kiểu không nhằm làm base, hãy giữ destructor non-virtual (và tốt nhất là
+thêm `final` cho class). Chi phí của `virtual ~T() = default` là một con trỏ
+vtable; chi phí của việc quên nó là rò rỉ và hành vi không xác định.
+
+## Khi không bị xóa qua base*
+
+Nếu ownership không bao giờ đi qua pointer của base — thuần value semantics,
+hoặc `std::unique_ptr<Derived>` với deleter có kiểu — thì không bắt buộc
+virtual destructor. Nhưng interface sẽ ít rò rỉ hơn nếu bạn đơn giản làm theo
+quy tắc: thiết kế một base → `virtual ~Base() = default;`, không ngoại lệ.

@@ -1,0 +1,21 @@
+{
+  "id": "ca13-strength-reduction",
+  "title": "Shifts for Powers of Two",
+  "prompt": "Implement `unsigned int by_shift(unsigned int x)` returning x * 8 using a left shift, and `unsigned int by_mul(unsigned int x)` returning x * 8 with multiplication. Values agree for every input below 2^29 (no overflow); the *dump* differs — the test pins the arithmetic contract, your hint explains the emission difference.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "shift equals multiply",
+      "code": "CHECK_EQ(by_shift(12345u), by_mul(12345u));\nCHECK_EQ(by_shift(0u), 0u);",
+      "hint": "x * 8 == x << 3 for all x without overflow — the compiler knows this too."
+    },
+    {
+      "name": "large values agree",
+      "code": "CHECK_EQ(by_shift(268435455u), 2147483640u);",
+      "hint": "2^28 - 1 times 8 = 2^31 - 8, still within unsigned range."
+    }
+  ],
+  "level": "independent"
+}

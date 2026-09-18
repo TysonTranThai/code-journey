@@ -37,7 +37,7 @@ async function solveChallenge(page: import("@playwright/test").Page) {
   await page.locator(".monaco-editor .view-line").first().click();
   await page.keyboard.press("ControlOrMeta+a");
   await page.keyboard.insertText("<h1>My First Page</h1>");
-  await page.getByRole("button", { name: /run code/i }).click();
+  await page.getByRole("button", { name: /submit/i }).click();
   // First run in a session pays the sandbox container cold start inside the
   // worker, so allow a generous window before declaring the verdict missing.
   // The banner renders in the aria-live status region AND the output panel.
@@ -60,12 +60,17 @@ test("critical path: register → browse → run challenge → verdict → dashb
   );
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 
-  // Challenge from the Practice section.
+  // Practice hub from the lesson's callout, then the challenge.
+  await page
+    .getByRole("link", { name: /practice/i })
+    .first()
+    .click();
+  await expect(page).toHaveURL(/practice\/introduction-to-html-practice$/);
   await page
     .getByRole("link", { name: /fix the broken heading/i })
     .first()
     .click();
-  await expect(page).toHaveURL(/challenge\/fix-the-heading/);
+  await expect(page).toHaveURL(/practice\/introduction-to-html-practice\/fix-the-heading/);
 
   await solveChallenge(page);
 
@@ -80,13 +85,13 @@ test("critical path: keyboard-only run reaches the verdict panel", async ({ page
   await register(page, `Kbd ${id}`);
 
   await page.goto(
-    "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html/challenge/fix-the-heading",
+    "/learn/web-development/web-development-beginner/html-foundations/practice/introduction-to-html-practice/fix-the-heading",
   );
   await page.locator(".monaco-editor .view-line").first().click();
   await page.keyboard.press("ControlOrMeta+a");
   await page.keyboard.insertText("<h1>My First Page</h1>");
   // Keyboard-only activation: focus Run, press Enter.
-  await page.getByRole("button", { name: /run code/i }).focus();
+  await page.getByRole("button", { name: /submit/i }).focus();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("status")).toContainText(/all tests passed/i, {
     timeout: 75_000,

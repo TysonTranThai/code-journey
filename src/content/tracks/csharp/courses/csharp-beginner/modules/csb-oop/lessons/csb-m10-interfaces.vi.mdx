@@ -1,0 +1,38 @@
+## Một hợp đồng, không gì khác
+
+Một **interface** khai báo những thành viên bắt buộc phải tồn tại — không trường, không cài đặt:
+
+```csharp
+interface IStorable
+{
+    string Serialize();
+}
+
+class Document : IStorable
+{
+    public string Serialize() => "doc";   // phải tồn tại, phải public
+}
+```
+
+Lớp liệt kê interface sau lớp cơ sở: `class Document : IStorable`. Trình biên dịch ép `Document` cung cấp `public string Serialize()` — thiếu là lỗi biên dịch.
+
+## Nhiều hợp đồng, một kiểu
+
+Khác kế thừa (một lớp cơ sở), một kiểu có thể thỏa nhiều interface — và các kiểu không liên quan vẫn dùng chung một hợp đồng:
+
+```csharp
+class Memory : IStorable { public string Serialize() => "mem"; }
+```
+
+`Document` và `Memory` không chia sẻ gì ngoài hợp đồng, nhưng cả hai cùng chảy qua một đoạn mã:
+
+```csharp
+static string Save(IStorable s) => s.Serialize();
+```
+
+## Chọn theo nhu cầu
+
+- **Kế thừa** = chia sẻ *cài đặt* cộng quan hệ is-a.
+- **Interface** = chia sẻ một *lời hứa* giữa các kiểu không liên quan.
+
+Lạm dụng interface cũng là một bệnh; hãy bắt đầu bằng lớp cụ thể, trích hợp đồng khi từ hai kiểu trở lên thật sự chia sẻ một lời hứa. Các bài sau dùng `IEnumerable<T>` — một hợp đồng bạn đã phụ thuộc hằng ngày.

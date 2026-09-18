@@ -4,7 +4,8 @@ import { z } from "zod";
 import { auth } from "@/lib/auth/config";
 import { enqueueExecution } from "@/lib/execution/queue";
 import type { JobPayload } from "@/lib/execution/types";
-import { getChallenge } from "@/lib/curriculum/loaders";
+import { getChallenge, getPracticeChallenge } from "@/lib/curriculum/loaders";
+import { getServerI18n } from "@/lib/i18n/server";
 import { clientIp, consume, DAY_MS, MINUTE_MS } from "@/lib/rate-limit/limiter";
 
 /**
@@ -27,7 +28,10 @@ const bodySchema = z.object({
   trackId: z.string().min(1),
   courseId: z.string().min(1),
   moduleId: z.string().min(1),
-  lessonId: z.string().min(1),
+  /** Required for lesson-attached challenges (checkpoints). */
+  lessonId: z.string().min(1).optional(),
+  /** Required for practice-set challenges. */
+  practiceId: z.string().min(1).optional(),
   challengeId: z.string().min(1),
 });
 
@@ -46,13 +50,24 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
-  const { code, trackId, courseId, moduleId, lessonId, challengeId } = parsed.data;
+  const { code, trackId, courseId, moduleId, lessonId, practiceId, challengeId } = parsed.data;
 
   // Challenge must exist in version-controlled content — client-supplied
-  // tests are never trusted.
+  // tests are never trusted. Practice challenges resolve through their set;
+  // lesson challenges (checkpoints) through the lesson.
+  const { locale } = await getServerI18n();
   let challenge;
   try {
-    challenge = getChallenge(trackId, courseId, moduleId, lessonId, challengeId);
+    if (practiceId) {
+      challenge = getPracticeChallenge(trackId, courseId, moduleId, practiceId, challengeId, undefined, locale);
+    } else if (lessonId) {
+      challenge = getChallenge(trackId, courseId, moduleId, lessonId, challengeId, undefined, locale);
+    } else {
+      return NextResponse.json(
+        { error: "invalid body", issues: ["lessonId or practiceId is required"] },
+        { status: 400 },
+      );
+    }
   } catch {
     return NextResponse.json({ error: "challenge not found" }, { status: 404 });
   }
@@ -61,8 +76,31 @@ export async function POST(request: Request) {
     code,
     // Server-side test definitions only.
     testFiles: challenge.tests.map((t) => ({ name: t.name, code: t.code })),
-    timeoutMs: 10_000,
-    memoryMb: 256,
+    // Java needs the largest budget: a fresh javac + JVM per test. C, C++,
+    // and C# compile per test but are fast (~0.04–0.5 s per unit, probed).
+    timeoutMs:
+      challenge.language === "java"
+        ? 40_000
+        : challenge.language === "cpp" || challenge.language === "c" || challenge.language === "csharp"
+          ? 20_000
+          : 10_000,
+    memoryMb:
+      challenge.language === "cpp" || challenge.language === "java" || challenge.language === "c" || challenge.language === "csharp"
+        ? 512
+        : 256,
+    // Python, C++, Java, C, and C# tracks: route the job to the matching runtime branch.
+    language:
+      challenge.language === "python"
+        ? "python"
+        : challenge.language === "cpp"
+          ? "cpp"
+          : challenge.language === "java"
+            ? "java"
+            : challenge.language === "c"
+              ? "c"
+              : challenge.language === "csharp"
+                ? "csharp"
+                : "javascript",
   };
 
   const session = await auth();
@@ -72,19 +110,21 @@ export async function POST(request: Request) {
   }
 
   // Rate limit (07-03): each run spawns an isolated execution workload, so
-  // limit per user+IP with a daily cap and a short per-minute burst.
+  // limit per user+IP with a daily cap and a short per-minute burst. Sized
+  // for auto-check (the workspace re-submits while the learner types), with
+  // the burst high enough that normal typing pauses never hit 429.
   const ip = await clientIp();
-  const daily = await consume("run", `${session.user.id}:${ip}`, 20, DAY_MS);
+  const daily = await consume("run", `${session.user.id}:${ip}`, 400, DAY_MS);
   if (!daily.allowed) {
     return NextResponse.json(
-      { error: "You've reached today's run limit. Try again tomorrow." },
+      { error: (await getServerI18n()).d.errors.dailyLimit },
       { status: 429 },
     );
   }
-  const burst = await consume("run-burst", `${session.user.id}:${ip}`, 5, MINUTE_MS);
+  const burst = await consume("run-burst", `${session.user.id}:${ip}`, 12, MINUTE_MS);
   if (!burst.allowed) {
     return NextResponse.json(
-      { error: "You're running too fast — wait a moment and try again." },
+      { error: (await getServerI18n()).d.errors.burstLimit },
       { status: 429 },
     );
   }

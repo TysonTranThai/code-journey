@@ -1,0 +1,20 @@
+{
+  "id": "i2-narrow-format",
+  "title": "Narrowing Formatter",
+  "prompt": "Write `format(value)` handling the union `string | number | boolean | null | undefined`: strings are trimmed then returned, numbers are formatted with exactly 2 decimals, booleans become `\"yes\"`/`\"no\"`, null/undefined become `\"—\"`.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function format(value) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "each union member formats correctly",
+      "code": "const fn = new Function(code + \"\\nreturn { format };\");\nconst { format } = fn();\nif (format(\"  hi  \") !== \"hi\") throw new Error(\"Strings are trimmed.\");\nif (format(3.14159) !== \"3.14\") throw new Error(\"Numbers get two decimals.\");\nif (format(true) !== \"yes\" || format(false) !== \"no\") throw new Error(\"Booleans map to yes/no.\");\nif (format(null) !== \"—\" || format(undefined) !== \"—\") throw new Error(\"Nullish becomes a dash.\");",
+      "hint": "Check null/undefined first, then typeof for the rest."
+    },
+    {
+      "name": "zero is a number, not falsy-nullish",
+      "code": "const fn = new Function(code + \"\\nreturn { format };\");\nconst { format } = fn();\nif (format(0) !== \"0.00\") throw new Error(\"0 must format as a number — beware truthiness checks.\");\nif (format(\"\") !== \"\") throw new Error(\"Empty string is still a string (trimmed).\");",
+      "hint": "value === null || value === undefined — not !value."
+    }
+  ]
+}

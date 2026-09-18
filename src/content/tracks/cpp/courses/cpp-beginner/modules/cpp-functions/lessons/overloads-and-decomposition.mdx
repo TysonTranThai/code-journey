@@ -1,0 +1,36 @@
+## Overloading: one name, several contracts
+
+```cpp
+int area(int side);                      // square
+int area(int width, int height);         // rectangle
+double area(double radius);              // circle
+```
+
+Three `area` functions coexist; the compiler picks by **parameter types and count** (the *signature*). Return type alone cannot distinguish overloads. Overloading is everywhere in the standard library — it is how one name `std::to_string` serves int, double, and more.
+
+Use overloads when the *idea* is genuinely one thing measured differently. If the bodies share logic, have the thin overloads call the real implementation rather than copy-pasting it.
+
+## Decomposition: the refactoring move
+
+Start (a typical beginner monolith):
+
+```cpp
+int main() {
+    // read 3 exam scores, print average, highest, and pass/fail
+    // ... 40 lines of tangled std::cout and loops ...
+}
+```
+
+Refactored:
+
+```cpp
+double average(const std::vector<int>& scores);
+int highest(const std::vector<int>& scores);
+bool passed(double avg);
+```
+
+`main` becomes four readable lines; each function is independently testable (the platform's tests can call `average({9,7,10})` directly); and each one is *reusable* by the next feature. That last point is the quiet superpower: decomposed code is the only kind that grows gracefully.
+
+## The naming test
+
+If you cannot name a function without "and" (`read_and_validate_and_sum`), it is two functions. Split at the "and".

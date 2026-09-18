@@ -1,0 +1,45 @@
+## Chuỗi như một stream
+
+```cpp
+#include <sstream>
+
+std::string record = "Linh 20 8.5";
+std::istringstream in(record);
+
+std::string name;
+int age = 0;
+double gpa = 0.0;
+in >> name >> age >> gpa;    // "Linh", 20, 8.5
+```
+
+`istringstream` biến một chuỗi thành `std::cin`. `>>` bỏ qua khoảng trắng và chuyển kiểu — tuổi đến dưới dạng `int` thật, không phải text. Đọc quá cuối sẽ giữ nguyên biến và làm stream thất bại: kiểm tra bằng `if (in >> x)` hoặc `if (!in)` sau khi đọc.
+
+## Từng dòng một: getline
+
+```cpp
+std::string line;
+while (std::getline(in, line)) {   // in cũng có thể là file stream (module 13)
+    // xử lý nguyên một dòng, kể cả dấu cách
+}
+```
+
+`getline` đọc đến dấu xuống dòng và bỏ nó đi. Trộn `>>` và `getline` trên cùng một stream cần cẩn thận (`>>` để lại ký tự xuống dòng — `in.ignore()` dọn nó) — chính việc trộn này là bug stream phổ biến nhất; các bài tập sẽ chủ động cho bạn gặp nó.
+
+## Mẫu mini-CSV
+
+```cpp
+// line = "pen,2.5,120"
+std::istringstream row{line};
+std::string name, price_s, qty_s;
+std::getline(row, name, ',');          // "pen"
+std::getline(row, price_s, ',');       // "2.5"
+std::getline(row, qty_s);              // "120"
+double price = std::stod(price_s);     // đổi text -> double
+int qty = std::stoi(qty_s);
+```
+
+`std::getline(stream, out, ',')` đọc đến ký tự phân cách. `std::stoi`/`std::stod` đổi text thành số (chúng ném exception khi gặp rác — module 14 sẽ xử lý đúng cách). Mẫu này chính là phần làm việc với file ở module 13 và định dạng lưu trữ của capstone, ở phiên bản thu nhỏ.
+
+## Vì sao không tự viết phép tính chỉ số?
+
+Vì các công cụ stream diễn đạt *ý định* ("đọc một từ", "đọc đến dấu phẩy") trong khi phép tính chỉ số diễn đạt *cơ chế* — và cơ chế là nơi các bug off-by-one sinh sôi. Hãy dùng công cụ.

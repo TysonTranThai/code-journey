@@ -1,0 +1,30 @@
+Two different questions, endlessly confused:
+
+- **Authentication** — _who_ is making this request? (passwords, OAuth, magic links)
+- **Authorization** — _what_ is this identity allowed to do? (roles, ownership, permissions)
+
+## Authentication essentials
+
+- **Passwords**: never stored raw — store a slow salted hash (bcrypt/argon2). Salt defeats rainbow tables; slowness defeats GPU brute force.
+- **Sessions**: on login, the server issues a session identifier — classically an **HttpOnly, Secure, SameSite** cookie. HttpOnly keeps JS away from it (XSS can't lift it); Secure keeps it to https; SameSite=Lax/Strict dampens CSRF.
+- **Tokens (JWT)**: signed claims in a token the client carries. Trade-offs: stateless and scalable, but hard to revoke — logout and password change need a denylist or short expiry + refresh.
+
+## Authorization: where real bugs live
+
+Most real-world breaches aren't crypto failures; they're **missing checks**:
+
+- **IDOR (Insecure Direct Object Reference)**: `/api/orders/1234` returns the order without asking "is it _yours_?" — test every endpoint with another user's IDs.
+- **Vertical escalation**: a regular user can call admin endpoints because the UI hid the button but the API didn't check the role.
+- **Client-side enforcement**: permissions checked only in the UI. The API is the authority; the UI is decoration.
+
+The discipline: **every request re-checks authn + authz server-side.** Not the page load — _every request_, including GETs, including "obviously safe" reads.
+
+## Rate limiting and account hygiene
+
+- **Rate-limit** login, registration, password reset, and expensive endpoints — per-IP and per-account. (Your own Code Journey E2E suite met this: stale rate-limiter rows blocked test registrations!)
+- **Constant-time comparison** for secrets (`crypto.timingSafeEqual`) to blunt timing attacks.
+- **Fail closed, log loudly**: an authz check that errors should deny, and should emit a log someone watches.
+
+## Minimum viable secure session checklist
+
+Cookie flags set, authz on every endpoint, ownership checks on every read-by-id, rate limits on auth routes, secrets in env vars, no tokens in URLs (URLs leak into logs, history, referrers).

@@ -1,0 +1,33 @@
+Mọi dự án Python hiện đại tuyên bố mình trong **pyproject.toml** (TOML —
+đọc được trong sandbox bằng `tomllib`):
+
+```toml
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tasknoter"
+version = "0.1.0"
+description = "A typed, tested task manager"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+tasknoter = "tasknoter.cli:main"
+```
+
+Mỗi khối hứa điều gì:
+
+- **build-system** — công cụ nào biến dự án thành gói cài được (setuptools ở đây; còn lựa chọn khác).
+- **project** — danh tính: tên, phiên bản, Python được hỗ trợ, và **dependencies** với ràng buộc phiên bản (`requests>=2.31,<3`).
+- **project.scripts** — các lệnh console sẽ được sinh ra (bài kế tiếp).
+
+`requires-python` là một lời hứa với người dùng: công cụ từ chối cài trên
+interpreter cũ hơn. Tự đánh phiên bản cho dự án của bạn theo kiểu semver
+(0.1.0 → 0.2.0 cho tính năng, +0.0.1 cho sửa lỗi) là công cụ phối hợp rẻ
+nhất bạn từng có.
+
+Trên máy riêng, `pip install -e .` cài dự án ở **chế độ editable** — sandbox
+không chạy được pip (không có mạng), nên khóa học này kiểm chứng *tệp* đúng
+chuẩn thay vì vậy.

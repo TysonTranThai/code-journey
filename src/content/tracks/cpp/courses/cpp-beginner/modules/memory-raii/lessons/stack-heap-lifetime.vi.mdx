@@ -1,0 +1,31 @@
+## Hai ngôi nhà cho đối tượng
+
+**Stack** — bộ nhớ tự động. Biến cục bộ sống ở đây; compiler cấp phát và giải phóng thay bạn:
+
+```cpp
+void f() {
+    int x{5};                          // sinh ra khi dòng này chạy
+    std::vector<int> v{1, 2, 3};       // sinh ra; các PHẦN TỬ của nó sống trên heap (dưới)
+}                                      // cả hai chết ở đây — được bảo đảm, thứ tự ngược
+```
+
+Cấp phát trên stack gần như miễn phí và vòng đời chính xác: vào scope → sống; rời scope → chết. Mọi đối tượng cục bộ, lồng nhau, và tạm thời đều theo luật này.
+
+**Heap** — bộ nhớ động cho những thứ mà kích thước hay vòng đời phải quyết định lúc chạy. Các phần tử của `vector`, ký tự của `std::string`, đối tượng dùng chung giữa các scope: *nội dung* của chúng sống trên heap, nhưng *tay cầm* (chính đối tượng vector/string) vẫn là biến cục bộ trên stack.
+
+## Câu hỏi vòng đời — hãy hỏi trước tiên
+
+Với mọi đối tượng: **ai được phép dùng nó, và đến khi nào?**
+
+```
+biến cục bộ trên stack → sống đến hết scope (tự động)
+đối tượng trên heap    → sống cho đến khi CÓ GÌ ĐÓ giải phóng nó (các bài sau: cái gì và như thế nào)
+```
+
+## Ba loại bug kinh điển (hãy biết tên của chúng)
+
+- **Memory leak** — bộ nhớ heap được cấp nhưng không bao giờ được trả; chương trình chậm rãi phình to.
+- **Use-after-free / con trỏ treo** — dùng bộ nhớ đã được trả về.
+- **Double-free** — trả cùng một vùng bộ nhớ hai lần.
+
+Cả ba đều là lỗi *sở hữu*: hoặc không ai sở hữu vùng nhớ đó, hoặc có hai thứ cùng nghĩ mình sở hữu. Liều thuốc không phải là cảnh giác; mà là làm cho sở hữu trở nên **tường minh và tự động** — đó chính xác là RAII.

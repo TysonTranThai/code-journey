@@ -1,0 +1,27 @@
+## What an exception is
+
+When code hits a condition it cannot fulfill — `int.Parse("abc")`, indexing past an array's end — it **throws** an exception object describing the failure. The runtime unwinds the call stack looking for a handler:
+
+```csharp
+try
+{
+    int n = int.Parse("abc");   // throws FormatException
+    Console.WriteLine("never runs");
+}
+catch (FormatException ex)
+{
+    Console.WriteLine($"not a number: {ex.Message}");
+}
+Console.WriteLine("program continues");
+```
+
+`try` marks a guarded region; `catch` handles a specific failure type. If nothing catches it, the program dies with the stack trace.
+
+## Catch specific, handle honestly
+
+```csharp
+catch (FormatException ex) { ... }   // only this failure
+catch (Exception ex) { ... }         // everything — use sparingly
+```
+
+A broad `catch (Exception)` swallows bugs you didn't anticipate: typos, null refs, logic errors — all invisible. Catch the **specific** type you can actually do something about; let the rest crash loudly during development instead of hiding.

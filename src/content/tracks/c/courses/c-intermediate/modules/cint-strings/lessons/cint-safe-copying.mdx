@@ -1,0 +1,47 @@
+## A growable string is a tiny dynamic array
+
+```c
+typedef struct {
+    char  *data;    /* malloc'd, always '\0'-terminated */
+    size_t len;     /* characters, not counting '\0' */
+    size_t cap;     /* allocated bytes */
+} StrBuf;
+```
+
+Append is the whole API, and every append is three jobs in one: make
+room, copy, terminate — with a failure path at step one:
+
+```c
+int sb_append(StrBuf *b, const char *s) {
+    size_t need = b->len + strlen(s) + 1;
+    if (need > b->cap) {
+        size_t ncap = b->cap ? b->cap : 16;
+        while (ncap < need) ncap *= 2;
+        char *nd = realloc(b->data, ncap);
+        if (!nd) return -1;          /* old b->data still valid! */
+        b->data = nd;
+        b->cap = ncap;
+    }
+    memcpy(b->data + b->len, s, strlen(s) + 1);
+    b->len += strlen(s);
+    return 0;
+}
+```
+
+Note the oom discipline: `realloc` returning NULL does **not** free the
+old block — keep the pointer, return the error, let the caller decide.
+Assigning `b->data = realloc(b->data, ...)` directly would leak the old
+buffer exactly when memory is already exhausted.
+
+## Worst-case capacity planning
+
+`snprintf(NULL, 0, ...)` measures first, so you can allocate exactly:
+
+```c
+int need = snprintf(NULL, 0, "%s: %d", name, value);  /* +1 for '\0' */
+char *out = malloc((size_t)need + 1);
+snprintf(out, (size_t)need + 1, "%s: %d", name, value);
+```
+
+Measure-then-allocate is how code formats without fixed buffers and
+without truncation.

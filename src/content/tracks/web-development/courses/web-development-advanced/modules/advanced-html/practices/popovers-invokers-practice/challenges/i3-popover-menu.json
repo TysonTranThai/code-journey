@@ -1,0 +1,30 @@
+{
+  "id": "i3-popover-menu",
+  "title": "Popover Action Menu",
+  "prompt": "Build a 'Row actions' menu with zero JavaScript: a button with popovertarget=\"row-menu\" opening a <div id=\"row-menu\" popover> that contains at least two action buttons and one close button using popovertarget=\"row-menu\" popovertargetaction=\"hide\".",
+  "difficulty": "advanced",
+  "level": "guided",
+  "boilerplate": "<!-- Row actions popover -->\n\n",
+  "tests": [
+    {
+      "name": "invoker targets the popover",
+      "code": "const inv = code.match(/<button[^>]*popovertarget\\s*=\\s*[\"']row-menu[\"'][^>]*>/i);\nif (!inv) {\n  throw new Error('Add an invoker button with popovertarget=\"row-menu\".');\n}",
+      "hint": "popovertarget on the button is the whole wiring — no addEventListener needed."
+    },
+    {
+      "name": "popover element exists",
+      "code": "const pop = code.match(/<(div|ul|menu|nav)[^>]*\\bid\\s*=\\s*[\"']row-menu[\"'][^>]*>/i);\nif (!pop) throw new Error('Add the element with id=\"row-menu\".');\nif (!/\\bpopover\\b/i.test(pop[0])) {\n  throw new Error('The target element needs the popover attribute.');\n}",
+      "hint": "The id the button targets must carry popover — that is what turns it into a popover."
+    },
+    {
+      "name": "menu holds real actions",
+      "code": "const start = code.search(/<(div|ul|menu|nav)[^>]*\\bid\\s*=\\s*[\"']row-menu[\"'][^>]*>/i);\nif (start === -1) throw new Error('Add the element with id=\"row-menu\".');\nconst seg = code.slice(start);\nconst end = seg.search(/<\\/(div|ul|menu|nav)>/i);\nconst inner = end === -1 ? seg : seg.slice(0, end);\nconst btns = (inner.match(/<button[\\s>]/gi) || []).length;\nif (btns < 3) {\n  throw new Error(\"The popover needs at least two action buttons plus the close button.\");\n}",
+      "hint": "Two actions and one close = three buttons inside the popover."
+    },
+    {
+      "name": "close button hides its own popover",
+      "code": "const close = [...code.matchAll(/<button([^>]*)>([\\s\\S]*?)<\\/button>/gi)].find((b) =>\n  /popovertargetaction\\s*=\\s*[\"']hide[\"']/i.test(b[1])\n);\nif (!close) {\n  throw new Error('Add a close button with popovertargetaction=\"hide\".');\n}\nif (!/popovertarget\\s*=\\s*[\"']row-menu[\"']/i.test(close[1])) {\n  throw new Error('The close button must target the popover itself: popovertarget=\"row-menu\".');\n}",
+      "hint": "A button inside the popover that targets it with action=hide is the idiomatic close affordance."
+    }
+  ]
+}

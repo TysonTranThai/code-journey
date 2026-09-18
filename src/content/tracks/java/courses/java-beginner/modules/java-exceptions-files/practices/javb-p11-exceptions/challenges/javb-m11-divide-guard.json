@@ -1,0 +1,21 @@
+{
+  "id": "javb-m11-divide-guard",
+  "title": "Divide, but loudly",
+  "prompt": "Write `safeDivide(int a, int b)` that returns `(double) a / b` - but throws `ArithmeticException` with a message containing \"zero\" when `b` is 0. A caller must be able to *catch* the failure, not discover a silent 0.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static double safeDivide(int a, int b) {\n        return 0;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "normal division keeps the fraction",
+      "code": "\nCjTestBase.checkEq(Solution.safeDivide(9, 4), 2.25, \"9/4 = 2.25\");\nCjTestBase.checkEq(Solution.safeDivide(-7, 2), -3.5, \"negative numerator ok\");\n",
+      "hint": "Cast BEFORE dividing: (double) a / b keeps the fraction."
+    },
+    {
+      "name": "zero throws, message says why",
+      "code": "\ntry {\n    Solution.safeDivide(5, 0);\n    CjTestBase.checkTrue(false, \"divide by zero must throw\");\n} catch (ArithmeticException e) {\n    CjTestBase.checkTrue(e.getMessage() != null && e.getMessage().contains(\"zero\"),\n        \"message names the problem\");\n}\n",
+      "hint": "Print-and-return-0 is how the bug hides - throw instead."
+    }
+  ],
+  "level": "imitation"
+}

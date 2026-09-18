@@ -1,0 +1,86 @@
+Menus, tooltips, pickers, toasts — the "transient UI" family used to be a framework
+feature. Since the Popover API reached every modern browser (January 2025), it is HTML.
+And in 2026 the Invoker Commands API (Baseline January 2026) standardized the last
+piece: buttons that drive dialogs, popovers, and more — declaratively.
+
+## The popover attribute
+
+```html
+<button popovertarget="menu">Actions</button>
+
+<div id="menu" popover>
+  <button>Rename</button>
+  <button>Duplicate</button>
+  <button popovertarget="menu" popovertargetaction="hide">Close</button>
+</div>
+```
+
+One attribute gives the element the popover behavior stack: hidden until invoked,
+rendered in the **top layer** (no `z-index` battles), **light dismiss** (Escape or an
+outside click closes it), and screen readers understand the invocation. Notably,
+popovers are *not* focus-trapped — users can tab out into the page. That is the
+correct behavior for menus and panels; modals that must hold focus are `<dialog>`
+territory.
+
+Two popover flavors: `popover="auto"` (default — light dismiss, one auto popover at a
+time) and `popover="manual"` (stays open, no light dismiss — for toasts and stacked
+tools).
+
+## popovertarget actions
+
+An invoker button controls its popover with `popovertarget` plus
+`popovertargetaction="show" | "hide" | "toggle"` — `toggle` is the default. Inside the
+popover, a button with `popovertarget` pointing at *itself* and `action="hide"` is the
+idiomatic close button. All of it works with zero JavaScript.
+
+## Invoker commands: command and commandfor
+
+2026's standardization step: the `command`/`commandfor` attributes generalize
+declarative invocation to every command-supporting target, unifying dialog and popover
+controls under one model:
+
+```html
+<button commandfor="settings" command="show-modal">Settings</button>
+
+<dialog id="settings">
+  <button commandfor="settings" command="close">Done</button>
+  …
+</dialog>
+```
+
+`command="show-modal"` on a button replaces the JS `showModal()` call;
+`command="close"` replaces `close()`. The equivalent popover pairing is
+`command="show"` / `command="hide"` / `command="toggle"`. Legacy
+`popovertarget`/`popovertargetaction` keep working — the invoker model is the unified
+successor. For anything beyond the built-in commands, the `command` event fires on the
+target with `event.command` set: your single custom hook for progressive enhancement.
+
+## What belongs to which layer
+
+- **Pure HTML** — open/close states: `popovertarget`, `command`/`commandfor`. Ship this
+  first; it works without a single script.
+- **CSS** — appearance, transitions (`@starting-style`, `::backdrop`), positioning.
+- **JavaScript** — the *behavior on top*: `oncommand` for custom actions, data
+  fetching, state sync. An enhancement, not a requirement.
+
+This layering *is* progressive enhancement, applied to interactive UI: the menu opens
+for everyone; the fancy bits ride on top where they are supported.
+
+## What goes wrong
+
+- **Modal envy**: `popover` is not a modal. If the task must block the page, use
+  `<dialog>` + `showModal()`.
+- **`popover="manual"` by accident**: no light dismiss — "the tooltip never goes away".
+- **Forgetting the close affordance inside the popover** on touch screens where outside
+  clicks are less obvious.
+- **Reaching for JS `showModal()`** when `command="show-modal"` does it declaratively.
+- **Positioning assumptions**: popovers land in the top layer at default position;
+  anchor-based positioning needs CSS anchor positioning — a separate topic.
+
+## Practice and where this connects
+
+You will build a toolbar menu (toggle + light dismiss), a toast with manual popover,
+then convert a JS-driven dialog to invoker commands, and debug a popover whose author
+chose the wrong flavor. Declarative invocation is also your first taste of the
+frontend-architecture mindset this course builds toward: the platform does the state
+management; your code orchestrates behavior.

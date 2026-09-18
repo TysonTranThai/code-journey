@@ -1,0 +1,20 @@
+{
+  "id": "i2-repro-minimize",
+  "title": "Minimal Reproducer",
+  "prompt": "Write `minimalInput(inputs, isBroken)` — inputs is an ordered array; isBroken(value) returns true when that input alone triggers the bug. Return the FIRST breaking input (null if none). This is step 1 of the debugging loop made mechanical.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function minimalInput(inputs, isBroken) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "returns the first breaking input",
+      "code": "const fn = new Function(code + \"\\nreturn { minimalInput };\");\nconst { minimalInput } = fn();\nconst inputs = [{ qty: 2 }, { qty: 0 }, { qty: -1 }];\nif (minimalInput(inputs, (v) => v.qty <= 0).qty !== 0) throw new Error(\"qty 0 is the first breaker.\");\n",
+      "hint": "find with the predicate; ?? null for the none case."
+    },
+    {
+      "name": "null when everything is healthy",
+      "code": "const fn = new Function(code + \"\\nreturn { minimalInput };\");\nconst { minimalInput } = fn();\nif (minimalInput([1, 2, 3], () => false) !== null) throw new Error(\"No breaker => null.\");\nif (minimalInput([], (v) => true) !== null) throw new Error(\"Empty inputs => null.\");\n",
+      "hint": "find returns undefined — normalize to null."
+    }
+  ]
+}

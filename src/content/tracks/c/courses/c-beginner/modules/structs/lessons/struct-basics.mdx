@@ -1,0 +1,43 @@
+## Defining and declaring
+
+```c
+struct Point {          // defines a new TYPE
+    int x;
+    int y;
+};
+
+struct Point p = {3, 4};        // positional initializer
+struct Point q = {.x = 3, .y = 4};  // designated (clearer, order-free)
+```
+
+The `struct` keyword is part of the type name. Members are accessed with the
+dot: `p.x`, `p.y`.
+
+## Assignment copies the whole thing
+
+```c
+struct Point a = {1, 2};
+struct Point b = a;     // b gets its OWN copy of both members
+b.x = 99;               // a.x is still 1
+```
+
+Arrays copy element-by-element only when you write the loop; structs copy in
+one assignment. That makes them natural value objects.
+
+## Nested structs
+
+```c
+struct Rect {
+    struct Point topleft;
+    struct Point size;
+};
+struct Rect r = {{0, 0}, {10, 5}};
+printf("%d\n", r.size.y);   // 5 — dots chain
+```
+
+## Arrays of structs
+
+```c
+struct Point pts[3] = {{1, 1}, {2, 2}, {3, 3}};
+printf("%d\n", pts[1].x);   // 2 — index first, then member
+```

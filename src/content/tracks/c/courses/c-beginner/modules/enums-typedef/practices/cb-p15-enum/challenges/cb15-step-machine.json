@@ -1,0 +1,36 @@
+{
+  "id": "cb15-step-machine",
+  "title": "State Machine Step",
+  "prompt": "Given `typedef enum { IDLE, RUNNING, PAUSED } State;` in scope, implement `State step(State s, int event)`: from IDLE event 1 goes RUNNING; from RUNNING event 0 goes PAUSED; from PAUSED event 1 goes RUNNING; anything else stays.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\ntypedef enum { IDLE, RUNNING, PAUSED } State;\n",
+  "tests": [
+    {
+      "name": "start",
+      "code": "CHECK_EQ(step(IDLE, 1), RUNNING);",
+      "hint": "Event 1 starts the machine."
+    },
+    {
+      "name": "pause",
+      "code": "CHECK_EQ(step(RUNNING, 0), PAUSED);",
+      "hint": "Event 0 pauses."
+    },
+    {
+      "name": "resume",
+      "code": "CHECK_EQ(step(PAUSED, 1), RUNNING);",
+      "hint": "Event 1 resumes."
+    },
+    {
+      "name": "stay idle",
+      "code": "CHECK_EQ(step(IDLE, 0), IDLE);",
+      "hint": "No start event: stay."
+    },
+    {
+      "name": "stay paused",
+      "code": "CHECK_EQ(step(PAUSED, 0), PAUSED);",
+      "hint": "Pause again changes nothing."
+    }
+  ],
+  "level": "guided"
+}

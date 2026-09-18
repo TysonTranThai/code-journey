@@ -1,0 +1,20 @@
+{
+  "id": "i2-fix-and-remeasure",
+  "title": "Fix and Re-measure",
+  "prompt": "Write `applyFix(page, fix)` producing an improved page spec (non-mutating). Fixes: \"server\" halves ttfbMs; \"hero\" sets heroLazy false; \"css\" empties renderBlocking; \"images\" quarters imageKB; \"js\" halves jsKB. Then `improved(page, fix)` returns { before, after, better } where better is true when the fix actually changed the spec (after differs from before, compare with JSON.stringify).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function applyFix(page, fix) {\n  // your code\n}\n\nfunction improved(page, fix) {\n  // your code — use diagnose and applyFix\n}\n",
+  "tests": [
+    {
+      "name": "each fix targets its lever",
+      "code": "const fn = new Function(code + \"\\nreturn { applyFix };\");\nconst { applyFix } = fn();\nconst base = { ttfbMs: 1000, heroLazy: true, renderBlocking: [\"css\"], imageKB: 4000, jsKB: 600 };\nif (applyFix(base, \"server\").ttfbMs !== 500) throw new Error(\"server halves ttfb.\");\nif (applyFix(base, \"hero\").heroLazy !== false) throw new Error(\"hero un-lazy.\");\nif (applyFix(base, \"css\").renderBlocking.length !== 0) throw new Error(\"css clears blockers.\");\nif (applyFix(base, \"images\").imageKB !== 1000) throw new Error(\"images quarter the bytes.\");\nif (base.ttfbMs !== 1000) throw new Error(\"Non-mutating.\");\n",
+      "hint": "Spread the page, override one field per fix."
+    },
+    {
+      "name": "the loop closes on a real case",
+      "code": "const fn = new Function(code + \"\\nreturn { improved };\");\nconst { improved } = fn();\nconst page = { ttfbMs: 900, heroLazy: false, renderBlocking: [], imageKB: 3000, jsKB: 100 };\nconst out = improved(page, \"images\");\nif (out.after.imageKB !== 750) throw new Error(\"3000/4 = 750.\");\nif (out.before !== page) throw new Error(\"before is the original spec.\");\nif (out.better !== true) throw new Error(\"The fix changed the spec, so better is true.\");\n",
+      "hint": "Compose the two functions; better compares before and after."
+    }
+  ]
+}

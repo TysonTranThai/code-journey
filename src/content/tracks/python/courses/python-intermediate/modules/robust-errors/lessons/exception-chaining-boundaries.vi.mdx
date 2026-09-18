@@ -1,0 +1,42 @@
+Khi tầng B nhận lỗi từ tầng A, caller không cần biết nội bộ của A. Hãy
+**dịch** lỗi tại ranh giới và giữ nguyên nhân gốc làm ngữ cảnh với
+`raise ... from`:
+
+```python
+class StorageError(AppError):
+    """Tầng lưu trữ gặp sự cố."""
+
+def save_task(task):
+    try:
+        db.execute("INSERT ...", task.as_row())
+    except sqlite3.Error as exc:
+        raise StorageError(f"could not save task {task.id}") from exc
+```
+
+Chuỗi `from exc` hiện **cả hai** traceback khi lỗi xảy ra: StorageError bạn
+raise, và nguyên nhân sqlite3 giải thích nó. `raise X from None` là lựa chọn
+có chủ đích để giấu nội bộ khi chúng có thể lộ bí mật — hiếm, và là một quyết
+định, không phải thói quen.
+
+## else và finally hoàn tất bức tranh
+
+```python
+try:
+    value = parse(line)
+except ValueError as exc:
+    log.warning("bad line skipped: %s", exc)
+else:
+    total += value          # chỉ chạy khi KHÔNG có exception
+finally:
+    lines_seen += 1         # luôn chạy — dọn dẹp
+```
+
+`else` giữ code đường thành công ngoài khối try (để exception của nó không bị
+bắt nhầm); `finally` là móc dọn dẹp được đảm bảo mà `with` đã chính thức hóa.
+
+## Retry: hình dạng cần thuộc
+
+Lỗi tạm thời (mạng, lock) xứng đáng được thử lại có giới hạn — nghỉ ngắn,
+thử lại vài lần, rồi báo lỗi cuối cùng. Mẫu cần thuộc là *có giới hạn, có
+backoff, và giữ lại lỗi cuối*; bạn sẽ luyện hình dạng vòng lặp này ở
+checkpoint của module.

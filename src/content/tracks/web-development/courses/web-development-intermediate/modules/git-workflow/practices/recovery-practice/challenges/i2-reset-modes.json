@@ -1,0 +1,20 @@
+{
+  "id": "i2-reset-modes",
+  "title": "Reset Mode Simulator",
+  "prompt": "Model reset as data. State = `{ commit, staged: [...], worktree: [...] }`. Write `applyReset(state, mode, n)` where n = how many commits to undo: \"soft\" → commit moves back n, staged and worktree unchanged; \"mixed\" → commit back n, worktree unchanged, staged becomes []; \"hard\" → commit back n, staged [], worktree []. Return the new state (do not mutate).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function applyReset(state, mode, n) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "soft keeps everything staged",
+      "code": "const fn = new Function(code + \"\\nreturn { applyReset };\");\nconst { applyReset } = fn();\nconst s = { commit: 3, staged: [\"a\"], worktree: [\"b\"] };\nconst out = applyReset(s, \"soft\", 1);\nif (out.commit !== 2 || out.staged.length !== 1 || out.worktree.length !== 1) throw new Error(\"soft: only HEAD moves.\");\nif (s.commit !== 3) throw new Error(\"Input not mutated.\");",
+      "hint": "Spread the state, override only what the mode changes."
+    },
+    {
+      "name": "mixed and hard clear progressively",
+      "code": "const fn = new Function(code + \"\\nreturn { applyReset };\");\nconst { applyReset } = fn();\nconst s = { commit: 3, staged: [\"a\"], worktree: [\"b\"] };\nconst m = applyReset(s, \"mixed\", 2);\nif (m.commit !== 1 || m.staged.length !== 0 || m.worktree.length !== 1) throw new Error(\"mixed: staged cleared, worktree kept.\");\nconst h = applyReset(s, \"hard\", 1);\nif (h.commit !== 2 || h.staged.length !== 0 || h.worktree.length !== 0) throw new Error(\"hard: everything cleared.\");",
+      "hint": "Three modes, three override sets."
+    }
+  ]
+}

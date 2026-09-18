@@ -1,0 +1,15 @@
+{
+  "id": "cint-checkpoint-m8-task",
+  "title": "Word Frequency Counter",
+  "prompt": "Combine the module: count word frequencies from an array of tokens.\nThe boilerplate declares:\n\n```c\n#define WF_BUCKETS 16\ntypedef struct WFNode {\n    const char   *word;     /* the table strdups it: it OWNS its keys */\n    size_t        count;\n    struct WFNode *next;\n} WFNode;\ntypedef struct { WFNode *buckets[WF_BUCKETS]; size_t distinct; } WF;\nvoid wf_init(WF *w);\nint wf_count(WF *w, const char *word);   /* 0 ok, -1 bad args/oom */\n/* returns 1 and fills count+word_out (the table's OWNED copy, valid\n   until wf_destroy) if present; 0 if absent */\nint wf_lookup(const WF *w, const char *word, size_t *count, const char **word_out);\nsize_t wf_distinct(const WF *w);\nvoid wf_destroy(WF *w);                  /* frees every node AND every strdup'd key */\n```\n\nThe table must own its keys (strdup on first sight) — that is the\nownership seam: values are plain counts, but keys are owned.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\n#define WF_BUCKETS 16\ntypedef struct WFNode {\n    const char   *word;\n    size_t        count;\n    struct WFNode *next;\n} WFNode;\ntypedef struct { WFNode *buckets[WF_BUCKETS]; size_t distinct; } WF;\nvoid wf_init(WF *w);\nint wf_count(WF *w, const char *word);\nint wf_lookup(const WF *w, const char *word, size_t *count, const char **word_out);\nsize_t wf_distinct(const WF *w);\nvoid wf_destroy(WF *w);\n",
+  "tests": [
+    {
+      "name": "count, lookup, destroy owned keys",
+      "code": "\nWF w;\nwf_init(&w);\nconst char *tokens[] = {\"go\", \"rust\", \"go\", \"c\", \"go\", \"rust\"};\nfor (int i = 0; i < 6; i++) CHECK_EQ(wf_count(&w, tokens[i]), 0);\nCHECK_EQ(wf_distinct(&w), 3);\nsize_t n;\nconst char *owned;\nCHECK_EQ(wf_lookup(&w, \"go\", &n, &owned), 1);\nCHECK_EQ(n, 3);\nCHECK(!strcmp(owned, \"go\"));\nCHECK(owned != tokens[0]);                 /* the table's own copy */\nCHECK_EQ(wf_lookup(&w, \"perl\", &n, &owned), 0);\nCHECK_EQ(wf_lookup(&w, NULL, &n, &owned), -1);\nCHECK_EQ(wf_count(&w, NULL), -1);\nwf_destroy(&w);\nCHECK_EQ(wf_distinct(&w), 0);\n",
+      "hint": "wf_count: walk chain for strcmp match -> count++; else strdup + push. destroy: free node then key — free key BEFORE dropping the node pointer."
+    }
+  ]
+}

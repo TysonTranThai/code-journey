@@ -1,0 +1,36 @@
+{
+  "id": "cb22-brackets",
+  "title": "Bracket Checker (mini-build)",
+  "prompt": "Implement `int brackets_ok(const char *s)` returning 1 when every '(' has a matching ')' in proper order (and likewise nothing unclosed at the end), else 0. Use a counter or a stack — both pass.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "balanced",
+      "code": "CHECK_EQ(brackets_ok(\"(a(b)c)\"), 1);",
+      "hint": "Every open closes."
+    },
+    {
+      "name": "empty",
+      "code": "CHECK_EQ(brackets_ok(\"\"), 1);",
+      "hint": "Nothing to mismatch."
+    },
+    {
+      "name": "unmatched close",
+      "code": "CHECK_EQ(brackets_ok(\"a)b(\"), 0);",
+      "hint": "Close before open fails."
+    },
+    {
+      "name": "leftover open",
+      "code": "CHECK_EQ(brackets_ok(\"(a\"), 0);",
+      "hint": "Trailing open fails."
+    },
+    {
+      "name": "deep nesting",
+      "code": "CHECK_EQ(brackets_ok(\"((()))\"), 1);",
+      "hint": "Depth three survives."
+    }
+  ],
+  "level": "mini-build"
+}

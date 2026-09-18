@@ -1,0 +1,18 @@
+{
+  "title": "Xây (một cách khái niệm) truy vấn an toàn",
+  "prompt": "Bài tập SQL-builder không cần database. Cài trong `Solution`:\n- `record Param(String value)`\n- `static String buildFind(String table, Param id)` trả\n  `\"SELECT * FROM \" + table + \" WHERE id = ?\"` — placeholder, KHÔNG phải\n  giá trị (minh họa parameter binding).\n- `static String buildFindUnsafe(String table, String id)` trả bản nối\n  chuỗi `\"SELECT * FROM \" + table + \" WHERE id = '\" + id + \"'\"`.\n\nTest minh họa cuộc tấn công: id `x' OR '1'='1` tạo ra chuỗi placeholder\nvô hại ở builder an toàn và một truy vấn *bị chèn* ở bản không an toàn —\ncho thấy lỗ hổng trần trụi.",
+  "tests": [
+    {
+      "name": "Builder an toàn bind, không nội suy",
+      "hint": "Payload không bao giờ vào trong văn bản SQL."
+    },
+    {
+      "name": "Builder không an toàn minh họa injection",
+      "hint": "Payload thay đổi ý nghĩa truy vấn — cuộc tấn công hiện nguyên hình."
+    },
+    {
+      "name": "An toàn với id bình thường",
+      "hint": "Placeholder bất kể giá trị."
+    }
+  ]
+}

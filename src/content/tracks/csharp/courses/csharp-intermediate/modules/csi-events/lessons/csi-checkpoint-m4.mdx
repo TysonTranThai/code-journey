@@ -1,0 +1,13 @@
+## The gate (mini-build)
+
+A `NotificationCenter` with two events:
+
+1. `Published` — `EventHandler<NotificationEventArgs>` raised for every
+   notification with (Id, Channel, Message). Handlers must see args
+   snapshots; raising with no subscribers must not throw.
+2. `Filtered` — raised when `Publish(channel, message, filter)` rejects a
+   message; `filter` is a `Predicate<string>` the *caller* supplies per call.
+
+Plus: `UnsubscribeAll()` clears both lists so a disposed center releases its
+subscribers. The graded test registers handlers, publishes through a filter,
+unsubscribes, and asserts the full observable behavior — order included.

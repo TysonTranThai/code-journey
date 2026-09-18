@@ -1,0 +1,50 @@
+`null` is Java's oldest footgun: any reference can silently be `null`, and
+the explosion happens far from the cause. `Optional<T>` makes "might not
+be there" **visible in the type**.
+
+```java
+static Optional<String> findEmail(java.util.Map<String, String> users, String name) {
+    return Optional.ofNullable(users.get(name));   // may be empty
+}
+
+// at the boundary, decide explicitly:
+String display = findEmail(users, "ada")
+    .map(String::toLowerCase)                      // transform if present
+    .orElse("(no email)");                          // default if empty
+```
+
+The small set of methods worth knowing by heart:
+
+| Method | Reads as |
+|---|---|
+| `Optional.of(v)` | wrap a value that must not be null (throws if it is) |
+| `Optional.ofNullable(v)` | wrap a value that may be null |
+| `Optional.empty()` | nothing here |
+| `.isPresent()` / `.isEmpty()` | yes/no check |
+| `.get()` | **avoid** - it re-introduces the crash, just with steps |
+| `.orElse(default)` | value, or the default |
+| `.orElseGet(supplier)` | value, or compute a default lazily |
+| `.map(f)` | transform the value if present |
+| `.filter(p)` | keep it only if the predicate holds |
+| `.ifPresent(c)` | run this consumer if there is a value |
+
+## The intended shape
+
+Optional is a **return type at boundaries**: "this lookup may find
+nothing." Fields, method parameters, and collections of Optionals are the
+wrong tool - use `null`-free design there instead (an empty list, a
+sentinel, or split the type).
+
+## Anti-patterns the compiler won't stop
+
+```java
+// These two lines are the same bug wearing different hats:
+opt.get()                       // NoSuchElementException if empty
+if (opt.isPresent()) x = opt.get();   // verbose null-check reborn
+
+// A null inside an Optional is still a landmine:
+Optional.ofNullable(null).get()   // still throws
+```
+
+If you find yourself calling `.isPresent()` and `.get()` together, reach
+for `.map`/`.orElse` instead - keep the decision *inside* the Optional.

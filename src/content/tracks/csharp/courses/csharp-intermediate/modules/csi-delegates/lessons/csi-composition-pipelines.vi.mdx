@@ -1,0 +1,47 @@
+## Callback là hợp đồng
+
+Tham số callback cho người gọi biết họ được phép truyền hình dạng nào, không
+phải điều gì sẽ xảy ra. Thiết kế chúng như mọi hợp đồng:
+
+```csharp
+static List<string> TransformAll(
+    IEnumerable<string> source,
+    Func<string, string> transform)          // MỘT hợp đồng: string -> string
+    => source.Select(transform).ToList();
+```
+
+Đặt tên tham số theo vai trò (`transform`, `predicate`, `onComplete`) —
+tên là tài liệu.
+
+## Pipeline: ghép các hàm nhỏ
+
+Delegate ghép được; các biến đổi nhỏ một-mục-đích xích thành hành vi:
+
+```csharp
+Func<string, string> pipeline = s => s;
+pipeline = pipeline.Compose(s => s.Trim())
+                   .Compose(s => s.ToLowerInvariant());
+```
+
+(Hoặc đơn giản: `source.Select(Trim).Select(Lower)` — LINQ là composition
+với thực thi trì hoãn, Module 8 khai thác trọn vẹn.)
+
+## Strategy trong ba dòng
+
+Bất cứ chỗ nào bạn định viết `switch (mode)`, hãy cân nhắc truyền hành vi:
+
+```csharp
+static int Reduce(int[] values, int seed, Func<int, int, int> fold) =>
+    values.Aggregate(seed, fold);
+
+var sum = Reduce(new[] { 1, 2, 3 }, 0, (a, b) => a + b);
+var max = Reduce(new[] { 1, 2, 3 }, int.MinValue, Math.Max);
+```
+
+Bản switch phải sửa (và test lại) cho mỗi mode mới; bản delegate nhận hành
+vi mới mà không cần sửa — open/closed trên thực tế.
+
+## Kiểm tra hiểu biết
+
+- Khi nào switch TỐT hơn tham số delegate? (Tập đóng cần tính đầy đủ của pattern.)
+- `Func<A,B>` + `Func<B,C>` ghép thành gì? (`Func<A,C>`.)

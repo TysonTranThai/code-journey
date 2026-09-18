@@ -1,0 +1,64 @@
+## The format is the contract that outlives you
+
+Code gets recompiled; files do not. The on-disk layout must be defined
+byte by byte, independent of struct padding, endianness habits, or
+compiler whims.
+
+### MiniKV's layout (fixed, documented)
+
+```
+offset  size  field
+0       4     magic  = 'C','J','K','V'
+4       1     version = 1
+5       4     count  (u32 LE) — number of LIVE records (informational)
+9       656   all KV_CAP = 16 slots, 41 bytes each:
+                key:   32 bytes, NUL-padded
+                value: 8 bytes, i64 little-endian
+                live:  1 byte (1 = live, 0 = free or tombstone)
+last    4     checksum (u32 LE): byte-sum of bytes 9..664
+```
+
+Total size = `9 + 41*16 + 4 = 669`, always. Writing every slot (not
+just live ones) makes the file a **snapshot of the table** — a deleted
+key round-trips as the tombstone it is, and the loader never has to
+guess where records end. Every field is written with explicit byte
+stores — `fputc`, shifts, `& 0xFF` — never `fwrite(&struct)`. M12's
+lesson applied: the struct layout belongs to the compiler; the format
+belongs to you.
+
+### Tombstones are part of the state
+
+A deleted key is not *nothing* — in this format it is a slot with
+`live = 0`. Why keep it? Because save/load must round-trip the
+**logical state**: "key k was absent" is information. Compaction
+(dropping dead slots on save) is a legitimate alternative design; what
+is *not* legitimate is being vague about which one you chose. This
+course's format states it plainly: snapshot, all 16 slots.
+
+### Checksum: cheap, honest, non-cryptographic
+
+The checksum is a **byte sum mod 2^32** over the record region. It
+detects accidental corruption — a truncated write, a flipped bit — and
+nothing else. It is *not* a hash, not a signature, and defends against
+nothing adversarial. Saying exactly what a mechanism does not do is
+part of specifying what it does; an over-claimed checksum is a bug
+waiting for an auditor to find.
+
+```c
+static unsigned long kv_sum(const unsigned char *p, size_t n) {
+    unsigned long s = 0;
+    for (size_t i = 0; i < n; i++) s = (s + p[i]) & 0xFFFFFFFFUL;
+    return s;
+}
+```
+
+### Loading is validation
+
+`kv_load` never trusts the file: check magic, check version, read
+exactly 656 record bytes and 4 checksum bytes (any short read →
+`KV_ETRUNC`), verify the checksum **before** touching the table
+(mismatch → `KV_EBADSUM`). Each failure maps to a distinct `KVError` —
+the M13 taxonomy, applied to bytes. A loader that returns "success"
+with a half-populated table is lying, and M13 taught you what lies
+cost. One more contract detail: `kv_load` **resets** the destination
+store first — load is "become the state in this file", not "merge".

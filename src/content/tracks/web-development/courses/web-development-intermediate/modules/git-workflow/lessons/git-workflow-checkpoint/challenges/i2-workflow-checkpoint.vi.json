@@ -1,0 +1,19 @@
+{
+  "id": "i2-workflow-checkpoint",
+  "title": "Mô phỏng quy trình",
+  "prompt": "Viết BA hàm. 1) `resolveConflict(mine, theirs, strategy)` với mine/theirs là hai nửa code bị conflict và strategy là \"mine\", \"theirs\" hoặc \"combine\": trả về mine cho \"mine\", theirs cho \"theirs\", và với \"combine\" trả về `mine + \"\\n\" + theirs` (xếp chồng dòng). 2) `chooseRecovery(pushed, othersPulled, wantHistory)` — trả về \"revert\" khi commit đã push VÀ người khác đã pull; trả về \"reset\" khi chưa push; nếu đã push, chưa ai pull và wantHistory true thì trả về \"merge\"... nhưng nếu đã push, chưa ai pull và wantHistory false thì trả về \"reset\". 3) `bumpVersion(version, type)` — nhận chuỗi semver \"MAJOR.MINOR.PATCH\" và loại conventional commit: \"fix\" tăng patch, \"feat\" tăng minor, \"feat!\" hoặc \"BREAKING CHANGE\" tăng major; trả về chuỗi version mới.",
+  "tests": [
+    {
+      "name": "xử lý conflict theo chiến lược đã chọn",
+      "hint": "Strategy chỉ là một nhánh đơn giản — điểm của bài là LỰA CHỌN phải có chủ đích."
+    },
+    {
+      "name": "lựa chọn khôi phục đúng luật an toàn",
+      "hint": "Kiểm tra theo thứ tự: đã bị pull? -> revert. Chưa push? -> reset. Cờ history quyết định phần còn lại."
+    },
+    {
+      "name": "bump semver theo loại commit",
+      "hint": "Tách ba số, chọn vị trí theo type, tăng nó, đặt 0 cho mọi số phía sau."
+    }
+  ]
+}

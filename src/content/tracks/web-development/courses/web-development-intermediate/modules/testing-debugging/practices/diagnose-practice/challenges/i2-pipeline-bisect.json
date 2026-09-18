@@ -1,0 +1,20 @@
+{
+  "id": "i2-pipeline-bisect",
+  "title": "Pipeline Bisection",
+  "prompt": "`stages` is an ordered array of stage ids; `inspect(stageId)` returns true if that stage's OUTPUT is already wrong. Write `firstBadStage(stages, inspect)` returning the id of the FIRST stage whose output is wrong (or null if all good). Must probe at most ceil(log2(n)) + 2 times — binary search the boundary.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function firstBadStage(stages, inspect) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "finds the first bad stage",
+      "code": "const fn = new Function(code + \"\\nreturn { firstBadStage };\");\nconst { firstBadStage } = fn();\nconst stages = [\"fetch\", \"parse\", \"filter\", \"render\"];\nconst bad = (s) => s === \"filter\" || s === \"render\";\nif (firstBadStage(stages, bad) !== \"filter\") throw new Error(\"filter is the first wrong output.\");\n",
+      "hint": "findIndex-style predicate, but log-probed."
+    },
+    {
+      "name": "probes logarithmically",
+      "code": "const fn = new Function(code + \"\\nreturn { firstBadStage };\");\nconst { firstBadStage } = fn();\nlet probes = 0;\nconst stages = Array.from({ length: 256 }, (_, i) => \"s\" + i);\nconst found = firstBadStage(stages, (s) => { probes++; return Number(s.slice(1)) >= 200; });\nif (found !== \"s200\") throw new Error(\"Correct boundary found.\");\nif (probes > 10) throw new Error(\"256 stages need <= 8 probes.\");\n",
+      "hint": "lo/hi pointers; when isBad(mid), hi = mid else lo = mid + 1."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+An ninh cho trình trung cấp là thói quen **hoài nghi input và mặc định**.
+Ba lỗi phủ phần lớn điều bạn sẽ gặp:
+
+## 1. Deserialization không an toàn
+
+```python
+# KHÔNG BAO GIỜ với dữ liệu từ người dùng/mạng:
+import pickle
+obj = pickle.loads(blob)          # chạy code do kẻ tấn công chọn
+
+# CÓ cho dữ liệu không tin cậy:
+import json
+obj = json.loads(text)            # chỉ dữ liệu, không thực thi code
+```
+
+## 2. Shell injection
+
+```python
+# KHÔNG BAO GIỜ:
+import subprocess
+subprocess.run(f"convert {filename}.png", shell=True)   # filename='x; rm -rf ~'
+
+# CÓ:
+import shlex, subprocess
+subprocess.run(["convert", f"{filename}.png"])          # argv dạng list, không shell
+```
+
+Dạng list không bao giờ cho ký tự đặc biệt lọt qua; `shlex.quote()`/`shlex.join()`
+dành cho trường hợp hiếm bạn thật sự cần chuỗi shell.
+
+## 3. Secrets và đường dẫn
+
+Secrets đến từ **biến môi trường** (`os.environ["API_KEY"]`), không bao giờ
+hard-code và không bao giờ log. Đường dẫn do người dùng cung cấp đi qua kỷ
+luật `safe_join` của module 6 (resolve + kiểm tra chứa đựng).
+
+## Phương pháp audit
+
+Đọc code với một câu hỏi: **input nào có thể chạm dòng này, và điều tồi tệ
+nhất nó có thể làm ở đó là gì?** Bộ luyện tập dưới đây đưa cho bạn các hàm
+dễ tổn thương để sửa — đúng bài tập mà người review an ninh chạy trên PR thật.

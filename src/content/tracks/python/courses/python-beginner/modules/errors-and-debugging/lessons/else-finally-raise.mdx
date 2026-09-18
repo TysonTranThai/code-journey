@@ -1,0 +1,34 @@
+```python
+try:
+    number = int("twelve")
+except ValueError:
+    print("That is not a number")
+```
+
+`try` means: run this; it may explode. `except` catches the specific explosion
+you are prepared for. Catch the **narrowest** exception you can handle — a bare
+`except:` swallows bugs you did not anticipate, including typos.
+
+## The exceptions you will meet weekly
+
+- `ValueError` — right type, impossible value (`int("abc")`)
+- `TypeError` — wrong kind of object entirely (`"5" + 5`)
+- `KeyError` / `IndexError` — missing dict key / list position
+- `ZeroDivisionError` — you know this one already
+
+## else and finally
+
+```python
+try:
+    data = load(path)
+except FileNotFoundError:
+    print("missing file — using defaults")
+    data = []
+else:
+    print("loaded", len(data), "rows")   # runs only if NO exception
+finally:
+    close_resources()                    # runs ALWAYS — cleanup
+```
+
+`else` keeps success-path code out of the try block; `finally` is for cleanup
+that must happen either way.

@@ -1,0 +1,24 @@
+**Coroutine** là bất kỳ hàm nào chứa `co_await`, `co_yield`, hoặc `co_return`. Gọi nó không chạy thân hàm — nó dựng một **frame** (bộ nhớ heap giữ tham số, biến cục bộ và trạng thái) rồi trao cho bạn đối tượng mà promise tạo ra.
+
+## Ba nhân vật
+
+1. **Thân coroutine** — code của bạn với các điểm treo,
+2. **`promise_type`** — điểm tùy biến: quyết định lời gọi coroutine tạo ra gì, `co_yield`/`co_return` lưu gì, và điều gì xảy ra đầu/cuối frame,
+3. **`std::coroutine_handle<P>`** — bánh lái: `resume()` chạy tiếp thân hàm đến điểm treo kế tiếp; `done()` báo hoàn tất; return object của bạn bọc handle để caller lái coroutine.
+
+## co_yield biên dịch thành gì
+
+`co_yield expr;` chính xác là:
+
+```cpp
+promise.yield_value(expr);           // lưu giá trị
+co_await promise.yield_value(expr);  // treo tại đây; resume tiếp tục SAU dòng này
+```
+
+Khi resume, thực thi tiếp tục ở câu lệnh sau `co_yield`. Chính điểm phục hồi đó làm generator lười biếng: không gì sau điểm treo hiện tại chạy cho tới khi có người hỏi.
+
+## Các thành viên bắt buộc của promise
+
+Với một generator thô: `get_return_object()` (dựng thứ mà lời gọi trả về), `initial_suspend()` (thường `std::suspend_always` — tính lười), `final_suspend()` (bắt buộc **noexcept**, thường `std::suspend_always` để frame sống cho tới khi bạn hủy), `return_void()` hoặc `return_value(v)` (xử lý co_return), và `unhandled_exception()` (lưu hoặc ném lại).
+
+Đó là toàn bộ hợp đồng. Bài kế tiếp: generator ~40 dòng cài đặt nó.

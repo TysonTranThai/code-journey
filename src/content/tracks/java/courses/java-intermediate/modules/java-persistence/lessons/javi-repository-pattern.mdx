@@ -1,0 +1,31 @@
+## The repository pattern
+
+A repository makes persistence *look like* a collection of domain
+objects, hiding the storage technology:
+
+```java
+public interface ExpenseRepository {
+    Expense save(Expense e);            // insert or update
+    Optional<Expense> findById(String id);
+    List<Expense> findAll();
+    List<Expense> findByCategory(String category);
+    boolean deleteById(String id);
+}
+```
+
+Service code depends on the interface. Production binds a JDBC
+implementation; tests bind an in-memory one. That is dependency inversion
+applied to data:
+
+```java
+final class InMemoryExpenseRepository implements ExpenseRepository {
+    private final Map<String, Expense> store = new LinkedHashMap<>();
+    public Expense save(Expense e) { store.put(e.id(), e); return e; }
+    public Optional<Expense> findById(String id) { return Optional.ofNullable(store.get(id)); }
+    ...
+}
+```
+
+Benefits: services unit-test with zero infrastructure; the storage swap
+is one constructor argument; queries are named domain operations, not
+SQL strings leaking everywhere.

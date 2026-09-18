@@ -1,0 +1,30 @@
+A relational database stores facts in **tables** (relations) of **rows** (records) with fixed **columns** (attributes). SQL is the language; PostgreSQL is the engine.
+
+## Keys
+
+- **Primary key** — the column (or combination) that uniquely identifies a row: `id serial PRIMARY KEY`. Never reuses values, never null.
+- **Foreign key** — a column pointing at another table's primary key: `author_id INTEGER REFERENCES users(id)`. The database _enforces_ that the referenced row exists — an impossible author_id is rejected at insert, not discovered in production.
+
+## Relationships
+
+- **One-to-many** — most common: one user, many tasks. FK lives on the "many" side (tasks.author_id).
+- **Many-to-many** — tasks and tags: a **junction table** `task_tags(task_id, tag_id)` holding a pair per link. Both columns FK; often the pair is the primary key.
+- **One-to-one** — a FK with a UNIQUE constraint (users ↔ user_profiles).
+
+## Normalization: the instinct
+
+**One fact, one place.** Storing the author's name on every task row means an update must touch thousands of rows and will eventually disagree with itself. Instead: store `author_id`; join to `users` when you need the name. The classic stages:
+
+- **1NF** — no repeating groups (no "tags" column holding "a,b,c")
+- **2NF** — every column depends on the whole key
+- **3NF** — no column depends on another non-key column
+
+Denormalization (deliberately duplicating for read speed) is a _tuning_ decision made later, with measurement — never the starting shape.
+
+## Data types matter
+
+`INTEGER` vs `TEXT` vs `TIMESTAMPTZ` vs `BOOLEAN` vs `NUMERIC` (money! never float). Types are your first line of defense: the database rejects garbage before your code runs. Postgres-native niceties: `SERIAL`/`GENERATED` for ids, `JSONB` when structure is genuinely flexible, `TIMESTAMPTZ` always over `TIMESTAMP`.
+
+## NULL is its own animal
+
+NULL means "unknown", not zero and not empty string. `NULL = NULL` is not true — it's NULL. Counts, joins, and constraints all treat NULL distinctly; declare columns `NOT NULL` by default and NULL only when absence is meaningful data.

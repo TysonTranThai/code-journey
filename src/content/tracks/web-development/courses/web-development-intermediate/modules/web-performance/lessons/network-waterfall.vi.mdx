@@ -1,0 +1,27 @@
+Một lần tải trang là biên đạo của nhiều request. Panel Network vẽ nó thành waterfall; đọc được nó là kỹ năng hiệu năng cốt lõi.
+
+## Giải phẫu một request
+
+Mỗi thanh cỏn nhiều pha: **DNS lookup** (tên → IP; được cache sau lần đầu), **TCP connect** (+TLS cho https), **Time To First Byte** (server đang nghĩ), **Content Download** (payload đang về). TTFB dài = server chậm (bài toán backend). Download dài = payload nặng (bài toán frontend). Mỗi request đều phải bắt kết nối mới = bạn không tái sử dụng kết nối.
+
+## Đường truyền tới hạn
+
+Trình duyệt không render nổi khi chưa có HTML. Bên trong HTML:
+
+- `<link rel="stylesheet">` — CSS chặn render (đúng đắn cho style phần nhìn thấy đầu tiên!)
+- `<script src>` (không attribute) — dừng hẳn việc parse HTML để tải VÀ chạy
+- `<script defer>` — tải song song, chạy sau khi parse xong, trước DOMContentLoaded
+- `<script async>` — tải song song, chạy khi nào sẵn sàng (analytics, không phải code chính)
+- `<img loading="lazy">` — ảnh ngoài màn hình chờ đến khi gần viewport
+
+Cấu hình chuyên nghiệp mặc định cho script ứng dụng: `defer` trong head. CSS chặn render: giữ nhỏ; tách theo route khi stylesheet phình to.
+
+## Nước — thứ tự vận hành
+
+Waterfall cho thấy _chuỗi phụ thuộc_: HTML → CSS/JS được phát hiện → font → ảnh. Chuỗi chậm vì mỗi chặng phải chờ. Tấn công chúng bằng: `preload` cho tài sản bạn biết là cần trong giây đầu (ảnh hero, font chính), `font-display: swap` để chữ render trước khi font tới, và nhúng critical CSS để lần vẽ đầu không phải chờ một chuyến khứ hồi.
+
+## Nén và vận chuyển
+
+- **gzip/brotli** trên tài sản văn bản: thường nhỏ hơn 60–80%. Kiểm tra `Content-Encoding` của response — nếu JS của bạn thiếu nó, đó là hiệu năng miễn phí đang nằm trên bàn.
+- **HTTP caching**: header `Cache-Control` quyết định khách quay lại có phải tải lại gì không. Tên file có hash (`app.a83f2.js`) cho phép cache "mãi mãi" mà vẫn ship được bản cập nhật — đổi file là đổi hash.
+- **HTTP/2+**: ghép nhiều request trên một kết nối — lời khuyên cũ "gom tất cả thành một request" đã lỗi thời; lời khuyên hiện đại là "đừng có 300 request cũng vậy."

@@ -1,0 +1,21 @@
+{
+  "id": "pi10-tk-concurrent",
+  "title": "Concurrent vs Sequential",
+  "prompt": "Implement async def slow_double(n) awaiting asyncio.sleep(0.1) and returning n*2. Then async def run_concurrent(values) using asyncio.create_task for each value and awaiting all tasks. Provide sync wrapper run_all(values) returning the list of results (in input order).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import asyncio\n\nasync def slow_double(n):\n    pass\n\nasync def run_concurrent(values):\n    pass\n\ndef run_all(values):\n    pass\n",
+  "tests": [
+    {
+      "name": "results match input order",
+      "code": "assert run_all([1, 2, 3]) == [2, 4, 6]",
+      "hint": "Collect each task with await; task order = result order here."
+    },
+    {
+      "name": "actually concurrent (fast, not 3x slow)",
+      "code": "import time\nstart = time.monotonic()\nrun_all([1, 2, 3, 4])\nelapsed = time.monotonic() - start\nassert elapsed < 0.35, f'too slow: {elapsed}'",
+      "hint": "Four 0.1s waits overlapped must finish well under 0.4s."
+    }
+  ],
+  "level": "guided"
+}

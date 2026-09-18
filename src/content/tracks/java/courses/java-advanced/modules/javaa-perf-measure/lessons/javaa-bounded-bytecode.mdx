@@ -1,0 +1,20 @@
+You cannot run `javap` in this sandbox — but you can still make *bounded,
+honest* claims about compiled code. Bubble sort's inversions (out-of-order
+pairs) are exactly the count of swaps it performs:
+
+```java
+static long inversionCount(int[] a) {   // O(n^2) — honest brute force
+    long inv = 0;
+    for (int i = 0; i < a.length; i++)
+        for (int j = i + 1; j < a.length; j++)
+            if (a[i] > a[j]) inv++;
+    return inv;
+}
+```
+
+`inversionCount` is a *fact about the data*; the number of swaps a correct
+bubble sort performs equals it exactly; and a linear scan of the final array
+proves the sort actually sorted (all-zero inversions). Three mutually
+reinforcing measurements — none of which trusts the optimizer to be honest,
+all of which the optimizer cannot cheat. This is the pattern for testing
+performance-adjacent behavior: assert on *countable* effects, not on vibes.

@@ -1,0 +1,17 @@
+## Balances and totals
+
+```csharp
+decimal balance = ledger.Sum(t => t.Dir == Direction.Income ? t.Amount : -t.Amount);
+
+var byCategory = ledger
+    .GroupBy(t => t.Category)
+    .Select(g => new { Category = g.Key, Total = g.Sum(t => t.Amount) })
+    .OrderByDescending(x => x.Total)
+    .ToList();
+```
+
+The signed fold gives the running balance; the GroupBy pipeline is the category report. Both are one pass over data — the aggregation lesson's patterns applied to a real domain.
+
+## The statement
+
+A monthly statement composes them: filter the month, compute income/expense/balance, find the biggest category, take the top 3 entries by amount descending. Nothing new — Module 15's `Where`/`Sum`/`GroupBy`/`OrderByDescending` in combination, which is the point: capstones verify that earlier modules became reflexes.

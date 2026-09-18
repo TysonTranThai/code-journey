@@ -1,0 +1,26 @@
+{
+  "id": "javi-p12-checkout-layers",
+  "title": "Layered Checkout",
+  "prompt": "Assemble a mini layered system in `Solution`:\n- `record Order(String id, int cents)` (domain)\n- `record OrderView(String id, String total)` (DTO — total formatted as\n  `\"$\" + (cents/100) + \".\" + zeroPadded(cents%100)`, e.g. `$12.05`)\n- `interface OrderRepository { void save(Order o); Order findById(String id); }`\n- `static class InMemoryOrderRepository implements OrderRepository`\n- `static class CheckoutService` with constructor `(OrderRepository r)`\n  and `Order place(String id, int cents)`: rejects negative cents with\n  IllegalArgumentException, then saves and returns the order.\n- `static String viewTotal(int cents)` — the mapping function used by\n  OrderView.\n\nThe controller layer is the test itself: it builds the repo, injects it\ninto the service, places an order, and maps it to a view.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "service persists through the repo",
+      "code": "\nSolution.InMemoryOrderRepository repo = new Solution.InMemoryOrderRepository();\nSolution.CheckoutService svc = new Solution.CheckoutService(repo);\nSolution.Order o = svc.place(\"o1\", 1205);\ncheckEq(repo.findById(\"o1\").cents(), 1205, \"persisted\");\n",
+      "hint": "Service → repository, injected."
+    },
+    {
+      "name": "service validates",
+      "code": "\nSolution.CheckoutService svc = new Solution.CheckoutService(new Solution.InMemoryOrderRepository());\ntry { svc.place(\"bad\", -5); checkTrue(false, \"must throw\"); }\ncatch (IllegalArgumentException e) { checkTrue(true, \"rejected\"); }\n",
+      "hint": "Business rule lives in the service, not the repository."
+    },
+    {
+      "name": "DTO mapping formats money",
+      "code": "\ncheckEq(Solution.viewTotal(1205), \"$12.05\", \"dollars and padded cents\");\ncheckEq(Solution.viewTotal(100), \"$1.00\", \"exact dollar\");\ncheckEq(Solution.viewTotal(7), \"$0.07\", \"single digit padded\");\n",
+      "hint": "Format: $ + whole + '.' + two-digit cents."
+    }
+  ],
+  "level": "real-world"
+}

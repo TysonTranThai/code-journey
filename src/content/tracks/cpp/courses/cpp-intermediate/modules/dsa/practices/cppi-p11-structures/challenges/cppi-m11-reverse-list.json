@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m11-reverse-list",
+  "title": "Reverse a linked list iteratively",
+  "prompt": "Implement `ListNode* reverse_list(ListNode* head)` reversing the chain in place with the three-pointer technique (prev, head, next) and returning the new head. `ListNode` is `{int value; ListNode* next;}`. No new nodes — relink the existing ones.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\n\nstruct ListNode {\n    int value;\n    ListNode* next;\n};\n\n// ListNode* reverse_list(ListNode* head)\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "ListNode c{3, nullptr};\nListNode b{2, &c};\nListNode a{1, &b};\nListNode* r = reverse_list(&a);\nCHECK_EQ(r->value, 3);\nCHECK_EQ(r->next->value, 2);\nCHECK_EQ(r->next->next->value, 1);\nCHECK_EQ(r->next->next->next, nullptr);",
+      "hint": "1→2→3 becomes 3→2→1."
+    },
+    {
+      "name": "single",
+      "code": "ListNode one{42, nullptr};\nCHECK_EQ(reverse_list(&one)->value, 42);",
+      "hint": "A single node is its own reversed head."
+    },
+    {
+      "name": "empty",
+      "code": "CHECK(reverse_list(nullptr) == nullptr);",
+      "hint": "Empty list reverses to empty."
+    }
+  ],
+  "level": "independent"
+}

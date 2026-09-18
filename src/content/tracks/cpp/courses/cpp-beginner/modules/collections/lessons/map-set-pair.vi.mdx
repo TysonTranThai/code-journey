@@ -1,0 +1,46 @@
+## std::map: khóa → giá trị
+
+```cpp
+#include <map>
+#include <string>
+
+std::map<std::string, int> stock;
+stock["pen"] = 120;                 // chèn mới hoặc ghi đè
+stock["ink"] += 5;                  // đọc 0 nếu chưa có, rồi cộng — tinh vi đấy!
+int pens = stock.at("pen");         // ném exception nếu thiếu khóa
+if (stock.count("ink")) { /* có mặt */ }
+for (const auto& [item, qty] : stock) {   // structured binding C++17, sắp theo khóa
+    std::cout << item << ": " << qty << '\n';
+}
+```
+
+`operator[]` **chèn số 0** khi khóa vắng mặt — nguồn bug huyền thoại trong code đếm. Dùng `[]` khi bạn chủ ý chèn/ghi đè; dùng `.at()` hoặc `find`/`count` khi chỉ đọc.
+
+`std::map` giữ khóa **được sắp xếp** (bên dưới là cây). `std::unordered_map` là người anh em bảng băm: nhanh hơn trung bình, nhưng không có thứ tự. Mặc định dùng `map` khi còn học (thứ tự đoán được giúp việc debug); chọn `unordered_map` khi profiling nói tra cứu đang là điểm nóng.
+
+## std::set: tính duy nhất
+
+```cpp
+#include <set>
+std::set<int> seen;
+seen.insert(3);            // trả về <iterator, bool chèn thành công>
+seen.insert(3);            // lần chèn thứ hai không làm gì
+CHECK(seen.size() == 1);
+bool has = seen.count(3);  // 1 = có mặt
+```
+
+Một `set` là túi các khóa duy nhất, có sắp xếp — câu trả lời trực tiếp cho "mình đã gặp cái này chưa?" và "có những giá trị phân biệt nào?".
+
+## std::pair: hộp hai ô
+
+```cpp
+#include <utility>
+std::pair<std::string, int> entry{"pen", 120};
+entry.first; entry.second;
+```
+
+Pair xuất hiện tự nhiên với map (mỗi phần tử là một pair) và như giá trị trả về hai-in-một (`find` trả iterator, `insert` trả `pair<`iterator`bool>`). Structured binding `auto [k, v]` gói chúng lại một cách thanh lịch.
+
+## Sắp tới
+
+Ba container là một *hộp công cụ*, không phải luật. Bài sau: cách thực sự lựa chọn.

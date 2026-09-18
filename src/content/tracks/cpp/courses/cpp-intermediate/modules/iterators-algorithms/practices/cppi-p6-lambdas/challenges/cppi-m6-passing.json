@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m6-passing",
+  "title": "Filter and rank with lambdas",
+  "prompt": "Given the `Student` struct in the boilerplate, implement `std::vector<Student> passing(const std::vector<Student>& students, int cutoff)` returning students with `score >= cutoff`, ordered by score **descending**. Use `std::copy_if` with a capture-by-value lambda, then `std::sort` with a comparator lambda.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <algorithm>\n#include <string>\n#include <vector>\n#include <iostream>\n\nstruct Student {\n    std::string name;\n    int score;\n};\n\n// std::vector<Student> passing(const std::vector<Student>& students, int cutoff)\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "std::vector<Student> in{{\"a\", 50}, {\"b\", 80}, {\"c\", 70}};\nauto r = passing(in, 60);\nCHECK_EQ(r.size(), 2);\nCHECK_EQ(r[0].name, std::string(\"b\"));\nCHECK_EQ(r[1].name, std::string(\"c\"));",
+      "hint": "Highest score first — the comparator returns a.score > b.score."
+    },
+    {
+      "name": "below-cutoff",
+      "code": "std::vector<Student> in{{\"a\", 50}};\nCHECK_EQ(passing(in, 60).size(), 0);",
+      "hint": "50 < 60: nobody passes."
+    },
+    {
+      "name": "all-pass-tied",
+      "code": "std::vector<Student> in{{\"a\", 70}, {\"b\", 70}};\nauto r = passing(in, 60);\nCHECK_EQ(r.size(), 2);\nCHECK_EQ(r[0].score, 70);\nCHECK_EQ(r[1].score, 70);",
+      "hint": "Ties are acceptable — stability is not part of this contract."
+    }
+  ],
+  "level": "combination"
+}

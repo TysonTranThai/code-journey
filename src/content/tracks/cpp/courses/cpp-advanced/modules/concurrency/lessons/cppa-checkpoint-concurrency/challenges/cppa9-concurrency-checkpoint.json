@@ -1,0 +1,20 @@
+{
+  "id": "cppa9-concurrency-checkpoint",
+  "title": "Pipeline Stage Gauntlet",
+  "prompt": "Implement `Stage`: `put` feeds the inbox (value -1 closes it), `run` moves inbox values (+delta) to the outbox until closed, `take` blocks for outbox values.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <condition_variable>\n#include <deque>\n#include <mutex>\n#include <optional>\n#include <thread>\n\n// A worker that moves values from inbox to outbox, transformed by +delta,\n// until the inbox closes (sentinel -1 means close).\nclass Stage {\npublic:\n    Stage(int delta);\n    void put(int v);       // inbox push (sentinel -1 closes)\n    int take();            // outbox pop (blocks)\n    void run();            // the worker loop (called on its own thread by tests)\nprivate:\n    int delta_;\n    std::deque<int> in_;                  // inbox queue\n    std::deque<int> out_;                 // outbox queue\n    std::mutex m_;                        // guards in_\n    std::mutex om_;                       // guards out_\n    std::condition_variable inCv_;        // signaled when in_ becomes non-empty\n    std::condition_variable oCv_;         // signaled when out_ becomes non-empty\n};\n",
+  "tests": [
+    {
+      "name": "values transform and flow",
+      "code": "Stage s{100};\nstd::thread t([&s] { s.run(); });\ns.put(1);\ns.put(2);\ns.put(-1);\nCHECK_EQ(s.take(), 101);\nCHECK_EQ(s.take(), 102);\nt.join();",
+      "hint": "Two mailbox slots (each mutex+cv+optional): run loops taking from inbox (waiting predicated), breaking on -1, otherwise pushing value+delta to outbox and notifying."
+    },
+    {
+      "name": "late take blocks until value",
+      "code": "Stage s{5};\nstd::thread feeder([&s] {\n    std::this_thread::sleep_for(std::chrono::milliseconds(20));\n    s.put(3);\n    s.put(-1);\n});\nstd::thread worker([&s] { s.run(); });\nCHECK_EQ(s.take(), 8);\nfeeder.join();\nworker.join();",
+      "hint": "take waits on the outbox condition variable with a predicate — the timing skew must not matter."
+    }
+  ]
+}

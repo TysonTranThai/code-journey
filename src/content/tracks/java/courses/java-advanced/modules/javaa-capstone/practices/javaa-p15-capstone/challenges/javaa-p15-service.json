@@ -1,0 +1,16 @@
+{
+  "id": "javaa-p15-service",
+  "title": "The service over either engine",
+  "prompt": "Inside Solution, add `public static class LedgerService`:\n1. Constructor takes an `Engine` and stores it (polymorphism by construction).\n2. `String get(String key)` — returns the value or the literal \"MISSING\" (the\nservice shapes the engine's Optional into domain language).\n3. `void record(String key, String value)` — delegates to engine.put.\n4. `java.util.List<String> entries()` — engine.keys() mapped to `key=value` strings,\nin the engine's (sorted) order.\n5. `static String health(int count, int failures)` — returns \"green\" if failures ==\n0 and count > 0, \"yellow\" if failures == 0 and count == 0, \"red\" otherwise.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "the service is engine-blind",
+      "code": "\nSolution.Engine m = new Solution.InMemory();\nSolution.LedgerService s = new Solution.LedgerService(m);\ns.record(\"a\", \"1\"); s.record(\"b\", \"2\");\ncheckEq(s.get(\"a\"), \"1\", \"recorded value\");\ncheckEq(s.get(\"zz\"), \"MISSING\", \"domain language for absence\");\ncheckEq(s.entries(), java.util.List.of(\"a=1\", \"b=2\"), \"sorted entries\");\ncheckEq(Solution.LedgerService.health(2, 0), \"green\", \"data + no failures\");\ncheckEq(Solution.LedgerService.health(0, 0), \"yellow\", \"empty is yellow\");\ncheckEq(Solution.LedgerService.health(0, 3), \"red\", \"failures are red\");\n",
+      "hint": "One service, any engine, honest health."
+    }
+  ],
+  "level": "independent"
+}

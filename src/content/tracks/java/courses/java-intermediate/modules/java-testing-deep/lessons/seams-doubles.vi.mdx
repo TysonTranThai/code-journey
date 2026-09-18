@@ -1,0 +1,27 @@
+## Seam và test double
+
+*Seam* là điểm có thể thay thế trong code — thường là interface được tiêm
+qua constructor. Double cắm vào seam:
+
+- **Stub** — trả dữ liệu đóng gói sẵn (`FakeGateway` từ Module 2)
+- **Fake** — hiện thực nhẹ hoạt động thật (repo trong bộ nhớ)
+- **Spy** — ghi lại các lần gọi để kiểm chứng sau
+- **Mock** — kỳ vọng được lập trình sẵn (dùng tiết chế; mock biết quá
+  nhiều khiến refactor đau đớn)
+
+```java
+interface Clock { Instant now(); }
+
+class SubscriptionService {
+    private final Clock clock;
+    SubscriptionService(Clock clock) { this.clock = clock; }
+    boolean isExpired(Instant until) { return clock.now().isAfter(until); }
+}
+
+// test: đóng băng thời gian thay vì ngủ/đợi
+Clock frozen = () -> Instant.parse("2026-09-14T00:00:00Z");
+```
+
+Quy tắc: nếu code gọi `Instant.now()` hoặc `Math.random()` chìm sâu bên
+trong, nó không có seam — tách quyết định đó sau một interface. Kết quả
+là test xác định được.

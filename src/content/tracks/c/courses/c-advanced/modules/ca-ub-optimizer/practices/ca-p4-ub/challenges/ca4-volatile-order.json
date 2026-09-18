@@ -1,0 +1,26 @@
+{
+  "id": "ca4-volatile-order",
+  "title": "volatile Makes It Honest",
+  "prompt": "A file-scope `static volatile int ticks = 0;` is already in your editor. Implement `int bump_ticks(void)` (adds 1, returns the new value), `void reset_ticks(void)`, and `int ticks_between(void (*work)(void), int expected)` which resets, runs work(), and returns 1 iff ticks equals expected — proving every write actually happened because volatile forbids collapsing them.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstatic volatile int ticks = 0;\n",
+  "tests": [
+    {
+      "name": "writes are observed",
+      "code": "CHECK_EQ(bump_ticks(), 1);\nCHECK_EQ(bump_ticks(), 2);\nreset_ticks();\nCHECK_EQ(ticks, 0);",
+      "hint": "Every increment really happens — volatile prevents store collapsing."
+    },
+    {
+      "name": "between works",
+      "code": "CHECK_EQ(ticks_between(bump_twice_probe, 2), 1);",
+      "hint": "work() runs between reset and check; volatile makes the count trustworthy."
+    },
+    {
+      "name": "wrong expectation fails",
+      "code": "CHECK_EQ(ticks_between(bump_once_probe, 2), 0);",
+      "hint": "The honest probe also reports the truth when the expectation is wrong."
+    }
+  ],
+  "level": "combination"
+}

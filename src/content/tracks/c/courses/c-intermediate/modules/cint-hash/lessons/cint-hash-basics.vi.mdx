@@ -1,0 +1,33 @@
+## Mảng đứng sau phép màu
+
+Mảng cho O(1) theo *chỉ số*. Hash table cho O(1) *trung bình* theo *key*:
+hàm băm maps key sang chỉ số bucket:
+
+```c
+size_t idx = hash(key) % nbuckets;
+```
+
+Hai tính chất chia hàm băm tốt/xấu: **định quán** (key giống → bucket
+giống, luôn vậy) và **đều** (keys rải đều; cụm thành linear scan). Với
+số nguyên, multiplicative hashing là sàn trung thực:
+
+```c
+/* Knuth multiplicative: đủ để dạy, không chống key đối kháng */
+size_t h = (size_t)key * 2654435761u;
+```
+
+Với chuỗi, FNV-1a là lựa chọn đơn giản chuẩn — nhân rồi xor từng byte,
+nên "ab" và "ba" khác nhau.
+
+## Load factor là toàn bộ câu chuyện hiệu năng
+
+`load = số phần tử / số bucket`. Với separate chaining, chiều dài chuỗi
+kỳ vọng *chính là* load factor — lookup là O(1 + load). Quá ~1.0, chuỗi
+dài dần và "hằng số" lặng lẽ thành tuyến tính. Cách chữa là **resize**:
+khi load vượt ngưỡng (thường 0.75), cấp phát mảng bucket lớn hơn và
+*rehash mọi phần tử* — chỉ số của chúng đổi, vì modulus đổi. Resize là
+O(n) nhưng amortized O(1) mỗi lần chèn, đúng như dynamic array.
+
+Với open addressing, load phải *thấp hơn* (0.5–0.7): cụm probing xấu đi
+nhanh khi bảng đầy, và ở 1.0 bảng kín — insert có thể thất bại dù các
+key khác nhau.

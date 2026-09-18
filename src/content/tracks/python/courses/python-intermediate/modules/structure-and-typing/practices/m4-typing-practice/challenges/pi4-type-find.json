@@ -1,0 +1,26 @@
+{
+  "id": "pi4-type-find",
+  "title": "Union Return",
+  "prompt": "Implement find_user(users: dict[int, str], user_id: int) -> str | None returning the name or None when absent. Annotate it — get_type_hints must report the union type.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "from typing import get_type_hints\n\ndef find_user(users: dict[int, str], user_id: int) -> str | None:\n    pass\n",
+  "tests": [
+    {
+      "name": "finds existing",
+      "code": "us = {1: 'An'}\nassert find_user(us, 1) == 'An'",
+      "hint": "dict.get does it."
+    },
+    {
+      "name": "missing returns None",
+      "code": "us = {1: 'An'}\nassert find_user(us, 9) is None",
+      "hint": "Return None, never raise, for absence."
+    },
+    {
+      "name": "union annotation present",
+      "code": "import typing\nhints = typing.get_type_hints(find_user)\nassert hints['return'] == (str | None)",
+      "hint": "The return annotation must be str | None."
+    }
+  ],
+  "level": "independent"
+}

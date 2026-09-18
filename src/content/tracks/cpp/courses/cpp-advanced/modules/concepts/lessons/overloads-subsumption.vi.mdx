@@ -1,0 +1,24 @@
+## Subsumption trong một hình
+
+Nếu ràng buộc của concept `B` bao hàm logic ràng buộc của concept `A` (`SizedIterable = Iterable<T> && has_size`), thì `B` **subsumes** `A`. Khi cả hai overload tồn tại, lời gọi thỏa cả hai sẽ phân giải về bản `B` — không cần tag dispatch, không thủ thuật priority, không mơ hồ:
+
+```cpp
+template <Iterable C>     std::string category(const C&) { return "iterable"; }
+template <SizedIterable C> std::string category(const C&) { return "sized-iterable"; }
+```
+
+`category(std::vector<int>{})` chọn "sized-iterable"; một range chỉ có begin/end chọn "iterable". Compiler biết `Iterable && X` *chặt hơn* `Iterable` vì nó theo dõi cấu trúc của biểu thức ràng buộc.
+
+## Vì sao vượt trội hơn tag dispatch
+
+Đồ thị subsumption nằm trong *kiểu* — caller không thể chọn nhầm overload, và thêm một nấc mới vào hệ phân cấp không cần đổi bất cứ lời gọi nào. Code tag-dispatch thì phải cập nhật mọi điểm gọi.
+
+## Mẫu thiết kế: thang ràng buộc
+
+Xếp overload từ chặt nhất đến lỏng nhất và để subsumption dẫn đường:
+
+1. `SizedRandomAccess` — đánh chỉ số được và có size: đường đi O(1),
+2. `Iterable` — bất cứ thứ gì có begin/end: đường đi tuyến tính,
+3. fallback không ràng buộc — báo lỗi rõ ràng hoặc kiểm tra lúc chạy.
+
+Bài tập chấm điểm dựng đúng cái thang này và hỏi bậc nào đã phục vụ lời gọi.

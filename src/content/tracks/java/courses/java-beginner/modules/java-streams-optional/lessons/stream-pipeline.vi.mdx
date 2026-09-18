@@ -1,0 +1,53 @@
+**Stream** là băng chuyền cho dữ liệu: bạn xếp các bước xử lý, và phần tử
+chảy qua từng công đoạn.
+
+```java
+List<String> names = List.of("Ada", "bob", "Grace", "eve", "Turing");
+
+List<String> result = names.stream()          // 1. nguồn
+    .filter(n -> n.length() > 3)              // 2. trung gian: giữ lại một số
+    .map(String::toUpperCase)                 // 3. trung gian: biến đổi
+    .sorted()                                 // 4. trung gian: sắp xếp
+    .collect(java.util.stream.Collectors.toList());  // 5. terminal: tạo kết quả
+// [ADA, GRACE, TURING]
+```
+
+Từ vựng:
+
+- **Nguồn** - `list.stream()`, `Stream.of(...)`, `map.entrySet().stream()`.
+- **Phép toán trung gian** (trả về stream mới, *lazy* - không chạy cho đến
+  khi có phép terminal): `filter`, `map`, `sorted`, `distinct`, `limit`,
+  `skip`, `peek`.
+- **Phép toán terminal** (thực sự chạy băng chuyền, đúng một lần):
+  `collect`, `forEach`, `count`, `anyMatch`/`allMatch`/`noneMatch`,
+  `findFirst`, `reduce`.
+
+## Stream nguyên thủy tránh boxing
+
+```java
+int total = prices.stream()            // Stream<Double>
+    .mapToInt(Double::intValue)        // IntStream - không tạo đối tượng Double
+    .sum();
+```
+
+## Collector hay dùng
+
+```java
+Collectors.toList()                              // dùng hằng ngày
+Collectors.joining(", ")                         // "Ada, Grace"
+Collectors.groupingBy(String::length)            // Map<Integer, List<String>>
+Collectors.counting()                            // thường nằm trong groupingBy
+```
+
+## Phần nói thật: khi nào vòng lặp rõ hơn
+
+Stream không phải huy hiệu danh dự. Hãy dùng vòng lặp thường khi:
+
+- bạn **tích lũy với trạng thái rối** (nhiều biến đếm ràng buộc nhau);
+- bạn cần **thoát sớm giữa chừng** với tác dụng phụ;
+- chuỗi sẽ dài năm tầng và không ai đọc nổi;
+- bạn xử lý **hai collection song song từng cặp**.
+
+Quy tắc tốt: stream cho code *mô tả phép biến đổi*, loop cho code *điều
+khiển quy trình*. Nếu đồng đội phải nheo mắt nhìn stream của bạn, hãy
+viết vòng lặp.

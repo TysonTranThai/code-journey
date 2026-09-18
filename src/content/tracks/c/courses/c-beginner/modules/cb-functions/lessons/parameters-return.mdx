@@ -1,0 +1,40 @@
+## Parameters are copies
+
+```c
+void set_to_zero(int x) {
+    x = 0;                    // modifies the COPY — caller unaffected
+}
+
+int a = 5;
+set_to_zero(a);              // a is still 5
+```
+
+C passes by value, always. The function's parameter is a fresh variable
+initialized with the argument's value. (Output parameters via pointers come in
+module 11 — this is the "why".)
+
+## One return value
+
+```c
+int clamp(int v, int lo, int hi) {
+    if (v < lo) return lo;
+    if (v > hi) return hi;
+    return v;
+}
+```
+
+`return` exits immediately — it can appear anywhere in the body. A
+non-`void` function that reaches the end of its body without a `return` hands
+the caller an **indeterminate value** (undefined behavior if the caller uses
+it). GCC warns with `-Wreturn-type`; our harness compiles with warnings shown.
+
+## Early returns beat nesting
+
+```c
+// prefer this                          // over this
+int f(int x) {                          int f(int x) {
+    if (bad(x)) return -1;                  if (!bad(x)) {
+    ... main path ...                           ... deep nesting ...
+}                                           }
+                                        }
+```

@@ -1,0 +1,47 @@
+Every object lives on one of four **storage durations** — four different clocks:
+
+1. **static** — created at program start, destroyed at exit: globals, `static` locals, `static` members. Initialization of function-local statics is thread-safe and lazy (C++11 "magic statics").
+2. **thread** — `thread_local`: one instance per thread, born at thread start, dies at thread end.
+3. **automatic** — locals: born at definition, destroyed when the scope exits (in **reverse order** of declaration).
+4. **dynamic** — `new`/`delete` directly (rare in modern code; ownership should live in RAII types).
+
+## Destruction order is a contract
+
+Within a scope, destruction runs in **reverse construction order**. Members are destroyed in reverse declaration order — *after* the destructor body runs. Locking discipline, mutex scoping, and cleanup code all depend on this:
+
+```cpp
+struct Job {
+    std::ofstream log;              // declared first  -> destroyed last
+    std::lock_guard<std::mutex> g;  // declared second -> destroyed first
+    Job(std::mutex& m) : log("job.log"), g(m) {}
+};
+```
+
+## Dangling: the lifetime bug family
+
+A reference/pointer/view that outlives its object is **dangling** — using it is undefined behavior, and the compiler usually will not stop you:
+
+- returning a reference/pointer to a local,
+- storing a `string_view` or `span` over a temporary,
+- iterators invalidated by container mutation,
+- captured-by-reference lambdas escaping their scope.
+
+```cpp
+std::string_view bad() {
+    std::string local = "temporary";
+    return local;            // compiles; the view dangles on return
+}
+```
+
+## Lifetime extension — the narrow exception
+
+A **const reference bound to a temporary** extends the temporary's lifetime to the reference's (and a range-for over a temporary container works for the loop's duration). But extension does **not** chain through function returns or past a constructor body into a reference member — the most-surveyed "gotcha" in C++:
+
+```cpp
+struct Holder {
+    const std::string& s;
+    Holder() : s("dangles!") {}   // temporary dies at the closing brace
+};
+```
+
+**Defensive habit:** views borrow — never store a `string_view`/`span`/`&` in a type whose lifetime you cannot prove is shorter than the viewed object's. In this module's graded work you will repair dangling code and predict destruction order exactly.

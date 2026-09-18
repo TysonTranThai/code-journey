@@ -1,0 +1,31 @@
+{
+  "id": "cppi-m9-stack-template",
+  "title": "Class template: Stack<T>",
+  "prompt": "Implement `template <typename T> class Stack` backed by `std::vector<T>` with: `void push(T)`, `T pop()` (removes and returns the top — moving, not copying), `const T& top() const`, `bool empty() const`, `std::size_t size() const`. It must instantiate for int and std::string.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <memory>\n#include <string>\n#include <vector>\n#include <iostream>\n\n// template <typename T> class Stack { ... };\n",
+  "tests": [
+    {
+      "name": "lifo-int",
+      "code": "Stack<int> s;\ns.push(1);\ns.push(2);\nCHECK_EQ(s.size(), 2);\nCHECK_EQ(s.pop(), 2);\nCHECK_EQ(s.pop(), 1);",
+      "hint": "Last pushed, first popped."
+    },
+    {
+      "name": "strings",
+      "code": "Stack<std::string> s;\ns.push(\"a\");\ns.push(\"b\");\nCHECK_EQ(s.top(), std::string(\"b\"));\ns.pop();\nCHECK_EQ(s.top(), std::string(\"a\"));",
+      "hint": "top() peeks without removing."
+    },
+    {
+      "name": "move-out",
+      "code": "Stack<std::string> s;\ns.push(std::string(\"payload\"));\nstd::string out = s.pop();\nCHECK_EQ(out, std::string(\"payload\"));\nCHECK(s.empty());",
+      "hint": "pop() hands the value out and leaves the stack empty."
+    },
+    {
+      "name": "move-only",
+      "code": "Stack<std::unique_ptr<int>> s;\ns.push(std::make_unique<int>(9));\nstd::unique_ptr<int> p = s.pop();\nCHECK(p != nullptr);\nCHECK_EQ(*p, 9);\nCHECK(s.empty());",
+      "hint": "unique_ptr is non-copyable: only a moving pop() compiles."
+    }
+  ],
+  "level": "independent"
+}

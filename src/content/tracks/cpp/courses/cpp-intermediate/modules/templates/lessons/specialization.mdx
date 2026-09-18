@@ -1,0 +1,38 @@
+Sometimes one type needs a different implementation than the generic
+recipe. **Specialization** provides it — opt in per type, keep the
+generic elsewhere.
+
+```cpp
+template <typename T>
+struct Serializer {
+    static std::string to(const T& v) { return std::to_string(v); }
+};
+
+// full specialization for std::string
+template <>
+struct Serializer<std::string> {
+    static std::string to(const std::string& v) { return v; }
+};
+
+// partial specialization for every std::vector<T>
+template <typename T>
+struct Serializer<std::vector<T>> {
+    static std::string to(const std::vector<T>& v) {
+        std::string out = "[";
+        for (std::size_t i = 0; i < v.size(); ++i) {
+            if (i) out += ",";
+            out += Serializer<T>::to(v[i]);   // recursion through the generic
+        }
+        return out + "]";
+    }
+};
+```
+
+Reading order for the compiler: full specializations beat partial ones,
+which beat the primary template. The vector case above recurses: a
+`std::vector<int>` uses the partial, whose elements use the primary, and
+a nested vector keeps recursing — generic machinery composing itself.
+
+Use sparingly: specialization is a hook for *implementations*, not for
+changing public behavior. If the specialized type's semantics differ, a
+plain overload or a differently-named function is usually clearer.

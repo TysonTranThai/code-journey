@@ -1,0 +1,68 @@
+Đến lúc này code của bạn chạy từ trên xuống, một lần. **Events** thay đổi tất cả: bạn đăng ký một hàm, và trình duyệt gọi nó mỗi khi hành động xảy ra — một cú bấm, một phím được nhấn, một biểu mẫu được gửi.
+
+## addEventListener
+
+```js
+const btn = document.querySelector("#save");
+
+btn.addEventListener("click", () => {
+  console.log("Clicked!");
+});
+```
+
+Đọc nó là: _trên `btn`, mỗi khi một `click` xảy ra, chạy hàm này._ Hàm đó là **handler** — trình duyệt gọi nó, không phải bạn. Không gì xảy ra cho đến khi người dùng hành động.
+
+## Các sự kiện thông dụng
+
+| Event     | Kích hoạt khi                                          |
+| --------- | ------------------------------------------------------ |
+| `click`   | một phần tử được bấm hoặc chạm                         |
+| `input`   | giá trị của một trường văn bản thay đổi, từng phím gõ  |
+| `submit`  | một biểu mẫu được gửi (trên **form**, không phải nút)  |
+| `keydown` | một phím được nhấn                                     |
+
+```js
+const field = document.querySelector("#search");
+field.addEventListener("input", () => {
+  console.log("Now contains:", field.value);
+});
+```
+
+## Event object và preventDefault
+
+Handler nhận một **event object** chứa chi tiết về những gì đã xảy ra:
+
+```js
+const form = document.querySelector("#signup");
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault(); // ngăn trình duyệt tải lại cả trang
+  console.log("Handling the submit ourselves");
+});
+```
+
+`event.preventDefault()` hủy hành vi mặc định của trình duyệt. Với biểu mẫu, điều này thiết yếu: không có nó, việc submit sẽ tải lại trang và JavaScript của bạn không bao giờ kịp phản hồi. Gần như mọi app hiện đại chặn submit theo cách này và cập nhật trang tại chỗ.
+
+## Nút bấm: click handler có việc thật
+
+```js
+const counterBtn = document.querySelector("#increment");
+const display = document.querySelector("#count");
+let count = 0;
+
+counterBtn.addEventListener("click", () => {
+  count++; // cập nhật trạng thái trước…
+  display.textContent = count; // …rồi phản chiếu nó lên trang
+});
+```
+
+Trạng thái trước, render sau — vũ điệu hai bước này là cốt lõi của mọi app tương tác bạn sẽ xây.
+
+## Bạn đã học được gì
+
+- `element.addEventListener("click", handler)` — trình duyệt gọi hàm của bạn
+- `click`, `input`, `submit`, `keydown`
+- Handler nhận một event object; `preventDefault()` ngăn hành vi mặc định
+- Cập nhật trạng thái, rồi render nó
+
+**Tiếp theo:** biểu mẫu — thu thập và xác thực đầu vào của người dùng.

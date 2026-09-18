@@ -1,0 +1,21 @@
+{
+  "id": "pa-arch-refactor-pipeline",
+  "title": "Preserve the contract, restructure the code",
+  "prompt": "Implement `process_orders(orders, notifier, audit)` per this EXACT contract (given as the refactored behavior):\n\n- for each order: total <= 0 → append `{'id': id, 'status': 'skipped'}` to `audit`, continue\n- otherwise `notifier.send(order['email'], 'order <id> confirmed')`; success → append `'sent'`\n- on notification failure → append `'failed'` to audit, then RE-RAISE the exception (batch aborts)\n- return the audit list\n\nThe hidden probe verifies three different notifier behaviors (happy, one failure mid-batch, all-skipped) — your implementation must match the contract exactly, in order.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "def process_orders(orders, notifier, audit):\n    # audit: list mutated in place; returns audit\n    pass",
+  "tests": [
+    {
+      "name": "happy path appends in order",
+      "code": "class Spy:\n    def __init__(self):\n        self.sent = []\n    def send(self, to, message):\n        self.sent.append((to, message))\n\nspy = Spy()\naudit = []\nout = process_orders(\n    [\n        {'id': 'a', 'total': 5, 'email': 'a@x'},\n        {'id': 'b', 'total': 0, 'email': 'b@x'},\n        {'id': 'c', 'total': 7, 'email': 'c@x'},\n    ],\n    spy,\n    audit,\n)\nassert out is audit\nassert out == [\n    {'id': 'a', 'status': 'sent'},\n    {'id': 'b', 'status': 'skipped'},\n    {'id': 'c', 'status': 'sent'},\n], f'audit: {out}'\nassert spy.sent == [('a@x', 'order a confirmed'), ('c@x', 'order c confirmed')]\nprint('ok')",
+      "hint": "Skip invalid totals BEFORE sending; append statuses in encounter order."
+    },
+    {
+      "name": "failure aborts the batch after auditing",
+      "code": "class Flaky:\n    def __init__(self):\n        self.calls = 0\n    def send(self, to, message):\n        self.calls += 1\n        if self.calls == 2:\n            raise RuntimeError('smtp down')\n\naudit = []\ntry:\n    process_orders(\n        [\n            {'id': 'a', 'total': 1, 'email': 'a@x'},\n            {'id': 'b', 'total': 1, 'email': 'b@x'},\n            {'id': 'c', 'total': 1, 'email': 'c@x'},\n        ],\n        Flaky(),\n        audit,\n    )\nexcept RuntimeError:\n    pass\nelse:\n    raise AssertionError('failure must propagate')\nassert audit == [\n    {'id': 'a', 'status': 'sent'},\n    {'id': 'b', 'status': 'failed'},\n], f'audit: {audit}'\nprint('ok')",
+      "hint": "Append 'failed' to audit, then re-raise — the third order must never be touched."
+    }
+  ],
+  "level": "real-world"
+}

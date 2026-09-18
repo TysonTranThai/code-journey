@@ -1,0 +1,30 @@
+{
+  "id": "pi11-ckpt-ship",
+  "title": "Release Gate",
+  "prompt": "Implement release_gate(pyproject_text, argv) that: (1) parses the TOML and raises ValueError('missing name') if [project].name is absent; (2) routes argv through a main-style dispatch: argv[0] == 'version' prints the version and returns 0; anything else returns 2 after printing an error to stderr; (3) if the dependencies list contains a bare (unpinned) name, raise ValueError('unpinned: <name>'). Return the dispatch exit code.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import sys, tomllib\n\ndef release_gate(pyproject_text, argv):\n    pass\n",
+  "tests": [
+    {
+      "name": "valid project + version command",
+      "code": "text = '[project]\\nname = \"t\"\\nversion = \"1.0.0\"\\ndependencies = [\"httpx>=0.27\"]'\nimport io, contextlib\nbuf = io.StringIO()\nwith contextlib.redirect_stdout(buf):\n    code = release_gate(text, ['version'])\nassert code == 0 and buf.getvalue().strip() == '1.0.0'",
+      "hint": "Parse, verify, dispatch: 'version' prints the version, exit 0."
+    },
+    {
+      "name": "missing name raises",
+      "code": "text = '[project]\\nversion = \"1.0.0\"'\ntry:\n    release_gate(text, ['version'])\n    failed = False\nexcept ValueError as e:\n    failed = 'missing name' in str(e)\nassert failed",
+      "hint": "The contract check precedes dispatch."
+    },
+    {
+      "name": "unpinned dependency raises",
+      "code": "text = '[project]\\nname = \"t\"\\nversion = \"1.0.0\"\\ndependencies = [\"requests\"]'\ntry:\n    release_gate(text, ['version'])\n    failed = False\nexcept ValueError as e:\n    failed = 'unpinned: requests' in str(e)\nassert failed",
+      "hint": "Every dependency must carry a constraint."
+    },
+    {
+      "name": "unknown command exits 2 via stderr",
+      "code": "text = '[project]\\nname = \"t\"\\nversion = \"1.0.0\"'\nimport io, contextlib\nerr = io.StringIO()\nwith contextlib.redirect_stderr(err):\n    code = release_gate(text, ['fly'])\nassert code == 2 and err.getvalue().strip() != ''",
+      "hint": "Dispatch failures report to stderr with exit 2."
+    }
+  ]
+}

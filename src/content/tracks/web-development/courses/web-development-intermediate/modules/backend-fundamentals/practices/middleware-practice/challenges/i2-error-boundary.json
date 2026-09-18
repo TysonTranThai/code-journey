@@ -1,0 +1,20 @@
+{
+  "id": "i2-error-boundary",
+  "title": "Error Boundary",
+  "prompt": "Write `withErrorBoundary(handler)` returning a wrapped function (input) => output-object. When handler succeeds, return { status: 200, body: result }. When it throws an Error with .status, return { status: err.status, body: { error: err.message } }. Any other throw => { status: 500, body: { error: \"internal error\" } } — the original message must NOT appear.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function withErrorBoundary(handler) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "success and typed errors pass through",
+      "code": "const fn = new Function(code + \"\\nreturn { withErrorBoundary };\");\nconst { withErrorBoundary } = fn();\nconst ok = withErrorBoundary((x) => x * 2);\nconst out = ok(21);\nif (out.status !== 200 || out.body !== 42) throw new Error(\"Success wraps as 200.\");\nconst nf = withErrorBoundary(() => { const e = new Error(\"task not found\"); e.status = 404; throw e; });\nif (nf().status !== 404 || nf().body.error !== \"task not found\") throw new Error(\"Typed error keeps its message.\");",
+      "hint": "try/catch inside the wrapper; check for a numeric status."
+    },
+    {
+      "code": "const fn = new Function(code + \"\\nreturn { withErrorBoundary };\");\nconst { withErrorBoundary } = fn();\nconst bomb = withErrorBoundary(() => { throw new Error(\"secret: DB password is hunter2\"); });\nconst out = bomb();\nif (out.status !== 500) throw new Error(\"Unexpected throw => 500.\");\nif (out.body.error !== \"internal error\") throw new Error(\"The raw message must not leak.\");\nif (JSON.stringify(out).includes(\"hunter2\")) throw new Error(\"Sanitized means sanitized.\");",
+      "name": "errors short-circuit the chain",
+      "hint": "The next handler never runs after an error."
+    }
+  ]
+}

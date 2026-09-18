@@ -1,0 +1,21 @@
+{
+  "id": "ca12-layout-contract",
+  "title": "Predict and Verify Layout",
+  "prompt": "Given (in your editor) `struct pkt { unsigned char ver; unsigned short len; unsigned int crc; };`, implement `void layout_report(size_t *off_len, size_t *off_crc, size_t *size)` writing offsetof values and sizeof. The tests check the *rules*, not hardcoded numbers: off_len is 2 (after 1-byte ver, aligned to 2), off_crc is 4, size is 8.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstruct pkt { unsigned char ver; unsigned short len; unsigned int crc; };\n#include <stddef.h>\n",
+  "tests": [
+    {
+      "name": "member offsets follow alignment",
+      "code": "size_t l = 0, c = 0, s = 0;\nlayout_report(&l, &c, &s);\nCHECK_EQ((long long)l, 2);\nCHECK_EQ((long long)c, 4);",
+      "hint": "ver at 0; len needs 2-alignment so it sits at 2; crc at 4."
+    },
+    {
+      "name": "size is the rounded total",
+      "code": "size_t l2 = 0, c2 = 0, s2 = 0;\nlayout_report(&l2, &c2, &s2);\nCHECK_EQ((long long)s2, 8);",
+      "hint": "4 + 4 ends on the 4-byte alignment of the strictest member — no trailing padding needed beyond that."
+    }
+  ],
+  "level": "independent"
+}

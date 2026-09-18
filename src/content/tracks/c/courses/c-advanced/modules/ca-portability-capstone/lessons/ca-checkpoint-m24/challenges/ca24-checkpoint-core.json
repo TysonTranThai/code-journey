@@ -1,0 +1,31 @@
+{
+  "id": "ca24-checkpoint-core",
+  "title": "Checkpoint: Portable Utility Core",
+  "prompt": "ISO C. Implement the composed utility: `int core_init(void)` runs the endianness probe (1 little, 0 big) and stores it (see given static); `int core_safe_copy(char *dst, size_t dstsize, const char *src)` \u2014 module 23's refusing copy (0 ok, -1 refuse, dst untouched on refusal); `int core_frame(const char *payload, size_t plen, unsigned char *out, size_t outsz)` \u2014 write a 4-byte header (payload length, this platform's byte order via core_init's stored verdict, least-significant-byte-first when little-endian) then the payload bytes; refuse (-1) if 4+plen exceeds outsz or args are NULL; return 4+(int)plen on success. Implement `int core_unframe(const unsigned char *in, size_t insz, char *out, size_t outsz)` \u2014 read the 4-byte header (same order rules), refuse if the claimed length exceeds insz-4 or outsz-1, copy payload and NUL-terminate; return the payload length, -1 on refusal.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstatic int g_order = -1;\n",
+  "tests": [
+    {
+      "name": "frame round-trips",
+      "code": "CHECK_EQ(core_init(), 1);\nunsigned char fr[64];\nint flen = core_frame(\"hello\", 5, fr, sizeof fr);\nCHECK_EQ(flen, 9);\nchar back[64] = {0};\nint ulen = core_unframe(fr, (size_t)flen, back, sizeof back);\nCHECK_EQ(ulen, 5);\nCHECK_STR_EQ(back, \"hello\");",
+      "hint": "Little-endian header (05 00 00 00) then hello: the round trip restores the payload exactly."
+    },
+    {
+      "name": "refuses oversized frame",
+      "code": "unsigned char fr2[8];\nCHECK_EQ(core_frame(\"hello\", 5, fr2, sizeof fr2), -1);",
+      "hint": "4 header + 5 payload = 9 > 8: refusal, no partial write semantics claimed."
+    },
+    {
+      "name": "unframe rejects bad header",
+      "code": "unsigned char fr3[16] = {255, 255, 255, 255, 104, 105};\nchar out3[16] = {0};\nCHECK_EQ(core_unframe(fr3, 6, out3, sizeof out3), -1);",
+      "hint": "A claimed length of 0xFFFFFFFF exceeds the 2 remaining bytes: refuse."
+    },
+    {
+      "name": "NULL discipline",
+      "code": "unsigned char frn[64];\nchar backn[64] = {0};\nCHECK_EQ(core_frame(NULL, 5, frn, 64), -1);\nCHECK_EQ(core_unframe(NULL, 9, backn, 64), -1);",
+      "hint": "NULL inputs refuse \u2014 the composed API keeps module 23's discipline."
+    }
+  ],
+  "level": "mini-build"
+}

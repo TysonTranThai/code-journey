@@ -1,0 +1,26 @@
+{
+  "id": "cb12-my-copy",
+  "title": "my_strcpy",
+  "prompt": "Implement `void my_strcpy(char *dst, const char *src)` copying src INCLUDING its NUL terminator into dst. Assume dst is large enough.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "text",
+      "code": "char d[16] = {0};\nmy_strcpy(d, \"cat\");\nCHECK_STR_EQ(d, \"cat\");",
+      "hint": "Copy chars, then the NUL."
+    },
+    {
+      "name": "terminator written",
+      "code": "char d[8] = {'x','x','x','x','x','x','x','x'};\nmy_strcpy(d, \"ab\");\nCHECK_EQ(d[2], '\\0');",
+      "hint": "The destination must be terminated."
+    },
+    {
+      "name": "empty src",
+      "code": "char d[8];\nd[0] = 'q';\nmy_strcpy(d, \"\");\nCHECK_EQ(d[0], '\\0');",
+      "hint": "Copying \"\" writes exactly one NUL."
+    }
+  ],
+  "level": "independent"
+}

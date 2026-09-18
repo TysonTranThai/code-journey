@@ -1,0 +1,31 @@
+## Ghi và nối thêm
+
+```python
+with open("out.txt", "w", encoding="utf-8") as f:
+    f.write("dòng đầu\n")       # CHÍNH BẠN cung cấp ký tự xuống dòng
+    f.write("dòng hai\n")
+```
+
+`"w"` **ghi đè** toàn bộ tệp. `"a"` nối vào cuối:
+
+```python
+with open("log.txt", "a", encoding="utf-8") as f:
+    f.write("2026-09-13 chạy báo cáo\n")
+```
+
+Hai cái bẫy của người mới: quên `\n` (mọi thứ dồn vào một dòng), và dùng `"w"`
+cho nhật ký (dữ liệu hôm qua biến mất). Chế độ ghi cho báo cáo, chế độ nối cho
+nhật ký.
+
+## Đường dẫn với pathlib
+
+```python
+from pathlib import Path
+
+p = Path("data") / "notes.txt"   # nối đường dẫn một cách tương thích
+print(p.exists())                # False hoặc True
+print(Path.cwd())                # chương trình chạy ở đâu
+```
+
+`Path` nối bằng `/`, kiểm tra sự tồn tại, và cho bạn `.name`, `.suffix`,
+`.parent` — dùng nó thay vì dán chuỗi bằng `+`.

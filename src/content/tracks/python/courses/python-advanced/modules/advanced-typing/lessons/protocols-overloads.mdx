@@ -1,0 +1,57 @@
+## Protocols, overloads, and callables
+
+**`typing.Protocol`** defines structure, not inheritance. Any object with the
+right members satisfies the protocol — duck typing that a checker can verify:
+
+```python
+from typing import Protocol
+
+class Drawable(Protocol):
+    def draw(self) -> str: ...
+
+def render(x: Drawable) -> str:
+    return x.draw()
+
+class Circle:                      # no inheritance from Drawable
+    def draw(self) -> str:
+        return "circle"
+```
+
+`render(Circle())` type-checks even though `Circle` never mentions `Drawable`.
+`@runtime_checkable` additionally allows `isinstance` checks (method presence
+only, not signatures).
+
+**`@overload`** describes input-dependent output types. The implementations
+carry the body; the overloads are the contract:
+
+```python
+from typing import overload, Union
+
+@overload
+def parse(value: str) -> list[str]: ...
+@overload
+def parse(value: bytes) -> str: ...
+def parse(value):
+    if isinstance(value, bytes):
+        return value.decode()
+    return value.split(",")
+```
+
+**Callables** get typed with `Callable[[ArgTypes], ReturnType]`. For anything
+richer — keyword args, generics, decorated functions — use `ParamSpec`:
+
+```python
+from typing import TypeVar, ParamSpec, Callable
+P = ParamSpec("P")
+R = TypeVar("R")
+
+def logged(fn: Callable[P, R]) -> Callable[P, R]:
+    def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+        print("calling", fn.__name__)
+        return fn(*args, **kwargs)
+    return wrapper
+```
+
+`ParamSpec` preserves the *entire* signature through the decorator — the
+decorated function stays as callable as the original, to the checker and to
+`inspect.signature` (via `functools.wraps`).

@@ -1,0 +1,26 @@
+{
+  "id": "ca19-release-publish",
+  "title": "Publish with Release, Observe with Acquire",
+  "prompt": "ISO C11. Implement the publish pattern: `void publish(atomic_int *flag, atomic_int *data, int payload)` stores payload into data (relaxed), then stores 1 into flag (release). `int observe(const atomic_int *flag, const atomic_int *data)` loads flag with acquire; when it sees 1 it must see the payload — return the data value, or -1 when flag is not yet 1.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#include <stdatomic.h>\n",
+  "tests": [
+    {
+      "name": "publish then observe",
+      "code": "atomic_int f = 0;\natomic_int d = 0;\npublish(&f, &d, 42);\nCHECK_EQ(observe(&f, &d), 42);",
+      "hint": "Release store to flag synchronizes-with the acquire load: 42 is visible."
+    },
+    {
+      "name": "before publish",
+      "code": "atomic_int f2 = 0;\natomic_int d2 = 99;\nCHECK_EQ(observe(&f2, &d2), -1);",
+      "hint": "flag is still 0 — the observer must report not-ready as -1."
+    },
+    {
+      "name": "payload survives republish",
+      "code": "atomic_int f3 = 0;\natomic_int d3 = 0;\npublish(&f3, &d3, 7);\npublish(&f3, &d3, 9);\nCHECK_EQ(observe(&f3, &d3), 9);",
+      "hint": "A second publish overwrites; the acquire load observes the newest release."
+    }
+  ],
+  "level": "combination"
+}

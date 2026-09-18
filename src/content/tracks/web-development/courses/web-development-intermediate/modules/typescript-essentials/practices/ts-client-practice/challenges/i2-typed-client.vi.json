@@ -1,0 +1,14 @@
+{
+  "title": "Client mang cảm giác kiểu",
+  "prompt": "Viết `createTypedClient(fetchImpl)` trong đó mọi phương thức đều KIỂM TRA trước khi trả về:\n\n- `getTask(id)` — fetch `/tasks/{id}`; nếu body vượt qua `isTaskDTO` trả `{ ok: true, task }`; 404 trả `{ ok: false, reason: \"not-found\" }`; body dị dạng trả `{ ok: false, reason: \"invalid\" }`\n- `listTasks()` — fetch `/tasks`; danh sách hợp lệ → `{ ok: true, tasks }`; dị dạng → `{ ok: false, reason: \"invalid\" }`\n- `fetchImpl(url)` giả trả `{ ok, status, json: async () => body }`",
+  "tests": [
+    {
+      "name": "task hợp lệ đi qua trọn vẹn",
+      "hint": "Fetch, parse, rồi isTaskDTO(body) quyết định hình dạng kết quả của bạn."
+    },
+    {
+      "name": "not-found và invalid là hai thất bại khác nhau",
+      "hint": "Kiểm tra res.ok/res.status trước (not-found), rồi validate body đã parse (invalid)."
+    }
+  ]
+}

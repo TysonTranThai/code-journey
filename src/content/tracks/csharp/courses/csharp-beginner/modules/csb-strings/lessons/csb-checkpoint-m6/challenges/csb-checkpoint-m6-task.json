@@ -1,0 +1,20 @@
+{
+  "id": "csb-checkpoint-m6-task",
+  "title": "Identity utilities",
+  "prompt": "Implement `Initials` and `PasswordScore` as described. Initials uppercases each word's first letter and joins them; the password score has exactly three independent criteria.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "initials",
+      "code": "Cj.Eq(Solution.Initials(\"nguyen van an\"), \"NVA\", \"three words\");\nCj.Eq(Solution.Initials(\"ada\"), \"A\", \"one word\");\nCj.Eq(Solution.Initials(\"\"), \"\", \"empty\");\nCj.Eq(Solution.Initials(null), \"\", \"null\");\nCj.Eq(Solution.Initials(\"  \"), \"\", \"blank\");",
+      "hint": "Lowercase input must come out uppercase; blank inputs yield the empty string."
+    },
+    {
+      "name": "password",
+      "code": "Cj.Eq(Solution.PasswordScore(\"Abcdefgh1\"), 3, \"all three\");\nCj.Eq(Solution.PasswordScore(\"abcdefgh\"), 1, \"length only\");\nCj.Eq(Solution.PasswordScore(\"abcdefgh1\"), 2, \"length+digit\");\nCj.Eq(Solution.PasswordScore(\"Ab1\"), 2, \"short but digit+upper still score\");\nCj.Eq(Solution.PasswordScore(\"\"), 0, \"empty\");\nCj.Eq(Solution.PasswordScore(null), 0, \"null\");",
+      "hint": "Careful: the \"Ab1\" assertion expects 2 — it fails the length rule but earns digit and uppercase points."
+    }
+  ]
+}

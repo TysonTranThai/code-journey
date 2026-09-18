@@ -1,0 +1,31 @@
+{
+  "id": "cb22-fmt-money",
+  "title": "Money Formatter",
+  "prompt": "Implement `void fmt_cents(int cents, char *out)` writing `<dollars>.<NN>` where NN is the two-digit remainder (e.g. 1234 -> \"12.34\", 5 -> \"0.05\", -250 -> \"-2.50\"). Use snprintf.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "positive",
+      "code": "char b[32] = {0};\nfmt_cents(1234, b);\nCHECK_STR_EQ(b, \"12.34\");",
+      "hint": "1234 cents = 12.34."
+    },
+    {
+      "name": "sub-dollar",
+      "code": "char b[32] = {0};\nfmt_cents(5, b);\nCHECK_STR_EQ(b, \"0.05\");",
+      "hint": "Zero dollars, two digits."
+    },
+    {
+      "name": "negative",
+      "code": "char b[32] = {0};\nfmt_cents(-250, b);\nCHECK_STR_EQ(b, \"-2.50\");",
+      "hint": "Sign and padded cents."
+    },
+    {
+      "name": "zero",
+      "code": "char b[32] = {0};\nfmt_cents(0, b);\nCHECK_STR_EQ(b, \"0.00\");",
+      "hint": "Zero is 0.00."
+    }
+  ],
+  "level": "independent"
+}

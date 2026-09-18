@@ -1,0 +1,33 @@
+## Every object is bytes
+
+In C, an **object** is a region of memory that holds a value of some type. The C standard does not say `int` means "a 32-bit two's complement number" — it says `int` has *an object representation* made of `sizeof(int)` bytes, each byte at least 8 bits (`CHAR_BIT`).
+
+Three distinct notions, three different questions:
+
+| Notion | Question | Portable answer? |
+| --- | --- | --- |
+| Type | What values can this hold? | Yes — from the standard |
+| Object representation | Which bytes exist? | `sizeof` only |
+| Value representation | Which bits encode the value? | No — implementation-defined |
+
+C23 finally mandates two's complement for signed integers, but width is still implementation-defined: `sizeof(int)` can be 2, 4, or 8 on real platforms.
+
+## Probing your platform honestly
+
+```c
+#include <stdio.h>
+#include <limits.h>
+
+int main(void) {
+    printf("CHAR_BIT = %d\n", CHAR_BIT);
+    printf("sizeof(int) = %zu\n", sizeof(int));
+    printf("INT_MIN = %d\n", INT_MIN);
+    return 0;
+}
+```
+
+This program is fully portable — it prints *your platform's truth* rather than assuming one.
+
+## Representation is not value
+
+For `unsigned char` (and all unsigned types) every bit pattern is a valid value. For signed integers C23 guarantees two's complement, but still allows padding bits in the representation — bits that exist in the object but participate in no value. `memcpy`-ing an object and inspecting its bytes is always valid; *reading* an int's representation as an int through a reinterpreted pointer is not (that journey starts in the UB module).

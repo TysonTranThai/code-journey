@@ -1,0 +1,15 @@
+{
+  "id": "pa-api-readiness",
+  "title": "The readiness probe that survives a dead dependency",
+  "prompt": "Implement `readiness(checks)` where `checks` is a dict mapping dependency names to zero-arg callables:\n\n- returns `{'ready': bool, 'checks': {name: bool}}` with every name included\n- a check that returns a truthy value is healthy; falsy is not\n- a check that RAISES is a dependency that is down: record `False` for it — the probe itself must never propagate the exception\n- `ready` is True iff every check is True\n- an empty `checks` dict is ready",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "def readiness(checks):\n    ...",
+  "tests": [
+    {
+      "name": "all healthy, some down, one exploding",
+      "code": "def ok():\n    return True\ndef down():\n    return False\ndef boom():\n    raise RuntimeError('db socket died')\n\nr = readiness({'db': ok, 'cache': ok})\nassert r == {'ready': True, 'checks': {'db': True, 'cache': True}}\nr2 = readiness({'db': ok, 'cache': down, 'queue': boom})\nassert r2 == {'ready': False, 'checks': {'db': True, 'cache': False, 'queue': False}}\nassert readiness({}) == {'ready': True, 'checks': {}}\nprint('ok')",
+      "hint": "Catch per check: raising means down, not a crashed probe."
+    }
+  ]
+}

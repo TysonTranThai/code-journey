@@ -1,0 +1,24 @@
+## Dòng họ hỏng bộ nhớ
+
+Tất cả những điều này là lỗi an toàn bộ nhớ mà compiler không chặn:
+
+- **Tràn bộ đệm** — ghi quá cuối mảng. Một `char buf[64]` cố định nhận 65 byte do kẻ tấn công điều khiển sẽ ghi đè lên thứ sống kế bên (địa chỉ trả về, metadata heap, đối tượng khác). C23 Annex K có API kiểm soát biên kiểu `strcpy_s`, nhưng thực hành portable là: **không bao giờ** sao chép thiếu độ dài: `snprintf`, `memcpy` với biên được tính và kiểm tra.
+- **Tiêm chuỗi định dạng** — `printf(user_input)` coi `%s`/`%n` trong đầu vào là chỉ thị: lộ bộ nhớ (`%s` từ con trỏ rác), ghi bộ nhớ (`%n`). Bản vá là một ký tự: `printf("%s", user_input)`.
+- **Tràn số nguyên** — `(size_t)len + 1` khi `len` gần SIZE_MAX sẽ wrap về 0 và `malloc(len+1)` sau đó phát một buffer tí hon cho một bản sao khổng lồ. Kiểm tra phép cộng, hoặc dùng kiểm tra kiểu `__builtin_add_overflow` khi có.
+- **TOCTOU** — kiểm-tra-rồi-dùng qua biên hệ thống: `access(path, R_OK)` nói có, tập tin bị thay, `open(path)` mở thứ khác. Bản vá bền: mở trước (nhận fd), rồi `fstat` *chính fd đó*, và làm việc qua fd — kiểm tra và dùng cùng tham chiếu một đối tượng.
+- **Dùng-sau-khi-giải phóng / giải phóng hai lần** — kỷ luật sở hữu từ mô-đun 6 là phòng ngừa; pattern một-chủ-sở-hữu, null-sau-free (`free(p); p = NULL;`) tiêu diệt cả lớp double-free.
+
+## Đọc biến chưa khởi tạo
+
+Đọc biến cục bộ trước khi ghi là hành vi không xác định — và trên thực tế trao cho kẻ tấn công thứ đang nằm trong ô stack đó (con trỏ cũ, khóa). Quy tắc: **khởi tạo ngay khi khai báo** (`int x = 0;`) hoặc cấu trúc code để mọi đường ghi trước khi đọc. Kỷ luật không tốn chi phí, cả lớp lỗi biến mất.
+
+## Danh sách kiểm của người phòng thủ
+
+1. Mọi bản sao mang độ dài tường minh, đã kiểm tra.
+2. Mọi chuỗi định dạng là literal.
+3. Mọi phép toán kích thước được kiểm trước khi cấp phát.
+4. Mọi tương tác tập tin đi qua một descriptor, kiểm tra tại thời điểm dùng.
+5. Mọi free để lại NULL.
+6. Mọi biến chưa khởi tạo là lỗi biên dịch trong review.
+
+Không điều gì trong số này cần sự sáng tạo của kẻ tấn công để biện minh — chỉ cần đầu vào bình thường.

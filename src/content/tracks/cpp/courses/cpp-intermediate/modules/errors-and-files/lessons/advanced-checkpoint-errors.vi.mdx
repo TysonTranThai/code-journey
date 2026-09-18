@@ -1,0 +1,16 @@
+`parse_config_value` là bài kiểm tra của module: nó kết hợp thiết kế ngoại
+lệ riêng (bài 2), phân tích theo dòng (bài 4), và chẩn đoán chính xác.
+
+Ba kiểu thất bại bộ phân tích của bạn phải phân biệt:
+
+1. dòng `value=` có phần giá trị rỗng hoặc không phải số → `ConfigError`
+   với số dòng thật
+2. không có dòng `value=` nào → `ConfigError` với thông báo missing-value
+3. dòng hợp lệ → trả về số
+
+Bộ đếm dòng là phần khiến các giải pháp viết vội thất bại: tăng theo dòng
+*trước* khi kiểm tra dòng đó, và đếm cả dòng cuối ngay cả khi nội dung
+không kết thúc bằng `\n`.
+
+Các test khẳng định trên `e.line_no()` như một field chuỗi — bằng chứng
+rằng ngoại lệ có cấu trúc mang được nhiều hơn một thông điệp.

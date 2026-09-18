@@ -1,0 +1,32 @@
+## Bẫy đẳng thức của class
+
+```csharp
+class PointC { public double X, Y; }
+var a = new PointC { X = 1, Y = 2 };
+var b = new PointC { X = 1, Y = 2 };
+// a == b là false! a.Equals(b) là false!
+```
+
+Kiểu tham chiếu so sánh theo *định danh* theo mặc định: hai đối tượng dựng riêng biệt không bao giờ bằng nhau, kể cả khi nội dung giống hệt. Tự override `Equals`/`GetHashCode` đúng cách thì tinh vi và dễ sai.
+
+## Record làm thay bạn
+
+```csharp
+record Point(double X, double Y);
+
+var p1 = new Point(1, 2);
+var p2 = new Point(1, 2);
+Console.WriteLine(p1 == p2);        // True
+Console.WriteLine(p1.Equals(p2));   // True
+Console.WriteLine(p1);              // Point { X = 1, Y = 2 }
+```
+
+Một **record** tự sinh `Equals`/`GetHashCode` theo giá trị, `ToString` dễ đọc, và hình dạng bất biến theo mặc định. Đó là mặc định đúng cho dữ liệu bạn chuyển tay nhau: thông điệp, tọa độ, dòng hóa đơn, kết quả truy vấn.
+
+`with` sao-chép-và-đổi mà không biến đổi bản gốc:
+
+```csharp
+var moved = p1 with { X = 10 };   // record mới: (10, 2); p1 nguyên vẹn
+```
+
+Bất biến cộng đẳng-thức-theo-giá-trị chính xác là nghĩa của "một phần dữ liệu" — vì sao record tồn tại.

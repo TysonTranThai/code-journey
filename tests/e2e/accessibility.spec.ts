@@ -16,7 +16,7 @@ const PAGES = [
     name: "lesson",
   },
   {
-    path: "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html/challenge/fix-the-heading",
+    path: "/learn/web-development/web-development-beginner/html-foundations/practice/introduction-to-html-practice/fix-the-heading",
     name: "challenge",
   },
   { path: "/login", name: "login" },
@@ -61,16 +61,27 @@ test.describe("keyboard navigation", () => {
     await page.keyboard.press("Tab");
     await expect(page.getByRole("link", { name: /skip to main content/i })).toBeFocused();
 
-    // Reach the challenge Run button by tabbing from the lesson page link.
-    await page.getByRole("link", { name: /fix the broken heading/i }).focus();
+    // Reach the practice hub via the lesson's practice callout.
+    await page
+      .getByRole("link", { name: /practice/i })
+      .first()
+      .focus();
     await page.keyboard.press("Enter");
-    await expect(page).toHaveURL(/challenge\/fix-the-heading/);
+    await expect(page).toHaveURL(/practice\/introduction-to-html-practice$/);
+
+    // Then into the challenge itself.
+    await page
+      .getByRole("link", { name: /fix the broken heading/i })
+      .first()
+      .focus();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(/practice\/introduction-to-html-practice\/fix-the-heading/);
 
     // Focus lands on a real element, then Run stays keyboard-activatable:
     // focusing Run and pressing Enter starts the run (button without focus
     // state would still activate — we assert the aria-live status flips from
     // idle once the run is submitted, which requires Enter to work).
-    const runButton = page.getByRole("button", { name: /run code/i });
+    const runButton = page.getByRole("button", { name: /submit/i });
     await expect(runButton).toBeVisible();
     await runButton.focus();
     await page.keyboard.press("Enter");

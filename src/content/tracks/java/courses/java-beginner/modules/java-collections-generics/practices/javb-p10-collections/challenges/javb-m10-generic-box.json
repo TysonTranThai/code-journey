@@ -1,0 +1,26 @@
+{
+  "id": "javb-m10-generic-box",
+  "title": "Your own generic Box",
+  "prompt": "Implement `static class Box<T>` with `private T value`, `put(T)`, `get()`, `isEmpty()`, and `static <T> Box<T> of(T value)` factory. Also implement `static <T extends Comparable<T>> T maxOf(java.util.List<T> items)` using the bound.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Box<T> {\n        public void put(T v) {\n        }\n\n        public T get() {\n            return null;\n        }\n\n        public boolean isEmpty() {\n            return false;\n        }\n    }\n\n    public static <T> Box<T> of(T value) {\n        return null;\n    }\n\n    public static <T extends Comparable<T>> T maxOf(java.util.List<T> items) {\n        return null;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "box behavior",
+      "code": "\nSolution.Box<String> box = new Solution.Box<>();\nCjTestBase.checkTrue(box.isEmpty(), \"starts empty\");\nbox.put(\"pearl\");\nCjTestBase.checkEq(box.get(), \"pearl\", \"stored value\");\nCjTestBase.checkTrue(!box.isEmpty(), \"no longer empty\");\n",
+      "hint": "isEmpty depends on whether a value was ever put."
+    },
+    {
+      "name": "factory",
+      "code": "\nSolution.Box<Integer> box = Solution.of(7);\nCjTestBase.checkEq(box.get(), 7, \"of(7)\");\n",
+      "hint": "of() constructs and puts in one step."
+    },
+    {
+      "name": "bounded maxOf",
+      "code": "\nCjTestBase.checkEq(Solution.maxOf(java.util.List.of(3, 9, 4)), 9, \"max of ints\");\nCjTestBase.checkEq(Solution.maxOf(java.util.List.of(\"apple\", \"pear\")), \"pear\", \"max of strings\");\n",
+      "hint": "One method, any Comparable type — that is the bound at work."
+    }
+  ],
+  "level": "combination"
+}

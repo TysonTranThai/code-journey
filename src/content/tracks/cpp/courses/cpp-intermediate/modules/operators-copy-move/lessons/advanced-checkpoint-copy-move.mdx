@@ -1,0 +1,10 @@
+Write `Sentence` with the full ownership discipline:
+
+- one `std::vector` member means the compiler-generated copies are already
+  deep — but write the five operations yourself to see the machinery
+- `joined()` builds its string from words; no stored separator state
+- after `std::move(a)`, `a` must still be destructible (it will be — the
+  vector member handles it) while `c` owns the words
+
+If your copy tests pass but assignment leaks or double-frees, you have
+re-discovered why the Rule of Three exists.

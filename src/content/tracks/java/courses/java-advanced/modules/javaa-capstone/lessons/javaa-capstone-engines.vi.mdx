@@ -1,0 +1,25 @@
+Hai engine, một hợp đồng:
+
+```java
+public interface Engine {
+    void put(String key, String value);   // upsert
+    java.util.Optional<String> get(String key);
+    java.util.List<String> keys();        // đã sắp, vì tính tất định
+    int count();
+}
+```
+
+**InMemory**: một `ConcurrentHashMap` sau interface. Tính tất định đến từ
+`keys()` có sắp xếp — thứ tự lặp của hash map vốn là chi tiết cài đặt, sẽ rò
+vào báo cáo nếu không chặn.
+
+**JsonlFile**: nguồn sự thật là một tệp chỉ-ghi-thêm, mỗi dòng một bản ghi
+kiểu JSON: `{"op":"put","k":"a","v":"1"}`. `put` ghi thêm rồi cập nhật chỉ
+mục in-memory (write-through); `keys()` sắp chỉ mục theo cùng cách. Replay —
+đọc tệp và áp dụng lại các phép toán — dựng lại trạng thái sau bất kỳ lần
+"khởi động lại" nào; checkpoint mô phỏng bằng cách dựng engine thứ hai trên
+cùng path và so báo cáo.
+
+Đây là Hình dạng của mọi tầng lưu trữ thật: một nhật ký sự kiện có thứ tự có
+thể phát lại, một chỉ mục có thể dựng lại, và đường đọc không bao giờ nói dối
+về những gì đã được xác nhận.

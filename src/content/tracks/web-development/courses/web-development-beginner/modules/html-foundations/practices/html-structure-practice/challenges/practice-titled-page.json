@@ -1,0 +1,30 @@
+{
+  "id": "practice-titled-page",
+  "title": "Give the Page a Title",
+  "prompt": "Starting from the skeleton below, add a `title` element to the head so the browser tab reads `About Me`. The body already has content — don't change it.\n\nRules:\n- The `head` contains a `title` element.\n- The title text is exactly `About Me`.\n- The body stays unchanged.",
+  "difficulty": "beginner",
+  "level": "guided",
+  "boilerplate": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n</head>\n<body>\n<p>All about me and what I am learning.</p>\n</body>\n</html>\n",
+  "tests": [
+    {
+      "name": "adds a title element",
+      "code": "if (!/<title>[\\s\\S]*?<\\/title>/i.test(code)) {\n  throw new Error(\"No <title> element found — it belongs inside the <head>.\");\n}",
+      "hint": "Add <title>About Me</title> inside the <head>."
+    },
+    {
+      "name": "title text is exactly About Me",
+      "code": "const m = code.match(/<title>([\\s\\S]*?)<\\/title>/i);\nif (!m || m[1].trim() !== \"About Me\") {\n  throw new Error(\"The title text must be exactly: About Me\");\n}",
+      "hint": "The browser tab should read 'About Me' — match the text exactly."
+    },
+    {
+      "name": "title is inside the head",
+      "code": "if (!/<head[\\s\\S]*<title>[\\s\\S]*<\\/title>[\\s\\S]*<\\/head>/i.test(code)) {\n  throw new Error(\"The <title> must be inside the <head>, not the body.\");\n}",
+      "hint": "Keep <title> between <head> and </head>."
+    },
+    {
+      "name": "body paragraph unchanged",
+      "code": "if (!/<p>All about me and what I am learning\\.<\\/p>/.test(code)) {\n  throw new Error(\"The original body paragraph should stay exactly as it was.\");\n}",
+      "hint": "Only the head changes — leave the body content alone."
+    }
+  ]
+}

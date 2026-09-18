@@ -1,0 +1,35 @@
+{
+  "id": "i3-dialog-confirm",
+  "title": "Confirmation Dialog",
+  "prompt": "Build a 'Delete file?' confirmation dialog: a <dialog id=\"confirm-delete\"> named via aria-labelledby pointing at its own heading; a form method=\"dialog\" inside it with a destructive button and a safe Cancel button carrying autofocus; a <style> block styling dialog::backdrop. Full document skeleton required.",
+  "difficulty": "advanced",
+  "level": "independent",
+  "boilerplate": "<!-- Confirmation dialog page -->\n\n",
+  "tests": [
+    {
+      "name": "dialog element with id",
+      "code": "if (!/<dialog[^>]*\\bid\\s*=\\s*[\"']confirm-delete[\"'][^>]*>/i.test(code)) {\n  throw new Error('Add <dialog id=\"confirm-delete\">.');\n}",
+      "hint": "The dialog element is the component — no divs, no role fakes."
+    },
+    {
+      "name": "named by its heading",
+      "code": "const dlg = code.match(/<dialog[^>]*>([\\s\\S]*?)<\\/dialog>/i);\nif (!dlg) throw new Error(\"Keep the <dialog>.\");\nconst m = dlg[0].match(/aria-labelledby\\s*=\\s*[\"']([^\"']+)[\"']/i) ||\n  code.match(/<dialog[^>]*aria-labelledby\\s*=\\s*[\"']([^\"']+)[\"']/i);\nif (!m) {\n  throw new Error(\"Name the dialog with aria-labelledby.\");\n}\nconst heading = new RegExp(\"<h[1-6][\\\\s>][^>]*id\\\\s*=\\\\s*[\\\"']\" + m[1] + \"[\\\"']\").test(dlg[0]);\nif (!heading) {\n  throw new Error('aria-labelledby \"' + m[1] + '\" must point at a heading inside the dialog.');\n}",
+      "hint": "Give the dialog's <h2> an id and reference it from the dialog's aria-labelledby."
+    },
+    {
+      "name": "method=dialog form with two buttons",
+      "code": "const dlg = code.match(/<dialog[^>]*>([\\s\\S]*?)<\\/dialog>/i);\nif (!dlg) throw new Error(\"Keep the <dialog>.\");\nif (!/<form[^>]*method\\s*=\\s*[\"']dialog[\"'][^>]*>/i.test(dlg[0])) {\n  throw new Error('Put a <form method=\"dialog\"> inside the dialog.');\n}\nconst btns = (dlg[0].match(/<button[\\s>]/gi) || []).length;\nif (btns < 2) {\n  throw new Error(\"The dialog needs both a destructive and a safe (Cancel) button.\");\n}",
+      "hint": "method=\"dialog\" closes the dialog on submit and exposes returnValue — the platform's own wiring."
+    },
+    {
+      "name": "autofocus on the safe action",
+      "code": "const dlg = code.match(/<dialog[^>]*>([\\s\\S]*?)<\\/dialog>/i);\nif (!dlg) throw new Error(\"Keep the <dialog>.\");\nconst af = [...dlg[0].matchAll(/<button([^>]*)>([\\s\\S]*?)<\\/button>/gi)].find((b) =>\n  /autofocus/i.test(b[1])\n);\nif (!af) {\n  throw new Error(\"One button inside the dialog needs autofocus.\");\n}\nif (/delete|remove|confirm/i.test(af[2].replace(/<[^>]*>/g, \"\"))) {\n  throw new Error(\"autofocus must be on the SAFE action (Cancel), not the destructive one.\");\n}",
+      "hint": "Focus lands where autofocus says — put it on Cancel so Enter can't fire the deletion."
+    },
+    {
+      "name": "backdrop is styled",
+      "code": "if (!/<style[\\s>][\\s\\S]*::backdrop/i.test(code)) {\n  throw new Error(\"Style dialog::backdrop in a <style> block.\");\n}",
+      "hint": "::backdrop is the pseudo-element behind a modal dialog — dim it so the page reads as blocked."
+    }
+  ]
+}

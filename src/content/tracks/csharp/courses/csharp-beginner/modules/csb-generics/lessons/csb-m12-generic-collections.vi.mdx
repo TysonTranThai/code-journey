@@ -1,0 +1,22 @@
+## Đọc chữ ký
+
+```csharp
+public class List<T> { ... }
+public class Dictionary<TKey, TValue> { ... }
+```
+
+Các bộ sưu tập bạn dùng từ module 8 là những lớp generic. Tham số kiểu là lý do `list[0]` trả về `T` — không phải `object` phải ép kiểu — và vì sao đưa `string` vào `List<int>` là lỗi biên dịch, không phải bất ngờ lúc chạy.
+
+## Tại sao không dùng `object`?
+
+Các bộ sưu tập tiền-generic lưu `object` (gốc của mọi kiểu):
+
+```csharp
+// căn bệnh cũ, vẫn hợp lệ:
+var list = new ArrayList();
+list.Add(42);
+int x = (int)list[0];          // phải ép kiểu, kiểm tra lúc CHẠY
+list.Add("oops");              // biên dịch được — nổ sau
+```
+
+Kiểu giá trị lưu trong `object` còn bị boxing (cấp phát heap) mỗi lần thêm. Generics xóa bỏ ép kiểu, đẩy lỗi về lúc biên dịch, và bỏ qua boxing. Bộ ba đó — không ép kiểu, an toàn lúc biên dịch, không boxing — là toàn bộ ý nghĩa.

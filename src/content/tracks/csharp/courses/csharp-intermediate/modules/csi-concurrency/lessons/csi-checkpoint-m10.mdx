@@ -1,0 +1,15 @@
+## The gate (mini-build)
+
+A job queue drained by concurrent workers — the producer/consumer core:
+
+1. `Enqueue(string job)` → adds a job.
+2. `RunAll(int workers)` → starts `workers` threads; each worker repeatedly
+   takes one job (if any) and processes it: call `CjConcurrency.Pause()`
+   (the simulated work), then record `"done:" + job` into the results.
+3. Every job is processed EXACTLY ONCE — no losses, no duplicates — even
+   though workers take jobs one at a time from a shared queue.
+4. `Results` exposes the recorded entries; `RunAll` returns after all
+   workers finish (join your threads).
+
+The graded test runs 20 jobs across 4 workers with 5 ms simulated work and
+asserts exact counts and no duplicates.

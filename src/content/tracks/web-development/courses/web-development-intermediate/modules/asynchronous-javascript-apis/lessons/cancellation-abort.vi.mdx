@@ -1,0 +1,43 @@
+Để năm cuộc tìm kiếm cũ chạy tiếp khi người dùng đang gõ là một lỗi: lãng phí
+băng thông, phản hồi lệch thứ tự, race condition. Hủy request là cách sửa.
+
+## Các mảnh ghép
+
+`AbortController` có một `signal`; bất kỳ ai nắm signal đều có thể dừng công
+việc bằng `controller.abort()`:
+
+```js
+const controller = new AbortController();
+fetch(url, { signal: controller.signal }).catch(handleAbort);
+
+// sau đó — từ một timeout, một lần tìm kiếm mới, hoặc khi component unmount:
+controller.abort();
+```
+
+Fetch bị hủy sẽ reject với `AbortError` (`err.name === "AbortError"`).
+**Phân biệt nó với lỗi thật** — người dùng không cần một hộp lỗi đáng sợ chỉ vì
+họ gõ nhanh hơn:
+
+```js
+function handleAbort(err) {
+  if (err.name === "AbortError") return; // dự liệu được, bỏ qua
+  showError(err);
+}
+```
+
+## Mẫu đua với timeout
+
+```js
+function withTimeout(ms) {
+  const c = new AbortController();
+  setTimeout(() => c.abort(), ms);
+  return c.signal;
+}
+
+fetch(url, { signal: withTimeout(5000) });
+```
+
+Mỗi lần tìm kiếm mới hủy controller trước đó — một controller cho mỗi thao tác
+logic, được thay thế khi thao tác được thay thế. Cùng signal đó cũng dừng được
+`addEventListener` (qua `{ signal }`) và có thể truyền cho timer trong các
+runtime hiện đại.

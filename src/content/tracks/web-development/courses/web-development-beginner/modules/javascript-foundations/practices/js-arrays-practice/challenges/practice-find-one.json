@@ -1,0 +1,20 @@
+{
+  "id": "practice-find-one",
+  "title": "Find the One That Matters",
+  "prompt": "Given `const users = [{ name: \"Ada\", admin: false }, { name: \"Grace\", admin: true }, { name: \"Linus\", admin: false }]`, use `.find()` to get the first admin and log their name (should be `Grace`).\n\nRules:\n- `.find()` with a condition on `admin`.",
+  "difficulty": "beginner",
+  "level": "independent",
+  "boilerplate": "const users = [{ name: \"Ada\", admin: false }, { name: \"Grace\", admin: true }, { name: \"Linus\", admin: false }];\n// find the first admin and log the name\n",
+  "tests": [
+    {
+      "name": "find with the admin condition",
+      "code": "if (!/\\.find\\s*\\(/.test(code)) throw new Error(\"Use .find() — it stops at the first match.\");",
+      "hint": "users.find((u) => u.admin) — truthy admin property."
+    },
+    {
+      "name": "logs Grace",
+      "code": "const fn = new Function(code + \"\\nreturn null;\");\nlet logged = \"\";\nconst fakeConsole = { log: (...a) => { logged += a.join(\" \"); } };\nconst sandboxCode = code.replace(/console\\.log/g, \"fakeConsole.log\");\nnew Function(\"fakeConsole\", sandboxCode)(fakeConsole);\nif (!logged.includes(\"Grace\")) throw new Error(\"The log should output Grace.\");",
+      "hint": "console.log(users.find((u) => u.admin).name);"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "i2-chain-transform",
+  "title": "Resilient Pipeline",
+  "prompt": "Write `async function pipeline(value, steps)` where `steps` is an array of sync-or-async functions. Await each step in order, feeding each result into the next. If a step throws, RETURN `{ ok: false, error: err.message }`; otherwise RETURN `{ ok: true, value: finalValue }`.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "async function pipeline(value, steps) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "runs sync and async steps in order",
+      "code": "const fn = new Function(code + \"\\nreturn { pipeline };\");\nconst { pipeline } = fn();\nconst out = await pipeline(2, [async (x) => x * 10, (x) => x + 1, async (x) => \"n=\" + x]);\nif (!out.ok || out.value !== \"n=21\") throw new Error(\"2 * 10 + 1 = 21, then formatted — expected { ok: true, value: 'n=21' }.\");",
+      "hint": "for (const s of steps) value = await s(value); — await accepts sync return values too."
+    },
+    {
+      "name": "converts a thrown error into a result object",
+      "code": "const fn = new Function(code + \"\\nreturn { pipeline };\");\nconst { pipeline } = fn();\nconst out = await pipeline(1, [(x) => x + 1, () => { throw new Error(\"boom\"); }, (x) => x * 100]);\nif (out.ok !== false) throw new Error(\"A failing step must produce { ok: false }.\");\nif (out.error !== \"boom\") throw new Error(\"error should carry the thrown message.\");",
+      "hint": "Wrap the loop in try/catch; on catch return { ok: false, error: err.message }."
+    },
+    {
+      "name": "empty steps return the value unchanged",
+      "code": "const fn = new Function(code + \"\\nreturn { pipeline };\");\nconst { pipeline } = fn();\nconst out = await pipeline(\"v\", []);\nif (out.ok !== true || out.value !== \"v\") throw new Error(\"With no steps, the value passes through unchanged.\");",
+      "hint": "The loop simply never runs."
+    }
+  ]
+}

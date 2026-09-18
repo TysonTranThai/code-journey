@@ -1,0 +1,14 @@
+{
+  "title": "Debug: Lệnh chuyển tiền bị đóng băng",
+  "prompt": "Transfer phải gọi CjConcurrency.Pause() SAU khi lấy lock đầu và TRƯỚC lock hai (kiểm tra tỷ giá mô phỏng). Bản hiện tại deadlock khi hai lệnh chuyển chạy ngược chiều. Sửa để cả hai luôn hoàn thành — không được bỏ Pause.",
+  "tests": [
+    {
+      "name": "opposite transfers both complete",
+      "hint": "Lấy cả hai lock theo THỨ TỰ TOÀN CỤC (ví dụ Id nhỏ trước) — không thể tạo chu kỳ; giữ Pause() giữa lock một và lock hai."
+    },
+    {
+      "name": "same-direction transfer still works",
+      "hint": "Thứ tự lock xử lý trường hợp thường giống hệt."
+    }
+  ]
+}

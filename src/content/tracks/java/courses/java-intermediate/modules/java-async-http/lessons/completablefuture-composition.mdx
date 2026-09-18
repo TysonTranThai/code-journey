@@ -1,0 +1,24 @@
+## CompletableFuture: composing async work
+
+A `Future` only *waits*. A `CompletableFuture` *composes*:
+
+```java
+CompletableFuture<Integer> price =
+    CompletableFuture.supplyAsync(() -> fetchPrice("USD"))
+        .thenApply(p -> p * 100)               // transform
+        .thenCombine(otherFuture, Integer::sum) // join two pipelines
+        .exceptionally(ex -> -1);               // fallback value
+```
+
+Mental model: a chain of stages; each runs when its inputs complete.
+- `supplyAsync` — start from a value produced on another thread
+- `thenApply` — map the value
+- `thenCompose` — chain a *dependent* async call (flatMap)
+- `thenCombine` — merge two independent chains
+- `allOf` / `anyOf` — wait for many / first
+- `exceptionally` / `handle` — recover or transform failures
+
+Golden rule: an exception skips forward to the nearest recovery stage —
+one `exceptionally` at the end of a chain covers every step above it.
+Default executor is the common ForkJoinPool; pass your own executor when
+task isolation matters.

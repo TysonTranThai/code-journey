@@ -1,0 +1,30 @@
+## Dạng lưới
+
+```cpp
+for (int row = 0; row < 3; ++row) {
+    for (int col = 0; col < 4; ++col) {
+        std::cout << row << ',' << col << ' ';
+    }
+    std::cout << '\n';       // kết thúc một hàng
+}
+```
+
+Vòng trong chạy *hoàn toàn* cho từng bước một của vòng ngoài: 3 × 4 = 12 lần lặp. Ký tự xuống dòng sau vòng trong chính là thứ tạo ra hình dạng của output.
+
+## Các mẫu kinh điển (bạn sẽ dựng chúng trong phần luyện tập)
+
+```
+*            1
+* *          1 2
+* * *        1 2 3
+```
+
+Tam giác một: vòng ngoài đếm hàng `r`, vòng trong in `r` dấu sao. Tam giác hai: vòng trong in số `1..r`. Cả hai không phải là chuyện dấu sao — mà là chuyện điều khiển *khoảng* của vòng trong từ *giá trị hiện tại* của vòng ngoài.
+
+## Bảng cửu chương
+
+Bảng cửu chương ghép một vòng hàng với một vòng cột và format bằng padding. Vòng lặp lồng trên hàng và cột cũng chính là cách bạn sẽ duyệt dữ liệu 2 chiều sau này (`vector<vector<int>>` — module 7) và là khởi đầu của các thuật toán image/flood-fill.
+
+## Cái giá của việc lồng nhau
+
+3 × 4 = 12 thì chẳng là gì. Nhưng 1.000 × 1.000 = 1.000.000 — và 10.000 × 10.000 mất vài giây ngay cả với C++. Khi bạn lồng vòng lặp, hãy nhân kích thước trong đầu *trước tiên*; đó là bản năng đầu tiên về độ phức tạp (module 18 sẽ phát triển đúng mức).

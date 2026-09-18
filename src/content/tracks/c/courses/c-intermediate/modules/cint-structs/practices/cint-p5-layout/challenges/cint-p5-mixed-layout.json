@@ -1,0 +1,15 @@
+{
+  "id": "cint-p5-mixed-layout",
+  "title": "Measure a Mixed Struct",
+  "prompt": "The boilerplate defines:\n\n```c\nstruct Record {\n    char  kind;\n    long  amount;\n    char  flag;\n};\n```\n\nImplement, **without naming any hard-coded sizes in the answer's logic**\n(use the operators, not magic numbers):\n\n```c\n/* offset of each member, as actually compiled */\nsize_t rec_kind_off(void);\nsize_t rec_amount_off(void);\nsize_t rec_flag_off(void);\n/* total compiled size */\nsize_t rec_size(void);\n/* how many Records fit in a buffer of n bytes (n/sizeof, floor; 0 if n < size) */\nsize_t rec_capacity(size_t n);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\nstruct Record { char kind; long amount; char flag; };\n",
+  "tests": [
+    {
+      "name": "offsets are measured, not guessed",
+      "code": "\nCHECK(rec_kind_off() == 0);\nCHECK(rec_amount_off() >= sizeof(long) && rec_amount_off() <= rec_size());\nCHECK(rec_flag_off() > rec_amount_off());\nCHECK(rec_size() >= rec_flag_off() + 1);\nCHECK_EQ(rec_capacity(0), 0);\nCHECK(rec_capacity(rec_size()) == 1);\nCHECK(rec_capacity(rec_size() * 7) == 7);\nCHECK(rec_capacity(rec_size() - 1) == 0);\n",
+      "hint": "offsetof(struct Record, member) for offsets; sizeof for the rest. rec_capacity: n < size -> 0."
+    }
+  ]
+}

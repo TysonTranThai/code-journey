@@ -1,0 +1,21 @@
+{
+  "id": "cppa6-dangling-fix",
+  "title": "Repair the Dangling Pipeline",
+  "prompt": "Implement `firstLetters(std::vector<std::string> words)`: return the uppercase first letters of long words as a **std::string** — computed through a view pipeline over `words`, but returned by value so nothing dangles after the call.",
+  "difficulty": "advanced",
+  "level": "debugging",
+  "language": "cpp",
+  "boilerplate": "#include <cctype>\n#include <string>\n#include <vector>\n\n// Caller passes a fresh vector each time; your job is to produce a value,\n// not a view — so the caller can never hold a dangling pipeline.\nstd::string firstLetters(std::vector<std::string> words, std::size_t n);\n",
+  "tests": [
+    {
+      "name": "returns a value, not a view",
+      "code": "std::string out = firstLetters(std::vector<std::string>{\"alpha\", \"be\", \"gamma\"}, 2);\nCHECK_EQ(out, std::string(\"AG\"));",
+      "hint": "Build the pipeline over the (by-value, caller-owned-copy) words parameter, accumulate into a std::string, return the string — the view dies inside the function, the value survives."
+    },
+    {
+      "name": "works through the by-value copy",
+      "code": "std::vector<std::string> src{\"one\", \"two\", \"three\"};\nstd::string out = firstLetters(src, 2);\nCHECK_EQ(out, std::string(\"OTT\"));  // all three words exceed 2 chars\nCHECK_EQ(src.size(), std::size_t{3});",
+      "hint": "The parameter is a copy — mutating/adapting it inside is safe; the caller's vector is untouched."
+    }
+  ]
+}

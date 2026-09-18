@@ -1,0 +1,31 @@
+{
+  "id": "javi-p7-csv-scanner",
+  "title": "Quoted-CSV Row Scanner",
+  "prompt": "Implement `static List<String> parseRow(String line)` — a character\nscanner that:\n- splits on commas OUTSIDE double quotes\n- treats `\"\"` inside a quoted field as a literal `\"`\n- keeps quoted commas in the field (`\"a,b\"` → one field `a,b`)\n- returns empty field list entries for consecutive commas\n(`a,,b` → [a, , b])\n\nThe tests hit every rule from the lesson.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "plain split",
+      "code": "\ncheckEq(Solution.parseRow(\"a,b,c\"), List.of(\"a\", \"b\", \"c\"), \"plain\");\n",
+      "hint": "No quotes — straight comma split."
+    },
+    {
+      "name": "quoted comma stays one field",
+      "code": "\ncheckEq(Solution.parseRow(\"\\\"a,b\\\",c\"), List.of(\"a,b\", \"c\"), \"quoted comma\");\n",
+      "hint": "The quoted comma must not split."
+    },
+    {
+      "name": "escaped double quote",
+      "code": "\ncheckEq(Solution.parseRow(\"\\\"say \\\"\\\"hi\\\"\\\"\\\",x\"), List.of(\"say \\\"hi\\\"\", \"x\"), \"escaped quotes\");\n",
+      "hint": "Inside quotes, \"\" becomes a single \"."
+    },
+    {
+      "name": "empty fields preserved",
+      "code": "\ncheckEq(Solution.parseRow(\"a,,b\"), List.of(\"a\", \"\", \"b\"), \"empty middle\");\n",
+      "hint": "Consecutive commas produce an empty field."
+    }
+  ],
+  "level": "independent"
+}

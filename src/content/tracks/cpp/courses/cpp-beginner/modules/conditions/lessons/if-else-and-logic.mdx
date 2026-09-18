@@ -1,0 +1,34 @@
+## The shape
+
+```cpp
+if (temperature > 30) {
+    std::cout << "hot\n";
+} else if (temperature > 20) {
+    std::cout << "warm\n";
+} else {
+    std::cout << "cool\n";
+}
+```
+
+Conditions run top to bottom; the **first** true branch wins and the rest are skipped. That ordering *is* the logic: swapping the first two branches breaks the program even though every condition is "correct".
+
+## Combining conditions
+
+```cpp
+bool can_enter = age >= 18 && has_ticket;   // both
+bool discount   = is_student || is_senior;  // at least one
+bool not_member = !is_member;               // negation
+```
+
+Two classic beginner pitfalls:
+
+1. **Range chains.** `if (0 < x < 10)` compiles but does NOT test what you think — it evaluates `(0 < x) < 10`, i.e. `true/false < 10`, always true. Write `x > 0 && x < 10`.
+2. **Assignment in conditions.** `if (x = 5)` assigns 5, yields 5 (truthy), and runs the branch. Compilers warn (`-Wall`) — read the warning.
+
+## Braces are not optional in this course
+
+C++ allows `if (x) std::cout << "yes";` without braces — and that style is how the famous Apple `goto fail` bug happened: one added line silently left the guard. **Always brace your branches**, even single-line ones. Modern style guides and this course agree.
+
+## Validation mindset
+
+Real programs spend most of their `if`-budget validating: is this input present? non-empty? in range? The earlier you write checks, the fewer crashes reach your logic. You will practice exactly that in this module's exercises: reject invalid input *at the door* with clear messages, then compute with confidence.

@@ -1,0 +1,58 @@
+## Two families, two behaviors
+
+A **value type** (struct, enum, numeric types, bool, char) carries its data
+inline. Assignment copies the whole value. A **reference type** (class,
+record class, interface, delegate, array, string) stores a reference; the
+object lives on the heap, and assignment copies only the reference — two
+variables then alias one object.
+
+```csharp
+struct PointS { public int X; }
+class  PointC { public int X; }
+
+var s1 = new PointS { X = 1 };
+var s2 = s1; s2.X = 9;              // s1.X is still 1 — copy
+
+var c1 = new PointC { X = 1 };
+var c2 = c1; c2.X = 9;              // c1.X is now 9 — alias
+```
+
+Neither is "better". Use structs for small, immutable, leaf values
+(coordinates, money amounts, identifiers); classes for entities with
+identity and lifetime. `record struct` gives you value semantics with
+generated equality; `record` (class) gives reference semantics with
+value-based equality — handy but distinct things.
+
+## Boxing: the invisible heap allocation
+
+Boxing wraps a value type in a heap object so it can travel where a
+reference is expected. It happens silently in three common places:
+
+```csharp
+object o = 42;                       // explicit box
+IComparable<int> c = 7;              // interface box
+Console.WriteLine(string.Join(" ", 1, 2, 3));   // params object[]: each int boxes
+```
+
+Unboxing is the reverse cast — it must name the EXACT type: unboxing a
+boxed `int` as `double` throws `InvalidCastException`, even though
+`int → double` converts implicitly in normal code.
+
+Boxing costs allocation and hurts in hot loops. `Console.WriteLine(42)`
+does NOT box (it has an int overload) — but `string.Format("{0}", x)` with
+an `object[]` path does. Equality gets subtle too: boxed values compare by
+value with `Equals`, but `==` on `object` compares references:
+
+```csharp
+object a = 1000, b = 1000;
+a.Equals(b)      // true  — boxed int compares by value
+a == b           // false — different boxes
+(object)a == (object)1000   // false again
+```
+
+## Check your understanding
+
+- `DateTime` is a struct: after `d2 = d1; d2 = d2.AddDays(1)`, what is `d1`?
+  (Unchanged — `AddDays` returns a new value.)
+- Why does `ArrayList` (pre-generics) feel slow for ints? (Every Add boxes.)
+- What does `(short)(object)intVar` throw? (InvalidCastException — exact-type rule.)

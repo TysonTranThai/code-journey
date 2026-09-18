@@ -1,0 +1,42 @@
+## Hai hàm mọi lập trình viên C phải sở hữu
+
+```c
+void qsort(void *base, size_t n, size_t size,
+           int (*cmp)(const void *, const void *));
+void *bsearch(const void *key, const void *base, size_t n, size_t size,
+              int (*cmp)(const void *, const void *));
+```
+
+Cả hai chạy trên *bất kỳ* kiểu phần tử nào qua đúng bộ ba ở bài trước.
+Comparator quyết định tất cả:
+
+```c
+/* phần tử int: đọc qua const void*, trả ba chiều */
+int cmp_int(const void *a, const void *b) {
+    int x = *(const int *)a, y = *(const int *)b;
+    return (x > y) - (x < y);      /* không bao giờ a - b: INT_MIN làm tràn */
+}
+```
+
+Hợp đồng: âm/không/dương cho nhỏ/bằng/lớn. `(x > y) - (x < y)` là mẫu
+chống tràn; `a - b` trên int gãy ở hai đầu mút, và trên double có thể
+làm tròn về 0 cho hai giá trị khác nhau.
+
+## Hai lưu ý trung thực
+
+**qsort không ổn định.** Phần tử bằng nhau có thể bị đảo thứ tự (chuẩn
+không hứa gì; mỗi cài đặt một khác). Nếu thứ tự trong nhóm bằng nhau
+quan trọng, thêm tiebreaker vào comparator, hoặc sort mảng cặp
+(key, chỉ-số-gốc).
+
+**bsearch đòi input đã sắp.** O(log n) của tìm kiếm nhị phân được thuê
+từ tiền đề. bsearch trên dữ liệu chưa sắp không phải "kết quả sai" —
+là undefined bạn tìm thấy phần tử nào (hoặc không). Và hợp đồng bsearch
+nói *bất kỳ* phần tử khớp khi có trùng; cần first/last thì tự viết biến
+thể lower_bound.
+
+## Khi nào qsort là công cụ sai
+
+Tính generic có giá: gọi comparator qua con trỏ hàm (phá inline),
+memcpy `size` byte. Sort chuyên cho int có thể nhanh gấp nhiều lần.
+qsort là *mặc định*; chuyên hóa khi đo đạc nói vậy.

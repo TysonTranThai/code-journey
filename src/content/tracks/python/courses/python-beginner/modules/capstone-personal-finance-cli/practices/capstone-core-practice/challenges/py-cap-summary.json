@@ -1,0 +1,16 @@
+{
+  "id": "py-cap-summary",
+  "title": "Acceptance: finance_summary",
+  "prompt": "Contract: finance_summary(expenses, budget) returns {\"total\", \"count\", \"top\", \"remaining\", \"warning\"} where total is rounded, top is the category with the highest total (tie -> first to reach it; None when empty), remaining = round(budget - total, 2), and warning is True when total > 0.9 * budget else False.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "",
+  "tests": [
+    {
+      "name": "the full report",
+      "code": "expenses = [\n    {\"amount\": 50, \"category\": \"food\", \"note\": \"\"},\n    {\"amount\": 20, \"category\": \"fun\", \"note\": \"\"},\n    {\"amount\": 30, \"category\": \"food\", \"note\": \"\"},\n]\nr = finance_summary(expenses, 100)\nassert r[\"total\"] == 100.0 and r[\"count\"] == 3, f\"got {r}\"\nassert r[\"top\"] == \"food\", f\"tie at 80? no: food 80, fun 20. got {r}\"\nassert r[\"remaining\"] == 0.0, f\"got {r}\"\nassert r[\"warning\"] is True, \"100 > 90% of 100\"\nr2 = finance_summary([], 50)\nassert r2[\"top\"] is None and r2[\"warning\"] is False and r2[\"remaining\"] == 50, f\"got {r2}\"\nr3 = finance_summary(expenses[:1], 100)\nassert r3[\"warning\"] is False, \"50 is exactly half — no warning\"\nr4 = finance_summary([{\"amount\": 2, \"category\": \"b\"}, {\"amount\": 3, \"category\": \"a\"}, {\"amount\": 2, \"category\": \"a\"}, {\"amount\": 3, \"category\": \"b\"}], 20)\nassert r4[\"top\"] == \"a\", f\"tie 5-5, a reached its 5 first: {r4}\"",
+      "hint": "two accumulators: totals and first-index-seen per category; top = min by (-total, first_seen)."
+    }
+  ],
+  "level": "mini-build"
+}

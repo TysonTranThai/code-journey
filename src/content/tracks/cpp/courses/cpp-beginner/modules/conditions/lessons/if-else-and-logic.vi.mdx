@@ -1,0 +1,34 @@
+## Dạng chuẩn
+
+```cpp
+if (temperature > 30) {
+    std::cout << "hot\n";
+} else if (temperature > 20) {
+    std::cout << "warm\n";
+} else {
+    std::cout << "cool\n";
+}
+```
+
+Các nhánh được xét từ trên xuống; nhánh **đầu tiên** đúng sẽ thắng và phần còn lại bị bỏ qua. Chính thứ tự đó *là* logic: đổi chỗ hai nhánh đầu sẽ hỏng chương trình dù mọi điều kiện đều "đúng".
+
+## Kết hợp điều kiện
+
+```cpp
+bool can_enter = age >= 18 && has_ticket;   // cả hai
+bool discount   = is_student || is_senior;  // ít nhất một
+bool not_member = !is_member;               // phủ định
+```
+
+Hai cái bẫy kinh điển của người mới:
+
+1. **Chuỗi khoảng giá trị.** `if (0 < x < 10)` biên dịch được nhưng KHÔNG kiểm tra điều bạn nghĩ — nó tính `(0 < x) < 10`, tức `true/false < 10`, luôn đúng. Hãy viết `x > 0 && x < 10`.
+2. **Gán trong điều kiện.** `if (x = 5)` gán 5, cho ra 5 (truthy), và chạy nhánh đó. Compiler có cảnh báo (`-Wall`) — hãy đọc cảnh báo.
+
+## Ngoặc nhọn không tùy chọn trong khóa này
+
+C++ cho phép `if (x) std::cout << "yes";` không cần ngoặc nhọn — và kiểu viết đó chính là nguồn cơn của bug `goto fail` nổi tiếng ở Apple: thêm một dòng là guard bị bỏ ngầm. **Luôn đặt ngoặc nhọn cho mọi nhánh**, kể cả một dòng. Các style guide hiện đại và khóa này cùng thống nhất.
+
+## Tư duy validation
+
+Chương trình thật dành phần lớn ngân sách `if` để validating: input này có tồn tại không? khác rỗng không? nằm trong khoảng không? Viết kiểm tra càng sớm, càng ít crash chạm tới phần logic. Chính xác điều đó là bài tập của module này: chặn input không hợp lệ *ngay cửa* với thông báo rõ ràng, rồi tính toán trong sự tự tin.

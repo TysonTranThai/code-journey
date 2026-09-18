@@ -1,0 +1,26 @@
+{
+  "id": "cppa12-add-checked",
+  "title": "Overflow-Safe Addition",
+  "prompt": "Implement `addChecked`: returns the sum, or `std::nullopt` when it would overflow — for every signed combination, including INT_MAX/INT_MIN extremes. No signed overflow may occur in your implementation (pre-check, don't post-detect).",
+  "difficulty": "advanced",
+  "level": "real-world",
+  "language": "cpp",
+  "boilerplate": "#include <climits>\n#include <cstdint>\n#include <optional>\n#include <string>\n#include <vector>\n\n// Safe arithmetic at the boundary. All three must return std::nullopt on\n// overflow instead of invoking UB.\nstd::optional<int> addChecked(int a, int b);\nstd::optional<int> subChecked(int a, int b);\nstd::optional<int> mulChecked(int a, int b);\n\n// Checked element access: value at index, or nullopt when out of bounds.\nstd::optional<int> atChecked(const std::vector<int>& v, std::size_t i);\n",
+  "tests": [
+    {
+      "name": "normal additions",
+      "code": "CHECK_EQ(addChecked(2, 3).value_or(-999), 5);\nCHECK_EQ(addChecked(-2, -3).value_or(-999), -5);\nCHECK_EQ(addChecked(0, 0).value_or(-999), 0);\nCHECK_EQ(addChecked(-5, 5).value_or(-999), 0);",
+      "hint": "Compute b > 0 && a > INT_MAX - b, and b < 0 && a < INT_MIN - b as the two guards; otherwise a + b is safe."
+    },
+    {
+      "name": "extremes are rejected, not wrapped",
+      "code": "CHECK(!addChecked(INT_MAX, 1).has_value());\nCHECK(!addChecked(1, INT_MAX).has_value());\nCHECK(!addChecked(INT_MIN, -1).has_value());\nCHECK(!addChecked(-1, INT_MIN).has_value());\nCHECK_EQ(addChecked(INT_MAX, 0).value_or(-999), INT_MAX);\nCHECK_EQ(addChecked(INT_MIN, 0).value_or(-999), INT_MIN);",
+      "hint": "INT_MAX + 1 and INT_MIN - 1 are the exact UB traps: the guards must fire BEFORE the addition. Adding 0 never overflows."
+    },
+    {
+      "name": "mixed signs always safe",
+      "code": "CHECK_EQ(addChecked(INT_MAX, INT_MIN).value_or(-999), -1);\nCHECK_EQ(addChecked(INT_MIN, INT_MAX).value_or(-999), -1);\nCHECK_EQ(addChecked(INT_MAX, -1).value_or(-999), INT_MAX - 1);\nCHECK_EQ(addChecked(INT_MIN, 1).value_or(-999), INT_MIN + 1);",
+      "hint": "A positive plus a negative never overflows — only same-sign sums can; make sure the guards permit mixed signs."
+    }
+  ]
+}

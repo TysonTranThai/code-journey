@@ -1,0 +1,21 @@
+## Đo trước: kỷ luật
+
+Mọi tuyên bố hiệu năng trong module này được chấm theo đúng cách chuyên nghiệp
+kiểm chứng: **đếm công việc, đừng đoán bằng đồng hồ.** Wall-clock trên máy dùng
+chung thì nhiễu; số lần gọi, số truy vấn, số lần cấp phát mới là dữ kiện.
+
+Quy trình:
+
+1. **Thiết lập baseline** — các con số hiện tại (latency, throughput, số lần
+   gọi tới thứ đắt đỏ).
+2. **Quy kết** — tìm xem công việc thực sự đi đâu (bài sau: cProfile).
+3. **Đặt giả thuyết** — "phép kiểm tra membership O(n²) là chỗ nặng nhất",
+   "chúng ta re-fetch cùng một dòng 50 lần".
+4. **Sửa MỘT thứ.**
+5. **Kiểm chứng** — đo lại ĐÚNG chỉ số đó. Giữ chiến thắng, hoặc revert.
+
+Tối ưu sớm ở đây có nghĩa rõ ràng: sửa code trước khi bước 1 tồn tại. `timeit`
+là công cụ cho micro-benchmark (tắt GC và lặp đủ nhiều lần để át nhiễu);
+`time.perf_counter()` là công cụ wall-clock trong tiến trình; **nhưng để chấm
+đúng đắn một phép tối ưu, hãy đếm thao tác** — chiến thắng của memoization là
+`calls: 13529 → 39`, không phải một con số x2 mơ hồ.

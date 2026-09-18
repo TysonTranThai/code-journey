@@ -1,0 +1,21 @@
+{
+  "id": "cint-p3-vec-grow",
+  "title": "The Vec Push Loop",
+  "prompt": "Implement a growable int vector with the exact realloc discipline:\n\n```c\ntypedef struct { int *data; size_t len, cap; } Vec;   /* in boilerplate */\nvoid vec_init(Vec *v);\nint vec_push(Vec *v, int value);   /* 0 on allocation failure; v unchanged then */\nsize_t vec_len(const Vec *v);\nint vec_get(const Vec *v, size_t i, int *out);  /* bounds-checked; 0 if out of range */\nvoid vec_destroy(Vec *v);          /* frees and zeroes the struct */\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\ntypedef struct { int *data; size_t len, cap; } Vec;\n",
+  "tests": [
+    {
+      "name": "grow and read back",
+      "code": "\nVec v;\nvec_init(&v);\nfor (int i = 0; i < 100; i++) CHECK_EQ(vec_push(&v, i * i), 1);\nCHECK_EQ(vec_len(&v), 100);\nint val = -1;\nCHECK_EQ(vec_get(&v, 0, &val), 1); CHECK_EQ(val, 0);\nCHECK_EQ(vec_get(&v, 99, &val), 1); CHECK_EQ(val, 9801);\nCHECK_EQ(vec_get(&v, 100, &val), 0);\nvec_destroy(&v);\nCHECK_NULL(v.data);\nCHECK_EQ(vec_len(&v), 0);\n",
+      "hint": "Start cap 8; double when full; realloc into a temp first."
+    },
+    {
+      "name": "empty and boundary",
+      "code": "\nVec v;\nvec_init(&v);\nCHECK_EQ(vec_len(&v), 0);\nint val;\nCHECK_EQ(vec_get(&v, 0, &val), 0);\nCHECK_EQ(vec_push(&v, 42), 1);\nCHECK_EQ(vec_get(&v, 0, &val), 1); CHECK_EQ(val, 42);\nvec_destroy(&v);\nvec_destroy(&v);   /* double destroy must be safe */\nCHECK_NULL(v.data);\n",
+      "hint": "After destroy, data == NULL so free(NULL) makes re-destroy a no-op."
+    }
+  ],
+  "level": "mini-build"
+}

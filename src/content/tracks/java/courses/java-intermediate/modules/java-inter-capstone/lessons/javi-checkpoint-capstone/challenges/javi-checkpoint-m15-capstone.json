@@ -1,0 +1,31 @@
+{
+  "id": "javi-checkpoint-m15-capstone",
+  "title": "The Integrated Tracker",
+  "prompt": "Assemble the WHOLE tracker in `Solution` (you may reuse your\nmilestone code):\n- `record Expense(String id, String category, int cents)` with\n  constructor validation (blank id/category, non-positive cents throw\n  `IllegalArgumentException` with a specific message)\n- `interface ExpenseStore { void save(Expense e); Optional<Expense> find(String id);\n  List<Expense> all(); }` + `InMemoryExpenseStore`\n- `static class ExpenseService` with constructor `(ExpenseStore store)`:\n  - `void add(String id, String category, int cents)` — constructs\n    (letting validation throw), then saves\n  - `Map<String, Integer> totalsByCategory()` — stream aggregation\n  - `Optional<String> topExpense()` — highest cents, tie → smallest id\n\nThe checkpoint test drives the three layers together, exactly as the\nmilestones promised.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Assemble Expense, ExpenseStore, InMemoryExpenseStore, ExpenseService here.\n}\n",
+  "tests": [
+    {
+      "name": "end-to-end add and total",
+      "code": "\nSolution.InMemoryExpenseStore store = new Solution.InMemoryExpenseStore();\nSolution.ExpenseService svc = new Solution.ExpenseService(store);\nsvc.add(\"e1\", \"food\", 1000);\nsvc.add(\"e2\", \"food\", 500);\nsvc.add(\"e3\", \"travel\", 2000);\ncheckEq(svc.totalsByCategory(), Map.of(\"food\", 1500, \"travel\", 2000), \"aggregated\");\n",
+      "hint": "Service → validated record → store → stream report."
+    },
+    {
+      "name": "validation rejects through the stack",
+      "code": "\nSolution.InMemoryExpenseStore store = new Solution.InMemoryExpenseStore();\nSolution.ExpenseService svc = new Solution.ExpenseService(store);\ntry { svc.add(\"e1\", \"food\", 0); checkTrue(false, \"must throw\"); }\ncatch (IllegalArgumentException e) { checkTrue(e.getMessage().contains(\"cents\"), \"reasoned\"); }\ncheckEq(store.all().size(), 0, \"nothing saved\");\n",
+      "hint": "Bad data never reaches the store."
+    },
+    {
+      "name": "topExpense with tie-break",
+      "code": "\nSolution.InMemoryExpenseStore store = new Solution.InMemoryExpenseStore();\nSolution.ExpenseService svc = new Solution.ExpenseService(store);\nsvc.add(\"b\", \"food\", 700);\nsvc.add(\"a\", \"travel\", 700);\ncheckEq(svc.topExpense().orElseThrow(), \"a\", \"tie → smaller id\");\n",
+      "hint": "Deterministic tie-breaking."
+    },
+    {
+      "name": "update flows through",
+      "code": "\nSolution.InMemoryExpenseStore store = new Solution.InMemoryExpenseStore();\nSolution.ExpenseService svc = new Solution.ExpenseService(store);\nsvc.add(\"e1\", \"food\", 1000);\nsvc.add(\"e1\", \"food\", 1200);\ncheckEq(svc.totalsByCategory(), Map.of(\"food\", 1200), \"updated total\");\n",
+      "hint": "Upsert visible in the report layer."
+    }
+  ],
+  "level": "real-world"
+}

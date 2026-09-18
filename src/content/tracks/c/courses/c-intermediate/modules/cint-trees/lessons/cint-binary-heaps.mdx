@@ -1,0 +1,48 @@
+## The tree that needs no pointers
+
+A binary heap is a *complete* binary tree with the heap property
+(parent ≤ children for min-heap). Completeness lets the tree live in an
+array with pure index arithmetic:
+
+```c
+/* for the element at index i: */
+size_t parent = (i - 1) / 2;
+size_t left   = 2 * i + 1;
+size_t right  = 2 * i + 2;
+```
+
+No pointers, no per-node malloc, and the array's memory locality is
+excellent — this is why heapsort and priority queues are array-backed
+in every real library.
+
+## Sift up, sift down
+
+**Insert** appends at the end (keeping completeness), then *sifts up*:
+while smaller than its parent, swap with the parent. O(log n).
+
+**Extract-min** removes the root (the minimum), moves the *last* element
+into the root slot, shrinks, then *sifts down*: swap with the smaller
+child while a child is smaller. O(log n). **Peek** is `a[0]` — O(1).
+
+```c
+void sift_down(long *a, size_t n, size_t i) {
+    while (1) {
+        size_t l = 2*i + 1, r = 2*i + 2, smallest = i;
+        if (l < n && a[l] < a[smallest]) smallest = l;
+        if (r < n && a[r] < a[smallest]) smallest = r;
+        if (smallest == i) return;
+        long t = a[i]; a[i] = a[smallest]; a[smallest] = t;
+        i = smallest;
+    }
+}
+```
+
+## The index-arithmetic bugs, catalogued
+
+- `parent = (i-1)/2` at i == 0 wraps to SIZE_MAX — guard the root.
+- Forgetting `left < n` — a half-full last level reads phantom children.
+- Sifting down comparing with only one child — the heap property breaks
+  silently.
+
+The invariant to test after every operation: every parent ≤ both
+children. A `heap_ok` checker is five lines and catches all of them.

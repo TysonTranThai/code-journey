@@ -1,0 +1,53 @@
+## Two kinds, one rule
+
+Object-like macros define constants:
+
+```c
+#define MAX_USERS 100
+#define ARRAY_LEN(a) (sizeof(a) / sizeof((a)[0]))
+```
+
+Function-like macros take arguments — and everything is *text*:
+
+```c
+#define SQUARE(x) ((x) * (x))
+```
+
+The one rule: **the preprocessor knows nothing about C.** It tokenizes
+and substitutes. There is no type checking, no scope, no evaluation
+order — just replacement, then the compiler sees the result. `ARRAY_LEN`
+works on any array precisely because it compiles to
+`sizeof(a)/sizeof(a[0])` — it is an expression, not a loop.
+
+## The do-while wrapper
+
+Multi-statement macros need a form that works inside `if/else` without
+braces:
+
+```c
+#define LOG(msg) do { log_write((msg)); log_count++; } while (0)
+
+if (bad)
+    LOG("bad input");        /* expands to one STATEMENT, not a block
+                                    that swallows the else */
+else
+    ...
+```
+
+Without `do { } while (0)`, the expanded `if (bad) { ...; count++; }`
+plus a trailing `;` breaks the `else`. The wrapper is the professional
+reflex — and `log_count++` here is a *side effect inside a macro*,
+which is exactly how real code gets burned (next lesson).
+
+## The compiler never sees your macro names
+
+Debuggers step through expansions; error messages cite line 1 of the
+#define. Prefer inline functions and enums where they suffice:
+
+```c
+enum { MAX_USERS = 100 };                 /* typed, scoped, debuggable */
+static inline int square_int(int x) { return x * x; }   /* type-checked */
+```
+
+Macros remain the only tool for: token pasting, conditional compilation,
+`ARRAY_LEN`, and anything that must work on *types*.

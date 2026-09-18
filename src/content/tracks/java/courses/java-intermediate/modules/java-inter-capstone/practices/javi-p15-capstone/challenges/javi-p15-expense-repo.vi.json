@@ -1,0 +1,18 @@
+{
+  "title": "Cột mốc 2: repository",
+  "prompt": "Thêm persistence sau một interface trong `Solution`:\n- `interface ExpenseStore { void save(Expense e); Optional<Expense> find(String id); List<Expense> all(); }`\n- `static class InMemoryExpenseStore implements ExpenseStore`\n  (giữ thứ tự chèn)\n- `static class DuplicateExpenseException extends RuntimeException`\n- `ExpenseStore.save` ném DuplicateExpenseException khi một expense\n  KHÁC đã chiếm id (re-save giống hệt là idempotent, ổn); lưu ý:\n  category được phép đổi khi cập nhật — id là chiều xung đột duy nhất.\n\nHai lần save cùng id nhưng cents khác = cập nhật, được phép.\nCùng id, khác category = xung đột, ném.",
+  "tests": [
+    {
+      "name": "Save/find/all trọn vòng",
+      "hint": "Hợp đồng lưu trữ cơ bản."
+    },
+    {
+      "name": "Cập nhật cùng id được phép",
+      "hint": "Ngữ nghĩa upsert trên cùng category."
+    },
+    {
+      "name": "Xung đột category ném",
+      "hint": "Một id gắn với một category."
+    }
+  ]
+}

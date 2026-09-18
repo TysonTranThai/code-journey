@@ -1,0 +1,21 @@
+## One call that returns twice
+
+`fork()` (POSIX) duplicates the calling process. It returns once *per process*: 0 in the child, the child's pid in the parent. Everything else — memory, open files, cwd — is copied or shared copy-on-write. The child usually immediately calls one of the `exec*()` functions, which *replaces* the process image with a new program; a successful exec never returns.
+
+## Collecting the result
+
+The parent reaps the child with `waitpid(pid, &status, 0)`. The `status` word is *not* the exit code — it is a bitfield decoded by macros:
+
+- `WIFEXITED(status)` — did the child exit normally?
+- `WEXITSTATUS(status)` — the low 8 bits the child passed to `exit()`, `_exit()`, or return.
+
+Two consequences to internalize:
+
+1. **Exit codes are 8 bits.** `_exit(256)` is observed as 0; `_exit(-1)` as 255. Never encode data beyond 0–255 in an exit code.
+2. **Killed children did not exit.** If a signal terminated the child, `WIFEXITED` is false and `WEXITSTATUS` is meaningless — check `WIFSIGNALED` and `WTERMSIG`.
+
+Every command-line tool you have ever chained with `&&` was orchestrating exactly this triple.
+
+## POSIX vs ISO C, again
+
+Nothing in this lesson exists in ISO C. `fork`, `exec`, `waitpid`, `_exit` are POSIX. Portable ISO-only programs cannot create processes — and that limitation is itself part of C's story: the standard library stops at `system()` (which *returns an implementation-defined status*), and everything richer is platform work.

@@ -1,0 +1,32 @@
+## Thiết kế theo hợp đồng
+
+Interface là một *lời hứa* mà caller có thể dựa vào và các hiện thực có thể
+hoán đổi cho nhau. Kỹ năng trung cấp là chọn cái gì nằm trong lời hứa:
+
+```java
+public interface PaymentGateway {
+    PaymentResult charge(Money amount, Card card);
+}
+```
+
+Code cấp cao (checkout) nên phụ thuộc `PaymentGateway`, không phụ thuộc
+`StripeGateway`. Đó là Dependency Inversion Principle gói trong một dòng:
+**detail phụ thuộc abstraction, không bao giờ ngược lại.**
+
+```java
+public final class CheckoutService {
+    private final PaymentGateway gateway;
+    public CheckoutService(PaymentGateway gateway) {   // tiêm vào
+        this.gateway = gateway;
+    }
+    public PaymentResult checkout(Order order) {
+        return gateway.charge(order.total(), order.card());
+    }
+}
+```
+
+Vì sao đáng giá:
+- test thay fake gateway — không mạng, không secret
+- thêm PayPal nghĩa là viết class mới, không phải sửa checkout
+- interface tài liệu hóa *chỉ những* method mà checkout thực sự cần
+  (interface segregation: lời hứa nhỏ tốt hơn lời hứa mập)

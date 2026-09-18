@@ -1,0 +1,14 @@
+## Bốn câu hỏi bắt phần lớn những gì ASan bắt
+
+1. **Sở hữu**: ai giải phóng cái này? Có hai câu trả lời → chờ double-free. Không có → chờ rò rỉ.
+2. **Tuổi thọ**: con trỏ này có thể sống lâu hơn đối tượng của nó không? Local được trả về, thành viên lưu rồi bị free, và invalidation của iterator nằm ở đây.
+3. **Giới hạn**: chỉ số hợp lệ lớn nhất là bao nhiêu, và cái gì chứng minh mọi truy cập nằm dưới nó? Kích thước không kiểm tra và vòng lặp off-by-one nằm ở đây.
+4. **Đồng thời** (mô-đun 18 áp dụng): những thread nào chạm trạng thái này không có khóa? Hai writer hoặc một writer cộng một reader thiếu đồng bộ là data race theo định nghĩa.
+
+## Biến câu hỏi thành kiểm tra chạy được
+
+Thiếu ASan, bạn *mã hóa* câu hỏi: bảng sở hữu ghi lại mọi cấp phát và freer được chỉ định (kiểm tra lúc tắt); accessor kiểm tra giới hạn khẳng định `i < n` trên mỗi lần đọc; thiết kế đơn-thread hoặc rà soát kỷ luật khóa cho trạng thái chia sẻ. Yếu hơn công cụ, nhưng về cấu trúc là cùng một phép phát hiện — và nó chạy ở bất cứ đâu C chạy, kể cả sandbox này.
+
+## Khi bạn có công cụ
+
+Chạy chúng dưới mọi bài kiểm thử, trong CI, nghiêm ngặt mức `-Werror`: phát hiện của sanitizer là lỗi build, không phải gợi ý. Thói quen mô-đun này xây — nêu chủ sở hữu, nêu tuổi thọ, nêu giới hạn — chính là thứ khiến báo cáo sanitizer nhanh để đọc khi bạn gặp chúng.

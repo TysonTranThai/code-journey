@@ -1,0 +1,37 @@
+**Pointer** lưu địa chỉ của một đối tượng (hoặc không trỏ đâu cả, khi là
+`nullptr`). Khác reference, pointer có thể trỏ lại, so sánh, tăng giảm —
+và có thể null, nên nó là công cụ cho trạng thái "có thể không có đối tượng".
+
+```cpp
+int main_cj_pointer() {
+    int value = 41;
+    int* p = &value;          // p giữ địa chỉ của value
+    *p += 1;                  // dereference: value giờ là 42
+    p = nullptr;              // p không trỏ đâu cả
+
+    if (p) {                  // LUÔN kiểm tra trước khi dereference
+        std::cout << *p;
+    }
+    return 0;
+}
+```
+
+## Đọc khai báo pointer thành lời
+
+- `int* p` — "p là pointer tới int".
+- `const int* p` — pointer tới const int: *đối tượng bị trỏ* chỉ đọc.
+- `int* const p` — const pointer tới int: *pointer* không thể trỏ lại.
+- `const int* const p` — cả pointer lẫn đối tượng đều không đổi.
+
+Đọc khai báo từ phải sang trái, `const` sẽ không bao giờ gây bất ngờ.
+
+## Pointer + const& quyết định phần lớn interface
+
+```cpp
+void rename(std::string* out, const std::string& fallback);
+// out: tùy chọn (bên gọi có thể truyền nullptr) và được ghi xuyên qua
+// fallback: bắt buộc, chỉ đọc
+```
+
+Reference nói "tôi cần một đối tượng". Pointer nói "có thể tôi không có".
+Hãy ghi rõ hợp đồng của từng tham số.

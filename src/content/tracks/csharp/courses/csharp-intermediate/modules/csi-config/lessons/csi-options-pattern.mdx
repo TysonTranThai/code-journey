@@ -1,0 +1,54 @@
+## Config is data your code needs before it runs
+
+Database locations, feature flags, limits, URLs. Rules of the road:
+config lives OUTSIDE compiled code, comes from SOURCES (JSON files,
+environment variables, command-line args — most specific wins), and reaches
+your classes as plain injected values.
+
+## The options pattern: a typed view
+
+Instead of string keys scattered around, bind a section to a class:
+
+```csharp
+public sealed class RetryOptions
+{
+    public int MaxAttempts { get; set; } = 3;
+    public int DelayMs { get; set; } = 200;
+}
+
+// binding (hand-rolled shape; ASP.NET's binder does the same)
+var section = JsonDocument.Parse(json).RootElement.GetProperty("Retry");
+var options = new RetryOptions
+{
+    MaxAttempts = section.GetProperty("MaxAttempts").GetInt32(),
+    DelayMs = section.GetProperty("DelayMs").GetInt32(),
+};
+```
+
+Defaults live ON the options class; config overrides them. Consumers
+receive `RetryOptions` (or `IOptions<RetryOptions>` in ASP.NET) — never the
+raw config — so keys are referenced in exactly one place.
+
+## Validate at startup, not at 3 a.m.
+
+Fail FAST with a precise message:
+
+```csharp
+if (options.MaxAttempts < 1)
+    throw new OptionsValidationException("Retry", "MaxAttempts must be >= 1");
+```
+
+An invalid port number discovered at startup is a one-line fix; the same
+discovery on Friday night is an incident.
+
+## Environment variables: the deployment layer
+
+`Environment.GetEnvironmentVariable("CJ_RETRY__MAXATTEMPTS")` —
+deployment pipelines inject these; double-underscore is the ASP.NET
+convention for nesting (`Retry:MaxAttempts`). Env vars override file
+config in every mainstream host — layering is the point.
+
+## Check your understanding
+
+- Why bind into a typed class instead of passing strings? (One place knows the keys; types catch shape errors; defaults live on the class.)
+- Which wins: file or environment? (Environment — more specific deployment context.)

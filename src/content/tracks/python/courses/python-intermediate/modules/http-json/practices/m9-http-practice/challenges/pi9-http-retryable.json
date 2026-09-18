@@ -1,0 +1,21 @@
+{
+  "id": "pi9-http-retryable",
+  "title": "Retry or Stop?",
+  "prompt": "Implement should_retry(status: int, attempts: int) -> bool: retry ONLY server errors (5xx) and 429, and only when attempts < 3. Everything else returns False.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "def should_retry(status, attempts):\n    pass\n",
+  "tests": [
+    {
+      "name": "retries transient failures",
+      "code": "assert should_retry(503, 1) is True\nassert should_retry(429, 2) is True",
+      "hint": "5xx and 429 are retryable."
+    },
+    {
+      "name": "stops at the bound and on client errors",
+      "code": "assert should_retry(503, 3) is False\nassert should_retry(404, 1) is False\nassert should_retry(200, 1) is False",
+      "hint": "attempts >= 3 stops; 4xx and 2xx never retry."
+    }
+  ],
+  "level": "guided"
+}

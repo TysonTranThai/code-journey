@@ -1,0 +1,20 @@
+{
+  "id": "javb-checkpoint-types",
+  "title": "Checkpoint: Grade Calculator",
+  "prompt": "\nThe Grade Calculator combines every module-2 idea in one small program.\n\nWrite `public static String report(String name, int score)` that returns\n(but does not print!) a line of text:\n\n- Start with the name, then `\": \"`, then the score, then `\" -> \"`.\n- Append the letter grade: `A` for 90+, `B` for 80–89, `C` for 70–79,\n  `D` for 60–69, `F` below 60.\n- Also append the percentage as ` (NN%)` — the score itself, so for\n  `report(\"Ada\", 93)` the exact result is `\"Ada: 93 -> A (93%)\"`.\n\nEverything must be built with `final` locals where sensible and string\nconcatenation; the grader compares the exact returned String for several\nstudents, including boundary scores 90, 60, and 59.\n",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String report(String name, int score) {\n        return \"\";\n    }\n}\n",
+  "tests": [
+    {
+      "name": "A and B bands",
+      "code": "\nCjTestBase.checkEq(Solution.report(\"Ada\", 93), \"Ada: 93 -> A (93%)\", \"report Ada 93\");\nCjTestBase.checkEq(Solution.report(\"Grace\", 90), \"Grace: 90 -> A (90%)\", \"boundary 90\");\nCjTestBase.checkEq(Solution.report(\"Alan\", 85), \"Alan: 85 -> B (85%)\", \"report Alan 85\");\n",
+      "hint": "90 is A (>= 90), 85 is B. Format: name + ': ' + score + ' -> ' + grade + ' (NN%)'."
+    },
+    {
+      "name": "C, D, F bands",
+      "code": "\nCjTestBase.checkEq(Solution.report(\"Joan\", 70), \"Joan: 70 -> C (70%)\", \"boundary 70\");\nCjTestBase.checkEq(Solution.report(\"Linus\", 60), \"Linus: 60 -> D (60%)\", \"boundary 60\");\nCjTestBase.checkEq(Solution.report(\"Edsger\", 59), \"Edsger: 59 -> F (59%)\", \"just below D\");\n",
+      "hint": "Boundaries: 70 C, 60 D, 59 F."
+    }
+  ]
+}

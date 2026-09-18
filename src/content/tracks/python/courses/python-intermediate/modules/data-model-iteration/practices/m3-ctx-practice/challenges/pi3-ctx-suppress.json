@@ -1,0 +1,21 @@
+{
+  "id": "pi3-ctx-suppress",
+  "title": "Quiet Zone",
+  "prompt": "Create a context manager using @contextmanager named quiet that SUPPRESSES ValueError raised in its body but lets other exceptions propagate. The with-body must run.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "from contextlib import contextmanager\n\n@contextmanager\ndef quiet():\n    pass\n",
+  "tests": [
+    {
+      "name": "suppresses ValueError",
+      "code": "with quiet():\n    raise ValueError('ignored')\nprint('ok')",
+      "hint": "Catch ValueError inside the generator after yield; do not re-raise."
+    },
+    {
+      "name": "propagates others",
+      "code": "try:\n    with quiet():\n        raise KeyError('boom')\n    failed = False\nexcept KeyError:\n    failed = True\nassert failed",
+      "hint": "Only ValueError is caught — everything else re-raises."
+    }
+  ],
+  "level": "independent"
+}

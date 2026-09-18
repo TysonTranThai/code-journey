@@ -1,0 +1,15 @@
+## Checkpoint — đo đạc một class
+
+Viết `@timed`, một **decorator class** bọc mọi public method (không bắt đầu bằng
+`_`) của class được trang trí sao cho thời gian thực thi của mỗi lần gọi được
+append vào `cls.__timings__[tên_method]` (một list, tạo khi cần).
+
+Yêu cầu:
+
+- tên method vẫn đúng trên wrapper (`__name__` được giữ)
+- method riêng tư/dunder không bị đụng tới
+- hoạt động với mọi class (decorator không được hardcode tên)
+- timings cộng dồn qua nhiều instance
+
+Đây chính là pattern mà profiler, thư viện metrics và tracing hook dùng khi
+không thể yêu cầu bạn sửa từng method một.

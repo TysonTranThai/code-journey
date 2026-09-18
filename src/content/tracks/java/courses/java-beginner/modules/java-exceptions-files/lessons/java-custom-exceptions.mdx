@@ -1,0 +1,54 @@
+The standard library names its exceptions for *itself*:
+`NumberFormatException`, `IOException`. Your domain has its own failure
+vocabulary, and custom exceptions let you speak it.
+
+```java
+class InsufficientFundsException extends Exception {
+    private final double shortfall;
+
+    InsufficientFundsException(double shortfall) {
+        super("short by " + shortfall);
+        this.shortfall = shortfall;
+    }
+
+    double getShortfall() { return shortfall; }
+}
+```
+
+Three decisions in that small class:
+
+1. **`extends Exception`** (not `RuntimeException`) makes it *checked* -
+   every caller must decide what withdrawal-with-insufficient-funds means
+   for them. Choose this for domain failures the caller can reasonably
+   handle.
+2. **`super(message)`** carries the human-readable explanation up to the
+   stack trace and logs.
+3. **Extra fields** (`shortfall`) let callers *react programmatically*, not
+   just display a string - e.g. suggest a smaller withdrawal.
+
+Throwing and catching:
+
+```java
+static void withdraw(double balance, double amount)
+        throws InsufficientFundsException {
+    if (amount > balance) {
+        throw new InsufficientFundsException(amount - balance);
+    }
+}
+
+try {
+    withdraw(50, 80);
+} catch (InsufficientFundsException e) {
+    System.out.println("cannot withdraw: " + e.getMessage()
+        + " (need " + e.getShortfall() + " more)");
+}
+```
+
+## When NOT to write one
+
+Reach for a custom exception when a *domain rule* is violated and callers
+will want to treat it differently from other failures. Don't write one
+when `IllegalArgumentException` already says it all - a custom exception
+that everyone catches generically adds ceremony without information. And
+never use exceptions for normal control flow: loop conditions and `if`
+checks are clearer and far cheaper.

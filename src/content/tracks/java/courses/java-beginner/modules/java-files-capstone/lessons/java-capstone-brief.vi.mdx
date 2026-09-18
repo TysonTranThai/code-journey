@@ -1,0 +1,42 @@
+Đến giờ lắp ráp. Capstone là một **sổ giao dịch cá nhân**: bản ghi tiền
+vào tiền ra được lưu trong file văn bản. Ở đây không có gì mới - và đó
+chính là điểm. Nó kết hợp:
+
+- **record** (Module 9) - `Transaction` bất biến với compact constructor
+  tự kiểm tra;
+- **collection + stream** (Module 10, 12) - một `List<Transaction>` được
+  truy vấn bằng pipeline;
+- **parse phòng thủ** (Module 11) - mọi dòng nạp về đều vượt cổng
+  `try/catch`;
+- **lưu file** (module này) - save và load qua
+  `Files.writeString`/`readString`;
+- **kỷ luật test** (Module 13) - các test chấm điểm chính là chuẩn, và
+  bạn đã tự viết suốt khóa học.
+
+## Định dạng bạn đang xây
+
+Mỗi dòng một giao dịch, bốn trường, phân tách bằng `|`:
+
+```
+2026-01-15|coffee|CASH_OUT|4.50
+2026-01-16|salary|CASH_IN|2500.00
+```
+
+`CASH_IN` cộng vào số dư, `CASH_OUT` trừ. Đó là toàn bộ schema - độ phức
+tạp nằm ở chỗ *xử lý nó cho tốt*.
+
+## Capstone được chấm thế nào
+
+Bạn nhận yêu cầu, test, và gợi ý - không phải một bài hướng dẫn. Bốn khối
+test lần lượt fail cho đến khi hành vi tương ứng tồn tại: validation,
+round-trip lưu/nạp, truy vấn lọc/tổng hợp, và số học số dư có chặn phòng
+thủ. Hãy xây các phương thức `Ledger` lần lượt theo từng khối test; khi
+cả bốn pass, capstone hoàn thành và khóa học cũng vậy.
+
+## Bạn có thể đi tiếp đâu
+
+Java Intermediate sẽ đưa bạn đi xa hơn từ đây: generic do bạn viết (không
+chỉ đọc), hệ kế thừa đáng tiền, interface như hợp đồng, builder pattern,
+và bước đầu với concurrency. Sổ giao dịch này là nền mà các khóa sau giả
+định bạn có - hoàn thành nó, hiểu từng dòng, và bạn đã xứng đáng với danh
+hiệu khóa học này hứa: một người viết được Java.

@@ -1,0 +1,18 @@
+{
+  "title": "Tách cộng sự viên tính giá",
+  "prompt": "`static class GodCart` (cho sẵn trong comment starter — dựng lại bản\nđã sửa) tính tổng, áp giảm giá, và định dạng biên nhận trong một method.\nRefactor bằng tách:\n\n- `static class Pricing` với `static int total(List<Integer> centsList,\n  int discountPercent)` — tổng trừ phần trăm giảm giá (chia nguyên).\n- `static class GodCart` giờ nhận `Pricing` làm phụ thuộc constructor\n  (chấp nhận `Object` và gọi method tĩnh, hoặc không nhận gì; giữ đơn\n  giản: cart ủy quyền cho `Pricing.total`) và lộ\n  `String receipt(List<Integer> centsList, int discountPercent)` trả\n  `\"TOTAL: $\" + viewTotal(total)` dùng `viewTotal` của Module-12 từ thử\n  thách trước — định nghĩa lại nó ở đây.\n\nTest seam: `receipt(List.of(1000, 500), 10)` → total 1350 →\n`\"TOTAL: $13.50\"`.",
+  "tests": [
+    {
+      "name": "Pricing tính tổng đã giảm",
+      "hint": "Tổng 1500, trừ 10% = 1350 (chia nguyên)."
+    },
+    {
+      "name": "Cart ủy quyền qua seam",
+      "hint": "Cart phải đi phép tính qua Pricing và định dạng qua viewTotal."
+    },
+    {
+      "name": "Cart rỗng",
+      "hint": "Không món → $0.00."
+    }
+  ]
+}

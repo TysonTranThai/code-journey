@@ -1,0 +1,31 @@
+## What is ordered, what is not
+
+Within an expression, C defines *sequencing points* (C11+: *sequenced before* relations):
+
+- `&&`, `||`, `,` (comma operator), `?:` — left side fully evaluated (all side effects done) before right.
+- End of a full expression; initializer boundaries.
+
+Everything else — operands of `+`, function **arguments**, subscripts — is **unsequenced relative to each other**.
+
+```c
+int i = 0;
+int a[2] = {0, 0};
+int k = i++ + i++;      /* UB: i modified twice without sequencing */
+int j = f() + g();      /* fine, but f/g call order is UNSPECIFIED */
+a[i] = i++;             /* UB: unsequenced read and write of i */
+```
+
+## The rule that survives code review
+
+If an expression both (1) modifies an object and (2) reads or modifies that same object anywhere else, and those two actions are unsequenced — the program is UB. Not "platform-dependent": undefined.
+
+Splitting into statements is the portable cure:
+
+```c
+int t = i++;
+a[i] = t;               /* now sequenced: the read of i happens before the store */
+```
+
+## Unspecified is not a license either
+
+`f() + g()` is well-defined C, but you cannot know which side runs first. Side effects in unsequenced argument lists (`printf("%d %d", i++, i)`) are not UB — but their output is unpredictable, and relying on it produces real damage.

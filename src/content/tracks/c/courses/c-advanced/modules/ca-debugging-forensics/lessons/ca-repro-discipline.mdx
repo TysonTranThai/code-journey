@@ -1,0 +1,19 @@
+## The repro is the unit of work
+
+A bug report says 'it crashes sometimes'. A repro says 'this 12-line program, compiled with these flags, prints X but must print Y'. The second one is half-solved. Professional practice: strip a failing case until removing one more line makes it pass. The shrunk repro usually *reveals* the cause — the act of minimizing is diagnosis.
+
+In graded sandboxes without debuggers, repro discipline doubles as your test harness: every diagnosed defect becomes a permanent regression test. This course's two-sided challenges (reference passes, mutants fail) are exactly that artifact.
+
+## assert() is a contract, not error handling
+
+```c
+/* contract: caller promised non-NULL and sorted */
+assert(buf != NULL);
+assert(is_sorted(buf, n));
+
+/* runtime condition: user input CAN be bad - handle it */
+if (n == 0) return -1;             /* error path, not assert */
+if (read(fd, buf, cap) < 0) ...    /* errno path, not assert */
+```
+
+Assert conditions must be *impossible by contract*. If a condition can legitimately happen (bad user input, file missing, allocation failure), it is error handling, and putting it in an assert makes your release build lie. Getting this distinction right is the difference between an assertion lattice and a minefield.

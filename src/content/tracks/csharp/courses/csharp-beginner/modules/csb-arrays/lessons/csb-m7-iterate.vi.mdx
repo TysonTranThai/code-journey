@@ -1,0 +1,35 @@
+## foreach: thăm mọi phần tử
+
+```csharp
+foreach (int p in primes)
+    Console.WriteLine(p);
+```
+
+`foreach` đi qua từng phần tử theo thứ tự, không chỉ số, không rủi ro biên. Nó không thể thay đổi cấu trúc mảng, và bạn không có vị trí. Khi cần vị trí — dùng `for`:
+
+```csharp
+for (int i = 0; i < primes.Length; i++)
+    Console.WriteLine($"{i}: {primes[i]}");
+```
+
+Chú ý `i < Length`, không phải `<=`. Dạng vòng lặp này xuất hiện trong mọi thử thách bạn sẽ làm.
+
+## Tích lũy: bốn mẫu
+
+Hầu hết mọi bài tập mảng là một trong các vòng lặp này cải trang:
+
+```csharp
+int sum = 0;                    // 1. gộp: một giá trị chạy dần
+foreach (int p in primes) sum += p;
+
+int max = primes[0];            // 2. tốt-nhất-tính-đến-nay
+foreach (int p in primes) if (p > max) max = p;
+
+int count = 0;                  // 3. bộ đếm với vị từ
+foreach (int p in primes) if (p % 2 == 0) count++;
+
+int[] copy = new int[primes.Length];   // 4. biến đổi
+for (int i = 0; i < primes.Length; i++) copy[i] = primes[i] * 2;
+```
+
+Vòng best-so-far giả định mảng khác rỗng — với input rỗng `primes[0]` ném exception. Bảo vệ bằng `Length == 0` (hoặc khởi đầu từ `int.MinValue` khi giá trị cờ giả là trung thực). Bốn dạng này cộng một guard clause phủ min/max/trung bình/đếm/lọc/ánh xạ — toàn bộ bộ bài tập Module 7 là chúng, và LINQ (Module 17) sau này sẽ đặt tên cho chúng.

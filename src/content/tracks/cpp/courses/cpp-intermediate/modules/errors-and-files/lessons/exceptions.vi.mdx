@@ -1,0 +1,37 @@
+Xử lý lỗi trong C++ có hai kênh: giá trị trả về cho kết quả *đúng như kỳ
+vọng*, và ngoại lệ cho *các tình huống caller không thể làm ngơ*.
+
+```cpp
+#include <stdexcept>
+
+int parse_port(const std::string& s) {
+    int value = std::stoi(s);          // ném std::invalid_argument
+    if (value < 0 || value > 65535)
+        throw std::out_of_range("port out of range: " + s);
+    return value;
+}
+```
+
+Họ ngoại lệ bạn sẽ thực sự dùng, tất cả trong `<stdexcept>`:
+
+- `std::invalid_argument` — input không phân tích được
+- `std::out_of_range` — phân tích được nhưng ngoài miền hợp lệ
+- `std::runtime_error` — lỗi chỉ thấy lúc chạy (I/O, mạng)
+- `std::logic_error` — *chương trình* tự phá hợp đồng của chính nó
+
+Ném bằng giá trị, bắt bằng `const&`:
+
+```cpp
+try {
+    int port = parse_port(user_input);
+    use(port);
+} catch (const std::out_of_range& e) {
+    std::cerr << "bad port: " << e.what() << "\n";
+} catch (const std::exception& e) {
+    std::cerr << "error: " << e.what() << "\n";   // dự phòng lớp cha
+}
+```
+
+Thứ tự catch rất quan trọng: các handler được thử từ trên xuống, nên đặt
+kiểu dẫn xuất trước lớp cha. `catch (...)` trần nuốt mọi thứ — hãy dành nó
+cho biên giới thread và rào chắn cuối cùng.

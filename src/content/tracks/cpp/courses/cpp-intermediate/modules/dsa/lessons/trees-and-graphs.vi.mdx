@@ -1,0 +1,48 @@
+Cây tìm kiếm nhị phân giữ *thứ tự sống sau mỗi lần chèn*: cây con trái <
+node < cây con phải. Tra cứu, chèn và xoá là O(h) với h là chiều cao cây —
+O(log n) khi cây cân bằng, O(n) khi nó thoái hóa thành danh sách.
+
+```cpp
+struct TreeNode {
+    int value;
+    TreeNode* left = nullptr;
+    TreeNode* right = nullptr;
+};
+
+bool contains(const TreeNode* n, int v) {
+    if (!n) return false;
+    if (v == n->value) return true;
+    return v < n->value ? contains(n->left, v)
+                        : contains(n->right, v);
+}
+
+TreeNode* insert(TreeNode* n, int v) {
+    if (!n) return new TreeNode{v};
+    if (v < n->value) n->left = insert(n->left, v);
+    else if (v > n->value) n->right = insert(n->right, v);
+    return n;   // phần tử trùng bị bỏ qua
+}
+```
+
+Duyệt in-order (trái, node, phải) đi qua BST theo thứ tự tăng dần — tính
+chất khiến nó là một container *có sắp*.
+
+Đồ thị tổng quát hơn: node + cạnh, không hứa hẹn thứ tự. Tìm kiếm theo
+chiều rộng (BFS, hàng đợi) khám phá theo khoảng cách; tìm kiếm theo chiều
+sâu (DFS, stack hoặc đệ quy) khám phá theo độ sâu. Dáng vẻ trong code:
+
+```cpp
+// Khung BFS trên danh sách kề
+std::queue<int> q;
+q.push(start);
+visited[start] = true;
+while (!q.empty()) {
+    int cur = q.front(); q.pop();
+    for (int next : adj[cur]) {
+        if (!visited[next]) { visited[next] = true; q.push(next); }
+    }
+}
+```
+
+`std::map` là một BST cân bằng trá hình — sau bài học này bạn biết nó đang
+làm gì bên dưới interface.

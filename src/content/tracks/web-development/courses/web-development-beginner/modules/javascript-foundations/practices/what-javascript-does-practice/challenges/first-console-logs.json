@@ -1,0 +1,25 @@
+{
+  "id": "first-console-logs",
+  "title": "Say Hello in the Console",
+  "prompt": "Write your first program:\n\n1. Log the exact text `Hello, web!` (with the comma and exclamation mark).\n2. Log a second line — any sentence you like — using another console.log.\n3. Add a comment above your first log explaining what it does.",
+  "difficulty": "beginner",
+  "boilerplate": "// 1) log \"Hello, web!\" exactly\n\n// 2) log a second sentence\n",
+  "tests": [
+    {
+      "name": "logs the exact greeting",
+      "code": "const logs = [];\nconst fakeConsole = { log: (...a) => logs.push(a.map(String).join(\" \")) };\ntry {\n  new Function(\"console\", code)(fakeConsole);\n} catch (err) {\n  throw new Error(\"Your code threw: \" + err.message);\n}\nif (!logs.some((l) => l === \"Hello, web!\")) {\n  throw new Error('Expected a log of exactly \"Hello, web!\" — check spelling, comma, and exclamation mark.');\n}",
+      "hint": "console.log(\"Hello, web!\");"
+    },
+    {
+      "name": "logs a second line",
+      "code": "const logs = [];\nconst fakeConsole = { log: (...a) => logs.push(a.map(String).join(\" \")) };\nnew Function(\"console\", code)(fakeConsole);\nif (logs.length < 2) {\n  throw new Error(\"Expected at least two console.log calls — got \" + logs.length + \".\");\n}",
+      "hint": "Add a second console.log with any sentence in quotes."
+    },
+    {
+      "name": "includes a comment",
+      "code": "if (!code.includes(\"//\")) {\n  throw new Error(\"Add a comment starting with // somewhere in your code.\");\n}",
+      "hint": "A comment looks like: // this logs a greeting"
+    }
+  ],
+  "level": "guided"
+}

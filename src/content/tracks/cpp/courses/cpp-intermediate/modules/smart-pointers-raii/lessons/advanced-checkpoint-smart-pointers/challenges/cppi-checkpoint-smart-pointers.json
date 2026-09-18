@@ -1,0 +1,25 @@
+{
+  "id": "cppi-checkpoint-smart-pointers",
+  "title": "Checkpoint: Inventory of owned items",
+  "prompt": "Complete `Inventory` managing `std::vector<std::unique_ptr<Item>>`: `void add(std::unique_ptr<Item>)` stores it; `std::unique_ptr<Item> take(const std::string& name)` finds the item, moves it out of the vector (ownership leaves the inventory), erases the now-empty slot, and returns it — or returns `nullptr` when absent. `Item` (name-based) is partially given.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <memory>\n#include <string>\n#include <vector>\n#include <iostream>\n\nclass Item {\npublic:\n    explicit Item(std::string name) : name_{std::move(name)} {}\n    const std::string& name() const { return name_; }\nprivate:\n    std::string name_;\n};\n\n// Complete class Inventory { add, take, size, contains }\n",
+  "tests": [
+    {
+      "name": "take-moves-out",
+      "code": "Inventory inv;\ninv.add(std::make_unique<Item>(\"sword\"));\nCHECK_EQ(inv.size(), 1);\nauto stolen = inv.take(\"sword\");\nCHECK(stolen != nullptr);\nCHECK_EQ(stolen->name(), std::string(\"sword\"));\nCHECK_EQ(inv.size(), 0);",
+      "hint": "take() must std::move the unique_ptr out before erasing the slot."
+    },
+    {
+      "name": "absent",
+      "code": "Inventory inv;\nCHECK(inv.take(\"ghost\") == nullptr);",
+      "hint": "Missing name returns an empty unique_ptr."
+    },
+    {
+      "name": "still-contains",
+      "code": "Inventory inv;\ninv.add(std::make_unique<Item>(\"shield\"));\ninv.take(\"shield\");\nCHECK_EQ(inv.contains(\"shield\"), false);",
+      "hint": "After take, contains() must report false."
+    }
+  ]
+}

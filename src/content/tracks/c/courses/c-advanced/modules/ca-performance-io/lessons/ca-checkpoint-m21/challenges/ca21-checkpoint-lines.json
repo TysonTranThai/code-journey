@@ -1,0 +1,26 @@
+{
+  "id": "ca21-checkpoint-lines",
+  "title": "Checkpoint: mmap Line Counter",
+  "prompt": "POSIX. Implement `long count_lines_mmap(const char *path)` \u2014 open, fstat, mmap PROT_READ MAP_PRIVATE, count newline bytes, munmap, close; return the count. Empty file returns 0. Any failure (open/fstat/mmap) returns -1. A trailing newline produces no extra phantom line beyond the newlines actually counted.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define _POSIX_C_SOURCE 200809L\n#include <unistd.h>\n#include <fcntl.h>\n#include <sys/mman.h>\n#include <sys/stat.h>\n#include <sys/uio.h>\n#include <time.h>\n#include <errno.h>\nstatic const char *GIVEN_LINES_PATH = \"/tmp/cj_ca21_lines.txt\";\nstatic long make_lines_file(long n) {\n    int fd = open(GIVEN_LINES_PATH, O_RDWR | O_CREAT | O_TRUNC, 0600);\n    if (fd < 0) return -1;\n    for (long i = 0; i < n; i++) {\n        if (write(fd, \"line.\\n\", 6) != 6) { close(fd); return -1; }\n    }\n    close(fd);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "counts newlines",
+      "code": "CHECK_EQ(make_lines_file(7), 0);\nCHECK_EQ(count_lines_mmap(GIVEN_LINES_PATH), 7);",
+      "hint": "Seven newline-terminated records: seven newlines counted through the mapping."
+    },
+    {
+      "name": "empty file is zero",
+      "code": "int fd = open(GIVEN_LINES_PATH, O_RDWR | O_CREAT | O_TRUNC, 0600);\nCHECK(fd >= 0);\nclose(fd);\nCHECK_EQ(count_lines_mmap(GIVEN_LINES_PATH), 0);",
+      "hint": "Zero bytes map to nothing to count: 0, not an error."
+    },
+    {
+      "name": "missing file fails",
+      "code": "CHECK_EQ(count_lines_mmap(\"/tmp/cj_definitely_missing.bin\"), -1);",
+      "hint": "A path that cannot be opened returns -1 \u2014 failures must be visible."
+    }
+  ],
+  "level": "mini-build"
+}

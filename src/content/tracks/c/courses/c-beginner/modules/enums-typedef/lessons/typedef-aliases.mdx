@@ -1,0 +1,38 @@
+## The basic form
+
+```c
+typedef unsigned long ulong;    // 'ulong' now names unsigned long
+typedef int Score;              // Score is int, with intent
+```
+
+`typedef` does not create a new type — it creates a new NAME for an existing
+type. `Score` and `int` are interchangeable.
+
+## The classic: typedef struct
+
+```c
+typedef struct {
+    int x;
+    int y;
+} Point;                 // now 'Point', not 'struct Point'
+
+Point p = {1, 2};        // no struct keyword needed
+```
+
+Or naming a tagged struct so it can self-reference:
+
+```c
+typedef struct Node Node;
+struct Node {
+    int value;
+    Node *next;          // self-reference needs the tag
+};
+```
+
+You will build this Node in module 20.
+
+## When to alias
+
+- burying `unsigned long long` behind `u64`
+- `typedef struct {...} Config;` — the dominant C idiom
+- naming semantic roles: `typedef int UserId;`

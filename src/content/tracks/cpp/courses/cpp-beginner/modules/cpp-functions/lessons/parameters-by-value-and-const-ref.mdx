@@ -1,0 +1,48 @@
+## Pass by value: a photocopy
+
+```cpp
+void double_it(int x) {   // x is a COPY
+    x = x * 2;            // changes the copy, not the caller's variable
+}
+
+int n = 5;
+double_it(n);
+std::cout << n;           // still 5
+```
+
+By value, the function works on a photocopy. Safe, simple, and free for small things: `int`, `double`, `bool`, `char`.
+
+## Pass by reference: the real thing
+
+A **reference** (`&`) is an alias — another name for the caller's actual variable:
+
+```cpp
+void double_it(int& x) {  // x IS the caller's variable
+    x = x * 2;
+}
+
+int n = 5;
+double_it(n);
+std::cout << n;           // 10
+```
+
+This is how a function hands results *back* through its parameters (an "out-parameter"). It is also how you accidentally modify things — so by default, don't.
+
+## The workhorse: const reference
+
+Reading a big object (a `std::string`, a `std::vector`) by value copies the whole thing — wasteful. Reading it by non-const reference grants write access you do not want. The answer is `const&`:
+
+```cpp
+int count_vowels(const std::string& text) {   // no copy, no writes
+    int count = 0;
+    for (char c : text) {
+        char lower = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+        if (lower=='a'||lower=='e'||lower=='i'||lower=='o'||lower=='u') ++count;
+    }
+    return count;
+}
+```
+
+**The course rule:** small values by value; everything else by `const&`; plain `&` only when the function is *supposed* to modify the caller's object. You will see `const std::string&` in nearly every function signature from now on — it is the professional default.
+
+(References are deep-dived again in module 11, where they meet pointers. Here, treat `&` as "the real variable" and `const&` as "the real variable, read-only".)

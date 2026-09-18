@@ -1,0 +1,38 @@
+Bốn phương thức tĩnh kết hợp danh sách promise. Chọn đúng cái là một quyết định
+thiết kế, không phải câu hỏi luyện trí nhớ.
+
+| Combinator           | Resolve khi nào                      | Reject khi nào     | Dùng cho                   |
+| -------------------- | ------------------------------------ | ------------------ | -------------------------- |
+| `Promise.all`        | **tất cả** fulfill                   | rejection đầu tiên | mọi thứ đều bắt buộc       |
+| `Promise.allSettled` | tất cả settle (cách nào cũng được)   | không bao giờ      | thất bại một phần vẫn ổn   |
+| `Promise.race`       | settle đầu tiên (cách nào cũng được) | —                  | timeout, phản hồi đầu tiên |
+| `Promise.any`        | **fulfillment** đầu tiên             | tất cả reject      | nguồn hoạt động nhanh nhất |
+
+## all và allSettled — bài toán thất bại một phần
+
+Dashboard tải user + orders + thông báo: với `Promise.all`, một endpoint hỏng
+đổ cả trang. Với `Promise.allSettled`, mọi request đều kết thúc và bạn quyết
+định theo từng mục:
+
+```js
+const results = await Promise.allSettled([getUser(), getOrders(), getNotifs()]);
+for (const r of results) {
+  if (r.status === "fulfilled") render(r.value);
+  else renderError(r.reason);
+}
+```
+
+Kết quả của `allSettled` là `{ status: "fulfilled", value }` hoặc
+`{ status: "rejected", reason }` — luôn luôn kiểm tra `status`.
+
+## race cho timeout
+
+```js
+const work = doLongThing();
+const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 3000));
+await Promise.race([work, timeout]);
+```
+
+Lưu ý `race` không hủy bên thua — fetch dài vẫn chạy tiếp (việc hủy nằm ở bài
+hai bài nữa). `Promise.any` hiếm gặp nhất: nhiều nguồn mirror, lấy cái trả lời
+thành công đầu tiên.

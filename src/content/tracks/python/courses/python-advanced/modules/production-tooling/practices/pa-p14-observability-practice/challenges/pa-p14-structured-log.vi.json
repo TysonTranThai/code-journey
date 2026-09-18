@@ -1,0 +1,10 @@
+{
+  "title": "Log mà máy truy vấn được, luật sư đọc được",
+  "prompt": "Cài `StructuredLogger(correlation_id)`:\n\n- `log(level, event, **fields)` thêm một dòng JSON (khóa đã sắp) chứa `level`, `event`, `correlation_id`, và các field\n- field có tên trong `SENSITIVE = {'password', 'token', 'secret', 'card_number'}` được phát thành `'[REDACTED]'` — che giấu xảy ra lúc phát\n- hai method tiện lợi `info(event, **fields)` và `error(event, **fields)` ánh xạ tới mức 'INFO' và 'ERROR'\n- phơi các dòng qua list `lines`\n\nBài test che giấu mới là điểm chính: một sự kiện đăng nhập mang mật khẩu không bao giờ được phát mật khẩu ra.",
+  "tests": [
+    {
+      "name": "Có cấu trúc, có correlation, và đã che giấu",
+      "hint": "Redaction theo tên field, áp dụng lúc phát, không bao giờ lưu thô."
+    }
+  ]
+}

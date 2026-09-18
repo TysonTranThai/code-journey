@@ -8,7 +8,12 @@ import { buildDockerArgs } from "@/workers/sandbox";
  * to the `-H` daemon flag (dedicated sandbox host, never the web-tier socket).
  */
 describe("buildDockerArgs (07-10 sandbox host scoping)", () => {
-  const base = { memoryMb: 256, image: "codejourney-sandbox:latest", dockerHost: null };
+  const base = {
+    memoryMb: 256,
+    image: "codejourney-sandbox:latest",
+    dockerHost: null,
+    name: "cj-sandbox-test",
+  };
 
   it("local mode: no -H flag, full hardening set preserved", () => {
     const args = buildDockerArgs(base);

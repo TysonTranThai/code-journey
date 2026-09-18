@@ -1,0 +1,50 @@
+## Tự động (mặc định)
+
+Biến cục bộ có bộ nhớ mới **theo từng lời gọi** và chết khi khối kết thúc:
+
+```c
+int counter(void) {
+    int n = 0;      // mới mỗi lần gọi
+    n++;
+    return n;       // luôn trả về 1
+}
+```
+
+## Static: sinh một lần, sống mãi
+
+`static` trên biến cục bộ làm nó khởi tạo **một lần** và giữ giá trị qua các
+lời gọi:
+
+```c
+int counter(void) {
+    static int n = 0;   // khởi tạo một lần
+    n++;
+    return n;           // 1, 2, 3, ...
+}
+```
+
+Vẫn là phạm vi cục bộ (không nhìn thấy ngoài hàm), khác ở thời gian sống.
+`static` trên **hàm/biến phạm-vĩ-tệp** thì nghĩa là "riêng của tệp này" —
+module 18 dùng nó cho hàm nội bộ.
+
+## Biến phạm vi tệp (toàn cục)
+
+Khai báo ngoài mọi hàm; nhìn thấy từ chỗ khai báo đến hết tệp, sống suốt
+chương trình:
+
+```c
+int g_attempts = 0;     // mọi hàm bên dưới đều thấy
+
+void attempt(void) { g_attempts++; }
+```
+
+Biến toàn cục giúp đọc trạng thái — nhưng trạng thái toàn cục có thể sửa sẽ
+trói buộc các hàm vào nhau theo cách phá vỡ việc kiểm thử và tái sử dụng. Quy
+tắc của khóa: **truyền những gì hàm cần qua tham số**; chỉ dùng biến toàn cục
+cho hằng số mang tính toàn chương trình.
+
+## extern (mức nhận diện)
+
+`extern int g;` nói "g tồn tại, định nghĩa ở nơi khác" — linker nối các chỗ
+dùng về một định nghĩa duy nhất. Bạn sẽ cần nó ở module 18; bây giờ chỉ cần
+đọc hiểu.

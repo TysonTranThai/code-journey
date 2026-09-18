@@ -1,0 +1,20 @@
+{
+  "id": "csb-checkpoint-m19-task",
+  "title": "RepoAuditor",
+  "prompt": "Implement `IsLinear`, `DescribeChange`, and `StaleBranches` — small pure functions over repo data.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "history",
+      "code": "Cj.True(Solution.IsLinear(new List<string> { \"a\", \"b\", \"c\" }), \"linear\");\nCj.False(Solution.IsLinear(new List<string> { \"a\", \"b\", \"a\" }), \"re-entry breaks linearity\");\nCj.True(Solution.IsLinear(new List<string>()), \"empty is linear\");\nCj.Eq(Solution.DescribeChange(\"\", \"file.cs\"), \"added\", \"new file\");\nCj.Eq(Solution.DescribeChange(\"file.cs\", \"\"), \"removed\", \"deleted\");\nCj.Eq(Solution.DescribeChange(\"file.cs\", \"file.cs\"), \"modified\", \"edited\");",
+      "hint": "Linearity, empty-list contract, and the change taxonomy."
+    },
+    {
+      "name": "branches",
+      "code": "var tips = new Dictionary<string, string>\n{\n    [\"feature/fresh\"] = \"e5\",\n    [\"feature/merged\"] = \"c3\",\n    [\"feature/stale\"] = \"b2\",\n};\nvar stale = Solution.StaleBranches(tips, \"e5\", new List<string> { \"feature/merged\" });\nCj.Eq(string.Join(\",\", stale), \"feature/stale\", \"merged branch is not stale\");",
+      "hint": "Merged branches are excused; everything else at an old tip is stale."
+    }
+  ]
+}

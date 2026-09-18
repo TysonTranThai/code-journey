@@ -1,0 +1,25 @@
+{
+  "id": "practice-loop-string-builder",
+  "title": "Build a String Across Iterations",
+  "prompt": "Write `function stars(rows)` that returns a string with one line per row, each line containing row-count `*` characters followed by `\\n`. `stars(3)` returns `\"**\\n***\\n***\\n\"`… wait — check the example: `stars(3)` is line 1: `*`, line 2: `**`, line 3: `***`, each ending with `\\n`.\n\nRules:\n- Accumulate into one string and return it.\n- Line k has k stars.",
+  "difficulty": "beginner",
+  "level": "independent",
+  "boilerplate": "function stars(rows) {\n  // accumulate lines\n}\nconsole.log(JSON.stringify(stars(3)));\n",
+  "tests": [
+    {
+      "name": "three rows produce a growing triangle",
+      "code": "const fn = new Function(code + \"\\nreturn stars;\");\nconst out = fn()(3);\nif (out !== \"*\\n**\\n***\\n\") throw new Error(\"stars(3) should be '*\\n**\\n***\\n' — line k has k stars, each line ends with \\n.\");",
+      "hint": "Line 1: one star. Line 2: two. Line 3: three. Every line ends with a newline."
+    },
+    {
+      "name": "handles other sizes",
+      "code": "const fn = new Function(code + \"\\nreturn stars;\");\nif (fn()(1) !== \"*\\n\") throw new Error(\"stars(1) is '*\\n'.\");\nif (fn()(0) !== \"\") throw new Error(\"stars(0) is an empty string.\");",
+      "hint": "Zero rows → empty string. Your loop just never runs."
+    },
+    {
+      "name": "returns, not logs",
+      "code": "const body = code.match(/function\\s+stars[\\s\\S]*\\n\\}/)[0];\nif (!/return/.test(body)) throw new Error(\"stars must return the string, not just log it.\");",
+      "hint": "Build the string in a variable and return it at the end."
+    }
+  ]
+}

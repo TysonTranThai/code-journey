@@ -1,0 +1,21 @@
+{
+  "id": "pa-ty-typed-order",
+  "title": "TypedDict + TypeGuard order validation",
+  "prompt": "Build the typed order model:\n\n1. `Status = Literal['pending', 'paid', 'shipped']`\n2. `class Order(TypedDict, total=False)` with fields `id: int`, `status: Status`, `items: List[str]`, `note: Optional[str]`\n3. `is_valid_order(data) -> TypeGuard[Order]` returning True only when: data is a dict; `id` is a true int (bool rejected); `status` is one of the three literals; `items` is a list of str\n4. `status_of(order) -> Status` returning the status field\n\nBe strict about bool: in Python `isinstance(True, int)` is True, so a bare isinstance check accepts booleans — reject them.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "from typing import TypedDict, Literal, TypeGuard, List, Optional\n\n# TODO: Status, Order, is_valid_order, status_of",
+  "tests": [
+    {
+      "name": "valid orders pass, garbage fails",
+      "code": "good = {'id': 7, 'status': 'paid', 'items': ['a', 'b']}\nassert is_valid_order(good)\nassert status_of(good) == 'paid'\nfor bad in (\n    {'id': True, 'status': 'paid', 'items': []},\n    {'id': 1, 'status': 'returned', 'items': []},\n    {'id': 1, 'status': 'paid', 'items': 'ab'},\n    {'id': 1, 'status': 'paid'},\n    'nope',\n    42,\n):\n    assert not is_valid_order(bad), f'must reject: {bad!r}'\nprint('ok')",
+      "hint": "Check dict-ness, true-int id (reject bool), literal status membership, and list-of-str items."
+    },
+    {
+      "name": "bool rejection is explicit",
+      "code": "assert is_valid_order({'id': 0, 'status': 'pending', 'items': []})\nassert not is_valid_order({'id': False, 'status': 'pending', 'items': []})\nprint('ok')",
+      "hint": "id 0 is valid; False is not — the bool check must be explicit."
+    }
+  ],
+  "level": "real-world"
+}

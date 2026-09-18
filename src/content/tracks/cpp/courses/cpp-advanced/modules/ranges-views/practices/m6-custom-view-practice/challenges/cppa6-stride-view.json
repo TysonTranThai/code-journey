@@ -1,0 +1,26 @@
+{
+  "id": "cppa6-stride-view",
+  "title": "A Hand-Written Stride View",
+  "prompt": "Implement `strideView(vec, k)` returning a type with begin()/end() that walks every k-th element (k >= 1). Iterate the returned view in the usual range-for.",
+  "difficulty": "advanced",
+  "level": "mini-build",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <vector>\n\n// Return a view-like object over every k-th element of data.\n// Must support: for (const auto& x : strideView(data, k)) ...\n// (Implement your own iterator; std::views::stride is C++23 — do not use it.)\nauto strideView(const std::vector<int>& data, std::size_t k);\n",
+  "tests": [
+    {
+      "name": "stride walks every k-th element",
+      "code": "std::vector<int> data{0, 1, 2, 3, 4, 5, 6};\nstd::string got;\nfor (int x : strideView(data, 3)) got += std::to_string(x) + \",\";\nCHECK_EQ(got, std::string(\"0,3,6,\"));",
+      "hint": "Iterator holds pointer-to-vector, index, and k; operator* returns (*v)[i]; operator+= (k) advances; end is index >= size."
+    },
+    {
+      "name": "k of 1 is the identity",
+      "code": "std::vector<int> small{7, 8};\nstd::string all;\nfor (int x : strideView(small, 1)) all += std::to_string(x);\nCHECK_EQ(all, std::string(\"78\"));",
+      "hint": "Stride 1 visits everything — the degenerate case must work."
+    },
+    {
+      "name": "empty and short inputs",
+      "code": "std::vector<int> none;\nint seen = 0;\nfor (int x : strideView(none, 2)) { ++seen; }\nCHECK_EQ(seen, 0);",
+      "hint": "begin == end immediately when data is empty — no dereference may happen."
+    }
+  ]
+}

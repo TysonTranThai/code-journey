@@ -1,0 +1,38 @@
+Vì chuỗi bất biến, việc xây một chuỗi từng mảnh bằng `+` trong vòng lặp tạo
+và vứt một object mỗi vòng lặp:
+
+```java
+String html = "";
+for (String row : rows) {
+    html = html + row + "\n";   // sao chép MỌI thứ đã có, mỗi vòng lặp
+}
+```
+
+Vài vòng lặp thì không sao — dễ đọc thắng. Hàng nghìn vòng thì các bản sao
+bình phương hoá chi phí. **StringBuilder** là thuốc: một buffer có thể đổi
+mà bạn append vào, và chuyển thành String đúng một lần ở cuối:
+
+```java
+StringBuilder html = new StringBuilder();
+for (String row : rows) {
+    html.append(row).append("\n");    // append trả về builder: ghép được chuỗi
+}
+String result = html.toString();      // một lần chuyển đổi cuối cùng
+```
+
+`StringBuilder` còn có `insert`, `replace`, `delete`, `reverse` — lời gọi
+`reverse()` chính là phép kiểm palindrome của Module 5 gói trong một dòng.
+
+Quy tắc quyết định đáng thuộc từ bây giờ: **`+` cho số mảnh cố định, nhỏ;
+`StringBuilder` bên trong vòng lặp.** Compiler hiện đại tự tối ưu chuỗi `+`
+ngắn gọn thành builder code — trường hợp vòng lặp mới là thứ nó không cứu
+được, vì builder phải sống sót *qua các* vòng lặp.
+
+Hai thành ngữ chuỗi bạn sẽ dùng liên tục:
+
+```java
+String.join(", ", "a", "b", "c");          // "a, b, c" — chiều ngược của split
+"key=%s value=%d".formatted(key, value);   // định dạng kiểu mẫu
+```
+
+**Tiếp theo:** thực hành — phân tích văn bản trên chuỗi thật.

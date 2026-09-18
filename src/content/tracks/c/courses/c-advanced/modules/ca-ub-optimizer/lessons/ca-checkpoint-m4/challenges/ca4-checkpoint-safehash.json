@@ -1,0 +1,26 @@
+{
+  "id": "ca4-checkpoint-safehash",
+  "title": "Checkpoint: Safe Accumulator + Honest Probe",
+  "prompt": "Implement three functions:\n \n1. `int safe_accum(int init, const int *deltas, size_t n, int *out)` — repeatedly add each delta using your overflow-guard pattern; on any overflow return 0 leaving *out untouched; on success store the total and return 1.\n2. `unsigned int hash_span(const unsigned char *bytes, size_t n)` — FNV-1a over the bytes (offset basis 2166136261u, prime 16777619u) — defined wraparound by design.\n3. `int probe_kept(int (*work)(void), int expected)` — volatile file-scope `static int probe = 0;` is in your editor; reset it, run work(), return 1 iff probe == expected. work() itself increments probe.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstatic volatile int probe = 0;\n#include <limits.h>\n",
+  "tests": [
+    {
+      "name": "accumulator guards",
+      "code": "int out = 99;\nint d1[2] = {5, 7};\nCHECK_EQ(safe_accum(0, d1, 2, &out), 1);\nCHECK_EQ(out, 12);\nint d2[2] = {INT_MAX, 5};\nCHECK_EQ(safe_accum(0, d2, 2, &out), 0);\nCHECK_EQ(out, 12);",
+      "hint": "Overflow mid-stream rejects and leaves *out at its last successful value."
+    },
+    {
+      "name": "hash wraps by design",
+      "code": "unsigned char msg[3] = {0x61, 0x62, 0x63};\nunsigned int h = hash_span(msg, 3);\nCHECK_EQ(hash_span(msg, 0), 2166136261u);\nCHECK_EQ(h != 2166136261u, 1);",
+      "hint": "Empty span is the offset basis; hashing bytes advances through defined modular arithmetic."
+    },
+    {
+      "name": "probe stays honest",
+      "code": "CHECK_EQ(probe_kept(bump_probe_once, 1), 1);\nCHECK_EQ(probe_kept(bump_probe_twice, 3), 0);",
+      "hint": "work runs after reset; the volatile counter reports exactly what ran."
+    }
+  ],
+  "level": "mini-build"
+}

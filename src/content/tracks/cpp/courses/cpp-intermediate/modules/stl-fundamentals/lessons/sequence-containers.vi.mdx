@@ -1,0 +1,34 @@
+STL cung cấp bốn container giữ giá trị theo *thứ tự của bạn*. Chọn container
+nào là quyết định về độ phức tạp, không phải guu stylistic.
+
+```cpp
+#include <vector>
+#include <array>
+#include <deque>
+#include <list>
+
+std::vector<int> v{1, 2, 3};   // liền kề; O(1) theo chỉ số; push_back O(1) khấu hao
+std::array<int, 3> a{1, 2, 3}; // kích thước cố định; không dùng heap; O(1)
+std::deque<int> d{1, 2, 3};    // theo khối; push_front VÀ push_back đều O(1)
+std::list<int> l{1, 2, 3};     // liên kết đôi; splice/erase O(1) tại bất kỳ đâu
+```
+
+## Mỗi container cho bạn gì
+
+| Container | Truy cập ngẫu nhiên | Chèn/xoá hai đầu | Chèn/xoá giữa |
+|-----------|---------------------|------------------|----------------|
+| `vector`  | O(1)                | cuối O(1) khấu hao | O(n) |
+| `array`   | O(1)                | — (cố định) | — (cố định) |
+| `deque`   | O(1)                | cả hai đầu O(1) | O(n) |
+| `list`    | — O(n)              | O(1) | O(1) tại iterator |
+
+## Quy tắc cắn người mới nhất: iterator invalidation
+
+- `vector`: **mọi** lần lớn lên có thể reallocate — iterator/pointer trỏ vào
+  nó đều chết. `push_back` sau khi giữ iterator là bug treo lơ lửng.
+- `deque`: chèn ở hai đầu vô hiệu hoá iterator nhưng **không** vô hiệu hoá
+  reference.
+- `list`: không gì vô hiệu hoá trừ khi xoá chính node bạn đang giữ.
+
+`vector` là lựa chọn mặc định. Dùng `deque` khi thật sự cần cả hai đầu;
+`list` chỉ khi bạn splice hoặc giữ iterator qua nhiều lần thay đổi.

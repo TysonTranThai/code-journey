@@ -1,4 +1,10 @@
+"use client";
+
 import type { PerTestResult, Verdict } from "@/lib/execution/types";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { useI18n } from "@/lib/i18n/provider";
+import { getErrorExplanation } from "@/lib/mentor/error-explainer";
+import { ErrorExplanationCard } from "./ErrorExplanationCard";
 
 /**
  * Verdict display (CHAL-05): every test shows pass/fail WITH its
@@ -6,28 +12,30 @@ import type { PerTestResult, Verdict } from "@/lib/execution/types";
  * for pending, timeout, and error.
  */
 
-const VERDICT_STYLES: Record<Verdict, { label: string; className: string }> = {
+const VERDICT_STYLES: Record<Verdict, { className: string }> = {
   passed: {
-    label: "All tests passed 🎉",
-    className: "border-emerald-700 bg-emerald-950/60 text-emerald-300",
+    className: "conductor-window border border-emerald-500/40 bg-[#091510] text-emerald-300 shadow-[0_0_30px_rgba(34,197,94,0.25)]",
   },
   failed: {
-    label: "Some tests failed",
-    className: "border-rose-800 bg-rose-950/60 text-rose-300",
+    className: "conductor-window border border-rose-500/40 bg-[#160a0f] text-rose-300 shadow-[0_0_30px_rgba(244,63,94,0.2)]",
   },
   timeout: {
-    label: "Your code took too long",
-    className: "border-amber-700 bg-amber-950/60 text-amber-300",
+    className: "conductor-window border border-amber-500/40 bg-[#161209] text-amber-300 shadow-[0_0_30px_rgba(245,158,11,0.2)]",
   },
   error: {
-    label: "Something went wrong running your code",
-    className: "border-zinc-700 bg-zinc-900 text-zinc-300",
+    className: "conductor-window border border-white/[0.1] bg-[#0c101b] text-zinc-300 shadow-xl",
   },
 };
 
 /** Shared with the mobile action bar so its live region can announce the verdict. */
-export function verdictLabel(verdict: Verdict): string {
-  return VERDICT_STYLES[verdict].label;
+export function verdictLabel(verdict: Verdict, d: Dictionary): string {
+  const labels: Record<Verdict, string> = {
+    passed: d.verdict.passed,
+    failed: d.verdict.failed,
+    timeout: d.verdict.timeout,
+    error: d.verdict.error,
+  };
+  return labels[verdict];
 }
 
 export type RunState =
@@ -41,58 +49,110 @@ export type RunState =
       output: string;
     };
 
-export function VerdictPanel({ state }: { state: RunState }) {
+export function VerdictPanel({
+  state,
+  testNames,
+}: {
+  state: RunState;
+  /**
+   * Authoritative, locale-correct test names from the challenge data
+   * (same order as the tests the worker ran). Preferred over the
+   * worker's sanitized marker id for display — the id is an execution
+   * detail; the learner should read the authored name (e.g. Vietnamese).
+   */
+  testNames?: string[];
+}) {
+  const { d } = useI18n();
+
   if (state.phase === "idle") {
-    return <p className="text-sm text-zinc-400">Run your code to see test results here.</p>;
+    const [before, after] = d.verdict.idle.split("{submit}");
+    return (
+      <p className="text-sm text-zinc-400">
+        {before}
+        <span className="font-semibold text-zinc-300">{d.workspace.submit}</span>
+        {after}
+      </p>
+    );
   }
 
   if (state.phase === "running") {
     return (
       <p className="flex items-center gap-2 text-sm text-zinc-400" role="status" aria-live="polite">
         <span
-          className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-zinc-600 border-t-transparent motion-reduce:animate-none"
+          className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-emerald-400 border-t-transparent motion-reduce:animate-none"
           aria-hidden="true"
         />
-        Running your code in the sandbox…
+        {d.verdict.running}
       </p>
     );
   }
 
   const style = VERDICT_STYLES[state.verdict];
+  const labels: Record<Verdict, string> = {
+    passed: d.verdict.passed,
+    failed: d.verdict.failed,
+    timeout: d.verdict.timeout,
+    error: d.verdict.error,
+  };
 
   return (
     <div
-      className={`flex flex-col gap-3 rounded-lg border px-4 py-3 ${style.className}`}
+      className={`flex flex-col gap-3 rounded-2xl p-5 ${style.className}`}
       role="status"
       aria-live="polite"
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="font-medium">{style.label}</span>
-        {state.runtimeMs !== null && (
-          <span className="text-xs opacity-75">{state.runtimeMs} ms</span>
-        )}
+        <div className="flex items-center gap-2.5">
+          <span className="text-base" aria-hidden="true">
+            {state.verdict === "passed" ? "✓" : state.verdict === "failed" ? "✕" : "⚠️"}
+          </span>
+          <span className="font-semibold text-sm">{labels[state.verdict]}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {state.verdict === "passed" && (
+            <span className="badge-pixel badge-pixel-xp text-[10px]">{d.verdict.xpEarned}</span>
+          )}
+          {state.runtimeMs !== null && (
+            <span className="font-mono text-xs opacity-75">{state.runtimeMs} ms</span>
+          )}
+        </div>
       </div>
 
-      {state.verdict === "timeout" && (
-        <p className="text-sm">
-          Check for infinite loops or operations that never complete, then run again.
-        </p>
-      )}
+      {state.verdict === "timeout" && <p className="text-sm">{d.verdict.timeoutHint}</p>}
 
       {state.verdict === "error" && (
-        <pre className="max-h-40 overflow-auto whitespace-pre-wrap text-xs text-zinc-400">
-          {state.output}
-        </pre>
+        <div className="flex flex-col gap-2.5">
+          <pre className="max-h-40 overflow-auto whitespace-pre-wrap rounded-xl border border-rose-500/30 bg-[#160a0f] p-3.5 font-mono text-xs text-rose-300">
+            {state.output}
+          </pre>
+          {(() => {
+            const explanation = getErrorExplanation(state.output, d);
+            return explanation ? <ErrorExplanationCard explanation={explanation} /> : null;
+          })()}
+        </div>
+      )}
+
+      {/* Sandbox console output (console.log etc.) — show whenever there is
+          any, not only on errors, so JS challenges give visible feedback. */}
+      {state.verdict !== "error" && state.output.trim().length > 0 && (
+        <section aria-label={d.verdict.sandboxOutput} className="flex flex-col gap-1">
+          <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
+            {d.verdict.consoleOutput}
+          </h3>
+          <pre className="max-h-48 overflow-auto whitespace-pre-wrap rounded-md border border-zinc-800 bg-zinc-950/70 px-3 py-2 text-xs text-zinc-300">
+            {state.output}
+          </pre>
+        </section>
       )}
 
       {state.perTestResults.length > 0 && (
         <ul className="flex flex-col gap-2">
-          {state.perTestResults.map((result) => (
+          {state.perTestResults.map((result, index) => (
             <li key={result.name} className="flex flex-col gap-1">
               <span className="flex items-center gap-2 text-sm">
                 <span aria-hidden="true">{result.passed ? "✅" : "❌"}</span>
                 <span className={result.passed ? "text-emerald-200" : "text-rose-200"}>
-                  {result.name}
+                  {testNames?.[index] ?? result.name}
                 </span>
               </span>
               {!result.passed && result.message && (

@@ -1,0 +1,35 @@
+{
+  "id": "i3-arch-rebuild",
+  "title": "Rebuild the Blog Architecture",
+  "prompt": "Rebuild the blog page from the brief: complete document (doctype, html lang, charset, title); an <hgroup> wrapping the page <h1> and a subtitle (<p> or <span>); exactly one <h1>; heading levels never skip; a comments region as <section aria-labelledby=\"…\"> whose label is a real heading inside it; and a reader comment as a nested <article aria-labelledby=\"…\"> inside the post article. Content is yours — structure is graded.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "boilerplate": "<!-- Rebuild the blog page -->\n\n",
+  "tests": [
+    {
+      "name": "complete document skeleton",
+      "code": "if (!/<!DOCTYPE\\s+html>/i.test(code)) {\n  throw new Error(\"Start with <!DOCTYPE html>.\");\n}\nif (!/<html[^>]*\\slang\\s*=\\s*[\"'][^\"']+[\"']/i.test(code)) {\n  throw new Error(\"<html> needs a lang attribute.\");\n}\nif (!/<meta[^>]*charset/i.test(code)) {\n  throw new Error('The head needs <meta charset=\"UTF-8\">.');\n}\nconst t = code.match(/<title>([\\s\\S]*?)<\\/title>/i);\nif (!t || !t[1].trim()) {\n  throw new Error(\"Add a non-empty <title>.\");\n}",
+      "hint": "Same skeleton as always: doctype, html lang, charset, title."
+    },
+    {
+      "name": "one h1 in an hgroup with a subtitle",
+      "code": "const h1s = (code.match(/<h1[\\s>]/gi) || []).length;\nif (h1s !== 1) {\n  throw new Error(\"Exactly one <h1> (found \" + h1s + \").\");\n}\nconst hg = code.match(/<hgroup[\\s>][\\s\\S]*?<\\/hgroup>/i);\nif (!hg) {\n  throw new Error(\"Wrap the title and subtitle in an <hgroup>.\");\n}\nif (!/<h1[\\s>]/i.test(hg[0])) {\n  throw new Error(\"The <hgroup> must contain the page <h1>.\");\n}\nconst sub = hg[0].replace(/<h1[\\s>][\\s\\S]*?<\\/h1>/i, \"\");\nif (!/<(p|span)[\\s>][^>]*>[^<]*\\S/i.test(sub)) {\n  throw new Error(\"Add a non-empty subtitle (<p> or <span>) inside the <hgroup>.\");\n}",
+      "hint": "The subtitle is part of the same heading — it lives in the hgroup, not in a new heading level."
+    },
+    {
+      "name": "outline never skips a level",
+      "code": "const levels = [...code.matchAll(/<h([1-6])[\\s>]/gi)].map((m) => Number(m[1]));\nif (levels.length < 3) {\n  throw new Error(\"The page needs at least three headings (h1 + section headings).\");\n}\nlet prev = 0;\nfor (const level of levels) {\n  if (level > prev + 1) {\n    throw new Error(\"Heading levels must not skip (h\" + prev + \" followed by h\" + level + \").\");\n  }\n  prev = level;\n}",
+      "hint": "Walk the headings in document order: each one may step down at most one level from the previous."
+    },
+    {
+      "name": "comments region labelled by its heading",
+      "code": "const sec = code.match(/<section[^>]*aria-labelledby\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>([\\s\\S]*?)<\\/section>/i);\nif (!sec) {\n  throw new Error('Give the comments region <section aria-labelledby=\"...\">.');\n}\nconst labelId = sec[1];\nif (!new RegExp(\"id\\\\s*=\\\\s*[\\\"']\" + labelId + \"[\\\"']\").test(sec[2])) {\n  throw new Error('aria-labelledby \"' + labelId + '\" must point at an id inside this section.');\n}\nif (!new RegExp(\"<h[1-6][\\\\s>][^>]*id\\\\s*=\\\\s*[\\\"']\" + labelId + \"[\\\"']\").test(sec[2])) {\n  throw new Error(\"Point aria-labelledby at a real heading element inside the section.\");\n}",
+      "hint": "The section borrows its heading as its name: the id lives on the <h2> (or h3), not on a wrapper."
+    },
+    {
+      "name": "nested comment article named by its heading",
+      "code": "const arts = [...code.matchAll(/<article([^>]*)>/gi)];\nif (arts.length < 2) {\n  throw new Error(\"Nest a comment <article> inside the post article (2 <article> tags expected).\");\n}\nconst inner = arts[arts.length - 1][1];\nconst m = inner.match(/aria-labelledby\\s*=\\s*[\"']([^\"']+)[\"']/i);\nif (!m) {\n  throw new Error(\"Name the comment article with aria-labelledby.\");\n}\nif (!new RegExp(\"id\\\\s*=\\\\s*[\\\"']\" + m[1] + \"[\\\"']\").test(code)) {\n  throw new Error('aria-labelledby points at missing id \"' + m[1] + '\".');\n}",
+      "hint": "The innermost article is the comment — it needs its own aria-labelledby pointing at its heading's id."
+    }
+  ]
+}

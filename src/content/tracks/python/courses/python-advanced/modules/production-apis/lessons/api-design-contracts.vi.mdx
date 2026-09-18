@@ -1,0 +1,75 @@
+API là một **hợp đồng**. Hai đội không bao giờ gặp nhau — backend của bạn và
+client của người khác — phối hợp với nhau hoàn toàn qua các shape và mã trạng
+thái mà bạn cam kết. Thiết kế API nâng cao phần lớn là giữ vệ sinh hợp đồng.
+
+## Mã trạng thái là từ vựng, không phải trang trí
+
+Chọn từ một tập nhỏ và dùng chính xác:
+
+| Mã | Nghĩa | Trường hợp điển hình |
+|---|---|---|
+| 200 | thành công, có body | GET/PUT trả dữ liệu |
+| 201 | đã tạo | POST tạo tài nguyên (trả về vị trí của nó) |
+| 204 | thành công, không body | DELETE |
+| 400 | request sai định dạng | body/params không parse được |
+| 401 | bạn là ai? | thiếu/sai thông tin xác thực |
+| 403 | tôi biết bạn, nhưng không | đã xác thực, không đủ quyền |
+| 404 | không có tài nguyên đó | id hoặc path lạ |
+| 409 | xung đột | trùng, phiên bản cũ, trạng thái không thể |
+| 422 | hiểu rồi nhưng không hợp lệ | fail validation |
+| 429 | chậm lại thôi | vượt rate limit |
+
+Hai nguyên tắc tách API chuyên nghiệp khỏi API "tự nhiên mà có":
+
+1. **401 / 403 / 404 là ba câu nói khác nhau.** Gộp chung thành 400 thì client
+   mất khả năng phản ứng ("đăng nhập lại" hay "bỏ cuộc" hay "sửa URL").
+2. **Không bao giờ lộ nội bộ qua 5xx.** Một 500 có stack trace hay mảnh SQL
+   trong body là món quà cho kẻ tấn công. Trả envelope chung chung; chi tiết
+   chỉ nằm ở log phía server.
+
+## Error envelope: một shape cho mọi lỗi
+
+Client chỉ viết một trình xử lý lỗi khi mọi lỗi trông giống nhau:
+
+```json
+{
+  "error": {
+    "status": 422,
+    "title": "validation_failed",
+    "detail": "email is not a valid address",
+    "field": "email"
+  }
+}
+```
+
+`field` chỉ xuất hiện với lỗi thuộc về một field cụ thể. `detail` của lỗi 5xx
+là chuỗi *chung chung* — chi tiết đi vào log, không lên đường truyền.
+
+## Idempotency: một lần retry được phép làm gì
+
+Mạng có thể đứt *sau khi* handler của bạn đã chạy. Client retry không được
+trừ tiền hai lần. Phân loại method theo hành vi của retry:
+
+- **Idempotent:** `GET`, `PUT`, `DELETE` — lặp lại hội tụ về cùng một trạng
+  thái. `DELETE` hai lần = vẫn đã xóa. `PUT` hai lần = cùng một biểu diễn.
+- **Không idempotent:** `POST` — hai POST giống nhau có thể tạo hai tài nguyên.
+
+Hai cách chuẩn hóa cho thao tác không idempotent:
+
+- **Idempotency key:** client gửi `Idempotency-Key: <uuid>`; server nhớ phản
+  hồi đầu tiên cho key đó và *phát lại* nó khi retry thay vì thực thi lại.
+- **Natural key:** làm tài nguyên tự unique (`UNIQUE(email)`) để lần chèn thứ
+  hai fail an toàn với 409.
+
+## Phân trang cũng là một phần của hợp đồng
+
+Mọi list endpoint cần một cách cắt dữ liệu xác định. Offset pagination
+(`?page=2&per_page=50`) đơn giản, dễ cache; cursor pagination chịu được khi dữ
+liệu chèn thêm liên tục. Chọn kiểu nào thì response cũng phải mang metadata của
+chính nó — `total`, `page`, `per_page`, `has_next` — để client không phải đếm.
+
+## Versioning là một lời thú nhận
+
+`/v1/` trong path nghĩa là: *hợp đồng này sẽ thay đổi một ngày nào đó, và các
+client cũ xứng đáng có một bản ổn định.* Bạn không thiết kế endpoint; bạn
+thiết kế một dòng kế thừa các hợp đồng.

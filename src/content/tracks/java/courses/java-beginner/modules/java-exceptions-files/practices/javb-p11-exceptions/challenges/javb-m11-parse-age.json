@@ -1,0 +1,26 @@
+{
+  "id": "javb-m11-parse-age",
+  "title": "The uncrashable age parser",
+  "prompt": "Write `parseAge(String field)` that returns the age as an `Integer`, or `null` when it is missing, not a number, or implausible (outside 0..150). Trim whitespace before parsing.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static Integer parseAge(String field) {\n        return null;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "clean values parse",
+      "code": "\nCjTestBase.checkEq(Solution.parseAge(\"42\"), 42, \"42 parses\");\nCjTestBase.checkEq(Solution.parseAge(\"  7  \"), 7, \"whitespace trimmed\");\n",
+      "hint": "Wrap Integer.parseInt in try/catch for NumberFormatException."
+    },
+    {
+      "name": "garbage becomes null",
+      "code": "\nCjTestBase.checkEq(Solution.parseAge(\"abc\"), null, \"not a number -> null\");\nCjTestBase.checkEq(Solution.parseAge(\"999\"), null, \"implausible -> null\");\nCjTestBase.checkEq(Solution.parseAge(\"-3\"), null, \"negative -> null\");\n",
+      "hint": "Check the range AFTER parsing succeeds - 999 parses but is not plausible."
+    },
+    {
+      "name": "null never crashes",
+      "code": "\nCjTestBase.checkEq(Solution.parseAge(null), null, \"null input -> null, no exception\");\n",
+      "hint": "A null check must come BEFORE any method call on the string."
+    }
+  ],
+  "level": "guided"
+}

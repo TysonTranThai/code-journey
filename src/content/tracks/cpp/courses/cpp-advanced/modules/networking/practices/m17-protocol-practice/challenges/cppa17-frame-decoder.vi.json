@@ -1,0 +1,10 @@
+{
+  "title": "Frame Decoder Được Gia Cố",
+  "prompt": "Cài `FrameDecoder` cho giao thức length-prefixed. Test dội từng byte một, chia chunk ở mọi vị trí, frame 0 byte, và một tuyên bố độ dài 2 GiB thù địch (phải lỗi \"too-long\", không được cấp phát).",
+  "tests": [
+    {
+      "name": "incremental + hostile battery",
+      "hint": "Tích lũy byte vào buf_. Trong khi >= 4 byte: decode length little-endian; nếu > kMaxFrame -> lỗi và return false TRƯỚC KHI cấp phát. Nếu buf_ có 4+len, tách payload và erase. Không bao giờ reserve dựa trên length chưa kiểm tra."
+    }
+  ]
+}

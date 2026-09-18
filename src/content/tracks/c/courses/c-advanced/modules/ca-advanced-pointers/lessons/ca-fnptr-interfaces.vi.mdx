@@ -1,0 +1,16 @@
+## Function pointer đặt tên cho hành vi
+
+```c
+typedef int (*cmp_fn)(const void *a, const void *b);
+void sort(void *base, size_t n, size_t w, cmp_fn cmp);
+```
+
+`qsort` đúng hình dáng này: thuật toán chung, *chính sách so sánh* là con trỏ lúc chạy. Gọi qua con trỏ là gọi gián tiếp — thứ ngăn inline trừ khi trình biên dịch nhìn thấy đích.
+
+## Opaque handle giấu struct
+
+Header chỉ công bố `typedef struct cache cache_t;` cùng các hàm nhận `cache_t *`; định nghĩa struct nằm trong file .c. Client không phụ thuộc bố cục (đổi thoải mái), mọi truy cập đi qua kiểm tra của bạn.
+
+## Mẫu context pointer
+
+Callback cần trạng thái thì nhận `void *ctx`. Thay thế — biến toàn cục — phá vỡ reentrancy và thread. Mọi API C nghiêm túc (event loop, iterator, thread pool) đều dùng context pointer.

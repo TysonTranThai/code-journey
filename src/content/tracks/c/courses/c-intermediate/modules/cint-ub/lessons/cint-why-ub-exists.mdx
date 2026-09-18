@@ -1,0 +1,56 @@
+## Three labels, one line
+
+The C standard classifies constructs the compiler cannot reasonably
+support:
+
+- **Undefined behavior (UB)** — *no requirements at all*. The compiler
+  may assume it never happens: delete the branch, reorder around it,
+  invent any result. Signed overflow, out-of-bounds access, use-after-
+  free, invalid shifts.
+- **Unspecified behavior** — the standard offers a menu of valid
+  outcomes and doesn't say which (`f()` and `g()` in `f() + g()` may
+  run in either order). Every choice is legal; the program is still
+  correct C.
+- **Implementation-defined behavior** — the implementation must
+  *document* its choice (`sizeof(int)`, char signedness, right-shift of
+  negatives).
+
+The distinction matters because the response differs: avoid UB
+absolutely, tolerate unspecified by not depending on it, and check the
+docs for implementation-defined.
+
+## The optimizer's license
+
+"Assume it never happens" is the part people miss. This is legal:
+
+```c
+int sat_add(int a, int b) {
+    if (a + b < a) return INT_MAX;   /* intent: overflow check */
+    return a + b;                    /* but a + b IS the overflow — UB */
+}
+```
+
+The compiler sees `a + b < a` and reasons: *overflow is UB, so if we
+reached the comparison, no overflow happened, so `a + b >= a` is always
+true, so this check is dead code* — and deletes your guard. The check
+was written in the language of the very thing it guards against. The
+defined way computes in a wider type:
+
+```c
+int sat_add(int a, int b) {
+    long long r = (long long)a + b;              /* defined: no int overflow */
+    if (r > INT_MAX) return INT_MAX;
+    if (r < INT_MIN) return INT_MIN;
+    return (int)r;
+}
+```
+
+## Time-travel is allowed
+
+Because the compiler may reorder freely around UB, a UB operation can
+"corrupt" code that *textually precedes* it: the store before the bad
+dereference may be sunk past it, the bounds-check after the array write
+may be hoisted before it. This is why "it worked when I printed the
+value" is not evidence — printing changed the optimization. The only
+stable position is: never execute UB, not even once, not even on a
+path you "know" is impossible.

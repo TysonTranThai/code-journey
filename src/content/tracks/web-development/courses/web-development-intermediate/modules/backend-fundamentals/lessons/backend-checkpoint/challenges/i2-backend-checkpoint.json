@@ -1,0 +1,25 @@
+{
+  "id": "i2-backend-checkpoint",
+  "title": "Router Room",
+  "prompt": "Write THREE functions. 1) `matchRoute(pattern, method, path, method2)` — pattern like \"/tasks/:id\"; return the params object when the method matches AND the path fits the pattern (segments align, :id captures one non-empty segment), else null. 2) `orderMiddleware(names)` — given a scrambled list containing \"bodyParser\", \"auth\", \"logger\", \"errorBoundary\", return the correct order: logger, bodyParser, auth, errorBoundary (errorBoundary wraps everything, so last). 3) `statusFor(situation)` — map: \"created\" => 201, \"validation-failed\" => 400, \"not-logged-in\" => 401, \"not-allowed\" => 403, \"missing\" => 404, \"duplicate\" => 409, \"crashed\" => 500.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function matchRoute(pattern, method, path, method2) {\n  // your code\n}\n\nfunction orderMiddleware(names) {\n  // your code\n}\n\nfunction statusFor(situation) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "pattern matching extracts params",
+      "code": "const fn = new Function(code + \"\\nreturn { matchRoute, orderMiddleware, statusFor };\");\nconst { matchRoute } = fn();\nconst p = matchRoute(\"/tasks/:id\", \"GET\", \"/tasks/42\", \"GET\");\nif (!p || p.id !== \"42\") throw new Error(\":id captured from the path.\");\nif (matchRoute(\"/tasks/:id\", \"GET\", \"/tasks/42\", \"POST\") !== null) throw new Error(\"Method mismatch => null.\");\nif (matchRoute(\"/tasks/:id\", \"GET\", \"/tasks\", \"GET\") !== null) throw new Error(\"Segment count mismatch => null.\");\nif (matchRoute(\"/tasks\", \"GET\", \"/tasks/42\", \"GET\") !== null) throw new Error(\"Extra segments => null.\");",
+      "hint": "Split both into segments; lengths must match; :x captures."
+    },
+    {
+      "name": "middleware order is semantics",
+      "code": "const fn = new Function(code + \"\\nreturn { matchRoute, orderMiddleware, statusFor };\");\nconst { orderMiddleware } = fn();\nconst out = orderMiddleware([\"auth\", \"logger\", \"bodyParser\", \"errorBoundary\"]);\nif (out.join(\",\") !== \"logger,bodyParser,auth,errorBoundary\") throw new Error(\"Log first, parse before auth reads body, boundary last.\");",
+      "hint": "logger outermost, then parse, then auth, then the error wrapper."
+    },
+    {
+      "name": "status codes tell the truth",
+      "code": "const fn = new Function(code + \"\\nreturn { matchRoute, orderMiddleware, statusFor };\");\nconst { statusFor } = fn();\nif (statusFor(\"created\") !== 201) throw new Error(\"Create => 201.\");\nif (statusFor(\"validation-failed\") !== 400) throw new Error(\"Bad input => 400, not 404.\");\nif (statusFor(\"not-logged-in\") !== 401) throw new Error(\"Who are you => 401.\");\nif (statusFor(\"not-allowed\") !== 403) throw new Error(\"No permission => 403.\");\nif (statusFor(\"duplicate\") !== 409) throw new Error(\"Conflict => 409.\");",
+      "hint": "A lookup object — but think about each pair as you write it."
+    }
+  ]
+}

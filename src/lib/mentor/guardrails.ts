@@ -23,25 +23,38 @@ const SOLUTION_MARKERS: RegExp[] = [
  * Refuse responses that look like a complete solution. Returns the original
  * text when acceptable, or a refusal response.
  */
-export function refuseIfSolution(text: string): { text: string; refused: boolean } {
+export function refuseIfSolution(
+  text: string,
+  locale?: string,
+): { text: string; refused: boolean } {
   for (const marker of SOLUTION_MARKERS) {
     if (marker.test(text)) {
       return {
         refused: true,
-        text: "That would be the whole answer — let's not skip the learning. Try describing which part you're stuck on, and I'll guide you to it.",
+        text:
+          locale === "vi"
+            ? "Đó sẽ là toàn bộ lời giải — chúng ta hãy cùng học từng bước nhé. Hãy mô tả phần bạn đang gặp khó khăn, tôi sẽ hướng dẫn cho bạn."
+            : "That would be the whole answer — let's not skip the learning. Try describing which part you're stuck on, and I'll guide you to it.",
       };
     }
   }
   return { text, refused: false };
 }
 
-const LEVEL_FRAME: Record<HintLevel, string> = {
+const LEVEL_FRAME_EN: Record<HintLevel, string> = {
   1: "Nudge:",
   2: "Closer:",
   3: "Almost there:",
 };
 
+const LEVEL_FRAME_VI: Record<HintLevel, string> = {
+  1: "Gợi ý:",
+  2: "Gần đúng rồi:",
+  3: "Sắp xong rồi:",
+};
+
 /** Frame a hint at its ladder level (never rewrites the pedagogy, only tone). */
-export function frameHint(level: HintLevel, text: string): string {
-  return `${LEVEL_FRAME[level]} ${text}`;
+export function frameHint(level: HintLevel, text: string, locale?: string): string {
+  const frameMap = locale === "vi" ? LEVEL_FRAME_VI : LEVEL_FRAME_EN;
+  return `${frameMap[level]} ${text}`;
 }

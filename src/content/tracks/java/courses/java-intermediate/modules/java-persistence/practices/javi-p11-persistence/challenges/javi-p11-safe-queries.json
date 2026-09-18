@@ -1,0 +1,26 @@
+{
+  "id": "javi-p11-safe-queries",
+  "title": "Build (Conceptually) Safe Queries",
+  "prompt": "A SQL-builder exercise without a database. Implement in `Solution`:\n- `record Param(String value)`\n- `static String buildFind(String table, Param id)` returning\n  `\"SELECT * FROM \" + table + \" WHERE id = ?\"` — the placeholder, NOT\n  the value (demonstrating parameter binding).\n- `static String buildFindUnsafe(String table, String id)` returning the\n  concatenated version `\"SELECT * FROM \" + table + \" WHERE id = '\" + id + \"'\"`.\n\nThe tests demonstrate the attack: an id of `x' OR '1'='1` produces a\nharmless placeholder string in the safe builder and a *broken/injected*\nquery in the unsafe one — making the vulnerability visible.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "safe builder binds, never interpolates",
+      "code": "\ncheckEq(Solution.buildFind(\"users\", new Solution.Param(\"x' OR '1'='1\")),\n        \"SELECT * FROM users WHERE id = ?\", \"placeholder only\");\n",
+      "hint": "The payload never enters the SQL text."
+    },
+    {
+      "name": "unsafe builder demonstrates the injection",
+      "code": "\nString sql = Solution.buildFindUnsafe(\"users\", \"x' OR '1'='1\");\ncheckEq(sql, \"SELECT * FROM users WHERE id = 'x' OR '1'='1'\", \"injected shape\");\n",
+      "hint": "The payload alters the query's meaning — the attack, made visible."
+    },
+    {
+      "name": "safe with normal id",
+      "code": "\ncheckEq(Solution.buildFind(\"users\", new Solution.Param(\"u1\")),\n        \"SELECT * FROM users WHERE id = ?\", \"normal path\");\n",
+      "hint": "Placeholder regardless of the value."
+    }
+  ],
+  "level": "guided"
+}

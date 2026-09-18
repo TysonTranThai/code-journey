@@ -1,0 +1,27 @@
+A page load is a choreography of requests. The Network panel draws it as a waterfall; reading it is a core performance skill.
+
+## Anatomy of one request
+
+Each bar stacks phases: **DNS lookup** (name → IP; cached after first), **TCP connect** (+TLS for https), **Time To First Byte** (server thinking), **Content Download** (payload arriving). Long TTFB = slow server (backend problem). Long download = big payload (frontend problem). Connection setup on every request = you're not reusing connections.
+
+## The critical path
+
+The browser can't render until it has HTML. Inside the HTML:
+
+- `<link rel="stylesheet">` — CSS blocks render (correct choice for above-the-fold styles!)
+- `<script src>` (no attribute) — pauses HTML parsing entirely while downloading AND executing
+- `<script defer>` — downloads in parallel, executes after parse, before DOMContentLoaded
+- `<script async>` — downloads in parallel, executes whenever ready (analytics, not app code)
+- `<img loading="lazy">` — off-screen images wait until near the viewport
+
+The default professional setup for app scripts: `defer` in the head. Render-blocking CSS: keep it small; split by route when a stylesheet grows.
+
+## Water — the order of operations
+
+The waterfall shows _dependency chains_: HTML → discovered CSS/JS → fonts → images. Chains are slow because each hop waits. Attack them by: `preload` for assets you know you'll need in the first second (the hero image, the main font), `font-display: swap` so text renders before the font arrives, and inlining critical CSS so first paint doesn't wait on a round trip.
+
+## Compression and transport
+
+- **gzip/brotli** on text assets: usually 60–80% smaller. Check the response's `Content-Encoding` — if it's missing on your JS, that's free performance on the table.
+- **HTTP caching**: `Cache-Control` headers decide whether returning visitors re-download anything. Hashed filenames (`app.a83f2.js`) let you cache "forever" and still ship updates — change the file, change the hash.
+- **HTTP/2+**: multiplexes many requests over one connection — the old advice "bundle everything into one request" is obsolete; the modern advice is "don't have 300 requests either."

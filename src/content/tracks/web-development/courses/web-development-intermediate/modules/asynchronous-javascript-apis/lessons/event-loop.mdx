@@ -1,0 +1,39 @@
+JavaScript runs your code on **one thread**. It never blocks: slow work (timers,
+network, disk) is handed to the environment, and your callbacks are _queued_.
+The rules of that queue are the event loop.
+
+## The three queues that matter
+
+1. **Call stack** — the function currently executing. One at a time, always.
+2. **Microtask queue** — promise callbacks (`.then`, `await` continuations),
+   `queueMicrotask`. Drained **completely** after every stack empties.
+3. **Macrotask queue** — `setTimeout`, `setInterval`, I/O callbacks, events.
+   One macrotask per loop turn.
+
+Per turn: run one macrotask → drain **all** microtasks → maybe render → next
+macrotask. Microtasks always win.
+
+## Predicting the order
+
+```js
+console.log("1");
+setTimeout(() => console.log("2"), 0);
+Promise.resolve().then(() => console.log("3"));
+console.log("4");
+```
+
+Prints `1, 4, 3, 2`. Sync code first (`1`, `4`), then microtasks (`3`), then
+the timer macrotask (`2`). `setTimeout(fn, 0)` does not mean _now_ — it means
+_next macrotask, at the earliest_.
+
+## Why it matters
+
+- A long-running loop blocks everything: renders, clicks, timers. Chunk work
+  with `await new Promise(r => setTimeout(r))` to yield.
+- Promise chains resolve before any timer callback — ordering bugs come from
+  forgetting which queue you are in.
+- The UI can only update between tasks: await between chunks lets the browser
+  paint.
+
+MDN's _Concurrency model and the event loop_ is the reference; this lesson is
+the mental model you will apply in every practice below.

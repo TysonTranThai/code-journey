@@ -1,0 +1,39 @@
+C++ has ~17 forms of initialization grouped into a few families. Four matter daily:
+
+## Direct vs copy vs list
+
+```cpp
+std::string a("x");     // direct-initialization
+std::string b = "x";    // copy-initialization: explicit constructors are OFF limits
+std::string c{"x"};     // direct-list-initialization
+std::string d = {"x"};  // copy-list-initialization
+```
+
+Copy-initialization cannot call an `explicit` constructor — that keyword is how types opt out of surprising implicit conversions. The flip side matters for overload design: a greedy forwarding constructor only hijacks **direct** initialization (`Tracked c{b};`), never copy initialization (`Tracked c = b;`).
+
+## The most vexing parse
+
+`Timer t(Log());` declares a **function** `t` returning `Timer`, taking a function returning `Log`. Braces disambiguate: `Timer t(Log{});` constructs.
+
+## Narrowing in braces
+
+Braces **forbid** narrowing conversions — the safe default:
+
+```cpp
+int x{3.9};     // error: narrowing
+int y = 3.9;    // compiles: y == 3, silently
+```
+
+## Default member initializers and initialization order
+
+Members initialize in **declaration order**, not initializer-list order — `-Wreorder` catches the mismatch. Default member initializers centralize defaults while constructors can still override:
+
+```cpp
+struct Session {
+    std::chrono::steady_clock::time_point start{std::chrono::steady_clock::now()};
+    int retries{0};
+    explicit Session(int r) : retries{r} {}   // declaration order: start first
+};
+```
+
+**Grading note:** the checks in this module use brace-initialization traps and `static_assert` on constructed types. Predict first, then let the compiler grade you.

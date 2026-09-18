@@ -1,0 +1,34 @@
+Toán tử chỉ là hàm thường với tên đặc biệt. Nạp chồng chúng giúp kiểu của bạn
+đọc tự nhiên như kiểu dựng sẵn — nhưng chỉ khi ý nghĩa hiển nhiên.
+
+```cpp
+class Money {
+public:
+    explicit Money(long cents) : cents_{cents} {}
+    long cents() const { return cents_; }
+
+private:
+    long cents_;
+};
+
+inline Money operator+(const Money& a, const Money& b) {
+    return Money{a.cents() + b.cents()};
+}
+
+inline bool operator==(const Money& a, const Money& b) {
+    return a.cents() == b.cents();
+}
+```
+
+## Quy trình quyết định
+
+1. Ý nghĩa của toán tử có **hiển nhiên** với mọi người đọc không? `Money +
+   Money` thì có; `Money << int` thì không.
+2. Ưu tiên viết dạng **non-member** dựa trên interface public (giữ đóng gói;
+   cho phép chuyển đổi đối xứng).
+3. Chỉ `=`, `()`, `[]`, `->` là bắt buộc viết dạng member.
+4. Các họ ngữ nghĩa đi cùng nhau: định nghĩa `==` và `!=` nhất quán (C++20
+   có thể tự sinh `!=` từ `==`); `<` phải khớp với trật tự mà `==` gợi ý.
+
+Nếu ngữ nghĩa gây bất ngờ, hãy dùng hàm có tên — `add_days(date, 3)` rõ hơn
+một `date + 3` bí ẩn khi quy luật lịch của `Date` không đơn giản.

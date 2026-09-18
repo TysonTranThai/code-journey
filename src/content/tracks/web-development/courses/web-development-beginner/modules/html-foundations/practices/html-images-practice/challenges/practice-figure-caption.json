@@ -1,0 +1,25 @@
+{
+  "id": "practice-figure-caption",
+  "title": "A Figure with Its Caption",
+  "prompt": "When an image needs a visible caption, wrap it in a `figure` element and use `figcaption`. Build one: the `figure` contains an `img` (`/images/market.jpg`, alt `A crowded farmers market on a Saturday morning`) and a `figcaption` reading `Saturday, 7 a.m.`\n\nRules:\n- `img` and `figcaption` both live inside the `figure`.\n- The caption is visible text, not alt text.",
+  "difficulty": "beginner",
+  "level": "imitation",
+  "boilerplate": "<h2>Where the week begins</h2>\n<!-- your figure here -->\n",
+  "tests": [
+    {
+      "name": "a figure wraps both elements",
+      "code": "const fig = code.match(/<figure[\\s\\S]*?<\\/figure>/i);\nif (!fig || !/<img\\s/i.test(fig[0]) || !/<figcaption[\\s\\S]*?<\\/figcaption>/i.test(fig[0])) {\n  throw new Error(\"The <figure> must contain both the <img> and a <figcaption>.\");\n}",
+      "hint": "<figure><img …><figcaption>…</figcaption></figure>."
+    },
+    {
+      "name": "image with src and alt",
+      "code": "const fig = code.match(/<figure[\\s\\S]*?<\\/figure>/i)[0];\nconst img = fig.match(/<img\\s[^>]*>/i)[0];\nconst src = img.match(/src=[\"']([^\"']*)[\"']/i);\nconst alt = img.match(/alt=[\"']([^\"']*)[\"']/i);\nif (!src || src[1] !== \"/images/market.jpg\") throw new Error(\"src must be /images/market.jpg\");\nif (!alt || alt[1].trim() !== \"A crowded farmers market on a Saturday morning\") {\n  throw new Error(\"alt must be: A crowded farmers market on a Saturday morning\");\n}",
+      "hint": "Both attributes on the img, exactly as the instructions spell them."
+    },
+    {
+      "name": "visible caption text",
+      "code": "const fig = code.match(/<figure[\\s\\S]*?<\\/figure>/i)[0];\nconst cap = fig.match(/<figcaption[^>]*>([\\s\\S]*?)<\\/figcaption>/i);\nif (!cap || cap[1].trim() !== \"Saturday, 7 a.m.\") {\n  throw new Error(\"The figcaption must read exactly: Saturday, 7 a.m.\");\n}",
+      "hint": "Put 'Saturday, 7 a.m.' between <figcaption> and </figcaption>."
+    }
+  ]
+}

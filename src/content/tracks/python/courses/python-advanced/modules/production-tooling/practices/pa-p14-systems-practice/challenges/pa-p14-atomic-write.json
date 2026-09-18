@@ -1,0 +1,16 @@
+{
+  "id": "pa-p14-atomic-write",
+  "title": "Write like the OS is watching",
+  "prompt": "Implement `AtomicStore` — a file store whose `write(path, data)` follows the real atomic-replace pattern, recorded in `log`:\n\n- append `('write', path + '.tmp')`, then `('flush', path + '.tmp')`, then `('replace', path + '.tmp', path)`\n- after the log entries, the data is readable at `path`, and no `.tmp` file remains\n- `read(path)` raises `FileNotFoundError` for unknown paths\n- expose `log` as a property\n\nThe log IS the test: a torn write is impossible when the sequence is write-tmp, flush, replace.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class AtomicStore:\n    def __init__(self):\n        ...\n\n    def write(self, path, data):\n        ...\n\n    def read(self, path):\n        ...\n\n    @property\n    def log(self):\n        ...",
+  "tests": [
+    {
+      "name": "the sequence is exactly write, flush, replace",
+      "code": "s = AtomicStore()\ns.write('state.json', '{\"a\": 1}')\nassert s.read('state.json') == '{\"a\": 1}'\nassert s.log == [('write', 'state.json.tmp'), ('flush', 'state.json.tmp'), ('replace', 'state.json.tmp', 'state.json')]\nprint('ok')",
+      "hint": "Order is the correctness argument."
+    }
+  ],
+  "level": "independent"
+}

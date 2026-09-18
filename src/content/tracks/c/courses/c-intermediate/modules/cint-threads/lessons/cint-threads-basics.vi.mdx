@@ -1,0 +1,38 @@
+## Từ vựng của chuẩn
+
+C11 thêm `<threads.h>`: `thrd_t` (handle thread), `thrd_create` (chạy
+một thread), `thrd_join` (chờ và thu kết quả):
+
+```c
+int work(void *arg) {                 /* chữ ký cố định: int(void*) */
+    long id = (long)(intptr_t)arg;
+    return (int)id;                   /* thành giá trị out của thrd_join */
+}
+
+thrd_t t;
+if (thrd_create(&t, work, (void *)(intptr_t)7) == thrd_success) {
+    int result;
+    thrd_join(t, &result);            /* chặn đến khi work trả về */
+}
+```
+
+Mỗi thread chạy hàm bạn đưa; `arg` là cách truyền dữ liệu (một con trỏ).
+**Join không phải vệ sinh tùy chọn** — thread chưa join vẫn chạy khi
+main thoát (không xác định lần ghi nào kịp đổ), và `thrd_join` là cách
+ bạn *biết* việc đã xong. `thrd_detach` là phương án bắn-quên: thread tự
+dọn, nhưng bạn không thể chờ hay thu gì cả.
+
+## Chia sẻ là toàn bộ vấn đề
+
+Hai thread tăng cùng một `int` là thảm họa kinh điển:
+
+```c
+/* cả hai thread chạy: counter++ */
+/* counter++ thực chất là: load, add, store — ba bước */
+```
+
+Ba bước kẹp vào nhau. Cả hai thread có thể load 5, cả hai store 6, và
+một lần biến mất — *mất mát cập nhật* (lost update). Cách chữa không
+phải "cẩn thận": là làm read-modify-write thành bất khả chia (bài sau).
+Kỷ luật cần xây ngay: ghi tên mọi biến chia sẻ vào comment, và coi mọi
+truy cập vào nó là một quyết định thiết kế.

@@ -4,9 +4,13 @@ import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth/config";
 import { noIndexMetadata } from "@/lib/seo";
+import { getServerI18n } from "@/lib/i18n/server";
 import { getDashboardData } from "@/lib/progress/dashboard";
 
-export const metadata: Metadata = noIndexMetadata("Your Dashboard");
+export async function generateMetadata(): Promise<Metadata> {
+  const { d } = await getServerI18n();
+  return noIndexMetadata(d.dashboard.title);
+}
 
 /**
  * Learner dashboard (PROG-01…04). Private page: no-index (PLAT-07),
@@ -18,27 +22,33 @@ export default async function DashboardPage() {
   const userId = session?.user?.id;
   if (!userId) redirect("/login");
 
-  const data = await getDashboardData(userId);
-  const name = session.user?.name ?? "Learner";
+  const { d, t } = await getServerI18n();
+  const { locale } = await getServerI18n();
+  const data = await getDashboardData(userId, locale);
+  const name = session.user?.name ?? d.dashboard.learner;
+  const dayUnit = d.dashboard.day.other;
 
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-col gap-8">
-      <header className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-100 sm:text-3xl">
-            Welcome back, {name}
+      {/* Adventurer Profile Header */}
+      <header className="conductor-window rounded-xl flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7 shadow-xl bg-[#0c101b] border border-white/[0.1]">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <span className="badge-pixel badge-pixel-level font-mono">{d.dashboard.profileBadge}</span>
+            <span className="badge-pixel badge-pixel-xp font-mono">{d.dashboard.levelBadge}</span>
+          </div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            {t(d.dashboard.welcome, { name })}
           </h1>
-          <p className="text-sm text-zinc-400">
-            Your progress is recorded from verified completions only.
-          </p>
+          <p className="text-sm text-zinc-300 font-normal font-mono">{d.dashboard.progressNote}</p>
         </div>
         <div
-          className="inline-flex items-center gap-2 self-start rounded-lg border border-amber-700/60 bg-amber-950/40 px-4 py-2 text-amber-300"
-          aria-label={`Streak: ${data.streakDays} consecutive ${data.streakDays === 1 ? "day" : "days"}`}
+          className="inline-flex items-center gap-2.5 self-start rounded-lg border border-orange-500/40 bg-orange-950/20 px-4 py-2 text-sm font-mono font-semibold text-orange-300 shadow-[0_0_20px_rgba(249,115,22,0.25)] cursor-default sm:self-center"
+          aria-label={t(d.dashboard.streakAria, { count: data.streakDays, unit: dayUnit })}
         >
-          <span aria-hidden="true">🔥</span>
-          <span className="text-sm font-semibold">
-            {data.streakDays} {data.streakDays === 1 ? "day" : "days"} in a row
+          <span className="text-xl" aria-hidden="true">🔥</span>
+          <span className="font-semibold text-orange-200">
+            {t(d.dashboard.inARow, { count: data.streakDays, unit: dayUnit })}
           </span>
         </div>
       </header>
@@ -46,24 +56,30 @@ export default async function DashboardPage() {
       {data.continueLearning && (
         <Link
           href={data.continueLearning.href}
-          className="flex items-center justify-between gap-4 rounded-xl border border-sky-500/40 bg-sky-950/30 px-5 py-4 transition-colors hover:border-sky-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+          className="conductor-window group rounded-xl flex items-center justify-between gap-4 p-5 border border-emerald-500/30 bg-[#0d1424] transition-all hover:border-emerald-400/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 shadow-xl"
         >
-          <span className="flex flex-col gap-1">
-            <span className="text-xs uppercase tracking-wide text-sky-300">
-              Continue where you left off
+          <span className="flex flex-col gap-1.5">
+            <span className="badge-pixel badge-pixel-quest self-start text-[10px] font-mono">
+              {d.dashboard.continueLabel}
             </span>
-            <span className="font-medium text-zinc-100">{data.continueLearning.title}</span>
+            <span className="text-lg font-semibold text-white group-hover:text-emerald-300 transition-colors">
+              {data.continueLearning.title}
+            </span>
           </span>
-          <span aria-hidden="true" className="text-sky-300">
-            →
+          <span className="btn-conductor-primary group/btn inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold shadow-[0_0_15px_rgba(34,197,94,0.3)]">
+            <span>{d.dashboard.resumeWorkspace}</span>
+            <span className="font-mono transition-transform duration-150 group-hover/btn:translate-x-0.5" aria-hidden="true">→</span>
           </span>
         </Link>
       )}
 
-      <div aria-label="Overall progress" className="flex flex-col gap-2">
-        <div className="flex items-center justify-between text-sm text-zinc-300">
-          <span>Overall progress</span>
-          <span>
+      {/* Overall Progression Bar */}
+      <div aria-label={d.dashboard.overallAria} className="conductor-window rounded-xl flex flex-col gap-3.5 p-5 shadow-xl bg-[#0c101b] border border-white/[0.08]">
+        <div className="flex items-center justify-between text-xs font-mono font-semibold">
+          <span className="uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+            <span>●</span> {d.dashboard.overallProgress}
+          </span>
+          <span className="text-zinc-300">
             {data.overall.completed}/{data.overall.total} · {data.overall.percent}%
           </span>
         </div>
@@ -72,73 +88,91 @@ export default async function DashboardPage() {
           aria-valuenow={data.overall.percent}
           aria-valuemin={0}
           aria-valuemax={100}
-          className="h-2.5 overflow-hidden rounded-full bg-zinc-800"
+          className="h-2.5 overflow-hidden rounded-full border border-white/[0.08] bg-[#07090e] p-0.5"
         >
           <div
-            className="h-full rounded-full bg-sky-500 transition-[width] motion-reduce:transition-none"
+            className="h-full rounded-full bg-[#22c55e] transition-[width] motion-reduce:transition-none shadow-[0_0_12px_rgba(34,197,94,0.6)]"
             style={{ width: `${data.overall.percent}%` }}
           />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {/* Per Track Realms Progress */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
         {data.perTrack.map((track) => (
           <div
             key={track.trackId}
-            className="flex flex-col gap-3 rounded-xl border border-zinc-800 bg-zinc-900/60 p-5"
+            className="conductor-window rounded-xl flex flex-col justify-between gap-4 p-5 shadow-lg bg-[#0c101b] border border-white/[0.08]"
           >
-            <h2 className="text-sm font-medium text-zinc-200">{track.trackTitle}</h2>
-            <div
-              role="progressbar"
-              aria-valuenow={track.percent}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label={`${track.trackTitle}: ${track.percent}% complete`}
-              className="h-2 overflow-hidden rounded-full bg-zinc-800"
-            >
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <span className="badge-pixel badge-pixel-quest text-[10px] font-mono">{d.dashboard.trackBranchBadge}</span>
+                <span className="font-mono text-xs font-semibold text-emerald-400">
+                  {track.percent}%
+                </span>
+              </div>
+              <h2 className="text-lg font-bold text-white">{track.trackTitle}</h2>
               <div
-                className="h-full rounded-full bg-emerald-500"
-                style={{ width: `${track.percent}%` }}
-              />
+                role="progressbar"
+                aria-valuenow={track.percent}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={t(d.dashboard.trackComplete, {
+                  title: track.trackTitle,
+                  percent: track.percent,
+                })}
+                className="h-2 overflow-hidden rounded-full border border-white/[0.08] bg-[#07090e]"
+              >
+                <div
+                  className="h-full rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]"
+                  style={{ width: `${track.percent}%` }}
+                />
+              </div>
+              <p className="font-mono text-xs text-zinc-400">
+                {t(d.dashboard.itemsDone, {
+                  done: track.completed,
+                  total: track.total,
+                  percent: track.percent,
+                })}
+              </p>
             </div>
-            <p className="text-xs text-zinc-400">
-              {track.completed}/{track.total} items · {track.percent}%
-            </p>
             <Link
               href={`/learn/${track.trackId}`}
-              className="text-xs text-sky-400 underline underline-offset-2 hover:text-sky-300"
+              className="btn-conductor-secondary group/btn inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold self-start mt-2"
             >
-              Open track
+              <span>{d.dashboard.openTrack}</span>
+              <span className="font-mono transition-transform duration-150 group-hover/btn:translate-x-0.5" aria-hidden="true">→</span>
             </Link>
           </div>
         ))}
       </div>
 
-      <div className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold text-zinc-100">Achievements</h2>
-        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Trophy Room & Collectible Achievements */}
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-2">
+          <span className="badge-pixel badge-pixel-level">{d.dashboard.trophyRoomBadge}</span>
+        </div>
+        <h2 className="text-2xl font-bold tracking-tight text-white">{d.dashboard.achievements}</h2>
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {data.achievements.map((achievement) => (
             <li
               key={achievement.id}
-              className={`flex items-start gap-3 rounded-xl border p-4 ${
+              className={`conductor-window rounded-xl flex items-start gap-4 p-5 transition-all ${
                 achievement.earned
-                  ? "border-emerald-700/60 bg-emerald-950/30"
-                  : "border-zinc-800 bg-zinc-900/40 opacity-60"
+                  ? "border-amber-500/40 bg-amber-950/20 shadow-[0_0_20px_rgba(245,158,11,0.15)]"
+                  : "border-white/[0.05] bg-[#0c101b]/50 opacity-40 grayscale"
               }`}
-              // Locked achievements: conveyed via the (locked) suffix and
-              // reduced contrast rather than aria-disabled (not supported
-              // on role listitem).
               data-locked={!achievement.earned || undefined}
             >
-              <span className="text-2xl" aria-hidden="true">
+              <span className={`text-2xl ${achievement.earned ? "sparkle-icon" : ""}`} aria-hidden="true">
                 {achievement.icon}
               </span>
               <span className="flex flex-col gap-1">
-                <span className="text-sm font-medium text-zinc-100">
+                <span className={`text-sm font-semibold ${achievement.earned ? "text-amber-200" : "text-zinc-400"}`}>
                   {achievement.title}
-                  {achievement.earned ? "" : " (locked)"}
+                  {achievement.earned ? "" : ` ${d.dashboard.locked}`}
                 </span>
-                <span className="text-xs text-zinc-400">{achievement.description}</span>
+                <span className="text-xs text-zinc-400 leading-relaxed">{achievement.description}</span>
               </span>
             </li>
           ))}

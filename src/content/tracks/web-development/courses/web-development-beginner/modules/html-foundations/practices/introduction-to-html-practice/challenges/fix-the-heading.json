@@ -1,0 +1,25 @@
+{
+  "id": "fix-the-heading",
+  "title": "Fix the Broken Heading",
+  "prompt": "The HTML below has a bug: the main heading is wrapped in the wrong tag, so it renders small and meaningless. Change the wrong tag to the correct heading tag for the most important heading on a page — it should contain the text exactly as given.\n\nRules:\n- The page's most important heading uses the level-1 heading tag.\n- Keep the text `My First Page` unchanged.",
+  "difficulty": "beginner",
+  "boilerplate": "<p>My First Page</p>\n",
+  "tests": [
+    {
+      "name": "uses an <h1> element",
+      "code": "if (!/<h1\\s*>/i.test(code)) {\n  throw new Error(\"No <h1> found — the most important heading on a page uses the level-1 heading tag.\");\n}",
+      "hint": "The most important heading on a page is <h1>. Replace <p> with <h1>."
+    },
+    {
+      "name": "no leftover <p> wrapper",
+      "code": "if (/<p\\s*>/i.test(code)) {\n  throw new Error(\"Still a <p> element present — replace it, don't add alongside it.\");\n}",
+      "hint": "Replace the <p> tag entirely — don't leave it next to your new heading."
+    },
+    {
+      "name": "keeps the original text",
+      "code": "const m = code.match(/<h1\\s*>([\\s\\S]*?)<\\/h1\\s*>/i);\nif (!m || m[1].trim() !== \"My First Page\") {\n  throw new Error(\"The heading text must be exactly: My First Page\");\n}",
+      "hint": "Keep the text 'My First Page' exactly as it was — only the tag changes."
+    }
+  ],
+  "level": "debugging"
+}

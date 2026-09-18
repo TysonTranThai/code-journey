@@ -1,0 +1,20 @@
+{
+  "id": "i2-regression-first",
+  "title": "Regression Test Ledger",
+  "prompt": "Write `addRegression(ledger, bugId, fixCommit, coversAll)` — a bug joins the regression ledger only when it is fixed AND its test covers the reported scenario (coversAll true): append { bugId, fixCommit } and return the new array (non-mutating). If coversAll is false, return the ledger unchanged. If bugId is already in the ledger, return the ledger unchanged (no duplicates).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function addRegression(ledger, bugId, fixCommit, coversAll) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "accepts proven fixes once",
+      "code": "const fn = new Function(code + \"\\nreturn { addRegression };\");\nconst { addRegression } = fn();\nlet ledger = [];\nledger = addRegression(ledger, \"BUG-1\", \"abc123\", true);\nif (ledger.length !== 1 || ledger[0].bugId !== \"BUG-1\") throw new Error(\"Proven fix recorded.\");\nledger = addRegression(ledger, \"BUG-1\", \"def456\", true);\nif (ledger.length !== 1) throw new Error(\"No duplicate bug entries.\");\nconst before = ledger;\nledger = addRegression(ledger, \"BUG-2\", \"aaa\", false);\nif (ledger !== before || ledger.length !== 1) throw new Error(\"Uncovered bug => unchanged array.\");\n",
+      "hint": "Two guards, then a spread-append."
+    },
+    {
+      "name": "non-mutation discipline",
+      "code": "const fn = new Function(code + \"\\nreturn { addRegression };\");\nconst { addRegression } = fn();\nconst original = [{ bugId: \"BUG-9\", fixCommit: \"x\" }];\nconst out = addRegression(original, \"BUG-10\", \"y\", true);\nif (original.length !== 1) throw new Error(\"Input ledger untouched.\");\nif (out.length !== 2) throw new Error(\"New array returned.\");\n",
+      "hint": "Spread, never push on the input."
+    }
+  ]
+}

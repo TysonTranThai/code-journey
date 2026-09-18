@@ -1,0 +1,18 @@
+{
+  "title": "Tách cache line",
+  "prompt": "ISO C11 + thực tế phần cứng. Hai counter cùng struct. Cho biến thể có pad 56 byte, cài `int same_line(const void *p, size_t offset_a, size_t offset_b)` — trả 1 khi hai offset byte dùng chung line 64 byte, 0 nếu ngược lại.",
+  "tests": [
+    {
+      "name": "thành viên kề nhau dùng chung line",
+      "hint": "Atomic 4 byte tại offset 0 và 4: cùng line 64 byte — kịch bản false sharing."
+    },
+    {
+      "name": "thành viên có pad khác line",
+      "hint": "Pad 56 byte đẩy b qua offset 64: hai line riêng."
+    },
+    {
+      "name": "offset trùng là cùng line",
+      "hint": "Offset với chính nó hiển nhiên cùng line — trường hợp suy biến không được crash."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "cb11-safe-get",
+  "title": "Guarded Read",
+  "prompt": "Implement `int safe_get(const int *p, int fallback)`: return *p if p is not NULL, otherwise return fallback WITHOUT dereferencing.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "real pointer",
+      "code": "int x = 42;\nCHECK_EQ(safe_get(&x, -1), 42);",
+      "hint": "Normal case: read through."
+    },
+    {
+      "name": "null input",
+      "code": "CHECK_EQ(safe_get(NULL, -1), -1);",
+      "hint": "NULL must return fallback, never crash."
+    },
+    {
+      "name": "null other fallback",
+      "code": "CHECK_EQ(safe_get(NULL, 7), 7);",
+      "hint": "Whatever the caller asked for."
+    }
+  ],
+  "level": "guided"
+}

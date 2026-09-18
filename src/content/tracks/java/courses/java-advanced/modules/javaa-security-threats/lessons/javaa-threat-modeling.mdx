@@ -1,0 +1,20 @@
+A threat model is a table you can argue with: *asset* (what's valuable),
+*threat* (who/what attacks it), *vector* (how they reach it), *control* (what
+stops them), *residual risk* (what remains). Example — a file export feature:
+
+| asset | threat | vector | control | residual |
+|---|---|---|---|---|
+| user files | traversal read | `..` in name | canonicalize + contain | symlink race |
+| session token | replay | stolen cookie | HTTPS + expiry | device theft |
+| export job | DoS | 10^9-row export | row cap + timeout | slow-loris |
+
+Least privilege is the cross-cutting control: the export job runs as a
+principal that can read user files and NOTHING ELSE — a traversal bug in it
+then reads files the principal could reach anyway (still bad, no longer
+catastrophic). Secrets (DB URLs, API keys) arrive as environment variables,
+never literals; code that logs a secret is a bug even when the secret "was
+only internal".
+
+STRIDE is the checklist vocabulary — Spoofing, Tampering, Repudiation,
+Information disclosure, Denial of service, Elevation of privilege — not a
+substitute for the table, but a prompt that keeps you from missing a column.

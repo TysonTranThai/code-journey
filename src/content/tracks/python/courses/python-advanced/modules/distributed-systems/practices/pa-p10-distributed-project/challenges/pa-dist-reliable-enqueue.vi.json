@@ -1,0 +1,14 @@
+{
+  "title": "Enqueue đáng tin trên mạng không đáng tin",
+  "prompt": "Cài `enqueue_with_retry(queue, payload, max_attempts=5, base=0.01, cap=0.1)`:\n\n- gọi `queue.put(payload)`; `ConnectionError` nghĩa là lần thử thất bại\n- giữa các lần thử, trần backoff `min(cap, base * 2**attempt)` phải được tính (bạn có thể sleep hay không — test đo số lần gọi, không đo thời gian)\n- thành công → trả `attempts_used` (bắt đầu từ 1)\n- dùng hết các lần thử → raise `RuntimeError` với message chứa 'exhausted'\n\n`queue` có thể là bất kỳ đối tượng nào có `.put` — test dùng một cái fail đúng số lần cố định rồi thành công.",
+  "tests": [
+    {
+      "name": "Hồi phục trong ngân sách",
+      "hint": "Mỗi ConnectionError tốn một lần thử; lần thứ 4 thành công."
+    },
+    {
+      "name": "Dùng hết một cách trung thực",
+      "hint": "Từ bỏ ầm ĩ sau khi hết ngân sách; không có thành công giả."
+    }
+  ]
+}

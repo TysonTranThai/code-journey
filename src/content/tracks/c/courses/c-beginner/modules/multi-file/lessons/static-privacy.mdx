@@ -1,0 +1,43 @@
+## Two meanings of static, one idea: private + persistent
+
+On a **function**: visible only within this translation unit.
+
+```c
+static int helper(int x) { return x * 2; }   // nobody outside can link to this
+```
+
+On a **file-scope variable**: visible only within this unit AND lives for the
+whole program run.
+
+```c
+static int hits = 0;     // private counter, persists between calls
+void count_hit(void) { hits++; }
+int hit_count(void) { return hits; }
+```
+
+## Why default-private wins
+
+A function named `helper` without static becomes a global name. Link two .c
+files that both define `helper` and the linker fails: duplicate symbol. With
+`static`, each file's helper is its own — no collision, no accidental coupling.
+
+Rule of thumb: **every helper starts static**; promote to public only when a
+caller genuinely needs it.
+
+## Reusable modules in one file: a "library section"
+
+```c
+/* ===== strlib (the module) ===== */
+static int is_vowel(char c) {
+    return c=='a'||c=='e'||c=='i'||c=='o'||c=='u';
+}
+int count_vowels(const char *s) {          // public
+    int n = 0;
+    for (; *s; s++) n += is_vowel(*s);
+    return n;
+}
+/* ===== end strlib ===== */
+```
+
+Later files/modules (arrays + structs, module 20) build the same shape: a
+private representation, public operations, callers that never peek inside.

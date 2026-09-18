@@ -1,0 +1,14 @@
+## Cổng kiểm tra (mini-build)
+
+Một `NotificationCenter` với hai event:
+
+1. `Published` — `EventHandler<NotificationEventArgs>` raise cho mọi thông
+   báo với (Id, Channel, Message). Handler phải thấy ảnh chụp args; raise
+   khi không ai đăng ký không được ném.
+2. `Filtered` — raise khi `Publish(channel, message, filter)` từ chối một
+   thông báo; `filter` là `Predicate<string>` mà *người gọi* cấp cho từng
+   lần gọi.
+
+Cộng thêm: `UnsubscribeAll()` xóa cả hai danh sách để một center đã giải phóng
+thả hết subscriber. Test chấm đăng ký handler, publish qua filter, hủy đăng
+ký, và khẳng định toàn bộ hành vi quan sát được — kể cả thứ tự.

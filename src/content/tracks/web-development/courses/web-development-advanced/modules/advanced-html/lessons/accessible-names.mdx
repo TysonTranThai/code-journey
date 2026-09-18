@@ -1,0 +1,111 @@
+Every interactive element and landmark has an **accessible name** — the text assistive
+technology uses when announcing it, and the text voice-control users speak to target
+it. Get names wrong and buttons say "button", images say "image", links say "click
+here". Advanced HTML means knowing exactly where a name comes from — and that the
+platform computes it for you more often than you think.
+
+## The name-from-content rule
+
+Native elements compute their own names. You almost never have to *give* a name — you
+have to *provide the content* the name comes from:
+
+```html
+<!-- names itself "Save draft" -->
+<button>Save draft</button>
+
+<!-- names itself "Search" from the label -->
+<label for="q">Search</label>
+<input id="q" name="q">
+
+<!-- names itself "Team photo at offsite" from alt -->
+<img src="team.jpg" alt="Team photo at offsite">
+
+<!-- names itself from its own text -->
+<a href="/pricing">Pricing</a>
+```
+
+This is the **first rule of ARIA** in practice: don't add ARIA to name things that
+already have names. `aria-label` on a `<button>` that already has text is noise — and
+if the two ever disagree, screen readers may announce the mismatch.
+
+## When the name must come from elsewhere: aria-labelledby
+
+Some controls have no visible text: an icon-only close button, a nav landmark, a
+dialog. When another element *on the page* holds the right words — including visually
+hidden text — point at it with `aria-labelledby`:
+
+```html
+<button aria-labelledby="close-label">
+  <svg aria-hidden="true"><path d="…"/></svg>
+</button>
+<span id="close-label" hidden>Close dialog</span>
+```
+
+`aria-labelledby` **replaces** the element's own content as the name source, and it can
+concatenate several ids in order: `aria-labelledby="first last"` reads as one name.
+Use it when the name exists elsewhere; use `aria-label` when no visible text exists
+anywhere and you must supply the name directly:
+
+```html
+<nav aria-label="Footer">…</nav>   <!-- distinguishes it from the main nav -->
+```
+
+Icon inside a labelled button? Mark the decorative SVG `aria-hidden="true"` so it never
+leaks into the name.
+
+## The priority order
+
+When several sources exist, the platform resolves them in a fixed order — `aria-labelledby`
+first, then `aria-label`, then native content (text, `alt`, `<label for>`, `<summary>`,
+`<caption>`, `value` for submits, `title` last). Two consequences worth internalizing:
+
+1. Adding `aria-label` to an element with visible text can **silently change** what
+   screen-reader users hear versus what sighted users see — speech-input users then say
+   the wrong words. Keep the name aligned with visible text.
+2. `title` is the weakest source and should not be your naming strategy.
+
+## Landmark names and form names
+
+Two `<nav>` elements are indistinguishable — "navigation" twice — unless you name one:
+
+```html
+<nav aria-label="Primary">…</nav>
+<nav aria-label="Footer">…</nav>
+```
+
+The same applies to `<section>`/`<article>` regions (borrow a heading with
+`aria-labelledby`, as the architecture lesson showed) and to `<fieldset>`:
+
+```html
+<fieldset>
+  <legend>Shipping address</legend>
+  …
+  <fieldset>
+    <legend>Name</legend>
+    <input aria-label="First"> <input aria-label="Last">
+  </fieldset>
+</fieldset>
+```
+
+The inner inputs become "First, Name, Shipping address" — a full address. That is the
+accessible name pipeline working for you, no ARIA acrobatics.
+
+## What goes wrong
+
+- **`alt=""` on meaningful images**: removes the image's name entirely; screen readers
+  skip it. Reserve empty alt strictly for decoration.
+- **href="/more" links**: "Learn more" five times on a page is five identical,
+  context-free names — give each link its own name ("Learn more about pricing").
+- **ARIA as decoration**: `role="button"` on a `<div>` adds a role but no button
+  behavior — keyboard focus, Enter/Space, disabled semantics all still missing. The
+  native `<button>` had all of it for free.
+- **aria-label on a control that already has visible text** — the classic
+  name-mismatch bug speech users hit.
+
+## Practice and where this connects
+
+The practice set drills name computation against tricky controls — icon buttons,
+labelled regions, a fieldset form — and a debugging challenge where every name is
+subtly broken. Accessible names are also the entry point to the accessibility
+engineering section later in this course, and to component work: a component whose
+names are wrong is broken no matter how clean its code is.

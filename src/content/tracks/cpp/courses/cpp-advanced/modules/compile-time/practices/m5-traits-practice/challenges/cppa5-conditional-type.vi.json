@@ -1,0 +1,18 @@
+{
+  "title": "std::conditional_t chọn kiểu",
+  "prompt": "Cài `Storage<T`> mà `value_type` là `T` với kiểu nhỏ (<= 8 byte) nhưng `std::shared_ptr<T>` với kiểu lớn — qua `std::conditional_t` — cùng alias `Scalar<T>` chuyển kiểu nguyên sang long long, kiểu chấm động sang double.",
+  "tests": [
+    {
+      "name": "kiểu nhỏ lưu trực tiếp",
+      "hint": "using value_type = std::conditional_t<sizeof(T) <= 8, T, std::shared_ptr<T>>;"
+    },
+    {
+      "name": "kiểu lớn lưu qua shared_ptr",
+      "hint": "Cùng conditional — sizeof(Big) là 64 nên nhánh shared_ptr được chọn."
+    },
+    {
+      "name": "alias Scalar đổi theo tính nguyên",
+      "hint": "template <class T> using Scalar = std::conditional_t<std::is_integral_v<T>, long long, double>;"
+    }
+  ]
+}

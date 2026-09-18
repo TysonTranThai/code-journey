@@ -1,0 +1,37 @@
+A page whose filters live only in JavaScript memory dies on refresh and cannot
+be shared. The professional move: put view state in the **URL**, which is
+shareable, bookmarkable, and survives reloads for free.
+
+## Reading the URL
+
+```js
+const url = new URL(window.location.href);
+const q = url.searchParams.get("q"); // ?q=ada
+const page = Number(url.searchParams.get("page") ?? "1");
+url.searchParams.set("q", input.value); // build a new URL
+```
+
+`URLSearchParams` handles encoding for you — never concatenate query
+strings by hand.
+
+## Writing history without navigation
+
+```js
+window.history.pushState({}, "", url);
+```
+
+`pushState` changes the address bar and adds an entry — **no page load
+happens**. The `popstate` event fires when the user moves through
+history (back/forward):
+
+```js
+window.addEventListener("popstate", () => {
+  renderFromURL(); // re-read the URL and redraw
+});
+```
+
+## The loop
+
+Every state change: update the URL (pushState), then render **from** the URL.
+Every back/forward: render **from** the URL. One reader of truth, one writer —
+refresh, share, and back-button all behave.

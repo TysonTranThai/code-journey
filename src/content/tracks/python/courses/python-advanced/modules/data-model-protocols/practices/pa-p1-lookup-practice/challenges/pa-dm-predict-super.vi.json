@@ -1,0 +1,14 @@
+{
+  "title": "Dự đoán chuỗi MRO",
+  "prompt": "Chưa chạy thì đoán trước (rồi chạy thử!), cài các class sao cho `chain()` trả về đúng thứ tự gọi `who()` xuyên qua hệ thứ tự khi gọi trên instance `D`.\n\nCác class: A định nghĩa `who` trả về 'A' và ghi vào một danh sách dùng chung. B(A) ghi đè `who` để ghi 'B' rồi `super().who()`. C(A) ghi đè `who` để ghi 'C' rồi `super().who()`. D(B, C) ghi đè `who` để ghi 'D' rồi `super().who()`.\n\n`chain()` phải xóa log, gọi `D().who()`, và trả về danh sách — kỳ vọng `['D', 'B', 'C', 'A']` theo MRO D→B→C→A.",
+  "tests": [
+    {
+      "name": "super() hợp tác theo MRO",
+      "hint": "super() đi theo MRO của class *của instance*, không phải cha theo văn bản."
+    },
+    {
+      "name": "MRO được linearize như kỳ vọng",
+      "hint": "C3 linearization của D(B, C) đặt B trước C, cả hai trước A."
+    }
+  ]
+}

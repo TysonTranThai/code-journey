@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m4-rule-of-three",
+  "title": "Rule of Three: a deep-copying Blob",
+  "prompt": "Implement `class Blob` owning `int* data_; std::size_t n_;`: constructor `Blob(std::size_t n)` zero-initializes heap memory, destructor frees it, copy constructor deep-copies, and copy assignment deep-copies with a self-assignment guard. Provide `std::size_t size() const` and `int& at(std::size_t)`. The test mutates a copy and checks the original is untouched (deep, not shallow).",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <cstring>\n#include <iostream>\n\nclass Blob {\n    // ctor, dtor, copy ctor, copy assign\n};\n",
+  "tests": [
+    {
+      "name": "deep-copy",
+      "code": "Blob a{3};\na.at(0) = 42;\nBlob b{a};\nb.at(0) = 7;\nCHECK_EQ(a.at(0), 42);\nCHECK_EQ(b.at(0), 7);",
+      "hint": "Copies must not alias the same heap buffer."
+    },
+    {
+      "name": "assign",
+      "code": "Blob a{2}, b{5};\na.at(1) = 9;\nb = a;\nb.at(1) = 100;\nCHECK_EQ(a.at(1), 9);",
+      "hint": "Assignment deep-copies too."
+    },
+    {
+      "name": "self",
+      "code": "Blob a{2};\na.at(0) = 5;\na = a;\nCHECK_EQ(a.at(0), 5);",
+      "hint": "Self-assignment must be harmless."
+    }
+  ],
+  "level": "real-world"
+}

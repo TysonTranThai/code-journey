@@ -1,0 +1,21 @@
+{
+  "id": "javb-m11-finally-flow",
+  "title": "The finally audit log",
+  "prompt": "Write `tryResource(boolean fail)` that appends to a `StringBuilder` exactly: `\"open;\"` always; then, if `fail` is true, throw `IllegalStateException`; otherwise append `\"work;\"` then `\"close;\"`. Add `\"catch;\"` in a catch block and `\"finally;\"` in a finally block. Return the log **once, at the very end** - after the finally block (a `return` inside try/catch escapes before `finally` can append).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String tryResource(boolean fail) {\n        return \"\";\n    }\n}\n",
+  "tests": [
+    {
+      "name": "success path order",
+      "code": "\nCjTestBase.checkEq(Solution.tryResource(false), \"open;work;close;finally;\",\n    \"success: finally still runs after return\");\n",
+      "hint": "Return once, after the finally block - not inside try or catch."
+    },
+    {
+      "name": "failure path order",
+      "code": "\nCjTestBase.checkEq(Solution.tryResource(true), \"open;catch;finally;\",\n    \"failure: catch then finally\");\n",
+      "hint": "On failure the try block stops at the throw - work/close never append."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,30 @@
+Three adapters wrap a container and expose exactly one discipline. They are
+not containers themselves — you cannot iterate a `stack`.
+
+```cpp
+#include <stack>
+#include <queue>
+
+std::stack<int> s;   // LIFO: push, pop, top          (defaults to deque)
+std::queue<int> q;   // FIFO: push, pop, front, back  (defaults to deque)
+
+#include <queue>
+std::priority_queue<int> pq;  // largest pops first by default
+```
+
+`priority_queue` is a heap facade, not a sorted list: `push` is O(log n),
+`top` is O(1), but there is no iteration and no "update" — you push and pop.
+
+A min-heap is spelled with the comparator form:
+
+```cpp
+#include <vector>
+#include <queue>
+#include <functional>
+
+std::priority_queue<int, std::vector<int>, std::greater<int>> min_heap;
+```
+
+When the ordering key is part of the value, give the element an
+`operator<` (or pass a comparator) — the adapter then ranks whole objects.
+That is exactly the mechanism Module 4's operator overloading feeds into.

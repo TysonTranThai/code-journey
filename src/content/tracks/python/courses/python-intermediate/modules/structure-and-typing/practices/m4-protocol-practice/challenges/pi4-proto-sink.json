@@ -1,0 +1,21 @@
+{
+  "id": "pi4-proto-sink",
+  "title": "Notifiable Protocol",
+  "prompt": "Define a @runtime_checkable Protocol named Notifiable with method send(message: str) -> None. Then implement class EmailSink with send appending to its own .sent list. backup(n) below must work with any Notifiable.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "from typing import Protocol, runtime_checkable\n\n@runtime_checkable\nclass Notifiable(Protocol):\n    pass\n\nclass EmailSink:\n    def __init__(self):\n        self.sent = []\n\ndef notify_all(sinks, message):\n    pass\n",
+  "tests": [
+    {
+      "name": "email sink records",
+      "code": "s = EmailSink()\nnotify_all([s], 'hi')\nassert s.sent == ['hi']",
+      "hint": "notify_all calls send on each sink."
+    },
+    {
+      "name": "any object with send works",
+      "code": "class Log:\n    def __init__(self):\n        self.lines = []\n    def send(self, m):\n        self.lines.append(m)\nl = Log()\nnotify_all([l], 'x')\nassert l.lines == ['x']",
+      "hint": "Duck typing: no inheritance required."
+    }
+  ],
+  "level": "independent"
+}

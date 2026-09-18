@@ -1,0 +1,26 @@
+{
+  "id": "cppa1-init-narrowing",
+  "title": "Braces Reject Narrowing",
+  "prompt": "Complete `Config` with `name` (std::string, default \"unset\"), `port` (int, default 0), and `tags` (vector<string>, default empty), then implement `int truncateToInt(double d)` that compiles **only** because it avoids brace narrowing.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <vector>\n\nstruct Config {\n    // TODO: add the three members with default member initializers\n};\n\nint truncateToInt(double d);   // must not use braces around d\n",
+  "tests": [
+    {
+      "name": "defaults apply",
+      "code": "Config c;\nCHECK_EQ(c.name, std::string(\"unset\"));\nCHECK_EQ(c.port, 0);\nCHECK_EQ(c.tags.size(), std::size_t{0});",
+      "hint": "Default member initializers: std::string name{\"unset\"}; int port{0}; std::vector<std::string> tags{};"
+    },
+    {
+      "name": "list-init with values",
+      "code": "Config c{\"api\", 8080, {\"a\", \"b\"}};\nCHECK_EQ(c.port, 8080);\nCHECK_EQ(c.tags.size(), std::size_t{2});",
+      "hint": "Brace/aggregate initialization sets every member in declaration order."
+    },
+    {
+      "name": "truncate avoids narrowing",
+      "code": "CHECK_EQ(truncateToInt(3.9), 3);\nCHECK_EQ(truncateToInt(-1.5), -1);",
+      "hint": "static_cast<int>(d) — the explicit cast is the honest way to narrow without braces."
+    }
+  ]
+}

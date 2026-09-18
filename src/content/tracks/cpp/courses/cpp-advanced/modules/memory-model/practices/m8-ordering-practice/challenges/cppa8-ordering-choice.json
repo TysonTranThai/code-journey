@@ -1,0 +1,26 @@
+{
+  "id": "cppa8-ordering-choice",
+  "title": "Choose the Ordering",
+  "prompt": "Implement three functions over one `std::atomic<unsigned>`: `bumpRelaxed` (statistics: relaxed is enough), `publishAndSpin` (release store, acquire load on a bool+int pair), and `seqTotal` (fetch_add with seq_cst, return the previous value).",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <atomic>\n\n// Statistics increment — only atomicity needed.\nvoid bumpRelaxed(std::atomic<unsigned>& counter);\n\n// Publish: set value first, then release the flag.\nvoid publishAndSpin(std::atomic<bool>& flag, int& value, int v);\n\n// Consume: acquire the flag, then read the value.\nint consumeAfter(std::atomic<bool>& flag, const int& value);\n\n// seq_cst fetch_add; return the value BEFORE the add.\nunsigned seqTotal(std::atomic<unsigned>& counter);\n",
+  "tests": [
+    {
+      "name": "relaxed bump accumulates",
+      "code": "std::atomic<unsigned> c{0};\nfor (int i = 0; i < 5; ++i) bumpRelaxed(c);\nCHECK_EQ(c.load(), 5u);",
+      "hint": "counter.fetch_add(1, std::memory_order_relaxed);"
+    },
+    {
+      "name": "publish/consume round-trips",
+      "code": "std::atomic<bool> f{false};\nint v = 0;\npublishAndSpin(f, v, 99);\nCHECK_EQ(consumeAfter(f, v), 99);",
+      "hint": "publishAndSpin: value = v; flag.store(true, std::memory_order_release);  consumeAfter: while (!flag.load(std::memory_order_acquire)) {} return value;"
+    },
+    {
+      "name": "seq_cst returns the previous",
+      "code": "std::atomic<unsigned> s{10};\nCHECK_EQ(seqTotal(s), 10u);\nCHECK_EQ(seqTotal(s), 11u);\nCHECK_EQ(s.load(), 12u);",
+      "hint": "return counter.fetch_add(1, std::memory_order_seq_cst); — fetch_add returns the OLD value."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "cint-checkpoint-m10-task",
+  "title": "Opcode Table via X-Macros",
+  "prompt": "Build a complete opcode subsystem from one X-macro list. The\nboilerplate provides:\n\n```c\n#define OPS \\\n  X(ADD, 1) \\\n  X(SUB, 2) \\\n  X(MUL, 3)\n```\n\nImplement (using OPS — the enum, dispatch, and name lookup must all be\ngenerated from it):\n\n```c\n/* OP_ADD=1, OP_SUB=2, OP_MUL=3 via pasting, plus OP_COUNT sentinel */\n/* applies op to a and b; returns 0 and fills *out; -1 on bad op/args */\nint op_apply(int op, int a, int b, int *out);\n/* \"ADD\" -> OP_ADD; -1 if unknown */\nint op_from_name(const char *name);\n```\n\nRules: SUB is a-b; MUL is a*b; arithmetic must not overflow (use long\ninternally, return -1 if the true result does not fit int).",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\n#include <string.h>\n#define OPS \\\n  X(ADD, 1) \\\n  X(SUB, 2) \\\n  X(MUL, 3)\n\n#define X(id, code) OP_##id = code,\nenum { OPS OP_COUNT };\n#undef X\n\nint op_apply(int op, int a, int b, int *out);\nint op_from_name(const char *name);\n",
+  "tests": [
+    {
+      "name": "one list, three views",
+      "code": "\nint r;\nCHECK_EQ(OP_ADD, 1); CHECK_EQ(OP_SUB, 2); CHECK_EQ(OP_MUL, 3);\nCHECK_EQ(OP_COUNT, 4);\nCHECK_EQ(op_apply(OP_ADD, 7, 5, &r), 0); CHECK_EQ(r, 12);\nCHECK_EQ(op_apply(OP_SUB, 7, 5, &r), 0); CHECK_EQ(r, 2);\nCHECK_EQ(op_apply(OP_MUL, 7, 5, &r), 0); CHECK_EQ(r, 35);\nCHECK_EQ(op_apply(99, 1, 2, &r), -1);\nCHECK_EQ(op_apply(OP_ADD, 1, 2, NULL), -1);\nCHECK_EQ(op_apply(OP_MUL, INT_MAX, 2, &r), -1);   /* overflow rejected */\nCHECK_EQ(op_from_name(\"ADD\"), OP_ADD);\nCHECK_EQ(op_from_name(\"MUL\"), OP_MUL);\nCHECK_EQ(op_from_name(\"DIV\"), -1);\nCHECK_EQ(op_from_name(NULL), -1);\n",
+      "hint": "Name lookup: a static table built with #id inside another X pass. Overflow: compute in long long, compare against INT_MIN/INT_MAX."
+    }
+  ]
+}

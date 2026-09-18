@@ -1,0 +1,23 @@
+Dependency injection không cần framework
+
+DI nghĩa là các phụ thuộc đến từ bên ngoài thay vì được dựng bên trong.
+Python không cần framework cho việc này — một `__init__` chính là container:
+
+```python
+class ReportService:
+    def __init__(self, repo, clock, mailer):     # all seams visible
+        self._repo, self._clock, self._mailer = repo, clock, mailer
+```
+
+- **Constructor injection** là mặc định: cộng tác viên bắt buộc là tham số.
+  Mọi thứ đối tượng cần đều hiện hữu trong chữ ký.
+- **Lõi hàm thuần, vỏ mệnh lệnh**: giữ các quyết định trong hàm thuần
+  `(data) -> data`, đẩy I/O ra rìa. Vỏ mỏng và nhàm chán; lõi thì dễ kiểm thử
+  vô cùng.
+- **Composition root**: một nơi duy nhất (thường là `main()` hay một factory
+  nhỏ) dựng đối tượng thật và nối chúng. Test dựng một đồ thị khác bằng fake.
+- **Đồng hồ, RNG, UUID factory là phụ thuộc.** Logic phụ thuộc thời gian chỉ
+  khó kiểm thử vì `datetime.now()` bị giấu bên trong. Hãy inject `clock` và
+  truyền một fake cố định trong test.
+- Khi đồ thị dựng对象 phình to, một hàm factory nhỏ thắng mọi DI framework:
+  tường minh, grep được, debug được.

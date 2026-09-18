@@ -1,0 +1,31 @@
+{
+  "id": "cppi-m10-validate-line",
+  "title": "Throw the right exception type",
+  "prompt": "Implement `int validate_line(const std::string& line)` interpreting the line as a non-negative integer: throw `std::invalid_argument` for an empty line, a leading '-', or any non-digit; throw `std::out_of_range` when the parsed value exceeds 100; otherwise return the value.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <stdexcept>\n#include <string>\n#include <iostream>\n\n// int validate_line(const std::string& line)\n",
+  "tests": [
+    {
+      "name": "valid",
+      "code": "CHECK_EQ(validate_line(\"42\"), 42);\nCHECK_EQ(validate_line(\"100\"), 100);",
+      "hint": "Boundary: 100 itself is legal."
+    },
+    {
+      "name": "invalid-arg",
+      "code": "bool threw = false;\ntry { validate_line(\"-5\"); } catch (const std::invalid_argument&) { threw = true; }\nCHECK(threw);",
+      "hint": "A leading '-' is invalid_argument, not out_of_range."
+    },
+    {
+      "name": "out-of-range",
+      "code": "bool threw = false;\ntry { validate_line(\"101\"); } catch (const std::out_of_range&) { threw = true; }\nCHECK(threw);",
+      "hint": "101 parses but leaves the domain: out_of_range."
+    },
+    {
+      "name": "exact-type",
+      "code": "bool wrong = false;\ntry { validate_line(\"abc\"); } catch (const std::out_of_range&) { wrong = true; } catch (const std::invalid_argument&) { wrong = false; }\nCHECK(!wrong);",
+      "hint": "Type discipline: 'abc' must land in invalid_argument."
+    }
+  ],
+  "level": "independent"
+}

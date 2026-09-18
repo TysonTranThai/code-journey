@@ -1,0 +1,20 @@
+{
+  "id": "i2-url-encode",
+  "title": "URL Parameter Encoder",
+  "prompt": "Write `buildSearchUrl(base, params)` — params is an object; return base + \"?\" + encoded query string where keys and values run through encodeURIComponent and pairs join with \"&\". An empty params object returns base unchanged.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function buildSearchUrl(base, params) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "encodes keys and values",
+      "code": "const fn = new Function(code + \"\\nreturn { buildSearchUrl };\");\nconst { buildSearchUrl } = fn();\nconst u = buildSearchUrl(\"/search\", { q: \"coffee & tea\", page: \"2\" });\nif (u !== \"/search?q=coffee%20%26%20tea&page=2\") throw new Error(\"Space becomes %20, & becomes %26.\");\n",
+      "hint": "encodeURIComponent encodes space as %20."
+    },
+    {
+      "name": "empty params return base",
+      "code": "const fn = new Function(code + \"\\nreturn { buildSearchUrl };\");\nconst { buildSearchUrl } = fn();\nif (buildSearchUrl(\"/search\", {}) !== \"/search\") throw new Error(\"No params, no ?.\");\n",
+      "hint": "Guard the empty case before joining."
+    }
+  ]
+}

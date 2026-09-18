@@ -1,0 +1,21 @@
+{
+  "id": "csi-p10-bounded-channel",
+  "title": "The Bounded Channel",
+  "prompt": "Implement a FIFO channel with a capacity: TryProduce returns false when full, TryConsume returns null when empty, Count reports items waiting.\n\n```csharp\npublic sealed class BoundedChannel\n{\n    public BoundedChannel(int capacity);\n    public bool TryProduce(string item);   // false when at capacity\n    public string? TryConsume();           // oldest item, or null when empty\n    public int Count { get; }\n}\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "capacity enforced",
+      "code": "\nvar ch = new Solution.BoundedChannel(3);\nCj.Eq(ch.TryProduce(\"a\"), true, \"1st fits\");\nCj.Eq(ch.TryProduce(\"b\"), true, \"2nd fits\");\nCj.Eq(ch.TryProduce(\"c\"), true, \"3rd fits\");\nCj.Eq(ch.TryProduce(\"d\"), false, \"4th rejected at capacity\");\nCj.Eq(ch.Count, 3, \"count unchanged after rejected produce\");\n",
+      "hint": "Queue<string> + count check before enqueue (lock-protected if you like — behavior is what's graded)."
+    },
+    {
+      "name": "FIFO drain",
+      "code": "\nvar ch = new Solution.BoundedChannel(2);\nch.TryProduce(\"first\"); ch.TryProduce(\"second\");\nCj.Eq(ch.TryConsume(), \"first\", \"oldest first\");\nCj.Eq(ch.TryConsume(), \"second\", \"then next\");\nCj.Eq(ch.TryConsume() is null, true, \"null when empty\");\nCj.Eq(ch.TryProduce(\"after\"), true, \"capacity freed by consumes\");\n",
+      "hint": "Dequeue when Count > 0; freed capacity allows new produces."
+    }
+  ],
+  "level": "guided"
+}

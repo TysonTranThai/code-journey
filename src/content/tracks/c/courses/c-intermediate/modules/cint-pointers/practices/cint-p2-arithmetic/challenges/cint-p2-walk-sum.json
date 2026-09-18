@@ -1,0 +1,16 @@
+{
+  "id": "cint-p2-walk-sum",
+  "title": "Walk, Don't Index",
+  "prompt": "Implement two sums over an int array using ONLY pointer arithmetic —\nno `[ ]` indexing anywhere in your implementation:\n\n```c\nlong long sum_walk(const int *a, size_t n);      /* forward walk */\nlong long sum_reverse(const int *a, size_t n);   /* walk from one-past-end backwards */\n```\n\nBoth return 0 for NULL or n == 0. Use `(a + n)` as the one-past-the-end pointer.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "forward and reverse walks",
+      "code": "\nint a1[] = {1, 2, 3, 4};\nCHECK_EQ(sum_walk(a1, 4), 10);\nCHECK_EQ(sum_reverse(a1, 4), 10);\nint a2[] = {5};\nCHECK_EQ(sum_walk(a2, 1), 5);\nCHECK_EQ(sum_walk(NULL, 0), 0);\nCHECK_EQ(sum_reverse(NULL, 0), 0);\n",
+      "hint": "for (const int *p = a, *e = a + n; p != e; ++p) — and start reverse from a + n going down to a."
+    }
+  ],
+  "level": "imitation"
+}

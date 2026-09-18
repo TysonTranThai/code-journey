@@ -1,0 +1,26 @@
+## Sealed hierarchies and exhaustive switches
+
+Before sealed classes, an interface had unbounded implementations, so a
+switch over its subtypes always needed a `default`. Sealed interfaces make
+the set of implementations finite and compiler-checked:
+
+```java
+public sealed interface Shape permits Circle, Rect {}
+public record Circle(double r) implements Shape {}
+public record Rect(double w, double h) implements Shape {}
+
+static double area(Shape s) {
+    return switch (s) {                 // pattern matching for switch
+        case Circle c -> Math.PI * c.r() * c.r();
+        case Rect r  -> r.w() * r.h();
+    };                                  // no default — compiler knows all cases
+}
+```
+
+Add a third permit without updating the switch and the code **does not
+compile** — the compiler turns a forgotten case into a build error instead
+of a runtime surprise.
+
+Choose sealed when the set of variants is *your* domain decision (shapes,
+payment methods, parse results). Keep interfaces open when third parties
+should be able to plug in.

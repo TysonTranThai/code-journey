@@ -1,0 +1,21 @@
+{
+  "id": "pa-test-property-engine",
+  "title": "Check and shrink",
+  "prompt": "Implement two functions of a mini property engine:\n\n- `check_roundtrip_codec(encode, decode, samples)` — for each sample, `decode(encode(x))` must equal `x` (any exception counts as failure). Returns `(passed, first_failure)` — the failing sample or `None`.\n- `shrink(samples, bad)` — minimize a failing list: repeatedly try removing one element and keep the removal when the property (identity round-trip via `check_roundtrip_codec`) still fails; stop when no single removal keeps it failing or one element remains. Returns the minimal list.\n\nShrinking is what turns 'fails on this 50-element monster' into 'fails on `[\"\\x00\"]`' — the bug report the author can act on.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: check_roundtrip_codec + shrink",
+  "tests": [
+    {
+      "name": "clean codec passes, broken codec fails",
+      "code": "ok, fail = check_roundtrip_codec(lambda x: x.upper(), lambda x: x.lower(), ['ab', 'Cd'])\nassert ok is False and fail == 'Cd'   # lower(upper('Cd')) == 'cd' != 'Cd'\nok, fail = check_roundtrip_codec(lambda x: x, lambda x: x, ['ab', 'Cd'])\nassert ok is True and fail is None\nprint('ok')",
+      "hint": "The property catches what an example test never imagined."
+    },
+    {
+      "name": "shrinking finds the minimal failing list",
+      "code": "def bad_encode(items):\n    return [x for x in items if x != 7]  # drops 7s: round-trip fails on any list containing one\nbad = [1, 2, 7, 3]\nminimal = shrink(bad, bad)\nassert minimal == [7] or (7 in minimal and len(minimal) == 1), minimal\nprint('ok')",
+      "hint": "Remove elements while the property still fails; one 7 remains."
+    }
+  ],
+  "level": "combination"
+}

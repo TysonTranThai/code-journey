@@ -1,0 +1,48 @@
+## Năm bài, năm thủ thuật chuyển giao được
+
+### Đếm vượt ngưỡng — O(n), một lượt
+
+```cpp
+int cnt = 0;
+for (long long x : a) if (x > t) ++cnt;
+```
+
+### Max thứ hai — theo dõi hai giá trị
+
+```cpp
+long long best = LLONG_MIN, second = LLONG_MIN;
+for (long long x : a) {
+    if (x > best) { second = best; best = x; }
+    else if (x > second && x != best) second = x;
+}
+```
+
+Thứ tự quan trọng: thăng hạng trước, rồi mới so với `second`. Trùng giá
+trị khiến `x != best` cần thiết.
+
+### Loại trùng trong mảng đã sắp — con trỏ ghi
+
+Với mảng **đã sắp**, giữ giá trị duy nhất tại chỗ bằng chỉ số ghi:
+
+```cpp
+sort(a.begin(), a.end());
+int w = 0;
+for (int i = 0; i < n; ++i)
+    if (i == 0 || a[i] != a[w - 1]) a[w++] = a[i];
+// a[0 .. w-1] là các giá trị duy nhất; w = số phần tử khác nhau
+```
+
+Đây là lõi "đếm phân biệt" tại chỗ (module sau có cách mảng đánh dấu).
+
+### Đảo bằng hai con trỏ
+
+```cpp
+for (int i = 0, j = n - 1; i < j; ++i, --j) swap(a[i], a[j]);
+```
+
+Hai chỉ số tiến vào nhau — mẫu hình này quay lại ở module hai con trỏ.
+
+### Prefix max — nhà vô địch đang chạy
+
+`pre[i] = max(pre[i-1], a[i])` — một dòng lặp trở thành viên gạch cho
+nhiều bài khó hơn.

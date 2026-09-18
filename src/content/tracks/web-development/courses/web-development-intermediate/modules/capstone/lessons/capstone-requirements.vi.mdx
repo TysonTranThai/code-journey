@@ -1,0 +1,32 @@
+## Đọc yêu cầu như một kỹ sư
+
+Một yêu cầu là lời hứa mà sản phẩm đưa ra. "Người dùng có thể đăng ký bằng email và mật khẩu" ngầm bao gồm: quy tắc định dạng email, chính sách mật khẩu, kiểm tra trùng email, lớp lưu trữ, trạng thái lỗi "email đã tồn tại", và phiên đăng nhập sau đó. **Hành động kỹ sư đầu tiên của bạn là gỡ lời hứa đó ra thành các quyết định.**
+
+Với mỗi yêu cầu, hãy tra hỏi bằng bốn câu hỏi:
+
+1. **Dữ liệu**: cần lưu gì, hình dạng nào, ràng buộc nào? (email duy nhất, ticket thuộc về một user)
+2. **Hành vi**: các luồng là gì, và điều gì xảy ra trên mọi đường lỗi?
+3. **Giao diện**: người dùng thấy gì, làm gì, được báo gì — kể cả khi mọi thứ hỏng?
+4. **Ranh giới**: cái gì ở client, cái gì qua mạng, cái gì chỉ server mới được quyết?
+
+## Dự án: ServiceDesk
+
+Bạn sẽ xây một hệ thống ticket nội bộ nhỏ. Yêu cầu, nguyên văn:
+
+> **ServiceDesk — yêu cầu**
+>
+> - Staff có thể đăng ký và đăng nhập bằng email và mật khẩu tối thiểu 8 ký tự.
+> - Staff có thể tạo ticket với **tiêu đề**, **mô tả**, và **độ ưu tiên** (low / medium / high).
+> - Danh sách ticket hiển thị mới nhất trước kèm tên tác giả; có thể lọc theo độ ưu tiên.
+> - Chỉ **tác giả** của ticket mới được đóng hoặc sửa; khi đóng ghi lại thời điểm.
+> - Trang danh sách tải qua API không reload cả trang và có trạng thái loading.
+
+Chú ý những điều yêu cầu **không** nói cho bạn: schema, endpoint, định dạng lỗi, kiến trúc CSS, chiến lược validation, kế hoạch triển khai. Tất cả là của bạn. Đó chính là công việc.
+
+## Từ yêu cầu đến backlog quyết định
+
+Biến mỗi yêu cầu thành một quyết định đánh số, có phương án và lựa chọn, ví dụ:
+
+- **R2 (tạo ticket)** → dữ liệu: bảng `tickets` (id, author_id, title, description, priority CHECK IN, status, created_at, closed_at nullable) → hành vi: validation ở cả server lẫn client, 400 kèm lỗi theo trường → giao diện: nút submit bị vô hiệu khi đang gửi, lỗi hiện ngay tại trường → ranh giới: author_id lấy từ session, không bao giờ lấy từ body của request.
+
+Hãy viết backlog trước khi viết code. Ở bài học sau bạn sẽ "ép" nó chịu áp lực, còn trong bộ luyện tập bạn sẽ ghi lại quyết định thật của mình — chúng được chấm điểm.

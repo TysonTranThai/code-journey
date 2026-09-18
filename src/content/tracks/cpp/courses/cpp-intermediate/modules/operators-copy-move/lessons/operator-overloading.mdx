@@ -1,0 +1,35 @@
+Operators are ordinary functions with special names. Overloading them lets
+your types read like the built-ins — but only when the meaning is obvious.
+
+```cpp
+class Money {
+public:
+    explicit Money(long cents) : cents_{cents} {}
+    long cents() const { return cents_; }
+
+private:
+    long cents_;
+};
+
+inline Money operator+(const Money& a, const Money& b) {
+    return Money{a.cents() + b.cents()};
+}
+
+inline bool operator==(const Money& a, const Money& b) {
+    return a.cents() == b.cents();
+}
+```
+
+## The decision procedure
+
+1. Would the operator's meaning be **obvious** to any reader? `Money +
+   Money` yes; `Money << int` no.
+2. Prefer writing it as a **non-member** on top of the public interface
+   (keeps encapsulation; enables symmetric conversions).
+3. Members are required only for `=`, `()`, `[]`, `->`.
+4. Semantic families go together: define `==` and `!=` consistently (C++20
+   can synthesize `!=` from `==`); define `<` to match `==`'s ordering idea.
+
+If an operator's semantics would surprise, use a named function instead —
+`add_days(date, 3)` beats a mysterious `date + 3` for a `Date` where the
+calendar rules are nontrivial.

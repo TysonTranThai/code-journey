@@ -1,0 +1,13 @@
+## Cổng kiểm tra (mini-build)
+
+Một `DataStore<TId, TEntity>` với `TEntity : Entity<TId>` và
+`TId : IComparable<TId>`:
+
+- `Add(TEntity)` / `Get(TId)` (null khi thiếu) / `Delete(TId)` (bool).
+- `AllOrdered()` trả về các entity sắp theo Id — ràng buộc làm việc sắp thứ
+  tự khả thi không cần ép kiểu.
+- `FirstMatching(Predicate<TEntity>)` trả về `TEntity?` (default khi không có).
+
+Kiểu hỗ trợ: `public abstract class Entity<TId> { public abstract TId Id { get; } }`.
+Test chấm dẫn hai kiểu entity khác nhau qua một kiểu kho — đó là toàn bộ ý
+nghĩa của thiết kế generic.

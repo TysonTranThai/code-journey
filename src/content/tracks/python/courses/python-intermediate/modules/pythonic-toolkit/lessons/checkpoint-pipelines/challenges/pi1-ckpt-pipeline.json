@@ -1,0 +1,30 @@
+{
+  "id": "pi1-ckpt-pipeline",
+  "title": "Transaction Summarizer",
+  "prompt": "Implement summarize(transactions) — each item is a dict with 'category' and 'amount'. Return a list of (category, total) tuples counting ONLY positive amounts, sorted by total descending; ties broken alphabetically by category.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "def summarize(transactions):\n    pass\n",
+  "tests": [
+    {
+      "name": "aggregates positive amounts only",
+      "code": "tx = [{\"category\": \"food\", \"amount\": 10}, {\"category\": \"food\", \"amount\": 5}, {\"category\": \"fun\", \"amount\": -3}]\nassert summarize(tx) == [(\"food\", 15)]",
+      "hint": "Skip negative amounts, then sum per category."
+    },
+    {
+      "name": "sorted by total descending",
+      "code": "tx = [{\"category\": \"a\", \"amount\": 1}, {\"category\": \"b\", \"amount\": 9}]\nassert summarize(tx) == [(\"b\", 9), (\"a\", 1)]",
+      "hint": "Rank by total, highest first."
+    },
+    {
+      "name": "ties are alphabetical",
+      "code": "tx = [{\"category\": \"b\", \"amount\": 5}, {\"category\": \"a\", \"amount\": 5}]\nassert summarize(tx) == [(\"a\", 5), (\"b\", 5)]",
+      "hint": "Sort key should be (-total, category) or two passes."
+    },
+    {
+      "name": "empty input",
+      "code": "assert summarize([]) == []",
+      "hint": "No transactions → empty summary."
+    }
+  ]
+}

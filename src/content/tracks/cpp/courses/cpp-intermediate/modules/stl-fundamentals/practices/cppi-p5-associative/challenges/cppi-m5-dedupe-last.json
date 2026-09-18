@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m5-dedupe-last",
+  "title": "Deduplicate keeping the last occurrence",
+  "prompt": "Implement `std::vector<std::string> dedupe_last(const std::vector<std::string>& v)` removing duplicates so each value appears once — at the position of its LAST occurrence, preserving overall order. Example: {\"a\",\"b\",\"a\",\"c\"} becomes {\"b\",\"a\",\"c\"}. A single index map plus one pass is enough.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <unordered_map>\n#include <vector>\n#include <iostream>\n\n// std::vector<std::string> dedupe_last(const std::vector<std::string>& v)\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "auto r = dedupe_last({\"a\",\"b\",\"a\",\"c\"});\nCHECK_EQ(r.size(), 3);\nCHECK_EQ(r[0], std::string(\"b\"));\nCHECK_EQ(r[1], std::string(\"a\"));\nCHECK_EQ(r[2], std::string(\"c\"));",
+      "hint": "\"a\" survives at its last position; earlier copy is dropped."
+    },
+    {
+      "name": "no-duplicates",
+      "code": "auto r = dedupe_last({\"x\",\"y\"});\nCHECK_EQ(r.size(), 2);\nCHECK_EQ(r[0], std::string(\"x\"));",
+      "hint": "Nothing to remove."
+    },
+    {
+      "name": "all-same",
+      "code": "auto r = dedupe_last({\"z\",\"z\",\"z\"});\nCHECK_EQ(r.size(), 1);\nCHECK_EQ(r[0], std::string(\"z\"));",
+      "hint": "The last occurrence is also the only survivor."
+    }
+  ],
+  "level": "independent"
+}

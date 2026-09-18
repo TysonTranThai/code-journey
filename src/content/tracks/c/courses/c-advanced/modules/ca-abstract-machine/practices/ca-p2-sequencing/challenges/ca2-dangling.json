@@ -1,0 +1,26 @@
+{
+  "id": "ca2-dangling",
+  "title": "Read Inside the Lifetime",
+  "prompt": "The helper below is already in your editor — and it is deliberately buggy:\n \n```c\nstatic int g_probe = 7;\nstatic int *leak_local(void) { int local = g_probe; return &local; }\n```\n \nThe pointer it returns is *indeterminate* the moment `local` dies: dereferencing it is UB, and even *comparing* it (say, `leak_local() != 0`) is UB — the optimizer exploits that and folds the check away. Never touch a dangling value. Implement `int safe_read(void)`: the defined counterpart — take the address of an automatic `int` initialized from `g_probe`, dereference the pointer *while the object is alive*, and return the value it reads.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstatic int g_probe = 7;\nstatic int *leak_local(void) { int local = g_probe; return &local; }\n",
+  "tests": [
+    {
+      "name": "defined read",
+      "code": "CHECK_EQ(safe_read(), 7);",
+      "hint": "p = &local; return *p; — the read happens before the block ends, so it is perfectly defined."
+    },
+    {
+      "name": "matches the probe",
+      "code": "CHECK_EQ(safe_read(), g_probe);",
+      "hint": "The defined path must observe exactly g_probe — the same value leak_local *would* have dangled with."
+    },
+    {
+      "name": "repeatable",
+      "code": "CHECK_EQ(safe_read(), safe_read());",
+      "hint": "A lifetime-correct read is stable; UB is the thing that comes and goes."
+    }
+  ],
+  "level": "debugging"
+}

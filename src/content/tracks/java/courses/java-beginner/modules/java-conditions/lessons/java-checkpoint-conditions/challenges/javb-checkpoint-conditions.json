@@ -1,0 +1,30 @@
+{
+  "id": "javb-checkpoint-conditions",
+  "title": "Checkpoint: Dispatch Desk",
+  "prompt": "\nThe Dispatch Desk decides how an order is handled, combining nested logic\nwith a switch expression.\n\nWrite `public static String dispatch(String tier, int weightKg, boolean fragile)`:\n\n1. If `weightKg <= 0`, return `\"rejected: bad weight\"`.\n2. Otherwise classify by `tier` using a **switch expression**:\n   - `\"standard\"` → `\"standard-\"` + weight class, where weight class is\n     `\"light\"` (weight < 5) or `\"heavy\"` (5 and above);\n   - `\"express\"` → `\"express-\"` + weight class (same classes);\n   - `\"freight\"` → `\"freight-quoted\"` (weight class ignored);\n   - any other tier → `\"rejected: unknown tier\"` (regardless of weight).\n3. Fragile orders get `\"+\"` appended at the very end — but ONLY if the\n   result is not a rejection. `dispatch(\"standard\", 3, true)` is\n   `\"standard-light+\"`; `dispatch(\"gold\", 3, false)` is\n   `\"rejected: unknown tier\"` with no plus.\n\nThe boundary at 5 belongs to `\"heavy\"`. Build the result with a `String`\nvariable, then decide the suffix once.\n",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String dispatch(String tier, int weightKg, boolean fragile) {\n        return \"\";\n    }\n}\n",
+  "tests": [
+    {
+      "name": "standard and express classes",
+      "code": "\nCjTestBase.checkEq(Solution.dispatch(\"standard\", 3, false), \"standard-light\", \"std light\");\nCjTestBase.checkEq(Solution.dispatch(\"standard\", 5, false), \"standard-heavy\", \"5 is heavy\");\nCjTestBase.checkEq(Solution.dispatch(\"express\", 9, false), \"express-heavy\", \"express heavy\");\n",
+      "hint": "Boundary: weight 5 belongs to heavy."
+    },
+    {
+      "name": "freight ignores weight",
+      "code": "\nCjTestBase.checkEq(Solution.dispatch(\"freight\", 900, false), \"freight-quoted\", \"freight\");\n",
+      "hint": "Freight always answers with a quote."
+    },
+    {
+      "name": "rejections stay clean",
+      "code": "\nCjTestBase.checkEq(Solution.dispatch(\"gold\", 3, false), \"rejected: unknown tier\", \"bad tier\");\nCjTestBase.checkEq(Solution.dispatch(\"standard\", 0, false), \"rejected: bad weight\", \"zero weight\");\n",
+      "hint": "Both rejections, exactly as specified."
+    },
+    {
+      "name": "fragile suffix rules",
+      "code": "\nCjTestBase.checkEq(Solution.dispatch(\"express\", 2, true), \"express-light+\", \"fragile express\");\nCjTestBase.checkEq(Solution.dispatch(\"gold\", 2, true), \"rejected: unknown tier\", \"fragile rejection gets no plus\");\n",
+      "hint": "Plus only on successful dispatches."
+    }
+  ]
+}

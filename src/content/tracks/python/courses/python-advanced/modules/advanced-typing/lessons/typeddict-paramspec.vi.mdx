@@ -1,0 +1,44 @@
+## TypedDict, Literal, TypeGuard — đánh kiểu dữ liệu ở rìa hệ thống
+
+**`TypedDict`** đánh kiểu cho dữ liệu dạng dict — JSON, payload API, config —
+nơi các key đã biết và value khác nhau theo key:
+
+```python
+from typing import TypedDict
+
+class Movie(TypedDict):
+    title: str
+    year: int
+    tags: list[str]
+
+movie: Movie = {"title": "Coco", "year": 2017, "tags": ["animation"]}
+```
+
+Lúc runtime nó chỉ là dict thường (không validate — việc của pydantic); giá trị
+của nó là cho checker và cho yêu cầu key qua `total=True/False`.
+
+**`Literal`** thu hẹp giá trị về đúng các literal — thay thế an toàn kiểu cho
+magic string:
+
+```python
+from typing import Literal, TypeAlias
+Mode: TypeAlias = Literal["r", "w", "a"]
+
+def open_db(mode: Mode) -> None: ...
+```
+
+**`TypeGuard`** ghi chú các hàm thu hẹp kiểu — predicate trả True và checker
+sau đó coi đối số như kiểu được bảo vệ:
+
+```python
+from typing import TypeGuard
+
+def is_str_list(xs: list[object]) -> TypeGuard[list[str]]:
+    return all(isinstance(x, str) for x in xs)
+```
+
+Định hướng thiết kế: đánh kiểu *rìa* hệ thống thật chính xác (response API,
+config, message trên queue) và để code bên trong chảy từ những mỏ neo đó.
+`cast()` tồn tại cho khoảnh khắc hiếm hoi bạn biết nhiều hơn checker — hãy coi
+mỗi cast như một comment có thể nói dối, và ưu tiên `TypeGuard` hay
+`assert isinstance` — những thứ thực sự kiểm tra.

@@ -1,0 +1,22 @@
+## The question decides the container
+
+| The question sounds like... | Reach for |
+| --- | --- |
+| "in order, one at a time" | `vector` |
+| "given a key, find the thing" | `map` / `unordered_map` |
+| "have I seen this before?" | `set` |
+| "the top/last/first few" | `vector` (+ sort or scan) |
+
+Choosing wrong makes every later step clumsy: searching an unsorted vector repeatedly is O(n) per query; a `set` answers in O(log n); an `unordered_set` in ~O(1). One structure choice can beat any amount of micro-optimization.
+
+## Counting your loops (complexity intuition)
+
+- One pass over n items → O(n): fine to a million.
+- Nested over n×n → O(n²): fine to ~10,000; painful at 100,000.
+- Halving each step (binary search) → O(log n): a billion items in ~30 steps.
+
+You will not derive these in Beginner; you will *count loop nests* and multiply. The next exercise makes the difference measurable: same task, two structures, and the harness times nothing — but the *number of operations* is the answer.
+
+## Two structures beat one wrong one
+
+"Count occurrences, then list the top word" is a `map<string,int>` *plus* a scan for the max — not one heroic vector scanned repeatedly. Composing the right containers is beginner-level architectural thinking, and it is exactly what the capstone's search feature will do.

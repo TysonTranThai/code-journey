@@ -1,0 +1,16 @@
+{
+  "id": "pa-db-n1-detect",
+  "title": "Detect N+1 from the query log",
+  "prompt": "Implement `count_queries(request_log)` — `request_log` is a list of `(request_id, queries)` where `queries` is a list of strings:\n\n- `'fetch-all:<entity>'` queries load a collection\n- `'fetch-one:<entity>:<id>'` queries load one entity in a loop\n- return `(total, offenders)`: `total` counts every query; `offenders` lists request_ids (first-seen order) with the N+1 signature — a `fetch-all` followed by **3 or more** `fetch-one` queries\n\nA request with many queries but no fetch-all-then-loop pattern is NOT an offender (batch jobs do big legitimate work).",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: count_queries",
+  "tests": [
+    {
+      "name": "the N+1 signature is specific",
+      "code": "log = [\n    ('r1', ['fetch-all:orders', 'fetch-one:customer:c1', 'fetch-one:customer:c2', 'fetch-one:customer:c3']),\n    ('r2', ['fetch-all:orders', 'fetch-all:customers']),\n    ('r3', ['fetch-one:x:1', 'fetch-one:x:2', 'fetch-one:x:3', 'fetch-one:x:4']),\n]\ntotal, offenders = count_queries(log)\nassert total == 10\nassert offenders == ['r1'], offenders\nprint('ok')",
+      "hint": "r1 is classic N+1; r2 is two batch loads; r3 has no fetch-all root."
+    }
+  ],
+  "level": "debugging"
+}

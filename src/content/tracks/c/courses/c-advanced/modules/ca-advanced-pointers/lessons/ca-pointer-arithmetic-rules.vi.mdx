@@ -1,0 +1,25 @@
+## Vùng hợp lệ duy nhất
+
+Nếu `p` trỏ vào mảng `N` phần tử (hoặc một vị trí sau cuối), bạn được phép:
+
+- cộng/trừ số nguyên, giữ trong `[begin, begin + N]`;
+- trừ hai con trỏ cùng mảng;
+- so sánh hai con trỏ cùng mảng;
+- hủy tham chiếu chỉ khi kết quả trỏ vào phần tử thật.
+
+Còn lại là không xác định. `p + N` tính được nhưng không được hủy tham chiếu — con trỏ một-vị-trình-sau-cuối là điểm neo của mọi vòng `for` và biên `memcpy`.
+
+```c
+int a[4];
+int *e = a + 4;        /* OK: một vị trí sau cuối */
+int *f = a + 5;        /* UB: không tính được */
+*e = 0;                /* UB: e không hủy tham chiếu được */
+```
+
+## Đối tượng đơn cũng dùng được
+
+Con trỏ tới một đối tượng đơn coi như mảng một phần tử: `&obj + 1` hợp lệ, `&obj + 2` thì không.
+
+## Thành phần struct
+
+Phép tính giữa các thành phần struct KHÔNG nằm trong luật mảng — cách khả chuyển là `offsetof`; trừ địa chỉ hai thành phần là UB.

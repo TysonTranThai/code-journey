@@ -1,0 +1,26 @@
+{
+  "id": "cb14-leftmost",
+  "title": "Leftmost Point",
+  "prompt": "Given `struct Point { int x; int y; };` in scope, implement `struct Point* leftmost(struct Point *pts, int n)` returning a pointer to the point with the SMALLEST x (ties: the first such point).",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstruct Point { int x; int y; };\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "struct Point pts[] = {{3, 0}, {1, 5}, {2, 7}};\nCHECK_EQ(leftmost(pts, 3), &pts[1]);",
+      "hint": "Track the best index, return its address."
+    },
+    {
+      "name": "tie first",
+      "code": "struct Point pts[] = {{1, 9}, {1, 2}};\nCHECK_EQ(leftmost(pts, 2), &pts[0]);",
+      "hint": "Strictly smaller to replace."
+    },
+    {
+      "name": "single",
+      "code": "struct Point one = {5, 5};\nCHECK_EQ(leftmost(&one, 1), &one);",
+      "hint": "n=1 returns it."
+    }
+  ],
+  "level": "independent"
+}

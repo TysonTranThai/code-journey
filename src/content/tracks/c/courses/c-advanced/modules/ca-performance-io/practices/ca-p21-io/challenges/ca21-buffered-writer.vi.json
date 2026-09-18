@@ -1,0 +1,18 @@
+{
+  "title": "Chỉ flush khi đầy",
+  "prompt": "Thiết kế ISO C cho quy tắc của stdio. Cho `struct bw { char buf[64]; size_t n; int flushes; };` (zero hóa trước khi dùng), cài `void bw_write(struct bw *w, const char *s, size_t len)` — nối byte; ngay khi thêm một byte sẽ vượt 64 thì flush trước (flushes++, n=0) rồi tiếp tục. Cài `size_t bw_pending(const struct bw *w)`. Guard NULL: w hoặc s NULL với len>0 thì không làm gì.",
+  "tests": [
+    {
+      "name": "đầy vừa khít rồi tràn",
+      "hint": "128 byte làm đầy buffer 64 đúng một lần và tràn một lần: 1 flush, 64 pending. Thêm một byte ép flush thứ hai."
+    },
+    {
+      "name": "ghi nhỏ một lần ở lại",
+      "hint": "Không có gì tràn: không flush — buffering chính là điểm mấu chốt."
+    },
+    {
+      "name": "guard NULL",
+      "hint": "Đầu vào NULL không được đổi gì — từ chối bằng cách bỏ qua, không crash."
+    }
+  ]
+}

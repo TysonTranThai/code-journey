@@ -1,0 +1,35 @@
+## Refcounting và bộ gom rác
+
+Quản lý bộ nhớ chính của CPython là **refcounting**: mỗi đối tượng đếm số tham
+chiếu tới nó; chạm 0 là giải phóng ngay lập tức (nên CPython nổi tiếng về tính
+xác định tức thời, không cần `__del__`).
+
+Một mình refcounting không thể giải phóng **chu kỳ** (a→b→a). Một **bộ phát hiện
+chu kỳ** bổ trợ — module `gc` thế hệ — định kỳ quét các đối tượng container tìm
+chu kỳ không thể chạm tới:
+
+```python
+import gc, sys
+
+class Node:
+    def __init__(self):
+        self.partner = None
+
+a, b = Node(), Node()
+a.partner, b.partner = b, a
+del a, b                       # refcounts never hit zero — cycle!
+gc.collect()                   # cycle detector frees them
+```
+
+Điểm rút ra cho người thực hành:
+
+- `sys.getrefcount(x)` hiển thị số đếm (luôn +1 cho chính đối số).
+- Đa số "rò rỉ bộ nhớ" trong Python là *rò rỉ tham chiếu*: cache, registry,
+  closure, hay logger giữ đối tượng mãi mãi. Tìm chúng bằng
+  `gc.get_referrers(obj)` — ai vẫn đang trỏ tới đây?
+- `gc.garbage` gom các đối tượng bộ gom không giải phóng được (thường là chu kỳ
+có `__del__`) — nó phình to là một dấu hiệu thiết kế xấu.
+- `weakref` cho phép cache tham chiếu đối tượng mà không giữ chúng sống — bản
+  sửa chuẩn cho rò rỉ do registry.
+- `gc.disable()` có thể tăng tốc nhẹ cho batch job cấp phát nặng, đổi lại là
+  rò rỉ chu kỳ — hãy đo trước khi áp dụng.

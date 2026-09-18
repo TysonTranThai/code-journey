@@ -1,0 +1,21 @@
+## The edge taxonomy
+
+For any function ask: what about —
+
+- **Empty** — no elements at all?
+- **Null** — the absence of a collection, not the same as empty?
+- **One** — a single element?
+- **Many** — does it still work at scale?
+- **Boundary** — exactly at the limit (`<=` vs `<` bugs live here)?
+- **Weird** — duplicates, negative numbers, unicode, whitespace?
+
+```csharp
+// the classic boundary bug
+static bool IsAdult(int age) => age > 18;   // an 18-year-old disagrees!
+```
+
+Off-by-one errors concentrate at boundaries. When the spec says "18 or older", write the test for exactly 18 **first**.
+
+## Test both directions
+
+An incorrect solution must *fail* — that's what makes a test a test. For every claim, the two-sided habit: a case where correct code passes, and a near-miss implementation that must not. A test suite where anything passes proves nothing.

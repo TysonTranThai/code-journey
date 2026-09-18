@@ -1,0 +1,47 @@
+A pull request is a _conversation artifact_, not just a merge button.
+
+## Anatomy of a reviewable PR
+
+- **One idea per PR.** "Add search filters" — not "add search filters, upgrade bundler, fix three typos."
+- **Small.** Review quality collapses beyond ~400 changed lines; if it's bigger, split it.
+- **A description that does the reviewer's homework:** what changed, why, how to test it, screenshots for UI, "here's what I decided NOT to do and why."
+
+## Reviewing: the reader's job is to improve the code and the author
+
+Review for, in order: **correctness** (does it do what it claims, including edge cases), **tests** (would a regression be caught), **readability** (names, structure), **security/perf** (the module 8–9 lenses). Style nits belong in automated linting, not human review.
+
+Comment phrasing that works:
+
+- "This could break when `query` is empty — did you consider X?" (question, not verdict)
+- "nit: rename `d` → `duration`" (explicitly non-blocking)
+- Blocking comments say **why** it blocks: "This logs the token — must be removed before merge."
+
+**Authors:** respond to every comment (fix, or explain why not), re-request review after pushing. Never force-push a PR that has active discussion without saying so.
+
+## Conventional Commits
+
+A format that makes history machine-diffable:
+
+```text
+<type>(<scope>)?: <description>
+
+feat(auth): add password reset
+fix(cart): prevent negative quantities
+refactor(search): extract debounce hook
+docs: update contribution guide
+chore(deps): bump zod to 4.5.4
+```
+
+Common types: `feat`, `fix`, `refactor`, `perf`, `test`, `docs`, `chore`, `ci`. Breaking changes get `!` (`feat!:`) or a `BREAKING CHANGE:` footer. Benefits: auto-generated changelogs, version bumps from commit types, greppable history.
+
+## Semantic Versioning
+
+`MAJOR.MINOR.PATCH` — bump MAJOR on breaking changes, MINOR on new features, PATCH on fixes. Libraries live by semver; applications mostly don't need it (they ship, they don't get imported). Know which one you're writing.
+
+## The workflow this course uses
+
+1. `feat/<short-name>` branch from main
+2. Small conventional commits as you go
+3. PR with description + tests
+4. Self-review your own diff _before_ requesting review — you'll catch half the issues yourself
+5. Merge, delete branch, pull main locally

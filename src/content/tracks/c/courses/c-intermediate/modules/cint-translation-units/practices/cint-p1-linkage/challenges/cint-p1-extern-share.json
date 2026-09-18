@@ -1,0 +1,16 @@
+{
+  "id": "cint-p1-extern-share",
+  "title": "One Object, Many Promises",
+  "prompt": "Implement a shared-external pattern in one TU:\n\n```c\nint attempts = 0;          /* the definition (external linkage) */\nvoid record_attempt(void); /* increments attempts */\nint peek_attempts(void);   /* returns attempts */\n```\n\n`record_attempt` must be safe to call any number of times. Then implement\n`int reset_attempts(void)` which zeroes attempts and returns how many were\nrecorded since the last reset.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "shared object lifecycle",
+      "code": "\nCHECK_EQ(peek_attempts(), 0);\nrecord_attempt();\nrecord_attempt();\nrecord_attempt();\nCHECK_EQ(peek_attempts(), 3);\nCHECK_EQ(reset_attempts(), 3);\nCHECK_EQ(peek_attempts(), 0);\n",
+      "hint": "int attempts = 0; at file scope (no static), then the three functions."
+    }
+  ],
+  "level": "imitation"
+}

@@ -1,0 +1,46 @@
+## Trạng thái và hành vi cùng nhau
+
+Một **lớp** là bản thiết kế cho đối tượng: nó khai báo các *trường* (trạng thái) mà mọi đối tượng mang theo và các *phương thức* (hành vi) thao tác trên trạng thái đó.
+
+```csharp
+class Stopwatch
+{
+    public long elapsedMs;      // trường: trạng thái theo từng đối tượng
+    public bool running;
+
+    public void Start()         // phương thức: hành vi trên trạng thái
+    {
+        running = true;
+    }
+
+    public void Record(long nowMs)
+    {
+        if (running) elapsedMs += nowMs;   // đọc/ghi trường của CHÍNH đối tượng này
+        running = false;
+    }
+}
+```
+
+`new` dựng một đối tượng từ bản thiết kế:
+
+```csharp
+var a = new Stopwatch();
+var b = new Stopwatch();
+a.Start();
+// b.elapsedMs vẫn là 0 — mỗi đối tượng sở hữu trường riêng
+```
+
+`a` và `b` là hai *thực thể* độc lập. Ghi trường trên đối tượng này không bao giờ ảnh hưởng đối tượng kia: trạng thái thuộc về đối tượng, không phải lớp.
+
+## Thành viên và `this`
+
+Trong một phương thức, tên không định vị như `elapsedMs` nghĩa là trường *của chính đối tượng này*. Viết `this.elapsedMs` là tường minh — chỉ cần khi tham số che khuất trường:
+
+```csharp
+public void Rename(string name)
+{
+    this.name = name;   // trái: trường, phải: tham số
+}
+```
+
+Mọi thứ ở đây là theo đối tượng. Thành viên thuộc về *chính lớp* được khai báo `static` — chủ đề ở bài sau.

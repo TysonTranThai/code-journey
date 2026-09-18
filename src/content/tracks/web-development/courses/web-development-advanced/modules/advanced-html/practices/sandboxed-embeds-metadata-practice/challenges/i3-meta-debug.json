@@ -1,0 +1,30 @@
+{
+  "id": "i3-meta-debug",
+  "title": "Debug: The Wide-Open Embed",
+  "prompt": "This page embeds a comment widget with NO sandbox at all, the iframe has no title, and the page's robots meta blocks indexing of a page that should be public. Repair: add a least-privilege sandbox (the widget renders its comment form — scripts and forms), give the iframe a title, and switch robots to allow indexing but still crawl links (index, follow).",
+  "difficulty": "advanced",
+  "level": "debugging",
+  "boilerplate": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>Release notes — Widget</title>\n  <meta name=\"robots\" content=\"noindex, nofollow\">\n</head>\n<body>\n  <h1>Release notes</h1>\n  <iframe src=\"https://comments.example.com/thread/42\" width=\"600\" height=\"400\"></iframe>\n</body>\n</html>\n",
+  "tests": [
+    {
+      "name": "widget is sandboxed",
+      "code": "const f = code.match(/<iframe[^>]*>/i);\nif (!f) throw new Error(\"Keep the embed.\");\nif (!/\\bsandbox\\b/i.test(f[0])) {\n  throw new Error(\"The third-party embed must carry the sandbox attribute.\");\n}",
+      "hint": "No sandbox means full platform privileges for the guest — the first thing a reviewer would flag."
+    },
+    {
+      "name": "sandbox is least-privilege",
+      "code": "const f = code.match(/<iframe[^>]*>/i);\nconst s = (f[0].match(/sandbox\\s*=\\s*[\"']([^\"']*)[\"']/i) || [])[1] || \"\";\nif (!/allow-scripts/i.test(s)) throw new Error(\"The widget needs allow-scripts.\");\nif (!/allow-forms/i.test(s)) throw new Error(\"Its comment form needs allow-forms.\");\nconst extra = s.split(/\\s+/).filter((t) =>\n  [\"allow-same-origin\", \"allow-top-navigation\", \"allow-popups\"].includes(t.toLowerCase())\n);\nif (extra.length > 0) {\n  throw new Error(\"Drop what it does not need: \" + extra.join(\", \") + \".\");\n}",
+      "hint": "Scripts + forms is the whole requirement — same-origin on third-party content is the escalation pair."
+    },
+    {
+      "name": "iframe has an accessible name",
+      "code": "const f = code.match(/<iframe[^>]*>/i);\nif (!/title\\s*=\\s*[\"'][^\"']{4,}[\"']/i.test(f[0])) {\n  throw new Error(\"Give the iframe a descriptive title attribute.\");\n}",
+      "hint": "Screen-reader users hear 'frame' and nothing else — title is the frame's name."
+    },
+    {
+      "name": "robots matches intent",
+      "code": "const r = code.match(/<meta[^>]*name\\s*=\\s*[\"']robots[\"'][^>]*content\\s*=\\s*[\"']([^\"']*)[\"']/i);\nif (!r) throw new Error(\"Keep the robots meta.\");\nconst v = r[1].toLowerCase();\nif (/noindex/.test(v)) throw new Error(\"Release notes are public — drop noindex.\");\nif (/nofollow/.test(v)) throw new Error(\"Links should still be crawled — drop nofollow.\");",
+      "hint": "Public page: 'index, follow' (or no robots meta at all) matches the intent."
+    }
+  ]
+}

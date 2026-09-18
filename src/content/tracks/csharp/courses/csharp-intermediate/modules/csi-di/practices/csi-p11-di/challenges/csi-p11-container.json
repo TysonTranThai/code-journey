@@ -1,0 +1,26 @@
+{
+  "id": "csi-p11-container",
+  "title": "Build the Tiny Container",
+  "prompt": "Implement the Container from the lesson: Register<TService>(Func<TService>) for transient, RegisterSingleton<TService>(Func<TService>) for lazy once-only, Resolve<TService>() throwing InvalidOperationException for unregistered types.\n\n```csharp\npublic sealed class Container\n{\n    public void Register<TService>(Func<TService> factory);\n    public void RegisterSingleton<TService>(Func<TService> factory);\n    public TService Resolve<TService>();\n}\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "transient creates fresh",
+      "code": "\nvar c = new Solution.Container();\nc.Register(() => new System.Text.StringBuilder());\nvar a = c.Resolve<System.Text.StringBuilder>();\na.Append(\"x\");\nvar b = c.Resolve<System.Text.StringBuilder>();\nCj.Eq(b.ToString(), \"\", \"fresh instance per resolve\");\nCj.True(!ReferenceEquals(a, b), \"different instances\");\n",
+      "hint": "Factories dictionary keyed by typeof(TService); Resolve invokes and casts."
+    },
+    {
+      "name": "singleton stays one",
+      "code": "\nvar c = new Solution.Container();\nint built = 0;\nc.RegisterSingleton<System.Random>(() => { built++; return new System.Random(); });\nvar r1 = c.Resolve<System.Random>();\nvar r2 = c.Resolve<System.Random>();\nCj.True(ReferenceEquals(r1, r2), \"same instance\");\nCj.Eq(built, 1, \"factory ran exactly once\");\n",
+      "hint": "Cache the created instance in the closure; return it thereafter."
+    },
+    {
+      "name": "unregistered type throws",
+      "code": "\nvar c = new Solution.Container();\ntry { c.Resolve<System.Random>(); Cj.True(false, \"should throw\"); }\ncatch (System.InvalidOperationException) { }\n",
+      "hint": "Missing key -> throw InvalidOperationException with the service type name."
+    }
+  ],
+  "level": "guided"
+}

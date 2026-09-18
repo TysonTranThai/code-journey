@@ -1,0 +1,26 @@
+{
+  "id": "ca18-condvar-queue",
+  "title": "Bounded FIFO Queue",
+  "prompt": "Given: mutex, condvar, `int slots[8]`, head/tail/count. Implement `int qpush(int v)` (append FIFO; -1 when full) and `int qpop(void)` (remove oldest; -1 when empty). Push/pop must maintain the mutex and the invariant count equals live elements.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define _POSIX_C_SOURCE 200809L\n#include <pthread.h>\n#include <stdint.h>\nstatic pthread_mutex_t q_mtx = PTHREAD_MUTEX_INITIALIZER;\nstatic pthread_cond_t q_cv = PTHREAD_COND_INITIALIZER;\nstatic int slots[8];\nstatic size_t q_head = 0;\nstatic size_t q_tail = 0;\nstatic size_t q_count = 0;\n",
+  "tests": [
+    {
+      "name": "FIFO order",
+      "code": "CHECK_EQ(qpush(1), 0);\nCHECK_EQ(qpush(2), 0);\nCHECK_EQ(qpush(3), 0);\nCHECK_EQ(qpop(), 1);\nCHECK_EQ(qpop(), 2);\nCHECK_EQ(qpop(), 3);",
+      "hint": "Oldest in, first out: the queue is a ring, not a stack."
+    },
+    {
+      "name": "empty pop refused",
+      "code": "CHECK_EQ(qpop(), -1);",
+      "hint": "Popping an empty queue is refused, not garbage."
+    },
+    {
+      "name": "fill then refuse, drain then refuse",
+      "code": "for (int i = 0; i < 8; i++) CHECK_EQ(qpush(i), 0);\nCHECK_EQ(qpush(99), -1);\nfor (int i = 0; i < 8; i++) CHECK_EQ(qpop(), i);\nCHECK_EQ(qpop(), -1);",
+      "hint": "Eight slots exactly: the ninth push is refused, and a full drain leaves the queue empty."
+    }
+  ],
+  "level": "combination"
+}

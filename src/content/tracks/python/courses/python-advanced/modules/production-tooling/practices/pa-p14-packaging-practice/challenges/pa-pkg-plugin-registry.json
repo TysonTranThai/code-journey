@@ -1,0 +1,16 @@
+{
+  "id": "pa-pkg-plugin-registry",
+  "title": "The plugin registry",
+  "prompt": "Implement `collect_plugins(registry, group)` — registry maps group names to lists of `(package, plugin_name, factory)` tuples:\n\n- returns `{plugin_name: factory}` for that group\n- a duplicate plugin name raises `ValueError('duplicate plugin: <name>')` — silent shadowing is how plugin bugs hide\n- factories are returned, never called\n\nThis is the entry-points mechanism (and the Module-2 registry) in miniature.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: collect_plugins",
+  "tests": [
+    {
+      "name": "collects, and refuses duplicates",
+      "code": "reg = {'fincli.plugins': [('pkg_a', 'csv', object), ('pkg_b', 'json', object)]}\npl = collect_plugins(reg, 'fincli.plugins')\nassert set(pl) == {'csv', 'json'}\nreg2 = {'g': [('a', 'dup', object), ('b', 'dup', object)]}\ntry:\n    collect_plugins(reg2, 'g')\nexcept ValueError as e:\n    assert 'duplicate plugin: dup' in str(e)\nelse:\n    raise AssertionError('duplicates must raise')\nassert collect_plugins(reg, 'missing-group') == {}\nprint('ok')",
+      "hint": "Order-independent discovery; first duplicate is loud."
+    }
+  ],
+  "level": "combination"
+}

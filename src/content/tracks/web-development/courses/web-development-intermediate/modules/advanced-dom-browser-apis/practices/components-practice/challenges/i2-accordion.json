@@ -1,0 +1,25 @@
+{
+  "id": "i2-accordion",
+  "title": "Accordion State",
+  "prompt": "Write `createAccordion(count)` that RETURNS an object with `toggle(i)`, `isOpen(i)`, and `openCount()`. Exactly one section may be open at a time (an accordion, not independent collapsibles): toggling the open section closes it; toggling a closed section opens it and closes the previous one. Out-of-range indexes must not crash or change state. Initially all closed.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function createAccordion(count) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "single-open behavior",
+      "code": "const fn = new Function(code + \"\\nreturn { createAccordion };\");\nconst { createAccordion } = fn();\nconst acc = createAccordion(3);\nif (acc.openCount() !== 0) throw new Error(\"Starts with all sections closed.\");\nacc.toggle(0);\nif (!acc.isOpen(0) || acc.openCount() !== 1) throw new Error(\"toggle(0) opens section 0.\");\nacc.toggle(1);\nif (acc.isOpen(0)) throw new Error(\"Opening section 1 closes section 0 (single-open).\");\nif (!acc.isOpen(1)) throw new Error(\"Section 1 is now open.\");",
+      "hint": "Keep a single `open` index (-1 for none) rather than an array of booleans."
+    },
+    {
+      "name": "toggling the open section closes it",
+      "code": "const fn = new Function(code + \"\\nreturn { createAccordion };\");\nconst { createAccordion } = fn();\nconst acc = createAccordion(3);\nacc.toggle(2);\nacc.toggle(2);\nif (acc.isOpen(2) || acc.openCount() !== 0) throw new Error(\"Toggling the open section must close it.\");",
+      "hint": "If i === open, set open = -1."
+    },
+    {
+      "name": "out-of-range toggles are ignored safely",
+      "code": "const fn = new Function(code + \"\\nreturn { createAccordion };\");\nconst { createAccordion } = fn();\nconst acc = createAccordion(3);\nacc.toggle(0);\nacc.toggle(-1);\nacc.toggle(7);\nif (!acc.isOpen(0) || acc.openCount() !== 1) throw new Error(\"Invalid indexes must not change state or throw.\");",
+      "hint": "Guard: if (i < 0 || i >= count) return;"
+    }
+  ]
+}

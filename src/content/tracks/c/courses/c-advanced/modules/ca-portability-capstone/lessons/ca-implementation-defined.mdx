@@ -1,0 +1,22 @@
+## The three categories
+
+- **Implementation-defined behavior** — the standard lets each implementation pick and *document* a choice: `sizeof(int)`, plain `char` signedness, two's-complement representation (C23 made this required, ending a 35-year debate). Writing code that depends on the choice is legal if you check the documentation and code defensively.
+- **Unspecified behavior** — several valid choices, no documentation duty, the implementation may differ call-to-call: evaluation order of function arguments. Correct code does not depend on it.
+- **Undefined behavior** — no requirements at all: signed overflow, out-of-bounds access, data races. Modules 2 and 4 covered why the optimizer treats UB as permission.
+
+The trap for professionals: implementation-defined is *portable if asked for*. `sizeof(int) == 4` is a fact about this target, not a law of C — ask via `<limits.h>`/`<stdint.h>` types (`int32_t`) when the width matters.
+
+## Endianness, honestly
+
+Byte order inside a multi-byte object is implementation-defined. This sandbox (aarch64 Linux) is **little-endian**, and GCC exposes `__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__` for compile-time detection. But the honest portable move is the runtime probe: place `1` in an `unsigned int` and inspect its first byte — that works on every C implementation, no macro required. Detect, then branch; never assume.
+
+## Feature detection, two clocks
+
+- **Compile time**: `#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__` — zero runtime cost, but tied to the compiler's macros (compiler-specific, labeled).
+- **Run time**: the byte probe, or `stdbit.h`'s C23 endian utilities where available. Costs a branch once, portable everywhere.
+
+Choose compile-time for hot paths, run-time for guaranteed portability. Document the choice; that documentation *is* the portability layer.
+
+## The capstone contract
+
+Module 24's checkpoint assembles the course: a portable utility core (endian detection + checked arithmetic + safe copy) plus integration of earlier modules' discipline. Every function it asks for has been built and tested in an earlier module — the capstone is composition under specification, the actual work of systems engineering.

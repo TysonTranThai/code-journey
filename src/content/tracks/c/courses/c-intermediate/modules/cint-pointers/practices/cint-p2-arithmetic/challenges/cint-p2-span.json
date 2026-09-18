@@ -1,0 +1,16 @@
+{
+  "id": "cint-p2-span",
+  "title": "Distance Between Pointers",
+  "prompt": "Implement range queries with pointer subtraction:\n\n```c\n/* returns how many elements lie in [lo, hi) of array a (n elements),\n   where lo and hi are pointers INTO a (or hi == a + n). Invalid inputs\n   (NULL, hi < lo, pointers outside the array's [a, a+n] range) return 0. */\nsize_t span(const int *a, size_t n, const int *lo, const int *hi);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "half-open span",
+      "code": "\nint a[] = {0, 1, 2, 3, 4, 5};\nCHECK_EQ(span(a, 6, a + 1, a + 4), 3);\nCHECK_EQ(span(a, 6, a, a + 6), 6);\nCHECK_EQ(span(a, 6, a + 3, a + 3), 0);\nCHECK_EQ(span(a, 6, a + 4, a + 2), 0);   /* inverted */\nCHECK_EQ(span(NULL, 0, NULL, NULL), 0);\n",
+      "hint": "Validate: a != NULL, lo and hi within [a, a+n], lo <= hi. Then (size_t)(hi - lo)."
+    }
+  ],
+  "level": "imitation"
+}

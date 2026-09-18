@@ -1,0 +1,23 @@
+`std::unique_ptr<T>` là smart pointer mặc định: sở hữu độc quyền, không tốn
+chi phí hơn con trỏ thô, tự delete khi `unique_ptr` chết.
+
+```cpp
+#include <memory>
+
+auto p = std::make_unique<Widget>(arg1, arg2);  // ưa dùng make_unique
+p->draw();
+auto q = std::move(p);       // quyền sở hữu chuyển giao; p giờ là nullptr
+// p->draw();                // UB: p rỗng — phải kiểm tra trước
+```
+
+Các quy tắc:
+
+- **Luôn dùng `make_unique`**, đừng dùng `new`: một lần cấp phát, an toàn
+  ngoại lệ, không `new` trần trụi trong code ứng dụng.
+- Không copy được, chỉ move. Copy sẽ tạo ra hai chủ — chính là bug mà kiểu
+  này sinh ra để ngăn chặn.
+- Mảng: `std::unique_ptr<T[]>` tồn tại nhưng `std::vector<T>` gần như luôn
+  là câu trả lời đúng.
+- Truyền `unique_ptr` khi bạn chuyển giao sở hữu; truyền `T&` hoặc `T*`
+  khi bạn chỉ dùng đối tượng. Hàm chỉ *quan sát* không nên gọi tên smart
+  pointer trong chữ ký.

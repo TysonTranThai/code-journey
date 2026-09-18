@@ -1,0 +1,40 @@
+## Start from the access pattern, not the type
+
+Ask in order: (1) keyed lookup? (2) uniqueness? (3) order matters? (4) FIFO/
+LIFO? (5) index access? Each answer eliminates half the menu.
+
+- Counting occurrences → `Dictionary<K,int>` (or `Dictionary<K, List<T>>`
+  for grouping). This is the **frequency map**, the single most reused
+  intermediate structure in application code.
+- "Seen before?" → `HashSet<T>`.
+- Process in arrival order → `Queue<T>`; undo → `Stack<T>`.
+- "Top N by score" → sort once, or a heap-shaped approach; a full sort is
+  fine below thousands of items — measure before contorting.
+
+## Protect invariants with readonly surfaces
+
+Methods that shouldn't mutate should accept (and return) readonly views:
+
+```csharp
+private readonly Dictionary<string, int> _scores = new();
+
+public IReadOnlyDictionary<string, int> Scores => _scores;   // caller can't Add
+public IReadOnlyList<string> Names => _names.AsReadOnly();
+```
+
+`IReadOnly*` is a VIEW, not a copy — the caller sees live data but cannot
+mutate through that reference. Returning the raw `Dictionary` hands every
+caller the keys to your invariants.
+
+## The eviction shape (LRU thinking)
+
+An LRU cache pairs a `Dictionary<K, LinkedListNode<(K,V)>>` with a
+`LinkedList`: dictionary for O(1) lookup, list for recency order, node
+handles connecting them. You will build a simplified version in the
+checkpoint — the point is that *composition* of two structures buys what
+neither provides alone.
+
+## Check your understanding
+
+- Why return `IReadOnlyDictionary` instead of a copy? (Zero-cost view; copies hide staleness.)
+- Grouping 10k rows by category: what structure? (`Dictionary<string, List<Row>>`, one pass.)

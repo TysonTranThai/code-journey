@@ -1,0 +1,31 @@
+{
+  "id": "javi-p6-account-errors",
+  "title": "Domain Errors That Carry Data",
+  "prompt": "Model payments in `Solution`:\n- `static class PaymentException extends RuntimeException`\n- `static final class InsufficientFundsException extends PaymentException`\n  carrying `int shortfallCents` with a getter.\n- `static void withdraw(int balance, int amount)`: throws\n  IllegalArgumentException for negative amount; throws\n  InsufficientFundsException with shortfall `amount - balance` when\n  amount > balance; otherwise completes (no-op).\n- `static int shortfallOf(RuntimeException e)`: returns\n  `((InsufficientFundsException) e).shortfallCents()` when applicable,\n  otherwise -1.\n\nThe tests catch at both granularities.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "negative amount is a programming error",
+      "code": "\ntry { Solution.withdraw(100, -5); checkTrue(false, \"must throw\"); }\ncatch (IllegalArgumentException e) { checkTrue(true, \"iafte\"); }\n",
+      "hint": "Negative amounts throw IllegalArgumentException."
+    },
+    {
+      "name": "shortfall carried as data",
+      "code": "\ntry { Solution.withdraw(100, 250); checkTrue(false, \"must throw\"); }\ncatch (Solution.InsufficientFundsException e) {\n    checkEq(e.shortfallCents(), 150, \"shortfall data\");\n}\n",
+      "hint": "250 - 100 = 150 shortfall, carried on the exception."
+    },
+    {
+      "name": "catch at parent granularity",
+      "code": "\ntry { Solution.withdraw(0, 5); checkTrue(false, \"must throw\"); }\ncatch (Solution.PaymentException e) {\n    checkTrue(e instanceof Solution.InsufficientFundsException, \"leaf type\");\n}\n",
+      "hint": "PaymentException catch covers the leaf."
+    },
+    {
+      "name": "shortfallOf helper",
+      "code": "\nRuntimeException e = new Solution.InsufficientFundsException(\"x\", 42);\ncheckEq(Solution.shortfallOf(e), 42, \"extracted\");\ncheckEq(Solution.shortfallOf(new RuntimeException(\"y\")), -1, \"not applicable\");\n",
+      "hint": "Cast when possible, -1 otherwise."
+    }
+  ],
+  "level": "independent"
+}

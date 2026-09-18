@@ -1,0 +1,50 @@
+Mọi thứ bạn biết về việc gọi hàm đều gãy khi lời gọi đi qua mạng. Một lời gọi
+từ xa có thể:
+
+- **thành công** — công việc xảy ra và bạn nghe được tin,
+- **thất bại hữu hình** — công việc không xảy ra và bạn nhận được lỗi,
+- **thất bại vô hình** — công việc đã xảy ra nhưng *response bị mất*, hoặc công
+  việc không xảy ra và *request bị mất*. Từ vị trí của bạn, hai điều này trông
+  **giống hệt nhau**: một timeout.
+
+Timeout không phải là một câu trả lời; nó là *sự vắng mặt* của câu trả lời.
+Một sự thật duy nhất đó chi phối phần lớn module này.
+
+## Chuyển giao at-least-once ép buộc tính idempotent
+
+Nếu mạng có thể làm mất response của bạn, chính sách retry an toàn duy nhất
+là **at-least-once**: gửi lại cho tới khi nghe được tin. Nhưng retry một thao
+tác không idempotent ("trừ thẻ") nghĩa là trừ hai lần. Kết luận:
+
+> **chuyển giao at-least-once + hiệu ứng exactly-once = idempotency key**
+
+Bên nhận ghi nhớ các key đã xử lý và phát lại kết quả đã ghi. Hiệu ứng là
+exactly-once dù việc chuyển giao không phải vậy.
+
+## Retry cần backoff và jitter
+
+Retry ngay lập tức vào một hệ thống đang quá tải là một cuộc tấn công
+denial-of-service nhắm vào chính bạn. Exponential backoff (`1s, 2s, 4s, ...` có
+trần) cho hệ thống thời gian hồi phục. Backoff thuần trên nhiều client khiến
+chúng đồng bộ hóa thành **thundering herd** — tất cả cùng retry vào mốc 8 giây.
+**Jitter** (ngẫu nhiên hóa mỗi độ trễ trong một dải) phá sự đồng bộ đó:
+
+```python
+delay = min(cap, base * 2 ** attempt)
+sleep(random.uniform(0, delay))   # full jitter
+```
+
+## Timeout, retry, và ngân sách của chúng
+
+Tổng ngân sách của một request (`5s`) phải được chia cho các lần thử. Ba lần
+thử, mỗi lần timeout 5s, nghĩa là xấu nhất 15s — thường là sai. Cho mỗi lần thử
+một timeout vừa với ngân sách, và theo dõi retry bằng một *deadline* (một mốc
+thời gian tuyệt đối sau đó bạn từ bỏ), không chỉ bằng số đếm.
+
+## Cô lập lỗi: bulkhead và fallback
+
+Một dependency chậm không được phép ngốn hết mọi worker thread của phần lành
+mạnh trong hệ thống (kiệt kết thread-pool — pattern bulkhead cô lập pool theo
+từng dependency). Và nơi một tính năng có chế độ suy giảm, hãy suy giảm: phục
+vụ giá cached thay vì trang lỗi. **Graceful degradation là quyết định thiết kế
+đưa ra trước sự cố, không phải trong lúc sự cố.**

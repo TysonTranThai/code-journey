@@ -1,0 +1,19 @@
+## The four detectors
+
+- **AddressSanitizer (`-fsanitize=address`)** — heap/stack buffer overflows, use-after-free, use-after-return. Run in every debug test run.
+- **UndefinedBehaviorSanitizer (`-fsanitize=undefined`)** — signed overflow, misaligned pointers, invalid enum values, null dereferences (most of them).
+- **ThreadSanitizer (`-fsanitize=thread`)** — data races via happens-before analysis. Slower (5–15x) but catches bugs no test output can.
+- **Static analysis (`-fanalyzer`, clang-tidy)** — finds null-deref and lifetime paths at compile time, no execution needed.
+
+## The CI shape
+
+Debug builds: ASan+UBSan on, fast tests only. Nightly: TSan run of concurrency tests. Release: neither. A finding is a bug — never "probably fine". That policy only works if tests actually execute the risky paths, which is why sanitizer runs pair with coverage thinking.
+
+## Designing for sanitizer-friendliness
+
+- Prefer `std::vector` + `at()` in debug paths over raw pointers + manual bounds.
+- Every allocation owner is a type (RAII) — ASan then has no leaks to report.
+- Deterministic tests beat random stress for CI (TSan is the exception: it wants concurrency, run it on the race-prone suites).
+- Fix order: real UB first, then warnings, then style. Do not teach the team to ignore reports.
+
+The graded exercises here simulate the *outcome*: functions that would trip ASan/UBSan fail their tests by construction (checked vs unchecked implementations diverge on adversarial input).

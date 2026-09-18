@@ -1,0 +1,26 @@
+{
+  "id": "pi5-exc-order",
+  "title": "Catch Order Matters",
+  "prompt": "Given the family above, implement classify(fn) that calls fn() and returns 'validation' if it raises ValidationError, 'notfound' if NotFoundError, 'app' for any other AppError, and 'unknown' for anything else.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "class AppError(Exception):\n    pass\n\nclass ValidationError(AppError):\n    pass\n\nclass NotFoundError(AppError):\n    pass\n\n\ndef classify(fn):\n    pass\n",
+  "tests": [
+    {
+      "name": "specific before base",
+      "code": "def f(): raise ValidationError('v')\nassert classify(f) == 'validation'",
+      "hint": "The ValidationError handler must come before the AppError handler."
+    },
+    {
+      "name": "falls back through the family",
+      "code": "def f(): raise NotFoundError('n')\nassert classify(f) == 'notfound'\ndef g(): raise AppError('a')\nassert classify(g) == 'app'",
+      "hint": "Each family member maps to its own label."
+    },
+    {
+      "name": "foreign errors are unknown",
+      "code": "def f(): raise KeyError('k')\nassert classify(f) == 'unknown'",
+      "hint": "Only AppError family maps to app labels."
+    }
+  ],
+  "level": "independent"
+}

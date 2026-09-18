@@ -1,0 +1,16 @@
+{
+  "id": "pa-perf-memo-fib",
+  "title": "Memoized fib, counted",
+  "prompt": "Implement `fib(n, memo, stats)` — recursive Fibonacci with explicit memoization:\n\n- `memo` is a dict the function may read and write\n- `stats` is a dict containing `'calls'`; increment `stats['calls'] += 1` at the top of EVERY invocation (including memo-hit returns)\n- fib(0)=0, fib(1)=1, else fib(n-1)+fib(n-2)\n\nThe graded test calls `fib(25, {}, stats)` and asserts the value is 75025 and `stats['calls']` is under 60 (the never-reads-memo version makes ~243k calls).",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "def fib(n, memo, stats):\n    # TODO: count every invocation; memoize; recurse\n    pass",
+  "tests": [
+    {
+      "name": "correct value, tiny call count",
+      "code": "stats = {'calls': 0}\nvalue = fib(25, {}, stats)\nassert value == 75025, f'value: {value}'\nassert stats['calls'] < 60, f'calls: {stats[\"calls\"]} — memoization not effective'\nprint('ok')",
+      "hint": "Check the memo BEFORE recursing; increment stats at the very top of the function."
+    }
+  ],
+  "level": "guided"
+}

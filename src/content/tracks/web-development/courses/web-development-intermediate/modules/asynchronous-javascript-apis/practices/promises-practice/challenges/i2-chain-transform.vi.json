@@ -1,0 +1,18 @@
+{
+  "title": "Pipeline kiên cường",
+  "prompt": "Viết `async function pipeline(value, steps)` trong đó `steps` là mảng các hàm đồng bộ hoặc bất đồng bộ. Await từng bước theo thứ tự, đưa kết quả của bước này vào bước kế. Nếu một bước throw, RETURN `{ ok: false, error: err.message }`; nếu không RETURN `{ ok: true, value: giá trị cuối }`.",
+  "tests": [
+    {
+      "name": "chạy các bước sync và async đúng thứ tự",
+      "hint": "for (const s of steps) value = await s(value); — await chấp nhận cả giá trị trả về đồng bộ."
+    },
+    {
+      "name": "biến lỗi ném ra thành result object",
+      "hint": "Bọc vòng lặp trong try/catch; khi catch thì return { ok: false, error: err.message }."
+    },
+    {
+      "name": "steps rỗng trả về giá trị nguyên vẹn",
+      "hint": "Vòng lặp đơn giản là không chạy."
+    }
+  ]
+}

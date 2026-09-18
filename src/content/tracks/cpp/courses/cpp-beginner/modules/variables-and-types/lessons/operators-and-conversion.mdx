@@ -1,0 +1,38 @@
+## Arithmetic
+
+`+ - * / %` work as expected on integers and doubles — with one famous trap:
+
+```cpp
+std::cout << 7 / 2;      // 3   — integer / integer = integer!
+std::cout << 7.0 / 2;    // 3.5 — one double makes the whole expression double
+std::cout << 7 % 2;      // 1   — remainder (modulo)
+```
+
+**Integer division truncates.** If a calculation *should* be fractional, at least one operand must be a double. `%` is for integers only and is everywhere in real code: even/odd checks, ring buffers, pagination.
+
+## Comparison and logic
+
+Comparisons produce `bool`: `== != < <= > >=`. Combine them with `&&` (and), `||` (or), `!` (not). Precedence trips beginners, so when in doubt, parenthesize:
+
+```cpp
+if ((age >= 18) && (has_ticket)) { /* ... */ }
+```
+
+(Real bug to avoid: `=` assigns, `==` compares. `if (x = 5)` compiles — and is almost never what you meant.)
+
+## Conversion: implicit and explicit
+
+```cpp
+int small = 3.9;               // implicit: 3, silently (why braces are better)
+double avg = static_cast<double>(total) / count;   // explicit, honest
+```
+
+`static_cast<double>(x)` says out loud "I want a real-numbered division here". This course uses `static_cast` — never C-style `(double)x` casts, which are hard to search for and can silently succeed where they should fail.
+
+## Overflow in one sentence
+
+Every type has limits (`int` is typically ±2.1 billion). Computing past them **wraps around silently** — there is no exception. The beginner defense is simply: pick a sensible type (`long long` for big counts) and know that overflow exists. Deep handling is Intermediate material.
+
+## Practice focus
+
+The exercises here are pure computation — unit conversions, bill splits, grade averages — chosen because each one famously bites beginners with the division trap at least once.

@@ -1,0 +1,21 @@
+{
+  "id": "javi-p14-guard-rename",
+  "title": "Guard Clauses & Honest Names",
+  "prompt": "Refactor (re-implement) `static int shipFee(int weightGrams,\nboolean vip, String country)` — behavior frozen by these tests, but the\nimplementation must use GUARD CLAUSES (no else-nesting) and the local\nvariables must carry meaningful names:\n- country not \"VN\" or \"SG\" → IllegalArgumentException\n- weight <= 0 → IllegalArgumentException\n- base fee: 400 cents; plus 200 if weight > 2000\n- vip: 50% off the running total (integer division)\n\nThe grader checks behavior AND structure: the method must not contain\nan `else` branch and must use a variable named `feeCents`.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "fee schedule",
+      "code": "\ncheckEq(Solution.shipFee(1000, false, \"VN\"), 400, \"base\");\ncheckEq(Solution.shipFee(3000, false, \"SG\"), 600, \"base + heavy\");\ncheckEq(Solution.shipFee(3000, true, \"SG\"), 300, \"vip half\");\n",
+      "hint": "400 base, +200 heavy, vip halves."
+    },
+    {
+      "name": "validation fails fast",
+      "code": "\ntry { Solution.shipFee(500, false, \"FR\"); checkTrue(false, \"must throw\"); }\ncatch (IllegalArgumentException e) { checkTrue(true, \"country\"); }\ntry { Solution.shipFee(0, false, \"VN\"); checkTrue(false, \"must throw\"); }\ncatch (IllegalArgumentException e) { checkTrue(true, \"weight\"); }\n",
+      "hint": "Unsupported country and non-positive weight throw immediately."
+    }
+  ],
+  "level": "independent"
+}

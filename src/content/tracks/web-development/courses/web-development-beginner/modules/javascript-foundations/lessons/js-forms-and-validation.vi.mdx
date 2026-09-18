@@ -1,0 +1,60 @@
+Biểu mẫu là cách site của bạn _lắng nghe_. Bạn đã biết HTML (Module 2) và events (bài trước) — giờ bạn đọc những gì người dùng đã gõ và kiểm tra nó.
+
+## Đọc giá trị
+
+```js
+const emailField = document.querySelector("#email");
+
+emailField.value; // văn bản hiện tại — một chuỗi, luôn luôn vậy
+```
+
+`.value` hoạt động trên input, textarea, và select. Nó **luôn là một chuỗi**: `"25"` không phải số — chuyển bằng `Number(...)` khi bạn cần tính toán.
+
+## Hai lớp xác thực
+
+**Lớp 1 — trình duyệt (miễn phí):** với `<input type="email" required minlength="3">`, trình duyệt từ chối gửi dữ liệu không hợp lệ và hiện một thông báo. Luôn bắt đầu từ đây.
+
+**Lớp 2 — JavaScript của bạn:** trình duyệt không thể biết các quy tắc nghiệp vụ của bạn ("tên đã bị chiếm", "tên đăng nhập không được chứa dấu cách"). Hãy chặn submit và tự kiểm tra:
+
+```js
+const form = document.querySelector("#signup");
+const errorBox = document.querySelector("#error");
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const username = document.querySelector("#username").value.trim();
+
+  if (username.length < 3) {
+    errorBox.textContent = "Username must be at least 3 characters.";
+    return; // dừng — không chấp nhận đầu vào xấu
+  }
+
+  errorBox.textContent = ""; // xóa lỗi cũ
+  console.log("Welcome, " + username);
+});
+```
+
+## Phản hồi bao gồm mọi người
+
+- Hiện lỗi bằng **văn bản trên trang** (chỉ dùng màu là fail với ~8% nam giới — người mù màu không thấy được "viền đỏ").
+- Đặt thông báo gần trường mà nó thuộc về.
+- `.trim()` trước khi kiểm tra: " " không phải một cái tên thật dù nó không rỗng.
+
+## Mẫu, khái quát hóa
+
+1. Chặn submit → `preventDefault()`
+2. Đọc + chuẩn hóa các giá trị
+3. Kiểm tra từng quy tắc; ngay lần thất bại đầu tiên, hiện thông báo và dừng
+4. Mọi thứ ổn → làm việc thật (lưu, gửi, render)
+
+Vòng lặp đọc → xác thực → phản hồi này không đổi trong mọi framework.
+
+## Bạn đã học được gì
+
+- `.value` đọc các trường; nó luôn là chuỗi (`Number()` để chuyển đổi)
+- Xác thực theo lớp: thuộc tính HTML trước, JavaScript cho quy tắc của bạn
+- Hiện lỗi bằng văn bản gần trường; không bao giờ chỉ dùng màu
+- Chặn, đọc, kiểm tra, phản hồi — theo đúng thứ tự đó
+
+**Tiếp theo:** ghi nhớ dữ liệu giữa các lần truy cập — storage.

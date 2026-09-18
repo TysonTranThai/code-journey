@@ -1,0 +1,47 @@
+**Kế thừa (inheritance)** cho phép một class tái sử dụng và chuyên biệt hóa
+class khác. Lớp cha là *superclass*, lớp con là *subclass*:
+
+```java
+class Vehicle {
+    private final String name;
+    private int speed = 0;
+
+    Vehicle(String name) { this.name = name; }
+
+    public void accelerate(int by) { speed += by; }
+    public int getSpeed() { return speed; }
+    public String getName() { return name; }
+}
+
+class ElectricCar extends Vehicle {
+    private int batteryPercent = 100;
+
+    public ElectricCar(String name) { super(name); }   // dựng cha trước
+
+    public void drainBattery(int by) { batteryPercent -= by; }
+    public int getBatteryPercent() { return batteryPercent; }
+}
+```
+
+`ElectricCar` **is-a** Vehicle: nó tăng tốc, có tốc độ và tên — được kế
+thừa — cộng thêm pin của riêng mình. Hai từ khóa mới:
+
+- `extends` khai báo quan hệ. Java chỉ cho **một** superclass trực tiếp
+  (không có kim tự tháp cha mẹ).
+- `super(...)` gọi constructor của cha; nó phải là câu lệnh ĐẦU TIÊN. Nếu
+  bạn bỏ qua, Java lặng lẽ chèn `super()` — chỉ biên dịch được khi cha có
+  constructor không đối số.
+
+Trường `private` được kế thừa nhưng *vô hình* với subclass — con sở hữu
+chúng mà không chạm trực tiếp được. Điều đó là chủ đích: quy tắc của cha
+giữ nguyên vẹn. Khi subclass thật sự cần truy cập, `protected` mở cửa cho
+con cháu (vẫn đóng cửa với thế giới bên ngoài).
+
+**Kế thừa là một quyết định thiết kế, không phải mặc định.** Nó hợp khi
+quan hệ là is-a đúng nghĩa và mãi mãi đúng ("ElectricCar là Vehicle"). Khi
+quan hệ là has-a ("Car **có** Engine"), hãy dùng **composition** — một
+trường chứa object kia — linh hoạt hơn và không bao giờ gãy khi thay đổi.
+Quy tắc cho khóa học này: chỉ gọi kế thừa khi mọi subclass phải thỏa cùng
+một hợp đồng; gọi composition khi bạn chỉ muốn tái sử dụng hành vi.
+
+**Tiếp theo:** overriding — chuyên biệt hóa hành vi kế thừa.

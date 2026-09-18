@@ -1,0 +1,68 @@
+Chỉnh sửa các phần tử có sẵn là một nửa câu chuyện. Nửa còn lại là **tạo ra** chúng — đó là cách một bảng tin, một danh sách kết quả tìm kiếm, hay một giỏ hàng được sinh ra đời.
+
+## Công thức: tạo → đổ nội dung → gắn vào
+
+```js
+const li = document.createElement("li"); // 1. tạo (chưa có trên trang)
+li.textContent = "Learn the DOM"; // 2. đổ nội dung vào nó
+list.appendChild(li); // 3. gắn vào một phần tử cha
+```
+
+Một phần tử mới lơ lửng không gắn bó cho đến khi bạn append nó — `appendChild` là khoảnh khắc nó xuất hiện.
+
+## Dựng nội dung có cấu trúc
+
+Các phần tử lồng ghép đúng như trong HTML:
+
+```js
+const card = document.createElement("article");
+card.className = "card"; // className đặt thuộc tính class
+
+const h3 = document.createElement("h3");
+h3.textContent = "Ada Lovelace";
+
+const p = document.createElement("p");
+p.textContent = "Wrote the first algorithm.";
+
+card.appendChild(h3);
+card.appendChild(p);
+feed.appendChild(card);
+```
+
+## Render từ dữ liệu — mẫu chạy suốt web
+
+```js
+const skills = ["HTML", "CSS", "JavaScript"];
+const list = document.querySelector("#skills");
+
+for (const skill of skills) {
+  const li = document.createElement("li");
+  li.textContent = skill;
+  list.appendChild(li);
+}
+```
+
+Dữ liệu sống trong mảng; DOM chỉ là hình chiếu của nó. Thay mảng, render lại, và trang theo ngay. Mọi framework bạn sẽ học đều là một phím tắt vòng quanh vòng lặp này.
+
+## for...of — lặp không cần chỉ số
+
+`for (const item of items)` ghé thăm từng giá trị theo lượt — hoàn hảo khi bạn không cần chỉ số.
+
+## Xóa bỏ
+
+```js
+item.remove(); // phần tử tự gỡ bỏ chính nó
+```
+
+## Một ghi chú về accessibility
+
+Trình đọc màn hình bám theo DOM, nên cấu trúc vẫn quan trọng kể cả khi JavaScript dựng nó: dùng các phần tử danh sách thật cho danh sách, heading theo đúng thứ tự, và cùng những phần tử ngữ nghĩa như thể bạn viết tay vậy.
+
+## Bạn đã học được gì
+
+- `createElement` → đổ nội dung → `appendChild`
+- `className` đặt class trên phần tử mới
+- Render-từ-dữ liệu: lặp mảng, dựng một phần tử cho mỗi mục
+- `for...of` ghé thăm giá trị không cần chỉ số; `.remove()` xóa
+
+**Tiếp theo:** làm cho trang phản hồi con người — events.

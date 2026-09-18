@@ -1,0 +1,41 @@
+## Registry và plugin pattern
+
+**Registry** ánh xạ khóa tới các bản cài đặt được phát hiện lúc import. Nó là
+xương sống của hệ plugin: phần lõi không bao giờ import plugin; plugin import
+lõi và tự đăng ký.
+
+Ba kiểu đăng ký, từ yếu tới mạnh:
+
+```python
+# 1. explicit registration call
+REGISTRY = {}
+def register(key):
+    def deco(cls):
+        REGISTRY[key] = cls
+        return cls
+    return deco
+
+# 2. __init_subclass__ (auto-registration with inheritance)
+class Handler:
+    _sub = {}
+    def __init_subclass__(cls, scheme=None, **kw):
+        super().__init_subclass__(**kw)
+        Handler._sub[scheme or cls.__name__.lower()] = cls
+
+# 3. entry points (cross-package, used by pytest and console scripts)
+# declared in pyproject.toml:
+# [project.entry-points."cj.exporters"]
+# csv = "myplug.csv:CsvExporter"
+```
+
+Entry point là cách các *distribution đã cài* cắm vào host mà host không cần
+import chủ động — `importlib.metadata.entry_points()` nạp lười theo nhu cầu.
+
+Những nguyên tắc giúp registry không điên loạn khi phóng to:
+
+- Thất bại nhanh với khóa trùng và method bắt buộc còn thiếu (kiểm tra lúc tạo
+  class, không phải lần dùng đầu tiên).
+- Giữ khóa registry bằng định danh *ổn định, công khai* — đừng bao giờ dùng tên
+  class, thứ mà refactor phá ngầm.
+- Đánh phiên bản hợp đồng: plugin viết cho protocol v1 phải thất bại ầm ĩ,
+  không phải âm thầm, trên host v2.

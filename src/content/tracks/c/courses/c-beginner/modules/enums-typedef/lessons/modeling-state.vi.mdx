@@ -1,0 +1,44 @@
+## Một máy trạng thái tí hon
+
+```c
+typedef enum { IDLE, RUNNING, PAUSED } State;
+
+State step(State s, int event) {
+    switch (s) {
+        case IDLE:    return event == 1 ? RUNNING : IDLE;
+        case RUNNING: return event == 0 ? PAUSED  : RUNNING;
+        case PAUSED:  return event == 1 ? RUNNING : PAUSED;
+    }
+    return s;
+}
+```
+
+Enum đặt tên cho các trạng thái, hàm đặt tên cho luật chuyển, và hệ thống kiểu
+khiến các trạng thái bất hợp lệ trở nên rõ ràng.
+
+## Mô hình hóa bản ghi
+
+```c
+typedef enum { DOC, VIDEO, QUIZ } Kind;
+
+typedef struct {
+    int id;
+    Kind kind;
+    int minutes;
+} Material;
+
+int total_minutes(const Material *ms, int n, Kind k) {
+    int t = 0;
+    for (int i = 0; i < n; i++)
+        if (ms[i].kind == k) t += ms[i].minutes;
+    return t;
+}
+```
+
+Đây chính là tầng mô hình dữ liệu của mọi chương trình C: một enum cho danh
+mục, một struct cho bản ghi, và các hàm truy vấn/cập nhật chúng.
+
+## Gợi ý thiết kế
+
+Khi bắt gặp chính mình viết `status == 3`, hãy dừng lại và đặt tên enum cho nó.
+Việc đổi tên tốn hai phút và trả lãi suốt vòng đời của mã nguồn.

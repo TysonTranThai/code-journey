@@ -1,0 +1,23 @@
+The capstone architecture is four layers with one dependency direction:
+
+```text
+Service (LedgerService)   — orchestration, no storage knowledge
+Engine (interface)        — put/get/all/count, nothing more
+InMemory / JsonlFile      — two interchangeable implementations
+Wire/Report (records)     — the data that crosses boundaries
+```
+
+The service is *compiled against* the interface and *run against* either
+engine. Swapping engines changes nothing above the interface line — that is
+the whole point, and the checkpoint verifies it behaviorally: identical
+sequences of operations through either engine must produce byte-identical
+reports. Not "similar" — identical, because determinism is what makes a
+report trustworthy and a regression testable.
+
+Design rules the course has earned: records for boundary data (immutable,
+final fields — Module 1); the engine interface is *narrow* (four methods —
+Module 6's capture lesson: every method you don't declare is a method you
+never have to fake); the JSONL engine holds a `Path` it owns and appends
+atomically (Module 10's journal discipline); the service bounds its report
+fan-out with per-branch `orTimeout` (Module 12) and exposes a health check
+that reads its own counters (Module 14).

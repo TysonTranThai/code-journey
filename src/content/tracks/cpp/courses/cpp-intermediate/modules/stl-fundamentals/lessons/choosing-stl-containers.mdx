@@ -1,0 +1,23 @@
+By now the STL menu is: sequence containers, adapters, and the associative
+families. Choosing is a three-question checklist.
+
+1. **How do you access it?** By position → `vector` (or `array` if fixed
+   size). By key → `map`/`unordered_map`. By discipline only → adapter.
+2. **Which ends?** Both ends O(1) → `deque`. Middle splicing with stable
+   iterators → `list`. Everything else → `vector`.
+3. **Is sorted order part of the contract?** Yes → ordered family. No →
+   `unordered_map` for lookup speed.
+
+Complexity in one table:
+
+| Operation | vector | deque | list | map | unordered_map |
+|---|---|---|---|---|---|
+| index/front/back | O(1) | O(1) | O(n) | O(log n) | O(1) avg |
+| insert at ends | O(1)* | O(1) | O(1) | O(log n) | O(1) avg |
+| find by value/key | O(n) | O(n) | O(n) | O(log n) | O(1) avg |
+
+\* amortized at the back.
+
+The default plan in real code: `vector` by default, `unordered_map` for
+lookups, `map` when output must be sorted, `priority_queue` for "best first"
+processing, `deque` for sliding windows.

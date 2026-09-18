@@ -1,0 +1,26 @@
+## The boundary rule
+
+Public APIs validate; internal helpers assert. A parser converts untrusted bytes into checked types at one choke point; everything downstream works with types that cannot hold invalid values. Scattered `if` checks everywhere mean the boundary is everywhere and nowhere.
+
+## Overflow-safe arithmetic
+
+`a + b` on ints is a trap. The professional shape:
+
+```cpp
+bool addChecked(int a, int b, int& out) {
+    if (b > 0 && a > INT_MAX - b) return false;
+    if (b < 0 && a < INT_MIN - b) return false;
+    out = a + b;
+    return true;
+}
+```
+
+or C++20's `<safe_comparison>`-adjacent tools / `__builtin_add_overflow` where available. The same discipline applies to subtraction, multiplication, and index arithmetic (`i + 1` can overflow when `i == INT_MAX`).
+
+## checked access as a type
+
+Return `std::optional<T>` or `std::expected<T, E>`-shaped results instead of sentinel values (`-1`, `nullptr` "sometimes"). A sentinel that callers can forget to check is a bug factory; an optional is a compile-time contract.
+
+## What the graders check here
+
+Feeds the function adversarial inputs (INT_MAX, empty containers, sizes past the end) and requires: defined behavior, correct result or a clean failure — never garbage, never a crash. The naive implementation fails by arithmetic, deterministically.

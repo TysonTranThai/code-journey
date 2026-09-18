@@ -1,0 +1,39 @@
+## Async context manager, iterator và backpressure
+
+**Async context manager** (`async with`) cho phép await bên trong `__aenter__`
+/ `__aexit__` — kết nối, lock, transaction:
+
+```python
+class AsyncConnection:
+    async def __aenter__(self):
+        await self._connect()
+        return self
+    async def __aexit__(self, exc_type, exc, tb):
+        await self._close()
+```
+
+`contextlib.asynccontextmanager` biến một generator thành async context
+manager, y hệt người anh em đồng bộ.
+
+**Async iterator** (`async for`) kéo item qua các lần await; **async
+generator** (`async def` có `yield`) sản xuất chúng:
+
+```python
+import asyncio
+
+async def ticker(n, delay=0.01):
+    for i in range(n):
+        await asyncio.sleep(delay)
+        yield i
+
+async def consume():
+    async for value in ticker(3):
+        print(value)
+```
+
+**Queue có giới hạn** là backpressure dạng async nhìn thấy được:
+`queue = asyncio.Queue(maxsize=10)`. `await queue.put(x)` treo producer khi
+đầy — producer chậm lại theo nhịp của consumer thay vì phình bộ nhớ vô hạn.
+`await queue.get()` treo consumer khi rỗng. Worker + `queue.join()` +
+`task_done()` hoạt động y như bản dùng thread ở module trước, nhưng ngay trên
+loop.

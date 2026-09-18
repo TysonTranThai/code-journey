@@ -1,0 +1,16 @@
+{
+  "id": "cppa16-pimpl-discipline",
+  "title": "Pimpl Lifecycle Discipline",
+  "prompt": "Implement `Widget`'s pimpl correctly: constructor allocates, destructor destroys exactly once, move steals and nulls the source (double-move-safe: moving twice must not crash), and every operation is safe on an empty (moved-from) instance.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <cstdint>\n#include <string>\n\n// --- ABI-stable widget: pimpl with disciplined lifecycle ---\nclass Widget {\npublic:\n    Widget();                       // allocates Impl\n    ~Widget();                      // YOU implement out-of-line discipline\n    Widget(const Widget&) = delete;\n    Widget& operator=(const Widget&) = delete;\n    Widget(Widget&& other) noexcept;\n    Widget& operator=(Widget&& other) noexcept;\n    void set(const std::string& key, std::int64_t value);\n    std::int64_t get(const std::string& key) const;   // 0 if absent\n    std::size_t size() const;\nprivate:\n    struct Impl;\n    Impl* impl_;\n};\n\n// --- versioned function table (pattern 3) ---\nstruct WidgetApi {\n    std::uint32_t version;          // 1\n    std::int64_t (*get)(void* self, const char* key);\n    void (*set)(void* self, const char* key, std::int64_t value);\n};\n\n// Opaque-handle factory contract used by the tests.\nextern \"C\" void* wapiCreate();\nextern \"C\" void  wapiDestroy(void** handle);   // takes the slot: can null it (idempotent)\nextern \"C\" void  wapiFillApi(WidgetApi* api);  // the library publishes its v1 table\n",
+  "tests": [
+    {
+      "name": "lifecycle battery",
+      "code": "{\n    Widget w;\n    w.set(\"hits\", 42);\n    CHECK_EQ(w.get(\"hits\"), 42);\n    CHECK_EQ(w.size(), 1);\n    Widget w2(std::move(w));\n    CHECK_EQ(w2.get(\"hits\"), 42);      // stolen\n    CHECK_EQ(w.size(), 0);             // source emptied\n    w.set(\"after\", 1);                 // moved-from must be safe to reuse\n    CHECK_EQ(w.get(\"after\"), 1);\n    Widget w3(std::move(w));           // double move: no crash, no leak\n    CHECK_EQ(w3.get(\"after\"), 1);\n    Widget w4(std::move(w3));\n    CHECK_EQ(w4.size(), std::size_t{1});\n}",
+      "hint": "Move: steal impl_ then set source impl_ = nullptr. All ops must branch on impl_ == nullptr (treat as empty). Destructor: delete impl_ only if non-null (delete on nullptr is fine — but the moved-from dtor runs too, so a second delete of the SAME pointer is the crash to avoid)."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+## Bản đồ tần suất
+
+Đếm các thứ là hình dạng vòng lặp tái sử dụng nhất trong chương collection:
+
+```csharp
+var counts = new Dictionary<string, int>();
+foreach (string w in words)
+    counts[w] = counts.GetValueOrDefault(w) + 1;
+```
+
+Nhiều bài toán chỉ là mẫu này mặc trang phục: bản sao đầu tiên, từ đứng đầu, kiểm tra đảo chữ, tra cặp tổng — mỗi bài là một từ điển làm phần việc ghi nhớ mà vòng lặp lồng nhau sẽ phải làm lại O(n²) lần.
+
+## Hợp đồng đệ quy
+
+Mọi phương thức đệ quy cần hai thứ, nếu không nó không bao giờ dừng:
+
+1. **Trường hợp gốc** — một đầu vào được trả lời trực tiếp, không gọi đệ quy.
+2. **Bước nhỏ hơn** — mỗi lời gọi làm việc trên đầu vào nhỏ hơn một cách nghiêm ngặt, tiến về trường hợp gốc.
+
+Ngăn xếp lời gọi lo phần sổ sách: mỗi lời gọi có khung riêng với biến cục bộ riêng, và kết quả được ghép lại khi các khung quay về.

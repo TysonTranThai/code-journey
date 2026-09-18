@@ -1,0 +1,26 @@
+{
+  "id": "ca18-mutex-counter",
+  "title": "The Contended Account",
+  "prompt": "Given a mutex and a global `long long account` (both in your editor). Implement `void deposit(long long amount)` — add amount to account under the mutex — and `long long balance(void)` returning it. The grader hammers it from many threads; a lost update means a lost test.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define _POSIX_C_SOURCE 200809L\n#include <pthread.h>\n#include <stdint.h>\nstatic pthread_mutex_t cnt_mtx = PTHREAD_MUTEX_INITIALIZER;\nstatic long long account = 0;\nvoid deposit(long long);\nstatic void *dep_worker(void *arg) { deposit((long long)(intptr_t)arg); return NULL; }\nstatic long long concurrent_deposits(int nthreads, long long each) {\n    pthread_t th[8];\n    if (nthreads > 8) nthreads = 8;\n    for (int i = 0; i < nthreads; i++) {\n        if (pthread_create(&th[i], NULL, dep_worker, (void *)(intptr_t)each) != 0) return -1;\n    }\n    for (int i = 0; i < nthreads; i++) pthread_join(th[i], NULL);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "single-thread deposit",
+      "code": "deposit(250);\nCHECK_EQ(balance(), 250);",
+      "hint": "One deposit, one update: the account reflects it exactly."
+    },
+    {
+      "name": "four threads hammer it",
+      "code": "CHECK_EQ(concurrent_deposits(4, 500), 0);\nCHECK_EQ(balance(), 2000);",
+      "hint": "concurrent_deposits (given) spawns 4 threads depositing 500 each; the mutex makes every update land: exactly 2000."
+    },
+    {
+      "name": "balance is read-only",
+      "code": "deposit(7);\nlong long b1 = balance();\nlong long b2 = balance();\nCHECK_EQ(b1, b2);",
+      "hint": "Observing the balance must not change it."
+    }
+  ],
+  "level": "guided"
+}

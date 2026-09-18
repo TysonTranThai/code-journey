@@ -1,0 +1,20 @@
+## Vòng lặp hằng ngày
+
+```bash
+dotnet new console -o MyApp    # dựng khung dự án console
+cd MyApp
+dotnet run                     # biên dịch + thực thi
+dotnet build                   # chỉ biên dịch, không chạy
+dotnet test                    # chạy các dự án kiểm thử
+dotnet publish -c Release      # kết quả sẵn-sàng-phát-hành
+```
+
+`dotnet run` là vòng lặp sửa–biên-dịch–chạy; nó dựng lại các tệp thay đổi và khởi động chương trình. `build` dừng trước khi chạy — dùng để kiểm tra biên dịch trong CI. Kết quả nằm ở `bin/` (tệp chạy) và `obj/` (tệp trung gian); cả hai đều xóa được và được dựng lại ở lần build kế — không bao giờ được commit.
+
+## Các cờ đáng biết sớm
+
+- `-c Release` — build tối ưu (mặc định `Debug` chậm hơn nhưng thân-thiện-debugger).
+- `--no-restore` — bỏ qua tải lại package khi bạn biết không có gì đổi.
+- `-o` — thư mục đích khi dựng khung.
+
+CLI có thể kịch bản hóa — mọi thứ GUI làm được, các động từ này làm được, và chính điều đó được sandbox chấm điểm sử dụng.

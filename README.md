@@ -81,7 +81,9 @@ pnpm dev             # terminal 2: the app
 ```
 
 Open a challenge (e.g. learn → Web Development → HTML Foundations → a lesson →
-a practice challenge), edit the code, press **Run code**, and see the verdict.
+a practice challenge), edit the code — the output pane updates **live** as you
+type — then press **Submit** to check it in the sandbox grader. The solution is
+also re-checked automatically (debounced) while you type once signed in.
 With no worker running, submissions stay queued and the UI says so.
 
 ## Database

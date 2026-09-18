@@ -1,0 +1,57 @@
+## Lambda capture BIẾN, không phải giá trị
+
+Closure capture chính biến — ô nhớ. Thay đổi sau lúc capture đều thấy được;
+vòng đời của lambda kéo dài vòng đời của biến:
+
+```csharp
+int counter = 0;
+Action bump = () => counter++;   // capture BIẾN counter
+bump(); bump();
+Console.WriteLine(counter);      // 2 — cùng ô nhớ
+```
+
+Mỗi lần *thực thi* một phạm vi tạo ô nhớ mới:
+
+```csharp
+static Func<int> MakeCounter()
+{
+    int count = 0;
+    return () => ++count;        // mỗi lần gọi MakeCounter(): count riêng
+}
+var a = MakeCounter(); var b = MakeCounter();
+a(); a(); b();                    // a:2, b:1 — độc lập
+```
+
+## Bẫy capture trong vòng lặp kinh điển
+
+```csharp
+var actions = new List<Action>();
+for (int i = 0; i < 3; i++)
+    actions.Add(() => Console.Write(i));
+foreach (var a in actions) a();      // 333 với for cổ điển: MỘT biến i
+```
+
+Vòng `for` khai báo MỘT biến `i` dùng chung cho cả ba lambda — sau vòng lặp
+nó là 3, nên cả ba in 3. Cách sửa, cả hai đều là thực tế production:
+
+```csharp
+for (int i = 0; i < 3; i++) { int copy = i; actions.Add(() => use(copy)); }
+// hoặc foreach với biến inline:
+foreach (int i in Enumerable.Range(0, 3))   // biến theo-từng-vòng
+    actions.Add(() => use(i));               // 012
+```
+
+Biến `foreach` theo từng vòng từ C# 5 — cái bẫy riêng biệt là `for` cổ điển
+với chỉ số tăng.
+
+## Vòng đời: closure giữ mọi thứ sống
+
+Đối tượng bị capture không thể thu gom khi lambda còn sống. Một lambda đăng
+ký vào component sống lâu và capture một đối tượng lớn là một memory leak
+mặc áo tính năng. Capture hẹp: capture hai trường bạn cần, không phải `this`
+giữ tất cả.
+
+## Kiểm tra hiểu biết
+
+- `int x = 1; var f = () => x; x = 2; f()` — ra gì? (2: biến captured đọc lúc gọi.)
+- Vì sao static lambda tồn tại? (Bằng chứng lúc biên dịch về việc không capture.)

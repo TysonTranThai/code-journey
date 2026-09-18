@@ -1,0 +1,49 @@
+## Vì sao không dùng lệnh g++ dài?
+
+`g++ main.cpp math_utils.cpp ... -o app` không mở rộng được: 40 file, đường dẫn include, thư viện, cờ Debug/Release. **CMake** mô tả dự án *một lần*; nó sinh ra đúng các lệnh build cho bất kỳ nền tảng nào.
+
+## CMakeLists.txt tối thiểu và trung thực
+
+```cmake
+cmake_minimum_required(VERSION 3.20)
+project(finance LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+add_executable(finance
+    src/main.cpp
+    src/ledger.cpp
+    src/report.cpp
+)
+
+target_compile_options(finance PRIVATE -Wall -Wextra -Wpedantic)
+```
+
+Đọc nó như một câu: "một dự án tên finance, C++20, một target thực thi `finance` từ các nguồn này, bật cảnh báo cho target này."
+
+- **Target** là đơn vị của mọi thứ: một file thực thi hoặc một thư viện, các nguồn của nó, cờ của nó, các phụ thuộc của nó.
+- `PRIVATE` nghĩa là cờ chỉ áp dụng khi build target này.
+
+## Build hai lệnh (học thuộc)
+
+```
+cmake -B build            # configure: đọc CMakeLists, sinh file build vào build/
+cmake --build build       # build: biên dịch + liên kết qua hệ thống đã sinh
+./build/finance           # chạy
+```
+
+`-B build` giữ mọi file được sinh trong một thư mục (git-ignored — module 17). Chạy lại configure sau khi sửa CMakeLists; chạy lại build sau khi sửa code — nó chỉ biên dịch lại phần thay đổi.
+
+## Debug so với Release
+
+```
+cmake -B build-debug -DCMAKE_BUILD_TYPE=Debug      # -g, không tối ưu: dễ debug
+cmake -B build-release -DCMAKE_BUILD_TYPE=Release  # -O2: nhanh, khó đọc trong debugger
+```
+
+Debug khi đang phát triển; release khi đo hiệu năng hoặc bàn giao. (Sanitizer gắn vào bản Debug — miền của Trung cấp, nhắc tên tại đây.)
+
+## CMake ở trình độ Cơ bản KHÔNG là gì
+
+Không có hàm tùy biến, không săn package (`find_package`), không luật cài đặt. Khi một dự án cần những thứ đó, nó đã vượt khỏi Cơ bản — và giờ bạn có từ vựng để nói điều đó.

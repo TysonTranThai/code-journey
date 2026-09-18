@@ -1,0 +1,26 @@
+{
+  "id": "javi-p10-cf-chain",
+  "title": "Compose a Pipeline",
+  "prompt": "Implement inside `Solution` (synchronous executor is fine —\n`CompletableFuture.completedFuture` chains run inline):\n- `static CompletableFuture<Integer> pipeline(int base)`:\n  completedFuture(base) → thenApply(x -> x * 2) → thenApply(x -> x + 1)\n- `static CompletableFuture<Integer> combine(int a, int b)`:\n  thenCombine of two completed pipelines, summed\n- `static CompletableFuture<Integer> safeDivide(int a, int b)`:\n  completedFuture of a/b inside the chain, `exceptionally` returning -1\n  on ArithmeticException\n\nJoin results with `.join()` in the tests — completed chains return\nimmediately.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\nimport java.util.concurrent.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "chain transforms in order",
+      "code": "\ncheckEq(Solution.pipeline(10).join(), 21, \"10*2+1\");\n",
+      "hint": "thenApply stages run in declaration order."
+    },
+    {
+      "name": "combine merges two chains",
+      "code": "\ncheckEq(Solution.combine(10, 5).join(), 32, \"pipeline(10)+pipeline(5)\");\n",
+      "hint": "Each side runs pipeline(), then the results sum."
+    },
+    {
+      "name": "exceptionally recovers",
+      "code": "\ncheckEq(Solution.safeDivide(7, 0).join(), -1, \"div by zero → -1\");\ncheckEq(Solution.safeDivide(8, 2).join(), 4, \"normal divide\");\n",
+      "hint": "ArithmeticException routes to the recovery stage."
+    }
+  ],
+  "level": "guided"
+}

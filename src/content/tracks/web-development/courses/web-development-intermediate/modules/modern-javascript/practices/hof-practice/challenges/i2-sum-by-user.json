@@ -1,0 +1,25 @@
+{
+  "id": "i2-sum-by-user",
+  "title": "Group and Sum with reduce",
+  "prompt": "Given `orders` (an array of `{ user, total }` objects, already declared in the boilerplate), write `sumByUser(orders)` that RETURNS an object mapping each user to the sum of their totals.\n\nUse `reduce` — no `for` loops.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "const orders = [\n  { user: \"ada\", total: 120 },\n  { user: \"linh\", total: 35 },\n  { user: \"ada\", total: 80 },\n];\n\nfunction sumByUser(orders) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "returns correct grouped totals",
+      "code": "const fn = new Function(code + \"\\nreturn { sumByUser };\");\nconst { sumByUser } = fn();\nconst out = sumByUser([{ user: \"ada\", total: 120 }, { user: \"linh\", total: 35 }, { user: \"ada\", total: 80 }]);\nif (out.ada !== 200 || out.linh !== 35) throw new Error(\"Expected { ada: 200, linh: 35 }, got \" + JSON.stringify(out));",
+      "hint": "reduce with an empty object as the initial accumulator; add each total to acc[o.user]."
+    },
+    {
+      "name": "handles an empty list",
+      "code": "const fn = new Function(code + \"\\nreturn { sumByUser };\");\nconst { sumByUser } = fn();\nconst out = sumByUser([]);\nif (typeof out !== \"object\" || Array.isArray(out)) throw new Error(\"An empty list should return an empty object.\");",
+      "hint": "With no items, reduce returns the initial value — that is why the initial accumulator matters."
+    },
+    {
+      "name": "uses reduce, not for loops",
+      "code": "if (/for\\s*\\(/.test(code)) throw new Error(\"Use reduce for this one — no for loops.\");",
+      "hint": "orders.reduce((acc, o) => { … return acc; }, {}) is the whole solution."
+    }
+  ]
+}

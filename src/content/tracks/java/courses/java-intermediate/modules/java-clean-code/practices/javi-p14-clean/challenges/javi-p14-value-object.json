@@ -1,0 +1,26 @@
+{
+  "id": "javi-p14-value-object",
+  "title": "Beat Primitive Obsession",
+  "prompt": "Introduce a value object in `Solution`:\n- `static class Email` with constructor `(String raw)` that validates:\n  exactly one '@', non-empty local part and domain, domain contains a\n  '.' after the '@'. Invalid → IllegalArgumentException.\n  Store a normalized (trimmed, lowercased) final field `value` with\n  getter `value()`.\n- `static List<String> uniqueEmails(List<String> rawList)` — parses each\n  into Email (invalid ones skipped) and returns distinct normalized\n  values, insertion order.\n\nStrings stay strings at the edges; inside this code, an Email is not a\nString.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "valid emails normalize",
+      "code": "\nSolution.Email e = new Solution.Email(\"  Ann@Example.COM \");\ncheckEq(e.value(), \"ann@example.com\", \"normalized\");\n",
+      "hint": "Trimmed and lowercased at construction."
+    },
+    {
+      "name": "invalid shapes rejected",
+      "code": "\nfor (String bad : new String[]{\"nope\", \"a@b\", \"@x.com\", \"a@.com\", \"a@@b.com\"}) {\n    try { new Solution.Email(bad); checkTrue(false, \"should reject \" + bad); }\n    catch (IllegalArgumentException e) { /* expected */ }\n}\n",
+      "hint": "Missing domain dot, double @, empty local — all rejected."
+    },
+    {
+      "name": "uniqueEmails dedupes",
+      "code": "\nList<String> out = Solution.uniqueEmails(List.of(\n    \"A@x.com\", \"bad\", \"a@X.COM\", \"b@y.com\"));\ncheckEq(out, List.of(\"a@x.com\", \"b@y.com\"), \"distinct normalized\");\n",
+      "hint": "Invalid skipped, duplicates collapse case-insensitively."
+    }
+  ],
+  "level": "independent"
+}

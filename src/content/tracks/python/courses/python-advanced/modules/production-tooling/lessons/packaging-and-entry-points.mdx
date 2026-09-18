@@ -1,0 +1,54 @@
+## pyproject.toml: the one file that rules them all
+
+Modern Python packaging is standardized around `pyproject.toml`:
+
+```toml
+[project]
+name = "fincli"
+version = "1.2.0"
+requires-python = ">=3.11"
+dependencies = ["click>=8.1"]
+
+[project.scripts]
+fincli = "fincli.cli:main"
+```
+
+`[project]` is the standardized metadata (PEP 621); `[project.scripts]` creates
+the `fincli` command that imports `fincli.cli` and calls `main`. Build
+backends (setuptools, hatchling, flit) read this file; you pick one, but the
+metadata contract is universal.
+
+## Wheels and sdists
+
+`python -m build` produces two artifacts:
+
+- **wheel** (`.whl`) — the installable format: fast, no build step for the user,
+- **sdist** (`.tar.gz`) — the source distribution from which a wheel can be
+  rebuilt.
+
+Install from a wheel with `pip install dist/fincli-1.2.0-py3-none-any.whl` —
+or publish to an index. Versioning follows your policy; semver (`major.minor.patch`)
+is the common contract for *breaking.feature.fix*.
+
+## Lockfiles: reproducible environments
+
+`requirements.txt` with loose ranges says *approximately what*; a lockfile says
+*exactly what* — every transitive dependency pinned to a hash-verified version,
+so that the environment you tested is the environment your colleague installs.
+Tools: `pip-tools`, `uv`, `poetry`. Rule of thumb: libraries declare loose
+ranges in `pyproject.toml`; applications lock.
+
+## Entry points beyond scripts
+
+The `[project.scripts]` mechanism is one use of **entry points** — a registry
+packages publish that others can query. Plugin systems use the same mechanism:
+an application declares an entry-point group (`fincli.plugins`), and any
+installed package can register a plugin there. The metaclass/registry patterns
+from Module 2 meet the packaging system.
+
+## Reproducible environments
+
+`python -m venv .venv` — one environment per project, never global installs;
+activate and `pip install -e .` (editable install: your code changes are live)
+while developing. `requires-python` is the contract with your users' machines;
+declare it honestly.

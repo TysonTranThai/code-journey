@@ -1,0 +1,18 @@
+{
+  "title": "Soạn một pipeline",
+  "prompt": "Cài bên trong `Solution` (executor đồng bộ là đủ — chuỗi\n`CompletableFuture.completedFuture` chạy inline):\n- `static CompletableFuture<Integer> pipeline(int base)`:\n  completedFuture(base) → thenApply(x -> x * 2) → thenApply(x -> x + 1)\n- `static CompletableFuture<Integer> combine(int a, int b)`:\n  thenCombine của hai pipeline đã hoàn tất, lấy tổng\n- `static CompletableFuture<Integer> safeDivide(int a, int b)`:\n  completedFuture của a/b trong chuỗi, `exceptionally` trả -1 khi gặp\n  ArithmeticException\n\nJoin kết quả bằng `.join()` trong test — chuỗi hoàn tất trả về ngay.",
+  "tests": [
+    {
+      "name": "Chuỗi biến đổi theo thứ tự",
+      "hint": "Các stage thenApply chạy theo thứ tự khai báo."
+    },
+    {
+      "name": "combine trộn hai chuỗi",
+      "hint": "Mỗi phía chạy pipeline(), rồi hai kết quả cộng lại: 21 + 11 = 32."
+    },
+    {
+      "name": "exceptionally phục hồi",
+      "hint": "ArithmeticException chuyển tới stage phục hồi."
+    }
+  ]
+}

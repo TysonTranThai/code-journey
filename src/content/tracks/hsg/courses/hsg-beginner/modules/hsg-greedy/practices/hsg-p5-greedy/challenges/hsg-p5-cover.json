@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p5-cover",
+  "title": "One Point to Cover Them All",
+  "prompt": "**Description:** n intervals on a line. Choose one real point that lies\ninside as many intervals as possible; print that count. (An interval [s, e]\ncontains a point p if s ≤ p ≤ e.)\n\n**Input:** Line 1: n (1 ≤ n ≤ 10^5). Each line: s e (0 ≤ s ≤ e ≤ 10^9).\n**Output:** One integer — the maximum coverage.\n\n**Example:** `3` / `(0 10) (2 5) (6 9)` → `2` (e.g. point 3 or 7; no point\nlies in all three).",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"3\\n0 10\\n2 5\\n6 9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Point 3 covers (0,10)+(2,5); point 7 covers (0,10)+(6,9); 2 max."
+    },
+    {
+      "name": "all overlap",
+      "code": "std::istringstream in(\"3\\n0 5\\n1 5\\n2 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "Point 5 lies in all three."
+    },
+    {
+      "name": "disjoint",
+      "code": "std::istringstream in(\"2\\n0 1\\n5 6\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "No point sees both."
+    },
+    {
+      "name": "touching ends",
+      "code": "std::istringstream in(\"2\\n0 2\\n2 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Point 2 is in both (closed intervals)."
+    }
+  ],
+  "level": "combination"
+}

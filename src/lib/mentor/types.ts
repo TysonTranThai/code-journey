@@ -16,6 +16,7 @@ export interface MentorContext {
   /** Educational hints from the challenge's own tests (content-as-data). */
   testHints: string[];
   boilerplate?: string;
+  locale?: string;
 }
 
 /** 1 = nudge, 2 = direction, 3 = near-miss. Never the final code. */

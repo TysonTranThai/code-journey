@@ -1,0 +1,21 @@
+{
+  "id": "pi8-sql-crud",
+  "title": "CRUD the Hard Way",
+  "prompt": "Implement setup(conn) that creates table items(id INTEGER PRIMARY KEY, name TEXT NOT NULL, qty INTEGER NOT NULL DEFAULT 0), and restock(conn, name, qty) inserting a row and returning its id.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import sqlite3\n\ndef setup(conn):\n    pass\n\ndef restock(conn, name, qty):\n    pass\n",
+  "tests": [
+    {
+      "name": "creates and inserts",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nsetup(conn)\niid = restock(conn, 'tea', 10)\nrow = conn.execute('SELECT name, qty FROM items WHERE id = ?', (iid,)).fetchone()\nassert row == ('tea', 10)",
+      "hint": "CREATE TABLE then INSERT with placeholder values; commit."
+    },
+    {
+      "name": "constraint enforced",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nsetup(conn)\ntry:\n    conn.execute('INSERT INTO items (name, qty) VALUES (?, ?)', (None, 1))\n    failed = False\nexcept sqlite3.IntegrityError:\n    failed = True\nassert failed",
+      "hint": "NOT NULL must be in the schema — the database rejects violations."
+    }
+  ],
+  "level": "guided"
+}

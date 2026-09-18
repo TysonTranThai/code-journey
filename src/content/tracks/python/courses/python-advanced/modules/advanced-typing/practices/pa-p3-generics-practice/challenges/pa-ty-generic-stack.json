@@ -1,0 +1,21 @@
+{
+  "id": "pa-ty-generic-stack",
+  "title": "A generic Stack[T]",
+  "prompt": "Implement `Stack(Generic[T])` with `push(item: T)`, `pop() -> T` (IndexError on empty), `peek() -> T` (IndexError on empty), and `__len__`. Also implement `first(xs: List[T]) -> T` raising `ValueError('empty sequence')` on an empty list.\n\nRuntime must behave exactly like the untyped version — the generic parameter is a design contract (your annotations must reference T where relevant).",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "from typing import TypeVar, Generic, List\n\nT = TypeVar('T')\n\n# TODO: Stack and first",
+  "tests": [
+    {
+      "name": "stack behaves and preserves values",
+      "code": "s = Stack()\ns.push(1)\ns.push('a')\nassert len(s) == 2\nassert s.pop() == 'a'\nassert s.peek() == 1\nassert s.pop() == 1\ntry:\n    Stack().pop()\nexcept IndexError:\n    pass\nelse:\n    raise AssertionError('empty pop must raise IndexError')\nprint('ok')",
+      "hint": "Store items in a list; the annotations document the contract (item: T, pop() -> T)."
+    },
+    {
+      "name": "first() and runtime subscript",
+      "code": "assert first([3, 1, 2]) == 3\nassert first(['x', 'y']) == 'x'\ntry:\n    first([])\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('first([]) must raise ValueError')\nsub = Stack[int]()\nassert isinstance(sub, Stack), 'Generic classes support runtime subscription'\nprint('ok')",
+      "hint": "Raise ValueError with the exact message for empty input; Stack[int]() must work at runtime via Generic."
+    }
+  ],
+  "level": "guided"
+}

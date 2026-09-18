@@ -1,0 +1,25 @@
+{
+  "id": "i2-repair-checkpoint",
+  "title": "Repair Room",
+  "prompt": "Write THREE functions. 1) `diagnose(testName)` — map failing test names to causes: names containing \"empty\" -> \"edge-case\", containing \"slow\" -> \"performance\", containing \"null\" or \"undefined\" -> \"type-error\", otherwise \"logic\". 2) `analyzeSpy(spy, expectedCount, expectedFirstArg)` — spy is { calls: [[arg...], ...] }; return true only when calls.length === expectedCount AND calls[0][0] === expectedFirstArg, else false (handle zero calls safely). 3) `fixAndProve(isFixed, testPasses)` — a fix counts only when BOTH the underlying behavior is fixed AND the regression test passes: return \"fixed\" when both true, \"untested\" when fixed but test fails, \"broken\" otherwise.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function diagnose(testName) {\n  // your code\n}\n\nfunction analyzeSpy(spy, expectedCount, expectedFirstArg) {\n  // your code\n}\n\nfunction fixAndProve(isFixed, testPasses) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "diagnoses from test evidence",
+      "code": "const fn = new Function(code + \"\\nreturn { diagnose, analyzeSpy, fixAndProve };\");\nconst { diagnose } = fn();\nif (diagnose(\"handles empty cart\") !== \"edge-case\") throw new Error(\"'empty' => edge-case.\");\nif (diagnose(\"responds slowly\") !== \"performance\") throw new Error(\"'slow' => performance.\");\nif (diagnose(\"crashes on null input\") !== \"type-error\") throw new Error(\"'null' => type-error.\");\nif (diagnose(\"adds items in order\") !== \"logic\") throw new Error(\"Everything else => logic.\");",
+      "hint": "Check 'empty' first, then 'slow', then 'null'/'undefined', then default."
+    },
+    {
+      "name": "reads spy evidence correctly",
+      "code": "const fn = new Function(code + \"\\nreturn { diagnose, analyzeSpy, fixAndProve };\");\nconst { analyzeSpy } = fn();\nif (!analyzeSpy({ calls: [[\"/api/users\"], [\"/api/posts\"]] }, 2, \"/api/users\")) throw new Error(\"Two calls, first is /api/users => true.\");\nif (analyzeSpy({ calls: [[\"/api/users\"]] }, 2, \"/api/users\")) throw new Error(\"Wrong count => false.\");\nif (analyzeSpy({ calls: [] }, 0, \"x\")) throw new Error(\"Zero calls can't match a first arg => false.\");\nif (analyzeSpy({ calls: [[\"a\"]] }, 1, \"a\") !== true) throw new Error(\"Exact match => true.\");",
+      "hint": "Guard the empty-calls case before reading calls[0][0]."
+    },
+    {
+      "name": "a fix only counts with proof",
+      "code": "const fn = new Function(code + \"\\nreturn { diagnose, analyzeSpy, fixAndProve };\");\nconst { fixAndProve } = fn();\nif (fixAndProve(true, true) !== \"fixed\") throw new Error(\"Fixed + proven => fixed.\");\nif (fixAndProve(true, false) !== \"untested\") throw new Error(\"Fixed without a passing test => untested.\");\nif (fixAndProve(false, true) !== \"broken\") throw new Error(\"Test passes but behavior broken => broken.\");",
+      "hint": "Three outcomes from two booleans — truth table it."
+    }
+  ]
+}

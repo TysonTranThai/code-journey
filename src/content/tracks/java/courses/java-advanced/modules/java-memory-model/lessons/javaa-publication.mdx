@@ -1,0 +1,25 @@
+**Publication patterns** in practice — each with its hb mechanism:
+
+- **Immutable + static final**: the constant-pool of objects. Initialized by
+  the JVM's own class-init machinery (which includes an implicit hb edge for
+  every reader), safe for all threads forever. Prefer this for config.
+- **Volatile holder**: `static volatile Config current;` — swap configurations
+  atomically-visible; readers see either old or new, never torn.
+- **Concurrent structures**: `ConcurrentHashMap.put`, `BlockingQueue.offer`,
+  `executor.submit` all establish hb between the producing actions and the
+  consuming ones.
+
+**The test-grade insight** (and how this course grades): you never need a
+race to *maybe* appear. Latch choreography makes deterministic scenarios:
+
+```java
+var started = new CountDownLatch(1);
+var done    = new CountDownLatch(1);
+// t1: setup data → started.countDown() → await(done) → read
+// t2: await(started) → mutate → done.countDown()
+```
+
+Every await is a *guaranteed* hb edge. If your protocol is wrong, the test
+fails deterministically (timeout/latch mismatch) — it never "passes on my
+machine". This is exactly how you should write concurrency tests: the latch
+graph IS the happens-before graph.

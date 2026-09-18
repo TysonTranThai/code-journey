@@ -1,0 +1,40 @@
+Một vòng lặp nằm trong vòng lặp nhân khối lượng công việc: mỗi vòng của
+vòng ngoài, vòng trong chạy trọn vẹn.
+
+```java
+for (int row = 1; row <= 3; row++) {
+    for (int col = 1; col <= 3; col++) {
+        System.out.print(row * col + "\t");
+    }
+    System.out.println();          // hết một hàng
+}
+```
+
+Lệnh này in bảng cửu chương 3×3. Cấu trúc cần chú ý: công việc của vòng
+**trong** là một phần thân của vòng **ngoài** — và dấu xuống dòng nằm *sau*
+vòng trong, một lần mỗi hàng. Đặt lệch một câu lệnh đúng một tầng biến bảng
+thành đường chéo.
+
+Vòng lặp lồng nuôi lưới dữ liệu, so sánh từng cặp, và in hình:
+
+```java
+for (int i = 1; i <= 4; i++) {
+    for (int j = 0; j < i; j++) {
+        System.out.print("*");
+    }
+    System.out.println();
+}
+// *
+// **
+// ***
+// ****
+```
+
+**Trực giác chi phí.** Nhân đôi dữ liệu trong vòng lặp đơn làm khối lượng
+tăng gấp đôi — tuyến tính. Nhân đôi dữ liệu trong vòng lặp lồng *bình
+phương* hoá khối lượng: 1.000 × 1.000 là một triệu phép toán; 10.000 ×
+10.000 là một trăm triệu, và bạn sẽ cảm nhận được. Khi sau này gặp chương
+trình chậm, các vòng lặp lồng trên dữ liệu lớn là nghi phạm đầu tiên. Trực
+giác này (chính thức hóa thành Big-O sau này) là khởi đầu của tư duy hiệu năng.
+
+**Tiếp theo:** thực hành.

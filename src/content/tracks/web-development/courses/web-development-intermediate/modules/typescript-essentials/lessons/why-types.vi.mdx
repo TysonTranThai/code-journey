@@ -1,0 +1,44 @@
+JavaScript thất bại lúc runtime: `user.nmae` là `undefined` ở cách ba màn
+hình khỏi chỗ gõ sai. TypeScript chuyển cả một lớp lỗi đó về editor — trước
+khi code kịp chạy.
+
+## Types mua cho bạn gì
+
+```ts
+function subtotal(items: CartItem[]): number {
+  return items.reduce((sum, i) => sum + i.price * i.qty, 0);
+}
+subtotal("cart"); // ✗ lỗi khi compile
+subtotal([{ price: 5, qty: 2 }]); // ✓ — và price/qty có autocomplete
+```
+
+Đổi tên một trường thì mọi chỗ dùng được cập nhật; chỗ nào bỏ sót sẽ đỏ ngay.
+Đó không phải nghi lễ — đó là hợp đồng tìm được bằng tìm kiếm và kiểm tra được
+bằng máy.
+
+## Suy diễn trước, chú thích ở biên giới
+
+TypeScript suy diễn hầu hết kiểu — chỉ chú thích nơi suy diễn không giúp được:
+
+```ts
+const rates = [0.2, 0.15];            // tự suy diễn: number[]
+function tax(amount: number) { ... }  // biên giới: tham số
+const total = tax(100);               // tự suy diễn: number
+```
+
+Chú thích từng biến cục bộ là ồn ào; không chú thích gì thì đẩy bất ngờ về chỗ
+gọi. Quy ước: chú thích tham số hàm và API export, biến cục bộ để TypeScript
+tự suy.
+
+## Structural typing
+
+TypeScript phân loại theo **hình dạng**, không phải tên — bất kỳ object nào có
+đúng các thành viên đều khớp, không cần kế thừa:
+
+```ts
+type Point = { x: number; y: number };
+const p = { x: 1, y: 2, label: "origin" }; // OK: có x và y (thừa label không sao)
+```
+
+Hãy chạy `tsc --noEmit` làm cổng kiểm tra: nó kiểm mà không sinh file. Strict
+mode (`strict: true`) bật các kiểm tra quan trọng — null checking trên hết.

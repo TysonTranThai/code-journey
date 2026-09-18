@@ -1,0 +1,55 @@
+Everything you've written so far dies when the program ends. Files make
+data outlive the process. Modern Java does file I/O with the
+`java.nio.file` API - two classes carry almost everything: `Path` (a
+*reference* to a file) and `Files` (the *operations* on it).
+
+```java
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+Path notes = Path.of("notes.txt");
+
+// write (replaces the file)
+Files.writeString(notes, "first line\nsecond line\n");
+
+// read whole file as one String
+String content = Files.readString(notes);
+
+// read as a list of lines
+java.util.List<String> lines = Files.readAllLines(notes);
+
+// check before you act
+if (Files.exists(notes)) { ... }
+```
+
+Every read/write method declares `throws IOException` - the *checked*
+exception from Module 11 finally earning its keep: the compiler forces you
+to decide what happens when the disk disagrees with you.
+
+```java
+try {
+    String config = Files.readString(Path.of("config.txt"));
+} catch (java.io.IOException e) {
+    System.out.println("no config file, using defaults");
+}
+```
+
+## Appending, walking, and the small print
+
+```java
+// append: CREATE first (if missing), then APPEND
+Files.writeString(notes, "another line\n",
+    java.nio.file.StandardOpenOption.CREATE,
+    java.nio.file.StandardOpenOption.APPEND);
+
+// visit every file under a directory
+try (var walk = Files.walk(Path.of("logs"))) {
+    walk.filter(p -> p.toString().endsWith(".txt"))
+        .forEach(System.out::println);
+}
+```
+
+`Files.walk` returns a stream - the try-with-resources block closes the
+directory handle when done. And remember the defensive habits from the
+parsing lesson: file content is *dirty data*. Every line you read gets
+the same null-guard, trim, and parse-check treatment as a CSV import.

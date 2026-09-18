@@ -1,0 +1,30 @@
+{
+  "id": "cb17-checkpoint-clamp",
+  "title": "Macro Clamp",
+  "prompt": "Define `#define CLAMP(v, lo, hi)` as a do-while(0) statement macro that modifies v IN PLACE to lie within [lo, hi], and implement `int percent_band(int v)` returning 0 when v <= 0, 100 when v >= 100, and v otherwise.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n",
+  "tests": [
+    {
+      "name": "clamp mid",
+      "code": "int v = 42;\nCLAMP(v, 0, 100);\nCHECK_EQ(v, 42);",
+      "hint": "Inside stays."
+    },
+    {
+      "name": "clamp low",
+      "code": "int v = -5;\nCLAMP(v, 0, 100);\nCHECK_EQ(v, 0);",
+      "hint": "Floor applies."
+    },
+    {
+      "name": "clamp high",
+      "code": "int v = 150;\nCLAMP(v, 0, 100);\nCHECK_EQ(v, 100);",
+      "hint": "Ceiling applies."
+    },
+    {
+      "name": "percent band",
+      "code": "CHECK_EQ(percent_band(-5), 0);\nCHECK_EQ(percent_band(150), 100);\nCHECK_EQ(percent_band(42), 42);",
+      "hint": "Compose CLAMP with the band logic."
+    }
+  ]
+}

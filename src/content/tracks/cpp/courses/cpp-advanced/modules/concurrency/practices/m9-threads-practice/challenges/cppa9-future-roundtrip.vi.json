@@ -1,0 +1,14 @@
+{
+  "title": "Promise/Future qua các thread",
+  "prompt": "Cài `runWithResult(std::function<int()>)`: chạy callable trên một std::thread mới, chuyển kết quả qua promise/future, join thread, và trả kết quả.",
+  "tests": [
+    {
+      "name": "kết quả băng qua thread",
+      "hint": "std::promise<int> p; auto fut = p.get_future(); std::thread t([&p, &fn] { p.set_value(fn()); }); int r = fut.get(); t.join(); return r;"
+    },
+    {
+      "name": "future kết hợp tuần tự",
+      "hint": "Mỗi lời gọi độc lập — future.get() chỉ chặn cho tới khi worker đó xong."
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+## Concurrency vs parallelism, threads vs pool
+
+CONCURRENCY is about structure (dealing with many things at once);
+PARALLELISM is about execution (doing many things literally simultaneously).
+A `Thread` is an OS execution lane; the `ThreadPool` reuses a pool of them so
+you don't pay thread-creation costs per work item — `Task.Run` queues onto
+the pool (Module 9's tasks ran there).
+
+## The race: read-modify-write is three steps
+
+`_count++` compiles to read, add, write. Two threads interleaving can both
+read 5 and both write 6 — one increment vanishes:
+
+```csharp
+int v = _count;      // thread A reads 5
+// ...thread B reads 5, writes 6...
+_count = v + 1;      // thread A writes 6 — B's increment is gone
+```
+
+Races are intermittent and machine-dependent — the nastiest bug class. Any
+shared mutable state touched by two threads without synchronization is a
+race by definition, even if tests never catch it.
+
+## lock: mutual exclusion
+
+```csharp
+private readonly object _gate = new();
+lock (_gate)
+{
+    _count = _count + 1;   // only one thread inside at a time
+}
+```
+
+`lock` is `Monitor.Enter/Exit` sugar. Rules: lock on a PRIVATE readonly
+object (locking `this` or a Type lets strangers block you); keep the
+critical section SMALL; every thread that touches the state must use the
+SAME gate — one unsynchronized accessor reopens the race.
+
+## Interlocked: atomic micro-operations
+
+For single-variable updates, `Interlocked.Increment/Decrement/Add/Exchange/
+CompareExchange` make read-modify-write atomic without a lock:
+
+```csharp
+Interlocked.Increment(ref _count);   // exact under any contention
+```
+
+Prefer Interlocked for counters; `lock` for multi-step invariants.
+
+## Visibility (concept)
+
+Each thread may cache field values; without synchronization a thread can see
+stale data. `lock` and Interlocked both imply memory barriers — writes
+become visible on exit. Don't sprinkle `volatile`; synchronize properly and
+visibility follows.
+
+## Check your understanding
+
+- Why can `++` lose updates? (Read-modify-write interleaves between threads.)
+- What's wrong with `lock(this)`? (External code can lock the same object — deadlock/blocking risk.)

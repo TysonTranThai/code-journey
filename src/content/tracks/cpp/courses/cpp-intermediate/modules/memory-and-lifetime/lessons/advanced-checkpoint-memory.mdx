@@ -1,0 +1,10 @@
+This checkpoint combines the module's skills into one function with an honest
+contract:
+
+- input is **borrowed** (`const long*`, possibly null) — never copied, never freed
+- the count is validated — invalid input **throws**, it is not silently ignored
+- the cap bounds the result — early exit is part of the spec, not a hack
+
+Write `bounded_total` so all four tests pass, then compare with the reference:
+notice there is no `new`, no `delete`, and no copy of the caller's data
+anywhere. That is what lifetime-aware C++ looks like.

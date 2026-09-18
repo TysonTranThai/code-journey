@@ -1,0 +1,38 @@
+## A node contains a link to a node
+
+```c
+typedef struct Node {
+    int          value;
+    struct Node *next;    /* pointer to my own kind */
+} Node;
+```
+
+Two details carry real weight:
+
+**1. The tag and the typedef are different names.** Inside the braces the
+typedef isn't complete yet, so you must write `struct Node *next`. Writing
+`Node *next` there does not compile.
+
+**2. It must be a pointer.** `struct Node next;` would ask the compiler
+for a struct containing itself — infinite size. A *pointer* to your own
+type is fine: a pointer has a fixed size.
+
+The same trick models mutual recursion with a forward declaration:
+
+```c
+struct Edge;                     /* forward: name only, no body yet */
+typedef struct Vertex {
+    struct Edge *out;           /* edges leaving this vertex */
+} Vertex;
+struct Edge {
+    Vertex *to;
+    struct Edge *next;
+};
+```
+
+## Ownership is now a graph question
+
+Every node holds a pointer. Before writing any list/tree API, write in the
+header comment: who owns `next`? (Answer that makes bugs rare: the list
+owns every node it reachable-holds; freeing the list frees the nodes;
+borrowers never free, never store past their loan.)

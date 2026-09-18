@@ -1,0 +1,20 @@
+{
+  "id": "i2-release-gate",
+  "title": "Release Gate",
+  "prompt": "Write `canRelease(checks)` — checks is an object like { ci: bool, migrations: bool, smoke: bool, reviewers: number }. Return \"yes\" only when ci, migrations and smoke are all true AND reviewers >= 1. Otherwise return the FIRST failing gate name: \"ci\", \"migrations\", \"smoke\", or \"review\".",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function canRelease(checks) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "all green releases",
+      "code": "const fn = new Function(code + \"\\nreturn { canRelease };\");\nconst { canRelease } = fn();\nif (canRelease({ ci: true, migrations: true, smoke: true, reviewers: 2 }) !== \"yes\") {\n  throw new Error(\"All gates pass => release.\");\n}\n",
+      "hint": "One condition, four clauses."
+    },
+    {
+      "name": "reports the first failing gate in order",
+      "code": "const fn = new Function(code + \"\\nreturn { canRelease };\");\nconst { canRelease } = fn();\nif (canRelease({ ci: false, migrations: false, smoke: false, reviewers: 0 }) !== \"ci\") {\n  throw new Error(\"Order matters: ci first.\");\n}\nif (canRelease({ ci: true, migrations: false, smoke: false, reviewers: 0 }) !== \"migrations\") {\n  throw new Error(\"Then migrations.\");\n}\nif (canRelease({ ci: true, migrations: true, smoke: false, reviewers: 0 }) !== \"smoke\") {\n  throw new Error(\"Then smoke.\");\n}\nif (canRelease({ ci: true, migrations: true, smoke: true, reviewers: 0 }) !== \"review\") {\n  throw new Error(\"Then review.\");\n}\n",
+      "hint": "Check gates in a fixed order and return the first failure — deterministic triage."
+    }
+  ]
+}

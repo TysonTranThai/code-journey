@@ -1,0 +1,24 @@
+{
+  "ca19-checkpoint-spsc": {
+    "title": "Kiểm tra: Lõi ring buffer SPSC",
+    "prompt": "ISO C11. Cho struct ring với head/tail atomic (empty: head==tail; full: (head+1)%8==tail — hi sinh một ô). Cài `ring_push` (ghi buf[head%8] rồi tăng head với release; 0 hoặc -1 khi đầy) và `ring_pop` (load tail với acquire, kiểm tra rỗng, đọc buf[tail%8] vào *out, tăng tail relaxed; 0 hoặc -1 khi rỗng). NULL trả -1.",
+    "tests": [
+      {
+        "name": "push rồi pop theo thứ tự",
+        "hint": "FIFO: head ghi, tail đọc — cặp producer/consumer giữ thứ tự nạp."
+      },
+      {
+        "name": "pop khi rỗng từ chối",
+        "hint": "head==tail là rỗng: pop phải từ chối và không đụng *out."
+      },
+      {
+        "name": "push khi đầy từ chối",
+        "hint": "Một ô bị hi sinh để phân biệt đầy với rỗng: lần push thứ 8 phải thất bại."
+      },
+      {
+        "name": "chặn NULL",
+        "hint": "NULL là vi phạm hợp đồng: từ chối, không bao giờ dereference."
+      }
+    ]
+  }
+}

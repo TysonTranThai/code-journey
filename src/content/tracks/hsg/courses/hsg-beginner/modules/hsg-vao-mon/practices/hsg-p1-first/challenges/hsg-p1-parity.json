@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p1-parity",
+  "title": "Even or Odd",
+  "prompt": "**Description:** Given an integer n. Print `CHAN` if n is even, `LE` if odd.\n\n**Input:** One integer n (−10^9 ≤ n ≤ 10^9).\n**Output:** `CHAN` or `LE`.\n\n**Example:** `10` → `CHAN`; `7` → `LE`.\n\n*Careful:* how does C++ `%` behave for negative n?",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "positive even",
+      "code": "std::istringstream in(\"10\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"CHAN\\n\"));",
+      "hint": "10 is divisible by 2 → CHAN."
+    },
+    {
+      "name": "positive odd",
+      "code": "std::istringstream in(\"7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"LE\\n\"));",
+      "hint": "7 is not divisible by 2 → LE."
+    },
+    {
+      "name": "zero",
+      "code": "std::istringstream in(\"0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"CHAN\\n\"));",
+      "hint": "0 is even."
+    },
+    {
+      "name": "negative odd",
+      "code": "std::istringstream in(\"-7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"LE\\n\"));",
+      "hint": "-7 % 2 is -1 in C++ — test `n % 2 != 0`, never `== 1`."
+    }
+  ],
+  "level": "guided"
+}

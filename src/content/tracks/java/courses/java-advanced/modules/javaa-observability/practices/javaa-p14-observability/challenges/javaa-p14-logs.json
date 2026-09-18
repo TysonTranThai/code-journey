@@ -1,0 +1,16 @@
+{
+  "id": "javaa-p14-logs",
+  "title": "Structured logging, executed",
+  "prompt": "1. `static String format(java.util.Map<String, String> fields)` — return a\ndeterministic line: keys SORTED alphabetically, each as `key=value`, joined by a\nsingle space. Empty map → empty string.\n2. `static java.util.Map<String, String> parse(String line)` — the inverse: split on\nsingle spaces, split each token on the FIRST '=', build the map.\n3. `static List<String> levelOf(List<String> lines)` — extract the value of \"level\"\nfrom each line via parse().\n4. `static List<String> actionFor(String level)` — the level contract as data:\n\"ERROR\"→[\"page\"], \"WARN\"→[\"watch\"], \"INFO\"→[\"ignore\"], unknown→[\"investigate\"].",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "fields round-trip deterministically",
+      "code": "\njava.util.Map<String, String> f = new java.util.HashMap<>();\nf.put(\"userId\", \"42\"); f.put(\"event\", \"login\"); f.put(\"level\", \"INFO\");\ncheckEq(Solution.format(f), \"event=login level=INFO userId=42\", \"sorted fields\");\ncheckEq(Solution.parse(\"event=login level=INFO\"), java.util.Map.of(\"event\", \"login\", \"level\", \"INFO\"), \"parse inverse\");\ncheckEq(Solution.levelOf(java.util.List.of(\"level=ERROR event=crash\")), java.util.List.of(\"ERROR\"), \"level extracted\");\ncheckEq(Solution.actionFor(\"ERROR\"), java.util.List.of(\"page\"), \"errors page\");\ncheckEq(Solution.actionFor(\"WARN\"), java.util.List.of(\"watch\"), \"warns watch\");\ncheckEq(Solution.actionFor(\"mystery\"), java.util.List.of(\"investigate\"), \"unknown investigates\");\n",
+      "hint": "Logs in, structured answers out."
+    }
+  ],
+  "level": "guided"
+}

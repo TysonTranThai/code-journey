@@ -1,0 +1,29 @@
+## Errors happen in the middle
+
+A function that acquires three resources can fail at three points. Every failure must release *exactly what was acquired so far* — no more, no less. Ad hoc frees duplicated in each branch is how leaks and double-frees are born.
+
+## The ladder pattern
+
+```c
+int run(void) {
+    int rc = -1;
+    res_a *a = a_open();
+    if (!a) goto fail;
+    res_b *b = b_open(a);
+    if (!b) goto fail_a;
+    if (use(a, b) != 0) goto fail_b;
+    rc = 0;
+fail_b:
+    b_close(b);
+fail_a:
+    a_close(a);
+fail:
+    return rc;
+}
+```
+
+One exit ladder, unwinding in reverse acquisition order. `goto` is not taboo here — it is the pattern Linux itself uses, because it makes 'what happens on failure' readable in one place.
+
+## Move-to-transfer hollows the source
+
+Transferring a buffer between owners must *NULL out the source* — a hollowed owner is proof the transfer happened; a still-set source pointer is a double-free waiting for the second cleanup.

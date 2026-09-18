@@ -1,0 +1,20 @@
+## Targets, not directories
+
+Legacy CMake set global variables (`include_directories`, `add_definitions`) that leaked everywhere. Modern CMake attaches everything to **targets**:
+
+```cpp
+add_library(fmtlib STATIC src/fmt.cpp)
+target_include_directories(fmtlib PUBLIC include)
+target_compile_features(fmtlib PUBLIC cxx_std_20)
+target_compile_definitions(fmtlib PRIVATE FMTLIB_BUILDING)
+```
+
+The keyword is the contract: `PUBLIC` = needed by consumers too (propagates), `PRIVATE` = only while building me, `INTERFACE` = consumers only (header-only). A consumer that does `target_link_libraries(app PRIVATE fmtlib)` inherits exactly what it needs — usage requirements flow through the build graph.
+
+## Why this matters for correctness
+
+Target scoping is not tidiness; it is correctness. A definition that leaks into a header you ship (because it was `PUBLIC` by accident) becomes an **ODR hazard** for every consumer that compiles with different flags (module 17). The build system is where binary compatibility begins.
+
+## Presets: reproducible configuration
+
+`CMakePresets.json` pins generator, toolchain, and cache variables per configuration so `cmake --preset release` is the same on every machine — the entry point CI uses, and the reason "works on my machine" stops being a build bug.

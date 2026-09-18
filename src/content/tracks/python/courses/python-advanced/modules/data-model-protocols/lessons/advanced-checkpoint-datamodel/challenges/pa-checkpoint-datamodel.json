@@ -1,0 +1,25 @@
+{
+  "id": "pa-checkpoint-datamodel",
+  "title": "LinkedList, protocol-complete",
+  "prompt": "Implement Node and LinkedList per the checkpoint specification: len, iteration, membership, repr 'LinkedList(1 -> 2 -> 3)', int indexing with negatives, slicing to a new LinkedList (with step), O(1) prepend, non-mutating reverse, and __slots__ on both classes.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class Node:\n    __slots__ = ('value', 'next')\n    # TODO\n\n\nclass LinkedList:\n    __slots__ = ('_head',)\n    # TODO",
+  "tests": [
+    {
+      "name": "construction, len, iter, repr",
+      "code": "l = LinkedList([1, 2, 3])\nassert len(l) == 3\nassert list(l) == [1, 2, 3]\nassert repr(l) == 'LinkedList(1 -> 2 -> 3)'\nassert LinkedList() .__len__() == 0\nassert 2 in l and 99 not in l\nprint('ok')",
+      "hint": "Iterate nodes from _head; build repr with ' -> '.join(repr(v))."
+    },
+    {
+      "name": "indexing with negatives and slices",
+      "code": "l = LinkedList([1, 2, 3, 4, 5])\nassert l[0] == 1 and l[4] == 5 and l[-1] == 5 and l[-2] == 4\ns = l[1:3]\nassert isinstance(s, LinkedList) and list(s) == [2, 3]\nst = l[0:5:2]\nassert list(st) == [1, 3, 5]\ntry:\n    l[99]\nexcept IndexError:\n    pass\nelse:\n    raise AssertionError('out-of-range must raise IndexError')\nprint('ok')",
+      "hint": "slice.indices(len(self)) converts a slice to concrete bounds; handle negative ints before scanning."
+    },
+    {
+      "name": "prepend, reverse, slots",
+      "code": "l = LinkedList([2, 3])\nl.prepend(1)\nassert list(l) == [1, 2, 3]\nr = l.reverse()\nassert list(r) == [3, 2, 1] and list(l) == [1, 2, 3]\nassert not hasattr(l, '__dict__') and not hasattr(Node(1), '__dict__')\nprint('ok')",
+      "hint": "reverse() must not mutate the original — build a new list by prepending."
+    }
+  ]
+}

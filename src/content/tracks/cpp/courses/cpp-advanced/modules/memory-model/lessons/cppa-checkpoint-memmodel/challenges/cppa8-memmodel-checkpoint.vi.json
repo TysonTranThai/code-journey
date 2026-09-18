@@ -1,0 +1,14 @@
+{
+  "title": "Vượt chướng ngại mô hình bộ nhớ",
+  "prompt": "Cài bốn phương thức `Cell` với mức xếp thứ tự đúng: bump relaxed, đọc acquire, publish bằng release trong reset.",
+  "tests": [
+    {
+      "name": "bump/total khép kín",
+      "hint": "void Cell::bump() { count.fetch_add(1, std::memory_order_relaxed); }  unsigned Cell::total() const { return count.load(std::memory_order_relaxed); }"
+    },
+    {
+      "name": "reset công bố stamp",
+      "hint": "reset: count.store(0, relaxed); stamp = newStamp; fresh.store(true, release);  readStamped: while (!fresh.load(acquire)) {} return stamp;"
+    }
+  ]
+}

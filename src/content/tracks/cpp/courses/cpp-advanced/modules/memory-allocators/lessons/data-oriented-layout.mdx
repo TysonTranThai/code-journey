@@ -1,0 +1,15 @@
+## The cache is the machine
+
+A modern core executes 4+ instructions/cycle but a main-memory miss costs ~100 cycles. The layout of your data decides how often that happens. Two programs with identical big-O can differ 10x purely by layout.
+
+## AoS vs SoA
+
+Array-of-structs: `struct P { float x, y, z; bool active; };  std::vector<P> ps;` — updating only x drags every cache line through y, z, active. Struct-of-arrays: `struct Ps { std::vector<float> x, y, z; std::vector<char> active; };` — the x-update loop streams only x. If your hot loop touches a subset of fields, SoA wins. If it always touches whole records, AoS is fine.
+
+## Hot/cold splitting
+
+Fields accessed on every iteration belong together; fields touched once per thousand iterations belong elsewhere. Splitting `active` flags out of 64-byte records turns a scans-everything loop into a scan of a bitmap.
+
+## The hot path contract
+
+Advanced codebases make the hot path *allocation-free and branch-stable*: preallocated buffers, indices instead of pointers, reserved vectors. The graded exercises here make this measurable: allocation counters and cache-detectable stride patterns — no microbenchmarks needed.

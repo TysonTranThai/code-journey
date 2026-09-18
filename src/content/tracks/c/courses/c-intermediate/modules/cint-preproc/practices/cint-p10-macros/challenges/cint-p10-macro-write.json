@@ -1,0 +1,15 @@
+{
+  "id": "cint-p10-macro-write",
+  "title": "Write the Safe Macros",
+  "prompt": "The boilerplate defines the macros under test. Your job is to\nimplement the FUNCTIONS that use them correctly — and one macro:\n\n```c\n/* provided (correct): */\n#define ARRAY_LEN(a) (sizeof(a) / sizeof((a)[0]))\n#define MAXI(a, b) ((a) > (b) ? (a) : (b))\n\n/* implement the function: sum of array using ARRAY_LEN (no explicit n) */\nlong sum_all(const int *a, size_t n);\n/* implement: clamp v into [lo, hi] using MAXI twice */\nint clamp(int v, int lo, int hi);\n/* implement THE MACRO (the boilerplate declares it for you to fill):\n   runs stmt exactly once per call, usable in if/else without braces */\n#define RUN_ONCE(stmt) ...\n```\n\nCareful: `ARRAY_LEN` only works on real arrays — `sum_all` takes a\npointer, which is why it needs `n`.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\n#define ARRAY_LEN(a) (sizeof(a) / sizeof((a)[0]))\n#define MAXI(a, b) ((a) > (b) ? (a) : (b))\nlong sum_all(const int *a, size_t n);\nint clamp(int v, int lo, int hi);\n#define RUN_ONCE(stmt) do { stmt; } while (0)\n",
+  "tests": [
+    {
+      "name": "macros at their seams",
+      "code": "\nint a[] = {1, 2, 3, 4};\nCHECK_EQ(ARRAY_LEN(a), 4);                    /* real array: works */\nCHECK_EQ(sum_all(a, ARRAY_LEN(a)), 10);\nCHECK_EQ(sum_all(a, 2), 3);\nCHECK_EQ(sum_all(NULL, 0), 0);\nCHECK_EQ(clamp(5, 0, 10), 5);\nCHECK_EQ(clamp(-3, 0, 10), 0);\nCHECK_EQ(clamp(42, 0, 10), 10);\nint counter_ = 0;\nRUN_ONCE(counter_ += 1);\nRUN_ONCE(counter_ += 1);\nCHECK_EQ(counter_, 2);\nif (counter_ == 2)\n    RUN_ONCE(counter_ += 10);\nelse\n    counter_ = -1;                            /* must compile & run: else intact */\nCHECK_EQ(counter_, 12);\n",
+      "hint": "sum_all walks n elements (ARRAY_LEN on a POINTER is sizeof(*)/sizeof(int) == 1 — the trap the prompt names). clamp: MAXI(v, lo) then MIN via MAXI trick or direct."
+    }
+  ]
+}

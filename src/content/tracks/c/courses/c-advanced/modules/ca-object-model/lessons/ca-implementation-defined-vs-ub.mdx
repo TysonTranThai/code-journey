@@ -1,0 +1,29 @@
+## Three behavior classes — learn them cold
+
+C gives every construct a *contract*. Advanced C is knowing which contract you're standing on:
+
+1. **Implementation-defined**: the implementation must choose, document it, and stay consistent. Example: `sizeof(int)`, whether plain `char` is signed.
+2. **Unspecified**: the implementation must pick *some* valid behavior from a set, without documenting which. Example: order of evaluation of function arguments; the value of padding bytes.
+3. **Undefined (UB)**: no requirements whatsoever. The compiler may do *anything* — including assuming it never happens, which lets it delete your "safety check".
+
+```c
+/* Implementation-defined: -1 or 255 depends on the platform's plain char */
+char c = -1;
+printf("%d\n", c);
+
+/* Unspecified: argument evaluation order */
+int i = 0;
+printf("%d %d\n", i, ++i);    /* DON'T. Order is unspecified. */
+
+/* Undefined: signed overflow. The compiler may assume it can't happen. */
+int big = INT_MAX;
+int overflowed = big + 1;     /* UB — no wraparound guarantee */
+```
+
+## Why UB is not "it crashes"
+
+UB usually does something *quietly reasonable* at -O0 and something *shocking* at -O2, because optimizations are built on the assumption that UB never executes. Deleted null checks, dead branches after overflow, and out-of-bounds accesses that "work" are all the same root cause.
+
+## The working rule
+
+Before shipping a construct, place it on this map. If it's UB, no amount of testing makes it correct — fix the construct, not the test.

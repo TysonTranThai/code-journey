@@ -1,0 +1,22 @@
+{
+  "title": "API gom dữ liệu tái sử dụng",
+  "prompt": "Xây một API generic nhỏ bên trong `Solution`:\n- `static <T extends Comparable<T>> List<T> topN(List<T> xs, int n)` —\n  n phần tử lớn nhất theo thứ tự GIẢM DẦN; n lớn hơn size trả tất cả;\n  n <= 0 ném IllegalArgumentException; xs null/rỗng cũng ném.\n- `static double sumNumbers(List<? extends Number> xs)` — producer PECS.\n- `static <T> List<? super T> drain(List<T> src, List<? super T> dst)` —\n  dời mọi phần tử từ src sang dst rồi trả dst; src kết thúc rỗng.\n\nCả ba chữ ký phải giữ đúng lời hứa generic (test biên dịch các điểm gọi\nsẽ vỡ nếu kiểu yếu hơn).",
+  "tests": [
+    {
+      "name": "topN giảm dần",
+      "hint": "Sắp giảm dần; lấy n đầu; phần tử trùng đếm riêng."
+    },
+    {
+      "name": "topN kiểm tra n",
+      "hint": "n <= 0 ném IllegalArgumentException."
+    },
+    {
+      "name": "sumNumbers wildcard",
+      "hint": "Đọc qua doubleValue()."
+    },
+    {
+      "name": "drain dời và trả dst",
+      "hint": "Duyệt src, addAll vào dst, clear src, trả dst."
+    }
+  ]
+}

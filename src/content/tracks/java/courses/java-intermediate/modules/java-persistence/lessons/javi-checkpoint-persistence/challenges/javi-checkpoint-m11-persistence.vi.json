@@ -1,0 +1,18 @@
+{
+  "title": "Outbox giao dịch",
+  "prompt": "Outbox ghi nhận side effect đang chờ một cách nguyên tử với thay đổi\ndữ liệu. Cài trong `Solution`:\n- `record OutboxEntry(String id, String topic, String payload)`\n- `static class OutboxStore`:\n  - `boolean offer(OutboxEntry e)` — nối nếu id mới, trả true; id trùng\n    trả false (producer idempotent).\n  - `List<OutboxEntry> drain(String topic)` — xóa và trả TẤT CẢ entry\n    của topic đó theo thứ tự chèn.\n  - `int pending()` — tổng qua mọi topic.\n- `static int deliverAll(OutboxStore store, String topic,\n  java.util.function.Consumer<OutboxEntry> sink)` — drain topic, đưa\n  từng entry cho sink, trả số entry đã giao.\n\nTính chất giao dịch bị test: một entry được giao đúng một lần kể cả khi\noffer() được gọi nhiều lần.",
+  "tests": [
+    {
+      "name": "offer idempotent",
+      "hint": "Id trùng không bao giờ giao hai lần."
+    },
+    {
+      "name": "drain dọn topic theo thứ tự",
+      "hint": "drain chỉ xóa topic của nó, giữ thứ tự."
+    },
+    {
+      "name": "deliverAll đưa sink đúng một lần",
+      "hint": "Ngữ nghĩa exactly-once qua các lần offer trùng."
+    }
+  ]
+}

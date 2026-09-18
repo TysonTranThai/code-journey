@@ -1,0 +1,15 @@
+{
+  "id": "py-checkpoint-problem-solving",
+  "title": "The Best Seller Report",
+  "prompt": "sales = [(\"mon\", \"pen\", 4), (\"mon\", \"book\", 2), (\"tue\", \"pen\", 3), (\"wed\", \"bag\", 5), (\"wed\", \"book\", 7)] — tuples of (day, item, qty). Write report(sales) returning a dict with keys: \"total\" (all units sold), \"best_item\" (item with the highest total units; ties -> the one that REACHED its total first), and \"busiest_day\" (day with the most units; ties -> alphabetically first).",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "sales = [(\"mon\", \"pen\", 4), (\"mon\", \"book\", 2), (\"tue\", \"pen\", 3), (\"wed\", \"bag\", 5), (\"wed\", \"book\", 7)]\n\ndef report(sales):\n    pass\n\nprint(report(sales))\n",
+  "tests": [
+    {
+      "name": "report is correct",
+      "code": "r = report(sales)\nassert r[\"total\"] == 21, f\"total: {r}\"\nassert r[\"best_item\"] == \"book\", f\"best_item: {r}\"\nassert r[\"busiest_day\"] == \"wed\", f\"busiest_day: {r}\"\nr2 = report([(\"mon\", \"a\", 1), (\"tue\", \"b\", 1)])\nassert r2[\"best_item\"] == \"a\", f\"tie -> a's last sale (mon) precedes b's (tue): {r2}\"\nassert r2[\"busiest_day\"] == \"mon\", f\"day tie -> alphabetical: {r2}\"\nr5 = report([(\"tue\", \"a\", 1), (\"mon\", \"b\", 1)])\nassert r5[\"busiest_day\"] == \"mon\", f\"day tie -> alphabetical, not arrival: {r5}\"\nr6 = report([(\"mon\", \"a\", 1), (\"tue\", \"b\", 2), (\"wed\", \"a\", 1)])\nassert r6[\"best_item\"] == \"b\", f\"totals tie at 2; b's last sale (tue) precedes a's (wed): {r6}\"",
+      "hint": "track units AND the index of each item's LAST sale; on equal totals prefer the item whose last sale came EARLIER (min by (-units, last_idx)). Days: sort by (-units, name)."
+    }
+  ]
+}

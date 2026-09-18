@@ -1,0 +1,18 @@
+{
+  "title": "Checkout phân lớp",
+  "prompt": "Lắp ráp một hệ thống phân lớp mini trong `Solution`:\n- `record Order(String id, int cents)` (domain)\n- `record OrderView(String id, String total)` (DTO — total format\n  `\"$\" + (cents/100) + \".\" + padZero(cents%100)`, ví dụ `$12.05`)\n- `interface OrderRepository { void save(Order o); Order findById(String id); }`\n- `static class InMemoryOrderRepository implements OrderRepository`\n- `static class CheckoutService` với constructor `(OrderRepository r)`\n  và `Order place(String id, int cents)`: chặn cents âm bằng\n  IllegalArgumentException, rồi lưu và trả order.\n- `static String viewTotal(int cents)` — hàm mapping mà OrderView dùng.\n\nTầng controller chính là test: nó dựng repo, tiêm vào service, đặt order,\nvà map sang view.",
+  "tests": [
+    {
+      "name": "Service lưu qua repo",
+      "hint": "Service → repository, được tiêm."
+    },
+    {
+      "name": "Service kiểm tra dữ liệu",
+      "hint": "Quy tắc nghiệp vụ nằm ở service, không phải repository."
+    },
+    {
+      "name": "Mapping DTO định dạng tiền",
+      "hint": "Format: $ + phần nguyên + '.' + hai chữ số cents."
+    }
+  ]
+}

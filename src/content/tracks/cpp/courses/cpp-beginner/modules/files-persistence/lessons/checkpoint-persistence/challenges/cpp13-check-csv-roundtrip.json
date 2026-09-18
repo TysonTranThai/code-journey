@@ -1,0 +1,26 @@
+{
+  "id": "cpp13-check-csv-roundtrip",
+  "title": "CSV Round-Trip",
+  "prompt": "Implement `serialize(items)` producing lines `name,price,qty` and `parse(csv)` producing the items back. Round-trip must preserve everything.",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <sstream>\n#include <string>\n#include <vector>\n\nstruct Item { std::string name; double price{}; int qty{}; };\n\nstd::string serialize(const std::vector<Item>& items) {\n    // TODO\n}\nstd::vector<Item> parse(const std::string& csv) {\n    // TODO\n}",
+  "tests": [
+    {
+      "name": "serialize",
+      "code": "std::vector<Item> items{{\"pen\", 2.5, 120}}; CHECK(serialize(items) == std::string{\"pen,2.5,120\\n\"});",
+      "hint": "One line per item, comma-separated, trailing newline."
+    },
+    {
+      "name": "parse",
+      "code": "auto items = parse(std::string{\"pen,2.5,120\\n\"}); CHECK_EQ(items.size(), 1); CHECK(items[0].name == std::string{\"pen\"}); CHECK_NEAR(items[0].price, 2.5, 0.001); CHECK_EQ(items[0].qty, 120);",
+      "hint": "getline(',') + stod + stoi."
+    },
+    {
+      "name": "roundtrip",
+      "code": "std::vector<Item> items{{\"a\", 1.0, 2}, {\"b c\", 3.5, 4}}; auto again = parse(serialize(items)); CHECK_EQ(again.size(), 2); CHECK(again[1].name == std::string{\"b c\"});",
+      "hint": "Two items survive intact — names may contain spaces; commas may not."
+    }
+  ],
+  "level": "real-world"
+}

@@ -1,0 +1,40 @@
+## throw, catch, và hành trình giữa hai điểm
+
+```cpp
+#include <stdexcept>
+
+double parse_ratio(const std::string& text) {
+    double value = std::stod(text);            // std::stod ném std::invalid_argument khi gặp rác
+    if (value < 0 || value > 1) throw std::out_of_range("ratio must be within [0,1]");
+    return value;
+}
+
+int main() {
+    try {
+        double r = parse_ratio("1.5");
+        use(r);
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "not a number: " << e.what() << '\n';
+        return 1;
+    } catch (const std::out_of_range& e) {
+        std::cerr << "out of range: " << e.what() << '\n';
+        return 1;
+    }
+}
+```
+
+Một `throw` bóc tách call stack cho tới khi một `catch` nào đó nhận nó; các destructor chạy dọc đường (RAII đứng vững dưới exception — đó là thiết kế). Bắt **bằng tham chiếu const**; `catch (...)` là phương án cuối cùng.
+
+## Hệ phân cấp bạn sẽ thực sự gặp
+
+`std::exception` → `std::logic_error` (`std::invalid_argument`, `std::out_of_range`) và `std::runtime_error` (và các lỗi stream/file). Hãy ném `std::runtime_error` (hoặc con của logic_error) kèm *thông điệp cụ thể*; `e.what()` là thứ người dùng của bạn sẽ đọc.
+
+## Quy tắc ranh giới
+
+**Ném** khi một hàm không thể hoàn thành hợp đồng và không có câu trả lời cục bộ (input xấu sâu trong một parser). **Bắt** ở các ranh giới — `main`, handler của request, vòng lặp lệnh CLI — nơi bạn có thể báo cho con người và tiếp tục hoặc thoát sạch sẽ. Bắt ở mọi tầng ở giữa chỉ chôn vùi lỗi dưới lớp `try` ồn ào; để tất cả crash thì mất cơ hội giải thích. Các bài có chấm theo đúng quy tắc này: hàm thấp ném, harness đóng vai `main`.
+
+## Đừng làm gì
+
+- Đừng ném exception cho luồng điều khiển thông thường (hết danh sách là giá trị trả về, không phải exception).
+- Đừng `catch (...)` trong im lặng rồi tiếp tục — đó là cách bug thành hồn ma.
+- Đừng ném exception từ destructor.

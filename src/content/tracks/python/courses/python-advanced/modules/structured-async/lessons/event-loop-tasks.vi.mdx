@@ -1,0 +1,33 @@
+## Coroutine, event loop và TaskGroup
+
+`async def` định nghĩa một **coroutine function**; gọi nó tạo ra một coroutine
+object không làm gì cả cho tới khi được await hoặc lên lịch. **Event loop**
+chạy các coroutine đã lên lịch tới cùng, chuyển giữa chúng tại mỗi `await`
+(điểm treo).
+
+Đa nhiệm hợp tác nghĩa là một quy tắc: **đừng bao giờ chặn loop.**
+`time.sleep(1)` trần trụi trong coroutine đóng băng mọi task khác;
+`await asyncio.sleep(1)` nhường đúng cách.
+
+```python
+import asyncio
+
+async def fetch(name, delay):
+    await asyncio.sleep(delay)          # stand-in for I/O
+    return f"{name}-done"
+
+async def main():
+    results = []
+    async with asyncio.TaskGroup() as tg:          # 3.11+
+        t1 = tg.create_task(fetch("a", 0.1))
+        t2 = tg.create_task(fetch("b", 0.2))
+    return t1.result(), t2.result()    # both done when the block exits
+```
+
+`TaskGroup` (3.11+) là primitive của structured concurrency: task tạo trong
+nhóm được bảo đảm xong (hoặc nhóm raise) khi `async with` thoát. Nếu task nào
+raise, nhóm hủy các task còn lại và raise `ExceptionGroup` (bóc lỗi đơn bằng
+`except*` hay `group.exceptions`).
+
+`asyncio.gather(*aws)` cũ vẫn tồn tại và trả kết quả theo thứ tự; nó KHÔNG hủy
+các task anh em khi có lỗi theo mặc định. Code mới ưu tiên TaskGroup.

@@ -1,0 +1,16 @@
+{
+  "id": "ca11-ctor-order",
+  "title": "Initialization Across Units",
+  "prompt": "A file-scope `int stage = 1;` is already in your editor. Implement `int advance(void)` (returns the old stage, then increments it) and `int current_stage(void)`. The test program below links as one unit, but your functions model what cross-object globals do: file-scope state lives once, and every caller sees the same object — simulate and confirm.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nint stage = 1;\n",
+  "tests": [
+    {
+      "name": "shared state advances",
+      "code": "CHECK_EQ(advance(), 1);\nCHECK_EQ(advance(), 2);\nCHECK_EQ(current_stage(), 3);",
+      "hint": "Each call reads and writes the same file-scope object — exactly what two objects linked against one definition share."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "cint-p3-arena",
+  "title": "A Tiny Arena (Own Once, Free Once)",
+  "prompt": "Implement a bump allocator (arena) — one ownership boundary for many\nsmall allocations:\n\n```c\ntypedef struct { unsigned char *buf; size_t cap, used; } Arena;  /* in boilerplate */\nint arena_init(Arena *a, size_t cap);     /* malloc cap bytes; 0 on failure */\n/* returns cap bytes of zeroed space inside the arena, or NULL if full */\nvoid *arena_alloc(Arena *a, size_t n);\n/* frees the whole arena in one free; zeroes the struct */\nvoid arena_destroy(Arena *a);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\ntypedef struct { unsigned char *buf; size_t cap, used; } Arena;\n",
+  "tests": [
+    {
+      "name": "bump allocation semantics",
+      "code": "\nArena a;\nCHECK_EQ(arena_init(&a, 64), 1);\nunsigned char *warm = arena_alloc(&a, 32);\nCHECK_NOT_NULL(warm);\nmemset(warm, 0xFF, 32);            /* dirty the next region's bytes */\nint *ints = arena_alloc(&a, 4 * sizeof(int));\nCHECK_NOT_NULL(ints);\nCHECK_EQ(ints[0], 0);              /* fresh region must be zeroed */\nints[0] = 10; ints[3] = 40;\nCHECK_EQ(ints[3], 40);\nCHECK_EQ(arena_alloc(&a, 64), NULL);   /* only 16 bytes left */\nCHECK_EQ(arena_alloc(&a, 17), NULL);\nchar *small = arena_alloc(&a, 8);\nCHECK_NOT_NULL(small);\narena_destroy(&a);\nCHECK_NULL(a.buf);\n",
+      "hint": "used += n if it fits; return buf + old used; memset the region to 0."
+    }
+  ],
+  "level": "mini-build"
+}

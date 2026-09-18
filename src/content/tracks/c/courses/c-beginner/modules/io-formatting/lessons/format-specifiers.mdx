@@ -1,0 +1,32 @@
+## The % vocabulary
+
+| Specifier | Prints | Example |
+|---|---|---|
+| `%d` | int (decimal) | `42` |
+| `%c` | one character | `A` |
+| `%s` | a C string | `hi` |
+| `%f` | double, 6 decimals default | `3.141593` |
+| `%e` | double, scientific | `3.141593e+00` |
+| `%zu` | size_t (sizeof results) | `4` |
+| `%%` | a literal percent | `50%` |
+
+## Width and padding
+
+A number between `%` and the letter sets a **minimum width**:
+
+```c
+printf("[%5d]\n", 42);     // [   42]  — right-aligned, space-padded
+printf("[%-5d]\n", 42);    // [42   ]  — left-aligned
+printf("[%05d]\n", 42);    // [00042]  — zero-padded
+```
+
+## Precision
+
+For `%f`, `.N` sets digits after the decimal point (rounding, not truncating):
+
+```c
+printf("%.2f\n", 3.14159);   // 3.14
+printf("%.0f\n", 2.5);       // 2  (banker's-ish rounding of exactly .5)
+```
+
+Combined: `%8.2f` = at least 8 characters wide, 2 decimals.

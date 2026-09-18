@@ -1,0 +1,67 @@
+Trình duyệt đọc HTML của bạn và dựng nên **DOM** (Document Object Model) — một cây object sống động, một object cho mỗi phần tử. Thay đổi một object, và trang cập nhật tức thì.
+
+## document — điểm khởi nhập
+
+```js
+// theo id (nhanh nhất, chính xác nhất) — MỘT phần tử hoặc null
+const title = document.getElementById("page-title");
+
+// theo CSS selector — khớp đầu tiên / tất cả các khớp
+const firstCard = document.querySelector(".card");
+const allCards = document.querySelectorAll(".card"); // một NodeList (giống mảng)
+```
+
+`querySelector`/`querySelectorAll` nhận bất kỳ CSS selector nào bạn đã biết: `"#save-btn"`, `".nav-link"`, `"form input[type=email]"`.
+
+## Thay đổi văn bản
+
+```js
+title.textContent = "My new heading";
+```
+
+`textContent` đặt văn bản của phần tử một cách an toàn. (Bạn cũng có thể thấy `innerHTML` — nó phân tích HTML và có thể chạy code được tiêm vào; tránh dùng nó cho văn bản.)
+
+## Thay đổi thuộc tính
+
+```js
+const img = document.querySelector("img");
+img.src = "/new-photo.jpg";
+img.alt = "A mountain lake at dawn";
+const link = document.querySelector("a");
+link.href = "https://developer.mozilla.org";
+link.target = "_blank";
+```
+
+Các object phần tử có một thuộc tính cho mỗi thuộc tính HTML — đọc chúng cũng được: `img.src` trả về giá trị hiện tại.
+
+## Thay đổi style và class
+
+```js
+const box = document.querySelector(".box");
+box.style.color = "crimson"; // inline style (thuộc tính camelCase)
+box.classList.add("is-open"); // cách tốt hơn: bật/tắt các CSS class
+box.classList.remove("hidden");
+box.classList.toggle("dark"); // thêm nếu thiếu, bỏ nếu có
+```
+
+Hãy ưu tiên `classList` hơn `style` — đặt giao diện trong CSS, nơi nó thuộc về, và để JavaScript chỉ gạt công tắc.
+
+## Thói quen kiểm tra null
+
+`querySelector` trả về `null` khi không có gì khớp. Khi đó `title.textContent = ...` ném `TypeError: null` — hãy kiểm tra thứ bạn thực sự chọn được:
+
+```js
+const btn = document.querySelector("#save");
+if (btn) {
+  btn.textContent = "Saving…";
+}
+```
+
+## Bạn đã học được gì
+
+- DOM là trang web dưới dạng cây object sống; `document` là điểm khởi nhập
+- `getElementById`, `querySelector`, `querySelectorAll`
+- `textContent`, các thuộc tính HTML, `style`, và `classList`
+- Phần tử không tồn tại trả về `null` — kiểm tra trước khi gán
+
+**Tiếp theo:** tạo các phần tử hoàn toàn mới, không chỉ chỉnh sửa phần tử có sẵn.

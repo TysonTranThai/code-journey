@@ -1,0 +1,102 @@
+Flexbox trả lời câu hỏi mà block layout không bao giờ trả lời được: _làm sao sắp xếp các hộp này thành một hàng và kiểm soát khoảng cách giữa chúng?_ Thanh nav, toolbar, hàng thẻ, căn giữa — flex là công cụ.
+
+## Container và items
+
+```css
+.nav {
+  display: flex;
+}
+```
+
+Phần tử có `display: flex` là một **flex container**; các con trực tiếp của nó trở thành **flex items**, được bố trí dọc theo một **trục chính (main axis)** (một hàng theo mặc định).
+
+## Các thuộc tính cốt lõi
+
+Trên container:
+
+```css
+.container {
+  display: flex;
+  flex-direction: row; /* row | column */
+  justify-content: space-between; /* dọc theo TRỤC CHÍNH */
+  align-items: center; /* dọc theo TRỤC NGANG */
+  gap: 1rem; /* khoảng cách GIỮA các item — không cần mẹo margin */
+  flex-wrap: wrap; /* cho phép dòng thứ hai khi hết chỗ */
+}
+```
+
+`justify-content` là thứ cần khắc cốt ghi tâm: `flex-start` (mặc định), `center`, `space-between` (đầu/cuối áp mép, khoảng cách đều), `space-around`, `space-evenly`.
+
+`gap` là câu trả lời hiện đại cho khoảng cách. Trước khi có `gap`, người ta dùng margin cho phần tử con — rồi dành cả sự nghiệp để sửa các mép. `gap` chỉ tạo khoảng cách _giữa_ các item. Hãy dùng nó.
+
+Trên các item:
+
+```css
+.item {
+  flex: 1; /* lớn lên chia đều không gian trống */
+}
+.sidebar {
+  flex: 0 0 200px; /* không lớn, không nhỏ đi, cố định 200px */
+}
+```
+
+`flex: 1` là con ngựa thồ: "chia đều phần không gian còn lại". Một sidebar với `flex: 0 0 200px` giữ đúng 200px trong khi cột chính co giãn.
+
+## Hai kiểu căn, khắc thuộc lòng
+
+Trục chính = hướng mà các item chảy theo. Trục ngang = trục còn lại.
+
+- `justify-content` → trục chính
+- `align-items` → trục ngang
+
+Đổi `flex-direction` sang `column` và hai thứ đó _hoán đổi ý nghĩa_ — vì thế mới có chuyện "vì sao align-items bây giờ lại là trái-phải?!". Luôn tự hỏi: các item đang chảy theo hướng nào?
+
+## Căn giữa theo chiều dọc, cuối cùng cũng dễ
+
+```css
+.hero {
+  display: flex;
+  align-items: center; /* trục ngang */
+  justify-content: center; /* trục chính */
+  min-height: 200px;
+}
+```
+
+Mẫu từng đòi hỏi các mẹo xoay vẩy giờ là ba dòng trung thực.
+
+## Một thanh nav, lắp ráp
+
+```css
+.nav {
+  display: flex;
+  justify-content: space-between; /* brand trái, liên kết phải */
+  align-items: center;
+  gap: 1rem;
+}
+.nav ul {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+}
+```
+
+```html
+<nav class="nav">
+  <strong>MySite</strong>
+  <ul>
+    <li><a href="#">Home</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+</nav>
+```
+
+Giờ bạn đã biết bộ khung của mọi thanh điều hướng trên web.
+
+## Bạn đã học được gì
+
+- Container: `display: flex`; các con trở thành flex item
+- `justify-content` (chính) vs `align-items` (ngang) — và đổi hướng làm hoán đổi ý nghĩa
+- `gap` cho khoảng cách; `flex: 1` để chia không gian; `flex-wrap: wrap` để tràn một cách duyên dáng
+- Hai mẫu: thanh-nav space-between và hero căn-đôi
+
+**Tiếp theo:** Grid — bố cục hai chiều.

@@ -1,0 +1,20 @@
+{
+  "id": "cint-p16-own",
+  "title": "The Store Owns Its Keys",
+  "prompt": "Prove the ownership rule: kv_put must copy the caller's bytes. The store's observable behavior must not change when the caller's buffer is modified or reused after the put.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#include <stddef.h>\n#define KV_CAP 16\n#define KV_KEYMAX 32\ntypedef enum {\n    KV_OK = 0, KV_EARGS, KV_ENOMEM, KV_ENOENT,\n    KV_EFORMAT, KV_ETRUNC, KV_EBADSUM\n} KVError;\ntypedef struct { char key[KV_KEYMAX]; long value; int live; } KVSlot;\ntypedef struct { KVSlot slots[KV_CAP]; size_t count; } KVStore;\nvoid kv_init(KVStore *s);\nKVError kv_put(KVStore *s, const char *key, long value);\nKVError kv_get(const KVStore *s, const char *key, long *out);\nKVError kv_del(KVStore *s, const char *key);\nsize_t kv_count(const KVStore *s);\nvoid kv_iter(const KVStore *s, void (*fn)(const char *key, long value, void *ctx), void *ctx);\n/* ---- capture state for iteration tests (defined here) ---- */\nstatic char kv_cap_keys[16][KV_KEYMAX];\nstatic long kv_cap_vals[16];\nstatic int kv_cap_n;\nstatic void kv_capture(const char *key, long value, void *ctx) {\n    (void)ctx;\n    if (kv_cap_n < 16) {\n        snprintf(kv_cap_keys[kv_cap_n], KV_KEYMAX, \"%s\", key);\n        kv_cap_vals[kv_cap_n] = value;\n        kv_cap_n++;\n    }\n}\nstatic void kv_capture_reset(void) { kv_cap_n = 0; }\n",
+  "tests": [
+    {
+      "name": "caller may clobber",
+      "code": "\nKVStore s; kv_init(&s);\nlong v;\nchar key[16];\nsnprintf(key, sizeof key, \"temp\");\nCHECK_EQ(kv_put(&s, key, 42), KV_OK);\nmemset(key, 'x', 4);                               /* clobber the buffer */\nCHECK_EQ(kv_get(&s, \"temp\", &v), KV_OK);           /* store kept its copy */\nCHECK_EQ(v, 42);\nsnprintf(key, sizeof key, \"other\");\nCHECK_EQ(kv_put(&s, key, 7), KV_OK);               /* reuse the buffer */\nCHECK_EQ(kv_get(&s, \"temp\", &v), KV_OK);           /* first key intact */\nCHECK_EQ(v, 42);\nCHECK_EQ(kv_get(&s, \"other\", &v), KV_OK); CHECK_EQ(v, 7);\n",
+      "hint": "After put, the caller's buffer is theirs to reuse."
+    },
+    {
+      "name": "distinct keys stay distinct",
+      "code": "\nKVStore s; kv_init(&s);\nlong v;\nCHECK_EQ(kv_put(&s, \"prefix-a\", 1), KV_OK);\nCHECK_EQ(kv_put(&s, \"prefix-b\", 2), KV_OK);\nCHECK_EQ(kv_get(&s, \"prefix-a\", &v), KV_OK); CHECK_EQ(v, 1);\nCHECK_EQ(kv_get(&s, \"prefix-b\", &v), KV_OK); CHECK_EQ(v, 2);\nCHECK_EQ(kv_del(&s, \"prefix-a\"), KV_OK);\nCHECK_EQ(kv_get(&s, \"prefix-b\", &v), KV_OK);       /* sibling untouched */\nCHECK_EQ(v, 2);\nCHECK_EQ(kv_get(&s, \"prefix-a\", &v), KV_ENOENT);\n",
+      "hint": "Distinct keys must never share storage."
+    }
+  ]
+}

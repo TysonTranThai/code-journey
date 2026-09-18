@@ -1,0 +1,26 @@
+{
+  "id": "ca1-rep-copy",
+  "title": "Representation Copy",
+  "prompt": "Implement `unsigned int rep_bytes(double d)` that returns the number of leading zero **bytes** in d's object representation on this little-endian platform. Copy the double's bytes via `memcpy` into an `unsigned char` array, then scan from the highest index (most significant byte) downward while bytes are zero.\n \n- `rep_bytes(1.0)` is 0: 1.0 is 0x3FF0000000000000, whose most significant byte (index 7, little-endian) is 0x3F — nonzero, so the scan stops immediately.\n- `rep_bytes(0.0)` is 8: every representation byte of +0.0 is zero.\n- `rep_bytes(5e-324)` is 7: the smallest positive subnormal is 0x0000000000000001 — its single nonzero byte is index 0, so exactly the seven bytes above it are zero.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "1.0 scans from the top",
+      "code": "CHECK_EQ((int)rep_bytes(1.0), 0);",
+      "hint": "1.0 = 0x3FF0...: the most significant byte (index 7) is 0x3F, nonzero, so there are 0 leading zero bytes."
+    },
+    {
+      "name": "tiny subnormal",
+      "code": "CHECK_EQ((int)rep_bytes(5e-324), 7);",
+      "hint": "0x0000000000000001: one nonzero byte at index 0, so scanning from index 7 counts seven zero bytes."
+    },
+    {
+      "name": "zero is all zeros",
+      "code": "CHECK_EQ((int)rep_bytes(0.0), 8);",
+      "hint": "Every representation byte of +0.0 is zero."
+    }
+  ],
+  "level": "independent"
+}

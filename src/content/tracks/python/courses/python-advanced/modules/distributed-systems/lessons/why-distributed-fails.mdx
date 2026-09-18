@@ -1,0 +1,50 @@
+Everything you learned about calling functions breaks when the call crosses a
+network. A remote call can:
+
+- **succeed** — the work happened and you hear about it,
+- **fail visibly** — the work didn't happen and you get an error,
+- **fail invisibly** — the work happened but the *response was lost*, or the
+  work didn't happen and the *request was lost*. From where you sit, these look
+  **identical**: a timeout.
+
+A timeout is not an answer; it is the *absence* of an answer. That single fact
+drives most of this module.
+
+## At-least-once delivery forces idempotency
+
+If the network can lose your response, the only safe retry policy is
+**at-least-once**: send again until you hear back. But retrying a non-idempotent
+operation ("charge the card") means doing it twice. Conclusion:
+
+> **at-least-once delivery + exactly-once effect = idempotency keys**
+
+The receiver remembers processed keys and replays the recorded result. The
+effect is exactly-once even though delivery is not.
+
+## Retries need backoff and jitter
+
+Retrying immediately into an overloaded system is a denial-of-service attack on
+yourself. Exponential backoff (`1s, 2s, 4s, ...` capped) gives the system room
+to recover. Pure backoff on many clients synchronizes into **thundering herds**
+— everyone retries at the 8-second mark together. **Jitter** (randomizing each
+delay within a band) desynchronizes them:
+
+```python
+delay = min(cap, base * 2 ** attempt)
+sleep(random.uniform(0, delay))   # full jitter
+```
+
+## Timeouts, retries, and their budget
+
+A total request budget (`5s`) must be divided among attempts. Three attempts
+with a 5s timeout each is a 15s worst case — usually wrong. Give each attempt a
+timeout that fits the budget, and track retries with a *deadline* (an absolute
+time after which you give up), not just a count.
+
+## Failure isolation: bulkheads and fallbacks
+
+One slow dependency should not consume every worker thread of a healthy part of
+the system (thread-pool exhaustion — the bulkhead pattern isolates pools per
+dependency). And where a feature has a degraded mode, degrade: serve a cached
+price rather than an error page. **Graceful degradation is a design decision
+made before the incident, not during it.**

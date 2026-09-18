@@ -1,0 +1,74 @@
+Bạn vốn đã test - mỗi lần chạy chương trình và nheo mắt nhìn output là
+bạn đang test. Vấn đề: **bạn** phải chạy lại mọi thứ sau mỗi lần sửa, và
+rồi bạn sẽ lười. Test tự động là những chương trình mà công việc duy nhất
+là chạy code khác của bạn và la lên to khi nó sai.
+
+## Những gì compiler không bắt được
+
+```java
+static double average(int[] scores) {
+    int sum = 0;
+    for (int s : scores) sum += s;
+    return sum / scores.length;        // biên dịch được. chạy được. sai.
+}
+```
+
+Chia số nguyên âm thầm cắt cụt: `average({1, 2})` là `1.0`, không phải
+`1.5`. Compiler thấy kiểu hợp lệ, cú pháp hợp lệ - còn *logic* là vấn đề
+của bạn. Test là cách bắt bug logic, tốt nhất là trước khi người dùng tìm
+ra chúng.
+
+## JUnit: hình dạng
+
+JUnit 5 là framework test chuẩn của Java. Trong dự án Maven thật, test
+nằm ở `src/test/java`, một lớp test cho mỗi lớp thật:
+
+```java
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class ScoreAverageTest {
+
+    @Test
+    void averagesTwoScores() {
+        assertEquals(1.5, ScoreAverage.average(new int[]{1, 2}));
+    }
+
+    @Test
+    void emptyScoresThrow() {
+        assertThrows(IllegalArgumentException.class,
+            () -> ScoreAverage.average(new int[0]));
+    }
+}
+```
+
+Từ vựng:
+
+- `@Test` - đánh dấu phương thức mà runner thực thi. Mỗi test độc lập,
+  chạy trên một đối tượng mới.
+- `assertEquals(expected, actual)` - chú diễn viên chính. Chú ý thứ tự:
+  **expected đứng trước**. Message lỗi in cả hai, nên đúng thứ tự thì lỗi
+  mới dễ đọc.
+- `assertTrue` / `assertFalse`, `assertNull` / `assertNotNull`,
+  `assertThrows` - phần còn lại của bộ hằng ngày.
+- `@BeforeEach` - chạy trước *mỗi* test: dựng fixture mới ở đó thay vì
+  copy-paste phần chuẩn bị.
+
+## Arrange, Act, Assert
+
+Đọc mỗi test như ba nhịp:
+
+```java
+@Test
+void withdrawReducesBalance() {
+    // Arrange
+    Account a = new Account(100);
+    // Act
+    a.withdraw(30);
+    // Assert
+    assertEquals(70, a.balance());
+}
+```
+
+Một hành vi cho mỗi test. Nếu bạn không gọi tên được hành vi duy nhất đó
+trong một câu, thì đó là hai test.

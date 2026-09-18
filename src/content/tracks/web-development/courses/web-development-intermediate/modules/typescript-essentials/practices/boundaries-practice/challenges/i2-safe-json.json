@@ -1,0 +1,20 @@
+{
+  "id": "i2-safe-json",
+  "title": "Safe JSON Layer",
+  "prompt": "Write `parseOr(raw, fallback)` — parse `raw` as JSON, RETURN the value or `fallback` on any failure (never throws; handles non-string inputs). Write `serialize(value, fallback)` — RETURN the JSON string of `value`, or `fallback` when the value cannot be serialized (circular references, BigInt).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function parseOr(raw, fallback) {\n  // your code\n}\n\nfunction serialize(value, fallback) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "parseOr is total",
+      "code": "const fn = new Function(code + \"\\nreturn { parseOr, serialize };\");\nconst { parseOr, serialize } = fn();\nif (parseOr(\"[1,2]\", null).length !== 2) throw new Error(\"Valid JSON parses.\");\nif (parseOr(\"{oops\", \"fb\") !== \"fb\") throw new Error(\"Invalid JSON yields the fallback.\");\nif (parseOr(undefined, \"fb\") !== \"fb\") throw new Error(\"Non-string input yields the fallback.\");",
+      "hint": "try/catch around JSON.parse covers non-strings too."
+    },
+    {
+      "name": "serialize survives circular references",
+      "code": "const fn = new Function(code + \"\\nreturn { parseOr, serialize };\");\nconst { parseOr, serialize } = fn();\nif (serialize({ a: 1 }, \"fb\") === \"fb\" || serialize({ a: 1 }, \"fb\") === undefined) throw new Error(\"Plain objects serialize.\");\nconst circular = {};\ncircular.self = circular;\nif (serialize(circular, \"fb\") !== \"fb\") throw new Error(\"Circular structures return the fallback instead of throwing.\");",
+      "hint": "JSON.stringify throws on cycles — wrap it and return fallback in the catch."
+    }
+  ]
+}

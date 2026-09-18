@@ -1,0 +1,25 @@
+{
+  "id": "javb-checkpoint-loops",
+  "title": "Checkpoint: Statistics Bureau",
+  "prompt": "\nThe Statistics Bureau processes test scores in one pass each.\n\nImplement three methods over an `int[] scores` (each 0–100; the array is\nnever empty):\n\n1. `int average(int[] scores)` — the mean **rounded down** to a whole\n   number (`(int)` truncation is acceptable and expected).\n2. `int passRate(int[] scores)` — the percentage of scores ≥ 60, rounded\n   down (an integer 0–100, not a double).\n3. `int secondLargest(int[] scores)` — the second-largest DISTINCT value;\n   every score is guaranteed to appear at least twice or the array is\n   guaranteed to hold at least two distinct values — when all values are\n   identical, return that value itself.\n\nOne loop per method (no `Arrays.sort` — this is a loops exercise), each\ncarrying only the state it needs. `average({70, 80, 91})` is 80;\n`passRate({70, 80, 91})` is 100; `secondLargest({90, 90, 85})` is 85.\n",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int average(int[] scores) {\n        return 0;\n    }\n\n    public static int passRate(int[] scores) {\n        return 0;\n    }\n\n    public static int secondLargest(int[] scores) {\n        return 0;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "average truncates",
+      "code": "\nCjTestBase.checkEq(Solution.average(new int[]{70, 80, 91}), 80, \"80.33 -> 80\");\nCjTestBase.checkEq(Solution.average(new int[]{50, 51}), 50, \"50.5 -> 50\");\n",
+      "hint": "Sum as long, divide, truncate."
+    },
+    {
+      "name": "pass rate",
+      "code": "\nCjTestBase.checkEq(Solution.passRate(new int[]{70, 80, 91}), 100, \"all pass\");\nCjTestBase.checkEq(Solution.passRate(new int[]{59, 60, 20}), 33, \"one of three, truncated\");\n",
+      "hint": "Count >= 60, multiply by 100, divide by length — in that order, with ints."
+    },
+    {
+      "name": "second largest distinct",
+      "code": "\nCjTestBase.checkEq(Solution.secondLargest(new int[]{90, 90, 85}), 85, \"85 is second\");\nCjTestBase.checkEq(Solution.secondLargest(new int[]{10, 20, 20, 30}), 20, \"20 is second of distinct\");\nCjTestBase.checkEq(Solution.secondLargest(new int[]{7}), 7, \"all identical\");\n",
+      "hint": "Track max and second-max; skip values equal to max; seed for the identical case."
+    }
+  ]
+}

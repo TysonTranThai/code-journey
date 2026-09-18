@@ -1,0 +1,43 @@
+## Ghi một file
+
+```cpp
+#include <fstream>
+
+int main() {
+    std::ofstream out{"notes.txt"};                 // mở để ghi (tạo mới/ghi đè)
+    if (!out) {                                     // LUÔN kiểm tra lần mở
+        std::cerr << "cannot open notes.txt\n";
+        return 1;
+    }
+    out << "buy milk\n" << "learn C++\n";
+}                                                    // destructor đóng file — RAII
+```
+
+Không cần gọi `close()`: destructor đóng và flush, kể cả khi return sớm. RAII ở module 12 bắt đầu trả tiền nhà.
+
+## Đọc file theo từng dòng
+
+```cpp
+std::ifstream in{"notes.txt"};
+if (!in) { /* kiểm tra tương tự */ }
+std::string line;
+while (std::getline(in, line)) {
+    std::cout << line << '\n';
+}                                                   // vòng lặp dừng tại EOF
+```
+
+Vòng lặp `getline` là MẪU đọc file; trạng thái boolean của stream kết thúc vòng lặp đúng lúc hết file.
+
+## Chế độ append và các file mode
+
+```cpp
+std::ofstream log{"app.log", std::ios::app};    // nối tiếp, không ghi đè
+```
+
+Các mode khác tồn tại (`std::ios::binary`, `in|out`) nhưng trình độ Cơ bản sống trong chế độ text.
+
+## Những phép kiểm tra quan trọng
+
+1. **Kiểm tra mở** sau khi dựng (`if (!out)`) — file thiếu, thiếu quyền, đường dẫn sai.
+2. **Kiểm tra đọc** trong điều kiện vòng lặp — `getline` tự lo.
+3. Các lỗi sâu hiếm gặp (đĩa đầy giữa chừng) có thật nhưng thuộc exception-safety của Trung cấp; ở đây, kiểm tra lần mở và vòng lặp.

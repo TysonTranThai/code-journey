@@ -1,0 +1,16 @@
+{
+  "id": "cint-p3-dangling-doc",
+  "title": "Borrowing Rules",
+  "prompt": "A struct holds a BORROWED string. Implement the documented discipline:\n\n```c\ntypedef struct { const char *name; int score; } Record;   /* in boilerplate */\n\n/* initializes the record with a borrowed name (NOT copied, NOT freed by\n   the record). Caller must keep name alive as long as the record lives. */\nvoid record_init(Record *r, const char *name, int score);\n/* returns the borrowed name (or NULL) */\nconst char *record_name(const Record *r);\n/* prints \"name=score\\n\" (e.g. \"ada=99\\n\") using the borrowed name */\nvoid record_print(const Record *r);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\ntypedef struct { const char *name; int score; } Record;\n",
+  "tests": [
+    {
+      "name": "borrowed lifetime respected",
+      "code": "\nchar owner[] = \"ada\";             /* caller-owned storage */\nRecord r;\nrecord_init(&r, owner, 99);\nCHECK_STR_EQ(record_name(&r), \"ada\");\nCHECK_EQ(r.name, owner);          /* truly borrowed: same storage */\nrecord_init(&r, \"static-literal\", 50);\nCHECK_STR_EQ(record_name(&r), \"static-literal\");\n",
+      "hint": "Store the pointer as-is; no strdup, no free anywhere in the record API."
+    }
+  ],
+  "level": "imitation"
+}

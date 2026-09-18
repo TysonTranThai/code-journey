@@ -1,0 +1,58 @@
+Object rất hợp cho record — một user, một config. Nhưng có hai việc cần công
+cụ khác: **bộ sưu tập có key không phải chuỗi**, và **tính duy nhất**.
+
+## Map: từ điển nhận bất cứ thứ gì làm key
+
+```js
+const cache = new Map();
+cache.set({ path: "/api/users" }, response); // một OBJECT làm key!
+cache.set(42, "answer");
+cache.get({ path: "/api/users" }); // cùng tham chiếu → tìm thấy
+
+cache.has(key); // kiểm tra membership không cần lấy giá trị
+cache.delete(key);
+cache.size; // số phần tử
+for (const [key, value] of cache) { ... } // duyệt theo thứ tự chèn
+```
+
+Hai siêu năng lực mà object thường thiếu:
+
+- Key có thể là giá trị bất kỳ — object, function, NaN.
+- `map.size` là O(1); `Object.keys(obj).length` thì không.
+
+## WeakMap (mở đầu)
+
+`WeakMap` giữ key _yếu_: nếu không còn gì tham chiếu tới object key,
+nó sẽ bị dọn cùng entry của mình bởi garbage collector. Hoàn hảo để gắn
+metadata vào DOM node hoặc object của thư viện mà không rò rỉ bộ nhớ.
+
+## Set: tính duy nhất như một cấu trúc dữ liệu
+
+```js
+const emails = new Set();
+emails.add("a@x.com");
+emails.add("a@x.com"); // bị bỏ qua — đã có
+emails.size; // 1
+
+const unique = [...new Set(array)]; // khử trùng lặp mảng trong một dòng
+emails.has("b@x.com"); // membership O(1) — nhanh hơn array.includes
+```
+
+## Chọn cấu trúc
+
+| Nhu cầu                               | Dùng   |
+| ------------------------------------- | ------ |
+| Record với các field biết trước       | object |
+| Key động/tùy ý, thêm/xóa thường xuyên | Map    |
+| Giá trị duy nhất, kiểm tra membership | Set    |
+| Danh sách có thứ tự                   | array  |
+
+Dùng object làm bảng tra cứu với key do người dùng kiểm soát còn có một lỗ
+hổng bảo mật: key như `__proto__` hay `constructor` có thể đụng
+property của prototype. Map miễn nhiễm điều đó.
+
+## Vì sao điều này quan trọng ở Trung cấp
+
+Chọn cấu trúc dữ liệu là một quyết định kỹ thuật. Chạm đúng cấu trúc — và
+biết vì sao — chính là kỹ năng "quyết định xây thế nào" mà khóa học này
+hướng tới.

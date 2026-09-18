@@ -1,0 +1,44 @@
+## CI: tích hợp liên tục
+
+Mỗi push chạy cổng kiểm tra tự động:
+
+```yaml
+# .github/workflows/ci.yml (khái niệm)
+on: push
+jobs:
+  verify:
+    steps:
+      - checkout, install (có cache)
+      - typecheck # vài giây
+      - lint # vài giây
+      - unit test # một phút
+      - build # chứng minh biên dịch được
+```
+
+Branch protection biến nó thành luật: PR yêu cầu CI xanh + review trước khi merge. Sự chuyển biến văn hóa mới là điểm mấu chốt — "trên máy tôi chạy mà" ngừng là lập luận khi cái máy đó là CI.
+
+## CD: delivery/deployment liên tục
+
+- **Delivery** — mỗi merge tạo ra một artifact đã xác minh, có thể triển khai (deploy là một nút bấm)
+- **Deployment** — mỗi merge _tự động triển khai_ lên production
+
+Deploy ngay khi merge là cấu hình tin cậy cao nhất; nó được giành bằng kim tự tháp test (module 7), phát hành theo giai đoạn (bài trước), và rollback tức thì. Bạn không bắt đầu ở đó; bạn lớn dần lên.
+
+## Giải phẫu pipeline
+
+```text
+push → [typecheck, lint, unit]  → merge PR →
+       [build artifact, hash, scan] →
+       deploy staging → [E2E, smoke test] →
+       deploy prod (canary/rolling) → [theo dõi metric] → xong
+```
+
+Nhanh trước, chậm sau: lập trình viên nhận phản hồi typecheck trong vài phút; các cổng nặng chạy trước prod, không phải trước mỗi commit.
+
+## Secret trong CI
+
+Hệ thống CI giữ credential quyền lực (deploy key, cloud token) — một token CI bị lộ là một vụ xâm nhập production. Lưu trong secret store của nền tảng (không bao giờ trong YAML), giới hạn phạm vi hẹp (deploy key ≠ admin key), xoay vòng chúng, và ghim action bên thứ ba theo digest khi nền tảng cho phép.
+
+## Mục tiêu tầm thường
+
+Thước đo của pipeline trưởng thành là _deploy không đáng kể_: nhiều lần mỗi ngày, không lần nào cần nhắc trong standup. Mỗi bước thủ công bị xóa là một lỗi 11 giờ đêm bớt đi. Khi deploy tầm thường, bạn ship thay đổi nhỏ hơn, hỏng nhỏ hơn, khiến deploy càng tầm thường hơn — vòng lặp cộng hưởng về phía bạn.

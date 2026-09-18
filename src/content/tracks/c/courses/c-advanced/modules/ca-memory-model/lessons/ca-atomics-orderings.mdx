@@ -1,0 +1,36 @@
+## The problem atomics solve
+
+Two threads incrementing a plain `int` is a **data race** — undefined behavior in ISO C (C11 §5.1.2.4). The compiler may load once, add twice, store once; the hardware may interleave reads and writes mid-word. Atomics fix this by making read-modify-write **indivisible** and by letting you choose how strongly visibility propagates.
+
+```c
+#include <stdatomic.h>          /* ISO C — not POSIX */
+
+atomic_int counter = 0;         /* initialized to 0, no race on init */
+
+void bump(void) {
+    atomic_fetch_add(&counter, 1);   /* returns the PREVIOUS value */
+}
+```
+
+`atomic_fetch_add` returns the value *before* the addition — the classic `x++` race is gone because the whole load-add-store is one atomic operation.
+
+## The six orderings, honestly ranked
+
+| ordering | promise | use it when |
+|----------|---------|-------------|
+| `memory_order_relaxed` | atomicity only; no ordering of other memory | statistics counters, sequence numbers |
+| `memory_order_acquire` | later reads/writes cannot move before this load | the *reading* side of a lock-free publish |
+| `memory_order_release` | earlier reads/writes cannot move after this store | the *writing* side of a lock-free publish |
+| `memory_order_acq_rel` | both, for read-modify-write ops | CAS loops that read and write |
+| `memory_order_seq_cst` | one total order every thread agrees on | default; use unless profiling says otherwise |
+| `memory_order_consume` | deprecated in practice; compilers promote to acquire | do not use |
+
+The **release/acquire pair** is the workhorse: a release store that writes flag=1 *synchronizes-with* an acquire load that observes flag=1, making everything written before the release visible after the acquire. This sandbox (gcc on aarch64) honors both; `ATOMIC_INT_LOCK_FREE == 2` here, so `atomic_int` needs no lock.
+
+## Relaxed is not broken — it is narrower
+
+The default `seq_cst` is total order across *all* atomic operations. `relaxed` keeps atomicity but allows different threads to *disagree about the order of different variables*. It is the right tool for a miss counter nobody coordinates on — and the wrong tool for publishing a pointer (the data behind the pointer needs the release/acquire fence).
+
+## Rule of the module
+
+**ISO C atomics define visibility; POSIX pthreads defines threads.** `pthread_create` is POSIX (feature macro required); `atomic_int` is ISO C. Keep the labels straight and the code portable.

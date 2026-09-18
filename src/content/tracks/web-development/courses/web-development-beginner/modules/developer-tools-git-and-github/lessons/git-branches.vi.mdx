@@ -1,0 +1,41 @@
+Một **nhánh (branch)** là một dòng lịch sử song song. Nhánh mặc định — thường là `main` — là phiên bản ổn định. Một nhánh mới là một sandbox an toàn: thí nghiệm thoải mái; `main` không bao giờ hay biết cho đến khi bạn merge.
+
+## Quy trình làm việc
+
+```text
+git branch about-page        # tạo một nhánh tên about-page
+git switch about-page        # di chuyển sang nó (git switch -c about-page = cả hai bước)
+...sửa tệp, add, commit...
+git switch main              # quay về dòng ổn định
+git merge about-page         # đưa công việc của nhánh vào main
+```
+
+Trong khi ở trên `about-page`, các commit đổ vào nhánh đó. `main` không bị đụng đến — đó là toàn bộ điểm mấu chốt.
+
+## Giải quyết một xung đột cơ bản
+
+Một **xung đột (conflict)** xảy ra khi hai nhánh thay đổi cùng các dòng. Git đánh dấu va chạm ngay trong tệp:
+
+```text
+<<<<<<< HEAD
+Welcome to my site
+=======
+Welcome — come on in
+>>>>>>> about-page
+```
+
+Bạn giải quyết bằng cách sửa tệp thành phiên bản bạn muốn (hoặc một sự pha trộn), xóa các dấu `<<<<<<<`, rồi `git add` + `git commit`. Xung đột không phải lỗi — chúng là Git nhờ bạn đưa ra một quyết định mà nó từ chối đoán.
+
+## Những thói quen thật
+
+- Một nhánh cho mỗi ý tưởng hoặc tính năng; các nhánh ngắn hạn merge sạch sẽ
+- Không bao giờ commit thẳng vào main trong repo của một đội — hãy branch, kể cả khi làm một mình, để luyện tập
+- `git branch` liệt kê các nhánh; `git log --oneline --all` hiện mọi dòng
+
+## Bạn đã học được gì
+
+- `git branch`/`git switch` tạo và bước vào các sandbox
+- Merge đưa công việc đã hoàn thành trở lại main
+- Xung đột là các quyết định, không phải thất bại — sửa, add, commit
+
+**Tiếp theo:** đưa các repository của bạn lên mạng — GitHub.

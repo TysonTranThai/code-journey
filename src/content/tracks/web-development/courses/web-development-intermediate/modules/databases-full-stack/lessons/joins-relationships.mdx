@@ -1,0 +1,63 @@
+Data is split across tables (module's first lesson); joins put it back together for a query.
+
+## INNER JOIN: rows that match
+
+```sql
+SELECT t.id, t.title, u.name
+FROM tasks t
+INNER JOIN users u ON u.id = t.author_id;
+```
+
+Every task with its author's name; tasks without a valid author vanish (the FK should prevent that, but soft-deleted users, legacy data...). Alias tables (`tasks t`) — you'll type them a lot.
+
+## LEFT JOIN: keep the left side
+
+```sql
+SELECT u.name, COUNT(t.id) AS task_count
+FROM users u
+LEFT JOIN tasks t ON t.author_id = u.id
+GROUP BY u.name;
+```
+
+Every user appears — even those with zero tasks (COUNT(t.id) is 0 because t.id is NULL). This "count including zeros" pattern is the most common real-world join. RIGHT JOIN exists (rarely used — flip the tables instead); FULL OUTER keeps both sides.
+
+## The NULL trap in joins
+
+A LEFT JOIN's unmatched rows have NULL right-columns. Two consequences:
+
+- `WHERE t.something = x` silently converts your LEFT JOIN into an INNER one (NULL fails the comparison). Put right-side conditions **in the ON clause** if you want preservation.
+- `COUNT(*)` counts rows (including matched-with-NULLs); `COUNT(t.id)` counts non-null ids. They differ exactly on the rows you joined to keep.
+
+## Subqueries and CTEs
+
+```sql
+-- users with more than 5 open tasks
+SELECT name FROM users u
+WHERE (SELECT COUNT(*) FROM tasks t WHERE t.author_id = u.id AND t.done = false) > 5;
+
+-- same, as a readable CTE
+WITH open_counts AS (
+  SELECT author_id, COUNT(*) AS n
+  FROM tasks
+  WHERE done = false
+  GROUP BY author_id
+)
+SELECT u.name, c.n
+FROM open_counts c
+JOIN users u ON u.id = c.author_id
+WHERE c.n > 5;
+```
+
+CTEs (`WITH`) name an intermediate result — often clearer than nesting, and Postgres can still optimize it.
+
+## Many-to-many in practice
+
+```sql
+SELECT t.title, array_agg(tg.name) AS tags
+FROM tasks t
+JOIN task_tags tt ON tt.task_id = t.id
+JOIN tags tg ON tg.id = tt.tag_id
+GROUP BY t.title;
+```
+
+Two hops across the junction table. Filtering ("tasks tagged urgent") is a join with `WHERE tg.name = 'urgent'`; counting per tag is a GROUP BY on the junction.

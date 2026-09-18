@@ -1,0 +1,16 @@
+`take()` là bài kiểm tra vì nó là điệu nhảy chính xác mà bài học sở hữu
+truyền dạy:
+
+1. tìm slot theo tên
+2. `auto out = std::move(*it);` — sở hữu rời vector; slot giờ giữ một
+   `unique_ptr` rỗng
+3. `items_.erase(it);` — bỏ lớp vỏ rỗng
+4. trả `out`
+
+Bỏ bước 2 phá hủy item; bỏ bước 3 để lại lỗ nullptr trong container. Cả
+hai lỗi đều im lặng lúc biên dịch — vì vậy test kiểm tra size, danh tính,
+và sự tồn tại sau lời gọi.
+
+Đây là điệu nhảy mà erase-trên-vector kèm move, xoá node trong cấu trúc
+liên kết, và hàng đợi công việc đều thực hiện. Học một lần ở đây và bạn sẽ
+nhận ra nó ở khắp nơi.

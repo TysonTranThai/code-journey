@@ -1,0 +1,16 @@
+{
+  "id": "py-ex-raise-negative",
+  "title": "Raise on Bad Input",
+  "prompt": "Write set_age(age) that returns age when it is 0..150 and raises ValueError with a message mentioning the number otherwise. The tests pass 200 and expect the raise.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "def set_age(age):\n    pass\n",
+  "tests": [
+    {
+      "name": "raises with message",
+      "code": "assert set_age(30) == 30\ntry:\n    set_age(200)\n    assert False, \"200 must raise\"\nexcept ValueError as e:\n    assert \"200\" in str(e), \"message must mention the bad value\"\ntry:\n    set_age(-5)\n    assert False, \"negative must raise too\"\nexcept ValueError:\n    pass",
+      "hint": "if not (0 <= age <= 150): raise ValueError(f\"invalid age: {age}\") — raise, never clamp"
+    }
+  ],
+  "level": "guided"
+}

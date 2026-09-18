@@ -1,0 +1,25 @@
+{
+  "id": "practice-const-vs-let",
+  "title": "const or let?",
+  "prompt": "Declare a constant `firstName` with the value `\"Ada\"`, and a `let` variable `score` starting at 0 that you then reassign to 42. Log both on one line using a template literal: `Ada: 42`.\n\nRules:\n- `firstName` never changes — `const`.\n- `score` is reassigned — `let`.",
+  "difficulty": "beginner",
+  "level": "imitation",
+  "boilerplate": "// Declare firstName and score, reassign score, then log them\n",
+  "tests": [
+    {
+      "name": "const firstName holds Ada",
+      "code": "if (!/const\\s+firstName\\s*=\\s*[\"']Ada[\"']\\s*;/.test(code)) {\n  throw new Error(\"Declare: const firstName = \\\"Ada\\\";\");\n}",
+      "hint": "const firstName = \"Ada\"; — constants can't be reassigned."
+    },
+    {
+      "name": "let score reassigned to 42",
+      "code": "if (!/let\\s+score\\s*=\\s*0\\s*;/.test(code)) throw new Error(\"Start score at 0 with let.\");\nif (!/score\\s*=\\s*42\\s*;/.test(code)) throw new Error(\"Reassign score to 42 (without const/let the second time).\");",
+      "hint": "let score = 0; then later score = 42; — reassignment without a new declaration."
+    },
+    {
+      "name": "template literal prints Ada: 42",
+      "code": "if (!/console\\.log\\(\\s*`[^\\x60]*\\$\\{\\s*firstName\\s*\\}[^\\x60]*\\$\\{\\s*score\\s*\\}[^\\x60]*`\\s*\\)/.test(code)) {\n  throw new Error(\"Log with a template literal: console.log(\\`\\${firstName}: \\${score}\\`);\");\n}",
+      "hint": "Backticks + ${…} interpolation: console.log(`${firstName}: ${score}`);"
+    }
+  ]
+}

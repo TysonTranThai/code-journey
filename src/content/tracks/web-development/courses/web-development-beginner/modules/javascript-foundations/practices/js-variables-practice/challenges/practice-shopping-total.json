@@ -1,0 +1,25 @@
+{
+  "id": "practice-shopping-total",
+  "title": "Compute the Shopping Total",
+  "prompt": "Given `const price = 4.5` and `const quantity = 3`, compute `total` and log a sentence using the variables, like `3 items cost 13.5`. Then log whether the total is more than 10 (a boolean).\n\nRules:\n- Use arithmetic on the variables — no hard-coded 13.5.",
+  "difficulty": "beginner",
+  "level": "guided",
+  "boilerplate": "const price = 4.5;\nconst quantity = 3;\n// compute total, log the sentence, log the comparison\n",
+  "tests": [
+    {
+      "name": "total is price times quantity",
+      "code": "const totalDecl = code.match(/(const|let)\\s+total\\s*=\\s*([^;]+);/);\nif (!totalDecl) throw new Error(\"Declare a total variable.\");\nif (!/price\\s*\\*\\s*quantity|quantity\\s*\\*\\s*price/.test(totalDecl[2])) {\n  throw new Error(\"Compute total from price * quantity — don't hard-code the result.\");\n}",
+      "hint": "const total = price * quantity; — the computer does the math."
+    },
+    {
+      "name": "logs a sentence using the variables",
+      "code": "if (!/console\\.log\\([^)]*\\$\\{\\s*(quantity|total|price)\\s*\\}[^)]*\\)/.test(code) && !/console\\.log\\([^)]*\\+\\s*(quantity|total|price)/.test(code)) {\n  throw new Error(\"Log a sentence that includes the variables (template literal or concatenation).\");\n}",
+      "hint": "console.log(`${quantity} items cost ${total}`);"
+    },
+    {
+      "name": "logs the boolean comparison",
+      "code": "const logs = code.match(/console\\.log\\(([^;]+)\\);/g) ?? [];\nconst compares = logs.some((l) => /\\$\\{[^}]*total[^}]*\\}\\s*>\\s*10|total\\s*>\\s*10/.test(l));\nif (!compares) throw new Error(\"Log total > 10 somewhere — comparison expressions produce booleans.\");",
+      "hint": "console.log(total > 10); prints true or false."
+    }
+  ]
+}

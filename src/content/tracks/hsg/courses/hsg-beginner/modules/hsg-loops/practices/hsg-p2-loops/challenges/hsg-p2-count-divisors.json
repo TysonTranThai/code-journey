@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p2-count-divisors",
+  "title": "Count the Divisors",
+  "prompt": "**Description:** Given a positive integer n, print how many divisors it has.\n\n**Input:** One integer n (1 ≤ n ≤ 10^12).\n**Output:** One integer — the divisor count.\n\n**Example:** `12` → `6` (1, 2, 3, 4, 6, 12).\n\n*Careful:* looping i from 1 to n is far too slow for 10^12. Loop i while\n`i * i <= n` and count each divisor pair (i, n/i) — remember i = n/i when\nn is a perfect square.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"12\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"6\\n\"));",
+      "hint": "Divisors of 12: 1,2,3,4,6,12."
+    },
+    {
+      "name": "one",
+      "code": "std::istringstream in(\"1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "1 has exactly one divisor: itself."
+    },
+    {
+      "name": "prime",
+      "code": "std::istringstream in(\"999999999989\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "A large prime has only 1 and itself — the i*i loop must be fast."
+    },
+    {
+      "name": "perfect square",
+      "code": "std::istringstream in(\"36\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"9\\n\"));",
+      "hint": "Divisors of 36 pair up with 6·6 counted once: 1,2,3,4,6,9,12,18,36."
+    }
+  ],
+  "level": "guided"
+}

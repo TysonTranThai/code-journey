@@ -1,0 +1,29 @@
+Assertions in a script stop at the first failure. A **test suite** runs every
+case, reports all failures, and becomes your safety net for refactoring.
+`unittest` ships with Python:
+
+```python
+import unittest
+
+class TestInvoice(unittest.TestCase):
+    def setUp(self):                       # fresh fixture per test
+        self.invoice = Invoice(["tea", "cup"])
+
+    def test_total_sums_items(self):
+        self.assertEqual(self.invoice.total(), 7)
+
+    def test_empty_invoice_is_zero(self):
+        self.assertEqual(Invoice([]).total(), 0)
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+What you gain over bare asserts:
+
+- **Independent tests**: `setUp` runs fresh before each method — no shared mutable state, no order dependence.
+- **Rich failure output**: expected vs actual, per test.
+- **A runner**: `python -m unittest` discovers and runs everything; the platform's sandbox runs your tests the same way.
+
+Test naming is communication: `test_total_sums_items` says what behavior is
+expected. When a test fails months from now, the name is the first hint.

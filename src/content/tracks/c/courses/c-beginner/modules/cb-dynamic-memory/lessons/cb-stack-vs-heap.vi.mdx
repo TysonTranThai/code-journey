@@ -1,0 +1,39 @@
+## Ngăn xếp: tự động và nhanh
+
+Biến cục bộ sống trên **ngăn xếp** (stack). Khi hàm trả về, vùng nhớ đó được
+thu hồi tự động:
+
+```c
+void f(void) {
+    int a[100];        // sống tới khi f kết thúc
+}                      // biến mất — bạn không viết code dọn dẹp
+```
+
+Nhanh, nhưng có hai giới hạn: kích thước phải biết lúc biên dịch, và vùng nhớ
+chết theo hàm.
+
+## Đống: thủ công và linh hoạt
+
+**Đống** (heap) chứa vùng nhớ bạn xin tại thời điểm chạy bằng `malloc` và tự
+trả bằng `free`:
+
+```c
+#include <stdlib.h>
+
+int *p = malloc(10 * sizeof(int));   // xin chỗ cho 10 int
+// ... p vẫn hợp lệ qua ranh giới hàm ...
+free(p);                             // BẠN trả lại
+```
+
+Vùng nhớ heap sống tới khi bạn free — nó có thể sống lâu hơn hàm tạo ra nó.
+
+## Một quy tắc theo bạn mãi mãi
+
+> Nếu bạn cấp phát nó, bạn sở hữu nó: phải có ai đó free đúng một lần.
+
+- quên free → **rò rỉ bộ nhớ**
+- free hai lần → hành vi không xác định (hỏng heap)
+- dùng sau khi free → hành vi không xác định
+
+Các module phía sau (file I/O, cấu trúc dữ liệu) xây trực tiếp trên quy tắc
+này.

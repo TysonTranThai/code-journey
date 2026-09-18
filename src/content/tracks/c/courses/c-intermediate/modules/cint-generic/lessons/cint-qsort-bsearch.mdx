@@ -1,0 +1,43 @@
+## The two functions every C programmer must own
+
+```c
+void qsort(void *base, size_t n, size_t size,
+           int (*cmp)(const void *, const void *));
+void *bsearch(const void *key, const void *base, size_t n, size_t size,
+              int (*cmp)(const void *, const void *));
+```
+
+Both work on *any* element type through exactly the triple from the last
+lesson. The comparator decides everything:
+
+```c
+/* int elements: read through const void*, return three-way */
+int cmp_int(const void *a, const void *b) {
+    int x = *(const int *)a, y = *(const int *)b;
+    return (x > y) - (x < y);      /* never a - b: INT_MIN overflows it */
+}
+```
+
+The contract: negative/zero/positive for less/equal/greater. `(x > y) -
+(x < y)` is the overflow-proof idiom; `a - b` on ints breaks at the
+extremes, and on doubles can round to 0 for distinct values.
+
+## Two honest caveats
+
+**qsort is not stable.** Equal elements may be reordered (the standard
+does not promise otherwise; implementations vary). If order among
+equals matters, extend the comparator with a tiebreaker key, or sort an
+array of (key, original-index) pairs.
+
+**bsearch demands sorted input.** Binary search's O(log n) is rented
+from the precondition. Calling bsearch on unsorted data is not "wrong
+answer" — it is undefined which element (if any) you find. And
+bsearch's contract says *any* matching element when duplicates exist;
+if you need first/last, write the lower_bound variant by hand.
+
+## When qsort is the wrong tool
+
+Its generality costs: comparator calls through a function pointer
+(defeating inlining), `size`-byte memcpys. Specialized sorts on ints
+can be several times faster. qsort is the *default*; specialize when
+measurement says so.

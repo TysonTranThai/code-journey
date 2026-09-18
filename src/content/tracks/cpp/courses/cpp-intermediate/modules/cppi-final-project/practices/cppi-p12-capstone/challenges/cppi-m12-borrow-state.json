@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m12-borrow-state",
+  "title": "Capstone seam 1: the borrow state machine",
+  "prompt": "Complete `BorrowTracker`: `bool borrow(const std::string& isbn)` moves an available (or unknown) book to Borrowed and returns true — but returns false and changes nothing if it is already Borrowed. `bool give_back(...)` is the mirror for returning. `bool is_borrowed(...) const` reports state; unknown books are not borrowed.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <vector>\n#include <iostream>\n\nenum class BookState { Available, Borrowed };\n\n// Complete class BorrowTracker { borrow, give_back, is_borrowed }\n",
+  "tests": [
+    {
+      "name": "happy-path",
+      "code": "BorrowTracker t;\nCHECK_EQ(t.borrow(\"111\"), true);\nCHECK_EQ(t.is_borrowed(\"111\"), true);\nCHECK_EQ(t.give_back(\"111\"), true);\nCHECK_EQ(t.is_borrowed(\"111\"), false);",
+      "hint": "Borrow flips Available→Borrowed; give_back flips it back."
+    },
+    {
+      "name": "double-borrow",
+      "code": "BorrowTracker t;\nCHECK_EQ(t.borrow(\"222\"), true);\nCHECK_EQ(t.borrow(\"222\"), false);\nCHECK_EQ(t.is_borrowed(\"222\"), true);",
+      "hint": "The second borrow must be refused, not silently succeed."
+    },
+    {
+      "name": "return-unknown",
+      "code": "BorrowTracker t;\nCHECK_EQ(t.give_back(\"ghost\"), false);",
+      "hint": "Returning a book never borrowed is refused."
+    }
+  ],
+  "level": "combination"
+}

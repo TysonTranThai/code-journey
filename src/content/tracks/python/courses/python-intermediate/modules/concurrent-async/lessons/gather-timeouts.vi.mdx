@@ -1,0 +1,41 @@
+`asyncio.gather` chạy một tập coroutine đồng thời và thu kết quả — với một
+núm xoay thay đổi triết lý thất bại của nó:
+
+```python
+import asyncio
+
+async def job(name, delay, fail=False):
+    await asyncio.sleep(delay)
+    if fail:
+        raise ValueError(name)
+    return name
+
+async def main():
+    results = await asyncio.gather(
+        job("a", 0.1),
+        job("b", 0.1, fail=True),
+        job("c", 0.1),
+        return_exceptions=True,       # lỗi thành GIÁ TRỊ, không phải crash
+    )
+    # ["a", ValueError("b"), "c"]
+```
+
+Với `return_exceptions=False` (mặc định), exception đầu tiên hủy cả nhóm và
+ném lại — hợp với công việc *all-or-nothing*. Với `True`, mỗi lỗi được trả về
+tại vị trí của nó — hợp với *gom được gì hay nấy*, như lấy dữ liệu từ nhiều
+ng-source hay trục trặc. Chọn giữa hai chế độ **chính là** quyết định thiết kế.
+
+## Timeout: không ai chờ vĩnh viễn
+
+```python
+async def main():
+    try:
+        result = await asyncio.wait_for(job("slow", 10), timeout=0.5)
+    except asyncio.TimeoutError:
+        result = "gave up"
+```
+
+`wait_for` hủy coroutine khi hết hạn và raise `TimeoutError` cho người gọi.
+Bộ gom dữ liệu thật kết hợp cả hai: gather với `return_exceptions=True`,
+bọc mỗi job trong một timeout, và coi kết quả (timeout, error) là "nguồn
+lỗi" — chính hình dạng của checkpoint module này.

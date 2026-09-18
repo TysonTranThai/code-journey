@@ -1,0 +1,41 @@
+Python có thể **dựng một collection từ một quy tắc** chỉ trong một dòng dễ
+đọc. List comprehension đọc như câu "với mỗi phần tử, giữ lại/biến đổi nó":
+
+```python
+nums = [1, 2, 3, 4, 5]
+squares = [n * n for n in nums]          # [1, 4, 9, 16, 25]
+evens    = [n for n in nums if n % 2 == 0]  # lọc bằng if phía sau
+labels   = [f"id-{n}" for n in nums]     # biến đổi từng phần tử
+```
+
+Dict và set comprehension cũng cùng hình dạng đó:
+
+```python
+words = ["tea", "coffee", "cola"]
+lengths = {w: len(w) for w in words}     # dict: từ -> độ dài
+unique  = {w[0] for w in words}          # set các chữ cái đầu
+```
+
+Nguyên tắc: nếu comprehension cần hơn một `if` hoặc các vòng lặp lồng nhau
+khó đọc, hãy dùng vòng `for` thường. **Tính dễ đọc thắng.**
+
+## Unpacking (gán nhiều biến)
+
+Gán nhiều đích cùng lúc — Python tự phân rã vế phải:
+
+```python
+point = (3, 8)
+x, y = point                # x=3, y=8
+a, b = b, a                 # cách hoán đổi chuẩn Python
+first, *rest = [10, 20, 30, 40]   # first=10, rest=[20, 30, 40]
+*init, last = range(5)            # init=[0, 1, 2, 3], last=4
+```
+
+Star-unpacking còn dùng để **gộp** collection: `[*xs, *ys]` nối list,
+`{**d1, **d2}` gộp dict (key phía sau thắng).
+
+## Vì sao điều này quan trọng
+
+Mã xử lý dữ liệu ở khắp nơi: làm sạch từng dòng, định hình lại payload từ
+API, dựng bảng tra cứu. Comprehension thể hiện ý định rõ ràng thay vì chôn
+nó dưới các dòng append và đánh chỉ số.

@@ -1,0 +1,30 @@
+## Composition, kế thừa, và delegation
+
+Kế thừa là mức khớp nối mạnh nhất của Java: subclass phụ thuộc nội bộ của
+superclass và phải sống sót qua mọi thay đổi của superclass. Ưu tiên
+**composition**: giữ một cộng sự viên và *ủy quyền* (delegate).
+
+```java
+// kiểu kế thừa
+class CountingList extends ArrayList<String> {
+    int count = 0;
+    @Override public boolean add(String s) { count++; return super.add(s); }
+    // hỏng: addAll() đi vòng qua add(), remove() làm count lệch...
+}
+
+// kiểu composition
+final class CountingList {
+    private final List<String> inner = new ArrayList<>();
+    int count = 0;
+    void add(String s) { count++; inner.add(s); }
+    int size() { return inner.size(); }
+}
+```
+
+Bản kế thừa thừa hưởng hành vi nó không hề xin (addAll bỏ qua override —
+một bug kinh điển). Bản composition chỉ lộ đúng bề mặt nó muốn, và phép
+đếm không thể lệch.
+
+Kinh nghiệm: `is-a` còn đúng sau mọi thay đổi tương lai → kế thừa.
+`has-a`, bọc, trang trí, chuyển đổi → composition. Khi phân vân, compose
+và delegate.

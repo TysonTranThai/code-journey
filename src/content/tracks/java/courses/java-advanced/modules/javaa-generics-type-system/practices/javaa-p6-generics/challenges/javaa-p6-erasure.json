@@ -1,0 +1,16 @@
+{
+  "id": "javaa-p6-erasure",
+  "title": "Prove erasure to yourself",
+  "prompt": "1. `static boolean sameErasure()` — true iff `new ArrayList<String>().getClass()` is the\nSAME object as `new ArrayList<Integer>().getClass()` (==).\n2. `static boolean arraysReified()` — true iff `String[].class != Integer[].class`.\n3. `static String classOfAList()` — return `new ArrayList<String>().getClass().getName()`.\n4. `static String arrayStore()` — inside the method: `Object[] objs = new String[1];`\nthen attempt `objs[0] = 42;` catching the runtime failure; return exactly\n\"ArrayStoreException\" (arrays enforce element type at runtime).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "erased generics share one class",
+      "code": "\ncheckTrue(Solution.sameErasure(), \"List<String> and List<Integer> share a class\");\ncheckTrue(Solution.arraysReified(), \"array classes are distinct\");\ncheckEq(Solution.classOfAList(), \"java.util.ArrayList\", \"erasure in one string\");\ncheckEq(Solution.arrayStore(), \"ArrayStoreException\", \"covariant arrays check at runtime\");\n",
+      "hint": "All four facts, executed."
+    }
+  ],
+  "level": "guided"
+}

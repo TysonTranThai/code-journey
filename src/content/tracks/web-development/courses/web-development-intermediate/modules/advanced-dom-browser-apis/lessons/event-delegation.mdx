@@ -1,0 +1,41 @@
+Imagine a table with 1,000 rows, each row needing a delete button. Attaching
+1,000 listeners is wasteful — and every row added later needs its own listener.
+**Delegation** solves both: attach **one** listener to the stable ancestor and
+let bubbling deliver the events.
+
+## The pattern
+
+```js
+table.addEventListener("click", (event) => {
+  const btn = event.target.closest("button[data-action=delete]");
+  if (!btn) return; // click landed elsewhere in the row
+  const row = btn.closest("tr");
+  row.remove();
+});
+```
+
+Three ingredients:
+
+1. Listen on the container that never changes.
+2. `event.target.closest(selector)` walks **up** from the real target to
+   find the element you care about — returning `null` when the click was
+   not on it.
+3. Metadata travels in `data-*` attributes, read via
+   `element.dataset`:
+
+```js
+<button data-action="delete" data-id="42">
+  Delete
+</button>
+// btn.dataset.action === "delete", btn.dataset.id === "42"
+```
+
+## Why delegation is the professional default
+
+- New rows work with **zero** extra code — the listener is already there.
+- One listener instead of thousands: less memory, faster startup.
+- UI built from templates or dynamic HTML needs no re-wiring after render.
+
+The same pattern powers tabs, menus, accordions, and every component practice
+below. When a challenge says "clicks work for dynamically added items", it is
+asking for delegation.

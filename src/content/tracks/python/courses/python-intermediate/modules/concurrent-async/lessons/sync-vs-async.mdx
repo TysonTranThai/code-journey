@@ -1,0 +1,39 @@
+Most of a network-bound program's life is **waiting** — for responses, disks,
+databases. Synchronous code waits *blocked*: nothing else happens.
+
+```python
+# SYNC: total time = sum of all waits
+def fetch_all(urls):
+    results = []
+    for url in urls:
+        results.append(fetch(url))     # blocks ~200ms each
+    return results
+```
+
+**Concurrency** is handling many waits during the same period (one worker
+switching between them). **Parallelism** is doing many things at the same
+instant (many workers). Async Python gives you concurrency on **one thread**:
+
+```python
+import asyncio
+
+async def fetch(url):
+    await asyncio.sleep(0.2)           # stand-in for a network wait
+    return url
+
+async def fetch_all(urls):
+    return await asyncio.gather(*(fetch(u) for u in urls))
+```
+
+`async def` defines a **coroutine** — a function that can pause (`await`)
+and let the **event loop** run someone else while it waits. When the wait
+finishes, the loop resumes it. Ten 200ms waits overlap into ~200ms total,
+not 2 seconds.
+
+## When async is (and isn't) the answer
+
+Async shines for **I/O-bound** work: APIs, sockets, databases. It does
+nothing for CPU-bound work (image processing, math) — that needs processes.
+And the rule that saves beginners: **you cannot `await` inside a regular
+`def`**, and you cannot call blocking functions inside async code without
+freezing the loop. `asyncio.run(main())` is the door into async-land.

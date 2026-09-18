@@ -1,0 +1,26 @@
+{
+  "id": "pi7-sub-edges",
+  "title": "Edge-Case Sweep",
+  "prompt": "Implement clamp(value, low, high) returning value bounded into [low, high]. Write TestClamp with subTest sweeping: below range, above range, at each boundary, and equal low==high. Assign to SUITE_TEST.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import unittest\n\ndef clamp(value, low, high):\n    pass\n\nclass TestClamp(unittest.TestCase):\n    pass\n\nSUITE_TEST = None\n",
+  "tests": [
+    {
+      "name": "clamps correctly",
+      "code": "assert clamp(-5, 0, 10) == 0\nassert clamp(15, 0, 10) == 10\nassert clamp(5, 0, 10) == 5\nassert clamp(0, 0, 10) == 0\nassert clamp(7, 7, 7) == 7",
+      "hint": "Boundaries are inclusive on both ends."
+    },
+    {
+      "name": "boundary sweep present",
+      "code": "import unittest, io\nassert 'subTest' in code, 'use self.subTest in the suite'\nresult = unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(unittest.TestLoader().loadTestsFromTestCase(SUITE_TEST))\nassert result.wasSuccessful(), 'clamp tests failed'",
+      "hint": "One parametrized test covering all five behaviors."
+    },
+    {
+      "name": "suite passes",
+      "code": "import unittest, io\nresult = unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(unittest.TestLoader().loadTestsFromTestCase(SUITE_TEST))\nassert result.wasSuccessful(), 'clamp tests failed'",
+      "hint": "All swept cases green."
+    }
+  ],
+  "level": "independent"
+}

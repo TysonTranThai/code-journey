@@ -1,0 +1,20 @@
+{
+  "id": "i2-first-mirror",
+  "title": "First Working Mirror",
+  "prompt": "Write `async function fastestMirror(urls, fetchFn)` that starts ALL `fetchFn(url)` calls concurrently and resolves with the first value that FULFILLS — a rejected attempt must not win the race. If every mirror rejects, rethrow the last rejection.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "async function fastestMirror(urls, fetchFn) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "resolves with the first fulfillment, ignoring rejections",
+      "code": "const fn = new Function(code + \"\\nreturn { fastestMirror };\");\nconst { fastestMirror } = fn();\nconst out = await fastestMirror([\"a\", \"b\", \"c\"], (u) =>\n  u === \"a\" ? new Promise((_, rej) => setTimeout(() => rej(new Error(\"down\")), 5))\n  : u === \"b\" ? new Promise((res) => setTimeout(() => res(\"mirror-b\"), 20))\n  : new Promise((res) => setTimeout(() => res(\"mirror-c\"), 40))\n);\nif (out !== \"mirror-b\") throw new Error(\"The first SUCCESSFUL fulfillment must win, even though mirror-a rejected first.\");",
+      "hint": "Promise.any resolves with the first fulfillment and only rejects when ALL reject."
+    },
+    {
+      "name": "rethrows when every mirror fails",
+      "code": "const fn = new Function(code + \"\\nreturn { fastestMirror };\");\nconst { fastestMirror } = fn();\nlet err;\ntry {\n  await fastestMirror([\"x\", \"y\"], () => Promise.reject(new Error(\"all down\")));\n} catch (e) { err = e; }\nif (!err) throw new Error(\"All mirrors failing must reject.\");",
+      "hint": "Promise.any rejects with an AggregateError when every input rejects — just let it propagate."
+    }
+  ]
+}

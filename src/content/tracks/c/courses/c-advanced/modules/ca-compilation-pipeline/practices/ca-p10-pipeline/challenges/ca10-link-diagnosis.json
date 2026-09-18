@@ -1,0 +1,16 @@
+{
+  "id": "ca10-link-diagnosis",
+  "title": "Diagnose the Link Failure",
+  "prompt": "You are given (in the challenge text) two tiny sources: `a.c` declares and calls `int helper(void);` but never defines it; `b.c` defines `static int helper(void) { return 1; }`. Implement `int link_outcome(void)` returning the code for what linking `a.c` and `b.c` produces: 0 = links and helper returns 1, 1 = undefined reference at link time, 2 = multiple definition.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "static does not rescue extern use",
+      "code": "CHECK_EQ(link_outcome(), 1);",
+      "hint": "b.c's helper is static — file-local, not exported — so a.c's call to helper stays undefined at link time."
+    }
+  ],
+  "level": "independent"
+}

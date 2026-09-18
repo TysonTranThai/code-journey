@@ -1,0 +1,15 @@
+## Các nhóm trụ cột
+
+- **Tràn số có dấu** (`INT_MAX + 1`): trình biên dịch được giả định điều đó không xảy ra, nên code chặn tràn viết *sau* phép cộng có thể bị xóa như code chết.
+- **Truy cập ngoài biên**: chỉ số vượt biên cho phép giả định vòng lặp đủ dài — kiểm tra biên biến mất.
+- **Đọc chưa khởi tạo**: giá trị không xác định không phải 'rác ngẫu nhiên' — đọc là UB; trình biên dịch truyền gì cũng được.
+- **Lạm dụng shift**: shift >= bề rộng, hoặc toán hạng trái âm, là UB; `1u << 32` trên int 32-bit không phải 'quay về 0'.
+- **Vi phạm vòng đời**: dùng sau free, dùng sau khi hết phạm vi, dùng trước khởi tạo.
+
+## UB tồn tại để làm gì
+
+Không phải ác ý: mỗi nhóm đánh dấu chỗ máy trừu tượng ngừng ràng buộc hiện thực, cho phép tối ưu hóa suy luận về 99% còn lại của chương trình. Cái giá: một lỗi trong 1% có thể làm sập mọi chứng minh.
+
+## Phản ứng chuyên nghiệp
+
+Bạn không học thuộc 200 luật; bạn biết chục luật trụ cột trên và biến mỗi luật thành *phát hiện được*: cờ cảnh báo, số học có kiểm tra tại biên, kỷ luật khởi tạo mọi nơi, và các lần chạy sanitizer ở mô-đun 16.

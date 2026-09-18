@@ -1,0 +1,26 @@
+## Lúc biên dịch: những lỗi thân thiện
+
+```csharp
+int x = "hello";        // CS0029: không chuyển đổi được
+Missing.Method();       // CS0103: không tồn tại
+```
+
+Trình biên dịch từ chối dựng mã sai và nêu tên tệp, dòng, và lý do. Sửa ngay trước khi chạy bất cứ gì — đây là những thất bại rẻ nhất bạn từng gặp.
+
+## Lúc chạy: ngoại lệ
+
+```csharp
+var list = new List<int>();
+int first = list[0];    // ArgumentOutOfRangeException: Count = 0
+```
+
+Chương trình biên dịch được nhưng chạm trạng thái bất khả thi. **Stack trace** là kho báu: đọc từ dưới lên — khung trên cùng nêu dòng ném ngoại lệ, các khung dưới nêu đường đi tới đó.
+
+## Bug logic: loài nguy hiểm
+
+```csharp
+// biên dịch được, chạy được, và tự tin trả lời SAI
+static double Average(List<int> xs) => xs.Sum() / xs.Count;   // chia nguyên!
+```
+
+Không ngoại lệ, không sập — chỉ là `Average(new[] {3, 4}) == 3`. Chỉ kiểm thử (hoặc một người dùng hoài nghi) tìm ra chúng. Vì vậy bài học thật của bài này: **khẳng định điều bạn tin**.

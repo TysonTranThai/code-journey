@@ -1,0 +1,25 @@
+## Từ số ma thuật sang tên
+
+```csharp
+// trước: 2 là gì?
+if (status == 2) { ... }
+
+// sau: chính tập hợp là tài liệu
+enum OrderStatus { Pending, Paid, Shipped, Cancelled }
+
+if (status == OrderStatus.Paid) { ... }
+```
+
+`OrderStatus.Paid` là một hằng được đặt tên của kiểu enum. Bên dưới, mỗi thành viên là một `int` (0, 1, 2, 3 theo mặc định), nhưng *kiểu* của biến giới hạn nó có thể giữ gì: một `OrderStatus` không thể lặng lẽ trở thành `42`.
+
+## Ép kiểu và an toàn
+
+Lối thoát là ép kiểu tường minh — và C# sẵn sàng ép một số ngoài tập vào kiểu enum, vì enum chỉ là lớp mỏng bọc int:
+
+```csharp
+OrderStatus s = OrderStatus.Shipped;
+int raw = (int)s;                     // 2
+OrderStatus bogus = (OrderStatus)99;  // biên dịch được! không phải thành viên
+```
+
+Vậy một phương thức nhận enum vẫn có thể nhận giá trị ép-vô-lý; nếu tập phải được thực thi, hãy kiểm tra: `Enum.IsDefined(typeof(OrderStatus), 99)` là false. Quy tắc đáng nhớ: **dùng enum để đặt tên cho tập cố định; đừng dựa vào enum để từ chối int tùy ý.**

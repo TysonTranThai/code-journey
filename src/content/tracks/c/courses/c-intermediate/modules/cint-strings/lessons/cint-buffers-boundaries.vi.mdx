@@ -1,0 +1,32 @@
+## Hai con số, một con trỏ
+
+*String* trong C là `char *` cộng một quy ước: các byte cho đến `'\0'`.
+Độ dài được *khám phá* bằng cách đi bộ (`strlen`). *Buffer* trong C là
+`char *` cộng một *capacity* ai đó phải theo dõi: vùng cấp phát thực sự
+chứa được bao nhiêu byte. Thảm họa kinh điển đến từ việc lẫn lộn hai thứ:
+
+```c
+char buf[8];
+strcpy(buf, "0123456789");   /* ghi 11 byte vào 8 — toi */
+```
+
+`strcpy` biết độ dài nguồn nhưng không biết capacity đích — nó *không thể*
+an toàn. Các hàm có thể an toàn nhận cả hai con số:
+
+```c
+/* strncpy: copy tối đa n byte; KHÔNG có '\0' nếu nguồn chiếm hết n! */
+strncpy(buf, src, sizeof buf);
+/* snprintf: luôn terminate, trả về số byte SẼ ghi */
+int need = snprintf(buf, sizeof buf, "%s/%s", a, b);
+if (need < 0 || (size_t)need >= sizeof buf) /* bị cắt — xử lý */;
+```
+
+`snprintf` là lao công chính: có giới hạn, luôn terminate, và *báo cho bạn
+biết* khi output không vừa. Giá trị trả về đó là máy dò truncate mà phần
+lớn code quên kiểm.
+
+## Câu hỏi biên giới, mỗi lần
+
+Trước khi đụng vào buffer, trả lời ba câu hỏi trong comment: capacity?
+độ dài hiện tại? ai terminate? Code không trả lời được ba câu đó trong
+comment của chính nó là code sẽ tràn khi được bảo trì.

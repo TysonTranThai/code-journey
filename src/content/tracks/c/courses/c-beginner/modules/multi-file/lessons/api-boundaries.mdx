@@ -1,0 +1,48 @@
+## The one-file preview of the two-file world
+
+This course's sandbox compiles a single file, so we rehearse the multi-file
+pattern inside it. The rules are exactly the ones a real `geom.h` + `geom.c`
+project follows:
+
+```c
+/* ---- the CONTRACT (what geom.h would say) ---- */
+int stack_push(int v);          // callers may call this
+int stack_pop(int *out);        // callers may call this
+
+/* ---- the IMPLEMENTATION (what geom.c would contain) ---- */
+static int data[16];            // private: callers never touch this
+static int count = 0;           // private state
+
+int stack_push(int v) {
+    if (count == 16) return 0;  // full: report failure
+    data[count++] = v;
+    return 1;
+}
+
+int stack_pop(int *out) {
+    if (out == NULL || count == 0) return 0;
+    *out = data[--count];
+    return 1;
+}
+```
+
+## What makes it a boundary
+
+- **public**: functions a caller is allowed to call — declared first, no
+  `static`
+- **private**: `static` data and helpers — invisible outside the module
+- The header never contains `static` state or function bodies; it is pure
+  promise.
+
+## The discipline the compiler enforces
+
+Callers can only reach the public functions. When the private representation
+changes (array size, algorithm), no caller's code changes — the boundary held.
+That property is the entire point of modules.
+
+## Prototype-then-define inside one file
+
+The same contract/check shape works inside one translation unit: declare the
+public functions at the top (that's the "header" region), define them below.
+`gcc` checks every call against the declaration, exactly as it would against
+a real header.

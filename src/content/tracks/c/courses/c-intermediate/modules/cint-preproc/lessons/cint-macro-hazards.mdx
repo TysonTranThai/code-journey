@@ -1,0 +1,48 @@
+## The argument that runs twice
+
+```c
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+int i = 0;
+int m = MAX(i++, 5);      /* expands: ((i++) > (5) ? (i++) : (5)) */
+```
+
+`i++` appears twice in the expansion — the ternary evaluates the winner
+a *second* time. Undefined behavior, wrong results, and it compiles
+clean. The fix is not "more parens"; the argument must be evaluated
+*exactly once*:
+
+```c
+/* GCC/clang statement-expression, NOT ISO C: */
+/* ISO C honest alternative: a static inline function */
+static inline int max_int(int a, int b) { return a > b ? a : b; }
+```
+
+Inline functions type-check, evaluate arguments once, and debug
+normally — they are the default answer. Macros stay for cases where the
+type must stay open (`MAX` on any numeric type) — and then the *contract
+documented* is "arguments must be side-effect free."
+
+## Precedence traps outside the macro
+
+```c
+#define DOUBLE(x) (x) + (x)      /* wrong at the seam */
+int r = 2 * DOUBLE(3);           /* 2 * (3) + (3) == 9, not 12 */
+```
+
+Every macro body must be parenthesized *as a whole* too:
+`#define DOUBLE(x) ((x) + (x))`. The rule is mechanical: wrap every
+parameter occurrence and the entire expansion.
+
+## Hygiene: names that escape
+
+A macro's "local" names are not local — they can collide with the
+caller's:
+
+```c
+#define SWAP(a, b) do { int tmp_ = a; a = b; b = tmp_; } while (0)
+/* caller's variable named tmp_? silent corruption */
+```
+
+Convention: underscore-suffixed internal names (`tmp_`, `i_`) reduce —
+never eliminate — collisions. Token pasting with unique names is the
+next lesson's tool.

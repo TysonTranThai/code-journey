@@ -1,0 +1,44 @@
+## while: chừng nào điều kiện còn đúng
+
+```cpp
+int cups = 0;
+while (cups < 3) {
+    std::cout << "refilling...\n";
+    ++cups;               // quên dòng này là vòng lặp không bao giờ dứt
+}
+```
+
+Dùng `while` khi số lần lặp *không biết trước* — đọc đến cuối file, tìm cho tới khi thấy, chờ một điều kiện.
+
+## do/while: kiểm tra sau lần thử đầu
+
+```cpp
+std::string choice;
+do {
+    choice = ask_menu();      // thân hàm chạy TRƯỚC, ít nhất một lần
+} while (choice != "h" && choice != "q");
+```
+
+`do/while` dành cho "hỏi ít nhất một lần, rồi hỏi lại khi còn sai" — vòng menu, nhắc nhập lại. Nếu bạn không cần lượt chạy đầu tiên được bảo đảm, `while` thường dễ đọc hơn.
+
+## Bộ tích lũy và tìm kiếm
+
+Hai mẫu này bao phủ phần lớn vòng lặp bạn sẽ viết trong năm nay:
+
+```cpp
+// bộ tích lũy
+int total = 0;
+for (int s : scores) total += s;
+
+// tìm phần tử đầu tiên khớp
+int first_below_60 = -1;
+for (std::size_t i = 0; i < scores.size(); ++i) {
+    if (scores[i] < 60) { first_below_60 = static_cast<int>(i); break; }
+}
+```
+
+Module 8 sẽ thay cả hai bản viết tay này bằng thuật toán STL — nhưng hãy viết tay bây giờ; bạn không thể tin tưởng vào sự trừu tượng mà bạn chưa từng tự dựng.
+
+## Vệ sinh chống vòng lặp vô hạn
+
+Một vòng `while` cần thứ gì đó bên trong nó đưa trạng thái tiến về điều kiện thoát: `++cups`, `std::cin >> value`, `break`. Sandbox sẽ tiêu diệt chương trình chạy hoài bằng timeout và báo "timeout" — nếu thấy verdict đó trong lần chạy có chấm, hãy tìm bước nhảy bị thiếu.

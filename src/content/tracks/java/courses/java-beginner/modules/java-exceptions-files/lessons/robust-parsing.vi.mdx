@@ -1,0 +1,60 @@
+Dữ liệu thật thì bẩn. Một dòng CSV lẽ ra là `name,age` có thể đến dưới dạng
+`"An,abc"`, `"   "`, hoặc không đến chút nào. Bộ import chắc chắn **kiểm
+tra từng trường, bỏ qua những gì không tin được, và báo cáo những gì đã
+bỏ qua.**
+
+## Mẫu parse-check
+
+```java
+static Integer parseAge(String field) {
+    if (field == null) return null;
+    try {
+        int age = Integer.parseInt(field.trim());
+        if (age < 0 || age > 150) return null;   // ngoài khoảng
+        return age;
+    } catch (NumberFormatException e) {
+        return null;                             // không phải số
+    }
+}
+```
+
+Ba lớp phòng thủ trong tám dòng:
+
+1. **Null guard** - `field` có thể bị thiếu hoàn toàn.
+2. **`try/catch`** - `"abc"` ném exception; ta biến crash thành `null`.
+3. **Kiểm tra khoảng giá trị** - `"999"` parse được nhưng không phải tuổi.
+
+## Pipeline từng dòng
+
+```java
+static int importLines(java.util.List<String> lines,
+                       java.util.List<String> errors,
+                       java.util.List<String> valid) {
+    for (int i = 0; i < lines.size(); i++) {
+        String line = lines.get(i);
+        String[] parts = line.split(",");
+        if (parts.length != 2) {
+            errors.add((i + 1) + ": expected 2 fields, got " + parts.length);
+            continue;
+        }
+        Integer age = parseAge(parts[1]);
+        if (age == null) {
+            errors.add((i + 1) + ": bad age '" + parts[1] + "'");
+            continue;
+        }
+        valid.add(parts[0].trim() + " (" + age + ")");
+    }
+    return valid.size();
+}
+```
+
+Chú ý các thói quen:
+
+- **Số dòng bắt đầu từ 1** trong thông báo lỗi (editor đếm từ 1, vòng lặp
+  đếm từ 0 - hãy quy đổi cho người đọc log).
+- **Ghi nhận lỗi rồi tiếp tục** - một dòng xấu không được che mất sáu dòng
+  tốt phía sau.
+- **`continue` sau khi ghi nhận** - không bao giờ để dòng xấu chảy tiếp.
+
+Đây chính là cách các công cụ import thật hoạt động: bạn nhận được cả dữ
+liệu lẫn danh sách việc cần sửa.

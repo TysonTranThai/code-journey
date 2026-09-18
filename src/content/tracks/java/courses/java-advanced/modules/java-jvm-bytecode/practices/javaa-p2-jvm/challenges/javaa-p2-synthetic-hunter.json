@@ -1,0 +1,26 @@
+{
+  "id": "javaa-p2-synthetic-hunter",
+  "title": "Hunt the synthetic method",
+  "prompt": "Implement `static java.util.function.Comparator<String> lambdaComparator()` that returns a comparator built from a **lambda** (e.g. `(a, b) -> a.length() - b.length()`), and `static boolean hasSyntheticMember()` that reflects over `Solution.class.getDeclaredMethods()` and returns true iff at least one method `isSynthetic()` (the lambda's desugared helper).\nAlso implement `static java.util.function.Comparator<String> anonymousComparator()` using an **anonymous inner class** — anonymous classes do not add synthetic *methods* to Solution.\nThe tests verify both the sorting behavior and the reflective difference.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "lambda comparator sorts",
+      "code": "\nvar xs = new java.util.ArrayList<>(List.of(\"ccc\", \"a\", \"bb\"));\nxs.sort(Solution.lambdaComparator());\ncheckEq(xs, List.of(\"a\", \"bb\", \"ccc\"), \"sorted by length\");\n",
+      "hint": "Compare by length."
+    },
+    {
+      "name": "lambda leaves a synthetic trace",
+      "code": "\ncheckTrue(Solution.hasSyntheticMember(), \"lambda desugars to a synthetic method\");\n",
+      "hint": "Reflect over getDeclaredMethods and look for isSynthetic()."
+    },
+    {
+      "name": "anonymous comparator works too",
+      "code": "\nvar xs = new java.util.ArrayList<>(List.of(\"ccc\", \"a\", \"bb\"));\nxs.sort(Solution.anonymousComparator());\ncheckEq(xs, List.of(\"a\", \"bb\", \"ccc\"), \"anonymous class comparator\");\n",
+      "hint": "new Comparator<String>() { ... } — no lambda here."
+    }
+  ],
+  "level": "independent"
+}

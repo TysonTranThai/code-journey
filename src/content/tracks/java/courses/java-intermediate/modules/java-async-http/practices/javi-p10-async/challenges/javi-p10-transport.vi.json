@@ -1,0 +1,18 @@
+{
+  "title": "Service qua fake transport",
+  "prompt": "Mô hình trong `Solution`:\n- `record HttpReply(int status, String body)`\n- `interface HttpTransport { HttpReply send(String url); }`\n- `static class ApiClient` với constructor `(HttpTransport t)` và\n  `String fetchUser(String id)`:\n  - gửi tới `\"https://api.test/users/\" + id`\n  - 200 → trả body\n  - 404 → ném NoSuchElementException(\"user \" + id)\n  - 5xx → ném IllegalStateException(\"server error \" + status)\n- `static HttpTransport fakeTransport(Map<String, HttpReply> replies)` —\n  transport trả phản hồi đóng gói cho URL khớp.\n\nTest không mở socket nào; fake chính là điểm nhấn.",
+  "tests": [
+    {
+      "name": "Hướng vui trả body",
+      "hint": "Client phải gọi transport với URL đã soạn."
+    },
+    {
+      "name": "404 thành NoSuchElementException",
+      "hint": "404 → NoSuchElementException mang theo id."
+    },
+    {
+      "name": "5xx thành IllegalStateException",
+      "hint": "Lỗi server lộ ra như IllegalStateException kèm status."
+    }
+  ]
+}

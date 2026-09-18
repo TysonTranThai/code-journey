@@ -1,0 +1,21 @@
+{
+  "id": "ca9-variadic-log",
+  "title": "Variadic Log with __VA_OPT__",
+  "prompt": "Implement `const char *last_log(void)` plus a macro `LOG(fmt, ...)` that appends into a static buffer (snprintf, appended at an offset) and returns the accumulated text. Calls like LOG(\"a=%d\", 7) and LOG(\"bare\") must both compile and both be retrievable — the __VA_OPT__ comma handling is the point.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "arguments forward",
+      "code": "LOG(\"a=%d\", 7);\nCHECK_STR_EQ(last_log(), \"a=7\");",
+      "hint": "The variadic arguments forward through the macro into snprintf unchanged."
+    },
+    {
+      "name": "no-argument form",
+      "code": "LOG(\"bare\");\nCHECK_STR_EQ(last_log(), \"bare\");",
+      "hint": "With no arguments the comma must vanish — __VA_OPT__(,) handles it."
+    }
+  ],
+  "level": "combination"
+}

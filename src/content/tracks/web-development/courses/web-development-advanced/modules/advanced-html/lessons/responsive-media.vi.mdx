@@ -1,0 +1,112 @@
+Hình ảnh chiếm phần lớn số byte của một trang web trung bình, nên làm chủ media ở trình
+độ nâng cao phần lớn là một kỹ năng hiệu năng. Công cụ nằm trong các thuộc tính HTML —
+còn kỹ năng là biết mỗi thuộc tính giải quyết vấn đề nào: resolution switching, art
+direction, định dạng, hay độ ưu tiên.
+
+## Resolution switching: srcset + sizes
+
+Một ảnh, nhiều file — để trình duyệt tự chọn:
+
+```html
+<img
+  src="hero-800w.jpg"
+  srcset="hero-400w.jpg 400w, hero-800w.jpg 800w, hero-1600w.jpg 1600w"
+  sizes="(max-width: 600px) 100vw, 50vw"
+  width="1600" height="800"
+  alt="Đông người dự lễ ra mắt giữa mưa pháo hoa giấy">
+```
+
+- `srcset` liệt kê các file ứng viên kèm **w-descriptor** (bề rộng pixel thật).
+- `sizes` báo cho trình duyệt biết ảnh *hiển thị* bề rộng bao nhiêu ở từng viewport:
+  ở đây, full bề rộng trên điện thoại, một nửa trên màn hình lớn hơn.
+- Trình duyệt kết hợp cả hai — cộng với device-pixel ratio của màn hình — rồi tải về
+  file nhỏ nhất vẫn đủ nét. Trên điện thoại 2× rộng 390 px, đó là file cỡ 780+ CSS px,
+  không phải 1600.
+- `width`/`height` nội tại cho phép trình duyệt giành trước đúng chiếc hộp trước khi
+  file về tới — bản sửa một dòng cho layout shift.
+
+Lỗi thường gặp là tính kích thước *cho màn hình lớn nhất*. Toàn bộ ý nghĩa của cơ chế
+này là điện thoại không bao giờ phải tải file của desktop.
+
+## Art direction: picture
+
+Ảnh cắt khác nhau cho màn hình khác nhau — không phải cùng một tấm ảnh, mà là *ảnh
+khác*:
+
+```html
+<picture>
+  <source media="(max-width: 600px)" srcset="hero-square-crop.jpg">
+  <source media="(min-width: 601px)" srcset="hero-wide-crop.jpg">
+  <img src="hero-wide-crop.jpg" alt="Đông người dự lễ ra mắt" width="1600" height="800">
+</picture>
+```
+
+Những quy tắc giữ cho `<picture>` trung thực: `<img>` bên trong là bắt buộc (nó giữ
+`alt`, kích thước, và phương án dự phòng), các source được thử từ trên xuống, và
+`media`/`type` quyết định source nào đủ điều kiện. Art direction thay đổi *bố cục*; nếu
+cùng một bố cục ở các kích thước khác nhau, việc đó thuộc về `srcset`.
+
+## Dự phòng định dạng: siêu năng lực thứ hai của picture
+
+Cùng cấu trúc đó phục vụ định dạng hiện đại với phương án dự phục duyên dáng:
+
+```html
+<picture>
+  <source type="image/avif" srcset="hero.avif">
+  <source type="image/webp" srcset="hero.webp">
+  <img src="hero.jpg" alt="Đông người dự lễ ra mắt" width="1600" height="800">
+</picture>
+```
+
+AVIF/WebP thường nhẹ hơn JPEG 30–60%; trình duyệt nào không hiểu `type` nào đó sẽ chỉ
+bỏ qua source đó. Chú ý chỗ đứng của `alt` — nằm trên `<img>`, không bao giờ nằm trên
+`<source>`.
+
+## Độ ưu tiên: fetchpriority, loading, decoding
+
+```html
+<!-- ảnh hero: được yêu cầu sớm, hiển thị ngay -->
+<img src="hero.avif" fetchpriority="high" ...>
+
+<!-- dưới màn hình đầu: tải chậm -->
+<img src="chart.webp" loading="lazy" decoding="async" ...>
+```
+
+`fetchpriority="high"` kéo ảnh LCP lên trước trong hàng đợi mạng; `loading="lazy"` giữ
+các ảnh ngoài màn hình không tranh ưu tiên với nó. Một hero được `high`; mọi thứ dưới
+màn hình đầu được `lazy` — sự phân chia đó là toàn bộ chiến lược.
+
+## Video kèm phụ đề
+
+```html
+<video controls muted playsinline poster="cover.jpg" width="960" height="540">
+  <source src="demo.webm" type="video/webm">
+  <source src="demo.mp4" type="video/mp4">
+  <track src="demo-en.vtt" kind="captions" srclang="en" label="English" default>
+  <track src="demo-vi.vtt" kind="captions" srclang="vi" label="Tiếng Việt">
+</video>
+```
+
+`controls` vì điều khiển gốc là điều khiển có khả năng tiếp cận; `muted playsinline` là
+điều kiện để video tự chạy không gây phiền trên di động; nhiều phần tử `<source>` tạo
+chuỗi dự phòng định dạng; `<track kind="captions">` mang phụ đề — một yêu cầu khả năng
+tiếp cận, không phải món quà tặng. Subtitles (`kind="subtitles"`) để dịch lời thoại;
+captions bao gồm cả hiệu ứng âm thanh và sự đổi người nói.
+
+## Điều gì hay sai
+
+- **`sizes` nói dối** ("100vw" cho ảnh chỉ hiển thị 300 px): trình duyệt tải gấp 3 lần
+  nhu cầu. Hãy làm toán layout.
+- **`<picture>` thiếu `<img>`**, hoặc đặt `alt`/kích thước lên `<source>`.
+- **Dùng `srcset` làm art direction**: bố cục *khác nhau* cần `<picture>` + `media`.
+- **Lazy-load chính hero**: `loading="lazy"` trên ảnh LCP là tự phá hoại.
+- **`autoplay` không có `muted`**: trình duyệt chặn — và âm thanh bất ngờ chưa tắt tiếng
+  là một thất bại khả năng tiếp cận dù trình duyệt có cho hay không.
+
+## Thực hành và điểm nối tiếp
+
+Bạn sẽ dựng một hero responsive đầy đủ thông số từ bản yêu cầu, chọn giữa `srcset` và
+`<picture>` cho ba tình huống cụ thể, sửa một gallery có `sizes` nói dối, và phục hồi
+một video thiếu lớp khả năng tiếp cận cùng lớp dự phòng. Các thuộc tính media sẽ quay
+lại trong chuyên đề hiệu năng của khóa này — ở đó bạn đo được khác biệt mà chúng tạo ra;
+ở đây bạn học viết cho đúng.

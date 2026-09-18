@@ -1,0 +1,21 @@
+{
+  "id": "javi-p15-expense-domain",
+  "title": "Milestone 1: Validated Domain",
+  "prompt": "Build the domain in `Solution`:\n- `static class InvalidExpenseException extends RuntimeException` —\n  carries `String problem` (getter).\n- `record Expense(String id, String category, int cents)`:\n  - constructor validates: id/category non-blank, cents > 0 — failures\n    throw InvalidExpenseException with a specific problem message\n    (e.g. `\"blank category\"`, `\"non-positive cents\"`)\n- `Expense` is a hash-contract value type (records already are — note\n  WHY in a comment).\n\nThis is Module 1 + 6 fused: fail fast, exceptions carry data.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "valid expense constructs",
+      "code": "\nSolution.Expense e = new Solution.Expense(\"e1\", \"food\", 1200);\ncheckEq(e.cents(), 1200, \"fields held\");\n",
+      "hint": "Happy path stores all fields."
+    },
+    {
+      "name": "invalid data rejected with reasons",
+      "code": "\ntry { new Solution.Expense(\"e1\", \"  \", 100); checkTrue(false, \"must throw\"); }\ncatch (Solution.InvalidExpenseException ex) {\n    checkEq(ex.problem(), \"blank category\", \"reasoned\");\n}\ntry { new Solution.Expense(\"e1\", \"food\", 0); checkTrue(false, \"must throw\"); }\ncatch (Solution.InvalidExpenseException ex) {\n    checkEq(ex.problem(), \"non-positive cents\", \"reasoned\");\n}\n",
+      "hint": "Each rule violation names itself."
+    }
+  ],
+  "level": "independent"
+}

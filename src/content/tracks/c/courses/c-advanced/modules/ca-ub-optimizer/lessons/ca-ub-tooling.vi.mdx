@@ -1,0 +1,18 @@
+## Cảnh báo là radar UB
+
+`-Wall -Wextra` bắt phần lớn UB kinh điển (dùng chưa khởi tạo, sai format, shift). Nâng chúng thành lỗi trong CI. Cảnh báo bạn phớt lờ dạy bạn phớt lờ cảnh báo.
+
+## Số học có kiểm tra tại biên tin cậy
+
+Nơi kích thước không tin cậy gặp phép tính, kiểm tra *trước khi* nó xảy ra:
+
+```c
+if (n > SIZE_MAX / sizeof *buf) return ENOMEM;   /* trước phép nhân */
+buf = malloc(n * sizeof *buf);
+```
+
+Các idiom an-toàn-tràn (số học modulo unsigned) là công cụ hợp lệ khi *miền* thực sự quay vòng — hash, bộ đếm. Kỹ năng là chọn có chủ đích, không tình cờ.
+
+## volatile là cửa sổ quan sát, không phải sửa lỗi
+
+Biến volatile ép mọi lần đọc/ghi phải xảy ra thật — đánh bại việc xóa ghi chết và làm các thí nghiệm thứ tự/khối lượng trung thực. Nó KHÔNG làm data race trở nên hợp lệ, không cung cấp tính nguyên tử, không phải primitve đồng bộ. Code không race cần atomics hoặc khóa (mô-đun 19-20).

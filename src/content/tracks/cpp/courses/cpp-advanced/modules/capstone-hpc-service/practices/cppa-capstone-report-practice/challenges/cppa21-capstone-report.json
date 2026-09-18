@@ -1,0 +1,21 @@
+{
+  "id": "cppa21-capstone-report",
+  "title": "Ops Report",
+  "prompt": "Implement `OpsReport::snapshot()`: \"[ts] CODE key\" lines, timestamp ascending, equal-timestamp ties REJECT before ADMIT, byte-deterministic.",
+  "difficulty": "advanced",
+  "level": "real-world",
+  "language": "cpp",
+  "boilerplate": "#include <cstdint>\n#include <map>\n#include <optional>\n#include <string>\n#include <tuple>\n#include <vector>\n\n// ---- FixedClock: the deterministic time seam (module 19) ----\nstruct FixedClock {\n    std::int64_t nowMs_ = 0;\n    std::int64_t nowMs() const { return nowMs_; }\n    void advance(std::int64_t ms) { nowMs_ += ms; }\n};\n\n// ---- Domain ----\nenum class ClassId : int { Regular = 0, Premium = 1 };\n\nstruct Admission {\n    bool admitted = false;\n    int tag = -1;\n    int ordinal = -1;   // arrival order within the winning tag this window\n};\n\nclass AdmissionsCore {\npublic:\n    explicit AdmissionsCore(const FixedClock* clock);\n    // tag limits: tag >= 0, limit >= 1; re-setting an existing tag fails.\n    bool setTagLimit(int tag, int limit);\n    Admission admit(ClassId cls, int tag);   // unknown tags are rejected\n    std::int64_t admittedCount() const { return admitted_; }\n    std::int64_t rejectedCount() const { return rejected_; }\n\nprivate:\n    const FixedClock* clock_;\n    std::map<int, int> limits_;\n    std::map<int, int> used_;\n    std::map<int, int> nextOrd_;\n    std::int64_t window_ = -1;\n    std::int64_t admitted_ = 0;\n    std::int64_t rejected_ = 0;\n};\n\nclass OpsReport {\npublic:\n    explicit OpsReport(const FixedClock* clock);\n    void record(std::int64_t tMs, std::string code, std::string key);\n    // exact lines \"[ts] CODE key\\n\" sorted by ts; at equal ts REJECT before ADMIT; oldest first\n    std::string snapshot() const;\n\nprivate:\n    const FixedClock* clock_;\n    std::vector<std::tuple<std::int64_t, std::string, std::string>> rows_;\n};\n",
+  "tests": [
+    {
+      "name": "ops report battery",
+      "code": "{\n    FixedClock clk;\n    OpsReport rep(&clk);\n    rep.record(10, \"ADMIT\", \"t1#1\");\n    rep.record(30, \"ADMIT\", \"t2#1\");\n    rep.record(30, \"REJECT\", \"t1#3\");\n    rep.record(20, \"ADMIT\", \"t3#1\");\n    const std::string snap = rep.snapshot();\n    CHECK_CONTAINS(snap, \"[10] ADMIT t1#1\");\n    CHECK_CONTAINS(snap, \"[20] ADMIT t3#1\");\n    CHECK_CONTAINS(snap, \"[30] REJECT t1#3\");\n    CHECK_CONTAINS(snap, \"[30] ADMIT t2#1\");\n    const size_t p10 = snap.find(\"[10]\");\n    const size_t p20 = snap.find(\"[20]\");\n    const size_t p30r = snap.find(\"[30] REJECT\");\n    const size_t p30a = snap.find(\"[30] ADMIT\");\n    CHECK(p10 < p20 && p20 < p30r);\n    CHECK(p30r < p30a);                  // equal ts: REJECT before ADMIT\n}",
+      "hint": "snapshot sorts by timestamp; ties are broken by code severity (REJECT before ADMIT), then stable insertion order. Lines are exactly \"[ts] CODE key\\n\"."
+    },
+    {
+      "name": "determinism battery",
+      "code": "{\n    FixedClock clk;\n    OpsReport rep(&clk);\n    rep.record(5, \"ADMIT\", \"x\");\n    rep.record(6, \"REJECT\", \"y\");\n    const std::string first = rep.snapshot();\n    const std::string second = rep.snapshot();\n    CHECK_EQ(first, second);\n    CHECK_CONTAINS(first, \"[6] REJECT y\");\n}",
+      "hint": "snapshot() is pure: repeated calls return byte-identical strings."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "csb-p12-swap",
+  "title": "Generic swap and reverse",
+  "prompt": "Implement in `Solution`: `static void Swap<T>(T[] items, int i, int j)` swapping in place (throws `ArgumentOutOfRangeException` for out-of-range indices), and `static T[] Reversed<T>(T[] items)` returning a NEW array in reverse order (null/empty → empty array, never null).",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "var a = new[] { 1, 2, 3 };\nSolution.Swap(a, 0, 2);\nCj.Eq(string.Join(\",\", a), \"3,2,1\", \"swap in place\");\nvar r = Solution.Reversed(a);\nCj.Eq(string.Join(\",\", r), \"1,2,3\", \"new reversed array\");\nCj.Eq(string.Join(\",\", a), \"3,2,1\", \"original untouched by Reversed\");",
+      "hint": "Swap mutates the caller's array; Reversed must not."
+    },
+    {
+      "name": "edges",
+      "code": "bool t = false;\ntry { Solution.Swap(new[] { 1, 2 }, 0, 5); } catch (ArgumentOutOfRangeException) { t = true; }\nCj.True(t, \"out-of-range index rejected\");\nCj.Eq(Solution.Reversed(new string[0]).Length, 0, \"empty -> empty\");\nCj.False(Solution.Reversed<string>(null) == null, \"null input never yields null\");",
+      "hint": "Both contracts: indices validated, null-input normalized to an empty array."
+    }
+  ],
+  "level": "guided"
+}

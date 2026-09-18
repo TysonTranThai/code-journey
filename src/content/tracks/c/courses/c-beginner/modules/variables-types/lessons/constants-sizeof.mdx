@@ -1,0 +1,32 @@
+## Constants
+
+A `const` variable cannot be assigned after initialization:
+
+```c
+const int MAX_USERS = 100;
+MAX_USERS = 5;   // compile error
+```
+
+`#define` is a preprocessor text substitution — different mechanism, same goal
+for simple constants:
+
+```c
+#define MAX_USERS 100   // no semicolon, no equals
+```
+
+Prefer `const` for typed constants; you will meet the preprocessor properly in
+module 17.
+
+## sizeof asks the compiler
+
+`sizeof` yields the size of a type or expression **in bytes**; its result type
+is `size_t`, printed with `%zu`:
+
+```c
+printf("%zu\n", sizeof(int));      // typically 4
+printf("%zu\n", sizeof(double));   // typically 8
+char c = 'x';
+printf("%zu\n", sizeof(c));        // 1
+```
+
+`sizeof` is evaluated at compile time for types — no runtime cost.

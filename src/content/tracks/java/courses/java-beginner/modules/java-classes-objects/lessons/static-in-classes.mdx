@@ -1,0 +1,43 @@
+Module 5 met `static` on methods; inside a class it completes the picture.
+
+**Constants** are the friendliest static members — shared, immutable values
+every instance can consult:
+
+```java
+public class Temperature {
+    static final double ABSOLUTE_ZERO_C = -273.15;
+
+    static boolean isPhysicallyPossible(double celsius) {
+        return celsius >= ABSOLUTE_ZERO_C;
+    }
+}
+```
+
+**Shared state** is the dangerous half. One `static int instanceCount`
+incremented in the constructor counts *all* Temperature objects ever made —
+shared by every instance, and by every caller. It can be exactly right
+(counting) or a disaster (a shared `balance`), and the difference is whether
+the value describes the *class* or an *individual thing*. When in doubt, it
+belongs to the thing: keep it non-static.
+
+**`this` in context.** Within any instance method or constructor, `this` is
+the current object. Two uses you will see constantly: disambiguating
+`this.field = param;` and constructor chaining `this(...)`. A third arrives
+in Module 8: passing `this` to another object ("call me back").
+
+**Utility classes** — classes that exist only to hold static methods
+(`Math` is one) — get one more convention: mark them un-instantiable by
+giving them a private constructor:
+
+```java
+public final class Money {
+    private Money() { }      // nobody can create a Money "object"
+
+    static String format(double amount) { ... }
+}
+```
+
+The private constructor is a small idiom with a big message: this class is
+a namespace, not a thing.
+
+**Next:** composition and the design principle that beats inheritance most of the time.

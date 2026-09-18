@@ -1,0 +1,20 @@
+{
+  "id": "i2-cors-decide",
+  "title": "CORS Decision Engine",
+  "prompt": "Write `corsDecision(origin, allowedOrigins, credentials)` — origin is the request's Origin header; allowedOrigins is an array (may contain \"*\"); credentials is boolean. Rules: origin not in list (and no \"*\") => \"deny\"; \"*\" with credentials => \"deny\" (forbidden combo); origin in list (or \"*\") without credentials => \"allow\"; origin in list with credentials => \"allow-with-credentials\".",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function corsDecision(origin, allowedOrigins, credentials) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "deny paths first",
+      "code": "const fn = new Function(code + \"\\nreturn { corsDecision };\");\nconst { corsDecision } = fn();\nif (corsDecision(\"https://evil.com\", [\"https://app.com\"], false) !== \"deny\") throw new Error(\"Unknown origin denied.\");\nif (corsDecision(\"https://app.com\", [\"*\"], true) !== \"deny\") throw new Error(\"Wildcard + credentials forbidden.\");\n",
+      "hint": "Two explicit deny rules before any allow."
+    },
+    {
+      "name": "allow paths",
+      "code": "const fn = new Function(code + \"\\nreturn { corsDecision };\");\nconst { corsDecision } = fn();\nif (corsDecision(\"https://app.com\", [\"*\"], false) !== \"allow\") throw new Error(\"Wildcard, no creds => allow.\");\nif (corsDecision(\"https://app.com\", [\"https://app.com\"], true) !== \"allow-with-credentials\") throw new Error(\"Exact origin + creds.\");\n",
+      "hint": "Then the two allow rules."
+    }
+  ]
+}

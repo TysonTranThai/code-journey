@@ -1,0 +1,25 @@
+A lambda is an unnamed function object written where it is used. The syntax
+has four parts: captures, parameters, return type (usually deduced), body.
+
+```cpp
+auto square = [](int x) { return x * x; };          // no capture
+int factor = 3;
+auto scale = [factor](int x) { return x * factor; }; // capture by value
+auto push  = [&out](int x) { out.push_back(x); };    // capture by reference
+auto all   = [=](int x) { return x * factor; };      // (C++20: explicit)
+```
+
+Capture semantics are the interview question *and* the bug source:
+
+- `[factor]` copies at lambda-creation time — later changes to `factor`
+  do not affect the lambda.
+- `[&factor]` stores a reference — the lambda must not outlive `factor`.
+  Returning a by-reference-capturing lambda from a function hands back a
+  dangling reference.
+- `[this]` captures the enclosing object's pointer; `[this, factor]` is
+  the common correct combination.
+- Mutable state needs `mutable`: `[n]() mutable { return ++n; }`.
+
+Default capture-by-value (`[=]`) is deprecated in C++20 for `this`
+scenarios; prefer listing what you capture — the list documents the
+lambda's dependencies.

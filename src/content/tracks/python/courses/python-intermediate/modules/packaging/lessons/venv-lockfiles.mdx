@@ -1,0 +1,15 @@
+Your Beginner course used `venv` + `pip install` + `requirements.txt`.
+Intermediate adds the *why* and the *reproducibility* layer:
+
+- **venv isolates per-project** so package versions can't clash between projects and your system Python stays clean. Never `pip install` globally.
+- **requirements.txt pins what you install**, but it says nothing about *which* builds your builds depend on (transitive pins).
+- **Lockfiles** (`pip-compile` output, `uv.lock`, `pdm.lock`) record the full resolved graph so that today's install and next year's install are byte-identical. Rule: hand-edit constraints in `pyproject.toml`; let a lockfile freeze reality.
+
+The professional flow: constraints live in `pyproject.toml` (loose, readable:
+`httpx>=0.27`), the lockfile is generated and committed (exact), and CI
+installs from the lockfile so tests run against what production runs.
+
+In this sandbox there is no network and no pip — so the gradable skill here
+is *reasoning about the files*: reading dependency declarations, spotting
+unpinned ranges, and writing a lockfile-aware workflow. The next lesson's
+audit drills exactly that.

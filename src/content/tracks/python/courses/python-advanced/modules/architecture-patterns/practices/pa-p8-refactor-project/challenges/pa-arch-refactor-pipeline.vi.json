@@ -1,0 +1,14 @@
+{
+  "title": "Giữ hợp đồng, tái cấu trúc code",
+  "prompt": "Cài `process_orders(orders, notifier, audit)` theo ĐÚNG hợp đồng này (đưa ra như hành vi đã refactor):\n\n- với mỗi order: total <= 0 → append `{'id': id, 'status': 'skipped'}` vào `audit`, tiếp tục\n- ngược lại `notifier.send(order['email'], 'order <id> confirmed')`; thành công → append `'sent'`\n- khi thông báo lỗi → append `'failed'` vào audit, rồi RE-RAISE exception (cả lô dừng)\n- trả về danh sách audit\n\nProbe ẩn kiểm tra ba hành vi notifier khác nhau (suôn sẻ, lỗi một lần giữa lô, tất cả bị bỏ qua) — bản cài của bạn phải khớp hợp đồng chính xác, đúng thứ tự.",
+  "tests": [
+    {
+      "name": "Đường vui append đúng thứ tự",
+      "hint": "Bỏ qua total không hợp lệ TRƯỚC khi gửi; append trạng thái theo thứ tự gặp phải."
+    },
+    {
+      "name": "Lỗi dừng cả lô sau khi ghi audit",
+      "hint": "Append 'failed' vào audit, rồi re-raise — order thứ ba không bao giờ bị đụng tới."
+    }
+  ]
+}

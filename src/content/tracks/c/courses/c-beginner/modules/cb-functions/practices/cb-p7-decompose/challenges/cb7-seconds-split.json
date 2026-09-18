@@ -1,0 +1,26 @@
+{
+  "id": "cb7-seconds-split",
+  "title": "Time Splitter",
+  "prompt": "Implement `void split_hms(int total, int* h, int* m, int* s)` filling hours, minutes (0-59), seconds (0-59) through the OUT parameters. total=7275 -> h=2, m=1, s=15.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "known split",
+      "code": "int h, m, s;\nsplit_hms(7275, &h, &m, &s);\nCHECK_EQ(h, 2);\nCHECK_EQ(m, 1);\nCHECK_EQ(s, 15);",
+      "hint": "7275 s = 2 h + 1 m + 15 s: divide down, keep remainders."
+    },
+    {
+      "name": "exact hour",
+      "code": "int h, m, s;\nsplit_hms(7200, &h, &m, &s);\nCHECK_EQ(h, 2);\nCHECK_EQ(m, 0);\nCHECK_EQ(s, 0);",
+      "hint": "Remainders can be zero."
+    },
+    {
+      "name": "under an hour",
+      "code": "int h, m, s;\nsplit_hms(59, &h, &m, &s);\nCHECK_EQ(h, 0);\nCHECK_EQ(m, 0);\nCHECK_EQ(s, 59);",
+      "hint": "h and m are 0."
+    }
+  ],
+  "level": "real-world"
+}

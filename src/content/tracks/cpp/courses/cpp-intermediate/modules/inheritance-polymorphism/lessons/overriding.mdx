@@ -1,0 +1,44 @@
+A derived class may **override** a base member function — but only if the
+signatures match exactly, and the base must say the function *may* be
+overridden (`virtual`, next lesson). Overriding is not overloading.
+
+```cpp
+#include <iostream>
+#include <string>
+
+class Animal {
+public:
+    virtual ~Animal() = default;
+    virtual void speak() const { std::cout << "...\n"; }
+};
+
+class Dog : public Animal {
+public:
+    void speak() const override { std::cout << "Woof\n"; }  // overrides
+    void speak(int times) const;                             // would OVERLOAD, not override
+};
+
+class Cat : public Animal {
+public:
+    void speak() const override { std::cout << "Meow\n"; }
+};
+```
+
+## override: write it, always
+
+`override` asks the compiler to verify a function really overrides something.
+Without it, a typo or a `const` mismatch silently creates a *new* function:
+
+```cpp
+class Bird : public Animal {
+public:
+    void Speak() const override;   // compile error: no such base function (typo caught!)
+    void speak() /* missing override + missing const */;   // new function, silent bug
+};
+```
+
+## The matching checklist
+
+Same name, same parameter types, same const-qualification, compatible
+return type. `override` checks all of it for you at compile time — the
+keyword costs nothing and removes an entire class of quiet bugs.

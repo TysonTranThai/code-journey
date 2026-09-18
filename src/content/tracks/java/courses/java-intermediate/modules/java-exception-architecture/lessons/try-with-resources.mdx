@@ -1,0 +1,28 @@
+## try-with-resources
+
+Any `AutoCloseable` can be managed by try-with-resources; the compiler
+writes the finally-cleanup for you — in *reverse* acquisition order:
+
+```java
+static String firstLine(Path p) throws IOException {
+    try (BufferedReader r = Files.newBufferedReader(p)) {
+        return r.readLine();
+    }   // r.close() guaranteed, even on exception
+}
+```
+
+Two resources close right-to-left:
+
+```java
+try (var in = openInput(); var out = openOutput(in)) {
+    ...
+}   // out closed first, then in — the dependency order
+```
+
+Suppressed exceptions: if the body throws AND close() throws, the close
+exception is *attached* to the body exception (`getSuppressed()`), never
+lost. With hand-written finally, the close exception would *replace* the
+body exception — swallowing the real failure.
+
+The sandbox cannot touch real files, so this course exercises
+AutoCloseable with in-memory resources — the semantics are identical.

@@ -1,0 +1,21 @@
+{
+  "id": "csi-p8-group-report",
+  "title": "Daily Sales Report with GroupBy",
+  "prompt": "Produce a per-day report: \"Day 1: 3 orders, avg 42.5\" — average of amounts rounded to 1 decimal (MidpointRounding.AwayFromZero), days in ascending order, zero-padded to width 2.\n\n```csharp\nstatic List<string> DailyReport(IEnumerable<Solution.OrderLine> lines);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "grouping, formatting, ordering",
+      "code": "\nvar lines = new[] {\n    new Solution.OrderLine(\"a\", 10m, 2),\n    new Solution.OrderLine(\"b\", 20m, 1),\n    new Solution.OrderLine(\"c\", 55m, 2),\n    new Solution.OrderLine(\"d\", 30m, 1),\n};\nCj.Eq(string.Join(\"|\", Solution.DailyReport(lines)), \"Day 01: 2 orders, avg 25.0|Day 02: 2 orders, avg 32.5\", \"days ASCENDING, not encounter order\");\n",
+      "hint": "GroupBy(l => l.Day), ORDER BY key (days arrive out of order), Count + Average + round, format with 2-digit padding."
+    },
+    {
+      "name": "rounding edge",
+      "code": "\nvar lines = new[] {\n    new Solution.OrderLine(\"a\", 10m, 3),\n    new Solution.OrderLine(\"b\", 15m, 3),\n};\nCj.Eq(string.Join(\"|\", Solution.DailyReport(lines)), \"Day 03: 2 orders, avg 12.5\", \"12.5 stays 12.5\");\nvar empty = Solution.DailyReport(new Solution.OrderLine[0]);\nCj.Eq(empty.Count, 0, \"no orders, no days\");\n",
+      "hint": "Average returns decimal; Math.Round(x, 1, MidpointRounding.AwayFromZero); day format \"dd\"."
+    }
+  ],
+  "level": "guided"
+}

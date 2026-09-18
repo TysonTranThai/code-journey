@@ -1,0 +1,28 @@
+## Ngữ nghĩa value so với reference
+
+Biến **value type** *chính là* dữ liệu; biến **reference type** là một địa
+chỉ *trỏ tới* dữ liệu. Mọi thứ khác đều suy ra từ đó:
+
+```csharp
+var a = new Counter();   // struct
+var b = a;               // sao chép toàn bộ — hai đối tượng độc lập
+b.Increment();
+// a không đổi
+
+var s1 = new Service();  // class
+var s2 = s1;             // sao chép địa chỉ — MỘT đối tượng, hai tên
+s2.Tick();
+// s1 cũng thấy tick
+```
+
+Cái bẫy không phải định nghĩa — mà là **bán kính tác động**. Bản sao dừng ở
+phạm vi cục bộ: mutation không thể rò rỉ. Reference lan tỏa: mọi alias đều
+quan sát được mọi mutation — vì thế tham chiếu khả biến dùng chung là gốc
+của phần lớn lỗi "trạng thái không thể xảy ra". Equality cũng tách theo cùng
+trục: value type so nội dung (`a.Equals(b)`), reference type so định danh
+trừ khi tác giả override `Equals`.
+
+Quy tắc mô hình hóa: mặc định dùng **value hoặc record bất biến** khi thứ
+đó là dữ liệu (`Money`, `Coordinates`); dùng class khi thứ đó có **định
+danh** tồn tại lâu hơn giá trị của nó (`UserSession`, `OrderPipeline`) —
+trục thật là định danh, không phải kích thước.

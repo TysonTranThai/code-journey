@@ -1,0 +1,16 @@
+{
+  "id": "py-mod-own-module",
+  "title": "Import Your Own",
+  "prompt": "Create two-module structure in ONE source: define area(r) (circle area, using 3.14159) inside a simulated module namespace... actually simpler: define area(r) and a main() that prints area(2) — but call main() ONLY under an if __name__ == \"__main__\": guard. The grader imports your definitions without running main(); printed must be EMPTY.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "",
+  "tests": [
+    {
+      "name": "definitions available, main silent",
+      "code": "assert callable(area), \"define area(r)\"\nassert abs(area(2) - 12.56636) < 1e-3, f\"area(2) should be ~12.566, got {area(2)}\"\nassert printed == [], f\"main() must NOT run on import — guard it. got {printed}\"\nassert (chr(105)+chr(102)+chr(32)+chr(95)*2+\"name\"+chr(95)*2) in code.replace(\" \", \"\") or \"__main__\" in code, \"add the __main__ guard\"",
+      "hint": "def area(r): return 3.14159 * r * r / def main(): print(area(2)) / if __name__ == \"__main__\": main()"
+    }
+  ],
+  "level": "guided"
+}

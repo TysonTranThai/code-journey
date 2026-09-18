@@ -1,0 +1,25 @@
+{
+  "id": "i2-action-router",
+  "title": "Action Router",
+  "prompt": "Write `handleClick(event, root, actions)`: resolve the actionable element as in `resolveAction`, read `el.dataset.action`, and call `actions[action](el)` when the handler exists. RETURN the action name that was dispatched, `null` when nothing matched, and `\"missing\"` when the element matched but `actions` has no handler for it. `actions` must never be mutated.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function handleClick(event, root, actions) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "dispatches to the right handler",
+      "code": "const fn = new Function(code + \"\\nreturn { handleClick };\");\nconst { handleClick } = fn();\nconst root = { matches: (s) => s === \"[data-action]\", parent: null, dataset: {} };\nconst btn = { matches: (s) => s === \"[data-action]\", parent: root, dataset: { action: \"remove\" } };\nconst target = { matches: () => false, parent: btn };\nconst calls = [];\nconst out = handleClick({ target }, root, { remove: (el) => calls.push(el) });\nif (out !== \"remove\") throw new Error(\"Should return the dispatched action name remove.\");\nif (calls.length !== 1 || calls[0] !== btn) throw new Error(\"The remove handler should receive the matched element.\");",
+      "hint": "Reuse your resolveAction logic, then look up el.dataset.action in actions."
+    },
+    {
+      "name": "returns null when nothing is actionable",
+      "code": "const fn = new Function(code + \"\\nreturn { handleClick };\");\nconst { handleClick } = fn();\nconst root = { matches: (s) => s === \"[data-action]\", parent: null, dataset: {} };\nconst target = { matches: () => false, parent: root };\nif (handleClick({ target }, root, {}) !== null) throw new Error(\"No match means no dispatch - return null.\");",
+      "hint": "Early return null when the resolution fails."
+    },
+    {
+      "name": "returns missing when no handler exists",
+      "code": "const fn = new Function(code + \"\\nreturn { handleClick };\");\nconst { handleClick } = fn();\nconst root = { matches: (s) => s === \"[data-action]\", parent: null, dataset: {} };\nconst btn = { matches: (s) => s === \"[data-action]\", parent: root, dataset: { action: \"archive\" } };\nconst target = { matches: () => false, parent: btn };\nconst out = handleClick({ target }, root, { remove: () => {} });\nif (out !== \"missing\") throw new Error(\"A matched element without a handler must return missing.\");",
+      "hint": "Check actions[el.dataset.action] exists (typeof === 'function') before calling."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+Programs become real when their work survives after they exit. Files are the
+simplest persistence.
+
+## Reading a file
+
+```python
+with open("notes.txt", "r", encoding="utf-8") as f:
+    content = f.read()          # whole file as one string
+print(content)
+```
+
+`open(path, mode, encoding=...)` returns a file object; `"r"` is read mode. The
+`with` block closes the file automatically — even if an error happens inside.
+Always use `with`.
+
+Useful reads:
+
+```python
+with open("notes.txt", encoding="utf-8") as f:
+    lines = f.readlines()       # list of lines (with trailing newlines)
+
+with open("notes.txt", encoding="utf-8") as f:
+    for line in f:              # memory-friendly: line by line
+        print(line.strip())
+```
+
+A file that does not exist raises `FileNotFoundError` — you already know how to
+catch it.

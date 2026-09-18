@@ -1,0 +1,42 @@
+## Pre-check instead of post-detect
+
+Every UB trap has a defined-side pre-check:
+
+```c
+/* overflow */   if (a > 0 && b > INT_MAX - a) ...
+/* shift */      if (k < 32) x = (unsigned)x << k;
+/* bounds */     if (i < n) use(a[i]);
+/* null */       if (p && p->next) ...
+```
+
+The check and the use must be made of *different* operations — checking
+`a + b < 0` before computing `a + b` is checking with the UB itself.
+
+## Bounded by default
+
+Every buffer-carrying call names its capacity. `snprintf` over
+`sprintf`; `memcpy(dst, src, n)` where n is computed from the
+*destination's* capacity, not the source's promise. The bounded call is
+never slower by an amount that matters and never the bug's origin.
+
+## Initialize at the declaration
+
+```c
+int x = 0;                     /* not "int x;" */
+TNode *n = calloc(1, sizeof *n);   /* zeroed: fields have defined values */
+char buf[64] = {0};
+```
+
+`calloc` for structs whose fields must start defined; explicit
+initializers for stack arrays. The cost is unmeasurable; the UB class
+it deletes is real.
+
+## The honest test posture
+
+Because UB cannot be *relied on* to fail (it may work on your machine
+today), tests assert the *defined replacement's* behavior: sat_add
+returns INT_MAX at the boundary, parse rejects the overflow input, the
+shift helper clamps. The W-solution pattern in this course is exactly
+that: Ws are *defined but wrong* — they misparse, drop, or corrupt in
+ways tests deterministically catch. Graded code never depends on UB
+failing; it depends on correct behavior being verifiable.

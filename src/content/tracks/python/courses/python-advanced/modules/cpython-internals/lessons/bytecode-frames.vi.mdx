@@ -1,0 +1,30 @@
+## Bytecode: trình thông dịch thực thi cái gì
+
+CPython biên dịch mã nguồn của bạn thành **bytecode** — một danh sách lệnh máy
+giác stack — rồi thực thi trong vòng lặp. Dịch ngược bằng module `dis`:
+
+```python
+import dis
+
+def add_squares(xs):
+    return sum(x * x for x in xs)
+
+dis.dis(add_squares)
+```
+
+Đọc bytecode trả lời những câu hỏi thật:
+
+- **Vì sao `x += 1` trên attribute của instance là ba thao tác?** LOAD
+  attribute, add, STORE attribute — chen lấn nằm giữa chúng.
+- **Vì sao thân vòng lặp dựng lại biểu thức lại chậm?** Mỗi lần lặp thực thi lại
+  cùng các lệnh LOAD_GLOBAL/LOAD_ATTR; nâng phép tra cứu ra khỏi vòng lặp bỏ
+  bytecode khỏi đường nóng.
+- **`LOAD_CONST` / `LOAD_FAST` / `LOAD_GLOBAL`** — pool hằng, slot frame cục bộ,
+  tra module dict, theo thứ tự chi phí tăng dần.
+- **Cache small-int và intern chuỗi** là chi tiết cài đặt, không phải ngữ nghĩa
+  ngôn ngữ — `is` trên số nguyên là vùng hành vi không định nghĩa; `==` mới là
+  phép so sánh bạn muốn.
+
+Một **frame** là trạng thái runtime của một lần gọi hàm: biến cục bộ, stack
+giá trị, con trỏ bytecode, và tham chiếu tới frame gọi nó. Traceback chỉ là
+chuỗi frame — đó là thứ `inspect.currentframe()` đi qua.

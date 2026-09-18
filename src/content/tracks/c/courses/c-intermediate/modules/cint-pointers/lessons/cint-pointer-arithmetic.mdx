@@ -1,0 +1,62 @@
+## Scaling by the pointee
+
+`p + 1` does not add one byte — it advances by `sizeof *p` **bytes**. For an
+`int *` on this platform that is 4 bytes; for a `struct Big *`, maybe 64. The
+compiler does the scaling; you do the reasoning:
+
+```c
+int arr[5] = {10, 20, 30, 40, 50};
+int *p = arr;          /* points at arr[0] */
+p + 3                  /* points at arr[3] */
+*(p + 3)               /* 40 — the value there */
+p[3]                   /* exactly the same thing: a[i] is *(a + i) */
+```
+
+The array-index operator is *defined* in terms of pointer arithmetic. That is
+why `3[arr]` also compiles (it is `*(3 + arr)`) — legal, unforgettable once
+seen, and never written on purpose.
+
+## The one legal out-of-bounds pointer
+
+C guarantees you may form a pointer **one past the end** of an array object.
+You may compare with it and subtract from it, but you may **not dereference** it:
+
+```c
+int *end = arr + 5;    /* legal: one past the last element */
+for (int *p = arr; p != end; p++) use(*p);   /* the classic walk */
+*(arr + 5)             /* UB: dereferencing the one-past pointer */
+arr + 6                /* UB: even forming it */
+```
+
+This is not pedantry: `<stdlib.h>`'s own conventions rely on it. Functions
+returning "position" return `NULL` or an end pointer, and algorithms like
+`qsort` reason in `[first, last)` half-open ranges — exactly this shape.
+
+## Subtraction gives counts
+
+```c
+size_t n = (size_t)(end - start);   /* number of elements, not bytes */
+```
+
+Subtracting two pointers into the *same array* yields `ptrdiff_t`: how many
+elements apart. Subtracting pointers into different objects is undefined.
+
+## Walking with pointers instead of indices
+
+```c
+/* sum an array the pointer way — same machine result, different mental model */
+int total = 0;
+for (const int *p = arr, *end = arr + 5; p != end; ++p) total += *p;
+```
+
+Neither style is "faster" by definition. The pointer style generalizes to
+structures where indices make no sense (linked lists, Module 9); the index
+style resists off-by-one errors better in dense arrays. Choose per situation.
+
+## Check your understanding
+
+- `sizeof` an array of 7 `double` is 56; `arr + 3` advances how many bytes?
+  (24.)
+- Is `arr + 5` legal for a 5-element array? (Yes — one-past-the-end. Dereferencing
+  it is not.)
+- What is `*(arr + 2) == arr[2]`? (True by definition of `[]`.)

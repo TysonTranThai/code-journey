@@ -1,0 +1,32 @@
+`String` là một object **bất biến** — một giá trị không bao giờ đổi được.
+Mọi phương thức "sửa" chuỗi thực chất trả về một chuỗi mới:
+
+```java
+String name = "  Ada Lovelace ";
+String clean = name.trim();       // "Ada Lovelace" — name vẫn nguyên!
+String upper = name.toUpperCase();
+String both  = name.trim().toUpperCase();   // chuỗi: các phương thức ghép được
+```
+
+Bộ dụng cụ hằng ngày:
+
+| Phương thức | Việc | Ví dụ |
+|---|---|---|
+| `length()` | đếm ký tự | `"hi".length()` → 2 |
+| `charAt(i)` | ký tự tại chỉ số | `"hi".charAt(1)` → `'i'` |
+| `substring(a, b)` | từ a tới b-1 | `"hello".substring(1, 3)` → `"el"` |
+| `indexOf(s)` | vị trí đầu tiên hoặc -1 | `"banana".indexOf("na")` → 2 |
+| `contains(s)` | có xuất hiện không | `"banana".contains("ana")` → true |
+| `replace(a, b)` | mọi a thành b | `"aa".replace("a","b")` → `"bb"` |
+| `split(regex)` | cắt thành mảng | `"a,b".split(",")` → `["a","b"]` |
+| `strip()/trim()` | bỏ khoảng trắng hai đầu | `" x ".strip()` → `"x"` |
+| `isEmpty()/isBlank()` | rỗng / chỉ toàn khoảng trắng | |
+
+Tính bất biến là lý do so sánh chuỗi dùng `.equals` (Module 2) và là lý do
+`substring` rẻ — chuỗi mới không chia sẻ gì có thể đổi với chuỗi cũ.
+
+**Bẫy của split:** `split` nhận một *regex*. Để tách theo dấu chấm thật,
+phải escape: `"1.2".split("\\.")`. Tách câu thành từ:
+`sentence.split("\\s+")` — một hoặc nhiều ký tự khoảng trắng.
+
+**Tiếp theo:** xây chuỗi hiệu quả.

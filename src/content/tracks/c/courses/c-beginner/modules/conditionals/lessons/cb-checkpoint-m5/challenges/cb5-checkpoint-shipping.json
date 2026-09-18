@@ -1,0 +1,25 @@
+{
+  "id": "cb5-checkpoint-shipping",
+  "title": "Shipping Calculator",
+  "prompt": "Implement two functions.\n\n1. `double shipping_cost(double weight)`: up to and including 1.0 kg -> 5.00; over 1.0 up to and including 5.0 -> 10.00; above 5.0 -> 10.00 + 1.50 per full kg above 5 (so 6.2 kg -> 11.50).\n2. `const char* shipping_label(int speed)` using switch: 1 -> \"standard\", 2 -> \"express\", default -> \"standard\".",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "tier boundaries",
+      "code": "CHECK_NEAR(shipping_cost(1.0), 5.00, 1e-9);\nCHECK_NEAR(shipping_cost(1.01), 10.00, 1e-9);\nCHECK_NEAR(shipping_cost(5.0), 10.00, 1e-9);",
+      "hint": "Both 'up to and including' edges are inclusive."
+    },
+    {
+      "name": "overage math",
+      "code": "CHECK_NEAR(shipping_cost(6.2), 11.50, 1e-9);\nCHECK_NEAR(shipping_cost(7.0), 13.00, 1e-9);",
+      "hint": "Full kg above 5: (int)(weight - 5) when weight > 5. 6.2 -> 1 extra -> 11.50; 7.0 -> 2 extra -> 13.00."
+    },
+    {
+      "name": "label switch",
+      "code": "CHECK_STR_EQ(shipping_label(1), \"standard\");\nCHECK_STR_EQ(shipping_label(2), \"express\");\nCHECK_STR_EQ(shipping_label(99), \"standard\");",
+      "hint": "default maps to standard."
+    }
+  ]
+}

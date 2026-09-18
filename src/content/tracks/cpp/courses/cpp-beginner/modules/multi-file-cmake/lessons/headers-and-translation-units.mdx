@@ -1,0 +1,48 @@
+## The compiler's blindfold
+
+The compiler compiles **one translation unit at a time** — one `.cpp` file after preprocessing. It has *no idea* what other `.cpp` files contain. Everything it needs must be visible: either defined in the file or **declared** via a header.
+
+```cpp
+// math_utils.h — the PROMISE (declarations)
+#pragma once
+#include <string>
+
+int add(int a, int b);
+std::string shout(std::string text);
+```
+
+```cpp
+// math_utils.cpp — the DELIVERY (definitions)
+#include "math_utils.h"
+
+int add(int a, int b) { return a + b; }
+std::string shout(std::string text) { return text + "!"; }
+```
+
+```cpp
+// main.cpp — the USER
+#include <iostream>
+#include "math_utils.h"     // quotes: "our" headers; angles: the standard library
+
+int main() {
+    std::cout << add(2, 3) << '\n';
+}
+```
+
+**Declarations say what exists; definitions say how.** A function may be declared many times but defined once (across the whole program). Classes in headers are definitions (the compiler needs their size); their method *bodies* may live in the `.cpp`.
+
+## Why this split?
+
+Change `math_utils.cpp`'s implementation and only *that file* recompiles, then the **linker** re-stitches the program. In big projects this is the difference between 1-second and 30-minute builds. It is also how teams divide work: headers are the contracts; nobody needs your `.cpp` to use your code.
+
+## `#pragma once` (and the older guards)
+
+Headers must not be pasted twice into one translation unit. `#pragma once` (supported by all major compilers) or classic `#ifndef MATH_UTILS_H / #define / #endif` guards. Modern code writes `#pragma once`; know the classic form for reading old code.
+
+## The graded-world connection
+
+This platform grades single files — `#include "solution.cpp"` is the harness stitching your code into its test translation unit. Same mechanism, smaller project. On your own machine, the commands are:
+
+```
+g++ -std=c++20 -Wall -Wextra main.cpp math_utils.cpp -o app
+```

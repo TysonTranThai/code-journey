@@ -1,0 +1,26 @@
+{
+  "id": "ca16-race-classify",
+  "title": "Race or Not?",
+  "prompt": "Implement `const char *race_verdict(int kind)`: 0 two threads write a plain int without locks → \"race\", 1 two threads read a const table → \"not-a-race\", 2 one thread writes while another reads a plain int → \"race\", 3 both threads update different mutex-protected counters → \"not-a-race\", 4 two threads write distinct elements of an array → \"not-a-race\" (distinct memory objects).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "conflicting unsynchronized access",
+      "code": "CHECK_STR_EQ(race_verdict(0), \"race\");\nCHECK_STR_EQ(race_verdict(2), \"race\");",
+      "hint": "Two writers, or writer+reader, on the same object without synchronization: the definition of a data race."
+    },
+    {
+      "name": "read-only sharing",
+      "code": "CHECK_STR_EQ(race_verdict(1), \"not-a-race\");",
+      "hint": "Concurrent reads never conflict."
+    },
+    {
+      "name": "disjoint or locked",
+      "code": "CHECK_STR_EQ(race_verdict(3), \"not-a-race\");\nCHECK_STR_EQ(race_verdict(4), \"not-a-race\");",
+      "hint": "Distinct objects or proper locking: no conflicting pair."
+    }
+  ],
+  "level": "imitation"
+}

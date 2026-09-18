@@ -1,0 +1,21 @@
+{
+  "id": "ca11-nm-forensics",
+  "title": "Forensics by Symbol Table",
+  "prompt": "Implement `char classify_symbol(const char *line)` parsing one `nm` output line like '0000000000401100 T bump' — return the type letter. Then implement `int is_defined(char t)` returning 1 for T/t/D/d/B/b/R/r and 0 for U/u/w/v.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "parses the letter",
+      "code": "CHECK_EQ(classify_symbol(\"0000000000401100 T bump\"), 'T');\nCHECK_EQ(classify_symbol(\"                 U printf\"), 'U');",
+      "hint": "A single-letter first field means the symbol is undefined (no address column); otherwise the letter follows the address."
+    },
+    {
+      "name": "defined vs not",
+      "code": "CHECK_EQ(is_defined('T'), 1);\nCHECK_EQ(is_defined('t'), 1);\nCHECK_EQ(is_defined('U'), 0);\nCHECK_EQ(is_defined('w'), 0);",
+      "hint": "Lowercase defined letters (t/d/b/r) are file-local but still defined; U/u/w/v are resolution debts."
+    }
+  ],
+  "level": "independent"
+}

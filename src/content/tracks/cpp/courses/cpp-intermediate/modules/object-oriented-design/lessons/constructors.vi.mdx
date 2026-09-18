@@ -1,0 +1,39 @@
+**Constructor** đưa đối tượng mới vào trạng thái hợp lệ. C++ cho bạn vài loại;
+bạn hiếm khi cần hết, nhưng phải nhận ra từng loại.
+
+```cpp
+#include <string>
+#include <vector>
+
+class Inventory {
+public:
+    Inventory() = default;                          // default ctor
+    explicit Inventory(int cap) : cap_{cap} {}      // ctor chuyển đổi → explicit!
+    Inventory(std::string owner, int cap)           // nhiều tham số
+        : owner_{std::move(owner)}, cap_{cap} {}
+
+private:
+    std::string owner_{"warehouse"};
+    int cap_{0};
+    std::vector<int> items_{};
+};
+```
+
+## Member initializer list
+
+Ưu tiên `: member_{value}` thay vì gán trong thân hàm — member được khởi tạo
+một lần, trực tiếp, còn member `const`/reference không có lựa chọn nào khác.
+Thứ tự trong list không quan trọng; **member khởi tạo theo thứ tự khai báo**.
+
+## explicit, luôn cho constructor một tham số
+
+Không có `explicit`, `Inventory inv = 5;` vẫn biên dịch — một chuyển đổi ngầm
+từ `int`. `explicit` biến điều đó thành lỗi biên dịch, trong khi
+`Inventory inv{5};` vẫn chạy. Quy tắc mặc định: constructor một tham số thì
+`explicit`, trừ khi bạn *cố ý* cho chuyển đổi ngầm.
+
+## Khi bạn không viết gì
+
+Nếu bạn không khai báo constructor nào, compiler sinh một constructor mặc định
+khởi tạo giá trị các member có mặc định `{}`. Thường là đủ —
+`struct Point { double x{}; double y{}; };` không cần gì thêm.

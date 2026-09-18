@@ -1,0 +1,30 @@
+{
+  "id": "pi7-ckpt-repair",
+  "title": "Repair the Stack",
+  "prompt": "The class Stack below has THREE bugs: pop on empty must raise IndexError (it returns None), peek must not remove the item (it does), and size must reflect the count (it miscounts). Fix the class so all behaviors hold. Do not rename anything.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "class Stack:\n    def __init__(self):\n        self._items = []\n\n    def push(self, item):\n        self._items.append(item)\n\n    def pop(self):\n        return self._items.pop() if self._items else None\n\n    def peek(self):\n        return self._items.pop()\n\n    def size(self):\n        return len(self._items) + 1\n",
+  "tests": [
+    {
+      "name": "pop empty raises IndexError",
+      "code": "s = Stack()\ntry:\n    s.pop()\n    failed = False\nexcept IndexError:\n    failed = True\nassert failed",
+      "hint": "Guard the empty case: raise IndexError, never return None."
+    },
+    {
+      "name": "peek does not remove",
+      "code": "s = Stack()\ns.push('x')\nassert s.peek() == 'x'\nassert s.size() == 1",
+      "hint": "peek reads the last item without popping."
+    },
+    {
+      "name": "size is accurate",
+      "code": "s = Stack()\ns.push(1); s.push(2); s.pop()\nassert s.size() == 1",
+      "hint": "len(self._items) — no fudge factors."
+    },
+    {
+      "name": "full lifecycle",
+      "code": "s = Stack()\ns.push('a'); s.push('b')\nassert s.pop() == 'b' and s.peek() == 'a' and s.size() == 1",
+      "hint": "LIFO order preserved end to end."
+    }
+  ]
+}

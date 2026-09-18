@@ -1,0 +1,24 @@
+## Ràng buộc chính là tính năng
+
+Stack là danh sách chỉ đụng được một đầu. Queue là danh sách thêm một
+đầu, bỏ đầu kia. Ràng buộc khiến việc suy luận khả thi — và phần cài đặt
+là nơi chi phí sống:
+
+- **Stack**: chèn đầu, bỏ đầu. O(1) với singly-linked. Không cần gì thêm.
+- **Queue**: thêm đuôi, bỏ đầu. Cần *thêm con trỏ tail* — và kỷ luật
+  cập nhật nó trong mọi thao tác (queue rỗng: `head = tail = n`).
+- **Deque**: hai đầu. Singly không bỏ được đuôi O(1) — cần doubly
+  (hoặc ring với sentinel).
+
+## Biên rỗng/một-phần-tử, lần nữa
+
+Mọi bug queue ngoài kia là một trong: thêm vào queue rỗng quên set head;
+pop về rỗng quên clear tail; pop phần tử cuối để lại tail cũ. Ghi
+bất biến hai chiều vào comment — `head == NULL  <=>  tail == NULL` — và
+test biên: push một, pop một, push lại.
+
+## Ownership không đổi
+
+Container sở hữu node; giá trị copy in/out (hoặc con trỏ mượn có ghi rõ
+khoản mượn). `destroy` đi và free đúng một lần — cùng kỷ luật với mọi
+list, giờ bọc trong API ràng buộc.

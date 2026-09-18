@@ -1,0 +1,40 @@
+{
+  "id": "cb20-checkpoint-stack",
+  "title": "Stack Complete",
+  "prompt": "Implement an int stack with capacity 16: `void stack_clear(void)`, `int stack_push(int v)` (0 on overflow), `int stack_pop(int *out)` (0 on underflow or out==NULL; else 1 and the MOST RECENT value), `int stack_size(void)`, and `int stack_top(int *out)` (peeks without removing; same contract as pop).",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "lifo",
+      "code": "stack_clear();\nstack_push(1);\nstack_push(2);\nint v;\nstack_pop(&v);\nCHECK_EQ(v, 2);",
+      "hint": "Last in, first out."
+    },
+    {
+      "name": "overflow",
+      "code": "stack_clear();\nfor (int i = 0; i < 16; i++) stack_push(i);\nCHECK_EQ(stack_push(99), 0);\nCHECK_EQ(stack_size(), 16);",
+      "hint": "The 17th is rejected."
+    },
+    {
+      "name": "underflow",
+      "code": "stack_clear();\nint v;\nCHECK_EQ(stack_pop(&v), 0);",
+      "hint": "Popping empty fails."
+    },
+    {
+      "name": "size",
+      "code": "stack_clear();\nstack_push(5);\nstack_push(6);\nCHECK_EQ(stack_size(), 2);",
+      "hint": "Count tracks pushes."
+    },
+    {
+      "name": "top peeks",
+      "code": "stack_clear();\nstack_push(4);\nint v;\nCHECK_EQ(stack_top(&v), 1);\nCHECK_EQ(v, 4);\nCHECK_EQ(stack_size(), 1);",
+      "hint": "Top does not remove."
+    },
+    {
+      "name": "null out",
+      "code": "stack_clear();\nstack_push(4);\nCHECK_EQ(stack_pop(NULL), 0);",
+      "hint": "NULL out is rejected."
+    }
+  ]
+}

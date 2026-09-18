@@ -1,0 +1,38 @@
+## Block scope
+
+A **block** is `{ ... }`. A name declared inside a block exists from its
+declaration to that block's closing brace:
+
+```c
+int main(void) {
+    int x = 1;            // visible to the end of main
+    {
+        int y = 2;        // visible inside these braces only
+        x = x + y;
+    }
+    // y does not exist here
+    return x;             // 3
+}
+```
+
+Loop and `if` bodies are blocks too — the classic bug:
+
+```c
+for (int i = 0; i < 3; i++) { }   // i exists only in the loop
+// i++ here is an error
+```
+
+## Shadowing
+
+An inner declaration with the same name hides the outer one:
+
+```c
+int total = 100;
+{
+    int total = 5;        // a DIFFERENT variable
+    printf("%d\n", total); // 5
+}
+printf("%d\n", total);    // 100 — untouched
+```
+
+Shadowing is legal but confusing. Avoid reusing names in nested scopes.

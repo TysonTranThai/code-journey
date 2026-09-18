@@ -1,0 +1,15 @@
+## Backpressure là một tính năng
+
+Hàng đợi không giới hạn biến consumer chậm thành OOM kill. Câu trả lời thiết kế là **giới hạn kèm chính sách**: hàng đợi có `capacity`, `push` trả `false` khi đầy, và chính sách tường minh — drop-new, drop-oldest, hay từ chối kết nối. Chính sách là quyết định sản phẩm; giới hạn thì không tùy chọn.
+
+## Timeout là một phần của hợp đồng
+
+Mọi thao tác chặn cần deadline: connect, read, dọn kết nối idle. Kết nối half-open (peer biến mất giữa request) là trạng thái mặc định của internet; service không có read/idle timeout sẽ tích tụ socket chết đến khi chạm giới hạn fd.
+
+## Suy giảm theo tầng
+
+Service production suy giảm theo tầng: giới hạn mỗi kết nối trước, rồi giới hạn toàn cục, rồi shedding. Mỗi tầng phải đo được — bộ đếm accepted/rejected/dropped — vì "service hình như chậm" không phải là báo cáo sự cố.
+
+## Sandbox chấm gì
+
+Socket thật không chấm được trong harness một TU (sandbox cũng không có mạng by design). Bài graded dựng tầng *phía trên* socket: frame decoder nhận chunk byte tùy ý, máy trạng thái parser với đầu vào tấn công, và hàng đợi có giới hạn kèm chính sách — tất cả xác định, tất cả thật.

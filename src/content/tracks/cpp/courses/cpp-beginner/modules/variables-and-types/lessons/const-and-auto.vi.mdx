@@ -1,0 +1,33 @@
+## `const`: hứa với compiler (và đồng đội) rằng nó sẽ không đổi
+
+```cpp
+const double vat_rate = 0.1;
+vat_rate = 0.2;          // lỗi — và đó chính là điều ta muốn
+```
+
+Biến `const` không thể bị gán sau khi khởi tạo. Hãy đọc là "chỉ đọc". Đây không là quan liêu: tính bất biến làm giảm lượng trạng thái bạn phải nhớ trong đầu, và cho compiler bắt được cả một lớp bug. Mặc định của khóa này là: **hãy thêm `const` cho mọi biến trừ khi nó thật sự thay đổi.**
+
+`const` còn truyền đạt ý định tốt hơn mọi comment: người đọc thấy `const` và thôi tự hỏi liệu giá trị đó có bị thay đổi sau này không.
+
+## `auto` với const
+
+`auto` bỏ `const`/reference mức trên theo mặc định — một quy tắc tinh tế bạn sẽ gặp lại ở module 11. Hiện tại:
+
+```cpp
+const double rate{0.1};
+auto r = rate;           // r là double (bản sao) — ổn ở đây
+```
+
+Khi còn phân vân ở những module đầu, hãy viết kiểu tường minh; chỉ dùng `auto` khi vế khởi tạo khiến kiểu hiển nhiên.
+
+## Liếc qua `constexpr`
+
+```cpp
+constexpr int kDays_in_week = 7;   // biết ngay lúc biên dịch
+```
+
+`constexpr` nghĩa là "giá trị này được tính lúc biên dịch". Bạn sẽ chủ yếu viết `const`; `constexpr` xuất hiện trong code thật cho các hằng số đúng nghĩa. Biết nó tồn tại là đủ cho trình độ Cơ bản.
+
+## Ghi chú phong cách
+
+Bạn sẽ thấy hai trường phái đặt tên hằng: `kDaysInWeek` (kiểu Google) và `DAYS_IN_WEEK`. Chọn một trong hai cho mỗi dự án và giữ nhất quán — và hãy ưu tiên `constexpr`/`const` thay vì macro `#define`, thứ không tôn trọng phạm vi lẫn kiểu.

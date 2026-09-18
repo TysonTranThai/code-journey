@@ -1,0 +1,26 @@
+Two primitives, both about *information leakage*:
+
+**Timing attacks** compare secrets character-by-character and stop early —
+the TIME of the failure leaks how many characters matched. String.equals is
+an early-exit compare. Secrets must be compared in **constant time**:
+
+```java
+static boolean safeEquals(byte[] a, byte[] b) {
+    return MessageDigest.isEqual(a, b);   // JDK built-in: constant-time
+}
+```
+
+**Rainbow tables** attack unsalted hashes: a precomputed digest of "hunter2"
+matches every user who ever used "hunter2". The fix is a PER-USER random salt
+mixed into the digest — same password, different stored bytes per user:
+
+```java
+byte[] salt = SecureRandom.getInstanceStrong()
+    .generateSeed(16);
+byte[] hash = sha256(salt, passwordBytes);   // store BOTH
+```
+
+Verify by recomputing with the STORED salt and comparing constant-time. For
+production password storage the stronger shape is a *slow* KDF (bcrypt/
+scrypt/Argon2/PBKDF2) — the sandbox course teaches the salted-digest shape;
+the principle scales: cost per guess is a design parameter.

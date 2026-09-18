@@ -1,0 +1,25 @@
+{
+  "id": "i2-safe-parse",
+  "title": "Safe JSON Parse",
+  "prompt": "Write `safeParse(json, fallback)` that RETURNS the parsed value when `json` is valid JSON, and RETURNS `fallback` when it is not. It must never throw, whatever the input.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function safeParse(json, fallback) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "parses valid JSON",
+      "code": "const fn = new Function(code + \"\\nreturn { safeParse };\");\nconst { safeParse } = fn();\nconst parsed = safeParse('{\"a\":1}', null);\nif (!parsed || parsed.a !== 1) throw new Error(\"safeParse should parse that JSON text into an object whose a property is 1.\");\nif (safeParse(\"[1,2]\", null)?.length !== 2) throw new Error(\"safeParse should parse arrays too.\");\nif (safeParse(\"42\", 0) !== 42) throw new Error(\"A JSON number string parses to the number 42.\");",
+      "hint": "JSON.parse handles objects, arrays, numbers, and strings — just wrap the call."
+    },
+    {
+      "name": "returns the fallback for invalid JSON",
+      "code": "const fn = new Function(code + \"\\nreturn { safeParse };\");\nconst { safeParse } = fn();\nif (safeParse(\"{nope\", \"x\") !== \"x\") throw new Error(\"Invalid JSON must return the fallback, not throw.\");\nif (safeParse(\"\", null) !== null) throw new Error(\"An empty string is not valid JSON — return the fallback.\");",
+      "hint": "try { return JSON.parse(json); } catch { return fallback; }"
+    },
+    {
+      "name": "never throws, whatever the input",
+      "code": "const fn = new Function(code + \"\\nreturn { safeParse };\");\nconst { safeParse } = fn();\nfor (const bad of [undefined, null, {}, 123]) {\n  let threw = false;\n  try { safeParse(bad, \"fb\"); } catch { threw = true; }\n  if (threw) throw new Error(\"safeParse must not throw even when json is not a string at all (got: \" + typeof bad + \").\");\n}",
+      "hint": "The catch block catches JSON.parse's TypeError for non-string inputs too — no extra checks needed."
+    }
+  ]
+}

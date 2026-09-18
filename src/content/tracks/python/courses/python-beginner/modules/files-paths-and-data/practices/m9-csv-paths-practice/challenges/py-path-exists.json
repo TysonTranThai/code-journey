@@ -1,0 +1,16 @@
+{
+  "id": "py-path-exists",
+  "title": "Path Detective",
+  "prompt": "Write check(path) that returns \"missing\" when the path does not exist and \"found\" when it does. Use pathlib.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "from pathlib import Path\n\ndef check(path):\n    pass\n",
+  "tests": [
+    {
+      "name": "exists vs missing",
+      "code": "import os as _os\n_os.remove(\"temp_probe.txt\") if _os.path.exists(\"temp_probe.txt\") else None\nopen(\"temp_probe.txt\", \"w\").write(\"x\")\nassert check(\"temp_probe.txt\") == \"found\", \"existing file must be found\"\n_os.remove(\"temp_probe.txt\")\nassert check(\"definitely_not_here.bin\") == \"missing\", \"missing file must be missing\"\nassert \"Path\" in code, \"use pathlib\"",
+      "hint": "return \"found\" if Path(path).exists() else \"missing\""
+    }
+  ],
+  "level": "guided"
+}

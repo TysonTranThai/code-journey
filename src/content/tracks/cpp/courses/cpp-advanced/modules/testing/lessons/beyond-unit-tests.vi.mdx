@@ -1,0 +1,15 @@
+## Ba tầng, theo đúng nghĩa C++
+
+- **Unit**: một class/hàm tự do, đối tượng thật, không I/O. Nhanh (ms), lỗi chính xác. Đây là nơi template và thuật toán bị rèn đòn.
+- **Integration**: vài thành phần thật nối nhau — parser + builder, pool + người dùng. Bắt sự lệch hợp đồng mà unit không nhìn thấy.
+- **System**: cả chương trình với đầu vào thực tế — chạy CLI, file khép kín. Chậm; dành cho đường vàng và các hồi quy lọt lưới.
+
+Đặc thù C++: unit test phải biên dịch nhanh (template nặng làm chậm mọi TU); integration test sở hữu fixture (file tạm, test double cho I/O); system test là nơi duy nhất chấp nhận biến động môi trường.
+
+## Điều gì khiến suite đáng tin
+
+Tất định (cùng đầu vào → cùng kết quả, seed được ghim), độc lập (thứ tự không bao giờ quan trọng), đủ nhanh để chạy mỗi lần lưu, và *fail luôn có ý nghĩa* — test flaky là test hỏng, xóa hoặc sửa ngay hôm nay, đừng "retry tới khi xanh".
+
+## Kiểm thử qua hành vi công khai
+
+Test hành vi quan sát được của API công khai, không phải nội dịch riêng — refactor nội dịch không nên phải viết lại test. Khi bạn thấy muốn test một helper riêng, hãy test qua đường công khai dùng nó, hoặc thăng nó thành utility có tên và được test.

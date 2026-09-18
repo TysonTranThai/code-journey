@@ -1,0 +1,43 @@
+Leaving five stale searches running while the user types is a bug: wasted
+bandwidth, out-of-order responses, race conditions. Cancellation is the fix.
+
+## The pieces
+
+`AbortController` exposes a `signal`; every consumer of the signal can stop
+work by calling `controller.abort()`:
+
+```js
+const controller = new AbortController();
+fetch(url, { signal: controller.signal }).catch(handleAbort);
+
+// later — from a timeout, a new search, or unmount:
+controller.abort();
+```
+
+Aborted fetches reject with an `AbortError` (`err.name === "AbortError"`).
+**Distinguish it from real errors** — the user does not need a scary error box
+because they typed faster:
+
+```js
+function handleAbort(err) {
+  if (err.name === "AbortError") return; // expected, ignore
+  showError(err);
+}
+```
+
+## The race-with-timeout idiom
+
+```js
+function withTimeout(ms) {
+  const c = new AbortController();
+  setTimeout(() => c.abort(), ms);
+  return c.signal;
+}
+
+fetch(url, { signal: withTimeout(5000) });
+```
+
+New searches abort the previous controller — one controller per logical
+operation, replaced when the operation is replaced. The same signal also stops
+`addEventListener` (via `{ signal }`) and can be passed to timers in modern
+runtimes.

@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p8-weakref",
+  "title": "Watch the collector retire data",
+  "prompt": "1. `static int retires()` — create THREE distinct `Object` values, wrap each in a\n`WeakReference`, do NOT keep strong references, call `System.gc()` (twice, for\nreliability), then count how many weak refs return null from get().\n2. `static int retiresWithStrong()` — same three objects, but keep them in a\n`static List<Object> pinned` first; after System.gc() count nulls (expect 0 —\nstrong refs are immortal while reachable).\n3. `static long heapAddress()` — measure USED heap as\n`totalMemory() - freeMemory()` BEFORE and AFTER allocating `int[1_000_000]`;\nreturn the difference (after - before). Allocation shows up as used-memory growth.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "unreachable dies, pinned survives",
+      "code": "\ncheckEq(Solution.retires(), 3, \"unreachable weak targets are gone\");\ncheckEq(Solution.retiresWithStrong(), 0, \"strong refs never collected\");\n",
+      "hint": "The lattice, executed."
+    },
+    {
+      "name": "allocation is observable",
+      "code": "\nlong delta = Solution.heapAddress();\ncheckTrue(delta > 0, \"a 1M-int array costs real bytes: \" + delta);\ncheckTrue(delta >= 1_000_000, \"at least 4 bytes per int: \" + delta);\n",
+      "hint": "Memory growth measured, not theorized."
+    }
+  ],
+  "level": "guided"
+}

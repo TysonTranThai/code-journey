@@ -1,0 +1,20 @@
+{
+  "id": "cppa4-concept-checkpoint",
+  "title": "Hashable Gauntlet",
+  "prompt": "Implement `Hashable` (std::hash works on a **const** T, result convertible to std::size_t), constrained `hashOf` returning the real hash, and a fallback returning 0.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <concepts>\n#include <functional>\n#include <string>\n\n// TODO: concept Hashable: std::hash<T>{}(t) works on a const T and yields something\n//       convertible to std::size_t.\n// TODO: std::size_t hashOf(const T&) constrained  -> real hash\n// TODO: fallback overload                         -> 0\nstruct NoHash {};\n",
+  "tests": [
+    {
+      "name": "hashable types hash",
+      "code": "CHECK_EQ(hashOf(42), std::hash<int>{}(42));\nCHECK_EQ(hashOf(std::string(\"key\")), std::hash<std::string>{}(std::string(\"key\")));",
+      "hint": "template <class T> concept Hashable = requires(const T& t) { { std::hash<T>{}(t) } -> std::convertible_to<std::size_t>; };"
+    },
+    {
+      "name": "non-hashable types fall back to 0",
+      "code": "CHECK_EQ(hashOf(NoHash{}), std::size_t{0});",
+      "hint": "Unconstrained overload returning 0 — std::hash<NoHash> does not exist, so the concept rejects it."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ca8-generic-dispatch",
+  "title": "_Generic Front Door",
+  "prompt": "Implement `const char *describe(value_t v)` over a tagged union `typedef struct { unsigned char tag; union { long i; double d; } as; } value_t;` with tags 1 = long, 2 = double: return 'long' or 'double' for the live arm. Then implement `long long to_int(long long x)` (identity) — and note in the test that a _Generic macro selects the *type* of its argument at compile time, which is how C keeps type-safety at such doors without overloads.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "tag selects arm",
+      "code": "value_t a = {1, {.i = 42}};\nvalue_t b = {2, {.d = 2.5}};\nCHECK_STR_EQ(describe(a), \"long\");\nCHECK_STR_EQ(describe(b), \"double\");",
+      "hint": "The tag is the runtime truth; describe reports the live arm."
+    },
+    {
+      "name": "identity plus _Generic proof",
+      "code": "CHECK_EQ(to_int(5), 5);\nCHECK_STR_EQ(_Generic(5, int: \"int\", default: \"other\"), \"int\");",
+      "hint": "to_int is identity; the _Generic expression proves compile-time type selection by naming int's arm."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,32 @@
+## The two layers
+
+- **Raw I/O** — `read(fd, buf, n)` / `write(fd, buf, n)`: one syscall per call, exactly as many bytes as the kernel happens to give or take. Unbuffered; you own every boundary.
+- **Buffered I/O** — `fwrite`/`fread` on a `FILE *`: the C library collects small requests into a user-space buffer and crosses the kernel boundary rarely. `<stdio.h>` is ISO C; `read`/`write` are POSIX.
+
+A 4096-byte read of 64-byte records costs 64 syscalls raw — or 1 syscall buffered. The kernel transition is thousands of cycles; the copy into your buffer is single-digit cycles per byte. That ratio is the whole game.
+
+## writev: one syscall, many buffers
+
+When your data already lives in N separate buffers (header here, payload there), copying into one scratch buffer costs a pass — `writev` gathers them in the kernel:
+
+```c
+#define _POSIX_C_SOURCE 200809L
+#include <sys/uio.h>              /* POSIX */
+
+struct iovec iov[2];
+iov[0].iov_base = header;  iov[0].iov_len = hlen;
+iov[1].iov_base = payload; iov[1].iov_len = plen;
+ssize_t n = writev(fd, iov, 2);   /* one syscall, hlen+plen bytes */
+```
+
+This is what real servers use to send `length-prefix + body` without a defensive copy.
+
+## When buffering betrays you
+
+- **Ordering**: stdout via stdio vs `write(STDOUT_FILENO, ...)` in the same process can interleave *wrongly* — two independent buffers. One stream per destination, or flush deliberately.
+- **Crash semantics**: buffered bytes die in the buffer on `abort()`; raw bytes are already gone with the kernel. Logs that must survive crashes use unbuffered writes (or explicit `fflush`).
+- **Interactive prompts**: `printf("input: ")` without `fflush(stdout)` may show nothing before `scanf` blocks on some setups. Prompt, flush, then read.
+
+## The discipline
+
+Never argue from vibes: measure syscall counts (`strace` off-platform; on-platform, reason from the code) and wall time with `CLOCK_MONOTONIC` — module 21's second lesson makes that a habit.

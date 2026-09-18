@@ -1,0 +1,31 @@
+Beginner file code glues strings with `/` or `os.path.join`. `pathlib` treats
+a path as an **object** with behavior:
+
+```python
+from pathlib import Path
+
+data_dir = Path("data")
+config = data_dir / "settings.json"     # / operator joins safely
+config.name          # "settings.json"
+config.stem          # "settings"
+config.suffix        # ".json"
+config.parent        # data
+config.exists()
+```
+
+The Killer Features:
+
+```python
+data_dir.mkdir(parents=True, exist_ok=True)   # idempotent directory creation
+for csv_file in data_dir.glob("*.csv"):       # pattern matching, lazy iterator
+    print(csv_file)
+
+text = config.read_text(encoding="utf-8")     # quick read (small files!)
+config.write_text("{}", encoding="utf-8")     # quick write
+```
+
+## Path safety habits
+
+- **Never trust user-supplied paths.** `Path(user_input).resolve()` then verify it's inside the directory you expect — otherwise `../../etc/passwd` walks out of your sandbox. That's path traversal, and it's module 11's audit topic too.
+- **Pass `encoding=` on every text read/write.** The default encoding varies by platform; explicit UTF-8 is the portability contract.
+- **`resolve()`** turns relative into absolute (and collapses `..`) — normalize first, compare after.

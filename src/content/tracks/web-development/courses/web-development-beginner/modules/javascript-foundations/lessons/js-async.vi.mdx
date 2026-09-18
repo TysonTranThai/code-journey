@@ -1,0 +1,73 @@
+Một số công việc tốn thời gian — các request mạng, bộ đếm giờ. Nếu JavaScript đơn giản là dừng lại để chờ, cả trang sẽ đóng băng. Thay vào đó nó là **bất đồng bộ (asynchronous)**: công việc chậm bắt đầu ngay, và kết quả của nó đến **sau**.
+
+## Callback và vấn đề của nó
+
+Kiểu cổ xưa nhất truyền một hàm để chạy khi công việc kết thúc:
+
+```js
+setTimeout(() => console.log("two seconds later"), 2000);
+console.log("printed first"); // callback của bộ đếm giờ chạy SAU
+```
+
+Ổn cho một bước — nhưng khi bước A cần bước B cần bước C, các callback lồng vào nhau thành một kim tự tháp không thể đọc. Cơn đau đó chính là điều promise sửa.
+
+## Promise — một giá trị đến sau
+
+Một **promise** là một object đại diện cho công việc đang tiến hành. Nó hoặc là **pending**, **fulfilled** (với một giá trị), hoặc **rejected** (với một lỗi):
+
+```js
+const p = fetchSomething(); // một promise — giá trị chưa có mặt ở đây
+
+p.then((value) => console.log("got:", value)); // khi thành công
+p.catch((err) => console.log("failed:", err)); // khi thất bại
+```
+
+## async/await — promise đọc như code bình thường
+
+Đánh dấu một hàm là `async` và bạn có thể `await` các promise bên trong nó:
+
+```js
+async function showUser() {
+  const response = await fetchUser(); // tạm dừng HÀM NÀY, không phải trang
+  console.log(response.name);
+}
+
+showUser();
+```
+
+`await` chỉ tạm ngưng hàm async — trình duyệt vẫn render, vẫn phản hồi, vẫn cuộn. Với người đọc, code async giờ chạy từ trên xuống.
+
+## Xử lý lỗi: try/catch
+
+Khi một promise được await bị reject, lỗi nổi lên như một lỗi ném ra — hãy bắt nó:
+
+```js
+async function showUser() {
+  try {
+    const response = await fetchUser();
+    console.log(response.name);
+  } catch (err) {
+    console.log("Could not load the user:", err.message);
+  }
+}
+```
+
+## Tuần tự so với song song
+
+```js
+// lần lượt từng cái (khi mỗi bước cần bước trước):
+const user = await getUser();
+const posts = await getPosts(user.id);
+
+// các công việc độc lập có thể chồng lấn — khởi động tất cả, await tất cả:
+const [a, b] = await Promise.all([getA(), getB()]);
+```
+
+## Bạn đã học được gì
+
+- Công việc chậm là bất đồng bộ để trang không bao giờ đóng băng
+- Promise: pending → fulfilled/rejected; `.then`/`.catch`
+- Hàm `async` có thể `await`; các rejection được bắt với `try/catch`
+- `Promise.all` chồng lấn công việc độc lập
+
+**Tiếp theo:** công việc bất đồng bộ phổ biến nhất — nói chuyện với server.

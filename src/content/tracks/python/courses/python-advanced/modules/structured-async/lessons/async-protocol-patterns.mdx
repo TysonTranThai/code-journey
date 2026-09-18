@@ -1,0 +1,39 @@
+## Async context managers, iterators, and backpressure
+
+**Async context managers** (`async with`) allow awaits inside `__aenter__` /
+`__aexit__` — connections, locks, transactions:
+
+```python
+class AsyncConnection:
+    async def __aenter__(self):
+        await self._connect()
+        return self
+    async def __aexit__(self, exc_type, exc, tb):
+        await self._close()
+```
+
+`contextlib.asynccontextmanager` turns a generator into one, exactly like its
+sync sibling.
+
+**Async iterators** (`async for`) pull items across awaits; **async
+generators** (`async def` with `yield`) produce them:
+
+```python
+import asyncio
+
+async def ticker(n, delay=0.01):
+    for i in range(n):
+        await asyncio.sleep(delay)
+        yield i
+
+async def consume():
+    async for value in ticker(3):
+        print(value)
+```
+
+**Bounded queues** are async backpressure made visible:
+`queue = asyncio.Queue(maxsize=10)`. `await queue.put(x)` suspends the
+producer when full — the producer slows to the consumer's pace instead of
+growing memory without limit. `await queue.get()` suspends the consumer when
+empty. Workers + `queue.join()` + `task_done()` work exactly like the threaded
+version from the previous module, but on the loop.

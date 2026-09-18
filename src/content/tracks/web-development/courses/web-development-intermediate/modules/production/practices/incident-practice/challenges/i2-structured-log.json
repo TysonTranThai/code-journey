@@ -1,0 +1,25 @@
+{
+  "id": "i2-structured-log",
+  "title": "Structured Log Line",
+  "prompt": "Write `logLine(level, event, fields)` returning a single JSON string: {\"ts\": <fixedTimestamp>, \"level\": level, \"event\": event, ...fields}. fixedTimestamp (provided in boilerplate) keeps tests deterministic. Fields spread AFTER level/event so they cannot overwrite them. Invalid level (not \"debug\"/\"info\"/\"warn\"/\"error\") => throw.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "const fixedTimestamp = 1700000000000;\n\nfunction logLine(level, event, fields) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "JSON with fixed ts and spread fields",
+      "code": "const fn = new Function(code + \"\\nreturn { logLine };\");\nconst { logLine } = fn();\nconst line = logLine(\"info\", \"request.completed\", { path: \"/api/tasks\", ms: 42 });\nconst parsed = JSON.parse(line);\nif (parsed.ts !== 1700000000000) throw new Error(\"ts comes from the fixed timestamp.\");\nif (parsed.level !== \"info\" || parsed.event !== \"request.completed\") throw new Error(\"level and event present.\");\nif (parsed.path !== \"/api/tasks\" || parsed.ms !== 42) throw new Error(\"Extra fields spread in.\");\n",
+      "hint": "JSON.stringify({ ts: fixedTimestamp, level, event, ...fields })."
+    },
+    {
+      "name": "fields cannot shadow the envelope",
+      "code": "const fn = new Function(code + \"\\nreturn { logLine };\");\nconst { logLine } = fn();\nconst parsed = JSON.parse(logLine(\"error\", \"db.timeout\", { level: \"debug\", event: \"hijack\" }));\nif (parsed.level !== \"error\") throw new Error(\"Malicious/sloppy fields must not overwrite level.\");\nif (parsed.event !== \"db.timeout\") throw new Error(\"Event must survive the spread.\");\n",
+      "hint": "Spread order decides ownership: envelope first, fields after — or is it the other way? Make the envelope win."
+    },
+    {
+      "name": "invalid level throws",
+      "code": "const fn = new Function(code + \"\\nreturn { logLine };\");\nconst { logLine } = fn();\ntry {\n  logLine(\"LOUD\", \"x\", {});\n  throw new Error(\"should have thrown\");\n} catch (e) {\n  if (!/level/i.test(e.message)) throw new Error(\"Error must mention level.\");\n}\n",
+      "hint": "Validate against the four allowed levels."
+    }
+  ]
+}

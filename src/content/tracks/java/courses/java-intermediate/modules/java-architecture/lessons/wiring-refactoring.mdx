@@ -1,0 +1,26 @@
+## Wiring dependencies by hand
+
+Frameworks (Spring) do dependency injection for you; intermediates learn
+to wire by hand first — it demystifies the container:
+
+```java
+public static void main(String[] args) {
+    ExpenseRepository repo = new InMemoryExpenseRepository();
+    ReportService reports = new ReportService(repo);
+    CliController cli = new CliController(reports);
+    cli.run();   // the composition root — the ONLY place that knows everything
+}
+```
+
+The **composition root** is the single place where concrete classes
+meet. Everything below it sees interfaces only.
+
+Refactoring a god class, in order:
+1. find the seams (inputs/outputs of each responsibility)
+2. extract one responsibility into a collaborator
+3. inject it via constructor
+4. test the extracted class alone
+5. repeat until the original class only *orchestrates*
+
+Each step keeps the program working — refactoring is a series of small
+verified moves, not a rewrite.

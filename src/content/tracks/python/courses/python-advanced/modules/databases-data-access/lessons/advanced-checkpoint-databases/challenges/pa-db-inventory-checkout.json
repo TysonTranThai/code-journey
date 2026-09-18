@@ -1,0 +1,20 @@
+{
+  "id": "pa-db-inventory-checkout",
+  "title": "Fight for the last unit of stock",
+  "prompt": "Implement `checkout(rows, requests)` — a reservation system over `rows` (a list of dicts `{'sku', 'stock', 'version'}`):\n\n- each request is `(sku, conflict_on_attempt_set)` meaning: decrement that SKU's stock by 1, where the given 1-based attempt numbers lose a race (another writer bumped the version first)\n- apply optimistic concurrency per request: read version, mutate, conflict → retry with the bumped row, up to **3 attempts**; after that the request fails\n- a request fails immediately if the stock is 0 at the moment of a winning write: return its sku in `out_of_stock` instead\n- return `{'rows': rows_after_all_requests, 'applied': [skus in request order], 'out_of_stock': [skus that failed]}`\n\nThe invariant: two requests racing for the last unit — exactly one wins, the loser reports `out_of_stock` (or retries and then reports honestly).",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: checkout(rows, requests)",
+  "tests": [
+    {
+      "name": "the loser loses, honestly",
+      "code": "rows = [{'sku': 'A', 'stock': 1, 'version': 0}]\nr = checkout(rows, [('A', set()), ('A', set())])\nassert r['applied'] == ['A']\nassert r['out_of_stock'] == ['A']\nfinal = [row for row in r['rows'] if row['sku'] == 'A'][0]\nassert final['stock'] == 0 and final['version'] == 1\nprint('ok')",
+      "hint": "Two requests, one unit: exactly one wins; the other reports honestly."
+    },
+    {
+      "name": "conflicts consume attempts, then succeed",
+      "code": "rows = [{'sku': 'B', 'stock': 5, 'version': 0}]\nr = checkout(rows, [('B', {1, 2})])\nassert r['applied'] == ['B'] and r['out_of_stock'] == []\nfinal = [row for row in r['rows'] if row['sku'] == 'B'][0]\nassert final['stock'] == 4\nprint('ok')",
+      "hint": "Losing races retries with the bumped row; the write lands on the latest state."
+    }
+  ]
+}

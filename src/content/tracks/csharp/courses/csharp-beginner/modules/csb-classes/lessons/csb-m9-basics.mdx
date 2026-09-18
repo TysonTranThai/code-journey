@@ -1,0 +1,46 @@
+## State and behavior together
+
+A **class** is a blueprint for objects: it declares the *fields* (state) every object carries and the *methods* (behavior) that operate on that state.
+
+```csharp
+class Stopwatch
+{
+    public long elapsedMs;      // field: per-object state
+    public bool running;
+
+    public void Start()         // method: behavior over state
+    {
+        running = true;
+    }
+
+    public void Record(long nowMs)
+    {
+        if (running) elapsedMs += nowMs;   // reads/writes THIS object's fields
+        running = false;
+    }
+}
+```
+
+`new` builds one object from the blueprint:
+
+```csharp
+var a = new Stopwatch();
+var b = new Stopwatch();
+a.Start();
+// b.elapsedMs is still 0 — each object owns its own fields
+```
+
+`a` and `b` are independent *instances*. Writing to a field on one never affects the other: state belongs to the object, not to the class.
+
+## Members and `this`
+
+Inside a method, an unqualified name like `elapsedMs` means *this object's* field. Writing `this.elapsedMs` is explicit — you need it only when a parameter shadows a field:
+
+```csharp
+public void Rename(string name)
+{
+    this.name = name;   // left: the field, right: the parameter
+}
+```
+
+Everything here is per-object. Members that belong to the *class itself* are declared `static` — a later topic.

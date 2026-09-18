@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 
 import { createThread } from "@/server/actions/discussions";
+import { useI18n } from "@/lib/i18n/provider";
 
 type ActionState = { ok: true; threadId: string } | { ok: false; error: string } | null;
 
@@ -22,14 +23,15 @@ export function NewThreadForm({ lessonId, signedIn }: { lessonId: string; signed
     },
     null,
   );
+  const { d } = useI18n();
 
   if (!signedIn) {
     return (
       <p className="rounded-lg border border-zinc-800 bg-zinc-900/60 px-4 py-3 text-sm text-zinc-400">
-        <Link href="/login" className="text-sky-400 underline underline-offset-2">
-          Sign in
+        <Link href="/login" className="text-emerald-400 underline underline-offset-2 hover:text-emerald-300">
+          {d.discussion.signIn}
         </Link>{" "}
-        to ask a question.
+        {d.discussion.signInToAsk}
       </p>
     );
   }
@@ -37,7 +39,7 @@ export function NewThreadForm({ lessonId, signedIn }: { lessonId: string; signed
   if (state?.ok) {
     return (
       <p className="rounded-lg border border-emerald-700 bg-emerald-950/50 px-4 py-3 text-sm text-emerald-300">
-        Thread posted.
+        {d.discussion.threadPosted}
       </p>
     );
   }
@@ -49,18 +51,18 @@ export function NewThreadForm({ lessonId, signedIn }: { lessonId: string; signed
         name="title"
         required
         maxLength={200}
-        placeholder="Your question in one line"
-        aria-label="Question title"
-        className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+        placeholder={d.discussion.titlePlaceholder}
+        aria-label={d.discussion.titleAria}
+        className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400"
       />
       <textarea
         name="body"
         required
         maxLength={4000}
         rows={4}
-        placeholder="What would you like to ask? Share what you tried, too."
-        aria-label="Question details"
-        className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+        placeholder={d.discussion.bodyPlaceholder}
+        aria-label={d.discussion.bodyAria}
+        className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-400"
       />
       {state && !state.ok && (
         <p role="alert" className="text-sm text-rose-400">
@@ -70,9 +72,9 @@ export function NewThreadForm({ lessonId, signedIn }: { lessonId: string; signed
       <button
         type="submit"
         disabled={pending}
-        className="self-start rounded-lg bg-sky-500 px-4 py-2 text-sm font-semibold text-zinc-950 hover:bg-sky-400 disabled:opacity-60"
+        className="self-start rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-zinc-950 hover:bg-emerald-400 shadow-sm shadow-emerald-500/20 disabled:opacity-60"
       >
-        {pending ? "Posting…" : "Post question"}
+        {pending ? d.discussion.posting : d.discussion.postQuestion}
       </button>
     </form>
   );

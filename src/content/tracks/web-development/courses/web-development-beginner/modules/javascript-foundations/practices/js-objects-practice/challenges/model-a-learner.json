@@ -1,0 +1,25 @@
+{
+  "id": "model-a-learner",
+  "title": "Model a Learner",
+  "prompt": "Model real data:\n\n1. Create `learner` — an object with `name` (string), `streak` (number), and `skills` (an array of at least two skill names).\n2. Write `isOnFire(person)` that returns true when `streak` is 7 or more.\n3. Create `cohort` — an array of two learner objects (reuse the same shape). Log the name of the second one.",
+  "difficulty": "intermediate",
+  "boilerplate": "// 1) learner object\n\n// 2) isOnFire\n\n// 3) cohort + log\n",
+  "tests": [
+    {
+      "name": "learner has the right shape",
+      "code": "const fn = new Function(code + \"\\nreturn { learner, cohort, isOnFire };\");\nconst { learner } = fn();\nif (!learner || typeof learner.name !== \"string\" || learner.name.length === 0) {\n  throw new Error(\"learner.name must be a non-empty string.\");\n}\nif (typeof learner.streak !== \"number\") {\n  throw new Error(\"learner.streak must be a number.\");\n}\nif (!Array.isArray(learner.skills) || learner.skills.length < 2) {\n  throw new Error(\"learner.skills must be an array with at least two entries.\");\n}",
+      "hint": "const learner = { name: \"Ada\", streak: 12, skills: [\"HTML\", \"CSS\"] };"
+    },
+    {
+      "name": "isOnFire reads the property",
+      "code": "const fn = new Function(code + \"\\nreturn { learner, cohort, isOnFire };\");\nconst { isOnFire } = fn();\nif (isOnFire({ streak: 9 }) !== true) {\n  throw new Error(\"A streak of 9 is on fire.\");\n}\nif (isOnFire({ streak: 3 }) !== false) {\n  throw new Error(\"A streak of 3 is not.\");\n}",
+      "hint": "(person) => person.streak >= 7 — read the property off the parameter."
+    },
+    {
+      "name": "cohort is an array of learners, second name logged",
+      "code": "const logs = [];\nconst fakeConsole = { log: (...a) => logs.push(a.map(String).join(\" \")) };\nconst fn = new Function(\"console\", code + \"\\nreturn { learner, cohort, isOnFire };\");\nconst { cohort } = fn(fakeConsole);\nif (!Array.isArray(cohort) || cohort.length < 2 || typeof cohort[1]?.name !== \"string\") {\n  throw new Error(\"cohort must be an array of at least two learner-shaped objects.\");\n}\nif (!logs.some((l) => l === cohort[1].name)) {\n  throw new Error(\"Log the second learner's name (cohort[1].name).\");\n}",
+      "hint": "console.log(cohort[1].name); — index into the array, then the property."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "cpp1-check-hello-fix",
+  "title": "Fix and Print",
+  "prompt": "Fix the broken program, then make `program()` print exactly three lines:\\n`CIEN`\\n`compiles clean`\\n`ships on time`\\n(The program must also compile: it is missing its include, its return statement, and a semicolon.)",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\n\nvoid program() {\n    // TODO: print three lines exactly\n    std::cout << \"CIEN\";\n    std::cout << \"compiles clean\"\n    std::cout << \"ships on time\";\n}\n\nint main() {\n\n}",
+  "tests": [
+    {
+      "name": "three exact lines",
+      "code": "auto out = capture([]{ program(); });\nCHECK_LINES(out, \"CIEN\", \"compiles clean\", \"ships on time\");\nCHECK(!out.empty() && out.back() == '\\n');",
+      "hint": "Print the three lines in order; output must end with a newline (std::endl or '\\n')."
+    },
+    {
+      "name": "compiles cleanly",
+      "code": "CHECK(true);",
+      "hint": "The whole program must compile — the missing include, semicolon, and return statement must be repaired."
+    }
+  ],
+  "level": "debugging"
+}

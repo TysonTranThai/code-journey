@@ -1,0 +1,10 @@
+## Checkpoint — checkout được inject
+
+Cài `CheckoutService(repo, clock)`:
+
+- `checkout(cart)` dựng `{'id': f'o-{clock.now():.0f}', 'items': list(cart), 'total': sum(cart)}`, lưu qua repository, và trả về nó
+- giỏ rỗng raise `ValueError('empty cart')` — không lưu gì cả
+- đồng hồ được INJECT (`clock.now()` trả một số thực) — test được chấm dùng
+  một fake clock cố định và khẳng định id và tổng chính xác
+
+Constructor injection + thời gian inject = test tất định. Đó chính là bài học.

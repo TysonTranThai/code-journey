@@ -1,0 +1,18 @@
+{
+  "title": "Pipeline truy vấn",
+  "prompt": "Viết `createQuery(records)` RETURN một function `query(opts)`. Mỗi bản ghi có `{ id, score }`. `opts` có thể chứa:\n\n- `minScore`, `maxScore` — khoảng điểm gồm cả hai đầu; biên bị bỏ qua nếu không truyền\n- `sortBy` — `\"score\"` (mặc định) hoặc `\"id\"`\n- `order` — `\"asc\"` (mặc định) hoặc `\"desc\"`; bằng giá trị thì giữ thứ tự gốc\n- `page` (bắt đầu từ 1, mặc định 1), `perPage` (mặc định 2)\n\n`query` RETURN `{ items, total, page, pages }` trong đó `items` là trang kết quả hiện tại (mảng rỗng khi page vượt phạm vi) và `pages` là `Math.ceil(total / perPage)` (bằng 0 khi không có kết quả).",
+  "tests": [
+    {
+      "name": "lọc theo khoảng điểm gồm cả hai đầu",
+      "hint": "Lọc trước: giữ bản ghi thỏa mọi biên có mặt với <= và >=."
+    },
+    {
+      "name": "sắp xếp theo trường và thứ tự, ổn định",
+      "hint": "Sắp trên một bản sao — so giá trị, đảo dấu cho desc, và hòa các kết quả bằng bằng index gốc."
+    },
+    {
+      "name": "phân trang và báo số trang",
+      "hint": "Slice với (page - 1) * perPage; pages là Math.ceil(total / perPage) nhưng bằng 0 với tập rỗng."
+    }
+  ]
+}

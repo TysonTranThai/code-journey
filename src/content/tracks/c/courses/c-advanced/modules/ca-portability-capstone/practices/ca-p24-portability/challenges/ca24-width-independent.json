@@ -1,0 +1,26 @@
+{
+  "id": "ca24-width-independent",
+  "title": "Width-Independent Loop",
+  "prompt": "ISO C. Implement `unsigned long long checksum_upto(unsigned long long n)` — sum i from 0 to n-1 using unsigned long long (the widest unsigned this course assumes) and return the total. The point: the math must be correct for any n representable in unsigned long long, without ever falling into signed-overflow UB.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "small sums",
+      "code": "CHECK_EQ(checksum_upto(4), 6ULL);\nCHECK_EQ(checksum_upto(1), 0ULL);\nCHECK_EQ(checksum_upto(0), 0ULL);",
+      "hint": "0+1+2+3 = 6; zero iterations sum to zero."
+    },
+    {
+      "name": "known large sum",
+      "code": "CHECK_EQ(checksum_upto(1000000ULL), 499999500000ULL);",
+      "hint": "Sum 0..999999 = n(n-1)/2 = 499999500000 — the formula check."
+    },
+    {
+      "name": "unsigned arithmetic stays defined",
+      "code": "unsigned long long big = 18446744073709551615ULL;\nunsigned long long wrapped = big + 1ULL;\nCHECK_EQ(wrapped, 0ULL);",
+      "hint": "Unsigned wraparound is defined modular arithmetic — the one overflow that is never UB."
+    }
+  ],
+  "level": "combination"
+}

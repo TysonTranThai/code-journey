@@ -1,0 +1,28 @@
+An **ExecutorService** is a queue of tasks plus worker threads. Its lifecycle
+has three phases and two endings:
+
+- `shutdown()`: stop accepting tasks, finish queued ones.
+- `shutdownNow()`: stop accepting, **interrupt** running tasks, drain the
+  queue into your hands (so nothing is lost silently).
+- `awaitTermination(timeout)`: the polite wait. The pattern:
+
+```java
+exec.shutdown();
+if (!exec.awaitTermination(5, TimeUnit.SECONDS)) {
+    exec.shutdownNow();   // escalate
+}
+```
+
+**Future.get()** is where composition goes to die: `f2.get()` cannot *start*
+until you call it, so "run A and B concurrently, then combine" becomes
+blocked hand-tuning. **CompletableFuture** fixes this:
+
+```java
+var a = CompletableFuture.supplyAsync(() -> fetchA());
+var b = CompletableFuture.supplyAsync(() -> fetchB());
+var both = a.thenCombine(b, (x, y) -> x + y);   // runs when BOTH complete
+```
+
+Composition primitives: `thenApply` (transform), `thenCompose` (chain,
+flat-map), `thenCombine` (join two), `exceptionally`/`handle` (recover),
+`orTimeout` (JDK 9+; sandbox-safe since it needs no extra flags).

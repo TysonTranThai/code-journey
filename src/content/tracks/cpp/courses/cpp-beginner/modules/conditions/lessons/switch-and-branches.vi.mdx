@@ -1,0 +1,50 @@
+## switch: chọn giữa các giá trị rời rạc
+
+```cpp
+switch (command) {
+    case 'h':
+        print_help();
+        break;
+    case 'q':
+        quit = true;
+        break;
+    default:
+        std::cout << "unknown command\n";
+        break;
+}
+```
+
+`switch` so sánh một giá trị nguyên hoặc enum với các nhãn `case`. Nó dễ đọc hơn chuỗi `if/else if` dài *khi mọi phép so sánh đều là đẳng thức với hằng số*.
+
+## Cái bẫy fall-through (và một 용 dụng chính đáng duy nhất)
+
+Không có `break`, việc thực thi sẽ *rơi xuống* case kế tiếp:
+
+```cpp
+case 1:
+    std::cout << "one";
+    // KHÔNG có break — in thêm "two"!
+case 2:
+    std::cout << "two";
+    break;
+```
+
+GCC cảnh báo về fall-through vô ý (`-Wimplicit-fallthrough` với `-Wextra`). Một 용 dụng chính đáng duy nhất — dùng chung code cho vài case — phải được đánh dấu tường minh bằng `[[fallthrough]];` để người review biết đó là chủ ý. Người mới: luôn viết `break;`.
+
+## switch hay if/else — cách chọn
+
+- So đẳng thức với một tập hằng cố định (lệnh `char`, menu `int`, trạng thái `enum class`) → `switch`.
+- Khoảng giá trị, logic phức hợp, so sánh `std::string` → `if/else`.
+- (`switch` trên `std::string` không hoạt động; if/else với `==` thì được.)
+
+## Dòng đơn: toán tử điều kiện
+
+```cpp
+std::string label = (score >= 50) ? "pass" : "fail";
+```
+
+`cond ? a : b` là một *biểu thức* — hữu ích khi khởi tạo biến từ một lựa chọn bé xíu. Bất cứ thứ gì rối hơn nên nằm trong một `if` thật.
+
+## Sắp tới
+
+Điều kiện quyết định một lần; vòng lặp quyết định một nghìn lần. Module sau: sự lặp lại.

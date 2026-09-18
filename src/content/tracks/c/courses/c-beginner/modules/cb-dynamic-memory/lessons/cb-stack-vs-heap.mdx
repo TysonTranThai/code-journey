@@ -1,0 +1,39 @@
+## The stack: automatic and fast
+
+Function locals live on the **stack**. When the function returns, that memory
+is reclaimed automatically:
+
+```c
+void f(void) {
+    int a[100];        // lives until f returns
+}                      // gone — no cleanup code written by you
+```
+
+Fast, but two limits: the size must be known at compile time, and the memory
+dies with the function.
+
+## The heap: manual and flexible
+
+The **heap** holds memory you request at runtime with `malloc` and release
+yourself with `free`:
+
+```c
+#include <stdlib.h>
+
+int *p = malloc(10 * sizeof(int));   // ask for room for 10 ints
+// ... p stays valid across function boundaries ...
+free(p);                             // YOU give it back
+```
+
+Heap memory survives until you free it — it can outlive the function that
+created it.
+
+## The one rule that follows you forever
+
+> If you allocated it, you own it: someone must free it exactly once.
+
+- forget to free → **memory leak**
+- free twice → undefined behavior (heap corruption)
+- use after free → undefined behavior
+
+Modules ahead (file I/O, data structures) build directly on this rule.

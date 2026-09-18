@@ -1,0 +1,21 @@
+{
+  "id": "csb-p5-convert",
+  "title": "Temperature pair",
+  "prompt": "Implement `static double CtoF(double c)` (multiply by 9/5, add 32) and `static double FtoC(double f)` (subtract 32, multiply by 5/9). Watch the parentheses — the subtraction must happen before the scaling in one direction and after it in the other.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "boiling",
+      "code": "Cj.Near(Solution.CtoF(100), 212, 1e-9, \"CtoF(100)\");\nCj.Near(Solution.FtoC(212), 100, 1e-9, \"FtoC(212)\");",
+      "hint": "The two fixed points of the scale."
+    },
+    {
+      "name": "freezing-and-roundtrip",
+      "code": "Cj.Near(Solution.CtoF(0), 32, 1e-9, \"CtoF(0)\");\nCj.Near(Solution.FtoC(32), 0, 1e-9, \"FtoC(32)\");\nCj.Near(Solution.FtoC(Solution.CtoF(37.5)), 37.5, 1e-9, \"roundtrip\");",
+      "hint": "Freezing point both ways, then FtoC(CtoF(x)) must land back on x."
+    }
+  ],
+  "level": "imitation"
+}

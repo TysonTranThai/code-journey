@@ -1,0 +1,50 @@
+Recursion is a function calling itself on a smaller input. Every recursive
+function needs a **base case** (when to stop) and a **recursive case**
+(how to shrink). Missing or wrong base cases mean stack overflow.
+
+```cpp
+long long factorial(int n) {
+    if (n <= 1) return 1;          // base case
+    return n * factorial(n - 1);   // shrink toward the base
+}
+```
+
+A linked list is the classic recursive structure: a node holds a value and
+a pointer to the rest of the list.
+
+```cpp
+struct Node {
+    int value;
+    Node* next;
+};
+
+int length(const Node* head) {
+    if (!head) return 0;                 // base: empty list
+    return 1 + length(head->next);       // shrink: rest of the list
+}
+```
+
+Manual list surgery — the operations the STL's `std::list` does for you:
+
+```cpp
+Node* push_front(Node* head, int v) {
+    return new Node{v, head};            // caller owns the nodes
+}
+
+// reverse in place: three pointers, one pass
+Node* reverse(Node* head) {
+    Node* prev = nullptr;
+    while (head) {
+        Node* next = head->next;
+        head->next = prev;
+        prev = head;
+        head = next;
+    }
+    return prev;
+}
+```
+
+Raw `new`/`delete` here is for *understanding* — production code wraps
+nodes in `unique_ptr` (Module 8) or uses `std::forward_list`. Recursion
+depth is also a memory decision: 10⁵ deep frames can overflow the stack
+where an iterative loop would not.

@@ -1,0 +1,17 @@
+Sổ giao dịch - cả khóa học gói lại trong bốn phương thức.
+
+`net` cần tổng *có dấu*: `CASH_IN ? +amount : -amount`, lọc theo
+`date.startsWith(prefix)`. Chú ý `net("")` nghĩa là tất cả - điều kiện
+prefix luôn thỏa. `labelsSince` là filter-rồi-uppercase-rồi-collect; thứ
+tự thêm vào là món quà miễn phí từ `ArrayList`. `saveLines` là
+`String.format("%s|%s|%s|%.2f", ...)` cho từng giao dịch - và chuỗi format
+đúng là thứ `loadLine` sẽ tách theo, đó là điều làm cho test round-trip
+trung thực: save, nạp vào một sổ *mới tinh*, save lần nữa, so sánh.
+
+`loadLine` là bài học module 11 khoác áo capstone: bọc construct-and-add
+trong `try { } catch (IllegalArgumentException e) { }` và bỏ qua im lặng.
+Một dòng lỗi không bao giờ được kéo sập cả đợt nạp - bạn đã chứng minh
+mình hiểu điều đó ở checkpoint trước; giờ nó lên thuyền sản phẩm cuối.
+
+Khi cả bốn khối test đều pass, mọi module của khóa học đều đã đóng góp
+một phần vào một sản phẩm chạy được. Đó là vạch đích.

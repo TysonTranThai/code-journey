@@ -1,0 +1,27 @@
+An iterator is the glue between containers and algorithms: an object that
+points into a sequence and can move to the next element. Every container
+exposes `begin()` and `end()`, and `end()` is one-past-the-last — a marker,
+never a value to dereference.
+
+```cpp
+#include <vector>
+#include <iostream>
+
+std::vector<int> v{10, 20, 30};
+for (auto it = v.begin(); it != v.end(); ++it) {
+    std::cout << *it << " ";           // dereference reads the element
+}
+*v.begin() = 11;                        // non-const iterators can write
+```
+
+The iterator categories, from weakest to strongest:
+
+- **input/output** — single pass (stream iterators)
+- **forward** — re-read, multi-pass (`forward_list`, `unordered_map`)
+- **bidirectional** — plus `--it` (`list`, `map`, `set`)
+- **random access** — plus `it + n`, `it1 - it2`, `it[n]` (`vector`, `deque`, `array`)
+
+Category decides which algorithms you may call: `std::sort` needs random
+access, so it works on `vector` but not on `list` (which offers its own
+`l.sort()` member). `const` containers hand back `const_iterator`s — you
+can read, you cannot write.

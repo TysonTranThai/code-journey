@@ -1,0 +1,60 @@
+Two branches diverged. How do you put them back together?
+
+## `git merge`: preserve history
+
+```bash
+git checkout feature
+git merge main
+# or, from main:
+git merge feature   # creates a merge commit if histories diverged
+```
+
+A merge commit has **two parents**. History shows exactly what happened: "these two lines of work were combined here." Non-destructive — safe on shared branches.
+
+## `git rebase`: rewrite into a straight line
+
+```bash
+git checkout feature
+git rebase main
+```
+
+Rebase replays _your_ commits on top of the latest `main`, creating **new commit objects** (same changes, new IDs). Result: linear history, no merge commit. The cost: the old commits are abandoned — which is why the golden rule exists.
+
+> **Golden rule: never rebase commits others have pulled.** Rebase rewrites IDs; everyone's copies of the "same" commits become duplicates. Rebase only commits that exist only on your machine (or coordinate explicitly).
+
+The professional pattern:
+
+```bash
+# keep feature fresh without a noise merge commit
+git fetch origin
+git rebase origin/main
+```
+
+## Conflicts: a resolution algorithm, not a panic
+
+A conflict happens when both branches changed the same lines. Git marks the file:
+
+```text
+<<<<<<< HEAD
+const total = subtotal * 1.1;      // your side
+=======
+const total = subtotal + fee;      // incoming side
+>>>>>>> main
+```
+
+Resolution procedure:
+
+1. `git status` — list every conflicted file (resolve all of them)
+2. Open each file; decide the **correct code for the product** — not "mine" or "theirs" reflexively; often the answer is a combination
+3. Remove all three marker lines
+4. `git add <file>` to mark resolved
+5. Finish: `git merge --continue` or `git rebase --continue`
+6. **Run the tests** before finishing — a conflict resolved textually can still be broken logically
+
+Escape hatches: `git merge --abort` / `git rebase --abort` return you to the exact pre-operation state. During a rebase conflict loop, `git rebase --skip` drops the offending commit entirely.
+
+## Which to use?
+
+- Shared/public branches → merge (never rewrite what others have)
+- Your own local feature branch → rebase onto main for a clean pull request
+- Team convention decides the rest — consistency beats ideology

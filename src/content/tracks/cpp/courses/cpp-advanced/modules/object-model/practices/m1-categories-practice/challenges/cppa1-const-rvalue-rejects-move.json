@@ -1,0 +1,21 @@
+{
+  "id": "cppa1-const-rvalue-rejects-move",
+  "title": "A const rvalue cannot be moved from",
+  "prompt": "Implement `std::string concat(const std::string& a, const std::string& b)` returning the concatenation **by value**, and `std::string sabotage(const std::string&& a, const std::string&& b)` that must still produce `a + b` even though its parameters are const rvalues.",
+  "difficulty": "advanced",
+  "level": "imitation",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n\nstd::string concat(const std::string& a, const std::string& b);\n\nstd::string sabotage(const std::string&& a, const std::string&& b);\n",
+  "tests": [
+    {
+      "name": "concat returns by value",
+      "code": "std::string x = concat(\"ab\", \"cd\");\nCHECK_EQ(x, std::string(\"abcd\"));",
+      "hint": "operator+ already returns by value: return a + b;"
+    },
+    {
+      "name": "const rvalues are still readable",
+      "code": "std::string y = sabotage(std::string(\"xy\"), std::string(\"zw\"));\nCHECK_EQ(y, std::string(\"xyzw\"));",
+      "hint": "const T&& cannot be moved from, but it can be read: return a + b; compiles and copies — that is the point of the trap."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+## Test hợp đồng, không phải bản cài đặt
+
+Mỗi challenge trong khóa này từng có một **bản sai mà gần đúng**. Bộ
+test tồn tại để làm *gần đúng* thất bại. Suite của capstone nhắm vào
+bốn chỗ thư viện thật hay gãy:
+
+### 1. Round-trip: trạng thái, không phải buffer
+
+```
+put k1..k3 → del k2 → save → load vào store mới →
+kỳ vọng: k1, k3 có; k2 vắng; count == 2
+```
+
+Điều này bắt lời nói dối kinh điển: dump mảng struct rồi gọi nó là
+"trạng thái".
+
+### 2. Tiêm nhiễm: hỏng một byte, kỳ vọng một câu trả lời
+
+Lật byte **cuối** (vùng checksum) → `KV_EBADSUM`. Cắt bớt một byte →
+`KV_ETRUNC`. Ghi đè magic → `KV_EFORMAT`. Mỗi đầu vào lỗi có **một**
+phán quyết riêng.
+
+### 3. Biên: dung lượng là trạng thái thật
+
+Lấp đủ 16 slot. `put` thứ 17 phải trả `KV_ENOMEM` — và 16 entry đã lưu
+phải **nguyên vẹn**.
+
+### 4. Thăm dò ownership: bộ nhớ người gọi là của họ
+
+```c
+char key[8] = "temp";
+kv_put(&s, key, 1);
+memset(key, 'x', 4);                       /* phá buffer của người gọi */
+CHECK_EQ(kv_get(&s, "temp", &v), KV_OK);   /* store giữ bản sao */
+```
+
+Store mượn con trỏ thay vì copy bytes sẽ trượt probe này — tất định.
+
+### Meta-test: suite của bạn có biết thất bại không?
+
+Với mỗi test, hỏi câu duy nhất quan trọng: *bản cài đặt sai nào test
+này giết?* Nếu không gọi tên được, test đó chỉ là trang trí.

@@ -1,0 +1,20 @@
+{
+  "id": "csb-checkpoint-m15-task",
+  "title": "SalesReport",
+  "prompt": "Implement `BigSales`, `TotalByRegion`, `TopProduct`, and `AverageSale` over the Sale record — every contract (ordering, ties, empty, case) is graded.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "big-sales",
+      "code": "var sales = new List<Solution.Sale>\n{\n    new Solution.Sale(\"north\", \"tea\", 50),\n    new Solution.Sale(\"south\", \"tea\", 80),\n    new Solution.Sale(\"north\", \"mug\", 30),\n    new Solution.Sale(\"south\", \"mug\", 50),\n};\nCj.Eq(string.Join(\"|\", Solution.BigSales(sales, 50)), \"tea:80|mug:50|tea:50\", \"desc amount, asc product\");\nCj.Eq(Solution.BigSales(sales, 100).Count, 0, \"nothing that big\");",
+      "hint": "Projection, filter, and the two-level ordering: ties on amount break by product A→Z."
+    },
+    {
+      "name": "region-and-top",
+      "code": "var sales = new List<Solution.Sale>\n{\n    new Solution.Sale(\"North\", \"tea\", 50),\n    new Solution.Sale(\"north\", \"mug\", 30),\n    new Solution.Sale(\"South\", \"tea\", 80),\n};\nvar byRegion = Solution.TotalByRegion(sales);\nCj.Eq(byRegion[\"North\"], 80, \"north merged case-insensitively\");\nCj.Eq(byRegion[\"South\"], 80, \"south\");\nvar top = Solution.TopProduct(sales);\nCj.Eq(top.Value.Item1, \"tea\", \"tea totals 130\");\nCj.Eq(Solution.AverageSale(sales, \"north\"), 40.0, \"north mean\");\nCj.Eq(Solution.AverageSale(sales, \"west\"), 0.0, \"no west sales\");\nCj.Eq(Solution.TopProduct(null), null, \"null sales\");",
+      "hint": "Region grouping preserves the key as first written; the top product and guarded averages follow."
+    }
+  ]
+}

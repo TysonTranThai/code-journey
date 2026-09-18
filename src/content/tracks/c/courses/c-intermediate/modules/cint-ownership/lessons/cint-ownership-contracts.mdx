@@ -1,0 +1,63 @@
+## The four questions
+
+Every heap pointer in a C program must have answers to:
+
+1. **Who owns it?** (Who is responsible for freeing it?)
+2. **How long does it live?** (Until the owner frees it — or forever?)
+3. **Who may write it?** (Single owner, or shared?)
+4. **What happens if allocation fails?** (Return NULL? Abort? Retry?)
+
+C does not answer these for you. The API design does — in signatures, docs,
+and naming.
+
+## Failure is a contract
+
+```c
+/* Contract: returns a heap buffer the caller must free, or NULL on failure.
+   The two outcomes are the whole contract; neither may be ignored. */
+char *greeting(const char *name);
+```
+
+Beginner code often pretends `malloc` never fails. Intermediate code handles
+it, because **the sandbox caps memory** and long-running systems fragment:
+
+```c
+char *copy = strdup(name);        /* may return NULL */
+if (!copy) return 0;              /* propagate, don't dereference */
+```
+
+Every allocation site needs a failure path, and every function that can fail
+needs a documented way to say so. The out-parameter pattern from Module 2
+pairs naturally: `int make(int n, T **out)` — return the status, write the
+pointer only on success.
+
+## NULL after free, and the ownership transfer
+
+```c
+free(p);
+p = NULL;      /* now accidental reuse is a harmless no-op */
+```
+
+Setting the pointer to NULL after free converts the nastiest bug class
+(use-after-free) into a benign one for that variable. It is cheap insurance
+wherever the variable outlives the free.
+
+Ownership **transfer**: a function like `takeover(char *s)` that stores or
+frees its argument now *owns* it — the caller must not free it again.
+Document every transfer; ownership confusion is the root of double-free.
+
+## The ownership ladder in signatures
+
+| Signature | Deal |
+|---|---|
+| `size_t len(const char *s)` | borrows; does not keep or free |
+| `int dup_str(const char *s, char **out)` | creates new memory; caller owns |
+| `void consume(char *s)` | takes ownership; caller must not reuse |
+| `void store(struct Table *t, char *s)` | takes ownership into the table |
+
+## Check your understanding
+
+- Who frees the result of `strdup`? (The caller — it created fresh heap memory.)
+- Is `free(p); free(p);` valid? (No — double free is undefined behavior.)
+- After `free(p); p = NULL;` what does `free(p)` do? (Nothing — free(NULL)
+  is a documented no-op.)

@@ -1,0 +1,21 @@
+{
+  "id": "csb-p6-normalize",
+  "title": "Name normalizer",
+  "prompt": "Implement `static string Normalize(string name)` — trim surrounding whitespace, then collapse every run of internal whitespace to a single space. `\"  Minh   Van  \"` becomes `\"Minh Van\"`. Null yields `\"\"`.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "Cj.Eq(Solution.Normalize(\"  Minh   Van  \"), \"Minh Van\", \"spaces\");\nCj.Eq(Solution.Normalize(\"clean\"), \"clean\", \"untouched\");",
+      "hint": "Trim outside; internal runs — not single spaces — collapse to one."
+    },
+    {
+      "name": "whitespace-kinds",
+      "code": "Cj.Eq(Solution.Normalize(\"a\\tb\\nc\"), \"a b c\", \"tabs/newlines count\");\nCj.Eq(Solution.Normalize(null), \"\", \"null\");\nCj.Eq(Solution.Normalize(\"   \"), \"\", \"blank\");",
+      "hint": "Whitespace is more than the space character; blank input collapses to empty."
+    }
+  ],
+  "level": "guided"
+}

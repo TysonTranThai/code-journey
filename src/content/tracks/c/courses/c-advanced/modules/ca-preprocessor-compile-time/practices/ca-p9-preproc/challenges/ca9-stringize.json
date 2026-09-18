@@ -1,0 +1,21 @@
+{
+  "id": "ca9-stringize",
+  "title": "Stringize with Double Expansion",
+  "prompt": "Given the classic wrapper pair already in your editor (`STR_` and `STR`) and a file-scope `#define BUILD_ID 77`, implement `const char *id_string(void)` returning STR(BUILD_ID) — the expanded value as text — and `const char *id_raw(void)` returning what STR_(BUILD_ID) yields: the bare token name.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define STR_(x) #x\n#define STR(x) STR_(x)\n",
+  "tests": [
+    {
+      "name": "double expansion stringizes the value",
+      "code": "CHECK_STR_EQ(id_string(), \"77\");",
+      "hint": "STR(BUILD_ID) first expands BUILD_ID to 77, then stringizes it: the result is the text 77."
+    },
+    {
+      "name": "single expansion keeps the name",
+      "code": "CHECK_STR_EQ(id_raw(), \"BUILD_ID\");",
+      "hint": "STR_ never expands its argument, so the string is the bare token name."
+    }
+  ],
+  "level": "combination"
+}

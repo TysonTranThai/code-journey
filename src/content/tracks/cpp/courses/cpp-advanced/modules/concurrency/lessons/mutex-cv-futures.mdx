@@ -1,0 +1,35 @@
+## Mutex + RAII guards
+
+`std::mutex` with `std::lock_guard` (scope-locked) or `std::unique_lock` (movable, conditional). The rule: guard construction owns the lock; never call the mutex directly when a guard exists. Shared-read-heavy data wants `std::shared_mutex` with `shared_lock` readers / `unique_lock` writers.
+
+## Condition variables: wait for a state change
+
+```cpp
+std::mutex m;
+std::condition_variable cv;
+bool ready = false;
+
+// waiter
+std::unique_lock lk(m);
+cv.wait(lk, [] { return ready; });   // releases m while waiting; re-acquires before returning
+
+// notifier
+{ std::lock_guard lk(m); ready = true; }
+cv.notify_one();
+```
+
+The **predicate form** is not optional polish — it guards against lost wakeups and spurious wakeups. Every wait must be predicated; every state change must hold the mutex and notify.
+
+## std::future / std::promise: one-shot hand-off
+
+`std::promise` is the write end, `std::future` the read end of a single value transfer — including exceptions:
+
+```cpp
+std::promise<int> p;
+std::future<int> f = p.get_future();
+std::thread t([&p] { p.set_value(compute()); });
+int result = f.get();   // blocks until set — or rethrows the worker's exception
+t.join();
+```
+
+`std::async` wraps this; `std::packaged_task` wraps a callable. These are for *one-shot* results; a queue of tasks is the thread pool's job (next lesson).

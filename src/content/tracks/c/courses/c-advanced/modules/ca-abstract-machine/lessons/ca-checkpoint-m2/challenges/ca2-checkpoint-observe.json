@@ -1,0 +1,26 @@
+{
+  "id": "ca2-checkpoint-observe",
+  "title": "Checkpoint: Observable Behavior Only",
+  "prompt": "A static `int g_seen = 0;` is already in your editor. Implement three functions:\n \n1. `int pure_compute(int x)` returning `x * 3 + 1`, locals only, no globals touched.\n2. `void observe(int x)` storing `pure_compute(x)`'s result into `g_seen`.\\n3. `int lifetime_alive(int v)` creating an automatic `int`, assigning v, and returning its value read back through a pointer taken while the object is alive.\\n \\n`pure_compute` must remain side-effect free; `observe` is the only thing making the computation observable.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstatic int g_seen = 0;\n",
+  "tests": [
+    {
+      "name": "observe writes 13",
+      "code": "int before = g_seen; observe(4); CHECK_EQ(g_seen, before + 13);",
+      "hint": "13 = 4*3+1; observe is what makes the result visible."
+    },
+    {
+      "name": "pure stays pure",
+      "code": "g_seen = 100; CHECK_EQ(pure_compute(10), 31); CHECK_EQ(g_seen, 100);",
+      "hint": "A direct call must return 31 without touching g_seen."
+    },
+    {
+      "name": "read inside lifetime",
+      "code": "CHECK_EQ(lifetime_alive(-7), -7);",
+      "hint": "Take the pointer, deref before the block ends."
+    }
+  ],
+  "level": "mini-build"
+}

@@ -1,0 +1,32 @@
+A `String` is an **immutable** object — a value that can never be changed.
+Every method that "modifies" a string actually returns a new one:
+
+```java
+String name = "  Ada Lovelace ";
+String clean = name.trim();       // "Ada Lovelace" — name itself unchanged!
+String upper = name.toUpperCase();
+String both  = name.trim().toUpperCase();   // chain: method calls compose
+```
+
+The everyday toolbox:
+
+| Method | Job | Example |
+|---|---|---|
+| `length()` | character count | `"hi".length()` → 2 |
+| `charAt(i)` | char at index | `"hi".charAt(1)` → `'i'` |
+| `substring(a, b)` | from a up to b-1 | `"hello".substring(1, 3)` → `"el"` |
+| `indexOf(s)` | first position or -1 | `"banana".indexOf("na")` → 2 |
+| `contains(s)` | does it appear | `"banana".contains("ana")` → true |
+| `replace(a, b)` | all a become b | `"aa".replace("a","b")` → `"bb"` |
+| `split(regex)` | cut into an array | `"a,b".split(",")` → `["a","b"]` |
+| `strip()/trim()` | drop surrounding whitespace | `" x ".strip()` → `"x"` |
+| `isEmpty()/isBlank()` | empty / whitespace-only | |
+
+Immutability is why string equality is `.equals` (Module 2) and why
+`substring` is cheap — the new string shares nothing mutable with the old.
+
+**Splitting gotcha:** `split` takes a *regex*. To split on a literal dot,
+escape it: `"1.2".split("\\.")`. To split a sentence into words:
+`sentence.split("\\s+")` — one or more whitespace characters.
+
+**Next:** building strings efficiently.

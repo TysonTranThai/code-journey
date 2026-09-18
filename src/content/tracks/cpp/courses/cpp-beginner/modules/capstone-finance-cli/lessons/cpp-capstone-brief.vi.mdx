@@ -1,0 +1,28 @@
+## Sản phẩm
+
+Một **Trình quản lý tài chính cá nhân** — ghi lại giao dịch, phân loại, và trả lời các câu hỏi thật: tôi đã tiêu gì, vào việc gì, và còn lại bao nhiêu?
+
+## Tính năng (phần có chấm đánh dấu ★)
+
+1. ★ **Ghi** một giao dịch: tên, danh mục, số tiền (dương = thu nhập, âm = chi tiêu).
+2. ★ **Validate** tại ranh giới: tên rỗng bị từ chối, số tiền 0 bị từ chối.
+3. ★ **Số dư**: tổng của mọi số tiền.
+4. ★ **Theo danh mục**: tổng từng danh mục (`map<string,double>`).
+5. **Lọc**: các giao dịch trên/dưới một ngưỡng.
+6. **Lưu trữ**: lưu/đọc dòng CSV (`name,category,amount`) — bộ phân tích của module 6 vào sản phẩm thật.
+7. **Báo cáo**: tóm tắt đã sắp xếp in qua `void program()`.
+
+## Ràng buộc kiến trúc
+
+- Một **struct** `Transaction`; một `enum class Kind { Income, Expense }` suy ra từ dấu.
+- Một **class** `Ledger` sở hữu `std::vector<Transaction>` — các hàm của nó thực thi validation (kỷ luật bất biến của module 10).
+- Phân tích/định dạng là các **hàm tự do** (chuỗi.pipeline của module 16), không dán vào `Ledger`.
+- Không có `new`/`delete` ở bất kỳ đâu (module 12), không C-string, không `using namespace std;` trong header.
+
+## Các cột mốc
+
+M1: struct + Ledger với record/balance. M2: tổng theo danh mục + lọc. M3: vòng tròn trọn CSV lưu/đọc. M4: báo cáo qua `program()`. Bàn giao từng cột mốc chạy được — các bước kiểm tra có chấm ánh xạ đúng tới M1–M3.
+
+## Nghiệm thu (góc nhìn của test)
+
+Các challenge có chấm gọi thẳng tên bạn: `add_record`, `balance`, `category_totals`, cộng một kiểm tra báo cáo `program()`. Edge case được chấm: sổ cái rỗng, bản ghi bị từ chối, tháng chỉ có một danh mục. Hãy thiết kế cho chúng ngay từ dòng đầu tiên.

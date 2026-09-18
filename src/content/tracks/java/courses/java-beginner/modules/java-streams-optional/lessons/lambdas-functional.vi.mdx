@@ -1,0 +1,54 @@
+Có những hành vi quá nhỏ để trở thành một phương thức có tên. Java 8 bổ
+sung cú pháp "chỉ lấy phần hành vi": **biểu thức lambda**.
+
+```java
+// cách cũ: anonymous class
+Comparator<String> byLength = new Comparator<String>() {
+    public int compare(String a, String b) {
+        return Integer.compare(a.length(), b.length());
+    }
+};
+
+// cách mới: cùng một ý bằng lambda
+Comparator<String> byLength = (a, b) -> Integer.compare(a.length(), b.length());
+```
+
+Lambda `(a, b) -> expression` đọc là: "cho `a` và `b`, tạo ra giá trị
+này." Khi kiểu của biến đã rõ ràng, Java tự suy luận.
+
+## Functional interface
+
+Lambda không phải cú tắt tùy tiện - nó lấp vào một interface có **đúng
+một phương thức trừu tượng** (*functional interface*). Bốn giao diện cốt
+lõi, đều trong `java.util.function`:
+
+| Interface | Phương thức | Ý nghĩa |
+|---|---|---|
+| `Predicate<T>` | `boolean test(T t)` | câu hỏi có/không về `t` |
+| `Function<T,R>` | `R apply(T t)` | biến `T` thành `R` |
+| `Consumer<T>` | `void accept(T t)` | làm gì đó với `t`, không trả về |
+| `Supplier<T>` | `T get()` | tạo giá trị từ hư không |
+
+Dạng `String::length` là **method reference** - một lambda mà thân chỉ
+gọi đúng một phương thức: `Type::method` cho instance method trên đối số,
+`object::method` cho một đối tượng cụ thể, `Type::new` cho constructor.
+
+Bạn cũng có thể tự khai báo - `@FunctionalInterface` bắt compiler thi hành
+luật một-phương-thức:
+
+```java
+@FunctionalInterface
+interface Validator<T> {
+    boolean check(T value);   // phương thức trừu tượng duy nhất
+}
+```
+
+## Nơi bạn gặp chúng đầu tiên
+
+Sắp xếp, `removeIf`, `replaceAll` trên collection:
+
+```java
+names.removeIf(s -> s.isBlank());            // Predicate
+names.replaceAll(s -> s.trim());             // UnaryOperator (Function T->T)
+names.sort(Comparator.comparingInt(String::length));
+```

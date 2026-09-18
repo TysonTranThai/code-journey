@@ -1,0 +1,15 @@
+{
+  "id": "cint-p6-span-split",
+  "title": "Split Without Mutating",
+  "prompt": "Implement span-based splitting. The boilerplate declares:\n\n```c\ntypedef struct { const char *start; size_t len; } Span;\n/* fills spans (array of capacity cap) with the ','-separated tokens of\n   line (NOT modified). Empty tokens ARE reported (len 0).\n   Returns the number of spans written, or -1 if more than cap needed. */\nint split_spans(const char *line, Span *spans, size_t cap);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\ntypedef struct { const char *start; size_t len; } Span;\nint split_spans(const char *line, Span *spans, size_t cap);\n",
+  "tests": [
+    {
+      "name": "spans, not mutation",
+      "code": "\nconst char *line = \"alpha,,gamma\";\nSpan sp[4];\nint n = split_spans(line, sp, 4);\nCHECK_EQ(n, 3);\nCHECK(sp[0].len == 5 && !strncmp(sp[0].start, \"alpha\", 5));\nCHECK(sp[1].len == 0);                        /* empty token kept */\nCHECK(sp[2].len == 5 && !strncmp(sp[2].start, \"gamma\", 5));\nCHECK(line[0] == 'a');                        /* input untouched */\nCHECK_EQ(split_spans(\"solo\", sp, 4), 1);\nCHECK_EQ(split_spans(\"\", sp, 4), 0);\nCHECK_EQ(split_spans(\"a,\", sp, 4), 2);        /* trailing empty field */\nCHECK(sp[1].len == 0);\nCHECK_EQ(split_spans(\"a,b,c\", sp, 2), -1);    /* needs 3, cap 2 */\nCHECK_EQ(split_spans(NULL, sp, 4), -1);\n",
+      "hint": "Walk with a cursor; emit [start, p-start) for each comma-delimited run; count first or fail on overflow."
+    }
+  ]
+}

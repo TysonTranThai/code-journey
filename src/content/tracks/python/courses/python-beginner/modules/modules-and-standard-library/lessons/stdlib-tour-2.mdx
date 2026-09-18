@@ -1,0 +1,34 @@
+Three more tools that appear constantly in real code:
+
+## pathlib — filesystem paths as objects
+
+```python
+from pathlib import Path
+
+data_dir = Path("data")
+print(data_dir / "notes.txt")   # data/notes.txt
+print(Path("report.pdf").suffix)  # .pdf
+```
+
+## json — data interchange
+
+```python
+import json
+
+json.dumps({"ok": True})      # '{"ok": true}'
+json.loads('{"ok": true}')    # {"ok": True}
+```
+
+## collections.Counter — counting, done right
+
+```python
+from collections import Counter
+
+votes = ["anh", "binh", "anh", "cuong", "anh"]
+c = Counter(votes)
+print(c.most_common(1))       # [('anh', 3)]
+print(c["binh"])              # 1 — missing keys count as 0
+```
+
+Notice what Counter replaces: a manual loop with a dict of tallies and a
+missing-key branch. Standard-library tools are usually shorter AND clearer.

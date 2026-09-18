@@ -1,0 +1,30 @@
+{
+  "id": "i3-dialog-faq",
+  "title": "Native FAQ Accordion",
+  "prompt": "Build the FAQ accordion for a product page: at least three sibling <details> elements that all share the same name=\"faq\" (opening one closes the others), each with a non-empty <summary> question and answer content after the summary. No JavaScript anywhere.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "boilerplate": "<!-- FAQ accordion -->\n\n",
+  "tests": [
+    {
+      "name": "three or more sibling details",
+      "code": "const n = (code.match(/<details[\\s>]/gi) || []).length;\nif (n < 3) {\n  throw new Error(\"At least three <details> elements expected (found \" + n + \").\");\n}",
+      "hint": "Every FAQ entry is one <details> with a <summary> and the answer as content."
+    },
+    {
+      "name": "accordion name shared by all",
+      "code": "const names = [...code.matchAll(/<details([^>]*)>/gi)].map((m) => {\n  const a = m[1].match(/name\\s*=\\s*[\"']([^\"']*)[\"']/i);\n  return a ? a[1] : null;\n});\nif (names.some((n) => !n)) {\n  throw new Error(\"Every <details> needs a name attribute.\");\n}\nconst unique = [...new Set(names)];\nif (unique.length !== 1) {\n  throw new Error(\"All siblings must share ONE name value — that is what makes them an accordion.\");\n}",
+      "hint": "The shared name attribute is the whole trick: same name = exclusive accordion, per details."
+    },
+    {
+      "name": "every summary is non-empty",
+      "code": "const sums = [...code.matchAll(/<summary[^>]*>([\\s\\S]*?)<\\/summary>/gi)].map((m) =>\n  m[1].replace(/<[^>]*>/g, \"\").trim()\n);\nif (sums.length < 3) {\n  throw new Error(\"Each <details> needs a <summary>.\");\n}\nconst empty = sums.filter((s) => !s).length;\nif (empty > 0) {\n  throw new Error(empty + \" <summary> element(s) are empty — the question is the accessible name.\");\n}",
+      "hint": "The summary is what gets announced and clicked — it must carry the visible question."
+    },
+    {
+      "name": "answers live after the summary",
+      "code": "const ds = [...code.matchAll(/<details[^>]*>([\\s\\S]*?)<\\/details>/gi)];\nif (ds.length < 3) throw new Error(\"Three <details> expected.\");\nfor (const d of ds) {\n  const body = d[1].replace(/<summary[^>]*>[\\s\\S]*?<\\/summary>/i, \"\").replace(/<[^>]*>/g, \"\").trim();\n  if (!body) {\n    throw new Error(\"A <details> has no answer content after its <summary>.\");\n  }\n}",
+      "hint": "Content that is not the <summary> is the disclosed answer — each item needs one."
+    }
+  ]
+}

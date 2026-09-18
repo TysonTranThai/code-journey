@@ -1,0 +1,45 @@
+## Testing async code
+
+The rule: drive the event loop yourself. `asyncio.run(coro())` in a test is
+fine; what's *not* fine is `time.sleep` — it freezes the loop and tests
+nothing. Use `await asyncio.sleep(0)` to yield control deterministically, fake
+clocks for timeouts, and assert on *task states* (`task.done()`,
+`task.cancelled()`) rather than wall-clock guesses.
+
+## Timing-sensitive tests
+
+Never assert `elapsed < X` on a loaded machine — CI machines lie. The stable
+alternatives:
+
+- **Injected clocks** (every module in this course): pass `now` in, advance it
+  by hand.
+- **Call counting**: assert "at most N attempts" instead of "finished within Y
+  ms".
+- **Deterministic schedulers**: for queue/worker logic, step the scheduler
+  explicitly (the `deliver()` sweep from the distributed module).
+
+## Test doubles for I/O
+
+A network dependency in a unit test is a flaky test with extra steps. Fake the
+*port* (the interface you already defined in the architecture module): an
+in-memory queue, a canned clock, a fake repository. Keep one thin integration
+suite that exercises the real adapters, and let it be the only place network
+flakiness can live.
+
+## What the suite cannot tell you
+
+- That your performance holds under *production* data volumes — load test
+  separately.
+- That your security holds against a motivated adversary — audit separately.
+- That users want the feature — that's not a test suite's job.
+
+Honest scope: the suite verifies behavior you specified, deterministically.
+Everything else needs a different tool.
+
+## The maintenance contract
+
+Tests are code: naming, duplication, dead tests deleted, helpers factored. A
+test suite is a *system under active maintenance* — budget for it, review it,
+refactor it. The pyramid's shape is a policy: when the integration tier grows
+fat, push logic down into unit-testable cores; when unit tests multiply on a
+thin layer, the design is telling you the logic belongs elsewhere.

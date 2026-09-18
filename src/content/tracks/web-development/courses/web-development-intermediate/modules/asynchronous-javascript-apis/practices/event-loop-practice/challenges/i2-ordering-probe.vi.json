@@ -1,0 +1,14 @@
+{
+  "title": "Đầu dò thứ tự thực thi",
+  "prompt": "Viết `runProbe(log)` — `log` là một function ghi lại chuỗi. KHÔNG gọi `log` trực tiếp ngoài các callback, hãy xếp lịch đúng chuỗi sau bằng `log`:\n\n1. đồng bộ: `log(\"sync\")`\n2. một microtask: `log(\"micro\")` (dùng Promise.resolve().then)\n3. một macrotask: `log(\"macro\")` (dùng setTimeout với 0)\n\nHàm probe phải return chuỗi \"scheduled\" ngay lập tức, và cả ba log phải xảy ra xong khi test chờ một timeout 20ms.",
+  "tests": [
+    {
+      "name": "return ngay, log xảy ra sau",
+      "hint": "Log 'sync' trước, rồi Promise.resolve().then(() => log('micro')), rồi setTimeout(() => log('macro'), 0)."
+    },
+    {
+      "name": "microtask thắng macrotask",
+      "hint": "Callback của promise xếp vào microtask; setTimeout xếp vào macrotask — vòng lặp xả microtask trước."
+    }
+  ]
+}

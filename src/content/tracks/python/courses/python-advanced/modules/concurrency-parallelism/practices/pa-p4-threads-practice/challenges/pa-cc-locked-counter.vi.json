@@ -1,0 +1,10 @@
+{
+  "title": "Counter sống sót dưới concurrency",
+  "prompt": "Cài `SafeCounter` với `inc()` và property chỉ đọc `.value` vẫn CHÍNH XÁC khi inc() chạy đồng thời.\n\nTest chấm chạy 6 thread, mỗi thread gọi `inc()` 20 lần, lặp hai lần. Dưới concurrency đó, bất kỳ read-modify-write không khóa nào (`value = self.value; ...; self.value = value + 1`) — nhất là khi có việc gì đó xen giữa lần đọc và lần ghi — sẽ mất update. Hãy bảo vệ trạng thái bằng `threading.Lock`.",
+  "tests": [
+    {
+      "name": "Đếm chính xác với 6 thread đồng thời",
+      "hint": "Mọi lần đọc và ghi giá trị chia sẻ phải giữ lock — phép tăng trong Python không nguyên tử."
+    }
+  ]
+}

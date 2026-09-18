@@ -1,0 +1,57 @@
+Here is the complete generator, annotated. Every graded exercise in this module is a variation of it.
+
+```cpp
+#include <coroutine>
+#include <exception>
+#include <utility>
+
+template <class T>
+class Generator {
+public:
+    struct promise_type {
+        T current_{};
+
+        Generator get_return_object() {
+            return Generator{std::coroutine_handle<promise_type>::from_promise(*this)};
+        }
+        std::suspend_always initial_suspend() noexcept { return {}; }   // lazy start
+        std::suspend_always final_suspend() noexcept { return {}; }     // keep frame; caller destroys
+        std::suspend_always yield_value(T v) { current_ = std::move(v); return {}; }  // store + pause
+        void return_void() {}
+        void unhandled_exception() { std::terminate(); }   // course-scope simplification
+    };
+
+    explicit Generator(std::coroutine_handle<promise_type> h) : h_(h) {}
+    Generator(Generator&& o) noexcept : h_(std::exchange(o.h_, {})) {}
+    Generator& operator=(Generator&&) = delete;
+    ~Generator() { if (h_) h_.destroy(); }             // RAII owns the frame
+
+    // Advance and report: true if a fresh value is available.
+    bool next() {
+        h_.resume();
+        return !h_.done();
+    }
+    T value() const { return h_.promise().current_; }
+
+private:
+    std::coroutine_handle<promise_type> h_;
+};
+
+Generator<int> counter(int from, int to) {
+    for (int i = from; i <= to; ++i) co_yield i;
+}
+```
+
+## Reading the flow
+
+`counter(1, 3)` returns immediately: the frame exists, suspended at `initial_suspend`. `next()` resumes the body until the first `co_yield i` stores `1` and pauses. `value()` reads what the promise stored. `next()` again → resume after the yield → loop → yield `2`… When the loop ends, the body falls off; `final_suspend` pauses once more; `done()` becomes true. The destructor destroys the frame — because `final_suspend` kept it suspended, destroying is safe (no double-resume of a finished frame).
+
+## The three classic bugs (each is a graded trap)
+
+1. **Resuming a done coroutine** — UB. Guard: check `done()` before `resume()`.
+2. **`final_suspend` returning `suspend_never`** — the frame self-destroys; your destructor then destroys it again: double-destroy UB. Keep `suspend_always`.
+3. **Yielding a reference to a local** — the value dies with the frame resumption; store by value (`current_ = std::move(v)`), or guarantee the referenced thing outlives the generator.
+
+## C++23 aside
+
+`std::generator<T>` (C++23) is exactly this class, battle-hardened and range-compatible. GCC 14.2 ships an early version; the course teaches the hand-rolled form because the machinery *is* the lesson — and because the hand-rolled form compiles identically on both course toolchains.

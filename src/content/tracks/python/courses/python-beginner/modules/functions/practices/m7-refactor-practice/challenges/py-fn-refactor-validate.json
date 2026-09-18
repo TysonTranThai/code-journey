@@ -1,0 +1,16 @@
+{
+  "id": "py-fn-refactor-validate",
+  "title": "Name the Condition",
+  "prompt": "is_ok(age, member) is needed by two different checks in the starter. Write it: True when age >= 18 AND member is truthy. Use it from both call sites — do not duplicate the logic.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "def check_ticket(age, member):\n    return age >= 18 and member\n\ndef check_entry(age, member):\n    return age >= 18 and member\n",
+  "tests": [
+    {
+      "name": "logic written once",
+      "code": "assert check_ticket(19, True) is True\nassert check_entry(17, True) is False\nassert \"age >= 18 and member\" not in code.split(\"def is_ok\")[-1] or True\nassert code.count(\"age >= 18 and member\") == 1, \"the condition should live in ONE place\"",
+      "hint": "def is_ok(age, member): return age >= 18 and member — and both wrappers call it."
+    }
+  ],
+  "level": "mini-build"
+}

@@ -1,0 +1,40 @@
+Not all bugs are equal. Python tells you which kind you have — learning to read
+that message is the skill.
+
+## The three error families
+
+**Syntax errors** — Python cannot even start. It points at the line it chokes on:
+
+```python
+if x > 5
+    print("big")
+# SyntaxError: expected ':'
+```
+
+**Runtime errors (exceptions)** — the program starts, then crashes mid-run:
+
+```python
+ages = {"minh": 21}
+print(ages["linh"])
+# KeyError: 'linh'
+```
+
+**Logic errors** — the program runs to completion and gives the WRONG answer. No
+error message appears. These are the most dangerous, and the reason testing
+exists:
+
+```python
+average = a + b / 2   # runs fine — and is wrong
+```
+
+## The traceback: read it bottom-up
+
+```
+Traceback (most recent call last):
+  File "report.py", line 4, in <module>
+    total = sum(values) / count
+ZeroDivisionError: division by zero
+```
+
+Read the LAST line first: the error type and message. Then the line above: where
+it happened. Then follow the call chain upward to find what led there.

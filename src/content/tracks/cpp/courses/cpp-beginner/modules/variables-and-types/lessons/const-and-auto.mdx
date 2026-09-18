@@ -1,0 +1,33 @@
+## `const`: promise the compiler (and your teammates) it won't change
+
+```cpp
+const double vat_rate = 0.1;
+vat_rate = 0.2;          // error — and that is the point
+```
+
+A `const` variable cannot be assigned after initialization. Read it as "read-only". This is not bureaucracy: immutability shrinks the amount of state you must hold in your head, and it lets the compiler catch an entire bug class. This course's default is: **make every variable `const` unless it genuinely changes.**
+
+`const` also documents intent better than any comment: a reader sees `const` and stops wondering whether that value mutates later.
+
+## `auto` with const
+
+`auto` drops top-level `const`/references by default — a subtle rule you will meet again in module 11. For now:
+
+```cpp
+const double rate{0.1};
+auto r = rate;           // r is double (copy) — fine here
+```
+
+When in doubt in these early modules, write the explicit type; reach for `auto` when the initializer makes it obvious.
+
+## A glimpse of `constexpr`
+
+```cpp
+constexpr int kDays_in_week = 7;   // known at compile time
+```
+
+`constexpr` means "this value is computed at compile time". You will mostly write `const`; `constexpr` appears in real codebases for true constants. Knowing it exists is enough for Beginner.
+
+## Style note
+
+You will see two camps for constants: `kDaysInWeek` (Google-style) and `DAYS_IN_WEEK`. Pick one per project, stay consistent — and prefer `constexpr`/`const` over `#define` macros, which do not respect scope or types.

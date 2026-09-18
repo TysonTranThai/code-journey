@@ -1,0 +1,30 @@
+Bạn đã biết constructor từ Trung cấp. Java Nâng cao hỏi câu sắc hơn: **cái gì
+khởi tạo trước, theo đúng thứ tự nào?** Quy tắc (JLS §12.2–12.4) là cơ học và
+bạn có thể quan sát tất cả:
+
+1. Trường **static** và khối `static {}` chạy **một lần**, theo thứ tự khai
+   báo, khi lớp được khởi tạo lần đầu (lần dùng "thật" đầu tiên).
+2. Trường instance và khối khởi tạo instance chạy **mỗi lần tạo đối tượng**,
+   theo thứ tự khai báo, *trước* thân constructor.
+3. `super(...)` chạy trước các initializer của lớp con — nên constructor lớp
+   cha gọi phương thức overridable sẽ thấy **trường lớp con vẫn null/0**.
+   Đây là bẫy khởi tạo kinh điển.
+4. Trường `final` phải được gán chắc chắn trước khi mọi constructor kết thúc.
+
+```java
+class Base {
+    Base() { log("Base ctor"); }
+}
+class Derived extends Base {
+    static String S = log("Derived static");
+    int x = log("Derived field");
+    Derived() { super(); log("Derived ctor"); }
+}
+// new Derived() in ra: Derived static → Base ctor → Derived field → Derived ctor
+```
+
+Trường hợp nguy hiểm là **gọi phương thức virtual trong constructor**.
+Constructor lớp cha gọi phương thức bị override sẽ chạy bản override trước khi
+trường lớp con tồn tại. Effective Java Item 19: *constructor không được gọi
+phương thức overridable, trực tiếp hay gián tiếp.* Khi cần setup chung, hãy
+dùng static factory ghép các đối tượng đã dựng xong.

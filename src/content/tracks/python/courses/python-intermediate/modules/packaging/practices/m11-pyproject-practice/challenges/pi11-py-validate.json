@@ -1,0 +1,26 @@
+{
+  "id": "pi11-py-validate",
+  "title": "Contract Validator",
+  "prompt": "Implement validate_project(pyproject_text) returning a list of problem strings for a pyproject: missing [project], missing name, missing version, and any dependency without a version constraint (a bare package name in dependencies). A fully valid file returns [].",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import tomllib\n\ndef validate_project(pyproject_text):\n    pass\n",
+  "tests": [
+    {
+      "name": "valid file passes clean",
+      "code": "text = '[project]\\nname = \"a\"\\nversion = \"0.1.0\"\\ndependencies = [\"httpx>=0.27\"]'\nassert validate_project(text) == []",
+      "hint": "Every check green → empty problem list."
+    },
+    {
+      "name": "missing version flagged",
+      "code": "text = '[project]\\nname = \"a\"'\nproblems = validate_project(text)\nassert any('version' in p for p in problems)",
+      "hint": "Report each missing field as a problem string."
+    },
+    {
+      "name": "unpinned dependency flagged",
+      "code": "text = '[project]\\nname = \"a\"\\nversion = \"0.1.0\"\\ndependencies = [\"requests\"]'\nproblems = validate_project(text)\nassert any('requests' in p for p in problems)",
+      "hint": "A dependency with no >=, <=, ==, ~, or ! is unpinned."
+    }
+  ],
+  "level": "combination"
+}

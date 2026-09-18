@@ -1,0 +1,34 @@
+Khi chuỗi `what()` chưa đủ cấu trúc, hãy định nghĩa kiểu ngoại lệ riêng.
+Kế thừa từ `std::runtime_error` (hoặc `logic_error`) và mang theo *dữ liệu*
+mà handler cần:
+
+```cpp
+#include <stdexcept>
+#include <string>
+
+class ValidationError : public std::runtime_error {
+public:
+    ValidationError(std::string field, std::string message)
+        : std::runtime_error{field + ": " + message},
+          field_{std::move(field)}, message_{std::move(message)} {}
+
+    const std::string& field() const noexcept { return field_; }
+
+private:
+    std::string field_;
+    std::string message_;
+};
+```
+
+Các quy tắc giữ exception riêng an toàn:
+
+- constructor không được phép ném (sẽ abort trong lúc unwinding);
+- `what()` được đáp ứng miễn phí nhờ `std::runtime_error`;
+- các member copy tồn tại mặc định — exception bị copy trong lúc unwinding,
+  nên member phải copy được;
+- handler nhận `const ValidationError&` và đọc `.field()` trực tiếp mà
+  không cần parse chuỗi.
+
+Hãy thiết kế kiểu xung quanh *quyết định của handler*: caller sẽ làm gì
+khác với lỗi này so với lỗi khác? Nếu câu trả lời là "không gì cả" thì một
+chuỗi `std::runtime_error` đơn giản đã đủ.

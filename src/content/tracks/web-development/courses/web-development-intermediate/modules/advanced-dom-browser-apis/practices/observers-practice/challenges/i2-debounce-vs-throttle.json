@@ -1,0 +1,20 @@
+{
+  "id": "i2-debounce-vs-throttle",
+  "title": "Debounce vs Throttle Signatures",
+  "prompt": "Write both, called with (fn, waitMs) and returning wrapped functions. For this exercise they run SYNCHRONOUSLY with a fake clock object { now() } passed as a third argument: debounce(fn, wait, clock) runs fn only after a gap of >= wait since the LAST call attempt (trailing edge); throttle(fn, wait, clock) runs fn immediately on the first call attempt, then blocks until wait has elapsed (leading edge).",
+  "difficulty": "advanced",
+  "level": "independent",
+  "boilerplate": "function debounce(fn, wait, clock) {\n  // your code\n}\n\nfunction throttle(fn, wait, clock) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "debounce waits for the quiet",
+      "code": "const fn = new Function(code + \"\\nreturn { debounce };\");\nconst { debounce } = fn();\nlet calls = 0;\nconst tick = () => calls++;\nconst clock = { now: () => t };\nlet t = 0;\nconst d = debounce(tick, 100, clock);\nd(); t = 50; d(); t = 90; d();\nt = 95;\nif (calls !== 0) throw new Error(\"No quiet gap yet — tick must not have run.\");\nt = 200; d(); t = 310;\nif (calls !== 1) throw new Error(\"After a 110ms gap the trailing call ran exactly once.\");\n",
+      "hint": "Record lastAttempt; on each call, if now - lastAttempt >= wait, run and reset."
+    },
+    {
+      "name": "throttle leads then locks",
+      "code": "const fn = new Function(code + \"\\nreturn { throttle };\");\nconst { throttle } = fn();\nlet calls = 0;\nconst tick = () => calls++;\nconst clock = { now: () => t };\nlet t = 0;\nconst th = throttle(tick, 100, clock);\nth();\nif (calls !== 1) throw new Error(\"Leading edge: first call runs immediately.\");\nt = 50; th(); t = 99; th();\nif (calls !== 1) throw new Error(\"Within the window, blocked.\");\nt = 150; th();\nif (calls !== 2) throw new Error(\"Window elapsed => runs again.\");\n",
+      "hint": "Record lastRun; run when now - lastRun >= wait, then set lastRun = now."
+    }
+  ]
+}

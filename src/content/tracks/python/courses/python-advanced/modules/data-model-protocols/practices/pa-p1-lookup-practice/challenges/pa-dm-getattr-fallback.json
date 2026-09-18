@@ -1,0 +1,21 @@
+{
+  "id": "pa-dm-getattr-fallback",
+  "title": "Delegating proxy with __getattr__",
+  "prompt": "Implement `class Proxy` that wraps any object passed to `__init__`:\n\n- attribute reads that fail on the Proxy itself must be **delegated** to the wrapped object via `__getattr__`\n- `Proxy.real(obj)` must return the wrapped object\n- calls on delegated methods must work (e.g. `Proxy('hi').upper()` returns 'HI')\n- reads of attributes the wrapper defines directly must NOT be delegated (define `sniff` on Proxy returning 'proxy')",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class Proxy:\n    def __init__(self, target):\n        # store target WITHOUT triggering delegation\n        pass\n\n    def sniff(self):\n        return 'proxy'\n\n    def __getattr__(self, name):\n        # TODO: delegate to the wrapped object\n        pass\n\n    @staticmethod\n    def real(obj):\n        pass",
+  "tests": [
+    {
+      "name": "delegates missing attributes",
+      "code": "p = Proxy('hi')\nassert p.upper() == 'HI', 'upper() must be delegated to str'\nassert p.sniff() == 'proxy', 'Proxy-owned attrs must not delegate'\nprint('ok')",
+      "hint": "__getattr__ is called only on normal-lookup misses; delegate there."
+    },
+    {
+      "name": "real() unwraps",
+      "code": "inner = [1, 2]\np = Proxy(inner)\nassert Proxy.real(p) is inner, 'real must return the wrapped object'\nprint('ok')",
+      "hint": "Keep the target in __dict__ under a name that cannot collide, e.g. '_target' set via object.__setattr__ or plain dict key."
+    }
+  ],
+  "level": "independent"
+}

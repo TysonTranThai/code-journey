@@ -1,0 +1,22 @@
+{
+  "title": "Checkpoint: Bàn điều phối",
+  "prompt": "\nBàn điều phối quyết định cách xử lý đơn hàng, kết hợp logic lồng với switch\nexpression.\n\nViết `public static String dispatch(String tier, int weightKg, boolean fragile)`:\n\n1. Nếu `weightKg <= 0`, trả `\"rejected: bad weight\"`.\n2. Còn lại xếp loại theo `tier` bằng **switch expression**:\n   - `\"standard\"` → `\"standard-\"` + loại cân nặng, với loại cân nặng là\n     `\"light\"` (weight < 5) hoặc `\"heavy\"` (từ 5 trở lên);\n   - `\"express\"` → `\"express-\"` + loại cân nặng (cùng quy tắc);\n   - `\"freight\"` → `\"freight-quoted\"` (bỏ qua loại cân nặng);\n   - tier khác bất kỳ → `\"rejected: unknown tier\"` (bất kể cân nặng).\n3. Đơn dễ vỡ được thêm `\"+\"` ở cuối cùng — nhưng CHỈ khi kết quả không phải\n   từ chối. `dispatch(\"standard\", 3, true)` là `\"standard-light+\"`;\n   `dispatch(\"gold\", 3, false)` là `\"rejected: unknown tier\"` không dấu cộng.\n\nBiên tại 5 thuộc `\"heavy\"`. Hãy xây chuỗi kết quả bằng một biến `String`,\nrồi quyết định hậu tố đúng một lần.\n",
+  "tests": [
+    {
+      "name": "standard and express classes",
+      "hint": "Biên: cân nặng 5 thuộc heavy."
+    },
+    {
+      "name": "freight ignores weight",
+      "hint": "Freight luôn trả lời bằng báo giá."
+    },
+    {
+      "name": "rejections stay clean",
+      "hint": "Hai trường hợp từ chối, đúng như đặc tả."
+    },
+    {
+      "name": "fragile suffix rules",
+      "hint": "Dấu cộng chỉ trên điều phối thành công."
+    }
+  ]
+}

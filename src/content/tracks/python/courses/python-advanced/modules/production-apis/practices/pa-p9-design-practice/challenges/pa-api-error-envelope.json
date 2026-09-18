@@ -1,0 +1,21 @@
+{
+  "id": "pa-api-error-envelope",
+  "title": "The error envelope that tells no secrets",
+  "prompt": "Implement `error_envelope(status, detail=None, field=None)` returning `{'error': {...}}` where:\n\n- `status` is echoed and `title` comes from this fixed table: 400 bad_request, 404 not_found, 409 conflict, 422 validation_failed, 429 rate_limited, 500 internal_error\n- `field` is included only when not None\n- `detail` is included when given — EXCEPT for statuses >= 500, where detail is always the generic string `'an unexpected error occurred'` (internals must never reach the wire)",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: fixed title table + error_envelope",
+  "tests": [
+    {
+      "name": "4xx detail passes through, 5xx detail is generic",
+      "code": "assert error_envelope(422, 'email is not valid', 'email') == {'error': {'status': 422, 'title': 'validation_failed', 'field': 'email', 'detail': 'email is not valid'}}\nassert error_envelope(404, 'no such widget')['error']['title'] == 'not_found'\nassert error_envelope(500, 'secrets: ConnectionRefused at db-7')['error']['detail'] == 'an unexpected error occurred'\nassert error_envelope(500)['error'] == {'status': 500, 'title': 'internal_error', 'detail': 'an unexpected error occurred'}\nprint('ok')",
+      "hint": "Build the dict, then decide what detail survives for each status band."
+    },
+    {
+      "name": "field appears only when given",
+      "code": "assert 'field' not in error_envelope(409, 'duplicate email')['error']\nassert error_envelope(400, 'bad json', 'body')['error']['field'] == 'body'\nprint('ok')",
+      "hint": "One optional key, conditional presence."
+    }
+  ],
+  "level": "independent"
+}

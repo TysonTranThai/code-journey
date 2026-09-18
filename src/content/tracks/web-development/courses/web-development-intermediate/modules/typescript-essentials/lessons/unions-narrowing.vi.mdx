@@ -1,0 +1,61 @@
+Dữ liệu thật thường là "một trong vài hình dạng". Union mô hình hóa điều đó
+một cách trung thực; rồi compiler buộc bạn phải xử lý mọi trường hợp.
+
+## Narrowing
+
+TypeScript đi theo các kiểm tra runtime của bạn:
+
+```ts
+function format(value: string | number) {
+  if (typeof value === "string") return value.trim(); // tại đây: string
+  return value.toFixed(2); // tại đây: number
+}
+```
+
+`typeof`, `instanceof`, `in`, và độ chân thực đều thu hẹp kiểu — không cần cast
+khi phép kiểm tra là thật.
+
+## Discriminated union
+
+Gắn cho mỗi biến thể một thẻ literal và mọi switch đều được kiểm tra:
+
+```ts
+type Request =
+  | { kind: "idle" }
+  | { kind: "loading" }
+  | { kind: "success"; data: string[] }
+  | { kind: "error"; message: string };
+
+function render(r: Request) {
+  switch (r.kind) {
+    case "idle":
+      return "Nothing yet";
+    case "loading":
+      return "Loading…";
+    case "success":
+      return r.data.join(", "); // r.data CHỈ tồn tại ở đây
+    case "error":
+      return r.message;
+    default: {
+      const _never: never = r;
+      return "";
+    }
+  }
+}
+```
+
+Mẹo `default`: gán vào `never` sẽ không biên dịch được ngay khi ai đó thêm một
+biến thể mà chưa xử lý — tính đầy đủ được hệ kiểu bảo đảm.
+
+## Type guard
+
+Một hàm vị từ thu hẹp kiểu ở mọi nơi nó được dùng:
+
+```ts
+function isUser(v: unknown): v is User {
+  return typeof v === "object" && v !== null && "id" in v && "email" in v;
+}
+```
+
+Kiểu trả về `v is User` chính là hợp đồng giữa kiểm tra runtime và hiểu biết
+compile-time — trái tim của bài luyện về biên giới bên dưới.

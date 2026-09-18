@@ -1,0 +1,37 @@
+Thói quen cơ sở dữ liệu quan trọng nhất, phát biểu thành luật: **SQL và dữ
+liệu đi hai đường riêng.** Placeholder (`?` trong sqlite3) trao giá trị cho
+driver, driver gán chúng một cách an toàn:
+
+```python
+# ĐÚNG: giá trị là dữ liệu, không bao giờ là SQL chạy được
+conn.execute("SELECT * FROM users WHERE name = ?", (user_input,))
+
+# TUYỆT ĐỐI KHÔNG: định dạng chuỗi dựng SQL chạy được từ input
+conn.execute(f"SELECT * FROM users WHERE name = '{user_input}'")
+```
+
+Vì sao bản f-string là thảm họa: input `' OR '1'='1` biến truy vấn thành
+`WHERE name = '' OR '1'='1'` — khớp **mọi người dùng**. Đó là SQL injection,
+nhiều thập kỷ nằm đầu danh sách lỗ hổng. Một tham số gắn `' OR '1'='1` như
+*chuỗi so sánh nguyên văn*, vô hiệu hóa hoàn toàn.
+
+## Tham số không làm được gì
+
+Placeholder chỉ hoạt động nơi **giá trị** đứng: sau `=`, `IN (...)`,
+`VALUES`. Định danh (tên bảng, tên cột) không thể tham số hóa — nếu buộc phải
+động, hãy xác thực theo whitelist:
+
+```python
+ALLOWED_SORTS = {"title": "title", "created": "id"}
+column = ALLOWED_SORTS.get(user_choice)      # None → từ chối
+if column is None:
+    raise ValueError("invalid sort column")
+```
+
+## executemany cho theo lô
+
+```python
+conn.executemany("INSERT INTO tasks (title) VALUES (?)", [("a",), ("b",)])
+```
+
+Một lượt cho nhiều dòng — và thêm một chỗ driver lo phần escape thay bạn.

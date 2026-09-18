@@ -1,0 +1,50 @@
+## switch: choosing among discrete values
+
+```cpp
+switch (command) {
+    case 'h':
+        print_help();
+        break;
+    case 'q':
+        quit = true;
+        break;
+    default:
+        std::cout << "unknown command\n";
+        break;
+}
+```
+
+`switch` compares one integral or enum value against `case` labels. It reads better than a long `if/else if` chain *when the tests are all equality against constants*.
+
+## The fall-through trap (and the one legit use)
+
+Without `break`, execution *falls through* into the next case:
+
+```cpp
+case 1:
+    std::cout << "one";
+    // NO break — also prints "two"!
+case 2:
+    std::cout << "two";
+    break;
+```
+
+GCC warns about accidental fall-through (`-Wimplicit-fallthrough` with `-Wextra`). The one legitimate use — shared code for several cases — must be an *explicit* `[[fallthrough]];` comment-attribute so reviewers know it is intended. Beginners: always `break;`.
+
+## switch vs if/else — how to choose
+
+- Equality against a fixed set of constants (`char` command, `int` menu, `enum class` state) → `switch`.
+- Ranges, compound logic, `std::string` comparisons → `if/else`.
+- (`switch` on `std::string` does not work; if/else with `==` does.)
+
+## One-liners: the conditional operator
+
+```cpp
+std::string label = (score >= 50) ? "pass" : "fail";
+```
+
+`cond ? a : b` is an *expression* — useful for initializing a variable from a tiny choice. Anything hairier belongs in a real `if`.
+
+## Coming up
+
+Conditions decide once; loops decide a thousand times. Next module: repetition.

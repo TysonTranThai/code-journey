@@ -1,0 +1,39 @@
+## Overload resolution, chuyển đổi, và pattern matching
+
+Khi bạn gọi một phương thức, Roslyn chạy một quy trình tất định: tìm các
+ứng viên khả dụng, rồi áp luật **betterness**. Bạn không cần thuộc spec —
+bạn cần vài luật quyết định bug thật:
+
+1. **Kiểu chính xác thắng chuyển đổi ngầm.** `Pick(5)` ưu tiên `Pick(int)`
+   hơn `Pick(long)`.
+2. **Non-generic thắng generic** khi cả hai áp dụng mà không cần chuyển đổi;
+   tham số kiểu *cố định* thắng cả hai (`Pick<object>(5)` gọi generic).
+3. **Mở rộng số học ngầm** không xảy ra giữa tham số `int`/`long` khi chọn
+   overload — literal int bám vào `int`.
+4. **Chuyển đổi do người dùng định nghĩa** được xét cuối cùng và không bao
+   giờ chuỗi nhau.
+
+Pattern matching được biên dịch thành kiểm tra kiểu và trích xuất giá trị:
+
+```csharp
+static string Describe(object o) => o switch
+{
+    int n when n < 0         => "negative",
+    int and > 100            => "big int",
+    string { Length: 0 }     => "empty string",
+    Point(_, 0)              => "on the X axis",
+    null                     => "null",
+    _                        => "other",
+};
+```
+
+`switch` expression được biên dịch thành cây quyết định — `isinst`/`unbox`
+cho type pattern, so sánh cho relational pattern. Recursive pattern lồng
+*khai báo*, không lồng hành vi. Lợi ích thiết kế: các dạng "có vẻ đầy đủ"
+đẩy quyết định trạng thái ra khỏi thang `if` về một chỗ mà compiler kiểm
+tra được (thêm một enum member mới và `_` nuốt im lặng — sự im lặng ấy là
+cái giá).
+
+Khi pattern sai: so khớp trên `object` xóa thông tin kiểu generic (hãy dựa
+vào guard `when`, không dựa vào bất ngờ runtime), và type pattern `is` trên
+value type sẽ *box* toán hạng — thêm một cấp phát ẩn nữa trên đường nóng.

@@ -1,0 +1,15 @@
+## Cổng kiểm tra (mini-build)
+
+Một pipeline xử lý văn bản trên "log" cố định trong bộ nhớ:
+
+1. `ParseLines(IEnumerable<string> lines)` → yield `(int Level, string Msg)`
+   cho các dòng dạng `"INFO|started"` / `"WARN|disk"`.
+2. `FilterLevel(IEnumerable<(int, string)>, int minLevel)` → yield các mục
+   có Level >= minLevel.
+3. `Format(IEnumerable<(int, string)>)` → yield chuỗi `"[LVL] msg"`.
+4. `Run(string[] lines, int minLevel, int maxResults)` ghép 1→2→3 và trả về
+   tối đa maxResults mục đã định dạng — và ngừng KÉO từ nguồn ngay khi chạm
+   trần (quan sát được: nguồn chấm đếm số dòng đã đọc; lượt chạy có trần
+   không được đọc phần còn lại).
+5. `CountingSource` — một `IEnumerable<string>` tối giản đếm số dòng thực sự
+   được đọc (enumerator của nó tăng biến đếm trên mỗi MoveNext có yield).

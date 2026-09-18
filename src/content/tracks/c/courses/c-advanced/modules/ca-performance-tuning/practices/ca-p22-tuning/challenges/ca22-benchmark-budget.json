@@ -1,0 +1,26 @@
+{
+  "id": "ca22-benchmark-budget",
+  "title": "Iteration Budget Math",
+  "prompt": "ISO C. Implement `size_t iters_for_budget(double budget_ms, double per_iter_ms)` — return the number of whole iterations that fit the budget, rounding up (a partially affordable iteration still runs once); return 0 when either argument is <= 0. Implement `double bench_sink(size_t iters)` that accumulates a workload into a local `volatile double sink` (sink += (double)i / 4.0 each iteration) and returns the sink — proving the work was not optimized away.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "ceil rounding",
+      "code": "CHECK_EQ(iters_for_budget(10.0, 3.0), 4);\nCHECK_EQ(iters_for_budget(9.0, 3.0), 3);",
+      "hint": "10/3 needs 4 iterations to cover the budget; exact division needs exactly 3."
+    },
+    {
+      "name": "degenerate inputs",
+      "code": "CHECK_EQ(iters_for_budget(0.0, 1.0), 0);\nCHECK_EQ(iters_for_budget(5.0, 0.0), 0);\nCHECK_EQ(iters_for_budget(-1.0, 1.0), 0);",
+      "hint": "No budget or no measurable per-iteration cost means run nothing."
+    },
+    {
+      "name": "sink proves work happened",
+      "code": "double s = bench_sink(8);\nCHECK(s > 0.0);\nCHECK_EQ(iters_for_budget(100.0, 0.01) > 0, 1);",
+      "hint": "A volatile accumulator survives dead-code elimination: the loop ran."
+    }
+  ],
+  "level": "combination"
+}

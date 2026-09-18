@@ -1,0 +1,61 @@
+## Tài nguyên, không phải động từ
+
+REST mô hình hóa API của bạn thành **danh từ kèm method**:
+
+```text
+GET    /api/tasks          liệt kê (hỗ trợ ?status=open&limit=20)
+POST   /api/tasks          tạo — 201 + Location: /api/tasks/42
+GET    /api/tasks/42       đọc một — 404 nếu không có
+PUT    /api/tasks/42       thay thế — object đầy đủ
+PATCH  /api/tasks/42       cập nhật một phần
+DELETE /api/tasks/42       xóa — 200 hoặc 204
+```
+
+So với anti-pattern: `/api/getTasks`, `/api/deleteTask?id=42`. Động từ trong URL trùng lặp với điều method đã nói và lớn lên không giới hạn. Ngoại lệ tồn tại (auth: `POST /api/login` là ổn — login là một tiến trình, không phải tài nguyên).
+
+## Path parameter và query
+
+- **Path** định danh tài nguyên: `/api/tasks/42`.
+- **Query** định hình response mà không đổi định danh: `?status=open&sort=due&limit=20`.
+
+Các quy ước client sẽ mặc định: `limit`/`offset` (hoặc `cursor`) cho phân trang, `sort=-createdAt` (trừ = giảm dần), lọc theo tên trường.
+
+## Checklist review thiết kế
+
+- Danh từ số nhiều (`/tasks` không phải `/task`)
+- Không động từ trong path (method mang hành động)
+- Mã trạng thái trung thực (201 khi tạo, 404 khi thiếu, 400 khi body sai)
+- Hình dạng lỗi nhất quán: `{ "error": { "message": "...", "field": "due" } }` — client chỉ parse một hình dạng
+- Chiến lược phiên bản khi buộc phải phá hợp đồng: `/api/v2/...` (né đến khi bị ép)
+
+## Router tí hon, làm tay
+
+```js
+const routes = [];
+function route(method, pattern, handler) {
+  // "/tasks/:id" -> regex với named group
+  const keys = [];
+  const rx = new RegExp(
+    "^" +
+      pattern.replace(/:(\w+)/g, (_, k) => {
+        keys.push(k);
+        return "([^/]+)";
+      }) +
+      "$",
+  );
+  routes.push({ method, rx, keys, handler });
+}
+
+function match(method, url) {
+  for (const r of routes) {
+    const m = r.rx.exec(url);
+    if (r.method === method && m) {
+      const params = Object.fromEntries(r.keys.map((k, i) => [k, decodeURIComponent(m[i + 1])]));
+      return { handler: r.handler, params };
+    }
+  }
+  return null;
+}
+```
+
+Ba mươi dòng và routing không còn huyền bí: pattern hóa thành regex, khớp thành parameter object. (Router của framework làm đúng như vậy cộng thêm tối ưu hóa.)

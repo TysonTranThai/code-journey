@@ -1,0 +1,30 @@
+The Java Memory Model (JLS §17.4) defines **happens-before** — the only
+arrow that matters when threads share data. If action A happens-before B,
+B sees A's effects. Without that edge, **visibility is not guaranteed**:
+a plain boolean written by another thread may never be seen by your loop.
+
+Three hb edges you can build on:
+
+1. **Program order** within one thread.
+2. **Monitor rules**: unlock happens-before every later lock of the same
+   monitor; every method of a `java.util.concurrent` lock does the same.
+3. **Volatile**: a write to a volatile field happens-before every later read
+   of that field.
+
+And two structural edges you get for free:
+
+4. **Thread.start()** happens-before anything the new thread does.
+5. Everything a thread does happens-before **join()** detects its exit.
+
+The classic broken pattern — a busy flag:
+
+```java
+class Stop {
+    private static boolean run = true;          // NOT volatile
+    static void stop() { run = false; }         // may never be visible
+    static void loop() { while (run) {} }       // may spin forever
+}
+```
+
+This is not pedantry: JIT-tier compilers may hoist the read out of the loop
+because *nothing in the model forces them to re-read*.

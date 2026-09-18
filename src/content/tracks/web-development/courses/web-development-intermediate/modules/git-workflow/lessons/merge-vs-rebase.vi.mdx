@@ -1,0 +1,60 @@
+Hai branch đã tách nhau. Làm sao hợp nhất lại?
+
+## `git merge`: giữ nguyên lịch sử
+
+```bash
+git checkout feature
+git merge main
+# hoặc, từ main:
+git merge feature   # tạo merge commit nếu lịch sử đã phân kỳ
+```
+
+Merge commit có **hai cha**. Lịch sử thể hiện đúng những gì đã xảy ra: "hai dòng công việc này được hợp nhất tại đây." Không phá hủy — an toàn trên branch dùng chung.
+
+## `git rebase`: viết lại thành đường thẳng
+
+```bash
+git checkout feature
+git rebase main
+```
+
+Rebase phát lại các commit _của bạn_ lên trên `main` mới nhất, tạo ra **commit object mới** (cùng thay đổi, ID mới). Kết quả: lịch sử tuyến tính, không có merge commit. Cái giá: các commit cũ bị bỏ lại — vì vậy mới có golden rule.
+
+> **Golden rule: không bao giờ rebase những commit mà người khác đã pull.** Rebase viết lại ID; bản "cùng một commit" của mỗi người trở thành bản trùng lặp. Chỉ rebase những commit chỉ tồn tại trên máy bạn (hoặc phối hợp rõ ràng với cả team).
+
+Mô hình chuyên nghiệp:
+
+```bash
+# giữ feature cập nhật mà không tạo merge commit nhiễu
+git fetch origin
+git rebase origin/main
+```
+
+## Conflict: một thuật toán xử lý, không phải cơn hoảng loạn
+
+Conflict xảy ra khi cả hai branch cùng sửa những dòng giống nhau. Git đánh dấu file:
+
+```text
+<<<<<<< HEAD
+const total = subtotal * 1.1;      // phía của bạn
+=======
+const total = subtotal + fee;      // phía bên kia
+>>>>>>> main
+```
+
+Quy trình xử lý:
+
+1. `git status` — liệt kê mọi file bị conflict (phải xử lý hết)
+2. Mở từng file; chọn **code đúng cho sản phẩm** — không phản xạ "của tôi" hay "của họ"; thường đáp án là một kết hợp
+3. Xóa cả ba dòng marker
+4. `git add <file>` để đánh dấu đã xử lý
+5. Kết thúc: `git merge --continue` hoặc `git rebase --continue`
+6. **Chạy test** trước khi xong — conflict xử lý đúng về văn bản vẫn có thể sai về logic
+
+Lối thoát: `git merge --abort` / `git rebase --abort` đưa bạn về đúng trạng thái trước khi thao tác. Trong vòng lặp conflict khi rebase, `git rebase --skip` bỏ hẳn commit gây lỗi.
+
+## Dùng cái nào?
+
+- Branch dùng chung/công khai → merge (không bao giờ viết lại cái người khác đã có)
+- Feature branch riêng của bạn → rebase vào main để pull request sạch
+- Quy ước team quyết định phần còn lại — nhất quán hơn quan trọng hơn ý thức hệ

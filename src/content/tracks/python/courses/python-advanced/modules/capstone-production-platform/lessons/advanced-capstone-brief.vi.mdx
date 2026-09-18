@@ -1,0 +1,54 @@
+Bạn sẽ xây **TaskFlow** — một nền tảng xử lý job kiểu production — chỉ từ bản
+đặc tả này. Không có hướng dẫn từng bước, vì không có công việc từng bước.
+
+## TaskFlow làm gì
+
+- **Tiếp nhận job** qua một hàm submit: client gửi payload với một idempotency
+  key và nhận job ID ngay lập tức (chấp nhận/từ chối, không bao giờ chờ công
+  việc).
+- **Xử lý job bằng worker** kéo từ một queue. Worker vốn không đáng tin: chúng
+  crash, bị kill giữa chừng, rồi quay lại.
+- **Ghi lại mọi kết quả** một cách bền vững: job thành công kèm kết quả, job
+  thất bại kèm lý do, và tầng dead-letter cho job đã dùng hết lần retry.
+- **Phơi trạng thái**: client hỏi "job X sao rồi?" và nhận câu trả lời trung
+  thực từ trạng thái bền vững, không phải từ bộ nhớ.
+
+## Yêu cầu cứng (bị chấm, không thương lượng)
+
+1. **Chuyển giao at-least-once với hiệu ứng exactly-once.** Một job được giao
+   hai lần sinh đúng một hiệu ứng. Mọi hành động của worker là idempotent —
+   khóa bằng idempotency key của job.
+2. **Retry với backoff và ngân sách.** Job thất bại retry với trần backoff hàm
+   mũ (được tính, không sleep), tối đa 3 lần, rồi vào kho dead-letter *kèm lý
+   do thất bại*.
+3. **Tắt máy nhã nhặn.** Một lời gọi shutdown ngừng tiếp nhận, trả công việc
+   đang chạy về queue, và để nền tảng khởi động lại mà không mất job, không
+   hiệu ứng kép.
+4. **Khả năng quan sát.** Một bản chụp metric: số đếm
+   submitted/succeeded/failed/dead, gauge in-flight, và mọi dòng log được
+   correlation theo job ID với secret được che giấu.
+5. **Ủy quyền.** Truy vấn trạng thái job kiểm tra quyền sở hữu từ *principal*,
+   không bao giờ từ tham số do client cung cấp; người lạ nhận not-found, không
+   phải forbidden.
+6. **Khả năng phục hồi.** Dependency hỏng bị circuit breaker ngắt và được
+   readiness check báo cáo — không bao giờ được truyền thô ra ngoài.
+
+## Ràng buộc
+
+- Chỉ dùng thư viện chuẩn. Queue nằm trong tiến trình (ngữ nghĩa mới là thứ bị
+  chấm); triển khai thật sẽ thay port, không phải hợp đồng.
+- Python 3.11. Ghi type annotation cho bề mặt public.
+- Bạn sở hữu mọi quyết định: bố cục module, ranh giới lớp, phân loại lỗi.
+
+## Các cột mốc gợi ý (không phải checklist — một hình dạng)
+
+1. **Vòng lặp lõi**: submit → deliver → process → ack, với cổng idempotency.
+2. **Đường thất bại**: retry với backoff, dead-letter kèm lý do.
+3. **Vòng đời**: tắt nhã nhặn và khởi động lại không mất mát, không trùng lặp.
+4. **Vận hành**: bản chụp metric, log có cấu trúc + đã che giấu, readiness,
+   breaker.
+5. **Giao diện**: truy vấn trạng thái với ủy quyền.
+
+Mỗi cột mốc được chấm bên dưới bằng bài test nghiệm thu thực thi được — hãy
+viết code tới khi test pass, rồi tiếp tục cho tới khi *thiết kế* là thứ bạn
+bảo vệ được.

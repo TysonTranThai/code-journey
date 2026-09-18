@@ -1,0 +1,21 @@
+{
+  "id": "pa-test-runner",
+  "title": "A runner that tells the truth",
+  "prompt": "Implement `run_suite(tests, order=None)` — tests are `{'name', 'fn'}` dicts whose `fn()` either returns normally or raises:\n\n- execution follows `order` (a list of names) when given, else input order\n- returns `{'passed': [...], 'failed': [...], 'errors': [...], 'skipped': [...]}`\n- `AssertionError` → `failed`; any other exception → `errors` (a failing assertion is a test result; a NameError is a broken test)\n- names in `order` that match no test → entries `'<name>: no such test'` in `errors`; tests not mentioned in a given order → `skipped`\n\nThe discriminating scenario: a suite where one test raises `NameError` must report it as an error, not a failure — that distinction is the whole point.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: run_suite",
+  "tests": [
+    {
+      "name": "assertions are failures, other exceptions are errors",
+      "code": "def boom_assert():\n    raise AssertionError('x != y')\ndef boom_name():\n    return undefined_variable  # noqa: F821\nsuite = [{'name': 'a', 'fn': lambda: None}, {'name': 'f', 'fn': boom_assert}, {'name': 'e', 'fn': boom_name}]\nr = run_suite(suite)\nassert r['passed'] == ['a'] and r['failed'] == ['f'] and r['errors'] == ['e']\nprint('ok')",
+      "hint": "The triage that keeps CI diagnostics honest."
+    },
+    {
+      "name": "explicit order replays exactly",
+      "code": "suite = [{'name': 'x', 'fn': lambda: None}, {'name': 'y', 'fn': lambda: None}]\nr = run_suite(suite, order=['y', 'x'])\nassert r['passed'] == ['y', 'x']\nr2 = run_suite(suite, order=['y', 'zz'])\nassert r2['errors'] == ['zz: no such test'] and r2['skipped'] == ['x']\nprint('ok')",
+      "hint": "Deterministic replay; unknown names are loud, not silent."
+    }
+  ],
+  "level": "real-world"
+}

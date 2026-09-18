@@ -1,0 +1,44 @@
+Every route needs some of the same work: parse the body, check auth, log timing, catch errors. Middleware is the pattern that factors it out: each layer wraps the next.
+
+## The shape
+
+```js
+function logger(req, res, next) {
+  const start = Date.now();
+  res.on("finish", () => console.log(req.method, req.url, Date.now() - start + "ms"));
+  next();
+}
+```
+
+A middleware receives (req, res, next). It can act **before** `next()` (setup), **after** (response finished), or never call `next()` (it _is_ the response — auth denial). Nesting them forms an onion: request enters layer 1, 2, 3, handler, then unwinds back out.
+
+## The pipeline by hand
+
+```js
+function pipeline(middlewares, handler) {
+  return (req, res) => {
+    let i = 0;
+    const next = (err) => {
+      if (err) return onError(res, err);
+      const mw = middlewares[i++];
+      if (mw) mw(req, res, next);
+      else handler(req, res);
+    };
+    next();
+  };
+}
+```
+
+`next` is the trick: it's a closure over position `i`, so each call advances exactly one layer. Express's `app.use()` builds precisely this list.
+
+## Middlewares worth writing
+
+- **Request logging** (above) — you'll write this in every job
+- **Body parser** — assemble chunks, parse JSON, attach `req.body`, 400 on garbage
+- **Auth guard** — verify session/token, attach `req.user`, 401 early
+- **Error boundary** — the outermost layer's try/catch: one 500 shape for the whole app, logged once
+- **Rate limiter** — keyed by IP/user, before the handler touches the DB
+
+## Ordering is semantics
+
+`auth` before `handler` (obviously), but also before anything that touches `req.user`. `bodyParser` before anything reading `req.body`. Errors thrown inside deep layers must reach the outermost catch — that's why the pipeline passes `err` through `next(err)` instead of letting each layer catch (and swallow) its own.

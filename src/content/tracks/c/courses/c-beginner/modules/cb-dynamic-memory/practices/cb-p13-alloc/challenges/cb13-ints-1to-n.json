@@ -1,0 +1,26 @@
+{
+  "id": "cb13-ints-1to-n",
+  "title": "Allocate 1..n",
+  "prompt": "Implement `int* ints_up_to(int n)` returning a heap-allocated array holding 1,2,...,n. Return NULL for n <= 0. The CALLER frees it.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "values",
+      "code": "int *p = ints_up_to(4);\nCHECK_NOT_NULL(p);\nCHECK_EQ(p[0], 1);\nCHECK_EQ(p[3], 4);\nfree(p);",
+      "hint": "malloc(4 * sizeof(int)) then fill in a loop."
+    },
+    {
+      "name": "n<=0 null",
+      "code": "CHECK_EQ(ints_up_to(0), NULL);",
+      "hint": "Guard the nonsense size first."
+    },
+    {
+      "name": "negative null",
+      "code": "CHECK_EQ(ints_up_to(-3), NULL);",
+      "hint": "Same guard covers negatives."
+    }
+  ],
+  "level": "guided"
+}

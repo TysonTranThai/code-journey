@@ -1,0 +1,20 @@
+{
+  "id": "i2-union-reducer",
+  "title": "Discriminated Reducer",
+  "prompt": "Write `reduceRequest(state, action)` for a request state machine. State is `{ kind: \"idle\" } | { kind: \"loading\" } | { kind: \"success\", data } | { kind: \"error\", message }`. Actions: `{ type: \"start\" }` → loading; `{ type: \"resolve\", data }` → success; `{ type: \"reject\", message }` → error; `{ type: \"reset\" }` → idle. RETURN the new state; never mutate.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function reduceRequest(state, action) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "full lifecycle",
+      "code": "const fn = new Function(code + \"\\nreturn { reduceRequest };\");\nconst { reduceRequest } = fn();\nlet s = { kind: \"idle\" };\ns = reduceRequest(s, { type: \"start\" });\nif (s.kind !== \"loading\") throw new Error(\"start → loading.\");\ns = reduceRequest(s, { type: \"resolve\", data: [1, 2] });\nif (s.kind !== \"success\" || s.data.join() !== \"1,2\") throw new Error(\"resolve → success with data.\");\ns = reduceRequest(s, { type: \"reject\", message: \"503\" });\nif (s.kind !== \"error\" || s.message !== \"503\") throw new Error(\"reject → error with message.\");\ns = reduceRequest(s, { type: \"reset\" });\nif (s.kind !== \"idle\") throw new Error(\"reset → idle.\");",
+      "hint": "switch on action.type returning fresh state objects."
+    },
+    {
+      "name": "success state carries data only there",
+      "code": "const fn = new Function(code + \"\\nreturn { reduceRequest };\");\nconst { reduceRequest } = fn();\nconst s = reduceRequest({ kind: \"idle\" }, { type: \"start\" });\nif (\"data\" in s) throw new Error(\"The loading state must not fabricate a data field — variants carry only their own fields.\");",
+      "hint": "Return { kind: 'loading' } exactly — no extra keys."
+    }
+  ]
+}

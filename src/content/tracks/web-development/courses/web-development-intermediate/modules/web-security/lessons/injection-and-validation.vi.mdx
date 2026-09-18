@@ -1,0 +1,41 @@
+Injection chính là bug XSS mặc bộ đồ khác: **dữ liệu bị diễn giải thành code**, lần này ở phía server.
+
+## SQL injection: kinh điển trong năm dòng
+
+```js
+// DỄ TỔN THƯƠNG: nối chuỗi vào SQL
+const q = "SELECT * FROM users WHERE email = '" + email + "'";
+db.query(q);
+// email = "' OR 1=1 --"  ->  trả về mọi user
+// email = "'; DROP TABLE users; --"  ->  đúng như văn bản của nó
+```
+
+Database không phân biệt được SQL của bạn với phần đuôi của kẻ tấn công. Cách sửa là **parameterized query** — dữ liệu đi dưới dạng dữ liệu, không bao giờ làm mã nguồn SQL:
+
+```js
+// AN TOÀN: driver gắn giá trị; cấu trúc do code quyết định
+db.query("SELECT * FROM users WHERE email = ?", [email]);
+```
+
+Điều này không phải tùy chọn. Bất kỳ phép nội suy chuỗi nào vào SQL (`+`, template literal, sprintf) đều là lỗ hổng — kể cả trong "công cụ admin nội bộ vô hại".
+
+## Command injection
+
+```js
+// DỄ TỔN THƯƠNG: input người dùng thành lệnh shell
+exec(`convert ${filename} thumb.png`);
+// filename = "a.jpg; rm -rf /" (hoặc tinh vi hơn)
+```
+
+Cách sửa: tránh shell (`execFile` với mảng tham số), allowlist tên file, không bao giờ đưa dữ liệu người dùng vào cú pháp shell.
+
+## Tư thế kiểm tra đầu vào
+
+- **Kiểm tra ở ranh giới** — ngay khi dữ liệu đi vào (route handler, form submit), bằng schema (Zod): kiểu, độ dài, định dạng, miền giá trị. Từ chối thứ bạn không lường trước thay vì săn thứ bạn cấm.
+- **Allowlist > denylist**: "phải khớp `^[a-z0-9-]{1,40}$`" hơn "không được chứa dấu chấm phẩy" — kẻ tấn công có vô hạn cách mã hóa; bạn có danh sách cấm hữu hạn.
+- **Kiểm tra không phải mã hóa**: xác nhận input là chuỗi sạch không miễn trừ việc mã hóa ở output. Cả hai lớp, luôn luôn.
+- **Phía server, luôn luôn.** Validation phía client là trải nghiệm người dùng. API kiểm tra lại mọi thứ.
+
+## Cùng một bài học ở mọi nơi
+
+Template injection, header injection, LDAP injection, path traversal (`../../etc/passwd`) — mô hình giống hệt: xác định nơi dữ liệu đi vào một ngôn ngữ có cấu trúc, giữ dữ liệu khỏi cấu trúc, kiểm tra hình dạng tại cửa.

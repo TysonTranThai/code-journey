@@ -1,0 +1,26 @@
+Chương trình trở nên thật khi kết quả của nó sống sót sau khi chương trình kết
+thúc. Tệp là hình thức lưu trữ đơn giản nhất.
+
+## Đọc tệp
+
+```python
+with open("notes.txt", "r", encoding="utf-8") as f:
+    content = f.read()          # toàn bộ tệp như một chuỗi
+print(content)
+```
+
+`open(path, mode, encoding=...)` trả về một file object; `"r"` là chế độ đọc.
+Khối `with` tự đóng tệp — kể cả khi có lỗi xảy ra bên trong. Luôn dùng `with`.
+
+Các cách đọc hữu ích:
+
+```python
+with open("notes.txt", encoding="utf-8") as f:
+    lines = f.readlines()       # danh sách các dòng (có ký tự xuống dòng)
+
+with open("notes.txt", encoding="utf-8") as f:
+    for line in f:              # tiết kiệm bộ nhớ: từng dòng một
+        print(line.strip())
+```
+
+Một tệp không tồn tại sẽ raise `FileNotFoundError` — bạn đã biết cách bắt nó.

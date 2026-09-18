@@ -1,0 +1,45 @@
+## Selection sort: pick the smallest, put it front
+
+```c
+void selection_sort(int *a, int n) {
+    for (int i = 0; i < n - 1; i++) {
+        int min = i;
+        for (int j = i + 1; j < n; j++)
+            if (a[j] < a[min]) min = j;
+        int t = a[i]; a[i] = a[min]; a[min] = t;   // swap into place
+    }
+}
+```
+
+Invariant: after pass i, the first i+1 elements are the i+1 smallest, sorted.
+Always ~n²/2 comparisons — predictable, in-place, easy to verify.
+
+## Insertion sort: grow a sorted prefix
+
+```c
+void insertion_sort(int *a, int n) {
+    for (int i = 1; i < n; i++) {
+        int key = a[i];
+        int j = i - 1;
+        while (j >= 0 && a[j] > key) {   // shift bigger elements right
+            a[j + 1] = a[j];
+            j--;
+        }
+        a[j + 1] = key;
+    }
+}
+```
+
+On nearly-sorted data it approaches O(n) — that is why real libraries build
+their top-tier sorts on insertion sort for small or nearly-ordered runs.
+
+## What "in place" means
+
+Both algorithms rearrange the array they are given — O(1) extra memory. The
+caller sees the permutation; nothing new is allocated.
+
+## Testing a sort
+
+Check: empty, single, already sorted, reverse sorted, duplicates, negatives.
+A sort that survives that battery is usually right — the same battery the
+graders run below.

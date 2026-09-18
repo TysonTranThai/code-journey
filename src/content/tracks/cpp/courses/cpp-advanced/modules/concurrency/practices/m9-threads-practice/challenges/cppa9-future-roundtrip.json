@@ -1,0 +1,21 @@
+{
+  "id": "cppa9-future-roundtrip",
+  "title": "Promise/Future Across Threads",
+  "prompt": "Implement `runWithResult(std::function<int()>)`: run the callable on a fresh std::thread, deliver its result through a promise/future, join the thread, and return the result.",
+  "difficulty": "advanced",
+  "level": "independent",
+  "language": "cpp",
+  "boilerplate": "#include <functional>\n#include <future>\n#include <thread>\n\nint runWithResult(std::function<int()> fn);\n",
+  "tests": [
+    {
+      "name": "result crosses the thread",
+      "code": "CHECK_EQ(runWithResult([] { return 6 * 7; }), 42);",
+      "hint": "std::promise<int> p; auto fut = p.get_future(); std::thread t([&p, &fn] { p.set_value(fn()); }); int r = fut.get(); t.join(); return r;"
+    },
+    {
+      "name": "futures compose sequentially",
+      "code": "int doubled = runWithResult([] { return 21; }) * 2;\nCHECK_EQ(doubled, 42);",
+      "hint": "Each call is independent — the future.get() blocks only until that worker finishes."
+    }
+  ]
+}

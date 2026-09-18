@@ -1,0 +1,32 @@
+A relational database stores **tables** of rows with typed columns. SQL is
+the query language; SQLite is the zero-config engine built into Python:
+
+```python
+import sqlite3
+
+conn = sqlite3.connect(":memory:")     # or "app.db" for a real file
+conn.execute(
+    """
+    CREATE TABLE tasks (
+        id INTEGER PRIMARY KEY,
+        title TEXT NOT NULL,
+        done INTEGER DEFAULT 0
+    )
+    """
+)
+conn.execute("INSERT INTO tasks (title) VALUES (?)", ("write lesson",))
+conn.commit()
+
+rows = conn.execute("SELECT id, title FROM tasks WHERE done = 0").fetchall()
+```
+
+The vocabulary that matters:
+
+- **SELECT ... FROM ... WHERE** — read rows matching a condition.
+- **ORDER BY ... LIMIT** — sort and take the top rows.
+- **INSERT INTO ... VALUES** — add rows; **UPDATE ... SET ... WHERE** — modify matched rows.
+- **DELETE FROM ... WHERE** — remove rows. (The WHERE on UPDATE/DELETE is not optional in practice — forgetting it changes every row.)
+- **COUNT, SUM, AVG, GROUP BY** — aggregate per group: `SELECT region, SUM(amount) FROM sales GROUP BY region`.
+
+`conn.row_factory = sqlite3.Row` makes rows behave like dicts
+(`row["title"]`) — better than bare tuples for readability.

@@ -1,0 +1,24 @@
+`volatile` gives you exactly two things — and not a third:
+
+1. **Visibility**: every read sees the latest write (hb edge per access).
+2. **Ordering**: the compiler/CPU may not reorder volatile accesses with each
+   other in observable ways.
+
+What volatile does NOT give: **atomicity of compound actions**.
+`volatile int n; n++` is still a read-modify-write race — two threads can
+both read 5 and both write 6, losing an increment. That is what
+`AtomicInteger` (CAS) is for — next module.
+
+**Safe publication** (§17.4.4): to hand an object to another thread safely,
+publish it through a channel that carries an hb edge — a volatile field, a
+`BlockingQueue`, an executor submit, or a properly synchronized structure.
+If you construct an object and store it in a plain static field, another
+thread may see a *partially constructed* object (fields default-valued or
+stale).
+
+**Final-field semantics** (§17.5): if an object is *properly constructed*
+(no `this` escape), every thread that gets a reference to it sees the final
+fields fully initialized — even without synchronization. This guarantee is
+why `String` is safe to share freely, and why leaking `this` from a
+constructor is not just ugly but a *correctness* bug: it can break the
+final-field guarantee.

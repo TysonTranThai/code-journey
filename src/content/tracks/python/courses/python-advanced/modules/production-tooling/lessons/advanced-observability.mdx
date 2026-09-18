@@ -1,0 +1,47 @@
+## The three pillars, honestly weighted
+
+- **Logs** — discrete events with context. The workhorse.
+- **Metrics** — numbers over time (counters, gauges, histograms). The alarms.
+- **Traces** — one request's journey across components, with a shared
+  **correlation ID**. The multi-hop detective.
+
+Structured logging beats string formatting: `log.info("order.created",
+order_id=..., total=...)` emits JSON that machines can query. The rules that
+matter:
+
+- levels are a *policy*: DEBUG for developers, INFO for business events, WARNING
+  for auto-healed oddities, ERROR for things a human must see,
+- **never log secrets or personal data** — passwords, tokens, full card numbers;
+  log identifiers, not contents,
+- one event per *occurrence*, with fields — not one line per variable.
+
+## Metrics that earn their keep
+
+Four metric types cover nearly everything: counter (monotone — requests,
+errors), gauge (point-in-time — queue depth, active connections), histogram
+(distributions — latency), and rate (counter per time). Alert on symptoms
+users feel (error rate, latency SLO burn) — not on causes (CPU is high) — and
+every alert must be actionable, or it trains people to ignore alerts.
+
+## Tracing: the correlation ID
+
+One ID per request, propagated through every hop and attached to every log
+line. When a user says "it failed", the ID reconstructs the whole journey: API
+→ queue → worker → database, with timings at each hop. OpenTelemetry
+standardizes the instrumentation; the concept matters more than the vendor.
+
+## Health checks and graceful degradation, revisited
+
+`/readyz` reports *dependency* state (the readiness probe you built in the APIs
+module); metrics on dependency failures feed circuit breakers (distributed
+module); traces carry the correlation ID that turns "errors spiked" into
+"checkout latency rose after the payment provider's p99 crossed 2s at 02:14".
+Each mechanism is simple; the compound system is how incidents get diagnosed
+before coffee.
+
+## SLOs: the honesty contract
+
+Pick a small set of user-facing objectives ("99.9% of checkout requests succeed
+in under 500ms"), measure them with histograms, and let the *burn rate* of the
+error budget drive urgency. Inside budget: ship features. Burning fast: stop
+and stabilize. The SLO replaces vibes with arithmetic.

@@ -1,0 +1,25 @@
+{
+  "id": "practice-accessible-image",
+  "title": "An Image Everyone Can Understand",
+  "prompt": "Add an image to the page: `src` `/images/sunrise.jpg`, with `alt` text that would let someone who cannot see the picture know what it shows — write `Sunrise over a mountain lake`.\n\nRules:\n- One `img` element with both `src` and `alt`.\n- The alt text is written for people, not for search engines.",
+  "difficulty": "beginner",
+  "level": "guided",
+  "boilerplate": "<h1>Morning pages</h1>\n<p>Every walk starts before the sun does.</p>\n<!-- your image here -->\n",
+  "tests": [
+    {
+      "name": "an img with src and alt",
+      "code": "const img = code.match(/<img\\s[^>]*>/i);\nif (!img || !/src=/i.test(img[0]) || !/alt=/i.test(img[0])) {\n  throw new Error(\"The <img> needs both src and alt attributes.\");\n}",
+      "hint": "<img src=\"/images/sunrise.jpg\" alt=\"…\"> — both attributes are required."
+    },
+    {
+      "name": "points at the sunrise image",
+      "code": "const img = code.match(/<img\\s[^>]*>/i)[0];\nconst src = img.match(/src=[\"']([^\"']*)[\"']/i);\nif (!src || src[1] !== \"/images/sunrise.jpg\") {\n  throw new Error(\"The src must be exactly /images/sunrise.jpg\");\n}",
+      "hint": "Copy the src from the instructions: /images/sunrise.jpg"
+    },
+    {
+      "name": "alt text describes the picture",
+      "code": "const img = code.match(/<img\\s[^>]*>/i)[0];\nconst alt = img.match(/alt=[\"']([^\"']*)[\"']/i);\nif (!alt || alt[1].trim() !== \"Sunrise over a mountain lake\") {\n  throw new Error(\"Write the alt text exactly: Sunrise over a mountain lake\");\n}",
+      "hint": "Alt text speaks the picture aloud: 'Sunrise over a mountain lake'."
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+Dữ liệu được tách across các bảng (bài đầu của module); join ráp lại thành một truy vấn.
+
+## INNER JOIN: những hàng khớp nhau
+
+```sql
+SELECT t.id, t.title, u.name
+FROM tasks t
+INNER JOIN users u ON u.id = t.author_id;
+```
+
+Mỗi task kèm tên tác giả; task không có tác giả hợp lệ biến mất (khóa ngoại đáng lẽ đã ngăn, nhưng user bị xóa mềm, dữ liệu cũ...). Đặt alias cho bảng (`tasks t`) — bạn sẽ gõ chúng nhiều lắm.
+
+## LEFT JOIN: giữ lại phía trái
+
+```sql
+SELECT u.name, COUNT(t.id) AS task_count
+FROM users u
+LEFT JOIN tasks t ON t.author_id = u.id
+GROUP BY u.name;
+```
+
+Mọi user đều xuất hiện — kể cả người không có task nào (COUNT(t.id) là 0 vì t.id là NULL). Mô hình "đếm cả số 0" này là join phổ biến nhất ngoài thực tế. RIGHT JOIN tồn tại (hiếm dùng — đảo hai bảng lại); FULL OUTER giữ cả hai phía.
+
+## Bẫy NULL trong join
+
+Hàng không khớp của LEFT JOIN có cột phải là NULL. Hai hệ quả:
+
+- `WHERE t.something = x` lặng lẽ biến LEFT JOIN của bạn thành INNER (NULL trượt phép so sánh). Đặt điều kiện phía phải **trong mệnh đề ON** nếu muốn giữ lại.
+- `COUNT(*)` đếm hàng (kể cả hàng khớp-kèm-NULL); `COUNT(t.id)` đếm id khác null. Chúng khác nhau đúng ở những hàng bạn join để giữ lại.
+
+## Subquery và CTE
+
+```sql
+-- user có nhiều hơn 5 task đang mở
+SELECT name FROM users u
+WHERE (SELECT COUNT(*) FROM tasks t WHERE t.author_id = u.id AND t.done = false) > 5;
+
+-- giống hệt, dưới dạng CTE dễ đọc
+WITH open_counts AS (
+  SELECT author_id, COUNT(*) AS n
+  FROM tasks
+  WHERE done = false
+  GROUP BY author_id
+)
+SELECT u.name, c.n
+FROM open_counts c
+JOIN users u ON u.id = c.author_id
+WHERE c.n > 5;
+```
+
+CTE (`WITH`) đặt tên cho một kết quả trung gian — thường rõ hơn việc lồng nhau, và Postgres vẫn tối ưu hóa được.
+
+## Nhiều-nhiều trong thực chiến
+
+```sql
+SELECT t.title, array_agg(tg.name) AS tags
+FROM tasks t
+JOIN task_tags tt ON tt.task_id = t.id
+JOIN tags tg ON tg.id = tt.tag_id
+GROUP BY t.title;
+```
+
+Hai bước nhảy qua bảng nối. Lọc ("task gắn tag urgent") là một join kèm `WHERE tg.name = 'urgent'`; đếm theo tag là GROUP BY trên bảng nối.

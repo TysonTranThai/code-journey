@@ -1,0 +1,19 @@
+The ledger - the whole course in four methods.
+
+`net` needs the *signed* sum: `CASH_IN ? +amount : -amount`, filtered by
+`date.startsWith(prefix)`. Note `net("")` means everything - the prefix
+check passes trivially. `labelsSince` is filter-then-uppercase-then-collect;
+insertion order comes free from `ArrayList`. `saveLines` is
+`String.format("%s|%s|%s|%.2f", ...)` per transaction - and the format
+string is exactly what `loadLine` will split on, which is what makes the
+round-trip test honest: save, load into a *fresh* ledger, save again,
+compare.
+
+`loadLine` is the module-11 lesson wearing a capstone costume: wrap the
+construct-and-add in `try { } catch (IllegalArgumentException e) { }` and
+skip silently. One malformed line must never take down the whole import -
+you proved you understand that in the checkpoint before last; here it
+ships in the final product.
+
+When all four test blocks pass, every module of this course has
+contributed something to a working artifact. That's the finish line.

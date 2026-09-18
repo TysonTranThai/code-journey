@@ -1,0 +1,38 @@
+## Ném có chủ đích
+
+Mã của bạn ném khi hợp đồng của nó bị phá:
+
+```csharp
+static decimal Withdraw(decimal balance, decimal amount)
+{
+    if (amount <= 0)
+        throw new ArgumentException("amount must be positive");
+    if (amount > balance)
+        throw new InvalidOperationException("insufficient funds");
+    return balance - amount;
+}
+```
+
+Hai quy tắc làm thông điệp throw hữu ích:
+
+- **ArgumentException** (và họ hàng) cho *đối số* xấu ngay tại chỗ — kèm tên đối số nếu được.
+- **InvalidOperationException** cho *thao tác xấu xét theo trạng thái hiện tại* — rút tiền từ tài khoản đã thấu chi.
+
+## Ngoại lệ tùy chỉnh
+
+Khi người gọi phải phân biệt thất bại của bạn với của framework, hãy định nghĩa một kiểu:
+
+```csharp
+class PaymentDeclinedException : Exception
+{
+    public PaymentDeclinedException(string message) : base(message) { }
+}
+
+static void Pay(decimal amount)
+{
+    if (amount > 1000m)
+        throw new PaymentDeclinedException("over the single-payment limit");
+}
+```
+
+Giờ người gọi có thể `catch (PaymentDeclinedException)` và biết chính xác luật của ai vừa kích hoạt. Quy ước: tên kết thúc bằng `Exception`, kế thừa từ `Exception`, truyền message cho `base`.

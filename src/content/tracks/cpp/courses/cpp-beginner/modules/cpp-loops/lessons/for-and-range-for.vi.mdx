@@ -1,0 +1,45 @@
+## Đếm: for kinh điển
+
+```cpp
+for (int i = 1; i <= 5; ++i) {
+    std::cout << i << ' ';
+}
+// in ra: 1 2 3 4 5
+```
+
+Ba phần: khởi tạo (`int i = 1`), điều kiện (`i <= 5`, kiểm tra *trước* mỗi vòng), bước nhảy (`++i`, sau mỗi vòng). Nên dùng `++i` thay vì `i++` như một thói quen phong cách (chưa bao giờ chậm hơn, đôi khi nhanh hơn).
+
+## Kỷ luật off-by-one
+
+Đếm 1..N dùng `i = 1; i <= N`. Truy cập vị trí 0..N-1 dùng `i = 0; i < N`. Trộn hai thói quen tạo ra bug off-by-one kinh điển: thừa hoặc thiếu đúng một vòng. Hãy quyết định *lý do* bạn lặp, rồi chọn dạng tương ứng một cách chủ ý.
+
+## Range-based for — mặc định hiện đại
+
+```cpp
+#include <vector>
+#include <string>
+
+std::vector<int> scores{9, 7, 10};
+
+for (int s : scores) {          // một lượt, không cần quản lý chỉ số
+    std::cout << s << ' ';
+}
+
+for (const auto& name : names) { // const& = chỉ đọc, không sao chép (module 11 giải thích &)
+    std::cout << name << '\n';
+}
+```
+
+Dùng range-for bất cứ khi nào bạn chỉ *ghé thăm* từng phần tử — nó không thể chạy quá cuối. Dùng for kinh điển khi bạn cần chỉ số (vị trí, bước nhảy, đi hai phần tử một lần).
+
+## break và continue
+
+`break` thoát vòng lặp ngay lập tức; `continue` bỏ qua sang vòng kế tiếp. Dùng chúng để giữ luồng chính không bị thụt lề:
+
+```cpp
+for (const auto& line : lines) {
+    if (line.empty() || line[0] == '#') continue;  // bỏ nhiễu
+    if (line == "STOP") break;                     // thoát sớm
+    process(line);
+}
+```

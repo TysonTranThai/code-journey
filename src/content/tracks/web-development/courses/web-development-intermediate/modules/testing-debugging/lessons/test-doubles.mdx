@@ -1,0 +1,50 @@
+A unit test must fail because _your code_ is wrong — not because the network was down, the clock drifted, or the database was empty. Test doubles replace collaborators with controllable stand-ins.
+
+## The taxonomy (precisely)
+
+- **Stub** — returns canned answers. `stubFetch` that always resolves `{"ok": true}`. You don't assert on it; your code calls it and you assert on the _result_.
+- **Spy** — wraps a real (or fake) function and records calls: arguments, count, order. You assert on _how your code used it_.
+- **Mock** — a stub with expectations pre-loaded: "this must be called once with X, or the test fails." Powerful; overuse couples tests to implementation.
+- **Fake** — a real lightweight implementation: an in-memory Map instead of a database, a queue that actually queues.
+
+## The dependency seam
+
+You can only substitute what your code can _reach from outside_. This is why hardcoded dependencies are a testing smell:
+
+```js
+// untestable as a unit — fetch is welded in
+export async function loadUser(id) {
+  const res = await fetch(`/api/users/${id}`);
+  return res.json();
+}
+
+// testable — the collaborator arrives by parameter
+export function makeUserLoader(fetchLike) {
+  return async (id) => {
+    const res = await fetchLike(`/api/users/${id}`);
+    return res.json();
+  };
+}
+```
+
+Constructor injection, function parameters, or module-level indirection — any seam works. The pattern is the point, not the mechanism.
+
+## The classic spy, by hand
+
+```js
+function makeSpy(impl) {
+  const calls = [];
+  const spy = (...args) => {
+    calls.push(args);
+    return impl?.(...args);
+  };
+  spy.calls = calls;
+  return spy;
+}
+```
+
+Then: `spy.calls.length === 2`, `spy.calls[0][0] === "/api/users/42"`. This is literally what `vi.fn()` / `jest.fn()` are.
+
+## What NOT to double
+
+Don't stub the function under test's own pure logic — only collaborators with side effects (network, clock, storage, randomness). Over-mocked tests pass while production burns: they verify your _assumptions_, not your code. When a test needs five mocks to run, the code is asking for a redesign (fewer collaborators, more seam, smaller unit).

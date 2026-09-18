@@ -1,0 +1,25 @@
+{
+  "id": "cppi-checkpoint-dsa",
+  "title": "Checkpoint: Binary search tree contains",
+  "prompt": "Implement `bool bst_contains(const TreeNode* n, int v)` on the given `TreeNode {int value; TreeNode* left; TreeNode* right;}` (left < node < right). Walk ONE path using the ordering — the recursive left-or-right branch, not both. Then implement `TreeNode* bst_insert(TreeNode* n, int v)` (ignore duplicates) so the second test can build a tree. Everything else is provided.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\n\nstruct TreeNode {\n    int value;\n    TreeNode* left;\n    TreeNode* right;\n};\n\n// bool bst_contains(const TreeNode* n, int v)\n// TreeNode* bst_insert(TreeNode* n, int v)\n",
+  "tests": [
+    {
+      "name": "finds-deep",
+      "code": "TreeNode a{1, nullptr, nullptr};\nTreeNode c{3, nullptr, nullptr};\nTreeNode b{2, &a, &c};\nCHECK(bst_contains(&b, 3));\nCHECK(bst_contains(&b, 1));\nCHECK(!bst_contains(&b, 4));",
+      "hint": "Left leaf, right leaf, and a miss — one path each."
+    },
+    {
+      "name": "after-insert",
+      "code": "TreeNode* root = nullptr;\nint values[] = {5, 3, 7, 6, 8};\nfor (int v : values) root = bst_insert(root, v);\nCHECK(bst_contains(root, 6));\nCHECK(!bst_contains(root, 4));",
+      "hint": "Insert builds the BST; contains walks it."
+    },
+    {
+      "name": "duplicate-ignored",
+      "code": "TreeNode* root = nullptr;\nroot = bst_insert(root, 5);\nroot = bst_insert(root, 5);\nCHECK(bst_contains(root, 5));",
+      "hint": "Inserting twice changes nothing observable."
+    }
+  ]
+}

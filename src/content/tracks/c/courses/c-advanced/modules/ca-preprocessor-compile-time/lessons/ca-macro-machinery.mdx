@@ -1,0 +1,18 @@
+## Arguments expand before substitution — except with # and ##
+
+`SQUARE(x) ((x) * (x))` replaces x with the *already expanded* argument — unless x is used with `#` (stringize) or `##` (paste), where it stays raw. This subtlety is why the classic double-expansion wrapper exists:
+
+```c
+#define STR_(x) #x          /* x stays unexpanded: becomes "x" */
+#define STR(x)  STR_(x)     /* x expands first, then stringizes */
+```
+
+`STR(__LINE__)` gives "14"; `STR_(__LINE__)` gives "__LINE__".
+
+## Parenthesize everything
+
+`#define BAD(a, b) a + b` and `BAD(1, 2) * 3` expands to `1 + 2 * 3`. Every parameter reference gets parentheses; the whole replacement gets parentheses. Macro code that violates this is not stylistically wrong — it computes wrong answers.
+
+## Multi-line and do-while
+
+Statement-shaped macros wrap in `do { ... } while (0)` so `if (x) MACRO(); else ...` still parses — a plain `{ }` would break the semicolon. This is not superstition; it is syntax maintenance.

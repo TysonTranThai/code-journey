@@ -1,0 +1,48 @@
+## Why plain parameters can't
+
+C function arguments are **copies**:
+
+```c
+void bump(int n) { n = n + 1; }   // bumps the COPY
+
+int x = 5;
+bump(x);
+// x is still 5 — the function changed its own copy
+```
+
+## Passing an address changes the object
+
+Give the function the *address*, and it can dereference its way back to the
+original:
+
+```c
+void bump(int *n) { *n = *n + 1; }   // follows the pointer to the caller's int
+
+int x = 5;
+bump(&x);        // pass the ADDRESS
+// x is now 6
+```
+
+This is the single most important pointer pattern in C: **out-parameters**.
+`scanf("%d", &n)` works for exactly this reason — you hand scanf the address
+so it can deposit the value.
+
+## Two outputs from one function
+
+```c
+void minmax(int a, int b, int *lo, int *hi) {
+    if (a <= b) { *lo = a; *hi = b; }
+    else        { *lo = b; *hi = a; }
+}
+...
+int lo, hi;
+minmax(3, 8, &lo, &hi);
+```
+
+A function returns one value; pointers give it many.
+
+## The contract
+
+A pointer parameter is a promise: "this points at a valid int". Passing
+`NULL` or an uninitialized pointer breaks the contract — the function will
+dereference garbage. Module 14 introduces checking.

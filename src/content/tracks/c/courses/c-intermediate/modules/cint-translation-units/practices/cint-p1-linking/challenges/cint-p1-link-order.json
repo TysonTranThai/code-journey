@@ -1,0 +1,16 @@
+{
+  "id": "cint-p1-link-order",
+  "title": "Simulate the Linker",
+  "prompt": "Implement a tiny model of symbol resolution:\n\n```c\nint resolve(int *symbols, size_t n, const char *want);\n```\n\n`symbols` encodes definitions across object files: each element is\n`1` (definition), `0` (declaration only), or `-1` (duplicate definition).\n`resolve` returns: `0` if there is exactly one definition and at least one\ndeclaration-or-definition overall, `-1` if there are zero definitions, and\n`1` if there are two or more definitions (multiple definition error).\nNULL or empty input returns -1 (nothing defined).",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "resolution verdicts",
+      "code": "\nint s1[] = {0, 1, 0};\nCHECK_EQ(resolve(s1, 3, \"fn\"), 0);\nint s2[] = {0, 0, 0};\nCHECK_EQ(resolve(s2, 3, \"fn\"), -1);\nint s3[] = {1, 1, 0};\nCHECK_EQ(resolve(s3, 3, \"fn\"), 1);\nCHECK_EQ(resolve(NULL, 0, \"fn\"), -1);\nint s4[] = {1};\nCHECK_EQ(resolve(s4, 1, \"fn\"), 0);\n",
+      "hint": "Count definitions (== 1): zero -> -1, two or more -> 1, exactly one -> 0."
+    }
+  ],
+  "level": "mini-build"
+}

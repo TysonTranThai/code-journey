@@ -1,0 +1,22 @@
+## The Parse family
+
+```csharp
+int i = int.Parse("42");            // 42
+int neg = int.Parse("-17");         // -17
+double d = double.Parse("3.5");     // 3.5
+decimal m = decimal.Parse("19.99"); // 19.99
+int bad = int.Parse("4 2");         // FormatException
+int empty = int.Parse("");          // FormatException
+```
+
+Each type's Parse accepts exactly the formats its own `ToString` produces (plus leading/trailing spaces, which are trimmed). `int.Parse("3.5")` **fails** — there's no silent truncation on the way in. Whitespace inside the number fails; a decimal point for an `int` fails.
+
+**Culture matters**: by default Parse uses the machine's culture — on systems configured with `,` as the decimal separator, `double.Parse("3.5")` fails. For this course's challenges the sandbox culture parses `.`; when you build real apps you'll meet `CultureInfo.InvariantCulture` for machine-to-machine formats. Knowing the trap exists is the beginner takeaway.
+
+## Choosing the type
+
+Parse into the type that models the value: `int` for counts, `double` for measurements, `decimal` for money. If the input is `"19.99"`, `int.Parse` is the wrong tool *before* you even ask whether it throws.
+
+## What a FormatException looks like
+
+Unhandled, it kills the program with a stack trace. You'll learn `try/catch` in Module 15 — but for input validation the right tool comes first: **TryParse**, which never throws at all.

@@ -1,0 +1,22 @@
+{
+  "title": "Mã hóa địa chỉ loopback",
+  "prompt": "POSIX. Cài `void fill_loopback(struct sockaddr_in *sa, int port)` — zero struct, đặt family AF_INET, địa chỉ INADDR_LOOPBACK (network byte order), và port (network byte order). Rồi `int decode_port(const struct sockaddr_in *sa)` trả port theo host order. NULL: decode trả -1, fill không làm gì.",
+  "tests": [
+    {
+      "name": "roundtrip port",
+      "hint": "htons lúc vào, ntohs lúc ra — thứ tự byte triệt tiêu."
+    },
+    {
+      "name": "địa chỉ loopback",
+      "hint": "INADDR_LOOPBACK là 127.0.0.1 — lưu theo network byte order đúng như cho."
+    },
+    {
+      "name": "zero hóa padding và family",
+      "hint": "Struct bị memset đầu độc phải ra sạch: hợp đồng nói zero struct trước."
+    },
+    {
+      "name": "chặn NULL",
+      "hint": "NULL là lỗi người gọi: từ chối bằng -1, không dereference."
+    }
+  ]
+}

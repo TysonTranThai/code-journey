@@ -1,0 +1,32 @@
+## Optional parameters
+
+```csharp
+static void Log(string message, int level = 1)
+{
+    Console.WriteLine("[" + level + "] " + message);
+}
+
+Log("boot");          // [1] boot   — level omitted, default used
+Log("disk full", 3);  // [3] disk full
+```
+
+A default value makes the trailing parameter skippable. Rules: optional parameters come **after** required ones, and the default must be a compile-time constant. Defaults are baked into the *caller's* compiled code — changing a default later requires recompiling callers. That's a real library-design consequence; for now, just know defaults are convenient for self-contained code.
+
+## Named arguments
+
+```csharp
+Log(level: 3, message: "disk full");   // same call, order-free
+Log("disk full", level: 3);            // positional then named
+```
+
+Named arguments say what each value *is* at the call site. They also let you skip middle optional parameters instead of passing them all positionally. Use them when a call would otherwise carry bare numbers or bools whose meaning isn't obvious at a glance: `Resize(img, width: 800)` beats `Resize(img, 800)`.
+
+## Overloading: one name, several signatures
+
+```csharp
+static int    Max(int a, int b)         => a > b ? a : b;
+static double Max(double a, double b)  => a > b ? a : b;
+static int    Max(int[] values)         { /* scan */ }
+```
+
+Three methods, one concept, one name. The compiler picks the overload whose **parameter types** match the arguments (or the best implicit conversion). Overloads must differ in their parameter lists — a different return type alone is a compile error (`CS0111`). Overload when the *concept* is identical and only the input shape differs; if the behavior meaningfully changes, a distinct name is more honest.

@@ -1,0 +1,16 @@
+{
+  "id": "pa-pkg-semver",
+  "title": "Versions are data",
+  "prompt": "Implement `parse_version(v)`, `bump(version, part)`, `compare(a, b)`:\n\n- versions are strict `MAJOR.MINOR.PATCH` digit strings; anything else raises `ValueError('invalid semver: <v>')`\n- `bump` returns the next version as a string; bumping a part resets everything below it (`bump('1.2.3', 'minor') == '1.3.0'`); unknown part raises `ValueError('unknown part: <p>')`\n- `compare` returns -1/0/1 with numeric (not lexicographic) ordering — `'1.10.0' > '1.9.0'`\n\nThis is the versioning contract of the packaging lesson as an executable spec.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import re\n\n\n# TODO: parse_version + bump + compare",
+  "tests": [
+    {
+      "name": "bump resets lower parts; compare is numeric",
+      "code": "assert bump('1.2.3', 'patch') == '1.2.4'\nassert bump('1.2.3', 'minor') == '1.3.0'\nassert bump('1.2.3', 'major') == '2.0.0'\nassert compare('1.10.0', '1.9.0') == 1\nassert compare('2.0.0', '2.0.0') == 0\nfor bad in ['1.2', 'v1.2.3', '1.2.3.4', '01.2.3']:\n    try:\n        parse_version(bad)\n    except ValueError:\n        pass\n    else:\n        raise AssertionError(bad)\nprint('ok')",
+      "hint": "Numeric compare and strict parsing — the two things hand-rolled versions get wrong."
+    }
+  ],
+  "level": "independent"
+}

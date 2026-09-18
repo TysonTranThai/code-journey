@@ -1,0 +1,22 @@
+Bài kiểm tra này lắp các mảnh của module thành động cơ mà một ứng dụng gọi API
+thực thụ vận hành. Không cần trình duyệt — logic thuần, kiểm tra được:
+
+1. **Động cơ request** — một factory `createLoader(fetchFn)`: `load(key)` trả
+   về promise và cache promise đó theo key, để các request trùng lặp chạy đồng
+   thời dùng chung một chuyến bay (dedupe), và `reset()` xóa cache.
+2. **Dashboard kiên cường** — `loadDashboard(tasks)` chạy mọi nguồn bằng
+   `allSettled` và trả về hai danh sách `{ loaded, failed }`.
+3. **Đua timeout** — `withTimeout(promise, ms, fallback)` phân giải bằng giá
+   trị của promise, hoặc `fallback` nếu nó chưa settle trong `ms`.
+
+## Hình dạng bạn đang hướng tới
+
+Mọi giao diện có dữ liệu đều quy về vòng lặp này: **event → state → render**.
+API cung cấp event (response), code của bạn giữ state (kết quả, cờ loading,
+lỗi), và DOM render state. Khi request chậm, cờ loading chính là UI của bạn;
+khi nó hỏng, trạng thái lỗi chính là UI; khi danh sách rỗng, _đó_ cũng là một
+màn hình.
+
+Checkpoint yêu cầu bạn lắp vòng lặp thêm một lần không có scaffold — vì lần
+gặp tiếp theo, nó sẽ nằm trong một framework, và framework không thay đổi bản
+chất vòng lặp. Nó chỉ thay đổi chỗ bạn viết từng phần.

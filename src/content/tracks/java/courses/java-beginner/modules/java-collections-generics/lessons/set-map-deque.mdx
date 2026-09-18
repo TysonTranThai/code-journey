@@ -1,0 +1,47 @@
+**Set** — no duplicates, no order promises (HashSet):
+
+```java
+Set<Integer> seen = new HashSet<>();
+seen.add(1);
+seen.add(1);                    // ignored: add returns false
+System.out.println(seen.size()); // 1
+```
+
+Membership tests are the point: `contains` on a HashSet is effectively
+instant regardless of size — it buckets by hash code. "Have I processed
+this id before?" is a Set question, not a List scan.
+
+**Map** — key → value pairs (HashMap):
+
+```java
+Map<String, Integer> stock = new HashMap<>();
+stock.put("pen", 12);
+stock.put("book", 3);
+stock.get("pen");               // 12
+stock.getOrDefault("ink", 0);   // 0 — no missing-key surprise
+stock.containsKey("book");      // true
+stock.remove("pen");
+
+for (var entry : stock.entrySet()) {          // both halves
+    System.out.println(entry.getKey() + "=" + entry.getValue());
+}
+for (String key : stock.keySet()) { /* keys */ }
+for (int qty : stock.values())    { /* values */ }
+```
+
+`get` on a missing key returns `null` — with primitive-like wrapper types
+(`Integer` here) that null can NPE on unboxing later. `getOrDefault` and
+`containsKey` are the defensive reads. Note `var` (Java 10+): local type
+inference when the right-hand side makes the type obvious.
+
+**Choosing, in one table:**
+
+| Need | Structure |
+|---|---|
+| ordered sequence, index access | `ArrayList` |
+| unique members, fast contains | `HashSet` (or `LinkedHashSet` to keep insertion order) |
+| key → value lookup | `HashMap` (or `TreeMap` for sorted keys) |
+| first-in-first-out processing | `ArrayDeque` as a queue |
+| undo / recent items | `ArrayDeque` as a stack (`push`/`pop`) |
+
+**Next:** what the `<…>` actually means.

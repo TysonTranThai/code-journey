@@ -1,0 +1,14 @@
+## Four questions catch most of what ASan catches
+
+1. **Ownership**: who frees this? If two answers exist, expect double-free. If zero, expect a leak.
+2. **Lifetime**: can this pointer outlive its object? Returned locals, stored-then-freed members, and iterator invalidation live here.
+3. **Bounds**: what is the largest legal index, and what proves every access is below it? Unchecked sizes and off-by-one loops live here.
+4. **Concurrency** (module 18 applies it): which threads touch this without a lock? Two writers or a writer plus a reader without synchronization is a data race by definition.
+
+## Turning questions into executable checks
+
+Without ASan, you *encode* the questions: an ownership table that records every allocation and its designated freer (checked at shutdown); bounds-checked accessors that assert `i < n` on every read; single-threaded-by-design or lock-discipline reviews for shared state. Weaker than the tools, but structurally the same detection — and it runs anywhere C runs, including this sandbox.
+
+## When you do have the tools
+
+Run them under every test, in CI, with `-Werror`-level strictness: sanitizer findings are build failures, not suggestions. The habit this module builds — name the owner, name the lifetime, name the bound — is precisely what makes sanitizer reports fast to read when you meet them.

@@ -1,0 +1,39 @@
+**Reference** là tên thứ hai của một đối tượng đã tồn tại. Một khi đã được
+gắn, reference không bao giờ trỏ sang đối tượng khác — phép gán đi xuyên qua
+nó tới đối tượng gốc. Reference phải được khởi tạo và không bao giờ null.
+
+```cpp
+void double_it(int& out) { out *= 2; }       // non-const: ghi xuyên qua
+
+void report(const std::string& name) {       // const&: mượn chỉ-đọc
+    std::cout << name << '\n';
+}
+
+int main_cj_reference() {
+    int x = 5;
+    int& alias = x;         // gắn kết, không sao chép
+    alias = 9;              // x giờ là 9
+    double_it(x);           // x giờ là 18
+    return 0;
+}
+```
+
+## Chọn giữa truyền giá trị, truyền tham chiếu, và const&
+
+| Bạn muốn... | Truyền bằng | Lý do |
+|---|---|---|
+| bản sao riêng mà hàm được thay đổi | giá trị | rẻ với kiểu nhỏ |
+| sửa đối tượng của bên gọi | `T&` | hàm được ghi xuyên qua |
+| chỉ đọc, không sao chép | `const T&` | không copy, không ghi được |
+| trạng thái "có thể không có đối tượng" | pointer (sau này) hoặc `std::optional` | reference không thể null |
+
+## Quy tắc giữ reference an toàn
+
+- Không bao giờ trả về reference tới biến cục bộ — đối tượng chết trước khi bên gọi đọc.
+- Vòng lặp range-based trên container nên dùng `const auto&` (đọc) hoặc `auto&` (sửa).
+- Member kiểu reference khiến kiểu không thể gán; thường nên dùng pointer hoặc giá trị.
+
+```cpp
+std::vector<int> data{3, 1, 2};
+for (const auto& value : data) std::cout << value;   // đọc: không copy
+for (auto& value : data) value *= 10;                // ghi tại chỗ

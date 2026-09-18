@@ -1,0 +1,19 @@
+{
+  "id": "i2-prod-checkpoint",
+  "title": "Bàn phát hành",
+  "prompt": "Viết BA hàm. 1) `envVerdict(config)` — config là { secretsInEnv: bool, validated: bool, devBuild: bool }. Trả về \"ready\" khi secretsInEnv VÀ validated VÀ KHÔNG devBuild; \"unsafe-secrets\" khi secretsInEnv là false; \"invalid-config\" khi validated là false (khi cả hai sai: \"unsafe-secrets\" trước); \"dev-build\" cho trường hợp devBuild. 2) `releaseStrategy(risk, users)` — risk \"low\" => \"rolling\"; risk \"high\" && users > 10000 => \"canary\"; risk \"high\" => \"blue-green\". 3) `triage(alert)` — alert là { kind, actionable, urgent }; trả về \"page\" khi actionable && urgent, \"ticket\" khi chỉ actionable, \"dashboard\" trong các trường hợp còn lại (noise).",
+  "tests": [
+    {
+      "name": "cổng sẵn sàng môi trường",
+      "hint": "Thứ tự: secrets, validated, build."
+    },
+    {
+      "name": "chiến lược phát hành theo bán kính sát thương",
+      "hint": "Rủi ro thấp chặn ngắn; rồi quy mô khán giả chọn giữa canary và blue-green."
+    },
+    {
+      "name": "alert được phân loại trung thực",
+      "hint": "Hai boolean, ba kết quả."
+    }
+  ]
+}

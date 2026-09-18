@@ -1,0 +1,58 @@
+## Hai họ, hai hành vi
+
+**Kiểu giá trị** (struct, enum, kiểu số, bool, char) mang dữ liệu ngay trong
+nó. Gán là sao chép toàn bộ giá trị. **Kiểu tham chiếu** (class, record
+class, interface, delegate, mảng, string) lưu một tham chiếu; đối tượng nằm
+trên heap, và phép gán chỉ sao chép tham chiếu — hai biến khi đó trỏ chung
+một đối tượng.
+
+```csharp
+struct PointS { public int X; }
+class  PointC { public int X; }
+
+var s1 = new PointS { X = 1 };
+var s2 = s1; s2.X = 9;              // s1.X vẫn là 1 — bản sao
+
+var c1 = new PointC { X = 1 };
+var c2 = c1; c2.X = 9;              // c1.X giờ là 9 — cùng đối tượng
+```
+
+Không bên nào "tốt hơn". Dùng struct cho giá trị lá nhỏ, bất biến (tọa độ,
+số tiền, mã định danh); dùng class cho thực thể có bản sắc và vòng đời.
+`record struct` cho ngữ nghĩa giá trị kèm equality tự sinh; `record`
+(class) cho ngữ nghĩa tham chiếu với equality theo giá trị — hai thứ khác
+nhau, đừng nhầm.
+
+## Boxing: cấp phát heap vô hình
+
+Boxing gói giá trị vào một đối tượng trên heap để nó đi được tới nơi cần
+tham chiếu. Nó xảy ra âm thầm ở ba chỗ thường gặp:
+
+```csharp
+object o = 42;                       // boxing tường minh
+IComparable<int> c = 7;              // boxing qua interface
+Console.WriteLine(string.Join(" ", 1, 2, 3));   // params object[]: mỗi int bị box
+```
+
+Unboxing là phép ép ngược — phải gọi ĐÚNG kiểu: unbox một `int` đã box thành
+`double` ném `InvalidCastException`, dù trong code thường `int → double`
+chuyển đổi ngầm được.
+
+Boxing tốn cấp phát và gây hại trong vòng lặp nóng. `Console.WriteLine(42)`
+KHÔNG box (có overload nhận int) — nhưng `string.Format("{0}", x)` đi qua
+`object[]` thì có. Equality cũng tinh tế: giá trị đã box so sánh theo giá trị
+với `Equals`, nhưng `==` trên `object` so sánh tham chiếu:
+
+```csharp
+object a = 1000, b = 1000;
+a.Equals(b)      // true  — boxed int so theo giá trị
+a == b           // false — hai hộp khác nhau
+(object)a == (object)1000   // false lần nữa
+```
+
+## Kiểm tra hiểu biết
+
+- `DateTime` là struct: sau `d2 = d1; d2 = d2.AddDays(1)`, `d1` là gì?
+  (Không đổi — `AddDays` trả về giá trị mới.)
+- Vì sao `ArrayList` (thời tiền-generic) chậm với int? (Mọi Add đều box.)
+- `(short)(object)intVar` ném gì? (InvalidCastException — luật đúng-kiểu.)

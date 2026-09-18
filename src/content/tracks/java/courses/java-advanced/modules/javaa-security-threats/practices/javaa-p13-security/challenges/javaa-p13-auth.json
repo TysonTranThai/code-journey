@@ -1,0 +1,16 @@
+{
+  "id": "javaa-p13-auth",
+  "title": "Credentials done right",
+  "prompt": "1. `static byte[] salt()` — 16 random bytes (SecureRandom).\n2. `static byte[] hash(byte[] salt, String password)` — SHA-256 over salt bytes\nfollowed by UTF-8 password bytes (concatenate the two arrays; MessageDigest from\njava.security).\n3. `static boolean verify(byte[] salt, String password, byte[] expectedHash)` —\nrecompute hash(salt, password) and compare with MessageDigest.isEqual (constant\ntime).\n4. `static boolean samePasswordDifferentSalt(byte[] s1, byte[] s2, String pw)` —\ntrue iff hash(s1,pw) differs from hash(s2,pw) — demonstrating that two users with\nthe same password produce different stored bytes.\n5. `static boolean timingSafe(byte[] a, byte[] b)` — MessageDigest.isEqual(a, b).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "salted hashes and constant-time verify",
+      "code": "\nbyte[] s = Solution.salt();\ncheckEq(s.length, 16, \"16-byte salt\");\nbyte[] h = Solution.hash(s, \"hunter2\");\ncheckEq(h.length, 32, \"SHA-256 is 32 bytes\");\ncheckTrue(Solution.verify(s, \"hunter2\", h), \"correct password verifies\");\ncheckTrue(!Solution.verify(s, \"hunter3\", h), \"wrong password fails\");\ncheckTrue(Solution.samePasswordDifferentSalt(Solution.salt(), Solution.salt(), \"same-pw\"),\n    \"same password, different bytes per salt\");\ncheckTrue(Solution.timingSafe(h, Solution.hash(s, \"hunter2\")), \"constant-time compare agrees\");\n",
+      "hint": "The full credential round-trip."
+    }
+  ],
+  "level": "independent"
+}

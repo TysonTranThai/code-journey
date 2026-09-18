@@ -1,0 +1,31 @@
+Class template tham số hóa cả một kiểu. `std::vector<int>` là ví dụ kinh
+điển; đây là một Box tối giản:
+
+```cpp
+template <typename T>
+class Box {
+public:
+    explicit Box(T value) : value_{std::move(value)} {}
+    const T& get() const { return value_; }
+    void set(T value) { value_ = std::move(value); }
+private:
+    T value_;
+};
+
+Box<int> a{42};
+Box<std::string> b{"hi"};
+```
+
+Những quy tắc quan trọng:
+
+- Các member được instantiate **lười**: một hàm thành viên không biên dịch
+  được với T chỉ thành lỗi khi có code thật sự gọi nó. Vì vậy `std::vector`
+  chạy được với kiểu không copy được miễn là bạn không bao giờ copy nó.
+- Nhiều tham số kết hợp được: `template <typename K, typename V> class Map { ... };`
+- Tham số template mặc định giống tham số hàm mặc định: `template <typename T, typename C = std::less<T>> class Sorted { ... };`
+- CTAD (C++17): `Box b{42};` suy ra `Box<int>`. Tiện cho biến cục bộ;
+  viết rõ kiểu trong interface.
+
+Template không thay thế inheritance cho đa hình runtime — chúng thực hiện
+**đa hình tĩnh**: kiểu được quyết ở compile time, không tốn virtual
+dispatch, nhưng mỗi kiểu một bản hiện thực cụ thể.

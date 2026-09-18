@@ -1,0 +1,16 @@
+## Every pointer has an owner
+
+For every heap allocation the codebase must answer: which function or struct is responsible for freeing this, and when? Everything else holds a *borrow* — a pointer valid only within the owner's lifetime.
+
+## The API shapes that encode ownership
+
+- `handle_create` / `handle_destroy` — the module owns; callers hold a borrow between the two calls.
+- `take(buf)` — the callee *takes ownership*: after the call, the caller must not free or use `buf`.
+- `give()` — the callee returns ownership: the caller must eventually free it.
+- `const T *view(const T *x)` — pure borrow: never freed by the receiver.
+
+APIs that hide which shape they use are bugs in documentation form.
+
+## Liveness counters make contracts executable
+
+A module-level `objects_alive` counter — incremented in create, decremented in destroy — turns 'the caller leaked' from a code-review opinion into a testable fact. Production code does this in debug builds; this course does it in every ownership challenge.

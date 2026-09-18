@@ -1,0 +1,48 @@
+## The universal triple
+
+Every generic array function in C has the same skeleton:
+
+```c
+void *my_lsearch(const void *key, const void *base, size_t n,
+                 size_t size, int (*cmp)(const void *, const void *));
+```
+
+`base` points at element 0, `n` counts elements, `size` is one element's
+byte size, `cmp` knows the real type. Inside, element `i` lives at:
+
+```c
+const char *p = (const char *)base + i * size;
+```
+
+`char*` arithmetic is byte arithmetic — that is the one guaranteed
+addressable unit. Two disciplines keep this safe:
+
+**1. Never cast to the wrong type — cast to `char *` and move bytes.**
+Copying an element is `memcpy(dst, src, size)`, never a struct or
+pointer dereference. `void *` converts to/from any object pointer
+*implicitly* in C — no cast needed on either side — but you still cannot
+dereference it.
+
+**2. Alignment is inherited, not manufactured.** If `base` really points
+at an array of `T`, every `i * size` offset is a valid `T` address. The
+caller's types stay aligned because you never invent storage of your
+own.
+
+## The swap primitive
+
+Generic algorithms bottom out in byte-wise element swaps:
+
+```c
+static void swap_bytes(char *a, char *b, size_t size) {
+    while (size--) {
+        char t = *a;
+        *a++ = *b;
+        *b++ = t;
+    }
+}
+```
+
+One byte at a time is slow but universally correct; `memcpy` through a
+small stack buffer is the faster classical form. Overlapping elements
+would be UB — the caller's contract (distinct element slots) is what
+makes the primitive legal.

@@ -1,0 +1,53 @@
+## Mặc định: truyền theo giá trị, luôn luôn
+
+C# truyền tham số theo giá trị. Với kiểu giá trị nghĩa là bản sao dữ liệu;
+với kiểu tham chiếu, bản sao của *tham chiếu* — vì vậy phương thức có thể
+biến đổi đối tượng bạn truyền nhưng không bao giờ trỏ lại biến của bạn:
+
+```csharp
+static void Replace(List<int> list) => list = new List<int>();  // caller không đổi
+static void Fill(List<int> list) => list.Add(1);                // caller thấy phần tử
+```
+
+## Các modifier, mỗi cái một nhiệm vụ
+
+- `out` — "phương thức chắc chắn sẽ gán biến của bạn." Compiler ép gán trên
+  mọi đường. Một output (cộng bool thành công trong mẫu `TryX`).
+  Khai báo inline: `int.TryParse(s, out int n)`.
+- `ref` — "*ô nhớ* của biến được chia sẻ." Phương thức đọc/ghi/trỏ lại đều
+  được; biến phải khởi tạo trước. Dùng cho ngữ nghĩa swap hoặc trạng thái
+  interlocked — hiếm khi.
+- `in` — `ref` để đọc: tham chiếu chỉ-đọc tới (thường là) struct lớn.
+  Compiler chặn biến đổi. Dùng khi sao chép struct lớn tốn hơn đáng kể so
+  với gián tiếp.
+- `params` — đuôi biến thiên: `params int[] values`, hoặc
+  `params ReadOnlySpan<int>` trong code hiện đại. Không-cùng-mấy-tham-số;
+  phải đứng cuối.
+
+```csharp
+static bool TryDivide(int a, int b, out int result)
+{
+    if (b == 0) { result = 0; return false; }   // PHẢI gán trên mọi đường
+    result = a / b;
+    return true;
+}
+
+static void Swap(ref int a, ref int b) => (a, b) = (b, a);
+
+readonly struct Big { public readonly long A, B, C, D, E, F, G, H; }
+static long Sum(in Big b) => b.A + b.B + b.C + b.D + b.E + b.F + b.G + b.H;
+```
+
+## Trả về điều bạn muốn nói
+
+Trước khi với tay lấy `out`, hãy hỏi: tuple trả về có đọc tốt hơn không?
+`(bool Ok, int Value)` mang cùng thông tin không cần aliasing — nhưng
+`out` + `TryX` là hình dạng .NET thành ngữ cho thao tác kiểu parse, và
+`ref` return (`ref T this[int i]`) tồn tại cho cấu trúc tại-chỗ đúng nghĩa.
+Chọn có chủ đích; ghi rõ lựa chọn.
+
+## Kiểm tra hiểu biết
+
+- Vì sao `out` phải gán trên mọi đường? (Biến của caller được tin là khởi tạo.)
+- `in` thắng thật sự khi nào? (Struct lớn trong đường nóng; nó bỏ qua bản sao.)
+- `params` mở rộng thành gì? (Một cấp phát mảng mỗi lần gọi — hoặc một span.)

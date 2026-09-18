@@ -1,0 +1,26 @@
+## Tiện lợi cả-tệp
+
+```csharp
+string all = File.ReadAllText(path);          // một chuỗi lớn
+string[] lines = File.ReadAllLines(path);     // tách sẵn cho bạn
+File.WriteAllLines(path, new[] { "a", "b" }); // nối bằng ký tự xuống dòng
+```
+
+`ReadAllLines` cũng chuẩn hóa khác biệt line-ending: CRLF Windows hay LF Unix, bạn nhận được các dòng sạch. Với tệp cấu hình và bộ dữ liệu nhỏ, những helper này là đúng công cụ.
+
+## Streaming với using
+
+Với dữ liệu có thể lớn — hoặc khi xử lý trong lúc đọc — hãy stream:
+
+```csharp
+using (var reader = new StreamReader(path))
+{
+    string line;
+    while ((line = reader.ReadLine()) != null)
+    {
+        Console.WriteLine(line);
+    }
+}
+```
+
+`StreamReader.ReadLine()` trả dòng kế tiếp hoặc `null` khi hết tệp. Khối `using` bảo đảm handle tệp được đóng ngay cả khi thân vòng lặp ném ngoại lệ — handle hở làm rò rỉ tài nguyên mà hệ điều hành cấp có hạn.

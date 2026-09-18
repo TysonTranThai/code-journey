@@ -1,0 +1,18 @@
+`CompletableFuture.supplyAsync(fn)` runs on the **ForkJoinPool.commonPool** —
+a shared, sized-to-cores pool you did not configure and cannot tune from
+inside the task. Under load, unrelated features share (and starve) it. The
+advanced move: **inject the executor**.
+
+```java
+CompletableFuture.supplyAsync(() -> fetch(id), executor);
+```
+
+Now the pipeline's concurrency is a *deployment decision*, visible at the
+construction site. In tests, inject an executor you control (a fixed pool of
+2 makes "these two ran concurrently" observable and deterministic). In
+production, inject a pool sized for the workload. The anti-pattern is a
+library that hard-wires commonPool deep inside and gives the caller no say.
+
+Executor choice is *also* where virtual threads re-enter: for
+blocking-dominated fan-outs, `Executors.newVirtualThreadPerTaskExecutor()`
+is the injected executor that scales.

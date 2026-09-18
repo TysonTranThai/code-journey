@@ -1,0 +1,72 @@
+One file stops scaling fast. **ES modules** are JavaScript's built-in way to
+split code into files with explicit dependencies.
+
+## Named exports and imports
+
+```js
+// file: math-utils.js
+export function clamp(n, min, max) {
+  return Math.min(Math.max(n, min), max);
+}
+export const TAX_RATE = 0.1;
+
+// file: app.js
+import { clamp, TAX_RATE } from "./math-utils.js";
+```
+
+## Default export: one per module
+
+```js
+// file: logger.js
+export default function log(msg) {
+  console.log(msg);
+}
+
+// file: app.js — the default can be named anything on import
+import log from "./logger.js";
+import whatever from "./logger.js"; // same thing
+```
+
+Rule of thumb: **default** for "the thing this module is about" (a component,
+a class), **named** for utilities and constants. Named imports are greppable —
+you can find every usage of `clamp` across the codebase.
+
+## Re-exports and barrel files
+
+```js
+// file: utils/index.js — a barrel
+export { clamp } from "./math.js";
+export { formatDate } from "./dates.js";
+
+// consumers import from one place:
+import { clamp, formatDate } from "./utils/index.js";
+```
+
+Barrels keep import paths tidy, but re-exporting everything from everything
+creates circular-import bugs. Keep barrels shallow.
+
+## Static vs dynamic
+
+`import` statements are static: they run at load time and must be at the
+top level. For code you want _later_ (a heavy library used on one action),
+use dynamic import — it returns a Promise:
+
+```js
+button.addEventListener("click", async () => {
+  const { default: chart } = await import("./heavy-chart-lib.js");
+  chart.render(data);
+});
+```
+
+## Circular imports
+
+When A imports B and B imports A, both can end up with `undefined` during
+startup. The fix is almost always extracting the shared piece into a third
+module C that both import. If you see `undefined is not a function` at
+startup, check for a cycle.
+
+## Why this matters at Intermediate
+
+From here on you will structure multi-file programs: a data layer, a UI
+layer, utilities. Modules are the unit of that structure — and the unit that
+tests import.

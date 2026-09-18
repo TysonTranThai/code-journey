@@ -1,0 +1,21 @@
+{
+  "id": "pi2-dc-point",
+  "title": "Point Dataclass",
+  "prompt": "Define a dataclass Point with float fields x and y. Two points with the same coordinates must be equal, and repr(Point(1, 2)) must contain 'Point' and the values.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "from dataclasses import dataclass\n\n@dataclass\nclass Point:\n    pass\n",
+  "tests": [
+    {
+      "name": "equality by fields",
+      "code": "assert Point(1.0, 2.0) == Point(1.0, 2.0)\nassert Point(1.0, 2.0) != Point(2.0, 1.0)",
+      "hint": "@dataclass generates field-wise __eq__ automatically."
+    },
+    {
+      "name": "repr is useful",
+      "code": "r = repr(Point(1.0, 2.0))\nassert 'Point' in r and '1.0' in r",
+      "hint": "The generated __repr__ shows the class name and fields."
+    }
+  ],
+  "level": "guided"
+}

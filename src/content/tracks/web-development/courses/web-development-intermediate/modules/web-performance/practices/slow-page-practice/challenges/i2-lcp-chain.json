@@ -1,0 +1,20 @@
+{
+  "id": "i2-lcp-chain",
+  "title": "LCP Chain Timer",
+  "prompt": "Write `lcpEstimate(page)` — a crude LCP model: ttfbMs + cssBlockMs + imageMs, where cssBlockMs = 50 per render-blocking css, imageMs = imageKB / 100 (KB per ms over 100KB/s effective). Return the total in ms. Write `withinLcp(page)` returning true when the estimate is <= 2500ms.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function lcpEstimate(page) {\n  // your code\n}\n\nfunction withinLcp(page) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "sums the chain",
+      "code": "const fn = new Function(code + \"\\nreturn { lcpEstimate, withinLcp };\");\nconst { lcpEstimate, withinLcp } = fn();\nconst page = { ttfbMs: 400, renderBlocking: [\"css\", \"css\"], imageKB: 5000 };\n// 400 + 100 + 50 = 550\nif (lcpEstimate(page) !== 550) throw new Error(\"ttfb + 2 css blocks + image time.\");\nif (withinLcp(page) !== true) throw new Error(\"550ms is comfortably within 2.5s.\");\n",
+      "hint": "imageMs = imageKB / 100; cssBlockMs = 50 * count."
+    },
+    {
+      "name": "over-budget page fails",
+      "code": "const fn = new Function(code + \"\\nreturn { lcpEstimate, withinLcp };\");\nconst { lcpEstimate, withinLcp } = fn();\nconst page = { ttfbMs: 1500, renderBlocking: [], imageKB: 400000 };\nif (withinLcp(page) !== false) throw new Error(\"1500 + 4000 = 5500ms > 2500.\");\n",
+      "hint": "Same formula; the threshold does the talking."
+    }
+  ]
+}

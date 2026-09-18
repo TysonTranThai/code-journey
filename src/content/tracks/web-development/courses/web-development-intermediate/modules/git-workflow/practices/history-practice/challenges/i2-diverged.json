@@ -1,0 +1,20 @@
+{
+  "id": "i2-diverged",
+  "title": "Divergence Detector",
+  "prompt": "Write `diverged(commits, a, b)` returning true when NEITHER commit is an ancestor of the other (their histories have split). Use your reachability logic conceptually: a is an ancestor of b (or equal) → false; same for b over a; otherwise true.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function diverged(commits, a, b) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "linear history never diverges",
+      "code": "const fn = new Function(code + \"\\nreturn { diverged };\");\nconst { diverged } = fn();\nconst cs = { C: \"B\", B: \"A\", A: null };\nif (diverged(cs, \"A\", \"C\")) throw new Error(\"A is an ancestor of C.\");\nif (diverged(cs, \"C\", \"B\")) throw new Error(\"Same line of history.\");\nif (diverged(cs, \"C\", \"C\")) throw new Error(\"Equal commits are not diverged.\");",
+      "hint": "Walk ancestors of each side; check membership in the other's set."
+    },
+    {
+      "name": "branch points diverge",
+      "code": "const fn = new Function(code + \"\\nreturn { diverged };\");\nconst { diverged } = fn();\nconst cs = { B: \"A\", A: null, D: \"B\", E: \"B\", F: \"E\" };\nif (!diverged(cs, \"D\", \"F\")) throw new Error(\"D and F split at B.\");\nif (diverged(cs, \"B\", \"D\")) throw new Error(\"B is the merge-base of D.\");\nif (diverged(cs, \"B\", \"A\")) throw new Error(\"B descends from A.\");",
+      "hint": "Compute the ancestor set of each; neither contains the other's start => diverged."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Constructor forwarding tham lam",
+  "prompt": "Constructor forwarding trong code khởi đầu cướp các phép copy khi direct initialization. Hãy ràng buộc nó bằng mệnh đề `requires` để `Tracked c{src};` đi qua **copy** constructor, trong khi `Tracked d(\"placed\");` vẫn forward bình thường.",
+  "tests": [
+    {
+      "name": "copy khi direct-init đi qua copy ctor",
+      "hint": "Thêm requires (!(std::same_as<std::decay_t<A>, Tracked>) && ...) trước explicit — khi đó lvalue Tracked không khớp nữa và copy ctor thắng."
+    },
+    {
+      "name": "string literal vẫn forward",
+      "hint": "Mảng const char suy biến thành char*, không phải Tracked — ràng buộc không ảnh hưởng việc dựng bình thường."
+    }
+  ]
+}

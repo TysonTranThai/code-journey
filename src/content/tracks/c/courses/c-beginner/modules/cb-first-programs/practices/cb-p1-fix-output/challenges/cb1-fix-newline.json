@@ -1,0 +1,16 @@
+{
+  "id": "cb1-fix-newline",
+  "title": "Missing Newlines",
+  "prompt": "This program was supposed to print three lines but everything runs together on one line. Fix `program` so the output is exactly:\n\n```\nA\nB\nC\n```\n\nDo not change how many times it prints — fix the newlines.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n\nvoid program(void) {\n    /* BROKEN: prints ABC on one line */\n    printf(\"A\");\n    printf(\"B\");\n    printf(\"C\");\n}\n\nint main(void) { program(); return 0; }",
+  "tests": [
+    {
+      "name": "three lines now",
+      "code": "const char* out = cj_capture(program);\nCHECK_STR_EQ(out, \"A\\nB\\nC\\n\");",
+      "hint": "Each line needs its own \\n (or one \\n between them)."
+    }
+  ],
+  "level": "debugging"
+}

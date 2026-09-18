@@ -1,0 +1,21 @@
+{
+  "id": "cppi-m8-unique-swap",
+  "title": "Swap ownership between two unique_ptrs",
+  "prompt": "Implement `template <typename T> void pointer_swap(std::unique_ptr<T>& a, std::unique_ptr<T>& b)` exchanging the two owned objects. After the call, each `unique_ptr` owns what the other owned. Do not use `std::swap` — implement the exchange with three `std::move`s.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <memory>\n#include <iostream>\n\n// template <typename T> void pointer_swap(std::unique_ptr<T>& a, std::unique_ptr<T>& b)\n",
+  "tests": [
+    {
+      "name": "values-exchange",
+      "code": "auto a = std::make_unique<int>(1);\nauto b = std::make_unique<int>(2);\npointer_swap(a, b);\nCHECK_EQ(*a, 2);\nCHECK_EQ(*b, 1);",
+      "hint": "Three moves: tmp = move(a); a = move(b); b = move(tmp)."
+    },
+    {
+      "name": "null-one-side",
+      "code": "auto a = std::make_unique<int>(5);\nstd::unique_ptr<int> b;\npointer_swap(a, b);\nCHECK_EQ(a == nullptr, true);\nCHECK_EQ(*b, 5);",
+      "hint": "Swapping with an empty pointer is legal — ownership moves out."
+    }
+  ],
+  "level": "guided"
+}

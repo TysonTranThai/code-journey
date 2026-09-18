@@ -1,0 +1,24 @@
+## The loop
+
+1. **Reproduce deterministically.** A bug you can trigger on demand is half-dead. Find the smallest input that still fails.
+2. **Read the evidence.** The crash message, the assert text, the wrong *value* — each names a neighborhood. Compiler warnings are free bug reports; this course compiles with `-Wall -Wextra -Wpedantic` and so should you.
+3. **Form ONE hypothesis.** "The index is off by one at the last element" — not "something is wrong with loops".
+4. **Test it cheaply.** Print the suspect values, or run under a debugger (breakpoints, step, inspect — learn your IDE's debugger; it beats print for anything nontrivial).
+5. **Fix, then re-run the WHOLE suite** — not just the failing case, or you just traded one bug for another.
+6. **Add the regression test.** The bug you just killed must never resurrect silently.
+
+## Bisecting: when you have no idea
+
+Comment out / skip half the pipeline; does it still fail? The bug lives in the failing half. Repeat. Log₂ of a thousand-line program is about ten experiments — bisection turns "impossible" into "twenty minutes".
+
+## The classic beginner traps, one last time
+
+- Uninitialized variable (garbage that "works sometimes").
+- Off-by-one at boundaries (test the empty and single cases explicitly).
+- `=` in a condition.
+- Integer division where a double was meant.
+- Modifying a container while range-for iterates it (invalidated iterators — push_back during a range-for over the same vector is UB; collect changes, apply after).
+
+## Debugging is the skill
+
+Interviewers know it, senior engineers know it: the scarce skill is not writing code, it is *finding out why the code lies*. Every module's debugging exercises trained this loop; module 18 will lean on it under time pressure.

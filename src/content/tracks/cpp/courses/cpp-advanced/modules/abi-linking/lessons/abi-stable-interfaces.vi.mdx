@@ -1,0 +1,36 @@
+## Pattern 1 — pimpl (con trỏ tới phần cài đặt)
+
+```cpp
+// engine.hpp — đã giao, đóng băng
+class Engine {
+public:
+    Engine();
+    ~Engine();                       // phải định nghĩa ngoài lớp! (xem dưới)
+    void tick(int units);
+private:
+    struct Impl;                     // không bao giờ định nghĩa trong header
+    Impl* impl_;                     // hoặc std::unique_ptr<Impl> với dtor out-of-line
+};
+```
+
+Mọi trạng thái private nấp sau một con trỏ. Thêm thành viên, đổi thuật toán, thậm chí thay cấu trúc dữ liệu: header không đổi, layout của `Engine` vẫn rộng một con trỏ, binary cũ vẫn chạy. Destructor phải nằm trong .cpp — compiler sinh deleter ở đó, nơi `Impl` đã complete. (Với `unique_ptr<Impl>` làm thành viên, dtor inline trong header sẽ instantiate `default_delete<Impl>` trên kiểu chưa complete — lỗi biên dịch; với con trỏ thô cộng dtor out-of-line, đó chỉ là một delete bạn nợ đúng một lần.)
+
+## Pattern 2 — factory extern "C" + handle mờ
+
+`extern "C"` tắt mangle: một tên symbol cố định, gọi được từ bất kỳ ngôn ngữ nào, miễn nhiễm với trôi chữ ký C++. Kết hợp với con trỏ mờ, đó là biên giới plugin cổ điển:
+
+```cpp
+extern "C" Engine* engine_create();
+extern "C" void    engine_tick(Engine*, int units);
+extern "C" void    engine_destroy(Engine*);
+```
+
+Phần cài đặt có thể viết lại hoàn toàn; ba symbol đó là hợp đồng.
+
+## Pattern 3 — bảng hàm có phiên bản
+
+Thêm năng lực mới mà không phá caller cũ: nối con trỏ hàm vào cuối struct và tăng trường phiên bản. Caller cũ đọc các trường v1 rồi dừng; caller mới kiểm tra `version >= 2` trước khi đụng các mục sau. Đây là cách ABI của OS và driver giữ ổn định hàng thập kỷ.
+
+## Sandbox cố định chấm gì
+
+Link .so thật không chấm được trong harness một TU, nên bài tập chấm *logic* của pattern: vòng đời pimpl với kỷ luật dtor out-of-line đúng, hợp đồng factory/destroy handle mờ, phép tính phiên bản bảng, và scoping hằng an toàn ODR. Hạn chế được ghi nhận, được chọn có chủ đích.

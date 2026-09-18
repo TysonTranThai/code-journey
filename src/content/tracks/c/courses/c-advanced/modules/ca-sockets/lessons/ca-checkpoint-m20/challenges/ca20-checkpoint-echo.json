@@ -1,0 +1,26 @@
+{
+  "id": "ca20-checkpoint-echo",
+  "title": "Checkpoint: Echo Server Core",
+  "prompt": "POSIX. Implement `int echo_serve(int lfd)` \u2014 accept ONE connection on the already-bound/listening socket lfd, echo every byte received back to the client until the client half-closes (recv returns 0), close the connection, and return 0 (-1 on accept failure). The tests build a loopback listener, run echo_serve on a thread, connect, send, verify the echo, and half-close.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define _POSIX_C_SOURCE 200809L\n#include <unistd.h>\n#include <sys/socket.h>\n#include <sys/time.h>\n#include <netinet/in.h>\n#include <arpa/inet.h>\n#include <signal.h>\n#include <errno.h>\n#include <pthread.h>\nstruct serve_arg {\n    int lfd;\n};\nstatic void *serve_thread(void *arg) {\n    struct serve_arg *a = (struct serve_arg *)arg;\n    echo_serve(a->lfd);\n    return NULL;\n};\nstatic int make_loopback_listener(void) {\n    int fd = socket(AF_INET, SOCK_STREAM, 0);\n    if (fd < 0) return -1;\n    struct sockaddr_in sa;\n    memset(&sa, 0, sizeof sa);\n    sa.sin_family = AF_INET;\n    sa.sin_addr.s_addr = htonl(INADDR_LOOPBACK);\n    sa.sin_port = 0;\n    if (bind(fd, (struct sockaddr *)&sa, sizeof sa) != 0) { close(fd); return -1; }\n    if (listen(fd, 16) != 0) { close(fd); return -1; }\n    return fd;\n};\nstatic int connect_to_listener(int lfd) {\n    struct sockaddr_in sa;\n    socklen_t sl = sizeof sa;\n    if (getsockname(lfd, (struct sockaddr *)&sa, &sl) != 0) return -1;\n    int cfd = socket(AF_INET, SOCK_STREAM, 0);\n    if (cfd < 0) return -1;\n    if (connect(cfd, (struct sockaddr *)&sa, sizeof sa) != 0) { close(cfd); return -1; }\n    return cfd;\n};\n",
+  "tests": [
+    {
+      "name": "echo roundtrip",
+      "code": "int lf = make_loopback_listener();\npthread_t t;\nstruct serve_arg sa = { lf };\nCHECK_EQ(pthread_create(&t, NULL, serve_thread, &sa), 0);\nint cf = connect_to_listener(lf);\nconst char *m = \"echo pipe-ok\";\nCHECK_EQ((int)send(cf, m, strlen(m), 0), (int)strlen(m));\nchar b[64] = {0};\nsize_t got = 0;\nwhile (got < strlen(m)) {\nssize_t r = recv(cf, b + got, sizeof b - got - 1, 0);\nif (r <= 0) break;\ngot += (size_t)r;\n}\nshutdown(cf, SHUT_WR);\npthread_join(t, NULL);\nCHECK(got == strlen(m));\nCHECK(strstr(b, \"pipe-ok\") != NULL);\nclose(cf);\nclose(lf);",
+      "hint": "Every sent byte comes back: echo semantics over one loopback connection."
+    },
+    {
+      "name": "empty stream tolerated",
+      "code": "int lf2 = make_loopback_listener();\npthread_t t2;\nstruct serve_arg sa2 = { lf2 };\nCHECK_EQ(pthread_create(&t2, NULL, serve_thread, &sa2), 0);\nint cf2 = connect_to_listener(lf2);\nshutdown(cf2, SHUT_WR);\npthread_join(t2, NULL);\nclose(cf2);\nclose(lf2);",
+      "hint": "A client that says nothing and closes: the server sees EOF immediately and finishes cleanly."
+    },
+    {
+      "name": "bad fd refused",
+      "code": "CHECK_EQ(echo_serve(-1), -1);",
+      "hint": "accept on an invalid descriptor fails: -1, no crash."
+    }
+  ],
+  "level": "mini-build"
+}

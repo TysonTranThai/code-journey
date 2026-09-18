@@ -1,0 +1,45 @@
+A relational database is not a pile of spreadsheets. It is a set of **relations**
+whose power comes from three ideas:
+
+## Identity: primary keys
+
+Every row is *the* row — identified by a primary key, never by position or
+duplication. `id` is an arbitrary surrogate; an email or an ISBN is a *natural*
+key. Choose surrogate keys for stability and natural keys for integrity
+(a `UNIQUE` constraint on email does the real work).
+
+## Truth: normalization
+
+Redundancy is a lie waiting to happen. If `orders` stores `customer_name` and
+the customer renames themselves, half your rows tell the truth and half don't.
+The normal forms discipline this:
+
+- **1NF** — values are atomic; no lists-in-a-column (`tags = "a,b,c"` is a
+  future bug).
+- **2NF** — every non-key column depends on the *whole* key (no columns that
+  really belong to just one part of a composite key).
+- **3NF** — and on nothing but the key (if `zip → city`, then `city` doesn't
+  belong in the address table; the zip table owns it).
+
+The mnemonic: *"the key, the whole key, and nothing but the key."*
+
+## Relationships: foreign keys
+
+A foreign key is a promise: this value refers to a row that *exists*. Enforced
+by the database, not by hope in application code. Referential actions encode
+policy — `ON DELETE RESTRICT` (protect the data), `ON DELETE CASCADE` (owned
+children die with the parent).
+
+## Denormalization is a decision, not a default
+
+Normalized schemas answer every question with joins. When read traffic makes a
+join measurably slow (measure first!), you may *cache a derived value* — a
+`comment_count` column maintained in the same transaction as comment writes.
+The rule that keeps it honest: **one writer, one transaction, or it will
+drift.**
+
+## Constraints are executable documentation
+
+`NOT NULL`, `CHECK (price >= 0)`, `UNIQUE`, foreign keys — each declares an
+invariant the schema enforces forever, for every client, including the ones you
+haven't written yet.

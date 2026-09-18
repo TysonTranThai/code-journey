@@ -1,0 +1,46 @@
+## Kết quả có kiểu, không dùng exception làm luồng điều khiển
+
+`EnsureSuccessStatusCode()` ném HttpRequestException cho MỌI thất bại — bạn
+mất sự phân biệt mã trạng thái. Map kết quả tường minh:
+
+```csharp
+public sealed record ApiResult(bool Ok, string? Body, int Status);
+
+public async Task<ApiResult> GetAsync(string path, CancellationToken ct)
+{
+    using var resp = await _http.GetAsync(path, ct);
+    string body = resp.IsSuccessStatusCode
+        ? await resp.Content.ReadAsStringAsync(ct) : null;
+    return new ApiResult(resp.IsSuccessStatusCode, body, (int)resp.StatusCode);
+}
+```
+
+## Timeout và hủy
+
+`CancellationToken` hủy từ phía caller; `Timeout` của HttpClient (mặc định
+100 s) giới hạn cả request. Timeout nổi lên dưới dạng
+TaskCanceledException/OperationCanceledException — bắt cả hai một cách chủ
+động.
+
+## Retry: chỉ tạm thời, chỉ an toàn
+
+Retry 5xx và lỗi mạng; KHÔNG BAO GIỜ retry 4xx (request của bạn sai — retry
+là đập thêm vào server cùng một lỗi). Tôn trọng `Retry-After` của 429 khi
+có. Thêm backoff nhân bản có trần, và giữ token chảy để hủy vẫn thắng:
+
+```csharp
+for (int attempt = 1; ; attempt++)
+{
+    try { return await SendOnceAsync(ct); }
+    catch (HttpRequestException) when (attempt < maxAttempts) { }
+    await Task.Delay(Math.Min(baseMs * (1 << (attempt - 1)), capMs), ct);
+}
+```
+
+Retry một POST không idempotent (thanh toán!) có thể tính tiền hai lần — độ
+an toàn nằm ở ngữ nghĩa thao tác, không chỉ mã trạng thái.
+
+## Kiểm tra hiểu biết
+
+- Vì sao không retry 400? (Request sai; retry là lặp lại nó.)
+- `1 << (attempt - 1)` dựng cái gì? (Backoff nhân bản: 1x, 2x, 4x…)

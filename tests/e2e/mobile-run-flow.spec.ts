@@ -15,7 +15,7 @@ test.beforeAll(async ({ request }) => {
 });
 
 const CHALLENGE_URL =
-  "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html/challenge/fix-the-heading";
+  "/learn/web-development/web-development-beginner/html-foundations/practice/introduction-to-html-practice/fix-the-heading";
 
 async function register(page: import("@playwright/test").Page) {
   const id = `e2e-f-${Date.now()}-${Math.floor(Math.random() * 10_000)}`;
@@ -37,7 +37,7 @@ test("run is reachable from the Code tab without switching", async ({ page }) =>
   await page.goto(CHALLENGE_URL);
 
   await page.getByRole("tab", { name: "Code" }).click();
-  const runButton = page.getByRole("button", { name: /run code/i });
+  const runButton = page.getByRole("button", { name: /submit/i });
   await expect(runButton).toBeVisible();
 
   // Sticky bar stays visible while the instructions scroll.
@@ -58,7 +58,7 @@ test("run from Code tab reaches the verdict and View results jumps to Output", a
   await page.keyboard.press("ControlOrMeta+a");
   await page.keyboard.insertText("<h1>My First Page</h1>");
 
-  await page.getByRole("button", { name: /run code/i }).click();
+  await page.getByRole("button", { name: /submit/i }).click();
 
   // aria-live status announces completion…
   await expect(page.getByRole("status")).toContainText(/all tests passed/i, {
@@ -79,7 +79,7 @@ test("action bar run is keyboard operable", async ({ page }) => {
   await page.keyboard.press("ControlOrMeta+a");
   await page.keyboard.insertText("<h1>My First Page</h1>");
 
-  await page.getByRole("button", { name: /run code/i }).focus();
+  await page.getByRole("button", { name: /submit/i }).focus();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("status")).toContainText(/all tests passed/i, {
     timeout: 75_000,

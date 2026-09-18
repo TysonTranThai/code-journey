@@ -1,0 +1,39 @@
+## Generics, TypeVar, and variance
+
+A **generic** keeps the type relationship between input and output visible:
+
+```python
+from typing import TypeVar, Generic, List
+
+T = TypeVar("T")
+
+class Stack(Generic[T]):
+    def __init__(self) -> None:
+        self._items: List[T] = []
+    def push(self, item: T) -> None:
+        self._items.append(item)
+    def pop(self) -> T:
+        return self._items.pop()
+
+def first(xs: List[T]) -> T:
+    return xs[0]
+```
+
+`first(["a", "b"])` has type `str` — the checker binds `T = str`. At runtime
+`Stack[int]()` also works: `Generic` classes support subscription, which some
+libraries use for validation.
+
+**Bounded TypeVars** state a contract: `T = TypeVar("T", bound="Shape")` means
+"any subtype of Shape" — inside the function you may call Shape's methods.
+
+**Variance** answers "may I use Box[Cat] where Box[Animal] is expected?":
+
+- **Covariant** (`T_co = TypeVar("T_co", covariant=True)`): read-only positions
+  (produced values). A producer of Cats is a producer of Animals.
+- **Contravariant** (`T_contra`): write-only positions (consumed values). A
+  consumer of Animals can consume Cats.
+- **Invariant** (default): mutable containers — `Box[Cat]` is NOT a `Box[Animal]`
+  because you could `put` a Dog into it.
+
+Rule of thumb: producers covariant, consumers contravariant, mutable containers
+invariant. Get this wrong and the checker blocks a real bug — that is the point.

@@ -1,0 +1,20 @@
+{
+  "id": "i2-store-authz",
+  "title": "Task Store: Ownership",
+  "prompt": "Extend the store: `update(id, patch, userId)` and `remove(id, userId)` — both enforce ownership: if the task exists but ownerId !== userId, return { ok: false, status: 403 }; missing task => { ok: false, status: 404 }. update applies only `title` and `done` from patch (ignore other fields) and returns { ok: true, task }; remove returns { ok: true } and actually removes.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function makeStore() {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "owners update and remove",
+      "code": "const fn = new Function(code + \"\\nreturn { makeStore };\");\nconst { makeStore } = fn();\nconst store = makeStore();\nconst { task } = store.create({ title: \"A\" }, \"u1\");\nconst up = store.update(task.id, { title: \"B\", ownerId: \"u9\" }, \"u1\");\nif (!up.ok || up.task.title !== \"B\" || up.task.ownerId === \"u9\") throw new Error(\"title applied, ownerId ignored.\");\nif (store.remove(task.id, \"u1\").ok !== true) throw new Error(\"Owner removes.\");\nif (store.update(task.id, { title: \"C\" }, \"u1\").status !== 404) throw new Error(\"Gone after removal.\");",
+      "hint": "403 for strangers, 404 for missing; whitelist patched fields."
+    },
+    {
+      "name": "strangers get 403",
+      "code": "const fn = new Function(code + \"\\nreturn { makeStore };\");\nconst { makeStore } = fn();\nconst store = makeStore();\nconst { task } = store.create({ title: \"Secret\" }, \"u1\");\nif (store.update(task.id, { title: \"Hacked\" }, \"u2\").status !== 403) throw new Error(\"Stranger cannot update.\");\nif (store.remove(task.id, \"u2\").status !== 403) throw new Error(\"Stranger cannot delete.\");\nif (store.list({}, \"u1\")[0].title !== \"Secret\") throw new Error(\"Title unchanged by the stranger's attempt.\");",
+      "hint": "Ownership check runs before any mutation."
+    }
+  ]
+}

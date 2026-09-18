@@ -1,0 +1,39 @@
+## Ba trường hợp, một đệ quy
+
+Xóa một giá trị khỏi BST:
+
+1. **Lá** — không con: free, gán link của cha thành NULL.
+2. **Một con** — nối tắt: con chiếm chỗ của node bị xóa.
+3. **Hai con** — trường hợp khó. Không thể gỡ node; hai cây con sẽ lơ
+   lửng. Thủ thuật: thay giá trị của node bằng **in-order successor**
+   (giá trị nhỏ nhất ở cây con phải), rồi xóa *successor đó* — theo định
+   nghĩa, nó không có con trái, đưa về trường hợp 1 hoặc 2.
+
+```c
+TNode *bst_delete(TNode *t, int v) {
+    if (!t) return NULL;
+    if (v < t->value)      t->left  = bst_delete(t->left, v);
+    else if (v > t->value) t->right = bst_delete(t->right, v);
+    else {
+        if (!t->left)  { TNode *r = t->right; free(t); return r; }
+        if (!t->right) { TNode *l = t->left;  free(t); return l; }
+        TNode *s = t->right;                   /* successor: trái nhất của phải */
+        while (s->left) s = s->left;
+        t->value = s->value;                   /* copy giá trị lên */
+        t->right = bst_delete(t->right, s->value);  /* xóa successor */
+    }
+    return t;
+}
+```
+
+Đệ quy kiểu `return` gán lại *link của cha* (`t->left =
+bst_delete(...)`) — ý tưởng pointer-to-link của danh sách, trong dạng
+cây. Duyệt in-order sau mọi phép xóa vẫn phải ra thứ tự đã sắp; đó là
+test.
+
+## Bẫy xóa hai lần
+
+Trường hợp 3 copy giá trị successor rồi đệ quy xóa nó. Nếu đệ quy viết
+vào sai cây con (hoặc phép so sánh dùng `<=`), cùng một node có thể
+được ghé để xóa hai lần — lần đầu free nó, lần hai đọc bộ nhớ đã free.
+Việc tìm successor và phép xóa phải đồng thuận về *node nào* chết.

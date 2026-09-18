@@ -1,0 +1,26 @@
+{
+  "id": "javi-p7-csv-roundtrip",
+  "title": "CSV Writer + Round-Trip",
+  "prompt": "Implement the writing side:\n- `static String writeRow(List<String> fields)` — joins with commas,\n  wrapping a field in double quotes only when it contains a comma or\n  quote; inside quoted fields, `\"` becomes `\"\"`.\n- `static List<String> roundTrip(List<String> fields)` — returns\n  `parseRow(writeRow(fields))` (you may re-implement the scanner or\n  inline it).\n\nRound-trip identity is the real contract: parse(write(x)) == x for any\nfield content — including commas and quotes.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "plain fields unquoted",
+      "code": "\ncheckEq(Solution.writeRow(List.of(\"a\", \"b\")), \"a,b\", \"no quotes needed\");\n",
+      "hint": "No comma/quote → no wrapping."
+    },
+    {
+      "name": "comma forces quoting",
+      "code": "\ncheckEq(Solution.writeRow(List.of(\"a,b\", \"c\")), \"\\\"a,b\\\",c\", \"quoted on comma\");\n",
+      "hint": "Wrap in \" when the field contains a comma."
+    },
+    {
+      "name": "round-trip identity",
+      "code": "\nList<String> fields = List.of(\"plain\", \"with,comma\", \"say \\\"hi\\\"\");\ncheckEq(Solution.roundTrip(fields), fields, \"parse(write(x)) == x\");\n",
+      "hint": "The scanner and writer must be mutual inverses."
+    }
+  ],
+  "level": "independent"
+}

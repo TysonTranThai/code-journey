@@ -1,0 +1,26 @@
+{
+  "id": "javb-m14-parse-transaction",
+  "title": "Parse the ledger line",
+  "prompt": "Implement `parse(String line)` in the provided skeleton: split on `|` into exactly 4 fields; return `new Transaction(date, label, Direction.valueOf(field.toUpperCase()), Double.parseDouble(amount))`. The record's compact constructor already validates - let its exceptions propagate unchanged (callers need the real reason).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public enum Direction { CASH_IN, CASH_OUT }\n\n    public record Transaction(String date, String label, Direction direction, double amount) {\n        public Transaction {\n            if (date == null) {\n                throw new IllegalArgumentException(\"date must not be null\");\n            }\n            try {\n                java.time.LocalDate.parse(date);   // real calendar: rejects 2026-13-40\n            } catch (java.time.format.DateTimeParseException e) {\n                throw new IllegalArgumentException(\"bad date: \" + date);\n            }\n            if (label == null || label.isBlank()) {\n                throw new IllegalArgumentException(\"label must not be blank\");\n            }\n            if (amount <= 0) {\n                throw new IllegalArgumentException(\"amount must be positive: \" + amount);\n            }\n        }\n    }\n\n    public static Transaction parse(String line) {\n        return null;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "valid lines parse",
+      "code": "\nSolution.Transaction t = Solution.parse(\"2026-01-15|coffee|CASH_OUT|4.50\");\nCjTestBase.checkEq(t.date(), \"2026-01-15\", \"date kept\");\nCjTestBase.checkEq(t.direction(), Solution.Direction.CASH_OUT, \"direction parsed\");\nCjTestBase.checkEq(t.amount(), 4.5, \"amount parsed\");\n",
+      "hint": "split(\"\\|\") - the pipe is a regex metacharacter and must be escaped."
+    },
+    {
+      "name": "lowercase direction is accepted",
+      "code": "\nCjTestBase.checkEq(Solution.parse(\"2026-01-16|salary|cash_in|2500.00\").direction(),\n    Solution.Direction.CASH_IN, \"case-insensitive direction\");\n",
+      "hint": "field.toUpperCase() before Direction.valueOf."
+    },
+    {
+      "name": "bad lines throw the record's exception",
+      "code": "\ntry {\n    Solution.parse(\"2026-13-40|coffee|CASH_OUT|4.50\");\n    CjTestBase.checkTrue(false, \"impossible date must throw\");\n} catch (IllegalArgumentException e) {\n    CjTestBase.checkTrue(true, \"record validation fired\");\n}\ntry {\n    Solution.parse(\"2026-01-15|coffee|CASH_OUT|-1\");\n    CjTestBase.checkTrue(false, \"negative amount must throw\");\n} catch (IllegalArgumentException e) {\n    CjTestBase.checkTrue(true, \"amount validation fired\");\n}\n",
+      "hint": "Don't catch inside parse - the constructor already throws the right thing."
+    }
+  ],
+  "level": "guided"
+}

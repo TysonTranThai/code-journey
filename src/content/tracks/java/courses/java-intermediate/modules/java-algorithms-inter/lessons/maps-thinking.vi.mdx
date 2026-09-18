@@ -1,0 +1,23 @@
+## Map là công cụ tư duy
+
+Nhiều bài "khó" sụp đổ ngay khi bạn chọn đúng map phụ trợ:
+
+- **đếm** — `freq.merge(x, 1, Integer::sum)` biến "bao nhiêu" thành tra
+  cứu O(1) (dò anagram, phần tử đa số)
+- **đánh chỉ mục** — `Map<Value, Index>` nhớ *đã thấy ở đâu* (two-sum
+  trong một lượt; chỉ số lần-quen-cuối cho bài window)
+- **nhóm** — `groupingBy` biến các lớp tương đương thành bucket (nhóm
+  anagram theo chữ-sắp-xếpký-tự)
+
+```java
+// two-sum, một lượt — O(n)
+Map<Integer, Integer> seen = new HashMap<>();
+for (int i = 0; i < xs.length; i++) {
+    Integer j = seen.get(target - xs[i]);
+    if (j != null) return new int[]{j, i};
+    seen.put(xs[i], i);
+}
+```
+
+Mẫu cần thấm: *đổi không gian lấy câu hỏi rẻ hơn*. Nếu một vòng lặp tồn
+tại chỉ để trả lời "đã thấy X chưa?", map đã biết sẵn.

@@ -1,0 +1,41 @@
+Vòng lặp lặp lại công việc mà không lặp lại code. Java có ba dạng; `for`
+đếm đến trước:
+
+```java
+for (int i = 1; i <= 5; i++) {
+    System.out.println("tick " + i);
+}
+```
+
+Đọc header như ba câu: **bắt đầu** với `i` bằng 1; **tiếp tục** trong khi
+`i <= 5`; sau mỗi vòng, **bước** `i` lên. Biến `i` chỉ tồn tại trong vòng
+lặp — hãy khai báo nó ở đó, đừng khai báo bên ngoài.
+
+Pattern đếm phủ phần lớn vòng lặp thực tế:
+
+```java
+int[] scores = {72, 85, 90};
+for (int i = 0; i < scores.length; i++) {
+    System.out.println(scores[i]);
+}
+```
+
+Đếm từ 0 với `i < length` (không phải `<=`) là quy ước của Java — mảng và
+String đánh chỉ số từ 0, vậy `i` chạy từ 0 đến length-1 chạm đúng mỗi phần
+tử một lần. Bug lệch một (`<=`) ném `ArrayIndexOutOfBoundsException` ở bước
+cuối.
+
+**Enhanced for** ("for-each") thăm mọi phần tử mà không cần chỉ số:
+
+```java
+for (int s : scores) {
+    System.out.println(s);
+}
+```
+
+Dùng for-each khi bạn cần *giá trị phần tử*; dùng `for` cổ điển khi bạn cần
+*vị trí* hoặc bước nhảy riêng (`i += 3`). Cả hai vòng ở đây in ba số giống
+hệt — chọn vòng lặp là chọn ý tưởng (chỉ số vs phần tử) mà code của bạn
+muốn nói tới.
+
+**Tiếp theo:** những vòng lặp chạy đến khi có gì đó xảy ra.

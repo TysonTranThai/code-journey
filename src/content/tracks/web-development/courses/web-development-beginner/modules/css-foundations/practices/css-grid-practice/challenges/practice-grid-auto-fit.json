@@ -1,0 +1,25 @@
+{
+  "id": "practice-grid-auto-fit",
+  "title": "Grid That Fits Itself",
+  "prompt": "Replace fixed column counts with the responsive one-liner: `.gallery` uses `grid-template-columns: repeat(auto-fit, minmax(180px, 1fr))` — as many 180px-minimum columns as fit, each sharing space equally.\n\nRules:\n- Keep `display: grid` and `gap: 1rem`.\n- Swap the template to the auto-fit form.",
+  "difficulty": "beginner",
+  "level": "combination",
+  "boilerplate": "<style>\n.gallery {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 1rem;\n}\n</style>\n",
+  "tests": [
+    {
+      "name": "auto-fit with a 180px minimum",
+      "code": "if (!/\\.gallery\\s*\\{[^}]*grid-template-columns\\s*:\\s*repeat\\(\\s*auto-fit\\s*,\\s*minmax\\(\\s*180px\\s*,\\s*1fr\\s*\\)\\s*\\)\\s*;/i.test(code)) {\n  throw new Error(\"Use grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\");\n}",
+      "hint": "repeat(auto-fit, minmax(180px, 1fr)) — columns appear only when they fit."
+    },
+    {
+      "name": "grid and gap survive",
+      "code": "if (!/\\.gallery\\s*\\{[^}]*display\\s*:\\s*grid\\s*;/i.test(code)) throw new Error(\"Keep display: grid.\");\nif (!/\\.gallery\\s*\\{[^}]*gap\\s*:\\s*1rem\\s*;/i.test(code)) throw new Error(\"Keep gap: 1rem.\");",
+      "hint": "Only the grid-template-columns line changes."
+    },
+    {
+      "name": "no media query needed",
+      "code": "if (/@media/i.test(code)) {\n  throw new Error(\"No media query required — auto-fit handles the responsiveness inside the grid itself.\");\n}",
+      "hint": "The whole point of auto-fit: responsiveness without media queries."
+    }
+  ]
+}

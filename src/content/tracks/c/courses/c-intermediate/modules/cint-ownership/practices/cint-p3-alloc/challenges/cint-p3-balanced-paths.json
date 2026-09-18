@@ -1,0 +1,16 @@
+{
+  "id": "cint-p3-balanced-paths",
+  "title": "Every Path Frees",
+  "prompt": "Implement a function with MULTIPLE allocation and failure paths where\nevery path balances:\n\n```c\n/* builds \"N=x;D=y\" from two ints using two temp buffers; on any failure\n   returns 0 with *out untouched; on success returns 1, caller frees *out. */\nint format_stats(int n, double d, char **out);\n```\n\nUse snprintf into a heap buffer per half, then join. The point of the exercise:\nif the second allocation fails, the first must be freed.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "success and failure balance",
+      "code": "\nchar *s = NULL;\nCHECK_EQ(format_stats(7, 0.5, &s), 1);\nCHECK_STR_EQ(s, \"N=7;D=0.5\");\nfree(s);\nCHECK_EQ(format_stats(7, 0.5, NULL), 0);\n",
+      "hint": "Build two halves with malloc+snprintf; on any failure free what you hold and return 0."
+    }
+  ],
+  "level": "guided"
+}

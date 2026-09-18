@@ -1,0 +1,21 @@
+{
+  "id": "javb-m13-write-tests",
+  "title": "Be the test suite",
+  "prompt": "The provided `average` has a real logic bug (integer division truncates). Write `main` that acts as a test suite: print one line per case, `PASS`/`FAIL name` per check, covering (1) average({1,2}) == 1.5, (2) average({5}) == 5.0, (3) average throws IllegalArgumentException for an empty array. Run it, watch case 1 FAIL, then fix `average` (cast before dividing) so all three print PASS.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static double average(int[] scores) {\n        if (scores == null || scores.length == 0) {\n            throw new IllegalArgumentException(\"scores must be non-empty\");\n        }\n        int sum = 0;\n        for (int s : scores) sum += s;\n        return sum / scores.length;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "the fixed average is exact",
+      "code": "\nCjTestBase.checkEq(Solution.average(new int[]{1, 2}), 1.5, \"1 and 2 average 1.5\");\nCjTestBase.checkEq(Solution.average(new int[]{5}), 5.0, \"single score\");\nCjTestBase.checkEq(Solution.average(new int[]{-3, 3}), 0.0, \"negatives cancel\");\n",
+      "hint": "Cast BEFORE dividing: sum / (double) scores.length keeps the fraction."
+    },
+    {
+      "name": "empty input still throws",
+      "code": "\ntry {\n    Solution.average(new int[0]);\n    CjTestBase.checkTrue(false, \"empty must throw\");\n} catch (IllegalArgumentException e) {\n    CjTestBase.checkTrue(true, \"empty throws as documented\");\n}\n",
+      "hint": "Keep the guard as-is - the fix is the division, not the guard."
+    }
+  ],
+  "level": "debugging"
+}

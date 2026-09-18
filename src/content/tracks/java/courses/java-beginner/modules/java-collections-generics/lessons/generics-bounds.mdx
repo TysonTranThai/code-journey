@@ -1,0 +1,54 @@
+Generic type parameters (`<T>`) are how Java collections stay type-safe —
+and how you write your own reusable containers.
+
+**Using them**, you already do: `List<String>`, `Map<String, Integer>`. The
+compiler stops `list.add(42)` on a `List<String>` at compile time, and
+eliminates casts on the way out. Before generics (Java 4 and earlier),
+everything was `Object` and every read was a risky downcast — generics
+moved those crashes from runtime to the compiler.
+
+**Writing them** is one angle-bracket declaration:
+
+```java
+class Box<T> {                       // T: a type filled in later
+    private T value;
+
+    public void put(T v) { value = v; }
+    public T get() { return value; }
+}
+
+Box<String> words = new Box<>();
+words.put("hi");                     // compile-checked
+String s = words.get();              // no cast
+```
+
+**Generic methods** declare their own type parameter before the return
+type:
+
+```java
+static <T> T firstOrNull(List<T> list) {
+    return list.isEmpty() ? null : list.get(0);
+}
+```
+
+Call it with `List<String>` and T becomes String; with `List<Integer>` and
+T becomes Integer — one method, every element type, no duplication.
+
+**Bounded types** constrain T when behavior needs a guarantee:
+
+```java
+static <T extends Comparable<T>> T maxOf(List<T> items) {
+    T best = items.get(0);
+    for (T item : items) {
+        if (item.compareTo(best) > 0) best = item;
+    }
+    return best;
+}
+```
+
+`T extends Comparable<T>` reads "any type that knows how to compare itself"
+— inside, `compareTo` is legal. Bounds are the beginner-safe half of
+generics; wildcards (`? extends`, `? super`) and variance belong to
+Intermediate — this course deliberately stops at bounds.
+
+**Next:** exceptions.

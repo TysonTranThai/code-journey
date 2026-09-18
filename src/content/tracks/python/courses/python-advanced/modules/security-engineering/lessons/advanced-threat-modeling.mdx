@@ -1,0 +1,39 @@
+Security done well starts on a whiteboard, not in a scanner. The four questions
+of threat modeling:
+
+1. **What are we building?** A data-flow diagram: users → API → database, and
+   the *trust boundaries* between them (browser↔server, service↔service,
+   admin↔public). Every boundary is where attacks live.
+2. **What can go wrong?** Walk each boundary with a checklist — STRIDE is the
+   classic: **S**poofing (pretend to be someone), **T**ampering (modify data in
+   transit/at rest), **R**epudiation (deny actions), **I**nformation disclosure
+   (leak data), **D**enial of service (exhaust resources), **E**levation of
+   privilege (become admin).
+3. **What will we do about it?** Every threat gets one of four fates:
+   *mitigate* (fix it), *transfer* (push to a provider), *avoid* (drop the
+   feature), *accept* (document why it's tolerable).
+4. **Did we do a good job?** Tests for each mitigation, and a process to
+   re-model when the design changes.
+
+## Risk ranking: fix the cheap, catastrophic, and likely first
+
+Impact × likelihood decides priority. The boring truth of web security: the
+biggest wins are hygiene — no secrets in code, no unvalidated redirects,
+parameterized queries, real authorization checks on every object, secure
+defaults. The OWASP Top 10 exists because the same handful of mistakes causes
+most breaches.
+
+## Trust nothing across a boundary
+
+Inside your process, you may assume your own invariants. Across a boundary, the
+data is *attacker-controlled* until proven otherwise: every HTTP header, query
+parameter, cookie, file, and third-party API response. The defense is not
+filtering — it's the boundary discipline from the APIs module: **parse once at
+the edge, treat the parsed value as the only input.**
+
+## Least privilege as a design stance
+
+Every component runs with the minimum authority it needs: a job worker that
+only reads the orders table should have credentials that only read the orders
+table. When something is compromised — and eventually something is — least
+privilege decides whether it's an incident or a catastrophe.

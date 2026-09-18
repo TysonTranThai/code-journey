@@ -1,0 +1,25 @@
+{
+  "id": "cppi-checkpoint-capstone",
+  "title": "Checkpoint: Library, assembled",
+  "prompt": "Assemble the capstone core: `class Library` holding `std::vector<Book>` with `void add(const Book&)`, `std::optional<const Book*> find(const std::string& title) const`, `std::size_t size() const`, and `std::string inventory() const` — a listing of `title|quantity` lines in insertion order (one per book, each ending with \\n; empty library yields an empty string). `Book` is `{std::string title; int quantity;}`.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <optional>\n#include <string>\n#include <vector>\n#include <iostream>\n\nstruct Book {\n    std::string title;\n    int quantity;\n};\n\n// Complete class Library { add, find, size, inventory }\n",
+  "tests": [
+    {
+      "name": "add-find",
+      "code": "Library lib;\nlib.add(Book{\"Clean Code\", 2});\nCHECK_EQ(lib.size(), 1);\nauto f = lib.find(\"Clean Code\");\nCHECK(f.has_value());\nCHECK_EQ((*f)->quantity, 2);\nCHECK(!lib.find(\"Ghost\").has_value());",
+      "hint": "add stores; find returns a pointer to the live book or nullopt."
+    },
+    {
+      "name": "inventory-format",
+      "code": "Library lib;\nlib.add(Book{\"A\", 1});\nlib.add(Book{\"B\", 3});\nCHECK_EQ(lib.inventory(), std::string(\"A|1\\nB|3\\n\"));",
+      "hint": "Insertion order, `title|quantity`, one line each."
+    },
+    {
+      "name": "empty-inventory",
+      "code": "Library lib;\nCHECK_EQ(lib.size(), 0);\nCHECK_EQ(lib.inventory(), std::string(\"\"));",
+      "hint": "An empty library inventories as an empty string."
+    }
+  ]
+}

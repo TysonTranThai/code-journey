@@ -1,0 +1,21 @@
+{
+  "id": "pi8-tx-transfer",
+  "title": "Atomic Transfer",
+  "prompt": "Implement transfer(conn, src, dst, amount) moving money between rows of accounts(id INTEGER PRIMARY KEY, balance INTEGER). Raise ValueError if either account is missing or src has insufficient funds (and roll back). On success, commit.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import sqlite3\n\ndef transfer(conn, src, dst, amount):\n    pass\n",
+  "tests": [
+    {
+      "name": "moves the money",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE accounts (id INTEGER PRIMARY KEY, balance INTEGER)')\nconn.executemany('INSERT INTO accounts VALUES (?, ?)', [(1, 100), (2, 0)])\nconn.commit()\ntransfer(conn, 1, 2, 40)\nbals = dict(conn.execute('SELECT id, balance FROM accounts'))\nassert bals == {1: 60, 2: 40}",
+      "hint": "Two UPDATEs inside one commit."
+    },
+    {
+      "name": "insufficient funds rejected atomically",
+      "code": "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE accounts (id INTEGER PRIMARY KEY, balance INTEGER)')\nconn.executemany('INSERT INTO accounts VALUES (?, ?)', [(1, 10), (2, 0)])\nconn.commit()\ntry:\n    transfer(conn, 1, 2, 50)\n    failed = False\nexcept ValueError:\n    failed = True\nassert failed\nbals = dict(conn.execute('SELECT id, balance FROM accounts'))\nassert bals == {1: 10, 2: 0}",
+      "hint": "Nothing changes when the transfer is rejected — rollback."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "i2-endpoint-audit",
+  "title": "Endpoint Audit",
+  "prompt": "Write `auditEndpoints(routes)` — routes is an array of { path, method, authRequired, rateLimited, validatesInput }. A route is CRITICAL when: authRequired false AND method !== \"GET\"; or rateLimited false AND path includes \"login|register|reset\". A route is a WARNING when it validatesInput false. Return { critical: n, warnings: n }. State-changing unauthenticated routes are the classic breach vector.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function auditEndpoints(routes) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "counts critical and warning routes",
+      "code": "const fn = new Function(code + \"\\nreturn { auditEndpoints };\");\nconst { auditEndpoints } = fn();\nconst routes = [\n  { path: \"/api/admin/delete\", method: \"POST\", authRequired: false, rateLimited: true, validatesInput: true },\n  { path: \"/login\", method: \"POST\", authRequired: true, rateLimited: false, validatesInput: true },\n  { path: \"/api/notes\", method: \"POST\", authRequired: true, rateLimited: true, validatesInput: false },\n];\nconst out = auditEndpoints(routes);\nif (out.critical !== 2) throw new Error(\"Unguarded POST + rate-limited login.\");\nif (out.warnings !== 1) throw new Error(\"One route skips validation.\");\n",
+      "hint": "Two independent critical conditions, one warning condition."
+    },
+    {
+      "name": "clean routes score zero",
+      "code": "const fn = new Function(code + \"\\nreturn { auditEndpoints };\");\nconst { auditEndpoints } = fn();\nconst out = auditEndpoints([\n  { path: \"/api/notes\", method: \"GET\", authRequired: true, rateLimited: true, validatesInput: true },\n]);\nif (out.critical !== 0 || out.warnings !== 0) throw new Error(\"All green stays green.\");\n",
+      "hint": "Defaults matter — count nothing when nothing triggers."
+    }
+  ]
+}

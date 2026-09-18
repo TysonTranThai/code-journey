@@ -1,0 +1,39 @@
+## The decay rule
+
+In most expressions, an array name **decays** to a pointer to its first
+element:
+
+```c
+int a[5] = {5, 10, 15, 20, 25};
+int *p = a;              // same as &a[0] — decay
+
+printf("%p\n", (void*)a);     // address of a[0]
+printf("%p\n", (void*)&a[0]); // identical
+```
+
+The crucial exception: `sizeof a` still knows the full array size (here 20 on
+the sandbox's 64-bit int world: 5 × 4). Decay has not happened inside sizeof.
+
+## What functions actually receive
+
+```c
+int sum(int arr[], int n)     // arr[] is NOTATION only
+int sum(int *arr, int n)      // the compiler sees exactly this
+```
+
+The two prototypes are **identical** to the compiler. An array parameter is a
+pointer; the array's size never travels with it — that's why `n` exists as a
+second parameter. Inside the function, `sizeof arr` is the size of a pointer
+(8), not the array.
+
+## Consequence: functions can modify your array
+
+Because the function receives the real address, writes through the parameter
+change the caller's array:
+
+```c
+void zero_first(int arr[], int n) { arr[0] = 0; }
+```
+
+Arrays are the first "pass by reference" you meet in C — and the ONLY one,
+until you choose it with pointers.

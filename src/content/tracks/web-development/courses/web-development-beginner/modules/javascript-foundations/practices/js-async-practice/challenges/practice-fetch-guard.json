@@ -1,0 +1,25 @@
+{
+  "id": "practice-fetch-guard",
+  "title": "Check response.ok Before Using It",
+  "prompt": "Write `async function loadUser()` that fetches `https://api.example.com/me`, throws `new Error(\"HTTP \" + response.status)` when `response.ok` is false, and otherwise returns the parsed JSON. Then call it and log the user's name (the provided `fetch` resolves with a working response).\n\nRules:\n- `await` both the fetch and `.json()`.\n- Guard with `if (!response.ok)`.",
+  "difficulty": "beginner",
+  "level": "debugging",
+  "boilerplate": "async function loadUser() {\n  // fetch, check ok, parse, return\n}\nloadUser().then((user) => console.log(user.name)).catch((err) => console.error(err.message));\n",
+  "tests": [
+    {
+      "name": "ok guard present",
+      "code": "if (!/if\\s*\\(\\s*!\\s*\\w+\\.ok\\s*\\)/.test(code)) {\n  throw new Error(\"Add the guard: if (!response.ok) { throw … }\");\n}",
+      "hint": "if (!response.ok) throw new Error(\"HTTP \" + response.status);"
+    },
+    {
+      "name": "returns the parsed user",
+      "code": "const fn = new Function(\"fetch\", code + \"\\nreturn loadUser();\");\nconst u = await fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({ name: \"Ada\", role: \"learner\" }) }));\nif (u.name !== \"Ada\") throw new Error(\"loadUser() should resolve to the parsed user object.\");",
+      "hint": "return await response.json(); — the parsed body is the resolved value."
+    },
+    {
+      "name": "throws on failure status",
+      "code": "const fn = new Function(\"fetch\", code + \"\\nreturn loadUser();\");\ntry {\n  await fn(() => Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({}) }));\n  throw new Error(\"NO_THROW\");\n} catch (err) {\n  if (err.message === \"NO_THROW\") throw new Error(\"A failing response must throw — your guard didn't fire.\");\n  if (!/HTTP\\s+500/.test(err.message)) throw new Error(\"The error message should include 'HTTP ' + the status (500).\");\n}",
+      "hint": "The thrown Error should read 'HTTP 500' for a 500 response."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+## qsort là lớp thạc sĩ
+
+```c
+void qsort(void *base, size_t nmemb, size_t size, int (*compar)(const void *, const void *));
+```
+
+Bốn thành phần làm nó tổng quát: base theo byte, *kích thước* phần tử (để thuật toán di chuyển phần tử bằng memcpy), số lượng, và callback so sánh do caller cung cấp. Mọi API C tổng quát bạn thiết kế đều trộn một tập con của những thứ này.
+
+## Cái giá là gì
+
+Bên trong container void*, phần tử là byte: `elem_at(base, i, size)` là `(char *)base + i * size`. Trình biên dịch không còn biết kiểu phần tử — cast sai, kích thước sai, comparator sai đều im lặng đến lúc chạy. Tính tổng quát trong C đổi kiểm tra lúc biên dịch lấy sự linh hoạt; hãy tài liệu hóa và kiểm thử tương ứng.
+
+## Alignment vẫn áp dụng
+
+void* trả lại cho caller phải căn bằng với dữ liệu nó đại diện. Nếu container cấp phát byte thô, hãy căn chúng — double nằm ở địa chỉ lẻ là UB ngay khi được load.

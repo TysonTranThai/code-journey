@@ -1,0 +1,26 @@
+{
+  "id": "javb-m5-utility",
+  "title": "Utility library: repeat, clamp, isBlank",
+  "prompt": "Implement three small utilities in one Solution class:\n\n1. `static String repeat(String s, int n)` — returns s repeated n times (`repeat(\"ab\", 3)` is `\"ababab\"`; n <= 0 gives `\"\"`).\n2. `static int clamp(int v, int min, int max)` — v if in range, otherwise the nearest bound.\n3. `static boolean isBlank(String s)` — true for null, empty, or whitespace-only strings.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String repeat(String s, int n) {\n        return \"\";\n    }\n\n    public static int clamp(int v, int min, int max) {\n        return 0;\n    }\n\n    public static boolean isBlank(String s) {\n        return false;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "repeat",
+      "code": "\nCjTestBase.checkEq(Solution.repeat(\"ab\", 3), \"ababab\", \"ab x3\");\nCjTestBase.checkEq(Solution.repeat(\"x\", 1), \"x\", \"x once\");\nCjTestBase.checkEq(Solution.repeat(\"x\", 0), \"\", \"zero times\");\nCjTestBase.checkEq(Solution.repeat(\"x\", -2), \"\", \"negative times\");\n",
+      "hint": "Accumulate with StringBuilder or a loop; n <= 0 is the empty string."
+    },
+    {
+      "name": "clamp",
+      "code": "\nCjTestBase.checkEq(Solution.clamp(5, 0, 10), 5, \"in range\");\nCjTestBase.checkEq(Solution.clamp(-3, 0, 10), 0, \"below range\");\nCjTestBase.checkEq(Solution.clamp(99, 0, 10), 10, \"above range\");\n",
+      "hint": "Two comparisons, two returns — or Math.max/min composed."
+    },
+    {
+      "name": "isBlank",
+      "code": "\nCjTestBase.checkTrue(Solution.isBlank(null), \"null is blank\");\nCjTestBase.checkTrue(Solution.isBlank(\"\"), \"empty is blank\");\nCjTestBase.checkTrue(Solution.isBlank(\"   \"), \"spaces are blank\");\nCjTestBase.checkTrue(!Solution.isBlank(\" x \"), \"content is not blank\");\n",
+      "hint": "Handle null FIRST, then trim/strip and check emptiness."
+    }
+  ],
+  "level": "guided"
+}

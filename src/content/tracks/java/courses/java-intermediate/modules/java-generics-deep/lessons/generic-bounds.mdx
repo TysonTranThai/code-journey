@@ -1,0 +1,24 @@
+## Bounded type parameters
+
+A bare `<T>` promises almost nothing. A bound makes the promise concrete:
+
+```java
+// T can be any Number subtype — so .doubleValue() is legal on it
+static double average(List<? extends Number> xs) { ... }
+
+// <T extends Comparable<T>> lets you call compareTo on values of type T
+static <T extends Comparable<T>> T max(List<T> xs) {
+    T best = xs.get(0);
+    for (T x : xs) if (x.compareTo(best) > 0) best = x;
+    return best;
+}
+```
+
+Two bound forms:
+- **Type-parameter bound** `<T extends Comparable<T>>` — used when T must
+  flow *through* the method (in and out).
+- **Wildcard bound** `List<? extends Number>` — used when T only flows
+  *out* of the list (you read it, never write).
+
+Multiple bounds: `<T extends Number & Comparable<T>>` — class first,
+interfaces after.

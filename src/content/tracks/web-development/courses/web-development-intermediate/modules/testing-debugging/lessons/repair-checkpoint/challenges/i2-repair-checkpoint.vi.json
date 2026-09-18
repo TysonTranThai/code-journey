@@ -1,0 +1,19 @@
+{
+  "id": "i2-repair-checkpoint",
+  "title": "Phòng sửa lỗi",
+  "prompt": "Viết BA hàm. 1) `diagnose(testName)` — ánh xạ tên test fail sang nguyên nhân: tên chứa \"empty\" -> \"edge-case\", chứa \"slow\" -> \"performance\", chứa \"null\" hoặc \"undefined\" -> \"type-error\", còn lại \"logic\". 2) `analyzeSpy(spy, expectedCount, expectedFirstArg)` — spy là { calls: [[arg...], ...] }; trả về true chỉ khi calls.length === expectedCount VÀ calls[0][0] === expectedFirstArg, ngược lại false (xử lý an toàn khi không có lần gọi nào). 3) `fixAndProve(isFixed, testPasses)` — một bản sửa chỉ được tính khi CẢ hành vi đã được sửa VÀ regression test pass: trả về \"fixed\" khi cả hai true, \"untested\" khi đã sửa nhưng test fail, \"broken\" trong các trường hợp còn lại.",
+  "tests": [
+    {
+      "name": "chẩn đoán từ bằng chứng test",
+      "hint": "Kiểm tra 'empty' trước, rồi 'slow', rồi 'null'/'undefined', cuối cùng là mặc định."
+    },
+    {
+      "name": "đọc đúng bằng chứng từ spy",
+      "hint": "Chặn trường hợp calls rỗng trước khi đọc calls[0][0]."
+    },
+    {
+      "name": "bản sửa chỉ được tính khi có chứng minh",
+      "hint": "Ba kết quả từ hai boolean — lập bảng chân trị."
+    }
+  ]
+}

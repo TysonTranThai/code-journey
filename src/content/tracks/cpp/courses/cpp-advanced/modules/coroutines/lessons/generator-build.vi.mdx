@@ -1,0 +1,57 @@
+Đây là generator hoàn chỉnh, có chú thích. Mọi bài tập chấm điểm trong module này đều là biến thể của nó.
+
+```cpp
+#include <coroutine>
+#include <exception>
+#include <utility>
+
+template <class T>
+class Generator {
+public:
+    struct promise_type {
+        T current_{};
+
+        Generator get_return_object() {
+            return Generator{std::coroutine_handle<promise_type>::from_promise(*this)};
+        }
+        std::suspend_always initial_suspend() noexcept { return {}; }   // khởi động lười
+        std::suspend_always final_suspend() noexcept { return {}; }     // giữ frame; caller hủy
+        std::suspend_always yield_value(T v) { current_ = std::move(v); return {}; }  // lưu + treo
+        void return_void() {}
+        void unhandled_exception() { std::terminate(); }   // đơn giản hóa trong phạm vi khóa học
+    };
+
+    explicit Generator(std::coroutine_handle<promise_type> h) : h_(h) {}
+    Generator(Generator&& o) noexcept : h_(std::exchange(o.h_, {})) {}
+    Generator& operator=(Generator&&) = delete;
+    ~Generator() { if (h_) h_.destroy(); }             // RAII sở hữu frame
+
+    // Tiến và báo: true nếu có giá trị mới.
+    bool next() {
+        h_.resume();
+        return !h_.done();
+    }
+    T value() const { return h_.promise().current_; }
+
+private:
+    std::coroutine_handle<promise_type> h_;
+};
+
+Generator<int> counter(int from, int to) {
+    for (int i = from; i <= to; ++i) co_yield i;
+}
+```
+
+## Đọc luồng chạy
+
+`counter(1, 3)` trả về ngay lập tức: frame tồn tại, treo tại `initial_suspend`. `next()` phục hồi thân hàm cho tới `co_yield i` đầu tiên lưu `1` rồi treo. `value()` đọc những gì promise lưu. `next()` lần nữa → phục hồi sau yield → vòng lặp → yield `2`… Khi vòng lặp kết thúc, thân hàm kết thúc; `final_suspend` treo thêm lần nữa; `done()` thành true. Destructor hủy frame — vì `final_suspend` giữ nó treo, việc hủy là an toàn (không resume-hai-lần lên frame đã xong).
+
+## Ba lỗi kinh điển (mỗi lỗi là một cái bẫy được chấm)
+
+1. **Resume coroutine đã done** — UB. Phòng: kiểm tra `done()` trước `resume()`.
+2. **`final_suspend` trả `suspend_never`** — frame tự hủy; destructor của bạn rồi lại hủy nó lần nữa: double-destroy UB. Giữ `suspend_always`.
+3. **Yield tham chiếu tới biến cục bộ** — giá trị chết cùng lần phục hồi frame; lưu bằng giá trị (`current_ = std::move(v)`), hoặc bảo đảm thứ được tham chiếu sống lâu hơn generator.
+
+## Ghi chú C++23
+
+`std::generator<T>` (C++23) chính là lớp này, đã được tôi luyện và tương thích range. GCC 14.2 có bản sơ khai; khóa học dạy bản viết tay vì bản thân cơ chế *mới* là bài học — và vì bản viết tay biên dịch giống hệt trên cả hai toolchain của khóa học.

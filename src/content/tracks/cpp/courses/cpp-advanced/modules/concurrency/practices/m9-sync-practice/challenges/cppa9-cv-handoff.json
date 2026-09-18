@@ -1,0 +1,21 @@
+{
+  "id": "cppa9-cv-handoff",
+  "title": "Condition-Variable Handoff",
+  "prompt": "Implement a one-slot mailbox: `put` stores a value under the mutex and notifies; `take` waits (predicated) until a value is present, removes and returns it.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <condition_variable>\n#include <chrono>\n#include <deque>\n#include <mutex>\n#include <optional>\n#include <thread>\n\nclass Mailbox {\npublic:\n    void put(int v);       // store + notify_one\n    int take();            // wait until present, then remove & return\n    bool empty() const;\nprivate:\n    mutable std::mutex m_;\n    std::condition_variable cv_;\n    std::deque<int> q_;\n};\n",
+  "tests": [
+    {
+      "name": "take blocks until put",
+      "code": "Mailbox box;\nstd::thread t([&box] { std::this_thread::sleep_for(std::chrono::milliseconds(20)); box.put(7); });\nCHECK_EQ(box.take(), 7);\nt.join();",
+      "hint": "put: { std::lock_guard lk(m_); q_.push_back(v); } cv_.notify_one();  take: std::unique_lock lk(m_); cv_.wait(lk, [this]{ return !q_.empty(); }); int v = q_.front(); q_.pop_front(); return v;"
+    },
+    {
+      "name": "fifo across two puts",
+      "code": "Mailbox box;\nbox.put(1);\nbox.put(2);\nCHECK_EQ(box.take(), 1);\nCHECK_EQ(box.take(), 2);",
+      "hint": "A waiting take re-checks the predicate after every wakeup — two puts mean two successful takes in order."
+    }
+  ]
+}

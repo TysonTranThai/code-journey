@@ -1,0 +1,26 @@
+{
+  "id": "ca14-flag-taxonomy",
+  "title": "Classify the Flag",
+  "prompt": "Implement `const char *flag_intent(const char *flag)` mapping each flag to its intent class: '-Wall' → \"warnings\", '-Werror' → \"escalation\", '-g' → \"debug-info\", '-O2' → \"optimization\", '-c' → \"compile-only\", '-fsanitize=address' → \"runtime-check\", anything else → \"other\".",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "warning classes",
+      "code": "CHECK_STR_EQ(flag_intent(\"-Wall\"), \"warnings\");\nCHECK_STR_EQ(flag_intent(\"-Werror\"), \"escalation\");",
+      "hint": "-Wall detects defect classes; -Werror changes failure policy, not detection."
+    },
+    {
+      "name": "build phases",
+      "code": "CHECK_STR_EQ(flag_intent(\"-c\"), \"compile-only\");\nCHECK_STR_EQ(flag_intent(\"-O2\"), \"optimization\");",
+      "hint": "Phase flags select what runs; optimization flags select how hard."
+    },
+    {
+      "name": "runtime tools",
+      "code": "CHECK_STR_EQ(flag_intent(\"-fsanitize=address\"), \"runtime-check\");\nCHECK_STR_EQ(flag_intent(\"-g\"), \"debug-info\");",
+      "hint": "Sanitizer flags add runtime machinery; -g adds metadata for humans."
+    }
+  ],
+  "level": "imitation"
+}

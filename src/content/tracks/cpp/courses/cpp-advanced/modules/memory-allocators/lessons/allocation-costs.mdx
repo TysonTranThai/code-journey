@@ -1,0 +1,18 @@
+## What a heap allocation actually does
+
+`new T[n]` asks the allocator for n*sizeof(T) bytes. Depending on the allocator that means: a size-class lookup, possibly a lock, possibly an OS syscall (mmap/sbrk), and metadata bookkeeping. The *CPU cost* is real but the *hidden* cost is bigger: a fresh allocation is a cache-cold object, and vectors that reallocate move or copy every element.
+
+## The four costs, in order of pain
+
+1. **Latency** — tens of ns hot, hundreds cold, microseconds if the OS gets involved.
+2. **Fragmentation** — many small allocations with random lifetimes fragment the heap; footprint grows even when live bytes don't.
+3. **Cache misses** — pointer-chasing into scattered nodes can cost 100+ cycles per hop.
+4. **Deallocation** — free also costs, and per-object free of millions of elements is measurable.
+
+## The beginner-advanced shift
+
+Beginners ask "is new slow?" — unanswerable. Advanced engineers ask: *how many allocations per operation, what sizes, what lifetimes?* Then they count. `malloc_count`-style counters (like the one in this module's practice) make allocation behavior a testable property.
+
+## Lifetime structure beats cleverness
+
+If 10,000 objects live and die together, one arena allocation + one free replaces 20,000 ops. If a hot loop allocates per iteration, hoisting the buffer out of the loop is usually the whole fix. Object pools pay off when object lifetimes interleave unpredictably but sizes are uniform.

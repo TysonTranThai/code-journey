@@ -1,0 +1,26 @@
+{
+  "id": "cb15-longest-video",
+  "title": "Longest Video",
+  "prompt": "Given the Material model in scope, implement `const Material* longest_video(const Material *ms, int n)` returning the VIDEO record with the most minutes, or NULL when there are none.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\ntypedef enum { DOC, VIDEO, QUIZ } Kind;\ntypedef struct { int id; Kind kind; int minutes; } Material;\n",
+  "tests": [
+    {
+      "name": "winner",
+      "code": "Material ms[] = {{1, VIDEO, 4}, {2, DOC, 9}, {3, VIDEO, 8}};\nCHECK_EQ(longest_video(ms, 3), &ms[2]);",
+      "hint": "Skip non-videos; track the max."
+    },
+    {
+      "name": "no videos",
+      "code": "Material ms[] = {{1, DOC, 9}};\nCHECK_EQ(longest_video(ms, 1), NULL);",
+      "hint": "No candidates: NULL."
+    },
+    {
+      "name": "single",
+      "code": "Material ms[] = {{5, VIDEO, 2}};\nCHECK_EQ(longest_video(ms, 1), &ms[0]);",
+      "hint": "One video wins by default."
+    }
+  ],
+  "level": "independent"
+}

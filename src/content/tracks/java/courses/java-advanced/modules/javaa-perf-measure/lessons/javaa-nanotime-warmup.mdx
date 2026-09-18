@@ -1,0 +1,20 @@
+`System.nanoTime()` is *monotonic*: it never goes backward, is unaffected by
+NTP or user clock changes, and is only meaningful as a DIFFERENCE between two
+reads. `System.currentTimeMillis()` is a wall clock — it can jump. Timing
+arithmetic uses nanoTime; date/time display uses the wall clock. Confusing
+them is how you time a test during a DST changeover.
+
+```java
+long t0 = System.nanoTime();
+work();
+long nanos = System.nanoTime() - t0;   // duration; divide for ms
+```
+
+JIT compilation is *asynchronous* and happens per-method, on thresholds: the
+interpreter counts invocations/back-edges, and at roughly 10k the method is
+queued for C1 (fast compile) and later C2 (full optimization). Timing an
+unwarmed method measures the interpreter plus the compiler's attention, not
+your code. Hence the golden rule: **measure warm code** — run the workload
+some thousands of times first, discard that data, then measure. `fork()`
+between benchmark JVMs and the absence of dead-code elimination are why JMH
+(@Benchmark) exists at all: an ad-hoc timer is a benchmarking *toy*.

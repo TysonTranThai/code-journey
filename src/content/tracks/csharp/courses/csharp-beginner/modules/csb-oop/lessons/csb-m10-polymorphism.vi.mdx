@@ -1,0 +1,42 @@
+## Bài toán điều phối
+
+Một phương thức xử lý nhiều loại đối tượng phải hành xử theo từng loại. Không có trợ giúp từ ngôn ngữ, bạn viết kiểm tra kiểu khắp nơi; với `virtual`/`override`, runtime làm việc đó:
+
+```csharp
+class Shape
+{
+    public virtual double Area() => 0.0;
+}
+
+class Circle : Shape
+{
+    private double r;
+    public Circle(double radius) { r = radius; }
+    public override double Area() => Math.PI * r * r;
+}
+
+class Rect : Shape
+{
+    private double w, h;
+    public Rect(double w, double h) { this.w = w; this.h = h; }
+    public override double Area() => w * h;
+}
+```
+
+Giờ một vòng lặp xử lý mọi hình — kể cả các loại được viết *sau* khi vòng lặp này tồn tại:
+
+```csharp
+var shapes = new List<Shape> { new Circle(1), new Rect(2, 3) };
+double total = 0;
+foreach (Shape s in shapes) total += s.Area();   // kiểu thực quyết định
+```
+
+`s.Area()` điều phối theo **kiểu lúc chạy** của đối tượng: override của Circle cho hình tròn, của Rect cho hình chữ nhật. Thêm `Triangle : Shape` không cần sửa vòng lặp — đó là phần thưởng.
+
+## Các luật làm nên sự an toàn
+
+- `virtual` nói "lớp con được thay thế cái này"; không có nó, `override` không biên dịch.
+- Override giữ nguyên chữ ký của cơ sở. Tại chỗ gọi, override không thể phân biệt với bản gốc.
+- `sealed override` chặn mọi thay thế tiếp theo.
+
+Thiếu override không phải lỗi — bản của cơ sở chạy. Vậy nên `virtual` là một lời hứa: bản cơ sở phải là mặc định hợp lý.

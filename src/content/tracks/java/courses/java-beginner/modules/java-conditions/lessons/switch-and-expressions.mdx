@@ -1,0 +1,58 @@
+When one variable is compared against several constant values, `switch`
+reads better than an `if` ladder:
+
+```java
+switch (choice) {
+    case 1:
+        System.out.println("Coffee");
+        break;
+    case 2:
+        System.out.println("Tea");
+        break;
+    default:
+        System.out.println("Unknown");
+        break;
+}
+```
+
+`switch` works on `int`, `long`, `char`, `String`, enums, and a few more.
+Two rules define the classic form:
+
+- **`break` exits the switch.** Without it, execution *falls through* into
+  the next case — occasionally useful deliberately ("cases 1 and 2 share
+  this code"), famously dangerous by accident. Miss a `break` and the
+  compiler stays silent while your menu prints everything below it.
+- **`default` is the else** — the case for every value you did not list.
+  Always write one, even when you believe the values are closed.
+
+**The modern form: switch expressions** (Java 14+). The arrow `->` runs
+exactly one branch, no fall-through, no break, and the whole switch
+*produces a value*:
+
+```java
+String drink = switch (choice) {
+    case 1 -> "Coffee";
+    case 2 -> "Tea";
+    default -> "Unknown";
+};
+```
+
+Multiple labels share one arm: `case 1, 2 -> "Hot drink";`. When an arm
+needs several statements, use braces and `yield`:
+
+```java
+String label = switch (code) {
+    case "A" -> "approved";
+    default -> {
+        System.out.println("unknown code: " + code);
+        yield "rejected";
+    }
+};
+```
+
+A switch expression must be **exhaustive** — the compiler forces a default
+(or all cases covered) because the result must always exist. The compiler
+checking your decision table for completeness is exactly the kind of ally
+this course keeps returning to.
+
+**Next:** designing validations that fail loudly and politely.

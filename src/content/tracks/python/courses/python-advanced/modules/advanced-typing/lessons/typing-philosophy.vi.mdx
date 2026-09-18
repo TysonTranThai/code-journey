@@ -1,0 +1,20 @@
+## Runtime vs tĩnh: type là gì và không phải là gì
+
+Type hint của Python **không được thực thi lúc runtime**. `def f(x: int) -> str`
+vẫn chạy ngon với `f("oops")`. Hint được *static checker* (mypy, pyright) và
+*người đọc* tiêu thụ — chúng là một ngôn ngữ thiết kế phủ lên trên code.
+
+Ở mức nâng cao, điều này có nghĩa là:
+
+- Type mô tả **ý định và hợp đồng**, không phải hành vi runtime. Annotation sai
+  là lời nói dối được ship âm thầm trừ khi checker chạy trong CI.
+- `typing.get_type_hints(obj)` / `obj.__annotations__` đọc được hint lúc runtime —
+  dataclasses, pydantic, và framework DI dựng hành vi từ annotation theo cách đó.
+- Quy trình chuyên nghiệp: annotate ranh giới trước (chữ ký hàm, model API),
+  để inference lo phần bên trong, chạy checker trong CI, và coi `Any` như một
+  TODO, không phải mặc định.
+
+Ghi chú phiên bản (chỉ là văn bản): Python 3.12 thêm cú pháp type-parameter
+PEP 695 (`def first[T](xs: list[T]) -> T`), và 3.13 thêm `typing.TypeIs`. Mã
+được chấm của khóa này nhắm tới 3.11 (`TypeVar`, `Generic`, `TypeGuard`), chạy
+nguyên vẹn trên sandbox 3.12+.

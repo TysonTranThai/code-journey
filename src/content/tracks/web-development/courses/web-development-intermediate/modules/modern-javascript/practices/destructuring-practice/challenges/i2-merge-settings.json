@@ -1,0 +1,25 @@
+{
+  "id": "i2-merge-settings",
+  "title": "Merge Settings",
+  "prompt": "Write `mergeSettings(defaults, overrides)` that RETURNS a new object containing every key from `defaults` plus every key from `overrides`, with `overrides` values winning on conflicts. Neither input object may be mutated.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function mergeSettings(defaults, overrides) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "overrides win on conflicts",
+      "code": "const fn = new Function(code + \"\\nreturn { mergeSettings };\");\nconst { mergeSettings } = fn();\nconst out = mergeSettings({ a: 1, b: 2 }, { b: 9 });\nif (out.a !== 1 || out.b !== 9) throw new Error(\"mergeSettings({ a: 1, b: 2 }, { b: 9 }) should be { a: 1, b: 9 } — later sources win.\");",
+      "hint": "Spread both objects into a new one, defaults first."
+    },
+    {
+      "name": "extra override keys flow through",
+      "code": "const fn = new Function(code + \"\\nreturn { mergeSettings };\");\nconst { mergeSettings } = fn();\nconst out = mergeSettings({ theme: \"light\" }, { fontSize: 14 });\nif (out.theme !== \"light\" || out.fontSize !== 14) throw new Error(\"Keys that only exist in overrides should still appear in the result.\");",
+      "hint": "A single spread of each source handles both directions."
+    },
+    {
+      "name": "neither input is mutated",
+      "code": "const fn = new Function(code + \"\\nreturn { mergeSettings };\");\nconst { mergeSettings } = fn();\nconst d = { a: 1 };\nconst o = { a: 2, b: 3 };\nconst out = mergeSettings(d, o);\nif (d.a !== 1 || Object.keys(d).length !== 1) throw new Error(\"defaults must not be mutated — Object.assign(d, o) is the classic mistake.\");\nif (o.a !== 2 || o.b !== 3) throw new Error(\"overrides must not be mutated.\");\nif (out === d || out === o) throw new Error(\"The result must be a fresh object.\");",
+      "hint": "Build a new object; never write into either argument."
+    }
+  ]
+}

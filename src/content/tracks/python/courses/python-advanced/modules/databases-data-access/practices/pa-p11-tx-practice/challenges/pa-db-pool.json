@@ -1,0 +1,21 @@
+{
+  "id": "pa-db-pool",
+  "title": "A pool that knows its size",
+  "prompt": "Implement `ConnectionPool(size)` with `PoolExhausted`:\n\n- starts with `size` idle connections (`'conn-0'` … `'conn-(size-1)'`)\n- `checkout()` returns an idle connection, or raises `PoolExhausted('pool exhausted')` when none remain — capacity is never exceeded\n- `checkin(conn, dirty=False)` returns the connection to the idle set; if `dirty` is True the returned name gets `':clean'` appended (simulating a ROLLBACK before reuse) — the returned name is what the next checkout hands out\n- `in_use` property: how many connections are currently lent\n\nThe rule under test: a pool of N can never lend more than N.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class PoolExhausted(Exception):\n    pass\n\n\nclass ConnectionPool:\n    def __init__(self, size):\n        ...\n\n    def checkout(self):\n        ...\n\n    def checkin(self, conn, dirty=False):\n        ...\n\n    @property\n    def in_use(self):\n        ...",
+  "tests": [
+    {
+      "name": "capacity is a hard limit, reuse works",
+      "code": "p = ConnectionPool(2)\na = p.checkout(); b = p.checkout()\nassert p.in_use == 2\ntry:\n    p.checkout()\nexcept PoolExhausted:\n    pass\nelse:\n    raise AssertionError('must refuse beyond capacity')\np.checkin(a)\nassert p.in_use == 1\nassert p.checkout() == a\nprint('ok')",
+      "hint": "Lend from the idle set only; checked-in connections return to service."
+    },
+    {
+      "name": "dirty connections are rolled back before reuse",
+      "code": "p = ConnectionPool(1)\nc = p.checkout()\np.checkin(c, dirty=True)\nassert p.checkout() == c + ':clean'\nprint('ok')",
+      "hint": "A borrowed connection must come back clean."
+    }
+  ],
+  "level": "guided"
+}

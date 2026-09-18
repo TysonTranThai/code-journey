@@ -1,0 +1,18 @@
+## Traits: câu hỏi về kiểu
+
+`std::is_integral_v<T>`, `std::is_same_v<A, B>`, `std::is_nothrow_move_constructible_v<T>`, `std::underlying_type_t<E>` — mỗi cái là một truy vấn compile-time. Traits có hai hương: `_t` (kết quả là kiểu) và `_v` (kết quả là giá trị); dạng `_v` là cách viết hiện đại của `::value`.
+
+## std::integral_constant: một giá trị đội lốt kiểu
+
+`std::integral_constant<int, 5>` là một *kiểu* mà giá trị là một phần của nó. Nhờ vậy bạn chuyển số compile-time qua cơ chế overload bình thường — dispatch theo giá trị:
+
+```cpp
+constexpr int route(std::integral_constant<int, 0>) { return 0; }  // pack rỗng
+constexpr int route(std::integral_constant<int, 1>) { return 1; }  // một phần tử
+```
+
+Bạn hiếm khi tự viết kiểu này — thường bạn *nhận* nó: tham số template `std::size_t N` sinh ra `std::integral_constant<std::size_t, N>` khi được suy qua các helper, và `std::bool_constant<B>` chính là `integral_constant<bool, B>`.
+
+## Khi nào traits thắng if constexpr
+
+Dùng traits trong *concept và ràng buộc* (Module 4) và trong phép toán cấp kiểu (`std::conditional_t<flag, A, B>`). Dùng `if constexpr` khi *giá trị* trong thân hàm khác nhau. Các bài tập chấm điểm dùng cả hai cùng lúc.

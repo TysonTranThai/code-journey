@@ -1,0 +1,33 @@
+`std::shared_ptr<T>` keeps a control block with two counters: strong (how
+many `shared_ptr`s own the object) and weak (how many `weak_ptr`s watch
+it). The object dies when the strong count hits zero; the control block
+dies when both do.
+
+```cpp
+#include <memory>
+
+auto a = std::make_shared<Node>();   // strong = 1
+auto b = a;                          // strong = 2
+b.reset();                           // strong = 1
+a.reset();                           // strong = 0 → destructor runs
+```
+
+`std::weak_ptr<T>` observes without owning. It does not keep the object
+alive; it can *ask* whether the object still exists:
+
+```cpp
+std::weak_ptr<Node> w = a;
+if (auto locked = w.lock()) {   // atomic upgrade to shared_ptr
+    locked->use();              // object is alive during this block
+} else {
+    // object already gone
+}
+```
+
+Use `shared_ptr` only when ownership is genuinely shared across unknown
+lifetimes (caches, observers, graphs). It costs an atomic counter and can
+hide who releases what — `unique_ptr` stays the default.
+
+The famous trap: two nodes holding `shared_ptr` to each other form a
+**reference cycle**; strong counts never reach zero; both leak. The fix is
+one direction becoming `weak_ptr` — child points to parent weakly.

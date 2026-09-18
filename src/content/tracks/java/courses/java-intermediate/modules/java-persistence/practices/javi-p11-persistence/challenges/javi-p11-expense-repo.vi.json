@@ -1,0 +1,26 @@
+{
+  "title": "Expense repository trong bộ nhớ",
+  "prompt": "Cài trong `Solution`:\n- `record Expense(String id, String category, int cents)`\n- `static class ExpenseRepository` với:\n  - `Expense save(Expense e)` (upsert theo id)\n  - `Optional<Expense> findById(String id)`\n  - `List<Expense> findByCategory(String category)` (thứ tự chèn)\n  - `boolean deleteById(String id)`\n  - `List<Expense> findAll()` (thứ tự chèn)\n  - `int totalCents()`\n- `static class DuplicateExpenseException extends RuntimeException`.\n\n`save` ném DuplicateExpenseException khi có expense KHÁC với cùng id\n(cùng id + category/cents bằng nhau = re-save idempotent, được phép).",
+  "tests": [
+    {
+      "name": "Save rồi findById",
+      "hint": "Save rồi fetch trả cùng một expense."
+    },
+    {
+      "name": "Upsert thay thế",
+      "hint": "Cùng id, dữ liệu giống hệt → thay thế idempotent."
+    },
+    {
+      "name": "Trùng lặp xung đột bị chặn",
+      "hint": "Cùng id với dữ liệu khác là xung đột."
+    },
+    {
+      "name": "findByCategory lọc",
+      "hint": "Index category lọc; total cộng tất cả."
+    },
+    {
+      "name": "Delete xóa bỏ",
+      "hint": "True lần đầu, false sau đó."
+    }
+  ]
+}

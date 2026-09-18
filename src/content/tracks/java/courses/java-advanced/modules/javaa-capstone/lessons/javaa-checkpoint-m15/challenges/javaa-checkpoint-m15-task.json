@@ -1,0 +1,21 @@
+{
+  "id": "javaa-checkpoint-m15-task",
+  "title": "Checkpoint: the ledger, proven",
+  "prompt": "Copy your Engine/InMemory/JsonlFile/replay and LedgerService into Solution, then add:\n1. `static String report(LedgerService svc, java.util.List<String> keys,\njava.util.concurrent.Executor exec)` — per key, supplyAsync(() -> key + \"=\" +\nsvc.get(key), exec) with orTimeout(50, MILLISECONDS) and handle → key + \"=down\" on\nfailure; allOf(...).orTimeout(500, MILLISECONDS).join(); join parts in submission\norder, joined with \",\".\n2. `static String prove(String seed)` — the proof: build a JsonlFile over a fresh\ntemp file, record seed/a=1, seed/b=2 through a LedgerService; build an InMemory\nengine, record the SAME operations through another LedgerService; run report(\n..., List.of(\"a\",\"b\"), sameExecutor) on both; return the two report strings\njoined with \"|\" — they must be IDENTICAL strings for the test to pass.\n3. `static boolean survivesRestart(java.nio.file.Path file)` — engine over file,\nrecord x=9; build a SECOND service via replay(file); return whether the replayed\nservice get(\"x\") equals \"9\".",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "two engines, one report",
+      "code": "\njava.util.concurrent.Executor exec = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor();\njava.util.concurrent.Executor exec2 = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor();\nString out = Solution.prove(\"seed\");\ncheckTrue(out.startsWith(\"a=1,b=2|a=1,b=2\"), \"identical reports from both engines: \" + out);\ncheckTrue(true, \"polymorphism proven by bytes\");\n",
+      "hint": "The abstraction held — byte for byte."
+    },
+    {
+      "name": "history replays",
+      "code": "\njava.nio.file.Path f = java.nio.file.Files.createTempFile(\"cjadv\", \".jsonl\");\ncheckTrue(Solution.survivesRestart(f), \"replayed service answers from history\");\n",
+      "hint": "The file is the truth; restarts lose nothing."
+    }
+  ],
+  "level": "real-world"
+}

@@ -1,0 +1,22 @@
+## std::thread: bạn sở hữu nó
+
+`std::thread` chạy callable của bạn ngay lập tức. Quên `join()` hay `detach()` trước khi hủy sẽ gọi `std::terminate` — quyền sở hữu tường minh và không khoan nhượng. Giữ thread trong phạm vi hẹp và join vô điều kiện.
+
+## std::jthread: thread RAII (C++20)
+
+`std::jthread` **tự join** trong destructor và mang theo `std::stop_token` để hủy hợp tác:
+
+```cpp
+std::jthread worker([](std::stop_token st) {
+    while (!st.stop_requested()) {
+        // làm một đơn vị công việc
+    }
+});
+// ... destructor yêu cầu stop VÀ join — không terminate khi ra khỏi phạm vi
+```
+
+Hủy là **hợp tác**: thread tự quyết định chỗ nào kiểm tra `stop_requested()` là an toàn. Không gì chiếm đoạt code của bạn.
+
+## Kỷ luật được chấm
+
+Mọi thread/jthread mà một hàm tạo ra phải được join (hoặc trao cho một owner sẽ làm việc đó). Các bài tập kiểm chứng bằng hiệu ứng phụ: kết quả được ghi trước join, không thread nào còn chạy khi ra khỏi phạm vi.

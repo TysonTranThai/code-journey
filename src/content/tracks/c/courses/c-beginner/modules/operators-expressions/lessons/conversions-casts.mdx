@@ -1,0 +1,26 @@
+## Implicit conversions
+
+C silently converts in mixed expressions — the "usual arithmetic
+conversions": the smaller/weaker type is promoted to the wider one.
+
+```c
+int i = 3;
+double d = i;          // int -> double, exact: 3.0
+double half = i / 2;   // int / int FIRST (0), then int -> double: 0.0!
+double ok = i / 2.0;   // i promoted to double: 1.5
+```
+
+The assignment case truncates the other way: `int x = 2.9;` stores `2` — the
+fraction is dropped, not rounded.
+
+## Explicit casts
+
+A cast says "convert on purpose":
+
+```c
+double avg = (double)total / count;   // divide as doubles
+int rounded = (int)(x + 0.5);         // round-half-up for positive x
+char c = (char)('A' + 3);             // int -> char
+```
+
+Cast when you mean it; never to silence a warning you do not understand.

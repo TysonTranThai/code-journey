@@ -1,0 +1,10 @@
+## Checkpoint — an injected checkout
+
+Implement `CheckoutService(repo, clock)`:
+
+- `checkout(cart)` builds `{'id': f'o-{clock.now():.0f}', 'items': list(cart), 'total': sum(cart)}`, saves it via the repository, and returns it
+- an empty cart raises `ValueError('empty cart')` — nothing saved
+- the clock is INJECTED (`clock.now()` returns a float) — the graded test uses
+  a fixed fake clock and asserts the id and totals exactly
+
+Constructor injection + injected time = deterministic tests. That is the lesson.

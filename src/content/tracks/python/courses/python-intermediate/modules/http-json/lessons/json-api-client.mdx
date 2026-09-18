@@ -1,0 +1,50 @@
+APIs return JSON, but a client that assumes success is a client that crashes
+in production. The defensive shape:
+
+```python
+import json
+
+class ApiError(Exception):
+    """API responded with an error status."""
+
+def parse_response(status: int, body: bytes) -> dict | list:
+    if status == 204:
+        return {}
+    try:
+        data = json.loads(body)
+    except json.JSONDecodeError as exc:
+        raise ApiError(f"non-JSON response (status {status})") from exc
+    if status >= 400:
+        message = data.get("error", "unknown") if isinstance(data, dict) else "error"
+        raise ApiError(f"HTTP {status}: {message}")
+    return data
+```
+
+Notice the layers: **decode** (is it JSON?), **classify** (which status
+family?), **extract** (where is the payload?), and only then **use**.
+
+## Pagination: read the envelope
+
+Most APIs wrap lists in metadata — page, per_page, total, or a `next` URL:
+
+```python
+def all_items(fetch, page_size=100):
+    items = []
+    page = 1
+    while True:
+        payload = fetch(page, page_size)        # {"items": [...], "has_more": bool}
+        items.extend(payload["items"])
+        if not payload["has_more"]:
+            return items
+        page += 1
+```
+
+Two non-negotiables: **stop conditions must be explicit** (a missing
+`has_more` must end the loop, not hang it), and **rate limits are real** —
+on 429, sleep for `Retry-After` seconds and retry a bounded number of times.
+
+## Timeouts are not optional
+
+A client without a timeout waits forever. Every real transport call carries a
+timeout; on expiry you raise a client-side error and decide (retry? surface?)
+like any other failure.

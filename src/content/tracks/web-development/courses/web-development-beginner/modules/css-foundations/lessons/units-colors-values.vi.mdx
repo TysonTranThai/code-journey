@@ -1,0 +1,70 @@
+Các giá trị CSS nhìn có vẻ đơn giản — và rồi `62.5%` của một phông chữ lại hiển thị khác với những gì bạn kỳ vọng. Hệ đơn vị đáng để dành mười phút cẩn thận.
+
+## Độ dài: tuyệt đối và tương đối
+
+- `px` — pixel. Dễ đoán, nhưng _cứng nhắc_: nó không tôn trọng cài đặt phông chữ của trình duyệt người dùng.
+- `rem` — "root em": một bội số của **kích thước phông chữ của phần tử gốc** (trình duyệt mặc định 16px, nhưng người dùng có thể thay đổi). `1.5rem` = 1,5 × kích thước đó.
+- `em` — bội số của kích thước phông chữ của _phần tử hiện tại_. Mạnh mẽ, cộng dồn — tinh tế. Người mới: hãy ưu tiên `rem`.
+- `%` — tương đối so với phần tử cha (thường dùng cho chiều rộng).
+
+**Vì sao rem quan trọng:** một người dùng thị lực kém nâng phông chữ mặc định lên 24px sẽ thấy một site toàn `rem` co giãn thanh lịch — chữ, padding, tất cả. Một site toàn `px` thì đứng im. Hướng dẫn hiện đại: kích thước chữ dùng `rem`, các chi tiết hình ảnh tinh tế có thể dùng `px`.
+
+```css
+body {
+  font-size: 1rem; /* 16px với cài đặt mặc định */
+}
+h1 {
+  font-size: 2rem; /* gấp đôi kích thước gốc — co giãn theo cài đặt người dùng */
+}
+```
+
+## Màu sắc
+
+Ba cách viết bao phủ mọi nhu cầu:
+
+```css
+a {
+  color: rebeccapurple;
+} /* theo tên */
+a {
+  color: #4b2e83;
+} /* hex: RR GG BB */
+a {
+  color: rgb(75 46 131);
+} /* rgb() — cùng một thứ, dạng thập phân */
+a {
+  color: rgb(75 46 131 / 0.6);
+} /* với độ trong suốt alpha */
+```
+
+Hex là con ngựa thồ hàng ngày (`#fff` = trắng, `#000` = đen). Cú pháp hiện đại bỏ dấu phẩy. Alpha — giá trị cuối, 0–1 — điều khiển độ trong suốt.
+
+Một quy tắc mà khóa học này bắt bạn giữ: **tương phản màu**. Văn bản mà bạn khó đọc được là một thất bại thiết kế, không phải một lựa chọn phong cách. Xám nhạt trên nền trắng là fail; WCAG 2.1 AA (chuẩn mà chính Code Journey đáp ứng) muốn xấp xỉ 4.5:1 cho văn bản thân bài. Hãy kiểm tra của bạn.
+
+## Custom property: biến của CSS
+
+```css
+:root {
+  --brand: #4b2e83;
+  --space: 1rem;
+}
+
+a {
+  color: var(--brand);
+}
+.button {
+  background-color: var(--brand);
+  padding: var(--space);
+}
+```
+
+Khai báo trên `:root` (phần tử gốc), dùng với `var()`. Đổi `--brand` một lần và mọi chỗ dùng theo ngay. Đây là cách các stylesheet thật tránh mười lăm sắc tím hơi-khác-nhau — và bạn sẽ gặp lại nó như xương sống của việc làm theme.
+
+## Bạn đã học được gì
+
+- `px` cứng nhắc; `rem` co giãn theo cài đặt phông chữ người dùng — ưu tiên nó cho chữ
+- Màu theo tên, hex, và `rgb()`, cùng độ trong suốt alpha
+- Tương phản là một yêu cầu, không phải sở thích
+- Custom property (`--name`, `var(--name)`) tập trung hóa các quyết định thiết kế
+
+**Tiếp theo:** typography — phông chữ, độ dài dòng, và văn bản dễ đọc.

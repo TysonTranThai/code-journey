@@ -1,0 +1,31 @@
+{
+  "id": "ca23-checkpoint-parser",
+  "title": "Checkpoint: Hardened Field Parser",
+  "prompt": "ISO C. A record is `name:score` (name up to 15 chars, score a decimal integer). Implement `int parse_record(const char *line, char *name, size_t namesz, int *score)` \u2014 split on the FIRST ':'; copy the name into name only if it fits (NUL included), parse the score with the strictness of strtol (digits only between optional leading +/-; empty or trailing garbage refuses). Return 0 on success; -1 on any refusal (NULL args, no colon, name too long, bad score). Refused outputs are untouched.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "happy path",
+      "code": "char nm[16] = {0};\nint sc = -9;\nCHECK_EQ(parse_record(\"world:42\", nm, 16, &sc), 0);\nCHECK_STR_EQ(nm, \"world\");\nCHECK_EQ(sc, 42);",
+      "hint": "world:42 parses cleanly into both outputs."
+    },
+    {
+      "name": "name overflows",
+      "code": "char nm2[4] = {0};\nint sc2 = -9;\nCHECK_EQ(parse_record(\"world:42\", nm2, 4, &sc2), -1);\nCHECK_EQ(sc2, -9);",
+      "hint": "A 5-char name does not fit 4 bytes: refusal, score untouched."
+    },
+    {
+      "name": "bad score refuses",
+      "code": "char nm3[16] = {0};\nint sc3 = -9;\nCHECK_EQ(parse_record(\"exit:x\", nm3, 16, &sc3), -1);\nCHECK_EQ(sc3, -9);",
+      "hint": "exit:3 has no digits after the colon prefix \u2014 a refusal, never atoi's silent zero."
+    },
+    {
+      "name": "no colon",
+      "code": "char nm4[16] = {0};\nint sc4 = -9;\nCHECK_EQ(parse_record(\"hello\", nm4, 16, &sc4), -1);\nCHECK_EQ(sc4, -9);",
+      "hint": "A line without a colon is not a record: refuse."
+    }
+  ],
+  "level": "mini-build"
+}

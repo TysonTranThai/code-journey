@@ -1,0 +1,32 @@
+## The duplication problem
+
+Swap two values, find the max, reverse a list — for `int`, then `string`, then `Money`... The logic is identical; only the type changes. Copy-pasting per type is how bugs breed.
+
+## `<T>` writes it once
+
+```csharp
+static T Max<T>(T a, T b) where T : IComparable<T>
+{
+    return a.CompareTo(b) >= 0 ? a : b;
+}
+
+Max(3, 7);            // T = int
+Max("apple", "pear"); // T = string
+```
+
+`T` is a **type parameter**: the caller's argument type fills it in, and the compiler enforces every operation on `T` against what the constraint allows. Inside the method there is no casting, no boxing, and no way to sneak in the wrong type.
+
+Generic classes work the same way:
+
+```csharp
+class Box<T>
+{
+    public T Content { get; set; }
+}
+
+var ib = new Box<int> { Content = 42 };
+var sb = new Box<string> { Content = "hi" };
+// ib.Content is int, sb.Content is string — statically
+```
+
+You already use generics everywhere: `List<T>`, `Dictionary<TKey, TValue>` — now you can write your own.

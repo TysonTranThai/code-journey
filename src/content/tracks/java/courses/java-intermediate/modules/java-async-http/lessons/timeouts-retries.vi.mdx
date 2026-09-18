@@ -1,0 +1,31 @@
+## Timeout, retry, và backoff
+
+Call phân tán thì hỏng; câu hỏi chuyên nghiệp là *chờ bao lâu* và *khi nào
+thử lại*:
+
+- **Đặt timeout cho mọi call** — thiếu timeout biến một phụ thuộc chậm
+  thành dịch vụ đứng hình. `HttpRequest.timeout()`,
+  `Future.get(3, SECONDS)`, hoặc `orTimeout()` trên stage
+  CompletableFuture.
+- **Retry thao tác idempotent** — GET thì có; POST thanh toán chỉ khi có
+  idempotency key.
+- **Exponential backoff có trần** — 100ms, 200ms, 400ms… trần vài giây;
+  bão retry khiến sự cố tệ hơn.
+- **Phân loại lỗi** — 4xx (lỗi của bạn) thường không retry được; 5xx và
+  timeout thì có; 429 nghĩa là *chậm lại* (tôn trọng Retry-After).
+
+```java
+static String getWithRetry(HttpTransport t, HttpRequest req) throws Exception {
+    int[] delays = {100, 200, 400};
+    for (int attempt = 0; ; attempt++) {
+        try {
+            HttpResponse<String> res = t.send(req);
+            if (res.statusCode() < 500) return res.body();  // đừng retry 4xx
+            if (attempt == delays.length) throw new IllegalStateException("gave up");
+        } catch (java.io.IOException e) {
+            if (attempt == delays.length) throw e;
+        }
+        Thread.sleep(delays[attempt]);
+    }
+}
+```

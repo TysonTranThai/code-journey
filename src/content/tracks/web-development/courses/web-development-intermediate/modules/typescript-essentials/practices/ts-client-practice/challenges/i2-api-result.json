@@ -1,0 +1,20 @@
+{
+  "id": "i2-api-result",
+  "title": "Discriminated API Result",
+  "prompt": "Write `toApiResult(promise)` — awaits the promise and returns `{ ok: true, data }` on success, `{ ok: false, status: 0, message: err.message }` on failure. Write `unwrap(result)` — returns `data` when ok, else THROWS an Error with the stored message. The pair must compose: `unwrap(toApiResult(p))` returns the value or throws.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "async function toApiResult(promise) {\n  // your code\n}\n\nfunction unwrap(result) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "success and failure shapes",
+      "code": "const fn = new Function(code + \"\\nreturn { toApiResult, unwrap };\");\nconst { toApiResult, unwrap } = fn();\nconst ok = await toApiResult(Promise.resolve({ n: 1 }));\nif (ok.ok !== true || ok.data.n !== 1) throw new Error(\"Success: { ok: true, data }.\");\nconst bad = await toApiResult(Promise.reject(new Error(\"boom\")));\nif (bad.ok !== false || bad.status !== 0 || bad.message !== \"boom\") throw new Error(\"Failure: { ok: false, status: 0, message }.\");",
+      "hint": "await inside try/catch; catch returns the failure object."
+    },
+    {
+      "name": "unwrap composes with toApiResult",
+      "code": "const fn = new Function(code + \"\\nreturn { toApiResult, unwrap };\");\nconst { toApiResult, unwrap } = fn();\nconst v = unwrap(await toApiResult(Promise.resolve(42)));\nif (v !== 42) throw new Error(\"unwrap returns the data on success.\");\nlet err;\ntry { unwrap(await toApiResult(Promise.reject(new Error(\"gone\")))); } catch (e) { err = e; }\nif (!err || err.message !== \"gone\") throw new Error(\"unwrap rethrows with the stored message.\");",
+      "hint": "result.ok ? result.data : (() => { throw new Error(result.message); })()"
+    }
+  ]
+}

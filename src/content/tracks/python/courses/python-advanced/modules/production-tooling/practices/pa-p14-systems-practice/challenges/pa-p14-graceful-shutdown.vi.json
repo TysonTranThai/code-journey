@@ -1,0 +1,10 @@
+{
+  "title": "Chết nhã nhặn, không mất gì",
+  "prompt": "Cài `graceful_shutdown(worker, sigterm=True, sigint=False)` — worker có `running` (bool), `in_flight` (số đếm), `drained` (bool), `requeued` (list):\n\n- `sigterm=False, sigint=False` mô phỏng SIGKILL: trả worker nguyên vẹn (không gì nhã nhặn xảy ra)\n- ngược lại: `running = False` (ngừng nhận), mọi công việc đang chạy được thêm vào `requeued` (có thể trả về queue bền vững, nhờ job idempotent) và `in_flight = 0`, rồi `drained = True`\n- trả worker\n\nBất biến: sau khi tắt nhã nhặn, `in_flight == 0` VÀ mọi đơn vị công việc được ghi nhận trong `requeued`.",
+  "tests": [
+    {
+      "name": "Công việc được trả về queue, không bị làm rơi",
+      "hint": "Nhã nhặn và kill-9 là hai thế giới; job idempotent nối chúng."
+    }
+  ]
+}

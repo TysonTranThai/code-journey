@@ -1,0 +1,26 @@
+{
+  "id": "cb16-load-sum",
+  "title": "Load and Sum",
+  "prompt": "Implement `int load_sum(const char *path)`: read integers (one per line, fscanf \"%d\") until reading fails, returning their sum; missing file returns -1.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "sums file",
+      "code": "FILE *f = fopen(\"/tmp/cj16-u.txt\", \"w\");\nfprintf(f, \"5\\n10\\n15\\n\");\nfclose(f);\nCHECK_EQ(load_sum(\"/tmp/cj16-u.txt\"), 30);\nremove(\"/tmp/cj16-u.txt\");",
+      "hint": "fscanf in a while loop."
+    },
+    {
+      "name": "empty file",
+      "code": "FILE *f = fopen(\"/tmp/cj16-v.txt\", \"w\");\nfclose(f);\nCHECK_EQ(load_sum(\"/tmp/cj16-v.txt\"), 0);\nremove(\"/tmp/cj16-v.txt\");",
+      "hint": "No numbers: sum 0."
+    },
+    {
+      "name": "missing",
+      "code": "CHECK_EQ(load_sum(\"/tmp/cj16-nope2.txt\"), -1);",
+      "hint": "No file: -1."
+    }
+  ],
+  "level": "independent"
+}

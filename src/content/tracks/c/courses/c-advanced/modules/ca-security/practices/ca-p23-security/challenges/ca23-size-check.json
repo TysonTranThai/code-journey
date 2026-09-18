@@ -1,0 +1,26 @@
+{
+  "id": "ca23-size-check",
+  "title": "Checked Size Arithmetic",
+  "prompt": "ISO C. Implement `int alloc_safe(size_t count, size_t elemsz, size_t *out_bytes)` — compute count*elemsz for allocation; on overflow of the multiplication, or count/elemsz 0 (refuse zero-size asks), return -1 and leave *out_bytes alone; else store the product and return 0. (On this platform you may detect overflow via division: count > SIZE_MAX / elemsz.)",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "normal sizing",
+      "code": "size_t b1 = 0;\nCHECK_EQ(alloc_safe(100, 64, &b1), 0);\nCHECK_EQ(b1, 6400);",
+      "hint": "Plain multiplication: 100 elements of 64 bytes."
+    },
+    {
+      "name": "overflow detected",
+      "code": "size_t b2 = 7;\nCHECK_EQ(alloc_safe((size_t)-1, 2, &b2), -1);\nCHECK_EQ(b2, 7);",
+      "hint": "(size_t)-1 times 2 wraps: the division check catches it and *out_bytes is untouched."
+    },
+    {
+      "name": "zero refuses",
+      "code": "size_t b3 = 9;\nCHECK_EQ(alloc_safe(0, 8, &b3), -1);\nCHECK_EQ(alloc_safe(8, 0, &b3), -1);\nCHECK_EQ(b3, 9);",
+      "hint": "Zero-sized allocations are a caller bug: refuse, never hand out a 0-byte pointer to loop over."
+    }
+  ],
+  "level": "combination"
+}

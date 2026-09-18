@@ -12,8 +12,11 @@ import { consume, DAY_MS } from "@/lib/rate-limit/limiter";
 const mockAuth = vi.fn();
 vi.mock("@/lib/auth/config", () => ({ auth: () => mockAuth() }));
 // Provide a stable client IP so the rate limiter keys deterministically.
+// `cookies` is also exported: the i18n server helper reads the locale cookie
+// when the run route localizes its error messages.
 vi.mock("next/headers", () => ({
   headers: async () => new Headers({ "x-forwarded-for": "203.0.113.7" }),
+  cookies: async () => new Map(),
 }));
 
 // Keep the real queue logic but never actually enqueue/execute.
@@ -112,8 +115,8 @@ describe.skipIf(!process.env.DATABASE_URL)("submission authorization (07-02)", (
   it("returns 429 when the daily run limit is exhausted (07-03)", async () => {
     const userId = ID_A;
     // Exceed the daily run cap for this user+IP so the route rejects.
-    for (let i = 0; i < 21; i++) {
-      await consume("run", `${userId}:203.0.113.7`, 20, DAY_MS);
+    for (let i = 0; i < 401; i++) {
+      await consume("run", `${userId}:203.0.113.7`, 400, DAY_MS);
     }
     mockAuth.mockResolvedValue({ user: { id: userId } });
     const res = await postRun(

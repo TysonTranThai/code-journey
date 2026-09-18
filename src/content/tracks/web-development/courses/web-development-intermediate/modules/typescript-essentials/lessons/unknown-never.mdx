@@ -1,0 +1,34 @@
+## any: the off switch
+
+`any` opts out of checking — assignable to and from everything. It silences the
+error today and reintroduces the runtime crash tomorrow. Every `any` in a
+codebase is a hole in the contract.
+
+## unknown: the honest version
+
+`unknown` accepts anything too — but you must narrow before use:
+
+```ts
+function parse(input: unknown) {
+  // input.foo            ✗ — unknown is not usable yet
+  if (typeof input === "string") return input.trim(); // ✓ narrowed
+  if (isUser(input)) return renderUser(input); // ✓ guard
+  throw new Error("Unexpected payload");
+}
+```
+
+Rule of thumb: `unknown` for anything that crosses a boundary you do not
+control — network responses, JSON.parse, localStorage, third-party callbacks.
+
+## never: the impossible type
+
+`never` is the type of values that cannot exist: a function that always throws,
+or the exhaustiveness check from the unions lesson. When the compiler computes
+"there are no remaining cases", the result is `never` — assigning it forces the
+check.
+
+## Where each belongs
+
+- Parameters you truly accept anything: `unknown` + narrow.
+- Values you construct that are impossible: design them away, or `never`.
+- `any`: only in genuinely untyped legacy seams, with a comment and a plan.

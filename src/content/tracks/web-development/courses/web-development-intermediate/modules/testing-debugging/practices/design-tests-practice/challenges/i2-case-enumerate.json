@@ -1,0 +1,20 @@
+{
+  "id": "i2-case-enumerate",
+  "title": "Edge Case Enumerator",
+  "prompt": "Write `edgeCases(value)` classifying a value against the standard checklist; return an array of the case names that APPLY: \"empty\" (empty array/string/object), \"boundary\" (0, -0, or Number.MAX_SAFE_INTEGER), \"wrong-type\" (null, undefined, NaN, or a non-empty string where a number reads natural), \"duplicate\" (array with at least one repeated element). Order: empty, boundary, wrong-type, duplicate.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function edgeCases(value) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "flags each category",
+      "code": "const fn = new Function(code + \"\\nreturn { edgeCases };\");\nconst { edgeCases } = fn();\nif (!edgeCases([]).includes(\"empty\")) throw new Error(\"Empty array => empty.\");\nif (!edgeCases(0).includes(\"boundary\")) throw new Error(\"Zero is a boundary.\");\nif (!edgeCases(null).includes(\"wrong-type\")) throw new Error(\"null => wrong-type.\");\nif (!edgeCases([1, 2, 1]).includes(\"duplicate\")) throw new Error(\"Repeated element => duplicate.\");\n",
+      "hint": "Independent checks, each pushing a label; order the pushes as specified."
+    },
+    {
+      "name": "clean values produce nothing",
+      "code": "const fn = new Function(code + \"\\nreturn { edgeCases };\");\nconst { edgeCases } = fn();\nif (edgeCases([3, 1, 2]).length !== 0) throw new Error(\"A normal array trips nothing.\");\nif (edgeCases(\"hello\").length !== 1 || edgeCases(\"hello\")[0] !== \"wrong-type\") throw new Error(\"Non-empty string => wrong-type only.\");\n",
+      "hint": "A value can match zero or more categories."
+    }
+  ]
+}

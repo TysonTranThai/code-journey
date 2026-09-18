@@ -1,0 +1,21 @@
+{
+  "id": "pa-db-repository",
+  "title": "The repository speaks domain, not rows",
+  "prompt": "Implement `OrderRepository(rows=None)` with `OrderNotFound`:\n\n- `get(order_id)` returns a COPY of the matching row, or raises `OrderNotFound`\n- `add(order_id, total, customer_id)` appends a row; duplicate ids raise `ValueError('duplicate order id')`\n- `for_customer(customer_id)` returns copies of matching rows\n\nThe contract under test: missing data is a loud domain error, duplicates are integrity violations, and callers can never mutate internal state.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class OrderNotFound(Exception):\n    pass\n\n\nclass OrderRepository:\n    def __init__(self, rows=None):\n        ...\n\n    def get(self, order_id):\n        ...\n\n    def add(self, order_id, total, customer_id):\n        ...\n\n    def for_customer(self, customer_id):\n        ...",
+  "tests": [
+    {
+      "name": "domain errors and integrity",
+      "code": "repo = OrderRepository([{'id': 'o1', 'total': 100, 'customer_id': 1}])\ntry:\n    repo.get('nope')\nexcept OrderNotFound:\n    pass\nelse:\n    raise AssertionError('missing order must raise')\nrepo.add('o2', 50, 1)\ntry:\n    repo.add('o2', 99, 2)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('duplicate id must raise')\nprint('ok')",
+      "hint": "Loud errors on missing and duplicate; the repository protects its invariants."
+    },
+    {
+      "name": "copies, not live references",
+      "code": "repo = OrderRepository([{'id': 'o1', 'total': 100, 'customer_id': 1}])\nsnap = repo.get('o1')\nsnap['total'] = 999\nassert repo.get('o1')['total'] == 100\nrows = repo.for_customer(1)\nrows[0]['total'] = 999\nassert repo.for_customer(1)[0]['total'] == 100\nprint('ok')",
+      "hint": "Mutating a returned row must never touch the store."
+    }
+  ],
+  "level": "real-world"
+}

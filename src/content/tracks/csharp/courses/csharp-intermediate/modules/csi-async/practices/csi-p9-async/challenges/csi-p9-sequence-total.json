@@ -1,0 +1,21 @@
+{
+  "id": "csi-p9-sequence-total",
+  "title": "Sequential vs Concurrent: Prove It",
+  "prompt": "Two ways to await three simulated fetches. `SumSequential` awaits one at a time; `SumConcurrent` starts all three, then awaits together. The simulator logs an event per transition — prove the difference by EVENT ORDER, not the clock:\n\n```csharp\npublic sealed class EventIo\n{\n    public EventIo();                            // provided\n    public List<string> Log { get; }             // \"start:N\" / \"done:N\" entries\n    public Task<int> FetchAsync(int step);       // provided: logs start, yields, logs done\n}\nstatic Task<int> SumSequential(EventIo io);     // sum of steps+1\nstatic Task<int> SumConcurrent(EventIo io);     // same total, different order\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "concurrent starts overlap",
+      "code": "\nvar io = new Solution.EventIo();\nCj.Eq(Solution.SumConcurrent(io).GetAwaiter().GetResult(), 1 + 2 + 3, \"sum of steps\");\nCj.Eq(string.Join(\",\", io.Log.GetRange(0, 3)), \"start:0,start:1,start:2\", \"all three start before any completes\");\n",
+      "hint": "Start all FetchAsync tasks into variables BEFORE awaiting — Task.WhenAll after start."
+    },
+    {
+      "name": "sequential interleaves strictly",
+      "code": "\nvar io = new Solution.EventIo();\nCj.Eq(Solution.SumSequential(io).GetAwaiter().GetResult(), 6, \"same total\");\nCj.Eq(string.Join(\",\", io.Log.GetRange(0, 4)), \"start:0,done:0,start:1,done:1\", \"each starts only after the previous finishes\");\n",
+      "hint": "await inside the loop: each fetch begins after the previous completes."
+    }
+  ],
+  "level": "guided"
+}

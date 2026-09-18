@@ -1,0 +1,44 @@
+## Vấn đề mà struct giải quyết
+
+Một học sinh không phải là ba biến rời rạc lơ lửng — nó là MỘT thứ:
+
+```cpp
+struct Student {
+    std::string name;
+    int age{};
+    double gpa{};
+};
+```
+
+Giờ `Student` là một kiểu, y như `int`:
+
+```cpp
+Student s{"Linh", 20, 3.8};                    // aggregate initialization
+Student t{.name = "Minh", .age = 21, .gpa = 3.5};   // designated initializers C++20
+s.name = "Linh Nguyen";                        // truy cập thành viên với .
+Student older = older_of(s, t);                // truyền và trả về theo giá trị như mọi kiểu
+```
+
+Các bộ khởi tạo thành viên `{}` (`int age{}`) cho mọi Student mới mặc định hợp lý — không bao giờ có thành viên chứa rác.
+
+## Struct là giá trị
+
+Gán là sao chép mọi thành viên; truyền theo giá trị là sao chép; `==` KHÔNG tự hoạt động (tự so các thành viên, hoặc viết `operator==` — chủ đề láng giềng của module 10). Ngữ nghĩa giá trị bạn học ở module 2 giờ áp dụng cho kiểu tự định nghĩa của chính bạn.
+
+## Nếm thử hàm thành viên
+
+```cpp
+struct Rectangle {
+    double width{};
+    double height{};
+
+    double area() const { return width * height; }   // const: chỉ đọc, không ghi
+};
+r.area()
+```
+
+Một hàm nằm trong struct thao tác trên các thành viên của đúng đối tượng được gọi. Hậu tố `const` hứa rằng nó không sửa đối tượng — cùng tính đúng đắn của const ở module 2, giờ là theo từng đối tượng. Hàm thành viên là cánh cửa tới module 10.
+
+## Gợi ý thiết kế: mô hình hóa miền vấn đề, không phải bộ nhớ
+
+`struct Account { std::string owner; long long cents; };` hơn hẳn `struct AccountData2 { ... };` — hãy đặt tên theo NGHĨA của sự vật. Và khi hai giá trị luôn đi cùng nhau (gợi ý ở module 7), cặp đó xứng đáng có một struct với cái tên thật, không phải `std::pair`.

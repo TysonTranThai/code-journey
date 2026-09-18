@@ -1,0 +1,35 @@
+## Ports & adapters with real seams
+
+A **port** is an interface owned by the application core. An **adapter** is a
+piece of infrastructure that fulfills it. The core defines `NotificationSender`
+and `OrderRepository`; the adapters are `SendGridSender`, `SmtpSender`,
+`PostgresOrderRepository`, `InMemoryOrderRepository` (for tests).
+
+```python
+from typing import Protocol
+
+class OrderRepository(Protocol):
+    def get(self, order_id: str) -> "Order | None": ...
+    def save(self, order: "Order") -> None: ...
+
+class PlaceOrder:                      # application service — the core
+    def __init__(self, repo: OrderRepository, notify: NotificationSender):
+        self._repo = repo
+        self._notify = notify
+
+    def __call__(self, order: "Order") -> None:
+        self._repo.save(order)
+        self._notify.order_placed(order)
+```
+
+What this buys, concretely:
+
+- **Business logic tests run in-memory** — no Postgres, no HTTP, no mocks of
+  the *domain*, only fakes at the port.
+- **Swapping infrastructure is a wiring change**, not a rewrite: Postgres →
+  DynamoDB touches one adapter.
+- **The core compiles without knowing HTTP exists.**
+
+The failure mode to avoid: a repository per table leaking SQL-shaped shapes
+(`QuerySet`, `Row`) into the domain. The port speaks the *domain's* language
+(`Order`, `OrderNotFound`), and the adapter translates.

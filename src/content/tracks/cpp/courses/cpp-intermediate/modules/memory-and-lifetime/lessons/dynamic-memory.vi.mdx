@@ -1,0 +1,43 @@
+`new` cấp phát một đối tượng trên heap; `delete` hủy nó. Cặp này là lựa chọn
+cuối cùng trong C++ hiện đại — container và smart pointer sở hữu bộ nhớ heap
+giúp bạn — nhưng bạn phải hiểu nó vì mọi công cụ bạn dùng đều được xây trên nó.
+
+```cpp
+#include <string>
+
+int main_cj_dynamic() {
+    int* single = new int{7};            // một int trên heap
+    delete single;                        // đúng một lần delete
+
+    std::string* word = new std::string{"hi"};
+    delete word;                          // destructor chạy tại đây
+
+    int* arr = new int[5]{};              // mảng 5 phần tử 0
+    delete[] arr;                         // CHÚ Ý dấu [] — phải khớp new[]
+    return 0;
+}
+```
+
+## Ba cách rò rỉ bộ nhớ
+
+1. `new` mà không có `delete` nào — đánh mất ownership.
+2. Lệnh `return` sớm hoặc exception ném ra giữa `new` và `delete`.
+3. `delete` một pointer mà người khác cũng delete — double free.
+
+```cpp
+void risky() {
+    int* p = new int{1};
+    may_throw();                          // nếu hàm này ném, p bị rò rỉ
+    delete p;
+}
+```
+
+Rò rỉ thứ hai là hiểm họa nhất: nó xảy ra *hiếm khi*, đúng lúc chương trình
+đang bất thường. RAII (Module 8) xóa sổ cả lớp lỗi này bằng cách để destructor
+làm việc `delete` — còn `std::vector` đã làm sẵn điều đó cho buffer.
+
+## new/delete khác new[]/delete[]
+
+Chúng là hai toán tử khác nhau với bố cục bộ nhớ khác nhau. Trộn chúng là
+hành vi không xác định. Nguyên tắc: **hầu như bạn không bao giờ cần cả hai** —
+hãy chọn `std::vector`, `std::string`, hoặc (Module 8) smart pointer trước.

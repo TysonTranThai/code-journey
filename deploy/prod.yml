@@ -1,0 +1,124 @@
+# Code Journey — PUBLIC PRODUCTION stack (codejourney.shop).
+#
+# Integrates with the VPS's EXISTING nginx (TLS termination, port 80/443):
+# nothing here publishes a public port. The web container binds 127.0.0.1:3010
+# only; nginx proxies codejourney.shop → 127.0.0.1:3010.
+#
+# Topology (single host):
+#   db                 PostgreSQL 16 (volume cj_prod_pgdata — back this up)
+#   web                Next.js (pnpm start) — loopback-only, no Docker socket
+#   worker             sandbox runner — mounts the Docker socket (single-host
+#                      mode; the ONLY service with daemon access)
+#   cleanup            profile "cleanup": one-shot inactive-account job —
+#                      run nightly from cron in DRY-RUN mode first
+#   migrate            profile "tools": one-shot drizzle-kit migrate
+#   backup             profile "backup": one-shot pg_dump -Fc
+#
+# Secrets live in deploy/.env.production (never committed; see
+# docs/DEPLOYMENT.md). Distinct project name (cj-prod) so this stack never
+# collides with dev compose or the beta stack.
+
+name: cj-prod
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: codejourney
+      POSTGRES_PASSWORD: ${CJ_PG_PASSWORD:?CJ_PG_PASSWORD is required}
+      POSTGRES_DB: codejourney
+    volumes:
+      - cj_prod_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U codejourney -d codejourney"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  web:
+    image: codejourney-web:latest
+    build:
+      context: ..
+      dockerfile: Dockerfile.web
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      DATABASE_URL: postgresql://codejourney:${CJ_PG_PASSWORD}@db:5432/codejourney
+      # Loopback-only: HTTPS terminates in the host's existing nginx.
+      AUTH_URL: ${AUTH_URL:?AUTH_URL is required (https://codejourney.shop)}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?NEXT_PUBLIC_SITE_URL is required}
+    ports:
+      # 3010: chosen because 127.0.0.1:3000 is already occupied on this host
+      # by an unrelated service. Only nginx reaches this port.
+      - "127.0.0.1:3010:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/health >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  worker:
+    image: codejourney-web:latest
+    restart: unless-stopped
+    env_file: .env.production
+    environment:
+      DATABASE_URL: postgresql://codejourney:${CJ_PG_PASSWORD}@db:5432/codejourney
+      SANDBOX_IMAGE: ${SANDBOX_IMAGE:-codejourney-sandbox:latest}
+    volumes:
+      # Single-host mode (docs/PRODUCTION.md beta compromise): the worker is
+      # the only container with daemon access; web stays socket-free.
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: ["pnpm", "worker"]
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'src/workers/runner.ts' >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  # One-shot: docker compose -f prod.yml --profile cleanup run --rm cleanup
+  # (add --dry-run via the DRY_RUN env or run cleanup:dry-run's image cmd).
+  cleanup:
+    profiles: ["cleanup"]
+    image: codejourney-web:latest
+    env_file: .env.production
+    environment:
+      DATABASE_URL: postgresql://codejourney:${CJ_PG_PASSWORD}@db:5432/codejourney
+      INACTIVE_ACCOUNT_DAYS: ${INACTIVE_ACCOUNT_DAYS:-7}
+    command: ["pnpm", "cleanup:dry-run"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  migrate:
+    profiles: ["tools"]
+    image: codejourney-web:latest
+    env_file: .env.production
+    environment:
+      DATABASE_URL: postgresql://codejourney:${CJ_PG_PASSWORD}@db:5432/codejourney
+    command: ["pnpm", "db:migrate"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  backup:
+    profiles: ["backup"]
+    image: postgres:16-alpine
+    environment:
+      PGPASSWORD: ${CJ_PG_PASSWORD}
+    volumes:
+      - ./backups:/backups
+    # One-shot: docker compose -f prod.yml --profile backup run --rm backup
+    command: >
+      sh -c 'pg_dump -h db -U codejourney -d codejourney -Fc
+      -f /backups/codejourney-prod-$$(date +%Y%m%d-%H%M%S).dump
+      && echo "backup written"'
+
+volumes:
+  cj_prod_pgdata:

@@ -1,0 +1,14 @@
+{
+  "title": "Tham số hóa đánh bại escaping thủ công",
+  "prompt": "Cài hai hàm tương phản cách dựng query an toàn và không an toàn:\n\n- `build_query(template, params)` — thế giới tham số hóa. Template có thể chứa placeholder `?`; giá trị được render bằng `repr()` (dấu nháy trong giá trị giữ nguyên như literal bên trong token trích dẫn, không bao giờ đổi cấu trúc câu lệnh). Lệch số placeholder raise `UnsafeQuery('placeholder count mismatch')`. Trả `(rendered, 'parameterized')`.\n- `vulnerable_query(template, values)` — thế giới định dạng chuỗi. Render bằng `template.format(*values)`; nếu kết quả chứa `drop table` (không phân biệt hoa thường), `' or '1'='1`, hoặc `;`, raise `UnsafeQuery('injection detected in string-built query')`; ngược lại trả nó.\n- định nghĩa `class UnsafeQuery(Exception)`.\n\nKịch bản phân biệt: tên khách hàng `O'Brien` phải trôi qua `build_query` an toàn, nguyên vẹn (giữ dấu nháy) — trong khi cùng chuỗi đó trên đường không an toàn là mối nguy escape thủ công.",
+  "tests": [
+    {
+      "name": "Dữ liệu hợp lệ sống sót nguyên vẹn qua tham số hóa",
+      "hint": "repr() giữ giá trị là literal; cấu trúc không bao giờ đổi."
+    },
+    {
+      "name": "Đường không an toàn bị tóm tại hiện trường",
+      "hint": "Định dạng chuỗi + payload = bị gắn cờ; giá trị bình thường đi qua."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "add-the-missing-link",
+  "title": "Add the Missing Link",
+  "prompt": "The page below has a paragraph but no way to move on. Add an anchor element that links to `https://example.com` with the visible text `Learn more`.\n\nRules:\n- The link target goes in the `href` attribute.\n- The visible text `Learn more` sits between the opening and closing anchor tags.",
+  "difficulty": "beginner",
+  "boilerplate": "<p>That's all for this page.</p>\n",
+  "tests": [
+    {
+      "name": "contains an anchor element",
+      "code": "if (!/<a\\s[^>]*href=/i.test(code) && !/<a\\s+href=/i.test(code)) {\n  throw new Error(\"No anchor (<a>) element with an href found.\");\n}",
+      "hint": "Links are created with the <a> (anchor) element and an href attribute."
+    },
+    {
+      "name": "links to https://example.com",
+      "code": "const m = code.match(/href\\s*=\\s*[\"']([^\"']*)[\"']/i);\nif (!m || m[1] !== \"https://example.com\") {\n  throw new Error(\"The href must be exactly: https://example.com\");\n}",
+      "hint": "Set the href attribute exactly to https://example.com (in quotes)."
+    },
+    {
+      "name": "visible text is 'Learn more'",
+      "code": "const m = code.match(/<a\\s[^>]*>([\\s\\S]*?)<\\/a\\s*>/i);\nif (!m || m[1].trim() !== \"Learn more\") {\n  throw new Error(\"The anchor text must be exactly: Learn more\");\n}",
+      "hint": "Put the text 'Learn more' between <a ...> and </a>."
+    }
+  ],
+  "level": "guided"
+}

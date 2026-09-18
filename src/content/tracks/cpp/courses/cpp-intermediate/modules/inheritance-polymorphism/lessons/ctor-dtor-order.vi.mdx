@@ -1,0 +1,38 @@
+Khởi tạo và hủy có thứ tự cố định. Dự đoán đúng thứ tự, bạn sẽ suy luận được
+mọi tài nguyên mà một hệ thống class chạm tới.
+
+```cpp
+#include <iostream>
+
+class Base {
+public:
+    Base() { std::cout << "Base ctor\n"; }
+    ~Base() { std::cout << "Base dtor\n"; }
+};
+
+class Derived : public Base {
+public:
+    Derived() { std::cout << "Derived ctor\n"; }
+    ~Derived() { std::cout << "Derived dtor\n"; }
+};
+
+int main_cj_order() {
+    { Derived d; }
+    // in ra: Base ctor, Derived ctor, Derived dtor, Base dtor
+    return 0;
+}
+```
+
+## Các quy tắc
+
+1. **Base được dựng trước** (trái sang phải theo danh sách base).
+2. **Member được dựng** theo thứ tự khai báo, sau mọi base.
+3. Thân constructor của derived chạy **cuối cùng**.
+4. Hủy là chiều **ngược lại hoàn toàn**: thân → member → base.
+
+## Vì sao buộc phải vậy
+
+Constructor của derived có thể gọi hàm của base trong thân — vậy base phải đã
+tồn tại. Destructor chạy khi phần derived sắp biến mất, nên nó phải chạy
+*trước* phần base mà nó còn có thể dùng. Mọi lỗi bộ nhớ và bất ngờ "gọi hàm
+ảo trong constructor" (bài sau) đều đến từ việc quên thứ tự này.

@@ -1,0 +1,21 @@
+{
+  "id": "pa-dm-cached-property",
+  "title": "Implement cached_property",
+  "prompt": "Implement a non-data descriptor `CachedProperty` that computes once and caches per instance:\n\n- constructed with the computing function: `CachedProperty(fn)`\n- first access calls `fn(instance)` and caches the result in `instance.__dict__` under the attribute name (use `__set_name__` to learn it)\n- later accesses return the cached value WITHOUT calling `fn` again (track call count via a list wrapper in the test)\n- because it is non-data, a later direct assignment `obj.name = x` overrides the cache — that behavior must work",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class CachedProperty:\n    def __init__(self, fn):\n        self.fn = fn\n\n    # TODO: __set_name__, __get__\n\n\nclass Report:\n    def __init__(self, rows):\n        self.rows = rows\n\n    @CachedProperty\n    def total(self):\n        return sum(self.rows)",
+  "tests": [
+    {
+      "name": "computes once then reuses",
+      "code": "r = Report([1, 2, 3])\nassert r.total == 6\nassert r.total == 6\nassert Report.total.fn_calls == [1], f'fn called {Report.total.fn_calls} times'\nprint('ok')",
+      "hint": "Store the cache in obj.__dict__[self.name]; __dict__ is checked before non-data descriptors."
+    },
+    {
+      "name": "instance assignment overrides cache",
+      "code": "r = Report([1, 2, 3])\nr.total = 100\nassert r.total == 100, 'instance dict must win over a non-data descriptor'\nprint('ok')",
+      "hint": "That is the definition of non-data: only __get__."
+    }
+  ],
+  "level": "guided"
+}

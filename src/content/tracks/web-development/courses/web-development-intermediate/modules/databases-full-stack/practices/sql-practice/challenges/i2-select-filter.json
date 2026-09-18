@@ -1,0 +1,20 @@
+{
+  "id": "i2-select-filter",
+  "title": "SELECT Filter Simulator",
+  "prompt": "Write `selectRows(rows, spec)` — rows is an array of objects; spec is { where: { col: value }?, orderBy?: [col, \"asc\"|\"desc\"], limit?, offset? }. Apply WHERE (all pairs must equal; a spec value of null matches rows where the column IS null), ORDER BY (stable), then OFFSET, then LIMIT. Return the resulting array.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function selectRows(rows, spec) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "filters, sorts, paginates in order",
+      "code": "const fn = new Function(code + \"\\nreturn { selectRows };\");\nconst { selectRows } = fn();\nconst rows = [\n  { id: 1, done: false, n: 3 },\n  { id: 2, done: true, n: 1 },\n  { id: 3, done: false, n: 2 },\n];\nconst out = selectRows(rows, { where: { done: false }, orderBy: [\"n\", \"asc\"], limit: 1 });\nif (out.length === 1 && out[0].id === 3) if (out.length !== 1 || out[0].id !== 3) throw new Error(\"done=false sorted by n, first row.\");\n",
+      "hint": "Filter -> sort -> offset -> limit, exactly the SQL order."
+    },
+    {
+      "name": "null matching and desc",
+      "code": "const fn = new Function(code + \"\\nreturn { selectRows };\");\nconst { selectRows } = fn();\nconst rows = [\n  { id: 1, due: \"2026-01-01\" },\n  { id: 2, due: null },\n  { id: 3, due: \"2025-06-01\" },\n];\nconst nulls = selectRows(rows, { where: { due: null } });\nif (nulls.length !== 1 || nulls[0].id !== 2) throw new Error(\"null spec matches IS NULL.\");\nconst dated = selectRows([{ id: 1, due: \"2026-01-01\" }, { id: 3, due: \"2025-06-01\" }], { orderBy: [\"due\", \"desc\"] });\nif (dated[0].id !== 1) throw new Error(\"Latest due first.\");",
+      "hint": "A where-value of null means the column must be null."
+    }
+  ]
+}

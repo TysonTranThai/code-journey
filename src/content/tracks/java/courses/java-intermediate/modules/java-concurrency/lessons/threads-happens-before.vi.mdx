@@ -1,0 +1,19 @@
+## Thread, Runnable, và JVM hứa gì
+
+Một `Thread` chạy một `Runnable` đồng thời; `start()` khởi động, `join()`
+chờ hoàn tất:
+
+```java
+Thread worker = new Thread(() -> System.out.println("work"));
+worker.start();
+worker.join();   // xác định trở lại — mọi thứ trước join đã xảy ra trước mọi thứ sau
+```
+
+Sau khi `join()` trả về, bạn được đọc mọi thứ thread đã ghi — đó là cạnh
+*happens-before* bạn sẽ dùng trong mọi bài tập xác định.
+
+Bug kinh điển của người mới là gọi `run()` thay vì `start()`: lệnh đó chạy
+Runnable trên thread *hiện tại* — tuần tự, không có concurrency nào cả.
+
+Thread đắt đỏ (mỗi thread mang stack ~1MB theo mặc định); vì vậy mới có
+executor — được.cover ở mức module, Advanced sẽ sâu hơn.

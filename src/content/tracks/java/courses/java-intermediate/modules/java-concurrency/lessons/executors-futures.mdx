@@ -1,0 +1,28 @@
+## ExecutorService and Futures
+
+Executors decouple *task submission* from *thread management*:
+
+```java
+ExecutorService pool = Executors.newFixedThreadPool(4);
+Future<Integer> f = pool.submit(() -> expensive());
+Integer result = f.get();      // blocks until done
+pool.shutdown();               // always — or the JVM won't exit
+```
+
+Key behaviors:
+- `submit` returns a `Future` immediately; `get()` joins that one task
+- tasks run on pool threads — exceptions inside them do NOT crash your
+  thread; `get()` rethrows them wrapped in `ExecutionException`
+- `invokeAll` submits a batch; the returned Futures complete in order
+- always `shutdown()` — try/finally or `close()` (ExecutorService is
+  AutoCloseable since Java 19)
+
+Deterministic testing pattern: submit N tasks, `get()` each — after all
+gets return, every side effect is visible. Latches are the tool when
+tasks must *all finish* before an assertion:
+
+```java
+CountDownLatch done = new CountDownLatch(n);
+// each task: work(); done.countDown();
+done.await();   // wait for all n countDowns
+```

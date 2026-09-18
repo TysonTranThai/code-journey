@@ -1,0 +1,21 @@
+{
+  "id": "cppa10-pool-release",
+  "title": "Pool Release and Reuse",
+  "prompt": "Extend the pool: `release(p)` returns a previously-acquired block to the free list (calls `AllocTracker::noteFree()`), and `available()` reports how many blocks can still be handed out.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <cstdint>\n#include <vector>\n\n// Deterministic allocation tracker the tests drive.\n// (No real heap calls: the challenge models allocation behavior.)\nclass AllocTracker {\npublic:\n    static int& allocs()   { static int n = 0; return n; }\n    static int& frees()    { static int n = 0; return n; }\n    static int& live()     { static int n = 0; return n; }\n    static void noteAlloc(){ ++allocs(); ++live(); }\n    static void noteFree() { ++frees(); --live(); }\n    static void reset()    { allocs() = frees() = live() = 0; }\n};\n\n// A fixed-size pool of 'blocks' blocks of 'blockSize' bytes.\n// acquire() returns a byte pointer or nullptr when exhausted;\n// release(p) returns the block to the pool (p must be from this pool).\nclass BytePool {\npublic:\n    BytePool(std::size_t blocks, std::size_t blockSize);\n    ~BytePool();\n    std::uint8_t* acquire();          // AllocTracker::noteAlloc() on success\n    void release(std::uint8_t* p);    // AllocTracker::noteFree() on success\n    std::size_t available() const;\nprivate:\n    std::size_t blocks_, blockSize_;\n    std::uint8_t* storage_ = nullptr;   // your bookkeeping here\n    std::vector<std::uint8_t*> freeList_;\n};\n",
+  "tests": [
+    {
+      "name": "released blocks are reusable",
+      "code": "AllocTracker::reset();\nBytePool pool{1, 16};\nstd::uint8_t* a = pool.acquire();\nCHECK_EQ(pool.available(), 0u);\npool.release(a);\nCHECK_EQ(pool.available(), 1u);\nstd::uint8_t* b = pool.acquire();\nCHECK_EQ(b, a);\nCHECK_EQ(AllocTracker::live(), 1);",
+      "hint": "release pushes the block back onto the free-list and notes a free; acquire pops it — the same pointer comes back for a 1-block pool."
+    },
+    {
+      "name": "available tracks the free-list",
+      "code": "AllocTracker::reset();\nBytePool pool{4, 8};\nstd::uint8_t* p1 = pool.acquire();\nstd::uint8_t* p2 = pool.acquire();\nCHECK_EQ(pool.available(), 2u);\npool.release(p1);\npool.release(p2);\nCHECK_EQ(pool.available(), 4u);\nCHECK_EQ(AllocTracker::live(), 0);",
+      "hint": "available() == free-list size at all times; two releases after two acquires restore 4 and live()==0."
+    }
+  ]
+}

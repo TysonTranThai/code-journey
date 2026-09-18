@@ -1,0 +1,45 @@
+**Tái cấu trúc (refactoring)** là cải tiến mã mà không đổi hành vi. Phép tái
+cấu trúc phổ biến nhất của người mới: code copy-dán → hàm.
+
+Trước:
+
+```python
+print("Welcome Minh, your balance is 120")
+print("Welcome Lan, your balance is 90")
+print("Welcome Bo, your balance is 0")
+```
+
+Sau:
+
+```python
+def welcome(name, balance):
+    print(f"Welcome {name}, your balance is {balance}")
+
+for who, amount in [("Minh", 120), ("Lan", 90), ("Bo", 0)]:
+    welcome(who, amount)
+```
+
+Cùng một đầu ra — nhưng giờ có một nơi duy nhất để đổi thông điệp, và một cái
+tên nói lên dòng lệnh làm gì.
+
+## Cách phát hiện điểm cần tái cấu trúc
+
+- Cùng 2+ dòng xuất hiện nhiều lần → tách thành hàm.
+- Một khối làm đúng một việc nhận diện được → đặt tên cho việc đó.
+- Một điều kiện dài đến mức cần chú thích → đặt tên cho nó (`is_valid_order(order)`).
+
+## Phân rã trong thực tế
+
+Xây chương trình như những đường ống gồm các hàm nhỏ:
+
+```python
+def read_input(): ...
+def process(data): ...
+def format_output(result): ...
+def main():
+    data = read_input()
+    print(format_output(process(data)))
+```
+
+Mỗi hàm kiểm thử được độc lập; `main` đọc như một đề bài. Đó là hình dạng mà mọi
+dự án còn lại trong khóa học sử dụng.

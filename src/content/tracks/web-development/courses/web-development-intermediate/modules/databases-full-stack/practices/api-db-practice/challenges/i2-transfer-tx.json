@@ -1,0 +1,20 @@
+{
+  "id": "i2-transfer-tx",
+  "title": "Transactional Transfer",
+  "prompt": "Write `transfer(accounts, fromId, toId, amount)` — accounts is a Map id => { balance }. Rules: missing account => { ok: false, error: \"not-found\" }; insufficient funds => { ok: false, error: \"insufficient\" } with NOTHING changed; success debits and credits and returns { ok: true }. The two writes must be atomic in effect: any failure leaves both balances untouched.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function transfer(accounts, fromId, toId, amount) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "happy path moves money once",
+      "code": "const fn = new Function(code + \"\\nreturn { transfer };\");\nconst { transfer } = fn();\nconst acc = new Map([[\"a\", { balance: 100 }], [\"b\", { balance: 0 }]]);\nconst r = transfer(acc, \"a\", \"b\", 40);\nif (!r.ok || acc.get(\"a\").balance !== 60 || acc.get(\"b\").balance !== 40) throw new Error(\"Atomic debit+credit.\");\n",
+      "hint": "Validate first, mutate second — the app-level transaction."
+    },
+    {
+      "name": "failures change nothing",
+      "code": "const fn = new Function(code + \"\\nreturn { transfer };\");\nconst { transfer } = fn();\nconst acc = new Map([[\"a\", { balance: 10 }], [\"b\", { balance: 0 }]]);\nif (transfer(acc, \"a\", \"b\", 50).error !== \"insufficient\") throw new Error(\"Overdraft named.\");\nif (acc.get(\"a\").balance !== 10 || acc.get(\"b\").balance !== 0) throw new Error(\"Balances untouched.\");\nif (transfer(acc, \"a\", \"ghost\", 5).error !== \"not-found\") throw new Error(\"Missing target named.\");\nif (acc.get(\"a\").balance !== 10) throw new Error(\"Still untouched.\");\n",
+      "hint": "Every check before the first write."
+    }
+  ]
+}

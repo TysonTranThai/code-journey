@@ -1,0 +1,36 @@
+## Greedy is a two-step recipe
+
+1. **Order** the items somehow (often sort).
+2. **Commit** to a local choice in that order, never undoing.
+
+The danger: "looks best" is not a proof. The value of greedy is you can
+often *prove* it right — or find a small counterexample that kills it.
+
+### Canonical example: coin change (standard denominations)
+
+1, 5, 10, 20, 50, 100, 200, 500 (VND-like denominations). Pay amount X
+with fewest coins: always take the largest coin ≤ remaining X.
+
+Why it's correct here: each larger coin can be exchanged by smaller ones
+only in combinations that use *more* coins (10 = 5+5), so taking the
+biggest never hurts — an **exchange argument**.
+
+### Counterexample: denominations 1, 3, 4
+
+Pay 6: greedy takes 4, then 1+1 → **3 coins**. Optimal: 3+3 → **2 coins**.
+Greedy is *wrong* for this system — one counterexample ends the debate.
+
+### Scheduling: pick the most meetings
+
+n meetings with start/end times; one room; maximize meetings. The
+correct greedy: sort by **end time**, take a meeting whenever it starts
+after the last chosen end.
+
+Why: the meeting that finishes earliest leaves the most room for the
+rest — swapping any other choice for it never loses.
+
+### The exchange-argument template
+
+Say your greedy takes item A but an optimal solution takes B instead.
+Show: replacing B with A in that solution keeps it valid and no worse.
+If that holds for every choice point, greedy is proven.

@@ -1,0 +1,16 @@
+{
+  "id": "cppi-m8-shared-lifetime",
+  "title": "shared_ptr lifetime counters",
+  "prompt": "Implement `struct SharedProbe` with a static `alive()` counter (constructor increments, destructor decrements) and the free function `int probe_lifetimes()` that: creates a `shared_ptr<SharedProbe>`, copies it, lets the copy go out of scope in an inner block, then resets the original — returning `alive()` measured after all of that. Correct code returns 0; the test proves both the copy and the reset released.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <memory>\n#include <iostream>\n\n// struct SharedProbe { static int& alive(); SharedProbe(); ~SharedProbe(); };\n// int probe_lifetimes();\n",
+  "tests": [
+    {
+      "name": "everything-released",
+      "code": "CHECK_EQ(probe_lifetimes(), 0);",
+      "hint": "Copy, inner scope, and reset — every owner must release."
+    }
+  ],
+  "level": "independent"
+}

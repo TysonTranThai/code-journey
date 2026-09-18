@@ -1,0 +1,31 @@
+## Vòng lặp
+
+1. **Ghim hành vi**: viết test (hoặc dùng test có sẵn) ghi lại hành vi *hiện tại* — kể cả những phần xấu xí.
+2. **Bước nhỏ**: đúng một thay đổi cấu trúc — tách hàm, đổi tên, thay một con số ma thuật.
+3. **Biên dịch + test xanh.** Nếu đỏ, hoàn tác bước đó (nó chỉ là một bước — đó chính là điểm hay).
+4. Lặp lại cho đến khi mớ hỗn độn thành cấu trúc.
+
+Đừng bao giờ trộn "refactor" và "thêm tính năng" trong cùng một bước — commit làm cả hai là commit bạn không thể tin tưởng.
+
+## Một mớ bời bời, và cách mổ xẻ
+
+```cpp
+// TRƯỚC: 60 dòng trong main — phân tích, kiểm tra, tính toán, in, chen chúc nhau
+int main() { /* đọc dòng csv, tách, stoi khắp nơi, if-chains, cout... */ }
+```
+
+Thứ tự tách luôn hiệu quả: **hằng số** → **hàm thuần** (parse, compute — không I/O) → **ranh giới I/O** (đọc/in) → kiểu dữ liệu (`struct Record`). Hàm thuần trước: chúng là món khoái khẩu của test.
+
+```cpp
+// SAU:
+struct Record { std::string name; int qty{}; double price{}; };
+std::optional<Record> parse_record(const std::string& line);
+double record_total(const Record& r);
+void print_report(const std::vector<Record>& rows);
+```
+
+Cùng hành vi (test ghim hành vi vẫn xanh), hình dạng mới: mọi đơn vị có tên, kiểm thử được, một mục đích.
+
+## Compiler là bạn đồng hành refactor
+
+Đổi tên hàm: sửa khai báo, biên dịch, đi theo từng lỗi tới người gọi. Sự nghiêm ngặt của C++ — thứ khiến tuần đầu đau khổ — chính là thứ làm refactor an toàn ở đây: không gì vỡ lặng lẽ.

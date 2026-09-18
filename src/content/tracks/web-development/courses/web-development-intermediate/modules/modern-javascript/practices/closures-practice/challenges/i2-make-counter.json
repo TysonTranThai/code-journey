@@ -1,0 +1,25 @@
+{
+  "id": "i2-make-counter",
+  "title": "Private Counter Factory",
+  "prompt": "Write a function `makeCounter()` that returns an object with two methods:\n\n- `increment()` — adds 1 to a private count and returns the new value\n- `value()` — returns the current count without changing it\n\nThe count must start at 0 and be completely inaccessible from outside — calling the factory twice must produce two independent counters.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function makeCounter() {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "counter counts up from 0",
+      "code": "const fn = new Function(code + \"\\nreturn { makeCounter };\");\nconst { makeCounter } = fn();\nconst c = makeCounter();\nc.increment(); c.increment(); c.increment();\nif (c.value() !== 3) throw new Error(\"After three increments, value() should be 3.\");",
+      "hint": "Declare let count = 0 inside makeCounter, and let both returned methods close over it."
+    },
+    {
+      "name": "count is private",
+      "code": "const fn = new Function(code + \"\\nreturn { makeCounter };\");\nconst { makeCounter } = fn();\nconst c = makeCounter();\nif (\"count\" in c) throw new Error(\"The count variable must not be reachable as c.count — keep it private via closure.\");",
+      "hint": "The variable lives inside makeCounter's scope — the returned methods are the only door."
+    },
+    {
+      "name": "two counters are independent",
+      "code": "const fn = new Function(code + \"\\nreturn { makeCounter };\");\nconst { makeCounter } = fn();\nconst a = makeCounter(); const b = makeCounter();\na.increment(); a.increment(); b.increment();\nif (a.value() !== 2 || b.value() !== 1) throw new Error(\"Each factory call must create its own closed-over count.\");",
+      "hint": "If both counters share state, you probably stored count outside the function."
+    }
+  ]
+}

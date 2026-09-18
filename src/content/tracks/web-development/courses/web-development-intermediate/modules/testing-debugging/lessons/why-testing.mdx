@@ -1,0 +1,34 @@
+A test is code that runs your code and complains when reality differs from expectation. That's the whole idea — the discipline is in _what_ you complain about.
+
+## What tests buy you
+
+- **Confidence to change.** Untested code ossifies: nobody dares touch it. Tested code can be refactored fearlessly — the tests tell you if behavior changed.
+- **Executable documentation.** "How does this function handle an empty cart?" — read its tests.
+- **Debugging acceleration.** When something breaks, a failing test pinpoints _where_ before you open a browser.
+
+## The pyramid
+
+```text
+        /  E2E  \        few — whole system, slow, brittle
+       / Integr. \       some — modules together, real-ish
+      /   Unit    \      many — one function, fast, precise
+```
+
+- **Unit tests** answer: _is this function correct for these inputs?_ Milliseconds. Hundreds of them.
+- **Integration tests** answer: _do these modules cooperate correctly?_ (your function + real localStorage, your route + real DB).
+- **E2E tests** answer: _can a user actually do the thing?_ Seconds each; reserve them for critical paths.
+
+## What makes a good unit test
+
+- **One behavior per test.** The name says what behavior: `rejects negative quantities` — not `testCart4`.
+- **Arrange–Act–Assert.** Set up inputs, do the one thing, check the one outcome.
+- **Independent.** No test depends on another having run, or on execution order.
+- **Fast.** If your suite takes minutes, you'll stop running it, and then it protects nothing.
+
+## When tests lie
+
+Tests can be wrong in two directions: passing while the code is broken (weak assertions — asserting only "doesn't throw"), or failing while the code is right (over-specified tests asserting implementation details). Both destroy trust. Assert _observable behavior_.
+
+## Coverage is a smoke detector, not a goal
+
+100% coverage proves lines executed, not that behavior is correct. Chasing the number produces useless tests. Use coverage to find _untested areas_, then decide what deserves real tests.

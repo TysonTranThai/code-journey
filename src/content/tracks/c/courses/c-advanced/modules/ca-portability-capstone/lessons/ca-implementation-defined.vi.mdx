@@ -1,0 +1,22 @@
+## Ba loại hành vi
+
+- **Hành vi tùy implementation** — chuẩn để mỗi implementation chọn và *tài liệu hóa* lựa chọn: `sizeof(int)`, dấu của `char` thường, biểu diễn bù-hai (C23 bắt buộc, chấm dứt 35 năm tranh cãi). Viết code phụ thuộc lựa chọn là hợp pháp nếu bạn đọc tài liệu và code phòng thủ.
+- **Hành vi không xác định rõ (unspecified)** — vài lựa chọn hợp lệ, không nghĩa vụ tài liệu, implementation có thể khác nhau giữa các lần gọi: thứ tự đánh giá tham số hàm. Code đúng không phụ thuộc nó.
+- **Hành vi không xác định (undefined)** — không yêu cầu gì cả: tràn số có dấu, truy cập quá biên, data race. Mô-đun 2 và 4 đã giải thích vì sao optimizer coi UB là giấy phép.
+
+Bẫy của dân chuyên: implementation-defined là *khả chuyển nếu được hỏi*. `sizeof(int) == 4` là sự thật về target này, không phải luật của C — hỏi qua `<limits.h>`/kiểu `<stdint.h>` (`int32_t`) khi độ rộng quan trọng.
+
+## Endianness, nói thẳng
+
+Thứ tự byte trong đối tượng nhiều byte là tùy implementation. Sandbox này (aarch64 Linux) là **little-endian**, và GCC lộ `__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__` để phát hiện lúc biên dịch. Nhưng nước đi portable trung thực là thăm dò lúc chạy: đặt `1` vào một `unsigned int` và xem byte đầu — chạy trên mọi implementation C, không cần macro. Phát hiện, rồi rẽ nhánh; không bao giờ giả định.
+
+## Phát hiện tính năng, hai đồng hồ
+
+- **Lúc biên dịch**: `#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__` — chi phí runtime bằng không, nhưng buộc vào macro của compiler (riêng compiler, ghi nhãn).
+- **Lúc chạy**: thăm dò byte, hoặc tiện ích endian của `stdbit.h` C23 khi có sẵn. Tốn một nhánh một lần, portable mọi nơi.
+
+Chọn compile-time cho đường nóng, run-time cho tính khả chuyển được bảo đảm. Tài liệu hóa lựa chọn; tài liệu đó *chính là* lớp khả chuyển.
+
+## Hợp đồng capstone
+
+Checkpoint của mô-đun 24 lắp ráp cả khóa học: một lõi tiện ích portable (phát hiện endian + số học được kiểm + bản sao an toàn) cộng tích hợp kỷ luật của các mô-đun trước. Mọi hàm nó yêu cầu đã được xây và kiểm trong mô-đun trước — capstone là sự kết hợp dưới đặc tả, công việc thật của kỹ nghệ hệ thống.

@@ -1,0 +1,32 @@
+## Bài toán lặp mã
+
+Đổi chỗ hai giá trị, tìm max, đảo danh sách — cho `int`, rồi `string`, rồi `Money`... Logic giống hệt nhau; chỉ có kiểu là khác. Copy-paste theo từng kiểu là cách bug sinh sôi.
+
+## `<T>` viết một lần
+
+```csharp
+static T Max<T>(T a, T b) where T : IComparable<T>
+{
+    return a.CompareTo(b) >= 0 ? a : b;
+}
+
+Max(3, 7);            // T = int
+Max("apple", "pear"); // T = string
+```
+
+`T` là một **tham số kiểu**: kiểu của đối số người gọi điền vào, và trình biên dịch kiểm tra mọi thao tác trên `T` theo những gì ràng buộc cho phép. Trong phương thức không có ép kiểu, không boxing, không cách nào lén đưa kiểu sai vào.
+
+Lớp generic cũng vậy:
+
+```csharp
+class Box<T>
+{
+    public T Content { get; set; }
+}
+
+var ib = new Box<int> { Content = 42 };
+var sb = new Box<string> { Content = "hi" };
+// ib.Content là int, sb.Content là string — tĩnh
+```
+
+Bạn đã dùng generic ở khắp nơi: `List<T>`, `Dictionary<TKey, TValue>` — giờ bạn tự viết được.

@@ -1,0 +1,11 @@
+## The invisible agreement
+
+When you call a function, both sides agree — without any C syntax saying so — where each argument travels (registers first, then stack), which register returns the value, and which registers the callee must restore. That agreement is the **calling convention**, the core of the platform ABI.
+
+## Caller-saved versus callee-saved
+
+Registers the *callee* may freely scratch are caller-saved: if the caller still needs the value, it must spill it before the call. Registers the callee promises to preserve are callee-saved: the callee spills and restores them. This division is why adding a call can change register allocation in the caller — visible in module 13's disassembly.
+
+## Variadic functions break the pattern on purpose
+
+printf-style functions take a runtime-shaped argument list. `<stdarg.h>` (va_start/va_arg/va_end) is the standard's portable window onto whatever the convention actually did — and the reason printf is a special beast for every ABI ever designed.

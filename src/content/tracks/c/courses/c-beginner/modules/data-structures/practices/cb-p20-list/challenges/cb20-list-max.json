@@ -1,0 +1,26 @@
+{
+  "id": "cb20-list-max",
+  "title": "List Max Node",
+  "prompt": "Implement `Node* list_max(Node *head)` returning a pointer to the node with the LARGEST value (ties: the first), or NULL for the empty list.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\ntypedef struct Node { int value; struct Node *next; } Node;\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "Node c = {3, NULL};\nNode b = {9, &c};\nNode a = {1, &b};\nCHECK_EQ(list_max(&a), &b);",
+      "hint": "Track the best node."
+    },
+    {
+      "name": "tie first",
+      "code": "Node b = {5, NULL};\nNode a = {5, &b};\nCHECK_EQ(list_max(&a), &a);",
+      "hint": "Strictly greater to replace."
+    },
+    {
+      "name": "empty",
+      "code": "CHECK_EQ(list_max(NULL), NULL);",
+      "hint": "Empty list: NULL."
+    }
+  ],
+  "level": "independent"
+}

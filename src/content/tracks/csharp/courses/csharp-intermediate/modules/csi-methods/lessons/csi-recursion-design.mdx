@@ -1,0 +1,45 @@
+## The two halves of every recursive method
+
+A recursive method needs a **base case** (smallest input, answered directly)
+and a **recursive case** (shrinking progress toward that base). Miss either
+and you get `StackOverflowException` — which, notably, cannot be caught; it
+tears the process down.
+
+```csharp
+static long Factorial(int n) =>
+    n <= 1 ? 1 : n * Factorial(n - 1);   // base: n<=1; progress: n-1
+```
+
+## The stack is a budget
+
+Each call frame costs stack space. Depth 10 or 100 is fine; depth 1,000,000
+is a crash. Recursion is the right tool when the *data* is recursive — trees,
+filesystems, nested JSON, grammars — not when the input is just long.
+
+```csharp
+/* depth = nesting depth, not element count: recursion is honest here */
+static int SumNested(object node) => node switch
+{
+    int n => n,
+    object[] arr => arr.Sum(SumNested),
+    _ => 0
+};
+```
+
+For linear inputs, a loop (or explicit stack) is the professional default.
+C# does not guarantee tail-call optimization — `return F(x);` at the end is
+still a frame per call.
+
+## Design checklist
+
+1. Base case first, and make it cover degenerate inputs (empty, null, one).
+2. Progress you can point at: every call moves toward the base.
+3. Depth budget: what input depth breaks it? Say the number out loud.
+4. Pure? Side effects in recursion multiply confusion — keep them at the edge.
+5. memoization when subproblems repeat: a `Dictionary<K,V>` cache turns
+   exponential Fibonacci into linear.
+
+## Check your understanding
+
+- Why can't you catch StackOverflowException? (The stack is exhausted; the runtime kills the process.)
+- When IS recursion the right call? (Recursive data: trees, nesting, grammars.)

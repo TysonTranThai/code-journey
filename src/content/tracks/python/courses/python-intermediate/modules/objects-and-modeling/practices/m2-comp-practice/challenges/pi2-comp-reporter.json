@@ -1,0 +1,21 @@
+{
+  "id": "pi2-comp-reporter",
+  "title": "Reporter Injection",
+  "prompt": "Create a class Order totals calculator: Order(items) where items is a list of prices. Its total() returns the sum. Add a constructor parameter reporter=None; if provided, total() must call reporter(total_value) once. This is dependency injection for observability.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "class Order:\n    def __init__(self, items, reporter=None):\n        pass\n",
+  "tests": [
+    {
+      "name": "totals without a reporter",
+      "code": "assert Order([10, 20]).total() == 30",
+      "hint": "reporter defaults to None; total works without it."
+    },
+    {
+      "name": "calls the reporter once with the total",
+      "code": "calls = []\nOrder([10, 20], reporter=calls.append).total()\nassert calls == [30]",
+      "hint": "A list's append is a function — pass it as the reporter."
+    }
+  ],
+  "level": "independent"
+}

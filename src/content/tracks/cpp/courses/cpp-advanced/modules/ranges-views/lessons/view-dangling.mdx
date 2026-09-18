@@ -1,0 +1,22 @@
+## The bug
+
+```cpp
+auto bad = std::string{"data"} | std::views::transform(f);   // dangles: the string dies on this line
+```
+
+The view stores a reference to its source. If the source is a temporary **container**, the view outlives it — every use after is UB.
+
+## The rule
+
+- C++20 **rejects at compile time** the classic case: piping a *container* rvalue into a view (the owning-rvalue rule). It cannot catch everything: `auto v = std::views::iota(0) | std::views::take(5);` is safe (iota owns its state), but piping a *view* that itself borrowed a temporary still slips through.
+- C++23 relaxed the most-annoying cases (owning rvalues are now allowed in more adaptor positions). With `-std=c++20`, learn the conservative rule:
+
+**Conservative rule: a view may only borrow from things that outlive the view variable.** Named container, static, or another view with a provable lifetime. If you need a temporary's data, materialize: `auto owned = src | ... | std::ranges::to<std::vector>();` (C++23) or copy into a named vector in C++20.
+
+## Spotting it in review
+
+- `auto v = getContainer() | views::filter(...)` — dangles (getContainer returns a temporary),
+- `for (auto x : makeVec() | views::take(3))` — actually safe: the temporary lives for the full range-for statement, the classic exception,
+- `class C { std::span<int> s_; ... };` storing a span of a local in a constructor — dangles at the constructor's exit.
+
+The graded exercises are a spotting clinic: mark each snippet safe/dangle, then fix the danging one by materializing.

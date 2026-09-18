@@ -1,0 +1,20 @@
+{
+  "id": "i2-reflog-walk",
+  "title": "Reflog Walk",
+  "prompt": "`reflog` is an array of { head, action } entries, newest FIRST. Write `lastGood(reflog, badAfterAction)` — walk the reflog and return the `head` of the newest entry at or before the LAST occurrence of an entry whose action is \"commit\". (In real terms: find the most recent committed state.) Return null if none.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function lastGood(reflog) {\n  // your code — return the head of the newest 'commit' entry\n}\n",
+  "tests": [
+    {
+      "name": "finds the most recent commit entry",
+      "code": "const fn = new Function(code + \"\\nreturn { lastGood };\");\nconst { lastGood } = fn();\nconst log = [\n  { head: \"h3\", action: \"reset\" },\n  { head: \"h2\", action: \"commit\" },\n  { head: \"h1\", action: \"commit\" },\n];\nif (lastGood(log) !== \"h2\") throw new Error(\"h2 is the newest commit.\");",
+      "hint": "The array is newest-first: the first 'commit' you meet is the answer."
+    },
+    {
+      "name": "null when nothing was committed",
+      "code": "const fn = new Function(code + \"\\nreturn { lastGood };\");\nconst { lastGood } = fn();\nconst log = [{ head: \"h9\", action: \"stash\" }, { head: \"h8\", action: \"reset\" }];\nif (lastGood(log) !== null) throw new Error(\"No commits => null.\");",
+      "hint": "Default to null; only a 'commit' entry produces a value."
+    }
+  ]
+}

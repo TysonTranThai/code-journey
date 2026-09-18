@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m3-shapes",
+  "title": "Abstract shapes with dispatch",
+  "prompt": "Implement `class Shape` with a pure virtual `double area() const`, a pure virtual `const char* name() const`, and a public virtual destructor (`virtual ~Shape() = default;`). Implement `Square(double side)` and `Circle(double radius)` overriding both. The test stores them in a `std::vector<std::unique_ptr<Shape>>` and checks dispatch + the vtable-aware destructor path.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <vector>\\n#include <memory>\\n#include <iostream>\\n\\nclass Shape {\\n    // pure virtuals + virtual dtor\\n};\\n",
+  "tests": [
+    {
+      "name": "dispatch",
+      "code": "std::vector<std::unique_ptr<Shape>> v;\nv.push_back(std::make_unique<Square>(2.0));\nv.push_back(std::make_unique<Circle>(1.0));\nCHECK_NEAR(v[0]->area(), 4.0, 1e-9);\nCHECK_NEAR(v[1]->area(), 3.14159265358979, 1e-4);",
+      "hint": "area() dispatches per element."
+    },
+    {
+      "name": "names",
+      "code": "std::vector<std::unique_ptr<Shape>> v;\nv.push_back(std::make_unique<Square>(1.0));\nCHECK_EQ(std::string(v[0]->name()), std::string(\"square\"));",
+      "hint": "name() is also virtual."
+    },
+    {
+      "name": "abstract",
+      "code": "static_assert(std::is_abstract<Shape>::value, \"Shape must be abstract\");",
+      "hint": "= 0 makes the class abstract."
+    }
+  ],
+  "level": "combination"
+}

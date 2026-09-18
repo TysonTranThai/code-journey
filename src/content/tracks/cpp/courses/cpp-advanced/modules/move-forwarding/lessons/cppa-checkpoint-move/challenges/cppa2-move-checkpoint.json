@@ -1,0 +1,20 @@
+{
+  "id": "cppa2-move-checkpoint",
+  "title": "Move Gauntlet",
+  "prompt": "Implement a forwarding factory and an NRVO builder so the counters prove zero accidental copies.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <string>\n#include <utility>\n\n// Instrumented type: counts copies and moves for the graded checks.\nstruct Tracked {\n    static inline int copies = 0;\n    static inline int moves = 0;\n    std::string tag;\n    Tracked() : tag(\"empty\") {}\n    explicit Tracked(std::string t) : tag(std::move(t)) {}\n    Tracked(const Tracked& o) : tag(o.tag) { ++copies; }\n    Tracked(Tracked&& o) noexcept : tag(std::move(o.tag)) { ++moves; }\n    Tracked& operator=(const Tracked& o) { tag = o.tag; ++copies; return *this; }\n    Tracked& operator=(Tracked&& o) noexcept { tag = std::move(o.tag); ++moves; return *this; }\n};\n\n#include <memory>\n\nstd::unique_ptr<Tracked> factoryTracked(Tracked t);   // TODO: forward into a new Tracked\nTracked buildTracked(int n);                          // TODO: NRVO builder\n",
+  "tests": [
+    {
+      "name": "factory forwards rvalue with exactly one move",
+      "code": "Tracked::moves = 0; Tracked::copies = 0;\nauto owned = factoryTracked(Tracked(\"goal\"));\nCHECK_EQ(Tracked::moves, 1);\nCHECK_EQ(Tracked::copies, 0);\nCHECK_EQ(owned->tag, std::string(\"goal\"));",
+      "hint": "new Tracked(std::move(t)) — exactly one move from the by-value parameter into the pointee."
+    },
+    {
+      "name": "builder uses NRVO: zero copies, zero moves",
+      "code": "Tracked::moves = 0; Tracked::copies = 0;\nTracked built = buildTracked(4);\nCHECK_EQ(Tracked::copies, 0);\nCHECK_EQ(Tracked::moves, 0);\nCHECK_EQ(built.tag, std::string(\"xxxx\"));",
+      "hint": "Construct a local from std::string(4, 'x') and return it by name — no std::move in the return."
+    }
+  ]
+}

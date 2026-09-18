@@ -1,0 +1,14 @@
+{
+  "title": "Thứ tự đóng & suppression",
+  "prompt": "Mô hình hóa tài nguyên trong bộ nhớ bên trong `Solution`:\n- `static class Res implements AutoCloseable` nhận `StringBuilder log`\n  và một tên; `close()` nối `name + \":closed\"` vào log.\n- `static String run(boolean failSecond, StringBuilder log)`:\n  mở `new Res(\"a\", log)`, rồi `new Res(\"b\", log)` trong MỘT câu lệnh\n  try-with-resources (thân nối \"work\" vào log); khi failSecond là true,\n  thân ném IllegalStateException SAU khi tài nguyên đầu đã mở.\n\nTrả `log.toString()`. Hành vi đúng:\n- hướng bình thường: `work` rồi `b:closed` rồi `a:closed` (thứ tự ngược)\n- lỗi: `a:closed b:closed` VẪN đóng cả hai, ngoại lệ lan ra ngoài",
+  "tests": [
+    {
+      "name": "Hướng bình thường đóng ngược",
+      "hint": "Thân trước, rồi tài nguyên đóng b→a (ngược thứ tự mở)."
+    },
+    {
+      "name": "Lỗi vẫn đóng cả hai",
+      "hint": "Cả hai close() chạy dù thân đã ném."
+    }
+  ]
+}

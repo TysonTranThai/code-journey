@@ -1,0 +1,30 @@
+Cơ sở dữ liệu quan hệ lưu các sự thật trong **bảng** (relation) gồm **hàng** (record) với **cột** (attribute) cố định. SQL là ngôn ngữ; PostgreSQL là động cơ.
+
+## Khóa
+
+- **Khóa chính (primary key)** — cột (hoặc tổ hợp) định danh duy nhất một hàng: `id serial PRIMARY KEY`. Không bao giờ tái sử dụng giá trị, không bao giờ null.
+- **Khóa ngoại (foreign key)** — cột trỏ tới khóa chính của bảng khác: `author_id INTEGER REFERENCES users(id)`. Database _ép buộc_ hàng được tham chiếu phải tồn tại — author_id không thể tồn tại bị chặn ngay lúc insert, không phải được phát hiện ở production.
+
+## Các loại quan hệ
+
+- **Một-nhiều** — phổ biến nhất: một user, nhiều task. Khóa ngoại nằm ở phía "nhiều" (tasks.author_id).
+- **Nhiều-nhiều** — task và tag: một **bảng nối** `task_tags(task_id, tag_id)` giữ một cặp cho mỗi liên kết. Cả hai cột là khóa ngoại; thường cặp đó chính là khóa chính.
+- **Một-một** — khóa ngoại kèm ràng buộc UNIQUE (users ↔ user_profiles).
+
+## Chuẩn hóa: bản năng
+
+**Một sự thật, một nơi.** Lưu tên tác giả trên mọi hàng task nghĩa là một lần cập nhật phải chạm hàng nghìn hàng và chắc chắn sẽ tự mâu thuẫn. Thay vào đó: lưu `author_id`; join sang `users` khi cần tên. Các mức kinh điển:
+
+- **1NF** — không có nhóm lặp lại (không có cột "tags" chứa "a,b,c")
+- **2NF** — mọi cột phụ thuộc vào toàn bộ khóa
+- **3NF** — không cột nào phụ thuộc vào một cột không phải khóa khác
+
+Phi chuẩn hóa (cố ý trùng lặp để đọc nhanh) là quyết định _tinh chỉnh_ đưa ra sau này, có đo đếm — không bao giờ là hình dạng khởi đầu.
+
+## Kiểu dữ liệu quan trọng
+
+`INTEGER` so với `TEXT` so với `TIMESTAMPTZ` so với `BOOLEAN` so với `NUMERIC` (tiền tệ! đừng bao giờ dùng float). Kiểu là tuyến phòng thủ đầu tiên của bạn: database chặn rác trước khi code chạy. Tiện ích bản địa Postgres: `SERIAL`/`GENERATED` cho id, `JSONB` khi cấu trúc thực sự linh hoạt, `TIMESTAMPTZ` luôn thay cho `TIMESTAMP`.
+
+## NULL là một loài riêng
+
+NULL nghĩa là "không xác định", không phải số 0 và không phải chuỗi rỗng. `NULL = NULL` không đúng — nó là NULL. Count, join, và ràng buộc đều đối xử với NULL khác biệt; mặc định khai báo cột `NOT NULL` và chỉ dùng NULL khi sự vắng mặt là dữ liệu có ý nghĩa.

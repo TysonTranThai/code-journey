@@ -1,0 +1,28 @@
+Two features move work from runtime to compile time — and make intent
+visible to both the compiler and the reader.
+
+`constexpr` marks an expression or function as computable at compile time
+when given constant arguments:
+
+```cpp
+constexpr int max_users = 1000;              // a true constant
+constexpr int square(int x) { return x * x; }
+static_assert(square(7) == 49);              // proven at compile time
+```
+
+`enum class` is a scoped, strongly-typed enum: enumerators live inside the
+enum's name, do not leak, do not implicitly convert to int, and the
+underlying type is your choice:
+
+```cpp
+enum class Status { Ok, NotFound, Error };
+
+Status s = Status::Ok;
+// int x = s;            // error: no implicit conversion — the whole point
+if (s == Status::Ok) { }  // comparisons are type-checked
+```
+
+The classic bug `enum class` eliminates: two unrelated unscoped enums (or
+an enum and an int) silently comparing equal. Prefer it for every new
+enumeration; pass it by value; switch over it exhaustively — most compilers
+warn when a switch misses an enumerator.

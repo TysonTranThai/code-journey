@@ -1,0 +1,10 @@
+{
+  "title": "Hiệu ứng exactly-once trên chuyển giao at-least-once",
+  "prompt": "Cài `process_stream(jobs, max_attempts=3)` với `jobs` là danh sách các batch `[job_id, payload, attempts]` theo thời gian (nối chúng lại theo thứ tự):\n\n- giữ `done` (dict job_id → 'done:' + job_id) và `dead` (list [job_id, payload, attempts])\n- job đã có trong `done` bị bỏ qua — hiệu ứng của nó đã xảy ra một lần, chuyển giao lại là no-op\n- payload `'poison'` tăng bộ đếm lần thử mỗi khi xuất hiện; khi attempts đạt `max_attempts` nó chuyển sang `dead` (dạng [job_id, payload, max_attempts]) và không bao giờ được xử lý nữa\n- payload khác được tạo hiệu ứng đúng một lần (thêm vào `done`) ở lần thấy đầu tiên\n- trả `{'done': {...}, 'dead': [...]}`\n\nVí dụ: `[[('j1','work',0)], [('j1','work',0), ('p','poison',0)], [('p','poison',1)], [('p','poison',2)]]` với max_attempts=3 → j1 xong một lần, p chết ở attempts 3 (gặp 0,1,2 → attempts 1,2,3).",
+  "tests": [
+    {
+      "name": "Chuyển giao lại là no-op, poison chết đúng ngân sách",
+      "hint": "Cổng done chặn đứng bản trùng lặp; số lần thử cộng dồn qua các batch."
+    }
+  ]
+}

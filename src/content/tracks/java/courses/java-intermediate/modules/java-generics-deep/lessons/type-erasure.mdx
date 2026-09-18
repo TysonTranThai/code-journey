@@ -1,0 +1,25 @@
+## Type erasure — what generics really are
+
+Generics exist at compile time only. `List<String>` and `List<Integer>`
+are the same class at runtime — both erase to `List`. Consequences:
+
+```java
+List<String> a = new ArrayList<>();
+List<Integer> b = new ArrayList<>();
+a.getClass() == b.getClass()   // true!
+
+// can't do these:
+// new T[10]                       — no T at runtime
+// if (x instanceof List<String>)  — erased
+// catch (MyEx<String> e)          — generics in catch are banned
+```
+
+Practical rules:
+- Arrays of generic type are unsafe (`new T[10]` won't compile; use
+  `ArrayList<T>`)
+- You cannot overload on erased parameters:
+  `f(List<String>)` + `f(List<Integer>)` — same erasure, compile error
+- Need runtime type info? Pass a `Class<T>` token: `<T> T parse(String s, Class<T> type)`
+
+Erasure explains *why* wildcards exist: flexibility must be expressible in
+the type system without runtime cost.

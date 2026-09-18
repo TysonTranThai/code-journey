@@ -1,0 +1,55 @@
+## Mẫu TryParse
+
+```csharp
+bool ok = int.TryParse("42", out int value);   // ok = true,  value = 42
+bool bad = int.TryParse("abc", out int other); // bad = false, other = 0
+```
+
+`TryParse` thử chuyển đổi và báo thành công bằng `bool`. Giá trị phân tích được đến qua một **tham số `out`** — kênh trả về thứ hai. Khi thất bại, giá trị `out` là `0` (mặc định xác định rõ), không bao giờ là rác.
+
+Hình thái theo thói quen idiomatic kết hợp khai báo và sử dụng:
+
+```csharp
+if (int.TryParse(input, out int count))
+{
+    Console.WriteLine($"Đã nhận {count}");
+}
+else
+{
+    Console.WriteLine("Không phải số nguyên.");
+}
+```
+
+## Kiểm tra dữ liệu: từ chối lịch sự, cụ thể
+
+Một bộ đọc bền vững phân biệt *lý do* input không hợp lệ:
+
+```csharp
+static string Classify(string input)
+{
+    if (input.Trim().Length == 0)
+        return "empty";
+    if (!int.TryParse(input, out int n))
+        return "not-a-number";
+    if (n < 0)
+        return "negative";
+    return $"ok:{n}";
+}
+```
+
+Rỗng trước, rồi định dạng, rồi khoảng giá trị — mỗi kiểu thất bại có thông điệp riêng. Tính cụ thể đó là ranh giới giữa chương trình người dùng dùng được và chương trình chỉ biết nói "lỗi".
+
+## Lặp cho tới khi hợp lệ (dạng console)
+
+```csharp
+int age;
+while (true)
+{
+    Console.Write("Tuổi: ");
+    string line = Console.ReadLine() ?? "";
+    if (int.TryParse(line, out age) && age >= 0 && age <= 130) break;
+    Console.WriteLine("Vui lòng nhập số nguyên 0–130.");
+}
+```
+
+Vòng lặp *chứa* việc kiểm tra, nên phần còn lại của chương trình được tin rằng `age` hợp lệ. Đó là nguyên lý sâu hơn: kiểm chứng ở biên giới, rồi viết code với giả định hợp lệ.

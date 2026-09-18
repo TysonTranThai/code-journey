@@ -1,0 +1,30 @@
+Most classes are mostly **data**. Writing `__init__`, `__repr__`, and
+`__eq__` by hand for each one is boilerplate with bug surface. `@dataclass`
+generates all three from your field declarations:
+
+```python
+from dataclasses import dataclass, field
+
+@dataclass
+class Task:
+    title: str
+    priority: int = 1
+    tags: list = field(default_factory=list)   # safe mutable default
+
+task = Task("ship release", 2)
+task == Task("ship release", 2)     # True — __eq__ compares fields
+repr(task)                          # Task(title='ship release', ...)
+```
+
+Three details professionals know:
+
+- **Mutable defaults need `field(default_factory=list)`** — a bare `tags=[]` would share one list across all instances (same trap as `def f(x=[])`).
+- **`frozen=True`** makes instances immutable and hashable — great for value objects like `Money` or `Point`.
+- **`__post_init__`** runs after `__init__` for cross-field validation.
+
+## When to use which
+
+Plain class → behavior-heavy objects with complex lifecycle. Dataclass →
+data records: rows, configs, messages, DTOs. Reaching for a dataclass first
+is a signal you're thinking about **data shape**, which usually makes better
+designs than thinking about inheritance hierarchies.

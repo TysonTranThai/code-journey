@@ -1,0 +1,30 @@
+JavaScript costs three times: download (bytes), parse+compile (CPU on the main thread), and execute (CPU, every run). Most teams only think about the first.
+
+## The main thread is single
+
+While your JS runs, the page can't respond. A 300ms task = 300ms of dead UI. The fixes:
+
+- **Break work up**: chunk a big loop with `await new Promise(r => setTimeout(r))` between chunks so input events can interleave.
+- **Debounce/idle**: `requestIdleCallback` or `setTimeout` for non-urgent work (analytics flushing, preview generation).
+- **Web workers** for genuinely heavy computation — they run off the main thread entirely (message-passing, no DOM).
+
+## Shipping less JavaScript
+
+- **Bundle analysis**: `npx vite-bundle-visualizer` (or webpack-bundle-analyzer) shows what your bundle actually contains. The usual suspects: moment.js (+locales!), lodash full import, duplicated dependencies.
+- **Tree-shaking works only with ESM imports**: `import { debounce } from "lodash-es"` pulls one function; `import _ from "lodash"` pulls the world.
+- **Code splitting**: route-based splitting is the easy 50% — users of `/admin` shouldn't download the checkout page's code.
+- **Ship less polyfill**: target modern browsers unless your analytics say otherwise.
+
+## Memory: leaks find slow pages
+
+A leak = memory that will never be used again but is never released. Common JS leaks:
+
+- Forgotten timers/listeners: a `setInterval` or `addEventListener` on an element that got removed keeps everything it closes over alive.
+- Global accumulators: caches/arrays that only grow.
+- Detached DOM: a variable holding a removed subtree (plus its data).
+
+In DevTools → Memory: take a heap snapshot, interact, take another, compare. Growing "Detached" or repeatedly-growing arrays = hunting grounds. `performance.measureUserAgentSpecificMemory()` and the Memory panel make this routine rather than mystical.
+
+## Measure, always
+
+`performance.now()` brackets code on the main thread; DevTools Performance panel records the whole picture (script, style, layout, paint). Number first, opinion second.

@@ -1,0 +1,21 @@
+{
+  "id": "pa-mt-metaclass-frozen",
+  "title": "A metaclass, when it is the right tool",
+  "prompt": "Implement `class FrozenMeta(type)` enforcing that instances only ever set the attributes DECLARED in the class body annotations:\n\n- setting an undeclared attribute raises `AttributeError` at ANY time (init or later)\n- declared attributes are freely settable and readable\n- `Vec.brand` must equal 'frozen' on every class using the metaclass (the metaclass itself may set class attributes)\n- this must apply to subclasses too — that is why it is a metaclass, not __init_subclass__",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class FrozenMeta(type):\n    # TODO: __new__ installs a strict __setattr__ on each class\n    pass",
+  "tests": [
+    {
+      "name": "declared attrs work, undeclared rejected",
+      "code": "class Vec(metaclass=FrozenMeta):\n    x: int\n    y: int\n\nv = Vec()\nv.x, v.y = 1, 2\nassert (v.x, v.y) == (1, 2)\ntry:\n    v.z = 9\nexcept AttributeError:\n    pass\nelse:\n    raise AssertionError('undeclared attribute must raise AttributeError')\nassert Vec.brand == 'frozen'\nprint('ok')",
+      "hint": "In Meta.__new__, read ns['__annotations__'] keys and install a __setattr__ closing over that set."
+    },
+    {
+      "name": "inherited by subclasses",
+      "code": "class Vec(metaclass=FrozenMeta):\n    x: int\n\nclass Vec3(Vec):\n    z: int\n\np = Vec3()\np.x = p.z = 1\ntry:\n    p.w = 2\nexcept AttributeError:\n    pass\nelse:\n    raise AssertionError('subclasses must inherit the frozen contract')\nprint('ok')",
+      "hint": "Subclass namespaces carry their own __annotations__; merge with the parents' declared names."
+    }
+  ],
+  "level": "combination"
+}

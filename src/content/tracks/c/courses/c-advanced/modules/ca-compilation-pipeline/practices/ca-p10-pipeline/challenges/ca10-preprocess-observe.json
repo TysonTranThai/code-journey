@@ -1,0 +1,21 @@
+{
+  "id": "ca10-preprocess-observe",
+  "title": "Watch the Preprocessor",
+  "prompt": "Implement `int pipeline_probe(void)`: define a macro `#define GROW(n) ((n) + 1)` and return `GROW(GROW(4))` — then verify by hand what the preprocessor produced: the expansion is ((4) + 1) + 1. Also implement `const char *include_probe(void)` returning __FILE__ — the preprocessor's own record of the translation unit.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "nested expansion",
+      "code": "CHECK_EQ(pipeline_probe(), 6);",
+      "hint": "GROW(GROW(4)) expands inside-out: ((4) + 1) then + 1 = 6."
+    },
+    {
+      "name": "__FILE__ is preprocessor state",
+      "code": "const char *f = include_probe();\nCHECK_NOT_NULL(f);\nCHECK_EQ(f[0] != 0, 1);",
+      "hint": "The file macro is a non-empty string naming this translation unit."
+    }
+  ],
+  "level": "guided"
+}

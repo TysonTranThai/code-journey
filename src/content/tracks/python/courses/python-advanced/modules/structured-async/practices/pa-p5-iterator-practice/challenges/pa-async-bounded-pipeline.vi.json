@@ -1,0 +1,14 @@
+{
+  "title": "Pipeline async có giới hạn",
+  "prompt": "Cài `async def pipeline(items, transform, workers=2, maxsize=3)`:\n\n- đưa mọi `items` qua `asyncio.Queue(maxsize=maxsize)`\n- `workers` task async tiêu thụ và append kết quả `await transform(item)`\n- producer KHÔNG được đổ hết vào queue một lúc — với maxsize được tôn trọng, backpressure có tác dụng (`await q.put` treo khi đầy)\n- trả về `sorted(results)` sau `await q.join()`; hủy worker sau đó",
+  "tests": [
+    {
+      "name": "Xử lý hết item, an toàn backpressure",
+      "hint": "q.join() chỉ nhả khi mọi item trong queue đã được task_done(); put() treo khi queue có giới hạn đầy."
+    },
+    {
+      "name": "60 item chui qua queue tí hon",
+      "hint": "60 item phải chảy qua queue maxsize-2 mà không deadlock."
+    }
+  ]
+}

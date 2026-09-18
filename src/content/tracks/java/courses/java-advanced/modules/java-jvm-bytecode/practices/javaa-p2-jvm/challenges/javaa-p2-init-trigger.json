@@ -1,0 +1,16 @@
+{
+  "id": "javaa-p2-init-trigger",
+  "title": "Class-initialization triggers",
+  "prompt": "Implement `static List<String> triggerTrace()`:\n1. `static String touch()` — references `Marker.class` (a literal) and returns \"literal\";\n   it must NOT cause Marker's static initializer to run.\n2. `static String force()` — calls `Class.forName(\"Solution$Marker\")` and returns \"forName\";\n   it MUST cause Marker's static initializer to run.\n3. `public static class Marker` with `static { trace.add(\"Marker<clinit>\"); }` where trace is a `static final List<String>` you own.\n4. `triggerTrace()` calls `touch()` then `force()` then returns the trace — which must show the literal did NOT initialize the class but forName did.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "literal does not initialize",
+      "code": "\njava.util.List<String> t = Solution.triggerTrace();\ncheckEq(t, java.util.List.of(\"Marker<clinit>\"), \"only forName triggers <clinit>\");\n",
+      "hint": "Marker.class is a constant reference, not an active use."
+    }
+  ],
+  "level": "guided"
+}

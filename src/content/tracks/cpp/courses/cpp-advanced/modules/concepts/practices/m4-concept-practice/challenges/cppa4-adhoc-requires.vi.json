@@ -1,0 +1,18 @@
+{
+  "title": "Concept probe const",
+  "prompt": "Cài `Sized` bằng mệnh đề `requires requires` ad-hoc, probe `c.size()` **trên tham chiếu const** (kết quả `std::convertible_to<std::size_t>`), và `totalIfSized(c)` trả về size — hoặc -1 qua fallback với kiểu không thỏa.",
+  "tests": [
+    {
+      "name": "container có size báo size",
+      "hint": "template <class C> concept Sized = requires(const C& c) { { c.size() } -> std::convertible_to<std::size_t>; };"
+    },
+    {
+      "name": "type không có size rơi vào fallback",
+      "hint": "Overload fallback không ràng buộc (viết thành template nhận C bất kỳ) trả về static_cast<std::size_t>(-1)."
+    },
+    {
+      "name": "size() non-const KHÔNG thỏa",
+      "hint": "Probe phải là requires(const C& c) — size() non-const khiến probe thất bại, fallback trả lời."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+## The gate (mini-build)
+
+A resilient concurrent fetch pipeline over `CjFlaky.FetchAsync(key, delayMs,
+ct)` (provided in your starter code; `slow*` keys hang for 5 s):
+
+1. `FetchAll(IEnumerable<string> keys, TimeSpan perCall, CancellationToken ct)`
+   → starts EVERY simulated fetch at once (fan-out).
+2. Each call is time-boxed with `perCall` — a hung backend is ABANDONED,
+   not waited out. Outcomes: `"key=ok"` or `"key=timeout"`.
+3. Caller cancellation aborts immediately with
+   `OperationCanceledException` even if fetches are still pending.
+4. `Report(results)` formats results sorted by key: `"a=ok|b=timeout"`.
+
+Tests observe timing generously (< 1 s for a 5 s hang) — the discipline is
+structural: start-all-then-await, WaitAsync per call, token through.

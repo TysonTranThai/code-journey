@@ -1,0 +1,21 @@
+{
+  "id": "javb-m12-optional-parse",
+  "title": "Optional at the boundary",
+  "prompt": "Write `parsePort(String input)`: return `Optional` of the parsed port when input is a valid number in 1..65535; `Optional.empty()` otherwise (null, blank, non-numeric, or out of range).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static java.util.Optional<Integer> parsePort(String input) {\n        return java.util.Optional.empty();\n    }\n}\n",
+  "tests": [
+    {
+      "name": "valid ports wrap",
+      "code": "\nCjTestBase.checkEq(Solution.parsePort(\"8080\"), java.util.Optional.of(8080), \"8080 parses\");\nCjTestBase.checkEq(Solution.parsePort(\" 443 \"), java.util.Optional.of(443), \"trimmed and parsed\");\n",
+      "hint": "Optional.ofNullable after your existing parse-check pattern."
+    },
+    {
+      "name": "everything else stays empty - never null",
+      "code": "\nCjTestBase.checkEq(Solution.parsePort(\"abc\"), java.util.Optional.empty(), \"not a number\");\nCjTestBase.checkEq(Solution.parsePort(\"99999\"), java.util.Optional.empty(), \"out of range\");\nCjTestBase.checkEq(Solution.parsePort(\"0\"), java.util.Optional.empty(), \"0 is not a port\");\nCjTestBase.checkEq(Solution.parsePort(null), java.util.Optional.empty(), \"null -> empty\");\n",
+      "hint": "Range-check after parsing; the result must never be an Optional wrapping null."
+    }
+  ],
+  "level": "guided"
+}

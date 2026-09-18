@@ -1,0 +1,21 @@
+{
+  "id": "csi-p8-double-enum-debug",
+  "title": "Debug: The Report That Reads the File Twice",
+  "prompt": "The reference implementation builds a lazy query over a counting source, checks it with Any(), then iterates it again for the report — the source is read twice. Fix Run() so the source is read exactly once while behavior stays identical.\n\n```csharp\npublic sealed class CountingSource : IEnumerable<int>\n{\n    public CountingSource(params int[] items);\n    public int ReadCount { get; }      // items actually pulled\n}\nstatic string Run(IEnumerable<int> source);   // returns \"count=<n>;max=<m>\"\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "single pass preserved",
+      "code": "\nvar src = new Solution.CountingSource(4, 8, 15, 16, 23, 42);\nCj.Eq(Solution.Run(src), \"count=6;max=42\", \"report correct\");\nCj.Eq(src.ReadCount, 6, \"source read exactly once\");\n",
+      "hint": "Materialize once: var data = source.ToList(); then count/max from data."
+    },
+    {
+      "name": "empty input",
+      "code": "\nvar src = new Solution.CountingSource();\nCj.Eq(Solution.Run(src), \"count=0;max=0\", \"no items -> count=0;max=0\");\nCj.Eq(src.ReadCount, 0, \"nothing to read\");\n",
+      "hint": "Handle the empty case without throwing (default max 0)."
+    }
+  ],
+  "level": "debugging"
+}

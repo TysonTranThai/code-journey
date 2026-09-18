@@ -1,0 +1,55 @@
+## Ba nhãn, một đường biên
+
+Chuẩn C phân loại các cấu trúc compiler không thể hỗ trợ hợp lý:
+
+- **Hành vi undefined (UB)** — *không yêu cầu gì cả*. Compiler được phép
+  cho rằng nó không bao giờ xảy ra: xóa nhánh, sắp xếp lại xuyên qua,
+  sáng tạo bất kỳ kết quả nào. Tràn số có dấu, truy cập ngoài biên,
+  use-after-free, shift không hợp lệ.
+- **Hành vi unspecified** — chuẩn đưa một thực đơn các kết quả hợp lệ và
+  không nói chọn cái nào (`f()` và `g()` trong `f() + g()` có thể chạy
+  theo thứ tự nào cũng được). Mọi lựa chọn đều hợp pháp; chương trình
+  vẫn là C đúng.
+- **Hành vi phụ thuộc cài đặt** — cài đặt phải *ghi tài liệu* lựa chọn
+  của mình (`sizeof(int)`, char có dấu hay không, shift phải của số âm).
+
+Phân biệt này quan trọng vì cách phản ứng khác nhau: tránh UB tuyệt đối,
+chấp nhận unspecified bằng cách không phụ thuộc vào nó, và tra tài liệu
+cho implementation-defined.
+
+## Giấy phép của optimizer
+
+"Cho rằng nó không bao giờ xảy ra" là phần mọi người bỏ lỡ. Đây là hợp
+pháp:
+
+```c
+int sat_add(int a, int b) {
+    if (a + b < a) return INT_MAX;   /* ý định: kiểm tra tràn số */
+    return a + b;                    /* nhưng a + b CHÍNH LÀ tràn số — UB */
+}
+```
+
+Compiler nhìn `a + b < a` và suy luận: *tràn số là UB, nên nếu tới được
+phép so sánh thì không có tràn số, nên `a + b >= a` luôn đúng, nên phép
+kiểm này là code chết* — và xóa bỏ ignoring của bạn. Phép kiểm được viết
+bằng ngôn ngữ của chính thứ nó chống lại. Cách có định nghĩa tính trong
+kiểu rộng hơn:
+
+```c
+int sat_add(int a, int b) {
+    long long r = (long long)a + b;              /* có định nghĩa */
+    if (r > INT_MAX) return INT_MAX;
+    if (r < INT_MIN) return INT_MIN;
+    return (int)r;
+}
+```
+
+## Du hành thời gian là được phép
+
+Vì compiler được sắp xếp lại tự do quanh UB, một thao tác UB có thể
+"làm hỏng" code *đứng trước nó trong văn bản*: phép ghi trước cú
+dereference xấu có thể bị chìm xuống sau, phép kiểm biên sau khi ghi
+mảng có thể được kéo lên trước. Vì sao "chạy được khi tôi in giá trị"
+không phải bằng chứng — việc in đã thay đổi tối ưu hóa. Vị trí ổn định
+duy nhất là: không bao giờ chạy UB, dù một lần, dù trên đường "biết
+chắc" không thể xảy ra.

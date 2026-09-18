@@ -1,0 +1,22 @@
+{
+  "title": "Retry với backoff (đếm, không ngủ)",
+  "prompt": "Cài `static int attemptsToSucceed(FlakyTransport t, String url)`\ntrong `Solution`:\n- `interface FlakyTransport { int attempt(String url); }` — trả status\n  HTTP \"nhận được\": 200, hoặc 5xx.\n- attemptsToSucceed gọi attempt() lặp lại cho đến khi nhận 200 (retry\n  ngay được: 5xx), TỐI ĐA 3 lần retry (4 call); trả số lần thử (tính từ 1)\n  khi 200 xuất hiện, hoặc -1 nếu vẫn hỏng.\n- 4xx dừng ngay với -1 (lỗi client không retry).\n\nKhông Thread.sleep — thời gian backoff là hạ tầng; *chính sách* mới là\nthứ bạn cài.",
+  "tests": [
+    {
+      "name": "Thành công lần đầu",
+      "hint": "Một lần thử, xong."
+    },
+    {
+      "name": "Retry 5xx rồi thành công",
+      "hint": "503, 503, 200 → lần thử 3."
+    },
+    {
+      "name": "Bỏ cuộc sau 4 call",
+      "hint": "1 lần đầu + 3 retry tối đa."
+    },
+    {
+      "name": "4xx không bao giờ retry",
+      "hint": "Lỗi client → -1 ngay, chỉ một call."
+    }
+  ]
+}

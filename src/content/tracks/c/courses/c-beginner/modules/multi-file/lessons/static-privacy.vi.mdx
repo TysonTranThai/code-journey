@@ -1,0 +1,43 @@
+## Hai nghĩa của static, một ý tưởng: riêng tư + bền vững
+
+Trên một **hàm**: chỉ hiện hữu trong đơn vị dịch này.
+
+```c
+static int helper(int x) { return x * 2; }   // không ai bên ngoài link tới được
+```
+
+Trên một **biến cấp tệp**: chỉ hiện hữu trong đơn vị này VÀ sống suốt chương
+trình.
+
+```c
+static int hits = 0;     // bộ đếm riêng tư, giữ giá trị giữa các lần gọi
+void count_hit(void) { hits++; }
+int hit_count(void) { return hits; }
+```
+
+## Vì sao mặc định riêng tư là thắng
+
+Một hàm tên `helper` không có static sẽ thành tên toàn cục. Link hai tệp .c
+cùng định nghĩa `helper` và linker lỗi: trùng ký hiệu. Với `static`, helper
+của mỗi tệp là của riêng nó — không xung đột, không ghép nối vô ý.
+
+Kinh nghiệm: **mọi helper đều bắt đầu bằng static**; chỉ nâng lên công khai
+khi người gọi thực sự cần.
+
+## Module tái sử dụng trong một tệp: một "khu thư viện"
+
+```c
+/* ===== strlib (module) ===== */
+static int is_vowel(char c) {
+    return c=='a'||c=='e'||c=='i'||c=='o'||c=='u';
+}
+int count_vowels(const char *s) {          // công khai
+    int n = 0;
+    for (; *s; s++) n += is_vowel(*s);
+    return n;
+}
+/* ===== hết strlib ===== */
+```
+
+Các module sau (mảng + struct, module 20) dựng cùng hình dạng: một phần biểu
+diễn riêng tư, các thao tác công khai, người gọi không bao giờ nhìn vào trong.

@@ -1,0 +1,21 @@
+{
+  "id": "pa-mt-plugin-framework",
+  "title": "Exporter plugin framework",
+  "prompt": "Build a small plugin framework. The host provides `ExporterBase` (below). Plugins subclass it and auto-register.\n\nRequirements:\n\n1. `ExporterBase.__init_subclass__` registers subclasses by their `name` attribute (nonempty str, unique — duplicates raise `ValueError` at definition time).\n2. Every exporter must implement `export(rows)` returning a STRING. If a subclass lacks `export`, raise `TypeError` at definition time.\n3. `ExporterBase.create(name)` returns an instance or raises `KeyError`.\n4. `ExporterBase.names()` returns a sorted list of registered names.\n5. Provide two built-in plugins: `CsvExporter` (name='csv', rows of dicts joined as 'k1=v1,k2=v2' with rows on newlines) and `JsonLinesExporter` (name='jsonl', one compact JSON object per line).\n6. Hostile test: registering a plugin named 'csv' again must raise `ValueError`; a plugin missing `export` must raise `TypeError`.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import json\n\n\nclass ExporterBase:\n    # TODO: registration machinery + create/names\n    pass\n\n\n# TODO: CsvExporter and JsonLinesExporter",
+  "tests": [
+    {
+      "name": "built-ins register and produce output",
+      "code": "assert ExporterBase.names() == ['csv', 'jsonl'], f'names: {ExporterBase.names()}'\ncsv_out = ExporterBase.create('csv').export([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}])\nassert csv_out == 'a=1,b=2\\na=3,b=4', f'csv: {csv_out!r}'\njl_out = ExporterBase.create('jsonl').export([{'a': 1}, {'b': 'x'}])\nlines = jl_out.splitlines()\nassert len(lines) == 2 and json.loads(lines[0]) == {'a': 1} and json.loads(lines[1]) == {'b': 'x'}\nprint('ok')",
+      "hint": "csv row = fields in dict order joined with ',' as k=v; jsonl = json.dumps(obj, separators=(',', ':')) per line."
+    },
+    {
+      "name": "hostile registrations fail fast",
+      "code": "try:\n    class Csv2(ExporterBase):\n        name = 'csv'\n        def export(self, rows): return ''\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('duplicate name must raise ValueError')\ntry:\n    class Broken(ExporterBase):\n        name = 'broken'\nexcept TypeError:\n    pass\nelse:\n    raise AssertionError('missing export must raise TypeError')\ntry:\n    ExporterBase.create('nope')\nexcept KeyError:\n    pass\nelse:\n    raise AssertionError('unknown name must raise KeyError')\nprint('ok')",
+      "hint": "All three validations live in __init_subclass__ + a dict lookup in create()."
+    }
+  ],
+  "level": "real-world"
+}

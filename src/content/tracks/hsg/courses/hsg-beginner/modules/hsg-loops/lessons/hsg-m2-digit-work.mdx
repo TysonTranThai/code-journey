@@ -1,0 +1,43 @@
+## Peeling digits with % and /
+
+An integer is a sequence of digits you can process without any string:
+
+```cpp
+long long n; in >> n;
+long long digitSum = 0;
+while (n > 0) {
+    digitSum += n % 10;   // last digit
+    n /= 10;              // drop last digit
+}
+```
+
+`n % 10` = last digit; `n / 10` = everything before it. Two operations,
+every digit problem becomes a loop problem.
+
+### The classic digit tasks
+
+| Task | How |
+| --- | --- |
+| Digit sum | accumulate `n % 10` |
+| Digit count | count iterations |
+| Largest digit | track max of `n % 10` |
+| Digit product | accumulate product (beware 0 digits) |
+| Reverse digits | `rev = rev * 10 + n % 10` |
+
+### Worked example: is the number a palindrome?
+
+```cpp
+long long n; in >> n;
+long long m = n, rev = 0;
+while (m > 0) { rev = rev * 10 + m % 10; m /= 10; }
+out << (rev == n ? "PALIN" : "NO") << "\n";
+```
+
+Note we kept `n` untouched in a copy `m` — the loop destroys what it
+peels. Forgetting the copy is a classic bug.
+
+### Overflow and negatives
+
+Reversing 19-digit numbers can overflow `long long` — read constraints
+first. And for negative inputs, decide the convention (usually work with
+`abs(n)`) before looping.

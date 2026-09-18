@@ -1,0 +1,20 @@
+{
+  "id": "i2-dash-tokens",
+  "title": "Token Pipeline",
+  "prompt": "Write `buildTheme(base, overrides)` returning the merged token object (`overrides` wins), plus `tokenValue(tokens, path, fallback)` where `path` is dot-separated (e.g. `\"color.bg\"`) resolving nested tokens; return `fallback` for missing paths.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function buildTheme(base, overrides) {\n  // your code\n}\n\nfunction tokenValue(tokens, path, fallback) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "merge with override priority",
+      "code": "const fn = new Function(code + \"\\nreturn { buildTheme, tokenValue };\");\nconst { buildTheme, tokenValue } = fn();\nconst t = buildTheme({ color: { bg: \"white\" }, radius: 8 }, { color: { bg: \"black\" } });\nif (t.color.bg !== \"black\") throw new Error(\"Override wins on conflicts.\");\nif (t.color !== undefined && t.color.radius !== undefined) throw new Error(\"Only specified keys change.\");\nif (t.radius !== 8) throw new Error(\"Unrelated tokens survive.\");",
+      "hint": "Shallow merge is fine unless both values are plain objects — then merge recursively one level per call."
+    },
+    {
+      "name": "dot-path resolution with fallback",
+      "code": "const fn = new Function(code + \"\\nreturn { buildTheme, tokenValue };\");\nconst { buildTheme, tokenValue } = fn();\nconst tokens = { color: { bg: \"#fff\", fg: { base: \"#000\" } } };\nif (tokenValue(tokens, \"color.bg\") !== \"#fff\") throw new Error(\"Two-segment path.\");\nif (tokenValue(tokens, \"color.fg.base\") !== \"#000\") throw new Error(\"Three-segment path.\");\nif (tokenValue(tokens, \"color.missing\", \"gray\") !== \"gray\") throw new Error(\"Missing paths return the fallback.\");",
+      "hint": "path.split('.').reduce((o, k) => (o == null ? o : o[k]), tokens) ?? fallback."
+    }
+  ]
+}

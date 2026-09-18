@@ -1,0 +1,48 @@
+Trình duyệt cung cấp cho bạn đồng hồ và observers — dùng tốt chúng chính là
+điều phân biệt một app mượt với một app giật cục.
+
+## Timer là hàng đợi, không phải chuông báo
+
+`setTimeout(fn, 0)` không chạy "ngay lập tức" — nó xếp `fn` vào
+hàng đợi để chạy sau khi code hiện tại kết thúc (event loop, sẽ được dạy đúng
+trong module async). `setInterval(fn, 1000)` không phát nhanh hơn mỗi một
+giây **khi main thread rảnh** — một handler chậm sẽ kéo giãn khoảng cách thật.
+Khi cần hành động lặp lại, hãy hẹn vòng `setTimeout` kế tiếp _sau khi_
+công việc hoàn thành.
+
+## Debounce và throttle
+
+- **Debounce** — phản hồi khi người dùng _nghỉ tay_: chờ một khoảng lặng
+  (search-as-you-type).
+- **Throttle** — phản hồi tối đa một lần mỗi khoảng: chặn tốc độ
+  (báo vị trí scroll).
+
+```js
+function debounce(fn, ms) {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), ms);
+  };
+}
+```
+
+Cả hai đều là mẫu closure từ Module 1 — handle của timer nằm trong closure.
+
+## Observers: trình duyệt theo dõi giúp bạn
+
+Thay vì polling, hãy đăng ký:
+
+```js
+const io = new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    if (e.isIntersecting) loadMore();
+  }
+});
+io.observe(sentinel);
+```
+
+`IntersectionObserver` báo khả năng hiển thị (lazy image, infinite
+scroll); `ResizeObserver` báo thay đổi kích thước (vẽ lại canvas, thu gọn
+widget). Cả hai rẻ và chính xác hơn các handler scroll/resize — và nhớ đến
+`prefers-reduced-motion` khi có animation.

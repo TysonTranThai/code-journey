@@ -1,0 +1,21 @@
+{
+  "id": "ca7-union-find",
+  "title": "Union-Find with Compression",
+  "prompt": "Union-find over fixed-size element sets:\n \n```c\nvoid uf_init(int *parent, int *rank_, int n);\nint uf_find(int *parent, int x);\nvoid uf_union(int *parent, int *rank_, int a, int b);\nint uf_connected(int *parent, int a, int b);\n```\n \nfind uses path compression; union by rank; connected returns 1 iff same root.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "components merge",
+      "code": "int parent[8], rk[8];\nuf_init(parent, rk, 8);\nuf_union(parent, rk, 0, 1);\nuf_union(parent, rk, 2, 3);\nCHECK_EQ(uf_connected(parent, 0, 1), 1);\nCHECK_EQ(uf_connected(parent, 0, 2), 0);\nuf_union(parent, rk, 1, 2);\nCHECK_EQ(uf_connected(parent, 0, 3), 1);",
+      "hint": "Two pairs union separately, then a bridging union merges the components — connectivity follows transitively."
+    },
+    {
+      "name": "find is idempotent",
+      "code": "int parent2[4], rk2[4];\nuf_init(parent2, rk2, 4);\nuf_union(parent2, rk2, 0, 1);\nint r1 = uf_find(parent2, 0);\nint r2 = uf_find(parent2, 0);\nCHECK_EQ(r1, r2);\nCHECK_EQ(uf_find(parent2, 1), r1);",
+      "hint": "Repeated finds are stable; after compression, a member and its root agree immediately."
+    }
+  ],
+  "level": "independent"
+}

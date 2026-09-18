@@ -1,0 +1,29 @@
+## Khai báo, khởi tạo, gán
+
+```csharp
+int score;              // khai báo: một ô tên score chứa int
+score = 10;             // gán: đưa giá trị vào
+int level = 3;          // khai báo + khởi tạo trên một dòng
+score = score + 5;      // gán lại: giá trị cũ được đọc rồi thay thế
+```
+
+**Kiểu của biến cố định vĩnh viễn** ngay từ lúc khai báo. `int score = "ten";` là lỗi biên dịch — không phải bất ngờ lúc chạy. Đó là khác biệt lớn nhất so với ngôn ngữ kịch bản, và nó là một lợi thế: compiler bắt cả một lớp lỗi trước khi chương trình chạy.
+
+**Gán giá trị chắc chắn**: C# từ chối cho bạn *đọc* biến cục bộ trước khi bạn đã ghi nó:
+
+```csharp
+int x;
+Console.WriteLine(x);   // lỗi CS0165: use of unassigned local
+```
+
+Compiler theo dõi điều này theo từng nhánh thực thi. Có vẻ khắt khe; nhưng nó xóa sổ cả một họ lỗi (đọc rác trong bộ nhớ) với chi phí bằng 0.
+
+## Tên định danh
+
+Tên phân biệt chữ hoa/thường (`score` và `Score` khác nhau), phải bắt đầu bằng chữ hoặc `_`, và theo quy ước dùng `camelCase` cho biến cục bộ. Ưu tiên tên mang ý nghĩa: `elapsedMs` hơn `e`; `invoiceCount` hơn `n`. Compiler không quan tâm; đồng đội của bạn (và bạn-của-sáu-tháng-sau) thì có.
+
+## Khai báo nhiều biến
+
+```csharp
+int a = 1, b = 2;   // hợp lệ, nhưng thường rõ ràng hơn nếu tách hai dòng
+```

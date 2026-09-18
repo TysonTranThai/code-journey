@@ -1,0 +1,15 @@
+{
+  "id": "cint-checkpoint-m5-task",
+  "title": "Bounded String Queue",
+  "prompt": "Implement the declared BQueue API exactly to contract: FIFO, copies\nowned by the queue, -1 on full/empty/bad args, NULL-tolerant, fixed cap 8,\nstrings up to 31 chars.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\ntypedef struct BQueue BQueue;\nBQueue *bq_create(void);\nint bq_push(BQueue *q, const char *s);\nint bq_pop(BQueue *q, char *out);\nsize_t bq_len(const BQueue *q);\nsize_t bq_capacity(const BQueue *q);\nvoid bq_destroy(BQueue *q);\n",
+  "tests": [
+    {
+      "name": "fifo under contract",
+      "code": "\nBQueue *q = bq_create();\nCHECK(q != NULL);\nCHECK_EQ(bq_len(q), 0);\nCHECK_EQ(bq_capacity(q), 8);\nchar out[32];\nCHECK_EQ(bq_pop(q, out), -1);\nCHECK_EQ(bq_push(q, \"first\"), 0);\nCHECK_EQ(bq_push(q, \"second\"), 0);\nCHECK_EQ(bq_push(q, \"third\"), 0);\nCHECK_EQ(bq_len(q), 3);\nCHECK_EQ(bq_pop(q, out), 0); CHECK(!strcmp(out, \"first\"));\nCHECK_EQ(bq_pop(q, out), 0); CHECK(!strcmp(out, \"second\"));\nCHECK_EQ(bq_push(q, \"fourth\"), 0);\nCHECK_EQ(bq_pop(q, out), 0); CHECK(!strcmp(out, \"third\"));\nCHECK_EQ(bq_pop(q, out), 0); CHECK(!strcmp(out, \"fourth\"));\nCHECK_EQ(bq_pop(q, out), -1);\nfor (int i = 0; i < 8; i++) CHECK_EQ(bq_push(q, \"x\"), 0);\nCHECK_EQ(bq_push(q, \"overflow\"), -1);\nCHECK_EQ(bq_push(NULL, \"x\"), -1);\nCHECK_EQ(bq_push(q, NULL), -1);\nCHECK_EQ(bq_pop(NULL, out), -1);\nbq_destroy(q);\nbq_destroy(NULL);\n",
+      "hint": "A ring buffer (head, count) over a fixed char[8][32] store passes everything with no malloc at all."
+    }
+  ]
+}

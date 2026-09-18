@@ -1,0 +1,15 @@
+{
+  "id": "cint-checkpoint-m9-task",
+  "title": "Generic Library: Sort, Search, Dedup",
+  "prompt": "Ship the mini-library: a generic toolkit over void* with a typed\nfacade. The boilerplate declares the raw engine and the facade macro\n(you implement the engine functions; the facade is given):\n\n```c\n/* engine: */\nvoid g_sort(void *base, size_t n, size_t size,\n            int (*cmp)(const void *, const void *));    /* any sort you like */\nsize_t g_dedup(void *base, size_t n, size_t size,\n               int (*cmp)(const void *, const void *));\n/* removes adjacent duplicates (array MUST be sorted first — sort it\n   yourself inside), returns new length. In place; tail is unspecified. */\n/* facade over int arrays only: */\n#define isort(a, n) g_sort((a), (n), sizeof(int), cmp_int)\n```\n\n`cmp_int` is provided in the boilerplate.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\nstatic int cmp_int(const void *a, const void *b) {\n    int x = *(const int *)a, y = *(const int *)b;\n    return (x > y) - (x < y);\n}\nstatic int cmp_double(const void *a, const void *b) {\n    double x = *(const double *)a, y = *(const double *)b;\n    return (x > y) - (x < y);\n}\nvoid g_sort(void *base, size_t n, size_t size,\n            int (*cmp)(const void *, const void *));\nsize_t g_dedup(void *base, size_t n, size_t size,\n               int (*cmp)(const void *, const void *));\n#define isort(a, n) g_sort((a), (n), sizeof(int), cmp_int)\n",
+  "tests": [
+    {
+      "name": "engine + facade",
+      "code": "\nint a[] = {5, 1, 5, 3, 1, 9, 5};\nisort(a, 7);                       /* facade dispatches with sizeof(int) */\nCHECK(a[0] == 1 && a[1] == 1 && a[6] == 9);\nsize_t m = g_dedup(a, 7, sizeof(int), cmp_int);\nCHECK_EQ(m, 4);\nCHECK(a[0] == 1 && a[1] == 3 && a[2] == 5 && a[3] == 9);\ndouble d[] = {2.5, 2.5, 2.5};\ng_sort(d, 3, sizeof(double), cmp_double);\nsize_t md = g_dedup(d, 3, sizeof(double), cmp_double);\nCHECK_EQ(md, 1);\nCHECK(d[0] == 2.5);\n",
+      "hint": "Sort first (any algorithm — even insertion sort via swap_bytes), then two-finger compaction copying distinct elements down."
+    }
+  ]
+}

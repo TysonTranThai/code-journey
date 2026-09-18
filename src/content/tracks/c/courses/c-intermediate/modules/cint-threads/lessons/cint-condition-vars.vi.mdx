@@ -1,0 +1,41 @@
+## Chờ đợi lịch sự
+
+Thread cần dữ liệu có hai lựa chọn xấu: quay vòng theo cờ (đốt CPU) hoặc
+ngủ mù (lãng phí độ trễ). Lựa chọn thứ ba là **condition variable** —
+kênh chờ đi cặp với một mutex:
+
+```c
+/* consumer: */
+mtx_lock(&m);
+while (!data_ready)               /* WHILE, không phải if — xem dưới */
+    cnd_wait(&cv, &m);            /* all định: unlock m + ngủ;
+                                     lock lại m trước khi trả về */
+use(data);
+mtx_unlock(&m);
+
+/* producer: */
+mtx_lock(&m);
+data_ready = 1;
+cnd_signal(&cv);                  /* đánh thức MỘT thread chờ */
+mtx_unlock(&m);
+```
+
+`cnd_wait` thả mutex khi ngủ và lấy lại trước khi trả về — sự ghép cặp
+đó là lý do vị từ (`data_ready`) và signal đều diễn ra dưới cùng một
+mutex.
+
+## Vòng while không phải phong cách
+
+`cnd_signal` có thể đánh thức thread ngay cả khi vị từ sai (*spurious
+wakeup* — chuẩn cho phép), và giữa signal và tỉnh dậy, consumer khác
+có thể đã ăn hết dữ liệu. `while` kiểm lại vị từ sau mỗi lần tỉnh;
+`if` tiến hành trên một lời nói dối. Đây là dòng được test nhiều nhất
+trong dạy đồng thời — và dòng học viên fail nhiều nhất.
+
+## Hàng đợi có giới hạn: luận điểm của module
+
+Producer/consumer với ring cố định: hai condition variable `not_full`
+và `not_empty` trên cùng một mutex; producer chờ `not_full`, consumer
+chờ `not_empty`; mỗi bên signal cho *bên kia* sau khi đổi state. Đây là
+hình dạng bên trong mọi work queue, channel, connection pool — và là
+bài build của checkpoint.

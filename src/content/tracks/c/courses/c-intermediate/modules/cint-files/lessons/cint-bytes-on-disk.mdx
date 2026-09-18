@@ -1,0 +1,52 @@
+## fwrite moves bytes — including padding
+
+```c
+struct Rec { long id; int qty; };
+struct Rec r = {7, 3};
+fwrite(&r, sizeof r, 1, f);   /* writes 16 bytes on a 64-bit libc:
+                                 8 (id) + 4 (qty) + 4 (padding!) */
+```
+
+The four padding bytes are *garbage carried to disk* — worse, they are
+non-portable: a different compiler or ABI lays the struct out
+differently and your file format breaks. Portable record I/O writes
+**fields, not structs**:
+
+```c
+/* field-by-field, fixed widths, defined by YOU */
+uint32_t id = (uint32_t)r.id;
+fwrite(&id, sizeof id, 1, f);
+```
+
+## Endianness is a tax you pay once
+
+Little-endian machines store the low byte first. If a file is written
+as raw `uint32_t`, an x86 writer and a big-endian reader disagree on
+every multi-byte field. Formats that live beyond one machine define a
+byte order (network order = big-endian) and convert at the boundary:
+
+```c
+/* little-endian write of a 32-bit value, byte by byte */
+unsigned char b[4] = { v & 0xFF, (v >> 8) & 0xFF, (v >> 16) & 0xFF, (v >> 24) & 0xFF };
+fwrite(b, 4, 1, f);
+```
+
+Byte-by-byte I/O is slower but *defines* the format — no platform can
+disagree with you about it.
+
+## The self-describing header
+
+Every non-trivial binary format starts with a header: magic number
+(your format's signature), version, count. Readers check all three
+*before* trusting anything else:
+
+```c
+unsigned char hdr[8];
+fread(hdr, 1, 8, f) == 8 || die();
+memcmp(hdr, "CJR1", 4) == 0 || die("wrong magic");
+/* hdr[4..7] = record count, little-endian */
+```
+
+`fread` returning fewer bytes than asked is the *normal* failure mode
+of short files — not an exotic event. Counting your bytes is the
+discipline.

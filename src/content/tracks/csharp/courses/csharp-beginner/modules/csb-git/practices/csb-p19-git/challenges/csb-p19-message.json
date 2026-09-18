@@ -1,0 +1,21 @@
+{
+  "id": "csb-p19-message",
+  "title": "Commit message hygiene",
+  "prompt": "Implement `static string? ValidateMessage(string message)` — return null for a good message (non-empty first line, ≤ 72 chars, no trailing period, doesn't start lowercase) or a short reason string: \"empty\", \"too-long\", \"trailing-period\", \"lowercase-start\".",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "good",
+      "code": "Cj.Eq(Solution.ValidateMessage(\"Fix off-by-one in SumRange\"), null, \"clean message\");\nCj.Eq(Solution.ValidateMessage(\"Add retry loop to importer\"), null, \"another clean one\");\nCj.Eq(Solution.ValidateMessage(new string('A', 72)), null, \"exactly 72 chars is legal\");",
+      "hint": "Imperative, concise, no period."
+    },
+    {
+      "name": "failures",
+      "code": "Cj.Eq(Solution.ValidateMessage(\"\"), \"empty\", \"empty rejected\");\nCj.Eq(Solution.ValidateMessage(new string('x', 73)), \"too-long\", \"over 72\");\nCj.Eq(Solution.ValidateMessage(\"Fix the thing.\"), \"trailing-period\", \"period\");\nCj.Eq(Solution.ValidateMessage(\"fix the thing\"), \"lowercase-start\", \"lowercase\");",
+      "hint": "Each failure mode has its own reason — diagnosable messages about messages."
+    }
+  ],
+  "level": "independent"
+}

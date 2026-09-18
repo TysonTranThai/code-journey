@@ -1,0 +1,39 @@
+## for: counted repetition
+
+```c
+for (int i = 0; i < 5; i++) {
+    printf("%d ", i);        // 0 1 2 3 4
+}
+```
+
+init; condition; step — run init once, test before every pass, step after.
+Loop variable visible only inside the loop (declare it there).
+
+## while: condition first
+
+```c
+int n = 40;
+while (n > 0) {
+    n = n / 2;
+}
+```
+
+Use when the count is unknown in advance. The condition is tested BEFORE the
+first pass — a false condition skips the body entirely.
+
+## do-while: body first
+
+```c
+int choice;
+do {
+    choice = read_menu();     // runs at least once
+} while (!valid(choice));
+```
+
+Tested AFTER each pass. Rare but right for "ask, then check" flows.
+
+## Termination is your job
+
+Every loop needs something inside the body to move the condition toward false.
+`while (1)` with no exit is an infinite loop — the sandbox will kill it at the
+timeout and the challenge fails.

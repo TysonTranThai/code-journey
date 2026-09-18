@@ -1,0 +1,36 @@
+## Tràn số có dấu
+
+`INT_MAX + 1` là UB — không phải wraparound. Thay thế có định nghĩa:
+kiểu rộng hơn (`long long`), kiểm trước (`a > INT_MAX - b`), hoặc số
+học unsigned khi wraparound *chính là* ngữ nghĩa mong muốn (unsigned
+wrap modulo 2³² — được chỉ định).
+
+## Truy cập ngoài biên
+
+`a[n]` trên mảng n phần tử là UB dù chỉ *tính địa chỉ* quá một-phần-tử
+cuối (con trỏ một-phần-tử tồn tại; đọc hoặc tạo xa hơn thì không). Các
+hàm chuỗi tin vào buffer của caller (`strcpy`, `strcat`, `sprintf`) là
+nhà máy UB — họ có giới hạn (`snprintf`, `memcpy` với kích thước tường
+minh) là thay thế.
+
+## Vi phạm lifetime
+
+`use-after-free` (lifetime đã kết thúc), `double free`, trả con trỏ vào
+biến cục bộ (biến cục bộ chết tại return). Đều là UB. Cách chữa cấu
+trúc là kỷ luật ownership (Module 3): mỗi free ghép cặp, mỗi khoản mượn
+ghi rõ, mọi ứng viên dangling được null.
+
+## Shift không hợp lệ và đọc không xác định
+
+`x << 32` trên int 32-bit, shift âm, `1 << 31` *dưới dạng int có dấu*
+(tràn số) — đều UB. Số bit shift phải nằm trong `[0, width-1]` và toán
+tử trái là unsigned khi bit cao có ý nghĩa. Đọc biến tự động chưa khởi
+tạo (`int x; use(x);`) là không xác định — UB trong thực tế. Khởi tạo
+mọi thứ; `-Wuninitialized` bắt được phần nhìn tĩnh được.
+
+## Toolchain giúp được đâu thì giúp
+
+Cảnh báo (`-Wall -Wextra -Wpedantic` — flags của platform này) bắt phần
+nhìn tĩnh được. UBSan/ASan bắt thêm được, nhưng sandbox này không có —
+nên *danh mục* trên là thứ bạn mang theo, và kỷ luật là viết dạng có
+định nghĩa một cách phản xạ.

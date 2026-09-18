@@ -1,0 +1,55 @@
+## MRO and cooperative `super()`
+
+Every class has a **method resolution order** — the C3-linearized list of
+classes Python searches left-to-right for an attribute. Inspect it with
+`Cls.__mro__`; reason about it, never memorize individual cases.
+
+Three rules cover almost everything:
+
+1. Children come before parents.
+2. Base classes appear in the order written in the class statement.
+3. The linearization is consistent: no class appears before one of its own
+   bases in a way that would break the first two rules (C3 rejects such
+   hierarchies with a `TypeError` at class-creation time).
+
+`super()` does **not** mean "my parent". It means "the *next* class in the MRO
+after me, for whoever is currently resolving". That is what makes **mixin**
+cooperation work:
+
+```python
+class ReprMixin:
+    def __repr__(self):
+        return f"{type(self).__name__}({', '.join(f'{k}={v!r}' for k, v in vars(self).items())})"
+
+class JSONMixin:
+    def to_json(self):
+        import json
+        return json.dumps(vars(self))
+
+class Point(ReprMixin, JSONMixin):
+    def __init__(self, x, y):
+        self.x, self.y = x, y
+
+p = Point(1, 2)
+print(p)              # Point(x=1, y=2)
+print(p.to_json())    # {"x": 1, "y": 2}
+```
+
+`__init_subclass__` is the cooperative hook: the *parent* class runs code each
+time a subclass is defined — registering subclasses, validating class
+attributes, or auto-generating methods. It runs without any metaclass:
+
+```python
+class Registry:
+    _registry = {}
+
+    def __init_subclass__(cls, key=None, **kw):
+        super().__init_subclass__(**kw)
+        Registry._registry[key or cls.__name__.lower()] = cls
+
+class RedisCache(Registry, key="redis"): pass
+print(Registry._registry)   # {'redis': <class RedisCache>}
+```
+
+Advanced habit: when a hierarchy grows weird, print
+`[c.__name__ for c in Cls.__mro__]` and ask what each `super()` call forwards to.

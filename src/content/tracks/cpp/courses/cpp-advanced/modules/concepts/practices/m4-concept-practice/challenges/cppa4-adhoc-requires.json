@@ -1,0 +1,26 @@
+{
+  "id": "cppa4-adhoc-requires",
+  "title": "The const-Probe Concept",
+  "prompt": "Implement `Sized` as an ad-hoc `requires requires` clause probing `c.size()` **on a const reference** (with a `std::convertible_to<std::size_t>` result), and `totalIfSized(c)` returning the size — or -1 through the fallback for unsatisfying types.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <concepts>\n#include <vector>\n\n// TODO: template <class C> concept Sized = requires(const C& c) { ... };\n// TODO: template <Sized C> std::size_t totalIfSized(const C& c);\n// TODO: fallback: template <class C> std::size_t totalIfSized(const C&);  // returns -1 cast\n",
+  "tests": [
+    {
+      "name": "sized containers report their size",
+      "code": "CHECK_EQ(totalIfSized(std::vector<int>{1, 2, 3}), std::size_t{3});\nCHECK_EQ(totalIfSized(std::vector<int>{}), std::size_t{0});",
+      "hint": "template <class C> concept Sized = requires(const C& c) { { c.size() } -> std::convertible_to<std::size_t>; };"
+    },
+    {
+      "name": "unsized types hit the fallback",
+      "code": "struct NoSize {};\nCHECK_EQ(totalIfSized(NoSize{}), static_cast<std::size_t>(-1));",
+      "hint": "The unconstrained fallback overload (declarable as a template taking any C) returns static_cast<std::size_t>(-1)."
+    },
+    {
+      "name": "a non-const size() does NOT satisfy",
+      "code": "struct Constless {\n    std::size_t size() { return 99; }   // not const — must not satisfy Sized\n};\nCHECK_EQ(totalIfSized(Constless{}), static_cast<std::size_t>(-1));",
+      "hint": "The probe must be requires(const C& c) — a non-const size() fails the probe, so the fallback answers."
+    }
+  ]
+}

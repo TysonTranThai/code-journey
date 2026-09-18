@@ -3,6 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { db } from "@/lib/db";
 import { users, achievements, progressEvents, submissions } from "@/lib/db/schema";
 import { getAchievementDefs } from "@/lib/progress/achievement-defs";
+import { getLessonPractices } from "@/lib/curriculum/loaders";
 import {
   maybeAwardAchievements,
   ProgressVerificationError,
@@ -119,7 +120,7 @@ describe.skipIf(!dbUp)("lesson completion verification (PROG-02)", () => {
     await db.delete(users).where(sql`${users.email} = ${testEmail}`);
   });
 
-  it("rejects completion of a lesson whose challenge was never passed", async () => {
+  it("rejects completion of a lesson whose practice was never passed", async () => {
     await expect(
       recordLessonCompletion(
         userId,
@@ -131,13 +132,24 @@ describe.skipIf(!dbUp)("lesson completion verification (PROG-02)", () => {
     ).rejects.toBeInstanceOf(ProgressVerificationError);
   });
 
-  it("records completion once the challenge has a passing submission (idempotent)", async () => {
-    await db.insert(submissions).values({
-      userId,
-      challengeId: "fix-the-heading",
-      code: "<h1>x</h1>",
-      verdict: "passed",
-    });
+  it("records completion once every anchored practice challenge has a passing submission (idempotent)", async () => {
+    // PROG-02 (Course 1 revision): a lesson is complete only when every
+    // challenge in its anchored practice sets has a passing submission.
+    const practiceChallengeIds = getLessonPractices(
+      "web-development",
+      "web-development-beginner",
+      "html-foundations",
+      "introduction-to-html",
+    ).flatMap((set) => set.challenges);
+    expect(practiceChallengeIds.length).toBeGreaterThan(0);
+    await db.insert(submissions).values(
+      practiceChallengeIds.map((challengeId) => ({
+        userId,
+        challengeId,
+        code: "<h1>x</h1>",
+        verdict: "passed" as const,
+      })),
+    );
     const first = await recordLessonCompletion(
       userId,
       "web-development",

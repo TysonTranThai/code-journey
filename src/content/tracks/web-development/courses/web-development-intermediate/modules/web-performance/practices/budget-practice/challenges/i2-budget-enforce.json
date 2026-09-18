@@ -1,0 +1,20 @@
+{
+  "id": "i2-budget-enforce",
+  "title": "Budget Enforcer",
+  "prompt": "Write `audit(assets, budgets)` — assets is { js: KB, css: KB, images: KB }; budgets is { js, css, images } (max allowed). Return { pass, over } where pass is true when every category is within budget, and over is an array of the exceeded category names sorted alphabetically.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function audit(assets, budgets) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "passes when within budget",
+      "code": "const fn = new Function(code + \"\\nreturn { audit };\");\nconst { audit } = fn();\nconst out = audit({ js: 150, css: 40, images: 300 }, { js: 170, css: 50, images: 400 });\nif (out.pass !== true || out.over.length !== 0) throw new Error(\"All categories fit.\");\n",
+      "hint": "Compare each shared key."
+    },
+    {
+      "name": "reports and sorts overruns",
+      "code": "const fn = new Function(code + \"\\nreturn { audit };\");\nconst { audit } = fn();\nconst out = audit({ js: 200, css: 60, images: 300 }, { js: 170, css: 50, images: 400 });\nif (out.pass !== false) throw new Error(\"Two categories over.\");\nif (out.over.join(\",\") !== \"css,js\") throw new Error(\"Alphabetical: css before js.\");\n",
+      "hint": "Collect, sort, and set pass from the emptiness of over."
+    }
+  ]
+}

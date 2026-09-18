@@ -1,0 +1,26 @@
+## Quy tắc biên giới
+
+API công khai kiểm tra; helper nội bộ assert. Parser chuyển byte không tin cậy thành các kiểu đã kiểm tra tại một điểm chặn duy nhất; mọi thứ hạ nguồn làm việc với các kiểu không thể chứa giá trị sai. `if` rải khắp nơi nghĩa là biên giới ở khắp nơi và ở hư không.
+
+## Số học an toàn tràn số
+
+`a + b` trên int là cái bẫy. Hình dạng chuyên nghiệp:
+
+```cpp
+bool addChecked(int a, int b, int& out) {
+    if (b > 0 && a > INT_MAX - b) return false;
+    if (b < 0 && a < INT_MIN - b) return false;
+    out = a + b;
+    return true;
+}
+```
+
+hoặc `__builtin_add_overflow` khi có sẵn. Kỷ luật tương tự áp dụng cho trừ, nhân, và phép tính chỉ số (`i + 1` tràn khi `i == INT_MAX`).
+
+## Truy cập có kiểm tra như một kiểu
+
+Trả `std::optional<T>` hoặc kết quả dạng `std::expected<T, E>` thay vì giá trị cắm mốc (`-1`, `nullptr` "đôi khi"). Sentinel mà caller quên kiểm tra là nhà máy sản xuất bug; optional là hợp đồng thời gian biên dịch.
+
+## Grader kiểm gì ở đây
+
+Nạp vào hàm các đầu vào adversarial (INT_MAX, container rỗng, chỉ số vượt cuối) và yêu cầu: hành vi xác định, kết quả đúng hoặc thất bại sạch — không bao giờ rác, không bao giờ crash. Bản cài ngây thơ trượt bằng toán học, tất định.

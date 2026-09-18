@@ -1,0 +1,51 @@
+Types are most valuable exactly where data arrives from the outside.
+
+## DTOs at the edge
+
+Model the server's response as a type, then VALIDATE before trusting it —
+types are compile-time only; the network does not read them:
+
+```ts
+type TaskDTO = { id: string; title: string; done: boolean };
+
+function isTask(v: unknown): v is TaskDTO {
+  return (
+    typeof v === "object" &&
+    v !== null &&
+    typeof (v as any).id === "string" &&
+    typeof (v as any).title === "string" &&
+    typeof (v as any).done === "boolean"
+  );
+}
+```
+
+A runtime guard + compile-time type is the standard pairing: the guard protects
+runtime, the type documents and checks the rest of the program.
+
+## Discriminated fetch results
+
+Combine with the unions lesson — an API client that cannot lie:
+
+```ts
+type ApiResult<T> =
+  | { ok: true; data: T }
+  | { ok: false; status: number };
+
+async function getJSON<T>(url: string): Promise<ApiResult<T>> { ... }
+```
+
+Callers MUST check `ok` before touching `data` — the loading/error UI contract
+from Module 3, now enforced by the compiler.
+
+## DOM access is also a boundary
+
+`document.querySelector` returns `Element | null`. Narrow honestly:
+
+```ts
+const btn = document.querySelector<HTMLButtonElement>("#submit");
+if (!btn) throw new Error("#submit missing"); // or return early
+btn.disabled = true; // HTMLButtonElement members
+```
+
+The generic parameter is a claim you are making about the selector — keep the
+null check; the type does not make the element exist.

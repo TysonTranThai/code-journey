@@ -1,0 +1,42 @@
+Deleting a derived object through a base pointer without a **virtual
+destructor** is undefined behavior — typically the derived destructor never
+runs and resources leak.
+
+```cpp
+#include <iostream>
+
+class BaseBad {
+public:
+    ~BaseBad() { std::cout << "BaseBad dtor\n"; }       // NOT virtual
+};
+
+class DerivedBad : public BaseBad {
+public:
+    ~DerivedBad() { std::cout << "DerivedBad dtor\n"; } // never runs via Base*
+};
+
+class BaseGood {
+public:
+    virtual ~BaseGood() = default;                       // virtual: correct chain
+};
+
+class DerivedGood : public BaseGood {
+public:
+    ~DerivedGood() { std::cout << "DerivedGood dtor\n"; }
+};
+```
+
+## The rule, stated once
+
+**Any class intended for polymorphic deletion must have a public virtual
+destructor.** If a type is not meant to be a base, keep its destructor
+non-virtual (and preferably make the class `final`). The cost of `virtual
+~T() = default` is one vtable pointer; the cost of forgetting it is leaks and
+undefined behavior.
+
+## When you will not be deleted via base*
+
+If ownership never travels through a base pointer — pure value semantics, or
+`std::unique_ptr<Derived>` with the deleter typed — a virtual destructor is
+not required. But interfaces leak less when you simply follow the rule:
+design a base → `virtual ~Base() = default;`, no exceptions.

@@ -1,0 +1,78 @@
+## Không phải rủi ro ngẫu nhiên — mà là sở hữu bị gãy
+
+Ba lỗi kinh điển không phải "bug tình cờ"; mỗi lỗi là một câu hỏi sở hữu cụ thể
+không được trả lời:
+
+| Lỗi | Câu hỏi bị bỏ ngỏ |
+|---|---|
+| **Rò rỉ (leak)** | Ai free thứ này? (Chưa ai được giao.) |
+| **Dùng-sau-free** | Nó sống bao lâu? (Có người dùng sau khi lời đáp hết hạn.) |
+| **Free-hai-lần** | Ai sở hữu nó? (Hai owner cùng làm nghĩa vụ.) |
+
+## Rò rỉ: mọi đường đi phải kết thúc ở đâu đó
+
+Hàm cấp phát rồi thoát sớm (return lỗi, break vòng lặp) vẫn phải free. Hình
+dạng thất bại:
+
+```c
+int load(Config **out) {
+    Config *c = malloc(sizeof *c);
+    if (!parse(c)) return 0;        /* RÒ RỈ: c không được free trên nhánh này */
+    *out = c;
+    return 1;
+}
+```
+
+Hình dạng sửa được: free trên mọi nhánh thất bại (hoặc dùng một điểm thoát):
+
+```c
+int load(Config **out) {
+    Config *c = malloc(sizeof *c);
+    if (!c) return 0;
+    if (!parse(c)) { free(c); return 0; }   /* mọi đường đều được tính */
+    *out = c;
+    return 1;
+}
+```
+
+**Nguyên tắc: đếm các phép cấp phát, rồi đếm các phép free trên từng đường đi.
+Chúng phải cân — trừ đường thành công nơi quyền sở hữu được bàn giao.**
+
+## Dùng-sau-free: con trỏ sống lâu hơn thỏa thuận
+
+```c
+char *name = strdup("ada");
+free(name);
+printf("%s\\n", name);      /* UB: đọc bộ nhớ đã free */
+```
+
+Nó đọc *rác hoặc dữ liệu cũ* — không chẩn đoán, không bẫy, loại bug khó chịu
+nhất. Phòng tránh: gán NULL sau free (bài 1 của module), và không bao giờ để
+con trỏ mượn sống lâu hơn lần mượn. Cấu trúc lưu con trỏ mượn phải ghi chú
+"không sở hữu; không free; vô hiệu sau khi owner free."
+
+## Free-hai-lần: hai owner, một đối tượng
+
+```c
+void give_away(char *s) { log(s); free(s); }   /* nhận sở hữu */
+/* caller: */
+give_away(name);
+free(name);                /* FREE HAI LẦN: caller quên rằng sở hữu đã chuyển */
+```
+
+API nhận sở hữu nên làm điều đó thấy được: đặt tên (`consume`, `take`), hoặc
+callee gán NULL vào handle của caller khi khả thi (`char **s`).
+
+## Checklist Trung cấp
+
+Trước khi gọi hàm nào chạm vào bộ nhớ heap, hãy trả lời:
+1. Lời gọi này có cấp phát không? Ai free?
+2. Lời gọi này có nhận sở hữu không? (Thì ngừng dùng bản sao của tôi.)
+3. Trên các nhánh thất bại của hàm này, cái gì phải được free?
+
+## Kiểm tra hiểu biết
+
+- `int save(FILE *f)` cấp phát buffer tạm, ghi, trả sớm khi lỗi ghi. Thiếu gì?
+  (Free buffer tạm trên nhánh lỗi.)
+- Một struct lưu `char *name` mà không bao giờ free và không bao giờ ghi. Ai
+  sở hữu? (Người tạo ra — struct mượn; hãy ghi chú điều đó.)

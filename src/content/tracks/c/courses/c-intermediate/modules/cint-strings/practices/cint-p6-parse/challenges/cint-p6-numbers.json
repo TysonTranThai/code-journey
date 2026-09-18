@@ -1,0 +1,15 @@
+{
+  "id": "cint-p6-numbers",
+  "title": "Numbers From Strangers",
+  "prompt": "Implement validated numeric parsing:\n\n```c\n/* parse a decimal int in [min,max]; 0 ok, -1 on: NULL/empty,\n   any non-digit character (leading '-' allowed iff it yields\n   a value >= min), or value outside [min,max]. No leading\n   whitespace, no '+', no trailing junk. */\nint parse_range(const char *s, long min, long max, long *out);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\nint parse_range(const char *s, long min, long max, long *out);\n",
+  "tests": [
+    {
+      "name": "every failure mode",
+      "code": "\nlong v;\nCHECK_EQ(parse_range(\"42\", 0, 100, &v), 0);\nCHECK_EQ(v, 42);\nCHECK_EQ(parse_range(\"-7\", -10, 10, &v), 0);\nCHECK_EQ(v, -7);\nCHECK_EQ(parse_range(\"007\", 0, 100, &v), 0);   /* leading zeros fine */\nCHECK_EQ(v, 7);\nCHECK_EQ(parse_range(\"\", 0, 10, &v), -1);\nCHECK_EQ(parse_range(\"42abc\", 0, 100, &v), -1);\nCHECK_EQ(parse_range(\"  42\", 0, 100, &v), -1); /* no whitespace */\nCHECK_EQ(parse_range(\"+42\", 0, 100, &v), -1);  /* no '+' */\nCHECK_EQ(parse_range(\"101\", 0, 100, &v), -1);  /* out of range */\nCHECK_EQ(parse_range(\"-11\", -10, 10, &v), -1);\nCHECK_EQ(parse_range(\"-\", 0, 10, &v), -1);     /* lone minus */\nCHECK_EQ(parse_range(NULL, 0, 10, &v), -1);\n",
+      "hint": "strtol + *end check; but strtol accepts whitespace and '+' — validate the character set yourself, digit by digit."
+    }
+  ]
+}

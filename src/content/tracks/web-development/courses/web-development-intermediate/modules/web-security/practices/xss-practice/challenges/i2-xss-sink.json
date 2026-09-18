@@ -1,0 +1,20 @@
+{
+  "id": "i2-xss-sink",
+  "title": "Sink or Safe",
+  "prompt": "Write `isDangerousSink(line)` — return true when the line writes data into an execution context: contains \"innerHTML =\", \"outerHTML =\", \"document.write(\", or \"eval(\". Assignment via += also counts. Ordinary DOM creation (createElement/textContent) is safe.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function isDangerousSink(line) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "flags the classic sinks",
+      "code": "const fn = new Function(code + \"\\nreturn { isDangerousSink };\");\nconst { isDangerousSink } = fn();\nif (!isDangerousSink('list.innerHTML = data')) throw new Error(\"innerHTML assignment.\");\nif (!isDangerousSink('document.write(userInput)')) throw new Error(\"document.write.\");\nif (!isDangerousSink('eval(code)')) throw new Error(\"eval is always a sink.\");\n",
+      "hint": "Substring checks — the lesson is knowing the list."
+    },
+    {
+      "name": "safe patterns pass",
+      "code": "const fn = new Function(code + \"\\nreturn { isDangerousSink };\");\nconst { isDangerousSink } = fn();\nif (isDangerousSink('el.textContent = data')) throw new Error(\"textContent is the safe choice.\");\nif (isDangerousSink('const el = document.createElement(\"div\")')) throw new Error(\"Creation without data injection.\");\nif (isDangerousSink('el.innerHTML;')) throw new Error(\"Reading innerHTML is not a write sink.\");\n",
+      "hint": "Require the assignment or call, not a mere mention."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "practice-dom-counter",
+  "title": "Wire a Counter Button",
+  "prompt": "You have `button` (a button element) and `display` (a span). Make the button clicks count: keep a `count` variable, listen for `click`, and show the new value in `display` on every click. Then simulate two clicks by calling the handler logic twice, and log the display text (should be `2`).\n\nRules:\n- `addEventListener(\"click\", …)` on the button.\n- The display updates inside the handler.",
+  "difficulty": "beginner",
+  "level": "mini-build",
+  "boilerplate": "let count = 0;\n// listen for clicks and update display\n// then simulate: call the handler twice, log display.textContent\n",
+  "tests": [
+    {
+      "name": "click listener registered",
+      "code": "if (!/button\\.addEventListener\\s*\\(\\s*[\"']click[\"']/.test(code)) {\n  throw new Error(\"Listen for clicks: button.addEventListener('click', handler).\");\n}",
+      "hint": "button.addEventListener(\"click\", bump);"
+    },
+    {
+      "name": "display updates inside the handler",
+      "code": "const handler = code.match(/(?:function\\s+(\\w+)|(?:const|let)\\s+(\\w+)\\s*=\\s*(?:\\([^)]*\\)|\\w+)\\s*=>)/);\nconst name = handler ? (handler[1] ?? handler[2]) : null;\nif (!name) throw new Error(\"Define a named handler function.\");\nconst body = code.match(new RegExp(`(?:function\\\\\\\\s+\\${name}[^\\\\\\\\{]*\\\\\\\\{[\\\\\\\\s\\\\\\\\S]*?\\\\\\\\n\\\\\\\\}|(?:const|let)\\\\\\\\s+\\${name}[^=]*=>[\\\\\\\\s\\\\\\\\S]*?\\\\\\\\n\\\\\\\\})`));\nif (!/display\\.textContent\\s*=/.test(code)) throw new Error(\"Update display.textContent inside the handler.\");",
+      "hint": "The handler body must include display.textContent = count; (after incrementing)."
+    },
+    {
+      "name": "two simulated clicks show 2",
+      "code": "const m = code.match(/display\\.textContent\\s*=\\s*(\\w+)/);\nconst varName = m ? m[1] : \"count\";\nconst fn = new Function(code + \"\\nreturn display;\");\nconst d = fn();\nif (String(d.textContent) !== \"2\") throw new Error(\"After two clicks the display should show 2.\");",
+      "hint": "Call the handler twice, then log display.textContent — it should read 2."
+    }
+  ]
+}

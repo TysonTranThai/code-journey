@@ -1,0 +1,30 @@
+{
+  "id": "practice-heading-hierarchy",
+  "title": "Shape a Real Article Outline",
+  "prompt": "Write the heading structure of a short article — not six empty heading tags, but a real outline: one `h1` for the article title, two `h2` section headings, and one `h3` sub-heading under the first section. Add one short paragraph under each heading so the structure has content.\n\nRules:\n- Exactly one `h1`.\n- At least two `h2` elements.\n- At least one `h3` after the first `h2`.\n- Every heading is followed by a paragraph.",
+  "difficulty": "beginner",
+  "level": "independent",
+  "boilerplate": "<!-- Article: 'A Week of Learning' — build the heading outline -->\n",
+  "tests": [
+    {
+      "name": "exactly one h1",
+      "code": "const h1 = code.match(/<h1\\s*>/gi) ?? [];\nif (h1.length !== 1) {\n  throw new Error(`Found ${h1.length} <h1> elements — a page has exactly one main heading.`);\n}",
+      "hint": "Use <h1> once, for the article title only."
+    },
+    {
+      "name": "at least two h2 sections",
+      "code": "const h2 = code.match(/<h2\\s*>/gi) ?? [];\nif (h2.length < 2) {\n  throw new Error(\"An article outline needs at least two <h2> section headings.\");\n}",
+      "hint": "Give the article two sections, each introduced by an <h2>."
+    },
+    {
+      "name": "an h3 nests under the first section",
+      "code": "const firstH2 = code.search(/<h2\\s*>/i);\nconst firstH3 = code.search(/<h3\\s*>/i);\nif (firstH3 === -1 || firstH3 < firstH2) {\n  throw new Error(\"Place an <h3> after your first <h2> — sub-headings nest under section headings, never before them.\");\n}",
+      "hint": "<h3> is a sub-heading: put it after an <h2>, never before the first one."
+    },
+    {
+      "name": "every heading is followed by a paragraph",
+      "code": "const ends = [...code.matchAll(/<h[123][\\s\\S]*?<\\/h[123]>/gi)].map((m) => m.index + m[0].length);\nends.push(code.length);\nfor (let i = 0; i < ends.length - 1; i++) {\n  const section = code.slice(ends[i], ends[i + 1]);\n  if (!/<p>[\\s\\S]*?<\\/p>/i.test(section)) {\n    throw new Error(\"Every heading should be followed by its own <p> before the next heading starts.\");\n  }\n}",
+      "hint": "After each heading, write a short <p> with a sentence of content."
+    }
+  ]
+}

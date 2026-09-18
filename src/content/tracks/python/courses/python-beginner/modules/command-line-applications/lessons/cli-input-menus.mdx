@@ -1,0 +1,27 @@
+A command-line application is a loop: show options, read a choice, act, repeat.
+
+```python
+while True:
+    choice = menu()          # in real apps: input("> ")
+    if choice == "list":
+        show_tasks()
+    elif choice == "add":
+        add_task()
+    elif choice == "quit":
+        break
+    else:
+        print("unknown choice")
+```
+
+`input()` reads a line from the user — but the sandbox (and any automated
+grader) cannot type at your program. That is why graded challenges isolate
+**functions** with parameters and returns, and menus are wired around them:
+
+```python
+def add_task(tasks, text):
+    tasks.append({"text": text, "done": False})
+    return tasks
+```
+
+Separate the *deciding* from the *doing* and your CLI becomes testable — the
+same lesson the capstone will grade you on.

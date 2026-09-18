@@ -1,0 +1,14 @@
+{
+  "title": "Retry decorator factory",
+  "prompt": "Cài `retry(times, exceptions=(Exception,))` — một decorator FACTORY trả về decorator khiến `fn` thử lại tối đa `times` lần:\n\n- chỉ các kiểu exception đã khai báo mới kích hoạt retry; loại khác lan truyền ngay\n- nếu mọi lần thử đều thất bại, raise lại exception CUỐI\n- giữ metadata của hàm: `wrapped.__name__ == fn.__name__`\n- theo dõi số lần thử: lộ `wrapped.attempts` (danh sách int, một phần tử mỗi lần gọi)",
+  "tests": [
+    {
+      "name": "Chỉ retry lỗi tạm thời",
+      "hint": "Vòng lặp các lần thử nằm trong wrapper; thành công thì return, hết lượt thì raise lại lỗi cuối."
+    },
+    {
+      "name": "Exception lạ lan truyền; giữ metadata",
+      "hint": "Chỉ bắt tuple exception đã khai báo; functools.wraps cho metadata; hết lượt thì raise lại."
+    }
+  ]
+}

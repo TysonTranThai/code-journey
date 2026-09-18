@@ -1,0 +1,20 @@
+{
+  "id": "i2-auto-gallery",
+  "title": "Auto-Wrapping Gallery",
+  "prompt": "Build `.gallery` as a grid whose columns wrap automatically: each track at least `180px`, all sharing leftover space equally, with `1rem` gaps — no media queries allowed.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "<div class=\"gallery\">\n  <div class=\"tile\">1</div>\n  <div class=\"tile\">2</div>\n  <div class=\"tile\">3</div>\n  <div class=\"tile\">4</div>\n</div>\n\n<style>\n  /* your grid */\n</style>\n",
+  "tests": [
+    {
+      "name": "grid with auto tracks and min 180px",
+      "code": "const css = code;\nif (!/\\.gallery\\s*{[^}]*display\\s*:\\s*grid/i.test(css)) throw new Error(\"The gallery must be a grid container.\");\nif (!/\\.gallery\\s*{[^}]*repeat\\(\\s*auto-(fit|fill)\\s*,\\s*minmax\\(\\s*180px\\s*,\\s*1fr\\s*\\)\\s*\\)/i.test(css)) throw new Error(\"Columns: repeat(auto-fit, minmax(180px, 1fr)).\");\nif (!/\\.gallery\\s*{[^}]*gap\\s*:\\s*1rem/i.test(css)) throw new Error(\"Space tiles with gap: 1rem.\");",
+      "hint": "grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;"
+    },
+    {
+      "name": "no media queries needed",
+      "code": "const css = code;\nif (!/^(?!.*@media)/i.test(css)) throw new Error(\"This layout should need no @media — auto-fit handles the wrapping.\");",
+      "hint": "The whole point of auto-fit: the grid reflows without breakpoints."
+    }
+  ]
+}

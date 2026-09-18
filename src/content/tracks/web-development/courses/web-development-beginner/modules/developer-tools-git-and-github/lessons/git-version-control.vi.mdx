@@ -1,0 +1,52 @@
+**Git** ghi lại các ảnh chụp (snapshot) của dự án để bạn có thể nhìn lại, hoàn tác, và cộng tác. Không có nó, dân lập trình gửi mail cho nhau các thư mục tên `final-v3-REAL.zip`. Có nó, mọi trạng thái của dự án chỉ cách bạn một lệnh.
+
+## Kho lưu trữ
+
+Một **repository** ("repo") là một thư mục mà Git để mắt tới. Biến bất kỳ dự án nào thành một repo:
+
+```text
+git init
+```
+
+Lệnh này tạo một thư mục ẩn `.git` — chính cỗ máy thời gian. Các tệp của bạn không thay đổi; Git chỉ bắt đầu để ý.
+
+## Ba nơi mà code của bạn sống
+
+1. **Thư mục làm việc** — các tệp bạn chỉnh sửa
+2. **Vùng staging** — những thay đổi được chọn cho ảnh chụp tiếp theo
+3. **Lịch sử repository** — các ảnh chụp vĩnh viễn ("commit")
+
+```text
+git status          # cái gì đã thay đổi? cái gì đang staged?
+git add index.html  # stage một tệp
+git add .           # stage mọi thứ đã thay đổi
+git commit -m "Add navigation bar"    # chụp lại các thay đổi đã staged
+```
+
+## Commit là các điểm kiểm tra, không phải bản sao lưu
+
+Một **commit** là một ảnh chụp có tên, kèm một thông báo giải thích _tại sao_. Thông báo tốt hoàn thiện câu "Commit này sẽ…":
+
+```text
+git commit -m "Fix broken link in the footer"     ✓
+git commit -m "stuff"                              ✗ bản-tương-lai-của-bạn sẽ ghét cái này
+```
+
+Những commit nhỏ, thường xuyên biến các thay đổi lớn thành một câu chuyện dễ đọc — và cho bạn hàng chục điểm khôi phục.
+
+## Nhìn lại
+
+```text
+git log --oneline   # lịch sử, một dòng cho mỗi commit
+```
+
+Làm hỏng mọi thứ trước khi commit? `git status` cho biết trạng thái; lịch sử giữ an toàn mọi thứ bạn đã commit. Repo của chính khóa học này có hàng chục commit — chạy `git log --oneline` trên bất kỳ dự án thật nào và đọc nó như một cuốn nhật ký.
+
+## Bạn đã học được gì
+
+- `git init` khởi động cỗ máy thời gian
+- sửa → `git status` → `git add` → `git commit -m`
+- Thông báo commit giải thích _tại sao_, ở thì hiện tại
+- `git log` đọc lịch sử
+
+**Tiếp theo:** các nhánh — thí nghiệm mà không phá vỡ nhánh chính.

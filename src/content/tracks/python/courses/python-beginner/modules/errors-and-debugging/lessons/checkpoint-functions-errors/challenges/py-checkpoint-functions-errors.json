@@ -1,0 +1,20 @@
+{
+  "id": "py-checkpoint-functions-errors",
+  "title": "Resilient Mean",
+  "prompt": "Write mean(texts) that receives a list of strings. Convert each to a number; strings that cannot convert are skipped. Return the mean of the converted values as a float. If NOTHING converts, raise ValueError with the word 'empty' in the message. Print mean(values) for values = [\"10\", \"x\", \"20\", \"\", \"30\"] — one line, formatted :.2f.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "values = [\"10\", \"x\", \"20\", \"\", \"30\"]\n\ndef mean(texts):\n    pass\n\nprint(f\"{mean(values):.2f}\")\n",
+  "tests": [
+    {
+      "name": "skips bad, returns mean",
+      "code": "assert abs(mean([\"10\", \"x\", \"20\", \"\", \"30\"]) - 20.0) < 1e-9, f\"got {mean(['10', 'x', '20', '', '30'])}\"\nassert mean([\"4\"]) == 4.0, \"single value works\"\nassert abs(mean([\"5\", \"5\", \"5\"]) - 5.0) < 1e-9, \"all valid works\"",
+      "hint": "int(t) in try/except; accumulate valid values then divide."
+    },
+    {
+      "name": "raises when nothing converts",
+      "code": "try:\n    mean([\"a\", \"b\"])\n    assert False, \"nothing convertible must raise\"\nexcept ValueError as e:\n    assert \"empty\" in str(e).lower(), \"message must mention empty\"",
+      "hint": "count what converted; if count == 0: raise ValueError('empty ...')"
+    }
+  ]
+}

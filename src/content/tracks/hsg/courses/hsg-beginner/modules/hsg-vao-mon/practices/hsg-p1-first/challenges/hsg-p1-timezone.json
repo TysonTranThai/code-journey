@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p1-timezone",
+  "title": "Clock Arithmetic",
+  "prompt": "**Description:** Given t (minutes, possibly negative) and k (a time-zone\noffset, 0 ≤ k ≤ 23) on one line `t k`. Total minutes = t + k·60. Print the\nhour of day in 24-hour form (a number 0..23).\n\n**Input:** One line: t k (−10^7 ≤ t ≤ 10^7, 0 ≤ k ≤ 23).\n**Output:** One integer 0..23.\n\n**Example:** `90 1` → (90 + 60)/60 = 2 → print `2`;\n`-30 0` → −30/60 = −1 hours → must wrap to 23.\n\n*Question:* which way does C++ integer division round for negatives?\n(`((x % 24) + 24) % 24` is your friend.)",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "positive sample",
+      "code": "std::istringstream in(\"90 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "(90+60)/60 = 2."
+    },
+    {
+      "name": "negative wraps to 23",
+      "code": "std::istringstream in(\"-30 0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"23\\n\"));",
+      "hint": "−30 minutes = −1 hour → wrap to 23 with ((x%24)+24)%24."
+    },
+    {
+      "name": "zero",
+      "code": "std::istringstream in(\"0 0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "0 minutes → hour 0."
+    },
+    {
+      "name": "large negative",
+      "code": "std::istringstream in(\"-10000000 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"16\\n\"));",
+      "hint": "A large negative total must still wrap into 0..23 correctly."
+    }
+  ],
+  "level": "combination"
+}

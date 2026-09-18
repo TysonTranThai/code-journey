@@ -1,0 +1,28 @@
+**Concept** là một vị từ compile-time có tên áp lên các kiểu. Nó là thay thế hiện đại cho SFINAE — và là nâng cấp dễ đọc lớn nhất của C++ hiện đại.
+
+## Bốn loại requirement
+
+```cpp
+template <class C>
+concept SizedContainer = requires(const C& c, const C& d, C& mut) {
+    c.size();                                   // simple requirement: biểu thức hợp lệ
+    { c.size() } -> std::convertible_to<std::size_t>;  // ràng buộc kiểu trên kết quả
+    typename C::value_type;                     // type requirement: tồn tại kiểu thành viên
+    requires std::is_class_v<C>;                // nested requirement: ràng buộc boolean
+};
+```
+
+**Tính const-correct của probe rất quan trọng**: `requires(const C& c) { c.size(); }` chỉ chấp nhận container có `size()` gọi được trên đối tượng const. Probe bằng reference non-const là false-positive kinh điển.
+
+## Ràng buộc ad-hoc trên hàm
+
+```cpp
+template <class T>
+requires std::is_arithmetic_v<T>          // mệnh đề requires ad-hoc
+T twice(T v) { return v * 2; }
+
+template <class T> requires requires(T t) { t * 2; }   // requires-REQUIRES ad-hoc
+T twice2(T v) { return v * 2; }
+```
+
+`requires requires` không phải lỗi đánh máy: vế ngoài là mệnh đề, vế trong là requires-expression nội tuyến làm toán hạng. Khi một ràng buộc xuất hiện lần thứ hai, hãy đặt cho nó tên (concept riêng).

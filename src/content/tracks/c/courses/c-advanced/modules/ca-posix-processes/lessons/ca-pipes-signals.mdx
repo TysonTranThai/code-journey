@@ -1,0 +1,23 @@
+## A pipe is a pair of fds
+
+`pipe(int fds[2])` (POSIX) gives a one-way channel: write to `fds[1]`, read from `fds[0]`. The classic pattern:
+
+1. `pipe()` *before* `fork()` — both processes inherit both ends.
+2. Child: `dup2(fds[1], STDOUT_FILENO)`, exec — its stdout flows into the pipe.
+3. Parent: close the write end (else `read` never returns 0), read until EOF, then `waitpid`.
+
+Forgetting the parent-side close is the classic bug: the reader blocks forever because a write end is still open somewhere.
+
+## Signals: the async flag discipline
+
+A handler runs between arbitrary two instructions of your program. The contract: the handler touches only `volatile sig_atomic_t` flags and the async-signal-safe functions. Everything else — allocation, stdio, locks — is off-limits. The production shape is always the same:
+
+```c
+static volatile sig_atomic_t shutdown_requested = 0;
+static void on_term(int sig) { (void)sig; shutdown_requested = 1; }
+/* main loop: while (!shutdown_requested) { ... } */
+```
+
+## The environment is inherited state
+
+`getenv` (ISO C) reads the process environment each child inherits from its parent. That is the whole mechanism behind `PATH`, `HOME`, and every 12-factor app config: environment is *per-process state, copied at fork and passed through exec*.

@@ -1,0 +1,21 @@
+Báo cáo là nơi mọi sợi chỉ của khóa học gặp nhau:
+
+```java
+static String report(LedgerService svc, List<String> keys, Executor exec) {
+    List<CompletableFuture<String>> parts = keys.stream()
+        .map(k -> CompletableFuture
+            .supplyAsync(() -> k + "=" + svc.get(k), exec)
+            .orTimeout(50, MILLISECONDS)
+            .handle((r, e) -> e == null ? r : k + "=down"))
+        .toList();
+    CompletableFuture.allOf(parts).orTimeout(500, MILLISECONDS).join();
+    return parts.stream().map(CompletableFuture::join)
+        .collect(Collectors.joining(","));
+}
+```
+
+Một phương thức mà: chạm vào lưu trữ chỉ qua interface (đa hình), chặn trên
+từng lần đọc (hạn chót), suy giảm key chậm thành một *giá trị* (thành công một
+phần), và join theo thứ tự nộp (tất định). Chạy nó trên hai engine: hai chuỗi,
+bằng nhau từng byte. Sự bằng nhau đó là bằng chứng rằng abstraction đã giữ vững
+— không gì phía trên interface từng biết engine nào đã trả lời.

@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m2-static-counter",
+  "title": "Count every instance",
+  "prompt": "Implement `class Tracked` with an `inline static int live_;` and `inline static int created_;`. The constructor increments both; the destructor decrements `live_`. Provide static getters `int live()` and `int created()`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\n\nclass Tracked {\n    // ctor, dtor, inline static members, static getters\n};\n",
+  "tests": [
+    {
+      "name": "created",
+      "code": "Tracked a;\nTracked b;\n{ Tracked c; }\nCHECK_EQ(Tracked::created(), 3);",
+      "hint": "created_ never decreases — it counts every construction."
+    },
+    {
+      "name": "live",
+      "code": "{ Tracked x; }\nTracked y;\nCHECK_EQ(Tracked::live(), 1);",
+      "hint": "x died in the block; only y remains."
+    },
+    {
+      "name": "no-instance",
+      "code": "CHECK(Tracked::created() >= 0);",
+      "hint": "Static getters work without any instance."
+    }
+  ],
+  "level": "combination"
+}

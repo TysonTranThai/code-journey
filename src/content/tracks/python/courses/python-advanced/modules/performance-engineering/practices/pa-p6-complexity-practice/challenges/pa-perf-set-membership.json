@@ -1,0 +1,21 @@
+{
+  "id": "pa-perf-set-membership",
+  "title": "Linear-time intersection",
+  "prompt": "Implement `find_common(a, b, counter)` returning the sorted list of values present in BOTH lists `a` and `b`.\n\n`counter` enforces a probe budget: call `counter.seed(b)` ONCE to load `b`, then for each element of `a` call `counter.membership(x)` — that is the only allowed membership test. The graded test asserts the result is correct AND that exactly `len(a)` membership probes were made.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "def find_common(a, b, counter):\n    # counter.seed(b) once; counter.membership(x) is the ONLY allowed lookup\n    pass",
+  "tests": [
+    {
+      "name": "correct result within linear probe budget",
+      "code": "class Budget:\n    def __init__(self):\n        self._set = set()\n        self.probes = 0\n    def seed(self, values):\n        self._set = set(values)\n    def membership(self, x):\n        self.probes += 1\n        return x in self._set\n\na = list(range(300))\nb = list(range(150, 450))\nc = Budget()\nout = find_common(a, b, c)\nassert out == list(range(150, 300)), f'out: {out[:5]}...{out[-5:]}'\nassert c.probes <= 310, f'probes: {c.probes}'\nprint('ok')",
+      "hint": "seed() builds the set in one call; membership() per element of a is O(1) each."
+    },
+    {
+      "name": "probe budget is enforced per element",
+      "code": "class Counting:\n    def __init__(self):\n        self._set = set()\n        self.probes = 0\n    def seed(self, values):\n        self._set = set(values)\n    def membership(self, x):\n        self.probes += 1\n        return x in self._set\n\nc = Counting()\nc.seed(list(range(150, 450)))\nout = find_common(list(range(300)), list(range(150, 450)), c)\nassert out == list(range(150, 300))\nassert c.probes == 300, f'probes: {c.probes} — must be exactly one per element of a'\nprint('ok')",
+      "hint": "Exactly len(a) membership calls — one set built via seed, then one probe per element of a."
+    }
+  ],
+  "level": "independent"
+}

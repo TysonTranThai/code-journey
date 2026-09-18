@@ -1,0 +1,21 @@
+{
+  "id": "javaa-checkpoint-m13-task",
+  "title": "Checkpoint: the request firewall",
+  "prompt": "Inside Solution, implement `public static class Firewall`:\n1. Constructor `Firewall(Path root, Set<String> allowedHosts)`; expose\n`public final Path root` and `public final Set<String> allowedHosts`.\n2. `boolean canRead(String userPath)` — canonical containment against root.\n3. `boolean canCall(String url)` — host extraction + allowlist.\n4. `boolean authenticate(byte[] salt, String password, byte[] stored)` — salted\nrecompute + constant-time verify.\n5. `static String review(java.util.Map<String, String> findings)` — given findings\nlike {\"sql\":\"parameterized\", \"secret\":\"env\", \"depends\":\"audited\"}, return\n\"pass\" iff every value is one of the accepted controls:\nsql∈{parameterized}, secret∈{env}, depends∈{audited}; otherwise return the FIRST\nkey whose control is unacceptable. Unknown keys count as unacceptable.\n6. `static String threatOf(String control)` — map each control to the STRIDE\nletter it primarily addresses: \"canonicalization\"→\"T\", \"allowlist\"→\"I\",\n\"parameterized\"→\"T\", \"least-privilege\"→\"E\", \"rate-limit\"→\"D\"; unknown → \"?\".",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "firewall answers the three questions",
+      "code": "\nSolution.Fw fw = new Solution.Fw(java.nio.file.Path.of(\"/srv/data\").toAbsolutePath().normalize(),\n    java.util.Set.of(\"api.example.com\"));\ncheckTrue(fw.canRead(\"docs/a.txt\"), \"inside root\");\ncheckTrue(!fw.canRead(\"../etc/passwd\"), \"traversal blocked\");\ncheckTrue(fw.canCall(\"http://api.example.com/x\"), \"allowed host\");\ncheckTrue(!fw.canCall(\"http://169.254.169.254/\"), \"metadata host blocked\");\nbyte[] s = Solution.Fw.salt();\nbyte[] stored = Solution.Fw.hash(s, \"pw\");\ncheckTrue(fw.authenticate(s, \"pw\", stored), \"good credentials\");\ncheckTrue(!fw.authenticate(s, \"wrong\", stored), \"bad credentials\");\n",
+      "hint": "Containment, egress, identity."
+    },
+    {
+      "name": "the review is a function",
+      "code": "\njava.util.Map<String, String> good = java.util.Map.of(\"sql\", \"parameterized\", \"secret\", \"env\");\ncheckEq(Solution.Fw.review(good), \"pass\", \"all controls accepted\");\njava.util.Map<String, String> bad = java.util.Map.of(\"sql\", \"string-concat\", \"secret\", \"env\");\ncheckEq(Solution.Fw.review(bad), \"sql\", \"first offender named\");\ncheckEq(Solution.Fw.threatOf(\"rate-limit\"), \"D\", \"denial of service\");\ncheckEq(Solution.Fw.threatOf(\"least-privilege\"), \"E\", \"elevation\");\ncheckEq(Solution.Fw.threatOf(\"vibes\"), \"?\", \"unknown control\");\n",
+      "hint": "Findings map to STRIDE letters."
+    }
+  ],
+  "level": "real-world"
+}

@@ -1,0 +1,33 @@
+## Interactive input: scanf, carefully
+
+`scanf("%d", &n)` reads whitespace-separated tokens from standard input.
+Note the `&` — scanf needs the **address** of `n` to store into (module 11
+explains why). Always check its return value: the number of items successfully
+read.
+
+```c
+int n;
+if (scanf("%d", &n) == 1) {
+    printf("read %d\n", n);
+}
+```
+
+**Danger:** `scanf("%s", buf)` with no width can overflow `buf` with long
+input — a buffer overflow, the classic C vulnerability. With a width it is
+bounded: `scanf("%63s", buf)` reads at most 63 characters plus the terminator
+into a 64-byte buffer.
+
+## The graded pattern: sscanf
+
+This course's challenges run non-interactively, so graded input handling uses
+`sscanf` — the same parsing engine, reading from a string instead of stdin:
+
+```c
+const char* line = "Alice 42";
+char name[32]; int age = 0;
+int got = sscanf(line, "%31s %d", name, &age);
+// got == 2, name == "Alice", age == 42
+```
+
+The skill being graded is identical to reading user input: describe the shape
+of the line, extract the fields, verify the count.

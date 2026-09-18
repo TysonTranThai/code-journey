@@ -1,0 +1,18 @@
+{
+  "title": "Kiểm tra kiến thức: Logic Client An Toàn Kiểu",
+  "prompt": "Cài đặt ba hàm kỷ luật kiểu:\n\n1. `isUser(v)` — RETURN true CHỈ khi `v` là object (không phải null, không phải mảng) với `id` là chuỗi, `email` là chuỗi chứa \"@\", và `name` tùy chọn (vắng mặt hoặc là chuỗi).\n2. `parseWith(v, validator, fallback)` — RETURN `{ ok: true, value }` khi `validator(v)` đúng, nếu không `{ ok: false, fallback }`.\n3. `handleApi(result)` — `result` là `{ ok: true, data }` hoặc `{ ok: false, status }`. RETURN chuỗi data khi ok, nếu không `\"HTTP \" + status`. Không bao giờ được đọc `.data` trên object thất bại.",
+  "tests": [
+    {
+      "name": "isUser chỉ chấp nhận user hợp chuẩn",
+      "hint": "Kiểm tra typeof v === 'object' && v !== null && !Array.isArray(v), rồi typeof từng trường; email phải chứa '@'."
+    },
+    {
+      "name": "parseWith kiểm tra hoặc rơi về fallback",
+      "hint": "validator(v) ? { ok: true, value: v } : { ok: false, fallback }."
+    },
+    {
+      "name": "handleApi kiểm tra ok trước khi đụng vào data",
+      "hint": "result.ok ? result.data : \"HTTP \" + result.status."
+    }
+  ]
+}

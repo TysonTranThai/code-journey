@@ -1,0 +1,21 @@
+## Event-driven decoupling
+
+A synchronous direct call couples the caller to the callee's lifetime, latency, and failure. An event bus breaks those: publishers emit facts (`"OrderPlaced{...}"`), subscribers react. The cost is dispatch ordering — a serious bus *documents and guarantees* its order (registration order for sync buses is the common deterministic choice), because "usually fine" ordering is a production incident generator.
+
+## The configuration ladder
+
+Real systems resolve config in layers with defined precedence — the common ladder:
+
+```
+defaults  <  file  <  environment  <  explicit flag
+```
+
+Each layer overrides the previous *only where it speaks*. Debugging misconfiguration means asking, per key: "which layer set this?" A config system that cannot answer that question is a rumour mill.
+
+## Secrets never ride the ladder
+
+Values from secret stores must never be logged, never land in error messages, and never become part of a string you format. Redaction is a *sink* responsibility (the logging layer), but the config layer's job is to mark secrets so the sink can.
+
+## What the sandbox grades
+
+The exercises grade the mechanics: a DI seam that makes time-based logic deterministic, an event bus with registration-order dispatch and unsubscribe, and a precedence ladder you can interrogate per key.

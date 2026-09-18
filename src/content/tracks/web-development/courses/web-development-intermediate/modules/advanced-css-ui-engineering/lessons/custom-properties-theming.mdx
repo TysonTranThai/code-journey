@@ -1,0 +1,53 @@
+Custom properties (CSS variables) are the backbone of maintainable CSS:
+**tokens** that cascade, inherit, and can change per-scope — something
+preprocessor variables never could.
+
+## Tokens
+
+```css
+:root {
+  --color-bg: #ffffff;
+  --color-fg: #111827;
+  --color-accent: #2563eb;
+  --radius: 8px;
+  --space-1: 0.25rem;
+}
+.card {
+  background: var(--color-bg);
+  border-radius: var(--radius);
+  padding: calc(4 * var(--space-1));
+}
+```
+
+`var()` reads at _use time_ through the cascade; `calc()` computes lengths from
+tokens. Change `--color-bg` on any subtree and every usage updates.
+
+## Theming is just re-declaration
+
+Because tokens cascade, a theme is a scope that re-declares them:
+
+```css
+[data-theme="dark"] {
+  --color-bg: #0b1120;
+  --color-fg: #e2e8f0;
+}
+```
+
+Every component using `var(--color-bg)` is now dark-mode aware with zero
+component changes. Honor the system preference by default and let an explicit
+choice override:
+
+```css
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* dark tokens */
+  }
+}
+```
+
+## Fallbacks and invalid at computed-value time
+
+`var(--missing, #333)` provides a fallback. A property referencing an undefined
+var becomes _invalid at computed-value time_ — it falls back to its inherited
+or initial value, which is rarely what you want. Define tokens at `:root` and
+treat them as an API.

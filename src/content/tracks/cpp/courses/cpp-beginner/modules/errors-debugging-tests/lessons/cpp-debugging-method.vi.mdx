@@ -1,0 +1,24 @@
+## Vòng lặp
+
+1. **Tái hiện một cách xác định.** Bug có thể kích hoạt theo yêu cầu đã chết một nửa. Tìm input nhỏ nhất vẫn gây lỗi.
+2. **Đọc bằng chứng.** Thông báo crash, chữ của assert, *giá trị* sai — mỗi thứ chỉ ra một khu vực. Compiler warning là báo cáo bug miễn phí; khóa này biên dịch với `-Wall -Wextra -Wpedantic` và bạn cũng nên vậy.
+3. **Thành lập MỘT giả thuyết.** "Chỉ số lệch một đơn vị ở phần tử cuối" — không phải "chắc vòng lặp có vấn đề".
+4. **Kiểm tra giả thuyết giá rẻ.** In các giá trị đáng ngờ, hoặc chạy dưới debugger (breakpoint, bước, soi biến — hãy học debugger của IDE; nó thắng print với mọi thứ không tầm thường).
+5. **Sửa, rồi chạy lại TOÀN BỘ bộ test** — không chỉ case đang hỏng, nếu không bạn chỉ đổi một bug lấy một bug khác.
+6. **Thêm test regression.** Bug vừa giết được không được sống lại một cách âm thầm.
+
+## Chia để trị: khi bạn không có manh mối
+
+Vô hiệu hóa/bỏ qua một nửa đường ống; nó còn hỏng không? Bug nằm trong nửa hỏng. Lặp lại. Log₂ của một chương trình nghìn dòng là khoảng mười lần thử — chia để trị biến "bất khả thi" thành "hai mươi phút".
+
+## Các cái bẫy kinh điển của người mới, lần cuối
+
+- Biến chưa khởi tạo (rác mà "thi thoảng chạy đúng").
+- Off-by-one ở biên (hãy test rõ ràng các case rỗng và một phần tử).
+- `=` trong điều kiện.
+- Chia số nguyên trong khi ý định là double.
+- Sửa container trong khi range-for đang duyệt nó (iterator vô hiệu — push_back trong range-for trên cùng vector là UB; hãy gom thay đổi, áp dụng sau).
+
+## Gỡ lỗi chính là kỹ năng
+
+Người phỏng vấn biết, kỹ sư cao cấp biết: kỹ năng khan hiếm không phải viết code, mà là *tìm ra vì sao code nói dối*. Bài tập gỡ lỗi của mọi module đã luyện vòng lặp này; module 18 sẽ dựa vào nó dưới áp lực thời gian.

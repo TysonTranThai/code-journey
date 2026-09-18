@@ -1,0 +1,45 @@
+## Định dạng là hợp đồng sống lâu hơn bạn
+
+Code được biên dịch lại; file thì không. Bố cục trên đĩa phải định nghĩa
+từng byte, độc lập với padding struct và thói quen endianness.
+
+### Bố cục của MiniKV (cố định, có tài liệu)
+
+```
+offset  size  field
+0       4     magic  = 'C','J','K','V'
+4       1     version = 1
+5       4     count  (u32 LE) — số record LIVE (thông tin)
+9       656   cả KV_CAP = 16 slot, mỗi slot 41 bytes:
+                key:   32 bytes, đệm NUL
+                value: 8 bytes, i64 little-endian
+                live:  1 byte (1 = live, 0 = trống hoặc tombstone)
+last    4     checksum (u32 LE): tổng byte của vùng 9..664
+```
+
+Tổng kích thước = `9 + 41*16 + 4 = 669`, luôn luôn. Ghi cả 16 slot biến
+file thành **ảnh chụp của bảng** — key đã xóa round-trip đúng như
+tombstone của nó. Mọi trường được ghi bằng byte tường minh — không bao
+giờ `fwrite(&struct)`.
+
+### Tombstone là một phần của trạng thái
+
+Key đã xóa không phải *không có gì* — trong định dạng này nó là slot
+với `live = 0`. Save/load phải round-trip **trạng thái logic**.
+Compaction là một thiết kế thay thế hợp lệ; điều *không* hợp lệ là
+không nói rõ mình chọn cái nào.
+
+### Checksum: rẻ, trung thực, không phải mật mã
+
+Checksum là **tổng byte mod 2^32** trên vùng record. Nó phát hiện hỏng
+ngẫu nhiên và không phòng thủ gì trước kẻ thù có chủ đích. Nói rõ một
+cơ chế *không* làm gì cũng là một phần của đặc tả.
+
+### Load là validation
+
+`kv_load` không bao giờ tin file: kiểm tra magic, version, đọc đúng 656
+byte record và 4 byte checksum (đọc thiếu → `KV_ETRUNC`), xác minh
+checksum **trước khi** đụng vào bảng (lệch → `KV_EBADSUM`). Mỗi thất
+bại ánh xạ tới một `KVError` riêng. Một chi tiết hợp đồng nữa:
+`kv_load` **reset** store đích trước — load là "trở thành trạng thái
+trong file", không phải "hòa vào trạng thái hiện có".

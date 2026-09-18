@@ -1,0 +1,31 @@
+Bạn sẽ xây **TaskNoter** — một CLI quản lý công việc nhỏ nhưng chuyên nghiệp —
+*một cách độc lập*. Đề bài cung cấp yêu cầu, ràng buộc, và tiêu chí nghiệm thu.
+Không có lời giải mẫu: ba thử thách checkpoint chấm các **quyết định** quan
+trọng, và các lựa chọn hiện thực là của bạn.
+
+## Yêu cầu
+
+1. **Storage**: bảng SQLite `tasks(id INTEGER PRIMARY KEY, title TEXT NOT NULL UNIQUE, done INTEGER NOT NULL DEFAULT 0)`.
+2. **Repository**: một lớp với add(title), get(task_id), complete(task_id), list_open() — toàn bộ SQL tham số hóa, vi phạm UNIQUE được dịch thành TaskError tùy chỉnh.
+3. **Service layer**: các hàm có chú thích kiểu (str/int/bool/dict), kiểm tra input tại ranh giới và raise lớp con của TaskError.
+4. **Interface**: một main(argv) điều phối lệnh `add <title>` và `list` với exit code đúng (0 thành công, 2 lỗi cú pháp) và báo lỗi qua stderr.
+5. **Report**: một hàm tóm tắt công việc thành dict với các key `total` và `open` đếm tổng số và số việc chưa xong.
+
+## Ràng buộc kiến trúc
+
+- Phân tầng: interface → domain/service → repository → sqlite. Không SQL trong tầng service hay interface.
+- Không gọi shell, không pickle, không hard-code secret. Lỗi được raise, không print, ở dưới tầng interface.
+- Hành vi quan trọng hơn trang trí: hàm helper là hoàn toàn được; framework thì không cần.
+
+## Ba cột mốc (thử thách checkpoint được chấm)
+
+- **Cột mốc 1 — Storage và Repository**: schema + hành vi repository (challenge 1 bên dưới).
+- **Cột mốc 2 — Service và Lỗi**: ranh giới kiểm tra có kiểu (challenge 2).
+- **Cột mốc 3 — Interface và Report**: điều phối CLI + tóm tắt (challenge 3).
+
+## Cách làm việc (và làm việc cùng AI)
+
+Tự viết test cho từng cột mốc *trước* khi hiện thực (kỷ luật module 7). Dùng
+AI mentor để phê bình thiết kế, sinh thêm test case, và review diff — không
+bao giờ chấp nhận nguyên khối kiến trúc. Đệ trình chữ ký hàm của từng cột mốc
+đúng như các thử thách yêu cầu để trình chấm kiểm chứng quyết định của bạn.

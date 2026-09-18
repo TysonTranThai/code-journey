@@ -1,0 +1,20 @@
+{
+  "id": "i2-commit-reach",
+  "title": "Reachability",
+  "prompt": "Given `commits` — a map of id → parent id (null for root) — and a target id, return an array of ALL ancestor ids reachable from the target (including itself), ordered oldest-first (walk to root, then reverse).",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function reachable(commits, target) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "walks parents to the root",
+      "code": "const fn = new Function(code + \"\\nreturn { reachable };\");\nconst { reachable } = fn();\nconst cs = { C: \"B\", B: \"A\", A: null };\nconst out = reachable(cs, \"C\");\nif (out.join(\",\") !== \"A,B,C\") throw new Error(\"Oldest-first: root A up to C.\");",
+      "hint": "Follow the parent chain collecting ids, then reverse."
+    },
+    {
+      "name": "handles roots and unknown links",
+      "code": "const fn = new Function(code + \"\\nreturn { reachable };\");\nconst { reachable } = fn();\nconst cs = { D: null, E: \"D\" };\nif (reachable(cs, \"D\").join(\",\") !== \"D\") throw new Error(\"A root reaches only itself.\");\nif (reachable(cs, \"E\").join(\",\") !== \"D,E\") throw new Error(\"E reaches D then E.\");\nif (reachable({}, \"X\").length !== 0) throw new Error(\"Unknown target => empty.\");",
+      "hint": "Stop when parent is null or the id is missing from the map."
+    }
+  ]
+}

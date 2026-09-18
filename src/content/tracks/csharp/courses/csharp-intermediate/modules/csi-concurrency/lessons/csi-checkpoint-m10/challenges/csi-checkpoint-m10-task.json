@@ -1,0 +1,20 @@
+{
+  "id": "csi-checkpoint-m10-task",
+  "title": "Checkpoint: Exactly-Once Workers",
+  "prompt": "Implement the queue described in the checkpoint:\n\n```csharp\npublic sealed class JobQueue\n{\n    public void Enqueue(string job);\n    public List<string> RunAll(int workers);   // joins its workers, returns results\n    public List<string> Results { get; }\n}\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\nusing System.Threading;\n\n// Provided infrastructure — do not modify.\npublic static class CjConcurrency\n{\n    // Simulated work: every long-enough operation calls this so the\n    // scheduler can interleave threads. Tests rely on it being called\n    // exactly where the task says.\n    public static void Pause()\n    {\n        Thread.Sleep(5);\n    }\n}\n",
+  "tests": [
+    {
+      "name": "every job exactly once",
+      "code": "\nvar q = new Solution.JobQueue();\nstring[] jobs = { \"alpha\", \"beta\", \"gamma\", \"delta\" };\nforeach (var j in jobs) q.Enqueue(j);\nvar results = q.RunAll(3);\nCj.Eq(results.Count, 4, \"no losses, no duplicates\");\nvar unique = new System.Collections.Generic.HashSet<string>(results);\nCj.Eq(unique.Count, 4, \"all distinct\");\nCj.True(results.Contains(\"done:alpha\") && results.Contains(\"done:beta\") && results.Contains(\"done:gamma\") && results.Contains(\"done:delta\"), \"all jobs present\");\n",
+      "hint": "Pop under lock (whole check-and-act), process outside the lock — Pause() then record."
+    },
+    {
+      "name": "more jobs than workers",
+      "code": "\nvar q = new Solution.JobQueue();\nfor (int i = 0; i < 20; i++) q.Enqueue(\"job-\" + i);\nvar results = q.RunAll(4);\nCj.Eq(results.Count, 20, \"20 jobs, 4 workers, exactly 20 results\");\nvar unique = new System.Collections.Generic.HashSet<string>(results);\nCj.Eq(unique.Count, 20, \"each job recorded once\");\n",
+      "hint": "Workers loop until the queue is empty; the pop is atomic under the gate."
+    }
+  ]
+}

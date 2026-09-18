@@ -1,0 +1,15 @@
+{
+  "id": "cint-p5-graph-free",
+  "title": "Free a Graph Exactly Once",
+  "prompt": "The boilerplate declares a tiny DAG of named nodes:\n\n```c\ntypedef struct GNode {\n    char name;\n    struct GNode **kids;   /* array of borrowed pointers, kids_len long */\n    size_t kids_len;\n} GNode;\n```\n\n`kids` and its pointers are **owned by the node**; a node may be a child\nof several parents (shared, borrowed from the parents' view). Implement:\n\n```c\n/* frees every distinct node reachable from root exactly once, then the\n   kids arrays, then returns how many nodes were freed */\nsize_t graph_free(GNode *root);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\ntypedef struct GNode {\n    char name;\n    struct GNode **kids;\n    size_t kids_len;\n} GNode;\nsize_t graph_free(GNode *root);\n",
+  "tests": [
+    {
+      "name": "shared children, single free",
+      "code": "\nGNode *leaf1 = malloc(sizeof(GNode)); leaf1->name='x'; leaf1->kids=NULL; leaf1->kids_len=0;\nGNode *leaf2 = malloc(sizeof(GNode)); leaf2->name='y'; leaf2->kids=NULL; leaf2->kids_len=0;\nGNode **k1 = malloc(2 * sizeof(GNode*)); k1[0]=leaf1; k1[1]=leaf2;\nGNode *mid = malloc(sizeof(GNode)); mid->name='m'; mid->kids=k1; mid->kids_len=2;\nGNode **k2 = malloc(2 * sizeof(GNode*)); k2[0]=leaf1; k2[1]=mid;\nGNode *root = malloc(sizeof(GNode)); root->name='r'; root->kids=k2; root->kids_len=2;\n/* leaf1 is shared by mid and root: freed exactly once */\nCHECK_EQ(graph_free(root), 4);\n",
+      "hint": "Mark-and-sweep with a 'freed' flag or collect-then-free. Never free a reachable node twice."
+    }
+  ]
+}

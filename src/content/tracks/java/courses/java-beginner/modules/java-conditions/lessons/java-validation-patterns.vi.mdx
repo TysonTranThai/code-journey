@@ -1,0 +1,30 @@
+Chương trình thật dành nhiều dòng để từ chối dữ liệu xấu hơn là ăn mừng dữ
+liệu tốt. Ba thói quen khiến việc xác thật (validation) sạch sẽ.
+
+**1. Xác thực ở rìa, sớm.** Kiểm tra mọi thứ hàm cần trong một guard clause
+ở đầu, rồi viết luồng chính không gián đoạn:
+
+```java
+static double monthlyPayment(double principal, int months) {
+    if (months <= 0) {
+        throw new IllegalArgumentException("months must be positive");
+    }
+    // luồng chính, không if lồng
+}
+```
+
+Bạn vừa gặp `throw` lần đầu: từ chối tiếp tục khi hợp đồng bị phá vỡ.
+Module 12 xây toàn bộ cơ chế; nhưng pattern này dùng được ngay từ ngày đầu.
+
+**2. Từ chối kèm thông điệp đáng đọc.** `"invalid input"` không giúp ai;
+`"months must be positive, got -3"` giúp người gọi sửa trong vài giây.
+
+**3. Ưu tiên trả về phán quyết thay vì in ra.** Hàm trả `"OK"` hoặc lý do
+thất bại thì *kiểm thử được*; hàm chỉ in thì chỉ có thể nhìn. Bộ thực hành
+của module này chấm điểm phán quyết trả về chính vì lý do đó.
+
+Một bảng xác thực gọn đọc rất đẹp dưới dạng switch expression theo mã lỗi,
+hoặc danh sách guard clause — cách nào làm hợp đồng hiển rõ trong một cái
+nhìn thì dùng cách đó.
+
+**Tiếp theo:** thực hành.

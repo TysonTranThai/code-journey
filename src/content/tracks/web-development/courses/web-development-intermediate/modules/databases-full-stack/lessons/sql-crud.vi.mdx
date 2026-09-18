@@ -1,0 +1,50 @@
+## Bốn câu lệnh
+
+```sql
+INSERT INTO tasks (title, author_id) VALUES ('Write tests', 7) RETURNING id;
+
+SELECT title, created_at FROM tasks WHERE author_id = 7 AND done = false ORDER BY created_at DESC LIMIT 20 OFFSET 40;
+
+UPDATE tasks SET done = true WHERE id = 42 RETURNING *;
+
+DELETE FROM tasks WHERE id = 42;
+```
+
+Đọc chúng như câu văn. `RETURNING` (Postgres) trả về hàng bị ảnh hưởng — không cần truy vấn thứ hai sau insert.
+
+## WHERE và bạn bè
+
+- So sánh: `=`, `<>`, `<`, `>`, `<=`, `>=`; miền `BETWEEN a AND b`; thuộc tập `IN (1, 2, 3)`
+- Mẫu: `LIKE 'wr%'` (% = chuỗi bất kỳ, \_ = một ký tự), `ILIKE` để bỏ qua hoa thường
+- Kiểm tra NULL: `IS NULL` / `IS NOT NULL` — **đừng bao giờ** `= NULL`
+- Logic: `AND`/`OR`/`NOT` — đặt ngoặc cho nhóm trộn lẫn; `a OR b AND c` ràng buộc thành `a OR (b AND c)`
+
+## Tổng hợp và nhóm
+
+```sql
+SELECT author_id, COUNT(*) AS task_count, MAX(created_at) AS latest
+FROM tasks
+WHERE done = false
+GROUP BY author_id
+HAVING COUNT(*) > 5
+ORDER BY task_count DESC;
+```
+
+`WHERE` lọc hàng _trước_ khi nhóm; `HAVING` lọc nhóm _sau_. COUNT/SUM/AVG/MIN/MAX là những con ngựa thồ.
+
+## Thói quen an toàn
+
+1. **Luôn có WHERE trên UPDATE/DELETE.** `UPDATE tasks SET done = true;` chạm _mọi_ hàng. Thói quen nghề: viết WHERE trước.
+2. **Parameterized từ code ứng dụng** (module 9!): `query("... WHERE id = $1", [id])` — không bao giờ nối chuỗi.
+3. **Transaction cho ghi nhiều bước** (bài sau): thử trong transaction, xác minh, commit hoặc rollback.
+4. **SELECT đúng cột cần**, không phải `*`, trong code ứng dụng — tự ghi chú và rẻ hơn trên đường truyền.
+
+## Index: vì sao tra cứu nhanh
+
+Index là cấu trúc phụ đã sắp xếp (B-tree) giúp động cơ tìm hàng theo thời gian log thay vì quét tất cả. Khóa chính tự có index; thêm cho các cột bạn lọc/join/sort:
+
+```sql
+CREATE INDEX idx_tasks_author ON tasks (author_id);
+```
+
+Đổi lại: index làm việc đọc nhanh, ghi chậm hơn chút, và tốn đĩa. Index thứ gì bạn truy vấn; bỏ qua thứ không (hầu hết công cụ đều có báo cáo index không dùng).

@@ -1,0 +1,24 @@
+## Non-type template parameter (NTTP)
+
+Tham số template có thể là *giá trị*: kích thước, enum, con trỏ — bất cứ thứ gì tính được ở constant expression. Phổ biến nhất: `std::size_t`:
+
+```cpp
+template <std::size_t N> struct Ring {
+    int data_[N]{};
+    std::size_t head_ = 0;
+    void push(int v) { data_[head_++ % N] = v; }
+    static constexpr std::size_t capacity() { return N; }
+};
+```
+
+Mỗi `Ring<8>` và `Ring<1024>` là một kiểu riêng, không cấp phát heap nào, capacity biết trước lúc biên dịch.
+
+## NTTP là cỡ mảng — độ dài chuỗi miễn phí
+
+Suy diễn `N` từ tham chiếu mảng cho bạn độ dài literal không tốn công: `template <std::size_t N> constexpr std::size_t strLen(const char (&s)[N]) { return N - 1; }` — `strLen("abcd")` là 4, tính lúc biên dịch, không cần `strlen`.
+
+## Partial specialization trên NTTP
+
+Hai kỹ thuật kết hợp với nhau: `Capacity<std::array<T, N>>` tách kích thước ra khỏi *kiểu* — `tuple_size` của thư viện chuẩn cũng hoạt động theo cách này.
+
+**Lưu ý:** mỗi giá trị `N` khởi tạo một kiểu riêng. `Ring<8>` không phải `Ring<9>`; nếu cần capacity thay đổi lúc chạy, đó là việc của `std::vector`, không phải của NTTP.

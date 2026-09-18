@@ -1,0 +1,21 @@
+{
+  "id": "cppa8-release-acquire",
+  "title": "Publish and Consume a Payload",
+  "prompt": "Implement the canonical acquire/release handshake: `storePayload` writes the ordinary variable **then** publishes with release; `waitAndRead` spins with acquire then reads. The graded check interleaves the calls across simulated threads and requires the payload to arrive intact.",
+  "difficulty": "advanced",
+  "level": "independent",
+  "language": "cpp",
+  "boilerplate": "#include <atomic>\n#include <string>\n\n// Publish/consume protocol the tests drive directly:\n// storePayload writes the payload then publishes; waitAndRead spins on the\n// flag with acquire and returns the payload it observed.\nvoid storePayload(std::atomic<bool>& flag, int& payload, int value);\nint waitAndRead(std::atomic<bool>& flag, const int& payload);\n",
+  "tests": [
+    {
+      "name": "payload is fully published",
+      "code": "std::atomic<bool> flag{false};\nint payload = 0;\nstorePayload(flag, payload, 42);\nCHECK_EQ(waitAndRead(flag, payload), 42);",
+      "hint": "storePayload: payload = value; flag.store(true, std::memory_order_release);  waitAndRead: while (!flag.load(std::memory_order_acquire)) {} return payload;"
+    },
+    {
+      "name": "spin exits on the flag",
+      "code": "std::atomic<bool> flag{false};\nint payload = 0;\nstorePayload(flag, payload, -7);\nCHECK_EQ(waitAndRead(flag, payload), -7);",
+      "hint": "The acquire loop exits as soon as the release store is observed — ordering carries the payload write."
+    }
+  ]
+}

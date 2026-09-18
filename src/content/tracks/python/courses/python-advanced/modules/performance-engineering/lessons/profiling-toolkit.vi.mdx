@@ -1,0 +1,34 @@
+## Bộ công cụ profiling: cProfile và pstats
+
+`cProfile` ghi số lần gọi từng hàm và thời gian cộng dồn:
+
+```python
+import cProfile, pstats, io
+
+def workload():
+    ...  # the slow thing
+
+pr = cProfile.Profile()
+pr.enable()
+workload()
+pr.disable()
+
+stats = pstats.Stats(pr)
+stats.sort_stats("tottime")       # self time per function
+stats.print_stats(5)              # top 5 offenders
+```
+
+Đọc profile như một chuyên gia:
+
+- **tottime** (thời gian riêng) — thời gian trong thân hàm, không tính callee.
+  Sort theo cái này để tìm hotspot thật.
+- **cumtime** (cộng dồn) — gồm cả những gì nó gọi. Sort theo cái này để tìm
+  *cây con* đắt đỏ.
+- **ncalls** — số lần gọi. Hàm được gọi 500k lần mỗi lần 1µs là một hotspot;
+  hàm gọi một lần tốn 500ms là một loại bài toán khác.
+- `stats.print_callers()` cho biết ai gọi tới hotspot — đích refactor thường là
+  phía gọi, không phải bị gọi.
+
+Bạn có thể bóc dữ liệu bằng mã: `pstats.Stats(pr).stats` ánh xạ
+`(filename, lineno, funcname)` → `(cc, nc, tt, ct, callers)`. Đây chính là cách
+các bài tập trong module này chấm "tìm bottleneck" — không đoán mò.

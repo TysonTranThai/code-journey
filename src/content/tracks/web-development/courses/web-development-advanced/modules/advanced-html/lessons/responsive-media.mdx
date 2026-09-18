@@ -1,0 +1,111 @@
+Images are most of the bytes on the median web page, so an advanced grip on media is
+mostly a performance skill. The tools are HTML attributes — and the skill is knowing
+which problem each one solves: resolution switching, art direction, format support, or
+priority.
+
+## Resolution switching: srcset + sizes
+
+One image, many files — let the browser pick:
+
+```html
+<img
+  src="hero-800w.jpg"
+  srcset="hero-400w.jpg 400w, hero-800w.jpg 800w, hero-1600w.jpg 1600w"
+  sizes="(max-width: 600px) 100vw, 50vw"
+  width="1600" height="800"
+  alt="Launch event crowd under confetti">
+```
+
+- `srcset` lists candidate files with **w-descriptors** (real pixel widths).
+- `sizes` tells the browser how wide the image *renders* at each viewport: here, full
+  viewport width on phones, half on larger screens.
+- The browser combines both — plus the screen's device-pixel ratio — and downloads the
+  smallest file that still looks sharp. On a 2× phone at 390 px, that is 780+ CSS px
+  worth of file, not 1600.
+- Intrinsic `width`/`height` let the browser reserve the right box before the file
+  arrives — the one-line fix for layout shift.
+
+A common mistake is sizing *for the largest screen*. The whole point is that a phone
+never downloads the desktop file.
+
+## Art direction: picture
+
+Different crops for different screens — not the same photo, a different *photo*:
+
+```html
+<picture>
+  <source media="(max-width: 600px)" srcset="hero-square-crop.jpg">
+  <source media="(min-width: 601px)" srcset="hero-wide-crop.jpg">
+  <img src="hero-wide-crop.jpg" alt="Launch event crowd" width="1600" height="800">
+</picture>
+```
+
+Rules that keep `<picture>` honest: the `<img>` inside is mandatory (it holds `alt`,
+dimensions, and the fallback), sources are tried top-down, and `media`/`type` decide
+whether a source is eligible. Art direction changes *composition*; if the image is the
+same composition at different sizes, that job belongs to `srcset`.
+
+## Format fallback: the other picture superpower
+
+The same structure serves modern formats with a graceful fallback:
+
+```html
+<picture>
+  <source type="image/avif" srcset="hero.avif">
+  <source type="image/webp" srcset="hero.webp">
+  <img src="hero.jpg" alt="Launch event crowd" width="1600" height="800">
+</picture>
+```
+
+AVIF/WebP typically cut file weight 30–60% over JPEG; browsers that do not understand
+a `type` simply skip that source. Note where `alt` lives — on the `<img>`, never on the
+`<source>`.
+
+## Priority: fetchpriority, loading, decoding
+
+```html
+<!-- the hero: requested early, rendered eagerly -->
+<img src="hero.avif" fetchpriority="high" ...>
+
+<!-- below the fold: fetched lazily -->
+<img src="chart.webp" loading="lazy" decoding="async" ...>
+```
+
+`fetchpriority="high"` pulls the LCP image forward in the network queue;
+`loading="lazy"` keeps off-screen images from competing with it. One hero gets `high`;
+everything below the fold gets `lazy` — that split is the entire strategy.
+
+## Video with captions
+
+```html
+<video controls muted playsinline poster="cover.jpg" width="960" height="540">
+  <source src="demo.webm" type="video/webm">
+  <source src="demo.mp4" type="video/mp4">
+  <track src="demo-en.vtt" kind="captions" srclang="en" label="English" default>
+  <track src="demo-vi.vtt" kind="captions" srclang="vi" label="Tiếng Việt">
+</video>
+```
+
+`controls` because native controls are accessible controls; `muted playsinline` is what
+lets autoplaying previews behave on mobile; multiple `<source>` elements give a format
+fallback chain; `<track kind="captions">` carries captions — an accessibility
+requirement, not a bonus. Subtitles (`kind="subtitles"`) are for translation; captions
+include sound effects and speaker changes.
+
+## What goes wrong
+
+- **`sizes` lies** ("100vw" on an image that renders at 300 px): the browser
+  over-downloads by 3×. Do the layout math.
+- **`<picture>` without an `<img>`**, or `alt`/dimensions on the `<source>` instead.
+- **Art direction via `srcset`**: different *compositions* need `<picture>` + `media`.
+- **Lazy-loading the hero**: `loading="lazy"` on your LCP image is self-sabotage.
+- **`autoplay` without `muted`**: browsers block it — and unmuted surprise audio is an
+  accessibility failure regardless.
+
+## Practice and where this connects
+
+You will build a fully-specced responsive hero from requirements, choose between
+`srcset` and `<picture>` for three concrete scenarios, fix a gallery whose `sizes` lie,
+and repair a video element missing its accessibility and fallback layers. Media
+attributes return in the performance section of this course — there you will measure
+the difference these attributes make; here you learn to write them correctly.

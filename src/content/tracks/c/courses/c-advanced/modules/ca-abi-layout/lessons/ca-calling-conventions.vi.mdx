@@ -1,0 +1,11 @@
+## Thỏa thuận vô hình
+
+Khi gọi hàm, hai bên thống nhất — không một cú pháp C nào nói ra — đối số đi đâu (register trước, rồi stack), register nào trả giá trị, và register nào callee phải khôi phục. Thỏa thuận đó là **quy ước gọi**, lõi của platform ABI.
+
+## Caller-saved so với callee-saved
+
+Register mà *callee* được phép xài tự do là caller-saved: nếu caller vẫn cần giá trị, nó phải đổ ra trước lời gọi. Register mà callee hứa bảo toàn là callee-saved: callee tự đổ và tự khôi phục. Sự phân công này giải thích vì sao thêm một lời gọi có thể đổi cách phân bổ register của caller — thấy được trong assembly của mô-đun 13.
+
+## Hàm variadic cố tình phá khuôn mẫu
+
+Hàm kiểu printf nhận danh sách đối số có hình dạng lúc chạy. `<stdarg.h>` (va_start/va_arg/va_end) là cửa sổ khả chuyển của chuẩn vào những gì quy ước thực sự làm — và lý do printf là con特别 thú với mọi ABI từng được thiết kế.

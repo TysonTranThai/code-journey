@@ -1,0 +1,26 @@
+## Whole-file convenience
+
+```csharp
+string all = File.ReadAllText(path);          // one big string
+string[] lines = File.ReadAllLines(path);     // split for you
+File.WriteAllLines(path, new[] { "a", "b" }); // joins with newlines
+```
+
+`ReadAllLines` also strips line-ending differences: Windows CRLF or Unix LF, you get clean lines. For config files and small datasets, these helpers are the right tool.
+
+## Streaming with using
+
+For anything potentially large — or when you process as you read — stream:
+
+```csharp
+using (var reader = new StreamReader(path))
+{
+    string line;
+    while ((line = reader.ReadLine()) != null)
+    {
+        Console.WriteLine(line);
+    }
+}
+```
+
+`StreamReader.ReadLine()` returns the next line or `null` at end-of-file. The `using` block guarantees the file handle closes even if the loop body throws — an open handle leaks a resource the OS grants in limited supply.

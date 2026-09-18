@@ -1,0 +1,36 @@
+{
+  "id": "cb15-score-tier",
+  "title": "Score Tier",
+  "prompt": "Given `typedef enum { BRONZE, SILVER, GOLD } Tier;` in scope, implement `Tier tier_for(int score)`: >= 90 GOLD, >= 70 SILVER, else BRONZE.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\ntypedef enum { BRONZE, SILVER, GOLD } Tier;\n",
+  "tests": [
+    {
+      "name": "gold",
+      "code": "CHECK_EQ(tier_for(95), GOLD);",
+      "hint": "High scores are gold."
+    },
+    {
+      "name": "exact ninety",
+      "code": "CHECK_EQ(tier_for(90), GOLD);",
+      "hint": "90 is gold: the cut is >="
+    },
+    {
+      "name": "silver boundary",
+      "code": "CHECK_EQ(tier_for(70), SILVER);",
+      "hint": "Exactly 70 is silver."
+    },
+    {
+      "name": "bronze",
+      "code": "CHECK_EQ(tier_for(69), BRONZE);",
+      "hint": "Below 70 is bronze."
+    },
+    {
+      "name": "zero",
+      "code": "CHECK_EQ(tier_for(0), BRONZE);",
+      "hint": "Zero is bronze."
+    }
+  ],
+  "level": "imitation"
+}

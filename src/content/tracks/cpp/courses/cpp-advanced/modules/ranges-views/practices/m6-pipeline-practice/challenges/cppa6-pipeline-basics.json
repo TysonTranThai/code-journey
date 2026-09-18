@@ -1,0 +1,21 @@
+{
+  "id": "cppa6-pipeline-basics",
+  "title": "Lazy Pipelines by Hand",
+  "prompt": "Implement `sumEvenSquares` with `views::iota | filter | transform` and `initials` with `filter | transform` — no loops over intermediate containers.",
+  "difficulty": "advanced",
+  "level": "imitation",
+  "language": "cpp",
+  "boilerplate": "#include <ranges>\n#include <string>\n#include <vector>\n\n// Sum of squares of even numbers in [1, limit).\nint sumEvenSquares(int limit);\n\n// Concatenate (space-separated) the uppercased first letters of words longer\n// than n characters, in order. Words come in a vector<string>.\nstd::string initials(const std::vector<std::string>& words, std::size_t n);\n",
+  "tests": [
+    {
+      "name": "sumEvenSquares matches the math",
+      "code": "CHECK_EQ(sumEvenSquares(11), 220);\nCHECK_EQ(sumEvenSquares(1), 0);\nCHECK_EQ(sumEvenSquares(2), 0);",
+      "hint": "namespace rv = std::views; for (int v : rv::iota(1, limit) | rv::filter([](int x){ return x % 2 == 0; }) | rv::transform([](int x){ return x * x; })) total += v;"
+    },
+    {
+      "name": "initials filters and maps",
+      "code": "std::vector<std::string> words{\"alpha\", \"be\", \"gamma\", \"hi\", \"fog\", \"delta\"};\nCHECK_EQ(initials(words, 3), std::string(\"AGD\"));  // \"fog\" is exactly 3 chars: excluded (strictly greater)",
+      "hint": "words | rv::filter([n](const std::string& w){ return w.size() > n; }) | rv::transform([](const std::string& w){ return (char)std::toupper((unsigned char)w[0]); }) — accumulate into a string."
+    }
+  ]
+}

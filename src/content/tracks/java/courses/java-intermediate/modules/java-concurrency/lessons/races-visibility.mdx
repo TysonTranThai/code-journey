@@ -1,0 +1,37 @@
+## Race conditions and visibility
+
+Two problems plague shared mutable state:
+
+**Interference** — `count++` is read-modify-write; two threads can read
+the same value and lose an increment:
+
+```java
+class Counter { int count; void inc() { count++; } }
+// 2 threads × 10_000 increments → often < 20_000
+```
+
+**Visibility** — without synchronization, one thread's writes may never
+become visible to another (the JIT may hoist the read out of a loop):
+
+```java
+boolean stop = false;          // plain field — may never be seen!
+// Thread A: while (!stop) work();
+// Thread B: stop = true;
+```
+
+Fixes, weakest to strongest:
+- `volatile` — visibility only; fine for flags, wrong for count++
+- `AtomicLong`/`AtomicInteger` — atomic read-modify-write
+  (`incrementAndGet()`)
+- `synchronized` blocks — mutual exclusion for compound actions
+
+```java
+class SafeCounter {
+    private final AtomicLong count = new AtomicLong();
+    void inc() { count.incrementAndGet(); }
+    long value() { return count.get(); }
+}
+```
+
+Rule of thumb: make shared state immutable, or confine it to one thread,
+or protect every access consistently — pick one and document it.

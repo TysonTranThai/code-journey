@@ -1,0 +1,45 @@
+## Pipelines compose for free
+
+An iterator consuming an IEnumerable is a stage; stages chain into
+pipelines where each item flows through all stages before the next item
+starts:
+
+```csharp
+static IEnumerable<string> ReadLines(string path) { /* yield per line */ }
+IEnumerable<string> NonEmpty(IEnumerable<string> src)
+{ foreach (var l in src) if (l.Trim().Length > 0) yield return l; }
+IEnumerable<int> ParseAll(IEnumerable<string> src)
+{ foreach (var l in src) yield return int.Parse(l); }
+
+var total = ParseAll(NonEmpty(ReadLines(path))).Sum();   // one pass, O(1) memory
+```
+
+The alternative — three `ToList()` calls — holds three full copies in
+memory. For a million-line file that is the difference between constant and
+gigabytes.
+
+## Bounded and infinite sources
+
+Iterators can be logically infinite because the consumer controls pace:
+
+```csharp
+static IEnumerable<long> Naturals()
+{
+    for (long i = 0; ; i++) yield return i;
+}
+var first10 = Naturals().Take(10);     // consumer bounds it
+```
+
+`Take`/`Skip`/`TakeWhile` are the consumer-side brakes. This is the shape
+behind `IAsyncEnumerable` (Module 9) and every streaming API you will meet.
+
+## The trap: multiple enumeration
+
+A pipeline over a source with side effects (network calls, random, file
+reads) re-triggers them per enumeration. If a query runs twice, the source
+runs twice — materialize once at the boundary and pass the list onward.
+
+## Check your understanding
+
+- Why is `file.ReadLines` (lazy) usually better than `File.ReadAllLines`? (Constant memory.)
+- Where SHOULD you materialize? (At boundaries: once per logical unit of work.)

@@ -1,0 +1,21 @@
+{
+  "id": "javaa-checkpoint-m14-task",
+  "title": "Checkpoint: triage the incident",
+  "prompt": "Events are lines `ts=<n> level=<L> event=<E> requestId=<R> endpoint=<P>` (already\nparsed for you as records). Inside Solution, implement `static class Ev` with\n`long ts; String level, event, requestId, endpoint;` and a constructor\n`Ev(long, String, String, String, String)`, then:\n1. `static List<String> affectedRequests(List<Ev> events)` — requestIds that have at\nleast one level=ERROR event, in first-appearance order, deduplicated.\n2. `static Map<String, Long> byEndpoint(List<Ev> events)` — count of ERROR events\nper endpoint.\n3. `static List<String> cascadeOf(List<Ev> events, String requestId)` — the event\nnames for that request in ts order (its full timeline).\n4. `static String verdict(List<Ev> events)` — return \"isolated\" if exactly one\nrequest is affected, \"endpoint-outage\" if one endpoint accounts for ALL errors and\nthere are 2+ affected requests, else \"widespread\".\n5. `static String refutes(String hypothesis)` — the observation that would kill each\nleading hypothesis: \"endpoint-outage\"→\"an error on a different endpoint\",\n\"isolated\"→\"a second affected request\", \"widespread\"→\"errors stop after deploy\".",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "localize, correlate, quantify",
+      "code": "\njava.util.List<Solution.Ev> events = java.util.List.of(\n    new Solution.Ev(1, \"INFO\", \"start\", \"r1\", \"/a\"),\n    new Solution.Ev(2, \"ERROR\", \"timeout\", \"r1\", \"/a\"),\n    new Solution.Ev(3, \"INFO\", \"start\", \"r2\", \"/b\"),\n    new Solution.Ev(4, \"ERROR\", \"timeout\", \"r2\", \"/b\"),\n    new Solution.Ev(5, \"ERROR\", \"db-down\", \"r3\", \"/a\"));\ncheckEq(Solution.affectedRequests(events), java.util.List.of(\"r1\", \"r2\", \"r3\"), \"three requests, in order\");\ncheckEq(Solution.byEndpoint(events), java.util.Map.of(\"/a\", 2L, \"/b\", 1L), \"endpoint counts\");\ncheckEq(Solution.cascadeOf(events, \"r1\"), java.util.List.of(\"start\", \"timeout\"), \"r1 timeline\");\ncheckEq(Solution.verdict(events), \"widespread\", \"two endpoints, 3 requests\");\n",
+      "hint": "Triage as functions over the stream."
+    },
+    {
+      "name": "hypotheses are refutable",
+      "code": "\ncheckEq(Solution.refutes(\"endpoint-outage\"), \"an error on a different endpoint\", \"outage refuter\");\ncheckEq(Solution.refutes(\"isolated\"), \"a second affected request\", \"isolation refuter\");\ncheckEq(Solution.refutes(\"widespread\"), \"errors stop after deploy\", \"spread refuter\");\n",
+      "hint": "Every hypothesis names its own killer."
+    }
+  ],
+  "level": "real-world"
+}

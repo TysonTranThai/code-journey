@@ -1,0 +1,30 @@
+{
+  "id": "hsg-cp-m4-lucky-range",
+  "title": "Lucky Range Count",
+  "prompt": "**Description:** Given q queries, each a range [l, r] with 1 ≤ l ≤ r ≤ 10^6,\ncount how many numbers in 1..10^6 have their digit sum between l and r\n(inclusive). Digit sum of 78 is 7+8 = 15.\n\n**Input:** Line 1: q (1 ≤ q ≤ 10^5). Each of the next q lines: l r.\n**Output:** q lines — one answer per query.\n\n**Example:** with q = 2: `1 1` → digit sum 1 happens for 1, 10, 100, ...,\n10^6 has digit sum 1 → count = 7 (1, 10, 100, 1000, 10000, 100000, 1000000) →\n`7`; `28 28` → `1` (only 99999... wait, digit sum 28: many numbers.\nPrecompute per-value digit sums and a prefix count — do not rescan per\nquery.)",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "digit sum one",
+      "code": "std::istringstream in(\"1\\n1 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n\"));",
+      "hint": "Numbers with digit sum 1 up to 10^6: 1, 10, 100, 1000, 10000, 100000, 1000000."
+    },
+    {
+      "name": "wide range",
+      "code": "std::istringstream in(\"1\\n1 54\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1000000\\n\"));",
+      "hint": "Max digit sum of a 7-digit number is 63 but 10^6 caps at 1; all values 1..10^6 have digit sum between 1 and 54 → every one counts."
+    },
+    {
+      "name": "impossible range",
+      "code": "std::istringstream in(\"1\\n55 60\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "No number ≤ 10^6 has digit sum 55+ except... none do."
+    },
+    {
+      "name": "two queries",
+      "code": "std::istringstream in(\"2\\n1 1\\n2 2\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n21\\n\"));",
+      "hint": "Digit sum 2: one 1-digit (2), two 2-digit (11,20), three 3-digit, ... 1+2+3+4+5+6 = 21."
+    }
+  ]
+}

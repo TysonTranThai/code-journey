@@ -1,0 +1,18 @@
+## The interface is three functions; the job is enormous
+
+`malloc`, `free`, `realloc` hide a subsystem that must satisfy conflicting goals at once:
+
+- **throughput** — allocate fast (the common case should be a few instructions);
+- **memory efficiency** — metadata and fragmentation must not eat the heap;
+- **low fragmentation** — long-running programs mix sizes unpredictably;
+- **thread safety** — modern allocators do this without a global lock.
+
+Real allocators (glibc's, musl's, jemalloc) chunk memory into size classes, keep free lists per class, coalesce neighbors on free, and mmap very large requests directly.
+
+## The tradeoff triangle
+
+Fast + compact + general: pick two. Arena allocators choose fast + compact for *one lifetime batch* and give up general free. Pools choose fast for *one size* and give up flexibility. Understanding *why* each design gives something up is the engineering content of this module — code alone does not teach it.
+
+## Alignment is part of the contract
+
+Every allocation is aligned for any fundamental type (typically 16 bytes). Your own allocators must honor that, or every struct cast through the result is a latent crash.

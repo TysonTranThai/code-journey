@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m7-safe-divide",
+  "title": "std::optional divide",
+  "prompt": "Implement `std::optional<int> safe_divide(int a, int b)`: return the quotient when `b != 0`, and `std::nullopt` when `b == 0`. No exceptions, no sentinel ints.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <optional>\n#include <iostream>\n\n// std::optional<int> safe_divide(int a, int b)\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "CHECK_EQ(safe_divide(7, 2).value(), 3);",
+      "hint": "Integer division truncates toward zero."
+    },
+    {
+      "name": "zero",
+      "code": "CHECK(!safe_divide(1, 0).has_value());",
+      "hint": "Division by zero is absence, not zero."
+    },
+    {
+      "name": "negative",
+      "code": "CHECK_EQ(safe_divide(-7, 2).value(), -3);",
+      "hint": "Negatives follow the same truncation rule."
+    }
+  ],
+  "level": "imitation"
+}

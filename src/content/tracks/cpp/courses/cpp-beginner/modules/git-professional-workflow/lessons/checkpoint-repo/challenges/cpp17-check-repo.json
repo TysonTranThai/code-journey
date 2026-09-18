@@ -1,0 +1,31 @@
+{
+  "id": "cpp17-check-repo",
+  "title": "Commit or Ignore",
+  "prompt": "Implement `should_commit(path)` returning true for files a professional C++ repo commits: `src/main.cpp`, `include/app.hpp`, `CMakeLists.txt`, `README.md`, `.gitignore` → true; `build/CMakeCache.txt`, `main.o`, `finance` (binary), `cmake-build-debug/x` → false (generated artifacts).",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n\nbool should_commit(const std::string& path) {\n    // TODO\n}",
+  "tests": [
+    {
+      "name": "sources",
+      "code": "CHECK(should_commit(std::string{\"src/main.cpp\"}));",
+      "hint": "Sources and headers are committed."
+    },
+    {
+      "name": "build ignored",
+      "code": "CHECK(!should_commit(std::string{\"build/CMakeCache.txt\"}));",
+      "hint": "The build directory is regenerable."
+    },
+    {
+      "name": "objects ignored",
+      "code": "CHECK(!should_commit(std::string{\"main.o\"}));",
+      "hint": "Object files never enter version control."
+    },
+    {
+      "name": "binary ignored",
+      "code": "CHECK(!should_commit(std::string{\"finance\"}));",
+      "hint": "Compiled binaries are artifacts, not sources."
+    }
+  ],
+  "level": "real-world"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "javi-p1-color-equals",
+  "title": "Write the equals/hashCode Pair",
+  "prompt": "Implement a `Color` value class inside `Solution`:\n- public constructor `Color(int r, int g, int b)` storing fields as final\n- `equals(Object)` returning true only for another `Color` with identical r, g, b\n- `hashCode()` consistent with equals (use `Objects.hash(...)`)\n- `toString()` returning `Color[r=...,g=...,b=...]`\n\nThe tests put two equal Colors into a HashSet and expect the set to treat\nthem as one element — the classic contract check.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "equal colors deduplicate in a HashSet",
+      "code": "\nSolution.Color a = new Solution.Color(10, 20, 30);\nSolution.Color b = new Solution.Color(10, 20, 30);\nSet<Solution.Color> set = new HashSet<>();\nset.add(a); set.add(b);\ncheckEq(set.size(), 1, \"two equal colors must be one element\");\n",
+      "hint": "Two equal objects must occupy one set slot — that requires equals AND hashCode together."
+    },
+    {
+      "name": "different colors stay distinct",
+      "code": "\nSolution.Color a = new Solution.Color(1, 2, 3);\nSolution.Color b = new Solution.Color(1, 2, 4);\ncheckTrue(!a.equals(b), \"different channels differ\");\nSet<Solution.Color> set = new HashSet<>();\nset.add(a); set.add(b);\ncheckEq(set.size(), 2, \"distinct colors stay two elements\");\n",
+      "hint": "Changing one channel must change both equality and the hash bucket."
+    },
+    {
+      "name": "toString format",
+      "code": "\ncheckEq(new Solution.Color(255, 0, 128).toString(), \"Color[r=255,g=0,b=128]\", \"format\");\n",
+      "hint": "Format exactly: Color[r=255,g=0,b=128]"
+    }
+  ],
+  "level": "independent"
+}

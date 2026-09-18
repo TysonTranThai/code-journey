@@ -1,0 +1,57 @@
+The cascade is not an accident to fight — it is a system to order. `@layer`
+gives you explicit control.
+
+## Layers beat specificity
+
+Declarations in a **later** layer win over earlier ones — regardless of
+specificity:
+
+```css
+@layer reset, base, components, utilities;
+
+@layer reset {
+  * {
+    margin: 0;
+  }
+}
+@layer components {
+  .btn {
+    padding: 0.5rem 1rem;
+  }
+}
+@layer utilities {
+  .p-0 {
+    padding: 0 !important-free;
+  } /* utilities beat components */
+}
+```
+
+(That comment is a marker, not syntax — utilities win because the layer is
+declared later.) A `.p-0` utility now overrides component padding without
+`!important`, because `utilities` outranks `components` by layer order.
+
+## The ordering rule
+
+Layer order is fixed at first declaration: `@layer reset, base, components,
+utilities;` sets the priority low→high. Un-layered styles beat all layered
+styles — that is how overrides ship last.
+
+## :where() — specificity you can spend
+
+`:where(...)` contributes **zero** specificity, perfect for resets that must
+always lose:
+
+```css
+:where(h1, h2, h3) {
+  margin-block: 0.5em;
+}
+```
+
+Any author rule now beats it. `:is()` is the same list but _takes_ the highest
+specificity of its arguments — use it when the match should count.
+
+## When to reach for each
+
+- Layers: organize whole stylesheets; make third-party CSS overridable.
+- `:where()`: resets and defaults that must be cheap to override.
+- `!important`: last resort, then only for utility layers by convention.

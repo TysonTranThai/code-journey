@@ -1,0 +1,56 @@
+## NULL: the pointer that points at nothing — on purpose
+
+```c
+#include <stdio.h>      // NULL lives in stdio.h and friends
+
+int *p = NULL;          // "points at nothing", a defined, testable value
+if (p == NULL) { /* not aiming at any object */ }
+```
+
+Dereferencing NULL is undefined behavior — typically a **crash** (on this
+course's sandbox, a segmentation fault). That crash is a *gift*: it is loud and
+immediate, unlike garbage pointers that silently corrupt.
+
+Initialize pointers to `NULL` when you have nothing to point at yet.
+
+## Mistake 1: dangling pointer
+
+```c
+int *p;
+{
+    int local = 7;
+    p = &local;
+}                        // local dies here
+printf("%d\n", *p);      // p still holds the dead address — undefined behavior
+```
+
+The variable `local` lived in a stack frame that no longer exists. Pointers to
+dead locals are **dangling**.
+
+## Mistake 2: dereferencing before assigning
+
+```c
+int *p;
+*p = 3;          // p was never given an address — undefined behavior
+```
+
+## Mistake 3: returning the address of a local
+
+```c
+int *make(void) {
+    int x = 5;
+    return &x;   // x dies when the function returns — dangling on arrival
+}
+```
+
+## Mistake 4: confusing address with value
+
+```c
+int x = 1;
+int *p = &x;
+if (p == &x) { }      // comparing addresses — true
+if (*p == x) { }      // comparing values — true
+if (p == x)  { }      // comparing address to int — nonsense (and a warning)
+```
+
+The compiler's warnings are your first defense: **read them**.

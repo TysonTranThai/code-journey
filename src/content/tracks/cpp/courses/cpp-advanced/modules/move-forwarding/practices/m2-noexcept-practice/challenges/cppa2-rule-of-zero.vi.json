@@ -1,0 +1,18 @@
+{
+  "title": "Rule of Zero vs Rule of Five",
+  "prompt": "`Config0` đã tuân thủ Rule of Zero — đừng đụng vào nó. Cài đủ năm special member của `Lease` trên `int*` đang sở hữu: copy sâu, gán có bảo vệ, cướp tài nguyên noexcept.",
+  "tests": [
+    {
+      "name": "Rule of Zero không cần gì",
+      "hint": "Không làm gì — các thành viên ngầm copy int đúng cách. Đừng thêm khai báo special member nào."
+    },
+    {
+      "name": "Lease copy sâu",
+      "hint": "new int(*o.resource_) — copy sâu, không bao giờ dùng chung con trỏ."
+    },
+    {
+      "name": "Lease cướp khi move",
+      "hint": "Cướp con trỏ, đặt nguồn về null: resource_(std::exchange(o.resource_, nullptr))."
+    }
+  ]
+}

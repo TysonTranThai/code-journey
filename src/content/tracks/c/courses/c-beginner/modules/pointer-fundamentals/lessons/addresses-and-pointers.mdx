@@ -1,0 +1,35 @@
+## Memory as numbered houses
+
+Every byte of memory has an **address** — a number, like a house number on a
+very long street. A variable like `int x = 42;` occupies some of those
+houses. The **address-of operator** `&` asks "where does x live?"
+
+```c
+int x = 42;
+printf("%p\n", (void*)&x);   // e.g. 0x7ffe... — an address, different each run
+```
+
+## A pointer stores an address
+
+A **pointer** is just a variable whose value is an address:
+
+```c
+int x = 42;
+int *p = &x;        // p holds the address of x
+```
+
+Read `int *p` as "p is a pointer to int". The type matters: an `int*` promises
+"the object at this address is an int". A `double*` promises a double. Pointers
+to different types are not interchangeable.
+
+## Two spellings, one meaning
+
+```c
+int *p;             // declaration context: * says "p is a pointer"
+*p = 7;             // expression context:  * means "the object p points to"
+```
+
+## Address is not value
+
+`x` is 42. `&x` is where 42 lives. `p` is a copy of that where. Three different
+things. Keeping them straight is 80% of understanding pointers.

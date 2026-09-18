@@ -1,0 +1,26 @@
+{
+  "id": "ca1-checkpoint-layout",
+  "title": "Checkpoint: Full Layout Report",
+  "prompt": "Given\n \n```c\nstruct Record { char kind; long id; char active; double score; };\n```\n \nimplement `void program(void)` printing exactly one layout line:\n \n```\nkind@0 id@8 active@16 score@24 size:32 pad:0\n```\n \nAll numbers must come from `offsetof`/`sizeof` measured on a locally defined identical struct (`<stddef.h>`); `pad:` is the *trailing* padding — size minus (last member offset + last member size). Internal padding before `score` is not counted. On a second line, print the contract class of signed overflow by calling `classify_overflow()`, which you also implement and which returns exactly `\"undefined\"`.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stddef.h>\n#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "layout line",
+      "code": "const char* out = cj_capture(program);\nCHECK_CONTAINS(out, \"kind@0 id@8 active@16 score@24 size:32\");",
+      "hint": "long is 8-aligned here, so id lands at 8; double at 24; total 32 is already a multiple of 8."
+    },
+    {
+      "name": "trailing pad is zero",
+      "code": "CHECK_CONTAINS(cj_capture(program), \"pad:0\");",
+      "hint": "size 32 minus (offset 24 + 8) = 0 — the 7 missing bytes are INTERNAL padding before score, not trailing."
+    },
+    {
+      "name": "overflow class",
+      "code": "CHECK_CONTAINS(cj_capture(program), \"undefined\");",
+      "hint": "Signed overflow is undefined behavior — print what your own classify_overflow returns."
+    }
+  ],
+  "level": "mini-build"
+}

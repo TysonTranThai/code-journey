@@ -1,0 +1,26 @@
+{
+  "id": "javi-p8-order-blind",
+  "title": "Order-Blind Assertions",
+  "prompt": "Implement `static Set<String> uniqueTags(String csv)` — split on\ncommas, trim each, drop empties, collect as a Set.\n\nThen implement `static boolean sameContent(List<String> a, List<String> b)`\nreturning true when both lists contain the same elements with the same\nmultiplicities — regardless of order (sort copies, or count with a map).\n\nThe lesson: never assert on a HashSet's iteration order; assert on\ncontent instead.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "tags dedupe and trim",
+      "code": "\ncheckEq(Solution.uniqueTags(\" a , b ,  ,a \"), Set.of(\"a\", \"b\"), \"content only\");\n",
+      "hint": "Set equality is order-blind by nature."
+    },
+    {
+      "name": "sameContent ignores order",
+      "code": "\ncheckEq(Solution.sameContent(List.of(\"x\", \"y\", \"x\"), List.of(\"x\", \"x\", \"y\")), true, \"same multiset\");\ncheckEq(Solution.sameContent(List.of(\"x\", \"y\"), List.of(\"x\", \"x\")), false, \"different counts\");\n",
+      "hint": "Compare sorted copies or frequency maps."
+    },
+    {
+      "name": "empty handling",
+      "code": "\ncheckEq(Solution.uniqueTags(\"  \"), Set.of(), \"empty set\");\ncheckEq(Solution.sameContent(List.of(), List.of()), true, \"both empty\");\n",
+      "hint": "Blank input → empty set; two empties are equal."
+    }
+  ],
+  "level": "independent"
+}

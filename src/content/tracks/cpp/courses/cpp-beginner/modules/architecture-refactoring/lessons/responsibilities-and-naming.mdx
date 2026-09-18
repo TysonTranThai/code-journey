@@ -1,0 +1,35 @@
+## The responsibility test
+
+For every function, class, and file, finish this sentence honestly: "This unit's job is ______ and nothing else." If the sentence needs "and also", split it.
+
+```
+parse_line()      → text in, parsed fields out. No printing.
+compute_totals()  → numbers in, totals out. No parsing.
+print_report()    → data in, console out. No computing.
+```
+
+A **pipeline** of small units beats a giant that "does the feature". Each stage is testable (the platform's tests call each function), each is reusable, and each has one reason to change.
+
+## Names are the cheapest documentation
+
+```cpp
+double d(double a, double b, int c);              // legal, opaque
+double invoice_total(double price, double tax_rate, int qty);   // self-documenting
+```
+
+Rename until the signature reads like the requirement. Types carry meaning too: `long long cents` beats `double money` (exact arithmetic for currency — a classic lesson), `enum class Status` beats `int state`.
+
+## const correctness as architecture
+
+`const` in signatures is a machine-checked contract:
+
+```cpp
+std::vector<std::string> load_rows(const std::string& path);   // will not touch your path
+void append_row(std::string& csv, const Row& row);             // will modify csv — visible
+```
+
+Reading a header, you know who mutates what without opening a single `.cpp`. This course's rule from module 2, scaled up: everything const until proven mutating.
+
+## Dependency direction
+
+Higher-level code (reports) may use lower-level code (parsing); lower levels must not reach upward. When two files need each other ("circular"), a third concept is hiding — extract it (a shared `Row` type, a small utility module). Data flows down; dependencies point down; debugging gets easy.

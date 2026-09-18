@@ -1,0 +1,21 @@
+{
+  "id": "cppa3-specialize-traits",
+  "title": "Rank and Capacity via Specialization",
+  "prompt": "Implement the `Rank` specializations (int -> 2, long -> 3), the `rank_v` variable template, and both `Capacity` partial specializations (`std::vector<T>` -> 0, `std::array<T, N>` -> N).",
+  "difficulty": "advanced",
+  "level": "independent",
+  "language": "cpp",
+  "boilerplate": "#include <array>\n#include <cstddef>\n#include <vector>\n\n// Rank: 0 for unknown types, higher for known ones.\ntemplate <class T> struct Rank {\n    static constexpr int value = 0;\n};\n// TODO: specialize Rank<int> -> 2 and Rank<long> -> 3.\n// Expose rank_v<T> as a variable template reading Rank<T>::value.\n\n// Capacity: 0 for dynamic containers, N for std::array<T, N>.\ntemplate <class C> struct Capacity;   // primary: undefined on purpose\n// TODO: partial specialization for std::vector<T> -> 0,\n//       partial specialization for std::array<T, N> -> N.\n",
+  "tests": [
+    {
+      "name": "rank_v reads through specializations",
+      "code": "static_assert(rank_v<int> == 2, \"int rank\");\nstatic_assert(rank_v<long> == 3, \"long rank\");\nstatic_assert(rank_v<double> == 0, \"unknown rank\");",
+      "hint": "template <> struct Rank<int> { static constexpr int value = 2; }; (same for long), then template <class T> inline constexpr int rank_v = Rank<T>::value;"
+    },
+    {
+      "name": "Capacity peels N from std::array",
+      "code": "static_assert(Capacity<std::array<int, 7>>::value == 7, \"array N\");\nstatic_assert(Capacity<std::vector<int>>::value == 0, \"dynamic\");",
+      "hint": "template <class T, std::size_t N> struct Capacity<std::array<T, N>> { static constexpr std::size_t value = N; }; and a vector<T> one returning 0."
+    }
+  ]
+}

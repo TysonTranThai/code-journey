@@ -1,0 +1,20 @@
+## gcc là driver, không phải một chương trình
+
+Một lệnh `gcc hello.c` điều phối bốn giai đoạn:
+
+1. **Tiền xử lý** (cpp): mở rộng macro và include → vẫn là văn bản C.
+2. **Trình biên dịch chính** (cc1): văn bản C → assembly.
+3. **Assembler** (as): assembly → object file (mã máy + bảng ký hiệu).
+4. **Linker** (ld): object + thư viện → file chạy được.
+
+`gcc -E` dừng sau tiền xử lý, `-S` sau biên dịch, `-c` sau hợp ngữ. Mỗi cờ trao cho bạn artifact trung gian đọc được thật.
+
+## Vì sao các ranh giới quan trọng
+
+- Đầu ra `-E` cho thấy macro *thực sự* làm gì — chân lý của mô-đun 9.
+- Đầu ra `-S` là nơi xem tối ưu hóa diễn ra — các tuyên bố của mô-đun 4 thành thấy được.
+- `-c` tạo ra .o mà linker sẽ giải quyết bảng ký hiệu — và nơi xung đột cùng định nghĩa thiếu sinh ra lỗi liên kết.
+
+## Bước liên kết định nghĩa mô hình lập trình của C
+
+Undefined reference, multiple definition, và linkage static-vs-external đều là khái niệm của linker. Khai báo hàm mà không định nghĩa vẫn biên dịch ngon (trình biên dịch tin bạn) và chỉ hụt ở liên kết — vì vậy drift header/cài đặt lộ ra rất muộn.

@@ -1,0 +1,28 @@
+A **concept** is a named compile-time predicate over types. The modern replacement for SFINAE — and the single biggest readability upgrade in modern C++.
+
+## The four requirement kinds
+
+```cpp
+template <class C>
+concept SizedContainer = requires(const C& c, const C& d, C& mut) {
+    c.size();                                   // simple requirement: expression is valid
+    { c.size() } -> std::convertible_to<std::size_t>;  // type requirement on the result
+    typename C::value_type;                     // type requirement: a member type exists
+    requires std::is_class_v<C>;                // nested requirement: a boolean constraint
+};
+```
+
+The **const-correctness of the probe matters**: `requires(const C& c) { c.size(); }` only accepts containers whose `size()` is const-callable. Probing with a non-const reference is the classic false-positive.
+
+## Ad-hoc constraints on functions
+
+```cpp
+template <class T>
+requires std::is_arithmetic_v<T>          // ad-hoc requires-clause
+T twice(T v) { return v * 2; }
+
+template <class T> requires requires(T t) { t * 2; }   // ad-hoc requires-REQUIRES
+T twice2(T v) { return v * 2; }
+```
+
+`requires requires` is not a typo: the outer clause, then an inline requires-expression as its operand. Prefer a *named* concept once a constraint appears twice.

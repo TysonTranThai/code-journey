@@ -1,0 +1,20 @@
+## The frequency map
+
+Counting things is the most reusable loop shape in the collections chapter:
+
+```csharp
+var counts = new Dictionary<string, int>();
+foreach (string w in words)
+    counts[w] = counts.GetValueOrDefault(w) + 1;
+```
+
+Many problems are this pattern wearing a costume: first duplicate, top word, anagram check, pair-sum lookup — each is a dictionary doing the memory work that a nested loop would redo O(n²) times.
+
+## The recursion contract
+
+Every recursive method needs two things, or it never terminates:
+
+1. **Base case** — an input answered directly, without recursing.
+2. **Smaller step** — each call works on a strictly smaller input, moving toward the base case.
+
+The call stack does the bookkeeping: every call gets its own frame with its own locals, and the answer is assembled as frames return.

@@ -1,0 +1,21 @@
+## C mô tả một cỗ máy; trình biên dịch dựng một cỗ máy khác
+
+Chương trình C là *mô tả* của máy trừu tượng: ô nhớ, thực hiện tuần tự. Trình biên dịch chỉ cần bảo đảm **hành vi quan sát được** — viết ra file, truy cập volatile, đọc input. Mọi thứ khác có thể sắp xếp lại, gộp hoặc xóa.
+
+## Điều đó mang lại gì cho trình tối ưu hóa
+
+```c
+int f(void) {
+    int x = 3;
+    int y = x * x;
+    return y;
+}
+/* STORE của x có thể bị xóa: y tính được lúc biên dịch,
+   ô nhớ của x chưa bao giờ quan sát được. */
+```
+
+Đó là lý do "chạy đúng khi thêm printf" không chứng minh gì: printf thêm điểm quan sát, thay đổi những gì trình biên dịch được giữ.
+
+## Cánh cửa một chiều
+
+Trình tối ưu hóa được chuẩn cho phép *giả định* UB không bao giờ xảy ra — vì vậy một lệnh kiểm tra null *sau* khi hủy tham chiếu có thể bị xóa hợp pháp.

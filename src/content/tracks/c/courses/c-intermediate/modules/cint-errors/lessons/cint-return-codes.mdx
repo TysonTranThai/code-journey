@@ -1,0 +1,47 @@
+## The vocabulary, written down
+
+C has no exceptions — every function *negotiates* failure through its
+return value. The conventions that make an API predictable:
+
+```c
+/* success: 0 or a value; failure: -1 (numeric) or NULL (pointer) */
+long  parse(const char *s, long *out);      /* 0 ok, -1 bad */
+char *dup_str(const char *s);               /* NULL on failure */
+/* three-valued: 0 = yes, 1 = no, -1 = error (like ferror semantics) */
+int   contains(const Set *s, int v);        /* distinguish "absent" from "broken" */
+```
+
+The cardinal rule: **one meaning per value.** A function that returns
+`int` where 0 means "found", 1 means "not found", and -1 means "error"
+is *documenting* that its caller must check all three — write that in
+the header, and test all three.
+
+## errno: the thread of context
+
+On failure, library functions set `errno` — a global(ish) int with
+symbolic names in `<errno.h>`:
+
+```c
+#include <errno.h>
+FILE *f = fopen(path, "r");
+if (!f) {
+    if (errno == ENOENT) /* no such file */;
+    else if (errno == EACCES) /* permission */;
+    /* ... */
+}
+```
+
+The contract is subtle: errno is meaningful **only immediately after a
+call that failed** — and only when that function documents setting it.
+Reading errno after a success (or after another call) is garbage. `perror`
+and `strerror(errno)` translate the number for humans. ISO C defines the
+mechanism; the *specific* values beyond a core set (ENOENT, EACCES,
+ENOMEM...) are platform territory — another ISO/POSIX boundary to mark.
+
+## Failure paths are code too
+
+Every `-1` in your implementation is a branch a test must reach. An API
+whose failure paths cannot be triggered from tests has failure paths
+nobody has ever run — the most dangerous code in the codebase. Design
+failures to be injectable: bad arguments (NULL, empty, out-of-range) are
+the honest lever in unit tests.

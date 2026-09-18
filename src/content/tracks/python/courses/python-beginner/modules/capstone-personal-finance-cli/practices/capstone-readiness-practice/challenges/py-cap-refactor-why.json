@@ -1,0 +1,16 @@
+{
+  "id": "py-cap-refactor-why",
+  "title": "Code Review: Which Design Survives?",
+  "prompt": "Two designs for the capstone storage layer are below. Write choose_design() returning \"A\" or \"B\" — the design that keeps the CLI testable and swappable. Then a comment line starting with # explaining why (one line, must mention the word 'storage' or 'layer').",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "",
+  "tests": [
+    {
+      "name": "judgment call",
+      "code": "_r = choose_design()\nassert _r in (\"A\", \"B\"), f\"answer A or B, got {_r!r}\"\n_lines = [l for l in code.splitlines() if l.strip().startswith(\"#\") and (\"storage\" in l.lower() or \"layer\" in l.lower())]\nassert _lines, \"add the one-line # justification\"\nassert choose_design() == \"B\", \"B keeps file I/O behind a seam the CLI never touches\"",
+      "hint": "Design A: every menu action opens/reads/writes the file directly. Design B: the menu calls add/list functions that return data; one storage module does all I/O."
+    }
+  ],
+  "level": "real-world"
+}

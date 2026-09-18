@@ -1,0 +1,83 @@
+JavaScript trung cấp đầy ranh giới function: response API vào, options object
+ra, array gộp lại. Destructuring và spread là hai tính năng ngôn ngữ giúp các
+ranh giới đó sạch sẽ.
+
+## Object destructuring
+
+```js
+const response = { user: { name: "Ada", email: "ada@example.com" }, status: 200 };
+
+const { user, status } = response; // chọn hai field
+const { name, email } = user; // hoặc lồng một bước:
+const {
+  user: { name: userName },
+} = response; // đổi tên khi giải nén
+```
+
+Destructuring trong tham số là chuẩn chuyên nghiệp cho options object:
+
+```js
+function connect({ host, port = 5432, retries = 3 } = {}) {
+  return host + ":" + port;
+}
+connect({ host: "db.local" }); // db.local:5432 — default áp dụng theo từng field
+```
+
+## Array destructuring
+
+```js
+const [first, second] = [10, 20];
+const [head, ...tail] = [1, 2, 3, 4]; // head=1, tail=[2,3,4]
+let a = 1,
+  b = 2;
+[a, b] = [b, a]; // hoán đổi không cần biến tạm
+```
+
+## Spread: sao chép và gộp
+
+Toán tử spread `...` _trải_ một iterable vào ngữ cảnh mới:
+
+```js
+const base = { theme: "dark", compact: false };
+const userPrefs = { compact: true };
+const settings = { ...base, ...userPrefs }; // cái sau thắng: { theme:"dark", compact:true }
+
+const merged = [...arr1, ...arr2];
+const copy = [...original]; // shallow copy — chỉ một tầng!
+```
+
+**Shallow vs deep:** spread chỉ sao chép tham chiếu một tầng. Object lồng bên
+trong vẫn dùng chung:
+
+```js
+const a = { meta: { count: 1 } };
+const b = { ...a };
+b.meta.count = 99;
+a.meta.count; // 99 — object bên trong bị chia sẻ
+```
+
+## Rest: thu thập thay vì trải
+
+Spread trải ra, rest _gom vào_. Cùng cú pháp, ngược hướng:
+
+```js
+function log(level, ...messages) {
+  // rest parameter
+  console.log("[" + level + "]", messages.join(" "));
+}
+
+const { id, ...rest } = user; // rest = user không có id — tiện để strip field
+```
+
+Một use case thực tế phổ biến — bỏ một field trước khi gửi dữ liệu lên API:
+
+```js
+const { password, safeUser } = user; // sai: password thành biến riêng
+const { password: _omit, ...safeUser } = user; // đúng: mọi thứ còn lại
+```
+
+## Vì sao điều này quan trọng ở Trung cấp
+
+Cập nhật state (tạo object mới với một field đổi), truyền props, và xử lý
+options đều dựa vào các cú pháp này. Chúng cũng xuất hiện khắp nơi trong code
+framework bạn sẽ đọc sau này.

@@ -1,0 +1,44 @@
+## Following the arrow
+
+**Dereferencing** a pointer means going to the address it holds and using the
+object there:
+
+```c
+int x = 42;
+int *p = &x;
+
+printf("%d\n", *p);   // 42 — the object p points AT
+*p = 99;              // writes through p: x is now 99
+printf("%d\n", x);    // 99
+```
+
+`*p` and `x` are the **same object**. There is one int; two names for it.
+
+## Declaration vs dereference: same star, different jobs
+
+In `int *p = &x;` the star is part of the *type*. In `*p = 99;` the star is
+the dereference operator. Same symbol, different contexts.
+
+## Reading and writing through pointers
+
+```c
+int a = 1, b = 2;
+int *p = &a;
+int *q = &b;
+
+*p = *q;        // a = b  (copies the VALUE b holds into a)
+p = q;          // p now points at b (copies the ADDRESS)
+```
+
+The first copies what the pointers point to; the second re-aims the pointer.
+Draw the arrows before you write the code.
+
+## Uninitialized pointers
+
+```c
+int *p;         // holds a GARBAGE address
+*p = 5;         // undefined behavior — writes to a random place
+```
+
+A pointer must be given an address before you dereference it — either `&x`
+or `NULL`.

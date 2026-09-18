@@ -1,0 +1,40 @@
+## strlen — the length
+
+```c
+#include <string.h>
+size_t n = strlen("hello");     // 5 — scans to the terminator
+```
+
+Counts characters BEFORE '\\0'. On an unterminated array it reads out of
+bounds — the terminator is your responsibility.
+
+## strcpy — the dangerous one
+
+```c
+char dst[8];
+strcpy(dst, "hello");           // copies 6 bytes (5 + terminator)
+```
+
+strcpy copies until the source's terminator and does NOT know how big `dst`
+is. Source longer than dst = buffer overflow. The course rule for graded work
+and for life: **know the destination size**, and prefer `snprintf` or bounded
+copies when the length is not statically obvious:
+
+```c
+char dst[8];
+snprintf(dst, sizeof dst, "%s", src);   // copies at most sizeof dst - 1 + '\0'
+```
+
+## strcmp — comparison is NOT ==
+
+```c
+if (a == b)          // compares POINTERS — almost always wrong
+if (strcmp(a, b) == 0)  // compares CONTENTS — correct
+```
+
+strcmp returns `<0`, `0`, or `>0` (lexicographic). Equality is exactly `== 0`.
+
+## The habit to build
+
+Before any string operation, answer: is the destination big enough, and is
+the source terminated? If either answer is "not sure", fix that first.

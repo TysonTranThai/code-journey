@@ -1,0 +1,44 @@
+**Kế thừa** diễn đạt "is-a": lớp dẫn xuất là một loại của base, và đối tượng
+dẫn xuất có thể được dùng ở nơi cần base. Bắt đầu bằng hình dạng:
+
+```cpp
+#include <string>
+
+class Employee {
+public:
+    explicit Employee(std::string name) : name_{std::move(name)} {}
+    const std::string& name() const { return name_; }
+
+private:
+    std::string name_;
+};
+
+class Engineer : public Employee {     // Engineer IS-A Employee
+public:
+    Engineer(std::string name, std::string specialty)
+        : Employee{std::move(name)}, specialty_{std::move(specialty)} {}
+    const std::string& specialty() const { return specialty_; }
+
+private:
+    std::string specialty_;
+};
+```
+
+## Public inheritance nghĩa là gì
+
+- Đối tượng derived **chứa trọn** một base subobject.
+- Member `private` của base tồn tại trong đối tượng derived nhưng lớp derived
+  **không truy cập được** — chúng thuộc về phần cài đặt của base.
+- Khởi tạo chạy **base trước**, rồi derived; hủy chạy derived trước, rồi base.
+
+## Mặc định là kế thừa private — hãy viết `public` tường minh
+
+`class D : B` kế thừa private (chi tiết cài đặt, gần như không bao giờ là điều
+bạn muốn). Luôn viết `: public B` cho quan hệ thay thế được; còn nếu bạn định
+dùng private/protected inheritance, hãy hỏi composition có nói tốt hơn không.
+
+## Kế thừa KHÔNG phải để
+
+Tái sử dụng một hàm phụ. Đó là composition hoặc hàm tự do. Chỉ dùng kế thừa
+khi bạn cần **khả năng thay thế** — nhiều đối tượng khác nhau dùng qua một
+interface base (các bài sau).

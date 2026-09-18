@@ -1,0 +1,72 @@
+## Từ chuỗi if đến pattern
+
+Pattern matching kiểm tra *hình dạng* của giá trị và gắn kết các mảnh của nó.
+Switch expression biến việc phân loại thành dữ liệu:
+
+```csharp
+public static string Describe(object o) => o switch
+{
+    int n when n < 0            => "negative int",
+    int n and > 100             => "big int",
+    int                         => "small int",
+    string { Length: 0 }        => "empty string",
+    string s                    => $"string of {s.Length}",
+    null                        => "nothing",
+    _                           => "unknown"
+};
+```
+
+Các viên gạch, ghép được ở khắp nơi:
+
+- **Type pattern** `int n` — kiểm tra + gắn tên.
+- **Property pattern** `string { Length: 0 }`, `Point { X: > 0, Y: > 0 }`.
+- **Relational** `> 100`, **logical** `and/or/not`.
+- **Constant** `null`, giá trị enum, literal.
+- **List pattern** (C# 11): `[1, .., var last]` khớp hình dạng chuỗi.
+
+## Tính đầy đủ và phân cấp
+
+Với enum và hệ đóng, compiler chứng minh được bạn phủ mọi trường hợp — thiếu
+một trường hợp bạn nhận cảnh báo, không phải bug lúc chạy. Đó là lý do switch
+trên hợp `Shape` thắng chuỗi `if/else`: hệ thống kiểu tham gia vào tính đúng
+đắn. Thêm `_` quá sớm và bạn *tắt* lớp bảo vệ đó — để nó làm phương án cuối.
+
+```csharp
+public enum LoadState { Idle, Loading, Ready, Failed }
+public static bool IsBusy(LoadState s) => s switch
+{
+    LoadState.Loading => true,
+    LoadState.Idle or LoadState.Ready or LoadState.Failed => false,
+    _ => throw new ArgumentOutOfRangeException(nameof(s))  // phòng tương lai
+};
+```
+
+## Tuple và deconstruction
+
+Tuple gom các giá trị tạm thời; deconstruction bóc ra bất cứ thứ gì có phương
+thức `Deconstruct` (mọi record đều có):
+
+```csharp
+(string name, int score) = ("ann", 92);
+var (min, max) = (nums.Min(), nums.Max());
+foreach (var (key, count) in dict)   // KeyValuePair cũng deconstruct được
+    Console.WriteLine($"{key}: {count}");
+```
+
+Switch trên tuple cho bảng quyết định đọc như bảng thật:
+
+```csharp
+public static string Grade(int score, bool attended) => (score, attended) switch
+{
+    ( >= 90, true)  => "A+",
+    ( >= 90, false) => "A",
+    ( >= 80, _)     => "B",
+    _               => "C"
+};
+```
+
+## Kiểm tra hiểu biết
+
+- Vì sao `_ => ...` là con dao hai lưỡi? (Bắt nốt các trường hợp tương lai một cách âm thầm.)
+- Property pattern thắng guard clause khi nào? (Khi phân loại, không phải khi hợp lệ hóa.)
+- `foreach (var (k, v) in dict)` dựa vào gì? (KeyValuePair.Deconstruct.)

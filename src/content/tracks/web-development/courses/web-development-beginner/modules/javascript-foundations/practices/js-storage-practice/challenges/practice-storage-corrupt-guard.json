@@ -1,0 +1,25 @@
+{
+  "id": "practice-storage-corrupt-guard",
+  "title": "Debug: Survive Corrupt Data",
+  "prompt": "This loader crashes when the stored value isn't valid JSON. Add a `try/catch` around the parse: on failure, return the default `{ theme: \"light\" }`. Test by storing garbage (`\"not-json{{\"`) and loading — it must return the default instead of throwing.\n\nRules:\n- try/catch around JSON.parse.\n- The catch returns the default.",
+  "difficulty": "beginner",
+  "level": "debugging",
+  "boilerplate": "function loadSettings() {\n  const raw = storage.getItem(\"settings\");\n  return JSON.parse(raw);\n}\nstorage.setItem(\"settings\", \"not-json{{\");\nconsole.log(loadSettings());\n",
+  "tests": [
+    {
+      "name": "parse is wrapped in try/catch",
+      "code": "if (!/try\\s*\\{[\\s\\S]*JSON\\.parse[\\s\\S]*\\}\\s*catch/i.test(code)) {\n  throw new Error(\"Wrap the JSON.parse call in try { … } catch { … }.\");\n}",
+      "hint": "try { return JSON.parse(raw); } catch { return { theme: \"light\" }; }"
+    },
+    {
+      "name": "corrupt data returns the default",
+      "code": "const fn = new Function(code + \"\\nreturn loadSettings();\");\nconst s = fn();\nif (!s || s.theme !== \"light\") throw new Error(\"Corrupt data should yield { theme: 'light' }, not a crash.\");",
+      "hint": "The catch block returns the default object."
+    },
+    {
+      "name": "valid data still parses",
+      "code": "const fn = new Function(code + '; storage.setItem(\"settings\", JSON.stringify({ theme: \"dark\" })); return loadSettings();');\nconst s = fn();\nif (s.theme !== \"dark\") throw new Error(\"Valid JSON must still load correctly.\");",
+      "hint": "The happy path keeps working: try parses and returns the stored object."
+    }
+  ]
+}

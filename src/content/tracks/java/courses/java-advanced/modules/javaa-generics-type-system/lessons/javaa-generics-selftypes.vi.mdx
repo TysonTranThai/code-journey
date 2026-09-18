@@ -1,0 +1,20 @@
+**Recursive generics** (idiom CRTP) giúp fluent API trả về kiểu *lớp con*:
+
+```java
+abstract static class Node<Self extends Node<Self>> {
+    private final List<String> labels = new ArrayList<>();
+    @SuppressWarnings("unchecked")
+    public Self label(String l) { labels.add(l); return (Self) this; }
+}
+static class Task extends Node<Task> { }
+```
+
+`new Task().label("a").label("b")` vẫn là `Task` — mọi mắt xích trả về `Self`.
+Cast `(Self) this` an toàn *theo quy ước*: lớp con hứa `Self` là chính nó. Cái
+giá đã biết: self-type không sống sót qua việc *đổi cha* — `Job extends Task`
+không thể đồng thời là `Node<Job>`; một lớp chỉ có một cha generic.
+
+**Class token**: generic bị xóa, nhưng đối tượng `Class<T>` *chính là* kiểu lúc
+chạy. `type.cast(value)` và `type.isInstance(value)` biến kho lưu trữ đã mất
+kiểu thành truy vấn có kiểm — nền tảng của registry an toàn kiểu, DI container,
+JSON binder. Ở nơi erasure mất kiểu, token tường minh mang kiểu thay.

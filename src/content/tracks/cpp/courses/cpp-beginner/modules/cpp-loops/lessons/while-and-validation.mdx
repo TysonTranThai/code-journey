@@ -1,0 +1,44 @@
+## while: as long as the condition holds
+
+```cpp
+int cups = 0;
+while (cups < 3) {
+    std::cout << "refilling...\n";
+    ++cups;               // forget this and the loop never ends
+}
+```
+
+Use `while` when the number of repetitions is *unknown in advance* — reading until end-of-file, searching until found, waiting for a condition.
+
+## do/while: check after the first try
+
+```cpp
+std::string choice;
+do {
+    choice = ask_menu();      // body runs FIRST, at least once
+} while (choice != "h" && choice != "q");
+```
+
+`do/while` is for "ask at least once, then re-ask while invalid" — menu loops, retry prompts. If you never need the guaranteed first pass, plain `while` reads better.
+
+## Accumulators and search
+
+Two patterns cover most loops you will write this year:
+
+```cpp
+// accumulator
+int total = 0;
+for (int s : scores) total += s;
+
+// first-match search
+int first_below_60 = -1;
+for (std::size_t i = 0; i < scores.size(); ++i) {
+    if (scores[i] < 60) { first_below_60 = static_cast<int>(i); break; }
+}
+```
+
+Module 8 replaces both hand-rolled versions with STL algorithms — but write them by hand now; you cannot trust abstractions you have never built.
+
+## Infinite-loop hygiene
+
+A `while` loop needs something inside it that moves the state toward the exit condition: `++cups`, `std::cin >> value`, `break`. The sandbox kills runaway programs with a timeout and reports "timeout" — if you see that verdict in a graded run, look for the missing step.

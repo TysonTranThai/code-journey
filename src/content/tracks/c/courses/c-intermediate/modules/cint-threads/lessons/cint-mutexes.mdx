@@ -1,0 +1,49 @@
+## The lock makes three steps one
+
+```c
+mtx_t m;
+mtx_init(&m, mtx_plain);          /* once, before threads exist */
+
+mtx_lock(&m);
+counter++;                        /* now indivisible: only one thread
+                                     can hold m at a time */
+mtx_unlock(&m);
+```
+
+A mutex is a token one thread holds at a time. Between `lock` and
+`unlock` is the **critical section** — code that touches shared state.
+While one thread holds `m`, every other `mtx_lock(&m)` *blocks* until
+it is released. The rule: **every** access to the shared variable must
+happen under the same mutex. Locking in one place and not another is
+worse than no mutex — it is a lie in the code.
+
+## Forgetting unlock is the classic bug
+
+Every early return inside a critical section must unlock on the way
+out — the cleanup-goto pattern returns with a new job:
+
+```c
+mtx_lock(&m);
+if (bad) { rc = -1; goto out; }   /* out: does the unlock */
+/* ... */
+out:
+    mtx_unlock(&m);
+    return rc;
+```
+
+C11 has no RAII and no `mtx_unlock` destructor — the goto ladder (or
+scrupulous pairing) is the discipline.
+
+## Deadlock: the recipe and the only cure
+
+Two mutexes acquired in different orders:
+
+```c
+/* thread A: lock(m1); lock(m2); */
+/* thread B: lock(m2); lock(m1);   — each holds one, waits forever */
+```
+
+The cure is *total ordering*: all threads acquire multiple locks in the
+same global order (and release in reverse). The other rule of thumb:
+hold a lock for the shortest time possible — never across I/O, never
+across `malloc` you can do before locking.

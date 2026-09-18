@@ -1,0 +1,25 @@
+{
+  "id": "load-and-display-user",
+  "title": "Load a User from an API",
+  "prompt": "A fake `fetch` is provided that returns a promise resolving to a response object with `.ok` (true) and `.json()` (resolves to { name: \"Ada\", role: \"learner\" }).\n\n1. Write an async function `loadUser()` that awaits fetch(\"https://api.example.com/me\"), checks response.ok (throw on failure), awaits response.json(), and RETURNS the parsed user object.\n2. Call loadUser() and log the returned user's name — should print Ada.",
+  "difficulty": "intermediate",
+  "boilerplate": "// fetch(url) resolves to { ok: true, json: async () => ({ name: \"Ada\", role: \"learner\" }) }\n\n// 1) async function loadUser()\n\n// 2) call it and log the name\n",
+  "tests": [
+    {
+      "name": "returns the parsed user object",
+      "code": "function makeFetch() {\n  return (url) => new Promise((res) => setTimeout(() => res({ ok: true, json: async () => ({ name: \"Ada\", role: \"learner\" }) }), 5));\n}\nconst fetch = makeFetch();\nconst logs = [];\nconst fakeConsole = { log: (...a) => logs.push(a.map(String).join(\" \")) };\nconst fn = new Function(\"fetch\", \"console\", code + \"\\nreturn { loadUser };\");\nconst { loadUser } = fn(fetch, fakeConsole);\nconst user = await loadUser();\nif (!user || user.name !== \"Ada\" || user.role !== \"learner\") {\n  throw new Error(\"loadUser() should return the parsed object { name: \\\"Ada\\\", role: \\\"learner\\\" }.\");\n}",
+      "hint": "const response = await fetch(url); if (!response.ok) throw new Error(...); return await response.json();"
+    },
+    {
+      "name": "checks response.ok and awaits json()",
+      "code": "if (!/\\.ok/.test(code)) {\n  throw new Error(\"Check response.ok — fetch does not throw on 404/500 by itself.\");\n}\nif (!/\\.json\\(\\)/.test(code)) {\n  throw new Error(\"Parse the body with response.json().\");\n}",
+      "hint": "if (!response.ok) throw new Error(...); — then response.json()."
+    },
+    {
+      "name": "logs the fetched name",
+      "code": "function makeFetch() {\n  return (url) => new Promise((res) => setTimeout(() => res({ ok: true, json: async () => ({ name: \"Ada\", role: \"learner\" }) }), 5));\n}\nconst fetch = makeFetch();\nconst logs = [];\nconst fakeConsole = { log: (...a) => logs.push(a.map(String).join(\" \")) };\nnew Function(\"fetch\", \"console\", code)(fetch, fakeConsole);\nawait new Promise((r) => setTimeout(r, 30));\nif (!logs.some((l) => l === \"Ada\")) {\n  throw new Error(\"Log the user's name after loading — the console should show Ada.\");\n}",
+      "hint": "const user = await loadUser(); console.log(user.name);"
+    }
+  ],
+  "level": "guided"
+}

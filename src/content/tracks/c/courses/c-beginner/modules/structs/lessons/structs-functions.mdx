@@ -1,0 +1,40 @@
+## Passing by value (copy)
+
+```c
+int area(struct Rect r) {          // r is a COPY
+    return r.size.x * r.size.y;
+}
+```
+
+Small structs pass cheaply and safely — the function cannot touch the
+caller's original.
+
+## Returning structs
+
+```c
+struct Point make_point(int x, int y) {
+    struct Point p = {x, y};
+    return p;                      // a copy comes back
+}
+```
+
+## Passing a pointer to modify
+
+```c
+void move_by(struct Point *p, int dx, int dy) {
+    p->x += dx;                    // arrow: dereference + member
+    p->y += dy;
+}
+...
+struct Point pos = {0, 0};
+move_by(&pos, 3, 4);              // pos is now (3, 4)
+```
+
+`p->x` is exactly shorthand for `(*p).x` — dereference then take the member.
+The arrow exists because `.` binds tighter than `*`, making `*p.x` mean the
+wrong thing.
+
+## Choosing the shape
+
+- read-only use of a small struct → pass by value
+- must modify, or the struct is large → pass `struct S *`

@@ -1,0 +1,50 @@
+File I/O goes through streams. `ifstream` reads, `ofstream` writes, and
+both close in their destructor — RAII again.
+
+```cpp
+#include <fstream>
+#include <iostream>
+
+std::ifstream in{"config.txt"};
+if (!in) {                       // stream is false-y when open failed
+    std::cerr << "cannot open config.txt\n";
+    return 1;
+}
+
+std::string line;
+while (std::getline(in, line)) {
+    process(line);               // line excludes the trailing newline
+}
+// in closes here — automatically
+```
+
+A reference implementation for our graded pattern — filtering lines whose
+content starts with `ERROR `:
+
+```cpp
+#include <sstream>
+#include <string>
+#include <vector>
+
+std::string error_lines(const std::string& content) {
+    std::istringstream in{content};          // same interface, in-memory
+    std::string out;
+    std::string line;
+    while (std::getline(in, line)) {
+        if (line.rfind("ERROR ", 0) == 0) {  // prefix check
+            out += line;
+            out += '\n';
+        }
+    }
+    return out;
+}
+```
+
+The graded tests in this module pass file *content* as a string — the
+sandbox has no stable working directory for real files. The parsing
+discipline is identical: read line-oriented, check the stream state, and
+never assume the last line ends with a newline.
+
+Common file bugs: reading without checking `if (!stream)`, mixing `>>`
+and `getline` (the `>>` leaves `\n` in the buffer), and forgetting that
+`getline` succeeds on the final line without a trailing `\n`.

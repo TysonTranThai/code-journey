@@ -1,0 +1,26 @@
+{
+  "id": "cb14-find-id",
+  "title": "Find by Id",
+  "prompt": "Given `struct Rec { int id; int score; };` in scope, implement `const struct Rec* find_id(const struct Rec *rs, int n, int id)` returning a pointer to the record with that id, or NULL.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstruct Rec { int id; int score; };\n",
+  "tests": [
+    {
+      "name": "found",
+      "code": "struct Rec rs[] = {{1, 10}, {2, 20}};\nCHECK_EQ(find_id(rs, 2, 2), &rs[1]);",
+      "hint": "Return the record's address."
+    },
+    {
+      "name": "missing null",
+      "code": "struct Rec rs[] = {{1, 10}};\nCHECK_EQ(find_id(rs, 1, 9), NULL);",
+      "hint": "NULL for absent ids."
+    },
+    {
+      "name": "first match",
+      "code": "struct Rec rs[] = {{7, 1}, {7, 2}};\nCHECK_EQ(find_id(rs, 2, 7), &rs[0]);",
+      "hint": "Earliest wins."
+    }
+  ],
+  "level": "independent"
+}

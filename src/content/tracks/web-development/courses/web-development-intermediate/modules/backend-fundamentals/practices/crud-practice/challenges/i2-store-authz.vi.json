@@ -1,0 +1,14 @@
+{
+  "title": "Task Store: Quyền sở hữu",
+  "prompt": "Mở rộng store: `update(id, patch, userId)` và `remove(id, userId)` — cả hai thực thi quyền sở hữu: nếu task tồn tại nhưng ownerId !== userId, trả về { ok: false, status: 403 }; task thiếu => { ok: false, status: 404 }. update chỉ áp dụng `title` và `done` từ patch (bỏ qua trường khác) và trả về { ok: true, task }; remove trả về { ok: true } và xóa thật.",
+  "tests": [
+    {
+      "name": "owner cập nhật và xóa",
+      "hint": "403 cho người lạ, 404 cho thứ thiếu; whitelist các trường được patch."
+    },
+    {
+      "name": "người lạ nhận 403",
+      "hint": "Kiểm tra quyền sở hữu chạy trước mọi mutation."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "pa-dm-init-subclass-registry",
+  "title": "Auto-registering subclasses",
+  "prompt": "Implement `class Registered` whose subclasses are collected automatically:\n\n- use `__init_subclass__` (no metaclass)\n- each subclass registers itself in `Registered.registry` (a dict) keyed by a class attribute `key` if present, else its lowercase class name\n- the base class itself must NOT appear in the registry\n- `Registered.get(key)` returns the class or raises `KeyError`",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class Registered:\n    registry = {}\n\n    # TODO: __init_subclass__ + get()\n\nclass Alpha(Registered):\n    pass\n\nclass Beta(Registered, key='beta-2'):\n    pass",
+  "tests": [
+    {
+      "name": "subclasses auto-register",
+      "code": "assert Registered.registry.get('alpha') is Alpha, f\"registry: {Registered.registry}\"\nassert Registered.registry.get('beta-2') is Beta\nassert len(Registered.registry) == 2, 'base must not register itself'\nprint('ok')",
+      "hint": "__init_subclass__ runs on the parent for each new subclass; cls is the new subclass."
+    },
+    {
+      "name": "get() resolves and raises",
+      "code": "assert Registered.get('alpha') is Alpha\ntry:\n    Registered.get('nope')\nexcept KeyError:\n    pass\nelse:\n    raise AssertionError('missing key must raise KeyError')\nprint('ok')",
+      "hint": "A plain dict lookup with [] is enough."
+    }
+  ],
+  "level": "combination"
+}

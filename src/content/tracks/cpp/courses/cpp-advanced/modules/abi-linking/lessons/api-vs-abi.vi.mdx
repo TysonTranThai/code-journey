@@ -1,0 +1,18 @@
+## Hai hợp đồng, hai khán giả
+
+- **API** (application programming interface): các header — những gì compiler chấp nhận.
+- **ABI** (application binary interface): kích thước, layout, calling convention, tên symbol đã mangle, hàm thành viên nào tồn tại *dưới dạng symbol* — những gì linker và binary đã biên dịch từ trước yêu cầu.
+
+Thêm một tham số đổi cả hai. Đổi thứ tự thành viên `private:` chỉ đổi ABI — và âm thầm làm hỏng mọi binary được biên dịch với layout cũ.
+
+## Linker thực sự ràng buộc gì
+
+Mỗi hàm non-inline và biến toàn cục trở thành một **symbol đã mangle** (`_ZN4demo6Engine4tickEv` mã hóa namespace/class/tên/tham số). Đổi chữ ký và tên symbol đổi — binary cũ gặp lỗi unresolved-symbol lúc load (hỏng thấy được, may ra). Đổi layout class với cùng chữ ký thì không gì fail khi link: call nhảy vào, offset rơi sai chỗ, dữ liệu hỏng (hỏng không thấy được, nguy hơn).
+
+## Quy tắc Một Định Nghĩa (ODR)
+
+Một hàm hay đối tượng có external linkage phải có đúng một định nghĩa trong toàn chương trình; định nghĩa inline/thành viên lớp phải **giống hệt** trong mọi TU include nó. Hai TU include cùng header nhưng biên dịch với `-DVERSION` khác nhau có thể lặng lẽ vi phạm ODR — linker chọn một, callers của bên kia dùng bản được chọn. Vì thế macro liên quan ABI không bao giờ được khác nhau giữa các TU của một chương trình.
+
+## Inline cũng là ABI
+
+Biến một hàm thành viên non-inline thành `inline` đổi *bản sao nào* tồn tại; bỏ `inline` khỏi hàm định nghĩa trong header có thể phá consumer không còn tìm thấy symbol. Hàm định nghĩa trong header là bề mặt ABI — được phiên bản hóa và đóng băng một khi đã giao.

@@ -1,0 +1,43 @@
+## Dạng chuẩn
+
+```cpp
+auto is_even = [](int x) { return x % 2 == 0; };
+```
+
+Một **lambda** là hàm không tên bạn viết ngay tại chỗ: `[]` (mệnh đề capture), tham số, thân hàm. Chúng tồn tại để các thuật toán mang theo logic của mình:
+
+```cpp
+std::count_if(v.begin(), v.end(), [](int x){ return x >= 60; });
+```
+
+## Capture: lambda nhìn thấy được gì
+
+`[]` rỗng → lambda không nhìn thấy gì bên ngoài. Muốn dùng biến ngoài, hãy liệt kê:
+
+```cpp
+int limit = 60;
+auto below = [limit](int x) { return x < limit; };   // sao chép limit vào
+auto bump  = [&total](int x) { total += x; };        // theo tham chiếu (được sửa)
+```
+
+Mặc định hãy capture theo giá trị `[limit]` — một bản chụp thì dễ suy luận. `[&]` (capture tất cả theo tham chiếu) tiện lợi nhưng là cái bẫy: nó giữ các *tham chiếu* có thể trở nên treo nếu lambda sống lâu hơn biến (chủ đề quen thuộc của module 11). Trong khóa này: hãy gọi tên điều bạn capture.
+
+## Mẫu comparator
+
+Đối số thứ ba tùy chọn của `std::sort` trả lời câu hỏi "nhỏ hơn theo nghĩa nào?":
+
+```cpp
+std::sort(v.begin(), v.end(), [](int a, int b){ return a > b; });   // giảm dần
+```
+
+Comparator phải là một *thứ tự yếu ngặt* — trên thực tế: trả true khi `a` phải đứng *ngặt* trước `b`. Trả về `a <= b` phá hỏng việc sắp xếp theo cách tinh vi (và là UB trong một số thuật toán). Hãy so `<`, không bao giờ `<=`.
+
+## Với `std::string`
+
+```cpp
+std::sort(words.begin(), words.end(), [](const std::string& a, const std::string& b){
+    return a.size() < b.size();      // theo độ dài
+});
+```
+
+Cùng mẫu đó mở rộng cho mọi "khóa": theo độ dài, theo ký tự cuối, theo giá trị mà map ánh xạ tới. Comparator này cộng với một struct (module 9) chính là hình dạng đúng của "sắp sổ của tôi theo trường".

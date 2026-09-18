@@ -1,0 +1,20 @@
+{
+  "id": "i2-html-encode",
+  "title": "HTML Encoder",
+  "prompt": "Write `encodeHTML(s)` escaping exactly the five HTML-significant characters: & < > \" '. Order matters — & must be escaped first. Write `rendersAsText(html)` returning true when encodeHTML was applied to the payload (the encoded string contains \"&lt;\" and no raw \"<\").",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function encodeHTML(s) {\n  // your code\n}\n\nfunction rendersAsText(html) {\n  // your code — true when html is safely inert text\n}\n",
+  "tests": [
+    {
+      "name": "escapes all five characters",
+      "code": "const fn = new Function(code + \"\\nreturn { encodeHTML };\");\nconst { encodeHTML } = fn();\nif (encodeHTML(\"a & b\") !== \"a &amp; b\") throw new Error(\"Ampersand first.\");\nif (encodeHTML(\"<b>\") !== \"&lt;b&gt;\") throw new Error(\"Angle brackets escaped.\");\nif (!encodeHTML('say \"hi\"').includes(\"&quot;\")) throw new Error(\"Double quote escaped.\");\nif (!encodeHTML(\"it's\").includes(\"&#39;\")) throw new Error(\"Single quote escaped.\");\nif (encodeHTML(\"<img src=x>\") !== \"&lt;img src=x&gt;\") throw new Error(\"Payload fully disarmed.\");\n",
+      "hint": "A chain of replace calls; start with &."
+    },
+    {
+      "name": "payload detection",
+      "code": "const fn = new Function(code + \"\\nreturn { encodeHTML, rendersAsText };\");\nconst { encodeHTML, rendersAsText } = fn();\nif (!rendersAsText(encodeHTML('<img src=x onerror=alert(1)>'))) throw new Error(\"Encoded payload is inert.\");\nif (rendersAsText('<img src=x>')) throw new Error(\"Raw markup is not inert.\");\n",
+      "hint": "Inert = no raw '<' remains."
+    }
+  ]
+}

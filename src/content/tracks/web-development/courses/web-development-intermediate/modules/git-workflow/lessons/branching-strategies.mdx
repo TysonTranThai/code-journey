@@ -1,0 +1,36 @@
+Branching strategy = the team's agreement about where code lives while it is being written.
+
+## GitHub Flow (the default for most web teams)
+
+1. Branch from `main` for each change: `feat/search-filters`
+2. Commit small, push, open a **pull request**
+3. Review + CI must pass
+4. Merge to `main`, delete the branch, deploy
+
+One long-lived branch (`main`), everything else short-lived. Ideal for continuously-deployed web apps — and what this course's projects use.
+
+## Git Flow
+
+Long-lived `main` (releases) + `develop` (integration), with `feature/`, `release/`, `hotfix/` branches. Powerful for versioned, scheduled-release software (mobile apps, installed products) — heavy for web.
+
+## Trunk-based development
+
+Everyone commits to `main` (or very short branches merged within a day). Incomplete features ship dark, behind **feature flags**:
+
+```js
+if (flags.newCheckout) renderNewCheckout();
+else renderLegacyCheckout();
+```
+
+Requires strong tests and CI; eliminates merge pain entirely. Common at high-cadence teams.
+
+## Choosing
+
+| Signal                       | Fit                         |
+| ---------------------------- | --------------------------- |
+| Deploy on every merge        | GitHub Flow                 |
+| Scheduled releases, versions | Git Flow                    |
+| Many engineers, one product  | Trunk-based + flags         |
+| Solo project                 | GitHub Flow, small branches |
+
+Whatever you choose, the rule that matters: **branches live short.** The longer a branch diverges, the more its merge cost grows — the classic "merge hell" is a symptom of long-lived branches, not of Git.

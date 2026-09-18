@@ -1,0 +1,39 @@
+`for x in thing` không phải phép màu. Python hỏi `thing` lấy một **iterator**
+(`iter(thing)`), rồi gọi `next()` liên tục cho đến khi gặp `StopIteration`:
+
+```python
+nums = [10, 20]
+it = iter(nums)      # một đối tượng iterator
+next(it)             # 10
+next(it)             # 20
+next(it)             # raise StopIteration — tín hiệu kết thúc của vòng for
+```
+
+Bất kỳ đối tượng nào có `__iter__` trả về một iterator đều là **iterable**;
+iterator mang `__next__`. List, dict, tệp, range — tất cả chỉ đơn giản là
+cài đặt đúng một giao thức này. Vì vậy `for` hoạt động giống nhau trên tất cả.
+
+## Iterator của riêng bạn
+
+```python
+class Countdown:
+    def __init__(self, start):
+        self.n = start
+
+    def __iter__(self):
+        return self            # chính đối tượng này là iterator của nó
+
+    def __next__(self):
+        if self.n <= 0:
+            raise StopIteration
+        self.n -= 1
+        return self.n + 1
+
+for n in Countdown(3):
+    print(n)                   # 3, 2, 1
+```
+
+Một chi tiết đáng nhớ: iterator **cạn sau một lượt** — vòng `for` thứ hai
+trên cùng một iterator không còn gì để duyệt. Iterable (như list) sinh một
+iterator mới mỗi lần; vì vậy bạn có thể duyệt một list hai lần nhưng không
+thể duyệt một generator hai lần.

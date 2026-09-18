@@ -1,0 +1,37 @@
+## Sanitizers: know the name, mind the platform
+
+AddressSanitizer and UBSan catch memory and undefined-behavior bugs at
+runtime. This course's sandbox image does NOT ship them, so we do not use
+them here — but on a Linux dev box they are the first tools to reach for:
+
+```sh
+gcc -fsanitize=address,undefined ...   # works on glibc toolchains
+```
+
+Here, your sanitizer is the **warning build plus careful reading**.
+
+## Forensics from warnings alone
+
+A strict build over buggy code is surprisingly loud:
+
+- comparing with `=` instead of `==` → `assignment in condition`
+- reading an uninitialized local → `may be used uninitialized`
+- a format/type mismatch → `-Wformat`
+- a missing return path → `control reaches end of non-void function`
+- an unused result that should have been stored → `unused value`
+
+When a program misbehaves, recompile with `-Wall -Wextra` FIRST. Half of
+beginner bugs confess immediately.
+
+## Interrogating a wrong answer
+
+- print the inputs at the boundary (what exactly did the function receive?)
+- print after each transformation (where does good data turn bad?)
+- check the loop bounds by hand on a 3-element example
+- verify types: is `a/b` doing integer division when you meant double?
+
+## The habit stack
+
+Fix, then re-run EVERYTHING (not just the failing case) — fixes often break
+the neighbors. And when you find the bug, ask "what let this type of bug
+in?" — the answer is usually a missing test, which you then write down.

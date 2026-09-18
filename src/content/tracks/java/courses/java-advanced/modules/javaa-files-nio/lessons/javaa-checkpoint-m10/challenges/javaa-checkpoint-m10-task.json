@@ -1,0 +1,26 @@
+{
+  "id": "javaa-checkpoint-m10-task",
+  "title": "Checkpoint: append, rotate, replay",
+  "prompt": "Inside Solution, implement the journal over a temp directory you create in each call:\n1. `static Path append(Path file, String event)` — appends `event + \"\\n\"` in UTF-8\nwith CREATE + APPEND; returns the file.\n2. `static List<String> replay(Path file)` — returns every complete line (a\nTRUNCATED final line — one lacking its newline — must be dropped; use\nFiles.readString and split on \"\\n\" carefully, or readAllLines and drop a final\nfragment you detect by re-reading raw bytes).\n3. `static Path rotate(Path file, int maxLines)` — if the file holds more than\nmaxLines complete lines, move it to a sibling named by appending \".1\"\n(file.1) atomically, and leave a fresh empty file at the original path; return\nthe ARCHIVE path (or the original if no rotation happened).\n4. `static int countEvents(Path file)` — number of complete lines.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "append and replay",
+      "code": "\njava.nio.file.Path f = java.nio.file.Files.createTempFile(\"cjadv\", \".jsonl\");\nSolution.append(f, \"{\\\"e\\\":1}\");\nSolution.append(f, \"{\\\"e\\\":2}\");\ncheckEq(Solution.replay(f), java.util.List.of(\"{\\\"e\\\":1}\", \"{\\\"e\\\":2}\"), \"both events\");\ncheckEq(Solution.countEvents(f), 2, \"two complete lines\");\n",
+      "hint": "Appends frame on newlines."
+    },
+    {
+      "name": "truncated tail is dropped",
+      "code": "\njava.nio.file.Path f = java.nio.file.Files.createTempFile(\"cjadv\", \".jsonl\");\njava.nio.file.Files.writeString(f, \"{\\\"e\\\":1}\\n{\\\"trun\");\ncheckEq(Solution.replay(f), java.util.List.of(\"{\\\"e\\\":1}\"), \"fragment dropped\");\ncheckEq(Solution.countEvents(f), 1, \"only complete lines count\");\n",
+      "hint": "A torn tail never becomes an event."
+    },
+    {
+      "name": "rotation by policy",
+      "code": "\njava.nio.file.Path f = java.nio.file.Files.createTempFile(\"cjadv\", \".jsonl\");\nSolution.append(f, \"a\"); Solution.append(f, \"b\"); Solution.append(f, \"c\");\njava.nio.file.Path arch = Solution.rotate(f, 2);\ncheckEq(Solution.countEvents(arch), 3, \"archive holds the history\");\ncheckEq(Solution.countEvents(f), 0, \"live file fresh\");\n",
+      "hint": "History moved aside atomically; appends continue fresh."
+    }
+  ],
+  "level": "real-world"
+}

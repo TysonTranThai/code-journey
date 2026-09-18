@@ -1,0 +1,21 @@
+{
+  "id": "pa-db-occ",
+  "title": "Optimistic concurrency, simulated",
+  "prompt": "Implement `apply_update(row, mutate, conflict_on_attempt=())` — an optimistic-concurrency update over `row` (a dict containing `'id'` and `'version'`):\n\n- loop up to 3 attempts; on each: `seen = row['version']`, copy the row, apply `mutate(copy)`\n- if the attempt number is in `conflict_on_attempt`, simulate losing the race: the stored row's version increments (another writer committed) and you retry\n- otherwise the write lands: the new row keeps the mutations and gets `version = seen + 1`; return `{'ok': True, 'row': new_row, 'attempts': n}`\n- after 3 failed attempts: return `{'ok': False, 'attempts': 3}`\n\nThe discriminating check: a conflict must re-read the bumped version, not blindly overwrite with a stale one.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: apply_update",
+  "tests": [
+    {
+      "name": "clean write bumps version once",
+      "code": "row = {'id': 7, 'version': 2, 'status': 'new'}\nr = apply_update(row, lambda c: c.update({'status': 'shipped'}))\nassert r['ok'] is True and r['attempts'] == 1\nassert r['row']['status'] == 'shipped' and r['row']['version'] == 3\nassert row['version'] == 2  # original untouched until commit\nprint('ok')",
+      "hint": "Copy-mutate-commit; the seen version is what increments."
+    },
+    {
+      "name": "conflicts re-read and eventually succeed",
+      "code": "row = {'id': 7, 'version': 0, 'status': 'new'}\nr = apply_update(row, lambda c: c.update({'status': 'x'}), conflict_on_attempt={1, 2})\nassert r['ok'] is True and r['attempts'] == 3\nassert r['row']['version'] == 3  # two lost races (2 bumps) + this writer's commit\nrow2 = {'id': 7, 'version': 0}\nr2 = apply_update(row2, lambda c: None, conflict_on_attempt={1, 2, 3})\nassert r2 == {'ok': False, 'attempts': 3}\nprint('ok')",
+      "hint": "Each conflict consumes an attempt; the winner builds on the latest version."
+    }
+  ],
+  "level": "combination"
+}

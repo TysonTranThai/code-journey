@@ -1,0 +1,22 @@
+## The format
+
+The simplest honest persistence format is **line-oriented**: one record per line, fields separated by a delimiter chosen to never appear in the data:
+
+```csharp
+// save: id|name|score
+File.WriteAllLines(path, players.Select(p => $"{p.Id}|{p.Name}|{p.Score}"));
+```
+
+Loading is the mirror:
+
+```csharp
+foreach (string line in File.ReadAllLines(path))
+{
+    string[] parts = line.Split('|');
+    players.Add(new Player(int.Parse(parts[0]), parts[1], int.Parse(parts[2])));
+}
+```
+
+## Design honestly, test both directions
+
+Choose `|` (or tab) over `,` when your data is free text — commas live inside prose. Decide the corrupt-line policy **before** it happens: skip-and-count, or fail loudly? Round-trip testing is the non-negotiable part: **save, load, assert equal**. If a format can't survive its own save/load cycle, nothing built on it can.

@@ -1,0 +1,44 @@
+Mọi route đều cần một số công việc giống nhau: parse body, kiểm tra auth, log thời gian, bắt lỗi. Middleware là mô hình tách phần đó ra: mỗi lớp bọc lớp kế tiếp.
+
+## Hình dạng
+
+```js
+function logger(req, res, next) {
+  const start = Date.now();
+  res.on("finish", () => console.log(req.method, req.url, Date.now() - start + "ms"));
+  next();
+}
+```
+
+Một middleware nhận (req, res, next). Nó có thể hành động **trước** `next()` (chuẩn bị), **sau** (response đã xong), hoặc không bao giờ gọi `next()` (nó _chính là_ response — auth từ chối). Lồng chúng tạo thành củ hành: request vào lớp 1, 2, 3, handler, rồi đi ngược ra.
+
+## Pipeline làm tay
+
+```js
+function pipeline(middlewares, handler) {
+  return (req, res) => {
+    let i = 0;
+    const next = (err) => {
+      if (err) return onError(res, err);
+      const mw = middlewares[i++];
+      if (mw) mw(req, res, next);
+      else handler(req, res);
+    };
+    next();
+  };
+}
+```
+
+`next` là mẹo: nó là một closure trên vị trí `i`, nên mỗi lần gọi tiến đúng một lớp. `app.use()` của Express dựng chính xác danh sách này.
+
+## Những middleware đáng viết
+
+- **Request logging** (như trên) — bạn sẽ viết nó ở mọi công việc
+- **Body parser** — ghép các khối, parse JSON, gắn `req.body`, 400 với rác
+- **Auth guard** — xác minh session/token, gắn `req.user`, 401 sớm
+- **Error boundary** — try/catch của lớp ngoài cùng: một hình dạng 500 cho cả app, log một nơi
+- **Rate limiter** — khóa theo IP/user, trước khi handler đụng vào DB
+
+## Thứ tự chính là ngữ nghĩa
+
+`auth` trước `handler` (tất nhiên), nhưng cũng trước bất cứ thứ gì đụng `req.user`. `bodyParser` trước bất cứ thứ gì đọc `req.body`. Lỗi ném ở lớp sâu phải với tới được catch ngoài cùng — đó là lý do pipeline truyền `err` qua `next(err)` thay vì để mỗi lớp tự catch (và nuốt) lỗi của mình.

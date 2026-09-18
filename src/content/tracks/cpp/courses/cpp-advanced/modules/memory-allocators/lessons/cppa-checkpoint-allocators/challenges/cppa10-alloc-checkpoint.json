@@ -1,0 +1,20 @@
+{
+  "id": "cppa10-alloc-checkpoint",
+  "title": "Pool Lifecycle Gauntlet",
+  "prompt": "Implement the full `BytePool` lifecycle: acquire until exhausted (nullptr after), release back (noteFree), and reuse released blocks. The tracker's live count must always equal blocks-out minus blocks-returned.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <cstdint>\n#include <vector>\n\n// Deterministic allocation tracker the tests drive.\n// (No real heap calls: the challenge models allocation behavior.)\nclass AllocTracker {\npublic:\n    static int& allocs()   { static int n = 0; return n; }\n    static int& frees()    { static int n = 0; return n; }\n    static int& live()     { static int n = 0; return n; }\n    static void noteAlloc(){ ++allocs(); ++live(); }\n    static void noteFree() { ++frees(); --live(); }\n    static void reset()    { allocs() = frees() = live() = 0; }\n};\n\n// A fixed-size pool of 'blocks' blocks of 'blockSize' bytes.\n// acquire() returns a byte pointer or nullptr when exhausted;\n// release(p) returns the block to the pool (p must be from this pool).\nclass BytePool {\npublic:\n    BytePool(std::size_t blocks, std::size_t blockSize);\n    ~BytePool();\n    std::uint8_t* acquire();          // AllocTracker::noteAlloc() on success\n    void release(std::uint8_t* p);    // AllocTracker::noteFree() on success\n    std::size_t available() const;\nprivate:\n    std::size_t blocks_, blockSize_;\n    std::uint8_t* storage_ = nullptr;   // your bookkeeping here\n    std::vector<std::uint8_t*> freeList_;\n};\n",
+  "tests": [
+    {
+      "name": "acquire, exhaust, release, reuse",
+      "code": "AllocTracker::reset();\nBytePool pool{2, 32};\nstd::uint8_t* a = pool.acquire();\nstd::uint8_t* b = pool.acquire();\nCHECK_EQ(pool.acquire(), nullptr);\nCHECK_EQ(AllocTracker::live(), 2);\npool.release(a);\nCHECK_EQ(AllocTracker::live(), 1);\nstd::uint8_t* c = pool.acquire();\nCHECK_EQ(c, a);\nCHECK_EQ(AllocTracker::live(), 2);",
+      "hint": "Free-list of block pointers: acquire pops (nullptr when empty, noteAlloc), release pushes (noteFree) — live() stays consistent automatically."
+    },
+    {
+      "name": "release of both blocks restores everything",
+      "code": "AllocTracker::reset();\nBytePool pool{3, 16};\nstd::uint8_t* a = pool.acquire();\nstd::uint8_t* b = pool.acquire();\nstd::uint8_t* c = pool.acquire();\npool.release(a);\npool.release(b);\npool.release(c);\nCHECK_EQ(pool.available(), 3u);\nCHECK_EQ(AllocTracker::live(), 0);\nCHECK_EQ(AllocTracker::allocs(), 3);\nCHECK_EQ(AllocTracker::frees(), 3);",
+      "hint": "Three acquires then three releases: available()==3, live()==0, allocs==frees==3."
+    }
+  ]
+}

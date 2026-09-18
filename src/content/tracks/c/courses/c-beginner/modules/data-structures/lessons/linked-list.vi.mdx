@@ -1,0 +1,48 @@
+## Node
+
+```c
+typedef struct Node {
+    int value;
+    struct Node *next;    // tag cho phép nó trỏ tới chính kiểu của mình
+} Node;
+```
+
+Một danh sách chỉ là `Node *head`. Danh sách rỗng là `head == NULL`. Node cuối
+giữ `next == NULL` — đó là dấu hiệu kết thúc.
+
+## Dựng và đi bộ
+
+```c
+Node c = {3, NULL};
+Node b = {2, &c};
+Node a = {1, &b};       // danh sách: 1 -> 2 -> 3
+Node *head = &a;
+
+for (Node *it = head; it != NULL; it = it->next) {
+    printf("%d ", it->value);
+}
+```
+
+## Đánh đổi so với mảng
+
+| thao tác | mảng | danh sách liên kết |
+|-----------|-------|-------------|
+| truy cập phần tử thứ i | O(1) | O(n) — phải đi bộ |
+| chèn vào đầu | O(n) — phải dời | O(1) — nối lại hai con trỏ |
+| chèn tại node đã biết | O(n) | O(1) |
+| bộ nhớ | một khối | một malloc MỖI NODE |
+
+## Các lỗi kinh điển
+
+- đánh mất phần còn lại của danh sách: nối lại `next` trước khi giữ nó
+- đi quá cuối: kiểm tra `it->next != NULL` trong khi ý là `it != NULL`
+- bộ nhớ: node trên heap cần đúng một `free` mỗi node — ai sở hữu chúng?
+
+Chèn vào đầu để luyện tập:
+
+```c
+Node *push_front(Node *head, Node *n) {
+    n->next = head;
+    return n;               // head mới
+}
+```

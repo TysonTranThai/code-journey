@@ -1,0 +1,44 @@
+Code người mới bắt `Exception` rồi cầu may. Code trung cấp định nghĩa một
+**hệ phân cấp** để caller chọn độ chính xác khi bắt:
+
+```python
+class AppError(Exception):
+    """Lỗi gốc cho mọi lỗi ứng dụng này raise."""
+
+class ValidationError(AppError):
+    """Input bị từ chối trước khi chạm tới bộ lưu trữ."""
+
+class StorageError(AppError):
+    """Tầng lưu trữ gặp sự cố."""
+
+try:
+    save(record)
+except ValidationError:
+    ...   # báo người dùng, thử lại vô ích
+except StorageError:
+    ...   # lùi lại, thử lại có thể giúp
+except AppError:
+    ...   # họ lỗi của mình: log và báo lên
+```
+
+Thứ tự quan trọng: Python chọn except **khớp đầu tiên**, nên lớp cụ thể
+phải đứng trước lớp cha. Bắt lớp cha `AppError` là lưới an toàn có chủ đích —
+không bao giờ là phản xạ.
+
+## Raise cụ thể, thông điệp giàu thông tin
+
+```python
+def set_quantity(q):
+    if q <= 0:
+        raise ValidationError(f"quantity must be positive, got {q}")
+```
+
+Thông điệp exception là tài liệu tại thời điểm lỗi. Hãy kèm giá trị vi phạm;
+một `raise ValueError()` trần trụi đánh cắp giờ của mọi người.
+
+## Những gì KHÔNG nên bắt
+
+Đừng bắt `KeyboardInterrupt`/`SystemExit` (chúng cố tình không kế thừa
+`Exception`), và đừng bắt những gì mình không xử lý được — một exception
+không xử lý với traceback tốt hơn một exception bị nuốt lặng lẽ. `except:`
+trống là một con bọ đang chờ nổ.

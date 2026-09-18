@@ -1,0 +1,20 @@
+{
+  "id": "i2-settled-report",
+  "title": "Partial-Failure Report",
+  "prompt": "Write `async function gatherReport(fetchers)` where `fetchers` is an array of `{ name, run }` and `run()` returns a promise. Run all concurrently with `Promise.allSettled` and RETURN `{ ok, broken }` — `ok` maps each fulfilled fetcher's name to its value, `broken` lists the names of rejected ones.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "async function gatherReport(fetchers) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "splits fulfilled and rejected by name",
+      "code": "const fn = new Function(code + \"\\nreturn { gatherReport };\");\nconst { gatherReport } = fn();\nconst out = await gatherReport([\n  { name: \"user\", run: () => Promise.resolve({ id: 1 }) },\n  { name: \"orders\", run: () => Promise.reject(new Error(\"503\")) },\n  { name: \"notifs\", run: () => Promise.resolve([\"a\"]) },\n]);\nif (out.ok.user.id !== 1 || out.ok.notifs.join() !== \"a\") throw new Error(\"Fulfilled values should be keyed by name.\");\nif (out.broken.join() !== \"orders\") throw new Error(\"Rejected fetcher names go into broken.\");",
+      "hint": "allSettled returns results in input order — zip them back with the fetchers array."
+    },
+    {
+      "name": "never rejects and handles empty input",
+      "code": "const fn = new Function(code + \"\\nreturn { gatherReport };\");\nconst { gatherReport } = fn();\nconst allBad = await gatherReport([{ name: \"x\", run: () => Promise.reject(new Error(\"e\")) }]);\nif (Object.keys(allBad.ok).length !== 0 || allBad.broken.join() !== \"x\") throw new Error(\"Every source failing still resolves.\");\nconst empty = await gatherReport([]);\nif (Object.keys(empty.ok).length !== 0 || empty.broken.length !== 0) throw new Error(\"Empty input yields empty ok and broken.\");",
+      "hint": "allSettled never rejects — the loop after it just finds zero fulfilled entries."
+    }
+  ]
+}

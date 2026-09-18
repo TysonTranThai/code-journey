@@ -1,0 +1,25 @@
+`raise` ném ngoại lệ một cách chủ đích — khi dữ liệu sai, hãy thất bại ầm ĩ:
+
+```python
+def set_price(price):
+    if price < 0:
+        raise ValueError(f"giá không thể âm, nhận được {price}")
+    return price
+```
+
+Một hàm thất bại nhanh với thông điệp rõ ràng tốt hơn một hàm trả về kết quả
+vô nghĩa để lỗi nổi lên ba tầng sau đó. Raise sớm biến một lỗi logic câm lặng
+thành một lỗi runtime ồn ào, dễ gỡ.
+
+## Kiểm tra phòng thủ trong thực tế
+
+```python
+def average(values):
+    if not values:                 # None, [], rỗng — đều falsy
+        raise ValueError("trung bình của dữ liệu rỗng là không xác định")
+    return sum(values) / len(values)
+```
+
+Câu kiểm tra chỉ một dòng; thời gian gỡ lỗi nó cứu lại là hàng giờ. Quy tắc:
+kiểm tra ở biên giới (nơi dữ liệu đi vào chương trình), raise bên trong (khi
+bất biến của chính bạn bị vi phạm).

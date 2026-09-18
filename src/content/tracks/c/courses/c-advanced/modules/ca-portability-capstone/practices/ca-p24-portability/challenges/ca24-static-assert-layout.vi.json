@@ -1,0 +1,14 @@
+{
+  "title": "Hợp đồng bố cục lúc biên dịch",
+  "prompt": "ISO C11. Cho `struct packet { unsigned char tag; unsigned short len; unsigned int crc; };` (đã khai báo), cài `size_t packet_min_size(void)` trả sizeof(struct packet) — phải ít nhất 7 (padding có thể làm lớn hơn). Rồi `int packet_layout_sane(void)` trả 1 khi offsetof(packet, crc) >= offsetof(packet, len) + sizeof(unsigned short), 0 nếu ngược lại — các thành viên không được chồng lấn.",
+  "tests": [
+    {
+      "name": "kích thước phủ mọi thành viên",
+      "hint": "Một byte cộng hai cộng bốn là sàn: 7. Padding có thể làm lớn hơn — lựa chọn được tài liệu hóa của ABI."
+    },
+    {
+      "name": "thành viên không bao giờ chồng lấn",
+      "hint": "crc phải bắt đầu từ hoặc sau cuối của len — compiler không bao giờ chồng lấn thành viên."
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+Các biến biến mất khi trang đóng. **localStorage** trao cho mỗi site một kho key–value nhỏ, riêng tư, sống sót qua các lần tải lại và khởi động lại.
+
+## API — bốn phương thức
+
+```js
+localStorage.setItem("theme", "dark"); // lưu một chuỗi
+localStorage.getItem("theme"); // "dark" — hoặc null nếu không có
+localStorage.removeItem("theme"); // xóa một khóa
+localStorage.clear(); // xóa mọi thứ của site này
+```
+
+Chỉ **chuỗi** được lưu. Số, boolean, mảng, và object phải đi du lịch dưới dạng văn bản — đó là việc của JSON:
+
+```js
+const settings = { theme: "dark", fontSize: 16 };
+
+localStorage.setItem("settings", JSON.stringify(settings)); // object → chuỗi
+
+const raw = localStorage.getItem("settings");
+const parsed = JSON.parse(raw); // chuỗi → object
+parsed.fontSize; // 16
+```
+
+## Phòng vệ trước dữ liệu hỏng
+
+`JSON.parse` ném lỗi với văn bản không hợp lệ. Bất cứ thứ gì trong kho đều có thể là cũ hoặc hỏng — hãy bọc phép đọc:
+
+```js
+function loadSettings() {
+  try {
+    return JSON.parse(localStorage.getItem("settings")) ?? { theme: "light" };
+  } catch {
+    return { theme: "light" }; // hỏng → fallback về mặc định
+  }
+}
+```
+
+`??` (nullish coalescing) cung cấp một giá trị mặc định khi phía trái là `null`/`undefined` — hoàn hảo với `getItem`, vốn trả về `null` cho các khóa không tồn tại.
+
+## Nó dùng để làm gì — và không dùng để làm gì
+
+Tốt cho: tùy chọn, theme, bản nháp, trạng thái UI "nhớ tôi", tiến độ game nhỏ.
+
+Không tốt cho: mật khẩu hay bất cứ thứ gì nhạy cảm (bất kỳ code nào trên trang cũng đọc được nó), và không cho dữ liệu lớn (tối đa vài MB). Tài khoản người dùng thật nằm trên server — localStorage là cuốn sổ tay của trình duyệt, không phải cơ sở dữ liệu.
+
+## Một cỗ máy trạng thái tí hon
+
+```js
+const visits = Number(localStorage.getItem("visits") ?? "0") + 1;
+localStorage.setItem("visits", String(visits));
+console.log("Visit number " + visits);
+```
+
+Đọc → cập nhật → ghi ngược lại — cùng vòng lặp trạng thái-và-render như bộ đếm, giờ bền vững qua các lần truy cập.
+
+## Bạn đã học được gì
+
+- `setItem`/`getItem`/`removeItem`/`clear`
+- Kho lưu trữ giữ chuỗi: `JSON.stringify` vào, `JSON.parse` ra
+- Bọc parse trong try/catch; dùng `??` cho các giá trị mặc định
+- Đúng công cụ cho tùy chọn và bản nháp — không bao giờ cho bí mật
+
+**Tiếp theo:** các chương trình biết chờ đợi — JavaScript bất đồng bộ.

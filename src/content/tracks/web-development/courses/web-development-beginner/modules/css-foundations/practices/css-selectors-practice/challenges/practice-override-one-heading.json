@@ -1,0 +1,25 @@
+{
+  "id": "practice-override-one-heading",
+  "title": "Override Just One Heading",
+  "prompt": "Three `h2` headings share a style: `h2 { color: seagreen; }` — already written for you. The heading with id `featured` must instead be `crimson`, and your override must beat the element selector.\n\nRules:\n- Keep the given rule untouched.\n- Add one rule that wins over `h2` for `#featured`.",
+  "difficulty": "beginner",
+  "level": "independent",
+  "boilerplate": "<style>\nh2 {\n  color: seagreen;\n}\n/* your override here */\n</style>\n\n<h2>Fresh bread</h2>\n<h2 id=\"featured\">Sourdough of the week</h2>\n<h2>Croissants</h2>\n",
+  "tests": [
+    {
+      "name": "original rule survives",
+      "code": "if (!/h2\\s*\\{[^}]*color\\s*:\\s*seagreen\\s*;/i.test(code)) {\n  throw new Error(\"Keep the original h2 { color: seagreen; } rule.\");\n}",
+      "hint": "Don't modify the given rule — add, don't replace."
+    },
+    {
+      "name": "#featured override wins",
+      "code": "if (!/#featured\\s*\\{[^}]*color\\s*:\\s*crimson\\s*;/i.test(code)) {\n  throw new Error(\"Add: #featured { color: crimson; } — an id beats an element selector.\");\n}",
+      "hint": "#featured { color: crimson; } — id specificity (1,0,0) beats element (0,0,1)."
+    },
+    {
+      "name": "no !important shortcuts",
+      "code": "if (/!important/i.test(code)) {\n  throw new Error(\"No !important — win on specificity, which is exactly the lesson here.\");\n}",
+      "hint": "The id selector alone outranks the element selector. No !important needed."
+    }
+  ]
+}

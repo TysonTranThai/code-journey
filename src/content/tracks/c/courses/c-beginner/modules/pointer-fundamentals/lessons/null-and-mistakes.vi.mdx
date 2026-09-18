@@ -1,0 +1,57 @@
+## NULL: con trỏ không trỏ đâu cả — một cách có chủ đích
+
+```c
+#include <stdio.h>      // NULL sống trong stdio.h và các header khác
+
+int *p = NULL;          // "không trỏ tới đâu", giá trị xác định, kiểm tra được
+if (p == NULL) { /* không nhắm vào đối tượng nào */ }
+```
+
+Giải tham chiếu NULL là hành vi không xác định — thường là **crash** (trên
+sandbox của khóa này, là lỗi segmentation fault). Cái crash đó là một *món
+quà*: nó ồn ào và ngay lập tức, khác với con trỏ rác âm thầm phá hỏng dữ liệu.
+
+Khởi tạo con trỏ thành `NULL` khi bạn chưa có gì để trỏ tới.
+
+## Lỗi 1: con trỏ treo
+
+```c
+int *p;
+{
+    int local = 7;
+    p = &local;
+}                        // local chết tại đây
+printf("%d\n", *p);      // p vẫn giữ địa chỉ đã chết — hành vi không xác định
+```
+
+Biến `local` sống trong một khung ngăn xếp không còn tồn tại. Con trỏ trỏ tới
+biến cục bộ đã chết gọi là **đang treo**.
+
+## Lỗi 2: giải tham chiếu trước khi gán
+
+```c
+int *p;
+*p = 3;          // p chưa bao giờ được gán địa chỉ — hành vi không xác định
+```
+
+## Lỗi 3: trả về địa chỉ của biến cục bộ
+
+```c
+int *make(void) {
+    int x = 5;
+    return &x;   // x chết khi hàm kết thúc — treo ngay từ đầu
+}
+```
+
+## Lỗi 4: nhầm địa chỉ với giá trị
+
+```c
+int x = 1;
+int *p = &x;
+if (p == &x) { }      // so sánh địa chỉ — đúng
+if (*p == x) { }      // so sánh giá trị — đúng
+if (p == x)  { }      // so sánh địa chỉ với int — vô nghĩa (và bị warning)
+```
+
+Warning của trình biên dịch là tuyến phòng thủ đầu tiên của bạn: **hãy đọc
+chúng**.

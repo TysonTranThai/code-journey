@@ -1,0 +1,20 @@
+{
+  "id": "cint-p11-bst-core",
+  "title": "The Search Tree",
+  "prompt": "Implement the BST core. The boilerplate declares:\n\n```c\ntypedef struct TNode { int value; struct TNode *left, *right; } TNode;\nint bst_insert(TNode **root, int v);        /* 0 inserted, 1 duplicate, -1 oom */\nint bst_find(const TNode *root, int v);     /* 1 found, 0 absent */\nsize_t bst_height(const TNode *root);       /* empty tree = 0 */\nlong bst_min(const TNode *root);            /* LLONG_MIN if empty */\n/* fills out with the in-order traversal, returns the count\n   (out must have room for the node count) */\nsize_t bst_inorder(const TNode *root, int *out);\nvoid bst_destroy(TNode *root);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\n#include <limits.h>\ntypedef struct TNode { int value; struct TNode *left, *right; } TNode;\nint bst_insert(TNode **root, int v);\nint bst_find(const TNode *root, int v);\nsize_t bst_height(const TNode *root);\nlong bst_min(const TNode *root);\nsize_t bst_inorder(const TNode *root, int *out);\nvoid bst_destroy(TNode *root);\n",
+  "tests": [
+    {
+      "name": "insert, find, order",
+      "code": "\nTNode *t = NULL;\nCHECK_EQ(bst_height(t), 0);\nCHECK_EQ(bst_find(t, 5), 0);\nCHECK_EQ(bst_insert(&t, 5), 0);\nCHECK_EQ(bst_insert(&t, 3), 0);\nCHECK_EQ(bst_insert(&t, 8), 0);\nCHECK_EQ(bst_insert(&t, 1), 0);\nCHECK_EQ(bst_insert(&t, 5), 1);            /* duplicate rejected */\nCHECK_EQ(bst_find(t, 8), 1);\nCHECK_EQ(bst_find(t, 2), 0);\nCHECK_EQ(bst_min(t), 1);\nCHECK_EQ(bst_height(t), 3);                /* 5-(3-(1)),8: chain left-left */\nint buf[8];\nCHECK_EQ(bst_inorder(t, buf), 4);\nCHECK(buf[0] == 1 && buf[1] == 3 && buf[2] == 5 && buf[3] == 8);\nbst_destroy(t);\n",
+      "hint": "Insert returns 1 when the value already exists (walk stops at equal). Height counts nodes on the longest path."
+    },
+    {
+      "name": "degenerate vs balanced",
+      "code": "\nTNode *t = NULL;\nfor (int i = 1; i <= 6; i++) CHECK_EQ(bst_insert(&t, i), 0);  /* sorted input! */\nCHECK_EQ(bst_height(t), 6);                /* degenerated: a linked list */\nint buf[8];\nCHECK_EQ(bst_inorder(t, buf), 6);          /* still sorted: 1..6 */\nfor (int i = 0; i < 6; i++) CHECK_EQ(buf[i], i + 1);\nbst_destroy(t);\n/* zig-zag build: 4,2,6,1,3,5,7 */\nTNode *z = NULL;\nint vals[] = {4, 2, 6, 1, 3, 5, 7};\nfor (int i = 0; i < 7; i++) CHECK_EQ(bst_insert(&z, vals[i]), 0);\nCHECK_EQ(bst_height(z), 3);\nCHECK_EQ(bst_min(z), 1);\nbst_destroy(z);\n",
+      "hint": "Sorted input is the documented worst case. The zig-zag build is the balanced best case."
+    }
+  ]
+}

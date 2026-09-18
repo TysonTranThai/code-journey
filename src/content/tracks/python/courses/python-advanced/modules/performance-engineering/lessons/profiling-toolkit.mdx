@@ -1,0 +1,34 @@
+## The profiling toolkit: cProfile and pstats
+
+`cProfile` records per-function call counts and cumulative time:
+
+```python
+import cProfile, pstats, io
+
+def workload():
+    ...  # the slow thing
+
+pr = cProfile.Profile()
+pr.enable()
+workload()
+pr.disable()
+
+stats = pstats.Stats(pr)
+stats.sort_stats("tottime")       # self time per function
+stats.print_stats(5)              # top 5 offenders
+```
+
+Reading a profile like a professional:
+
+- **tottime** (self time) — time in the function's own body, excluding callees.
+  Sort by this to find the actual hotspot.
+- **cumtime** (cumulative) — including everything it calls. Sort by this to
+  find expensive *subtrees*.
+- **ncalls** — call counts. A function called 500k times at 1µs each is a
+  hotspot; a function called once at 500ms is a different kind of problem.
+- `stats.print_callers()` shows who calls the hotspot — the refactoring target
+  is often the caller, not the callee.
+
+You can extract rows programmatically: `pstats.Stats(pr).stats` maps
+`(filename, lineno, funcname)` → `(cc, nc, tt, ct, callers)`. That is exactly
+what this module's challenges use to grade "find the bottleneck" — no guessing.

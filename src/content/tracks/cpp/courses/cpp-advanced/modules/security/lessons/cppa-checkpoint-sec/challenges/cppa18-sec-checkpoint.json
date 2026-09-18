@@ -1,0 +1,15 @@
+{
+  "id": "cppa18-sec-checkpoint",
+  "title": "Sandbox Verdicts",
+  "prompt": "Same `sandboxPath` contract (plus the other two functions unchanged). The battery pushes adversarial segment cases: multi-level escapes, mixed dot-segments, and exact canonical outputs.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <cstdint>\n#include <optional>\n#include <string>\n#include <vector>\n\n// --- checked allocation math: fail closed on overflow ---\nstd::optional<std::size_t> checkedTotal(std::size_t a, std::size_t b, std::size_t c);\n\n// --- canonicalizing path sandboxer ---\n// Resolves '.', '..', redundant separators; then requires the result to stay\n// under the trusted root \"/data\". Returns nullopt on escape attempt.\nstd::optional<std::string> sandboxPath(const std::string& userPath);\n\n// --- shell-argument quoting: result cannot change token structure ---\nstd::string shellQuote(const std::string& arg);\n",
+  "tests": [
+    {
+      "name": "sandbox verdict battery",
+      "code": "CHECK_EQ(sandboxPath(\"/data/x/../y/./z\").value_or(\"no\"), \"/data/y/z\");\nCHECK_EQ(sandboxPath(\"/data/....hidden\").value_or(\"no\"), \"/data/....hidden\");\nCHECK(!sandboxPath(\"/data/a/../../b\").has_value());\nCHECK(!sandboxPath(\"/data//../../x\").has_value());\nCHECK_EQ(sandboxPath(\"/data/a//b///c\").value_or(\"no\"), \"/data/a/b/c\");\nCHECK(!checkedTotal(SIZE_MAX, SIZE_MAX, 2).has_value());\nCHECK_EQ(shellQuote(\"q'q\"), \"'q'\\\\''q'\");",
+      "hint": "The stack starts with exactly {\"data\"}; every '..' that would pop below that is an escape. Empty segments collapse; '.' never pushes."
+    }
+  ]
+}

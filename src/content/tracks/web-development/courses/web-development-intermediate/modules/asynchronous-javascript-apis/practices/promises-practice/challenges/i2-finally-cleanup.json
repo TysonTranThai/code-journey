@@ -1,0 +1,20 @@
+{
+  "id": "i2-finally-cleanup",
+  "title": "Cleanup With finally",
+  "prompt": "Write `async function withLock(lock, job)` where `lock` has `acquire()` and `release()` (both promise-returning). Acquire, run `job()`, and ALWAYS release — whether the job succeeded or threw. RETURN the job's result; if the job threw, rethrow after releasing.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "async function withLock(lock, job) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "releases on success",
+      "code": "const fn = new Function(code + \"\\nreturn { withLock };\");\nconst { withLock } = fn();\nconst events = [];\nconst lock = { acquire: async () => { events.push(\"acquire\"); }, release: async () => { events.push(\"release\"); } };\nconst out = await withLock(lock, async () => { events.push(\"job\"); return 42; });\nif (out !== 42) throw new Error(\"The job result should be returned.\");\nif (events.join() !== \"acquire,job,release\") throw new Error(\"Order must be acquire, job, release.\");",
+      "hint": "try { return await job(); } finally { await lock.release(); } — but acquire must happen before the try."
+    },
+    {
+      "name": "releases on failure and rethrows",
+      "code": "const fn = new Function(code + \"\\nreturn { withLock };\");\nconst { withLock } = fn();\nconst events = [];\nconst lock = { acquire: async () => { events.push(\"acquire\"); }, release: async () => { events.push(\"release\"); } };\nlet err;\ntry { await withLock(lock, async () => { throw new Error(\"job failed\"); }); } catch (e) { err = e; }\nif (!err || err.message !== \"job failed\") throw new Error(\"The job's error must propagate to the caller.\");\nif (events.join() !== \"acquire,release\") throw new Error(\"Release must still run when the job throws.\");",
+      "hint": "finally runs on both paths; the throw continues after finally completes."
+    }
+  ]
+}

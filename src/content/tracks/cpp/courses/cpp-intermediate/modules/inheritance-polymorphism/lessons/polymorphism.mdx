@@ -1,0 +1,55 @@
+**Polymorphism**: through a base-class reference or pointer, the *right*
+override for the actual object runs — chosen at run time via the virtual
+table.
+
+```cpp
+#include <iostream>
+#include <memory>
+#include <vector>
+
+class Shape {
+public:
+    virtual ~Shape() = default;
+    virtual double area() const = 0;              // pure virtual
+    virtual const char* name() const = 0;
+};
+
+class Square : public Shape {
+public:
+    explicit Square(double s) : side_{s} {}
+    double area() const override { return side_ * side_; }
+    const char* name() const override { return "square"; }
+private:
+    double side_;
+};
+
+class Circle : public Shape {
+public:
+    explicit Circle(double r) : radius_{r} {}
+    double area() const override { return 3.14159265358979 * radius_ * radius_; }
+    const char* name() const override { return "circle"; }
+private:
+    double radius_;
+};
+
+double total_area(const std::vector<std::unique_ptr<Shape>>& shapes) {
+    double sum = 0;
+    for (const auto& s : shapes) sum += s->area();   // dynamic dispatch per element
+    return sum;
+}
+```
+
+## The two conditions for dynamic dispatch
+
+1. The call goes through a **reference or pointer** to the base.
+2. The function is **virtual** in the base.
+
+Call by value slices the object (a `Shape` copy of a `Square` loses the
+derived parts) and dispatch never happens. Store shapes by pointer (a smart
+pointer, Module 8) or reference, never by value, in polymorphic containers.
+
+## Pure virtual and abstract types
+
+`area() const = 0` makes `Shape` **abstract**: it cannot be instantiated, only
+derived from. Derived classes must override every pure virtual or stay
+abstract. This is how C++ expresses "interface".

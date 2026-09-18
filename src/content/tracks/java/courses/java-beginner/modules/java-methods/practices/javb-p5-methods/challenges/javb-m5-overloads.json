@@ -1,0 +1,21 @@
+{
+  "id": "javb-m5-overloads",
+  "title": "Overloads that delegate",
+  "prompt": "Create a family of `join` overloads that all delegate to one core:\n\n- `static String join(String sep, String a, String b)`\n- `static String join(String sep, String a, String b, String c)`\n- `static String join(String sep, String... parts)` — varargs core\n\nEach joins with the separator between items (`join(\"-\", \"a\", \"b\")` is `\"a-b\"`). The two fixed overloads must CALL the varargs one rather than duplicating logic.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String join(String sep, String a, String b) {\n        return \"\";\n    }\n\n    public static String join(String sep, String a, String b, String c) {\n        return \"\";\n    }\n\n    public static String join(String sep, String... parts) {\n        return \"\";\n    }\n}\n",
+  "tests": [
+    {
+      "name": "fixed arities",
+      "code": "\nCjTestBase.checkEq(Solution.join(\"-\", \"a\", \"b\"), \"a-b\", \"two parts\");\nCjTestBase.checkEq(Solution.join(\", \", \"x\", \"y\", \"z\"), \"x, y, z\", \"three parts\");\n",
+      "hint": "Separator only BETWEEN items, never at the ends."
+    },
+    {
+      "name": "varargs core",
+      "code": "\nCjTestBase.checkEq(Solution.join(\"-\", \"a\"), \"a\", \"single part\");\nCjTestBase.checkEq(Solution.join(\"-\"), \"\", \"no parts\");\n",
+      "hint": "One part prints bare; zero parts is empty."
+    }
+  ],
+  "level": "combination"
+}

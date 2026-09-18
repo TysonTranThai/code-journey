@@ -1,0 +1,46 @@
+## Selection sort: chọn nhỏ nhất, đặt lên trước
+
+```c
+void selection_sort(int *a, int n) {
+    for (int i = 0; i < n - 1; i++) {
+        int min = i;
+        for (int j = i + 1; j < n; j++)
+            if (a[j] < a[min]) min = j;
+        int t = a[i]; a[i] = a[min]; a[min] = t;   // hoán đổi vào chỗ
+    }
+}
+```
+
+Bất biến: sau lượt thứ i, i+1 phần tử đầu tiên là i+1 phần tử nhỏ nhất, đã
+có thứ tự. Luôn khoảng n²/2 phép so sánh — đoán trước được, tại chỗ, dễ
+kiểm chứng.
+
+## Insertion sort: nuôi một tiền tố có thứ tự
+
+```c
+void insertion_sort(int *a, int n) {
+    for (int i = 1; i < n; i++) {
+        int key = a[i];
+        int j = i - 1;
+        while (j >= 0 && a[j] > key) {   // dời phần tử lớn hơn sang phải
+            a[j + 1] = a[j];
+            j--;
+        }
+        a[j + 1] = key;
+    }
+}
+```
+
+Trên dữ liệu gần như có thứ tự, nó tiến gần O(n) — vì sao thư viện thật dựng
+các sort hạng nặng trên insertion sort cho các đoạn nhỏ hoặc gần có thứ tự.
+
+## "Tại chỗ" nghĩa là gì
+
+Cả hai thuật toán xáo lại đúng mảng được đưa vào — bộ nhớ thêm O(1). Người
+gọi nhìn thấy hoán vị; không cấp phát gì mới.
+
+## Kiểm thử một hàm sắp xếp
+
+Kiểm tra: rỗng, một phần tử, đã sắp xếp, sắp ngược, trùng giá trị, số âm.
+Một hàm sort sống sót qua bộ test đó thường là đúng — cũng chính là bộ test
+bộ chấm chạy dưới đây.

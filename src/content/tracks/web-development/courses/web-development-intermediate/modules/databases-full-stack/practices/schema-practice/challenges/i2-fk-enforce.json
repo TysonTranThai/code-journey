@@ -1,0 +1,20 @@
+{
+  "id": "i2-fk-enforce",
+  "title": "Foreign-Key Enforcer",
+  "prompt": "Write `insertWithFK(tables, table, row)` — tables is { users: Set of ids, tasks: [] }; the tasks table's `authorId` must exist in users. Valid insert => append and return { ok: true, id } (ids are \"t<n>\" incrementing); FK violation => { ok: false, error: \"fk-violation\" } and nothing inserted.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function insertWithFK(tables, table, row) {\n  // your code — support table === \"tasks\" with row.authorId\n}\n",
+  "tests": [
+    {
+      "name": "valid insert lands",
+      "code": "const fn = new Function(code + \"\\nreturn { insertWithFK };\");\nconst { insertWithFK } = fn();\nconst db = { users: new Set([\"u1\"]), tasks: [] };\nconst r = insertWithFK(db, \"tasks\", { title: \"A\", authorId: \"u1\" });\nif (!r.ok || r.id !== \"t1\" || db.tasks.length !== 1) throw new Error(\"Row stored with id t1.\");\nconst r2 = insertWithFK(db, \"tasks\", { title: \"B\", authorId: \"u1\" });\nif (r2.id !== \"t2\") throw new Error(\"Ids increment.\");",
+      "hint": "Check membership before pushing."
+    },
+    {
+      "name": "bad author rejected cleanly",
+      "code": "const fn = new Function(code + \"\\nreturn { insertWithFK };\");\nconst { insertWithFK } = fn();\nconst db = { users: new Set([\"u1\"]), tasks: [] };\nconst r = insertWithFK(db, \"tasks\", { title: \"A\", authorId: \"ghost\" });\nif (r.ok !== false || r.error !== \"fk-violation\") throw new Error(\"FK violation named.\");\nif (db.tasks.length !== 0) throw new Error(\"Nothing was inserted.\");",
+      "hint": "The rejection must leave state untouched."
+    }
+  ]
+}

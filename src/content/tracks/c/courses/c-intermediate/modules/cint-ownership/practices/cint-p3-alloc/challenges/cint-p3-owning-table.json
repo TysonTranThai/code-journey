@@ -1,0 +1,16 @@
+{
+  "id": "cint-p3-owning-table",
+  "title": "A Table That Takes Ownership",
+  "prompt": "Implement a string table that OWNS its entries:\n\n```c\ntypedef struct { char **items; size_t len, cap; } OwnedTable;  /* in boilerplate */\nvoid ot_init(OwnedTable *t);\n/* copies s into fresh memory and stores it. 0 on failure (t unchanged). */\nint ot_add(OwnedTable *t, const char *s);\n/* number of entries currently stored */\nsize_t ot_len(const OwnedTable *t);\n/* frees every string AND the array; zeroes the struct */\nvoid ot_destroy(OwnedTable *t);\n/* removes the last entry, frees it, returns 1; 0 if empty */\nint ot_pop(OwnedTable *t);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\ntypedef struct { char **items; size_t len, cap; } OwnedTable;\n",
+  "tests": [
+    {
+      "name": "ownership through the table lifecycle",
+      "code": "\nOwnedTable t;\not_init(&t);\nCHECK_EQ(ot_add(&t, \"alpha\"), 1);\nCHECK_EQ(ot_add(&t, \"beta\"), 1);\nCHECK_EQ(ot_len(&t), 2);\nCHECK_EQ(ot_pop(&t), 1);\nCHECK_EQ(ot_len(&t), 1);\nCHECK_EQ(ot_pop(&t), 1);\nCHECK_EQ(ot_pop(&t), 0);   /* empty now */\not_destroy(&t);\nCHECK_NULL(t.items);\n",
+      "hint": "Growth identical to Vec but for char*; pop frees the string slot."
+    }
+  ],
+  "level": "mini-build"
+}

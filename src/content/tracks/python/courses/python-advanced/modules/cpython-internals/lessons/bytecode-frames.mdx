@@ -1,0 +1,30 @@
+## Bytecode: what the interpreter actually executes
+
+CPython compiles your source to **bytecode** — a stack-machine instruction list —
+then executes it in a loop. Disassemble with the `dis` module:
+
+```python
+import dis
+
+def add_squares(xs):
+    return sum(x * x for x in xs)
+
+dis.dis(add_squares)
+```
+
+Reading bytecode answers real questions:
+
+- **Why is `x += 1` on an instance attribute three operations?** LOAD the
+  attribute, add, STORE the attribute — interleaving lives between them.
+- **Why is a loop body that rebuilds an expression slow?** Every iteration
+  re-executes the same LOAD_GLOBAL/LOAD_ATTR instructions; hoisting a lookup
+  out of the loop removes bytecode from the hot path.
+- **`LOAD_CONST` / `LOAD_FAST` / `LOAD_GLOBAL`** — const pool, local frame
+  slots, module dict lookups, in increasing cost order.
+- **Small-int caching and string interning** are implementation details, not
+  language semantics — `is` on integers is undefined behavior territory;
+  `==` is the comparison you mean.
+
+A **frame** is the runtime state of one function call: its locals, its value
+stack, the bytecode pointer, and the reference to the calling frame. Tracebacks
+are just the chain of frames — that is what `inspect.currentframe()` walks.

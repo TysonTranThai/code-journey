@@ -45,16 +45,19 @@ export async function requestHint(
   if (!quota.allowed) {
     return {
       ok: false,
-      error: "You've used all your hints for today. Come back tomorrow — the challenge will keep.",
+      error:
+        context.locale === "vi"
+          ? "Bạn đã dùng hết gợi ý hôm nay. Hãy quay lại vào ngày mai — thử thách vẫn đang đợi bạn."
+          : "You've used all your hints for today. Come back tomorrow — the challenge will keep.",
     };
   }
 
   const adapter = await getAdapter();
   const raw = await adapter.hint(context, level);
-  const filtered = refuseIfSolution(raw.text);
+  const filtered = refuseIfSolution(raw.text, context.locale);
   await recordMentorRequest(userId, kind);
 
-  const framed = frameHint(level, filtered.text);
+  const framed = frameHint(level, filtered.text, context.locale);
   return {
     ok: true,
     text: framed,
@@ -76,13 +79,16 @@ export async function explainError(
   if (!quota.allowed) {
     return {
       ok: false,
-      error: "You've reached today's error-explanation limit. Try again tomorrow.",
+      error:
+        context.locale === "vi"
+          ? "Bạn đã đạt giới hạn giải thích lỗi hôm nay. Hãy thử lại vào ngày mai."
+          : "You've reached today's error-explanation limit. Try again tomorrow.",
     };
   }
 
   const adapter = await getAdapter();
   const raw = await adapter.explainError(context, failedTestName, errorOutput);
-  const filtered = refuseIfSolution(raw.text);
+  const filtered = refuseIfSolution(raw.text, context.locale);
   await recordMentorRequest(userId, kind);
 
   return {

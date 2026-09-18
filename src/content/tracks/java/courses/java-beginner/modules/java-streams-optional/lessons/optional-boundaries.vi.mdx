@@ -1,0 +1,43 @@
+`null` là cái bẫy lâu đời nhất của Java: bất kỳ tham chiếu nào cũng có thể
+âm thầm là `null`, và vụ nổ xảy ra rất xa nơi gây ra. `Optional<T>` biến
+"có thể không có" thành **hiện hữu ngay trên kiểu**.
+
+```java
+static Optional<String> findEmail(java.util.Map<String, String> users, String name) {
+    return Optional.ofNullable(users.get(name));   // có thể rỗng
+}
+
+// tại biên giới, hãy quyết định rõ ràng:
+String display = findEmail(users, "ada")
+    .map(String::toLowerCase)                      // biến đổi nếu có giá trị
+    .orElse("(no email)");                          // mặc định nếu rỗng
+```
+
+| Phương thức | Đọc là |
+|---|---|
+| `Optional.of(v)` | bọc giá trị không được null (ném exception nếu null) |
+| `Optional.ofNullable(v)` | bọc giá trị có thể null |
+| `Optional.empty()` | không có gì ở đây |
+| `.isPresent()` / `.isEmpty()` | kiểm tra có/không |
+| `.get()` | **tránh** - tái tạo chính vụ crash, chỉ là qua thêm một bước |
+| `.orElse(default)` | giá trị, hoặc mặc định |
+| `.orElseGet(supplier)` | giá trị, hoặc tính mặc định một cách lười |
+| `.map(f)` | biến đổi giá trị nếu có |
+| `.filter(p)` | chỉ giữ nếu điều kiện thỏa |
+| `.ifPresent(c)` | chạy consumer này nếu có giá trị |
+
+## Dạng đúng đắn
+
+Optional là **kiểu trả về tại biên giới**: "lần tra này có thể không tìm
+thấy." Đừng dùng Optional cho field, tham số, hay collection các Optional.
+
+## Anti-pattern mà compiler không chặn
+
+```java
+// Hai dòng này là cùng một bug đội mũ khác nhau:
+opt.get()                       // NoSuchElementException nếu rỗng
+if (opt.isPresent()) x = opt.get();   // null-check nhiều lời lại hồi sinh
+```
+
+Nếu bạn thấy mình gọi `.isPresent()` rồi `.get()` liền nhau, hãy chuyển
+sang `.map`/`.orElse` - giữ mọi quyết định *bên trong* Optional.

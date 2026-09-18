@@ -1,0 +1,26 @@
+{
+  "id": "ca20-udp-roundtrip",
+  "title": "UDP Send and Receive",
+  "prompt": "POSIX. Implement `ssize_t udp_roundtrip(int ufd, const char *msg, char *out, size_t cap)` — sendto msg to the loopback address and the socket's OWN bound port (getsockname), then recvfrom into out (at most cap-1 bytes, NUL-terminated) and return the byte count, or -1 on any failure (NULL args, cap 0). Bind ufd to port 0 before calling — the tests do.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define _POSIX_C_SOURCE 200809L\n#include <unistd.h>\n#include <sys/socket.h>\n#include <sys/time.h>\n#include <netinet/in.h>\n#include <arpa/inet.h>\n#include <signal.h>\n#include <errno.h>\n",
+  "tests": [
+    {
+      "name": "echo to self",
+      "code": "int u1 = socket(AF_INET, SOCK_DGRAM, 0);\nstruct sockaddr_in a1;\nmemset(&a1, 0, sizeof a1);\na1.sin_family = AF_INET;\na1.sin_addr.s_addr = htonl(INADDR_LOOPBACK);\na1.sin_port = 0;\nCHECK_EQ(bind(u1, (struct sockaddr *)&a1, sizeof a1), 0);\nchar o1[32] = {0};\nCHECK_EQ(udp_roundtrip(u1, \"x\", o1, 32), 1);\nCHECK_EQ(o1[0], 120);\nclose(u1);",
+      "hint": "The datagram leaves and returns through the loopback: one byte, value 'x'."
+    },
+    {
+      "name": "message boundary kept",
+      "code": "int u2 = socket(AF_INET, SOCK_DGRAM, 0);\nstruct sockaddr_in a2;\nmemset(&a2, 0, sizeof a2);\na2.sin_family = AF_INET;\na2.sin_addr.s_addr = htonl(INADDR_LOOPBACK);\na2.sin_port = 0;\nCHECK_EQ(bind(u2, (struct sockaddr *)&a2, sizeof a2), 0);\nchar o2[32] = {0};\nCHECK_EQ(udp_roundtrip(u2, \"fallback\", o2, 32), 8);\nCHECK_EQ(o2[7], 'k');\nclose(u2);",
+      "hint": "UDP preserves message boundaries: the whole 8-byte word arrives as one datagram."
+    },
+    {
+      "name": "NULL message refused",
+      "code": "int u3 = socket(AF_INET, SOCK_DGRAM, 0);\nchar o3[8] = {0};\nCHECK_EQ(udp_roundtrip(u3, NULL, o3, 8), -1);\nclose(u3);",
+      "hint": "NULL msg is a contract violation: -1, no send."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,30 @@
+Hai thuật toán sinh dữ liệu mới từ dữ liệu cũ: `std::transform` (map) và
+`std::accumulate` (fold).
+
+```cpp
+#include <algorithm>
+#include <numeric>
+#include <string>
+#include <vector>
+
+std::vector<int> v{1, 2, 3};
+std::vector<int> doubled;
+std::transform(v.begin(), v.end(), std::back_inserter(doubled),
+               [](int x) { return x * 2; });
+
+long total = std::accumulate(v.begin(), v.end(), 0L);
+std::string joined = std::accumulate(
+    words.begin(), words.end(), std::string{},
+    [](const std::string& a, const std::string& b) {
+        return a.empty() ? b : a + " " + b;
+    });
+```
+
+`std::back_inserter` là bắt buộc khi đích còn rỗng: transform không tự lớn
+container cho bạn; ghi qua `doubled.begin()` trên vector rỗng là hành vi
+không xác định.
+
+`accumulate` nhận giá trị khởi tạo và một phép toán nhị phân. Quy tắc kiểu
+của nó tinh tế: *kiểu của giá trị khởi tạo* chính là kiểu của accumulator —
+khởi đầu bằng `0` thay vì `0.0` sẽ âm thầm cắt cụt tổng số thực. Đây là bug
+kinh điển của người mới mà bài học này tồn tại để ngăn chặn.

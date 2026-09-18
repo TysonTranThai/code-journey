@@ -1,0 +1,26 @@
+{
+  "id": "cppa14-kill-the-mutants",
+  "title": "Kill the Mutants",
+  "prompt": "Implement the validator `issues` exactly per the contract. The graded tests are a mutation suite: boundary mutants (`<` vs `<=`, missing edge chars) must fail — your implementation has to be exact at every boundary to kill them all.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <cstdint>\n#include <optional>\n#include <string>\n#include <vector>\n\n// A username validator for account creation.\n//   length 3..20\n//   first char: letter\n//   rest: letter, digit or '_'\n//   no two consecutive '_'\nstd::optional<std::string> issues(const std::string& name);\n// Returns nullopt when valid; otherwise the first violated rule, one of:\n//   \"length\", \"first-char\", \"char-set\", \"double-underscore\".\n// (Checked in that order for names violating several rules.)\n",
+  "tests": [
+    {
+      "name": "valid names pass",
+      "code": "CHECK(!issues(\"abc\").has_value());\nCHECK(!issues(\"a_1\").has_value());\nCHECK(!issues(\"Z9_\").has_value());\nCHECK(!issues(\"abcdefghij0123456789\").has_value());",
+      "hint": "Length exactly 3 and exactly 20 are both valid — the boundary is inclusive on both ends."
+    },
+    {
+      "name": "every rule fires, in order",
+      "code": "CHECK_EQ(issues(\"ab\").value_or(\"\"), \"length\");\nCHECK_EQ(issues(\"\").value_or(\"\"), \"length\");\nCHECK_EQ(issues(\"1abc\").value_or(\"\"), \"first-char\");\nCHECK_EQ(issues(\"_abc\").value_or(\"\"), \"first-char\");\nCHECK_EQ(issues(\"abc-d\").value_or(\"\"), \"char-set\");\nCHECK_EQ(issues(\"ab__c\").value_or(\"\"), \"double-underscore\");\nCHECK(!issues(\"ab_c\").has_value());",
+      "hint": "Check rules in the documented priority: length, then first-char, then char-set, then double-underscore."
+    },
+    {
+      "name": "boundary mutants die",
+      "code": "CHECK_EQ(issues(\"ab\").value_or(\"\"), \"length\");        // < 3\nCHECK(!issues(\"abc\").has_value());                     // == 3\nCHECK(!issues(\"abcdefghijklmnopqrst\").has_value());    // == 20\nCHECK_EQ(issues(\"abcdefghijklmnopqrstu\").value_or(\"\"), \"length\");  // 21\nCHECK_EQ(issues(\"a__b\").value_or(\"\"), \"double-underscore\");",
+      "hint": "Off-by-one mutants (`<` vs `<=`) survive only if the exact boundary values are untested — test both 3 and 20 exactly."
+    }
+  ]
+}

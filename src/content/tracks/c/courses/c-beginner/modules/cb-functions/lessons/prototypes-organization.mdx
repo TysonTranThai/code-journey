@@ -1,0 +1,32 @@
+## Declare before use
+
+C reads top-down. Calling a function whose name the compiler hasn't seen yet
+is an error (in C23 and under GCC 14 with our flags):
+
+```c
+int main(void) {
+    return area(3, 4);        // ERROR: 'area' unknown here
+}
+
+int area(int w, int h) { return w * h; }
+```
+
+Fix with a **prototype** (declaration) — signature only, no body:
+
+```c
+int area(int w, int h);       // prototype
+
+int main(void) { return area(3, 4); }   // OK now
+
+int area(int w, int h) { return w * h; } // definition
+```
+
+## The rule you'll actually use
+
+In graded challenges, define helpers **above** `main` (or prototype them) so
+the compiler has seen every name before it compiles the caller.
+
+## Files (a taste)
+
+Real projects put prototypes in `.h` headers and definitions in `.c` files —
+module 18 builds that out. For now: one file, helpers first, `main` last.

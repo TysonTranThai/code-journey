@@ -1,0 +1,22 @@
+{
+  "title": "Capstone: sổ giao dịch cá nhân",
+  "prompt": "Hoàn thiện lớp `Ledger`. `net(datePrefix)` = tổng các khoản theo dấu của direction, chỉ đếm giao dịch có ngày bắt đầu bằng prefix (dùng `\"\"` cho tất cả). `labelsSince(datePrefix)` = label của các giao dịch khớp, theo thứ tự thêm vào, viết hoa. `saveLines()` = mọi giao dịch render thành `date|label|DIRECTION|amount` với đúng hai chữ số thập phân, theo thứ tự thêm vào. `loadLine(line)` = parse một dòng đã lưu và thêm vào - nhưng dòng lỗi không được làm hỏng sổ: bỏ qua im lặng nếu nó fails validation của record.",
+  "tests": [
+    {
+      "name": "net cộng có dấu theo direction và lọc theo prefix ngày",
+      "hint": "map dấu theo direction, lọc theo date.startsWith(prefix), cộng vào một double."
+    },
+    {
+      "name": "label viết hoa, đúng thứ tự thêm vào",
+      "hint": "filter, rồi map(String::toUpperCase) TRƯỚC khi collect."
+    },
+    {
+      "name": "save render hai chữ số thập phân đúng thứ tự",
+      "hint": "String.format(\"%s|%s|%s|%.2f\", ...) - %.2f cho đúng hai chữ số."
+    },
+    {
+      "name": "load round-trip, rác bị bỏ qua im lặng",
+      "hint": "try { add(code-parse) } catch (IllegalArgumentException e) { /* bỏ qua */ } - đừng để một dòng xấu làm sập cả lần nạp."
+    }
+  ]
+}

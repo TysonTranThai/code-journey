@@ -1,0 +1,20 @@
+{
+  "id": "csb-checkpoint-m8-task",
+  "title": "Gradebook",
+  "prompt": "Implement `Averages`, `Honors`, and `TopStudent` as described. The empty-list exclusion, the double division, and both tie rules are the contract.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "averages",
+      "code": "var gb = new Dictionary<string, List<int>>\n{\n    [\"an\"] = new List<int> { 90, 90 },\n    [\"binh\"] = new List<int> { 80 },\n    [\"empty\"] = new List<int>(),\n};\nvar av = Solution.Averages(gb);\nCj.False(av.ContainsKey(\"empty\"), \"empty list excluded\");\nCj.Near(av[\"an\"], 90.0, 1e-9, \"an avg\");\nCj.Near(av[\"binh\"], 80.0, 1e-9, \"binh avg\");\nCj.Eq(Solution.Averages(new Dictionary<string, List<int>>()).Count, 0, \"empty book\");\nCj.Eq(Solution.Averages(null).Count, 0, \"null book\");",
+      "hint": "Exclusion rule, exact means, and the null/empty contracts."
+    },
+    {
+      "name": "honors-and-top",
+      "code": "var gb = new Dictionary<string, List<int>>\n{\n    [\"an\"] = new List<int> { 95, 95 },\n    [\"binh\"] = new List<int> { 90, 90 },\n    [\"chi\"] = new List<int> { 90, 90 },\n    [\"duan\"] = new List<int> { 70 },\n};\nvar h = Solution.Honors(gb);\nCj.Eq(string.Join(\",\", h), \"an,binh,chi\", \"desc avg, asc name\");\nCj.Eq(Solution.TopStudent(gb), \"an\", \"top\");\nvar tie = new Dictionary<string, List<int>> { [\"mai\"] = new List<int> { 85 }, [\"hoa\"] = new List<int> { 85 } };\nCj.Eq(Solution.TopStudent(tie), \"hoa\", \"tie -> alphabetical\");\nCj.Eq(Solution.TopStudent(null), \"\", \"null top\");",
+      "hint": "Both orderings in Honors, the top pick, and the alphabetical tie."
+    }
+  ]
+}

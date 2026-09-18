@@ -1,0 +1,20 @@
+{
+  "id": "i2-dashboard-render",
+  "title": "State-to-DOM Renderer",
+  "prompt": "Write `renderTasks(state)` that returns an HTML STRING (never touches the DOM directly): tasks ordered by done ascending then priority weight high=3, medium=2, low=1, each rendered as `<li data-id=\"ID\" class=\"done?\">TITLE</li>` — class \"done\" only when done is true. Plus `nextId(state)` returning the next numeric id as a string.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "boilerplate": "function renderTasks(state) {\n  // your code — return an HTML string\n}\n\nfunction nextId(state) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "renders sorted, done class only where earned",
+      "code": "const fn = new Function(code + \"\\nreturn { renderTasks };\");\nconst { renderTasks } = fn();\nconst state = { tasks: [\n  { id: \"1\", title: \"Ship\", done: false, priority: \"medium\" },\n  { id: \"2\", title: \"Sleep\", done: true, priority: \"high\" },\n  { id: \"3\", title: \"Test\", done: false, priority: \"high\" },\n] };\nconst html = renderTasks(state);\nconst order = [...html.matchAll(/<li data-id=\"(\\d)\"/g)].map((m) => m[1]);\nif (order.join(\",\") !== \"3,1,2\") throw new Error(\"Open tasks first (high before medium), then done ones.\");\nif (!/<li data-id=\"2\" class=\"done\">Sleep<\\/li>/.test(html)) throw new Error(\"Done task carries class=\\\"done\\\".\");\nif (/data-id=\"3\" class=\"done\"/.test(html)) throw new Error(\"Open task must not have the done class.\");\n",
+      "hint": "Copy + sort with a weight map; build strings with map/join."
+    },
+    {
+      "name": "nextId is max + 1",
+      "code": "const fn = new Function(code + \"\\nreturn { nextId };\");\nconst { nextId } = fn();\nif (nextId({ tasks: [{ id: \"4\" }, { id: \"2\" }] }) !== \"5\") throw new Error(\"Max id 4 => next 5.\");\nif (nextId({ tasks: [] }) !== \"1\") throw new Error(\"Empty list starts at 1.\");\n",
+      "hint": "Numbers in, string out."
+    }
+  ]
+}

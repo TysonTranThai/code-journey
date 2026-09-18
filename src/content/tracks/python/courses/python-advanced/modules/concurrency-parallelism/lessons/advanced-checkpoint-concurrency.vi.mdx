@@ -1,0 +1,9 @@
+## Checkpoint — bộ xử lý job đồng thời (bản gia cố)
+
+Cùng hợp đồng với project: `run_jobs(jobs, workers=3, retries=2)` trả về
+`{'succeeded': {index: value}, 'failed': [các index đã sort]}`, retry lỗi tối đa
+thêm `retries` lần.
+
+Điểm soi kỹ của checkpoint này: **kết cục của mọi future đã nộp phải được quan
+sát.** Một retry được nộp lại mà không ai await sẽ mất kết quả lẫn exception —
+đúng kiểu bug production thật. Probe phản chủ sẽ khai đúng lỗi này.

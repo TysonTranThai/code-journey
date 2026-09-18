@@ -1,0 +1,25 @@
+{
+  "id": "javb-checkpoint-modeling",
+  "title": "Checkpoint: Inventory Line",
+  "prompt": "\nThe Inventory Line — a modeling checkpoint.\n\nInside `Solution`:\n\n1. `enum Category { FOOD, ELECTRONICS, BOOKS }`\n2. `record Item(String name, int quantity, Category category)` with a\n   compact constructor rejecting blank names, negative quantities, and\n   null categories.\n3. `static int stockValue(java.util.List<Item> items, Category c)` — the\n   total quantity of items in the given category.\n4. `static Item merge(Item a, Item b)` — combine two items of the SAME\n   name and category into one with the summed quantity; different\n   name/category → IllegalArgumentException.\n\nThe design question being tested: which type for each concept, and why\nrecords make merge/compare trivial.\n",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public enum Category { FOOD, ELECTRONICS, BOOKS }\n\n    public record Item(String name, int quantity, Category category) {\n        public Item {\n            // validate\n        }\n    }\n\n    public static int stockValue(java.util.List<Item> items, Category c) {\n        return 0;\n    }\n\n    public static Item merge(Item a, Item b) {\n        return a;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "validation at construction",
+      "code": "\nCjTestBase.checkThrows(() -> new Solution.Item(\"  \", 1, Solution.Category.FOOD), \"blank name\");\nCjTestBase.checkThrows(() -> new Solution.Item(\"rice\", -1, Solution.Category.FOOD), \"negative qty\");\n",
+      "hint": "Compact constructor refuses bad data."
+    },
+    {
+      "name": "stock by category",
+      "code": "\njava.util.List<Solution.Item> items = java.util.List.of(\n    new Solution.Item(\"rice\", 3, Solution.Category.FOOD),\n    new Solution.Item(\"lamp\", 2, Solution.Category.ELECTRONICS),\n    new Solution.Item(\"noodles\", 4, Solution.Category.FOOD));\nCjTestBase.checkEq(Solution.stockValue(items, Solution.Category.FOOD), 7, \"food total\");\nCjTestBase.checkEq(Solution.stockValue(items, Solution.Category.BOOKS), 0, \"no books\");\n",
+      "hint": "Sum quantities filtered by category."
+    },
+    {
+      "name": "merge rules",
+      "code": "\nSolution.Item a = new Solution.Item(\"rice\", 3, Solution.Category.FOOD);\nSolution.Item b = new Solution.Item(\"rice\", 4, Solution.Category.FOOD);\nCjTestBase.checkEq(Solution.merge(a, b).quantity(), 7, \"3 + 4\");\nCjTestBase.checkThrows(() -> Solution.merge(a,\n    new Solution.Item(\"lamp\", 1, Solution.Category.FOOD)), \"name mismatch\");\n",
+      "hint": "Same name+category merges; otherwise refuse."
+    }
+  ]
+}

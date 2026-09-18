@@ -1,0 +1,47 @@
+## Ownership in one line
+
+Every allocation has exactly one owner — a function or module responsible for
+freeing it. When you take ownership, you take the duty. When you hand it
+over, you give up the right to free it yourself. Design functions so the
+ownership story is obvious from the name:
+
+- `create_*` / `alloc_*` → caller frees
+- `*_destroy` / `*_free` → this function frees; don't double-free afterwards
+
+## Leak
+
+```c
+void f(void) {
+    int *p = malloc(8 * sizeof(int));
+    if (cond) return;          // LEAK: p dies unfreed
+    free(p);
+}
+```
+
+Memory leaks rarely crash a program — they starve it slowly. Long-running
+programs (servers!) die from accumulated leaks.
+
+## Double free
+
+```c
+free(p);
+free(p);        // undefined behavior — heap metadata corrupted
+```
+
+Set `p = NULL` after freeing; `free(NULL)` is defined and harmless.
+
+## Use-after-free
+
+```c
+free(p);
+*p = 5;         // undefined behavior — the block may already be reused
+```
+
+This is the most dangerous of the three: it can silently "work" in tests and
+corrupt data in production.
+
+## Reading them in the wild
+
+None of these crash at the error site. The skill is recognizing the SHAPE:
+a return/break path that skips free, two frees of one name, any use of a
+name after its free. Training that eye is what the practice below is for.

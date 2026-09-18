@@ -1,0 +1,25 @@
+## Giải phẫu
+
+1. **Hàng đợi công việc** — `std::deque<std::function<void()>>` dưới một mutex, với `condition_variable` đánh thức worker rảnh,
+2. **Worker** — N thread lặp: chờ công việc, chạy, lặp lại,
+3. **Tắt máy** — cờ `stopping`; worker rút cạn hoặc bỏ hàng đợi tùy chính sách, rồi thoát.
+
+```cpp
+class ThreadPool {
+public:
+    explicit ThreadPool(std::size_t n);
+    void submit(std::function<void()> f);   // enqueue + notify_one
+    ~ThreadPool();                          // bật stopping, notify_all, join tất cả
+};
+```
+
+## Những quyết định thiết kế quan trọng
+
+- **Backpressure**: hàng đợi vô hạn che giấu quá tải cho tới khi bộ nhớ chết. Pool production giới hạn hàng đợi hoặc vứt bớt việc.
+- **Số worker**: xấp xỉ hardware_concurrency cho việc nặng CPU; nhiều hơn cho việc nặng I/O. Đo, đừng đoán (Module 11).
+- **submit trả future**: production `submit` trả `std::future<T>` qua `std::packaged_task` để caller nhận cả kết quả lẫn ngoại lệ. Bản được chấm làm đúng như vậy.
+- **An toàn ngoại lệ**: task ném ngoại lệ không được giết worker — `packaged_task` bắt ngoại lệ vào future; vòng lặp trần phải bắt.
+
+## Bản được chấm
+
+Bạn sẽ cài một pool nhỏ với submit trả future và tắt máy êm, rồi kiểm chứng: mọi task chạy, kết quả đúng, ngoại lệ lộ ra qua future, và destructor join sạch sẽ.

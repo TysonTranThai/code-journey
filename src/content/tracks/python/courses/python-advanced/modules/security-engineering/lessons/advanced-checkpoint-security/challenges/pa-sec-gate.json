@@ -1,0 +1,15 @@
+{
+  "id": "pa-sec-gate",
+  "title": "The five-minute audit",
+  "prompt": "Implement `security_gate(handlers)` — stricter cousin of the practice audit:\n\n- each handler: `{'name', 'checks': set, 'public': bool}` where 'public' marks endpoints intentionally unauthenticated (health checks)\n- an endpoint that is NOT public must have 'auth' AND 'owner' (data endpoints) — missing either → vulnerable with `'critical': True`\n- an endpoint that IS public but has any of 'auth'/'owner' checks is suspicious (flag `'suspicious': True` — why would a health check need auth code?)\n- missing 'params' or 'encode' → vulnerable (not critical)\n- return `{'clean': [...], 'vulnerable': [...worst-first, ties by name...]}` where vulnerable entries carry 'missing' (sorted), and 'critical'/'suspicious' booleans only when True",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: security_gate",
+  "tests": [
+    {
+      "name": "triage in one pass",
+      "code": "hs = [\n    {'name': 'health', 'checks': set(), 'public': True},\n    {'name': 'weird-health', 'checks': {'auth'}, 'public': True},\n    {'name': 'orders', 'checks': {'auth', 'owner', 'params', 'encode'}, 'public': False},\n    {'name': 'orders-idor', 'checks': {'auth', 'params', 'encode'}, 'public': False},\n    {'name': 'upload', 'checks': {'auth', 'owner', 'params'}, 'public': False},\n]\nr = security_gate(hs)\nassert r['clean'] == ['health', 'orders']\nbyname = {v['name']: v for v in r['vulnerable']}\nassert byname['orders-idor']['critical'] is True and byname['orders-idor']['missing'] == ['owner']\nassert byname['weird-health']['suspicious'] is True\nassert byname['upload']['missing'] == ['encode'] and 'critical' not in byname['upload']\nprint('ok')",
+      "hint": "Public+authless is clean; data+no-owner is critical; non-critical vulnerability notes encode only."
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+## Cơ sở dữ liệu — bộ nhớ dài hạn
+
+Một server có thể khởi động lại bất cứ lúc nào; bộ nhớ của nó bị xóa sạch. Dữ liệu bền vững sống trong một **cơ sở dữ liệu**. Loại thống trị là **quan hệ (relational)** — dữ liệu trong các **bảng** gồm hàng và cột, liên kết với nhau bằng id:
+
+```text
+users
+id | email           | password_hash
+1  | ada@example.com | $2b$12$KIX...
+
+submissions
+id | user_id | challenge_id | verdict
+7  | 1       | render-a-list | passed
+```
+
+Cột `user_id` đó chính là liên kết: một người dùng, nhiều submission. Bạn truy vấn bằng **SQL**: `SELECT * FROM submissions WHERE user_id = 1;`. Khi Code Journey hiển thị lịch sử submission của bạn, một truy vấn đúng như vậy đã chạy.
+
+## Xác thực so với phân quyền
+
+Hai câu hỏi khác nhau:
+
+- **Authentication (xác thực)** — _bạn là ai?_ (đăng nhập)
+- **Authorization (phân quyền)** — _tài khoản này được làm gì?_ (quyền hạn)
+
+## Đăng nhập thực sự hoạt động thế nào
+
+1. Bạn gửi email + mật khẩu.
+2. Server tra cứu người dùng và **băm (hash)** mật khẩu đã gửi — một phép biến đổi toán học một chiều.
+3. Hash khớp → bạn đã được xác thực. Server cấp một **phiên (session)** (thường là một cookie với một id ngẫu nhiên, không đoán được).
+
+**Mật khẩu không bao giờ được lưu** — chỉ có hash của chúng. Một hash một chiều không thể đảo ngược; nếu cơ sở dữ liệu bị rò rỉ, kẻ tấn công nhận được các hash, không phải mật khẩu. Khi một site gửi email cho bạn mật khẩu thật của bạn dưới dạng văn bản thuần, hãy bỏ chạy.
+
+## Phân quyền mà bạn đã từng trải qua
+
+Code Journey kiểm tra phân quyền trên mọi lần đọc submission: người dùng A xin kết quả của người dùng B nhận được `404`, kể cả với đúng id. Server không hỏi _submission này có tồn tại không_ mà hỏi _submission này có thuộc về người yêu cầu không_ — và nó kiểm tra trên server, nơi câu trả lời không thể bị giả mạo.
+
+## Bạn đã học được gì
+
+- Cơ sở dữ liệu quan hệ: bảng, hàng, liên kết id, truy vấn SQL
+- Authentication (ai) vs authorization (được làm gì)
+- Mật khẩu được băm, không bao giờ lưu; phiên giữ bạn đăng nhập
+- Kiểm tra quyền sở hữu xảy ra phía server — bạn đã từng trải qua điều này với những cú 404
+
+**Tiếp theo:** các site đến được với thế giới như thế nào — DNS, HTTPS, và triển khai.

@@ -1,0 +1,14 @@
+{
+  "title": "Chuỗi phụ thuộc tuần tự",
+  "prompt": "Viết `async function fetchProfile(db)` trong đó `db` cung cấp `getUser(id)`, `getSettings(userId)`, và `getFriends(userId)` — mỗi hàm trả về promise. Tải user với id 7 trước, rồi tải settings và friends SONG SONG bằng id của user. RETURN `{ user, settings, friends }`. Nếu tải user thất bại, RETURN `{ error: \"user-not-found\" }`.",
+  "tests": [
+    {
+      "name": "user trước, rồi settings và friends song song",
+      "hint": "const user = await db.getUser(7); rồi Promise.all([db.getSettings(user.id), db.getFriends(user.id)])."
+    },
+    {
+      "name": "user thất bại thì dừng lại với error object",
+      "hint": "Bọc await getUser trong try/catch và trả về error object; các lời gọi song song không chạy."
+    }
+  ]
+}

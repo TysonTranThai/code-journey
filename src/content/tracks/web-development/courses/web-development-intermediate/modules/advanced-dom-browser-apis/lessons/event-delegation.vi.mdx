@@ -1,0 +1,40 @@
+Hãy tưởng tượng một bảng với 1.000 dòng, mỗi dòng cần một nút xóa. Gắn 1.000
+listener là phí tài nguyên — và mỗi dòng thêm vào sau lại cần listener riêng.
+**Ủy quyền (delegation)** giải quyết cả hai: gắn **một** listener vào tổ tiên
+ổn định và để bubbling đưa sự kiện đến nơi.
+
+## Mẫu thiết kế
+
+```js
+table.addEventListener("click", (event) => {
+  const btn = event.target.closest("button[data-action=delete]");
+  if (!btn) return; // cú click rơi vào chỗ khác của dòng
+  const row = btn.closest("tr");
+  row.remove();
+});
+```
+
+Ba thành phần:
+
+1. Lắng nghe trên container không bao giờ thay đổi.
+2. `event.target.closest(selector)` đi **lên** từ target thật để tìm phần
+   tử bạn quan tâm — trả về `null` khi click không nằm trên nó.
+3. Siêu dữ liệu đi kèm qua thuộc tính `data-*`, đọc bằng
+   `element.dataset`:
+
+```js
+<button data-action="delete" data-id="42">
+  Delete
+</button>
+// btn.dataset.action === "delete", btn.dataset.id === "42"
+```
+
+## Vì sao ủy quyền là lựa chọn mặc định của dân chuyên
+
+- Dòng mới hoạt động với **không một dòng code** thêm — listener đã có sẵn.
+- Một listener thay vì hàng nghìn: ít bộ nhớ hơn, khởi động nhanh hơn.
+- UI dựng từ template hay HTML động không cần đi lại dây nối sau khi render.
+
+Chính mẫu này đứng sau tabs, menu, accordion và mọi bài luyện component bên
+dưới. Khi một thử thách nói "click hoạt động cả với phần tử thêm động", đó là
+lời yêu cầu ủy quyền.

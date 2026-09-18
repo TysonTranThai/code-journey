@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p10-path",
+  "title": "Path arithmetic, executed",
+  "prompt": "1. `static Path buildLogPath(Path base)` — return `base.resolve(\"logs\").resolve(\"app.log\")`.\n2. `static String relativeShape(Path base, Path child)` — return\n`base.relativize(child).toString()`.\n3. `static int nameCount(Path p)` — p.getNameCount().\n4. `static boolean atomicSwap(Path src, Path dst)` — write \"new\" to src, then\n`Files.move(src, dst, REPLACE_EXISTING)`; return true iff dst now contains \"new\"\nand src no longer exists. (Create dst with old content \"old\" first.)",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "resolve joins, relativize inverts",
+      "code": "\njava.nio.file.Path base = java.nio.file.Path.of(\"root\", \"proj\");\ncheckEq(Solution.buildLogPath(base).toString(), \"root/proj/logs/app.log\", \"resolve chains\");\ncheckEq(Solution.relativeShape(base, base.resolve(\"a\").resolve(\"b\")), \"a/b\", \"relativize\");\ncheckEq(Solution.nameCount(java.nio.file.Path.of(\"a\", \"b\", \"c\")), 3, \"three names\");\n",
+      "hint": "Pure path algebra."
+    },
+    {
+      "name": "atomic move replaces wholesale",
+      "code": "\njava.nio.file.Path dir = java.nio.file.Files.createTempDirectory(\"cjadv\");\ncheckTrue(Solution.atomicSwap(dir.resolve(\"s\"), dir.resolve(\"d\")), \"dst has new content, src gone\");\n",
+      "hint": "No half-states observable."
+    }
+  ],
+  "level": "guided"
+}

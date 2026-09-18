@@ -1,0 +1,15 @@
+{
+  "id": "cint-p13-threeval",
+  "title": "Three-Valued APIs",
+  "prompt": "Implement the discriminating API. The boilerplate declares:\n\n```c\n#define LOOKUP_FOUND    0\n#define LOOKUP_ABSENT   1\n#define LOOKUP_ERROR   (-1)\ntypedef struct { long keys[16]; long vals[16]; size_t n; } Table;\nvoid tab_init(Table *t);\nint tab_put(Table *t, long k, long v);       /* 0 ok, -1 full/NULL */\n/* FOUND (fills *out) | ABSENT | ERROR (bad args) */\nint tab_get(const Table *t, long k, long *out);\nint tab_del(Table *t, long k);               /* 1 removed, 0 absent, -1 NULL */\n```\n\nThe tests distinguish all three values — a conflation fails them.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\n#define LOOKUP_FOUND    0\n#define LOOKUP_ABSENT   1\n#define LOOKUP_ERROR   (-1)\ntypedef struct { long keys[16]; long vals[16]; size_t n; } Table;\nvoid tab_init(Table *t);\nint tab_put(Table *t, long k, long v);\nint tab_get(const Table *t, long k, long *out);\nint tab_del(Table *t, long k);\n",
+  "tests": [
+    {
+      "name": "found, absent, error — all distinct",
+      "code": "\nTable t;\ntab_init(&t);\nlong v;\nCHECK_EQ(tab_get(&t, 5, &v), LOOKUP_ABSENT);      /* empty: absent, not error */\nCHECK_EQ(tab_put(&t, 5, 50), 0);\nCHECK_EQ(tab_get(&t, 5, &v), LOOKUP_FOUND);\nCHECK_EQ(v, 50);\nCHECK_EQ(tab_get(&t, 6, &v), LOOKUP_ABSENT);\nCHECK_EQ(tab_get(&t, 5, NULL), LOOKUP_ERROR);     /* bad out: error */\nCHECK_EQ(tab_get(NULL, 5, &v), LOOKUP_ERROR);\nCHECK_EQ(tab_put(NULL, 1, 1), -1);\nCHECK_EQ(tab_del(&t, 5), 1);\nCHECK_EQ(tab_del(&t, 5), 0);\nCHECK_EQ(tab_del(NULL, 5), -1);\n/* fill to capacity (16), then overflow is an ERROR, not silent loss */\nfor (long i = 0; i < 16; i++) CHECK_EQ(tab_put(&t, 100 + i, i), 0);\nCHECK_EQ(tab_put(&t, 999, 1), -1);\n",
+      "hint": "absent and error are different answers to different questions: the key isn't there vs. the call itself is invalid."
+    }
+  ]
+}

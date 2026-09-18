@@ -1,0 +1,10 @@
+{
+  "title": "Chẩn đoán test flaky",
+  "prompt": "Cài `diagnose_flaky(test_record)` — bản ghi có các boolean `uses_time`, `uses_random_unseeded`, `shared_state`, `order_dependent`:\n\n- trả `(verdict, causes)`: `'flaky'` khi có bất kỳ nguyên nhân nào, ngược lại `'sound'`\n- causes là các cách sửa đọc được theo thứ tự cố định: thời gian → `'reads the wall clock: inject a clock'`; ngẫu nhiên → `'unseeded randomness: seed it'`; trạng thái chia sẻ → `'shared state: give each test its own world'`; phụ thuộc thứ tự → `'order-dependent: construct prerequisites in the test'`\n\nPhân loại cơ khí hóa: năm phút đầu của reviewer, dưới dạng một hàm.",
+  "tests": [
+    {
+      "name": "Mọi nguyên nhân được báo, đúng thứ tự",
+      "hint": "Cả bốn nghi phạm được kiểm, theo thứ tự cố định."
+    }
+  ]
+}

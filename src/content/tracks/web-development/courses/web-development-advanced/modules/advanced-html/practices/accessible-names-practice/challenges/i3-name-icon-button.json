@@ -1,0 +1,30 @@
+{
+  "id": "i3-name-icon-button",
+  "title": "Name the Icon Buttons",
+  "prompt": "Build a toolbar with three icon-only buttons — close, search, settings — each named with aria-labelledby pointing at visually hidden text (use the hidden attribute or a class), each <svg> icon marked aria-hidden=\"true\". Add one normal text button labeled Save — which must NOT carry an aria-label (it names itself).",
+  "difficulty": "advanced",
+  "level": "guided",
+  "boilerplate": "<!-- Toolbar -->\n\n",
+  "tests": [
+    {
+      "name": "three icon-only buttons labelled",
+      "code": "const btns = [...code.matchAll(/<button([^>]*)>([\\s\\S]*?)<\\/button>/gi)];\nlet labelled = 0;\nfor (const b of btns) {\n  const m = b[1].match(/aria-labelledby\\s*=\\s*[\"']([^\"']+)[\"']/i);\n  if (m) {\n    labelled++;\n    if (!new RegExp(\"id\\\\s*=\\\\s*[\\\"']\" + m[1] + \"[\\\"']\").test(code)) {\n      throw new Error('aria-labelledby points at missing id \"' + m[1] + '\".');\n    }\n    const vis = b[2].replace(/<[^>]*>/g, \"\").trim();\n    if (vis) {\n      throw new Error(\"An icon button still has visible text — move the label to hidden text.\");\n    }\n  }\n}\nif (labelled < 3) {\n  throw new Error(\"Three icon-only buttons need aria-labelledby (found \" + labelled + \").\");\n}",
+      "hint": "Icon-only means the visible text is empty — the name must come from a hidden element via aria-labelledby."
+    },
+    {
+      "name": "hidden labels carry real words",
+      "code": "const refs = [...code.matchAll(/aria-labelledby\\s*=\\s*[\"']([^\"']+)[\"']/gi)].map((m) => m[1]);\nif (refs.length === 0) {\n  throw new Error(\"No aria-labelledby found.\");\n}\nfor (const ref of refs) {\n  const el = new RegExp(\"id\\\\s*=\\\\s*[\\\"']\" + ref + \"[\\\"'][^>]*>([\\\\s\\\\S]*?)<\", \"i\").exec(code);\n  if (!el || !el[1].replace(/<[^>]*>/g, \"\").trim()) {\n    throw new Error('The label for \"' + ref + '\" is empty — hidden text still needs words.');\n  }\n}",
+      "hint": "Hidden from sight, not from meaning: each referenced element must contain non-empty text."
+    },
+    {
+      "name": "icons silent to assistive tech",
+      "code": "const svgs = [...code.matchAll(/<svg([^>]*)>/gi)];\nif (svgs.length < 3) {\n  throw new Error(\"Give each icon button an <svg> icon (3 expected).\");\n}\nconst unmarked = svgs.filter((s) => !/aria-hidden\\s*=\\s*[\"']true[\"']/i.test(s[1])).length;\nif (unmarked > 0) {\n  throw new Error(unmarked + \" <svg> icon(s) are not aria-hidden — decorative icons must be silent.\");\n}",
+      "hint": "The icon is decoration; the hidden text is the name. aria-hidden=\"true\" keeps the icon out of the name."
+    },
+    {
+      "name": "text button names itself",
+      "code": "const btns = [...code.matchAll(/<button([^>]*)>([\\s\\S]*?)<\\/button>/gi)];\nconst save = btns.find((b) => /save/i.test(b[2].replace(/<[^>]*>/g, \"\")));\nif (!save) {\n  throw new Error(\"Add the 'Save' text button.\");\n}\nif (/aria-label\\s*=\\s*[\"'][^\"']+[\"']/i.test(save[1])) {\n  throw new Error(\"The Save button names itself — remove the redundant aria-label.\");\n}",
+      "hint": "First rule of ARIA: a button with visible text already has a name — adding aria-label only risks a mismatch."
+    }
+  ]
+}

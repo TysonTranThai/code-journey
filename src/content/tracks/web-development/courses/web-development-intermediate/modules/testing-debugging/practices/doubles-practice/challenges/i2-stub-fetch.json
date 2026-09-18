@@ -1,0 +1,20 @@
+{
+  "id": "i2-stub-fetch",
+  "title": "Async Collaborator Stub",
+  "prompt": "Write `makeFetchStub(routes)` — routes maps URL to a response body (object). Returns a fetch-like `async (url) => ({ ok: true, status: 200, json: async () => routes[url] })` for known URLs, and `{ ok: false, status: 404, json: async () => null }` for unknown ones. The stub must record requested URLs in `.requests` (array, in order).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function makeFetchStub(routes) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "serves known routes",
+      "code": "const fn = new Function(code + \"\\nreturn { makeFetchStub };\");\nconst { makeFetchStub } = fn();\n\nconst stub = makeFetchStub({ \"/api/users\": [{ id: 1 }] });\nconst res = await stub(\"/api/users\");\nif (!res.ok || res.status !== 200) throw new Error(\"Known URL resolves ok.\");\nconst body = await res.json();\nif (body[0].id !== 1) throw new Error(\"Body matches the route table.\");\nif (stub.requests[0] !== \"/api/users\") throw new Error(\"Request recorded.\");\n",
+      "hint": "async arrow returning the response object; json is another async arrow closing over the route."
+    },
+    {
+      "name": "404s unknown routes",
+      "code": "const fn = new Function(code + \"\\nreturn { makeFetchStub };\");\nconst { makeFetchStub } = fn();\n\nconst stub = makeFetchStub({});\nconst res = await stub(\"/api/nope\");\nif (res.ok || res.status !== 404) throw new Error(\"Unknown URL => 404.\");\n",
+      "hint": "Same shape, different constants."
+    }
+  ]
+}

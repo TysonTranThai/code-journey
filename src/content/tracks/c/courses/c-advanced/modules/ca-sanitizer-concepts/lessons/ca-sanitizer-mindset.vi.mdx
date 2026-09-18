@@ -1,0 +1,15 @@
+## Trung thực về môi trường trước tiên
+
+Sandbox thực thi của khóa học không có AddressSanitizer, UBSan, TSan, Valgrind, hay gdb. *Kỹ năng* dưới đây được dạy dưới dạng bài lý luận; *công cụ* được mô tả để bạn tự chạy trong môi trường của mình. Cả hai nửa đều là kiến thức chuyên nghiệp.
+
+## Bản đồ công cụ (chạy cục bộ, không phải ở đây)
+
+- **ASan** (biên dịch với `-fsanitize=address`): use-after-free, tràn buffer (heap/stack/global), double free, free không hợp lệ. Chậm hơn ~2 lần; kỹ thuật shadow-memory.
+- **UBSan** (`-fsanitize=undefined`): tràn số có dấu, shift không hợp lệ, truy cập lệch alignment, deref null — mỗi cái bị bắt *tại thời điểm nó thực thi*.
+- **TSan** (`-fsanitize=thread`): data race qua theo dõi happens-before.
+- **LSan** (kèm ASan trên đa số nền tảng): báo cáo rò rỉ lúc thoát.
+- **Valgrind** (thiết bị hóa nhị phân động): lỗi bộ nhớ và rò rỉ không cần biên dịch lại, với độ trễ lớn hơn.
+
+## Vì sao chúng thay đổi cách bạn viết code
+
+Sanitizer biến hủy hoại im lặng thành abort ngay lập tức, có nguồn. Nhóm áp dụng chúng trong CI ngừng gỡ các vụ bí ẩn vì bí ẩn không bao giờ tới production. Các bài lý luận ở bài học sau trao cho bạn bản năng phát hiện sớm tương tự cho môi trường không có công cụ — kể cả môi trường này.

@@ -1,0 +1,15 @@
+{
+  "id": "cint-p5-opaque-counter",
+  "title": "Build an Opaque Handle",
+  "prompt": "Implement an opaque multi-counter. The boilerplate declares:\n\n```c\ntypedef struct MCounter MCounter;\nMCounter *mc_create(void);                 /* NULL on oom */\nint mc_bump(MCounter *m, const char *key, int by); /* 0 ok, -1 args/oom */\nint mc_get(const MCounter *m, const char *key);    /* count, 0 if absent */\nsize_t mc_keys(const MCounter *m);         /* number of distinct keys */\nvoid mc_destroy(MCounter *m);\n```\n\nKeys are short (<= 15 chars). Store them however you like — the tests only\nsee the API. The constructor must leave a valid object for `mc_keys() == 0`\nand `mc_get(...) == 0`; every function must tolerate NULL handles.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\ntypedef struct MCounter MCounter;\nMCounter *mc_create(void);\nint mc_bump(MCounter *m, const char *key, int by);\nint mc_get(const MCounter *m, const char *key);\nsize_t mc_keys(const MCounter *m);\nvoid mc_destroy(MCounter *m);\n",
+  "tests": [
+    {
+      "name": "API discipline",
+      "code": "\nMCounter *m = mc_create();\nCHECK(m != NULL);\nCHECK_EQ(mc_keys(m), 0);\nCHECK_EQ(mc_get(m, \"hits\"), 0);\nCHECK_EQ(mc_bump(m, \"hits\", 1), 0);\nCHECK_EQ(mc_bump(m, \"hits\", 4), 0);\nCHECK_EQ(mc_bump(m, \"miss\", 2), 0);\nCHECK_EQ(mc_get(m, \"hits\"), 5);\nCHECK_EQ(mc_get(m, \"miss\"), 2);\nCHECK_EQ(mc_keys(m), 2);\nCHECK_EQ(mc_bump(NULL, \"x\", 1), -1);\nCHECK_EQ(mc_bump(m, NULL, 1), -1);\nCHECK_EQ(mc_get(NULL, \"hits\"), 0);\nmc_destroy(m);\nmc_destroy(NULL);   /* must be a no-op */\n",
+      "hint": "A small fixed array of {char key[16]; int count;} slots keeps this focused on the API, not storage."
+    }
+  ]
+}

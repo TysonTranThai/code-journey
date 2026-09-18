@@ -1,0 +1,21 @@
+{
+  "id": "javaa-checkpoint-m5-task",
+  "title": "Checkpoint: timed fan-out aggregator",
+  "prompt": "Implement `static List<String> aggregate(int shards)` returning shard reports `\"shard-<i>-ok\"` in shard order where every even shard succeeds and every odd shard throws. Requirements:\n1. Each shard runs on its own VIRTUAL thread (newVirtualThreadPerTaskExecutor), sleeping 10ms of simulated work.\n2. Compose with CompletableFuture.supplyAsync(executor, ...) per shard; failures map to `\"shard-<i>-failed\"` via exceptionally.\n3. The whole pipeline must complete and the list must be in shard order 0..shards-1.\n4. `static String executorChoice()` returns exactly: \"virtual threads per task: blocking work scales, CPU work still capped by cores\".",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "aggregation with failures mapped",
+      "code": "\njava.util.List<String> out = Solution.aggregate(4);\ncheckEq(out, java.util.List.of(\"shard-0-ok\", \"shard-1-failed\", \"shard-2-ok\", \"shard-3-failed\"),\n    \"order preserved, failures mapped\");\n",
+      "hint": "Even shards ok, odd shards failed, order intact."
+    },
+    {
+      "name": "executor philosophy",
+      "code": "\ncheckEq(Solution.executorChoice(),\n  \"virtual threads per task: blocking work scales, CPU work still capped by cores\",\n  \"the tradeoff line\");\n",
+      "hint": "Copy exactly."
+    }
+  ],
+  "level": "real-world"
+}

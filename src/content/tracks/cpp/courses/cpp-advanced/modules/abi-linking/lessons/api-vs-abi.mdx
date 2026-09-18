@@ -1,0 +1,18 @@
+## Two contracts, two audiences
+
+- **API** (application programming interface): the headers — what compilers accept.
+- **ABI** (application binary interface): sizes, layouts, calling conventions, mangled symbol names, which member functions exist *as symbols* — what linkers and already-compiled binaries require.
+
+Adding a parameter changes both. Reordering `private:` members changes only the ABI — and silently corrupts every binary that was compiled against the old layout.
+
+## What the linker actually binds
+
+Each non-inline function and global becomes a **mangled symbol** (`_ZN4demo6Engine4tickEv` encodes namespace/class/name/params). Change a signature and the symbol name changes — old binaries get an unresolved-symbol error at load (visible, at least). Change a class layout with the same signatures and nothing fails to link: calls jump in, offsets land in the wrong places, data corrupts (invisible, worse).
+
+## The One Definition Rule
+
+A function or object with external linkage must have exactly one definition across the whole program; an inline/class-member definition must be **identical** in every TU that includes it. Two TUs including a header compiled with different `-DVERSION` options can quietly violate ODR — the linker picks one, and the other's callers use it. This is why ABI-relevant macros must never differ across a program's TUs.
+
+## Inline is ABI too
+
+Making a previously non-inline member function `inline` changes *which* copies exist; removing `inline` from a header-defined function can break consumers that no longer find the symbol. Header-defined functions are ABI surface — versioned and frozen once shipped.

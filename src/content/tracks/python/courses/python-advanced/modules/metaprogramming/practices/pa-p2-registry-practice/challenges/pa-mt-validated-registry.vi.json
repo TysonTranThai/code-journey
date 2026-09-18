@@ -1,0 +1,14 @@
+{
+  "title": "Registry có kiểm tra hợp lệ",
+  "prompt": "Cài `class Handler` với `__init_subclass__` tự đăng ký subclass và KIỂM TRA ngay khi tạo class:\n\n- subclass phải định nghĩa `scheme` (str khác rỗng) và `handle(value)` — nếu thiếu, raise `TypeError` ngay lúc định nghĩa class\n- `scheme` trùng nhau raise `ValueError` ngay lúc định nghĩa class\n- `Handler.dispatch(scheme, value)` gọi `handle` của handler đúng và trả về kết quả; scheme lạ raise `KeyError`\n- bản thân base class không được đăng ký",
+  "tests": [
+    {
+      "name": "Đăng ký và dispatch",
+      "hint": "Đăng ký diễn ra trong __init_subclass__; dispatch tra theo scheme rồi gọi method của instance."
+    },
+    {
+      "name": "Kiểm tra hợp lệ thất bại nhanh",
+      "hint": "Cả hai phép kiểm tra nằm trong __init_subclass — trước khi thân class kết thúc."
+    }
+  ]
+}

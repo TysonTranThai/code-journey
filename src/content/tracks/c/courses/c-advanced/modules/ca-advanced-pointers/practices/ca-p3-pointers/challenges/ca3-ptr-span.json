@@ -1,0 +1,21 @@
+{
+  "id": "ca3-ptr-span",
+  "title": "Measure the Legal Span",
+  "prompt": "Implement `size_t legal_span(void)`: given the file-scope array `static int arr[6];` (already in your editor), return how many distinct pointer values `arr + k` (k = 0..) are *computable* — including the one-past-the-end value. Then implement `size_t deref_span(void)` returning how many of those are dereferenceable.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstatic int arr[6];\n",
+  "tests": [
+    {
+      "name": "computable includes the end",
+      "code": "CHECK_EQ((int)legal_span(), 7);",
+      "hint": "k ranges 0..6: six element pointers plus the one-past-the-end pointer."
+    },
+    {
+      "name": "dereferenceable excludes it",
+      "code": "CHECK_EQ((int)deref_span(), 6);",
+      "hint": "arr + 6 is computable but never dereferenceable."
+    }
+  ],
+  "level": "independent"
+}

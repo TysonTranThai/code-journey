@@ -1,0 +1,41 @@
+Phép so sánh tạo ra giá trị `boolean`, và boolean kết hợp với nhau bằng
+`&&` (AND), `||` (OR), `!` (NOT):
+
+```java
+int age = 20;
+boolean adult   = age >= 18;          // true
+boolean teen    = age >= 13 && age < 18;  // AND: cả hai vế đúng
+boolean weekend = isSat || isSun;     // OR: một trong hai vế đúng
+boolean invalid = !adult;             // NOT: lật ngược
+```
+
+**`&&` và `||` đoản mạch**: vế phải bị bỏ qua khi vế trái đã quyết định được
+kết quả. Đây không phải chú thích tối ưu hóa — đó là cách bạn viết kiểm tra
+an toàn:
+
+```java
+// && bảo vệ vế phải: nếu s là null, không ai hỏi length()
+if (s != null && s.length() > 0) { ... }
+
+// Đảo ngược nguy hiểm: hỏi length() của null → NullPointerException
+if (s.length() > 0 && s != null) { ... }
+```
+
+Phép bằng có một cái bẫy riêng:
+
+- Primitive so sánh theo giá trị: `x == 5` hoàn toàn đúng.
+- **Object (kể cả String) so sánh bằng `==` là so identity** — "có phải cùng
+  một object", không phải "cùng nội dung". Hai object `String` khác nhau cùng
+  chứa `"yes"` có thể thất bại với `==`. Luôn so *nội dung* bằng `.equals`:
+
+```java
+String a = new String("yes");
+String b = "yes";
+a == b          // false — hai object khác nhau!
+a.equals(b)     // true  — cùng ký tự
+```
+
+Hãy để `.equals` thành phản xạ với String và mọi object khác; và để `==`
+nghĩa là "chỉ dùng cho primitive" trong đầu bạn.
+
+**Tiếp theo:** thực hành — máy tính, bộ chuyển đổi, sổ điểm.

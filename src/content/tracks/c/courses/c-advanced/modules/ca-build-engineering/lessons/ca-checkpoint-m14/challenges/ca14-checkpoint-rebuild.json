@@ -1,0 +1,31 @@
+{
+  "id": "ca14-checkpoint-rebuild",
+  "title": "Checkpoint: Rebuild Engine",
+  "prompt": "Implement three functions:\n1. `int rebuild(long long tgt, const long long *deps, size_t n, int phony, int strict)` — rebuilds if phony; else if strict, any prerequisite *not older* than the target triggers (>=); else only strictly newer (>).\n2. `size_t count_rebuilds(long long tgt, const long long *obj_mtimes, size_t n)` — how many object files (as targets of their own rules) are older than the changed source at tgt... model: count objects whose mtime < tgt (they will rebuild).\n3. `const char *strictness_effect(int strict)` — return \"more rebuilds\" for strict=1, \"fewer rebuilds\" for strict=0.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "engine semantics",
+      "code": "long long d[2] = {100, 105};\nCHECK_EQ(rebuild(102, d, 2, 0, 0), 1);\nCHECK_EQ(rebuild(105, d, 2, 0, 0), 0);\nCHECK_EQ(rebuild(105, d, 2, 0, 1), 1);",
+      "hint": "Strict mode treats equal timestamps as stale (>=); standard mode requires strictly newer."
+    },
+    {
+      "name": "phony overrides",
+      "code": "long long d2[1] = {5};\nCHECK_EQ(rebuild(10, d2, 1, 1, 0), 1);",
+      "hint": "Phony targets rebuild regardless of timestamps."
+    },
+    {
+      "name": "stale object count",
+      "code": "long long o[3] = {90, 105, 110};\nCHECK_EQ((int)count_rebuilds(100, o, 3), 1);",
+      "hint": "Only the object older than the source rebuilds."
+    },
+    {
+      "name": "strictness documented",
+      "code": "CHECK_STR_EQ(strictness_effect(1), \"more rebuilds\");\nCHECK_STR_EQ(strictness_effect(0), \"fewer rebuilds\");",
+      "hint": "The toggle's meaning, as text."
+    }
+  ],
+  "level": "mini-build"
+}

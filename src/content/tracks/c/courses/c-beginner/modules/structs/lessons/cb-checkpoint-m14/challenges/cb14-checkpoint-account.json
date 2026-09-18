@@ -1,0 +1,35 @@
+{
+  "id": "cb14-checkpoint-account",
+  "title": "Account Operations",
+  "prompt": "Given `struct Account { int balance; };` in scope, implement `void deposit(struct Account *a, int amount)` adding amount, `int withdraw(struct Account *a, int amount)` subtracting and returning 1 only if the balance stayed >= 0 (else 0 and no change), and `const struct Account* richest(const struct Account *as, int n)` returning the account with the highest balance.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstruct Account { int balance; };\n",
+  "tests": [
+    {
+      "name": "deposit",
+      "code": "struct Account a = {100};\ndeposit(&a, 50);\nCHECK_EQ(a.balance, 150);",
+      "hint": "Arrow add."
+    },
+    {
+      "name": "withdraw ok",
+      "code": "struct Account a = {100};\nCHECK_EQ(withdraw(&a, 30), 1);\nCHECK_EQ(a.balance, 70);",
+      "hint": "Subtract and report success."
+    },
+    {
+      "name": "withdraw rejected",
+      "code": "struct Account a = {10};\nCHECK_EQ(withdraw(&a, 30), 0);\nCHECK_EQ(a.balance, 10);",
+      "hint": "Refuse overdrafts; balance unchanged."
+    },
+    {
+      "name": "richest",
+      "code": "struct Account as[] = {{100}, {300}, {200}};\nCHECK_EQ(richest(as, 3), &as[1]);",
+      "hint": "Max scan returning an address."
+    },
+    {
+      "name": "richest tie first",
+      "code": "struct Account as[] = {{300}, {300}};\nCHECK_EQ(richest(as, 2), &as[0]);",
+      "hint": "Strictly greater to replace."
+    }
+  ]
+}

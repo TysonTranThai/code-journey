@@ -1,0 +1,14 @@
+Socket có *half-close*: `socket.shutdownOutput()` gửi EOF tới peer trong khi
+chiều đọc của bạn vẫn mở. Đó là cách chính xác để nói "yêu cầu của tôi xong"
+— một command client một-lần ghi payload, half-close, đọc toàn bộ phản hồi
+cho tới EOF. `close()` đóng CẢ HAI chiều và trả descriptor.
+
+Phía server là `ServerSocket.accept()` — mỗi kết nối được nhận cho ra một
+`Socket` riêng, và mô hình kinh điển là một thread (hoặc virtual thread) mỗi
+kết nối. Với virtual thread (Module 5), thread-per-kết nối trở lại đúng mực:
+10k kết nối đồng thời với code kiểu blocking.
+
+Vệ sinh accept/close: đóng socket SERVER trong finally (ngừng nhận kết nối
+mới), đóng từng socket client trong finally (giải phóng descriptor), và không
+bao giờ dùng chung một đối tượng `Socket` giữa các thread không có đồng bộ —
+các stream không thread-safe.

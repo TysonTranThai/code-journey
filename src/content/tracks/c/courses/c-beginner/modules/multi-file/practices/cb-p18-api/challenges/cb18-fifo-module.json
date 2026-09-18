@@ -1,0 +1,31 @@
+{
+  "id": "cb18-fifo-module",
+  "title": "FIFO Module",
+  "prompt": "Build a bounded queue: private storage, public `void q_clear(void)`, `int q_push(int v)` (0 when full, capacity 8), `int q_pop(int *out)` (0 when empty or out==NULL, else 1 and the OLDEST value).",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n",
+  "tests": [
+    {
+      "name": "fifo order",
+      "code": "q_clear();\nq_push(1); q_push(2); q_push(3);\nint v;\nq_pop(&v);\nCHECK_EQ(v, 1);\nq_pop(&v);\nCHECK_EQ(v, 2);",
+      "hint": "First in, first out."
+    },
+    {
+      "name": "full rejected",
+      "code": "q_clear();\nfor (int i = 0; i < 8; i++) q_push(i);\nCHECK_EQ(q_push(99), 0);",
+      "hint": "Capacity 8: the 9th fails."
+    },
+    {
+      "name": "empty rejected",
+      "code": "q_clear();\nint v;\nCHECK_EQ(q_pop(&v), 0);",
+      "hint": "Nothing to pop."
+    },
+    {
+      "name": "null out",
+      "code": "q_clear();\nq_push(4);\nCHECK_EQ(q_pop(NULL), 0);",
+      "hint": "NULL out must be rejected safely."
+    }
+  ],
+  "level": "independent"
+}

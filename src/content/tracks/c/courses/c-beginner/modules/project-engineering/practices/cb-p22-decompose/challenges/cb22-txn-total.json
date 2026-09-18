@@ -1,0 +1,26 @@
+{
+  "id": "cb22-txn-total",
+  "title": "Category Totals",
+  "prompt": "Given the Txn model in scope, implement `int total_by_cat(const Txn *txs, int n, int cat)` summing cents of transactions whose category equals cat.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\ntypedef struct { int id; int cents; int cat; } Txn;\n",
+  "tests": [
+    {
+      "name": "filters",
+      "code": "Txn t[] = {{1, 500, 1}, {2, 200, 2}, {3, 300, 1}};\nCHECK_EQ(total_by_cat(t, 3, 1), 800);",
+      "hint": "500 + 300."
+    },
+    {
+      "name": "none",
+      "code": "Txn t[] = {{1, 500, 1}};\nCHECK_EQ(total_by_cat(t, 1, 9), 0);",
+      "hint": "Unknown category: 0."
+    },
+    {
+      "name": "empty",
+      "code": "Txn t[1];\nCHECK_EQ(total_by_cat(t, 0, 1), 0);",
+      "hint": "n=0: 0."
+    }
+  ],
+  "level": "guided"
+}

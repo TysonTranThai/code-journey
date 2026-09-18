@@ -1,0 +1,26 @@
+{
+  "id": "pi9-ti-fetch",
+  "title": "Fetch with an Injected Transport",
+  "prompt": "Implement get_status(base_url, path, transport=None) that composes url = base_url + path, calls transport(url) (default transport raises RuntimeError('no network in sandbox')) expecting an object with attributes .status and .read(), and returns (status, parsed-json-body).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import json\n\ndef get_status(base_url, path, transport=None):\n    pass\n",
+  "tests": [
+    {
+      "name": "uses the injected transport",
+      "code": "class R:\n    status = 200\n    def read(self):\n        return b'{\"ok\": 1}'\nstatus, body = get_status('http://api', '/x', transport=lambda u: R())\nassert status == 200 and body == {'ok': 1}",
+      "hint": "Call transport(url); parse read() bytes."
+    },
+    {
+      "name": "default transport is explicit about no network",
+      "code": "try:\n    get_status('http://api', '/x')\n    failed = False\nexcept RuntimeError as e:\n    failed = 'no network' in str(e)\nassert failed",
+      "hint": "None transport → RuntimeError('no network in sandbox')."
+    },
+    {
+      "name": "url composition",
+      "code": "seen = []\nclass R:\n    status = 201\n    def read(self):\n        return b'{}'\ndef t(u):\n    seen.append(u)\n    return R()\nget_status('http://api', '/items/7', transport=t)\nassert seen == ['http://api/items/7']",
+      "hint": "Concatenate base_url and path exactly."
+    }
+  ],
+  "level": "independent"
+}

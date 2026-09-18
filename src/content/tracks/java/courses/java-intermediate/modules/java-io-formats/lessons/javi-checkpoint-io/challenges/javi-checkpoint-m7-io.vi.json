@@ -1,0 +1,22 @@
+{
+  "title": "Chuẩn hóa payload CSV",
+  "prompt": "Xây `Solution`:\n- `static List<String> parseRow(String line)` — bộ quét CSV có ngoặc kép\n  từ phần luyện (tái sử dụng bản của bạn).\n- `record Record(String name, int qty)` trong `Solution`.\n- `static List<Record> normalize(List<String> rows, String header)`:\n  parse từng row bằng bộ quét; BỎ qua row lỗi khi parse cột qty (index 1)\n  thành số; row header (khớp `header` chính xác) cũng bị bỏ. Trả các\n  record theo thứ tự.\n\nTrường biên: field có thể chứa dấu phẩy trong ngoặc; `qty` có thể có\nkhoảng trắng hai bên (trim trước khi parse).",
+  "tests": [
+    {
+      "name": "Payload sạch",
+      "hint": "Header bị bỏ, hai row dữ liệu được parse."
+    },
+    {
+      "name": "Dấu phẩy trong ngoặc sống sót",
+      "hint": "Bộ quét giữ 'pen, blue' làm một field."
+    },
+    {
+      "name": "qty lỗi bị bỏ",
+      "hint": "Row qty không phải số bị bỏ qua, không fatal."
+    },
+    {
+      "name": "qty có khoảng trắng",
+      "hint": "Trim trước Integer.parseInt."
+    }
+  ]
+}

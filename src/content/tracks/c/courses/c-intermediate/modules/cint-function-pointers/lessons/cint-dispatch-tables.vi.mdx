@@ -1,0 +1,65 @@
+## Dispatch theo bảng
+
+Một chuỗi `strcmp` là một bảng dispatch mà compiler không nhìn thấy. Biến nó
+thành dữ liệu để nó trở nên dễ kiểm tra, mở rộng, và kiểm thử:
+
+```c
+typedef struct { const char *name; int (*fn)(int, int); } Command;
+
+static int cmd_add(int a, int b) { return a + b; }
+static int cmd_mul(int a, int b) { return a * b; }
+
+static const Command TABLE[] = {
+    { "add", cmd_add },
+    { "mul", cmd_mul },
+};
+
+int dispatch(const char *name, int a, int b) {
+    for (size_t i = 0; i < sizeof TABLE / sizeof TABLE[0]; i++)
+        if (strcmp(TABLE[i].name, name) == 0) return TABLE[i].fn(a, b);
+    return INT_MAX;   /* giá trị "lệnh lạ" */
+}
+```
+
+Thêm một lệnh là thêm một dòng bảng — không có nhánh mới để gãy. Tên lạ là
+quyết định chính sách hiện rõ ở một chỗ.
+
+## Closure, kiểu C: con trỏ ngữ cảnh
+
+Callback của JavaScript mang theo môi trường. Callback của C mang một `void *ctx`
+mà caller điền:
+
+```c
+/* gọi visit(i, ctx) cho mỗi chỉ số i trong [0, n) */
+void for_each(size_t n, void (*visit)(size_t, void *), void *ctx);
+
+/* "closure" của caller */
+struct SumCtx { long long total; };
+static void add_index(size_t i, void *c) {
+    struct SumCtx *s = c;
+    s->total += (long long)i;
+}
+```
+
+Mẫu: caller sở hữu struct ngữ cảnh, truyền địa chỉ, callback cast `void *`
+về lại. Mọi API callback trong C hoạt động kiểu này — qsort thiếu tham số ngữ
+cảnh (một lời chỉ trích nổi tiếng; `qsort_r` tồn tại ở POSIX, không phải ISO C),
+nên khi viết ISO C ta dùng static cấp module hoặc biến toàn cục thay thế.
+
+## Mảng con trỏ hàm
+
+Khi lệnh là các số nguyên dày, bỏ qua việc tìm kiếm:
+
+```c
+static int (*OPS[4])(int, int) = { op_nop, op_add, op_sub, op_mul };
+int run(int code, int a, int b) {
+    return (code >= 0 && code < 4) ? OPS[code](a, b) : -1;
+}
+```
+
+## Kiểm tra hiểu biết
+
+- Vì sao bảng dễ mở rộng hơn switch? (Một dòng là dữ liệu; một nhánh switch là
+  logic nằm giữa hàm.)
+- `void *ctx` thay thế gì từ ngôn ngữ khác? (Closure capture — môi trường đi
+  cùng callback.)

@@ -1,0 +1,20 @@
+{
+  "id": "i2-shape-guard",
+  "title": "Shape Checker",
+  "prompt": "Write `hasShape(obj, spec)` — `spec` maps field names to expected typeof strings (`\"string\"`, `\"number\"`, `\"boolean\"`). RETURN true only when `obj` is a non-null object and every spec field exists with the exact typeof. Extra fields on `obj` are allowed (structural typing).",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function hasShape(obj, spec) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "accepts objects matching the spec",
+      "code": "const fn = new Function(code + \"\\nreturn { hasShape };\");\nconst { hasShape } = fn();\nconst spec = { id: \"string\", qty: \"number\" };\nif (hasShape({ id: \"a\", qty: 2 }, spec) !== true) throw new Error(\"Exact match accepted.\");\nif (hasShape({ id: \"a\", qty: 2, extra: true }, spec) !== true) throw new Error(\"Structural typing: extra fields allowed.\");",
+      "hint": "Every structural check passes with extra properties — that IS structural typing."
+    },
+    {
+      "name": "rejects wrong types and missing fields",
+      "code": "const fn = new Function(code + \"\\nreturn { hasShape };\");\nconst { hasShape } = fn();\nconst spec = { id: \"string\", qty: \"number\" };\nif (hasShape({ id: 7, qty: 2 }, spec) !== false) throw new Error(\"Wrong typeof fails.\");\nif (hasShape({ id: \"a\" }, spec) !== false) throw new Error(\"Missing fields fail.\");\nif (hasShape(null, spec) !== false) throw new Error(\"null is not an object here.\");\nif (hasShape(\"nope\", spec) !== false) throw new Error(\"Non-objects fail.\");",
+      "hint": "Guard typeof obj === 'object' && obj !== null first, then every [k, t] of Object.entries(spec)."
+    }
+  ]
+}

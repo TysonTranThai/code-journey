@@ -1,0 +1,24 @@
+Three questions decide when an object can die: *who can reach it?* (the
+collector starts from GC roots — stacks, statics, live threads), *how urgently
+might it be needed?* (the reachability lattice), and *when will it be
+collected?* (a policy question, never a guarantee).
+
+```java
+Object strong  = new Object();               // reachable — lives
+WeakReference<Object> weak = new WeakReference<>(new Object());
+System.gc();                                 // weak target: unreachable → gone
+weak.get()                                   // now null (usually immediately;
+                                             // soft refs get breathing room first)
+```
+
+The lattice: **strong** (an ordinary reference — never collected while
+reachable) → **soft** (collected only under memory *pressure*; good for
+caches that may survive) → **weak** (collected at the *next* GC; good for
+metadata and canonical maps) → **phantom** (enqueues cleanup after death;
+replacement for finalization).
+
+Two disciplines follow. First: `System.gc()` is a *hint* — tests and programs
+must be written so that correctness never depends on a collection *happening*,
+only on what collection means when it does. Second: value caches belong in
+`WeakHashMap`/weak keys precisely because keys reachable nowhere else should
+not pin their values.

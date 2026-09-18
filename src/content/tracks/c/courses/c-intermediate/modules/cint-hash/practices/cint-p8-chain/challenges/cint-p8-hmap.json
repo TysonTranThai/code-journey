@@ -1,0 +1,20 @@
+{
+  "id": "cint-p8-hmap",
+  "title": "The Chaining Map",
+  "prompt": "Implement a string-keyed map with chaining. The boilerplate declares:\n\n```c\n#define HMAP_BUCKETS 8\ntypedef struct HNode {\n    const char   *key;      /* borrowed */\n    int           value;\n    struct HNode *next;\n} HNode;\ntypedef struct { HNode *buckets[HMAP_BUCKETS]; size_t count; } HMap;\nvoid hmap_init(HMap *m);\n/* 0 inserted, 1 updated, -1 bad args. key is borrowed. */\nint hmap_put(HMap *m, const char *key, int value);\nint hmap_get(const HMap *m, const char *key, int *out); /* 0 found, -1 absent */\nint hmap_del(HMap *m, const char *key);                 /* 1 removed, 0 absent */\nsize_t hmap_size(const HMap *m);\n/* longest chain length (collision health metric) */\nsize_t hmap_max_chain(const HMap *m);\nvoid hmap_destroy(HMap *m);\n```\n\nHash: FNV-1a over the key's bytes, mod buckets.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\n#define HMAP_BUCKETS 8\ntypedef struct HNode {\n    const char   *key;\n    int           value;\n    struct HNode *next;\n} HNode;\ntypedef struct { HNode *buckets[HMAP_BUCKETS]; size_t count; } HMap;\nvoid hmap_init(HMap *m);\nint hmap_put(HMap *m, const char *key, int value);\nint hmap_get(const HMap *m, const char *key, int *out);\nint hmap_del(HMap *m, const char *key);\nsize_t hmap_size(const HMap *m);\nsize_t hmap_max_chain(const HMap *m);\nvoid hmap_destroy(HMap *m);\n",
+  "tests": [
+    {
+      "name": "map lifecycle",
+      "code": "\nHMap m;\nhmap_init(&m);\nint v;\nCHECK_EQ(hmap_size(&m), 0);\nCHECK_EQ(hmap_get(&m, \"a\", &v), -1);\nCHECK_EQ(hmap_put(&m, \"alpha\", 1), 0);\nCHECK_EQ(hmap_put(&m, \"bravo\", 2), 0);\nCHECK_EQ(hmap_put(&m, \"alpha\", 11), 1);      /* update */\nCHECK_EQ(hmap_size(&m), 2);\nCHECK_EQ(hmap_get(&m, \"alpha\", &v), 0); CHECK_EQ(v, 11);\nCHECK_EQ(hmap_get(&m, \"bravo\", &v), 0); CHECK_EQ(v, 2);\nCHECK_EQ(hmap_del(&m, \"alpha\"), 1);\nCHECK_EQ(hmap_del(&m, \"alpha\"), 0);\nCHECK_EQ(hmap_get(&m, \"alpha\", &v), -1);\nCHECK_EQ(hmap_get(&m, \"bravo\", &v), 0);      /* other keys intact */\nCHECK_EQ(hmap_put(NULL, \"x\", 1), -1);\nCHECK_EQ(hmap_put(&m, NULL, 1), -1);\nhmap_destroy(&m);\n",
+      "hint": "FNV-1a: h = 2166136261u; per byte: h ^= byte, h *= 16777619u. Put walks its chain for the key before pushing."
+    },
+    {
+      "name": "collisions are visible",
+      "code": "\nHMap m;\nhmap_init(&m);\n/* keys must LIVE for the whole test: the map borrows them, so one\n   reused stack buffer would alias every entry (the lifetime rule). */\nchar keys[12][8];\nfor (int i = 0; i < 12; i++) {\n    snprintf(keys[i], sizeof keys[i], \"k%d\", i);\n    CHECK_EQ(hmap_put(&m, keys[i], i), 0);\n}\nCHECK_EQ(hmap_size(&m), 12);\nCHECK(hmap_max_chain(&m) >= 2);              /* pigeonhole: 12 into 8 */\nCHECK(hmap_max_chain(&m) <= 12);\n/* every key still findable */\nfor (int i = 0; i < 12; i++) {\n    int v;\n    CHECK_EQ(hmap_get(&m, keys[i], &v), 0);\n    CHECK_EQ(v, i);\n}\nhmap_destroy(&m);\n",
+      "hint": "12 keys into 8 buckets: pigeonhole forces a chain of 2+. max_chain just walks and counts. Keys live in a 2D array — the map borrows them."
+    }
+  ]
+}

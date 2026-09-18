@@ -1,0 +1,38 @@
+Đôi khi một kiểu cần cách hiện thực khác với công thức chung.
+**Specialization** cung cấp điều đó — chọn cho từng kiểu, giữ bản chung
+ở nơi khác.
+
+```cpp
+template <typename T>
+struct Serializer {
+    static std::string to(const T& v) { return std::to_string(v); }
+};
+
+// specialization toàn phần cho std::string
+template <>
+struct Serializer<std::string> {
+    static std::string to(const std::string& v) { return v; }
+};
+
+// specialization riêng phần cho mọi std::vector<T>
+template <typename T>
+struct Serializer<std::vector<T>> {
+    static std::string to(const std::vector<T>& v) {
+        std::string out = "[";
+        for (std::size_t i = 0; i < v.size(); ++i) {
+            if (i) out += ",";
+            out += Serializer<T>::to(v[i]);   // đệ quy qua bản chung
+        }
+        return out + "]";
+    }
+};
+```
+
+Thứ tự ưu tiên của compiler: specialization toàn phần thắng riêng phần,
+riêng phần thắng template gốc. Trường hợp vector ở trên đệ quy: một
+`std::vector<int>` dùng bản riêng phần, phần tử của nó dùng bản gốc, và
+vector lồng nhau tiếp tục đệ quy — cơ chế chung tự kết hợp với nhau.
+
+Dùng tiết chế: specialization là cái móc cho *cách hiện thực*, không phải
+để thay đổi hành vi công khai. Nếu ngữ nghĩa của kiểu được chuyên biệt hóa
+khác hẳn, một overload thường hoặc hàm đặt tên khác thường rõ ràng hơn.

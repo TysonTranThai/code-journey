@@ -1,0 +1,28 @@
+## Filter with Where
+
+```csharp
+var nums = new List<int> { 1, 2, 3, 4, 5, 6 };
+var evens = nums.Where(n => n % 2 == 0);   // 2, 4, 6
+```
+
+`Where` takes a **predicate** — a function from element to bool — and yields elements where it returns true. The source is unchanged; the result is a *query* over it.
+
+## Project with Select
+
+```csharp
+var names = new[] { "an", "binh" };
+var upper = names.Select(s => s.ToUpperInvariant());   // "AN", "BINH"
+var lengths = names.Select(s => s.Length);             // 2, 4
+```
+
+`Select` transforms each element into something else — same count in, same count out, new shape out. Together they compose:
+
+```csharp
+var longUpper = names.Where(s => s.Length > 2).Select(s => s.ToUpperInvariant());
+```
+
+Read the chain left to right: filter first, then transform. Chaining is the everyday LINQ style; each stage's output is the next stage's input.
+
+## What LINQ actually is
+
+No magic: `Where`/`Select` are ordinary extension methods on `IEnumerable<T>` from `System.Linq`. The lambda you pass is a delegate that runs per element. Deferred execution is the one surprise — covered two lessons ahead.

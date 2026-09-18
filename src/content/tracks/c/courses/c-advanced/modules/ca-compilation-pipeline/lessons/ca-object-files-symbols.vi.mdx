@@ -1,0 +1,19 @@
+## Bên trong một object file
+
+Một .o chứa các section: `.text` (code), `.data` (global có khởi tạo), `.bss` (global khởi tạo 0, không chiếm chỗ tới lúc load), cộng bảng ký hiệu. `nm` in ký hiệu với chữ loại: T (định nghĩa trong .text), U (chưa định nghĩa — linker phải tìm), D/B (data/bss), t (static — chỉ trong file).
+
+```c
+int counter = 5;          /* .data, symbol D */
+static int hidden = 9;    /* vẫn .data nhưng symbol d: không export */
+int bump(void);           /* chưa định nghĩa: caller phát ra U */
+```
+
+## Archive là object có mục lục
+
+`ar rcs libmath.a add.o mul.o` gói các object; `gcc main.c -L. -lmath` liên kết với nó. Thành viên archive chỉ được kéo vào nếu nó định nghĩa một ký hiệu đang còn undefined — ngữ nghĩa pull-in giải thích cả việc thứ tự liên kết quan trọng lẫn thành viên không dùng tốn đúng 0.
+
+## Ba lỗi liên kết kinh điển
+
+- **undefined reference**: bạn dùng, không ai định nghĩa (hoặc archive định nghĩa nó không được liên kết).
+- **multiple definition**: hai object export cùng ký hiệu external.
+- **lệch bố cục**: không lỗi nào cả — lệch ABI liên kết ngon lành và vỡ lúc chạy, vì vậy kỷ luật header không phải thủ tục hành chính.

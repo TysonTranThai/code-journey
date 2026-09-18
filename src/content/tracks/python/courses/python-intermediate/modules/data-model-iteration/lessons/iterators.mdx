@@ -1,0 +1,39 @@
+`for x in thing` is not magic. Python asks `thing` for an **iterator**
+(`iter(thing)`), then calls `next()` on it repeatedly until `StopIteration`:
+
+```python
+nums = [10, 20]
+it = iter(nums)      # an iterator object
+next(it)             # 10
+next(it)             # 20
+next(it)             # raises StopIteration — the for-loop's exit signal
+```
+
+Any object with `__iter__` returning an iterator is **iterable**; an
+iterator carries `__next__`. Lists, dicts, files, ranges — all just implement
+this one protocol. That's why `for` works identically over all of them.
+
+## Your own iterator
+
+```python
+class Countdown:
+    def __init__(self, start):
+        self.n = start
+
+    def __iter__(self):
+        return self            # the object IS its own iterator
+
+    def __next__(self):
+        if self.n <= 0:
+            raise StopIteration
+        self.n -= 1
+        return self.n + 1
+
+for n in Countdown(3):
+    print(n)                   # 3, 2, 1
+```
+
+A subtlety worth knowing: an iterator is **exhausted after one pass** — a
+second `for` over the same iterator sees nothing. Iterables (like lists)
+produce a fresh iterator each time; that's why you can loop over a list twice
+but not over a generator twice.

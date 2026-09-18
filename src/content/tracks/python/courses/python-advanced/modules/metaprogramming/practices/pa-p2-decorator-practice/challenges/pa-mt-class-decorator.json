@@ -1,0 +1,21 @@
+{
+  "id": "pa-mt-class-decorator",
+  "title": "Class decorator: auto-properties",
+  "prompt": "Implement `@dataclassish` — a class decorator that, for every attribute annotated in the class body (use `__annotations__`), synthesizes:\n\n- an `__init__` accepting exactly those fields as keyword-or-positional args in declaration order, assigning each\n- a `__repr__` as `Name(field=repr, ...)` in declaration order\n- an `__eq__` comparing type and all field values (False for other types)\n\nThe class may define its own `__init__` — in that case LEAVE it alone and only add repr/eq if missing.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "def dataclassish(cls):\n    # TODO\n    return cls\n\n@dataclassish\nclass Point:\n    x: int\n    y: int\n\n@dataclassish\nclass Named:\n    name: str\n\n    def __init__(self, name):\n        self.name = 'Dr ' + name",
+  "tests": [
+    {
+      "name": "synthesizes init and repr",
+      "code": "p = Point(1, y=2)\nassert (p.x, p.y) == (1, 2)\nassert repr(p) == 'Point(x=1, y=2)', f'repr: {p!r}'\nassert Point(1, 2) == Point(1, 2)\nassert Point(1, 2) != Point(2, 1)\nassert (Point(1, 2) == 'x') is False\nprint('ok')",
+      "hint": "Read cls.__annotations__ keys in order; build __init__ via a normal function that assigns each field."
+    },
+    {
+      "name": "respects a hand-written __init__",
+      "code": "n = Named('Alice')\nassert n.name == 'Dr Alice', 'user __init__ must win'\nprint('ok')",
+      "hint": "Check '__init__' in vars(cls) before synthesizing."
+    }
+  ],
+  "level": "guided"
+}

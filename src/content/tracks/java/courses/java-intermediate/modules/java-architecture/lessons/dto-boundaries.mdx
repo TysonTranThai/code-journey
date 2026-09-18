@@ -1,0 +1,27 @@
+## DTOs vs domain models
+
+A **domain model** carries business behavior; a **DTO** (Data Transfer
+Object) is a plain data shuttle between layers:
+
+```java
+// domain — knows the rules
+public record Account(String id, int balanceCents) {
+    public Account withdraw(int amount) {
+        if (amount > balanceCents) throw new InsufficientFundsException();
+        return new Account(id, balanceCents - amount);
+    }
+}
+
+// DTO — crosses the layer boundary, no behavior
+public record AccountView(String id, String balance) {}
+```
+
+Rules of thumb:
+- internal layers pass domain objects; boundaries expose DTOs
+- the mapping function is *explicit* (`toView(Account)`) — never expose
+  mutable domain internals by accident
+- DTO fields are presentation-shaped (`"1,234.00"`), domain fields are
+  computation-shaped (`int cents`)
+
+Small apps can skip DTOs; the discipline matters when the API shape and
+the internal model want to evolve at different speeds.

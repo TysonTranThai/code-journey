@@ -1,0 +1,32 @@
+## The hardened set
+
+| risky | hardened | why |
+|-------|----------|-----|
+| `strcpy(dst, src)` | `snprintf(dst, dstsize, "%s", src)` | truncates at dstsize, always NUL-terminates, returns the would-be length so you can detect loss |
+| `strcat(a, b)` | `strncat` with computed room, or track length yourself | classic `strncat` off-by-one: its `n` is *bytes to copy*, not total size |
+| `sprintf(buf, ...)` | `snprintf` | sprintf has no bound at all |
+| `atoi(s)` | `strtol(s, &end, 10)` + errno/range checks | atoi has no error report; `strtol` reports overflow via ERANGE |
+| `gets` | never; removed from the language (C11) | the historic exhibits-A; `fgets(buf, size, stdin)` instead |
+
+`snprintf`'s return value is the security-relevant part: it returns the length the string *wanted*. If it is >= dstsize, output was truncated — treat that as an error, not a shrug:
+
+```c
+char buf[16];
+int need = snprintf(buf, sizeof buf, "%s", user);
+if (need < 0 || (size_t)need >= sizeof buf) { /* refuse */ }
+```
+
+## Hardening flags (compiler-specific, labeled)
+
+GCC/Clang offer defense-in-depth flags: `-fstack-protector-strong` (canary on arrays), `-D_FORTIFY_SOURCE=2` (libc checks when sizes are known), `-Wformat-security` (warn on non-literal formats), `-fPIE`/ASLR (address randomization). None fix a broken program — they convert *some* exploits into loud crashes. The flags are GCC/Clang-specific engineering practice, not ISO C.
+
+## Verification without exploits
+
+Defensive testing asks one question per hazard: *does the guard fire?*
+
+- Overflow guard: feed one byte past the boundary, expect the refusal path (not a crash — a refusal).
+- Truncation guard: expect the `need >= sizeof buf` branch to be taken and handled.
+- TOCTOU: structure review — is there any window between access-check and use? If the code checks `access()` then `open()`s, the answer is yes, and the fix is the fd-based pattern.
+- Double-free: free, null, free again — the second call must be a harmless no-op.
+
+An exploit proves an attacker can win; a test proves the guard fires. We write the second thing only.

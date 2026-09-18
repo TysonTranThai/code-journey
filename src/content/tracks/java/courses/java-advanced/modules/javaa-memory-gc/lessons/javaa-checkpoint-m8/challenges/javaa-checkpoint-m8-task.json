@@ -1,0 +1,31 @@
+{
+  "id": "javaa-checkpoint-m8-task",
+  "title": "Checkpoint: the bounded TTL cache",
+  "prompt": "Inside Solution, build `public static class Cache` and `static class CacheKey`:\n1. Backing store: `WeakHashMap<CacheKey, Line>` where `static class Line` carries\n`String value` and `long expiry` (System.nanoTime() + ttlNanos at put time).\n2. `void put(CacheKey k, String v, long ttlMillis)` and `String get(CacheKey k)` —\nget returns null for missing keys AND for expired lines (expired lines are removed).\n3. `int size()` — count of live (present, unexpired) entries; expires lazily on read.\n4. `void evictOver(int max)` — while size() > max, remove the entry with the EARLIEST\nexpiry (single pass over the entries is fine).\n5. `static String policyOf(Cache.class)`-style reflection is NOT needed here — instead\nadd `static String describe()` returning exactly:\n\"time expires staleness; size bounds memory; weak keys release the dead\".",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "ttl expires",
+      "code": "\nSolution.Cache c = new Solution.Cache();\nSolution.CacheKey k = new Solution.CacheKey(\"k\");\nc.put(k, \"v\", 0);   // expires immediately\ncheckEq(c.get(k), null, \"expired line is gone\");\ncheckEq(c.size(), 0, \"size reflects expiry\");\n",
+      "hint": "Time expiry on read."
+    },
+    {
+      "name": "live entries survive",
+      "code": "\nSolution.Cache c = new Solution.Cache();\nSolution.CacheKey k = new Solution.CacheKey(\"k\");\nc.put(k, \"v\", 60_000);\ncheckEq(c.get(k), \"v\", \"fresh within ttl\");\ncheckEq(c.size(), 1, \"one live entry\");\n",
+      "hint": "Unexpired lines serve."
+    },
+    {
+      "name": "size eviction removes earliest expiry",
+      "code": "\nSolution.Cache c = new Solution.Cache();\nSolution.CacheKey a = new Solution.CacheKey(\"a\");\nSolution.CacheKey b = new Solution.CacheKey(\"b\");\nSolution.CacheKey d = new Solution.CacheKey(\"d\");\nc.put(a, \"va\", 1_000);    // earliest expiry\nc.put(b, \"vb\", 2_000);\nc.put(d, \"vd\", 3_000);\nc.evictOver(2);\ncheckTrue(c.get(a) == null, \"earliest-expiry evicted\");\ncheckEq(c.get(b), \"vb\", \"later survives\");\ncheckEq(c.get(d), \"vd\", \"latest survives\");\n",
+      "hint": "Eviction by policy, not accident."
+    },
+    {
+      "name": "philosophy line",
+      "code": "\ncheckEq(Solution.Cache.describe(),\n  \"time expires staleness; size bounds memory; weak keys release the dead\",\n  \"the three mechanisms\");\n",
+      "hint": "Say what each mechanism buys."
+    }
+  ],
+  "level": "real-world"
+}

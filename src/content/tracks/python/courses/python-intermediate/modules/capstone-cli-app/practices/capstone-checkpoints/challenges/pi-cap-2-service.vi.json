@@ -1,0 +1,26 @@
+{
+  "title": "Cột mốc 2: Service và Lỗi",
+  "prompt": "Dựng ranh giới kiểm tra có kiểu: ValidationError(TaskError) và các hàm service add_task(repo, title: str) -> int (strip tiêu đề; rỗng/chỉ-whitespace hoặc không phải str raise ValidationError; rồi ủy quyền cho repo.add) và complete_task(repo, task_id: int) -> bool (không phải int raise ValidationError; id không tồn tại raise NotFoundError(TaskError)). Annotation phải đọc được qua typing.get_type_hints.",
+  "tests": [
+    {
+      "name": "Đường hợp lệ ủy quyền",
+      "hint": "Tiêu đề hợp lệ đi thẳng xuống repo."
+    },
+    {
+      "name": "Tiêu đề trắng raise ValidationError",
+      "hint": "Rỗng, whitespace, không-phải-str → ValidationError trước khi chạm repo."
+    },
+    {
+      "name": "Tiêu đề đã strip được truyền qua",
+      "hint": "Strip, rồi ủy quyền."
+    },
+    {
+      "name": "complete kiểm tra và dịch",
+      "hint": "Không-phải-int → ValidationError; repo False → NotFoundError."
+    },
+    {
+      "name": "Annotation hiện diện",
+      "hint": "Chú thích title: str, task_id: int, và cả hai kiểu trả về."
+    }
+  ]
+}

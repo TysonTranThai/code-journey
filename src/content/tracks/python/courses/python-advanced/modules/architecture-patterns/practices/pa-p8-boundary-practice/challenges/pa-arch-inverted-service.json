@@ -1,0 +1,21 @@
+{
+  "id": "pa-arch-inverted-service",
+  "title": "The service owns the port",
+  "prompt": "Implement `PasswordResetService(notifier)`:\n\n- `notifier` is ANY object with `send(to, message)` (define a `Notifier` Protocol in the solution for documentation)\n- `reset(user, token)` sends `'reset token: <token>'` to `user['email']` and returns True\n- a user without an email raises `ValueError('user has no email')`\n- the service must never import or name a concrete vendor — graded by running it against two DIFFERENT notifier implementations",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "from typing import Protocol\n\n# TODO: Notifier protocol + PasswordResetService",
+  "tests": [
+    {
+      "name": "works with any port implementation",
+      "code": "class SpyNotifier:\n    def __init__(self):\n        self.sent = []\n    def send(self, to, message):\n        self.sent.append((to, message))\n\nclass SmsNotifier:\n    def __init__(self):\n        self.sent = []\n    def send(self, to, message):\n        self.sent.append((to, 'SMS:' + message))\n\nsvc = PasswordResetService(SpyNotifier())\nassert svc.reset({'email': 'a@x.y'}, 'tok1') is True\nsvc2 = PasswordResetService(SmsNotifier())\nassert svc2.reset({'email': 'b@x.y'}, 'tok2') is True\nprint('ok')",
+      "hint": "The constructor takes the port; the service calls only send()."
+    },
+    {
+      "name": "missing email fails loudly",
+      "code": "class SpyNotifier:\n    def __init__(self):\n        self.sent = []\n    def send(self, to, message):\n        self.sent.append((to, message))\n\nspy = SpyNotifier()\nsvc = PasswordResetService(spy)\ntry:\n    svc.reset({}, 'tok')\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('missing email must raise ValueError')\nassert spy.sent == [], 'nothing may be sent on failure'\nprint('ok')",
+      "hint": "Validate before any side effect."
+    }
+  ],
+  "level": "combination"
+}

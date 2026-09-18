@@ -1,0 +1,46 @@
+Generics là hàm dành cho kiểu: một cài đặt, kiểu thay đổi theo từng cách dùng,
+và compiler theo dõi từng cách dùng một cách riêng biệt.
+
+## Ý tưởng
+
+```ts
+function first<T>(items: T[]): T | undefined {
+  return items[0];
+}
+const a = first(["x", "y"]); // T tự suy là string → a: string | undefined
+const b = first([1, 2]); // T tự suy là number → b: number | undefined
+```
+
+Suy diễn tại chỗ gọi nghĩa là bạn hiếm khi phải viết dấu ngoặc nhọn — chúng đến
+từ ngữ cảnh.
+
+## Ràng buộc
+
+Khi thân hàm cần khả năng vượt ngoài `unknown`, hãy ràng buộc:
+
+```ts
+function pluck<T, K extends keyof T>(items: T[], key: K): T[K][] {
+  return items.map((i) => i[key]);
+}
+pluck(users, "email"); // ✓ — và "emial" là lỗi compile
+```
+
+`K extends keyof T` buộc key phải là key thật sự tồn tại trên T — một lỗi gõ
+trở thành lỗi compile thay vì `undefined` lúc runtime.
+
+## Utility types
+
+Các công cụ có sẵn phủ 90% nhu cầu:
+
+- `Partial<T>` — mọi trường thành optional (payload cập nhật)
+- `Pick<T, K>` / `Omit<T, K>` — chọn hoặc loại trường (bản công khai của một dòng)
+- `ReturnType<typeof fn>` — bắt lấy những gì hàm trả về
+- `Record<K, V>` — dictionary có kiểu
+
+```ts
+type PublicUser = Omit<User, "passwordHash">;
+function updateUser(id: number, patch: Partial<User>) { ... }
+```
+
+Dùng generics khi MỐI QUAN HỆ hình dạng quan trọng (vào → ra); dùng `unknown`
+khi bạn thật sự chấp nhận mọi thứ.

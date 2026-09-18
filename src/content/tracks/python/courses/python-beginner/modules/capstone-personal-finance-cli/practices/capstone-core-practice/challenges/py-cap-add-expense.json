@@ -1,0 +1,16 @@
+{
+  "id": "py-cap-add-expense",
+  "title": "Acceptance: add_expense",
+  "prompt": "Contract: add_expense(expenses, amount, category, note=\"\") returns a NEW list with {\"amount\": float, \"category\": lowercase str, \"note\": str} appended. amount must be a number > 0 and category non-empty, else raise ValueError. Input list must never be mutated.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "",
+  "tests": [
+    {
+      "name": "validation and purity",
+      "code": "e0 = [{\"amount\": 5.0, \"category\": \"food\", \"note\": \"\"}]\nr = add_expense(e0, 12.5, \"Transport\")\nassert r == e0 + [{\"amount\": 12.5, \"category\": \"transport\", \"note\": \"\"}], f\"got {r}\"\nassert e0 == [{\"amount\": 5.0, \"category\": \"food\", \"note\": \"\"}], \"input mutated!\"\nfor bad in [(0, \"food\"), (-3, \"food\"), (5, \"\")]:\n    try:\n        add_expense([], *bad)\n        assert False, f\"{bad} must raise\"\n    except ValueError:\n        pass\nassert add_expense([], 10, \"food\", \"lunch\")[0][\"note\"] == \"lunch\", \"note defaults and stores\"",
+      "hint": "amount = float(amount) after validating > 0; category = category.strip().lower()."
+    }
+  ],
+  "level": "independent"
+}

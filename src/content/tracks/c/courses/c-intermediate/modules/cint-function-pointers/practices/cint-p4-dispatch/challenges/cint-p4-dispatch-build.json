@@ -1,0 +1,16 @@
+{
+  "id": "cint-p4-dispatch-build",
+  "title": "The Command Table",
+  "prompt": "Implement a table-driven calculator:\n\n```c\n/* runs the named binary command: \"add\", \"sub\", \"mul\".\n   Returns the result, or INT_MAX for an unknown name. */\nint calc(const char *name, int a, int b);\n/* returns the number of registered commands */\nsize_t calc_count(void);\n/* returns 1 if name is registered, 0 otherwise */\nint calc_has(const char *name);\n```\n\nThe dispatch table must be data (an array the functions walk) — no strcmp\nif-chains inside calc.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <limits.h>\n",
+  "tests": [
+    {
+      "name": "table dispatch",
+      "code": "\nCHECK_EQ(calc(\"add\", 2, 3), 5);\nCHECK_EQ(calc(\"sub\", 9, 4), 5);\nCHECK_EQ(calc(\"mul\", 6, 7), 42);\nCHECK_EQ(calc(\"div\", 6, 7), INT_MAX);\nCHECK_EQ(calc_has(\"add\"), 1);\nCHECK_EQ(calc_has(\"mod\"), 0);\nCHECK(calc_count() >= 3);\n",
+      "hint": "static const Command TABLE[] = {{\"add\", cmd_add}, ...}; walk and strcmp."
+    }
+  ],
+  "level": "mini-build"
+}

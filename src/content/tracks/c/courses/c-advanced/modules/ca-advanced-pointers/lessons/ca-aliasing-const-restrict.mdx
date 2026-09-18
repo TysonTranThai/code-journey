@@ -1,0 +1,20 @@
+## The effective-type rule
+
+An object's stored value may only be accessed through an lvalue of a compatible type — or through `char` (any object's bytes are always readable as chars, which is what `memcpy` and debuggers are built on). This is why:
+
+```c
+float f = 1.0f;
+int bits = *(int *)&f;          /* UB: wrong effective type */
+int bits2;
+memcpy(&bits2, &f, sizeof f);   /* defined: byte copy */
+```
+
+Compilers assume it hard: after `int *p` and `float *q` are both in play, a store through one may be assumed not to touch the other.
+
+## const is a contract, not protection
+
+`const int *p` says *through this lvalue* you will not write. Casting it away and writing is UB **only if** the object was defined const; writing through a cast on a non-const object is legal. Two different sentences hiding in one keyword.
+
+## restrict: the promise that pays
+
+`void copy(int *restrict d, const int *restrict s, size_t n)` promises: for the function's duration, every write through `d` aliases nothing read through `s`. Break the promise (overlapping ranges) and even memcpy-identical code may miscompute — that is exactly why the standard splits `memcpy` (restrict, UB on overlap) from `memmove` (defined on overlap, may be slower).

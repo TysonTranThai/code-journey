@@ -1,0 +1,40 @@
+## Trả hai con trỏ, xóa O(1)
+
+```c
+typedef struct DNode {
+    int            value;
+    struct DNode  *prev, *next;
+} DNode;
+```
+
+Có `prev`, node tự mang "ai trỏ vào mình" — gỡ không cần tìm:
+
+```c
+void unlink(DNode *n) {
+    if (n->prev) n->prev->next = n->next; else /* là head */;
+    if (n->next) n->next->prev = n->prev; else /* là tail */;
+    n->prev = n->next = NULL;      /* node đã tách rời */
+}
+```
+
+Giá: **bốn lần cập nhật con trỏ mỗi thao tác thay vì hai**, và cả một
+họ bug mới: quên một bên để lại node tưởng đã tách rời trong khi danh
+sách vẫn với tới nó — hoặc tệ hơn, chuỗi *prev* bất đồng với chuỗi
+*next*. Sau mọi thay đổi cấu trúc, đi xuôi và đi ngược phải gặp cùng các
+node theo thứ tự ngược. Test nên kiểm cả hai hướng.
+
+## Sentinel: lấy một node đổi không trường hợp đặc biệt
+
+Giữ một node giả không bao giờ chứa dữ liệu; danh sách thật chạy giữa
+hai link của nó. Thao tác đầu/đuôi hết có trường hợp NULL:
+
+```c
+DNode sentinel;
+sentinel.next = &sentinel;
+sentinel.prev = &sentinel;          /* rỗng: cả hai trỏ về nhà */
+```
+
+Chèn thành một câu lệnh bất kể vị trí; duyệt là
+`for (DNode *p = s.next; p != &s; p = p->next)`. Giá: một node thừa và
+kỷ luật *không bao giờ* dereference giá trị của sentinel. Các cài đặt
+list thật (Linux `list_head` trong số đó) đều dựa trên sentinel.

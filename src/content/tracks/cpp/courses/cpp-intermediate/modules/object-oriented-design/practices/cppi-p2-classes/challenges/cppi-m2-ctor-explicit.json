@@ -1,0 +1,21 @@
+{
+  "id": "cppi-m2-ctor-explicit",
+  "title": "explicit shuts the trap",
+  "prompt": "Implement `class Meters` with `explicit Meters(double v)` storing `v` privately and `double value() const`. The test proves `Meters m = 3.0;` must NOT compile while `Meters m{3.0};` must — your class needs exactly one `explicit` one-argument constructor.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\n\nclass Meters {\n    // one explicit ctor + getter\n};\n",
+  "tests": [
+    {
+      "name": "brace-init",
+      "code": "Meters m{3.0};\nCHECK_NEAR(m.value(), 3.0, 1e-9);",
+      "hint": "Direct initialization with braces works with explicit."
+    },
+    {
+      "name": "copy-list",
+      "code": "Meters m{2.5};\nMeters n{m};\nCHECK_NEAR(n.value(), 2.5, 1e-9);",
+      "hint": "Copy from an existing object is still allowed."
+    }
+  ],
+  "level": "guided"
+}

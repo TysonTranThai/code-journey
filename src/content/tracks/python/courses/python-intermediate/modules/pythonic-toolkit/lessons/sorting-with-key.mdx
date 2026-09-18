@@ -1,0 +1,34 @@
+`sorted()` never compares your objects directly — it compares the value your
+**`key=` function** produces. One idea, and you can sort anything:
+
+```python
+words = ["banana", "fig", "cherry"]
+sorted(words, key=len)              # by length: fig, banana, cherry
+
+people = [
+    {"name": "An", "age": 30},
+    {"name": "Binh", "age": 25},
+]
+sorted(people, key=lambda p: p["age"])
+```
+
+**Descending and multi-level sorting** come free:
+
+```python
+scores = [("An", 8), ("Binh", 9), ("Chi", 8)]
+sorted(scores, key=lambda p: p[1], reverse=True)      # highest first
+
+# sort by age, then by name — return a tuple from key:
+sorted(people, key=lambda p: (p["age"], p["name"]))
+```
+
+Two facts professionals rely on:
+
+- **`sorted()` returns a new list; `list.sort()` mutates in place** (and returns `None` — a classic bug).
+- **Sorts are stable**: equal keys keep their original order, so you can sort by secondary key first, then primary key.
+
+## Why not compare functions?
+
+`key=` decouples "what to compare" from "how to compare". Sorting records by
+a field, files by size, tasks by deadline — all become one-liners instead of
+hand-rolled comparison logic.

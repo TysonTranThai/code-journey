@@ -1,0 +1,37 @@
+The capstone exercises every module. Where each one shows up:
+
+| Module | Shows up as |
+|---|---|
+| M2-M4 classes | `Book`, `Library` with encapsulation, `const` correctness |
+| M5 STL | `std::vector<Book>` storage, `std::map` for counts |
+| M6 algorithms | `std::sort` the listing, `std::find_if` the search |
+| M7 modern | `std::optional` for lookups, `enum class` Status |
+| M8 RAII | ownership discipline if you hold resources |
+| M9 templates | a generic `format_table` helper if you generalize |
+| M10 errors | `ValidationError` carrying field data |
+| M11 DSA | complexity awareness for search choices |
+
+The integration lesson: **each seam is a place you already practiced.**
+When the compiler complains, you now know which module's lesson to reread.
+
+A worked skeleton to extend — search with `optional` + `find_if`:
+
+```cpp
+#include <algorithm>
+#include <optional>
+#include <vector>
+
+class Library {
+public:
+    std::optional<const Book*> find(std::string_view title) const {
+        auto it = std::find_if(books_.begin(), books_.end(),
+                               [&](const Book& b) { return b.title() == title; });
+        if (it == books_.end()) return std::nullopt;
+        return &*it;
+    }
+private:
+    std::vector<Book> books_;
+};
+```
+
+Every piece is review; the composition is the new skill.

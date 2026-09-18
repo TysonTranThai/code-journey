@@ -1,0 +1,21 @@
+{
+  "id": "pa-mt-validated-registry",
+  "title": "Validated handler registry",
+  "prompt": "Implement `class Handler` with `__init_subclass__` that auto-registers subclasses and VALIDATES them at class-creation time:\n\n- subclass must define `scheme` (a nonempty str) and `handle(value)` — raise `TypeError` at class definition otherwise\n- duplicate `scheme` values raise `ValueError` at class definition\n- `Handler.dispatch(scheme, value)` calls the right handler's `handle` and returns its result; unknown scheme raises `KeyError`\n- the base class itself is not registered",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class Handler:\n    _handlers = {}\n\n    # TODO: __init_subclass__ + dispatch\n\nclass Upper(Handler):\n    scheme = 'upper'\n    def handle(self, value):\n        return value.upper()",
+  "tests": [
+    {
+      "name": "registers and dispatches",
+      "code": "u = Upper()\nassert Handler.dispatch('upper', 'hi') == 'HI', 'dispatch must reach the handler'\nprint('ok')",
+      "hint": "Registration happens in __init_subclass__; dispatch looks up by scheme and calls an instance method."
+    },
+    {
+      "name": "validation fails fast",
+      "code": "try:\n    class NoScheme(Handler):\n        def handle(self, value): return value\nexcept TypeError:\n    pass\nelse:\n    raise AssertionError('missing scheme must raise TypeError at class creation')\ntry:\n    class Dup(Handler):\n        scheme = 'upper'\n        def handle(self, value): return value\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('duplicate scheme must raise ValueError')\nprint('ok')",
+      "hint": "Both checks run inside __init_subclass__ — before the class body finishes."
+    }
+  ],
+  "level": "independent"
+}

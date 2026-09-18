@@ -1,0 +1,20 @@
+## The hypothesis loop
+
+1. **Reproduce** reliably (same input, same failure).
+2. **Localize** with the largest step that keeps the failure: binary search over the pipeline.
+3. **Hypothesize** one mechanism ("the index is stale after the erase").
+4. **Experiment**: breakpoint/watchpoint that distinguishes hypothesis A from B.
+5. **Confirm**, fix, and *add the regression test that would have caught it*.
+
+printf-debugging is a for-loop over guesses; the debugger is a binary search. Both are tools, but only one scales to heisenbugs.
+
+## The moves that matter
+
+- **Breakpoints** — stop at a line/function. Conditional breakpoints (`i == 999`) skip 998 useless stops.
+- **Watchpoints** — break when a *variable changes*: the killer feature for "who corrupts this field?" (`watch -l s->count`).
+- **Stepping** — `step` into, `next` over, `finish` out. Stepping through library code is noise; step your code, skip the standard library.
+- **Backtrace + frame inspection** — after a crash, `bt` lists the stack; frame 0 is where it died, frames up are why.
+
+## Post-mortem state of mind
+
+A crash dump is a recording of the past. The skill is reading it: which frame is library-internal (skim), which is yours (study), which values are plausible vs corrupted (distrust pointers that look like small integers).

@@ -1,0 +1,58 @@
+Khi một câu lệnh Java không thể thực hiện được - file không tồn tại, chuỗi
+"123abc" không thể thành số, chỉ số mảng vượt quá giới hạn - JVM không trả
+về một giá trị lỗi kỳ diệu nào cả. Nó **ném (throw) một ngoại lệ**: một
+đối tượng "bong" lên qua call stack cho đến khi có ai đó xử lý nó.
+
+## Bốn từ khóa
+
+```java
+try {
+    int n = Integer.parseInt("12x");   // ném NumberFormatException
+    System.out.println("không bao giờ in dòng này");
+} catch (NumberFormatException e) {
+    System.out.println("số không hợp lệ: " + e.getMessage());
+} finally {
+    System.out.println("luôn luôn chạy");
+}
+```
+
+- **`try`** - các câu lệnh có rủi ro.
+- **`catch (SomeException e)`** - chỉ chạy khi ngoại lệ đó (hoặc lớp con
+  của nó) được ném. Có thể viết nhiều catch, khối cụ thể hơn đứng trước.
+- **`finally`** - chạy dù có hay không có ngoại lệ. Dùng cho việc dọn dẹp
+  bắt buộc phải xảy ra.
+- **`throw`** - bạn tự ném: `throw new IllegalArgumentException("n < 0");`
+
+## Checked vs unchecked
+
+Đây là điểm lạ lùng nhất với người mới, hãy đi chậm.
+
+- **Unchecked exceptions** kế thừa `RuntimeException`. Compiler **không**
+  ép bạn xử lý: `NullPointerException`, `IllegalArgumentException`,
+  `ArithmeticException`, `NumberFormatException`... Chúng hầu như luôn là
+  **bug** - cách sửa là code tốt hơn, chứ không phải try block lớn hơn.
+- **Checked exceptions** kế thừa `Exception` nhưng không phải
+  `RuntimeException`. Compiler **ép** mọi caller phải `catch` hoặc khai
+  báo `throws`: `IOException`, `FileNotFoundException`. Chúng đại diện cho
+  lỗi thực tế mà chương trình cần lên kế hoạch ứng phó.
+
+## Đọc stack trace
+
+Đọc **từ dưới lên**: lớp của bạn xuất hiện đầu tiên. Dòng `Main.java:8`
+cho biết file và dòng gọi hàm lỗi; *message* (`For input string: "12x"`)
+thường nêu đúng dữ liệu xấu. Stack trace không phải lời chê - đó là bản đồ
+từ hiện trường về code của bạn.
+
+## Ném với thông điệp rõ ràng
+
+```java
+static double average(int[] scores) {
+    if (scores == null || scores.length == 0) {
+        throw new IllegalArgumentException("scores must be non-empty");
+    }
+    ...
+}
+```
+
+Hãy viết message cho **người gọi hàm gây lỗi**: nêu quy tắc và giá trị vi
+phạm. Sau này, message đó chính là dòng đầu tiên của việc gỡ lỗi.

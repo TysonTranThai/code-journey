@@ -1,0 +1,28 @@
+## Custom exception hierarchies
+
+Model *domain failures* as types, not strings:
+
+```java
+public class OrderException extends RuntimeException {
+    public OrderException(String message) { super(message); }
+    public OrderException(String message, Throwable cause) { super(message, cause); }
+}
+
+public final class InsufficientFundsException extends OrderException {
+    private final int shortfallCents;
+    public InsufficientFundsException(String message, int shortfallCents) {
+        super(message);
+        this.shortfallCents = shortfallCents;
+    }
+    public int shortfallCents() { return shortfallCents; }
+}
+```
+
+Callers can now catch at the right granularity:
+`catch (InsufficientFundsException e)` to show a friendly message, or
+`catch (OrderException e)` for all order failures.
+
+Keep hierarchy shallow (base + 2–3 leaf types), extend RuntimeException
+unless the caller can genuinely recover, and carry *data* on the
+exception (like shortfallCents) instead of forcing callers to parse the
+message.

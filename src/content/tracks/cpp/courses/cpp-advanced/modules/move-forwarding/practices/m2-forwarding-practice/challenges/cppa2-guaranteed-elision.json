@@ -1,0 +1,21 @@
+{
+  "id": "cppa2-guaranteed-elision",
+  "title": "Guaranteed Elision, Proven by Counters",
+  "prompt": "Implement `makeTracked` returning its result **by value**, and `accumulateTracked` building a named local and returning it (NRVO). The counters must show zero copies and zero moves in both paths.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <string>\n#include <utility>\n\n// Instrumented type: counts copies and moves for the graded checks.\nstruct Tracked {\n    static inline int copies = 0;\n    static inline int moves = 0;\n    std::string tag;\n    Tracked() : tag(\"empty\") {}\n    explicit Tracked(std::string t) : tag(std::move(t)) {}\n    Tracked(const Tracked& o) : tag(o.tag) { ++copies; }\n    Tracked(Tracked&& o) noexcept : tag(std::move(o.tag)) { ++moves; }\n    Tracked& operator=(const Tracked& o) { tag = o.tag; ++copies; return *this; }\n    Tracked& operator=(Tracked&& o) noexcept { tag = std::move(o.tag); ++moves; return *this; }\n};\n\nTracked makeTracked(std::string tag);   // TODO: return by value\nTracked accumulateTracked(int n);       // TODO: build a tag of n 'x' chars in a local, return it\n",
+  "tests": [
+    {
+      "name": "prvalue return: zero copies, zero moves",
+      "code": "Tracked::copies = 0; Tracked::moves = 0;\nTracked t = makeTracked(\"direct\");\nCHECK_EQ(Tracked::copies, 0);\nCHECK_EQ(Tracked::moves, 0);\nCHECK_EQ(t.tag, std::string(\"direct\"));",
+      "hint": "return Tracked(tag); — a prvalue return has guaranteed elision; constructing the return value from the argument stays copy- and move-free."
+    },
+    {
+      "name": "NRVO: zero copies, zero moves",
+      "code": "Tracked::copies = 0; Tracked::moves = 0;\nTracked a = accumulateTracked(3);\nCHECK_EQ(Tracked::copies, 0);\nCHECK_EQ(Tracked::moves, 0);\nCHECK_EQ(a.tag, std::string(\"xxx\"));",
+      "hint": "Build a local Tracked from std::string(3, 'x'), then return the local by name (NOT std::move) — NRVO constructs in place."
+    }
+  ]
+}

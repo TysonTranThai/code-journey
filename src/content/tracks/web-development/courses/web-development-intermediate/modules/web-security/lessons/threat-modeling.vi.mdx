@@ -1,0 +1,29 @@
+Bảo mật không phải một tính năng để thêm vào; đó là một thuộc tính mà bạn tránh làm mất. Hãy bắt đầu mọi thiết kế bằng ba câu hỏi.
+
+## Bốn câu hỏi
+
+1. **Chúng ta đang xây gì?** (một tính năng nhận bình luận, upload, thanh toán...)
+2. **Điều gì có thể sai?** (các nhóm STRIDE kinh điển: Giả mạo, Can thiệp, Chối bỏ, Tiết lộ thông tin, Từ chối dịch vụ, Nâng quyền)
+3. **Chúng ta sẽ làm gì về việc đó?** (ngăn chặn, phát hiện, giảm nhẹ, chấp nhận — nêu rõ)
+4. **Chúng ta làm tốt không?** (test, review, audit)
+
+Không cần thuộc thuật ngữ vẫn cần kỷ luật này: _"trường bình luận sẽ lọt vào HTML — nếu nó chứa thẻ script thì sao?"_ chính là threat modeling.
+
+## Ranh giới tin cậy
+
+Vẽ đường phân định nơi dữ liệu đi qua: input người dùng → server, server → database, database → HTML, API bên thứ ba → code của bạn. Dữ liệu bên trong ranh giới là (tương đối) đáng tin; dữ liệu đi vào là thù địch cho đến khi được chứng minh ngược lại. **Mọi bug XSS, SQLi, path traversal đều là dữ liệu vượt ranh giới mà không được kiểm tra hay mã hóa.**
+
+## Những chiến thắng rẻ nhất của kẻ tấn công
+
+Tin tặc chuyên nghiệp không "hack"; họ kiểm tra những cánh cửa mở sẵn:
+
+- Credential dùng lại/bị lộ (bài secrets của module 6!)
+- Thiếu kiểm tra phân quyền (IDOR: `/api/invoices/4821` mở được hóa đơn của người khác)
+- Output không được làm sạch (XSS)
+- Dependency cũ có CVE công khai
+
+Phòng thủ chủ yếu là _không phải quả thấp dễ hái_: kiểm tra input, mã hóa output, kiểm tra quyền sở hữu trên mỗi lần đọc, vá dependency, và không bao giờ tự chế thuật toán mã hóa.
+
+## Thái độ người phòng thủ (thái độ của khóa học)
+
+Chúng ta chỉ luyện **bảo mật phòng thủ**: nhận diện → hiểu → ngăn chặn → xác minh an toàn. Mọi bài tập trong module này đều là "đây là mẫu code dễ tổn thương; tìm nó, giải thích nó, sửa nó" — không bao giờ "đây là cách khai thác site của người khác," điều vừa phi pháp vừa vô ích.

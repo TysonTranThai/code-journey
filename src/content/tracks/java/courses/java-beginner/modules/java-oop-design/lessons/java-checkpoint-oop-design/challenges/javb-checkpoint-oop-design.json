@@ -1,0 +1,25 @@
+{
+  "id": "javb-checkpoint-oop-design",
+  "title": "Checkpoint: The Zoo Census",
+  "prompt": "\nThe Zoo: one abstract base, three species, and a census.\n\nInside `Solution`:\n\n1. `static abstract class Animal` — `abstract String sound();` and a\n   `public String toString()` override returning `sound()` (so printing\n   shows the sound).\n2. `static class Dog extends Animal` — sound `\"woof\"`.\n3. `static class Cat extends Animal` — sound `\"meow\"`.\n4. `static class Robot extends Animal` — sound `\"beep\"`, but Robot is NOT\n   really an animal, so it must also `implements Describable` where\n   `interface Describable { String kind(); }` returns `\"machine\"`.\n5. `static int countRealAnimals(Animal[] zoo)` — the number of animals in\n   the array that implement `Describable`... **is zero logic**: instead\n   count the ones whose `sound()` is a real animal sound. Simpler and\n   honest: count entries that are NOT instanceof `Describable` (that is\n   exactly the interface check the lesson allows here).\n\nSo for `{ new Dog(), new Cat(), new Robot() }`, `countRealAnimals` returns 2.\nThe grader also checks polymorphism: every `sound()` must dispatch to the\nobject's own class.\n",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public interface Describable {\n        String kind();\n    }\n\n    public static abstract class Animal {\n        public abstract String sound();\n    }\n\n    public static class Dog extends Animal {\n        public String sound() { return \"\"; }\n    }\n\n    public static class Cat extends Animal {\n        public String sound() { return \"\"; }\n    }\n\n    public static class Robot extends Animal implements Describable {\n        public String sound() { return \"\"; }\n        public String kind() { return \"\"; }\n    }\n\n    public static int countRealAnimals(Animal[] zoo) {\n        return 0;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "each species speaks",
+      "code": "\nCjTestBase.checkEq(new Solution.Dog().sound(), \"woof\", \"dog\");\nCjTestBase.checkEq(new Solution.Cat().sound(), \"meow\", \"cat\");\nCjTestBase.checkEq(new Solution.Robot().sound(), \"beep\", \"robot\");\n",
+      "hint": "Polymorphic dispatch through the abstract method."
+    },
+    {
+      "name": "robot is describable",
+      "code": "\nCjTestBase.checkEq(new Solution.Robot().kind(), \"machine\", \"robot kind\");\n",
+      "hint": "Robot carries the extra capability."
+    },
+    {
+      "name": "the census",
+      "code": "\nSolution.Animal[] zoo = { new Solution.Dog(), new Solution.Cat(), new Solution.Robot() };\nCjTestBase.checkEq(Solution.countRealAnimals(zoo), 2, \"two real animals\");\nCjTestBase.checkEq(Solution.countRealAnimals(new Solution.Animal[]{}), 0, \"empty zoo\");\n",
+      "hint": "Count entries that are NOT instanceof Describable."
+    }
+  ]
+}

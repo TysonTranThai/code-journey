@@ -1,0 +1,45 @@
+## String growable là một dynamic array tí hon
+
+```c
+typedef struct {
+    char  *data;    /* malloc'd, luôn '\0'-terminated */
+    size_t len;     /* số ký tự, không tính '\0' */
+    size_t cap;     /* byte đã cấp phát */
+} StrBuf;
+```
+
+Append là toàn bộ API, và mỗi append là ba việc: chổ chỗ, copy, terminate
+— với đường lỗi ở bước một:
+
+```c
+int sb_append(StrBuf *b, const char *s) {
+    size_t need = b->len + strlen(s) + 1;
+    if (need > b->cap) {
+        size_t ncap = b->cap ? b->cap : 16;
+        while (ncap < need) ncap *= 2;
+        char *nd = realloc(b->data, ncap);
+        if (!nd) return -1;          /* b->data cũ vẫn hợp lệ! */
+        b->data = nd;
+        b->cap = ncap;
+    }
+    memcpy(b->data + b->len, s, strlen(s) + 1);
+    b->len += strlen(s);
+    return 0;
+}
+```
+
+Chú ý kỷ luật oom: `realloc` trả NULL **không** free block cũ — giữ con
+trỏ, báo lỗi, để caller quyết định. Gán thẳng
+`b->data = realloc(b->data, ...)` sẽ leak buffer cũ đúng lúc bộ nhớ đã cạn.
+
+## Lập kế hoạch capacity xấu nhất
+
+`snprintf(NULL, 0, ...)` đo trước, để cấp phát vừa đúng:
+
+```c
+int need = snprintf(NULL, 0, "%s: %d", name, value);
+char *out = malloc((size_t)need + 1);
+snprintf(out, (size_t)need + 1, "%s: %d", name, value);
+```
+
+Đo-rồi-cấp-phát là cách format không cần buffer cố định và không truncate.

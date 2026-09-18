@@ -1,0 +1,21 @@
+{
+  "id": "cint-checkpoint-m4-task",
+  "title": "Checkpoint: The Callback Framework",
+  "prompt": "Build a small event framework on function pointers:\n\n```c\ntypedef struct { int id; int (*handler)(int); } Handler;  /* in boilerplate */\n\n/* registers handler under an id (id 0..63). Returns 1, or 0 if the id is\n   taken or out of range or handler is NULL. */\nint bus_register(int id, int (*handler)(int));\n/* runs the handler registered under id on value v; returns its result,\n   or -1 if no handler is registered there. */\nint bus_emit(int id, int v);\n/* removes a handler; returns 1 if one was removed, 0 otherwise */\nint bus_unregister(int id);\n/* runs ALL registered handlers on v, summing results; returns the sum */\nint bus_broadcast(int v);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <limits.h>\ntypedef struct { int id; int (*handler)(int); } Handler;\nint h_double(int v) { return v * 2; }\nint h_negate(int v) { return -v; }\n",
+  "tests": [
+    {
+      "name": "register, emit, remove",
+      "code": "\nCHECK_EQ(bus_register(1, &h_double), 1);\nCHECK_EQ(bus_emit(1, 21), 42);\nCHECK_EQ(bus_register(1, &h_negate), 0);   /* taken */\nCHECK_EQ(bus_register(64, &h_double), 0);  /* out of range */\nCHECK_EQ(bus_register(2, NULL), 0);\nCHECK_EQ(bus_emit(3, 5), -1);              /* unregistered */\nCHECK_EQ(bus_unregister(1), 1);\nCHECK_EQ(bus_emit(1, 21), -1);\nCHECK_EQ(bus_unregister(1), 0);\n",
+      "hint": "Slots array of 64 function pointers, NULL = empty."
+    },
+    {
+      "name": "broadcast sums all",
+      "code": "\nbus_register(1, &h_double);\nbus_register(2, &h_negate);\nCHECK_EQ(bus_broadcast(10), 20 + (-10));\nbus_register(7, &h_double);\nCHECK_EQ(bus_broadcast(4), 8 + -4 + 8);\nbus_broadcast(0);   /* smoke: no crash with mixed handlers */\nCHECK_EQ(bus_broadcast(0), 0);\nCHECK_EQ(bus_emit(1, 5), 10);   /* slots still live after broadcasts */\n",
+      "hint": "Walk all 64 slots; add non-NULL results."
+    }
+  ],
+  "level": "independent"
+}

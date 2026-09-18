@@ -1,0 +1,28 @@
+## Modeling relations without a database
+
+SQL thinking transfers directly to repository design:
+
+- **Primary key** → the map key (id), unique and immutable
+- **Foreign key** → a field referencing another aggregate's id
+  (`Expense.categoryId()`)
+- **JOIN** → a method that combines repositories or a denormalized view
+- **UNIQUE constraint** → the store checks and rejects duplicates
+  (`save` throws on conflicting email)
+- **INDEX** → a secondary `Map<String, List<Expense>>` byCategory, kept
+  consistent on every write
+
+That last one is the deep idea: an index is a *derived* structure. Every
+write path must maintain it — the classic bug is updating the main store
+and forgetting the index:
+
+```java
+public Expense save(Expense e) {
+    Expense old = store.put(e.id(), e);
+    if (old != null) byCategory.get(old.category()).remove(old);
+    byCategory.computeIfAbsent(e.category(), k -> new ArrayList<>()).add(e);
+    return e;
+}
+```
+
+Rebuilding indexes on read (`findAll` filters on the fly) is correct but
+O(n) per query — the tradeoff databases charge you for.

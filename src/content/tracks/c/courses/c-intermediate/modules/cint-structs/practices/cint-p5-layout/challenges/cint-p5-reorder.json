@@ -1,0 +1,15 @@
+{
+  "id": "cint-p5-reorder",
+  "title": "Shrink by Reordering",
+  "prompt": "The boilerplate defines a wasteful struct and a mirror:\n\n```c\nstruct Naive {  char a; double d; char b; long l; };\nstruct Tight { double d; long l; char a; char b; };\n```\n\nImplement:\n\n```c\n/* 1 if Tight is strictly smaller than Naive, else 0 */\nint tight_is_smaller(void);\n/* bytes wasted by padding inside a struct of size total with raw member bytes raw */\nsize_t padding_bytes(size_t total, size_t raw);\n/* size of an array of n Tight structs */\nsize_t tight_array_bytes(size_t n);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\nstruct Naive {  char a; double d; char b; long l; };\nstruct Tight { double d; long l; char a; char b; };\n",
+  "tests": [
+    {
+      "name": "size arithmetic",
+      "code": "\nCHECK(tight_is_smaller() == 1);\nCHECK_EQ(padding_bytes(sizeof(struct Naive), 1 + 8 + 1 + 8),\n         sizeof(struct Naive) - 18);\nCHECK_EQ(tight_array_bytes(5), 5 * sizeof(struct Tight));\nCHECK_EQ(tight_array_bytes(0), 0);\n",
+      "hint": "tight_is_smaller: sizeof comparison. padding_bytes: total - raw. Arrays multiply sizeof."
+    }
+  ]
+}

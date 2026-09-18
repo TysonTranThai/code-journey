@@ -1,0 +1,21 @@
+{
+  "id": "javb-m7-class-counter",
+  "title": "A class that counts instances",
+  "prompt": "Inside `Solution`, write a nested `static class Widget` with a private `final String name`, a constructor that stores it, a getter, and a `static int count` that tracks how many Widgets have been created. `Solution.Widget.of(\"a\")` style calls are not needed — the grader creates `new Solution.Widget(\"a\")` directly and reads `Solution.Widget.getCount()`.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Widget {\n        // name field, constructor, getName(), static count + getCount()\n        public Widget(String name) {\n        }\n    }\n\n    public static int getCount() {\n        return Widget.count;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "count grows with creation",
+      "code": "\nint before = Solution.getCount();\nnew Solution.Widget(\"a\");\nnew Solution.Widget(\"b\");\nCjTestBase.checkEq(Solution.getCount(), before + 2, \"two more widgets\");\n",
+      "hint": "The constructor must increment the static counter."
+    },
+    {
+      "name": "name is stored and readable",
+      "code": "\nSolution.Widget w = new Solution.Widget(\"gear\");\nCjTestBase.checkEq(w.getName(), \"gear\", \"getter returns the name\");\n",
+      "hint": "getName() returns the field set at birth."
+    }
+  ],
+  "level": "guided"
+}

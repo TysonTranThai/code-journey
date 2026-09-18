@@ -1,0 +1,27 @@
+## Seams and test doubles
+
+A *seam* is a replaceable point in code — usually a constructor-injected
+interface. Doubles plug into seams:
+
+- **Stub** — returns canned data (`FakeGateway` from Module 2)
+- **Fake** — a working lightweight implementation (in-memory repo)
+- **Spy** — records calls for later verification
+- **Mock** — pre-programmed expectations (use sparingly; mocks that know
+  too much make refactoring painful)
+
+```java
+interface Clock { Instant now(); }
+
+class SubscriptionService {
+    private final Clock clock;
+    SubscriptionService(Clock clock) { this.clock = clock; }
+    boolean isExpired(Instant until) { return clock.now().isAfter(until); }
+}
+
+// test: freeze time instead of sleeping/_waiting
+Clock frozen = () -> Instant.parse("2026-09-14T00:00:00Z");
+```
+
+The rule: if code calls `Instant.now()` or `Math.random()` deep inside,
+it has no seam — extract the decision behind an interface. Deterministic
+tests are the payoff.

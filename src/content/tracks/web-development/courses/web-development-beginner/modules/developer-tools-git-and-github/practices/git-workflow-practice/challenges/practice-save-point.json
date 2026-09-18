@@ -1,0 +1,25 @@
+{
+  "id": "practice-save-point",
+  "title": "Create a Save Point",
+  "prompt": "Fill the object with the exact commands:\n- `stage`: the command that stages every change.\n- `commit`: the command that records a save point with the message `\"Add navigation\"`.\n- `check`: the command that shows what's staged before you commit.",
+  "difficulty": "beginner",
+  "level": "imitation",
+  "boilerplate": "const workflow = {\n  check: \"\",\n  stage: \"\",\n  commit: \"\",\n};\n",
+  "tests": [
+    {
+      "name": "stage everything",
+      "code": "const fn = new Function(code + \"\\nreturn workflow;\");\nconst w = fn();\nif (w.stage !== \"git add .\") throw new Error(\"stage should be: git add .\");",
+      "hint": "git add . stages every change in the project."
+    },
+    {
+      "name": "commit with a message",
+      "code": "const fn = new Function(code + \"\\nreturn workflow;\");\nconst w = fn();\nif (!/^git commit -m [\"']Add navigation[\"']$/.test(w.commit)) {\n  throw new Error('commit should be: git commit -m \"Add navigation\"');\n}",
+      "hint": "git commit -m \"Add navigation\" — messages explain the why."
+    },
+    {
+      "name": "check before committing",
+      "code": "const fn = new Function(code + \"\\nreturn workflow;\");\nconst w = fn();\nif (w.check !== \"git status\") throw new Error(\"check should be: git status\");",
+      "hint": "git status shows what's staged and what isn't."
+    }
+  ]
+}

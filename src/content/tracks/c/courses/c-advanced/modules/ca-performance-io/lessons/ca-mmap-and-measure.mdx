@@ -1,0 +1,41 @@
+## mmap: the file as memory
+
+```c
+#define _POSIX_C_SOURCE 200809L
+#include <sys/mman.h>       /* POSIX */
+#include <fcntl.h>
+#include <sys/stat.h>
+
+int fd = open(path, O_RDONLY);
+struct stat st;
+fstat(fd, &st);
+char *p = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+/* use p[0] .. p[st.st_size-1] like any memory */
+munmap(p, st.st_size);
+close(fd);
+```
+
+No `read` call, no buffer sizing: bytes materialize on first touch, one page (4 KiB) at a time. The kernel owns the cache; `munmap` releases the mapping, not the data. `MAP_PRIVATE` forbids writing through; `MAP_SHARED` propagates writes back to the file.
+
+Honest tradeoffs: mmap wins for random access to large files and zero-copy consumption; plain `read` wins for strictly sequential one-pass scans where page-fault overhead exceeds copy cost — and it is simpler to reason about. Measure, then choose.
+
+## Measuring: the only credible witness
+
+```c
+#include <time.h>                 /* ISO C clock — POSIX clock_gettime */
+struct timespec t0, t1;
+clock_gettime(CLOCK_MONOTONIC, &t0);
+/* work */
+clock_gettime(CLOCK_MONOTONIC, &t1);
+double ms = (t1.tv_sec - t0.tv_sec) * 1e3 + (t1.tv_nsec - t0.tv_nsec) / 1e6;
+```
+
+`CLOCK_MONOTONIC` never goes backwards and ignores wall-clock adjustments — the only clock for durations. `clock_gettime` is POSIX here (`CLOCK_MONOTONIC` itself is POSIX, not ISO C).
+
+## Three benchmark traps
+
+1. **Dead-code elimination**: a loop whose result is never used may be deleted whole. Consume the result — print it, or accumulate into a `volatile` sink.
+2. **The one-shot lie**: first touch pays page-fault and cache-fill costs. Warm up, then measure many iterations, then divide.
+3. **Micro vs macro**: an inner-loop win that makes the outer loop cache-hostile is a loss. Measure the whole program path, not the function.
+
+Numbers you did not measure yourself are folklore. This course asserts *mechanisms*, never timings.

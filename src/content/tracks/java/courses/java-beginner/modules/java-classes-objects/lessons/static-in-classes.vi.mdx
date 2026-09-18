@@ -1,0 +1,43 @@
+Module 5 gặp `static` trên phương thức; trong class, nó hoàn thành bức tranh.
+
+**Hằng số** là thành viên static thân thiện nhất — giá trị dùng chung, bất
+biến, mọi instance đều tra cứu được:
+
+```java
+public class Temperature {
+    static final double ABSOLUTE_ZERO_C = -273.15;
+
+    static boolean isPhysicallyPossible(double celsius) {
+        return celsius >= ABSOLUTE_ZERO_C;
+    }
+}
+```
+
+**Trạng thái dùng chung** là nửa nguy hiểm. Một `static int instanceCount`
+được tăng trong constructor đếm *mọi* Temperature từng được tạo — dùng chung
+cho mọi instance, và mọi người gọi. Nó có thể đúng hoàn toàn (đếm) hoặc là
+thảm họa (một `balance` dùng chung), và ranh giới là: giá trị đó mô tả
+*class* hay *một vật cụ thể*. Không chắc thì nó thuộc về vật: đừng để static.
+
+**`this` trong ngữ cảnh.** Trong bất kỳ phương thức hay constructor dạng
+object nào, `this` là object hiện tại. Hai cách dùng bạn sẽ gặp liên tục:
+phân biệt `this.field = param;` và nối chuỗi constructor `this(...)`. Cách
+thứ ba sẽ tới ở Module 8: truyền `this` cho object khác ("gọi lại tôi").
+
+**Utility class** — class chỉ tồn tại để chứa phương thức static (`Math` là
+một ví dụ) — có thêm một quy ước: làm cho nó không thể tạo instance bằng
+constructor private:
+
+```java
+public final class Money {
+    private Money() { }      // không ai tạo được "object" Money
+
+    static String format(double amount) { ... }
+}
+```
+
+Constructor private là một thành ngữ nhỏ với thông điệp lớn: class này là
+một không gian tên, không phải một vật.
+
+**Tiếp theo:** composition và nguyên tắc thiết kế thắng kế thừa trong đa
+số trường hợp.

@@ -1,0 +1,22 @@
+## Họ Parse
+
+```csharp
+int i = int.Parse("42");            // 42
+int neg = int.Parse("-17");         // -17
+double d = double.Parse("3.5");     // 3.5
+decimal m = decimal.Parse("19.99"); // 19.99
+int bad = int.Parse("4 2");         // FormatException
+int empty = int.Parse("");          // FormatException
+```
+
+Parse của mỗi kiểu chỉ chấp nhận đúng các định dạng mà `ToString` của chính nó tạo ra (cộng khoảng trắng đầu/cuối, vốn được cắt bỏ). `int.Parse("3.5")` **thất bại** — không có cắt cụt âm thầm khi đưa vào. Khoảng trắng giữa các chữ số làm hỏng; dấu chấm thập phân với `int` làm hỏng.
+
+**Văn hoá (culture) có vai trò**: mặc định Parse dùng văn hoá của máy — trên hệ thống dùng `,` làm dấu thập phân, `double.Parse("3.5")` thất bại. Sandbox của khoá này dùng culture phân tích được `.`; khi xây ứng dụng thật bạn sẽ gặp `CultureInfo.InvariantCulture` cho định dạng máy-gửi-máy. Với người mới, điều quan trọng là biết cái bẫy tồn tại.
+
+## Chọn kiểu
+
+Phân tích vào kiểu mô hình hoá giá trị: `int` cho số đếm, `double` cho đo lường, `decimal` cho tiền. Input là `"19.99"` thì `int.Parse` đã là công cụ sai *trước cả khi* hỏi nó có nổ hay không.
+
+## FormatException trông như thế nào
+
+Không xử lý, nó hạ chương trình kèm stack trace. Bạn sẽ học `try/catch` ở Module 15 — nhưng với việc kiểm tra input, đúng công cụ là thứ khác: **TryParse**, vốn không bao giờ ném.

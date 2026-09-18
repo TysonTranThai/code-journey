@@ -1,0 +1,15 @@
+## The three levels, in C++ terms
+
+- **Unit**: one class/free function, real objects, no I/O. Fast (ms), pinpoint failures. This is where templates and algorithms get hammered.
+- **Integration**: a few real components wired together — parser + builder, pool + users. Catches contract mismatches units cannot see.
+- **System**: the whole program on realistic inputs — CLI runs, file round-trips. Slow; reserved for the golden paths and the regressions that escaped.
+
+The C++ specifics: unit tests must compile fast (heavy templates slow every TU); integration tests own the fixtures (temp files, test doubles for I/O); system tests are the only place environment variance is acceptable.
+
+## What makes a suite trustworthy
+
+Deterministic (same input → same result, seeds pinned), independent (order never matters), fast enough to run on every save, and *failing is always meaningful* — a flaky test is a broken test, delete or fix it today, not "retry until green".
+
+## Testing through public behavior
+
+Test the public API's observable behavior, not private internals — internals refactors shouldn't rewrite tests. When you are tempted to test a private helper, test it through the public path that uses it, or promote it to a named, tested utility.

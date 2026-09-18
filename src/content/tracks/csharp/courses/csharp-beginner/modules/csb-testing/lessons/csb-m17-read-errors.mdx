@@ -1,0 +1,26 @@
+## Compile-time: the friendly ones
+
+```csharp
+int x = "hello";        // CS0029: cannot convert
+Missing.Method();       // CS0103: does not exist
+```
+
+The compiler refuses to build wrong code and names the file, line, and reason. Fix immediately, before running anything — these are the cheapest failures you will ever see.
+
+## Runtime: exceptions
+
+```csharp
+var list = new List<int>();
+int first = list[0];    // ArgumentOutOfRangeException: index -1? no: 0, Count 0
+```
+
+The program compiles but hits an impossible state. The **stack trace** is the treasure: read it bottom-up — the top frame names the throwing line, the frames below name how you got there.
+
+## Logic bugs: the dangerous ones
+
+```csharp
+// compiles, runs, and confidently returns the WRONG answer
+static double Average(List<int> xs) => xs.Sum() / xs.Count;   // int division!
+```
+
+No exception, no crash — just `Average(new[] {3, 4}) == 3`. Only tests (or a suspicious user) find these. That's why this module is really about building the habit: **assert what you believe**.

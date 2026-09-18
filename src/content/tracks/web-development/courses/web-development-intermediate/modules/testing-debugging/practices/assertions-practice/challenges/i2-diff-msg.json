@@ -1,0 +1,20 @@
+{
+  "id": "i2-diff-msg",
+  "title": "Failure Messages That Help",
+  "prompt": "Write `fmt(v)` producing readable failure output: strings render with quotes, undefined/null render as their names, arrays render as [a, b, c] with fmt applied to items, plain objects render as {k: v, ...} with fmt values, functions render \"function\", everything else String(v).",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function fmt(v) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "primitives render readably",
+      "code": "const fn = new Function(code + \"\\nreturn { fmt };\");\nconst { fmt } = fn();\nif (fmt(\"hi\") !== '\"hi\"') throw new Error(\"Strings are quoted.\");\nif (fmt(undefined) !== \"undefined\") throw new Error(\"undefined named, not stringified.\");\nif (fmt(42) !== \"42\") throw new Error(\"Numbers pass through.\");\n",
+      "hint": "typeof switch first; null is its own case (typeof null === 'object')."
+    },
+    {
+      "name": "structures render with recursion",
+      "code": "const fn = new Function(code + \"\\nreturn { fmt };\");\nconst { fmt } = fn();\nif (fmt([1, \"a\"]) !== '[1, \"a\"]') throw new Error(\"Array items are fmt-ed.\");\nif (fmt({ a: 1 }) !== \"{a: 1}\") throw new Error(\"Objects list entries.\");\nif (fmt(() => {}) !== \"function\") throw new Error(\"Functions named.\");\n",
+      "hint": "Recursion is what makes nested failures readable."
+    }
+  ]
+}

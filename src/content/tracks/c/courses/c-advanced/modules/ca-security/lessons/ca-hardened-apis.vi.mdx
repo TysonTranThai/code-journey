@@ -1,0 +1,32 @@
+## Bộ API gia cố
+
+|rủi ro|gia cố|vì sao|
+|------|------|------|
+|`strcpy(dst, src)`|`snprintf(dst, dstsize, "%s", src)`|cắt tại dstsize, luôn kết thúc NUL, trả độ dài mong muốn để phát hiện mất mát|
+|`strcat(a, b)`|`strncat` với chỗ trống đã tính, hoặc tự theo dõi độ dài|lỗi lệch-một kinh điển của `strncat`: `n` là *byte cần sao*, không phải tổng cỡ|
+|`sprintf(buf, ...)`|`snprintf`|sprintf không có biên nào cả|
+|`atoi(s)`|`strtol(s, &end, 10)` + kiểm tra errno/phan vi|atoi không báo lỗi; `strtol` báo tràn qua ERANGE|
+|`gets`|không bao giờ; đã bị loại khỏi ngôn ngữ (C11)|bằng chứng lịch sử; `fgets(buf, size, stdin)` thay thế|
+
+Giá trị trả về của `snprintf` là phần quan trọng về an ninh: nó trả độ dài mà chuỗi *muốn*. Nếu >= dstsize, output đã bị cắt — coi đó là lỗi, không phải nhún vai:
+
+```c
+char buf[16];
+int need = snprintf(buf, sizeof buf, "%s", user);
+if (need < 0 || (size_t)need >= sizeof buf) { /* từ chối */ }
+```
+
+## Cờ gia cố (riêng compiler, ghi nhãn)
+
+GCC/Clang có các cờ phòng thủ theo tầng: `-fstack-protector-strong` (canary cho mảng), `-D_FORTIFY_SOURCE=2` (kiểm tra libc khi biết kích thước), `-Wformat-security` (cảnh báo định dạng không phải literal), `-fPIE`/ASLR (xáo trộn địa chỉ). Không cờ nào sửa chương trình hỏng — chúng biến *một số* khai thác thành crash ồn ào. Cờ là thực hành kỹ thuật riêng của GCC/Clang, không phải ISO C.
+
+## Kiểm chứng mà không viết khai thác
+
+Kiểm thử phòng thủ hỏi một câu cho mỗi nguy cơ: *guard có kích hoạt không?*
+
+- Guard tràn: đưa một byte quá biên, kỳ vọng đường từ chối (không phải crash — một sự từ chối).
+- Guard cắt cụt: kỳ vọng nhánh `need >= sizeof buf` được đi vào và xử lý.
+- TOCTOU: review cấu trúc — có khoảng trống nào giữa kiểm tra và dùng không? Nếu code kiểm `access()` rồi mới `open()`, câu trả lời là có, và bản vá là pattern dựa trên fd.
+- Double-free: free, gán NULL, free lần nữa — lần gọi thứ hai phải là no-op vô hại.
+
+Khai thác chứng minh kẻ tấn công có thể thắng; kiểm thử chứng minh guard kích hoạt. Chúng ta chỉ viết thứ thứ hai.

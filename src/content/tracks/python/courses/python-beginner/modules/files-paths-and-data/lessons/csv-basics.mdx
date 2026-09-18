@@ -1,0 +1,31 @@
+CSV (comma-separated values) is the universal export format of spreadsheets.
+
+```python
+line = "minh,21,Hanoi"
+name, age, city = line.split(",")
+# "minh", "21", "Hanoi"  — note age is still a STRING
+```
+
+Reading a whole CSV:
+
+```python
+rows = []
+with open("people.csv", encoding="utf-8") as f:
+    for line in f:
+        rows.append(line.strip().split(","))
+```
+
+The first row of most CSVs is a header — skip it with slicing (`rows[1:]`) or
+read it as column names. Values always arrive as strings; convert numbers
+yourself.
+
+Writing is the mirror image:
+
+```python
+with open("summary.csv", "w", encoding="utf-8") as f:
+    f.write("name,total\n")
+    f.write(f"{name},{total}\n")
+```
+
+(The real `csv` module handles quoting edge cases — meet it in Intermediate.
+For well-behaved data, split/join is honest work.)

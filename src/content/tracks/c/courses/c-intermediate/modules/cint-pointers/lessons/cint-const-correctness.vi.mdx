@@ -1,0 +1,62 @@
+## Đọc từ phải sang
+
+`const` gắn với cái bên **trái** (trừ khi không có gì ở đó — thì sang phải).
+Bốn vị trí, bốn hợp đồng:
+
+```c
+const int *p;         /* con trỏ đến int hằng: *p chỉ đọc, p di chuyển được */
+int const *p;         /* giống hệt dòng trên */
+int *const p;         /* con trỏ hằng đến int: p cố định, *p ghi được */
+const int *const p;   /* con trỏ hằng đến int hằng: không gì di chuyển */
+```
+
+Mẹo đọc: quét phải-sang-trái. `int *const p` → "p là con trỏ hằng đến int".
+`const int *p` → "p là con trỏ đến int-hằng".
+
+## Mỗi vị trí cấm gì — và không cấm gì
+
+```c
+int x = 1, y = 2;
+const int *a = &x;
+a = &y;               /* được: con trỏ tự nó di chuyển */
+*a = 5;               /* lỗi biên dịch: phần tử bị const */
+
+int *const b = &x;
+b = &y;               /* lỗi biên dịch: con trỏ bị const */
+*b = 5;               /* được: phần tử ghi được */
+```
+
+**Lời bảo đảm là theo kiểu dữ liệu, không theo thực tế.** `const int *p` hứa
+*qua p* bạn sẽ không ghi — nó không làm đối tượng bất biến:
+
+```c
+int v = 7;
+const int *spy = &v;
+/* *spy = 9;            lỗi biên dịch */
+v = 9;                 /* được: bản thân v chưa bao giờ là const */
+```
+
+## Chữ ký là nơi điều này trả lương
+
+```c
+size_t length(const char *s);        /* "tôi chỉ đọc chuỗi của bạn" */
+int clamp(int *value, int lo, int hi); /* "tôi sẽ ghi qua con trỏ này" */
+const int *find(const int *a, size_t n, int key); /* đọc-only vào, đọc-only ra */
+```
+
+`const` trong tham số là lời hứa với người gọi, được compiler kiểm tra. API
+đọc dữ liệu nhận con-trỏ-đến-const — mọi hàm chuỗi trong thư viện chuẩn đều
+vậy (`strlen(const char *)`).
+
+## Ép kiểu bỏ const
+
+`const int *` → `int *` qua cast là cú pháp hợp lệ và là undefined behavior
+**nếu đối tượng được định nghĩa là const**. Các dùng trung thực hiếm (giao
+tiếp với API cũ thiếu const). Nếu bạn với tới cast này trong code mới, chữ ký
+mới là thứ sai.
+
+## Kiểm tra hiểu biết
+
+- `char *const argv0` vs `const char *argv0` — cái nào được trỏ chỗ khác?
+  (Cái đầu không được; cái hai được.)
+- Vì sao `strlen` nhận `const char *`? (Nó hứa không sửa chuỗi.)

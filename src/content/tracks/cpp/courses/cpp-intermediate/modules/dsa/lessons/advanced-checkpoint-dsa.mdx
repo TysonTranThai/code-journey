@@ -1,0 +1,14 @@
+`bst_contains` is the exam because the *wrong-looking* version passes the
+eye test: searching both subtrees returns the same answers. It is just
+O(n) instead of O(log n) — and on a degenerate tree, indistinguishable
+from linear scan.
+
+The discipline being tested:
+
+- compare, then descend into exactly one subtree
+- `!n` is the base case that means "absent", not an error
+- `insert` mirrors the same walk and attaches at the null it reaches
+
+This is the exact trade `std::map` makes for you: the balanced variant
+keeps the tree height logarithmic so *every* lookup pays O(log n), never
+O(n). After this module, you know what you are paying for.

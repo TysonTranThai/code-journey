@@ -1,0 +1,32 @@
+## A reference is an alias
+
+```cpp
+int score = 90;
+int& alias = score;      // alias IS score — not a copy
+alias = 95;
+CHECK(score == 95);      // changed through the alias
+```
+
+Binding a reference writes no memory and calls no constructor: it is another *name* for an existing object. Rules that follow:
+
+- A reference must be initialized when declared, and can never refer to a different object later (no reseating).
+- `sizeof(alias)` is the size of the referent, `&alias` takes the referent's address — the language pretends the alias does not exist.
+- There are no references to nothing: a reference is born pointing at an object (dangling is possible only through bugs — below).
+
+## The API patterns (recap with teeth)
+
+```cpp
+void scale_all(std::vector<int>& v, int k);            // in-out: will modify
+int  total(const std::vector<int>& v);                 // in: big, read-only
+void bump(int& n);                                     // out: result through parameter
+int  twice(int n);                                     // small value: plain by-value
+```
+
+## The one danger: dangling
+
+```cpp
+const std::string& name = make_greeting();   // if make_greeting returns BY VALUE...
+// ...the temporary dies at the end of this statement; in many real cases name dangles
+```
+
+A reference promises *no ownership and no lifetime extension* (a temporary bound directly in an initializer is an exception — and relying on that exception is advanced). The beginner rule: **references must not outlive the object they name.** When data must survive the scope that created it, that is ownership — module 12's smart pointers, not references.

@@ -1,0 +1,63 @@
+Đến lúc chứng minh cả chuyên đề trong một lần. Bạn sẽ dựng trang trung tâm tài liệu
+cho **"Kite CLI"** — một công cụ dòng lệnh open-source hư cấu — theo cách một kỹ sư
+cao cấp ship nó: mọi quyết định trong dự án này đều là những quyết định bạn đã làm ở
+các bài học phía trên.
+
+## Đề bài
+
+Một trang bài viết tri thức cho Kite CLI. Nó phải phục vụ đồng thời bốn đối tượng:
+người dùng nhìn thấy, người dùng trình đọc màn hình, công cụ tìm kiếm cùng crawler mạng
+xã hội, và lập trình viên bảo trì trang sau bạn. Sản phẩm là một tài liệu HTML duy
+nhất; điểm số mang tính cấu trúc — mọi yêu cầu dưới đây đều kiểm tra được bằng cách
+đọc markup.
+
+**Tầng tài liệu**
+
+- Tài liệu hoàn chỉnh: doctype, `<html lang>`, charset, viewport, `<title>` không rỗng,
+  meta description.
+- Một URL canonical và bộ ba Open Graph (`og:title`, `og:description`, `og:image` với
+  URL tuyệt đối) để trang có preview liên kết đúng chuẩn.
+- Các bản `hreflang` alternate cho `en` và `vi` — tài liệu của Kite là song ngữ.
+- Đúng một `<h1>`; các cấp heading không bỏ bước; `<time datetime>` đánh dấu ngày cập
+  nhật cuối.
+
+**Tầng kiến trúc**
+
+- Landmark: `header` (dấu hiệu site), một `nav` (mục lục với các liên kết fragment giải
+  quyết được), `main`, `footer` (liên hệ qua `<address>`).
+- Bản thân bài viết là một `<article>` được đặt tên qua heading bằng `aria-labelledby`.
+- Mục cài đặt là một cặp `<section aria-labelledby>`.
+
+**Tầng tương tác**
+
+- Một FAQ dạng accordion gốc: các `<details>` anh em dùng chung `name`, mỗi cái có
+  `<summary>` không rỗng.
+- Nâng cấp tăng tiến: với hoặc không có JavaScript, lệnh cài vẫn đọc được và chọn được.
+
+**Tầng media**
+
+- Một hero responsive dựng trên `<picture>`: một source AVIF, một source WebP, và bản
+  dự phòng JPEG trên `<img>`; `width`/`height` nội tại; `alt` có ý nghĩa.
+- Một iframe demo được nhúng với sandbox tối thiểu an toàn (chỉ cho phép script), có
+  `title`, và `loading="lazy"`.
+
+**Tầng nâng cấp**
+
+- Hành động phá hủy "Delete local config…" bên trong một `<dialog>` có tên qua
+  `aria-labelledby`, `autofocus` đặt trên nút an toàn, và một form `method="dialog"`.
+
+## Thế nào là "hoàn thành"
+
+Bộ thực hành phía sau chứa ba thử thách quyết định-đối chiếu. Mỗi thử thách mở harness
+chấm điểm vào HTML của bạn và kiểm tra một tầng của đề bài — tài liệu + kiến trúc,
+tương tác + media, nâng cấp + metadata. Giống capstone của Intermediate, chúng không
+thể bị qua mặt: các phép kiểm đọc chính sản phẩm bạn dựng lên, nên cách duy nhất để
+đạt là dựng cho xong.
+
+## Điểm nối tiếp phía trước
+
+Dự án này cố tình không dùng framework: mọi pattern ở đây — landmark, tên, trạng thái
+gốc, kỹ thuật media, nhúng an toàn — là những gì các thư viện component tái hiện sau
+API của chúng. Khi các chuyên đề CSS nâng cao, JavaScript và kiến trúc frontend đến,
+bạn sẽ nhận ra lớp mình đang nắm giữ từ phía bên kia: là thứ mà component của bạn
+không được phá vỡ.

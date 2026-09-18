@@ -1,0 +1,30 @@
+{
+  "id": "pi5-ckpt-importer",
+  "title": "Resilient Record Importer",
+  "prompt": "Implement import_records(sources) where sources is a list of callables, each returning a list of dicts or raising. For each source: retry up to 2 times on failure; on final failure, log it (logger 'pi.importer', any level >= WARNING) and continue. Return the concatenated list of successfully fetched dicts. Preserve order. If EVERY source fails, raise ImportError-like error: raise RuntimeError('all sources failed').",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import logging\n\nlog = logging.getLogger('pi.importer')\n\ndef import_records(sources):\n    pass\n",
+  "tests": [
+    {
+      "name": "concatenates successes in order",
+      "code": "srcs = [lambda: [{'i': 1}], lambda: [{'i': 2}]]\nassert import_records(srcs) == [{'i': 1}, {'i': 2}]",
+      "hint": "Extend results in source order."
+    },
+    {
+      "name": "retries a transient source",
+      "code": "calls = []\ndef flaky():\n    calls.append(1)\n    if len(calls) < 2:\n        raise ValueError('transient')\n    return [{'i': 9}]\nassert import_records([flaky]) == [{'i': 9}]\nassert len(calls) == 2",
+      "hint": "One retry rescues a transient failure."
+    },
+    {
+      "name": "skips a dead source, keeps others",
+      "code": "def dead(): raise ValueError('gone')\nsrcs = [dead, lambda: [{'i': 3}]]\nassert import_records(srcs) == [{'i': 3}]",
+      "hint": "A failing source must not abort the import."
+    },
+    {
+      "name": "all sources dead raises",
+      "code": "def dead(): raise ValueError('gone')\ntry:\n    import_records([dead, dead])\n    failed = False\nexcept RuntimeError:\n    failed = True\nassert failed",
+      "hint": "Never return partial data silently — raise RuntimeError when nothing succeeded."
+    }
+  ]
+}

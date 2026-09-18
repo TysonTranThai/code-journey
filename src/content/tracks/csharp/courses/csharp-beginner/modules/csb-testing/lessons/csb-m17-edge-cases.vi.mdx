@@ -1,0 +1,21 @@
+## Phân loại rìa
+
+Với bất kỳ hàm nào, hãy hỏi: thế còn —
+
+- **Rỗng** — không có phần tử nào?
+- **Null** — sự vắng mặt của bộ sưu tập, không giống rỗng?
+- **Một** — phần tử đơn lẻ?
+- **Nhiều** — có còn hoạt động ở quy mô lớn?
+- **Biên** — đúng tại giới hạn (bug `<=` vs `<` sống ở đây)?
+- **Lạ** — trùng lặp, số âm, unicode, khoảng trắng?
+
+```csharp
+// bug biên kinh điển
+static bool IsAdult(int age) => age > 18;   // người 18 tuổi không đồng ý!
+```
+
+Lỗi lệch-một tập trung ở biên. Khi đặc tả nói "18 tuổi trở lên", hãy viết bài kiểm tra cho đúng 18 **trước tiên**.
+
+## Kiểm tra cả hai chiều
+
+Một giải pháp sai phải *thất bại* — đó là điều khiến một bài kiểm tra xứng đáng là kiểm tra. Với mọi lời khẳng định, thói quen hai chiều: một trường hợp mã đúng phải qua, và một cài đặt sát-nhưng-sai không được qua. Một bộ kiểm tra mà cái gì cũng qua thì không chứng minh điều gì.

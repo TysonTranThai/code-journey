@@ -1,0 +1,23 @@
+## Coupling: the thing architecture actually manages
+
+Architecture is not folders and diagrams — it is the management of **coupling**:
+how much one piece of code must know about another to work.
+
+Two symptoms tell you coupling is too high:
+
+- **Change amplification**: one business rule change forces edits across many
+  files ("I touched 14 files to rename a field").
+- **Test impossibility**: you cannot exercise business logic without a real
+  database, real HTTP, real clock.
+
+Coupling itself is not evil — the *direction* matters. Business rules should
+not know about delivery mechanisms (HTTP, CLI), persistence (SQL), or vendors.
+Those details should depend on the domain, never the reverse. That is the
+whole idea behind **dependency inversion**: high-level policy defines an
+interface; low-level detail implements it; the wiring points the dependency
+arrow inwards.
+
+The pragmatic test for every abstraction you add: **name the second
+implementation.** If there is only ever one implementation and no testing or
+boundary need, the interface is ceremony. (The test double in your unit tests
+counts as a second implementation.)

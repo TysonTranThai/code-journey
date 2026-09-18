@@ -1,0 +1,15 @@
+{
+  "id": "cint-checkpoint-m14-task",
+  "title": "The Safe Expression Evaluator",
+  "prompt": "Assemble the module into one hardened component: an evaluator for\ntiny integer expressions that CANNOT exhibit UB on any input. The\nboilerplate declares:\n\n```c\n/* grammar: NUMBER op NUMBER   (op: + - *)\n   input: the expression string; out: the result\n   returns 0 ok, -1 on ANY problem: syntax, too long (numbers must fit\n   int), intermediate or final overflow (int arithmetic), unknown op.\n   All arithmetic is saturating (Module 14 rules); no UB anywhere. */\nint eval_expr(const char *s, int *out);\n/* saturating helpers from this module's practice (implement them here) */\nint sat_add2(int a, int b);\nint sat_mul2(int a, int b);\n```\n\nGrammar: whitespace allowed around tokens; numbers are unsigned decimal\n(fit int, checked); exactly one operator; nothing else.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <limits.h>\n#include <stddef.h>\nint eval_expr(const char *s, int *out);\nint sat_add2(int a, int b);\nint sat_mul2(int a, int b);\n",
+  "tests": [
+    {
+      "name": "no input can hurt it",
+      "code": "\nint r;\nCHECK_EQ(eval_expr(\"2 + 3\", &r), 0); CHECK_EQ(r, 5);\nCHECK_EQ(eval_expr(\"7*6\", &r), 0); CHECK_EQ(r, 42);\nCHECK_EQ(eval_expr(\"  10 - 4  \", &r), 0); CHECK_EQ(r, 6);\nCHECK_EQ(eval_expr(\"2147483647 + 1\", &r), 0); CHECK_EQ(r, INT_MAX);   /* saturated, defined */\nCHECK_EQ(eval_expr(\"2147483647 * 2\", &r), 0); CHECK_EQ(r, INT_MAX);\nCHECK_EQ(eval_expr(\"-5 - 3\", &r), -1);        /* no unary minus in grammar */\nCHECK_EQ(eval_expr(\"1 / 2\", &r), -1);         /* unknown op */\nCHECK_EQ(eval_expr(\"99999999999 + 1\", &r), -1);  /* number doesn't fit int */\nCHECK_EQ(eval_expr(\"1 +\", &r), -1);\nCHECK_EQ(eval_expr(\"+ 1\", &r), -1);\nCHECK_EQ(eval_expr(\"\", &r), -1);\nCHECK_EQ(eval_expr(NULL, &r), -1);\nCHECK_EQ(eval_expr(\"1 + 2\", NULL), -1);\n",
+      "hint": "Tokenize strictly, parse numbers with a digit-count guard, apply saturating ops, never compute an overflowing expression."
+    }
+  ]
+}

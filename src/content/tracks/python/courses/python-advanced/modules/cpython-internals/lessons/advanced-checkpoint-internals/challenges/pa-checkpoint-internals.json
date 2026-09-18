@@ -1,0 +1,15 @@
+{
+  "id": "pa-checkpoint-internals",
+  "title": "LOAD_ATTR forensics",
+  "prompt": "Implement count_attr_loads (exact count of LOAD_ATTR instructions) and hoistable (True iff more than one).",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import dis\n\n# TODO: count_attr_loads(func), hoistable(func)",
+  "tests": [
+    {
+      "name": "counts and flags correctly",
+      "code": "class Config:\n    def __init__(self):\n        self.f = [1, 2, 3]\n        self.g = [4]\n\ndef repeats(cfg):\n    return sum(cfg.f) + sum(cfg.f)  # two LOAD_ATTR on the same attr\n\ndef once(cfg):\n    return sum(cfg.f)            # one LOAD_ATTR\n\ndef plain(x):\n    return x + 1                 # no attributes at all\n\nr = count_attr_loads(repeats)\nassert r == 2, f'count: {r}'\nassert count_attr_loads(once) == 1\nassert count_attr_loads(plain) == 0\nassert hoistable(repeats)\nassert not hoistable(once)\nassert not hoistable(plain)\nprint('ok')",
+      "hint": "LOAD_ATTR appears once per attribute access on an object; in 3.11 method calls also use LOAD_ATTR (LOAD_METHOD merged)."
+    }
+  ]
+}

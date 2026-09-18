@@ -1,0 +1,30 @@
+{
+  "id": "cppi-checkpoint-oop",
+  "title": "Checkpoint: Object-Oriented Design",
+  "prompt": "Implement `class Library` that owns a `std::vector<std::string> titles_;` plus an `inline static int copies_;` counting every title ever added across all instances. Provide: `void add(std::string title)` (push_back and bump the static counter), `std::size_t size() const`, `bool has(const std::string& title) const`, and `static int total_copies()`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <vector>\n#include <iostream>\n\nclass Library {\n    // members, static counter, methods\n};\n",
+  "tests": [
+    {
+      "name": "add-and-size",
+      "code": "Library lib;\nlib.add(\"zen\");\nCHECK_EQ(lib.size(), 1);\nCHECK_EQ(lib.total_copies(), 1);",
+      "hint": "Instance state and class state evolve together."
+    },
+    {
+      "name": "has",
+      "code": "Library lib;\nlib.add(\"zen\");\nCHECK(lib.has(\"zen\"));\nCHECK(!lib.has(\"nope\"));",
+      "hint": "has() searches the owned vector."
+    },
+    {
+      "name": "shared-static",
+      "code": "Library a;\nLibrary b;\na.add(\"x\");\nb.add(\"y\");\nCHECK_EQ(Library::total_copies(), 2);",
+      "hint": "Two instances share one static counter."
+    },
+    {
+      "name": "const-correct",
+      "code": "Library lib;\nlib.add(\"q\");\nconst Library& view = lib;\nCHECK_EQ(view.size(), 1);\nCHECK(view.has(\"q\"));",
+      "hint": "Read-only calls must work through a const reference."
+    }
+  ]
+}

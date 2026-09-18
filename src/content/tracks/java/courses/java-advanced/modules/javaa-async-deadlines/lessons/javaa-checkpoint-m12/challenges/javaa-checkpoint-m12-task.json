@@ -1,0 +1,21 @@
+{
+  "id": "javaa-checkpoint-m12-task",
+  "title": "Checkpoint: bounded fan-out, collected as values",
+  "prompt": "Inside Solution, implement the deadline aggregator:\n1. `static List<String> aggregate(List<Integer> ids, Executor executor)` — for each\nid, run a task that sleeps `id` ms (simulated work) and returns \"id-<id>-ok\" IF\nid is even; odd ids sleep then throw. Bound EACH branch with\n`orTimeout(80, MILLISECONDS)` and recover with handle → failure mode string:\n\"id-<id>-timeout\" for timeouts, \"id-<id>-error\" for other exceptions.\n2. Aggregate with allOf(...).orTimeout(500, MILLISECONDS), then join in submission\norder and return the list. Every id must appear exactly once — failures included.\n3. `static String philosophy()` returns exactly:\n\"per-branch bounds degrade dependencies; the aggregate bound protects the caller;\nfailures are values\".",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "every branch yields a value",
+      "code": "\njava.util.concurrent.Executor e = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor();\njava.util.List<String> out = Solution.aggregate(java.util.List.of(10, 30, 200, 7), e);\ncheckEq(out.size(), 4, \"one entry per id\");\ncheckEq(out.get(0), \"id-10-ok\", \"fast even succeeds\");\ncheckEq(out.get(1), \"id-30-ok\", \"medium even succeeds\");\ncheckTrue(out.get(2).equals(\"id-200-timeout\"), \"200ms exceeds 80ms bound: \" + out.get(2));\ncheckEq(out.get(3), \"id-7-error\", \"odd id errors\");\n",
+      "hint": "Timeouts and errors are values, in submission order."
+    },
+    {
+      "name": "philosophy",
+      "code": "\ncheckEq(Solution.philosophy(),\n  \"per-branch bounds degrade dependencies; the aggregate bound protects the caller;\\nfailures are values\",\n  \"the deadline contract\");\n",
+      "hint": "Say the three-part contract."
+    }
+  ],
+  "level": "real-world"
+}

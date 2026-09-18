@@ -1,0 +1,41 @@
+Here is the professional shape that makes HTTP code testable without a
+network — the same dependency-injection idea from modules 2 and 7, applied
+to transport:
+
+```python
+import json
+import urllib.request
+
+def fetch_json(url: str, opener=None) -> dict:
+    """opener(url) -> object with .read() -> bytes. Defaults to real urllib."""
+    if opener is None:
+        opener = urllib.request.urlopen     # real transport, real network
+    with opener(url) as response:
+        return json.loads(response.read())
+```
+
+In production, callers omit `opener` and the real network is used. In tests,
+a fake transport is two lines:
+
+```python
+class FakeResponse:
+    def __init__(self, payload: bytes):
+        self._payload = payload
+    def read(self):
+        return self._payload
+
+def test_fetch():
+    data = fetch_json("http://x", opener=lambda url: FakeResponse(b'{"ok": true}'))
+    assert data == {"ok": True}
+```
+
+## Why this beats mocking internals
+
+With injection, the function under test never knows it's in a test — no
+patching paths to remember, no refactor breaks when module layout changes.
+It also forces honest design: if you *can't* inject the transport, the
+function is doing too much.
+
+The industry tools (`requests`, `httpx`) sit on top of this same idea with
+more features (sessions, retries, base URLs). The pattern transfers — on your
+own machine, `pip install httpx` and the architecture is identical.

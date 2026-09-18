@@ -1,0 +1,42 @@
+## finally: luôn chạy
+
+```csharp
+try
+{
+    OpenConnection();
+    DoWork();          // có thể ném
+}
+finally
+{
+    CloseConnection(); // chạy cả khi thành công lẫn thất bại
+}
+```
+
+`finally` thực thi dù khối try thành công, ném, hay return. Hãy đặt dọn dẹp ở đó — giải phóng tài nguyên không bao giờ được phụ thuộc may rủi.
+
+Trong C# hiện đại, file/stream có sẵn hình dạng đó:
+
+```csharp
+using (var reader = new StringReader(text))
+{
+    ... // được dispose tự động, kể cả khi có ngoại lệ
+}
+```
+
+## Kiểm tra sớm, thất bại nhanh
+
+Mẫu xử lý lỗi mạnh nhất không phải là catch — mà là từ chối đầu vào xấu trước khi bất kỳ công việc nào diễn ra:
+
+```csharp
+static int ParseAge(string input)
+{
+    if (input == null) throw new ArgumentException("input required");
+    if (!int.TryParse(input, out int age))
+        throw new FormatException("not a number");
+    if (age < 0 || age > 150)
+        throw new ArgumentOutOfRangeException("implausible age");
+    return age;
+}
+```
+
+Hãy so với việc bắt lỗi *sau khi* nửa công việc đã xong: trạng thái giờ không nhất quán, dọn dẹp phức tạp, và thông điệp lỗi mơ hồ. Kiểm tra ngay ở cửa.

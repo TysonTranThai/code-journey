@@ -1,0 +1,18 @@
+## Warnings are UB radar
+
+`-Wall -Wextra` catches a large share of the classic UB (uninitialized use, format mismatches, shifts). Promote them to errors in CI. A warning you ignore trains you to ignore warnings.
+
+## Checked arithmetic at trust boundaries
+
+Where untrusted sizes meet arithmetic, check *before* it happens:
+
+```c
+if (n > SIZE_MAX / sizeof *buf) return ENOMEM;   /* before the multiply */
+buf = malloc(n * sizeof *buf);
+```
+
+Wraparound-safe idioms (unsigned modular arithmetic) are legitimate tools when the *domain* genuinely wraps — hash sums, counters. The skill is choosing deliberately, not by accident.
+
+## volatile is a porthole, not a fix
+
+Marking a variable volatile forces every read and write to actually happen — it defeats dead-store elimination and makes timing/order experiments honest. It does NOT make data races defined, does not provide atomicity, and is not a synchronization primitive. Race-free code needs atomics or locks (modules 19-20).

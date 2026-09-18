@@ -1,0 +1,53 @@
+## Nullable value types: absence you can see
+
+A value type cannot be null — unless you wrap it: `int?` is
+`Nullable<int>`, a struct holding a `bool HasValue` plus a `T Value`.
+
+```csharp
+int? found = list.Find(x => x > 10);   // 0 would be a lie; null means "none"
+if (found is int value) Use(value);    // pattern test + unwrap in one step
+int fallback = found ?? -1;            // GetValueOrDefault-style default
+```
+
+`int?` lifts operators: `null + 5` is `null` (not an exception). Comparisons
+with null are `false` — `null < 5` is false, not true.
+
+## Nullable reference types: promises the compiler checks
+
+Since C# 8, reference types are **non-nullable by default** under NRT. The
+compiler tracks null-state and warns:
+
+- `string?` — "may be null"; you must check before use.
+- `string` — "expected non-null"; assigning null warns.
+- `string? name = Fetch(); var len = name.Length;` — warning: possible null.
+- After `if (name != null)` the compiler *knows* it is safe — flow analysis.
+- `!` (null-forgiving) says "trust me" — a last resort, not a tool.
+
+Two honest tools when null is a legitimate answer:
+
+```csharp
+string? found = dict.GetValueOrDefault(key);        // null is real absence
+string  found2 = dict.GetValueOrDefault(key, "");   // or a default
+```
+
+And one dishonest one to avoid: initializing fields with `= null!` to
+silence the compiler creates a lie that explodes later.
+
+## The nullable machinery in API design
+
+`TryX` patterns (like Beginner's `int.TryParse`) return `bool` + `out` value;
+nullable returns let you express "no result" directly:
+
+```csharp
+public static int? ParseAge(string input) =>
+    int.TryParse(input, out int age) && age >= 0 ? age : null;
+```
+
+Callers then use `??`, `is int v`, or `if (v is not null)` — null becomes a
+visible, checkable part of the contract instead of an ambush.
+
+## Check your understanding
+
+- What is `(int?)null == null`? (True — lifted equality.)
+- `string s = null;` under NRT — warning or error? (Warning; still compiles.)
+- Why prefer `int?` over a magic `-1` sentinel? (Sentinels collide with real data.)

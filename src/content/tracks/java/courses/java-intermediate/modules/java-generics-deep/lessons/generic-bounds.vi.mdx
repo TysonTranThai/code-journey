@@ -1,0 +1,24 @@
+## Bounded type parameter
+
+`<T>` trần trụi hầu như không hứa gì. Bound biến lời hứa thành cụ thể:
+
+```java
+// T là subtype bất kỳ của Number — nên .doubleValue() hợp lệ trên nó
+static double average(List<? extends Number> xs) { ... }
+
+// <T extends Comparable<T>> cho phép gọi compareTo trên giá trị kiểu T
+static <T extends Comparable<T>> T max(List<T> xs) {
+    T best = xs.get(0);
+    for (T x : xs) if (x.compareTo(best) > 0) best = x;
+    return best;
+}
+```
+
+Hai dạng bound:
+- **Bound trên type parameter** `<T extends Comparable<T>>` — dùng khi T
+  phải chảy *qua* method (vào và ra).
+- **Wildcard bound** `List<? extends Number>` — dùng khi T chỉ chảy *ra*
+  khỏi list (đọc, không ghi).
+
+Nhiều bound: `<T extends Number & Comparable<T>>` — class trước, interface
+sau.

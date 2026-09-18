@@ -1,0 +1,15 @@
+{
+  "id": "cint-p10-xmacro",
+  "title": "Build the X-Macro Table",
+  "prompt": "The boilerplate defines a color table via X-macros:\n\n```c\n#define COLORS \\\n  X(RED,    0xFF0000) \\\n  X(GREEN,  0x00FF00) \\\n  X(BLUE,   0x0000FF)\n```\n\nImplement the two views over it (the enum and lookup are YOURS to write\nusing `COLORS`):\n\n```c\n/* the enum must contain CLR_RED, CLR_GREEN, CLR_BLUE (via pasting),\n   plus CLR_COUNT as the sentinel */\n/* returns the enum value for name (\"RED\" -> CLR_RED), or -1 */\nint clr_from_name(const char *name);\n/* returns the hex value for the enum, or -1 */\nlong clr_hex(int clr);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\n#include <string.h>\n#define COLORS \\\n  X(RED,    0xFF0000) \\\n  X(GREEN,  0x00FF00) \\\n  X(BLUE,   0x0000FF)\n\n#define X(id, hex) CLR_##id,\nenum { COLORS CLR_COUNT };\n#undef X\n\nstatic const struct { const char *name; long hex; } CLR_TAB[] = {\n#define X(id, hex) { #id, hex },\nCOLORS\n#undef X\n};\n\nint clr_from_name(const char *name);\nlong clr_hex(int clr);\n",
+  "tests": [
+    {
+      "name": "one list, two views",
+      "code": "\nCHECK_EQ(clr_from_name(\"RED\"), 0);\nCHECK_EQ(clr_from_name(\"GREEN\"), 1);\nCHECK_EQ(clr_from_name(\"BLUE\"), 2);\nCHECK_EQ(clr_from_name(\"PINK\"), -1);\nCHECK_EQ(clr_from_name(NULL), -1);\nCHECK_EQ(clr_hex(0), 0xFF0000);\nCHECK_EQ(clr_hex(2), 0x0000FF);\nCHECK_EQ(clr_hex(-1), -1);\nCHECK_EQ(clr_hex(CLR_COUNT), -1);\nCHECK_EQ(CLR_COUNT, 3);\n",
+      "hint": "clr_from_name walks CLR_TAB with strcmp, returning the index; clr_hex bounds-checks then reads hex."
+    }
+  ]
+}

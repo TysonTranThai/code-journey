@@ -1,0 +1,21 @@
+{
+  "id": "csb-p10-notifier",
+  "title": "Notifier behind an interface",
+  "prompt": "Implement in `Solution`: interface `INotifier { string Send(string message); }`; classes `EmailNotifier` (returns `\"email: \" + message`) and `SmsNotifier` (returns `\"sms: \" + message`); and `static string Broadcast(INotifier n, string message)` returning `n.Send(message)`.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "Cj.Eq(Solution.Broadcast(new Solution.EmailNotifier(), \"hi\"), \"email: hi\", \"email flavor\");\nCj.Eq(Solution.Broadcast(new Solution.SmsNotifier(), \"hi\"), \"sms: hi\", \"sms flavor\");",
+      "hint": "Broadcast depends only on the contract; the flavor comes from the object."
+    },
+    {
+      "name": "swap",
+      "code": "var notifiers = new List<Solution.INotifier> { new Solution.EmailNotifier(), new Solution.SmsNotifier() };\nstring log = \"\";\nforeach (var n in notifiers) log += n.Send(\"ping\") + \";\";\nCj.Eq(log, \"email: ping;sms: ping;\", \"contract-level loop\");",
+      "hint": "One loop, both implementations — code written against the interface never changes when flavors are added."
+    }
+  ],
+  "level": "independent"
+}

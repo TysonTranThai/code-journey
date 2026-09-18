@@ -1,0 +1,21 @@
+{
+  "id": "pa-dist-breaker",
+  "title": "CLOSED → OPEN → HALF-OPEN → CLOSED",
+  "prompt": "Implement `CircuitBreaker(threshold=3, cooldown=30.0)` with `allow(now)` and `record(now, ok)`:\n\n- starts CLOSED; `allow` returns True\n- each `record(now, False)` in CLOSED increments failures; reaching `threshold` trips state to OPEN and stamps `_opened_at = now`\n- while OPEN, `allow` returns False until `now - _opened_at >= cooldown`, then switches to HALF-OPEN and returns True exactly once (the probe)\n- `record(now, True)` in any state: resets failures and closes the circuit\n- `record(now, False)` in HALF-OPEN: re-opens (stamp `_opened_at = now`)\n\n`now` is always a float parameter — no time functions inside.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class CircuitBreaker:\n    def __init__(self, threshold=3, cooldown=30.0):\n        ...\n\n    def allow(self, now):\n        ...\n\n    def record(self, now, ok):\n        ...",
+  "tests": [
+    {
+      "name": "trips at threshold, blocks during cooldown",
+      "code": "b = CircuitBreaker(threshold=3, cooldown=30.0)\nfor t in (1.0, 2.0, 3.0):\n    assert b.allow(t) is True\n    b.record(t, False)\nassert b.state == 'open'\nassert b.allow(10.0) is False\nassert b.allow(32.9) is False   # 32.9 - 3.0 < 30\nassert b.allow(33.0) is True    # probe\nassert b.state == 'half-open'\nb.record(33.0, False)           # probe failed -> re-open\nassert b.state == 'open' and b.allow(40.0) is False\nprint('ok')",
+      "hint": "The breaker is a little clock-driven state machine."
+    },
+    {
+      "name": "success closes and resets",
+      "code": "b = CircuitBreaker(threshold=2, cooldown=10.0)\nb.record(0, False)\nb.record(0, False)\nassert b.state == 'open'\nassert b.allow(10.0) is True\nb.record(10.0, True)\nassert b.state == 'closed' and b.allow(11.0) is True\nb.record(11.0, False)\nassert b.state == 'closed'  # failures reset: one failure alone doesn't trip\nprint('ok')",
+      "hint": "A success clears the failure count, not just the state."
+    }
+  ],
+  "level": "combination"
+}

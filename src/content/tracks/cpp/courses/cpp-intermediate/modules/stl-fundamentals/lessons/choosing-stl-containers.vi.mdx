@@ -1,0 +1,24 @@
+Thực đơn STL đến lúc này: container tuần tự, adapter, và các họ kết hợp.
+Chọn container là checklist ba câu hỏi.
+
+1. **Bạn truy cập bằng gì?** Theo vị trí → `vector` (hoặc `array` nếu kích
+   thước cố định). Theo khoá → `map`/`unordered_map`. Chỉ theo kỷ luật →
+   adapter.
+2. **Đầu nào?** Cả hai đầu O(1) → `deque`. splice ở giữa với iterator ổn
+   định → `list`. Còn lại → `vector`.
+3. **Thứ tự sort có nằm trong hợp đồng không?** Có → họ có thứ tự. Không →
+   `unordered_map` để tra cứu nhanh.
+
+Độ phức tạp gộp trong một bảng:
+
+| Thao tác | vector | deque | list | map | unordered_map |
+|---|---|---|---|---|---|
+| index/front/back | O(1) | O(1) | O(n) | O(log n) | O(1) trung bình |
+| chèn ở hai đầu | O(1)* | O(1) | O(1) | O(log n) | O(1) trung bình |
+| tìm theo giá trị/khoá | O(n) | O(n) | O(n) | O(log n) | O(1) trung bình |
+
+\* khấu hao ở đầu cuối.
+
+Kế hoạch mặc định trong code thật: `vector` là mặc định, `unordered_map`
+để tra cứu, `map` khi kết quả phải có thứ tự, `priority_queue` để xử lý
+"tốt nhất trước", `deque` cho cửa sổ trượt.

@@ -1,0 +1,38 @@
+## The magic-string problem
+
+Functions that take `"admin"`, `"editor"`, `"viewer"` as strings are a bug factory: typos compile, casing drifts, and the set of valid values lives only in documentation. The fix is a **closed set with a type**:
+
+```cpp
+enum class Role { Viewer, Editor, Admin };
+
+Role role = Role::Editor;
+
+switch (role) {
+    case Role::Viewer: /* ... */ break;
+    case Role::Editor: /* ... */ break;
+    case Role::Admin:  /* ... */ break;
+}
+```
+
+## Why `enum class`, not plain `enum`
+
+- **Scoped:** values are `Role::Editor`, never bare `Editor` — no namespace pollution.
+- **Strongly typed:** `Role` does not silently convert to `int`; you cannot accidentally compare a Role with a number or pass it where an int is expected. (Plain pre-C++11 `enum` leaks values into the enclosing scope and converts to int — legacy code compat, not a recommendation.)
+- **Switch-checked:** with `-Wall -Wextra`, GCC warns when a switch over a `Role` misses a case (add a `default` or handle every enumerator).
+
+## `using`: type nicknames
+
+```cpp
+using Inventory = std::map<std::string, int>;
+using Scores = std::vector<int>;
+
+Inventory stock;             // reads like the domain
+std::vector<std::vector<int>> grid;
+using Grid = std::vector<std::vector<int>>;
+```
+
+`using` (modern; prefer it over C's `typedef`) gives long types honest names. It is documentation with compiler enforcement: change the alias once, every user follows.
+
+## Modeling exercise ahead
+
+The checkpoint asks you to design `struct Order { ... }` with `enum class Status { ... }` — one glance at the type definitions should explain the whole business domain.

@@ -1,0 +1,28 @@
+## Ordering: Comparable and Comparator
+
+`Comparable<T>` is the *natural* order — the object itself decides:
+
+```java
+record Weight(int grams) implements Comparable<Weight> {
+    public int compareTo(Weight o) { return Integer.compare(grams, o.grams); }
+}
+```
+
+`Comparator<T>` is an *external, swappable* order:
+
+```java
+Comparator<Employee> bySalary = Comparator.comparingInt(Employee::salary);
+Comparator<Employee> bySalaryDesc = bySalary.reversed();
+Comparator<Employee> byDeptThenSalary =
+    Comparator.comparing(Employee::dept).thenComparingInt(Employee::salary);
+```
+
+Rules of the road:
+- compare(a,b) < 0, 0, or > 0 — sign is the only thing that matters
+- comparator must be *consistent with equals* if used in sorted sets/maps,
+  or you get duplicate-looking entries
+- `Comparator.comparing(keyExtractor)` beats hand-written lambdas for
+  readability and null-handling (`nullsFirst`, `nullsLast`)
+
+Sorting with streams (`sorted(cmp)`) and `Collections.sort` share these
+interfaces.

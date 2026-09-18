@@ -1,0 +1,31 @@
+{
+  "id": "javi-p15-expense-report",
+  "title": "Milestone 3: Stream Reports",
+  "prompt": "Add the report layer in `Solution` (types from milestones 1–2 are\navailable):\n- `static int totalForCategory(Solution.ExpenseStore store,\n  String category)` — sum of that category's cents.\n- `static List<String> categoryTotals(Solution.ExpenseStore store)` —\n  one `\"category:cents\"` line per category, sorted by category name,\n  categories with zero expenses (never saved) excluded.\n- `static Optional<String> biggestSpend(Solution.ExpenseStore store)` —\n  the expense id with the highest cents (ties: lexicographically\n  smallest id); empty store → Optional.empty().\n\nUse streams with groupingBy/reducing or toMap merges — the point is\nexpressing aggregation declaratively.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "category totals",
+      "code": "\nSolution.InMemoryExpenseStore s = new Solution.InMemoryExpenseStore();\ns.save(new Solution.Expense(\"a\", \"food\", 100));\ns.save(new Solution.Expense(\"b\", \"food\", 50));\ns.save(new Solution.Expense(\"c\", \"travel\", 200));\ncheckEq(Solution.categoryTotals(s), List.of(\"food:150\", \"travel:200\"), \"grouped and summed\");\n",
+      "hint": "groupingBy + summingInt, keys sorted."
+    },
+    {
+      "name": "single category total",
+      "code": "\nSolution.InMemoryExpenseStore s = new Solution.InMemoryExpenseStore();\ns.save(new Solution.Expense(\"a\", \"food\", 100));\ncheckEq(Solution.totalForCategory(s, \"food\"), 100, \"the one food expense\");\ncheckEq(Solution.totalForCategory(s, \"travel\"), 0, \"absent category\");\n",
+      "hint": "Unknown category totals to 0."
+    },
+    {
+      "name": "biggest spend with tie-break",
+      "code": "\nSolution.InMemoryExpenseStore s = new Solution.InMemoryExpenseStore();\ns.save(new Solution.Expense(\"b\", \"food\", 500));\ns.save(new Solution.Expense(\"a\", \"travel\", 500));\ncheckEq(Solution.biggestSpend(s).orElseThrow(), \"a\", \"tie → smaller id\");\n",
+      "hint": "Max cents, then min id."
+    },
+    {
+      "name": "empty store",
+      "code": "\ncheckEq(Solution.biggestSpend(new Solution.InMemoryExpenseStore()).isPresent(), false, \"empty → empty\");\n",
+      "hint": "Optional.empty on no data."
+    }
+  ],
+  "level": "real-world"
+}

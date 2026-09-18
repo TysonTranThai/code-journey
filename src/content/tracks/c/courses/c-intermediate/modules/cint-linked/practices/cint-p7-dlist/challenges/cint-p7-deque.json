@@ -1,0 +1,20 @@
+{
+  "id": "cint-p7-deque",
+  "title": "Build the Sentinel Deque",
+  "prompt": "Implement a deque over a sentinel ring. The boilerplate declares:\n\n```c\ntypedef struct DNode {\n    int value;\n    struct DNode *prev, *next;\n} DNode;\n/* the caller owns the sentinel; init makes it self-linked */\nvoid dq_init(DNode *s);\nvoid dq_push_front(DNode *s, int v);\nvoid dq_push_back(DNode *s, int v);\nint  dq_pop_front(DNode *s, int *out);   /* 0 ok, -1 empty */\nint  dq_pop_back(DNode *s, int *out);    /* 0 ok, -1 empty */\nsize_t dq_len(const DNode *s);\n/* 1 if a forward walk and a backward walk see the same values reversed */\nint dq_consistent(const DNode *s);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\ntypedef struct DNode {\n    int value;\n    struct DNode *prev, *next;\n} DNode;\nvoid dq_init(DNode *s);\nvoid dq_push_front(DNode *s, int v);\nvoid dq_push_back(DNode *s, int v);\nint  dq_pop_front(DNode *s, int *out);\nint  dq_pop_back(DNode *s, int *out);\nsize_t dq_len(const DNode *s);\nint dq_consistent(const DNode *s);\n",
+  "tests": [
+    {
+      "name": "both ends, one ring",
+      "code": "\nDNode s;\ndq_init(&s);\nint v;\nCHECK_EQ(dq_len(&s), 0);\nCHECK_EQ(dq_pop_front(&s, &v), -1);\nCHECK_EQ(dq_pop_back(&s, &v), -1);\ndq_push_back(&s, 2);\ndq_push_front(&s, 1);\ndq_push_back(&s, 3);                    /* 1 2 3 */\nCHECK_EQ(dq_len(&s), 3);\nCHECK_EQ(dq_pop_front(&s, &v), 0); CHECK_EQ(v, 1);\nCHECK_EQ(dq_pop_back(&s, &v), 0); CHECK_EQ(v, 3);\nCHECK_EQ(dq_pop_front(&s, &v), 0); CHECK_EQ(v, 2);\nCHECK_EQ(dq_len(&s), 0);\nCHECK_EQ(dq_pop_back(&s, &v), -1);      /* drained both ways */\ndq_push_front(&s, 7);                   /* reusable */\nCHECK_EQ(dq_len(&s), 1);\nCHECK_EQ(dq_consistent(&s), 1);\n",
+      "hint": "push X: link between s and s->next (front) or s->prev and s (back). Sentinel never stores data."
+    },
+    {
+      "name": "consistency under churn",
+      "code": "\nDNode s;\ndq_init(&s);\nfor (int i = 0; i < 10; i++) {\n    if (i % 2) dq_push_back(&s, i); else dq_push_front(&s, i);\n}\nCHECK_EQ(dq_len(&s), 10);\nCHECK_EQ(dq_consistent(&s), 1);\nint v;\nfor (int i = 0; i < 10; i++) CHECK_EQ(dq_pop_front(&s, &v), 0);\nCHECK_EQ(dq_len(&s), 0);\nCHECK_EQ(dq_consistent(&s), 1);         /* empty ring is consistent */\n",
+      "hint": "If prev/next ever disagree, dq_consistent catches it — forward and backward walks differ."
+    }
+  ]
+}

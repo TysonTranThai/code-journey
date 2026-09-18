@@ -1,0 +1,19 @@
+## The gate (mini-build)
+
+A layered configuration engine — the shape every real host uses:
+
+1. `JsonConfig(string json)` — parses `{ "Section": { "Key": "value" } }`;
+   `Get("Section:Key")` returns the value or null.
+2. `LayeredConfig(IConfigProvider file, string envPrefix)` — looks up env
+   first (`envPrefix__SECTION__KEY`, upper-cased, `:` → `__`), then falls
+   back to the file provider.
+3. `BindRetry(IConfigProvider config)` → typed `RetryOptions` (defaults
+   3 / 200) reading `Retry:MaxAttempts` and `Retry:DelayMs` as ints, with
+   non-numeric values throwing FormatException.
+4. `Validate(RetryOptions)` — MaxAttempts >= 1, DelayMs >= 0; all problems
+   in one message: `"Retry: <p1>; <p2>"`.
+5. Secrets rule baked in: `Require(config, key)` returns the value or
+   throws `InvalidOperationException("Configuration key <key> is required")`
+   — no fallbacks.
+
+Provided: `IConfigProvider` / `MemoryConfig` (same as the practice).

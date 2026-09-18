@@ -1,0 +1,20 @@
+{
+  "id": "i2-dashboard-delegate",
+  "title": "Delegated Dashboard Events",
+  "prompt": "Model event delegation WITHOUT the DOM. Write `createDelegator(onToggle)` returning { wire, click } — wire(el, id) registers an element under a task id; click(target) simulates a click on target: if target is a registered element, call onToggle(id) for its CURRENT state, flip that state, and return true; unknown targets return false and do nothing. State per id starts at false (not done).",
+  "difficulty": "advanced",
+  "level": "guided",
+  "boilerplate": "function createDelegator(onToggle) {\n  // your code — no DOM needed\n}\n",
+  "tests": [
+    {
+      "name": "one entry point toggles the clicked task",
+      "code": "const fn = new Function(code + \"\\nreturn { createDelegator };\");\nconst { createDelegator } = fn();\nconst toggled = [];\nconst d = createDelegator((id, done) => toggled.push(id + \":\" + done));\nconst a = { tag: \"li\" };\nd.wire(a, \"7\");\nif (d.click(a) !== true) throw new Error(\"Click on a wired element is handled.\");\nif (toggled.join(\",\") !== \"7:false\") throw new Error(\"First click reports the pre-toggle state (false) and toggles it.\");\nif (d.click(a) !== true) throw new Error(\"Second click handled too.\");\nif (toggled.join(\",\") !== \"7:false,7:true\") throw new Error(\"State flipped between clicks.\");\n",
+      "hint": "A Map from element to { id, done }; click reads, reports, flips."
+    },
+    {
+      "name": "clicks off the items are ignored",
+      "code": "const fn = new Function(code + \"\\nreturn { createDelegator };\");\nconst { createDelegator } = fn();\nconst toggled = [];\nconst d = createDelegator((id) => toggled.push(id));\nif (d.click({ tag: \"ul\" }) !== false) throw new Error(\"Bare container click => false.\");\nif (d.click({ tag: \"li\" }) !== false) throw new Error(\"An UNWIRED li is not a task.\");\nif (toggled.length !== 0) throw new Error(\"No handler call for unknown targets.\");\n",
+      "hint": "Delegation guards the lookup: no registration, no action."
+    }
+  ]
+}

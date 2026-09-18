@@ -1,0 +1,41 @@
+Mọi thay đổi hiển thị đều đi qua một pipeline. Bước bị chạy lại quyết định cái giá.
+
+## Pipeline
+
+1. **Parse** — HTML thành DOM; CSS thành CSSOM. Script có thể chặn parsing (nên có `defer`/`async`).
+2. **Style** — tính xem quy tắc CSS nào áp cho từng phần tử ("Recalculate Style" mà bạn thấy trong DevTools).
+3. **Layout** — hình học: mọi phần tử ngồi đâu, to cỡ nào. Đổi _kích thước hoặc vị trí_ làm layout mất hiệu lực.
+4. **Paint** — tô pixel: chữ, màu, bóng, ảnh.
+5. **Composite** — GPU lắp các lớp đã tô. Rẻ nhất trong tất cả.
+
+Thứ tự chi phí quan trọng: đổi `transform` hoặc `opacity` có thể dừng ở composite (rẻ). Đổi `width`/`top`/`font-size` đi hết style→layout→paint (đắt — áp cho mọi phần tử bị ảnh hưởng và cả con của chúng). `color`/`background` bỏ qua layout nhưng vẫn phải paint.
+
+## Jank và ngân sách khung hình
+
+Trình duyệt nhắm 60fps — mỗi khung có **ngân sách 16.7ms** (10ms trên màn 120Hz). Một script task chạy 200ms đóng băng bấy nhiêu khung: trang giật thấy rõ. Long task đến từ vòng lặp lớn, đột biến DOM khổng lồ, hoặc layout thrashing.
+
+## Layout thrashing: bug hiệu năng kinh điển
+
+```js
+// XẤU: đọc-ghi-đọc-ghi ép layout mỗi vòng lặp
+for (const card of cards) {
+  const h = card.offsetHeight; // ĐỌC — ép layout (ghi trước đó còn treo)
+  card.style.height = h + 20 + "px"; // GHI — vô hiệu hóa layout
+}
+```
+
+Cách sửa là gom lô: **đọc hết, rồi ghi hết**.
+
+```js
+const heights = cards.map((c) => c.offsetHeight); // đọc hết
+cards.forEach((c, i) => {
+  c.style.height = heights[i] + 20 + "px";
+}); // ghi hết
+```
+
+## Thứ gì thực sự tạo khác biệt
+
+- Chuyển động bằng `visibility`/`opacity` thay vì animate kích thước
+- `content-visibility: auto` cho các đoạn dài nằm ngoài màn hình
+- Ít đột biến DOM hơn, mỗi lần lớn hơn (DocumentFragment, một reflow duy nhất)
+- Các thuộc tính Composite-only (`transform`, `opacity`) cho animation

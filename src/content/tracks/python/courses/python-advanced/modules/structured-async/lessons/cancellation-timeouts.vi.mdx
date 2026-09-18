@@ -1,0 +1,33 @@
+## Timeout và hủy, làm cho đúng
+
+Hủy trong asyncio là **hợp tác và dựa trên exception**: hủy một task sẽ sắp đặt
+cho `CancelledError` được raise tại điểm await hiện tại của nó.
+
+`asyncio.timeout(seconds)` (3.11+) wraps a block:
+
+```python
+import asyncio
+
+async def slow_api():
+    await asyncio.sleep(10)
+
+async def handler():
+    try:
+        async with asyncio.timeout(0.5):
+            await slow_api()
+    except TimeoutError:
+        return "gave up"          # TimeoutError in 3.11+, asyncio.TimeoutError before
+```
+
+Những điều chuyên nghiệp phải biết:
+
+- **Timeout hủy; sự hủy lan truyền.** Các block `finally` bên trong và async
+  context manager vẫn chạy — mã dọn dẹp phải an toàn khi bị hủy (không await
+  vô hạn trong phần cleanup).
+- Coroutine có thể **shield** một đoạn găng bằng `asyncio.shield(coro)` —
+  phía gọi vẫn nhận CancelledError, nhưng thao tác bên trong vẫn tiếp tục.
+- Nuốt `CancelledError` (`except Exception` thường KHÔNG bắt nó từ 3.8+...
+  nhưng `except BaseException` thì có) là cách kinh điển phá vỡ structured
+  concurrency. Chỉ bắt nó để re-raise sau khi dọn dẹp.
+- `asyncio.call_later`, timer gắn loop, và `asyncio.to_thread` (3.9+) để đẩy
+  call blocking sang thread — hoàn thiện bộ công cụ.

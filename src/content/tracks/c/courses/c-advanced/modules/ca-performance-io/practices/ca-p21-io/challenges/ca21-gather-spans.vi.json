@@ -1,0 +1,18 @@
+{
+  "title": "Gom span như writev",
+  "prompt": "Thiết kế kiểu POSIX. Cho `struct span { const char *base; size_t len; };`, cài `size_t spans_total(const struct span *s, size_t n)` (tổng len; NULL s với n>0 trả (size_t)-1) và `void spans_gather(const struct span *s, size_t n, char *out)` (nối các span vào out theo thứ tự; base NULL thì bỏ qua).",
+  "tests": [
+    {
+      "name": "tổng và gom",
+      "hint": "Ba buffer, một lượt: gather tái tạo dòng byte logic đúng thứ tự."
+    },
+    {
+      "name": "danh sách rỗng",
+      "hint": "n==0 nghĩa là không có gì để cộng (0 là đúng); NULL với n>0 là vi phạm hợp đồng."
+    },
+    {
+      "name": "base NULL bị bỏ qua",
+      "hint": "base NULL không đóng góp gì vào output — gather phải bỏ qua, không bao giờ dereference."
+    }
+  ]
+}

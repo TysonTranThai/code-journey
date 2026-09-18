@@ -1,0 +1,20 @@
+{
+  "id": "csb-checkpoint-m9-task",
+  "title": "BankAccount",
+  "prompt": "Implement `BankAccount` exactly as described — owner validation, the two exception types, and the untouched-balance rule on every rejection.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "basics",
+      "code": "var a = new Solution.BankAccount(\"An\", 100m);\nCj.Eq(a.Owner, \"An\", \"owner kept\");\nCj.Eq(a.Balance, 100m, \"opening balance\");\na.Deposit(50m);\nCj.Eq(a.Balance, 150m, \"deposit adds\");\na.Withdraw(30m);\nCj.Eq(a.Balance, 120m, \"withdraw subtracts\");",
+      "hint": "The happy path: constructor, deposit, withdraw, all reflected in Balance."
+    },
+    {
+      "name": "invariants",
+      "code": "var a = new Solution.BankAccount(\"Binh\", 120m);\nbool t1 = false;\ntry { a.Deposit(0m); } catch (ArgumentException) { t1 = true; }\nbool t2 = false;\ntry { a.Deposit(-100m); } catch (ArgumentException) { t2 = true; }\nbool t3 = false;\ntry { a.Withdraw(999m); } catch (InvalidOperationException) { t3 = true; }\nbool t4 = false;\ntry { a.Withdraw(-10m); } catch (ArgumentException) { t4 = true; }\nbool t5 = false;\ntry { new Solution.BankAccount(\"  \", 50m); } catch (ArgumentException) { t5 = true; }\nCj.True(t1 && t2 && t3 && t4 && t5, \"every invalid operation throws the right type\");\nCj.Eq(a.Balance, 120m, \"rejected operations left the balance untouched\");",
+      "hint": "Zero/negative deposits, over-withdrawal, negative withdrawal, blank owner — and the balance must not move."
+    }
+  ]
+}

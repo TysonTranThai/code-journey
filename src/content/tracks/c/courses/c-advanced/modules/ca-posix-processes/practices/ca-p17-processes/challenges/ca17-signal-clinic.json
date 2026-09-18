@@ -1,0 +1,26 @@
+{
+  "id": "ca17-signal-clinic",
+  "title": "Count Signal Deliveries",
+  "prompt": "POSIX. A handler (given) increments a `volatile sig_atomic_t` counter for SIGUSR1. Implement `int install_usr1_handler(void)` — install it with sigaction, return 0 on success and -1 on failure — and `int usr1_count(void)` returning the counter. Handler-touches-flags-only is the whole discipline.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define _POSIX_C_SOURCE 200809L\n#include <unistd.h>\n#include <sys/wait.h>\n#include <fcntl.h>\n#include <signal.h>\n#include <string.h>\n#include <errno.h>\nstatic volatile sig_atomic_t g_usr1 = 0;\nstatic void on_usr1(int sig) { (void)sig; g_usr1++; }\n",
+  "tests": [
+    {
+      "name": "install succeeds",
+      "code": "CHECK_EQ(install_usr1_handler(), 0);",
+      "hint": "sigaction with a handler for SIGUSR1 returns 0."
+    },
+    {
+      "name": "delivery counted",
+      "code": "CHECK_EQ(install_usr1_handler(), 0);\nraise(SIGUSR1);\nCHECK_EQ(usr1_count(), 1);",
+      "hint": "raise sends the signal to the calling process; the handler bumps the sig_atomic_t flag."
+    },
+    {
+      "name": "three deliveries",
+      "code": "CHECK_EQ(install_usr1_handler(), 0);\nraise(SIGUSR1);\nraise(SIGUSR1);\nraise(SIGUSR1);\nCHECK_EQ(usr1_count(), 3);",
+      "hint": "Each raise is one synchronous delivery; the counter sees all three."
+    }
+  ],
+  "level": "imitation"
+}

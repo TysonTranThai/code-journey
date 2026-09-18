@@ -1,0 +1,48 @@
+## Callbacks are contracts
+
+A callback parameter tells callers what shape they may pass, not what will
+happen. Design them like any contract:
+
+```csharp
+static List<string> TransformAll(
+    IEnumerable<string> source,
+    Func<string, string> transform)          // ONE contract: string -> string
+    => source.Select(transform).ToList();
+```
+
+Name the parameter for its role (`transform`, `predicate`, `onComplete`) —
+the name is the documentation.
+
+## Pipelines: compose small functions
+
+Delegates compose; small single-purpose transforms chain into behavior:
+
+```csharp
+Func<string, string> pipeline = s => s;
+pipeline = pipeline.Compose(s => s.Trim())
+                   .Compose(s => s.ToLowerInvariant());
+```
+
+(Or simply: `source.Select(Trim).Select(Lower)` — LINQ is composition with
+deferred execution, which Module 8 exploits fully.)
+
+## Strategy in three lines
+
+Any place you would write `switch (mode)`, consider passing the behavior:
+
+```csharp
+static int Reduce(int[] values, int seed, Func<int, int, int> fold) =>
+    values.Aggregate(seed, fold);
+
+var sum = Reduce(new[] { 1, 2, 3 }, 0, (a, b) => a + b);
+var max = Reduce(new[] { 1, 2, 3 }, int.MinValue, Math.Max);
+```
+
+The switch version must change (and be re-tested) for every new mode; the
+delegate version accepts new behavior without modification — open/closed in
+practice.
+
+## Check your understanding
+
+- When is a switch BETTER than a delegate parameter? (Closed sets with pattern-exhaustiveness needs.)
+- What does `Func<A,B>` + `Func<B,C>` compose into? (`Func<A,C>`.)

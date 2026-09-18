@@ -1,0 +1,30 @@
+RAII — Resource Acquisition Is Initialization — là idiom quan trọng nhất
+của C++: bọc mọi tài nguyên trong một đối tượng mà destructor của nó giải
+phóng tài nguyên đó. Thoát phạm vi, kể cả qua ngoại lệ, đều chạy destructor.
+Không rò rỉ.
+
+```cpp
+class FileGuard {
+public:
+    explicit FileGuard(std::FILE* f) : f_{f} {}
+    ~FileGuard() { if (f_) std::fclose(f_); }
+
+    FileGuard(const FileGuard&) = delete;             // một chủ sở hữu
+    FileGuard& operator=(const FileGuard&) = delete;
+private:
+    std::FILE* f_;
+};
+
+void work() {
+    FileGuard g{std::fopen("data.txt", "r")};  // chiếm giữ
+    // ... kể cả exception tại đây cũng không làm rò rỉ handle
+}                                              // destructor chạy tại đây
+```
+
+Bạn đã dùng RAII suốt từ đầu mà chưa gọi tên: `std::vector` sở hữu buffer
+heap của nó; `std::string` sở hữu các ký tự; `std::ofstream` sở hữu file
+handle. Smart pointer chỉ là RAII cho trường hợp *bạn* gọi `new`: chúng sở
+hữu một đối tượng heap và delete nó trong chính destructor của mình.
+
+Ownership là từ khóa thiết kế đứng sau từ viết tắt: đúng một đoạn code chịu
+trách nhiệm giải phóng mỗi tài nguyên. Mọi thứ khác chỉ mượn.

@@ -1,0 +1,21 @@
+{
+  "id": "ca8-bytesort",
+  "title": "A qsort of Your Own",
+  "prompt": "Implement insertion sort over void* exactly like the library contract:\n \n```c\nvoid isort(void *base, size_t n, size_t size, int (*cmp)(const void *, const void *));\n```\n \nElements move via a stack temp of up to 64 bytes and memcpy; stability is required (equal elements keep order).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "sorts ints",
+      "code": "int a[5] = {5, 2, 4, 1, 3};\nisort(a, 5, sizeof(int), cmp_int);\nCHECK_EQ(a[0], 1);\nCHECK_EQ(a[4], 5);",
+      "hint": "Byte-wise moves with size sizeof(int) and the comparator produce a correct sort."
+    },
+    {
+      "name": "stable on records",
+      "code": "rec_t r[3] = {{2, 20}, {1, 11}, {2, 22}};\nisort(r, 3, sizeof(rec_t), cmp_rec_key);\nCHECK_EQ(r[0].seq, 11);\nCHECK_EQ(r[1].seq, 20);\nCHECK_EQ(r[2].seq, 22);",
+      "hint": "Equal keys keep original relative order — the definition of stability."
+    }
+  ],
+  "level": "mini-build"
+}

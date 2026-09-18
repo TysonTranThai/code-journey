@@ -1,0 +1,20 @@
+{
+  "id": "i2-aggregate",
+  "title": "GROUP BY Simulator",
+  "prompt": "Write `groupByCount(rows, key)` returning an array of { key: keyValue, count } sorted by count desc (ties: key asc). Write `having(rows, key, min)` chaining: group, then keep groups with count >= min.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function groupByCount(rows, key) {\n  // your code\n}\n\nfunction having(rows, key, min) {\n  // your code — reuse groupByCount\n}\n",
+  "tests": [
+    {
+      "name": "counts per group, sorted",
+      "code": "const fn = new Function(code + \"\\nreturn { groupByCount, having };\");\nconst { groupByCount, having } = fn();\nconst rows = [\n  { author: \"ada\" }, { author: \"ada\" }, { author: \"bo\" },\n];\nconst out = groupByCount(rows, \"author\");\nif (out[0].key !== \"ada\" || out[0].count !== 2) throw new Error(\"ada leads with 2.\");\nif (out[1].count !== 1) throw new Error(\"bo trails with 1.\");\n",
+      "hint": "Map<string, number>, then entries sorted by count desc, key asc."
+    },
+    {
+      "name": "HAVING filters groups",
+      "code": "const fn = new Function(code + \"\\nreturn { groupByCount, having };\");\nconst { groupByCount, having } = fn();\nconst rows = [{ a: \"x\" }, { a: \"x\" }, { a: \"x\" }, { a: \"y\" }];\nif (having(rows, \"a\", 2).length !== 1) throw new Error(\"Only x survives count >= 2.\");\nif (having(rows, \"a\", 5).length !== 0) throw new Error(\"Nothing survives count >= 5.\");\n",
+      "hint": "Filter the grouped output by count."
+    }
+  ]
+}

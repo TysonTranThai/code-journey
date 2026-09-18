@@ -1,0 +1,30 @@
+JSON is how programs share structured data — the same format your future APIs
+will speak.
+
+```python
+import json
+
+config = {"theme": "dark", "font_size": 14, "tags": ["work", "urgent"]}
+
+text = json.dumps(config)        # dict -> JSON string
+again = json.loads(text)         # JSON string -> dict
+```
+
+And the file versions — the save/load pattern that powers small apps:
+
+```python
+import json
+
+def save(contacts, path):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(contacts, f, ensure_ascii=False, indent=2)
+
+def load(path):
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+```
+
+`ensure_ascii=False` keeps Vietnamese text readable in the file; `indent=2`
+makes it human-inspectable. JSON supports dicts, lists, strings, numbers,
+booleans, and null — tuples become lists, and anything else needs conversion
+before saving.

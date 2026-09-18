@@ -1,0 +1,43 @@
+Media query hỏi "viewport _rộng bao nhiêu_?" Container query hỏi "hộp của tôi
+_rộng bao nhiêu_?" — chính là điều component thực sự cần.
+
+## Cài đặt
+
+```css
+.card-wrapper {
+  container-type: inline-size;
+}
+
+@container (min-width: 400px) {
+  .card {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+  }
+}
+```
+
+`container-type: inline-size` đánh dấu phần tử là size container trên trục
+inline. Quy tắc `@container` áp style của nó **dựa trên container tổ tiên gần
+nhất** — cùng một `.card` có thể nằm ngang trong một ô sidebar rộng và xếp dọc
+trong ô hẹp, không cần JavaScript và không giả định gì về viewport.
+
+## Vì sao điều này thay đổi kiến trúc
+
+Với media query, diện mạo của component phụ thuộc vào vị trí của _trang_ — nên
+dùng lại một card trong hai layout đồng nghĩa với nhân đôi breakpoint. Với
+container, component tự sở hữu hành vi responsive của mình; thả vào đâu cũng
+tự thích ứng. Đây là nền móng của hệ thống thiết kế xây từ các phần độc lập.
+
+## Chữ động với clamp()
+
+Giữa các breakpoint cố định, `clamp()` nội suy mượt:
+
+```css
+h1 {
+  font-size: clamp(1.75rem, 1rem + 3vw, 3.5rem);
+}
+/* min, preferred (tăng theo viewport), max */
+```
+
+Kết hợp `clamp()` với layout theo container query và component luôn dễ đọc từ
+320px đến siêu rộng mà không cần thêm breakpoint nào.

@@ -1,0 +1,34 @@
+Fan-out có hạn chót ghép ba chặn trên:
+
+1. **Theo nhánh**: mỗi lời gọi từ xa nhận `orTimeout` — một dependency chậm
+   suy biến thành fallback CỦA CHÍNH NÓ, không phải của cả yêu cầu.
+2. **Tổng hợp**: `allOf(...).orTimeout(total, ...)` chặn trên *tổng* — từng
+   nhánh có thể ổn trong khi composition (thứ tự join, xếp hàng) vẫn vượt hạn.
+3. **Join kèm phục hồi**: thu thập bằng `handle` cho từng future, rồi join theo
+   thứ tự nộp — một danh sách kết quả mà mọi phần tử đều có mặt, mọi thất bại
+   là một *giá trị* ("timeout", "error"), không bao giờ là exception thoát ra
+   khỏi bộ tổng hợp.
+
+```java
+List<CompletableFuture<String>> branches = ids.stream()
+    .map(id -> supplyAsync(() -> call(id), exec)
+        .orTimeout(50, MILLISECONDS)
+        .handle((r, e) -> e == null ? r : "down"))
+    .toList();
+allOf(branches).join();           // tổng hợp có chặn trên
+return branches.stream().map(CompletableFuture::join).toList();
+```
+
+Kết quả: thành công một phần là *kết quả có cấu trúc* mà người gọi lý giải
+được, không phải một trò xổ số giữa chính sách timeout của người gọi này với
+người gọi kia.
+
+Một chi tiết tinh vi của JDK mà bộ tổng hợp phải sống sót qua: exception của
+chính tác vụ tới `handle` được **bọc** trong `CompletionException`, trong khi
+`TimeoutException` của `orTimeout` tới **trần trụi**. Code vững chắc mở bọc
+một tầng trước khi phân loại:
+
+```java
+Throwable ex = (e instanceof CompletionException && e.getCause() != null)
+    ? e.getCause() : e;
+```

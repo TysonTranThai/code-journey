@@ -1,0 +1,19 @@
+Two habits separate throwaway tests from trustworthy ones.
+
+## Test the edges, not just the happy path
+
+```python
+def test_grade():
+    assert letter_grade(90) == "A"    # the boundary
+    assert letter_grade(89.9) == "B"  # just below it — bugs live here
+    assert letter_grade(150) == "A"   # nonsense input, defined behavior
+```
+
+Bugs cluster at boundaries: zero, empty, one-past-the-end, the day the discount
+starts. Happy-path-only tests are passports that wave everything through.
+
+## A failing test must fail for the RIGHT reason
+
+Before celebrating a test that fails, read the error. Is it failing because the
+code is wrong, or because the test itself is wrong? A test suite nobody trusts
+is worse than no suite — it prints false alarms until people stop listening.

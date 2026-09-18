@@ -1,0 +1,30 @@
+{
+  "id": "cppi-checkpoint-memory",
+  "title": "Checkpoint: Memory & Lifetime",
+  "prompt": "Implement `long bounded_total(const long* values, int count, long cap)`: sum up to `count` values read through the pointer (stop early once the running total would exceed `cap` — in that case return `cap`). A null pointer with `count > 0`, or a negative `count`, must throw `std::invalid_argument`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <stdexcept>\n#include <iostream>\n\nlong bounded_total(const long* values, int count, long cap);\n",
+  "tests": [
+    {
+      "name": "simple",
+      "code": "long v[]{1, 2, 3};\nCHECK_EQ(bounded_total(v, 3, 100), 6);",
+      "hint": "Normal path sums all values."
+    },
+    {
+      "name": "cap",
+      "code": "long v[]{50, 60, 5};\nCHECK_EQ(bounded_total(v, 3, 100), 100);",
+      "hint": "50 fits; 60 would exceed → clamp at cap."
+    },
+    {
+      "name": "null",
+      "code": "CHECK_THROWS(bounded_total(nullptr, 2, 100));",
+      "hint": "Null with a positive count is a caller bug → throw."
+    },
+    {
+      "name": "negative-count",
+      "code": "long v[]{1};\nCHECK_THROWS(bounded_total(v, -1, 100));",
+      "hint": "Negative count is invalid → throw."
+    }
+  ]
+}

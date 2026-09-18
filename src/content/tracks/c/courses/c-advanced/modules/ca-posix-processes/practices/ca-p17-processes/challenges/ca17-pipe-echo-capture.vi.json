@@ -1,0 +1,18 @@
+{
+  "title": "Thu output con qua pipe",
+  "prompt": "Cài capture_child: fork, chuyển stdout con vào pipe tạo trước fork, exec /bin/sh -c cmd, đọc đến EOF (tối đa cap-1 byte, kết thúc NUL), waitpid, trả mã exit.",
+  "tests": [
+    {
+      "name": "thu được stdout",
+      "hint": "Pipe trước fork, dup2 ở con, đọc đến EOF ở cha: stdout con nằm trong buf."
+    },
+    {
+      "name": "truyền mã exit",
+      "hint": "Shell exit 3; waitpid + WEXITSTATUS báo lại."
+    },
+    {
+      "name": "output rỗng",
+      "hint": "Con không ghi gì cho buffer rỗng, có NUL kết thúc."
+    }
+  ]
+}

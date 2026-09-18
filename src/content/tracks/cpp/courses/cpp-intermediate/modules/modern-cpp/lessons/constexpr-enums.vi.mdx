@@ -1,0 +1,28 @@
+Hai tính năng chuyển công việc từ runtime sang compile time — và khiến ý
+đồ hiện rõ với cả compiler lẫn người đọc.
+
+`constexpr` đánh dấu một biểu thức hoặc hàm tính được lúc biên dịch khi
+nhận đối số hằng:
+
+```cpp
+constexpr int max_users = 1000;              // hằng số thật sự
+constexpr int square(int x) { return x * x; }
+static_assert(square(7) == 49);              // được chứng minh lúc biên dịch
+```
+
+`enum class` là enum có phạm vi, kiểu mạnh: các enumerator sống trong tên
+enum, không rò rỉ ra ngoài, không chuyển ngầm thành int, và kiểu nền do bạn
+chọn:
+
+```cpp
+enum class Status { Ok, NotFound, Error };
+
+Status s = Status::Ok;
+// int x = s;            // lỗi: không chuyển ngầm — chính là điểm giá trị
+if (s == Status::Ok) { }  // so sánh được kiểm tra kiểu
+```
+
+Bug kinh điển mà `enum class` loại bỏ: hai enum không-phạm-vi không liên
+quan (hoặc một enum và một int) âm thầm so sánh bằng nhau. Hãy dùng nó cho
+mọi enum mới; truyền bằng giá trị; switch đầy đủ — đa số compiler cảnh báo
+khi switch thiếu một enumerator.

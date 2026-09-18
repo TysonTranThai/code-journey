@@ -1,0 +1,83 @@
+Flexbox sắp một hàng; **Grid** sắp cả bàn cờ — hàng _và_ cột cùng lúc. Bộ khung trang, thư viện ảnh, dashboard: bất cứ nơi nào hai chiều cùng quan trọng.
+
+## Mô hình tinh thần
+
+```css
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+```
+
+- `grid-template-columns` định nghĩa các cột: ở đây, ba track, mỗi track `1fr` ("một phần của không gian trống" — ba phần bằng nhau).
+- `repeat(3, 1fr)` là cách viết gọn của `1fr 1fr 1fr`.
+- `gap` hoạt động đúng như trong flex — giữa các hàng và cột.
+- Các item tự chảy vào ô, từ trái sang phải, từ trên xuống dưới.
+
+## Phân số và bạn bè
+
+```css
+grid-template-columns: 200px 1fr; /* sidebar cố định, phần chính linh hoạt */
+grid-template-columns: 1fr 2fr; /* một phần, hai phần */
+grid-template-columns: auto 1fr; /* theo nội dung, rồi phần còn lại */
+```
+
+`fr` phân phối không gian _còn lại_ sau các kích thước cố định — bố cục "sidebar + main" chỉ là một dòng, không float, không mẹo vặt.
+
+## Đặt vị trí tường minh
+
+```css
+.featured {
+  grid-column: 1 / -1; /* trải từ đường đầu đến đường cuối: toàn bộ chiều rộng */
+}
+```
+
+Grid theo _đường_ (line), không phải ô: đường cột 1 đến đường -1 (điểm kết thúc). `span 2` cũng hoạt động: `grid-column: span 2`. Đây là cách một ô nuốt trọn một hàng trong thư viện ảnh.
+
+## Bộ khung trang
+
+```css
+.page {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+header {
+  grid-column: 1 / -1;
+}
+aside {
+  grid-column: 1;
+}
+main {
+  grid-column: 2;
+}
+footer {
+  grid-column: 1 / -1;
+}
+```
+
+```html
+<div class="page">
+  <header>…</header>
+  <aside>…</aside>
+  <main>…</main>
+  <footer>…</footer>
+</div>
+```
+
+Named areas (`grid-template-areas`) là bước tiếp theo — khi cần đến nó, nó đọc như một bức tranh ASCII của trang. Còn bây giờ, đặt vị trí theo đường đã đủ cho nhu cầu thật.
+
+## Flex hay Grid?
+
+Hãy hỏi: **một chiều hay hai chiều?** Một hàng nút, một nav, một toolbar → flex (nội dung dẫn dắt, item tự chảy). Bộ khung trang, thư viện ảnh, lưới biểu mẫu → grid (_container_ định nghĩa cấu trúc, item vào chỗ). Chúng kết hợp được: một ô grid có thể là một flex container. Tổ hợp đó là cách các trang hiện đại được xây.
+
+## Bạn đã học được gì
+
+- `display: grid` + `grid-template-columns`; phân số `fr`; `repeat()`
+- `gap` cho cả bàn cờ; item tự chảy vào ô
+- `grid-column: 1 / -1` trải trọn chiều rộng
+- Flex = một chiều (nội dung dẫn dắt); Grid = hai chiều (cấu trúc dẫn dắt)
+
+**Tiếp theo:** responsive design — cùng những bố cục đó, thích ứng với mọi màn hình.

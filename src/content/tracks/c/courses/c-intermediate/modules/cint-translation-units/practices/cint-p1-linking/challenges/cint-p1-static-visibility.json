@@ -1,0 +1,16 @@
+{
+  "id": "cint-p1-static-visibility",
+  "title": "Internal Linkage Twins",
+  "prompt": "Implement a file-scope static counter pair that demonstrates internal\nlinkage semantics:\n\n```c\nint tally_a(int n);   /* uses static accumulator a_count */\nint tally_b(int n);   /* uses static accumulator b_count */\n```\n\nEach function adds `n` to its own accumulator (both start at 0) and returns the\nnew total. The two accumulators must be independent — that is the whole point of\ninternal linkage. Also implement `int peek_a(void)` returning a_count unchanged.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "accumulators are independent",
+      "code": "\nCHECK_EQ(tally_a(5), 5);\nCHECK_EQ(tally_b(3), 3);\nCHECK_EQ(tally_a(2), 7);\nCHECK_EQ(tally_b(4), 7);\nCHECK_EQ(peek_a(), 7);\nCHECK_EQ(tally_a(0), 7);\n",
+      "hint": "static int a_count = 0; static int b_count = 0; — two file-scope statics."
+    }
+  ],
+  "level": "imitation"
+}

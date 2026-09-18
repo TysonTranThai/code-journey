@@ -1,0 +1,16 @@
+{
+  "id": "py-json-save-contacts",
+  "title": "Save Contacts",
+  "prompt": "contacts is given (a dict of name -> phone). Save it as JSON into contacts.json with ensure_ascii=False and indent=2. The test loads the file back and compares.",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "contacts = {\"Minh\": \"0901\", \"Lan\": \"0902\"}\n",
+  "tests": [
+    {
+      "name": "file round-trips",
+      "code": "import json as _j\nwith open(\"contacts.json\", encoding=\"utf-8\") as _f:\n    _d = _j.load(_f)\nassert _d == {\"Minh\": \"0901\", \"Lan\": \"0902\"}, f\"got {_d}\"\nassert \"json.dump\" in code, \"use json.dump into the open file\"",
+      "hint": "with open(\"contacts.json\", \"w\", encoding=\"utf-8\") as f: json.dump(contacts, f, ensure_ascii=False, indent=2)"
+    }
+  ],
+  "level": "guided"
+}

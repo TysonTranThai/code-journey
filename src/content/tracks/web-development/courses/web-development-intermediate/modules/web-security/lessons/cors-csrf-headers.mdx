@@ -1,0 +1,39 @@
+## CORS: who may call your API from a browser
+
+Browsers block cross-origin _reads_ by default (Same-Origin Policy). **CORS** is the server's opt-in: response headers declaring which origins may read the response.
+
+```text
+Access-Control-Allow-Origin: https://app.example.com
+Access-Control-Allow-Methods: GET, POST
+Access-Control-Allow-Credentials: true
+```
+
+Key mental model: **CORS protects the _server's_ data from other sites' scripts** — it does not protect your site from being called. `Access-Control-Allow-Origin: *` (anyone) plus credentials is not just wrong, browsers forbid it. And CORS is enforced by the browser only — `curl` doesn't care, so CORS is _not_ an access-control system.
+
+## CSRF: forged requests ride the user's cookies
+
+If evil.com embeds `<form action="https://bank.example/transfer" method="POST">` and auto-submits it, the browser attaches the victim's bank cookies — a **CSRF** attack. The cookie proves identity, not intent.
+
+Defenses:
+
+- **SameSite cookies** (`Lax` default in modern browsers) — cross-site POSTs don't carry the cookie
+- **CSRF tokens** — a random value the server embeds in the form and verifies on submit; evil.com can't read it (Same-Origin Policy) so can't supply it
+- **Don't use GET for state changes** — GETs are fetched by links, images, prefetchers
+
+## Security headers: cheap, real hardening
+
+```text
+Content-Security-Policy: default-src 'self'; img-src 'self' data:
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY            (or frame-ancestors in CSP)
+Referrer-Policy: strict-origin-when-cross-origin
+```
+
+- **CSP** limits what scripts/styles/images may load — the XSS backstop
+- **HSTS** forces https for a year (including subdomains)
+- **nosniff** stops content-type guessing (a text file becoming a script)
+- **frame options** block clickjacking (your page invisibly framed behind attacker buttons)
+- **Referrer-Policy** stops leaking full URLs (with tokens!) to other sites
+
+Set them once in the server config; verify with securityheaders.com; revisit when adding third parties (CSP especially).

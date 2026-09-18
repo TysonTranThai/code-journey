@@ -1,0 +1,38 @@
+You already use `git commit` daily. Now look at what it actually creates.
+
+## Commits are snapshots, not diffs
+
+Each commit stores a full tree (snapshot) of every file, a message, an author, and a pointer to its **parent** commit(s). History is a directed graph:
+
+```text
+A ← B ← C        (main, linear)
+      \
+       D ← E      (feature, diverged from B)
+```
+
+`HEAD` points to a branch; a branch is just a movable pointer to one commit. That is _all_ a branch is — 41 bytes in `.git/refs`.
+
+## Reading the graph
+
+```bash
+git log --oneline --graph --all
+```
+
+Learn to read this fluently. Questions professionals ask of history:
+
+- **Where did these two lines diverge?** `git merge-base main feature`
+- **Which commits are on main but not here?** `git log main ^feature` (read: commits reachable from main, excluding feature)
+- **What exactly changed in commit X?** `git show X`
+- **When did this line last change?** `git blame -L 10,20 file` — and `git log -S "thatString"` to find the commit that _introduced_ it (pickaxe search).
+
+## Branch pointers move; commits are (mostly) forever
+
+When you "delete" a commit from a branch, the commit object still exists — the branch pointer simply stopped pointing at it. `git reflog` records every movement of HEAD for ~90 days, which is why almost nothing in Git is truly lost.
+
+## Three states, one mental model
+
+- **working directory** — your files right now
+- **staging area (index)** — the _next_ snapshot, built with `git add`
+- **repository (HEAD)** — committed history
+
+`git diff` (working vs index), `git diff --staged` (index vs HEAD), `git diff main` (working vs main). Professionals always check `git status` before any history-changing command.

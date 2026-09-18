@@ -1,0 +1,15 @@
+{
+  "id": "pa-dist-idempotent-processor",
+  "title": "Exactly-once effects on at-least-once delivery",
+  "prompt": "Implement `process_stream(jobs, max_attempts=3)` where `jobs` is a list of `[job_id, payload, attempts]` batches over time (concatenate them in order):\n\n- maintain `done` (dict job_id → 'done:' + job_id) and `dead` (list of [job_id, payload, attempts])\n- a job already in `done` is skipped — its effect happened once, redelivery is a no-op\n- a `'poison'` payload increments its attempt counter each time it is seen; when attempts reach `max_attempts` it moves to `dead` (as [job_id, payload, max_attempts]) and is never processed again\n- any other payload is effected exactly once (added to `done`) the first time it is seen\n- return `{'done': {...}, 'dead': [...]}`\n\nExample: `[[('j1','work',0)], [('j1','work',0), ('p','poison',0)], [('p','poison',1)], [('p','poison',2)]]` with max_attempts=3 → j1 done once, p dead at attempts 3 (sightings 0,1,2 → attempts 1,2,3).",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "def process_stream(jobs, max_attempts=3):\n    ...",
+  "tests": [
+    {
+      "name": "redelivery is a no-op, poison dies at budget",
+      "code": "batches = [[['j1', 'work', 0]], [['j1', 'work', 0], ['p', 'poison', 0]], [['p', 'poison', 1]], [['p', 'poison', 2]]]\nr = process_stream(batches, max_attempts=3)\nassert r['done'] == {'j1': 'done:j1'}\nassert r['dead'] == [['p', 'poison', 3]]\nprint('ok')",
+      "hint": "The done-gate short-circuits duplicates; attempts accumulate across batches."
+    }
+  ]
+}

@@ -1,13 +1,18 @@
 import "server-only";
 
+import nodemailer from "nodemailer";
+
 /**
  * Email transport (07-04). A single seam so password reset (and any future
- * transactional email) works without a real mailbox today, and a real provider
- * can be dropped in later with a one-adapter change — no vendor locked in.
+ * transactional email) works without a mailbox in dev, and a real provider
+ * plugs in via env config — no vendor locked in.
  *
- * Default: a console sender (logs the composed email) that needs no network or
- * credentials. A real provider is selected from EMAIL_PROVIDER + credentials in
- * production (see getEmailSender).
+ * Production mode: when EMAIL_PROVIDER=smtp and SMTP_URL + EMAIL_FROM are
+ * set, a Nodemailer SMTP transport is used (SMTP_URL like
+ * smtps://user:pass@smtp.example.com:465, or smtp://host:587 with
+ * SMTP_USER/SMTP_PASS or URL-embedded credentials). The reset link is the
+ * only secret ever handed to the transport, and it is single-use,
+ * hashed-at-rest, and expires in 1h.
  */
 
 export interface EmailSender {
@@ -22,13 +27,47 @@ const consoleEmailSender: EmailSender = {
   },
 };
 
+/** Nodemailer SMTP sender (production). Built only when SMTP_URL is set. */
+class SmtpEmailSender implements EmailSender {
+  private readonly transporter: nodemailer.Transporter;
+  private readonly from: string;
+
+  constructor(from: string, url: string) {
+    this.transporter = nodemailer.createTransport(url, { from });
+    this.from = from;
+  }
+
+  send(to: string, message: { subject: string; text: string; html?: string }): Promise<void> {
+    return this.transporter.sendMail({
+      from: this.from,
+      to,
+      subject: message.subject,
+      text: message.text,
+      html: message.html,
+    });
+  }
+}
+
 /**
- * Resolve the active sender. When EMAIL_PROVIDER and its credentials are set in
- * production, a real provider sender is returned here. Until then the console
- * sender is the only one Phase 7 ships.
+ * Resolve the active sender:
+ * 1. EMAIL_PROVIDER=smtp with SMTP_URL (and EMAIL_FROM) → real SMTP transport.
+ * 2. Otherwise (or misconfigured) → console sender, with a loud warning so a
+ *    "password reset is email-ready" claim can never be made silently.
  */
 export function getEmailSender(): EmailSender {
-  // TODO(production): build a real sender (Nodemailer/SMTP or a transactional
-  // API) from EMAIL_* env vars and return it here. Single seam — one change.
+  const url = process.env.SMTP_URL?.trim();
+  const from = process.env.EMAIL_FROM?.trim();
+  if (process.env.EMAIL_PROVIDER === "smtp" && url && from) {
+    return new SmtpEmailSender(from, url);
+  }
+  if (url && from) {
+    // SMTP credentials exist but EMAIL_PROVIDER is not set to "smtp".
+    // Fail-safe to console, never silently claim real delivery.
+    console.warn(
+      "[email] SMTP_URL is set but EMAIL_PROVIDER is not 'smtp' — using the console dev sender. Set EMAIL_PROVIDER=smtp to enable real email.",
+    );
+  }
   return consoleEmailSender;
 }
+
+export { consoleEmailSender };

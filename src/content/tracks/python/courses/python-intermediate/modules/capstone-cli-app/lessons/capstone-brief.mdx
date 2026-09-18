@@ -1,0 +1,32 @@
+You will build **TaskNoter** — a small but professional task manager CLI —
+*independently*. This brief gives requirements, constraints, and acceptance
+criteria. There is no reference solution: the three checkpoint challenges
+grade the **decisions** that matter, and your implementation choices are yours.
+
+## Requirements
+
+1. **Storage**: SQLite table `tasks(id INTEGER PRIMARY KEY, title TEXT NOT NULL UNIQUE, done INTEGER NOT NULL DEFAULT 0)`.
+2. **Repository**: a class exposing add(title), get(task_id), complete(task_id), list_open() — all SQL parameterized, UNIQUE violations translated to a custom TaskError.
+3. **Service layer**: functions annotated with type hints (str/int/bool/dict), validating input at the boundary and raising TaskError subclasses.
+4. **Interface**: a main(argv) dispatcher for `add <title>` and `list` commands with correct exit codes (0 success, 2 usage error) and stderr error reporting.
+5. **Report**: a function summarizing tasks as a dict with keys `total` and `open` counting all and open tasks.
+
+## Architecture constraints
+
+- Layering: interface → domain/service → repository → sqlite. No SQL in the service or interface layers.
+- No shell calls, no pickle, no hardcoded secrets. Errors are raised, not printed, below the interface layer.
+- Behavior beats decoration: helper functions are fine; frameworks are not needed.
+
+## The three milestones (graded checkpoint challenges)
+
+- **Milestone 1 — Storage and Repository**: schema + repository behavior (below, challenge 1).
+- **Milestone 2 — Service and Errors**: typed validation boundary (challenge 2).
+- **Milestone 3 — Interface and Report**: CLI dispatch + summary (challenge 3).
+
+## How to work (and with AI)
+
+Write your own tests for each milestone *before* implementing (module 7's
+discipline). Use the AI mentor to critique designs, generate extra test
+cases, and review diffs — never to accept wholesale architecture. Submit
+each milestone's function signatures exactly as the challenges specify so
+the graders can verify your decisions.

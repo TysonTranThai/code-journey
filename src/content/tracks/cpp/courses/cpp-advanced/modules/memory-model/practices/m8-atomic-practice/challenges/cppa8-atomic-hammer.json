@@ -1,0 +1,21 @@
+{
+  "id": "cppa8-atomic-hammer",
+  "title": "A Race-Free Counter",
+  "prompt": "Implement `hammer` spawning `nThreads` threads that each increment `counter` `incs` times. Total increments must be exact — the counters prove atomicity.",
+  "difficulty": "advanced",
+  "level": "independent",
+  "language": "cpp",
+  "boilerplate": "#include <atomic>\n#include <cstddef>\n#include <thread>\n#include <vector>\n\n// Increment the counter from n threads, incs times each.\nvoid hammer(std::atomic<int>& counter, int nThreads, int incs);\n",
+  "tests": [
+    {
+      "name": "total is exact across threads",
+      "code": "std::atomic<int> c{0};\nhammer(c, 4, 1000);\nCHECK_EQ(c.load(), 4000);",
+      "hint": "Spawn threads with std::thread, each runs a for-loop of counter.fetch_add(1, std::memory_order_relaxed), then join every thread before returning."
+    },
+    {
+      "name": "single-thread sanity",
+      "code": "std::atomic<int> c{0};\nhammer(c, 1, 10);\nCHECK_EQ(c.load(), 10);",
+      "hint": "Same path, one thread — guards against off-by-one in the loop."
+    }
+  ]
+}

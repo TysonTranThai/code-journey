@@ -1,0 +1,40 @@
+Trong mọi hàm thành viên non-static, `this` là địa chỉ của đối tượng mà lời
+gọi đang chạy trên đó. Bạn hiếm khi *viết* nó — `balance_` chính là
+`this->balance_` — nhưng có ba chỗ bạn dùng nó một cách chủ đích.
+
+```cpp
+#include <string>
+
+class Account {
+public:
+    Account& deposit(long cents) {          // trả *this để nối chuỗi lời gọi
+        balance_ += cents;
+        return *this;
+    }
+    Account& withdraw(long cents) {
+        balance_ -= cents;
+        return *this;
+    }
+    bool same_as(const Account& other) const {
+        return this == &other;               // bản sắc: so địa chỉ
+    }
+    long balance() const { return balance_; }
+
+private:
+    long balance_{0};
+};
+
+// nối chuỗi: a.deposit(100).withdraw(30).deposit(5);
+```
+
+## Ba cách dùng chủ đích
+
+1. **Trả `*this`** bằng reference để nối chuỗi và cho các toán tử gán
+   (`operator=` ở Module 4 làm đúng điều này).
+2. **So sánh bản sắc** — `this == &other` trả lời "có phải literally cùng một
+   đối tượng?" (khác với `==` nghĩa là giá trị bằng nhau).
+3. **Phân biệt** — khi tham số che member, `this->name` chọn member; tốt hơn
+   hãy đổi tên.
+
+Trong hàm thành viên `const`, `this` có kiểu `const Account*` — đó là toàn bộ
+cơ chế để const lan xuống các member.

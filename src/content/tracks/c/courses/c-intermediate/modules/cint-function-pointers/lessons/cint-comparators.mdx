@@ -1,0 +1,56 @@
+## The three-way contract
+
+A comparator takes two element pointers and returns:
+
+- `< 0` if the first sorts before the second
+- `0` if equal for ordering purposes
+- `> 0` if the first sorts after
+
+`qsort` in `<stdlib.h>` is the canonical consumer:
+
+```c
+static int cmp_int(const void *a, const void *b) {
+    int x = *(const int *)a;
+    int y = *(const int *)b;
+    return (x > y) - (x < y);      /* branchless, overflow-proof */
+}
+qsort(arr, n, sizeof(int), cmp_int);
+```
+
+## The subtraction trap
+
+```c
+return x - y;    /* BUG: overflows for x = INT_MAX, y = INT_MIN */
+```
+
+Learners meet this on every array of large numbers. The fix is the
+`(x > y) - (x < y)` idiom (or explicit branches). Same contract, no overflow.
+
+## The void* handshake
+
+`qsort` knows nothing about your data. It hands the comparator two
+`const void *` pointing at single elements; you cast them to their real
+element type. The element size is passed separately — the comparator never
+needs it (but multi-field sorts may cast to the struct type).
+
+```c
+typedef struct { int key; const char *name; } Entry;
+static int cmp_entry(const void *a, const void *b) {
+    const Entry *ea = a, *eb = b;    /* void* -> any object pointer, implicitly */
+    return (ea->key > eb->key) - (ea->key < eb->key);
+}
+```
+
+## Consistency requirements
+
+Your comparator must be a **strict weak ordering**: consistent with itself
+(`cmp(a,b) > 0` implies `cmp(b,a) < 0`), transitive, and stable across calls.
+A comparator that returns different answers for the same pair (e.g. reads a
+mutable global) hands qsort garbage and can read/write out of bounds — the
+standard library trusts you completely here.
+
+## Check your understanding
+
+- Why does the comparator receive pointers, not values? (qsort works for any
+  element type/size; it only moves bytes and calls your comparator.)
+- `cmp(a, a)` must return what? (0 — an element equals itself in ordering.)

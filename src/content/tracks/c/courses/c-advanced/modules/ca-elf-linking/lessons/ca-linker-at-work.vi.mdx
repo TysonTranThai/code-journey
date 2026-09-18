@@ -1,0 +1,16 @@
+## Chương trình hai file liên kết bằng tay
+
+```c
+/* counter.c */  int counter = 5; int bump(void) { return ++counter; }
+/* main.c   */  int bump(void); int main(void) { return bump(); }
+```
+
+`gcc -c counter.c main.c` tạo hai object; `gcc main.o counter.o -o prog` giải quyết `bump` xuyên biên giới. Đảo thứ tự liên kết với archive và ngữ nghĩa resolution lộ răng: `ar rcs libcnt.a counter.o` rồi `gcc main.o -L. -lcnt -o prog` chạy, còn `gcc -L. -lcnt main.o` có thể hụt — archive được quét khi linker chạm tới nó, và `bump` của `main.o` phải đang chờ trước đó.
+
+## Linker làm gì cho bạn
+
+Gộp các section cùng loại, gán địa chỉ cuối, vá relocation, và bỏ thành viên archive không giải quyết gì. Thư viện tĩnh không bị 'nhúng vào' — chúng bị *tìm kiếm*, thành viên một thành viên, cho các ký hiệu đang undefined.
+
+## Shared object so với archive tĩnh
+
+.so được nạp lúc chạy và tra ký hiệu xảy ra lúc đó; .a được sao chép vào binary lúc liên kết. Sandbox ở đây liên kết tĩnh — nhưng mô hình resolution bạn luyện (U đang chờ, T định nghĩa) là cùng một cỗ máy mà cả hai dùng.

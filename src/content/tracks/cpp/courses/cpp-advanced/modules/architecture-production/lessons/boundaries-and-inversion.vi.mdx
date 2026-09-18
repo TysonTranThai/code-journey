@@ -1,0 +1,30 @@
+## Quy tắc dependency
+
+Business logic không được include storage, transport, hay vendor header. Nó định nghĩa interface mà nó *cần*; một adapter phía dưới cài đặt:
+
+```cpp
+struct Clock {                      // seam — thuộc sở hữu của tầng logic
+    virtual ~Clock() = default;
+    virtual std::int64_t nowMs() const = 0;
+};
+
+struct RateLimiter {                // chính sách cấp cao, test được
+    explicit RateLimiter(const Clock* clock) : clock_(clock) {}
+    bool allow(std::int64_t nowMs); // xác định dưới fake clock
+    const Clock* clock_;
+};
+```
+
+Production gắn clock thật lúc compose; test gắn fake. Seam là lý do logic xác định, và tính xác định là lý do nó test được — test theo thời gian hay flaky là thiếu seam, không phải xui xẻo.
+
+## Interface ở biên giới
+
+Interface trừu tượng cũng là biên giới ABI (module 16): layout vtable chính là hợp đồng. Giữ chúng nhỏ, ổn định, có phiên bản — interface rộng lớn dần từng mục là cách vtable bị "đóng băng vĩnh viễn".
+
+## Cái gì nằm ở đâu
+
+- **Domain**: kiểu + quy tắc, không include I/O.
+- **Adapter**: cài đặt DB/queue/fs của interface domain.
+- **Composition root**: duy nhất một nơi nối các kiểu cụ thể.
+
+Khi một yêu cầu mới chạm ba tầng, hãy hỏi dependency nào đang chỉ sai hướng.

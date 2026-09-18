@@ -1,0 +1,26 @@
+{
+  "id": "pi3-gen-parse",
+  "title": "Parsing Stream",
+  "prompt": "Implement parse_scores(lines) yielding int values for lines that are pure digits (after stripping whitespace), silently skipping anything else.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "def parse_scores(lines):\n    pass\n",
+  "tests": [
+    {
+      "name": "skips bad lines",
+      "code": "assert list(parse_scores(['10', ' oops ', '42'])) == [10, 42]\ndef endless():\n    i = 0\n    while True:\n        yield str(i)\n        i += 1\ngen = parse_scores(endless())\nassert next(gen) == 0, 'must be lazy: return a generator, yield the first valid score without consuming everything'\n",
+      "hint": "strip() then str.isdigit() guards each line."
+    },
+    {
+      "name": "empty input",
+      "code": "assert list(parse_scores([])) == []",
+      "hint": "Nothing in, nothing out."
+    },
+    {
+      "name": "all bad lines",
+      "code": "assert list(parse_scores(['x', 'y'])) == []",
+      "hint": "A stream of garbage yields an empty stream."
+    }
+  ],
+  "level": "guided"
+}

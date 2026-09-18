@@ -1,0 +1,21 @@
+{
+  "id": "csi-p10-deadlock-debug",
+  "title": "Debug: The Transfer That Freezes",
+  "prompt": "Transfer must call CjConcurrency.Pause() AFTER acquiring its first lock and BEFORE the second (a simulated FX check). The current implementation deadlocks when two transfers run in opposite directions. Fix it so both transfers always complete — without removing the Pause.\n\n```csharp\npublic sealed class Account { public int Id; public int Balance; }\nstatic void Transfer(Account from, Account to, int amount);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\nusing System.Threading;\n\n// Provided infrastructure — do not modify.\npublic static class CjConcurrency\n{\n    // Simulated work: every long-enough operation calls this so the\n    // scheduler can interleave threads. Tests rely on it being called\n    // exactly where the task says.\n    public static void Pause()\n    {\n        Thread.Sleep(5);\n    }\n}\n",
+  "tests": [
+    {
+      "name": "opposite transfers both complete",
+      "code": "\nvar a = new Solution.Account { Id = 1, Balance = 100 };\nvar b = new Solution.Account { Id = 2, Balance = 50 };\nvar t1 = new System.Threading.Thread(() => Solution.Transfer(a, b, 30));\nvar t2 = new System.Threading.Thread(() => Solution.Transfer(b, a, 20));\nt1.IsBackground = true; t2.IsBackground = true;\nt1.Start(); t2.Start();\nvar done = t1.Join(3000) && t2.Join(3000);\nCj.True(done, \"no deadlock — both transfers finish\");\nCj.Eq(a.Balance, 90, \"a: 100 - 30 + 20\");\nCj.Eq(b.Balance, 60, \"b: 50 + 30 - 20\");\n",
+      "hint": "Acquire both locks in a GLOBAL order (e.g., lower Id first) — a cycle can't form; keep Pause() between first and second acquisition."
+    },
+    {
+      "name": "same-direction transfer still works",
+      "code": "\nvar a = new Solution.Account { Id = 1, Balance = 100 };\nvar b = new Solution.Account { Id = 2, Balance = 50 };\nSolution.Transfer(a, b, 40);\nCj.Eq(a.Balance, 60, \"from debited\");\nCj.Eq(b.Balance, 90, \"to credited\");\n",
+      "hint": "Ordered locking handles the normal case identically."
+    }
+  ],
+  "level": "debugging"
+}

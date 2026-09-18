@@ -1,0 +1,29 @@
+JSON là cách các chương trình chia sẻ dữ liệu có cấu trúc — cùng định dạng mà
+những API tương lai của bạn sẽ nói.
+
+```python
+import json
+
+config = {"theme": "dark", "font_size": 14, "tags": ["work", "urgent"]}
+
+text = json.dumps(config)        # dict -> chuỗi JSON
+again = json.loads(text)         # chuỗi JSON -> dict
+```
+
+Và phiên bản tệp — mẫu save/load tạo nên các ứng dụng nhỏ:
+
+```python
+import json
+
+def save(contacts, path):
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(contacts, f, ensure_ascii=False, indent=2)
+
+def load(path):
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+```
+
+`ensure_ascii=False` giữ văn bản tiếng Việt dễ đọc trong tệp; `indent=2` giúp
+con người dễ xem. JSON hỗ trợ dict, list, chuỗi, số, boolean, và null — tuple
+thành list, còn thứ gì khác cần chuyển đổi trước khi lưu.

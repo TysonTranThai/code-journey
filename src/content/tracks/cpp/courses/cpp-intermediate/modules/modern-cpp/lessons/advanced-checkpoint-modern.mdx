@@ -1,0 +1,13 @@
+`describe` is the module's exam: a three-way variant, one generic lambda,
+and compile-time branch selection with `if constexpr`.
+
+The design decisions you are rehearsing:
+
+- the visitor handles every alternative — add a fourth alternative later
+  and the lambda must grow or fail to compile
+- `std::decay_t<decltype(x)>` names the held type inside the generic lambda
+- the double case needs `std::fixed` with `precision(2)` BEFORE the value
+  is streamed — output state is order-sensitive
+
+If the int case passes but doubles print as `3.5`, you have rediscovered
+why formatting state lives on the stream, not in the value.

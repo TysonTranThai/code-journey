@@ -1,0 +1,20 @@
+{
+  "id": "cint-p16-kvcore",
+  "title": "Put, Get, Del, Replace",
+  "prompt": "Implement the core table ops. Keys are copied into the store; putting an existing key replaces its value (no duplicates); del makes the slot reusable; a full table returns KV_ENOMEM and changes nothing.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#include <stddef.h>\n#define KV_CAP 16\n#define KV_KEYMAX 32\ntypedef enum {\n    KV_OK = 0, KV_EARGS, KV_ENOMEM, KV_ENOENT,\n    KV_EFORMAT, KV_ETRUNC, KV_EBADSUM\n} KVError;\ntypedef struct { char key[KV_KEYMAX]; long value; int live; } KVSlot;\ntypedef struct { KVSlot slots[KV_CAP]; size_t count; } KVStore;\nvoid kv_init(KVStore *s);\nKVError kv_put(KVStore *s, const char *key, long value);\nKVError kv_get(const KVStore *s, const char *key, long *out);\nKVError kv_del(KVStore *s, const char *key);\nsize_t kv_count(const KVStore *s);\nvoid kv_iter(const KVStore *s, void (*fn)(const char *key, long value, void *ctx), void *ctx);\n/* ---- capture state for iteration tests (defined here) ---- */\nstatic char kv_cap_keys[16][KV_KEYMAX];\nstatic long kv_cap_vals[16];\nstatic int kv_cap_n;\nstatic void kv_capture(const char *key, long value, void *ctx) {\n    (void)ctx;\n    if (kv_cap_n < 16) {\n        snprintf(kv_cap_keys[kv_cap_n], KV_KEYMAX, \"%s\", key);\n        kv_cap_vals[kv_cap_n] = value;\n        kv_cap_n++;\n    }\n}\nstatic void kv_capture_reset(void) { kv_cap_n = 0; }\n",
+  "tests": [
+    {
+      "name": "core contract",
+      "code": "\nKVStore s; kv_init(&s);\nlong v;\nCHECK_EQ(kv_get(&s, \"a\", &v), KV_ENOENT);          /* empty: absent */\nCHECK_EQ(kv_put(&s, \"a\", 1), KV_OK);\nCHECK_EQ(kv_put(&s, \"b\", 2), KV_OK);\nCHECK_EQ(kv_get(&s, \"a\", &v), KV_OK); CHECK_EQ(v, 1);\nCHECK_EQ(kv_put(&s, \"a\", 10), KV_OK);              /* replace */\nCHECK_EQ(kv_get(&s, \"a\", &v), KV_OK); CHECK_EQ(v, 10);\nCHECK_EQ(kv_count(&s), 2);                         /* no duplicate */\nCHECK_EQ(kv_del(&s, \"a\"), KV_OK);\nCHECK_EQ(kv_get(&s, \"a\", &v), KV_ENOENT);\nCHECK_EQ(kv_count(&s), 1);\nCHECK_EQ(kv_put(&s, \"a\", 11), KV_OK);              /* slot reused */\nCHECK_EQ(kv_get(&s, \"a\", &v), KV_OK); CHECK_EQ(v, 11);\nCHECK_EQ(kv_del(&s, \"ghost\"), KV_ENOENT);          /* deleting nothing */\nCHECK_EQ(kv_put(NULL, \"x\", 1), KV_EARGS);\nCHECK_EQ(kv_get(&s, NULL, &v), KV_EARGS);\n",
+      "hint": "Does replace insert or update? Does del free a slot for reuse?"
+    },
+    {
+      "name": "capacity is a state",
+      "code": "\nKVStore s; kv_init(&s);\nchar key[KV_KEYMAX];\nfor (int i = 0; i < 16; i++) {\n    snprintf(key, sizeof key, \"k%02d\", i);\n    CHECK_EQ(kv_put(&s, key, i), KV_OK);\n}\nCHECK_EQ(kv_count(&s), 16);\nCHECK_EQ(kv_put(&s, \"overflow\", 99), KV_ENOMEM);   /* full: state, not args */\nCHECK_EQ(kv_count(&s), 16);                        /* nothing changed */\nlong v;\nCHECK_EQ(kv_get(&s, \"k00\", &v), KV_OK); CHECK_EQ(v, 0);   /* untouched */\nCHECK_EQ(kv_put(&s, \"k00\", 100), KV_OK);           /* replace still fine */\nCHECK_EQ(kv_get(&s, \"k00\", &v), KV_OK); CHECK_EQ(v, 100);\nCHECK_EQ(kv_del(&s, \"k07\"), KV_OK);\nCHECK_EQ(kv_put(&s, \"overflow\", 99), KV_OK);       /* freed slot reused */\n",
+      "hint": "ENOMEM must leave the table exactly as it was."
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+## The HTTP client behind a seam
+
+`java.net.http.HttpClient` (Java 11+) is the modern client:
+
+```java
+HttpClient client = HttpClient.newBuilder()
+    .connectTimeout(Duration.ofSeconds(5))
+    .build();
+
+HttpRequest req = HttpRequest.newBuilder()
+    .uri(URI.create("https://api.example.com/users/1"))
+    .header("Accept", "application/json")
+    .timeout(Duration.ofSeconds(3))
+    .GET()
+    .build();
+
+HttpResponse<String> res = client.send(req, HttpResponse.BodyHandlers.ofString());
+if (res.statusCode() == 200) { /* body via res.body() */ }
+```
+
+But this course *never* puts a live client in a test — no network in the
+sandbox, and unit tests shouldn't need one anyway. The professional shape
+is the same as Module 8's Clock seam:
+
+```java
+public interface HttpTransport {
+    HttpResponse<String> send(HttpRequest req) throws Exception;
+}
+```
+
+The service takes a transport; tests inject a canned-response transport.
+Everything about HTTP — status codes, headers, timeouts, retries — is
+then exercised deterministically. Real `HttpClient` usage belongs in
+integration tests on machines with a network.

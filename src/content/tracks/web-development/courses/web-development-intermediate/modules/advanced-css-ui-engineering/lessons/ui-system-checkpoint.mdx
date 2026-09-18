@@ -1,0 +1,22 @@
+The practices below run CSS through declaration checks and component logic
+through JS. The checkpoint verifies your _reasoning_: token cascade order,
+theme state handling, and reduced-motion policy as pure functions.
+
+1. `resolveTokens(scopes)` — later scopes override earlier token by token.
+2. `applyTheme(state, action)` — a reducer for theme state with system
+   fallback.
+3. `motionPolicy(prefersReduced, userSetting)` — decide the effective motion
+   mode.
+
+## Why a UI checkpoint?
+
+CSS knowledge is easy to fake in a tutorial and easy to test in review. The
+four checks here — token naming, container-query adaptation, motion respect,
+and contrast-aware state design — are the difference between styles that
+scale and styles that collapse at the next feature. They are also exactly
+what a senior reviewer looks for first.
+
+Run them against your own SaaS dashboard build before you submit: name the
+tokens you actually reused, prove one component adapts to its container, show
+your `prefers-reduced-motion` block, and state your contrast pairs. If any
+answer is "I did not check", you have found your next hour of work.

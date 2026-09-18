@@ -1,0 +1,33 @@
+Java's arithmetic operators: `+ - * / %`, plus `++` and `--`. The surprises
+live in division and remainder:
+
+```java
+System.out.println(7 / 2);        // 3  — integer division truncates!
+System.out.println(7.0 / 2);      // 3.5 — one double makes the math double
+System.out.println(7 % 2);        // 1  — remainder ("mod")
+System.out.println(-7 % 2);       // -1 — sign follows the dividend in Java
+```
+
+**Integer division is the classic beginner bug**: `double avg = sum / count;`
+where both are ints gives a truncated `int` result *before* the assignment.
+Fix by widening first: `(double) sum / count`.
+
+`%` is not just for even/odd checks — it drives clock arithmetic
+(`(hour + 3) % 24`), cycling indexes, and "every Nth item" loops.
+
+**Overflow awareness.** Primitives are fixed-size boxes:
+
+```java
+int max = Integer.MAX_VALUE;   // 2_147_483_647
+System.out.println(max + 1);   // -2_147_483_648 — wraps around, no error!
+```
+
+The math wraps silently. For counters that could exceed ~2 billion (or where
+correctness matters more than speed), use `long`; Java 8+ also offers
+`Math.addExact(max, 1)`, which throws instead of wrapping.
+
+**Augmented assignment** updates in place: `score += 10` is `score = score + 10`;
+also `-=`, `*=`, `/=`, `%=`. And `++`/`--` add or subtract one — `i++` in a
+loop header is the idiom you will see everywhere.
+
+**Next:** comparing values and combining conditions.

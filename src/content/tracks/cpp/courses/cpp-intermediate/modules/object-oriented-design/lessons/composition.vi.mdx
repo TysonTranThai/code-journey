@@ -1,0 +1,40 @@
+**Composition** — xây class từ các đối tượng thành viên — là quan hệ mặc định
+trong C++. Kế thừa (module sau) dùng cho khả năng thay thế, không phải để tái
+sử dụng mã; phần lớn trực giác "is-a" thực ra là "has-a".
+
+```cpp
+#include <string>
+#include <vector>
+
+class Engine {
+public:
+    void start() { running_ = true; }
+    bool running() const { return running_; }
+private:
+    bool running_{false};
+};
+
+class Car {
+public:
+    void drive() { engine_.start(); }        // ủy quyền; sở hữu một Engine
+    bool ready() const { return engine_.running(); }
+private:
+    Engine engine_;                           // composition: Car CÓ một Engine
+    std::vector<std::string> trips_;          // và CÓ nhật ký chuyến đi
+};
+```
+
+## Vì sao composition trước
+
+- Bất biến của member được đóng gói bên trong nó; `Car` không thể làm hỏng
+  phần bên trong của `Engine`.
+- Vòng đời tự động: member của `Car` khởi tạo và hủy cùng nó, theo thứ tự khai báo.
+- Đổi một thành phần (thay `Engine` bằng `Battery`) chỉ đụng một dòng khai
+  báo member, không phải cả một cây kế thừa.
+
+## Khi nào kế thừa thực sự đúng
+
+Khi bên gọi phải xử lý nhiều kiểu khác nhau *thông qua một interface* — các
+hình vẽ cùng một cách, các handler được gọi cùng một cách. Nếu bạn không chỉ
+ra được một điểm gọi nào giữ base-class reference/pointer thì bạn không cần
+kế thừa. Bài test call-site này cũng quyết định các bài thiết kế ở Module 3.

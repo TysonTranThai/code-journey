@@ -1,0 +1,21 @@
+{
+  "id": "pi2-cls-counter",
+  "title": "Step Counter",
+  "prompt": "Create a class Counter with a method tick() that returns the number of ticks so far (1 on the first call). Use an instance attribute, not a global.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "class Counter:\n    def __init__(self):\n        pass\n\n    def tick(self):\n        pass\n",
+  "tests": [
+    {
+      "name": "ticks increment",
+      "code": "c = Counter()\nassert [c.tick(), c.tick(), c.tick()] == [1, 2, 3]",
+      "hint": "Store the count in __init__ and increment in tick."
+    },
+    {
+      "name": "independent counters",
+      "code": "a, b = Counter(), Counter()\na.tick(); a.tick()\nassert b.tick() == 1\nassert 'count' not in Counter.__dict__, 'count must be instance state set in __init__, not a class attribute'\n",
+      "hint": "Each instance owns its own state."
+    }
+  ],
+  "level": "guided"
+}

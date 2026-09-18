@@ -1,0 +1,24 @@
+## What the capstone asks
+
+A **portable systems utility core** — the skeleton every real service grows from — built from four pieces you have already written in isolation:
+
+1. **Endian detector** (module 24A) — runtime byte probe returning a stable verdict.
+2. **Checked size arithmetic** (module 23) — multiplication that refuses overflow instead of wrapping into a tiny allocation.
+3. **Safe copy** (module 23) — snprintf's semantics: refuse, never truncate silently.
+4. **A framed record writer** (modules 20/21) — length-prefix then bytes, gathered into one logical write (module 21's spans).
+
+The checkpoint assembles them under one specification and verifies the composition: detection that matches the platform truth (little-endian here), arithmetic that refuses, copies that refuse, and a framed payload that round-trips.
+
+## Why composition is the test
+
+Each piece passes its own tests; the capstone asks whether the *contracts* hold together:
+
+- the framer trusts the size checker (a refusal upstream becomes a clean -1 downstream, not a crash);
+- the detector's verdict decides byte order in the frame header — so a wrong detector makes a wrong-but-consistent frame, which the round-trip catches;
+- every failure path returns a code, so the caller can always distinguish "did nothing" from "did partially" from "refused".
+
+That distinction — clean refusal vs partial work vs silent corruption — is the whole subject of this course, dressed in one function.
+
+## After this course
+
+C Intermediate/Advanced territory beyond: concurrency at scale, allocator engineering, kernel interfaces. The modules named those doors; this course made sure you can walk to them — reading C the way tools see it, reasoning about UB like a compiler engineer, measuring like an experimentalist, and refusing like a security engineer.

@@ -1,0 +1,21 @@
+{
+  "id": "pa-dm-predict-super",
+  "title": "Predict the MRO chain",
+  "prompt": "Without running it first (then run it!), implement the classes so that `chain()` returns the exact call order of `who()` across the hierarchy when called on a `D` instance.\n\nClasses: A defines `who` returning 'A' and logs to a shared list. B(A) overrides `who` to log 'B' then `super().who()`. C(A) overrides `who` to log 'C' then `super().who()`. D(B, C) overrides `who` to log 'D' then `super().who()`.\n\n`chain()` must reset the log, call `D().who()`, and return the list — expected `['D', 'B', 'C', 'A']` following the MRO D→B→C→A.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "LOG = []\n\nclass A:\n    def who(self):\n        LOG.append('A')\n        return 'A'\n\n# TODO: define B(A), C(A), D(B, C) with cooperative who()\n\ndef chain():\n    LOG.clear()\n    D().who()\n    return list(LOG)",
+  "tests": [
+    {
+      "name": "cooperative super follows MRO",
+      "code": "assert chain() == ['D', 'B', 'C', 'A'], f\"got {chain()}\"\nprint('ok')",
+      "hint": "super() follows the MRO of the *instance's* class, not the textual parent."
+    },
+    {
+      "name": "mro is linearized as expected",
+      "code": "assert [c.__name__ for c in D.__mro__] == ['D', 'B', 'C', 'A', 'object'], f\"MRO: {D.__mro__}\"\nprint('ok')",
+      "hint": "C3 linearization of D(B, C) puts B before C, both before A."
+    }
+  ],
+  "level": "independent"
+}

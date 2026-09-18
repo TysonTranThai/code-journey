@@ -1,0 +1,48 @@
+## The node
+
+```c
+typedef struct Node {
+    int value;
+    struct Node *next;    // the tag lets it point at its own type
+} Node;
+```
+
+A list is just a `Node *head`. An empty list is `head == NULL`. The last node
+stores `next == NULL` — that is the end marker.
+
+## Building and walking
+
+```c
+Node c = {3, NULL};
+Node b = {2, &c};
+Node a = {1, &b};       // list: 1 -> 2 -> 3
+Node *head = &a;
+
+for (Node *it = head; it != NULL; it = it->next) {
+    printf("%d ", it->value);
+}
+```
+
+## The trade-off against arrays
+
+| operation | array | linked list |
+|-----------|-------|-------------|
+| access i-th | O(1) | O(n) — must walk |
+| insert at head | O(n) — shift | O(1) — rewire two pointers |
+| insert at known node | O(n) | O(1) |
+| memory | one block | one malloc PER NODE |
+
+## The classic bugs
+
+- losing the rest of the list: rewiring `next` before saving it
+- walking past the end: testing `it->next != NULL` when you meant `it != NULL`
+- memory: heap nodes need one `free` each — who owns them?
+
+Insert-at-head for practice:
+
+```c
+Node *push_front(Node *head, Node *n) {
+    n->next = head;
+    return n;               // new head
+}
+```

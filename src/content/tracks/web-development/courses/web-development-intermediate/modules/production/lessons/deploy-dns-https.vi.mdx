@@ -1,0 +1,24 @@
+## Điều gì xảy ra khi ai đó gõ URL của bạn
+
+1. **DNS** — trình duyệt hỏi resolver về `app.example.com`; resolver đi root → TLD → nameserver có thẩm quyền → trả về một IP (được cache dọc đường, theo TTL).
+2. **TCP + TLS** — kết nối tới cổng 443; bắt tay TLS xác minh chứng chỉ của server (do một CA mà trình duyệt tin) và thiết lập mã hóa. Đó là HTTPS: riêng tư _và_ bằng chứng bạn đang nói chuyện đúng server.
+3. **HTTP request** — chạm load balancer → server của bạn (hoặc mép CDN, nơi trả lời trước khi tới bạn).
+
+Giờ đây chứng chỉ tự gia hạn (Let's Encrypt, nền tảng quản lý); kỹ năng còn lại là chẩn đoán lỗi hết hạn và cảnh báo mixed-content (trang https tải tài nguyên http — bị chặn).
+
+## Chiến lược phát hành
+
+- **Rolling** — thay thế từng nhóm instance; bản cũ và mới phục vụ đồng thời. Mặc định của đa số nền tảng.
+- **Blue-green** — hai môi trường giống hệt nhau; lật router từ blue sang green. Rollback tức thì = lật ngược lại.
+- **Canary** — định tuyến 1% traffic sang bản mới, theo dõi metric, tăng dần. Bắt được thứ test bỏ sót, trên 1% người dùng thay vì tất cả.
+- **Feature flag** (bài trước) tách deploy code khỏi release tính năng.
+
+Chọn theo bán kính sát thương: flag cho tính năng, canary cho refactor rủi ro, rolling cho ngày thường.
+
+## Rollback: kỹ năng mua lại sự bình tĩnh
+
+Deploy thất bại là chuyện thường. Nước đi chuyên nghiệp là **revert deploy** — triển khai lại artifact trước đó — chứ không phải hotfix dưới áp lực. Điều kiện: artifact bất biến và lấy lại được (bài trước), migration tương thích về trước với phiên bản code cũ (expand/contract!), và rollback được diễn tập. "Không rollback được vì migration phá tương thích" là câu biến một sự cố thành một sự cố dài.
+
+## Database trong câu chuyện deploy
+
+Schema migration đi cùng pipeline với sự cẩn trọng thêm: **migrate trước** khi code mới khởi động (hoặc với expand/contract, bất cứ lúc nào), migration phải an toàn idempotent với lock của công cụ, và các thay đổi phá hủy chờ đến khi không còn phiên bản đang chạy nào cần cột cũ. Đa số sự cố deploy là sự cố migration.

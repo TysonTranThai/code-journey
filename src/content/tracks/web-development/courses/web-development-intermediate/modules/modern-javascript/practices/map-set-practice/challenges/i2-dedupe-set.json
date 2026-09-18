@@ -1,0 +1,25 @@
+{
+  "id": "i2-dedupe-set",
+  "title": "Dedupe and Membership with Set",
+  "prompt": "Write `dedupeTags(tags)` that returns the unique tags of an array, preserving first-seen order, case-insensitively (\"CSS\" and \"css\" are the same tag; keep the first spelling seen). Also write `hasAll(tags, needed)` returning `true` only if every string in `needed` appears in `tags`.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function dedupeTags(tags) {\n  // your code\n}\n\nfunction hasAll(tags, needed) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "dedupes case-insensitively keeping first spelling",
+      "code": "const fn = new Function(code + \"\\nreturn { dedupeTags, hasAll };\");\nconst { dedupeTags } = fn();\nconst out = dedupeTags([\"CSS\", \"js\", \"css\", \"HTML\", \"js\"]);\nif (JSON.stringify(out) !== JSON.stringify([\"CSS\", \"js\", \"HTML\"])) throw new Error(\"Expected [CSS, js, HTML], got \" + JSON.stringify(out));",
+      "hint": "Track seen keys in a Set lowercased; push the original when not yet seen."
+    },
+    {
+      "name": "hasAll checks every needed tag",
+      "code": "const fn = new Function(code + \"\\nreturn { dedupeTags, hasAll };\");\nconst { hasAll } = fn();\nif (hasAll([\"css\", \"js\"], [\"css\"]) !== true) throw new Error(\"All present → true.\");\nif (hasAll([\"css\"], [\"css\", \"js\"]) !== false) throw new Error(\"Missing one → false.\");",
+      "hint": "Build a Set from tags once, then every() over needed with has()."
+    },
+    {
+      "name": "hasAll is efficient (uses Set, not nested loops)",
+      "code": "if (/\\.includes\\(.*\\.includes/.test(code)) throw new Error(\"Nested includes is O(n²) — build a Set instead.\");",
+      "hint": "const tagSet = new Set(tags); then needed.every((t) => tagSet.has(t))."
+    }
+  ]
+}

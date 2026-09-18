@@ -1,0 +1,14 @@
+{
+  "title": "Cache không rò rỉ",
+  "prompt": "Cài `class WeakCache`:\n\n- `put(key, obj)` lưu tham chiếu YẾU tới obj theo key\n- `get(key)` trả về đối tượng còn sống, hoặc None khi nó đã bị gom rác (hoặc chưa từng put)\n- `default_factory(key)` tùy chọn sẽ dựng và cache đối tượng khi miss (cũng bằng weak)\n\nProbe chấm: đối tượng được tạo rồi không còn tham chiếu mạnh nào; sau `gc.collect()`, `get` phải trả None — cache dùng tham chiếu mạnh sẽ trượt.",
+  "tests": [
+    {
+      "name": "Đối tượng bị gom thì biến mất khỏi cache",
+      "hint": "weakref.ref(obj) lưu theo key; gọi ref để nhận đối tượng hoặc None."
+    },
+    {
+      "name": "default_factory dựng khi miss",
+      "hint": "Khi miss có factory: dựng, lưu yếu, trả về."
+    }
+  ]
+}

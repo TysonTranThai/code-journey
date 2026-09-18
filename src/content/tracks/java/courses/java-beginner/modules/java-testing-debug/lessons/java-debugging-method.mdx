@@ -1,0 +1,40 @@
+A bug report says "the total is wrong." Where do you even start? With a
+method, not a mood.
+
+## The loop that works
+
+1. **Reproduce** - find the smallest input that triggers the bug. A bug
+   you can trigger on demand is already half-dead.
+2. **Read the evidence** - the stack trace, the wrong value itself. "Total
+   is 0" says more than "total is wrong": zero usually means a loop never
+   ran, an accumulate-variable was never assigned, or a lookup missed.
+3. **Form one hypothesis** - a specific, falsifiable sentence: "the sum is
+   0 because `items` is empty when `filter` rejects everything."
+4. **Test it cheaply** - print the intermediate value once (`System.out.println`),
+   or step in a debugger. Did `items.size()` equal 0? Hypothesis confirmed
+   or killed - either way you've learned.
+5. **Fix the cause, not the symptom** - re-initializing the variable at
+   the call site might hide this crash while the empty-collection bug
+   lives on elsewhere.
+6. **Prove it dead** - add a test that fails with the bug and passes
+   without it. This is the regression test, and it's how the same bug
+   never wastes your time twice.
+
+## The debugger you already own
+
+Real projects use IDE debuggers (breakpoints, step-over, variable
+inspection). In this course the sandbox gives you two tools:
+
+- `System.out.println("items=" + items + " size=" + items.size())` -
+  one-line, throwaway, gone before you commit.
+- A failing **test** with a precise message - the `CjTestBase.checkEq`
+  failures you've seen all course are exactly this: `expected X but got Y`
+  at the exact statement.
+
+## Reading someone else's stack trace
+
+Bottom-up: your classes first, then libraries. The top *exception line*
+names the crime (`NumberFormatException: For input string: "12x"`); the
+bottom frames name the crime scene (`Main.parseCount(Main.java:8)`). When
+a *cause* chain appears (`Caused by: ...`), read the deepest `Caused by`
+first - that's usually the true origin.

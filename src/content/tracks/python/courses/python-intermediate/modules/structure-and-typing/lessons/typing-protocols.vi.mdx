@@ -1,0 +1,44 @@
+Module 2 kết thúc bằng duck typing: cái gì có `start()` cũng dùng được như
+engine. **`typing.Protocol`** đặt tên cho ý tưởng đó và cho nó hình dạng kiểm
+được bằng type checker — một interface khớp theo **cấu trúc**, không phải qua
+kế thừa:
+
+```python
+from typing import Protocol
+
+class Storage(Protocol):
+    def save(self, key: str, value: str) -> None: ...
+    def load(self, key: str) -> str | None: ...
+
+class MemoryStorage:                 # không kế thừa Storage!
+    def __init__(self):
+        self._data: dict[str, str] = {}
+
+    def save(self, key: str, value: str) -> None:
+        self._data[key] = value
+
+    def load(self, key: str) -> str | None:
+        return self._data.get(key)
+
+def backup(store: Storage) -> None:      # nhận bất cứ thứ gì có hình Storage
+    store.save("backup", "2026-09-13")
+```
+
+`MemoryStorage` chưa từng nhắc đến `Storage`, nhưng mọi type checker vẫn chấp
+nhận nó nơi cần một `Storage` — vì nó có đúng **hình dạng**. Đó là structural
+typing, và đó là cách các codebase Python lớn giữ các thành phần hoán đổi được
+mà không cần rừng kế thừa.
+
+## Khi nào viết một Protocol
+
+Hãy viết khi một **bên tiêu thụ** cần hứa một năng lực: "tôi cần bất cứ thứ gì
+`save`/`load` được." Protocol sống cùng bên tiêu thụ, không phải cùng các bản
+cài đặt — điều đó giữ các phụ thuộc chỉ đúng chiều (lại là phân tầng của
+module này). Dành ABC/kế thừa cho lúc bạn cần cả bản cài đặt dùng chung,
+không chỉ hình dạng.
+
+## Kiểm tra runtime
+
+Protocol mặc định là tĩnh; `isinstance` cần `@runtime_checkable` — và kể cả
+vậy nó chỉ kiểm tra **tên** method. Hãy thiết kế với protocol cho type checker
+và con người; đừng dựa vào kiểm tra runtime.

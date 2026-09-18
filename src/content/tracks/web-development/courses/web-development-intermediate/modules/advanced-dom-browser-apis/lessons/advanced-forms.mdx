@@ -1,0 +1,44 @@
+Beginner forms have a submit handler. Intermediate forms earn trust: they
+validate like the server will, explain themselves inline, and stay accessible
+while doing it.
+
+## Constraint validation API
+
+The browser already validates — read its verdict instead of duplicating rules:
+
+```js
+const email = form.elements.email;
+if (!email.validity.valid) {
+  // email.validity.valueMissing, .typeMismatch, .tooShort ...
+  email.setCustomValidity("Enter an email like ada@example.com");
+} else {
+  email.setCustomValidity("");
+}
+```
+
+`setCustomValidity("")` clears a custom error; any other string marks the
+field invalid. `form.reportValidity()` shows the message the way the
+platform intends. Use built-in attributes first — `required`,
+`type="email"`, `minlength`, `pattern` — then custom code for
+cross-field rules like password confirmation.
+
+## Inline errors that assistive tech can see
+
+A red border is decoration; the accessible signal is programmatic:
+
+```js
+field.setAttribute("aria-invalid", "true");
+errorBox.textContent = "Age must be a number";
+field.setAttribute("aria-describedby", "age-error");
+```
+
+The error box needs `id="age-error"` and
+`role="alert"` so screen readers announce it when it appears. Clear all
+three when the field becomes valid.
+
+## Dynamic field sets
+
+Adding rows (tasks, guests, line items) is delegation again: one listener on the
+container, `closest("[data-row]")` to find the row to remove, and names
+that stay unique — either indexed (`task-0`, `task-1`) or irrelevant
+because you serialize from the DOM on submit.

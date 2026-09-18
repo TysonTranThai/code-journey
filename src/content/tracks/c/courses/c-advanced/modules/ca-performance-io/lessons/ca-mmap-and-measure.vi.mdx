@@ -1,0 +1,41 @@
+## mmap: tập tin như bộ nhớ
+
+```c
+#define _POSIX_C_SOURCE 200809L
+#include <sys/mman.h>       /* POSIX */
+#include <fcntl.h>
+#include <sys/stat.h>
+
+int fd = open(path, O_RDONLY);
+struct stat st;
+fstat(fd, &st);
+char *p = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+/* dùng p[0] .. p[st.st_size-1] như bất kỳ bộ nhớ nào */
+munmap(p, st.st_size);
+close(fd);
+```
+
+Không lời gọi `read`, không tính cỡ buffer: byte hiện ra khi chạm lần đầu, từng trang (4 KiB) một. Kernel sở hữu cache; `munmap` thu hồi mapping, không thu hồi dữ liệu. `MAP_PRIVATE` cấm ghi qua mapping; `MAP_SHARED` đưa ghi ngược lại tập tin.
+
+Đánh đổi trung thực: mmap thắng với truy cập ngẫu nhiên trên tập tin lớn và tiêu thụ zero-copy; `read` thường thắng với quét tuần tự một lượt, nơi chi tiết page-fault vượt chi phí sao chép — và dễ suy luận hơn. Đo, rồi chọn.
+
+## Đo đạc: nhân chứng duy nhất đáng tin
+
+```c
+#include <time.h>
+struct timespec t0, t1;
+clock_gettime(CLOCK_MONOTONIC, &t0);
+/* công việc */
+clock_gettime(CLOCK_MONOTONIC, &t1);
+double ms = (t1.tv_sec - t0.tv_sec) * 1e3 + (t1.tv_nsec - t0.tv_nsec) / 1e6;
+```
+
+`CLOCK_MONOTONIC` không bao giờ đi lùi và bỏ qua chỉnh sửa đồng hồ treo tường — đồng hồ duy nhất đáng tin cho khoảng thời gian. `clock_gettime` là POSIX ở đây (`CLOCK_MONOTONIC` cũng là POSIX, không phải ISO C).
+
+## Ba cái bẫy benchmark
+
+1. **Loại bỏ code chết**: vòng lặp không ai dùng kết quả có thể bị xóa nguyên. Tiêu thụ kết quả — in ra, hoặc cộng dồn vào một `volatile` sink.
+2. **Lừa dối một lần chạy**: lần chạm đầu trả chi phí page-fault và làm đầy cache. Làm ấm, rồi đo nhiều lần lặp, rồi chia.
+3. **Micro vs macro**: thắng ở vòng trong mà làm vòng ngoài ghét cache là một thất bại. Đo cả đường đi của chương trình, không phải một hàm.
+
+Con số bạn không tự đo là chuyện kể. Khóa học này chỉ khẳng định *cơ chế*, không bao giờ khẳng định thời gian.

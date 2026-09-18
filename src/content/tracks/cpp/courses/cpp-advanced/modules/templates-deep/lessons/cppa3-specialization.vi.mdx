@@ -1,0 +1,38 @@
+Template chính khai báo thuật toán tổng quát; **specialization** thay thế nó cho các đối số cụ thể. Thư viện chuẩn dùng điều này khắp nơi: `std::hash<std::string>` là một specialization của `std::hash<T>`.
+
+## Full specialization
+
+Một danh sách đối số cụ thể, với `template <>`:
+
+```cpp
+template <class T> struct Serializer {
+    static std::string dump(const T&) { return "generic"; }
+};
+template <> struct Serializer<bool> {
+    static std::string dump(const bool& b) { return b ? "true" : "false"; }
+};
+```
+
+## Partial specialization
+
+Vẫn còn template nhưng bị ràng buộc — một *mẫu hình*, không phải một điểm:
+
+```cpp
+template <class T> struct Serializer<std::vector<T>> {
+    static std::string dump(const std::vector<T>& v);
+};
+```
+
+Compiler chọn mẫu hình **chuyên biệt nhất**. Nhờ vậy `Capacity<std::array<T, N>>` đọc được `N` từ chính kiểu.
+
+## Variable template
+
+Một giá trị compile-time được tham số hóa theo kiểu:
+
+```cpp
+template <class T> inline constexpr bool is_small_v = sizeof(T) <= 8;
+```
+
+Kết hợp tự nhiên với specialization: cấp giá trị cho `Rank<T>` theo từng kiểu, phơi ra qua `rank_v<T>`.
+
+**Nguyên tắc thiết kế:** chỉ specialize cho *hành vi kiểu đó không tự diễn đạt được bằng thành viên của nó* (trait bên ngoài). Nếu hành vi thuộc về bên trong kiểu, hãy viết thành viên.

@@ -1,0 +1,25 @@
+{
+  "id": "i3-popover-toast",
+  "title": "Toast and Filter Popover",
+  "prompt": "Two flavors, right tool each: (1) a toast notification as popover=\"manual\" (no light dismiss) that carries its own close button (popovertarget + popovertargetaction=\"hide\"); (2) a filter panel as a plain auto popover (light dismiss expected). Distinct ids; no JavaScript.",
+  "difficulty": "advanced",
+  "level": "independent",
+  "boilerplate": "<!-- Toast + filter popover -->\n\n",
+  "tests": [
+    {
+      "name": "manual toast with explicit close",
+      "code": "const toast = code.match(/<[^>]*popover\\s*=\\s*[\"']manual[\"'][^>]*\\bid\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>/i) ||\n  code.match(/<[^>]*\\bid\\s*=\\s*[\"']([^\"']+)[\"'][^>]*popover\\s*=\\s*[\"']manual[\"'][^>]*>/i);\nif (!toast) {\n  throw new Error('The toast needs popover=\"manual\" and an id.');\n}\nconst tid = toast[1];\nconst closer = [...code.matchAll(/<button([^>]*)>/gi)].find((b) =>\n  new RegExp(\"popovertarget\\\\s*=\\\\s*[\\\"']\" + tid + \"[\\\"']\", \"i\").test(b[1]) &&\n  /popovertargetaction\\s*=\\s*[\"']hide[\"']/i.test(b[1])\n);\nif (!closer) {\n  throw new Error(\"A manual popover never light-dismisses — it needs its own close button (action=hide).\");\n}",
+      "hint": "manual means the platform will never close it for you — the close button is not optional."
+    },
+    {
+      "name": "auto popover for the filter panel",
+      "code": "const auto = code.match(/<[^>]*\\bpopover(\\s*=\\s*[\"']auto[\"'])?[^>]*>/i);\nif (!auto) {\n  throw new Error(\"Add the filter panel as an auto popover (bare popover attribute).\");\n}",
+      "hint": "Bare popover (or popover=\"auto\") gets light dismiss — the right flavor for a transient panel."
+    },
+    {
+      "name": "two distinct ids",
+      "code": "const pEls = [...code.matchAll(/<[^>]*\\bpopover(\\s*=\\s*[\"'][^\"']*[\"'])?\\b[^>]*>/gi)];\nconst ids = pEls.map((m) => (m[0].match(/\\bid\\s*=\\s*[\"']([^\"']+)[\"']/i) || [])[1]).filter(Boolean);\nif (new Set(ids).size < 2) {\n  throw new Error(\"Toast and filter panel need distinct ids on their popover elements.\");\n}",
+      "hint": "Each popover is its own element with its own id — the invokers reference them individually."
+    }
+  ]
+}

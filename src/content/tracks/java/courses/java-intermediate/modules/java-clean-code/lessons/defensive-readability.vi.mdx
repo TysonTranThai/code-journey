@@ -1,0 +1,22 @@
+## Khả đọc phòng thủ
+
+Viết code *ngăn* hiểu sai:
+
+- **guard clause trước** — fail fast, rồi hướng bình thường đọc thẳng
+  xuống không else-lồng nhau:
+
+```java
+if (order == null) throw new IllegalArgumentException("order required");
+if (order.items().isEmpty()) return OrderResult.empty();
+// hướng bình thường tiếp tục ở thụt lề 0
+```
+
+- **return sớm thay bậc thang else** — mỗi `else` thêm một cấp mà người
+  đọc phải theo dõi
+- **biểu thức thay câu lệnh khi cái tên mới là vấn đề**:
+  `boolean isAdult = age >= 18;` tốt hơn đọc lại `age >= 18` bốn lần
+- **cấu trúc thắng sự tinh ranh** — bản bit-trick không nhánh của `max`
+  tốn một comment và một bug trong tương lai; `Math.max` không tốn gì
+
+Phép thử: đồng nghiệp đọc lướt diff PR có thể hiểu sai dòng nào không?
+Nếu có — đổi tên, tách, hoặc làm phẳng cho đến khi câu trả lời là không.

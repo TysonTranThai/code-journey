@@ -1,0 +1,130 @@
+Two skills separate professional markup from copy-paste markup: embedding other
+people's content *safely*, and making your own document *machine-readable*. Both are
+attribute-and-element work — no frameworks, no build steps.
+
+## Sandboxed embeds: iframe with intent
+
+An `<iframe>` imports a full browsing context — someone else's HTML, CSS, and
+JavaScript — into your page. The `sandbox` attribute is how you keep that guest on a
+leash. **An empty sandbox starts from zero permissions:**
+
+```html
+<iframe
+  src="https://example.com/embed"
+  sandbox
+  title="Interactive pricing demo"
+  loading="lazy"
+  width="640" height="360">
+</iframe>
+```
+
+A sandboxed iframe gets a unique origin: scripts (if you allow them) cannot touch your
+DOM, storage, or cookies. You then grant capabilities back one token at a time, only
+what the embed genuinely needs:
+
+| Token | Grants |
+| --- | --- |
+| `allow-scripts` | Run JavaScript |
+| `allow-forms` | Submit forms |
+| `allow-popups` | Open new windows |
+| `allow-same-origin` | Keep its real origin (storage, cookies) |
+
+The combination to fear: `sandbox="allow-scripts allow-same-origin"` on content you do
+not trust. With both, the embedded page can reach its own origin's storage and scripts
+can run — on same-origin content that means the embed can strip its own sandbox. If you
+would not say "this embed may act as my site," you do not grant that pair.
+
+The `allow` attribute delegates specific powerful features (camera, fullscreen,
+clipboard) through Permissions Policy syntax:
+
+```html
+<iframe src="https://meet.example/join" allow="camera; microphone" sandbox="allow-scripts" title="Join the call"></iframe>
+```
+
+Delegation is opt-in per feature: an embed without `allow="camera"` has no camera,
+period. And `title` on an iframe is not decoration — it is the frame's accessible name.
+
+## Metadata: the document's API
+
+Everything machines learn about your page before rendering it comes from `<head>`:
+
+```html
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kite CLI — Getting started</title>
+  <meta name="description" content="Install, configure, and ship your first command with Kite CLI in ten minutes.">
+  <link rel="canonical" href="https://docs.example.com/kite/getting-started">
+  <meta name="robots" content="noindex, follow">
+</head>
+```
+
+- `charset` first — a mangled-encoding page is a broken page.
+- `viewport` makes responsive CSS possible; without it, phones render a 980 px desktop
+  layout.
+- `canonical` names the *one* URL that represents this content, so duplicates and
+  parameterized variants consolidate instead of competing.
+- `robots` steers crawlers page-by-page: `noindex, follow` is the admin-page pattern —
+  invisible to search, links still crawled.
+
+## Social and structured metadata
+
+Link previews are driven by Open Graph plus card markup:
+
+```html
+<meta property="og:title" content="Kite CLI — Getting started">
+<meta property="og:description" content="Ship your first command in ten minutes.">
+<meta property="og:image" content="https://docs.example.com/kite-card.png">
+<meta name="twitter:card" content="summary_large_image">
+```
+
+Structured metadata — machine-comprehensible facts about entities on the page — is the
+same instinct applied deeper. The concepts matter at this stage: entities, properties,
+and the machine layer that search engines build from them.
+
+## Language and meaning in text
+
+Internationalization is markup, too:
+
+```html
+<html lang="vi">
+  …
+  <p>Đặt giá trị <code lang="en" dir="ltr">fetchpriority</code> thành <code>high</code>.</p>
+  <time datetime="2026-09-12">12/09/2026</time>
+  <address><a href="mailto:team@example.com">team@example.com</a></address>
+  <abbr title="HyperText Markup Language">HTML</abbr>
+</html>
+```
+
+`lang` on the root (screen readers pick pronunciation from it; search engines segment
+by it), `lang`/`dir` on foreign-language spans, `<time datetime>` giving dates a
+machine-readable value while humans see any format, `<address>` for contact info,
+`<abbr title>` expanding acronyms once at first use. And `hreflang` on alternate links
+tells search engines which locale each version serves:
+
+```html
+<link rel="alternate" hreflang="en" href="https://example.com/en/getting-started">
+<link rel="alternate" hreflang="vi" href="https://example.com/vi/getting-started">
+```
+
+This is exactly how a bilingual product like Code Journey declares its two locales.
+
+## What goes wrong
+
+- **`sandbox="allow-scripts allow-same-origin"` on untrusted content** — the classic
+  embed-escalation hole.
+- **Missing iframe `title`** — screen-reader users hear "frame" and nothing else.
+- **Viewport missing** on a responsive page (or `user-scalable=no` breaking zoom).
+- **Every page with the same `title`/description**, or canonical pointing at the site
+  root instead of the page's own URL.
+- **`og:image` pointing at a relative URL** — crawlers fetch it out of context; social
+  images must be absolute.
+- **No `lang` attribute** — pronunciation and translation tools degrade silently.
+
+## Practice and where this connects
+
+You will grade sandbox tokens against embed scenarios (which are safe, which escalate),
+build a complete head with canonical + OG + hreflang, and debug an iframe that was
+shipped wide open. Safe embedding reappears in the security engineering section of this
+course; metadata returns in the SEO/observability work — both build directly on this
+lesson.

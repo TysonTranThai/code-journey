@@ -1,0 +1,20 @@
+{
+  "id": "pa-checkpoint-typing",
+  "title": "Generic Repository protocol + memory implementation",
+  "prompt": "Implement Repository(Protocol[T]), MemoryRepository(Generic[T]) (key_fn constructor; first-add-wins on duplicate keys), and seed(repo, users).",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "from typing import Protocol, TypeVar, Generic, List, Optional\n\nT = TypeVar('T')\n\n# TODO: Repository, MemoryRepository, seed",
+  "tests": [
+    {
+      "name": "protocol-shaped repository works",
+      "code": "class User:\n    def __init__(self, uid, name):\n        self.uid, self.name = uid, name\n    def __eq__(self, other):\n        return isinstance(other, User) and self.uid == other.uid and self.name == other.name\n    def __repr__(self):\n        return f'User({self.uid})'\n\nrepo = MemoryRepository(key_fn=lambda u: str(u.uid))\nseed(repo, [User(1, 'a'), User(2, 'b')])\nassert repo.get('1') == User(1, 'a')\nassert repo.get('99') is None\nassert len(repo.all()) == 2\nprint('ok')",
+      "hint": "Protocol bodies are ...; MemoryRepository stores items keyed by key_fn(item)."
+    },
+    {
+      "name": "first-add-wins on duplicate keys",
+      "code": "repo = MemoryRepository(key_fn=lambda u: str(u.uid))\nseed(repo, [User(1, 'first'), User(1, 'second'), User(2, 'x')])\nassert repo.get('1').name == 'first', 'duplicate keys must keep the first item'\nassert len(repo.all()) == 2\nprint('ok')",
+      "hint": "Only insert when the key is absent — setdefault or an explicit check."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "csb-p8-wordcount",
+  "title": "Word frequency",
+  "prompt": "Implement `static Dictionary<string, int> WordCounts(IEnumerable<string> words)` — each distinct word (case-**insensitive**, store lowercased) mapped to its count. Null or empty input returns an empty dictionary.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "var wc = Solution.WordCounts(new[] {\"a\", \"B\", \"a\", \"b\", \"c\"});\nCj.Eq(wc.Count, 3, \"three distinct\");\nCj.Eq(wc[\"a\"], 2, \"a twice\");\nCj.Eq(wc[\"b\"], 2, \"B counted with b\");\nCj.Eq(wc[\"c\"], 1, \"c once\");",
+      "hint": "Case folding means \"B\" and \"b\" are one word."
+    },
+    {
+      "name": "edges",
+      "code": "Cj.Eq(Solution.WordCounts(new string[0]).Count, 0, \"empty\");\nCj.Eq(Solution.WordCounts(null).Count, 0, \"null\");\nvar one = Solution.WordCounts(new[] {\"Solo\"});\nCj.Eq(one[\"solo\"], 1, \"keys stored lowercase\");",
+      "hint": "No input, no entries — and the stored keys must be lowercase so later lookups compose."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "csa-p1-null-gate",
+  "title": "Null-state gate",
+  "prompt": "Implement `static int LengthOrMinus(string? text)`: return -1 when text is null, else its Length. Then implement `static string Coalesce(string? a, string? b)`: first non-null of a and b, or \"<empty>\". The tests exercise the null-state contract with nullable reference types in mind.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "length-or-minus",
+      "code": "Cj.Eq(Solution.LengthOrMinus(null), -1, \"null path\");\nCj.Eq(Solution.LengthOrMinus(\"abc\"), 3, \"value path\");",
+      "hint": "Pattern-match null first, then Length is safe."
+    },
+    {
+      "name": "coalesce-chain",
+      "code": "Cj.Eq(Solution.Coalesce(null, \"b\"), \"b\", \"second wins\");\nCj.Eq(Solution.Coalesce(\"a\", \"b\"), \"a\", \"first wins\");\nCj.Eq(Solution.Coalesce(null, null), \"<empty>\", \"fallback\");",
+      "hint": "?? chains left to right; a constant fallback covers the all-null case."
+    }
+  ],
+  "level": "guided"
+}

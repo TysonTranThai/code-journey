@@ -18,14 +18,32 @@ function fixtureRoot(name: string): string {
 }
 
 describe("curriculum loaders (real content)", () => {
-  it("loads the course curriculum: 1 track, 56 linear lessons in spec order", () => {
+  it("loads the curriculum: 6 tracks, 143 web linear lessons in spec order", () => {
     const tracks = getTracks();
-    expect(tracks).toHaveLength(1);
-    expect(tracks[0]?.id).toBe("web-development");
+    expect(tracks.length).toBeGreaterThanOrEqual(6);
+    const web = tracks.find((t) => t.id === "web-development");
+    expect(web?.courses.map((c) => c.reference)).toEqual([
+      "web-development-beginner",
+      "web-development-intermediate",
+      "web-development-advanced",
+    ]);
+    // C++ track registered after the Python courses. cpp-intermediate is
+    // scaffolded concurrently (track.json references it); the loader only
+    // includes courses that load — an empty authoring shell is skipped
+    // (see loadTrack), so assert membership of the finished course.
+    const cpp = tracks.find((t) => t.id === "cpp");
+    expect(cpp?.courses.map((c) => c.reference)).toContain("cpp-beginner");
+    // C track: all three courses registered (beginner, intermediate, advanced).
+    const c = tracks.find((t) => t.id === "c");
+    expect(c?.courses.map((cc) => cc.reference)).toEqual([
+      "c-beginner",
+      "c-intermediate",
+      "c-advanced",
+    ]);
 
     const linear = getLinearLessons("web-development");
-    expect(linear).toHaveLength(56);
-    // Anchors at the seams between modules (the spec's teaching order).
+    expect(linear).toHaveLength(143);
+    // Anchors at the seams between beginner modules (the spec's teaching order).
     expect(linear[0]?.id).toBe("how-the-web-works");
     expect(linear[4]?.id).toBe("introduction-to-html");
     expect(linear[14]?.id).toBe("what-css-is");
@@ -47,8 +65,11 @@ describe("curriculum loaders (real content)", () => {
     const first = getLinearNeighbors("web-development", "how-the-web-works");
     expect(first.prev).toBeNull();
 
-    const last = getLinearNeighbors("web-development", "capstone-build-and-ship");
-    expect(last.next).toBeNull();
+    const last = getLinearNeighbors("web-development", "capstone-ship");
+    // Web track continues into Course 3 (Advanced) after Intermediate's capstone.
+    expect(last.next?.courseId).toBe("web-development-advanced");
+    expect(last.next?.moduleId).toBe("advanced-html");
+    expect(last.next?.id).toBe("html-architecture");
   });
 
   it("throws CurriculumNotFoundError for unknown tracks/lessons", async () => {
@@ -66,14 +87,26 @@ describe("curriculum loaders (real content)", () => {
     expect(body).toContain("HyperText Markup Language");
   });
 
-  it("loads lesson challenges in declared order with resolved location", () => {
+  it("regular lessons have no lesson-attached challenges (they live in practice sets)", () => {
+    // Course 1 revision: non-checkpoint lessons carry zero challenges — all
+    // coding practice lives in practice sets anchored to the lesson.
     const challenges = getLessonChallenges(
       "web-development",
       "web-development-beginner",
       "html-foundations",
       "introduction-to-html",
     );
-    expect(challenges.map((c) => c.id)).toEqual(["fix-the-heading"]);
+    expect(challenges).toEqual([]);
+  });
+
+  it("checkpoint lessons keep their lesson-attached challenge", () => {
+    const challenges = getLessonChallenges(
+      "web-development",
+      "web-development-beginner",
+      "html-foundations",
+      "html-checkpoint",
+    );
+    expect(challenges.map((c) => c.id)).toEqual(["html-understanding-check"]);
     expect(challenges[0]?.tests.length).toBeGreaterThan(0);
     expect(challenges[0]?.tests[0]?.hint).toBeTruthy();
 
@@ -81,12 +114,12 @@ describe("curriculum loaders (real content)", () => {
       "web-development",
       "web-development-beginner",
       "html-foundations",
-      "html-links",
-      "add-the-missing-link",
+      "html-checkpoint",
+      "html-understanding-check",
     );
-    expect(resolved.lessonId).toBe("html-links");
+    expect(resolved.lessonId).toBe("html-checkpoint");
     expect(resolved.trackId).toBe("web-development");
-    expect(resolved.tests).toHaveLength(3);
+    expect(resolved.tests).toHaveLength(6);
   });
 
   it("throws for an unknown challenge id", () => {
@@ -125,7 +158,9 @@ describe("curriculum loaders (invalid content fails loudly)", () => {
     expect(() => getTracks(fixtureRoot("empty-lessons-array"))).toThrow(/at least one lesson/);
   });
 
-  it("challenge-unknown-lesson: dangling challenge reference throws naming the lesson file", () => {
+  it("practice-unknown-challenge: dangling challenge reference throws naming the set file", () => {
+    // Course 1 revision: challenges live in practice sets; a dangling challenge
+    // reference in a set manifest must fail loudly.
     expect(() => getTracks(fixtureRoot("challenge-unknown-lesson"))).toThrow(
       /challenge reference "no-such-challenge" has no file/,
     );

@@ -1,0 +1,10 @@
+## Checkpoint — concurrent job processor (hardened)
+
+Same contract as the project: `run_jobs(jobs, workers=3, retries=2)` returns
+`{'succeeded': {index: value}, 'failed': [sorted indices]}`, retrying failures
+up to `retries` extra attempts.
+
+This checkpoint's extra scrutiny: **every submitted future's outcome must be
+observed.** A resubmitted retry that nobody awaits loses its result and its
+exception — a real production bug. The wrong-solution probe fires exactly this
+mistake.

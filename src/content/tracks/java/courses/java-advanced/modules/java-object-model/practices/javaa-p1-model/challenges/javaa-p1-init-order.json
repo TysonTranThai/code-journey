@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p1-init-order",
+  "title": "Predict the initialization sequence",
+  "prompt": "Implement `static List<String> trace()` that returns the exact observable initialization order for `new Derived()` in this class family:\n1. `class Base { Base() { t(\"Base ctor\"); } }` where `t` records into the trace.\n2. `class Derived extends Base { static String S = t(\"D static\"); int x = t(\"D field\"); Derived() { t(\"D ctor\"); } }`\nRules: `t` appends to a shared list and returns its argument. `trace()` creates one `Derived` and returns the recorded list. Static init happens at first active use — instantiation counts.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "initialization order is exact",
+      "code": "\nList<String> expected = List.of(\"D static\", \"Base ctor\", \"D field\", \"D ctor\");\ncheckEq(Solution.trace(), expected, \"trace matches JLS 12.4 order\");\n",
+      "hint": "super() runs before subclass field initializers; static runs once at first use."
+    },
+    {
+      "name": "second instance skips static",
+      "code": "\nSolution.trace();\nList<String> second = List.of(\"Base ctor\", \"D field\", \"D ctor\");\ncheckEq(Solution.trace(), second, \"static block does not rerun\");\n",
+      "hint": "Class initialization happens once per class, not per instance."
+    }
+  ],
+  "level": "guided"
+}

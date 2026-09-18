@@ -1,0 +1,26 @@
+{
+  "id": "javi-p12-testable-report",
+  "title": "Report Service with a Seamed Clock",
+  "prompt": "Combine Module 8's seams with Module 12's layering in `Solution`:\n- `interface Clock { long nowMillis(); }` (reuse the shape)\n- `static class ReportService` with constructor `(Clock clock)` exposing\n  `String header()` returning `\"Report @ <millis>\"` using the injected\n  clock.\n- `static class ReportController` with constructor `(ReportService s)`\n  exposing `String render()` returning `s.header() + \"\\n[body]\"`.\n\nBuild the graph twice with different clocks — proving the controller is\nagnostic to time. This is the composition root skill.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "service honors the injected clock",
+      "code": "\nSolution.ReportService s = new Solution.ReportService(() -> 1726300000000L);\ncheckEq(s.header(), \"Report @ 1726300000000\", \"clock-driven header\");\n",
+      "hint": "The lambda IS a clock — interface seams accept lambdas."
+    },
+    {
+      "name": "controller composes the service",
+      "code": "\nSolution.ReportController c = new Solution.ReportController(\n    new Solution.ReportService(() -> 42L));\ncheckEq(c.render(), \"Report @ 42\\n[body]\", \"controller wraps service\");\n",
+      "hint": "render = header + body, through the service."
+    },
+    {
+      "name": "two clocks, one controller class",
+      "code": "\nSolution.ReportController a = new Solution.ReportController(new Solution.ReportService(() -> 1L));\nSolution.ReportController b = new Solution.ReportController(new Solution.ReportService(() -> 999L));\ncheckTrue(!a.render().equals(b.render()), \"times differ\");\n",
+      "hint": "Same classes, different behavior — that's injection."
+    }
+  ],
+  "level": "guided"
+}

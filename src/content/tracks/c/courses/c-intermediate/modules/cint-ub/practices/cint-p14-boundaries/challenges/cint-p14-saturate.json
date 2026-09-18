@@ -1,0 +1,15 @@
+{
+  "id": "cint-p14-saturate",
+  "title": "Saturating Arithmetic",
+  "prompt": "Implement overflow-proof integer ops. The boilerplate declares:\n\n```c\n/* a + b saturated into [INT_MIN, INT_MAX] */\nint sat_add(int a, int b);\n/* a - b saturated */\nint sat_sub(int a, int b);\n/* a * b saturated (compute in long long) */\nint sat_mul(int a, int b);\n/* x << k as unsigned; 0 if k is out of range [0, 31] */\nunsigned safe_shl(unsigned x, unsigned k);\n```\n\nNo signed overflow may occur in your implementation — that is the whole\nexercise.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <limits.h>\nint sat_add(int a, int b);\nint sat_sub(int a, int b);\nint sat_mul(int a, int b);\nunsigned safe_shl(unsigned x, unsigned k);\n",
+  "tests": [
+    {
+      "name": "the boundaries hold",
+      "code": "\nCHECK_EQ(sat_add(2, 3), 5);\nCHECK_EQ(sat_add(INT_MAX, 1), INT_MAX);\nCHECK_EQ(sat_add(INT_MAX, INT_MAX), INT_MAX);\nCHECK_EQ(sat_add(INT_MIN, -1), INT_MIN);\nCHECK_EQ(sat_add(-5, 5), 0);\nCHECK_EQ(sat_sub(INT_MIN, 1), INT_MIN);\nCHECK_EQ(sat_sub(5, 8), -3);\nCHECK_EQ(sat_mul(INT_MAX, 2), INT_MAX);\nCHECK_EQ(sat_mul(INT_MIN, -1), INT_MAX);      /* +2147483648 saturates */\nCHECK_EQ(sat_mul(-3, -7), 21);\nCHECK_EQ(sat_mul(0, INT_MIN), 0);\nCHECK_EQ(safe_shl(1u, 31), 2147483648u);      /* unsigned: defined */\nCHECK_EQ(safe_shl(3u, 4), 48u);\nCHECK_EQ(safe_shl(1u, 32), 0u);               /* out of range -> 0 */\nCHECK_EQ(safe_shl(1u, 100), 0u);\n",
+      "hint": "Compute in long long (or unsigned), clamp to [INT_MIN, INT_MAX], cast back. safe_shl: range-check first."
+    }
+  ]
+}

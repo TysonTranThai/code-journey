@@ -1,0 +1,31 @@
+{
+  "id": "javi-p10-retry",
+  "title": "Retry with Backoff (Counted, Not Slept)",
+  "prompt": "Implement `static int attemptsToSucceed(FlakyTransport t, String url)`\nin `Solution`:\n- `interface FlakyTransport { int attempt(String url); }` — returns the\n  HTTP status it \"got\": 200, or a 5xx.\n- attemptsToSucceed calls attempt() repeatedly until it returns 200\n  (immediately retryable: 5xx), with a MAX of 3 retries (4 calls total);\n  return the attempt number (1-based) on which 200 arrived, or -1 if\n  still failing.\n- 4xx stops immediately with -1 (client errors are not retryable).\n\nNo Thread.sleep — backoff timing is infrastructure; the *policy* is what\nyou're implementing.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\nimport java.util.concurrent.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "first-try success",
+      "code": "\nSolution.FlakyTransport t = url -> 200;\ncheckEq(Solution.attemptsToSucceed(t, \"x\"), 1, \"succeeds immediately\");\n",
+      "hint": "One attempt, done."
+    },
+    {
+      "name": "retries 5xx then succeeds",
+      "code": "\nint[] calls = {0};\nSolution.FlakyTransport t = url -> (calls[0]++ < 2) ? 503 : 200;\ncheckEq(Solution.attemptsToSucceed(t, \"x\"), 3, \"third attempt\");\n",
+      "hint": "503, 503, 200 → attempt 3."
+    },
+    {
+      "name": "gives up after 4 calls",
+      "code": "\nSolution.FlakyTransport t = url -> 500;\ncheckEq(Solution.attemptsToSucceed(t, \"x\"), -1, \"exhausted\");\n",
+      "hint": "1 initial + 3 retries max."
+    },
+    {
+      "name": "4xx never retried",
+      "code": "\nint[] calls = {0};\nSolution.FlakyTransport t = url -> { calls[0]++; return 404; };\ncheckEq(Solution.attemptsToSucceed(t, \"x\"), -1, \"no retry on 404\");\ncheckEq(calls[0], 1, \"exactly one call\");\n",
+      "hint": "Client error → immediate -1, one call only."
+    }
+  ],
+  "level": "independent"
+}

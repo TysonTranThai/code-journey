@@ -1,0 +1,25 @@
+{
+  "id": "csi-checkpoint-m1-task",
+  "title": "Checkpoint: Type Semantics Under Pressure",
+  "prompt": "Three functions in one graded unit — value/reference, nullability, and patterns together:\n\n```csharp\n/* 1. Returns true iff the SAME object (reference equality), false for\n      equal-but-distinct boxes; null-safe both sides. */\nstatic bool IsSameInstance(object? a, object? b);\n/* 2. Classifies with a switch expression (exact strings):\n      null -> \"empty\"; empty/whitespace -> \"blank\"; parses as int ->\n      \"int:<n>\"; any other -> \"text:<input>\" */\nstatic string Classify(string? input);\n/* 3. Deconstructs: returns (min, max) of the numbers; empty or null\n      sequence -> (0, 0). */\nstatic (int Min, int Max) Range(IEnumerable<int>? numbers);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "reference identity",
+      "code": "\nobject shared = new object();\nCj.True(Solution.IsSameInstance(shared, shared), \"same instance is same\");\nCj.False(Solution.IsSameInstance(new object(), new object()), \"distinct instances differ\");\nobject boxed = 1000;\nCj.True(Solution.IsSameInstance(boxed, boxed), \"boxed int compared with itself\");\nCj.False(Solution.IsSameInstance(boxed, 1000), \"equal box vs fresh box: NOT same instance\");\nCj.False(Solution.IsSameInstance(null, boxed), \"null is not an instance\");\nCj.False(Solution.IsSameInstance(null, null), \"null vs null: nothing to be same as\");\n",
+      "hint": "ReferenceEquals handles the null-null case (it's true for nulls) — the spec wants false, so guard explicitly."
+    },
+    {
+      "name": "classification table",
+      "code": "\nCj.Eq(Solution.Classify(null), \"empty\", \"null input\");\nCj.Eq(Solution.Classify(\"\"), \"blank\", \"empty string\");\nCj.Eq(Solution.Classify(\"   \"), \"blank\", \"whitespace only\");\nCj.Eq(Solution.Classify(\"-5\"), \"int:-5\", \"parses as negative int\");\nCj.Eq(Solution.Classify(\"42\"), \"int:42\", \"parses as int\");\nCj.Eq(Solution.Classify(\"4.5\"), \"text:4.5\", \"not an int -> text\");\nCj.Eq(Solution.Classify(\"hi\"), \"text:hi\", \"plain text\");\n",
+      "hint": "Order matters: null first, then blank, then TryParse, then the text branch — a switch expression on (input) with guards."
+    },
+    {
+      "name": "range with absence",
+      "code": "\nvar (lo, hi) = Solution.Range(new[] { 3, -1, 7, 4 });\nCj.Eq(lo, -1, \"min\"); Cj.Eq(hi, 7, \"max\");\nvar (z1, z2) = Solution.Range(Array.Empty<int>());\nCj.Eq(z1, 0, \"empty min\"); Cj.Eq(z2, 0, \"empty max\");\nvar (n1, n2) = Solution.Range(null);\nCj.Eq(n1, 0, \"null min\"); Cj.Eq(n2, 0, \"null max\");\nvar (one, one2) = Solution.Range(new[] { 5 });\nCj.Eq(one, 5, \"single min==max\"); Cj.Eq(one2, 5, \"single max==min\");\n",
+      "hint": "Treat null and empty the same way — and single elements make min==max."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+Đến lúc xây dựng thứ gì đó thật. **Task tracker** nhỏ nhưng hoàn chỉnh: trạng thái thật, sự kiện thật, lưu trữ thật — cùng kiến trúc với các app production, ở quy mô người mới.
+
+## Yêu cầu
+
+Xây nó bên trong một chương trình JavaScript (máy chấm chạy nó với DOM và storage được thay thế bằng stub — logic giống hệt của trình duyệt):
+
+1. **Trạng thái:** một mảng `tasks` gồm các object `{ title, done }`, được nạp từ khóa storage `"tasks"` (mặc định: mảng rỗng).
+2. **Thêm:** một hàm `addTask(title)` nối thêm `{ title, done: false }`, lưu, và render lại.
+3. **Bật/tắt:** một hàm `toggleTask(index)` lật `done`, lưu, và render lại.
+4. **Render:** một hàm `render()` làm rỗng phần tử danh sách và tạo một `<li>` cho mỗi task — văn bản `"[x] title"` cho task đã xong, `"[ ] title"` nếu chưa.
+5. **Luồng:** thêm hai task, bật/tắt task đầu tiên, và log từng mục đã render.
+
+## Vì sao từng mảnh quan trọng
+
+- **Trạng thái trước:** `tasks` là nguồn sự thật duy nhất. Rendering là một hình chiếu thuần túy của nó — không bao giờ sửa mục danh sách bằng tay.
+- **Lưu trữ:** mọi thay đổi trạng thái đều gọi save. Chống crash bằng chính cấu trúc.
+- **Render-sau-khi-đổi:** một hàm render, được gọi ở khắp nơi. Đây chính là mẫu mà React sau này tự động hóa.
+
+## Điểm khởi đầu
+
+```js
+const tasks = load(); // từ storage (helper kiểu loadSettings của bạn)
+
+function save() {
+  /* JSON.stringify vào storage */
+}
+function render() {
+  /* một li cho mỗi task */
+}
+function addTask(title) {
+  /* push, save, render */
+}
+function toggleTask(index) {
+  /* lật, save, render */
+}
+```
+
+Làm qua các hàm theo thứ tự đó và test từng bước — một hàm add hoạt động được trước khi bạn bắt tay vào toggle.
+
+**Sau dự án này:** cách các lập trình viên quản lý và chia sẻ code — Git.

@@ -1,0 +1,57 @@
+## Lambdas capture VARIABLES, not values
+
+A closure captures the variable itself — the storage location. Changes after
+capture are visible; the lambda's lifetime extends the variable's:
+
+```csharp
+int counter = 0;
+Action bump = () => counter++;   // captures the VARIABLE counter
+bump(); bump();
+Console.WriteLine(counter);      // 2 — same storage
+```
+
+Each *execution* of a scope produces fresh storage:
+
+```csharp
+static Func<int> MakeCounter()
+{
+    int count = 0;
+    return () => ++count;        // each MakeCounter() call: its own count
+}
+var a = MakeCounter(); var b = MakeCounter();
+a(); a(); b();                    // a:2, b:1 — independent
+```
+
+## The classic loop-capture bug
+
+```csharp
+var actions = new List<Action>();
+for (int i = 0; i < 3; i++)
+    actions.Add(() => Console.Write(i));
+foreach (var a in actions) a();      // 333 in old-style for: ONE variable i
+```
+
+The `for` loop declares ONE variable `i` shared by all three lambdas — after
+the loop it is 3, so all print 3. Fixes, both real-world:
+
+```csharp
+for (int i = 0; i < 3; i++) { int copy = i; actions.Add(() => use(copy)); }
+// or foreach with an inline variable:
+foreach (int i in Enumerable.Range(0, 3))   // per-iteration variable
+    actions.Add(() => use(i));               // 012
+```
+
+`foreach` variables are per-iteration since C# 5 — the trap is specifically
+classic `for` with an incrementing index.
+
+## Lifetime: closures keep things alive
+
+A captured object cannot be collected while the lambda lives. A lambda
+registered in a long-lived component and capturing a big object is a leak
+shaped like a feature. Capture narrowly: capture the two fields you need,
+not `this` holding everything.
+
+## Check your understanding
+
+- `int x = 1; var f = () => x; x = 2; f()` — what? (2: captured variable read at invoke.)
+- Why do static lambdas exist? (Compile-time proof of no capture.)

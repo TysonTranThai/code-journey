@@ -1,0 +1,48 @@
+## Truyền theo giá trị: một bản photocopy
+
+```cpp
+void double_it(int x) {   // x là một BẢN SAO
+    x = x * 2;            // sửa bản sao, không sửa biến của người gọi
+}
+
+int n = 5;
+double_it(n);
+std::cout << n;           // vẫn là 5
+```
+
+Theo giá trị, hàm làm việc trên một bản photocopy. An toàn, đơn giản, và miễn phí với thứ nhỏ: `int`, `double`, `bool`, `char`.
+
+## Truyền theo tham chiếu: bản gốc
+
+Một **tham chiếu** (`&`) là một bí danh — một tên khác cho biến thật của người gọi:
+
+```cpp
+void double_it(int& x) {  // x CHÍNH LÀ biến của người gọi
+    x = x * 2;
+}
+
+int n = 5;
+double_it(n);
+std::cout << n;           // 10
+```
+
+Đây là cách một hàm đưa kết quả *trả ngược lại* qua tham số ("out-parameter"). Cũng là cách bạn vô tình sửa thứ không nên sửa — nên mặc định, đừng.
+
+## Lao động chính: tham chiếu const
+
+Đọc một đối tượng lớn (một `std::string`, một `std::vector`) theo giá trị nghĩa là sao chép toàn bộ — lãng phí. Đọc theo tham chiếu không-const lại trao quyền ghi mà bạn không muốn. Câu trả lời là `const&`:
+
+```cpp
+int count_vowels(const std::string& text) {   // không sao chép, không ghi
+    int count = 0;
+    for (char c : text) {
+        char lower = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+        if (lower=='a'||lower=='e'||lower=='i'||lower=='o'||lower=='u') ++count;
+    }
+    return count;
+}
+```
+
+**Quy tắc của khóa học:** giá trị nhỏ truyền theo giá trị; mọi thứ khác truyền theo `const&`; `&` trần chỉ khi hàm *được thiết kế* để sửa biến của người gọi. Từ giờ bạn sẽ thấy `const std::string&` trong gần mọi chữ ký hàm — đó là mặc định chuyên nghiệp.
+
+(Tham chiếu sẽ được đào sâu lại ở module 11, nơi chúng gặp con trỏ. Ở đây, hãy xem `&` là "biến thật" và `const&` là "biến thật, chỉ đọc".)

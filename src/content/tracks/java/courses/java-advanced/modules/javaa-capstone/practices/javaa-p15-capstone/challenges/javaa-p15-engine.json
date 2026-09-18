@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p15-engine",
+  "title": "The narrow seam",
+  "prompt": "Inside Solution, implement the engine contract:\n1. `public interface Engine { void put(String key, String value);\njava.util.Optional<String> get(String key); java.util.List<String> keys();\nint count(); }`\n2. `public static class InMemory implements Engine` — ConcurrentHashMap backed;\n`keys()` returns keys SORTED ascending (determinism is part of the contract).\n3. `public static class JsonlFile implements Engine` — constructor takes a\n`java.nio.file.Path` of an append-only file; `put` appends the line\n`{\"op\":\"put\",\"k\":\"<key>\",\"v\":\"<value>\"}\\n` (UTF-8, CREATE+APPEND) then updates an\ninternal ConcurrentHashMap index (write-through); `get`/`keys`/`count` read the\nindex; `keys()` sorted ascending.\n4. `static Engine replay(Path file)` — a NEW JsonlFile whose state is rebuilt by\nreading every line of the existing file and applying each op in order (later puts\noverwrite earlier ones for the same key).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "in-memory contract",
+      "code": "\nSolution.Engine m = new Solution.InMemory();\nm.put(\"b\", \"2\"); m.put(\"a\", \"1\"); m.put(\"a\", \"1x\");\ncheckEq(m.get(\"a\"), java.util.Optional.of(\"1x\"), \"upsert wins\");\ncheckEq(m.get(\"zz\"), java.util.Optional.empty(), \"absent is empty\");\ncheckEq(m.keys(), java.util.List.of(\"a\", \"b\"), \"sorted keys\");\ncheckEq(m.count(), 2, \"two entries\");\n",
+      "hint": "Sorted keys; upsert semantics."
+    },
+    {
+      "name": "jsonl engine persists and replays",
+      "code": "\njava.nio.file.Path f = java.nio.file.Files.createTempFile(\"cjadv\", \".jsonl\");\nSolution.Engine e = new Solution.JsonlFile(f);\ne.put(\"b\", \"2\"); e.put(\"a\", \"1\");\nSolution.Engine r = Solution.replay(f);\ncheckEq(r.get(\"a\"), java.util.Optional.of(\"1\"), \"replayed state\");\ncheckEq(r.keys(), java.util.List.of(\"a\", \"b\"), \"replayed keys sorted\");\ncheckEq(r.count(), 2, \"replayed count\");\n",
+      "hint": "The file is the truth; the index is a cache."
+    }
+  ],
+  "level": "guided"
+}

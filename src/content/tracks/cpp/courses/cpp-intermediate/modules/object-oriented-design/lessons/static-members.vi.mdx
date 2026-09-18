@@ -1,0 +1,39 @@
+**Static member** thuộc về class, không thuộc một đối tượng nào: một bản sao
+duy nhất dùng chung cho mọi instance. Static data member được khai báo trong
+class và định nghĩa một lần bên ngoài (C++17 cho phép khởi tạo ngay trong
+class với `inline`).
+
+```cpp
+#include <string>
+#include <vector>
+
+class IdGenerator {
+public:
+    static int next() { return ++counter_; }   // hàm static: không có this
+
+private:
+    inline static int counter_{0};             // một int dùng chung
+};
+
+class Registry {
+public:
+    void add(std::string name) { names_.push_back(std::move(name)); }
+    static std::size_t count(const Registry& r) { return r.names_.size(); }
+
+private:
+    std::vector<std::string> names_;
+};
+```
+
+## Hai loại, tách bạch
+
+- **static data member** — trạng thái dùng chung giữa mọi instance (bộ đếm, cache, cấu hình).
+- **hàm thành viên static** — gọi được mà không cần đối tượng; không có `this`,
+  nên không được đụng member thường (nhưng đọc được của *người khác* qua tham số).
+
+## Truy cập
+
+`ClassName::member` từ bất kỳ đâu có quyền; `member` từ bên trong phạm vi
+class. Những trường hợp thực sự xứng đáng có static state: đếm instance, cấu
+hình bất biến dùng chung, hàm factory. Còn lại nên là đối tượng thường —
+trạng thái toàn cục mutable là mùi thiết kế bạn sẽ gặp trong bài gỡ lỗi.

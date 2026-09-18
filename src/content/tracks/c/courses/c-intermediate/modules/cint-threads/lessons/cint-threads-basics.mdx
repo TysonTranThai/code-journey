@@ -1,0 +1,39 @@
+## The standard's vocabulary
+
+C11 added `<threads.h>`: `thrd_t` (a thread handle), `thrd_create`
+(start one), `thrd_join` (wait for it and collect its return):
+
+```c
+int work(void *arg) {                 /* signature is fixed: int(void*) */
+    long id = (long)(intptr_t)arg;
+    return (int)id;                   /* becomes thrd_join's out value */
+}
+
+thrd_t t;
+if (thrd_create(&t, work, (void *)(intptr_t)7) == thrd_success) {
+    int result;
+    thrd_join(t, &result);            /* blocks until work returns */
+}
+```
+
+Every thread runs the function you hand it; `arg` is how you pass data
+(one pointer). **Joining is not optional hygiene** — an unjoined thread
+keeps running while main exits (undefined which writes land), and
+`thrd_join` is how you *know* the work finished. `thrd_detach` is the
+fire-and-forget alternative: the thread cleans itself up, but then you
+cannot wait for it or collect anything.
+
+## Sharing is the entire problem
+
+Two threads incrementing the same `int` is the canonical disaster:
+
+```c
+/* both threads run: counter++ */
+/* counter++ is really: load, add, store — three steps */
+```
+
+The three steps interleave. Both threads can load 5, both store 6, and
+one increment vanishes — a *lost update*. The fix is not "be careful":
+it is making the read-modify-write indivisible (next lesson). The
+discipline to build now: name every shared variable in a comment, and
+treat every access to one as a design decision.

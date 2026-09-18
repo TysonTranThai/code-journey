@@ -1,0 +1,35 @@
+{
+  "id": "cb22-checkpoint-capstone",
+  "title": "Finance Core Complete",
+  "prompt": "Given the Txn model in scope, implement all four: `int total_by_cat(const Txn *txs, int n, int cat)` (sum of cents in category cat), `int biggest_idx(const Txn *txs, int n)` (index of largest cents, ties lowest index, -1 for n==0), `int after_balance(const Txn *txs, int n, int start)` (start + all cents), and `void fmt_report(const Txn *txs, int n, int start, char *out)` writing `txns=<n> balance=<b>` where b is after_balance (snprintf).",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\ntypedef struct { int id; int cents; int cat; } Txn;\n",
+  "tests": [
+    {
+      "name": "total",
+      "code": "Txn t[] = {{1, 500, 1}, {2, 200, 2}, {3, 300, 1}};\nCHECK_EQ(total_by_cat(t, 3, 1), 800);",
+      "hint": "Category filter."
+    },
+    {
+      "name": "biggest",
+      "code": "Txn t[] = {{1, 500, 1}, {2, 900, 2}};\nCHECK_EQ(biggest_idx(t, 2), 1);",
+      "hint": "Max scan."
+    },
+    {
+      "name": "biggest empty",
+      "code": "Txn t[1];\nCHECK_EQ(biggest_idx(t, 0), -1);",
+      "hint": "Empty contract."
+    },
+    {
+      "name": "balance",
+      "code": "Txn t[] = {{1, -200, 1}, {2, 1000, 2}};\nCHECK_EQ(after_balance(t, 2, 100), 900);",
+      "hint": "100 - 200 + 1000."
+    },
+    {
+      "name": "report",
+      "code": "Txn t[] = {{1, -200, 1}, {2, 1000, 2}};\nchar b[64] = {0};\nfmt_report(t, 2, 100, b);\nCHECK_STR_EQ(b, \"txns=2 balance=900\");",
+      "hint": "Compose after_balance into the line."
+    }
+  ]
+}

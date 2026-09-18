@@ -1,0 +1,32 @@
+## The collapse methods
+
+```csharp
+var nums = new[] { 3, 1, 4, 1, 5 };
+nums.Count();          // 5
+nums.Sum();            // 14
+nums.Min(); nums.Max(); // 1, 5
+nums.Average();        // 2.8
+nums.Any(n => n > 4);  // true  — "at least one"
+nums.All(n => n > 0);  // true  — "every one"
+```
+
+`Any`/`All` are predicates over the whole set; `Count()` with a predicate counts matches. On empty sequences `Min`/`Max`/`Average` throw `InvalidOperationException` — guard or use `FirstOrDefault`-style handling.
+
+## Deferred execution
+
+```csharp
+var query = nums.Where(n => n > 2);   // NOTHING runs yet
+nums.Add(10);
+foreach (var n in query) ...          // NOW it runs — and sees the 10!
+```
+
+A query is a *recipe*, not a result. It executes when enumerated — `foreach`, `ToList()`, an aggregate like `Sum()`. Each enumeration re-runs it. Pin a snapshot when the source might change: `var pinned = query.ToList();`.
+
+First-or-default family:
+
+```csharp
+nums.FirstOrDefault(n => n > 100);    // 0 (int default) — no throw
+nums.First(n => n > 100);             // throws InvalidOperationException
+```
+
+`...OrDefault` returns the type's default instead of throwing — the polite variant for "might not exist".

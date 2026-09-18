@@ -1,0 +1,20 @@
+{
+  "id": "cppa14-testing-checkpoint",
+  "title": "Verification Gauntlet",
+  "prompt": "Implement the run-length codec (module-14 contract) AND the reversed-word validator: `isReversedPair(a, b)` is true iff b is a with all characters in reverse order (single characters and empty strings are trivially pairs). The mutation suite probes boundaries: empty, single-char, palindromes, repeated chars.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <cstdint>\n#include <string>\n#include <vector>\n\n// Run-length codec (see module 14): {3,3,3,5} <-> \"3x3,1x5\"\nstd::string encode(const std::vector<int>& v);\nstd::vector<int> decode(const std::string& s);\n\n// True iff b == reverse(a). Empty/1-char strings are pairs of themselves.\nbool isReversedPair(const std::string& a, const std::string& b);\n",
+  "tests": [
+    {
+      "name": "codec round-trip over input classes",
+      "code": "std::vector<std::vector<int>> cases = {\n    {}, {1}, {7, 7, 7}, {1, 2, 2, 3, 3, 3, 3}, {0, -1, -1, 0}};\nfor (const auto& v : cases) CHECK(decode(encode(v)) == v);\nCHECK_EQ(encode({2, 2, 2}), \"3x2\");\nCHECK((decode(\"2x4,1x9\") == std::vector<int>{4, 4, 9}));",
+      "hint": "encode runs; decode splits on ',' then expands count x value. Round-trip holds for every class."
+    },
+    {
+      "name": "reversed-pair boundary battery",
+      "code": "CHECK(isReversedPair(\"\", \"\"));\nCHECK(isReversedPair(\"x\", \"x\"));\nCHECK(isReversedPair(\"ab\", \"ba\"));\nCHECK(isReversedPair(\"abc\", \"cba\"));\nCHECK(!isReversedPair(\"ab\", \"ab\"));\nCHECK(isReversedPair(\"aa\", \"aa\"));\nCHECK(!isReversedPair(\"abc\", \"abd\"));\nCHECK(isReversedPair(\"aba\", \"aba\"));\nCHECK(isReversedPair(\"aab\", \"baa\"));",
+      "hint": "Compare a[i] with b[a.size()-1-i] for all i — length mismatch first. Note \"aab\"/\"baa\" IS a pair, \"aa\"/\"aa\" is too (palindrome)."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p2-identity-matrix",
+  "title": "The identity matrix",
+  "prompt": "Implement four static predicates — each must use `==` (identity), not equals:\n1. `static boolean pooledLiterals()` — is `\"jvm\" == \"jvm\"` (two literals)?\n2. `static boolean newStringSameAsLiteral()` — is `new String(\"jvm\") == \"jvm\"`?\n3. `static boolean internedMatches()` — is `new String(\"jvm\").intern() == \"jvm\"`?\n4. `static boolean boxCacheHolds()` — is `Integer.valueOf(127) == Integer.valueOf(127)`?\n5. `static boolean boxCacheMisses()` — is `Integer.valueOf(128) == Integer.valueOf(128)`?\n6. `static boolean bigBoxSame()` — is `Integer.valueOf(1000) == Integer.valueOf(1000)`?\nReturn the *actual* results, whatever they are — the tests know the truth.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "constant pool and cache truth",
+      "code": "\ncheckTrue(Solution.pooledLiterals(), \"literals are pooled\");\ncheckTrue(!Solution.newStringSameAsLiteral(), \"new String is a fresh object\");\ncheckTrue(Solution.internedMatches(), \"intern returns the pool entry\");\n",
+      "hint": "Pool deduplicates literals; new always allocates; intern canonicalizes."
+    },
+    {
+      "name": "boxing cache boundaries",
+      "code": "\ncheckTrue(Solution.boxCacheHolds(), \"127 is cached\");\ncheckTrue(!Solution.boxCacheMisses(), \"128 is outside the cache\");\ncheckTrue(!Solution.bigBoxSame(), \"1000 boxes are never shared\");\n",
+      "hint": "The cache covers exactly -128..127."
+    }
+  ],
+  "level": "independent"
+}

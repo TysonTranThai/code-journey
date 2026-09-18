@@ -1,0 +1,37 @@
+## The table worth memorizing (then deriving)
+
+| Structure | Contains/Add | Remove | Notes |
+|---|---|---|---|
+| `List<T>` | O(n) / O(1)* | O(n) | *amortized; index access O(1) |
+| `Dictionary<K,V>` | O(1) avg | O(1) avg | worst O(n) under collisions; no order |
+| `HashSet<T>` | O(1) avg | O(1) avg | unique items; set algebra |
+| `SortedDictionary<K,V>` | O(log n) | O(log n) | ordered iteration; tree |
+| `Queue<T>` / `Stack<T>` | O(1) | O(1) | FIFO / LIFO only |
+| `LinkedList<T>` | O(1) at a node | O(1) at a node | find is O(n); no index |
+
+"Average" hides the hash story: buckets + a good `GetHashCode` + `Equals`
+consistency. A type whose hash varies with mutable state poisons any
+dictionary it sits in — that is why dictionary KEYS are effectively immutable
+by convention.
+
+## Amortized growth
+
+`List<T>` doubles capacity when full: occasional O(n) copies, amortized
+O(1) appends. Pre-size hot paths — `new List<int>(capacity)` — when you
+know the size; the same logic justifies `Dictionary` capacity hints.
+
+## Set algebra exists
+
+```csharp
+var a = new HashSet<int> { 1, 2, 3 };
+var b = new HashSet<int> { 3, 4 };
+a.UnionWith(b);          // a becomes {1,2,3,4}
+a.IntersectWith(b); a.ExceptWith(b); a.SymmetricExceptWith(b);
+```
+
+Distinct-by-key dedup (`HashSet` on projected keys) is the classic use.
+
+## Check your understanding
+
+- Why is Dictionary "no order"? (Bucket layout; insertion order is an implementation detail.)
+- When is LinkedList right? (Splice/insert mid-sequence with a node in hand; rare.)

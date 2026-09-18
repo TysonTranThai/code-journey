@@ -1,0 +1,22 @@
+{
+  "title": "Kiểm tra điểm: Bộ phân tích config với ngoại lệ mang thông tin",
+  "prompt": "Cài `int parse_config_value(const std::string& content)` quét các dòng tìm dòng bắt đầu bằng `value=`. Trả số không âm đã phân tích. Ném `ConfigError` riêng (kế thừa `std::runtime_error`, mang số dòng vi phạm như một field, lộ qua `line_no()`) khi giá trị thiếu, rỗng, hoặc không phải số — `what()` của ngoại lệ phải đọc `line <N>: <message>` với số dòng THẬT (tính từ 1).",
+  "tests": [
+    {
+      "name": "valid",
+      "hint": "value=42 ở dòng 2 phân tích thành 42."
+    },
+    {
+      "name": "bad-value-line",
+      "hint": "Lỗi ở dòng 1 — line_no() phải báo đúng."
+    },
+    {
+      "name": "line-number-accurate",
+      "hint": "Giá trị rỗng ở dòng 3 — field phải mang 3, không phải 0."
+    },
+    {
+      "name": "missing-value",
+      "hint": "Hoàn toàn không có dòng value= cũng là ConfigError."
+    }
+  ]
+}

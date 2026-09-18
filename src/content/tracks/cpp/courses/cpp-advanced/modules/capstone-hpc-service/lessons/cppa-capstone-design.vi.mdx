@@ -1,0 +1,17 @@
+## Các quyết định cần chốt trước khi cài
+
+1. **Quyền sở hữu cửa sổ.** "Cửa sổ hiện tại" nằm ở đâu? (Gợi ý: một phép
+   so sánh timestamp trong `admit` — không phải timer, không phải thread.)
+2. **Ngữ nghĩa reset.** Cửa sổ lăn ở *lần admit đầu* tại timestamp mới: xóa
+   hạn mức đã dùng **và** ordinal cùng lúc, hoặc không xóa gì cả.
+3. **Đường từ chối cũng có thứ tự.** Tag lạ và tag hết hạn mức đều là từ
+   chối — một bộ đếm, hai lý do, cùng kỷ luật.
+4. **Báo cáo là thứ tự toàn phần.** Timestamp tăng, rồi độ nghiêm trọng mã
+   (REJECT < ADMIT), rồi ổn định theo thứ tự ghi — để `snapshot()` xác định
+   cả khi bằng timestamp.
+5. **Truy vết.** `Admission.ordinal` phải qua được lần lăn cửa sổ (đặt lại
+   từ 1) — ai lưu ordinal toàn cục sẽ trượt bộ test nghiệm thu.
+
+Viết câu trả lời thành chú thích trên từng phương thức, rồi cài. Bộ test
+nghiệm thu bên dưới là người chấm, trong bài luyện và lần nữa — khó hơn —
+ở checkpoint.

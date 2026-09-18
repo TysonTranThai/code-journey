@@ -1,0 +1,24 @@
+## Capstone yêu cầu gì
+
+Một **lõi tiện ích hệ thống portable** — bộ khung mọi service thật lớn lên từ đó — xây từ bốn mảnh bạn đã viết riêng lẻ:
+
+1. **Bộ dò endian** (mô-đun 24A) — thăm dò byte lúc chạy trả phán quyết ổn định.
+2. **Số học kích thước được kiểm** (mô-đun 23) — phép nhân từ chối tràn thay vì wrap thành cấp phát tí hon.
+3. **Bản sao an toàn** (mô-đun 23) — ngữ nghĩa của snprintf: từ chối, không bao giờ cắt cụt câm lặng.
+4. **Bộ ghi bản ghi có khung** (mô-đun 20/21) — length-prefix rồi byte, gom thành một lần ghi logic (span của mô-đun 21).
+
+Checkpoint lắp chúng dưới một đặc tả và kiểm chứng sự kết hợp: dò endian khớp sự thật nền tảng (little-endian tại đây), số học từ chối, bản sao từ chối, và payload có khung khép vòng được.
+
+## Vì sao kết hợp mới là bài kiểm
+
+Từng mảnh vượt bài kiểm riêng; capstone hỏi liệu các *hợp đồng* có cầm nhau:
+
+- framer tin bộ kiểm kích thước (một lời từ chối thượng nguồn trở thành -1 sạch sẽ hạ nguồn, không phải crash);
+- phán quyết của bộ dò quyết định thứ tự byte trong header khung — bộ dò sai cho ra khung sai-nhưng-nhất-quán, và vòng lặp khép bắt được điều đó;
+- mọi đường lỗi trả mã, nên người gọi luôn phân biệt được "không làm gì" với "làm dở" với "từ chối".
+
+Sự phân biệt đó — từ chối sạch vs công việc dở vs hỏng câm lặng — là toàn bộ chủ đề của khóa học này, khoác lên mình một hàm.
+
+## Sau khóa học
+
+Vùng đất C Intermediate/Advanced xa hơn: đồng thời ở quy mô lớn, kỹ nghệ allocator, giao diện kernel. Các mô-đun đã gọi tên những cánh cửa đó; khóa học này bảo đảm bạn có thể đi đến chúng — đọc C theo cách công cụ thấy, suy luận về UB như kỹ sư compiler, đo đạc như nhà thực nghiệm, và từ chối như kỹ sư an ninh.

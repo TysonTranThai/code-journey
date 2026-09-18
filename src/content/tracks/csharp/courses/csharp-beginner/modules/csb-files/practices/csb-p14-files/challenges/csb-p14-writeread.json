@@ -1,0 +1,21 @@
+{
+  "id": "csb-p14-writeread",
+  "title": "Write, read, and overwrite",
+  "prompt": "Implement `static void WriteNote(string path, string note)` (create parent directory if missing, overwrite the file with the note text) and `static string ReadNote(string path)` (return the file's text; `FileNotFoundException` when the file doesn't exist).",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "var dir = Path.Combine(Path.GetTempPath(), \"cj-p14a\", Guid.NewGuid().ToString());\nvar path = Path.Combine(dir, \"note.txt\");\nSolution.WriteNote(path, \"hello files\");\nCj.Eq(Solution.ReadNote(path), \"hello files\", \"round trip\");\nSolution.WriteNote(path, \"second\");\nCj.Eq(Solution.ReadNote(path), \"second\", \"overwrite replaces\");",
+      "hint": "Write must create missing directories and replace existing content."
+    },
+    {
+      "name": "missing",
+      "code": "var dir = Path.Combine(Path.GetTempPath(), \"cj-p14b\", Guid.NewGuid().ToString());\nDirectory.CreateDirectory(dir);\nvar path = Path.Combine(dir, \"ghost.txt\");\nbool t = false;\ntry { Solution.ReadNote(path); } catch (FileNotFoundException) { t = true; }\nCj.True(t, \"missing file throws, no silent null\");",
+      "hint": "Reading what was never written is an exceptional condition."
+    }
+  ],
+  "level": "guided"
+}

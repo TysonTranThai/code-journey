@@ -1,0 +1,52 @@
+Two loops run on a *condition* rather than a count.
+
+**`while`** checks first, then runs — the body may execute zero times:
+
+```java
+int cups = 0;
+while (cups < 3) {
+    cups++;
+}
+// cups == 3 here
+```
+
+**`do-while`** runs the body first, then checks — the body always executes
+at least once. The classic shape is a retry loop:
+
+```java
+int attempts = 0;
+do {
+    attempts++;
+    // try something
+} while (attempts < 3 && !succeeded);
+```
+
+Use `while` when the answer might already be "done" (draining a queue); use
+`do-while` only when the first pass is required by the problem itself
+(prompt-then-check input). In practice 90% of condition loops are `while`.
+
+**`break` and `continue`** control the loop from inside:
+
+```java
+int found = -1;
+for (int i = 0; i < data.length; i++) {
+    if (data[i] < 0) {
+        continue;            // skip this element, keep looping
+    }
+    if (data[i] == target) {
+        found = i;
+        break;               // stop the whole loop
+    }
+}
+```
+
+`break` exits the loop immediately; `continue` jumps to the next iteration.
+Both are clearest when rare — a loop full of breaks is really a tangled
+state machine. Note the standard search idiom: carry the answer in a
+variable declared *outside* the loop, so it survives the `break`.
+
+**The infinite loop** `while (true) { ... break; }` is legitimate when the
+exit is in the middle of the body — but the `break` must be reachable, and
+you must be able to say in one sentence what eventually makes it run.
+
+**Next:** loops inside loops, and the accumulator patterns that make loops earn their keep.

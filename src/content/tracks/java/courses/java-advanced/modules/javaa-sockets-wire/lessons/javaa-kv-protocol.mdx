@@ -1,0 +1,21 @@
+The checkpoint protocol — a KV store over TCP:
+
+```text
+client: PUT key value
+     server: OK
+
+client: GET key
+           server: VALUE value
+   (or)  MISSING
+
+client: QUIT
+              server: BYE
+  (then both close)
+```
+
+Design decisions worth noticing: the frame is a line (text protocol, easy to
+debug with telnet); responses are SINGLE lines (the client never has to count
+bytes); `QUIT` ends the session explicitly instead of relying on EOF races;
+unknown commands answer `ERR` rather than hanging or crashing. A server loop:
+accept → per-connection handler → read-line/write-line until QUIT/EOF. The
+test client proves the whole loop over real loopback bytes.

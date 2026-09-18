@@ -1,0 +1,20 @@
+{
+  "id": "i2-flow-validate",
+  "title": "Flow Validator",
+  "prompt": "A GitHub Flow session is a list of events: \"branch\", \"commit\", \"push\", \"pr\", \"merge\". Write `validateFlow(events)` returning true only for a valid session: starts with exactly one \"branch\", at least one \"commit\" and \"push\" before the \"pr\", exactly one \"pr\", and \"merge\" last (if present). Order violations => false.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function validateFlow(events) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "accepts well-formed sessions",
+      "code": "const fn = new Function(code + \"\\nreturn { validateFlow };\");\nconst { validateFlow } = fn();\nif (!validateFlow([\"branch\", \"commit\", \"push\", \"pr\", \"merge\"])) throw new Error(\"The canonical flow.\");\nif (!validateFlow([\"branch\", \"commit\", \"commit\", \"push\", \"pr\"])) throw new Error(\"Merge is optional; multiple commits fine.\");",
+      "hint": "Track what you've seen; each event has allowed predecessors."
+    },
+    {
+      "name": "rejects out-of-order sessions",
+      "code": "const fn = new Function(code + \"\\nreturn { validateFlow };\");\nconst { validateFlow } = fn();\nif (validateFlow([\"commit\", \"branch\", \"pr\"])) throw new Error(\"Must branch before committing.\");\nif (validateFlow([\"branch\", \"pr\", \"push\"])) throw new Error(\"Push before PR.\");\nif (validateFlow([\"branch\", \"commit\", \"pr\", \"merge\", \"commit\"])) throw new Error(\"Nothing after merge.\");\nif (validateFlow([\"branch\", \"pr\"])) throw new Error(\"A PR needs commits and a push.\");",
+      "hint": "A simple state machine: branch → commit+ → push → pr → merge?."
+    }
+  ]
+}

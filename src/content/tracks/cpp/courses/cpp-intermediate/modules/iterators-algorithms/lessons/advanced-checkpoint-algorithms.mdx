@@ -1,0 +1,11 @@
+`running_avg` is the module's exam because it combines everything: a
+`std::transform` that writes into a pre-sized output, a lambda capturing a
+running prefix **by reference**, and correct division by the count seen so
+far — not the total size.
+
+The by-reference capture is the load-bearing decision: the lambda must
+remember state between calls. The classic wrong answer divides the prefix
+by `v.size()` every time — it looks plausible and fails exactly one test.
+
+Before you code: what does the empty vector return? Decide, then make the
+test prove it.

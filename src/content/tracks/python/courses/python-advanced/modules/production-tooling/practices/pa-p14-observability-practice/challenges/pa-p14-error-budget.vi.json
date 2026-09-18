@@ -1,0 +1,10 @@
+{
+  "title": "Ngân sách lỗi",
+  "prompt": "Cài `error_budget(slo_success_rate, total, failures, window_days=30)`:\n\n- lỗi cho phép = `total * (1 - slo)`; ngân sách còn lại = `1 - failures/allowed`, sàn là 0 (1.0 khi allowed bằng 0 và không có lỗi)\n- trả `{'slo', 'actual' (tỷ lệ thành công đo được), 'budget_remaining', 'status'}`\n- status: `'healthy'` khi còn >= 0.5, `'burning'` khi 0 < còn < 0.5, `'breached'` khi bằng 0 (một lần vi phạm thật KHÔNG được đọc là chỉ đang burning)\n\nHàm này là quyết định SLO: healthy → ship tính năng; burning → ổn định.",
+  "tests": [
+    {
+      "name": "Healthy, burning, breached",
+      "hint": "20 lỗi vượt ngân sách 10 lỗi: breached, không phải burning."
+    }
+  ]
+}

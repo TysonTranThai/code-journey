@@ -1,0 +1,66 @@
+## The node is the whole idea
+
+```c
+typedef struct SNode {
+    int            value;
+    struct SNode  *next;    /* NULL ends the list */
+} SNode;
+```
+
+The list *is* the head pointer. An empty list is `SNode *head = NULL;` —
+there is no list object to initialize. Every function that mutates the
+list must handle three special cases: **empty** (head is NULL), **single
+element**, and **the head itself** (which changes).
+
+Head insertion is the cheap one — O(1), no traversal, and it naturally
+reverses insertion order:
+
+```c
+int push_front(SNode **head, int v) {
+    SNode *n = malloc(sizeof *n);
+    if (!n) return -1;
+    n->value = v;
+    n->next = *head;      /* works for empty: *head is NULL */
+    *head = n;
+    return 0;
+}
+```
+
+The `SNode **head` is not decoration. The function must *change the
+caller's head* — and to change a pointer you need its address. The
+alternative (returning the new head) works but forces the caller to
+reassign on every call, which is one forgotten `head = ...` away from a
+leak.
+
+## Deletion is where lists punish you
+
+To delete a node you need the *previous* node — but singly-linked nodes
+point only forward. Either walk with two fingers (`prev`/`cur`), or copy
+the next node's payload into the doomed node and unlink it (great for
+tail-agnostic O(1) delete, changes iteration semantics). The two-finger
+walk is the honest default:
+
+```c
+int remove_val(SNode **head, int v) {
+    SNode **link = head;              /* points at whoever points at cur */
+    for (SNode *cur = *head; cur; cur = cur->next) {
+        if (cur->value == v) {
+            *link = cur->next;        /* unlink: fixes head OR prev->next */
+            free(cur);
+            return 1;
+        }
+        link = &cur->next;
+    }
+    return 0;
+}
+```
+
+`SNode **link` walks the *links*, not the nodes: `*link` is "whatever
+points at cur" — the head itself, or the previous node's `next`. One
+code path for both, no special cases.
+
+## Destroying a list
+
+Free every node exactly once, then null the head. The trap is
+`free(cur); cur = cur->next;` — reading a freed node. Save the next
+pointer first, always.

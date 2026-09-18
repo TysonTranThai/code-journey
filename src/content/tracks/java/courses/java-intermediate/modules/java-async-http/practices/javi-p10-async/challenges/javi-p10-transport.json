@@ -1,0 +1,26 @@
+{
+  "id": "javi-p10-transport",
+  "title": "Service Over a Fake Transport",
+  "prompt": "Model in `Solution`:\n- `record HttpReply(int status, String body)`\n- `interface HttpTransport { HttpReply send(String url); }`\n- `static class ApiClient` with constructor `(HttpTransport t)` and\n  `String fetchUser(String id)`:\n  - sends to `\"https://api.test/users/\" + id`\n  - 200 → returns body\n  - 404 → throws NoSuchElementException(\"user \" + id)\n  - 5xx → throws IllegalStateException(\"server error \" + status)\n- `static HttpTransport fakeTransport(Map<String, HttpReply> replies)` —\n  a transport returning the canned reply for the matching URL.\n\nThe tests never open a socket; the fake IS the point.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\nimport java.util.concurrent.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "happy path returns body",
+      "code": "\nMap<String, Solution.HttpReply> canned = Map.of(\n    \"https://api.test/users/u1\", new Solution.HttpReply(200, \"{\\\"id\\\":\\\"u1\\\"}\"));\nSolution.ApiClient api = new Solution.ApiClient(Solution.fakeTransport(canned));\ncheckEq(api.fetchUser(\"u1\"), \"{\\\"id\\\":\\\"u1\\\"}\", \"body returned\");\n",
+      "hint": "The client must call the transport with the composed URL."
+    },
+    {
+      "name": "404 becomes NoSuchElementException",
+      "code": "\nMap<String, Solution.HttpReply> canned = Map.of(\n    \"https://api.test/users/ghost\", new Solution.HttpReply(404, \"\"));\nSolution.ApiClient api = new Solution.ApiClient(Solution.fakeTransport(canned));\ntry { api.fetchUser(\"ghost\"); checkTrue(false, \"must throw\"); }\ncatch (java.util.NoSuchElementException e) { checkTrue(true, \"translated\"); }\n",
+      "hint": "404 → NoSuchElementException carrying the id."
+    },
+    {
+      "name": "5xx becomes IllegalStateException",
+      "code": "\nMap<String, Solution.HttpReply> canned = Map.of(\n    \"https://api.test/users/x\", new Solution.HttpReply(503, \"\"));\nSolution.ApiClient api = new Solution.ApiClient(Solution.fakeTransport(canned));\ntry { api.fetchUser(\"x\"); checkTrue(false, \"must throw\"); }\ncatch (IllegalStateException e) { checkTrue(e.getMessage().contains(\"503\"), \"status in message\"); }\n",
+      "hint": "Server errors surface as IllegalStateException with the status."
+    }
+  ],
+  "level": "independent"
+}

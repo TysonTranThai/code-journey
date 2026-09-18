@@ -1,0 +1,15 @@
+## Test-first repair
+
+When a bug report arrives, the first artifact is not the fix — it is the **failing test** that reproduces the report. Benefits: proves the bug is real and reproducible; pins the exact expected behavior; and after the fix, it is a permanent regression guard.
+
+## The loop
+
+1. Translate the report into a test with the smallest data that triggers it.
+2. Watch it fail — for the *reported reason* (not for a typo in the test).
+3. Fix the minimum: no drive-by refactors inside an incident.
+4. Watch the full suite: the fix must not break neighbors.
+5. Write down the class of the bug (bounds? lifetime? race?) and check siblings for the same pattern.
+
+## Blameless and systemic
+
+"Who wrote this" is irrelevant; "what made this class of bug reachable" is the question. If an unchecked index caused it, the systemic fix is a boundary type at the API edge, not a scolding. The graded exercise here walks exactly this loop: given a described incident and a broken function, write the fixed version — graded by the failing-behavior test and the correct-behavior test both.

@@ -1,0 +1,30 @@
+{
+  "id": "cppi-checkpoint-errors",
+  "title": "Checkpoint: Config parser with a field-aware exception",
+  "prompt": "Implement `int parse_config_value(const std::string& content)` scanning lines for one starting with `value=`. Return the parsed non-negative number. Throw a custom `ConfigError` (deriving from `std::runtime_error`, carrying the offending line number as a field, exposed via `line_no()`) when the value is missing, empty, or non-numeric — the exception's `what()` must read `line <N>: <message>` with the REAL line number (1-based).",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <stdexcept>\n#include <string>\n#include <iostream>\n\n// Define ConfigError, then:\n// int parse_config_value(const std::string& content)\n",
+  "tests": [
+    {
+      "name": "valid",
+      "code": "CHECK_EQ(parse_config_value(std::string{\"name=app\\nvalue=42\\n\"}), 42);",
+      "hint": "value=42 on line 2 parses to 42."
+    },
+    {
+      "name": "bad-value-line",
+      "code": "bool threw = false;\nstd::string line_no;\ntry {\n    parse_config_value(std::string{\"value=abc\\n\"});\n} catch (const ConfigError& e) {\n    threw = true;\n    line_no = e.line_no();\n}\nCHECK(threw);\nCHECK_EQ(line_no, std::string(\"1\"));",
+      "hint": "The failure is on line 1 — line_no() must say so."
+    },
+    {
+      "name": "line-number-accurate",
+      "code": "bool threw = false;\nstd::string line_no;\ntry {\n    parse_config_value(std::string{\"a=1\\nb=2\\nvalue=\\n\"});\n} catch (const ConfigError& e) {\n    threw = true;\n    line_no = e.line_no();\n}\nCHECK(threw);\nCHECK_EQ(line_no, std::string(\"3\"));",
+      "hint": "Empty value on line 3 — the field must carry 3, not 0."
+    },
+    {
+      "name": "missing-value",
+      "code": "bool threw = false;\ntry { parse_config_value(std::string{\"a=1\\n\"}); } catch (const ConfigError&) { threw = true; }\nCHECK(threw);",
+      "hint": "No value= line at all is also a ConfigError."
+    }
+  ]
+}

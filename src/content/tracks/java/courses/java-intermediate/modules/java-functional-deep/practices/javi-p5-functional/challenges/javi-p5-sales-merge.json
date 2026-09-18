@@ -1,0 +1,21 @@
+{
+  "id": "javi-p5-sales-merge",
+  "title": "toMap with a Merge Function",
+  "prompt": "- `record Sale(String region, int amount)` in `Solution`\n- `static Map<String, Integer> totalsByRegion(List<Sale> sales)` — sum\n  amounts per region using `Collectors.toMap` with `Integer::sum` as the\n  merge function.\n- `static Map.Entry<String, Integer> topRegion(List<Sale> sales)` —\n  returns the region's entry with the highest total (ties: smallest\n  region name wins).\n\nDuplicate keys without a merge function throw IllegalStateException —\nthe tests make sure you used one.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\nimport java.util.stream.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "totals merge duplicates",
+      "code": "\nList<Object> sales = List.of(\n    new Solution.Sale(\"east\", 10), new Solution.Sale(\"west\", 5),\n    new Solution.Sale(\"east\", 7));\ncheckEq(Solution.totalsByRegion((List) sales), Map.of(\"east\", 17, \"west\", 5), \"merged totals\");\n",
+      "hint": "toMap(Sale::region, Sale::amount, Integer::sum)."
+    },
+    {
+      "name": "top region",
+      "code": "\nList<Object> sales = List.of(\n    new Solution.Sale(\"east\", 10), new Solution.Sale(\"west\", 5),\n    new Solution.Sale(\"east\", 7));\nvar top = Solution.topRegion((List) sales);\ncheckEq(top.getKey(), \"east\", \"winner region\");\ncheckEq(top.getValue(), 17, \"winner total\");\n",
+      "hint": "Max entry of the totals map; ties resolved by name."
+    }
+  ],
+  "level": "independent"
+}

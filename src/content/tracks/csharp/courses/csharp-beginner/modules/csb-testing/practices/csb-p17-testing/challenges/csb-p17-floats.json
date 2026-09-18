@@ -1,0 +1,21 @@
+{
+  "id": "csb-p17-floats",
+  "title": "Floating-point honesty",
+  "prompt": "Implement `static bool SameTotal(decimal a, decimal b, decimal tolerance)` — true when |a−b| ≤ tolerance — and `static double Mean(List<double> xs)` returning the average (empty/null → 0.0). Tests pin exact-decimal behavior and tolerance logic.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "Cj.True(Solution.SameTotal(100.0m, 100.0m, 0.0m), \"exact equal\");\nCj.True(Solution.SameTotal(100.05m, 100.0m, 0.1m), \"within tolerance\");\nCj.False(Solution.SameTotal(100.2m, 100.0m, 0.1m), \"outside tolerance\");\nCj.Near(Solution.Mean(new List<double> { 1.0, 2.0, 3.0 }), 2.0, 1e-9, \"mean\");",
+      "hint": "Tolerance comparisons and a clean mean — decimal money, double statistics."
+    },
+    {
+      "name": "edges",
+      "code": "Cj.Eq(Solution.Mean(new List<double>()), 0.0, \"empty mean\");\nCj.Eq(Solution.Mean(null), 0.0, \"null mean\");\nCj.True(Solution.SameTotal(-1.0m, -1.0m, 0.0m), \"negative exact\");\nCj.True(Solution.SameTotal(0.05m, 0.0m, 0.05m), \"boundary tolerance inclusive\");",
+      "hint": "Empty contracts and the inclusive-tolerance boundary."
+    }
+  ],
+  "level": "independent"
+}

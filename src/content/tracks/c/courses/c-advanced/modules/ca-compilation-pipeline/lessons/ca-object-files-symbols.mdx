@@ -1,0 +1,19 @@
+## Inside an object file
+
+A .o holds sections: `.text` (code), `.data` (initialized globals), `.bss` (zero-initialized globals, no storage until load), plus a symbol table. `nm` prints the symbols with a type letter: T (defined in .text), U (undefined — the linker must find it), D/B (data/bss), t (static — file-local).
+
+```c
+int counter = 5;          /* .data, symbol D */
+static int hidden = 9;    /* still .data but symbol d: not exported */
+int bump(void);           /* no definition: callers emit U */
+```
+
+## Archives are objects with an index
+
+`ar rcs libmath.a add.o mul.o` bundles objects; `gcc main.c -L. -lmath` links against it. The archive member is pulled in only if it defines a symbol that is currently undefined — pull-in semantics that explain both why link order matters and why an unused member costs nothing.
+
+## The three classic link errors
+
+- **undefined reference**: you used it, nobody defined it (or the archive defining it was not linked).
+- **multiple definition**: two objects export the same external symbol.
+- **layout mismatch**: no error at all — an ABI mismatch links cleanly and breaks at runtime, which is why header discipline (module 18 of Beginner, sharpened here) is not bureaucracy.

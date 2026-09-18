@@ -1,0 +1,90 @@
+Hơn một nửa lượt truy cập web là từ điện thoại. Một site chỉ hoạt động ở chiều rộng desktop là một site hỏng. Responsive design không phải một tính năng — nó là mặt sàn.
+
+## Thẻ meta viewport
+
+Trước bất kỳ CSS nào: các trang responsive cần dòng này trong `<head>`:
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+```
+
+Không có nó, điện thoại giả vờ mình rộng ~980px rồi thu nhỏ lại — flexbox đẹp đẽ của bạn hiện lên như một trang desktop tí hon. Thẻ này nói rằng "chiều rộng thiết bị _chính là_ viewport".
+
+## Mobile-first
+
+Hãy viết layout cho điện thoại **mà không dùng media query nào cả**, rồi thêm query cho màn hình lớn hơn:
+
+```css
+/* nền = mobile */
+.gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+/* tablet trở lên */
+@media (min-width: 640px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* desktop trở lên */
+@media (min-width: 1024px) {
+  .gallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+```
+
+Vì sao mobile-first? Hai lý do. Về kỹ thuật, query `min-width` xếp lớp các phần bổ sung một cách sạch sẽ — mỗi cấp chỉ ghi đè những gì thay đổi. Về thực tiễn, thiết kế cho màn hình nhỏ nhất ép buộc thứ tự ưu tiên: điều gì quan trọng nhất? Một trang desktop-first cố nhồi một biệt thự vào một căn studio.
+
+Các breakpoint tiêu chuẩn (quy ước, không phải luật): ~640px (điện thoại → tablet), ~768px (tablet lớn), ~1024px (desktop), ~1280px (rộng). Chọn ít breakpoint và tái sử dụng chúng.
+
+## Những gì flex và grid cho bạn miễn phí
+
+Bạn đã học sẵn các công cụ responsive:
+
+- Track `1fr`, `flex: 1`, và phần trăm co giãn theo màn hình.
+- `flex-wrap: wrap` sắp xếp lại toolbar khi các item không còn vừa.
+- Kích thước `rem` tôn trọng cài đặt phông chữ người dùng ở mọi chiều rộng.
+- `max-width: 100%` trên ảnh ngăn bất kỳ hình nào tràn ra khỏi container:
+
+```css
+img {
+  max-width: 100%;
+  height: auto;
+}
+```
+
+Media query là phần _tỉa_; layout dạng chất lỏng là _tấm vải_. Một trang xây trên đơn vị fr và flex-wrap cần ít query hơn bạn tưởng.
+
+## Mẫu điều hướng responsive
+
+Mẫu trung thực cho người mới — không cần JavaScript:
+
+```css
+.nav ul {
+  display: flex;
+  flex-direction: column; /* xếp chồng trên điện thoại */
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .nav ul {
+    flex-direction: row; /* thành hàng trên màn hình lớn hơn */
+    justify-content: space-between;
+  }
+}
+```
+
+(Menu hamburger đòi JS và sự cẩn trọng về a11y — Module 4 sẽ cho bạn công cụ; bạn sẽ tự xây một cái trong dự án cuối khóa.)
+
+## Bạn đã học được gì
+
+- Thẻ meta viewport là điều kiện tiên quyết, không phải tùy chọn
+- Mobile-first: style nền cho điện thoại, `@media (min-width: …)` để nâng cấp lên trên
+- Đơn vị dạng chất lỏng (fr, %, rem, max-width: 100%) làm phần lớn việc; query chỉ để tỉa
+- Mẫu lật cột-thành-hàng của nav: pattern cho người mới mà ship được
+
+**Tiếp theo:** transitions — chuyển động, và hóa đơn accessibility của nó.

@@ -1,0 +1,53 @@
+## Protocol, special method và `__slots__`
+
+Mọi hành vi built-in của Python đều là móc của data model. Đối tượng "trở nên"
+iterable, có độ dài, so sánh được hay gọi được chỉ bằng cách định nghĩa đúng
+special method:
+
+| You write | Python calls | Enables |
+|---|---|---|
+| `len(x)` | `x.__len__` | sizing |
+| `for a in x` | `iter(x)` → `x.__iter__` | iteration |
+| `x[k]` | `x.__getitem__` | indexing / sequences |
+| `k in x` | `x.__contains__` (or falls back to `__iter__`) | membership |
+| `x == y` | `x.__eq__` | equality |
+| `x()` | `x.__call__` | callable objects |
+| `with x:` | `x.__enter__` / `x.__exit__` | context managers |
+
+Slicing đến dưới dạng **slice object**: `x[1:5]` gọi
+`__getitem__(slice(1, 5, None))`. Một `__getitem__` vững vàng phải xử lý cả
+`int` lẫn `slice`:
+
+```python
+def __getitem__(self, index):
+    if isinstance(index, slice):
+        return type(self)(self._data[index])
+    return self._data[index]
+```
+
+**Structural typing với `typing.Protocol`** (3.8+) cho phép checker xác nhận
+"có các method này" mà không cần kế thừa — duck typing được kiểm tra tĩnh:
+
+```python
+from typing import Protocol, runtime_checkable
+
+@runtime_checkable
+class Closeable(Protocol):
+    def close(self) -> None: ...
+
+def shutdown(x: Closeable) -> None:
+    x.close()
+```
+
+**`__slots__`** thay `__dict__` từng instance bằng các slot cố định: ít bộ nhớ
+hơn cho hàng triệu instance, truy cập attribute nhanh hơn, và lỗi gõ tên trở
+thành `AttributeError` thay vì attribute thừa im lặng. Cái giá: không thuộc tính
+động trừ khi thêm lại `__dict__`, và cần cẩn thận với đa kế thừa (hai cha có
+slots khác rỗng sẽ xung đột).
+
+```python
+class Vector:
+    __slots__ = ("x", "y")
+    def __init__(self, x, y):
+        self.x, self.y = x, y
+```

@@ -1,0 +1,44 @@
+## Coi tệp đang nói dối
+
+Reader bền vững coi mọi byte là đáng ngờ:
+
+1. **Kiểm return count của mọi lần đọc.** `fread` trả số item đọc được;
+   đọc ngắn nghĩa là cắt cụt.
+2. **Kiểm trước khi dùng.** Magic, version, số record, khoảng giá trị
+   trường — từ chối mọi thứ ngoài định dạng bạn định nghĩa.
+3. **Checksum payload.** Checksum không chứng minh toàn vẹn, nhưng bắt
+   được hư hỏng thật sự (ghi đứt, bit rot, truyền bị cắt).
+
+```c
+/* FNV-1a trên các byte của tệp */
+unsigned long file_checksum(FILE *f, long size) {
+    unsigned long h = 2166136261UL;
+    int c;
+    while (size-- > 0 && (c = fgetc(f)) != EOF)
+        h = (h ^ (unsigned long)c) * 16777619UL;
+    return h;
+}
+```
+
+Lưu checksum *cùng* dữ liệu (header hoặc trailer); reader tính lại và so
+sánh. Lệch = từ chối tệp, không đoán.
+
+## Thất bại là giá trị trả về
+
+Các hàm tệp của C báo hiệu qua return code — `NULL` từ fopen, số item từ
+fread, `EOF` từ fgetc. Dạng bền vững là một đường lỗi duy nhất:
+
+```c
+int load(const char *path, Doc *out) {
+    FILE *f = fopen(path, "rb");
+    if (!f) return -1;                       /* errno nói lý do */
+    /* ... mọi bước kiểm và thoát ... */
+    fclose(f);
+    return 0;
+}
+```
+
+`fclose` trên đường thành công *và* mọi đường thoát giữa chừng — leak ở
+dạng tệp. (Mẫu cơ giới hóa kỷ luật này, RAII /
+`__attribute__((cleanup))`, nằm ngoài ISO C; thói quen trung thực là một
+lối `goto cleanup` hoặc ghép cặp cẩn trọng.)

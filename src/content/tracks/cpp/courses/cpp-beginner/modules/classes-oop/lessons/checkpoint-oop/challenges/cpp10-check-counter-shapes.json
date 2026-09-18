@@ -1,0 +1,31 @@
+{
+  "id": "cpp10-check-counter-shapes",
+  "title": "Counter and Shapes",
+  "prompt": "Implement class `Counter` with: a constructor taking an initial value (default 0), `inc()` (+1), `reset()` (back to the value it was constructed with), and `value() const`. The count must never go below the initial value (inc past it is fine). Then implement `total_area(const std::vector<std::unique_ptr<Shape>>&)` given the Shape/Circle/Square definitions in the boilerplate.",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <memory>\n#include <vector>\n\nclass Shape {\npublic:\n    virtual ~Shape() = default;\n    virtual double area() const = 0;\n};\nclass Circle : public Shape {\npublic:\n    explicit Circle(double r) : radius_(r) {}\n    double area() const override { return 3.14159265358979 * radius_ * radius_; }\nprivate:\n    double radius_;\n};\nclass Square : public Shape {\npublic:\n    explicit Square(double s) : side_(s) {}\n    double area() const override { return side_ * side_; }\nprivate:\n    double side_;\n};\n\nclass Counter {\npublic:\n    // TODO\nprivate:\n    // TODO\n};\n\ndouble total_area(const std::vector<std::unique_ptr<Shape>>& shapes) {\n    // TODO\n}",
+  "tests": [
+    {
+      "name": "counts up",
+      "code": "Counter c; c.inc(); c.inc(); CHECK_EQ(c.value(), 2);",
+      "hint": "Default start 0, two incs, value 2."
+    },
+    {
+      "name": "reset",
+      "code": "Counter c{5}; c.inc(); c.reset(); CHECK_EQ(c.value(), 5);",
+      "hint": "Reset returns to the CONSTRUCTED value, not zero."
+    },
+    {
+      "name": "const-safe",
+      "code": "Counter c2{7};\nconst Counter& view = c2;\n(void)view.value();\nCHECK(true);",
+      "hint": "value() must be const-callable on const references."
+    },
+    {
+      "name": "area polymorphic",
+      "code": "std::vector<std::unique_ptr<Shape>> v; v.push_back(std::make_unique<Square>(2.0)); v.push_back(std::make_unique<Circle>(1.0)); CHECK_NEAR(total_area(v), 7.14159, 0.001);",
+      "hint": "4 + π, chosen at runtime through the base interface."
+    }
+  ],
+  "level": "combination"
+}

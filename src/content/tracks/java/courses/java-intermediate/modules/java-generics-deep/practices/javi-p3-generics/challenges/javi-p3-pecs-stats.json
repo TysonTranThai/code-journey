@@ -1,0 +1,26 @@
+{
+  "id": "javi-p3-pecs-stats",
+  "title": "PECS: Sum Into and Out Of Lists",
+  "prompt": "Implement two methods that demonstrate PECS signatures:\n- `static double sum(List<? extends Number> src)` — producer side,\n  returns the total as double.\n- `static void fill(List<? super Integer> dst, int a, int b, int c)` —\n  consumer side, appends a, b, c in order.\n\nThen `static List<Number> demo()` returns a `List<Number>` produced by\ncalling `fill` on it and then `sum` over it — proving one method reads a\nList<Number> and the other writes into it, exactly as the wildcards\npromise.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "sum reads any Number list",
+      "code": "\ncheckNear(Solution.sum(List.of(1, 2.5, 3L)), 6.5, 1e-9, \"sum of mixed numbers\");\n",
+      "hint": "List.of(1, 2.5, 3L) is List<? extends Number> — sum must accept it."
+    },
+    {
+      "name": "fill writes into a supertype list",
+      "code": "\nList<Object> dst = new ArrayList<>();\nSolution.fill(dst, 4, 5, 6);\ncheckEq(dst, List.of(4, 5, 6), \"fill appended in order\");\n",
+      "hint": "List<Object> is List<? super Integer> — fill must accept and append a, b, c."
+    },
+    {
+      "name": "demo exercises both sides",
+      "code": "\nList<Number> out = Solution.demo();\ncheckEq(out, List.of(7, 8, 9), \"demo filled 7,8,9\");\ncheckNear(Solution.sum(out), 24.0, 1e-9, \"demo sums\");\n",
+      "hint": "demo() should fill(7,8,9) into its own list then return it."
+    }
+  ],
+  "level": "guided"
+}

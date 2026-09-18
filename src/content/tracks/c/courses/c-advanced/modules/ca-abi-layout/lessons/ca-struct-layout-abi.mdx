@@ -1,0 +1,15 @@
+## Layout is determined, not arbitrary
+
+Every member sits at its alignment boundary, and the struct's total size is a multiple of its strictest alignment (module 1's forensics, now as a contract). Two compilers claiming the same ABI must compute the same layout for the same declaration — otherwise binary modules cannot exchange structs.
+
+## The one-membership change that breaks everything
+
+Adding a member in the *middle* shifts every later member's offset. Old binaries writing the old layout silently produce garbage for the new reader: no error, wrong data. This is why public C APIs append to the end of structs, or hide them behind opaque handles (module 3) entirely.
+
+## Versioning without breaking
+
+- **append-only**: new members go last; old code ignores the tail (the size it knew still worked for the old prefix).
+- **reserved fields**: pad the struct to a stable size from day one.
+- **opaque handles**: layout becomes private; you can change anything.
+
+Choose deliberately: every public struct in your career will carry one of these three decisions.

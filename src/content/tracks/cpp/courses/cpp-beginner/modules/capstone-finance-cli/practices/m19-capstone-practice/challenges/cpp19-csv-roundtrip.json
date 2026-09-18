@@ -1,0 +1,31 @@
+{
+  "id": "cpp19-csv-roundtrip",
+  "title": "CSV Round-Trip",
+  "prompt": "Implement `to_csv(name, category, amount)` producing \"name,category,amount\" (amount with one decimal), and `from_csv(line)` returning the amount (0.0 on any malformed line — no name, no category, unparseable amount).",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n\nstd::string to_csv(const std::string& name, const std::string& category, double amount) {\n    // TODO\n}\ndouble from_csv(const std::string& line) {\n    // TODO\n}",
+  "tests": [
+    {
+      "name": "to csv",
+      "code": "CHECK(to_csv(std::string{\"salary\"}, std::string{\"work\"}, 500.0) == std::string{\"salary,work,500.0\"});",
+      "hint": "Three comma-separated fields, one decimal."
+    },
+    {
+      "name": "from csv",
+      "code": "CHECK_NEAR(from_csv(std::string{\"food,life,-120.5\"}), -120.5, 0.001);",
+      "hint": "Third field parsed as double."
+    },
+    {
+      "name": "malformed",
+      "code": "CHECK_NEAR(from_csv(std::string{\"nocommas\"}), 0.0, 0.001);",
+      "hint": "Malformed lines yield 0.0 — never crash."
+    },
+    {
+      "name": "roundtrip",
+      "code": "CHECK_NEAR(from_csv(to_csv(std::string{\"x\"}, std::string{\"c\"}, 3.5)), 3.5, 0.001);",
+      "hint": "Write then read returns the amount."
+    }
+  ],
+  "level": "real-world"
+}

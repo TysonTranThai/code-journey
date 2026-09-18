@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p2-day-sim",
+  "title": "Mowing the Field",
+  "prompt": "**Description:** A lawn is 1 cm tall. Each day it grows by g cm; each\nevening a mower cuts it back to h cm (only if it is taller than h).\nAfter how many full days is the lawn taller than T cm for the first time?\nPrint the day number, or `-1` if it never happens within 10^6 days.\n\n**Input:** One line: g h T (0 ≤ g ≤ 10, 0 ≤ h ≤ 10, 1 ≤ T ≤ 10^9).\n**Output:** One integer — the first day the height exceeds T, else -1.\n\n**Example:** `2 1 4` → day1: 1+2=3 (cut to 1), day2: 1+2=3… never exceeds\n4 → `-1`. With `3 1 4`: day1: 4 (not > 4? cut), day2: 4… `-1`. With\n`4 1 4`: day1: 1+4=5 > 4 → `1`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "never",
+      "code": "std::istringstream in(\"2 1 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-1\\n\"));",
+      "hint": "Grows 3, cut to 1 — the cycle never passes 4."
+    },
+    {
+      "name": "first day",
+      "code": "std::istringstream in(\"4 1 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "1+4 = 5 > 4 on day 1."
+    },
+    {
+      "name": "slow growth",
+      "code": "std::istringstream in(\"1 0 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n\"));",
+      "hint": "No mower (h=0): heights 1..6, exceeds 5 on day 5."
+    },
+    {
+      "name": "zero growth",
+      "code": "std::istringstream in(\"0 0 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-1\\n\"));",
+      "hint": "Never grows, never exceeds."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,25 @@
+## Hệ thống import: module, cache và __main__
+
+`import foo` thực hiện tìm kiếm, rồi nạp từ cache:
+
+1. Tra `sys.modules` — cache module. Đã import? Dùng lại ĐÚNG đối tượng module
+   đó (import được cache theo tiến trình).
+2. Tìm một **finder** chịu xử lý tên đó (`sys.meta_path`); các finder mặc định
+   tìm package (thư mục có `__init__.py`) và module (tệp `.py`) trên `sys.path`.
+3. **Thực thi** thân module trong namespace mới, cache vào `sys.modules`, và
+   gắn tên vào namespace của bạn.
+
+Những hệ quả giải thích các điều bí ẩn thường ngày:
+
+- **Side effect của import chạy đúng một lần** mỗi tiến trình — lần `import`
+  thứ hai chỉ là tra dict.
+- **Circular import** gãy khi module A (đang giữa chừng thực thi) kích hoạt
+  import B, mà B lại import A và nhận về namespace dở dang. Cách sửa: đổi thứ tự
+  import, import bên trong hàm, hoặc tái cấu trúc phụ thuộc.
+- `__name__ == "__main__"` chỉ đúng khi tệp được chạy làm script đầu vào; khi
+  bị *import*, `__name__` là đường dẫn module — vì thế idiom này canh code
+  CLI/demo.
+- **Cache bytecode `.pyc`** (`__pycache__`) bỏ qua bước biên dịch lại cho từng
+  phiên bản mã nguồn — chỉ là tối ưu, bị vô hiệu theo mtime/kích thước.
+- Có `sys.path` manipulation và namespace package; hãy ưu tiên đóng gói đúng
+  cách (module kế tiếp) thay các mẹo `sys.path.append`.

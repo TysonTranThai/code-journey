@@ -1,0 +1,27 @@
+## Edge-case nets and determinism
+
+An intermediate test suite hunts *boundaries*:
+
+- **empty / single / many** — the three sizes every collection behavior
+  must satisfy
+- **zero, min, max** — numeric edges (0, Integer.MIN_VALUE, MAX_VALUE)
+- **first / last / middle** — position-sensitive logic
+- **duplicate and absent keys** — map semantics
+- **null vs empty vs blank** — three different "nothings"
+
+```java
+// boundary net for a discount function
+checkEq(discount(0), 0, "zero price");
+checkEq(discount(1), 1, "minimal price");
+checkEq(discount(Integer.MAX_VALUE), ..., "max price");
+```
+
+Determinism rules:
+- never assert on unordered collections' toString (order is incidental)
+- sort or compare as sets when order doesn't matter
+- fixed seeds for randomness; frozen clocks for time
+- a test that *sometimes* fails is worse than one that always fails —
+  fix or delete it today
+
+Regression nets: when you fix a bug, add the test that would have caught
+it — forever.

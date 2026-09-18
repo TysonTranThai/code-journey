@@ -1,0 +1,16 @@
+{
+  "id": "javaa-p12-combinators",
+  "title": "The three recoveries",
+  "prompt": "1. `static CompletableFuture<String> recovered()` — async throwing IllegalStateException;\nrecover with `exceptionally` returning \"fallback\".\n2. `static CompletableFuture<String> handled()` — same failing async; recover with\n`handle` returning \"fallback\" on error, \"ok:\" + result on success.\n3. `static CompletableFuture<String> observed()` — a SUCCEEDING async (\"value\"), with\n`whenComplete` appending to a `static List<String> observations` (add \"saw-value\" on\nsuccess) — return the future; the observation must exist after join.\n4. `static CompletableFuture<String> onTimeoutFallback()` — async sleeping 200ms then\nreturning \"late\"; bound with `completeOnTimeout(\"fast-fail\", 20, MILLISECONDS)`.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "each combinator does its one job",
+      "code": "\ncheckEq(Solution.recovered().join(), \"fallback\", \"exceptionally replaces\");\ncheckEq(Solution.handled().join(), \"fallback\", \"handle maps the error\");\ncheckEq(Solution.observed().join(), \"value\", \"whenComplete cannot replace\");\ncheckTrue(Solution.observations.contains(\"saw-value\"), \"observation recorded\");\ncheckEq(Solution.onTimeoutFallback().join(), \"fast-fail\", \"timeout replaced by value\");\n",
+      "hint": "Recovery placement is the lesson."
+    }
+  ],
+  "level": "independent"
+}

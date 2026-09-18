@@ -1,0 +1,21 @@
+{
+  "id": "csb-p9-counter",
+  "title": "Counter with a floor",
+  "prompt": "Implement nested class `Solution.Counter`: starts at 0; `Increment()` adds 1; `Decrement()` subtracts 1 but the value **never goes below 0**; read-only `Value` property.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "var c = new Solution.Counter();\nCj.Eq(c.Value, 0, \"starts at zero\");\nc.Increment();\nc.Increment();\nc.Decrement();\nCj.Eq(c.Value, 1, \"one left after up-up-down\");",
+      "hint": "A fresh counter is zero; the value tracks the exact operation sequence."
+    },
+    {
+      "name": "floor",
+      "code": "var c = new Solution.Counter();\nc.Decrement();\nc.Decrement();\nc.Decrement();\nCj.Eq(c.Value, 0, \"never below zero\");\nc.Increment();\nCj.Eq(c.Value, 1, \"recovers to one, not negative-plus-one\");",
+      "hint": "The floor is the contract: decrementing at zero must be a no-op, not a hidden negative."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "cppa1-static-outlives-view",
+  "title": "A View Must Outlive Its Source",
+  "prompt": "Implement `stableView` so the returned `string_view` is still valid when the test inspects it, and fix `danglingView` so it returns a view over storage that lives long enough.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n#include <string_view>\n\n// Return a view over characters that outlive the call.\nstd::string_view stableView();\n\n// Return a view over characters that outlive the call (repair the idea).\nstd::string_view danglingView();\n",
+  "tests": [
+    {
+      "name": "stableView is valid after return",
+      "code": "std::string v(stableView());\nCHECK_CONTAINS(v, \"durable\");",
+      "hint": "A view over a function-local static, a string literal, or dynamic storage survives the return. A view over an automatic local does not."
+    },
+    {
+      "name": "danglingView repaired",
+      "code": "std::string w(danglingView());\nCHECK_CONTAINS(w, \"persist\");",
+      "hint": "Give the backing string static storage duration (static std::string) or return dynamic storage — anything whose lifetime continues after the return."
+    }
+  ]
+}

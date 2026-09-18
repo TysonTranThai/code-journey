@@ -1,0 +1,26 @@
+{
+  "id": "ca23-fd-not-path",
+  "title": "Open Once, Then Ask the fd",
+  "prompt": "POSIX. Implement `int file_has_size(int fd, long want)` — fstat the fd (never a path) and return 1 when the file's size equals want, 0 when it differs, -1 on fstat failure. This is the TOCTOU-elimination primitive: the check is bound to the very object being used.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define _POSIX_C_SOURCE 200809L\n#include <fcntl.h>\n#include <unistd.h>\n#include <sys/stat.h>\n",
+  "tests": [
+    {
+      "name": "size match",
+      "code": "int fd1 = open(\"/tmp/cj_ca21_lines.txt\", O_RDWR | O_CREAT | O_TRUNC, 0600);\nCHECK(fd1 >= 0);\nCHECK_EQ((int)write(fd1, \"hello\", 5), 5);\nCHECK_EQ(file_has_size(fd1, 5), 1);\nclose(fd1);",
+      "hint": "fstat on the fd sees the object this descriptor names: size 5 matches."
+    },
+    {
+      "name": "size mismatch",
+      "code": "int fd2 = open(\"/tmp/cj_ca21_lines.txt\", O_RDWR | O_CREAT | O_TRUNC, 0600);\nCHECK(fd2 >= 0);\nCHECK_EQ((int)write(fd2, \"hello\", 5), 5);\nCHECK_EQ(file_has_size(fd2, 4), 0);\nclose(fd2);",
+      "hint": "The same primitive reports a difference instead of a match."
+    },
+    {
+      "name": "bad fd refuses",
+      "code": "CHECK_EQ(file_has_size(-1, 5), -1);",
+      "hint": "An invalid descriptor fails loudly — no guessing, no path fallback."
+    }
+  ],
+  "level": "combination"
+}

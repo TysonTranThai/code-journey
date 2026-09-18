@@ -1,0 +1,49 @@
+**Constructor** là một phương thức đặc biệt chạy tại thời điểm `new`, định
+hình mọi object của class ngay khi sinh ra:
+
+```java
+class Account {
+    String owner;
+    double balance;
+
+    Account(String owner, double balance) {   // trùng tên class, không có kiểu trả về
+        this.owner = owner;
+        this.balance = balance;
+    }
+}
+
+Account acc = new Account("Ada", 100.0);   // trường được đặt ngay khi sinh
+```
+
+Ba quy tắc của constructor:
+
+- Tên trùng với tên class **tuyệt đối**, và không có kiểu trả về — kể cả `void`.
+- Nếu bạn KHÔNG viết constructor nào, Java lặng lẽ viết cho bạn một mặc định
+  không làm gì (các trường nhận `0`/`false`/`null`).
+- Nếu bạn viết BẤT KỲ constructor nào, bản mặc định miễn phí biến mất:
+  `new Account()` ngừng biên dịch trừ khi bạn tự viết nó.
+
+**Overload constructor** tạo sự tiện lợi cho người gọi; pattern kinh điển
+là nối chuỗi bằng `this(...)` để logic thật nằm đúng một chỗ:
+
+```java
+Account(String owner) {
+    this(owner, 0.0);        // ủy quyền: ai cũng bắt đầu từ số 0
+}
+
+Account(String owner, double balance) {
+    if (balance < 0) {
+        throw new IllegalArgumentException("balance must be >= 0");
+    }
+    this.owner = owner;
+    this.balance = balance;
+}
+```
+
+Constructor cũng là nơi tự nhiên để **xác thực**: từ chối ngay những ca sinh
+xấu (owner `null`, số dư âm), để phần còn lại của class được phép giả định
+các bất biến của nó luôn đúng. Thói quen "xác thực ở cửa" này là dạng người
+mới của thứ dân chuyên gọi là *bất biến* — một lời cam kết mọi object giữ
+trọn đời nó.
+
+**Tiếp theo:** canh gác các trường — đóng gói.

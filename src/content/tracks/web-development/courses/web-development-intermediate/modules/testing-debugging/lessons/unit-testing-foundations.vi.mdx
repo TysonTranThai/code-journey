@@ -1,0 +1,44 @@
+Mọi framework test — Jest, Vitest, Mocha — chỉ là lớp đường trên cùng một lõi: chạy code, so sánh, báo cáo. Tự dựng lõi một lần là hiểu hết tất cả.
+
+## Assertion: fail to, fail chính xác
+
+```js
+function assertEqual(actual, expected, msg) {
+  if (!Object.is(actual, expected)) {
+    throw new Error(`${msg ?? "assert failed"}: expected ${fmt(expected)}, got ${fmt(actual)}`);
+  }
+}
+```
+
+Những quy tắc đúc kết từ đau khổ:
+
+- **Message nêu kỳ vọng**, không nêu cơ chế. "Tổng giỏ hàng loại bỏ số lượng âm" hơn "0 !== -5".
+- **Deep equality** cho object: `Object.is` so tham chiếu; bạn cần so sánh cấu trúc (hoặc `JSON.stringify` như thủ thuật thô — nhạy thứ tự, ghét undefined).
+- **`assertThrows(fn, ErrorType)`** phải kiểm tra cả _kiểu lỗi_ (và lý tưởng là message) — "nó ném ra cái gì đó" là quá yếu.
+
+## Tổ chức suite
+
+```js
+describe("formatPrice", () => {
+  it("formats whole dollars without cents", () => {
+    /* ... */
+  });
+  it("always shows two decimals for fractional prices", () => {
+    /* ... */
+  });
+});
+```
+
+`describe` gom một _đối tượng_; `it` nêu một _hành vi_. describe lồng nhau mã hóa ngữ cảnh: `describe("with an empty cart")`. Tên test có chữ "and" là phải tách.
+
+## Hook
+
+- `beforeEach` — trạng thái mới cho mỗi test (lựa chọn mặc định; độc lập!)
+- `afterEach` — dọn dẹp (khôi phục stub, xóa storage)
+- `beforeAll` — setup đắt dùng chung (khởi động server); dùng ít vì nó _ghim_ các test vào nhau
+
+Nguồn bug kinh điển: các test dùng chung trạng thái mutable (một mảng module-level mà test này append). Trạng thái mới mỗi test tốn mili giây nhưng mua được độ tin cậy.
+
+## Edge case trước
+
+Với bất kỳ hàm nào, trước cả happy path, hãy liệt kê: **input rỗng** (mảng, chuỗi, object), **biên** (0, -1, max), **sai kiểu** (null, undefined, số không phải số), và **trùng lặp**. Phần lớn bug production sống ở đó — hãy viết cái test mà lần trước lẽ ra đã bắt được bug của bạn.

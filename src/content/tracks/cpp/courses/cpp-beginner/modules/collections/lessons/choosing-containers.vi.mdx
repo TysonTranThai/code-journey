@@ -1,0 +1,23 @@
+## Bảng quyết định cho người mới
+
+| Nhu cầu | Container |
+| --- | --- |
+| Danh sách có thứ tự để duyệt, thêm cuối, đánh chỉ số | `std::vector` |
+| Đúng N phần tử, cố định lúc biên dịch | `std::array` |
+| Tra giá trị THEO KHÓA (tên → số điện thoại) | `std::map` / `std::unordered_map` |
+| Theo dõi "đã gặp X chưa?" / các giá trị phân biệt | `std::set` / `std::unordered_set` |
+| Hai giá trị đi cùng nhau | `std::pair` (hoặc một struct — module 9) |
+
+Nếu câu trả lời của bạn không có trong bảng, khả năng cao là `vector`. Thật sự đó là lựa chọn mặc định.
+
+## Trực giác về chi phí (không phải môn học về độ phức tạp)
+
+- `vector`: truy chỉ số O(1); thêm cuối khấu trừ O(1); chèn giữa O(n) — mọi thứ phía sau phải dời.
+- `map`/`set`: thao tác O(log n); giữ thứ tự.
+- `unordered_map`/`unordered_set`: trung bình O(1), có thể xấu đi trong trường hợp xấu nhất.
+
+Bạn không cần học thuộc các bảng này; chỉ cần nhớ *hình dạng của sự đánh đổi*: vector gọn và thân thiện với cache, cây đánh đổi một chút chi phí mỗi thao tác để lấy thứ tự, bảng băm cá cược vào tốc độ. Khi một vòng lặp duyệt collection có vẻ chậm, câu hỏi đầu tiên là "có phải *container* đang sai?" — câu thứ hai thuộc về module 18.
+
+## Quy tắc trung thực
+
+Chọn container là một phát kiến kiến trúc về dữ liệu của bạn. `std::map<std::string, std::vector<int>> grades_by_student;` nói rằng "mỗi học sinh có nhiều điểm, tra theo tên" — riêng dòng khai báo đã là tài liệu. Khi một lựa chọn container khiến người review ngạc nhiên, thì hoặc lựa chọn hoặc cái tên đang sai.

@@ -1,0 +1,17 @@
+## The method
+
+1. Establish a baseline with a *metric*, not a feeling.
+2. Form one hypothesis ("the per-call allocation dominates").
+3. Change one thing.
+4. Re-measure the same metric.
+5. Keep or revert — with numbers.
+
+Wall-clock microbenchmarks are noisy and machine-dependent; this course grades the *countable* proxies professionals extract from profilers: allocation counts, bytes moved, comparisons, branch divergence detectable via deterministic patterns.
+
+## Where C++ programs actually lose time
+
+In rough order of frequency: unnecessary copies (strings, vectors), unnecessary allocations (per-iteration buffers), wrong data layout (pointer chasing), wrong algorithm (O(n log n) vs O(n)), and only *then* micro-stuff like branch order.
+
+## Amdahl's law keeps you honest
+
+If the sort is 90% of runtime, a 2x faster string format changes little. Profile-guided intuition: find the hot 10%, then optimize only inside it.

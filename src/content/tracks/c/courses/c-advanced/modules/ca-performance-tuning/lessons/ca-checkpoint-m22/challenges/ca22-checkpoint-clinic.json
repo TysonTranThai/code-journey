@@ -1,0 +1,26 @@
+{
+  "id": "ca22-checkpoint-clinic",
+  "title": "Checkpoint: Layout Clinic Verdict",
+  "prompt": "ISO C. Given `struct fat { int id; int score; char name[60]; };` (declared for you), implement `size_t touched_bytes(const char *layout, size_t n)` \u2014 for layout 'interleaved' return n * sizeof(struct fat); for 'split' return n * 2 * sizeof(int) (the hot fields only: id + score, stored in their own array); any other layout (or NULL) returns (size_t)-1. n == 0 returns 0 for any valid layout.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstruct fat { int id; int score; char name[60]; };\n",
+  "tests": [
+    {
+      "name": "interleaved pays for names",
+      "code": "CHECK_EQ(touched_bytes(\"interleaved\", 100), 100 * sizeof(struct fat));",
+      "hint": "Every record drags its 60-byte name through the pass: n times the fat size."
+    },
+    {
+      "name": "split pays hot only",
+      "code": "CHECK_EQ(touched_bytes(\"split\", 100), 100 * 2 * sizeof(int));",
+      "hint": "Scores and ids live in their own arrays: 8 bytes per record, names untouched."
+    },
+    {
+      "name": "zero and unknown",
+      "code": "CHECK_EQ(touched_bytes(\"split\", 0), 0);\nCHECK_EQ(touched_bytes(\"exit 3\", 5), (size_t)-1);\nCHECK_EQ(touched_bytes(NULL, 5), (size_t)-1);",
+      "hint": "Zero records touch nothing; an unknown layout is a caller bug, refused."
+    }
+  ],
+  "level": "mini-build"
+}

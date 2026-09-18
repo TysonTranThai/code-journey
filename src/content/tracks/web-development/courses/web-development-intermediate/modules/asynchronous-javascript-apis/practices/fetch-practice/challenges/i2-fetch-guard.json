@@ -1,0 +1,25 @@
+{
+  "id": "i2-fetch-guard",
+  "title": "Guarded JSON Fetch",
+  "prompt": "Write `async function fetchJSON(url, fetchImpl)` — `fetchImpl` defaults to the real `fetch` (the tests inject a fake). It must:\n\n- throw `new Error(\"HTTP \" + status)` when `!res.ok`\n- return the parsed JSON otherwise\n- expose `method` and `headers` when a body is sent: `fetchJSON(url, fetchImpl, { method: \"POST\", body: value })` must call fetch with `method`, `body: JSON.stringify(value)`, and `Content-Type: application/json`.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "async function fetchJSON(url, fetchImpl, opts) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "returns parsed JSON on 2xx",
+      "code": "const fn = new Function(code + \"\\nreturn { fetchJSON };\");\nconst { fetchJSON } = fn();\nconst fake = async () => ({ ok: true, status: 200, json: async () => ({ id: 9 }) });\nconst out = await fetchJSON(\"/api/x\", fake);\nif (out.id !== 9) throw new Error(\"A 200 response should return the parsed body.\");",
+      "hint": "const res = await fetchImpl(url, opts); if (!res.ok) throw ...; return res.json();"
+    },
+    {
+      "name": "throws on non-2xx with the status",
+      "code": "const fn = new Function(code + \"\\nreturn { fetchJSON };\");\nconst { fetchJSON } = fn();\nconst fake404 = async () => ({ ok: false, status: 404, json: async () => ({}) });\nlet msg;\ntry { await fetchJSON(\"/api/x\", fake404); } catch (e) { msg = e.message; }\nif (msg !== \"HTTP 404\") throw new Error('A 404 must throw Error with message \"HTTP 404\" — got: ' + msg);",
+      "hint": "Check res.ok first; the message template is 'HTTP ' + res.status."
+    },
+    {
+      "name": "sends JSON body with the right headers",
+      "code": "const fn = new Function(code + \"\\nreturn { fetchJSON };\");\nconst { fetchJSON } = fn();\nlet captured;\nconst fake = async (u, o) => { captured = o; return { ok: true, status: 201, json: async () => ({}) }; };\nawait fetchJSON(\"/api/tasks\", fake, { method: \"POST\", body: { title: \"x\" } });\nif (captured.method !== \"POST\") throw new Error(\"method must be forwarded.\");\nif (captured.body !== '{\"title\":\"x\"}') throw new Error(\"body must be JSON.stringify(value) — got: \" + captured.body);\nif (captured.headers[\"Content-Type\"] !== \"application/json\") throw new Error(\"Content-Type: application/json is required when a body is sent.\");",
+      "hint": "When opts.body exists, build { ...opts, body: JSON.stringify(opts.body), headers: { 'Content-Type': 'application/json' } }."
+    }
+  ]
+}

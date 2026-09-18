@@ -1,0 +1,18 @@
+{
+  "title": "Refactor bộ kiểm tra",
+  "prompt": "`static String validateOrder(String id, int cents, String coupon)`\ntrả một trong `\"OK\"`, `\"BAD_ID\"`, `\"BAD_AMOUNT\"`, `\"BAD_COUPON\"` — lỗi\nđầu tiên thắng. Quy tắc:\n- id: không null, 3..20 ký tự → không thì BAD_ID\n- cents: 1..1_000_000 → không thì BAD_AMOUNT\n- coupon: null/rỗng thì OK; nếu không phải khớp `[A-Z0-9]{4,10}` →\n  không thì BAD_COUPON\n\nCài nó SẠCH: tách `static boolean isValidId(String id)`,\n`static boolean isValidAmount(int cents)`, và\n`static boolean isValidCoupon(String coupon)` — validateOrder gọi ba\nhelper, không nhân bản logic quy tắc, kiểu guard.",
+  "tests": [
+    {
+      "name": "Đơn hàng hợp lệ",
+      "hint": "Coupon null nghĩa là không có."
+    },
+    {
+      "name": "Thứ tự ưu tiên lỗi",
+      "hint": "ID → amount → coupon, lỗi đầu tiên thắng."
+    },
+    {
+      "name": "Giá trị biên",
+      "hint": "Hai đầu khoảng được tính vào."
+    }
+  ]
+}

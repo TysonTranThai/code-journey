@@ -1,0 +1,53 @@
+## subprocess: the list form or nothing
+
+```python
+# shell=True: a shell interprets your string — injection returns
+subprocess.run(f"convert {filename}.png", shell=True)
+
+# list form: argv passed directly, no shell, no injection
+subprocess.run(["convert", f"{filename}.png"], check=True, timeout=30)
+```
+
+Always `check=True` (non-zero exit raises) unless you handle the code
+yourself; always `timeout=` (a hung child is a hung service); capture output
+with `capture_output=True` and decode explicitly. Streams are the contract:
+children write to stdout/stderr, and a robust parent reads them *before* they
+fill the OS pipe buffer (or uses threads) — a child blocked on a full pipe is
+the classic silent deadlock.
+
+## Filesystem as an API
+
+`pathlib.Path` is the modern interface: `Path(base) / name` joins portably,
+`.resolve()` canonicalizes, `.is_relative_to(base)` confines (the traversal
+defense from the security module). Atomic writes follow one pattern: write to
+a temp file in the same directory, `flush`, `fsync`, then `os.replace(tmp,
+final)` — readers see either the old file or the new one, never a torn write.
+
+## Environment and configuration
+
+Configuration comes from the environment in production (the secrets rule from
+the security module). Parse once at startup with the fail-closed discipline,
+then pass values explicitly — a module that reaches for `os.environ` deep in
+its call tree is untestable and unknowable.
+
+## Signals and graceful shutdown
+
+The OS talks to processes via signals: `SIGTERM` (please stop), `SIGINT`
+(Ctrl-C), `SIGKILL` (no negotiation, cannot be caught). The graceful-shutdown
+pattern:
+
+1. install handlers for `SIGTERM`/`SIGINT` that set a shutdown flag,
+2. stop accepting new work,
+3. finish (or durably re-queue) in-flight work — idempotent jobs make this safe,
+4. release resources, then exit.
+
+Kill-9 mid-job is only survivable because of the at-least-once + idempotency
+design from the distributed module: the job re-delivers, the effect stays
+exactly-once.
+
+## Safe execution for automation
+
+An "automation agent" that runs on real machines needs the humility list:
+validate every external input (even file names), never shell out with user
+data, dry-run modes for destructive operations, and audit logs of every action
+taken. The tool you wrote is the tool that will run when you are on vacation.

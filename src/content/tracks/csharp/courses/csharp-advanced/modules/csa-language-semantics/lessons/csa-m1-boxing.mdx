@@ -1,0 +1,31 @@
+## Boxing, unboxing, and hidden allocations
+
+**Boxing** wraps a value type in a heap object so it can travel as
+`object`, through an interface, or into a non-generic collection. Unboxing
+copies it back out. The box is a real allocation — gen0 pressure, not
+theoretical cost:
+
+```csharp
+int x = 42;
+object o = x;          // BOX: 24-byte heap object (header + value)
+int y = (int)o;        // UNBOX: copy back out
+```
+
+The silent ones are what bite in production:
+
+```csharp
+IComparable c = 5;          // box at the interface
+string.Join(",", list);     // boxes each struct element
+Func<int> f = s.GetHashCode; // struct receiver copied/captured
+list.Add(structPoint);      // ArrayList: box per element
+```
+
+Where boxing is EXPECTED in this course: `object` boundaries you design
+deliberately (serialization, homogeneous storage), and once per logical
+operation — not per element in a hot loop. `ToString()` on a struct boxes if
+not overridden. Watch for `enum` boxed into `Enum.HasFlag` patterns on hot
+paths.
+
+Grade your own code the way the runtime does: `GC.GetAllocatedBytesForCurrentThread()`
+before and after the loop. Bytes that grow per iteration are the truth; your
+intention is not.

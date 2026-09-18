@@ -1,0 +1,24 @@
+{
+  "id": "i2-ts-checkpoint",
+  "title": "Type-Safe Client Logic Check",
+  "prompt": "Implement three typing-discipline helpers:\n\n1. `isUser(v)` — RETURN true only when `v` is an object (not null, not array) with a string `id`, string `email` containing \"@\", and optional string `name` (absent or string).\n2. `parseWith(v, validator, fallback)` — RETURN `{ ok: true, value }` when `validator(v)` is true, else `{ ok: false, fallback }`.\n3. `handleApi(result)` — `result` is `{ ok: true, data }` or `{ ok: false, status }`. RETURN the data string when ok, else `\"HTTP \" + status`. It must never read `.data` on a failure object.",
+  "difficulty": "intermediate",
+  "boilerplate": "// 1) isUser(v)\n\n// 2) parseWith(v, validator, fallback)\n\n// 3) handleApi(result)\n",
+  "tests": [
+    {
+      "name": "isUser accepts only well-formed users",
+      "code": "const fn = new Function(code + \"\\nreturn { isUser, parseWith, handleApi };\");\nconst { isUser, parseWith, handleApi } = fn();\nif (isUser({ id: \"u1\", email: \"a@b.co\" }) !== true) throw new Error(\"Minimal valid user accepted.\");\nif (isUser({ id: \"u1\", email: \"a@b.co\", name: \"Ada\" }) !== true) throw new Error(\"Optional name present is fine.\");\nif (isUser({ id: 7, email: \"a@b.co\" }) !== false) throw new Error(\"Numeric id must fail.\");\nif (isUser({ id: \"u1\", email: \"nope\" }) !== false) throw new Error(\"Email without @ must fail.\");\nif (isUser([\"u1\", \"a@b.co\"]) !== false) throw new Error(\"Arrays are not users.\");\nif (isUser(null) !== false) throw new Error(\"null is not a user.\");",
+      "hint": "Check typeof v === 'object' && v !== null && !Array.isArray(v), then each field's typeof; email must include '@'."
+    },
+    {
+      "name": "parseWith validates or falls back",
+      "code": "const fn = new Function(code + \"\\nreturn { isUser, parseWith, handleApi };\");\nconst { isUser, parseWith, handleApi } = fn();\nconst good = parseWith({ id: \"u1\", email: \"a@b.co\" }, isUser, null);\nif (good.ok !== true || good.value.email !== \"a@b.co\") throw new Error(\"Valid input flows through as { ok: true, value }.\");\nconst bad = parseWith(\"junk\", isUser, \"default\");\nif (bad.ok !== false || bad.fallback !== \"default\") throw new Error(\"Invalid input returns { ok: false, fallback }.\");",
+      "hint": "validator(v) ? { ok: true, value: v } : { ok: false, fallback }."
+    },
+    {
+      "name": "handleApi checks ok before data",
+      "code": "const fn = new Function(code + \"\\nreturn { isUser, parseWith, handleApi };\");\nconst { isUser, parseWith, handleApi } = fn();\nif (handleApi({ ok: true, data: \"tasks\" }) !== \"tasks\") throw new Error(\"Success returns the data.\");\nif (handleApi({ ok: false, status: 503 }) !== \"HTTP 503\") throw new Error(\"Failure returns 'HTTP ' + status.\");",
+      "hint": "result.ok ? result.data : \"HTTP \" + result.status."
+    }
+  ]
+}

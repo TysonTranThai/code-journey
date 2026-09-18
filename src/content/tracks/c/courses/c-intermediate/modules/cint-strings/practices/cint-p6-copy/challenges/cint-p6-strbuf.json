@@ -1,0 +1,15 @@
+{
+  "id": "cint-p6-strbuf",
+  "title": "Build the Growable String",
+  "prompt": "Implement the StrBuf from the lesson. The boilerplate declares:\n\n```c\ntypedef struct { char *data; size_t len; size_t cap; } StrBuf;\nvoid sb_init(StrBuf *b);                  /* empty but valid; data may be NULL */\nint  sb_append(StrBuf *b, const char *s); /* 0 ok, -1 bad args/oom */\nvoid sb_free(StrBuf *b);                  /* ends ownership, back to init state */\n```\n\nAfter append, `data` must be a valid '\u0000'-terminated string of `len`\ncharacters with room for at least `len + 1` bytes.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\ntypedef struct { char *data; size_t len; size_t cap; } StrBuf;\nvoid sb_init(StrBuf *b);\nint sb_append(StrBuf *b, const char *s);\nvoid sb_free(StrBuf *b);\n",
+  "tests": [
+    {
+      "name": "append, grow, free",
+      "code": "\nStrBuf b;\nsb_init(&b);\nCHECK(b.data == NULL || strlen(b.data) == 0);\nCHECK_EQ(b.len, 0);\nCHECK_EQ(sb_append(&b, \"hello\"), 0);\nCHECK_EQ(sb_append(&b, \" \"), 0);\nCHECK_EQ(sb_append(&b, \"world\"), 0);\nCHECK_EQ(b.len, 11);\nCHECK(b.cap >= 12);\nCHECK(!strcmp(b.data, \"hello world\"));\nCHECK_EQ(sb_append(NULL, \"x\"), -1);\nCHECK_EQ(sb_append(&b, NULL), -1);\nsb_free(&b);\nCHECK_EQ(b.len, 0);                       /* back to init state */\nCHECK_EQ(sb_append(&b, \"again\"), 0);      /* reusable after free */\nCHECK(!strcmp(b.data, \"again\"));\nsb_free(&b);\n",
+      "hint": "realloc with a temp pointer; double the cap starting at 16; append keeps '\u0000' termination."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+## Mọi hàm đều có hình dáng
+
+Prologue điển hình push các register callee-saved sẽ dùng, dời stack pointer cho biến cục bộ, và đôi khi giữ frame pointer. Epilogue làm ngược lại. Nhận ra hình dáng này là 80% việc đọc bất kỳ dump nào: mọi thứ giữa prologue và epilogue là logic *của hàm bạn*.
+
+## Ánh xạ C sang lệnh máy
+
+```c
+int tri(int n) { return n * (n + 1) / 2; }
+```
+
+Code phát ra có thể không chạm phép nhân theo cách bạn viết — trình biên dịch biến `n * (n + 1) / 2` thành shift và add khi có lợi. Bài học không phải 'assembly khó'; mà là *trình biên dịch đã tối ưu sẵn*, và đọc đầu ra của nó cho thấy các phép biến đổi mà mô-đun 4 và 10 chỉ nói tới.
+
+## Cách nhìn, trung thực
+
+`gcc -S` (assembly dạng văn bản), `gcc -c` + `objdump -d` (disassembly của object). Đầu ra khác nhau giữa các kiến trúc (aarch64 so với x86-64) và giữa các mức tối ưu. Thực hành chuyên nghiệp: đọc dump của *hàm của chính bạn*, so -O0 với -O2, và giải thích từng khác biệt. Đừng thuộc các mnemonic của một nền tảng rồi coi là 'chân lý'.

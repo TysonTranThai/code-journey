@@ -1,0 +1,25 @@
+`raise` throws an exception deliberately — when the data is wrong, fail loudly:
+
+```python
+def set_price(price):
+    if price < 0:
+        raise ValueError(f"price cannot be negative, got {price}")
+    return price
+```
+
+A function that fails fast with a clear message is kinder than one that returns
+nonsense and lets the bug surface three layers away. Raising early converts a
+silent logic error into a loud, debuggable runtime error.
+
+## Defensive checks in practice
+
+```python
+def average(values):
+    if not values:                 # None, [], empty — all falsy
+        raise ValueError("average of empty data is undefined")
+    return sum(values) / len(values)
+```
+
+The check is one line; the debugging time it saves is hours. As a rule: validate
+at the boundary (where data enters your program), raise inside (when your own
+invariants break).

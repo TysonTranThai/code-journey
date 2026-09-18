@@ -1,0 +1,39 @@
+Construction and destruction have a fixed order. Predict it and you can
+reason about every resource a class hierarchy touches.
+
+```cpp
+#include <iostream>
+
+class Base {
+public:
+    Base() { std::cout << "Base ctor\n"; }
+    ~Base() { std::cout << "Base dtor\n"; }
+};
+
+class Derived : public Base {
+public:
+    Derived() { std::cout << "Derived ctor\n"; }
+    ~Derived() { std::cout << "Derived dtor\n"; }
+};
+
+int main_cj_order() {
+    { Derived d; }
+    // prints: Base ctor, Derived ctor, Derived dtor, Base dtor
+    return 0;
+}
+```
+
+## The rules
+
+1. **Bases construct first** (left to right in the base list).
+2. **Members construct** in declaration order, after all bases.
+3. The derived constructor **body** runs last.
+4. Destruction is the exact **reverse**: body → members → bases.
+
+## Why it must be so
+
+A derived constructor may call base functions in its body — so the base must
+already exist. The destructor runs when the derived part is about to vanish,
+so it must run *before* the base part it may still use disappears. Memory
+bugs and "virtual call in constructor" surprises (later lessons) both come
+from forgetting this order.

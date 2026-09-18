@@ -1,0 +1,27 @@
+**PECS** from Intermediate, applied at API-design depth. A *copy* API reads
+from one list and writes to another:
+
+```java
+static <T> void copy(List<? extends T> src, List<? super T> dst) {
+    for (T t : src) dst.add(t);
+}
+```
+
+Two wildcards, one inference point: `T` is fixed from the call site, `src`
+produces `T`s, `dst` consumes them. When a parameter's type is
+`List<?>` *without* a type variable, you need **wildcard capture** — a
+private helper reifies the unknown:
+
+```java
+static void swap(List<?> list, int i, int j) {
+    swapHelper(list, i, j);
+}
+private static <E> void swapHelper(List<E> list, int i, int j) {
+    list.set(i, list.set(j, list.get(i)));   // only legal with a real E
+}
+```
+
+`list.set(...)` on a raw `List<?>` does not compile — the compiler cannot
+prove type safety of the unknown; inside the helper, `E` is a *real* type and
+the same operations are provably safe. Capture is not a trick; it is how you
+tell the compiler "the unknown element type is *fixed* for this call".

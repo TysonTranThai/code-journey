@@ -1,0 +1,39 @@
+## void* là lời hứa, không phải kiểu
+
+```c
+typedef struct HNode {
+    const char   *key;      /* mượn: caller giữ nó sống */
+    void         *value;    /* OWNERSHIP: do policy của bảng quyết định */
+    struct HNode *next;
+} HNode;
+```
+
+Bảng không thể biết `value` trỏ vào gì. Đó là mục đích — và là nguy hiểm.
+Mỗi generic container phải công bố **ownership policy**, và cách sạch để
+làm nó tường minh là callback:
+
+```c
+typedef void (*FreeFn)(void *value);
+/* destroy_frees: nếu true, hmap_destroy gọi free_value trên mọi value
+   còn lưu; nếu false, value để lại cho chủ sở hữu. */
+void hmap_destroy(HMap *m, int destroy_frees, FreeFn free_value);
+```
+
+Giờ hợp đồng kiểm được tại chỗ gọi: bảng của buffer malloc'd truyền
+`1, free`; bảng của chuỗi mượn truyền `0, NULL`. Họ bug điều này giết
+chết: double free khi hai container cùng "dọn" chung value, và leak khi
+không ai dọn.
+
+## Key gần như luôn mượn
+
+Value có thể sở hữu; key nên *mượn* — chuỗi của caller nằm trong kho của
+caller, bảng chỉ so sánh ký tự. Nếu bảng phải sở hữu key (buffer của
+caller chết), nó phải `strdup` — và giờ nó sở hữu hai thứ, policy nhân
+đôi. Key mượn giữ một quy tắc: key sống lâu hơn entry.
+
+## Hợp đồng duyệt
+
+Mọi bảng đi được (`hmap_foreach`) phải công bố việc biến đổi trong lúc
+duệt làm gì. Quy tắc an toàn: được *thay* value của entry hiện tại;
+không được chèn/xóa khi đang duyệt. Thực thi hoặc ghi rõ hành vi
+undefined — thay vào đó là hỏng âm thầm.

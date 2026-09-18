@@ -1,0 +1,21 @@
+## Tách rời bằng event
+
+Gọi trực tiếp đồng bộ buộc caller vào vòng đời, độ trễ, và thất bại của callee. Event bus phá các ràng buộc đó: publisher phát sự kiện (`"OrderPlaced{...}"`), subscriber phản ứng. Cái giá là thứ tự dispatch — một bus nghiêm túc *ghi nhận và đảm bảo* thứ tự của nó (thứ tự đăng ký là lựa chọn xác định phổ biến cho bus đồng bộ), vì thứ tự "thường ổn" là máy tạo sự cố production.
+
+## Thang cấu hình
+
+Hệ thống thật phân giải config theo tầng với thứ tự ưu tiên rõ — thang phổ biến:
+
+```
+defaults  <  file  <  environment  <  cờ tường minh
+```
+
+Mỗi tầng ghi đè tầng dưới *chỉ ở những key nó nói tới*. Debug cấu hình sai nghĩa là hỏi, theo từng key: "tầng nào đã đặt giá trị này?" Một hệ cấu hình không trả lời được câu đó chỉ là tin đồn.
+
+## Secret không đi trên thang
+
+Giá trị từ secret store không bao giờ được log, không bao giờ lọt vào thông báo lỗi, không bao giờ thành một chuỗi bạn format. Việc che giấu là trách nhiệm của *sink* (tầng log), nhưng tầng config phải đánh dấu secret để sink có thể che.
+
+## Sandbox chấm gì
+
+Bài tập chấm cơ chế: seam DI biến logic theo thời gian thành xác định, event bus dispatch theo thứ tự đăng ký và có unsubscribe, và thang ưu tiên có thể truy vấn theo từng key.

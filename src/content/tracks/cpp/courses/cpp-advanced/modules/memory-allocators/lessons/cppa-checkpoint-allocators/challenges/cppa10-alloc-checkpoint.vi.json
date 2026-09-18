@@ -1,0 +1,14 @@
+{
+  "title": "Vượt chướng ngại vòng đời pool",
+  "prompt": "Cài trọn vòng đời `BytePool`: acquire tới khi cạn (nullptr sau đó), release trả về (noteFree), và tái sử dụng khối đã trả. Số live của tracker luôn bằng số khối đã phát trừ số khối đã trả.",
+  "tests": [
+    {
+      "name": "acquire, cạn, release, tái sử dụng",
+      "hint": "Free-list các con trỏ khối: acquire pop (nullptr khi rỗng, noteAlloc), release push (noteFree) — live() tự khớp."
+    },
+    {
+      "name": "release cả hai khối khôi phục mọi thứ",
+      "hint": "Ba lần acquire rồi ba lần release: available()==3, live()==0, allocs==frees==3."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "title": "Cổng phát hành",
+  "prompt": "Viết release_gate(pyproject_text, argv) mà: (1) phân tích TOML và raise ValueError('missing name') nếu thiếu [project].name; (2) điều phối argv theo kiểu main: argv[0] == 'version' in phiên bản và trả 0; mọi thứ khác trả 2 sau khi in lỗi ra stderr; (3) nếu list dependencies chứa tên trần (chưa ghim), raise ValueError('unpinned: <name>'). Trả về mã exit của việc điều phối.",
+  "tests": [
+    {
+      "name": "Dự án hợp lệ + lệnh version",
+      "hint": "Parse, xác minh, điều phối: 'version' in phiên bản, exit 0."
+    },
+    {
+      "name": "Thiếu name sẽ raise",
+      "hint": "Kiểm tra hợp đồng diễn ra trước khi điều phối."
+    },
+    {
+      "name": "Dependency chưa ghim sẽ raise",
+      "hint": "Mọi dependency phải mang ràng buộc."
+    },
+    {
+      "name": "Lệnh lạ exit 2 qua stderr",
+      "hint": "Lỗi điều phối báo ra stderr với exit 2."
+    }
+  ]
+}

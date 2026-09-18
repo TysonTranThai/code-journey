@@ -1,0 +1,31 @@
+## Sắp xếp tại chỗ
+
+```csharp
+int[] nums = { 5, 3, 9, 1 };
+Array.Sort(nums);            // nums giờ là { 1, 3, 5, 9 }
+Array.Reverse(nums);         // { 9, 5, 3, 1 }
+```
+
+`Array.Sort` biến đổi mảng — **tại chỗ** — bằng introsort; trung bình O(n log n). Không có overload "bản sao đã sắp"; nếu phải giữ bản gốc, sao chép trước (`(int[])nums.Clone()`). Chuỗi mặc định sắp theo so sánh phụ thuộc văn hóa — với thứ tự kiểu code hãy nói `Array.Sort(names, StringComparer.Ordinal)`.
+
+## Tìm kiếm
+
+```csharp
+int at = Array.IndexOf(nums, 5);      // chỉ số hoặc -1 khi vắng
+bool has = Array.Exists(nums, n => n > 8);   // tìm theo vị từ
+int first = Array.Find(nums, n => n > 8);    // phần tử hoặc mặc định 0/""/null
+```
+
+`IndexOf` trả **-1 khi vắng** — một giá trị cờ bạn phải kiểm tra trước khi dùng làm chỉ số. Họ vị từ (`Exists`/`Find`/`FindAll`) nhận một lambda; bạn đã chạm qua lambda, sau này sẽ có nguyên một module.
+
+## Sao chép không aliasing
+
+```csharp
+int[] src = { 1, 2, 3, 4 };
+int[] dst = new int[src.Length];
+src.CopyTo(dst, 0);          // dst độc lập
+int[] head = new int[2];
+src.CopyTo(head, 0);         // chỉ hai phần tử đầu
+```
+
+`CopyTo(target, startInTarget)` ghi các phần tử vào một mảng có sẵn (phải đủ dài). Giờ aliasing và sao chép là hai con đường nhìn thấy được: `b = a` chia sẻ, `CopyTo`/`Clone` nhân bản. Mỗi lần đưa mảng cho một phương thức hay lưu vào field, hãy hỏi: tôi muốn alias hay bản sao?

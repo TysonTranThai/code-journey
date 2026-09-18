@@ -1,0 +1,19 @@
+## _Generic: chọn lúc biên dịch
+
+```c
+#define type_name(x) _Generic((x), int: "int", double: "double", char *: "char *", default: "other")
+```
+
+*Kiểu* của biểu thức (không phải giá trị) chọn nhánh lúc biên dịch. Đây là overload thực sự duy nhất của C: wrapper an-toàn-kiểu bên trên máy móc xóa-kiểu — ví dụ điều phối hash_int vs hash_str mà caller không bao giờ đụng nhầm.
+
+## Tagged union: tổng quát lúc chạy
+
+```c
+typedef struct { unsigned char tag; union { long i; double d; char *s; } as; } value_t;
+```
+
+Tag nói nhánh nào đang sống; người đọc switch theo nó. Interpreter, thư viện JSON, và mọi giá trị động trong C đều thế. Union chỉ lưu biểu diễn, không phải kiểu — kỷ luật nằm ở tag.
+
+## Macro: biết ranh giới
+
+Token pasting và stringizing dựng DSL nhỏ (bảng đăng ký, danh sách enum/chuỗi X-macro). Nhưng macro không tôn trọng phạm vi, không lấy được địa chỉ như hàm, và đánh giá đối số hai lần. Quy tắc chuyên nghiệp: macro để *xóa boilerplate*, hàm (kể cả hàm static tí hon) cho logic.

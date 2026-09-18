@@ -1,0 +1,10 @@
+{
+  "title": "Biến bộ test đáng tin",
+  "prompt": "Cài `audit_suite(records)` và `plan_fix(record)`:\n\n- `audit_suite(records)` trả `{'sound': [tên], 'flaky': [tên]}` — flaky khi có bất kỳ nguyên nhân boolean nào (`uses_time`, `uses_random_unseeded`, `shared_state`, `order_dependent`); cả hai list giữ thứ tự input\n- `plan_fix(record)` trả list các cách sửa cụ thể theo thứ tự cho bản ghi flaky — đúng bốn chuỗi từ bài chẩn đoán — hoặc `[]` cho bản ghi sound\n- các cách sửa trong plan ánh xạ 1:1 theo thứ tự: thời gian → tiêm đồng hồ; ngẫu nhiên → seed; trạng thái chia sẻ → cô lập thế giới; phụ thuộc thứ tự → tự dựng điều kiện tiên quyết\n\nBất biến: sau khi áp mọi fix trong plan, chạy lại `diagnose_flaky` trên bản ghi cho `'sound'`.",
+  "tests": [
+    {
+      "name": "Phân loại, lập kế hoạch, và kế hoạch thực sự chữa được",
+      "hint": "Test sound được nêu tên; test flaky nhận một kế hoạch có thứ tự, hành động được."
+    }
+  ]
+}

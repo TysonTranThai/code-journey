@@ -1,0 +1,47 @@
+Motion communicates state changes; done carelessly it also communicates
+nausea.
+
+## Animate the cheap properties
+
+Only `transform` and `opacity` animate on the compositor without triggering
+layout or paint. Everything else (width, top, margin) re-flows the page every
+frame:
+
+```css
+.drawer {
+  transition: transform 0.25s ease;
+}
+.drawer.is-closed {
+  transform: translateX(-100%);
+}
+```
+
+Move with transforms; fade with opacity; size with `scale()` when geometry
+allows. Duration under ~300ms for interactions; entrance animations may be
+slightly longer.
+
+## Respect the preference
+
+Some users turn animations off at the OS level. Honor it globally:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+States still change instantly — information is preserved, movement is not
+forced on anyone.
+
+## Transitions vs animations
+
+`transition` reacts to a state change between two values — perfect for hover,
+open/close. `@keyframes` animation runs on its own timeline — loops, multi-step
+sequences. If you find yourself writing JS to toggle a transition, you probably
+wanted a class change; if you need orchestration, keyframes or the Web
+Animations API.

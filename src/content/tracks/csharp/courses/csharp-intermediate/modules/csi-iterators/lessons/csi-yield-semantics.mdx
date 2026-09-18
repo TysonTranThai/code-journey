@@ -1,0 +1,49 @@
+## An iterator method is rewritten, not called
+
+Mark a method `IEnumerable<T>` with `yield return` and the compiler generates
+a state-machine class: each `yield return` is a pause point, each MoveNext a
+resume:
+
+```csharp
+static IEnumerable<int> Evens(int upto)
+{
+    for (int i = 0; i <= upto; i += 2)
+        yield return i;          // pause: hand one value out, wait
+}
+```
+
+Nothing runs when `Evens(10)` is CALLED — the method body starts only when
+the first `MoveNext` happens (the first `foreach` step). Side effects before
+the first yield are equally deferred:
+
+```csharp
+static IEnumerable<int> Logged()
+{
+    Console.WriteLine("start");        // deferred too!
+    yield return 1;
+    Console.WriteLine("middle");
+    yield return 2;
+}
+```
+
+`yield break` terminates early (an empty iterator is just `yield break`).
+Inside iterator methods: no `yield return` inside try-catch (only try-
+finally), no `ref`/`out` parameters, single yield path per resume.
+
+## Deferred ≠ cached
+
+Each `foreach` over an iterator RE-RUNS it:
+
+```csharp
+var seq = Logged();
+foreach (var x in seq) { }   // prints start, middle
+foreach (var x in seq) { }   // prints start, middle AGAIN
+```
+
+Materialize with `ToList()` when you need one-shot semantics or multiple
+passes over expensive work — and expect the tradeoff (memory for time).
+
+## Check your understanding
+
+- When does the code before the first `yield` execute? (On first MoveNext, not at call.)
+- Why can't iterator methods take `ref` parameters? (State machines are heap objects; ref locals can't persist across suspensions.)

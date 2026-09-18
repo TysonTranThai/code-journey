@@ -1,0 +1,31 @@
+{
+  "id": "ca20-sockaddr-encode",
+  "title": "Encode the Loopback Address",
+  "prompt": "POSIX. Implement `void fill_loopback(struct sockaddr_in *sa, int port)` — zero the struct, set family AF_INET, address to INADDR_LOOPBACK (network byte order), and port (network byte order). Then implement `int decode_port(const struct sockaddr_in *sa)` returning the host-order port. NULL sa returns -1 from decode_port and does nothing in fill.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define _POSIX_C_SOURCE 200809L\n#include <unistd.h>\n#include <sys/socket.h>\n#include <sys/time.h>\n#include <netinet/in.h>\n#include <arpa/inet.h>\n#include <signal.h>\n#include <errno.h>\n",
+  "tests": [
+    {
+      "name": "roundtrip port",
+      "code": "struct sockaddr_in s1;\nfill_loopback(&s1, 8080);\nCHECK_EQ(decode_port(&s1), 8080);",
+      "hint": "htons on the way in, ntohs on the way out — the byte order cancels."
+    },
+    {
+      "name": "loopback address set",
+      "code": "struct sockaddr_in s2;\nfill_loopback(&s2, 1);\nCHECK_EQ(s2.sin_addr.s_addr, htonl(INADDR_LOOPBACK));",
+      "hint": "INADDR_LOOPBACK is 127.0.0.1 — stored in network byte order exactly as given."
+    },
+    {
+      "name": "zeroed padding and family",
+      "code": "struct sockaddr_in s3;\nmemset(&s3, 0xAB, sizeof s3);\nfill_loopback(&s3, 9);\nCHECK_EQ(s3.sin_family, AF_INET);",
+      "hint": "A memset-poisoned struct must come out clean: the contract says zero the struct first."
+    },
+    {
+      "name": "NULL guard",
+      "code": "CHECK_EQ(decode_port(NULL), -1);",
+      "hint": "NULL is a caller bug: refuse with -1, never dereference."
+    }
+  ],
+  "level": "guided"
+}

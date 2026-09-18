@@ -1,0 +1,18 @@
+{
+  "title": "Forward như make_unique",
+  "prompt": "Cài `makeOwned` dựng `T` từ các đối số được forward hoàn hảo, và `restore` forward một đối số với đúng phép collapsing.",
+  "tests": [
+    {
+      "name": "rvalue vẫn là rvalue",
+      "hint": "new T(std::forward<A>(a)...) — đối tượng tạm được move một lần vào T; nếu copy (thiếu forward) thì moves bằng 0 và rớt."
+    },
+    {
+      "name": "lvalue vẫn là lvalue (copy, không move)",
+      "hint": "lvalue src phải được copy đúng một lần vào T — forward giữ nguyên phân loại của caller."
+    },
+    {
+      "name": "restore sập đúng luật",
+      "hint": "return std::forward<T>(x); — collapsing khôi phục phân loại gốc cho cả hai lời gọi."
+    }
+  ]
+}

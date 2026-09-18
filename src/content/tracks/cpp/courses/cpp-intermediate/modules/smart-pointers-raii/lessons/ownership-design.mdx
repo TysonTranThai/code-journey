@@ -1,0 +1,28 @@
+Pick the ownership model before you pick the pointer type.
+
+| Relationship | Model | Tool |
+|---|---|---|
+| I own, nobody else | exclusive | `unique_ptr` member |
+| Shared pool, users outlive creators | shared | `shared_ptr` |
+| Back-reference (child → parent) | observing | `weak_ptr` or `T*` |
+| Just using, no lifetime stake | observing | `T&` / `T*` parameter |
+| The container owns it all | value semantics | `std::vector<T>` |
+
+A worked example — an entity system:
+
+```cpp
+class Scene {
+    std::vector<std::unique_ptr<Entity>> entities_;  // scene owns
+public:
+    Entity& spawn() {
+        entities_.push_back(std::make_unique<Entity>());
+        return *entities_.back();          // hand back a reference, not ownership
+    }
+};
+```
+
+Note the signature discipline: `spawn()` returns `Entity&` because callers
+use the entity but the scene keeps owning it. Handing back `unique_ptr`
+would invite double-ownership; handing back `shared_ptr` would make the
+counters meaningless. Default to `unique_ptr` and references; escalate to
+`shared_ptr` only with a stated reason.

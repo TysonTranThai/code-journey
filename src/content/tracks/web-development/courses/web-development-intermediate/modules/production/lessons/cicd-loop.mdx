@@ -1,0 +1,44 @@
+## CI: continuous integration
+
+Every push runs the gate automatically:
+
+```yaml
+# .github/workflows/ci.yml (conceptual)
+on: push
+jobs:
+  verify:
+    steps:
+      - checkout, install (cached)
+      - typecheck # seconds
+      - lint # seconds
+      - unit tests # a minute
+      - build # proves it compiles
+```
+
+Branch protection makes it law: PRs require green CI + review before merge. The cultural shift is the point — "it works on my machine" stops being an argument when the machine is CI.
+
+## CD: continuous delivery/deployment
+
+- **Delivery** — every merge produces a verified, deployable artifact (deploy is a button)
+- **Deployment** — every merge _deploys_ to production automatically
+
+Deployment on merge is the highest-trust setup; it's earned by the test pyramid (module 7), staged rollouts (previous lesson), and instant rollback. You don't start there; you grow into it.
+
+## The pipeline anatomy
+
+```text
+push → [typecheck, lint, unit]  → PR merge →
+       [build artifact, hash, scan] →
+       deploy staging → [E2E, smoke tests] →
+       deploy prod (canary/rolling) → [metrics watch] → done
+```
+
+Fast first, slow later: developers get typecheck feedback in minutes; the heavyweight gates run before prod, not before every commit.
+
+## Secrets in CI
+
+CI systems hold powerful credentials (deploy keys, cloud tokens) — a leaked CI token is a production breach. Store them in the platform's secret store (never in YAML), scope them narrowly (deploy key ≠ admin key), rotate them, and pin third-party actions to digests where the platform allows.
+
+## The boring goal
+
+The measure of a mature pipeline is _unremarkable deploys_: multiple per day, none worth mentioning in standup. Every manual step removed is one less 11pm mistake. When deploys are boring, you ship smaller changes, which fail smaller, which makes deploys even more boring — the loop compounds in your favor.

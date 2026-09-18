@@ -1,0 +1,31 @@
+{
+  "id": "cppi-m5-windowed-max",
+  "title": "Sliding window maximum",
+  "prompt": "Implement `std::vector<int> windowed_max(const std::vector<int>& v, std::size_t k)` returning the maximum of every contiguous window of size k, in order. If `k` is 0 or `v` is empty return an empty vector; if `k >= v.size()` return a single-element vector with the overall maximum. Target O(n) with a monotonic `std::deque` of indices (pop from the back while the new value is greater-or-equal; pop the front when it falls out of the window).",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <deque>\n#include <vector>\n#include <iostream>\n\n// std::vector<int> windowed_max(const std::vector<int>& v, std::size_t k)\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "auto r = windowed_max({4,2,12,11,-5,6,7}, 3);\nCHECK_EQ(r.size(), 5);\nCHECK_EQ(r[0], 12);\nCHECK_EQ(r[3], 11);\nCHECK_EQ(r[4], 7);",
+      "hint": "Five windows of size 3 slide across seven values."
+    },
+    {
+      "name": "identity-k1",
+      "code": "auto r = windowed_max({3,1,2}, 1);\nCHECK_EQ(r.size(), 3);\nCHECK_EQ(r[0], 3);\nCHECK_EQ(r[2], 2);",
+      "hint": "Every window of size 1 is the value itself."
+    },
+    {
+      "name": "decreasing",
+      "code": "auto r = windowed_max({5,4,3,2,1}, 2);\nCHECK_EQ(r.size(), 4);\nCHECK_EQ(r[0], 5);\nCHECK_EQ(r[3], 2);",
+      "hint": "A decreasing input makes each window's max its first element."
+    },
+    {
+      "name": "oversized-k",
+      "code": "auto r = windowed_max({1,9,3}, 10);\nCHECK_EQ(r.size(), 1);\nCHECK_EQ(r[0], 9);",
+      "hint": "k beyond the size collapses to one overall max."
+    }
+  ],
+  "level": "combination"
+}

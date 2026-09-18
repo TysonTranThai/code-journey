@@ -1,0 +1,20 @@
+{
+  "id": "i2-storage-guard",
+  "title": "Storage Guard",
+  "prompt": "Write `loadSetting(storage, key, fallback)` — `storage` provides `getItem`/`setItem`. Parse the stored JSON safely: missing key, invalid JSON, or wrong-typed value all RETURN `fallback`; only a value passing `isShape` (provided as an argument: `(v) => boolean`) returns `{ ok: true, value }`. Also write `saveSetting(storage, key, value)` that stores `JSON.stringify(value)`.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function loadSetting(storage, key, isShape, fallback) {\n  // your code\n}\n\nfunction saveSetting(storage, key, value) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "round-trip through a fake storage",
+      "code": "const fn = new Function(code + \"\\nreturn { loadSetting, saveSetting };\");\nconst { loadSetting, saveSetting } = fn();\nconst m = new Map();\nconst storage = { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, v) };\nconst isStr = (v) => typeof v === \"string\";\nsaveSetting(storage, \"theme\", \"dark\");\nconst out = loadSetting(storage, \"theme\", isStr, \"light\");\nif (out.ok !== true || out.value !== \"dark\") throw new Error(\"Valid stored value round-trips.\");",
+      "hint": "JSON.parse inside try/catch; then isShape(parsed) decides ok vs fallback."
+    },
+    {
+      "name": "corrupt or wrong-typed data falls back",
+      "code": "const fn = new Function(code + \"\\nreturn { loadSetting, saveSetting };\");\nconst { loadSetting, saveSetting } = fn();\nconst m = new Map();\nconst storage = { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, v) };\nconst isNum = (v) => typeof v === \"number\" && Number.isFinite(v);\nm.set(\"bad\", \"{nope\");           // invalid JSON\nm.set(\"wrong\", JSON.stringify(\"42\")); // string, not number\nif (loadSetting(storage, \"missing\", isNum, 0).ok !== false) throw new Error(\"Missing keys fall back.\");\nif (loadSetting(storage, \"bad\", isNum, 0).ok !== false) throw new Error(\"Invalid JSON falls back.\");\nif (loadSetting(storage, \"wrong\", isNum, 0).ok !== false) throw new Error(\"Wrong-typed values fall back.\");",
+      "hint": "Three failure paths, one return: { ok: false, fallback }."
+    }
+  ]
+}

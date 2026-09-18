@@ -1,0 +1,31 @@
+{
+  "id": "cppi-m10-error-lines",
+  "title": "Filter error lines from file content",
+  "prompt": "Implement `std::string error_lines(const std::string& content)` that treats `content` as a text file (lines separated by \\n) and returns only the lines starting with `ERROR `, each followed by \\n. Use `std::istringstream` + `std::getline`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <sstream>\n#include <string>\n#include <iostream>\n\n// std::string error_lines(const std::string& content)\n",
+  "tests": [
+    {
+      "name": "mixed",
+      "code": "std::string out = error_lines(std::string{\"INFO ok\\nERROR bad\\nINFO fine\\nERROR worse\\n\"});\nCHECK(out == std::string{\"ERROR bad\\nERROR worse\\n\"});",
+      "hint": "Keep order; drop everything not starting with the prefix."
+    },
+    {
+      "name": "none",
+      "code": "CHECK(error_lines(std::string{\"INFO a\\n\"}).empty());",
+      "hint": "No matches: empty output."
+    },
+    {
+      "name": "prefix-only",
+      "code": "CHECK(error_lines(std::string{\"XERROR no\\nERROR yes\\n\"}) == std::string{\"ERROR yes\\n\"});",
+      "hint": "The prefix must start at position 0."
+    },
+    {
+      "name": "no-trailing-newline",
+      "code": "CHECK(error_lines(std::string{\"a\\nERROR last\"}) == std::string{\"ERROR last\\n\"});",
+      "hint": "The final line may lack \\n — getline still yields it."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "i2-pr-size",
+  "title": "PR Size Gate",
+  "prompt": "Write `prVerdict(files)` — files is an array of { path, additions, deletions }. Rules: a PR over 400 total changed lines gets \"split\"; one touching more than 10 files gets \"too-many-files\"; both conditions → \"split\" (size dominates); otherwise \"ok\". Changed lines = additions + deletions.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function prVerdict(files) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "size dominates files count",
+      "code": "const fn = new Function(code + \"\\nreturn { prVerdict };\");\nconst { prVerdict } = fn();\nconst big = Array.from({ length: 12 }, () => ({ path: \"a\", additions: 50, deletions: 10 }));\nif (prVerdict(big) !== \"split\") throw new Error(\"720 lines across 12 files: split wins.\");",
+      "hint": "Compute both totals, check size first."
+    },
+    {
+      "name": "file count and ok paths",
+      "code": "const fn = new Function(code + \"\\nreturn { prVerdict };\");\nconst { prVerdict } = fn();\nconst many = Array.from({ length: 11 }, () => ({ path: \"a\", additions: 2, deletions: 0 }));\nif (prVerdict(many) !== \"too-many-files\") throw new Error(\"22 lines but 11 files.\");\nif (prVerdict([{ path: \"a\", additions: 100, deletions: 20 }]) !== \"ok\") throw new Error(\"120 lines, 1 file.\");",
+      "hint": "Then the file-count check, then default ok."
+    }
+  ]
+}

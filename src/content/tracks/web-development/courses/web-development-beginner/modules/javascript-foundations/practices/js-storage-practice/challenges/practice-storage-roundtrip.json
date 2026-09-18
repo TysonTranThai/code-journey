@@ -1,0 +1,25 @@
+{
+  "id": "practice-storage-roundtrip",
+  "title": "Save and Load Settings",
+  "prompt": "Write `saveSettings(settings)` that stores the object under key `\"settings\"` as JSON, and `loadSettings()` that reads it back and returns the object (default `{ theme: \"light\" }` when nothing is stored). Save `{ theme: \"dark\", fontSize: 16 }`, then log the loaded theme (should be `dark`).\n\nRules:\n- `storage` is provided (same API as localStorage).\n- JSON.stringify on the way in, JSON.parse on the way out.",
+  "difficulty": "beginner",
+  "level": "imitation",
+  "boilerplate": "function saveSettings(settings) {\n  // stringify and store\n}\nfunction loadSettings() {\n  // read, parse, default\n}\nsaveSettings({ theme: \"dark\", fontSize: 16 });\nconsole.log(loadSettings().theme);\n",
+  "tests": [
+    {
+      "name": "objects are stringified before storing",
+      "code": "if (!/JSON\\.stringify/.test(code)) {\n  throw new Error(\"localStorage stores strings — JSON.stringify the object first.\");\n}",
+      "hint": "storage.setItem(\"settings\", JSON.stringify(settings));"
+    },
+    {
+      "name": "load parses and returns the object",
+      "code": "const fn = new Function(code + \"\\nreturn loadSettings();\");\nconst s = fn();\nif (!s || s.theme !== \"dark\" || s.fontSize !== 16) {\n  throw new Error(\"loadSettings() should return { theme: 'dark', fontSize: 16 }.\");\n}",
+      "hint": "Read with storage.getItem(\"settings\"), then JSON.parse it."
+    },
+    {
+      "name": "empty storage gets the default",
+      "code": "const fn = new Function(code + \"; storage.removeItem('settings'); return loadSettings();\");\nconst s = fn();\nif (!s || s.theme !== \"light\") throw new Error(\"With nothing stored, loadSettings() should return { theme: 'light' }.\");",
+      "hint": "When getItem returns null, return the default object instead of parsing null."
+    }
+  ]
+}

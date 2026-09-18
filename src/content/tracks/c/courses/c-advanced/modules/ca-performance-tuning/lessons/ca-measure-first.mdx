@@ -1,0 +1,24 @@
+## The budget loop
+
+Work backward from a time budget: if one iteration costs `p` milliseconds and you may spend `B` milliseconds, run `ceil(B / p)` iterations — and guard division by zero. Deriving the iteration count from a budget (instead of a magic constant) is what makes a benchmark stoppable *and* comparable across machines.
+
+## Keeping the optimizer honest
+
+```c
+volatile double sink = 0.0;          /* or accumulate-and-print */
+for (size_t i = 0; i < iters; i++) sink += work(i);
+```
+
+Without a consumed result, the optimizer may delete the entire loop: computing a value nobody uses is not an observable behavior (module 2). The sink (or a printed checksum) makes the work real.
+
+## Optimization levels, honestly
+
+- `-O0`: fast compile, slow code — the debugging mode. Variables live in memory; stepping in a debugger stays sane.
+- `-O2`/`-O3`: inlining, vectorization, aggressive reordering. Code may behave observably-identically while executing completely differently.
+- The gap between -O0 and -O2 on the same source is routinely large — which is why "it felt slow in debug" is not a performance claim.
+
+ISO C defines none of this: optimization levels are compiler flags (GCC/Clang here, labeled as such). Undefined behavior plus optimization equals module 4's menagerie — measure with the flags you ship.
+
+## The regression habit
+
+A number without a baseline is a anecdote. Keep the benchmark in the repo, record the machine, flags, and input; compare like with like. When a change claims 20%, re-run with and without. If the delta does not reproduce, it did not happen.

@@ -1,0 +1,21 @@
+{
+  "id": "pa-api-validate-user",
+  "title": "Collect all the errors",
+  "prompt": "Implement `validate_user(payload)` returning `(clean, errors)`:\n\n- `name`: required non-empty string → stored stripped\n- `email`: required string containing '@' → stored stripped and lowercased\n- `age`: int 0..150 — a digit-string like `'42'` is coerced to int first (bools are NOT ints here)\n- every other key in the payload produces an `{'field': k, 'detail': 'unknown field'}` error, sorted by field name\n- each error is `{'field': ..., 'detail': ...}`; when errors is non-empty, `clean` may only contain fields that passed\n\nThe final error list is sorted by field name.\n\nThe contract: report ALL problems in one call (collect, don't abort at the first).",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: validate_user — returns (clean, errors)",
+  "tests": [
+    {
+      "name": "valid payload normalizes",
+      "code": "clean, errors = validate_user({'name': '  Lan ', 'email': ' Lan@Example.COM ', 'age': '42'})\nassert errors == []\nassert clean == {'name': 'Lan', 'email': 'lan@example.com', 'age': 42}\nprint('ok')",
+      "hint": "Strip and case-fold before checking; coerce digit strings."
+    },
+    {
+      "name": "every problem reported exactly once",
+      "code": "clean, errors = validate_user({'name': 'Lan', 'email': 'nope', 'age': 999, 'extra': 1, 'zz': 2})\nassert clean == {'name': 'Lan'}\nfields = [e['field'] for e in errors]\nassert fields == ['age', 'email', 'extra', 'zz'], fields\nmissing = validate_user({})\nassert [e['field'] for e in missing[1]] == ['age', 'email', 'name']\nprint('ok')",
+      "hint": "One pass, every field checked, unknowns sorted by name."
+    }
+  ],
+  "level": "debugging"
+}

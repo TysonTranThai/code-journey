@@ -1,0 +1,26 @@
+{
+  "id": "csi-p1-boxing-prediction",
+  "title": "Boxing Detective",
+  "prompt": "Implement the probes so the tests confirm the real boxing rules:\n\n```csharp\n/* true iff the two objects are the same box (reference equality) */\nstatic bool SameBox(object a, object b);\n/* unbox to the EXACT type named by the generic parameter:\n   UnboxAs<int>(boxedInt) works; UnboxAs<double>(boxedInt) must\n   throw InvalidCastException (let it propagate). */\nstatic T UnboxAs<T>(object boxed) where T : struct;\n/* sum WITHOUT boxing per element: takes int[] and returns long */\nstatic long SumNoBox(int[] values);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "box identity",
+      "code": "\nobject a = 1000, b = 1000;\nCj.False(Solution.SameBox(a, b), \"two separate boxes for equal ints\");\nCj.True(Solution.SameBox(a, a), \"same variable, same box\");\nobject c = a;\nCj.True(Solution.SameBox(a, c), \"copy of the reference, same box\");\n",
+      "hint": "Every implicit conversion to object creates a new box — even for equal values."
+    },
+    {
+      "name": "exact-type unboxing",
+      "code": "\nobject bi = 42;\nCj.Eq(Solution.UnboxAs<int>(bi), 42, \"int unboxes as int\");\nbool threw = false;\ntry { Solution.UnboxAs<double>(bi); } catch (InvalidCastException) { threw = true; }\nCj.True(threw, \"boxed int cannot unbox as double\");\nobject bl = 42L;\nCj.Eq(Solution.UnboxAs<long>(bl), 42L, \"long unboxes as long\");\n",
+      "hint": "The unbox instruction demands the exact type — no numeric conversion happens."
+    },
+    {
+      "name": "box-free sum",
+      "code": "\nint[] big = new int[10_000];\nfor (int i = 0; i < big.Length; i++) big[i] = i + 1;\nCj.Eq(Solution.SumNoBox(big), 50_005_000L, \"10k values, zero boxes\");\nCj.Eq(Solution.SumNoBox(Array.Empty<int>()), 0L, \"empty sums to 0\");\n",
+      "hint": "A foreach over int[] never boxes — it's the params/object[] paths that do."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "cpp10-temperature",
+  "title": "Temperature Class",
+  "prompt": "Implement class `Temperature` (Celsius): constructor validates -273.15..10000 (invalid → keeps 0.0); `set(double)` same rule; `celsius() const`; `is_freezing() const` (<= 0).",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <string>\n\nclass Temperature {\npublic:\n    // TODO\nprivate:\n    // TODO\n};",
+  "tests": [
+    {
+      "name": "valid range",
+      "code": "Temperature t{25.0}; CHECK_NEAR(t.celsius(), 25.0, 0.001);",
+      "hint": "Valid values are kept."
+    },
+    {
+      "name": "absolute zero guard",
+      "code": "Temperature t{-300.0}; CHECK_NEAR(t.celsius(), 0.0, 0.001);",
+      "hint": "Below -273.15 → falls back to 0.0."
+    },
+    {
+      "name": "freezing",
+      "code": "Temperature t{-5.0}; CHECK(t.is_freezing());",
+      "hint": "-5°C is freezing."
+    },
+    {
+      "name": "set guarded",
+      "code": "Temperature t{10.0}; t.set(-999.0); CHECK_NEAR(t.celsius(), 10.0, 0.001);",
+      "hint": "Invalid set leaves the value unchanged."
+    }
+  ],
+  "level": "independent"
+}

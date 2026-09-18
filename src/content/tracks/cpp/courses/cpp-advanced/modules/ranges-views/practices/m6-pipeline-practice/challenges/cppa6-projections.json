@@ -1,0 +1,21 @@
+{
+  "id": "cppa6-projections",
+  "title": "Algorithms with Projections",
+  "prompt": "Implement `topEarner` (max_element with a salary projection) and `sortRoster` (sort by level, ties broken by name — a projection cannot express two keys, so use a comparator) — both without copying the vector.",
+  "difficulty": "advanced",
+  "level": "independent",
+  "language": "cpp",
+  "boilerplate": "#include <algorithm>\n#include <ranges>\n#include <string>\n#include <vector>\n\nstruct Employee {\n    std::string name;\n    int level;\n    double salary;\n};\n\n// Return the name of the highest-salary employee.\nstd::string topEarner(const std::vector<Employee>& staff);\n\n// Sort in place by level (ascending), ties by name.\nvoid sortRoster(std::vector<Employee>& staff);\n",
+  "tests": [
+    {
+      "name": "topEarner projects on salary",
+      "code": "std::vector<Employee> staff{{\"Ada\", 3, 120.0}, {\"Lin\", 5, 98.5}, {\"Zoe\", 2, 155.0}};\nCHECK_EQ(topEarner(staff), std::string(\"Zoe\"));",
+      "hint": "auto it = std::ranges::max_element(staff, {}, &Employee::salary); return it->name; — {} is the default comparator, the projection is the last argument."
+    },
+    {
+      "name": "sortRoster orders by level then name",
+      "code": "std::vector<Employee> roster{{\"b\", 2, 1.0}, {\"a\", 2, 1.0}, {\"c\", 1, 1.0}};\nsortRoster(roster);\nCHECK_EQ(roster[0].name, std::string(\"c\"));\nCHECK_EQ(roster[1].name, std::string(\"a\"));\nCHECK_EQ(roster[2].name, std::string(\"b\"));",
+      "hint": "std::ranges::sort(staff, [](const Employee& x, const Employee& y) { return x.level != y.level ? x.level < y.level : x.name < y.name; }); — two keys need a comparator, not a projection."
+    }
+  ]
+}

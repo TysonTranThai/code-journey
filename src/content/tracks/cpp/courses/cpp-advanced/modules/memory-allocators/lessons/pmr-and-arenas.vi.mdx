@@ -1,0 +1,24 @@
+## Ý tưởng pmr
+
+`std::pmr::memory_resource` là một interface với `do_allocate/do_deallocate`. Container nhận allocator: `std::pmr::vector<int> v{&resource};` Giờ *ai sở hữu bộ nhớ và cách carve* là quyết định runtime, có thể kết hợp — không cần biên dịch lại template theo từng chiến lược.
+
+## monotonic_buffer_resource: arena
+
+Tăng dần về phía trước, deallocate là no-op, mọi thứ được giải phóng khi resource chết:
+
+```cpp
+char buf[64 * 1024];
+std::pmr::monotonic_buffer_resource arena(buf, sizeof(buf));
+std::pmr::vector<std::pmr::string> rows{&arena};
+rows.emplace_back("alpha");   // string + vector đều cấp phát từ arena
+```
+
+Hoàn hảo cho công việc dạng request: parse, tính toán, vứt. Cấp phát bump O(1) khấu trừ, không free từng đối tượng, locality hoàn hảo với dữ liệu nhỏ.
+
+## Chuỗi upstream và fallback
+
+`pmr::new_delete_resource()` là upstream mặc định. `synchronized_pool_resource` gộp khối nhỏ. Lồng pool trên monotonic buffer trên heap cho bạn: tái sử dụng đối tượng nhỏ nhanh, reset arena, và fallback về OS — trong một chuỗi khai báo.
+
+## Khi KHÔNG nên pmr
+
+Đối tượng đơn sống lâu không được lợi gì. Đối tượng sống lâu hơn arena là use-after-free chờ xảy ra — resource phải sống lâu hơn hoặc được reset đồng bộ với mọi thứ đã cấp phát từ nó.

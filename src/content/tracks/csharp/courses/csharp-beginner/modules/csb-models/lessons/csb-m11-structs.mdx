@@ -1,0 +1,22 @@
+## The copy rule
+
+```csharp
+struct PointS { public double X, Y; }
+class  PointC { public double X, Y; }
+
+var s1 = new PointS { X = 1 };
+var s2 = s1;  s2.X = 99;    // s1.X still 1 — s2 is a COPY
+
+var c1 = new PointC { X = 1 };
+var c2 = c1;  c2.X = 99;    // c1.X is 99! c2 is the SAME object
+```
+
+A **struct** variable *is* the data (value type): assignment copies it. A **class** variable *points at* the data (reference type): assignment shares it. This is the single most consequential runtime difference in C#.
+
+## Choosing
+
+- Small, short-lived, data-like things where copying is harmless and identity is meaningless → `struct` (or better, `readonly record struct`).
+- Entities with identity and lifetime — a bank account, a UI window → `class`.
+- Data passed around and compared by contents → `record` (a reference type with value semantics).
+
+Beginner guidance: default to classes and records; reach for structs only when copying is genuinely what you want. Misusing big mutable structs causes mysterious copy-bugs — the exact trap the practice below exercises.

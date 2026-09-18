@@ -1,0 +1,26 @@
+{
+  "id": "javaa-p1-alias-proof",
+  "title": "Make the aliasing bug impossible",
+  "prompt": "A `Team` object was leaking its internal roster. Implement a leak-proof version:\n1. `static final class Team` with a `List<String> members` field\n2. Constructor takes `List<String> initial` and defensively copies it\n3. `add(String m)` appends; `members()` returns an UNMODIFIABLE view\n4. `static List<String> freeze(List<String> src)` returns a copy that the caller can then mutate without ever affecting any Team\nTests attempt both leak directions: outside-in (mutating the list after the ctor) and inside-out (mutating the returned view).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "outside-in blocked",
+      "code": "\njava.util.List<String> ext = new java.util.ArrayList<>(List.of(\"a\"));\nSolution.Team t = new Solution.Team(ext);\next.add(\"hacker\");\ncheckEq(t.members(), List.of(\"a\"), \"post-ctor mutation must not leak in\");\n",
+      "hint": "Copy in the constructor: List.copyOf(ext)."
+    },
+    {
+      "name": "inside-out blocked",
+      "code": "\nSolution.Team t = new Solution.Team(List.of(\"a\"));\ntry {\n    t.members().add(\"hacker\");\n    checkTrue(false, \"view must be unmodifiable\");\n} catch (UnsupportedOperationException e) {\n    checkTrue(true, \"mutation correctly rejected\");\n}\n",
+      "hint": "Return List.copyOf(members) or Collections.unmodifiableList."
+    },
+    {
+      "name": "freeze is a true copy",
+      "code": "\njava.util.List<String> src = new java.util.ArrayList<>(List.of(\"x\"));\njava.util.List<String> f = Solution.freeze(src);\nsrc.add(\"y\");\ncheckEq(f, List.of(\"x\"), \"freeze snapshots\");\n",
+      "hint": "freeze must copy, not wrap."
+    }
+  ],
+  "level": "independent"
+}

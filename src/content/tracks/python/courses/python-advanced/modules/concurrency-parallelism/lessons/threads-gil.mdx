@@ -1,0 +1,29 @@
+## Threads and the GIL: what actually happens
+
+A **thread** shares memory with every other thread in the process. Python
+threads are real OS threads — but in the standard CPython build, the **GIL**
+(Global Interpreter Lock) lets only one thread execute Python *bytecode* at a
+time.
+
+The consequences, precisely:
+
+- **CPU-bound pure-Python work gains nothing from threads.** Summing a huge
+  list in 4 threads takes the same time as 1 thread — bytecode execution is
+  serialized.
+- **I/O-bound work gains a lot.** While one thread waits on the network, disk,
+  or `time.sleep`, the GIL is released and other threads run. Threads remain a
+  fine model for concurrent I/O.
+- **C extensions** (NumPy, hashlib on large buffers, regex engines) often
+  release the GIL during heavy calls — so threads CAN parallelize some native
+  code.
+- **`time.sleep` releases the GIL.** Waiting on `queue.Queue`, `Lock`,
+  `Event`, `Barrier` releases it too.
+
+Version note (prose): CPython 3.13 ships an experimental **free-threaded**
+build (PEP 703) without a GIL, where CPU-bound threads genuinely parallelize.
+The engineering skill — measure, choose, verify — is identical either way.
+
+One more precision: the GIL does **not** make your code correct. It guarantees
+bytecode atomicity per instruction, but `counter += 1` is *three* operations
+(load, add, store) — another thread can interleave between them. That is the
+race you will repair in the first practice.

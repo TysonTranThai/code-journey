@@ -1,0 +1,16 @@
+{
+  "id": "cint-p2-const-swap",
+  "title": "Swap Through Qualifiers",
+  "prompt": "Implement two swap variants that demonstrate the const contracts:\n\n```c\nvoid swap(int *x, int *y);                       /* ordinary swap */\nint swap_if_sorted(const int **px, const int **py); /* if **px > **py, swap the\n    POINTERS so *px ends up pointing at the smaller value; returns 1 if swapped */\n```\n\n`swap_if_sorted` takes pointers-to-pointers-to-const: it may move which pointer\npoints where, but never write through to the ints.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "values vs pointer reshuffle",
+      "code": "\nint a = 2, b = 1;\nswap(&a, &b);\nCHECK_EQ(a, 1); CHECK_EQ(b, 2);\nint c = 9, d = 4;                 /* fresh inverted pair for the pointer swap */\nconst int *pa = &c, *pb = &d;\nint moved = swap_if_sorted(&pa, &pb);\nCHECK_EQ(moved, 1);\nCHECK_EQ(*pa, 4); CHECK_EQ(*pb, 9);   /* pointers now point small-first */\nCHECK_EQ(c, 9); CHECK_EQ(d, 4);   /* the ints never changed */\n",
+      "hint": "In swap_if_sorted: if (**px > **py) { const int *t = *px; *px = *py; *py = t; return 1; } return 0;"
+    }
+  ],
+  "level": "guided"
+}

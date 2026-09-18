@@ -1,0 +1,18 @@
+## The definition that matters
+
+A **data race** exists when two threads access the same memory location, at least one access is a write, and the accesses are not ordered by synchronization. Racing accesses are **undefined behavior** — not "one of the two wins", but *anything*: torn reads, phantom values, miscompiled loops. (Two concurrent reads are fine.)
+
+## Synchronization = happens-before
+
+The model orders operations with **happens-before**. You get it from:
+
+- program order within a thread,
+- thread creation (`t.join()`, everything the thread did happens-before join returns),
+- mutexes (everything before `unlock()` happens-before everything after the next `lock()`),
+- suitably ordered atomic operations (next lesson).
+
+If two accesses can't be ordered by any happens-before chain and one is a write — race. If they are ordered — well-defined, and you can say *which value* the reader sees.
+
+## The default instinct
+
+No synchronization primitive between two threads touching shared data? Race. "It works on my machine" only means the race hasn't bitten *yet* — races are timing-dependent and the graded exercises make them deterministic by construction.

@@ -1,0 +1,33 @@
+## Comparisons yield 0 or 1
+
+`== != < <= > >=` produce `int`: `1` (true) or `0` (false). C has no separate
+boolean type in everyday use — any nonzero value is "true".
+
+**The classic bug:** `=` assigns, `==` compares. `if (x = 5)` assigns 5 to x
+and is always true. Compilers warn; turn warnings on (this course always does).
+
+## Logical operators, short-circuit
+
+```c
+int a = 0, b = 5;
+a && b   // 0 — a is false, b never evaluated (short-circuit)
+b || a   // 1 — b is true, a never evaluated
+!b       // 0 — not true is false
+```
+
+Short-circuiting is a feature: `p != NULL && p->value > 0` is safe — the second
+operand only runs when `p` is non-NULL.
+
+## Precedence (the rules that matter now)
+
+1. `!`, unary `-` — highest
+2. `* / %`
+3. `+ -`
+4. `< <= > >=`
+5. `== !=`
+6. `&&`
+7. `||`
+8. `=` — lowest
+
+`x + y == 3 && a < b` parses as `((x + y) == 3) && (a < b)`. When in doubt,
+parenthesize for humans.

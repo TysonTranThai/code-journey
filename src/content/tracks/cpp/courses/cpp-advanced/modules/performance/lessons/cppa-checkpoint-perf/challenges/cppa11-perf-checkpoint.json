@@ -1,0 +1,20 @@
+{
+  "id": "cppa11-perf-checkpoint",
+  "title": "Evidence Gauntlet",
+  "prompt": "Two graded properties: (1) `buildRange` produces n values with at most one allocation, (2) `countDistinct` uses hashing so tracked element comparisons stay at zero.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <cstdint>\n#include <cstdlib>\n#include <vector>\n\n// Allocation counter (each graded test is its own program).\ninline int& gAllocs() { static int n = 0; return n; }\nvoid* operator new(std::size_t sz) { ++gAllocs(); return std::malloc(sz); }\nvoid* operator new[](std::size_t sz) { ++gAllocs(); return std::malloc(sz); }\nvoid operator delete(void* p) noexcept { std::free(p); }\nvoid operator delete[](void* p) noexcept { std::free(p); }\nvoid operator delete(void* p, std::size_t) noexcept { std::free(p); }\nvoid operator delete[](void* p, std::size_t) noexcept { std::free(p); }\ninline int allocCount() { return gAllocs(); }\n\n// Comparison-counted element (see module 11 practice).\n#include <unordered_set>\n\nstruct Tracked {\n    long long value;\n    inline static int& comparisons() { static int n = 0; return n; }\n    friend bool operator<(const Tracked& a, const Tracked& b) { ++comparisons(); return a.value < b.value; }\n    friend bool operator==(const Tracked& a, const Tracked& b) { ++comparisons(); return a.value == b.value; }\n};\ntemplate <>\nstruct std::hash<Tracked> {\n    std::size_t operator()(const Tracked& t) const noexcept { return std::hash<long long>{}(t.value); }\n};\ninline int trackedComparisons() { return Tracked::comparisons(); }\n\n// (1) out gets 0..n-1 with at most one allocation.\nvoid buildRange(std::vector<int>& out, int n);\n\n// (2) number of distinct values; hash-based membership keeps comparisons <= n.\nint countDistinct(const std::vector<Tracked>& data);\n",
+  "tests": [
+    {
+      "name": "buildRange: one allocation, right values",
+      "code": "std::vector<int> v;\nint before = allocCount();\nbuildRange(v, 8);\nCHECK_EQ(allocCount() - before <= 1, true);\nCHECK_EQ(v.size(), 8u);\nCHECK_EQ(v.front(), 0);\nCHECK_EQ(v.back(), 7);",
+      "hint": "out.reserve(n) then fill 0..n-1."
+    },
+    {
+      "name": "countDistinct: hash, don't compare",
+      "code": "int before = trackedComparisons();\nCHECK_EQ(countDistinct({{1}, {2}, {2}, {3}, {3}, {3}}), 3);\nCHECK(trackedComparisons() - before <= 6);\nCHECK_EQ(countDistinct({}), 0);",
+      "hint": "std::unordered_set<Tracked> s; insert each element; return (int)s.size();"
+    }
+  ]
+}

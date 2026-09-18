@@ -1,0 +1,16 @@
+{
+  "id": "pa-p14-graceful-shutdown",
+  "title": "Die gracefully, lose nothing",
+  "prompt": "Implement `graceful_shutdown(worker, sigterm=True, sigint=False)` — the worker has `running` (bool), `in_flight` (int count), `drained` (bool), `requeued` (list):\n\n- `sigterm=False, sigint=False` simulates SIGKILL: return the worker untouched (nothing graceful happens)\n- otherwise: `running = False` (stop accepting), any in-flight work is appended to `requeued` (durably re-queueable, thanks to idempotent jobs) and `in_flight = 0`, then `drained = True`\n- return the worker\n\nThe invariant: after a graceful shutdown, `in_flight == 0` AND every unit of work is accounted for in `requeued`.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "def graceful_shutdown(worker, sigterm=True, sigint=False):\n    ...",
+  "tests": [
+    {
+      "name": "work is requeued, not dropped",
+      "code": "class W:\n    running, in_flight, drained, requeued = True, 3, False, []\nw = graceful_shutdown(W())\nassert w.running is False and w.drained is True\nassert w.in_flight == 0 and w.requeued == [3]\nw2 = graceful_shutdown(W(), sigterm=False, sigint=False)\nassert w2.running is True and w2.in_flight == 3  # SIGKILL: no guarantees\nprint('ok')",
+      "hint": "Graceful vs. kill-9 are different worlds; idempotent jobs bridge them."
+    }
+  ],
+  "level": "combination"
+}

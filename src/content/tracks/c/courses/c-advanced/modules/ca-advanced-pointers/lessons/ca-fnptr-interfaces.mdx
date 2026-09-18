@@ -1,0 +1,22 @@
+## Function pointers name behavior
+
+```c
+typedef int (*cmp_fn)(const void *a, const void *b);
+void sort(void *base, size_t n, size_t w, cmp_fn cmp);
+```
+
+`qsort` is exactly this shape: the algorithm is generic, the *comparison policy* is a runtime pointer. Calling through the pointer is an indirect call — the one thing preventing inlining unless the compiler can see the target.
+
+## Opaque handles hide the struct
+
+Publish a header with `typedef struct cache cache_t;` and functions taking `cache_t *`; define the struct only in the .c file. Clients cannot depend on layout (you can change it freely), and every access goes through your validation. This is the standard C module boundary.
+
+## The context-pointer pattern
+
+Callbacks that need state take `void *ctx`:
+
+```c
+void foreach(list_t *l, void (*fn)(void *item, void *ctx), void *ctx);
+```
+
+The alternative — global variables — breaks reentrancy and threads. Every serious C API you will meet (event loops, hash iterators, thread pools) uses the context pointer.

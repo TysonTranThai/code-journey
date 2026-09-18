@@ -1,0 +1,53 @@
+## Phân tích một request
+
+```text
+GET /courses/web-development-beginner HTTP/1.1
+Host: codejourney.example
+Accept: application/json
+```
+
+- **Method** — động từ: `GET` (đọc), `POST` (tạo/gửi), `PUT/PATCH` (cập nhật), `DELETE` (xóa)
+- **Path** — tài nguyên nào
+- **Headers** — siêu dữ liệu (những định dạng được chấp nhận, ai đang gọi)
+
+## Phân tích một response
+
+```text
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"id": "web-development-beginner", "lessons": 62}
+```
+
+Một **status code**, các header, và một phần thân. Các họ status:
+
+- **1xx** thông tin · **2xx** thành công · **3xx** chuyển hướng
+- **4xx** lỗi từ phía client (`404` không tìm thấy, `401` chưa xác thực, `403` bị cấm, `429` quá nhiều request)
+- **5xx** lỗi từ phía server
+
+Bạn đã gặp vài cái rồi: run API của Code Journey trả `401` khi bạn chưa đăng nhập và `429` khi bạn vượt giới hạn tần suất — giờ bạn có thể đọc chúng như một dân chuyên nghiệp.
+
+## JSON: định dạng dữ liệu của web
+
+**JSON** (JavaScript Object Notation) là văn bản có hình dạng giống các JavaScript object — object, mảng, chuỗi, số, boolean, null. Mọi ngôn ngữ đều đọc được nó, vì thế các API khắp nơi đều nói nó:
+
+```js
+const text = '{"user":{"name":"Ada","roles":["learner"]}}';
+const data = JSON.parse(text); // chuỗi → object
+data.user.roles[0]; // "learner" — di chuyển như bất kỳ object nào
+
+JSON.stringify(data); // object → chuỗi (để gửi đi)
+```
+
+## Stateless — và vì sao cookie tồn tại
+
+HTTP là **stateless**: mỗi request đến một mình, không nhớ gì cả. Vậy các site giữ cho bạn đăng nhập bằng cách nào? **Cookie** — những mẩu dữ liệu nhỏ mà trình duyệt đính kèm vào mọi request đến site đó. Server đọc cookie, nhận ra **phiên (session)** của bạn, và coi request là của bạn. Cơ chế duy nhất đó là cách "giữ đăng nhập" hoạt động ở khắp mọi nơi.
+
+## Bạn đã học được gì
+
+- Request: method + path + headers; response: status + headers + body
+- Các họ status; những cái hằng ngày (`401`, `403`, `404`, `429`)
+- JSON là định dạng dữ liệu của web; `JSON.parse`/`stringify` chuyển đổi
+- Stateless → cookie → session
+
+**Tiếp theo:** nơi dữ liệu sống — cơ sở dữ liệu.

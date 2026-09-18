@@ -1,0 +1,44 @@
+## Đi theo mũi tên
+
+**Giải tham chiếu** một con trỏ nghĩa là đến địa chỉ nó giữ và dùng đối tượng
+ở đó:
+
+```c
+int x = 42;
+int *p = &x;
+
+printf("%d\n", *p);   // 42 — đối tượng p trỏ TỚI
+*p = 99;              // ghi qua p: x giờ là 99
+printf("%d\n", x);    // 99
+```
+
+`*p` và `x` là **cùng một đối tượng**. Chỉ có một int; hai cái tên cho nó.
+
+## Khai báo vs giải tham chiếu: cùng dấu sao, khác nhiệm vụ
+
+Trong `int *p = &x;` dấu sao là một phần của *kiểu*. Trong `*p = 99;` dấu sao
+là toán tử giải tham chiếu. Cùng ký hiệu, khác ngữ cảnh.
+
+## Đọc và ghi qua con trỏ
+
+```c
+int a = 1, b = 2;
+int *p = &a;
+int *q = &b;
+
+*p = *q;        // a = b  (chép GIÁ TRỊ mà b giữ vào a)
+p = q;          // p giờ trỏ tới b (chép ĐỊA CHỈ)
+```
+
+Câu đầu chép thứ mà con trỏ trỏ tới; câu sau đổi hướng con trỏ. Hãy vẽ mũi
+tên trước khi viết code.
+
+## Con trỏ chưa khởi tạo
+
+```c
+int *p;         // giữ một địa chỉ RÁC
+*p = 5;         // hành vi không xác định — ghi vào một nơi ngẫu nhiên
+```
+
+Con trỏ phải được gán địa chỉ trước khi giải tham chiếu — hoặc `&x` hoặc
+`NULL`.

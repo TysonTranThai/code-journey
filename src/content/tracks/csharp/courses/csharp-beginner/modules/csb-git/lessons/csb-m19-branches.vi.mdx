@@ -1,0 +1,19 @@
+## Nhánh = nhãn
+
+```text
+        D --- E   (feature)
+       /
+A --- B --- C   (main)
+```
+
+`git switch feature` di chuyển bản làm việc; `main` đỗ tại C. Commit trên nhánh không ảnh hưởng main cho tới khi bạn hợp nhất — thí nghiệm giá rẻ là toàn bộ ý nghĩa.
+
+## Merge = commit hai cha
+
+```text
+        D --- E
+       /       \
+A --- B --- C --- F   (main, sau merge)
+```
+
+F có cả C và E làm cha; hai dòng lịch sử nối vào nhau. Khi cả hai bên sửa cùng những dòng khác nhau, git từ chối đoán — một **xung đột**. Giải quyết là quyết định con người được ghi trong merge commit: giữ của họ, giữ của bạn, hoặc viết phiên bản đúng thật. Các dấu xung đột (`<<<<<<<`, `=======`, `>>>>>>>`) đánh dấu hai bản ứng viên; xóa dấu, giữ mã đúng ý, stage, commit.

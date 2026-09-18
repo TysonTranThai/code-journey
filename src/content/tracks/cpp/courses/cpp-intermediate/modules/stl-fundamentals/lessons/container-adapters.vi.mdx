@@ -1,0 +1,30 @@
+Ba adapter bọc một container và chỉ lộ ra đúng một kỷ luật truy cập. Chúng
+không phải container thật — bạn không thể iterate một `stack`.
+
+```cpp
+#include <stack>
+#include <queue>
+
+std::stack<int> s;   // LIFO: push, pop, top          (mặc định là deque)
+std::queue<int> q;   // FIFO: push, pop, front, back  (mặc định là deque)
+
+#include <queue>
+std::priority_queue<int> pq;  // phần tử lớn nhất được pop trước
+```
+
+`priority_queue` là mặt nạ heap, không phải danh sách đã sắp: `push` O(log n),
+`top` O(1), nhưng không có iteration và không có "update" — chỉ push và pop.
+
+Min-heap viết bằng dạng comparator:
+
+```cpp
+#include <vector>
+#include <queue>
+#include <functional>
+
+std::priority_queue<int, std::vector<int>, std::greater<int>> min_heap;
+```
+
+Khi khoá sắp xếp là một phần của giá trị, hãy cho phần tử có `operator<`
+(hoặc truyền comparator) — adapter khi đó xếp hạng cả đối tượng. Đây chính
+là cơ chế mà nạp chồng toán tử ở Module 4 phục vụ.

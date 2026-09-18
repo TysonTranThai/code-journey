@@ -1,0 +1,21 @@
+{
+  "id": "cb13-grow-preserve",
+  "title": "Grow and Preserve",
+  "prompt": "A dynamic array grows by DOUBLING when full: implement `int* grow(int *old, int old_cap)` returning a new block of 2*old_cap ints whose first old_cap elements equal the old ones. Free nothing — the CALLER still owns old. Return NULL on failure.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "contents preserved",
+      "code": "int *a = malloc(2 * sizeof(int));\na[0] = 7; a[1] = 8;\nint *b = grow(a, 2);\nCHECK_NOT_NULL(b);\nCHECK_EQ(b[0], 7);\nCHECK_EQ(b[1], 8);\nCHECK_EQ(b[3], 0);\nfree(a); free(b);",
+      "hint": "realloc copies contents on move."
+    },
+    {
+      "name": "cap doubles",
+      "code": "int *a = malloc(1 * sizeof(int));\na[0] = 3;\nint *b = grow(a, 1);\nCHECK_NOT_NULL(b);\nCHECK_EQ(b[0], 3);\nfree(a); free(b);",
+      "hint": "New capacity is 2*old_cap = 2."
+    }
+  ],
+  "level": "independent"
+}

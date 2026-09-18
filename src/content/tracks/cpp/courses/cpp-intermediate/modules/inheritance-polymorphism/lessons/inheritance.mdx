@@ -1,0 +1,46 @@
+**Inheritance** expresses "is-a": a derived class is a kind of its base, and
+a derived object can be used where a base is expected. Begin with the shape:
+
+```cpp
+#include <string>
+
+class Employee {
+public:
+    explicit Employee(std::string name) : name_{std::move(name)} {}
+    const std::string& name() const { return name_; }
+
+private:
+    std::string name_;
+};
+
+class Engineer : public Employee {     // Engineer IS-A Employee
+public:
+    Engineer(std::string name, std::string specialty)
+        : Employee{std::move(name)}, specialty_{std::move(specialty)} {}
+    const std::string& specialty() const { return specialty_; }
+
+private:
+    std::string specialty_;
+};
+```
+
+## What public inheritance means
+
+- The derived object **contains** a full base subobject.
+- Base `private` members exist in the derived object but are **not accessible**
+  to the derived class — they belong to the base's implementation.
+- Construction runs **base first**, then derived; destruction runs derived
+  first, then base.
+
+## The default is `private` inheritance — use `public` explicitly
+
+`class D : B` inherits privately (implementation detail, almost never what
+you want). Always write `: public B` for the substitutability relationship,
+and if you find yourself reaching for private/protected inheritance, ask
+whether composition says it better.
+
+## What inheritance is NOT for
+
+Reusing a helper. That is composition or a free function. Reach for
+inheritance only when you need **substitutability** — different objects used
+through one base interface (next lessons).

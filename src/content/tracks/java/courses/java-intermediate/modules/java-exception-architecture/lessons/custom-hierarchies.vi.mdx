@@ -1,0 +1,27 @@
+## Hệ thống exception riêng
+
+Mô hình hóa *lỗi domain* thành kiểu, không phải chuỗi:
+
+```java
+public class OrderException extends RuntimeException {
+    public OrderException(String message) { super(message); }
+    public OrderException(String message, Throwable cause) { super(message, cause); }
+}
+
+public final class InsufficientFundsException extends OrderException {
+    private final int shortfallCents;
+    public InsufficientFundsException(String message, int shortfallCents) {
+        super(message);
+        this.shortfallCents = shortfallCents;
+    }
+    public int shortfallCents() { return shortfallCents; }
+}
+```
+
+Caller giờ có thể catch đúng độ mịn:
+`catch (InsufficientFundsException e)` để hiển thị thông báo thân thiện,
+hoặc `catch (OrderException e)` cho mọi lỗi đơn hàng.
+
+Giữ hệ thống nông (base + 2–3 kiểu lá), extends RuntimeException trừ khi
+caller thực sự phục hồi được, và *mang dữ liệu* trên exception (như
+shortfallCents) thay vì ép caller đọc chuỗi message.

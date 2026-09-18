@@ -1,0 +1,18 @@
+{
+  "title": "Máy trạng thái UI bất đồng bộ",
+  "prompt": "Viết `createViewState()` — một máy trạng thái nhỏ cho view bất đồng bộ. Nó RETURN `{ get, load }`:\n\n- trạng thái khởi đầu là `{ status: \"idle\" }`\n- `load(fetchFn)` đặt `{ status: \"loading\" }`, await `fetchFn()`\n  - thành công → `{ status: \"success\", data }`\n  - thất bại → `{ status: \"error\", message }` (err.message)\n- `get()` trả về object trạng thái HIỆN TẠI (mỗi lần gọi một object mới cũng được)\n- gọi `load` khi một lần đang bay vẫn được cho phép — lần gọi CUỐI thắng (các lần hoàn tất lỗi thời không được ghi đè trạng thái mới hơn)",
+  "tests": [
+    {
+      "name": "đi qua idle → loading → success",
+      "hint": "Giữ object trạng thái trong closure; load thay đổi trạng thái rồi trả về promise nó tạo ra."
+    },
+    {
+      "name": "thất bại trở thành trạng thái lỗi",
+      "hint": "try/catch quanh await; catch lưu message và không được ném tiếp."
+    },
+    {
+      "name": "lần load cuối thắng lần lỗi thời",
+      "hint": "Bắt một load id khi load() được gọi; chỉ ghi success/error nếu id vẫn còn là hiện tại."
+    }
+  ]
+}

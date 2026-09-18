@@ -1,0 +1,32 @@
+## Tham số tùy chọn
+
+```csharp
+static void Log(string message, int level = 1)
+{
+    Console.WriteLine("[" + level + "] " + message);
+}
+
+Log("boot");          // [1] boot   — bỏ qua level, dùng mặc định
+Log("disk full", 3);  // [3] disk full
+```
+
+Giá trị mặc định làm tham số cuối trở thành tùy chọn. Quy tắc: tham số tùy chọn đứng **sau** tham số bắt buộc, và mặc định phải là hằng số biên dịch được. Mặc định được nướng vào mã đã biên dịch của *người gọi* — đổi mặc định sau này buộc biên dịch lại nơi gọi. Đó là hệ quả thật khi thiết kế thư viện; còn bây giờ, chỉ cần biết mặc định tiện cho code tự chứa.
+
+## Named arguments
+
+```csharp
+Log(level: 3, message: "disk full");   // cùng một lời gọi, không cần thứ tự
+Log("disk full", level: 3);            // vị trí rồi named
+```
+
+Named argument nói rõ mỗi giá trị *là gì* ngay tại lời gọi. Chúng cũng cho phép bỏ qua tham số tùy chọn ở giữa mà không phải truyền hết theo vị trí. Dùng khi lời gọi có số hoặc bool trần mà ý nghĩa không rõ: `Resize(img, width: 800)` rõ hơn `Resize(img, 800)`.
+
+## Overloading: một tên, nhiều chữ ký
+
+```csharp
+static int    Max(int a, int b)         => a > b ? a : b;
+static double Max(double a, double b)  => a > b ? a : b;
+static int    Max(int[] values)         { /* duyệt mảng */ }
+```
+
+Ba phương thức, một khái niệm, một tên. Trình biên dịch chọn overload khớp **kiểu tham số** với đối số (hoặc chuyển đổi ngầm tốt nhất). Các overload phải khác danh sách tham số — chỉ khác kiểu trả về là lỗi biên dịch (`CS0111`). Overload khi *khái niệm* giống hệt và chỉ khác hình dạng đầu vào; nếu hành vi đổi thực sự, một tên riêng sẽ trung thực hơn.

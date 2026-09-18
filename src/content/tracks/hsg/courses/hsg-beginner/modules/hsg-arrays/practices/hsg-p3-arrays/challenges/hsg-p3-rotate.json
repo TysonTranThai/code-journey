@@ -1,0 +1,31 @@
+{
+  "id": "hsg-p3-rotate",
+  "title": "Rotate Left",
+  "prompt": "**Description:** Given n numbers and k, rotate the array left by k\npositions and print it. Values may wrap multiple times (k can exceed n).\n\n**Input:** Line 1: n k (1 ≤ n ≤ 10^5, 0 ≤ k ≤ 10^9). Line 2: n numbers.\n**Output:** The rotated array, space-separated.\n\n**Example:** `5 2` / `1 2 3 4 5` → `3 4 5 1 2`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"5 2\\n1 2 3 4 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3 4 5 1 2\\n\"));",
+      "hint": "Left by 2: start at index 2."
+    },
+    {
+      "name": "k zero",
+      "code": "std::istringstream in(\"3 0\\n7 8 9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7 8 9\\n\"));",
+      "hint": "No rotation."
+    },
+    {
+      "name": "k equals n",
+      "code": "std::istringstream in(\"3 3\\n7 8 9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7 8 9\\n\"));",
+      "hint": "Rotating by n is the identity."
+    },
+    {
+      "name": "k huge",
+      "code": "std::istringstream in(\"3 1000000000\\n7 8 9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"8 9 7\\n\"));",
+      "hint": "10^9 mod 3 = 1 → left-rotate by 1 → 8 9 7."
+    }
+  ],
+  "level": "independent"
+}

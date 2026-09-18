@@ -1,0 +1,26 @@
+{
+  "id": "javi-p15-expense-repo",
+  "title": "Milestone 2: The Repository",
+  "prompt": "Add persistence behind an interface in `Solution`:\n- `interface ExpenseStore { void save(Solution.Expense e); Optional<Solution.Expense> find(String id); List<Solution.Expense> all(); }`\n  (referencing the nested record as `Solution.Expense` — inside Solution\n  you can write `Expense` directly)\n- `static class InMemoryExpenseStore implements ExpenseStore`\n  (insertion order preserved)\n- `static class DuplicateExpenseException extends RuntimeException`\n- `ExpenseStore.save` throws DuplicateExpenseException when a DIFFERENT\n  expense already occupies the id (idempotent identical re-save is\n  fine); note: category may legitimately change on update — id is the\n  only conflict dimension.\n\nTwo saves with the same id but different cents = update, allowed.\nSame id, different category = conflict, throw.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "save/find/all roundtrip",
+      "code": "\nSolution.InMemoryExpenseStore s = new Solution.InMemoryExpenseStore();\ns.save(new Solution.Expense(\"a\", \"food\", 100));\ncheckEq(s.find(\"a\").orElseThrow().cents(), 100, \"found\");\ncheckEq(s.all().size(), 1, \"one row\");\n",
+      "hint": "Basic storage contract."
+    },
+    {
+      "name": "same-id update allowed",
+      "code": "\nSolution.InMemoryExpenseStore s = new Solution.InMemoryExpenseStore();\ns.save(new Solution.Expense(\"a\", \"food\", 100));\ns.save(new Solution.Expense(\"a\", \"food\", 250));\ncheckEq(s.find(\"a\").orElseThrow().cents(), 250, \"updated in place\");\ncheckEq(s.all().size(), 1, \"still one row\");\n",
+      "hint": "Upsert semantics on identical category."
+    },
+    {
+      "name": "category conflict throws",
+      "code": "\nSolution.InMemoryExpenseStore s = new Solution.InMemoryExpenseStore();\ns.save(new Solution.Expense(\"a\", \"food\", 100));\ntry { s.save(new Solution.Expense(\"a\", \"travel\", 100)); checkTrue(false, \"must throw\"); }\ncatch (Solution.DuplicateExpenseException ex) { checkTrue(true, \"conflict caught\"); }\n",
+      "hint": "An id is bound to one category."
+    }
+  ],
+  "level": "independent"
+}

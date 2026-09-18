@@ -1,0 +1,19 @@
+## Chiến thắng thuật toán: độ phức tạp át micro-tuning
+
+Những cú tăng tốc lớn nhất đến từ việc thay đổi *hình dạng* công việc:
+
+- **Membership trên list là O(n); trên set/dict là O(1).** Lọc một list với
+  một denylist lớn bằng `x in some_list` là tai nạn bậc hai kinh điển. Một lần
+  `set(...)` xóa cả một bậc độ lớn.
+- **Memoization** biến công việc đệ quy chồng lấn thành tra bảng: `fib(25)`
+  ngây thơ gọi ~243k lần; bản memoized gọi ~49. Cùng đáp án, hai vũ trụ công
+  việc khác nhau. `functools.lru_cache(maxsize=None)` là công cụ chuẩn; một
+  dict keyed theo tham số là bản thủ công tương đương.
+- **Batching** biến N chuyến đi về thành 1: fetch từng item từ DB hay API trong
+  vòng lặp (N+1 truy vấn) sụp đổ thành một lần fetch theo lô.
+- **Thoát sớm / chặn biên**: ngừng quét khi đáp án đã rõ; ưu tiên
+  `any()`/`all()` thay vì dựng cả danh sách boolean.
+
+Micro-tuning (nâng attribute lookup lên biến cục bộ, cache biến local) chỉ cho
+hệ số hằng nhỏ. Sửa độ phức tạp cho cả bậc độ lớn. Khi cả hai đều khả dụng,
+hãy lấy bản sửa độ phức tạp trước — nó cũng thường là thay đổi dễ đọc hơn.

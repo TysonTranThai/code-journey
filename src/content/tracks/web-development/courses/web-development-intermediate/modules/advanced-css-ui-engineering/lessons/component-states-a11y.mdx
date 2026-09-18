@@ -1,0 +1,40 @@
+A component is its states. Engineering them — visibly and accessibly — is the
+difference between decoration and UI.
+
+## The state contract
+
+Every interactive element owes: **hover** (affordance), **focus** (keyboard
+parity with hover), **active** (feedback), **disabled** (clearly non-interactive,
+still perceivable), **aria-disabled** when it must stay focusable. Never remove
+focus outlines without a `:focus-visible` replacement:
+
+```css
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+```
+
+`:focus-visible` shows rings for keyboard users and skips them for pointer
+users — the best of both.
+
+## Stacking contexts
+
+`z-index` only ranks within its **stacking context** — created by position +
+z-index, opacity < 1, transform, filter, and more. A modal inside a
+`transform: translateY(0)` card cannot rise above a sibling with z-index 10 in
+another context. Debug with DevTools' 3D/layers view; fix by keeping overlays
+in flat subtrees (often portaled to body).
+
+## Disclosure semantics
+
+For toggled UI, wire semantics with states — no heavy ARIA libraries needed:
+
+```html
+<button aria-expanded="false" aria-controls="menu">Menu</button>
+<div id="menu" hidden>…</div>
+```
+
+Flip `aria-expanded` and `hidden` together from one source of truth. Reach for
+`role` only when the platform has no native element (dialogs get native
+`<dialog>`); native first, ARIA second.

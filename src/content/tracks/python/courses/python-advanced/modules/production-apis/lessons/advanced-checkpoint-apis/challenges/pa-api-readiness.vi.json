@@ -1,0 +1,10 @@
+{
+  "title": "Readiness probe sống sót trước dependency chết",
+  "prompt": "Cài `readiness(checks)` với `checks` là dict ánh xạ tên dependency tới callable không tham số:\n\n- trả `{'ready': bool, 'checks': {name: bool}}` gồm đủ mọi tên\n- check trả giá trị truthy là khỏe mạnh; falsy là không\n- check RAISE nghĩa là dependency đang chết: ghi `False` cho nó — bản thân probe không bao giờ làm exception bay ra ngoài\n- `ready` là True khi và chỉ khi mọi check đều True\n- `checks` rỗng là sẵn sàng",
+  "tests": [
+    {
+      "name": "Khỏe mạnh hết, có cái chết, có cái nổ",
+      "hint": "Catch theo từng check: raise nghĩa là chết, không phải probe crash."
+    }
+  ]
+}

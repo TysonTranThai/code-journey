@@ -1,0 +1,15 @@
+{
+  "id": "cint-p11-minheap",
+  "title": "The Array Heap",
+  "prompt": "Implement a fixed-capacity min-heap. The boilerplate declares:\n\n```c\n#define HCAP 64\ntypedef struct { long a[HCAP]; size_t n; } Heap;\nvoid heap_init(Heap *h);\nint  heap_push(Heap *h, long v);      /* 0 ok, -1 full/NULL */\nint  heap_pop(Heap *h, long *out);    /* 0 ok, -1 empty/NULL */\nint  heap_peek(const Heap *h, long *out);  /* 0 ok, -1 empty */\nsize_t heap_size(const Heap *h);\n/* 1 if the heap property holds for every parent/child pair */\nint  heap_ok(const Heap *h);\n```\n\nMin-heap: the smallest element is at index 0.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\n#define HCAP 64\ntypedef struct { long a[HCAP]; size_t n; } Heap;\nvoid heap_init(Heap *h);\nint  heap_push(Heap *h, long v);\nint  heap_pop(Heap *h, long *out);\nint  heap_peek(const Heap *h, long *out);\nsize_t heap_size(const Heap *h);\nint  heap_ok(const Heap *h);\n",
+  "tests": [
+    {
+      "name": "push, pop, invariant",
+      "code": "\nHeap h;\nheap_init(&h);\nlong v;\nCHECK_EQ(heap_peek(&h, &v), -1);\nCHECK_EQ(heap_pop(&h, &v), -1);\nlong vals[] = {7, 3, 9, 1, 5};\nfor (int i = 0; i < 5; i++) CHECK_EQ(heap_push(&h, vals[i]), 0);\nCHECK_EQ(heap_size(&h), 5);\nCHECK_EQ(heap_ok(&h), 1);\nCHECK_EQ(heap_peek(&h, &v), 0); CHECK_EQ(v, 1);   /* min at root */\nCHECK_EQ(heap_pop(&h, &v), 0); CHECK_EQ(v, 1);\nCHECK_EQ(heap_pop(&h, &v), 0); CHECK_EQ(v, 3);\nCHECK_EQ(heap_ok(&h), 1);                          /* still valid after pops */\nCHECK_EQ(heap_push(&h, 0), 0);                     /* new global min */\nCHECK_EQ(heap_peek(&h, &v), 0); CHECK_EQ(v, 0);\nCHECK_EQ(heap_ok(&h), 1);\n",
+      "hint": "Push: place at a[n], sift up while < parent (guard i > 0). Pop: root out, last to root, sift down to the smaller child."
+    }
+  ]
+}

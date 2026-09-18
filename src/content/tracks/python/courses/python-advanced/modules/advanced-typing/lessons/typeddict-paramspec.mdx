@@ -1,0 +1,44 @@
+## TypedDict, Literal, TypeGuard — typing data at the edges
+
+**`TypedDict`** types dictionary-shaped data — JSON, API payloads, config —
+where keys are known and values vary per key:
+
+```python
+from typing import TypedDict
+
+class Movie(TypedDict):
+    title: str
+    year: int
+    tags: list[str]
+
+movie: Movie = {"title": "Coco", "year": 2017, "tags": ["animation"]}
+```
+
+At runtime it is a plain dict (no validation — that is pydantic's job); the
+value is for the checker and for `total=True/False` key requirements.
+
+**`Literal`** narrows a value to exact literals — the type-safe replacement for
+magic strings:
+
+```python
+from typing import Literal, TypeAlias
+Mode: TypeAlias = Literal["r", "w", "a"]
+
+def open_db(mode: Mode) -> None: ...
+```
+
+**`TypeGuard`** documents narrowing functions — the predicate returns True and
+the checker then treats the argument as the guarded type:
+
+```python
+from typing import TypeGuard
+
+def is_str_list(xs: list[object]) -> TypeGuard[list[str]]:
+    return all(isinstance(x, str) for x in xs)
+```
+
+Design guidance: type the *edges* of the system precisely (API responses,
+config, queue messages) and let internal code flow from those anchors. `cast()`
+exists for the rare moment you know more than the checker — treat every cast
+as a comment that can lie, and prefer a `TypeGuard` or `assert isinstance`
+which actually checks.

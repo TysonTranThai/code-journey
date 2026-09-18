@@ -1,0 +1,61 @@
+## Nhân theo kiểu của phần tử
+
+`p + 1` không cộng một byte — nó tiến `sizeof *p` **byte**. Với `int *` trên
+nền tảng này là 4 byte; với `struct Big *`, có thể 64. Compiler làm phép nhân;
+bạn làm phần suy luận:
+
+```c
+int arr[5] = {10, 20, 30, 40, 50};
+int *p = arr;          /* trỏ vào arr[0] */
+p + 3                  /* trỏ vào arr[3] */
+*(p + 3)               /* 40 — giá trị ở đó */
+p[3]                   /* y hệt: a[i] là *(a + i) */
+```
+
+Toán tử chỉ số mảng được *định nghĩa* qua phép toán con trỏ. Vì vậy `3[arr]`
+cũng biên dịch được (nó là `*(3 + arr)`) — hợp lệ, không thể quên khi đã thấy,
+và không bao giờ cố tình viết.
+
+## Con trỏ ngoài-biên hợp lệ duy nhất
+
+C bảo đảm bạn có thể tạo con trỏ **trỏ đến ngay sau phần tử cuối** của mảng.
+Bạn được so sánh và trừ với nó, nhưng **không được dereference**:
+
+```c
+int *end = arr + 5;    /* hợp lệ: sau phần tử cuối */
+for (int *p = arr; p != end; p++) use(*p);   /* cách đi kinh điển */
+*(arr + 5)             /* UB: dereference con trỏ one-past */
+arr + 6                /* UB: tạo ra nó cũng là UB */
+```
+
+Đây không phải kiểu cách: chính quy ước của `<stdlib.h>` dựa vào nó. Hàm trả
+"vị trí" trả `NULL` hoặc con trỏ cuối, và thuật toán như `qsort` suy luận trong
+nửa-khoảng `[first, last)` — đúng hình dạng này.
+
+## Phép trừ cho ra số phần tử
+
+```c
+size_t n = (size_t)(end - start);   /* số phần tử, không phải byte */
+```
+
+Trừ hai con trỏ vào *cùng một mảng* cho `ptrdiff_t`: chúng cách nhau bao nhiêu
+phần tử. Trừ con trỏ của hai đối tượng khác nhau là undefined.
+
+## Đi bằng con trỏ thay vì chỉ số
+
+```c
+/* tổng mảng theo kiểu con trỏ — cùng kết quả máy, khác mô hình tinh thần */
+int total = 0;
+for (const int *p = arr, *end = arr + 5; p != end; ++p) total += *p;
+```
+
+Không kiểu nào "nhanh hơn" một cách mặc định. Kiểu con trỏ tổng quát hóa cho
+cấu trúc mà chỉ số vô nghĩa (danh sách liên kết, Module 9); kiểu chỉ số chống
+lỗi off-by-one tốt hơn trong mảng dày. Chọn theo tình huống.
+
+## Kiểm tra hiểu biết
+
+- `sizeof` mảng 7 `double` là 56; `arr + 3` tiến bao nhiêu byte? (24.)
+- `arr + 5` có hợp lệ với mảng 5 phần tử? (Có — one-past-the-end. Dereference
+  thì không.)
+- `*(arr + 2) == arr[2]`? (Đúng, theo định nghĩa của `[]`.)

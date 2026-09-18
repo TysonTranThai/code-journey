@@ -1,0 +1,35 @@
+## Nhóm 1: crash (segfault)
+
+Tiến trình chết với `Segmentation fault`. Các nghi phạm quen thuộc, theo thứ
+tự:
+
+1. giải tham chiếu NULL hoặc con trỏ chưa khởi tạo
+2. chỉ số mảng vượt biên
+3. use-after-free / con trỏ treo
+4. ghi qua con trỏ xấu trong hàm chuỗi
+
+Segfault cho bạn biết nó chết Ở ĐÂU (stack trace) nhưng không cho biết TẠI
+SAO — địa chỉ xấu thường được tạo ra từ rất trước đó.
+
+## Nhóm 2: đầu ra sai, không crash
+
+Khó phát hiện nhất. Nguyên nhân: biên vòng lặp lệch một, toán tử so sánh sai,
+cộng dồn vào nhầm biến, định dạng printf không khớp kiểu, chia số nguyên khi
+ý định là chia thực. Hàng phòng thủ là các test có đáp án đã biết — chính là
+những gì challenge của khóa này chạy với mã của bạn.
+
+## Nhóm 3: treo
+
+Vòng lặp vô hạn: bộ đếm không bao giờ tiến về giới hạn, hoặc điều kiện dừng
+không bao giờ trở thành sai. Kiểm tra xem có gì đó trong thân vòng lặp thay
+đổi sau mỗi vòng hay không.
+
+## Vòng lặp gỡ lỗi
+
+1. tái hiện — tìm đầu vào nhỏ nhất gây sai
+2. dự đoán — nói to điều Đáng lẽ phải xảy ra
+3. đo đạc — in giá trị ở từng bước (printf là debugger lâu đời nhất và vẫn
+   rất tốt)
+4. thu hẹp — chia đôi đường ống: đầu vào đã sai sẵn, hay phần xử lý sai?
+5. sửa nguyên nhân, không sửa triệu chứng — một crash bị nuốt sẽ quay lại
+   thành lỗi còn tệ hơn

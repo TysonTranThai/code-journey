@@ -1,0 +1,30 @@
+{
+  "id": "cb13-checkpoint-fill-scale",
+  "title": "Fill Then Scale",
+  "prompt": "Implement `int* make_filled(int n)` returning a heap array of n ints filled with 1..n (NULL for n <= 0 or allocation failure), and `void scale_all(int *a, int n, int k)` multiplying each element by k.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "filled",
+      "code": "int *p = make_filled(5);\nCHECK_NOT_NULL(p);\nCHECK_EQ(p[0], 1);\nCHECK_EQ(p[4], 5);\nfree(p);",
+      "hint": "malloc, check NULL, fill."
+    },
+    {
+      "name": "bad size null",
+      "code": "CHECK_EQ(make_filled(0), NULL);",
+      "hint": "Guard first."
+    },
+    {
+      "name": "scale",
+      "code": "int *p = make_filled(3);\nscale_all(p, 3, 10);\nCHECK_EQ(p[0], 10);\nCHECK_EQ(p[2], 30);\nfree(p);",
+      "hint": "In-place multiply."
+    },
+    {
+      "name": "scale zero",
+      "code": "int *p = make_filled(2);\nscale_all(p, 2, 0);\nCHECK_EQ(p[1], 0);\nfree(p);",
+      "hint": "k=0 zeroes."
+    }
+  ]
+}

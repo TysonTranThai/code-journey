@@ -1,0 +1,24 @@
+## The pmr idea
+
+`std::pmr::memory_resource` is an interface with `do_allocate/do_deallocate`. Containers take an allocator argument: `std::pmr::vector<int> v{&resource};` Now *who owns memory and how it is carved* is a runtime, composable decision — no template recompilation per strategy.
+
+## monotonic_buffer_resource: the arena
+
+Grows forward, deallocate is a no-op, everything is freed when the resource dies:
+
+```cpp
+char buf[64 * 1024];
+std::pmr::monotonic_buffer_resource arena(buf, sizeof(buf));
+std::pmr::vector<std::pmr::string> rows{&arena};
+rows.emplace_back("alpha");   // string + vector both allocate from the arena
+```
+
+Perfect for request-shaped work: parse, compute, drop. O(1) amortized bump allocation, zero per-object frees, perfect locality for small data.
+
+## upstream and fallback chains
+
+`pmr::new_delete_resource()` is the default upstream. `synchronized_pool_resource` pools small blocks. Nesting a pool over a monotonic buffer over the heap gives you: fast small-object reuse, arena reset, and OS fallback — in one declarative chain.
+
+## When NOT to pmr
+
+Single long-lived objects gain nothing. Objects whose lifetime outlives the arena are a use-after-free waiting to happen — the resource must outlive or be reset in lockstep with everything allocated from it.

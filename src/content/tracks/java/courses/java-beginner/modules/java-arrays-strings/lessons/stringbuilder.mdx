@@ -1,0 +1,38 @@
+Because strings are immutable, building one piece at a time with `+` inside
+a loop creates and throws away an object every iteration:
+
+```java
+String html = "";
+for (String row : rows) {
+    html = html + row + "\n";   // copies EVERYTHING so far, every pass
+}
+```
+
+For a few iterations that is fine — readability wins. For thousands, the
+copies square the cost. **StringBuilder** is the fix: a mutable buffer you
+append to, converting to a String once at the end:
+
+```java
+StringBuilder html = new StringBuilder();
+for (String row : rows) {
+    html.append(row).append("\n");    // appends return the builder: chainable
+}
+String result = html.toString();      // one final conversion
+```
+
+`StringBuilder` also has `insert`, `replace`, `delete`, `reverse` — the
+`reverse()` call is the palindrome check from Module 5 in one line.
+
+The decision rule, worth internalizing now: **`+` for a fixed, small number
+of pieces; `StringBuilder` inside loops.** A modern compiler optimizes
+simple `+` chains into builder code anyway — the loop case is the one it
+cannot rescue, because the builder must survive *across* iterations.
+
+Two more string idioms you will use constantly:
+
+```java
+String.join(", ", "a", "b", "c");          // "a, b, c" — the inverse of split
+"key=%s value=%d".formatted(key, value);   // template-style formatting
+```
+
+**Next:** practice — text analysis on real strings.

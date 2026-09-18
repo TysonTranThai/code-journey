@@ -1,0 +1,46 @@
+## The legacy pattern you WILL meet
+
+```cpp
+// Legacy style — for reading only. Never write this in new code.
+Report* make_report() {
+    Report* r = new Report("legacy");    // heap allocation, manual ownership
+    return r;
+}
+
+void use() {
+    Report* r = make_report();
+    if (r->is_empty()) return;           // LEAK: early return skips the delete below
+    r->render();
+    delete r;                            // manual release — one path among many
+}
+```
+
+Every line is a decision a human must remember forever. The failure modes are exactly module 12A's list, and this 12-line function already leaks: the early return. Real functions have loops, exceptions, and ten return paths — manual cleanup does not survive contact with real control flow.
+
+## The same code, modern
+
+```cpp
+std::unique_ptr<Report> make_report() {
+    return std::make_unique<Report>("modern");
+}
+
+void use() {
+    auto r = make_report();
+    if (r->is_empty()) return;     // no leak: unique_ptr's destructor runs
+    r->render();
+}                                   // freed here — every path, including throws
+```
+
+Ownership became a *type*. The compiler now enforces what the legacy version begged humans to remember.
+
+## Your exercise: translator, not author
+
+This module's challenges hand you legacy `new`/`delete` code and ask you to (1) name the bug, (2) rewrite it with RAII. You will write `new`/`delete` exactly once in this course — inside the "spot the bug" lesson, as the patient on the operating table. That is deliberate: Core Guidelines R.11 warns against `new`/`delete` outside low-level ownership code, and even there, wrapped.
+
+## When DO raw pointers appear in modern code?
+
+- **Non-owning observers**: a function parameter `const Report*` that may be null, or a class member that views another object it does not own.
+- **Interop** with C-style APIs.
+- **Inside the standard library and low-level ownership code** you will study in Intermediate.
+
+Ownership flows through types (`unique_ptr`, containers, by-value members); access flows through references and non-owning pointers. That sentence is the module.

@@ -1,0 +1,20 @@
+{
+  "id": "i2-disclosure",
+  "title": "Disclosure Widget Logic",
+  "prompt": "Write `createDisclosure()` returning `{ toggle, isOpen, state }`: internal `open` boolean starts false; `toggle()` flips it and RETURNS the new state string (`\"expanded\"`/`\"collapsed\"`); `state()` returns `{ open, ariaExpanded: open ? \"true\" : \"false\", hidden: !open }` — exactly the attributes a real widget would set.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function createDisclosure() {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "toggle flips and reports the state",
+      "code": "const fn = new Function(code + \"\\nreturn { createDisclosure };\");\nconst { createDisclosure } = fn();\nconst d = createDisclosure();\nif (d.isOpen()) throw new Error(\"Starts closed.\");\nif (d.toggle() !== \"expanded\") throw new Error(\"First toggle returns 'expanded'.\");\nif (!d.isOpen()) throw new Error(\"Now open.\");\nif (d.toggle() !== \"collapsed\") throw new Error(\"Second toggle returns 'collapsed'.\");",
+      "hint": "A closure over one boolean."
+    },
+    {
+      "name": "state exposes the accessibility attributes",
+      "code": "const fn = new Function(code + \"\\nreturn { createDisclosure };\");\nconst { createDisclosure } = fn();\nconst d = createDisclosure();\nlet s = d.state();\nif (s.ariaExpanded !== \"false\" || s.hidden !== true) throw new Error(\"Closed: aria-expanded 'false', hidden true.\");\nd.toggle();\ns = d.state();\nif (s.ariaExpanded !== \"true\" || s.hidden !== false) throw new Error(\"Open: aria-expanded 'true', hidden false.\");",
+      "hint": "aria-* attributes are strings; hidden is boolean."
+    }
+  ]
+}

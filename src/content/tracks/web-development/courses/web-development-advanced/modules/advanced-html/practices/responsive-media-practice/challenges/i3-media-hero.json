@@ -1,0 +1,30 @@
+{
+  "id": "i3-media-hero",
+  "title": "Format-Fallback Hero",
+  "prompt": "Build the hero image of a product page as a <picture>: an AVIF source, a WebP source, and a JPEG fallback on the inner <img>; the <img> carries intrinsic width=\"1600\" height=\"800\", meaningful alt (4+ characters), and fetchpriority=\"high\".",
+  "difficulty": "advanced",
+  "level": "guided",
+  "boilerplate": "<!-- Hero picture -->\n\n",
+  "tests": [
+    {
+      "name": "avif and webp sources",
+      "code": "const sources = [...code.matchAll(/<source([^>]*)>/gi)].map((m) => m[1]);\nconst avif = sources.some((s) => /type\\s*=\\s*[\"']image\\/avif[\"']/i.test(s));\nconst webp = sources.some((s) => /type\\s*=\\s*[\"']image\\/webp[\"']/i.test(s));\nif (!avif) throw new Error('Add <source type=\"image/avif\">.');\nif (!webp) throw new Error('Add <source type=\"image/webp\">.');",
+      "hint": "Sources are tried top-down: newest format first, oldest last."
+    },
+    {
+      "name": "img fallback with dimensions",
+      "code": "const img = code.match(/<img[^>]*>/i);\nif (!img) throw new Error(\"The <picture> needs an inner <img> fallback.\");\nif (!/width\\s*=\\s*[\"']1600[\"']/i.test(img[0]) || !/height\\s*=\\s*[\"']800[\"']/i.test(img[0])) {\n  throw new Error('The <img> needs width=\"1600\" height=\"800\" — the browser reserves the box from these.');\n}",
+      "hint": "Intrinsic dimensions on the <img> kill layout shift — they live on the img, never on a source."
+    },
+    {
+      "name": "alt lives on the img",
+      "code": "const img = code.match(/<img[^>]*>/i);\nif (!img) throw new Error(\"Keep the <img>.\");\nconst alt = (img[0].match(/alt\\s*=\\s*[\"']([^\"']*)[\"']/i) || [])[1] || \"\";\nif (alt.trim().length < 4) {\n  throw new Error(\"The <img> needs meaningful alt text (4+ characters).\");\n}\nif (/<source[^>]*\\balt\\s*=/i.test(code)) {\n  throw new Error(\"alt belongs on the <img> only — sources have no alt.\");\n}",
+      "hint": "One image, one name: alt sits on the fallback <img> and serves every source."
+    },
+    {
+      "name": "hero priority is high",
+      "code": "const img = code.match(/<img[^>]*>/i);\nif (!img) throw new Error(\"Keep the <img>.\");\nif (!/fetchpriority\\s*=\\s*[\"']high[\"']/i.test(img[0])) {\n  throw new Error('The hero needs fetchpriority=\"high\" — it is the LCP image.');\n}",
+      "hint": "The largest visible image is the LCP candidate — pull it forward with fetchpriority."
+    }
+  ]
+}

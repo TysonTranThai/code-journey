@@ -1,0 +1,28 @@
+## AAA and tests that read like specs
+
+Every good test has three blocks, visibly separated:
+
+```java
+// Arrange — build the world
+var cart = new Cart();
+cart.add(new Item("pen", 200));
+
+// Act — one behavior
+int total = cart.totalCents();
+
+// Assert — one expectation
+assertEquals(200, total);
+```
+
+Discipline that scales:
+- **One behavior per test** — two asserts of the same behavior are fine;
+  two behaviors are not
+- **Name = scenario + expectation**: `total_includes_quantity_multiplier`,
+  not `testTotal`
+- **No logic in tests** (no loops, no ifs) — if you need logic, you're
+  re-implementing the subject under test
+- Tests are the first reader of your API: if arranging is painful, the
+  API needs a builder or factory
+
+A failing test message should tell you what broke without opening a
+debugger — that's why `checkEq(actual, expected, "what")` takes a label.

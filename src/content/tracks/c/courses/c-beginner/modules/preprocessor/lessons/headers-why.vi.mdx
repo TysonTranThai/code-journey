@@ -1,0 +1,44 @@
+## Vấn đề nó giải quyết
+
+Hai tệp .c cùng cần `int add(int, int);`. Không có header, mỗi bên tự viết
+một bản — và khi chữ ký thay đổi, một bản âm thầm mục rữa.
+
+## Sự tách biệt
+
+```c
+/* geom.h — HỢP ĐỒNG: cái gì tồn tại */
+#ifndef GEOM_H
+#define GEOM_H
+int add(int a, int b);
+double circle_area(double r);
+#endif
+
+/* geom.c — CÀI ĐẶT */
+#include "geom.h"
+int add(int a, int b) { return a + b; }
+double circle_area(double r) { return 3.14159265358979 * r * r; }
+```
+
+Tệp nào #include "geom.h" đều gọi được add và circle_area; trình biên dịch
+kiểm tra lời gọi theo khai báo, và linker tìm định nghĩa trong geom.o.
+
+## Khai báo vs định nghĩa
+
+Khai báo công bố tên và kiểu (`...;`). Định nghĩa cung cấp thân/bộ nhớ. Khai
+báo có thể lặp lại; định nghĩa của một hàm hoặc biến toàn cục thì không (đó
+là điều guard bảo vệ).
+
+## Đơn vị dịch
+
+Mỗi tệp .c được biên dịch một mình — một translation unit. Nó chỉ thấy văn
+bản của mình cộng với mọi thứ #include kéo vào. `static` trên một hàm giữ nó
+riêng tư trong đơn vị: công cụ C của "cái này không thuộc API công khai".
+
+## Dòng lệnh build dài ra
+
+```sh
+gcc -std=c23 main.c geom.c -o app
+```
+
+Hai tệp nguồn, biên dịch và liên kết trong một lệnh. Make (module 22) sẽ tự
+động hóa đúng việc này.

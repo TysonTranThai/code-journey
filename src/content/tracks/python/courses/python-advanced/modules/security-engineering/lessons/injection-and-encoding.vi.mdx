@@ -1,0 +1,57 @@
+Injection là một lỗi duy nhất với nhiều trang phục: **dữ liệu đi qua một ranh
+giới và bị diễn giải thành code.** Các trang phục quan trọng vì mỗi parser
+khác nhau.
+
+## SQL injection → tham số hóa
+
+```python
+# SAI: query dựng bằng chuỗi
+cursor.execute(f"SELECT * FROM users WHERE name = '{name}'")
+# name = "'; DROP TABLE users; --"  → bảng của bạn biến mất
+
+# ĐÚNG: tham số
+cursor.execute("SELECT * FROM users WHERE name = %s", (name,))
+```
+
+Query tham số hóa gửi *giá trị* tách khỏi *câu lệnh*, nên một giá trị không bao
+giờ đổi được ý nghĩa của câu lệnh. Không có đầu vào nào mà bạn không thể truyền
+an toàn theo cách này — vì vậy "tự escape dấu nháy" không bao giờ là câu trả
+lời.
+
+## Command injection → đừng gọi shell
+
+`os.system(f"convert {filename}.png")` với `filename = "a; rm -rf /; echo"`
+thực thi lệnh tùy ý. Thứ tự ưu tiên của các cách sửa: **không gọi shell** (dùng
+API thư viện, hoặc `subprocess.run([...dạng list...], shell=False)`); nếu bắt
+buộc phải shell, whitelist-validate tham số theo một pattern chính xác; và
+không bao giờ đưa dữ liệu người dùng gần một shell.
+
+## Path traversal → resolve và giới hạn
+
+`open(base_dir + "/" + filename)` với `filename = "../../etc/passwd"` rời khỏi
+thư mục. Giới hạn: resolve đường dẫn đã nối và xác minh nó vẫn nằm trong base
+(`path.resolve().is_relative_to(base.resolve())`), rồi mở. Từ chối hoặc chuẩn
+hóa `..` — và nhớ rằng URL không phải đường dẫn.
+
+## Deserialization nguy hiểm → không bao giờ unpickle byte lạ
+
+`pickle.loads(untrusted)` thực thi code nhúng — đó là thực thi mã tùy ý dưới
+dạng một tính năng thư viện. Với dữ liệu qua ranh giới, dùng JSON (chỉ giá trị,
+không code), và coi mọi binary deserializer là RCE chờ ngày nổ.
+
+## XSS và output encoding
+
+XSS là injection vào *parser của trình duyệt*: dữ liệu của bạn đáp xuống HTML
+và chạy như script. Phòng thủ là **output encoding theo ngữ cảnh** (escape cho
+HTML body, attribute, JS, URL đúng chỗ) cộng với các framework mặc định đã
+escape — và header **Content-Security-Policy** như bức tường thứ hai. Và cookie
+chứng minh danh tính của bạn không bao giờ được JavaScript đọc được:
+`HttpOnly; Secure; SameSite=Lax`.
+
+## Authorization: lỗi mà máy quét không tìm ra
+
+Broken access control đứng #1 trong OWASP Top 10 chính vì đó là lỗi *thiết kế*:
+`/api/orders/42` hoạt động với mọi người vì handler chưa từng hỏi *42 có phải
+của bạn không?*. Quy tắc nhàm chán và tuyệt đối: **mọi truy cập đối tượng mang
+một kiểm tra sở hữu/vai trò suy ra từ session, không bao giờ từ một tham số.**
+IDOR (Insecure Direct Object Reference) là tên của việc quên điều đó.

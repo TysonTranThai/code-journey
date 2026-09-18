@@ -1,0 +1,21 @@
+`Path` là *mô tả bất biến* về vị trí tệp — không phải handle mở tệp, không
+phải lời hứa tệp tồn tại.
+
+```java
+Path base = Path.of("/tmp", "cjadv");
+Path p = base.resolve("logs/app.log");   // /tmp/cjadv/logs/app.log
+p.getParent();  p.getFileName();         // điều hướng
+base.relativize(p);                      // logs/app.log
+```
+
+`resolve` nối; `relativize` là phép nghịch đảo. Sandbox cho mỗi lần chạy một
+`/tmp` ghi được — mọi thao tác tệp trong khóa học nhắm vào
+`Files.createTempDirectory("cjadv")` để các lần chạy không bao giờ va chạm và
+không đụng gì bên ngoài sandbox của chúng.
+
+Tồn tại là một *trạng thái*, không phải thuộc tính: giữa `Files.exists(p)` và
+`Files.createFile(p)`, một tác nhân khác có thể tạo tệp. Câu trả lời của NIO
+là các phép toán nguyên tử có ngữ nghĩa, không phải check-then-act:
+`Files.createFile(p)` ném nếu đã có (tạo an toànrace);
+`Files.move(src, dst, REPLACE_EXISTING, ATOMIC_MOVE)` hoặc đổi xong trọn vẹn
+hoặc ném — không bao giờ quan sát được tệp chép dở.

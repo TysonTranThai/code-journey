@@ -1,0 +1,20 @@
+{
+  "id": "pa-checkpoint-architecture",
+  "title": "Injected checkout service",
+  "prompt": "Implement CheckoutService(repo, clock) per the spec: injected clock drives ids; empty carts raise before saving; totals are sums of the cart.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class CheckoutService:\n    def __init__(self, repo, clock):\n        pass\n\n    def checkout(self, cart):\n        pass",
+  "tests": [
+    {
+      "name": "deterministic order with fixed clock",
+      "code": "class FakeClock:\n    def __init__(self, t):\n        self.t = t\n    def now(self):\n        return self.t\n\nclass MemRepo:\n    def __init__(self):\n        self.saved = []\n    def save(self, order):\n        self.saved.append(dict(order))\n\nrepo = MemRepo()\nsvc = CheckoutService(repo, FakeClock(1712345678.9))\norder = svc.checkout([10, 20, 12])\nassert order['id'] == 'o-1712345679', f'id: {order[\"id\"]}'\nassert order['total'] == 42 and order['items'] == [10, 20, 12]\nassert repo.saved == [order]\nprint('ok')",
+      "hint": "Build the id from clock.now(); save then return the same dict."
+    },
+    {
+      "name": "empty cart raises before saving",
+      "code": "class FakeClock:\n    def __init__(self, t):\n        self.t = t\n    def now(self):\n        return self.t\n\nclass MemRepo:\n    def __init__(self):\n        self.saved = []\n    def save(self, order):\n        self.saved.append(dict(order))\n\nrepo = MemRepo()\nsvc = CheckoutService(repo, FakeClock(1.0))\ntry:\n    svc.checkout([])\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('empty cart must raise ValueError')\nassert repo.saved == [], 'nothing may be saved'\nprint('ok')",
+      "hint": "Validate before constructing or persisting anything."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+**CAS — compare-and-set** — is the hardware instruction under every atomic
+class: "if the value is still `expected`, set it to `next`, atomically;
+report whether you won." Losers retry. No lock is held; the OS never
+schedules around you.
+
+```java
+AtomicReference<State> ref = new AtomicReference<>(initial);
+State cur, next;
+do {
+    cur = ref.get();
+    next = derive(cur);
+} while (!ref.compareAndSet(cur, next));
+```
+
+**The ABA problem**: CAS asks "is it still A?" — not "did anything happen?".
+If the value went A→B→A between your read and your CAS, your compare *passes*
+but the world changed. Harmless for counters, fatal for stacks built on
+pointers: node A was freed and reallocated while you held a stale `next`.
+Java's answer: `AtomicStampedReference` (value + stamp, both CAS'd together)
+or simply avoiding shared-mutable-node designs.
+
+CAS is *optimistic* (assume no interference, retry on loss); locks are
+*pessimistic* (block first). Contended CAS burns CPU retrying; contended
+locks park threads. High contention → locks often win. Low contention,
+short critical sections → CAS wins. Knowing *which regime you are in* is the
+skill.

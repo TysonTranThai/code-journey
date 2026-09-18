@@ -1,0 +1,31 @@
+## Hot and cold
+
+Every struct field rides along on every access. A hot loop touching `id` and `score` should not stream 60-byte name arrays through the cache:
+
+```c
+struct fat { int id; int score; char name[60]; };   /* 68 bytes, most dead in the loop */
+struct hot { int id; int score; };                  /* 8 bytes: 8 records per line */
+struct cold { char name[60]; };                     /* kept aside, touched rarely */
+```
+
+Splitting hot from cold (AoS-of-two-arrays or an index that links them) multiplies the records per cache line by 8. Same asymptotics, radically different constants — and constants are what you ship.
+
+## Arrays of structures vs structures of arrays
+
+```c
+struct particle { double x, y, vx, vy, mass; };   /* AoS */
+struct particle p[N];
+
+struct soa { double *x, *y, *vx, *vy, *mass; };   /* SoA: five parallel arrays */
+```
+
+A loop that updates only velocities touches 40% of each AoS record's bytes; with SoA it streams exactly the three arrays it needs. SIMD and prefetchers love SoA. Random access by whole record loves AoS. Pick per access pattern, not per fashion.
+
+## The 64-byte lens
+
+Cache lines (typically 64 bytes — hardware reality, not ISO C) are the unit of memory traffic. Layout questions are all the same question: *how many of the bytes in each line do I actually need?* Padding out false sharing (module 19) and splitting hot/cold are the same lever applied at different scales.
+
+## Honest limits
+
+- `sizeof`/`offsetof` are ISO C and deterministic for a given target — assert on them freely.
+- Which accesses are fast is target-specific. This sandbox is aarch64 with its cache geometry; a core x86 machine differs. The *method* transfers; the numbers do not.

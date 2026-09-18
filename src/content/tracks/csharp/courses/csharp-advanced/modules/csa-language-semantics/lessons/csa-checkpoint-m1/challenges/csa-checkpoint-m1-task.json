@@ -1,0 +1,20 @@
+{
+  "id": "csa-checkpoint-m1-task",
+  "title": "Language semantics checkpoint",
+  "prompt": "Implement `static string Classify(int input)` in class `Solution`. Rules: return \"default\" for 0, \"negative\" below 0, \"small\" for 1–99, otherwise \"large\". Then decide the boxing behavior questions in the second test by returning the exact values shown.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "classification",
+      "code": "Cj.Eq(Solution.Classify(-5), \"negative\", \"negative\");\nCj.Eq(Solution.Classify(0), \"default\", \"zero\");\nCj.Eq(Solution.Classify(42), \"small\", \"small\");\nCj.Eq(Solution.Classify(1000), \"large\", \"large\");",
+      "hint": "Four ranges in order: negative, zero, 1–99, 100+."
+    },
+    {
+      "name": "boxing-truth",
+      "code": "object a = 5;\nint b = (int)a;\nb = 9;\n// After unboxing to b and reassigning, `a` must still be 5 (copy semantics).\nCj.Eq((int)a, 5, \"unboxed copy independent\");\n// Boxed value types never compare by identity against boxed copies via Equals chain:\nobject c = 5;\nCj.True(a.Equals(c), \"Equals compares boxed values\");\nCj.False(ReferenceEquals(a, c), \"distinct boxes\");",
+      "hint": "Unboxing copies the value; Equals on boxed value types compares values; boxes are distinct objects."
+    }
+  ]
+}

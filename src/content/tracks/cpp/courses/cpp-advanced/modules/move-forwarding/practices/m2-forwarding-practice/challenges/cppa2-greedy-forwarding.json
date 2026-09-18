@@ -1,0 +1,21 @@
+{
+  "id": "cppa2-greedy-forwarding",
+  "title": "The Greedy Forwarding Constructor",
+  "prompt": "The forwarding constructor in the starter hijacks direct-initialization copies. Constrain it with a `requires` clause so `Tracked c{src};` routes to the **copy** constructor, while `Tracked d(\"placed\");` still forwards.",
+  "difficulty": "advanced",
+  "level": "guided",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <string>\n#include <utility>\n\n// Instrumented type: counts copies and moves for the graded checks.\nstruct Tracked {\n    static inline int copies = 0;\n    static inline int moves = 0;\n    std::string tag;\n    Tracked() : tag(\"empty\") {}\n    explicit Tracked(std::string t) : tag(std::move(t)) {}\n    Tracked(const Tracked& o) : tag(o.tag) { ++copies; }\n    Tracked(Tracked&& o) noexcept : tag(std::move(o.tag)) { ++moves; }\n    Tracked& operator=(const Tracked& o) { tag = o.tag; ++copies; return *this; }\n    Tracked& operator=(Tracked&& o) noexcept { tag = std::move(o.tag); ++moves; return *this; }\n};\n\n#include <string>\n#include <type_traits>\n#include <utility>\n\n// TODO: constrain this forwarding constructor so it rejects Tracked arguments\n// (otherwise it hijacks direct-initialization copies like Tracked c{other};).\ntemplate <class... A>\nexplicit Tracked(A&&... a) : tag(std::forward<A>(a)...) {}\n",
+  "tests": [
+    {
+      "name": "direct-init copy routes to the copy ctor",
+      "code": "Tracked::copies = 0;\nTracked src(\"origin\");\nTracked c{src};\nCHECK_EQ(Tracked::copies, 1);\nCHECK_EQ(c.tag, std::string(\"origin\"));",
+      "hint": "Add requires (!(std::same_as<std::decay_t<A>, Tracked>) && ...) before explicit — a Tracked lvalue then can't match, so the copy ctor wins."
+    },
+    {
+      "name": "string literal still forwards",
+      "code": "Tracked d(\"placed\");\nCHECK_EQ(d.tag, std::string(\"placed\"));",
+      "hint": "A const char array decays to char*, which is not Tracked — the constraint leaves normal construction alone."
+    }
+  ]
+}

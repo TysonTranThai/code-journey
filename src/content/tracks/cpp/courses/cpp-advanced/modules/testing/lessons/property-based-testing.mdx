@@ -1,0 +1,16 @@
+## From examples to properties
+
+An example test: `sort({3,1,2}) == {1,2,3}`. A property: *for every vector, sorting yields the same multiset, non-decreasing*. One property is worth a hundred examples because it covers the inputs you forgot. Classic C++ properties:
+
+- **Round-trip**: parse(serialize(x)) == x (parsers, codecs, string formatting).
+- **Involution**: compress(decompress(x)) correctness, `reverse(reverse(v)) == v`.
+- **Idempotence**: `sort(sort(v)) == sort(v)`, dedup applied twice is applied once.
+- **Oracles**: compare against a slow-but-obviously-correct implementation.
+
+## Random needs structure
+
+Pure random bytes rarely reach interesting code. Generate *structured* randoms: valid-ish inputs with occasional boundary values (0, 1, INT_MAX, empty). Deterministic seeds keep CI reproducible; the failing case is printed and shrunk to the minimal witness.
+
+## Properties as documentation
+
+A property states the contract so precisely that reading the test *is* reading the spec — "for all n >= 0: buildRange(n).size() == n" teaches the requirement better than prose. The graded exercises here grade property implementations: your checker function must accept correct implementations and reject subtly broken ones.

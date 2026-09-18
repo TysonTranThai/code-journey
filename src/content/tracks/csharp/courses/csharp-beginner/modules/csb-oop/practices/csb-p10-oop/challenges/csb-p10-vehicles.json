@@ -1,0 +1,21 @@
+{
+  "id": "csb-p10-vehicles",
+  "title": "Vehicle fleet totals",
+  "prompt": "Implement in `Solution`: abstract `Vehicle` with `public abstract double FuelFor(double km);`; `Car` returning `km / 15.0`; `Truck` returning `km / 8.0`; and `static double FleetFuel(List<Vehicle> fleet, double km)` summing `FuelFor(km)` over the fleet (null/empty fleet → 0).",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "var fleet = new List<Solution.Vehicle> { new Solution.Car(), new Solution.Truck() };\nCj.Near(Solution.FleetFuel(fleet, 120), 120 / 15.0 + 120 / 8.0, 1e-9, \"car + truck\");\nCj.Eq(Solution.FleetFuel(new List<Solution.Vehicle>(), 100), 0.0, \"empty fleet\");\nCj.Eq(Solution.FleetFuel(null, 100), 0.0, \"null fleet\");",
+      "hint": "FleetFuel aggregates through the abstract contract only."
+    },
+    {
+      "name": "single",
+      "code": "var solo = new List<Solution.Vehicle> { new Solution.Truck() };\nCj.Near(Solution.FleetFuel(solo, 80), 10.0, 1e-9, \"80km truck burns 10\");",
+      "hint": "A lone truck at 8 km/l covers 80 km on 10 liters."
+    }
+  ],
+  "level": "independent"
+}

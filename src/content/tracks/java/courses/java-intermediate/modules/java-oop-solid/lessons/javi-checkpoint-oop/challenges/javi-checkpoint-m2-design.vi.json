@@ -1,0 +1,26 @@
+{
+  "title": "Chính sách giảm giá hoán đổi được",
+  "prompt": "Thiết kế máy giảm giá sau một hợp đồng:\n- `sealed interface Discount permits None, Percent, Flat` bên trong `Solution`\n- `record None()`, `record Percent(int pct)`, `record Flat(int cents)`\n- `static int apply(Discount d, int priceCents)` dispatch bằng pattern switch:\n  - None → giá không đổi\n  - Percent(pct) → price - price*pct/100 (chia nguyên)\n  - Flat(cents) → price - cents, nhưng không dưới 0\n- `static Discount best(List<Discount> options, int priceCents)` trả về\n  chính sách cho giá cuối THẤP NHẤT.\n\nFail fast: Percent ngoài 0..100 ném IllegalArgumentException.",
+  "tests": [
+    {
+      "name": "Giảm theo phần trăm",
+      "hint": "400 - 400*25/100 = 400 - 100 = 300."
+    },
+    {
+      "name": "Giảm cố định sàn ở 0",
+      "hint": "Max(0, price - cents)."
+    },
+    {
+      "name": "None giữ nguyên giá",
+      "hint": "None trả giá không đổi."
+    },
+    {
+      "name": "best chọn thấp nhất",
+      "hint": "Tính từng lựa chọn theo giá, trả discount có kết quả nhỏ nhất."
+    },
+    {
+      "name": "Chặn biên phần trăm",
+      "hint": "Constructor kiểm tra 0..100, ném IllegalArgumentException."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+Your first projects used only the standard library — nothing to install. Real
+projects lean on **third-party packages** (requests, rich, pytest...), and that
+creates a problem: two projects on one machine often need different versions of
+the same package.
+
+## The problem
+
+```
+project-a needs requests==2.25
+project-b needs requests==2.31
+```
+
+Install globally and one project silently breaks the other.
+
+## The fix: virtual environments
+
+A **venv** is a private, disposable Python setup for one project:
+
+```bash
+python3 -m venv .venv        # create (once per project)
+source .venv/bin/activate    # activate (every shell) — Windows: .venv\Scripts\activate
+```
+
+With the venv active, `pip install` affects ONLY that project. Deactivate with
+`deactivate`. The venv is regenerable — delete it, recreate it, nothing of
+yours is lost.

@@ -1,0 +1,82 @@
+When a Java statement can't do its job - a file doesn't exist, a string
+"123abc" can't become a number, an array index is out of range - the JVM
+doesn't return a magic error value. It **throws an exception**: an object
+that unwinds the call stack until someone handles it.
+
+## The four keywords
+
+```java
+try {
+    int n = Integer.parseInt("12x");   // throws NumberFormatException
+    System.out.println("never printed");
+} catch (NumberFormatException e) {
+    System.out.println("bad number: " + e.getMessage());
+} finally {
+    System.out.println("always runs");
+}
+```
+
+- **`try`** - the risky statements.
+- **`catch (SomeException e)`** - runs *only* if that exception (or a
+  subclass) was thrown. You can list several catch blocks, most specific
+  first.
+- **`finally`** - runs whether or not an exception happened. Use it for
+  cleanup that must happen.
+- **`throw`** - you raise one yourself: `throw new IllegalArgumentException("n < 0");`
+
+## Checked vs unchecked
+
+This is the part beginners find strangest, so take it slowly.
+
+- **Unchecked exceptions** extend `RuntimeException`. The compiler does
+  *not* force you to handle them: `NullPointerException`,
+  `IllegalArgumentException`, `ArithmeticException`,
+  `NumberFormatException`. They almost always mean a **bug** - the fix is
+  better code, not a bigger try block.
+- **Checked exceptions** extend `Exception` but not `RuntimeException`. The
+  compiler *forces* every caller to either `catch` them or declare
+  `throws`: `IOException`, `FileNotFoundException`. They represent
+  real-world failures a program should plan for.
+
+```java
+// Option 1: handle it here
+try {
+    String text = Files.readString(path);
+} catch (IOException e) {
+    System.out.println("could not read: " + path);
+}
+
+// Option 2: pass the problem up to *your* caller
+static String readNote(Path path) throws IOException {
+    return Files.readString(path);
+}
+```
+
+## Reading a stack trace
+
+```
+Exception in thread "main" java.lang.NumberFormatException:
+    For input string: "12x"
+	at java.base/java.lang.Integer.parseInt(Integer.java:652)
+	at Main.parseCount(Main.java:8)
+	at Main.main(Main.java:3)
+```
+
+Read it **bottom-up**: your own classes appear first. Here `Main.java`
+line 8 called `Integer.parseInt` with `"12x"`. The *message* (`For input
+string: "12x"`) usually names the exact bad input. The stack trace is not
+an insult - it's a map from the crash site back to your code.
+
+## Throwing with a message
+
+```java
+static double average(int[] scores) {
+    if (scores == null || scores.length == 0) {
+        throw new IllegalArgumentException("scores must be non-empty");
+    }
+    ...
+}
+```
+
+Aim the message at the **caller who made the mistake**: state the rule and
+the violated value. That message becomes the first line of debugging later.

@@ -1,0 +1,44 @@
+## Tính bất biến và bản sao phòng thủ
+
+Class bất biến: field `final`, không setter, không rò rỉ trạng thái khả biến.
+Đối tượng bất biến an toàn luồng ngay từ thiết kế, làm key của map an toàn,
+và dễ suy luận.
+
+```java
+public final class Range {
+    private final int lo, hi;
+    public Range(int lo, int hi) {
+        if (lo > hi) throw new IllegalArgumentException("lo > hi");
+        this.lo = lo; this.hi = hi;
+    }
+    public int lo() { return lo; }
+    public int hi() { return hi; }
+}
+```
+
+Tính khả biến rò rỉ theo hai hướng:
+
+**1. Field khả biến bị lộ ra ngoài** — caller thay đổi trạng thái của bạn
+mà không đi qua method nào:
+
+```java
+public final class Team {
+    private final List<String> members;
+    Team(List<String> members) { this.members = members; }
+    public List<String> members() { return members; }  // RÒ RỈ
+}
+// caller: team.members().clear();  — field "final" giờ rỗng toạch
+```
+
+Cách sửa: trả về view không thể sửa (hoặc bản sao), và sao chép khi nhận vào:
+
+```java
+Team(List<String> members) { this.members = List.copyOf(members); }
+public List<String> members() { return Collections.unmodifiableList(members); }
+```
+
+**2. Field giữ tham chiếu của caller** — bạn giữ list của caller; họ sửa sau
+đó và đối tượng của bạn đổi dưới chân họ.
+
+`record` xử lý việc lộ field nhưng vẫn chỉ sao chép nông với mảng và list —
+record chứa `List` khả biến chỉ bất biến bằng đúng mức list đó cho phép.

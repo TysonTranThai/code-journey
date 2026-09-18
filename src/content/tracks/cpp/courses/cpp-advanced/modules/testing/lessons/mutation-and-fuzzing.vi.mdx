@@ -1,0 +1,15 @@
+## Mutation testing: tấm gương soi ngược
+
+Một mutant là bản cố-tình-hỏng của code (`<` → `<=`, `+` → `-`, xóa kiểm tra biên). Chạy suite với mutant: nếu test vẫn pass, suite của bạn không nhận ra lớp bug đó — mutant *sống sót* và suite có lỗ hổng. Điểm mutation = bị giết / tổng số. Nó đo test, không phải code.
+
+## Mutation testing dạy gì
+
+Điều kiện biên (mutant `<=` vs `<` chỉ chết nếu test chạm đúng biên), off-by-one, và assert chết. Nếu mọi mutant của một hàm validation đều sống sót trừ lỗi cú pháp, hàm đó thực ra chưa được test.
+
+## Fuzzing: cỗ máy đầu vào
+
+Fuzzer nạp đầu vào ngẫu nhiên có cấu trúc để săn crash, vấp sanitizer, hoặc treo. Harness kiểu libFuzzer định nghĩa `LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)` gọi parser của bạn với ASan+UBSan bật; phản hồi coverage của fuzzer lái về các đường chưa test. Mọi code parse byte không tin cậy đều xứng đáng có fuzz target — parser, codec, xử lý giao thức.
+
+## Cái nào nằm ở đâu
+
+Mutation: định kỳ, với các module trọng yếu, để kiểm toán suite. Fuzzing: liên tục trong CI cho thành phần đón đầu vào, và crash tìm được chuyển thành regression test vĩnh viễn (đầu vào gây crash thành đầu vào test).

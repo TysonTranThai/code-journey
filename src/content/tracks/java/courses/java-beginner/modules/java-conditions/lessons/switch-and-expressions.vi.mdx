@@ -1,0 +1,57 @@
+Khi một biến được so sánh với vài giá trị hằng, `switch` dễ đọc hơn thang
+`if`:
+
+```java
+switch (choice) {
+    case 1:
+        System.out.println("Coffee");
+        break;
+    case 2:
+        System.out.println("Tea");
+        break;
+    default:
+        System.out.println("Unknown");
+        break;
+}
+```
+
+`switch` hoạt động với `int`, `long`, `char`, `String`, enum, và vài loại
+khác. Hai quy tắc định nghĩa dạng cổ điển:
+
+- **`break` thoát khỏi switch.** Không có nó, chương trình *rơi xuống* case
+  kế tiếp — thỉnh thoảng hữu ích một cách chủ đích ("case 1 và 2 dùng chung
+  code"), và nổi tiếng nguy hiểm khi vô ý. Thiếu một `break`, compiler im
+  lặng trong khi menu của bạn in mọi lựa chọn bên dưới.
+- **`default` là else** — case cho mọi giá trị bạn không liệt kê. Luôn viết
+  một cái, kể cả khi bạn tin tập giá trị đã đóng.
+
+**Dạng hiện đại: switch expression** (Java 14+). Mũi tên `->` chạy đúng
+một nhánh, không rơi xuống, không break, và cả switch *trả về một giá trị*:
+
+```java
+String drink = switch (choice) {
+    case 1 -> "Coffee";
+    case 2 -> "Tea";
+    default -> "Unknown";
+};
+```
+
+Nhiều nhãn dùng chung một nhánh: `case 1, 2 -> "Hot drink";`. Khi một nhánh
+cần nhiều câu lệnh, dùng ngoặc nhọn và `yield`:
+
+```java
+String label = switch (code) {
+    case "A" -> "approved";
+    default -> {
+        System.out.println("unknown code: " + code);
+        yield "rejected";
+    }
+};
+```
+
+Switch expression phải **đầy đủ** — compiler buộc bạn viết default (hoặc
+phủ hết các case) vì kết quả phải luôn tồn tại. Compiler kiểm tra bảng quyết
+định của bạn về tính đầy đủ đúng là loại đồng minh mà khóa học này luôn
+quay lại với bạn.
+
+**Tiếp theo:** thiết kế xác thực đầu vào — từ chối to và lịch sự.

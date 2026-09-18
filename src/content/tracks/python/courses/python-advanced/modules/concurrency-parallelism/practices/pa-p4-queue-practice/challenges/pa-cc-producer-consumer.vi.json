@@ -1,0 +1,14 @@
+{
+  "title": "Pipeline producer/consumer có giới hạn",
+  "prompt": "Cài `process_all(items, transform, workers=3)`:\n\n- đưa `items` qua `queue.Queue` vào `workers` thread daemon\n- mỗi worker áp `transform(item)` và thu kết quả một cách thread-safe\n- `process_all` phải RETURN (không treo) khi mọi item đã xử lý xong, trả về `sorted(results)`\n- worker quên `task_done()` sẽ deadlock chỗ join — hãy gọi nó đúng một lần cho mỗi item",
+  "tests": [
+    {
+      "name": "Xử lý hết và return",
+      "hint": "q.join() nhả khi số unfinished-task về 0 — đúng một task_done cho mỗi get()."
+    },
+    {
+      "name": "Nhiều item, ít worker",
+      "hint": "200 item phải được 2 worker xử lý hết; sort để so sánh không phụ thuộc thứ tự."
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Chọn mức xếp thứ tự",
+  "prompt": "Cài ba hàm trên một `std::atomic<unsigned>`: `bumpRelaxed` (thống kê: relaxed là đủ), `publishAndSpin` (release store, acquire load trên cặp bool+int), và `seqTotal` (fetch_add với seq_cst, trả về giá trị TRƯỚC khi cộng).",
+  "tests": [
+    {
+      "name": "bump relaxed cộng dồn",
+      "hint": "counter.fetch_add(1, std::memory_order_relaxed);"
+    },
+    {
+      "name": "publish/consume khép kín vòng",
+      "hint": "publishAndSpin: value = v; flag.store(true, std::memory_order_release);  consumeAfter: while (!flag.load(std::memory_order_acquire)) {} return value;"
+    },
+    {
+      "name": "seq_cst trả giá trị cũ",
+      "hint": "return counter.fetch_add(1, std::memory_order_seq_cst); — fetch_add trả về giá trị CŨ."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+Duyệt cây là một pipeline, không phải bài tập đệ quy:
+
+```java
+try (Stream<Path> paths = Files.walk(root, 3)) {
+    List<Path> logs = paths
+        .filter(p -> p.toString().endsWith(".log"))
+        .collect(toList());
+}
+```
+
+`Files.walk` stream lười toàn cây (giới hạn độ sâu); `Files.find` gộp sẵn vị
+từ; `Files.list` cho một thư mục duy nhất. Khớp glob có sẵn —
+`FileSystems.getDefault().getPathMatcher("glob:**/*.{log,tmp}")` — và phải áp
+dụng vào *cả* path lẫn dạng filename của nó tùy hình dạng pattern
+(`dir/**` khớp cú pháp path; `*.log` khớp filename). Stream là LAZY và được
+đỡ bởi iterator thư mục: đóng nó (try-with-resources) trả handle — rò rỉ nó
+là rò rỉ file descriptor.

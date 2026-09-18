@@ -1,0 +1,15 @@
+## The gate (mini-build)
+
+A tiny sales analytics engine over in-memory rows:
+
+1. `Revenue(IEnumerable<Sale> sales)` → total revenue (decimal).
+2. `BestCategory(IEnumerable<Sale> sales)` → category name with the highest
+   revenue (ties: earliest alphabetically).
+3. `CustomerMatrix(IEnumerable<Sale> sales, IEnumerable<string> customers)`
+   → per-customer totals in the ORDER GIVEN (zero for customers with no
+   sales), formatted "name=total".
+4. `Run(IEnumerable<Sale> sales, IEnumerable<string> customers)` → a report
+   string combining all three, computed from ONE enumeration of sales
+   (graded with a counting source — a second pull fails).
+
+Sale record: `(string Customer, string Category, decimal Amount)`.

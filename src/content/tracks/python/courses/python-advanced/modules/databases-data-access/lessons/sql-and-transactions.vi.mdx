@@ -1,0 +1,52 @@
+## SQL là khai báo — hãy tận dụng
+
+Bạn nói *cái gì*; planner quyết định *như thế nào*. Hãy viết truy vấn mà planner
+có thể lý giải:
+
+- Lọc bằng `WHERE`, tổng hợp bằng `GROUP BY`, và để index làm việc tìm kiếm.
+- `JOIN ... ON` tuyên bố quan hệ một cách tường minh. `INNER JOIN` giữ các cặp
+  khớp; `LEFT JOIN` giữ mọi dòng bên trái (và là cách *tìm cái thiếu* — users
+  không có orders là `LEFT JOIN orders ON ... WHERE orders.id IS NULL`).
+- `ORDER BY` không có index nghĩa là một phép sắp xếp — của toàn bộ tập kết quả,
+  sau tất cả các join. `LIMIT` không cứu được bạn.
+
+## Index: lối tắt của planner
+
+Index là một cấu trúc phụ đã sắp xếp (thường là B-tree) biến quét thành nhảy
+trực tiếp. Những quy tắc sống sót qua production:
+
+1. **Index các cột bạn lọc, join, và sắp xếp** — theo thứ tự của truy vấn (index
+   ghép `(user_id, created_at)` phục vụ
+   `WHERE user_id = ? ORDER BY created_at DESC`).
+2. **Tiền tố trái nhất:** index trên `(a, b)` phục vụ truy vấn theo `a`, và
+   theo `a AND b` — nhưng không phải một mình `b`.
+3. **Cột có độ chọn lọc thấp gần như vô dụng** (index trên `active BOOLEAN`
+   trong bảng 99% là true gần như không seek được gì).
+4. **Mỗi index đánh thuế mọi lần ghi.** Index không miễn phí; mỗi cái phải được
+   cập nhật trên INSERT/UPDATE/DELETE.
+
+## Transaction và các bất thường kinh điển
+
+Transaction là tất-cả-hoặc-không-cái-gì (tính nguyên tử) cộng với cô lập — và cô
+lập có các mức, vì cô lập hoàn toàn thì đắt:
+
+| Mức cô lập | Bất thường có thể xảy ra |
+|---|---|
+| READ UNCOMMITTED | dirty read (nhìn thấy dữ liệu chưa commit) |
+| READ COMMITTED | non-repeatable read (cùng truy vấn, khác kết quả) |
+| REPEATABLE READ | phantom row (dòng mới xuất hiện giữa hai lần đọc) |
+| SERIALIZABLE | không — nhưng nhiều khóa/retry nhất |
+
+Mặc định của Postgres là READ COMMITTED — nghĩa là **xung đột ghi-ghi là vấn đề
+của bạn**. Cách sửa là *optimistic concurrency*: đóng dấu phiên bản cho dòng,
+và cập nhật bằng `UPDATE ... SET v = v + 1 WHERE id = :id AND v = :seen`. Cập
+nhật 0 dòng nghĩa là có người vừa tranh chấp với bạn: đọc lại, quyết định lại,
+thử lại. Khóa-sau-sự-việc đánh bại khóa-trước-sự-việc với dữ liệu ít tranh chấp.
+
+## Vấn đề N+1 truy vấn
+
+Lấy 50 đơn hàng, rồi vòng lặp lấy khách hàng của từng đơn: 1 + 50 truy vấn.
+Chi phí mạng lượt đi-về-lại, không phải công việc database, là thứ thống trị.
+Cách sửa: lấy bộ sưu tập một lần (`WHERE user_id IN (...)`) và join trong bộ
+nhớ — hoặc một JOIN duy nhất. Phát hiện nó bằng cách *đếm truy vấn trên mỗi
+request*, chính là điều bài tập dưới đây làm.

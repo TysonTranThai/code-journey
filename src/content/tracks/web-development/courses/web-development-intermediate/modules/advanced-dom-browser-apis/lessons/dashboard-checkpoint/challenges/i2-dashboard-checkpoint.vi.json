@@ -1,0 +1,22 @@
+{
+  "title": "Kiểm tra kiến thức: Logic Component",
+  "prompt": "Cài đặt ba hàm logic component:\n\n1. `findActionable(target, selector)` RETURN phần tử đầu tiên trong chuỗi `target`, `target.parent`, `target.parent.parent`, ... khớp với `selector` (mỗi phần tử có phương thức `matches(sel)`), hoặc `null`.\n2. `reduceTabs(state, action)` RETURN một object `{ active, count }` MỚI. Các action: `{ type: \"select\", index }` kẹp trong 0..count-1, `{ type: \"next\" }` và `{ type: \"prev\" }` quay vòng. Không được làm thay đổi state đầu vào.\n3. `debounce(fn, ms)` RETURN một wrapper đã debounce. Các lời gọi trong khoảng lặng hủy lời đang chờ; sau `ms` im lặng, đối số của lời gọi CUỐI được dùng.",
+  "tests": [
+    {
+      "name": "findActionable đi lên tìm tổ tiên khớp",
+      "hint": "Vòng lặp for (let el = target; el; el = el.parent) và trả về phần tử đầu tiên có matches(sel) đúng."
+    },
+    {
+      "name": "reduceTabs kẹp select và quay vòng next/prev",
+      "hint": "select: Math.min(Math.max(index, 0), count - 1). next: (active + 1) % count. prev: (active - 1 + count) % count."
+    },
+    {
+      "name": "reduceTabs không làm thay đổi state đầu vào",
+      "hint": "Dựng kết quả bằng spread: { ...state, active: giá trị mới }."
+    },
+    {
+      "name": "debounce trì hoãn và gộp các lời gọi liên tiếp",
+      "hint": "Mỗi lần gọi: clearTimeout handle cũ rồi setTimeout handle mới — handle nằm trong closure."
+    }
+  ]
+}

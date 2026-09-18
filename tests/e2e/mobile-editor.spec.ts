@@ -27,7 +27,7 @@ test.beforeAll(async ({ request }) => {
 });
 
 const CHALLENGE_URL =
-  "/learn/web-development/web-development-beginner/html-foundations/introduction-to-html/challenge/fix-the-heading";
+  "/learn/web-development/web-development-beginner/html-foundations/practice/introduction-to-html-practice/fix-the-heading";
 
 async function register(page: import("@playwright/test").Page) {
   const id = `e2e-m-${Date.now()}-${Math.floor(Math.random() * 10_000)}`;
@@ -87,7 +87,7 @@ test("mobile challenge loop completes: type → run → verdict", async ({ page 
   await page.keyboard.insertText("<h1>My First Page</h1>");
 
   // 07-07: Run must be reachable from the Code tab via the sticky action bar.
-  await page.getByRole("button", { name: /run code/i }).click();
+  await page.getByRole("button", { name: /submit/i }).click();
   await expect(page.getByRole("status")).toContainText(/all tests passed/i, {
     timeout: 75_000,
   });

@@ -1,0 +1,26 @@
+Tự viết template là một hoạt động thiết kế. Kỷ luật:
+
+1. **Viết bản cụ thể trước.** Cho nó chạy đúng với một kiểu.
+2. **Tổng quát hóa một cách cơ học.** Thay kiểu cụ thể bằng T và đẩy các
+   thao tác đặc thù theo kiểu ra sau hợp đồng.
+3. **Ghi tên hợp đồng trong chú thích hoặc concepts.** `T phải movable và
+   hỗ trợ operator<` chính là interface mà caller đọc.
+4. **Thử với ít nhất hai kiểu không liên quan** — int và std::string là
+   cặp kinh điển; nếu template chỉ biên dịch với một kiểu, nó chưa phải
+   generic.
+
+```cpp
+// bước 1-3 áp dụng: một clamp tổng quát
+template <typename T>
+T clamp_to(const T& v, const T& lo, const T& hi) {
+    // hợp đồng: T hỗ trợ operator< (và copy rẻ, hoặc truyền bằng reference)
+    if (v < lo) return lo;
+    if (hi < v) return hi;
+    return v;
+}
+```
+
+Khi nào *không* nên template: hành vi thay đổi lúc runtime (đó là đa hình),
+chỉ có một điểm gọi cụ thể (sớm quá), hoặc ranh giới API nơi kiểu phải được
+gọi tên cho tài liệu. Template đánh đổi độ rõ của thông báo lỗi lấy khả
+năng tái sử dụng — chỉ trả cái giá đó khi việc tái sử dụng là thật.

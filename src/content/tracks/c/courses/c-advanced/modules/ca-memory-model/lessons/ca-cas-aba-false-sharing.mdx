@@ -1,0 +1,57 @@
+## Compare-exchange, the universal atom
+
+```c
+atomic_int v = 10;
+int expected = 10;
+atomic_compare_exchange_strong(&v, &expected, 20);
+/* if v == expected: v = 20, returns true (expected untouched)
+   else:             expected = current v, returns false */
+```
+
+CAS reads, compares, and conditionally writes as **one** atomic step. Every lock-free structure is a loop: load, compute a new value, CAS; on failure the exchange gives you the fresh value and you retry:
+
+```c
+int old = atomic_load(&v);
+while (!atomic_compare_exchange_weak(&v, &old, old * 2)) {
+    /* old was refreshed by the failed CAS; just loop */
+}
+```
+
+`weak` may fail spuriously (cheaper on some architectures) — always use it inside a loop; use `strong` for one-shot decisions.
+
+## ABA: the comparison lies
+
+CAS compares *values*, not *histories*. Thread 1 reads A, stalls; thread 2 replaces A with B, then B with A again. Thread 1's CAS sees value A and succeeds — but the object behind the value is not the one it inspected. Classic victim: lock-free stacks recycling nodes through a free list.
+
+Honest beginner-grade mitigations, in ascending cost:
+
+1. **Never reclaim while readers may hold pointers** (epoch/RCU discipline — Intermediate/Advanced pattern).
+2. **Tag the value**: pack a version counter alongside (per-CAS `atomic_fetch_add` on a second word, or a double-width CAS).
+3. **Pool per thread** so a node cannot be freed and re-allocated by another thread mid-operation.
+
+We practice the tag pattern because it is implementable and testable here; RCU is named so you know it exists.
+
+## False sharing: the cache-line tax
+
+Cores exchange memory in cache lines (typically 64 bytes; `atomic_is_lock_free` aside, this is hardware reality, not a C standard term). Two hot atomics placed side by side ping-pong one line between cores even though no thread ever touches the other variable — correctness intact, throughput wrecked.
+
+```c
+struct counts {
+    atomic_int a;    /* thread 0 hammers a */
+    atomic_int b;    /* thread 1 hammers b — same 64B line as a! */
+};
+
+struct counts_padded {
+    atomic_int a;
+    char pad[64 - sizeof(atomic_int)];   /* b moves to the next line */
+    atomic_int b;
+};
+```
+
+Padding is the fix. Measuring is the discipline: pad only when contention measurement shows the line is the problem.
+
+## Field notes
+
+- CAS loops are starvation-prone under contention — bound retries and fall back to a lock if you must guarantee progress.
+- `atomic_exchange` swaps unconditionally and returns the old value; handy for "take the latest" patterns.
+- This image reports `ATOMIC_POINTER_LOCK_FREE == 2`: pointer-sized atomics are hardware lock-free here.

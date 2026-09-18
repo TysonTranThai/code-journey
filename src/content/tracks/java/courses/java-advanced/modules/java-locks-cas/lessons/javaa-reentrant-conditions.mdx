@@ -1,0 +1,25 @@
+`synchronized` covers the basics. Real systems need what **ReentrantLock**
+adds:
+
+- **tryLock**: attempt acquisition *now* (or within a timeout) instead of
+  blocking forever. The backbone of deadlock avoidance — acquire two locks
+  with `tryLock` + backoff, or walk away.
+- **Fairness**: `new ReentrantLock(true)` grants access in arrival order.
+  Fair locks trade throughput for bounded waiting; default (unfair) lets a
+  just-released thread re-acquire, which is usually what you want.
+- **Interruptible acquisition**: `lockInterruptibly()` lets blocked threads
+  respond to cancellation — `synchronized` cannot.
+- **Condition queues**: one lock, multiple wait-sets. `await()/signal()`
+  replace `wait()/notify()` per-Condition, so a bounded buffer's not-full and
+  not-empty predicates each get their own queue (no more waking everyone for
+  one predicate).
+
+```java
+var lock = new ReentrantLock();
+var notEmpty = lock.newCondition();
+// consumer:  lock.lock(); try { while (empty) notEmpty.await(); ... } finally { lock.unlock(); }
+// producer:  lock.lock(); try { put(x); notEmpty.signal(); } finally { lock.unlock(); }
+```
+
+The rules that make it correct: **await inside a loop** (spurious wakeups are
+allowed), and **unlock in finally** (exceptions must not leak a held lock).

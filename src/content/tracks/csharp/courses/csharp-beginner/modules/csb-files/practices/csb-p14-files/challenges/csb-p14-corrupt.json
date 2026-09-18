@@ -1,0 +1,21 @@
+{
+  "id": "csb-p14-corrupt",
+  "title": "Corrupt-line policy",
+  "prompt": "Implement `static (int Loaded, int Skipped) LoadScoresLenient(string path, List<(int Id, string Name, int Score)> into)`: parses each `id|name|score` line; well-formed lines load, malformed lines (wrong field count, non-numeric id/score) are skipped and counted. Returns both counts.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "mixed",
+      "code": "var path = Path.Combine(Path.GetTempPath(), \"cj-p14g\", Guid.NewGuid().ToString() + \".csv\");\nDirectory.CreateDirectory(Path.GetDirectoryName(path));\nFile.WriteAllLines(path, new[] { \"1|An|90\", \"garbage\", \"2|Binh|abc\", \"3|Chi|70\" });\nvar into = new List<(int, string, int)>();\nvar r = Solution.LoadScoresLenient(path, into);\nCj.Eq(r.Loaded, 2, \"two good rows\");\nCj.Eq(r.Skipped, 2, \"two bad rows\");\nCj.Eq(into[0].Item2, \"An\", \"first good row intact\");",
+      "hint": "Good rows survive bad neighbors — skip, don't crash, don't lose data."
+    },
+    {
+      "name": "edge",
+      "code": "var path = Path.Combine(Path.GetTempPath(), \"cj-p14h\", Guid.NewGuid().ToString() + \".csv\");\nDirectory.CreateDirectory(Path.GetDirectoryName(path));\nFile.WriteAllText(path, \"\");\nvar into = new List<(int, string, int)>();\nvar r = Solution.LoadScoresLenient(path, into);\nCj.Eq(r.Loaded, 0, \"empty file loads nothing\");\nCj.Eq(r.Skipped, 0, \"and skips nothing — blank is not corrupt\");",
+      "hint": "An empty file is not corruption; the counts must say exactly that."
+    }
+  ],
+  "level": "independent"
+}

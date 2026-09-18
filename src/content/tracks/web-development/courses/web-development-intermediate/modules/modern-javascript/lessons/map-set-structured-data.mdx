@@ -1,0 +1,59 @@
+Objects are great for records — a user, a config. But two jobs need
+different tools: **keyed collections with non-string keys**, and
+**uniqueness**.
+
+## Map: a dictionary that accepts anything as a key
+
+```js
+const cache = new Map();
+cache.set({ path: "/api/users" }, response); // an OBJECT as key!
+cache.set(42, "answer");
+cache.get({ path: "/api/users" }); // same reference → found
+
+cache.has(key); // membership without retrieving
+cache.delete(key);
+cache.size; // number of entries
+for (const [key, value] of cache) { ... } // iterates in insertion order
+```
+
+Two superpowers a plain object lacks:
+
+- Keys can be any value — objects, functions, NaN.
+- `map.size` is O(1); `Object.keys(obj).length` is not.
+
+## WeakMap (a taste)
+
+A `WeakMap` holds keys _weakly_: if nothing else references a key
+object, it can be garbage-collected along with its entry. Perfect for
+attaching metadata to DOM nodes or library objects without leaking memory.
+
+## Set: uniqueness as a data structure
+
+```js
+const emails = new Set();
+emails.add("a@x.com");
+emails.add("a@x.com"); // ignored — already present
+emails.size; // 1
+
+const unique = [...new Set(array)]; // dedupe an array in one line
+emails.has("b@x.com"); // O(1) membership — faster than array.includes
+```
+
+## Choosing the structure
+
+| Need                                                 | Use    |
+| ---------------------------------------------------- | ------ |
+| Record with known fields                             | object |
+| Keyed by dynamic/arbitrary keys, frequent add/remove | Map    |
+| Unique values, membership tests                      | Set    |
+| Ordered list                                         | array  |
+
+Using an object as a lookup table with user-controlled keys has a security
+wrinkle too: keys like `__proto__` or `constructor` can collide with
+prototype properties. A Map is immune.
+
+## Why this matters at Intermediate
+
+Choosing data structures is an engineering decision. Reaching for the right
+one — and knowing why — is exactly the "decide how to build this" skill this
+course is about.

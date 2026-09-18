@@ -1,0 +1,21 @@
+`Path` is an *immutable description* of a file location — not a handle to an
+open file, not a promise the file exists.
+
+```java
+Path base = Path.of("/tmp", "cjadv");
+Path p = base.resolve("logs/app.log");   // /tmp/cjadv/logs/app.log
+p.getParent();  p.getFileName();         // navigation
+base.relativize(p);                      // logs/app.log
+```
+
+`resolve` joins; `relativize` is the inverse. The sandbox gives each run a
+writable `/tmp` — every file operation in this course targets
+`Files.createTempDirectory("cjadv")` so runs never collide and never touch
+anything outside their sandbox.
+
+Existence is a *state*, not a property: between `Files.exists(p)` and
+`Files.createFile(p)` another actor can create the file. The NIO answer is
+atomic operations with semantics, not check-then-act:
+`Files.createFile(p)` throws if it exists (race-safe creation);
+`Files.move(src, dst, REPLACE_EXISTING, ATOMIC_MOVE)` either swaps completely
+or throws — no half-copied files ever observable.

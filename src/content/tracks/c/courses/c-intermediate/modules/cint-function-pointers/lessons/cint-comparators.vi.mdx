@@ -1,0 +1,56 @@
+## Hợp đồng ba hướng
+
+Một comparator nhận hai con trỏ phần tử và trả về:
+
+- `< 0` nếu phần tử thứ nhất đứng trước
+- `0` nếu bằng nhau cho mục đích sắp xếp
+- `> 0` nếu phần tử thứ nhất đứng sau
+
+`qsort` trong `<stdlib.h>` là người tiêu dùng kinh điển:
+
+```c
+static int cmp_int(const void *a, const void *b) {
+    int x = *(const int *)a;
+    int y = *(const int *)b;
+    return (x > y) - (x < y);      /* không nhánh, không tràn số */
+}
+qsort(arr, n, sizeof(int), cmp_int);
+```
+
+## Cái bẫy trừ số
+
+```c
+return x - y;    /* BUG: tràn số với x = INT_MAX, y = INT_MIN */
+```
+
+Người học gặp điều này trên mọi mảng số lớn. Cách sửa là idiom
+`(x > y) - (x < y)` (hoặc nhánh tường minh). Cùng hợp đồng, không tràn.
+
+## Bắt tay void*
+
+`qsort` không biết gì về dữ liệu của bạn. Nó đưa cho comparator hai
+`const void *` trỏ vào từng phần tử; bạn cast chúng về kiểu phần tử thật.
+Kích thước phần tử được truyền riêng — comparator không cần nó (nhưng sort
+nhiều trường có thể cast về kiểu struct).
+
+```c
+typedef struct { int key; const char *name; } Entry;
+static int cmp_entry(const void *a, const void *b) {
+    const Entry *ea = a, *eb = b;    /* void* -> con trỏ đối tượng nào cũng được, ngầm định */
+    return (ea->key > eb->key) - (ea->key < eb->key);
+}
+```
+
+## Yêu cầu nhất quán
+
+Comparator của bạn phải là một **thứ tự yếu nghiêm ngặt**: nhất quán với bản
+thân (`cmp(a,b) > 0` kéo theo `cmp(b,a) < 0`), bắc cầu, và ổn định giữa các
+lần gọi. Comparator trả lời khác nhau cho cùng một cặp (ví dụ đọc biến toàn
+cục thay đổi được) đưa cho qsort rác và có thể đọc/ghi ngoài biên — thư viện
+chuẩn tin bạn tuyệt đối ở đây.
+
+## Kiểm tra hiểu biết
+
+- Vì sao comparator nhận con trỏ, không phải giá trị? (qsort làm việc với mọi
+  kiểu/kích thước phần tử; nó chỉ di chuyển byte và gọi comparator của bạn.)
+- `cmp(a, a)` phải trả gì? (0 — một phần tử "bằng" chính nó trong thứ tự.)

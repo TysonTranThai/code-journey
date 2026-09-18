@@ -1,0 +1,46 @@
+**Encapsulation** = fields private, behavior public. Mark fields `private`
+so nobody outside the class can touch them directly, and expose *methods*
+that guard the access:
+
+```java
+public class Account {
+    private String owner;
+    private double balance;      // hidden: no acc.balance from outside
+
+    public Account(String owner, double balance) {
+        this.owner = owner;
+        this.balance = Math.max(0, balance);
+    }
+
+    public double getBalance() {          // read is safe: just a report
+        return balance;
+    }
+
+    public void deposit(double amount) {  // write is guarded: a rule lives here
+        if (amount <= 0) {
+            throw new IllegalArgumentException("deposit must be positive");
+        }
+        balance += amount;
+    }
+}
+```
+
+Why hide the field when a public one is shorter? Because **the field is the
+past of the class; the methods are its future**. With `balance` private you
+can later add logging, switch storage to cents, or add a transaction limit —
+and every rule has exactly one home. With it public, every caller bypasses
+every rule and you can never change anything.
+
+**Getters and setters** are not the goal — *control* is. A getter that just
+returns the field is a harmless convenience; a `setBalance(double)` that
+accepts anything is encapsulation theater. Prefer **verbs** that describe
+the real operations: `deposit`, `withdraw`, `transfer` — not
+`setBalance`. The Account above has no setter at all, and that is good
+design, not an omission.
+
+`private` and `public` are **access modifiers**: `private` = this class
+only; `public` = everyone. (Two more, `protected` and package-private,
+arrive with inheritance and packages later.) The default habit:
+fields `private`, the few doors the world needs `public`.
+
+**Next:** composition — objects holding objects.

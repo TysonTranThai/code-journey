@@ -1,0 +1,13 @@
+## Checkpoint: dịch vụ đặt chỗ
+
+**Nhiệm vụ:** hiện thực trong `Solution`:
+
+1. `class BookingConflictException : Exception` với `public string Slot { get; }` (constructor `(string slot, string message)` → base(message), lưu Slot).
+2. `static string Book(List<string> takenSlots, string slot)`:
+   - slot null/toàn khoảng trắng → `ArgumentException`;
+   - slot đã có trong `takenSlots` → `BookingConflictException` (Slot = slot);
+   - nếu hợp lệ: thêm vào và trả slot.
+3. `static T Guard<T>(Func<T> action, string label)`:
+   - chạy `action`; trả kết quả khi thành công;
+   - khi có ngoại lệ: ném `InvalidOperationException` với message chứa `label` — nhưng CHỈ với `InvalidOperationException`; ngoại lệ kiểu khác phải lan truyền nguyên vẹn;
+   - `label` null → `ArgumentException` trước khi chạy action.

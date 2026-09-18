@@ -1,0 +1,20 @@
+{
+  "id": "i2-capstone-model",
+  "title": "The Data Model Decision",
+  "prompt": "Declare your ServiceDesk data model as one object `model` with: table (the tickets table name you chose), columns (array of your actual column names for: id, author, title, description, priority, status, created, closed — in your naming), priorities (array of allowed priority values), closedByDefault (status value a ticket starts with).",
+  "difficulty": "advanced",
+  "level": "independent",
+  "boilerplate": "const model = {\n  table: \"\",\n  columns: [],\n  priorities: [],\n  closedByDefault: \"\",\n};\n",
+  "tests": [
+    {
+      "name": "a table with the required concept columns",
+      "code": "const fn = new Function(code + \"\\nreturn { model };\");\nconst { model } = fn();\nif (typeof model.table !== \"string\" || model.table.length < 3) throw new Error(\"Name your tickets table.\");\nif (!Array.isArray(model.columns) || model.columns.length < 8) {\n  throw new Error(\"Columns must cover at least: id, author, title, description, priority, status, created, closed (8 concepts).\");\n}\nif (model.columns.length !== new Set(model.columns).size) throw new Error(\"Column names must be unique.\");\n",
+      "hint": "snake_case or camelCase — your call, but 8 concepts must appear."
+    },
+    {
+      "name": "the three priorities, constrained",
+      "code": "const fn = new Function(code + \"\\nreturn { model };\");\nconst { model } = fn();\nif (!Array.isArray(model.priorities) || model.priorities.length !== 3) {\n  throw new Error(\"Requirements say exactly three priorities.\");\n}\nconst lower = model.priorities.map((p) => String(p).toLowerCase());\nif (![\"low\", \"medium\", \"high\"].every((p) => lower.includes(p))) {\n  throw new Error(\"Priorities must be low, medium, high (any casing your schema uses).\");\n}\nif (typeof model.closedByDefault !== \"string\" || !model.closedByDefault) {\n  throw new Error(\"Name the status a new ticket starts with (e.g. \\\"open\\\").\");\n}\n",
+      "hint": "A CHECK IN constraint in your schema starts here — spell the values."
+    }
+  ]
+}

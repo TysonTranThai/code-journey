@@ -1,0 +1,30 @@
+## One block, many values
+
+```csharp
+int[] scores = new int[5];              // 5 zeros
+int[] primes = { 2, 3, 5, 7, 11 };      // infer from initializer
+string[] names = new[] { "an", "binh" };
+```
+
+An array is a **fixed-size** block of elements of one type. `new int[5]` allocates 5 elements and fills value-type arrays with the type's default (`0`, `false`); element-type arrays (`string[]`) fill with `null`. Length is chosen at creation and never changes — need more room later, you allocate a new array (Module 10's `List<T>` exists precisely for that).
+
+## Indexing and bounds
+
+```csharp
+primes[0]      // 2 — first
+primes[^1]     // 11 — last (hat counts from the end)
+primes[5]      // throws IndexOutOfRangeException — valid indices are 0..4
+```
+
+The bounds check is real and immediate. Off-by-one errors (`<=` in a loop, `arr[arr.Length]`) are the classic crash; `Length` is the size, the last valid index is `Length - 1`.
+
+## Reference semantics: the aliasing trap
+
+```csharp
+int[] a = { 1, 2, 3 };
+int[] b = a;          // b is ANOTHER NAME for the same array
+b[0] = 99;
+Console.WriteLine(a[0]);   // 99 — a changed too
+```
+
+Arrays are **reference types**. Assignment copies the *reference*, not the elements — two variables pointing at one block. This is the model for classes (Module 11) met early, where it can hurt: pass an array to a method and the method can mutate your data. To get an independent copy: `a.Clone()`, `a.ToArray()` (LINQ), or copy in a loop.

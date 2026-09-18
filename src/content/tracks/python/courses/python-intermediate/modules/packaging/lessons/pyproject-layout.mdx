@@ -1,0 +1,33 @@
+Every modern Python project declares itself in **pyproject.toml** (TOML —
+read it in the sandbox with `tomllib`):
+
+```toml
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tasknoter"
+version = "0.1.0"
+description = "A typed, tested task manager"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+tasknoter = "tasknoter.cli:main"
+```
+
+What each block promises:
+
+- **build-system** — which tool turns this into an installable package (setuptools here; alternatives exist).
+- **project** — identity: name, version, supported Python, and **dependencies** with version constraints (`requests>=2.31,<3`).
+- **project.scripts** — console commands to generate (next lesson).
+
+`requires-python` is a promise to your users: the tool refuses to install on
+older interpreters. Versioning your *own* project with semver-like bumps
+(0.1.0 → 0.2.0 for features, +0.0.1 for fixes) is the cheapest coordination
+tool you will ever adopt.
+
+On your own machine, `pip install -e .` installs the project in **editable
+mode** — the sandbox can't run pip (no network), so this course verifies the
+*file* is well-formed instead.

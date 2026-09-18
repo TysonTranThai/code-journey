@@ -1,0 +1,28 @@
+Một ứng dụng dòng lệnh là một vòng lặp: hiện các lựa chọn, đọc lựa chọn, hành
+động, lặp lại.
+
+```python
+while True:
+    choice = menu()          # ứng dụng thật: input("> ")
+    if choice == "list":
+        show_tasks()
+    elif choice == "add":
+        add_task()
+    elif choice == "quit":
+        break
+    else:
+        print("lựa chọn không rõ")
+```
+
+`input()` đọc một dòng từ người dùng — nhưng sandbox (và bất kỳ bộ chấm tự động
+nào) không thể gõ vào chương trình của bạn. Vì thế các thử thách được chấm tách
+**hàm** có tham số và giá trị trả về, và menu được nối quanh chúng:
+
+```python
+def add_task(tasks, text):
+    tasks.append({"text": text, "done": False})
+    return tasks
+```
+
+Tách *quyết định* khỏi *hành động* và CLI của bạn trở nên kiểm thử được — cùng
+bài học mà capstone sẽ chấm bạn.

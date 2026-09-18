@@ -1,0 +1,20 @@
+## Vòng lặp giả thuyết
+
+1. **Tái lập** đáng tin (cùng đầu vào, cùng thất bại).
+2. **Địa phương hóa** bằng bước lớn nhất còn giữ thất bại: tìm kiếm nhị phân trên pipeline.
+3. **Giả thuyết** một cơ chế ("chỉ số stale sau erase").
+4. **Thí nghiệm**: breakpoint/watchpoint phân biệt giả thuyết A với B.
+5. **Xác nhận**, sửa, và *thêm regression test lẽ ra bắt được nó*.
+
+printf-debugging là vòng for trên các phỏng đoán; debugger là tìm kiếm nhị phân. Cả hai đều là công cụ, nhưng chỉ một cái mở rộng được cho heisenbug.
+
+## Những nước đi quan trọng
+
+- **Breakpoint** — dừng tại một dòng/hàm. Breakpoint có điều kiện (`i == 999`) bỏ qua 998 lần dừng vô ích.
+- **Watchpoint** — dừng khi một *biến thay đổi*: vũ khí sát thủ cho câu hỏi "ai làm hỏng trường này?" (`watch -l s->count`).
+- **Bước chạy** — `step` vào trong, `next` bước qua, `finish` thoát ra. Bước qua code thư viện là nhiễu; bước code của bạn, bỏ qua thư viện chuẩn.
+- **Backtrace + soi frame** — sau crash, `bt` liệt kê stack; frame 0 là nơi chết, các frame trên là lý do.
+
+## Tâm thế hậu kỳ
+
+Crash dump là bản ghi âm của quá khứ. Kỹ năng là đọc nó: frame nào là nội bộ thư viện (lướt), frame nào là của bạn (nghiên cứu), giá trị nào hợp lý so với bị hỏng (không tin con trỏ trông như số nguyên nhỏ).

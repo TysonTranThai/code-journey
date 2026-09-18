@@ -1,0 +1,31 @@
+{
+  "id": "javi-checkpoint-m8-testing",
+  "title": "Testable Rate Limiter",
+  "prompt": "Design a rate limiter around a Clock seam in `Solution`:\n- `interface Clock { long nowMillis(); }`\n- `static class RateLimiter` with constructor `(Clock clock, int maxPerWindow)`\n  and `boolean allow(String key)`:\n  - counts calls per key within a 1000ms rolling window (from the clock)\n  - returns true if under the limit, false otherwise\n  - calls OLDER than 1000ms (strictly) no longer count\n- `static Clock manualClock(long startMillis)` returns a mutable-ish\n  clock advanced by calling `((Solution.AdvanceableClock) c).advance(ms)`\n  — define `static interface AdvanceableClock extends Clock` with\n  `void advance(long ms)`.\n\nThe tests drive time explicitly — no sleeps.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Provide Clock, AdvanceableClock, manualClock, RateLimiter here.\n}\n",
+  "tests": [
+    {
+      "name": "under limit allows",
+      "code": "\nSolution.Clock c = Solution.manualClock(0);\nSolution.RateLimiter rl = new Solution.RateLimiter(c, 2);\ncheckEq(rl.allow(\"u\"), true, \"first\");\ncheckEq(rl.allow(\"u\"), true, \"second\");\n",
+      "hint": "Two calls within the window pass."
+    },
+    {
+      "name": "third call blocked",
+      "code": "\nSolution.Clock c = Solution.manualClock(0);\nSolution.RateLimiter rl = new Solution.RateLimiter(c, 2);\nrl.allow(\"u\"); rl.allow(\"u\");\ncheckEq(rl.allow(\"u\"), false, \"over limit\");\n",
+      "hint": "maxPerWindow is a hard cap."
+    },
+    {
+      "name": "window rolls with the clock",
+      "code": "\nSolution.AdvanceableClock c = Solution.manualClock(0);\nSolution.RateLimiter rl = new Solution.RateLimiter(c, 1);\nrl.allow(\"u\");\nc.advance(1500);\ncheckEq(rl.allow(\"u\"), true, \"old call expired\");\n",
+      "hint": "After advancing 1500ms, the old call (>1000ms) drops out."
+    },
+    {
+      "name": "keys are independent",
+      "code": "\nSolution.Clock c = Solution.manualClock(0);\nSolution.RateLimiter rl = new Solution.RateLimiter(c, 1);\ncheckEq(rl.allow(\"a\"), true, \"key a\");\ncheckEq(rl.allow(\"b\"), true, \"key b\");\n",
+      "hint": "Limit is per key."
+    }
+  ],
+  "level": "real-world"
+}

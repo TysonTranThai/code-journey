@@ -1,0 +1,34 @@
+Every HTTP interaction is a **request** (method, path, headers, optional
+body) answered by a **response** (status, headers, body):
+
+```
+GET /api/users?page=2 HTTP/1.1
+Host: api.example.com
+Accept: application/json
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[{"id": 21}, {"id": 22}]
+```
+
+Methods are verbs: **GET** reads (no body, safe, cacheable), **POST**
+creates/submits, **PUT/PATCH** update, **DELETE** removes. The status code
+is the machine's verdict:
+
+| Family | Meaning | Your job |
+|---|---|---|
+| 2xx | success (200 OK, 201 Created, 204 No Content) | proceed |
+| 3xx | redirected | follow or update your URL |
+| 4xx | **you** sent something wrong (400, 401, 403, 404, 429) | fix the request or report to user |
+| 5xx | **server** failed (500, 502, 503) | back off, maybe retry |
+
+The single most common intermediate mistake: treating every non-200 as the
+same. A 404 means "stop retrying"; a 429 means "slow down (read
+Retry-After)"; a 503 means "transient — retry with backoff". Clients that
+respect status semantics are welcome; clients that hammer failing servers
+are not.
+
+In the sandbox there is no network — which is exactly why this course teaches
+the **transport-injection** pattern (next lessons): the logic around HTTP is
+testable without a socket.

@@ -1,0 +1,15 @@
+Sockets have a *half-close*: `socket.shutdownOutput()` sends EOF to the peer
+while your read direction stays open. It is the precise way to say "my
+request is complete" — a one-shot command client writes its payload,
+half-closes, reads the entire response until EOF. `close()` closes BOTH
+directions and releases the descriptor.
+
+The server side is `ServerSocket.accept()` — each accepted connection gets
+its own `Socket`, and the classic model is a thread (or virtual thread) per
+connection. With virtual threads (Module 5), thread-per-connection returns
+to respectability: 10k concurrent connections with blocking-style code.
+
+Accept/close hygiene: close the SERVER socket in finally (stops new
+connections), close each client socket in finally (frees descriptors), and
+never share one `Socket` object across threads without synchronization —
+the streams are not thread-safe.

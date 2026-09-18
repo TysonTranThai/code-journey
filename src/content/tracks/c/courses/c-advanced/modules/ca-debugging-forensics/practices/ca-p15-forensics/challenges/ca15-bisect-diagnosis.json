@@ -1,0 +1,26 @@
+{
+  "id": "ca15-bisect-diagnosis",
+  "title": "Bisect the Corruption",
+  "prompt": "A pipeline of n stages transforms a value; exactly one stage is broken (it flips sign). You receive the stage functions pre-implemented in your editor and must implement `size_t find_bad_stage(const int *injections, size_t n)` — injections holds each stage's output for the known input; find the first index where the value's sign differs from injections[0]'s sign (all stages before the bad one preserve it, all after inherit the flip).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstatic int apply_stage(int v) { return v; }\n",
+  "tests": [
+    {
+      "name": "finds the first flip",
+      "code": "int in1[5] = {2, 2, -2, -2, -2};\nCHECK_EQ((int)find_bad_stage(in1, 5), 2);",
+      "hint": "Sign flips at index 2; everything after is downstream of the corruption."
+    },
+    {
+      "name": "no corruption",
+      "code": "int in2[4] = {3, 3, 3, 3};\nCHECK_EQ((int)find_bad_stage(in2, 4), 4);",
+      "hint": "No flip means no bad stage — return n (sentinel for 'none')."
+    },
+    {
+      "name": "localizes the flip, not the value change",
+      "code": "int in3[3] = {5, 3, -7};\nCHECK_EQ((int)find_bad_stage(in3, 3), 2);",
+      "hint": "The value changed at index 1 without a sign flip — not the corruption; the sign first differs from injections[0] at index 2."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "ca2-order-probe",
+  "title": "Unspecified Order, Deterministically Handled",
+  "prompt": "The counters below are already in your editor:\n \n```c\nstatic int calls_a = 0, calls_b = 0;\nstatic int bump_a(void) { return ++calls_a; }\nstatic int bump_b(void) { return ++calls_b; }\n```\n \nImplement `int observed_sum(void)` returning `bump_a() + bump_b()` (one call to each). Then implement `int order_safe(void)` returning the same total but computed in separate statements so it never depends on evaluation order. Also implement `int counters_match_sum(int s)` returning 1 iff `calls_a + calls_b == s`.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstatic int calls_a = 0, calls_b = 0;\nstatic int bump_a(void) { return ++calls_a; }\nstatic int bump_b(void) { return ++calls_b; }\n",
+  "tests": [
+    {
+      "name": "sum is 2 regardless of order",
+      "code": "CHECK_EQ(observed_sum(), 2);",
+      "hint": "Both bumps happen before the addition completes; order only affects which returns 1 first."
+    },
+    {
+      "name": "counters consistent",
+      "code": "CHECK_EQ(observed_sum(), 2);\nCHECK_EQ(counters_match_sum(2), 1);",
+      "hint": "Call observed_sum() first so each bump happens exactly once in this process; then 2 is the only consistent total."
+    },
+    {
+      "name": "order-safe variant also 2",
+      "code": "CHECK_EQ(order_safe(), 2);",
+      "hint": "Sequenced statements give the same observable total — without the unspecified-order risk."
+    }
+  ],
+  "level": "combination"
+}

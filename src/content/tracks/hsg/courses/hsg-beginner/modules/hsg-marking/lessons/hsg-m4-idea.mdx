@@ -1,0 +1,37 @@
+## One array, indexed by value
+
+To check "did value v appear?", a linear scan costs O(n) per query. A
+**marking array** answers in O(1):
+
+```cpp
+const int MAXV = 100000;
+vector<bool> seen(MAXV + 1, false);
+int x; in >> x;
+seen[x] = true;                 // mark
+if (seen[v]) ...                // O(1) lookup
+```
+
+### Frequency arrays (đếm phân phối)
+
+```cpp
+vector<int> freq(MAXV + 1, 0);
+++freq[x];                      // x appeared once more
+```
+
+- Most frequent value: loop over `freq`, take the max.
+- Duplicates: any `freq[v] > 1`.
+- Missing value: any `freq[v] == 0` in a range.
+
+### Worked example — do two arrays contain the same multiset?
+
+```cpp
+vector<int> f1(MAXV + 1, 0), f2(MAXV + 1, 0);
+// increment f1 for a's elements, f2 for b's
+bool same = true;
+for (int v = 0; v <= MAXV && same; ++v) same = (f1[v] == f2[v]);
+out << (same ? "SAME" : "DIFF") << "\n";
+```
+
+Sorting both arrays and comparing also works (O(n log n)); marking is
+O(n + MAXV). The technique costs memory — which is exactly the catch the
+next lesson covers.

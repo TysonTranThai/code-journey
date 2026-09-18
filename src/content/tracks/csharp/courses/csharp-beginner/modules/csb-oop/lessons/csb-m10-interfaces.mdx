@@ -1,0 +1,38 @@
+## A contract, nothing else
+
+An **interface** declares what members must exist — no fields, no implementation:
+
+```csharp
+interface IStorable
+{
+    string Serialize();
+}
+
+class Document : IStorable
+{
+    public string Serialize() => "doc";   // must exist, must be public
+}
+```
+
+A class lists its interfaces after its base class: `class Document : IStorable`. The compiler enforces that `Document` provides `public string Serialize()` — miss it and compilation fails.
+
+## Many contracts, one type
+
+Unlike inheritance (one base class), a type may satisfy many interfaces — and unrelated types can share one:
+
+```csharp
+class Memory : IStorable { public string Serialize() => "mem"; }
+```
+
+`Document` and `Memory` share nothing but the contract, yet both flow through the same code:
+
+```csharp
+static string Save(IStorable s) => s.Serialize();
+```
+
+## Choose by need
+
+- **Inheritance** = sharing *implementation* plus an is-a relationship.
+- **Interface** = sharing a *promise* across unrelated types.
+
+Reaching for interfaces everywhere is its own disease; start concrete, extract a contract when two+ types genuinely share a promise. Later modules use `IEnumerable<T>` — a contract you already depend on daily.

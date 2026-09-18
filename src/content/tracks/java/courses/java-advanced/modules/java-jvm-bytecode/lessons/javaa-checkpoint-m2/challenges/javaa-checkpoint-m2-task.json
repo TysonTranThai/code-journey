@@ -1,0 +1,16 @@
+{
+  "id": "javaa-checkpoint-m2-task",
+  "title": "Checkpoint: assemble the evidence",
+  "prompt": "Implement:\n1. `static class Probe` with `static final List<String> LOG` and a static block that adds \"probe<clinit>\".\n2. `static String evidence()` that: (a) references `Probe.class` only, (b) records \"literal-silent:\" + outerTrace.isEmpty() (NOTE: read Probe state only through a list owned by Solution — reading any non-constant static of Probe is itself an active use that triggers <clinit>!), (c) calls `Class.forName(\"Solution$Probe\")`, (d) records \"forName-loud:\" + outerTrace.contains(\"probe<clinit>\"), (e) returns `\"jvm\" == new String(\"jvm\").intern()` ? \"pool-true\" : \"pool-false\" joined with the two flag strings as one `;`-separated line in order (b), (d), (e).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "evidence line assembled",
+      "code": "\nString line = Solution.evidence();\ncheckContains(line, \"literal-silent:true\");\ncheckContains(line, \"forName-loud:true\");\ncheckContains(line, \"pool-true\");\n",
+      "hint": "Sequence: literal (silent) → forName (loud) → intern (pool)."
+    }
+  ],
+  "level": "real-world"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "javi-checkpoint-m12-architecture",
+  "title": "Three-Layer Mini-Stack",
+  "prompt": "Assemble the full stack in `Solution`:\n- `record Task(String id, String title, boolean done)` (domain)\n- `interface TaskRepository { void save(Task t); Optional<Task> find(String id); List<Task> all(); }`\n- `static class InMemoryTaskRepository implements TaskRepository`\n- `static class TaskService` with constructor `(TaskRepository r)`:\n  - `Task create(String id, String title)` — blank title throws\n    IllegalArgumentException; saves and returns\n  - `Task complete(String id)` — missing id throws\n    NoSuchElementException; marks done and saves\n  - `List<Task> pending()` — all not-done tasks (insertion order)\n- `record TaskView(String id, String title)` (DTO)\n- `static List<TaskView> pendingViews(TaskService s)` — the controller\n  function mapping pending() to views.\n\nThen the test drives the whole graph: repo → service → views.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    public record Task(String id, String title, boolean done) {}\n    public record TaskView(String id, String title) {}\n    // Provide TaskRepository, InMemoryTaskRepository, TaskService,\n    // and pendingViews here.\n}\n",
+  "tests": [
+    {
+      "name": "create validates and persists",
+      "code": "\nSolution.InMemoryTaskRepository repo = new Solution.InMemoryTaskRepository();\nSolution.TaskService svc = new Solution.TaskService(repo);\nsvc.create(\"t1\", \"write tests\");\ncheckEq(repo.find(\"t1\").orElseThrow().done(), false, \"created open\");\ntry { svc.create(\"t2\", \"  \"); checkTrue(false, \"must throw\"); }\ncatch (IllegalArgumentException e) { checkTrue(true, \"blank rejected\"); }\n",
+      "hint": "Service guards the rule; repo stores the result."
+    },
+    {
+      "name": "complete flips state",
+      "code": "\nSolution.InMemoryTaskRepository repo = new Solution.InMemoryTaskRepository();\nSolution.TaskService svc = new Solution.TaskService(repo);\nsvc.create(\"t1\", \"a\");\nsvc.complete(\"t1\");\ncheckEq(repo.find(\"t1\").orElseThrow().done(), true, \"done\");\ntry { svc.complete(\"ghost\"); checkTrue(false, \"must throw\"); }\ncatch (java.util.NoSuchElementException e) { checkTrue(true, \"missing id\"); }\n",
+      "hint": "Complete updates persisted state; unknown ids throw."
+    },
+    {
+      "name": "pending filters and maps",
+      "code": "\nSolution.InMemoryTaskRepository repo = new Solution.InMemoryTaskRepository();\nSolution.TaskService svc = new Solution.TaskService(repo);\nsvc.create(\"t1\", \"a\"); svc.create(\"t2\", \"b\");\nsvc.complete(\"t1\");\nList<Solution.TaskView> views = Solution.pendingViews(svc);\ncheckEq(views.size(), 1, \"only pending\");\ncheckEq(views.get(0).title(), \"b\", \"t2 remains\");\n",
+      "hint": "pending() filters; pendingViews() maps to DTOs."
+    }
+  ],
+  "level": "real-world"
+}

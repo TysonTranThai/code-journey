@@ -1,0 +1,8 @@
+**The exam question:** two workers update the same inventory row at the same
+time. Both read `stock = 1`. Both decrement. How many widgets does the customer
+buy? One — if you built the write correctly.
+
+The checkpoint challenge combines optimistic concurrency and the unit-of-work
+rule: apply a batch of decrements against a simulated table, where concurrent
+writers (the `conflict_on_attempt` simulation from the practice) race you, and
+each unit of work must either fully land or cleanly retry.

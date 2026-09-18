@@ -1,0 +1,43 @@
+A **variable** is a named piece of memory with a type. In C++, you declare it once and the compiler enforces the type forever:
+
+```cpp
+int score = 0;            // whole numbers
+double price = 19.99;     // floating point
+char grade = 'A';         // a single character (single quotes!)
+bool passed = true;       // true or false
+std::string name = "Ha";  // text (double quotes) — needs #include <string>
+```
+
+## Declaration vs initialization vs assignment
+
+- **Declaration** creates the variable: `int x;`
+- **Initialization** gives it its first value — do it on the same line, always.
+- **Assignment** replaces the value later: `x = 5;`
+
+An uninitialized variable contains garbage. Not "zero", not "empty" — *garbage*: whatever bits were already in that memory. Reading it is undefined behavior.
+
+## Brace initialization — the modern default
+
+```cpp
+int width{10};          // preferred modern form
+int y = 3.7;            // compiles: y becomes 3 — silently!
+int z{3.7};             // error: narrowing conversion — compiler catches it
+```
+
+Braces refuse lossy conversions. That is why this course writes `{}` for new variables: the compiler becomes your safety net.
+
+## `auto` — say the type once
+
+```cpp
+auto count = 10;        // int — the compiler deduces it from the initializer
+auto ratio = 0.5;       // double
+auto title = std::string{"Report"};
+```
+
+`auto` is not a "dynamic type" (types are still fixed at compile time); it just avoids repeating them. Rule of thumb in this course: use explicit types for simple values, `auto` when the type is obvious from the right-hand side. (More in lesson 2C.)
+
+## Names matter
+
+`int x2tmp1;` compiles; `int pending_items;` communicates. Modern C++ style: `snake_case` for variables and functions, `PascalCase` for types you will meet in module 10.
+
+**Practice next:** declare, initialize, and compute — the compiler will grade your types.

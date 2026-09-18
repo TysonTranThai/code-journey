@@ -1,0 +1,20 @@
+{
+  "id": "i2-body-stream",
+  "title": "Streamed Body Assembler",
+  "prompt": "Write `assembleBody(chunks)` — chunks is an array of Buffer-like strings arriving in order; concatenate and parse as JSON. Return { ok: true, data } on valid JSON, { ok: false, error: \"invalid-json\" } on unparseable input (empty array counts as invalid). Wrap JSON.parse — never let a 400 become a 500.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function assembleBody(chunks) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "concatenates and parses",
+      "code": "const fn = new Function(code + \"\\nreturn { assembleBody };\");\nconst { assembleBody } = fn();\nconst out = assembleBody(['{\"title\":', '\"Write tests\"}']);\nif (!out.ok || out.data.title !== \"Write tests\") throw new Error(\"Two chunks assemble into one object.\");\n",
+      "hint": "join then JSON.parse inside try/catch."
+    },
+    {
+      "name": "bad JSON fails safely",
+      "code": "const fn = new Function(code + \"\\nreturn { assembleBody };\");\nconst { assembleBody } = fn();\nif (assembleBody([\"{broken\"]).ok !== false) throw new Error(\"Garbage => ok false.\");\nif (assembleBody([]).ok !== false) throw new Error(\"Empty body => not ok.\");\nif (assembleBody([\"{broken\"]).error !== \"invalid-json\") throw new Error(\"The error is named.\");\n",
+      "hint": "Catch is the success path here — it's how you return 400."
+    }
+  ]
+}

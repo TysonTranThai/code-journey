@@ -1,0 +1,39 @@
+```cpp
+#include <vector>
+
+std::vector<int> scores;                 // rỗng
+scores.push_back(9);                     // thêm cuối: {9}
+scores.push_back(7);                     // {9, 7}
+std::vector<int> init{9, 7, 10};         // danh sách khởi tạo
+std::vector<int> filled(5, 0);           // {0,0,0,0,0} — năm số không
+```
+
+## Vì sao vector thắng mảng thô
+
+Một mảng C thô `int a[10]` là một khối byte cố định: không biết kích thước, không kiểm tra biên, suy biến thành con trỏ khi truyền đi, và không thể lớn lên. `std::vector` là mảng co giãn *tự biết độ dài*, được sao chép đúng khi gán, và tự dọn dẹp sau mình (điểm cuối cùng chính là RAII — module 12). Nguyên tắc gần như không ngoại lệ: **nếu bạn đang viết mảng thô, có lẽ bạn muốn một `std::vector` (kích thước linh hoạt) hoặc `std::array` (kích thước cố định nhỏ)**.
+
+`std::array<int, 3>` là lớp bọc mỏng quanh mảng kích thước cố định, thêm các tiện nghi chuẩn (`.size()`, so sánh, tương thích thuật toán STL) với chi phí bằng không. Dùng nó khi kích thước thực sự cố định lúc biên dịch.
+
+## API hằng ngày
+
+```cpp
+scores.size()            // 2 — một size_t (không dấu); cẩn thận khi so với int
+scores.at(1)             // 7 — có kiểm tra biên; [] là đường nhanh không kiểm tra
+scores.back()            // 10
+scores.pop_back()        // bỏ phần tử cuối
+scores.empty()           // false
+```
+
+## Duyệt
+
+```cpp
+for (int s : scores) { /* theo giá trị — sao chép từng int */ }
+for (const int& s : scores) { /* chỉ đọc, không sao chép */ }
+for (int& s : scores) { s *= 2; }        // sửa tại chỗ
+```
+
+Dạng `const&` quan trọng khi phần tử lớn (string); với int thì như nhau. Module 11 sẽ giải thích `&` trọn vẹn.
+
+## Tăng trưởng và mảng 2 chiều
+
+`push_back` thi thoảng mở rộng buffer của vector (capacity ≥ size) — bạn không phải quản lý; chỉ cần biết `size()` là số phần tử, `capacity()` là chỗ trống. Lưới 2 chiều là vector của các vector: `std::vector<std::vector<int>> grid(rows, std::vector<int>(cols, 0));` rồi `grid[r][c]` (có kiểm tra biên: `grid.at(r).at(c)`).

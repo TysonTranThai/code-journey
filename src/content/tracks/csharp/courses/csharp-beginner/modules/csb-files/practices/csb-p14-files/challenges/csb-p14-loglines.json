@@ -1,0 +1,21 @@
+{
+  "id": "csb-p14-loglines",
+  "title": "Append-only log",
+  "prompt": "Implement `static void AppendLine(string path, string line)` (appends one line, creating the file if needed) and `static string[] ReadLines(string path)` (all lines; empty array for a missing file, never null).",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "var path = Path.Combine(Path.GetTempPath(), \"cj-p14c\", Guid.NewGuid().ToString() + \".log\");\nSolution.AppendLine(path, \"first\");\nSolution.AppendLine(path, \"second\");\nCj.Eq(string.Join(\"|\", Solution.ReadLines(path)), \"first|second\", \"append order kept\");\nCj.Eq(Solution.ReadLines(path).Length, 2, \"two entries\");",
+      "hint": "Each append lands after the last; order survives."
+    },
+    {
+      "name": "missing",
+      "code": "var path = Path.Combine(Path.GetTempPath(), \"cj-p14d\", Guid.NewGuid().ToString() + \".log\");\nvar lines = Solution.ReadLines(path);\nCj.False(lines == null, \"missing file yields empty, not null\");\nCj.Eq(lines.Length, 0, \"zero lines\");\nSolution.AppendLine(path, \"seed\");\nCj.Eq(Solution.ReadLines(path)[0], \"seed\", \"append creates the file\");",
+      "hint": "Read-before-write must not crash the log viewer; append bootstraps the file."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,32 @@
+## Các kiểu hằng ngày
+
+| Kiểu | Kích thước thường gặp | Chứa |
+|---|---|---|
+| `int` | 4 byte | số nguyên, khoảng ±2,1 tỷ |
+| `char` | 1 byte | một ký tự — và một số nguyên nhỏ (-128..127) |
+| `float` | 4 byte | số thực xấp xỉ, ~7 chữ số có nghĩa |
+| `double` | 8 byte | số thực xấp xỉ, ~15 chữ số có nghĩa |
+
+Kích thước là *thường gặp*, không đảm bảo — đó là lý do có `sizeof`. `%zu` in
+một `size_t` (kiểu trả về của `sizeof`).
+
+## char là một số
+
+```c
+char c = 'A';        // ký tự literal — nháy đơn
+printf("%d\n", c);   // 65 — mã ASCII
+printf("%c\n", c);   // A
+```
+
+`'A' + 1` là `'B'`. Đồng nhất ký tự–số nguyên này là nền của xử lý văn bản trong C.
+
+## signed và unsigned
+
+`int` mặc định **có dấu**: có thể âm. `unsigned int` bỏ dấu và nhân đôi miền
+dương. Trộn chúng trong một biểu thức là nguồn lỗi kinh điển — hiện tại, hãy
+giữ phép tính trong các kiểu có dấu.
+
+## float hay double
+
+`float` làm tròn sớm hơn. Mặc định dùng `double` cho số thực
+(`printf("%f", ...)` in một double).

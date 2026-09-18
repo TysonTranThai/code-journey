@@ -1,0 +1,58 @@
+## Protocol, overload và callable
+
+**`typing.Protocol`** định nghĩa cấu trúc, không phải kế thừa. Bất kỳ đối tượng
+nào có đúng các thành viên đều thỏa protocol — duck typing mà checker có thể
+xác minh:
+
+```python
+from typing import Protocol
+
+class Drawable(Protocol):
+    def draw(self) -> str: ...
+
+def render(x: Drawable) -> str:
+    return x.draw()
+
+class Circle:                      # no inheritance from Drawable
+    def draw(self) -> str:
+        return "circle"
+```
+
+`render(Circle())` qua được kiểm tra kiểu dù `Circle` chưa từng nhắc tới
+`Drawable`. `@runtime_checkable` cộng thêm khả năng `isinstance` (chỉ kiểm tra
+có method, không kiểm tra chữ ký).
+
+**`@overload`** mô tả kiểu đầu ra phụ thuộc đầu vào. Phần implementation giữ
+thân hàm; các overload chính là hợp đồng:
+
+```python
+from typing import overload, Union
+
+@overload
+def parse(value: str) -> list[str]: ...
+@overload
+def parse(value: bytes) -> str: ...
+def parse(value):
+    if isinstance(value, bytes):
+        return value.decode()
+    return value.split(",")
+```
+
+**Callable** được đánh kiểu bằng `Callable[[ArgTypes], ReturnType]`. Với những
+devà richer — keyword args, generic, hàm được trang trí — dùng `ParamSpec`:
+
+```python
+from typing import TypeVar, ParamSpec, Callable
+P = ParamSpec("P")
+R = TypeVar("R")
+
+def logged(fn: Callable[P, R]) -> Callable[P, R]:
+    def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+        print("calling", fn.__name__)
+        return fn(*args, **kwargs)
+    return wrapper
+```
+
+`ParamSpec` giữ nguyên *toàn bộ* chữ ký xuyên qua decorator — hàm sau trang trí
+vẫn callable như bản gốc, với cả checker lẫn `inspect.signature` (nhờ
+`functools.wraps`).

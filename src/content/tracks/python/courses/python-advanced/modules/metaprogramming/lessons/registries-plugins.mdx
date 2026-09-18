@@ -1,0 +1,42 @@
+## Registries and plugin patterns
+
+A **registry** maps keys to implementations discovered at import time. It is
+the backbone of plugin systems: the core never imports the plugins; the
+plugins import the core and register themselves.
+
+Three registration styles, weakest to strongest:
+
+```python
+# 1. explicit registration call
+REGISTRY = {}
+def register(key):
+    def deco(cls):
+        REGISTRY[key] = cls
+        return cls
+    return deco
+
+# 2. __init_subclass__ (auto-registration with inheritance)
+class Handler:
+    _sub = {}
+    def __init_subclass__(cls, scheme=None, **kw):
+        super().__init_subclass__(**kw)
+        Handler._sub[scheme or cls.__name__.lower()] = cls
+
+# 3. entry points (cross-package, used by pytest and console scripts)
+# declared in pyproject.toml:
+# [project.entry-points."cj.exporters"]
+# csv = "myplug.csv:CsvExporter"
+```
+
+Entry points are how *installed distributions* plug into a host without the
+host importing them eagerly — `importlib.metadata.entry_points()` loads them
+lazily on demand.
+
+Design rules that keep registries sane at scale:
+
+- Fail fast on duplicate keys and missing required methods (validate at class
+  creation, not first use).
+- Keep the registry keyed by *stable, public* identifiers — never class names,
+  which refactors break silently.
+- Version the contract: a plugin written against protocol v1 should fail
+  loudly, not subtly, on a v2 host.

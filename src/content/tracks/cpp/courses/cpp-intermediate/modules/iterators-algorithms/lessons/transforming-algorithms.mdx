@@ -1,0 +1,30 @@
+Two algorithms produce new data from old: `std::transform` (map) and
+`std::accumulate` (fold).
+
+```cpp
+#include <algorithm>
+#include <numeric>
+#include <string>
+#include <vector>
+
+std::vector<int> v{1, 2, 3};
+std::vector<int> doubled;
+std::transform(v.begin(), v.end(), std::back_inserter(doubled),
+               [](int x) { return x * 2; });
+
+long total = std::accumulate(v.begin(), v.end(), 0L);
+std::string joined = std::accumulate(
+    words.begin(), words.end(), std::string{},
+    [](const std::string& a, const std::string& b) {
+        return a.empty() ? b : a + " " + b;
+    });
+```
+
+`std::back_inserter` is required when the destination is empty: transform
+does not grow the container for you; writing through `doubled.begin()` on
+an empty vector is undefined behavior.
+
+`accumulate` takes an initial value and a binary operation. Its type rule
+is subtle: the *initial value's type* is the accumulator's type — starting
+with `0` instead of `0.0` silently truncates a double sum. This is the
+classic beginner bug this lesson exists to prevent.

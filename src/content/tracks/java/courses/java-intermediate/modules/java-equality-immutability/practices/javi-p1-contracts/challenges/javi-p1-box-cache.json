@@ -1,0 +1,16 @@
+{
+  "id": "javi-p1-box-cache",
+  "title": "Predict the Box Comparison",
+  "prompt": "Without running code first, predict each result, then implement\n`Solution.answers()` returning them as a `boolean[]`:\n\n1. `Integer a = 1000, b = 1000; a == b` — ?\n2. `Integer c = 100, d = 100; c == d` — ?\n3. `Integer e = 1000, f = 1000; e.equals(f)` — ?\n4. `int g = 1000; Integer h = 1000; g == h` — ? (unboxing comparison)\n\nIndex 0..3 in the returned array. Then read the explanation the tests give\nyou and reconcile it with your intuition.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "four predictions in order",
+      "code": "\nboolean[] ans = Solution.answers();\ncheckEq(ans.length, 4, \"four answers\");\ncheckEq(ans[0], false, \"1000 > 127 → distinct boxes\");\ncheckEq(ans[1], true, \"100 ≤ 127 → shared cache box (accident!)\");\ncheckEq(ans[2], true, \"equals compares values\");\ncheckEq(ans[3], true, \"h unboxes to int, primitive ==\");\n",
+      "hint": "The Integer cache covers -128..127 only; above that each box is a new object. Unboxing comparisons use primitive ==."
+    }
+  ],
+  "level": "independent"
+}

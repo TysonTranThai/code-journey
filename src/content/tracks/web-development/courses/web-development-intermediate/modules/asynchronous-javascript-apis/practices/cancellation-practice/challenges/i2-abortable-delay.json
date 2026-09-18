@@ -1,0 +1,25 @@
+{
+  "id": "i2-abortable-delay",
+  "title": "Abortable Delay",
+  "prompt": "Write `abortableDelay(ms, signal)` returning a promise that resolves with `\"done\"` after `ms` — UNLESS `signal` aborts first, in which case it must REJECT with an error whose `name` is `\"AbortError\"`. If the signal is already aborted, reject immediately.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function abortableDelay(ms, signal) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "resolves when not aborted",
+      "code": "const fn = new Function(code + \"\\nreturn { abortableDelay };\");\nconst { abortableDelay } = fn();\nconst out = await abortableDelay(10, new AbortController().signal);\nif (out !== \"done\") throw new Error(\"An un-aborted delay resolves with 'done'.\");",
+      "hint": "setTimeout(() => resolve('done'), ms) — wire signal.addEventListener('abort', reject)."
+    },
+    {
+      "name": "rejects with AbortError when aborted mid-flight",
+      "code": "const fn = new Function(code + \"\\nreturn { abortableDelay };\");\nconst { abortableDelay } = fn();\nconst c = new AbortController();\nconst p = abortableDelay(60, c.signal);\nsetTimeout(() => c.abort(), 5);\nlet err;\ntry { await p; } catch (e) { err = e; }\nif (!err || err.name !== \"AbortError\") throw new Error(\"Mid-flight abort must reject with err.name === 'AbortError'.\");",
+      "hint": "The abort listener calls a reject function captured from the promise executor."
+    },
+    {
+      "name": "already-aborted signal rejects immediately",
+      "code": "const fn = new Function(code + \"\\nreturn { abortableDelay };\");\nconst { abortableDelay } = fn();\nconst c = new AbortController();\nc.abort();\nlet err;\ntry { await abortableDelay(60, c.signal); } catch (e) { err = e; }\nif (!err || err.name !== \"AbortError\") throw new Error(\"A pre-aborted signal rejects immediately with AbortError.\");",
+      "hint": "Check signal?.aborted at the top and reject synchronously in that path."
+    }
+  ]
+}

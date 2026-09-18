@@ -1,0 +1,26 @@
+{
+  "id": "ca15-assert-vs-error",
+  "title": "Contract or Error Path?",
+  "prompt": "Implement `const char *classify_condition(int kind)` mapping: 0 (NULL from malloc) → \"error-handling\", 1 (user typed negative size) → \"error-handling\", 2 (internal: node->next == node in an acyclic list) → \"assert\", 3 (file open failure) → \"error-handling\", 4 (internal: popped an empty stack the API forbids) → \"assert\". The rule: caller-controllable or environmental → handle; contract-impossible → assert.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "environmental conditions",
+      "code": "CHECK_STR_EQ(classify_condition(0), \"error-handling\");\nCHECK_STR_EQ(classify_condition(3), \"error-handling\");",
+      "hint": "Allocation failure and file errors happen in correct programs — they need error paths, not asserts."
+    },
+    {
+      "name": "contract violations",
+      "code": "CHECK_STR_EQ(classify_condition(2), \"assert\");\nCHECK_STR_EQ(classify_condition(4), \"assert\");",
+      "hint": "A cycle in an acyclic list or a forbidden pop is an internal bug — assert fires in debug, aborts loudly."
+    },
+    {
+      "name": "user input",
+      "code": "CHECK_STR_EQ(classify_condition(1), \"error-handling\");",
+      "hint": "User input is never contract-impossible."
+    }
+  ],
+  "level": "imitation"
+}

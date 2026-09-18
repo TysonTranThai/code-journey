@@ -1,0 +1,14 @@
+## Lvalue và giá trị
+
+**Lvalue** là biểu thức *tham chiếu đến đối tượng* — nó có địa chỉ. Gán cần lvalue bên trái vì lưu trữ cần đối tượng để lưu.
+
+```c
+int x = 1;
+int *p = &x;        /* &x: toán hạng phải là lvalue */
+x + 1 = 3;          /* LỖI: không phải lvalue */
+"hi"[0] = 'H';      /* biên dịch được; UB lúc chạy */
+```
+
+## Vòng đời bắt đầu và kết thúc
+
+**Vòng đời** của đối tượng do thời lượng lưu trữ quyết định: đối tượng tự động sống theo khối bao quanh; đối tượng tĩnh/cấp phát sống đến hết chương trình hoặc `free`. Truy cập ngoài vòng đời là UB — ví dụ kinh điển: trả về địa chỉ biến cục bộ.

@@ -1,0 +1,14 @@
+{
+  "title": "Time-box thao tác hay lỗi",
+  "prompt": "Bọc một task tùy ý với timeout: trả kết quả nếu xong đúng hạn, ngược lại ném TimeoutException. Dùng Task.WhenAny + Task.Delay (hoặc Task.WaitAsync — .NET 8+).",
+  "tests": [
+    {
+      "name": "fast path wins",
+      "hint": "Task.WhenAny(work, Task.Delay(timeoutMs)); nếu winner != work ném TimeoutException, else await work."
+    },
+    {
+      "name": "slow path times out",
+      "hint": "Task.Delay(50) thắng task 2s — WhenAny trả delay; ném TimeoutException."
+    }
+  ]
+}

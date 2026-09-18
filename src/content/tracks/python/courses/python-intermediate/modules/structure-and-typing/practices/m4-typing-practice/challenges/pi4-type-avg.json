@@ -1,0 +1,26 @@
+{
+  "id": "pi4-type-avg",
+  "title": "Annotated Average",
+  "prompt": "Implement average(values: list[float]) -> float that raises ValueError on an empty list. The annotations must be exactly list[float] and float (verifyable via typing.get_type_hints).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "from typing import get_type_hints\n\ndef average(values: list[float]) -> float:\n    pass\n",
+  "tests": [
+    {
+      "name": "computes the mean",
+      "code": "assert average([2.0, 4.0]) == 3.0",
+      "hint": "sum/len — the annotations don't change behavior."
+    },
+    {
+      "name": "empty input raises",
+      "code": "try:\n    average([])\n    failed = False\nexcept ValueError:\n    failed = True\nassert failed",
+      "hint": "Guard the empty case with ValueError."
+    },
+    {
+      "name": "annotations are real",
+      "code": "import typing\nhints = typing.get_type_hints(average)\nassert hints['values'] == list[float]\nassert hints['return'] is float",
+      "hint": "Keep the annotations: get_type_hints must see list[float] and float."
+    }
+  ],
+  "level": "guided"
+}

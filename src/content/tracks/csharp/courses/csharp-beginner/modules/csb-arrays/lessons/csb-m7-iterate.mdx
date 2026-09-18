@@ -1,0 +1,35 @@
+## foreach: visit everything
+
+```csharp
+foreach (int p in primes)
+    Console.WriteLine(p);
+```
+
+`foreach` walks every element in order, no index, no bounds risk. It cannot modify the array structure, and you don't get a position. When you need the position — `for`:
+
+```csharp
+for (int i = 0; i < primes.Length; i++)
+    Console.WriteLine($"{i}: {primes[i]}");
+```
+
+Note `i < Length`, not `<=`. This loop shape appears in every challenge you'll ship.
+
+## Accumulation: the four patterns
+
+Almost every array exercise is one of these loops in disguise:
+
+```csharp
+int sum = 0;                    // 1. fold: one running value
+foreach (int p in primes) sum += p;
+
+int max = primes[0];            // 2. best-so-far
+foreach (int p in primes) if (p > max) max = p;
+
+int count = 0;                  // 3. counter with predicate
+foreach (int p in primes) if (p % 2 == 0) count++;
+
+int[] copy = new int[primes.Length];   // 4. transform
+for (int i = 0; i < primes.Length; i++) copy[i] = primes[i] * 2;
+```
+
+The best-so-far loop assumes a non-empty array — on empty input `primes[0]` throws. Guard with `Length == 0` (or seed from `int.MinValue` when a sentinel is honest). These four shapes plus a guard clause cover min/max/average/count/filter/map — the entire Module 7 practice set is them, and LINQ (Module 17) later names them.

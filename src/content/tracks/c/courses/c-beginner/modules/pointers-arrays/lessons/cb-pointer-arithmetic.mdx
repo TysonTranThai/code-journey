@@ -1,0 +1,50 @@
+## +1 means "one element further"
+
+```c
+int a[5] = {5, 10, 15, 20, 25};
+int *p = a;          // &a[0]
+
+printf("%d\n", *p);        // 5
+printf("%d\n", *(p + 1));  // 10 — one INT further (4 bytes), not one byte
+printf("%d\n", *(p + 2));  // 15
+```
+
+The compiler scales arithmetic by `sizeof(type)`: for `int*`, +1 is +4 bytes;
+for `double*`, +1 is +8. That is why pointer types matter.
+
+## Indexing IS pointer arithmetic
+
+```c
+a[i]  is defined as  *(a + i)
+```
+
+`a[3]`, `3[a]`, `*(a+3)` — all the same address. The bracket notation exists
+for readability, not because it is a different mechanism.
+
+## Walking with a pointer
+
+```c
+int *p = a;
+int *end = a + 5;          // one PAST the last element — legal to hold
+while (p < end) {
+    printf("%d ", *p);
+    p++;                    // advance one element
+}
+```
+
+You may compute and compare pointers one past the end; dereferencing there is
+undefined behavior.
+
+## Subtraction gives distance
+
+```c
+int *p = &a[2];
+printf("%ld\\n", (long)(p - a));   // 2 — element count, not bytes
+```
+
+## What is NOT legal
+
+- arithmetic between unrelated arrays: `p1 - p2` where they point into
+  different arrays — undefined
+- dereferencing one-past-the-end, or any address outside the array
+- scaling with pointers to incomplete objects

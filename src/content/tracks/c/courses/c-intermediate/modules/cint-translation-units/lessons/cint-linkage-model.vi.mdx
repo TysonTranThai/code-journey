@@ -1,0 +1,67 @@
+## Một tệp mã nguồn, ba giai đoạn
+
+Cấp độ mới xem "biên dịch" như một bước. Thực ra là ba, và biết giai đoạn nào
+lỗi là một nửa công việc debug C:
+
+1. **Tiền xử lý** — thao tác trên văn bản. `#include` dán nguyên văn nội dung
+   tệp vào chỗ include, macro được mở rộng, khối `#if` bị cắt bỏ. Kết quả:
+   một **đơn vị dịch** (translation unit).
+2. **Biên dịch** — đơn vị dịch được phân tích và tối ưu thành **tệp đối tượng**
+   (`.o`): mã máy với các "lỗ" ở những chỗ tham chiếu symbol của tệp khác.
+3. **Liên kết** — linker gộp các tệp đối tượng và thư viện, lấp đầy mọi lỗ.
+   Không lấp được thì bạn gặp **lỗi liên kết**, không phải lỗi biên dịch.
+
+```c
+/* #include thực chất là gì — copy-paste */
+#include "myheader.h"   /* dán toàn bộ văn bản myheader.h vào đây */
+```
+
+## Vì sao điều này quan trọng khi đọc lỗi
+
+- `error: unknown type name 'Foo'` → **giai đoạn biên dịch** (thiếu khai báo
+  ở nơi compiler đang đọc).
+- `undefined reference to 'helper'` → **giai đoạn liên kết** (tên được khai
+  báo nhưng không có định nghĩa trong tệp đối tượng nào).
+- `multiple definition of 'counter'` → **giai đoạn liên kết** (hai TU cùng định nghĩa).
+
+## Quy tắc một định nghĩa
+
+Một chương trình có thể **khai báo** một tên nhiều lần (đó là việc của header)
+nhưng chỉ được **định nghĩa** đúng một lần trên toàn bộ các TU. Khai báo nói
+"thứ này tồn tại ở đâu đó"; định nghĩa tạo ra nó.
+
+```c
+extern int counter;   /* khai báo: tồn tại ở nơi khác */
+int counter = 0;      /* định nghĩa: nó nằm trong tệp đối tượng NÀY */
+```
+
+## Liên kết nội bộ: `static` ở phạm vi tệp
+
+```c
+static int helpers_used = 0;   /* riêng tư trong TU này */
+static void tally(void) { helpers_used++; }   /* linker không thấy */
+```
+
+`static` ở phạm vi tệp nghĩa là "tên này **nội bộ** — tệp đối tượng khác không
+thấy, và tệp của tôi không đụng ai". Hai tệp khác nhau có thể cùng có
+`static int count;` riêng mà không xung đột. Không có `static`, tên là
+**bên ngoài** và mọi bản sao phải là một thực thể duy nhất.
+
+## Hàm mặc định là bên ngoài
+
+```c
+static int fast_path(int x) { return x + 1; }  /* nội bộ: chỉ tệp này */
+int slow_path(int x);                          /* bên ngoài: định nghĩa nơi khác */
+```
+
+Nguyên tắc: mỗi helper riêng tư của tệp đều có `static`. Bạn nhận được cảnh
+báo tốt hơn (unused-function), không va chạm tên ngoài ý muốn, và optimizer
+đôi khi inline mạnh hơn khi tên có liên kết nội bộ.
+
+## Kiểm tra hiểu biết
+
+- Giai đoạn nào bắt thiếu dấu chấm phẩy? (Biên dịch — tiền xử lý chỉ xáo trộn
+  văn bản; parser mới phát hiện.)
+- Hai tệp cùng định nghĩa `int total;` ở phạm vi tệp. Giai đoạn nào fail?
+  (Liên kết — định nghĩa "mặc định" trùng tên bên ngoài.)
+- Tiền xử lý làm gì với `#if 0 ... #endif`? (Xóa khối trước khi compiler thấy.)

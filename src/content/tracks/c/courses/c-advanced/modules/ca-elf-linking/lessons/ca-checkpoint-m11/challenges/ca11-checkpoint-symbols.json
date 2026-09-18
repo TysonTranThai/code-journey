@@ -1,0 +1,31 @@
+{
+  "id": "ca11-checkpoint-symbols",
+  "title": "Checkpoint: Reading the Linker's Mind",
+  "level": "mini-build",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>",
+  "prompt": "Module integration: symbol-table forensics plus the link order rule, in one file.\n \n1. `char sym_class(const char *nm_line)` — classify one `nm` output line like \"0000000000401100 T bump\" or \"                 U printf\": return the type letter. (A single-letter first field means undefined — no address column.)\n2. `int linker_resolves(const char *order)` — order is a string of \"A\" and \"P\" (Archive, Plain object) read left to right. Archives only satisfy symbols still pending when the scan reaches them. Given the archive defines what pending needs and plain objects only *demand*, return 1 iff at least one archive appears after the first P (the classic ordering pitfall), else 0.",
+  "tests": [
+    {
+      "name": "classified letters",
+      "code": "CHECK_EQ(sym_class(\"0000000000401100 T bump\"), (int)'T');\nCHECK_EQ(sym_class(\"                 U printf\"), (int)'U');\nCHECK_EQ(sym_class(\"0000000000402000 d local\"), (int)'d');",
+      "hint": "Address then letter, or a lone letter for undefined symbols — return that letter."
+    },
+    {
+      "name": "archive after plain resolves",
+      "code": "CHECK_EQ(linker_resolves(\"PA\"), 1);\nCHECK_EQ(linker_resolves(\"PPA\"), 1);",
+      "hint": "The archive is scanned while the demand is still pending, so the member is pulled in."
+    },
+    {
+      "name": "archive before plain loses",
+      "code": "CHECK_EQ(linker_resolves(\"AP\"), 0);\nCHECK_EQ(linker_resolves(\"APP\"), 0);",
+      "hint": "The archive was scanned before the demand existed: nothing was pending, so nothing was pulled."
+    },
+    {
+      "name": "no plain object means nothing pending",
+      "code": "CHECK_EQ(linker_resolves(\"AA\"), 0);",
+      "hint": "With no plain object there is no demand — archives pull nothing."
+    }
+  ]
+}

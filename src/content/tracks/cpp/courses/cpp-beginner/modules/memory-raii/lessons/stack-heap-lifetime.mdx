@@ -1,0 +1,31 @@
+## Two homes for objects
+
+**The stack** — automatic storage. Local variables live here; the compiler allocates and frees them:
+
+```cpp
+void f() {
+    int x{5};                          // born when the line runs
+    std::vector<int> v{1, 2, 3};       // born; its ELEMENTS live on the heap (below)
+}                                      // both die here — guaranteed, reverse order
+```
+
+Stack allocation is nearly free and lifetimes are exact: enter scope → live; leave scope → dead. Every local, nested, and temporary object follows this rule.
+
+**The heap** — dynamic storage for things whose size or lifetime must be decided at runtime. The `vector`'s elements, a `std::string`'s characters, objects shared between scopes: their *contents* live on the heap, but their *handles* (the vector/string object itself) are still stack locals.
+
+## The lifetime question — ask it first
+
+For every object: **who is allowed to use it, and until when?**
+
+```
+stack local      → lives to end of scope (automatic)
+heap object      → lives until SOMETHING releases it (the next lessons: what and how)
+```
+
+## The three classic bugs (know their names)
+
+- **Memory leak** — heap memory allocated, never released; the program slowly bloats.
+- **Use-after-free / dangling** — using memory that was already released.
+- **Double-free** — releasing the same memory twice.
+
+Every one of them is an *ownership* mistake: either nobody owned the memory, or two things thought they did. The cure is not vigilance; it is making ownership **explicit and automatic** — which is exactly RAII.

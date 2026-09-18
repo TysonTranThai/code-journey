@@ -1,0 +1,20 @@
+{
+  "id": "i2-unknown-handler",
+  "title": "Unknown Payload Handler",
+  "prompt": "Write `handleUnknown(payload)` that narrows honestly: arrays of strings → `{ kind: \"tags\", tags }` (trimmed); finite numbers → `{ kind: \"count\", count }`; objects with string `id` → `{ kind: \"entity\", id }`; anything else → `{ kind: \"reject\" }`. Never throw.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function handleUnknown(payload) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "each variant narrows correctly",
+      "code": "const fn = new Function(code + \"\\nreturn { handleUnknown };\");\nconst { handleUnknown } = fn();\nconst t = handleUnknown([\" a \", \"b\"]);\nif (t.kind !== \"tags\" || t.tags.join() !== \"a,b\") throw new Error(\"String arrays → tags (trimmed).\");\nconst c = handleUnknown(42);\nif (c.kind !== \"count\" || c.count !== 42) throw new Error(\"Finite numbers → count.\");\nconst e = handleUnknown({ id: \"x1\", junk: true });\nif (e.kind !== \"entity\" || e.id !== \"x1\") throw new Error(\"Objects with string id → entity (extra fields ok).\");\nconst r = handleUnknown(Symbol ? \"just a string\" : 0);\nif (r.kind !== \"reject\") throw new Error(\"Bare strings do not match any variant.\");",
+      "hint": "Array.isArray first, then typeof, then the object check with an id field."
+    },
+    {
+      "name": "never throws on junk",
+      "code": "const fn = new Function(code + \"\\nreturn { handleUnknown };\");\nconst { handleUnknown } = fn();\nfor (const junk of [null, undefined, NaN, {}, () => 1]) {\n  let threw = false;\n  try { handleUnknown(junk); } catch { threw = true; }\n  if (threw) throw new Error(\"Junk input must produce a result object, not a throw (failed on: \" + String(junk) + \").\");\n}",
+      "hint": "Every branch guards its assumptions; the final fallback returns reject."
+    }
+  ]
+}

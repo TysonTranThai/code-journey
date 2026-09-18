@@ -1,0 +1,39 @@
+## Tệp là mảng bạn đánh chỉ số được
+
+Record độ rộng cố định cho phép tới bất kỳ record nào trực tiếp:
+
+```c
+/* record i có độ rộng W: */
+fseek(f, (long)i * W, SEEK_SET);   /* SEEK_SET: từ đầu */
+fread(buf, W, 1, f);
+```
+
+`ftell` báo vị trí hiện tại; `SEEK_CUR` di chuyển tương đối, và
+`SEEK_END` từ đuôi (`fseek(f, 0, SEEK_END); ftell(f)` là cách kinh điển
+lấy kích thước tệp — với kích thước thật, dùng stat API của OS; đây là
+bản stdlib-only).
+
+## "r+" là đọc VÀ ghi — không phải append
+
+Mở bằng `"r+"` cho phép cả hai hướng nhưng **không** tạo tệp và
+**không** tự dời vị trí: sau khi ghi, vị trí nằm nơi bạn dừng. `"a"`
+(append) luôn ghi ở cuối nhưng không đọc được. Mode là hợp đồng — lập
+bảng một lần:
+
+| mode | đọc | ghi | tạo | cắt cụt |
+|---|---|---|---|---|
+| "r" | ✓ | ✗ | ✗ | ✗ |
+| "w" | ✗* | ✓ | ✓ | ✓ |
+| "a" | ✗ | ✓ | ✓ | ✗ |
+| "r+" | ✓ | ✓ | ✗ | ✗ |
+| "w+" | ✓* | ✓ | ✓ | ✓ |
+
+\* chỉ sau khi rewind; "w" cắt cụt khi mở, phá dữ liệu cũ — mode xóa tệp
+khi chọn ẩu.
+
+## Update tại chỗ: độ rộng phải khớp
+
+Ghi đè record i qua `"r+"` chỉ đúng khi record mới có *đúng* độ rộng cũ
+— không thì mọi thứ phía sau dịch chuyển và tệp hỏng. Update độ rộng
+thay đổi phải viết lại phần đuôi hoặc dùng gián tiếp (slot table) — lý
+do database thật phức tạp.

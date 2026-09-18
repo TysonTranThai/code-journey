@@ -1,0 +1,66 @@
+## API là gì
+
+Một **API** (Application Programming Interface) là cửa trước của một dịch vụ: một tập hợp các URL mà bạn có thể hỏi xin dữ liệu. Một **web API** trả lời các HTTP request — thường bằng JSON. Con số thời tiết trong app trên điện thoại của bạn đến từ chính loại request đó.
+
+## Chu trình request/response
+
+Trang của bạn (**client**) gửi một HTTP **request** đến một URL; server gửi trả lại một **response** với một status code và một phần thân:
+
+- `200` OK · `201` Created · `404` Not Found · `401` Unauthorized · `500` Server error
+
+`2xx` = thành công, `4xx` = lỗi từ request của bạn, `5xx` = lỗi của server. Biết liếc qua các status code là một siêu năng lực — tab network trong DevTools hiện mọi request mà trang của bạn gửi đi.
+
+## fetch — hàm request của trình duyệt
+
+```js
+const response = await fetch("https://api.example.com/users/1");
+
+if (!response.ok) {
+  // ok là false với 4xx/5xx
+  throw new Error("Request failed: " + response.status);
+}
+
+const user = await response.json(); // phân tích phần thân JSON
+console.log(user.name);
+```
+
+Hai await, hai việc: await đầu tiên đợi **headers** (các status code sống ở đây), await thứ hai đợi và phân tích **thân** dưới dạng JSON.
+
+## Ba kết cục mà mọi UI phải xử lý
+
+```js
+async function loadUser() {
+  try {
+    const response = await fetch("/api/user");
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const user = await response.json();
+    return user; // 1. thành công
+  } catch (err) {
+    return null; // 2. lỗi mạng/phân tích
+  }
+}
+// 3. chậm: hiện "Loading…" trước, thay thế khi dữ liệu về nơi
+```
+
+App thật hiện một trạng thái loading, một thông báo lỗi hữu ích, và chỉ sau đó mới hiện dữ liệu. Trình chạy thử thách của chính Code Journey thực hiện đúng vũ điệu này — bạn xem nó mỗi lần bấm Run.
+
+## GET và POST
+
+`fetch` mặc định là **GET** (lấy dữ liệu cho tôi). Để gửi dữ liệu — một submission biểu mẫu, một bản ghi mới — thêm options:
+
+```js
+await fetch("/api/signup", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ username: "ada" }),
+});
+```
+
+## Bạn đã học được gì
+
+- API là các URL trả lời bằng dữ liệu; JSON là ngôn ngữ
+- `fetch`: await headers, kiểm tra `response.ok`, await `.json()`
+- Xử lý thành công, thất bại, và chậm — mỗi lần
+- GET đọc; POST gửi (method + headers + body)
+
+**Tiếp theo:** checkpoint — chứng minh nền tảng JavaScript của bạn.

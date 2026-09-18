@@ -1,0 +1,25 @@
+A function template is a recipe the compiler stamps out per type. You write
+the algorithm once; the compiler writes the type-specific versions.
+
+```cpp
+template <typename T>
+T max_of(const T& a, const T& b) {
+    return a < b ? b : a;   // T must support operator< — that's the contract
+}
+
+int i = max_of(3, 7);          // T = int (deduced)
+double d = max_of(2.5, 1.5);   // T = double
+auto m = max_of(std::string{"a"}, std::string{"b"});
+```
+
+Key mechanics:
+
+- **Deduction** happens from the arguments; explicit spelling
+  `max_of<double>(3, 7)` forces it (and permits conversions).
+- The **contract is implicit**: whatever operations the body uses become
+  requirements on T. A type without `operator<` fails at instantiation —
+  with a long error, but at compile time, never at runtime.
+- Two-phase translation: the template itself is only *syntax-checked*;
+  each instantiation is fully checked against the real T.
+- Templates live in headers. The compiler needs the definition at the
+  point of instantiation — a .cpp definition produces linker errors.

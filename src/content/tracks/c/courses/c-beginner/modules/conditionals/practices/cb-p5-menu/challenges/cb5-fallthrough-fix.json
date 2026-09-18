@@ -1,0 +1,26 @@
+{
+  "id": "cb5-fallthrough-fix",
+  "title": "Stop the Fall-Through",
+  "prompt": "This `dispatch` is missing its breaks, so choosing 1 reports the wrong thing. Fix it so each choice reports ONLY its own label (1 -> \"one\", 2 -> \"two\", else \"many\").",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n\nconst char* dispatch(int n) {\n    /* BROKEN: falls through */\n    switch (n) {\n        case 1:\n        case 2:\n            return \"many\";\n        default:\n            return \"many\";\n    }\n}\n\nint main(void) { return 0; }",
+  "tests": [
+    {
+      "name": "one is isolated",
+      "code": "CHECK_STR_EQ(dispatch(1), \"one\");",
+      "hint": "case 1 needs its own return/break."
+    },
+    {
+      "name": "two stays",
+      "code": "CHECK_STR_EQ(dispatch(2), \"two\");",
+      "hint": "case 2 reports two."
+    },
+    {
+      "name": "rest is many",
+      "code": "CHECK_STR_EQ(dispatch(5), \"many\");",
+      "hint": "default unchanged."
+    }
+  ],
+  "level": "debugging"
+}

@@ -1,0 +1,36 @@
+{
+  "id": "javi-p11-expense-repo",
+  "title": "In-Memory Expense Repository",
+  "prompt": "Implement in `Solution`:\n- `record Expense(String id, String category, int cents)`\n- `static class ExpenseRepository` with:\n  - `Expense save(Expense e)` (upsert by id)\n  - `Optional<Expense> findById(String id)`\n  - `List<Expense> findByCategory(String category)` (insertion order)\n  - `boolean deleteById(String id)`\n  - `List<Expense> findAll()` (insertion order)\n  - `int totalCents()`\n- `static class DuplicateExpenseException extends RuntimeException`.\n\n`save` acts as a category-guarded upsert: same id + same category\nreplaces the entry (updates allowed); same id + DIFFERENT category\nthrows DuplicateExpenseException (an id is bound to one category).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement types and methods below.\n}\n",
+  "tests": [
+    {
+      "name": "save and findById",
+      "code": "\nSolution.ExpenseRepository r = new Solution.ExpenseRepository();\nr.save(new Solution.Expense(\"e1\", \"food\", 1200));\ncheckEq(r.findById(\"e1\").orElseThrow().cents(), 1200, \"roundtrip\");\n",
+      "hint": "Save then fetch returns the same expense."
+    },
+    {
+      "name": "upsert replaces",
+      "code": "\nSolution.ExpenseRepository r = new Solution.ExpenseRepository();\nr.save(new Solution.Expense(\"e1\", \"food\", 1200));\nr.save(new Solution.Expense(\"e1\", \"food\", 1500));\ncheckEq(r.findById(\"e1\").orElseThrow().cents(), 1500, \"updated\");\ncheckEq(r.findAll().size(), 1, \"still one row\");\n",
+      "hint": "Same id, identical data → idempotent replace."
+    },
+    {
+      "name": "conflicting duplicate rejected",
+      "code": "\nSolution.ExpenseRepository r = new Solution.ExpenseRepository();\nr.save(new Solution.Expense(\"e1\", \"food\", 1200));\ntry { r.save(new Solution.Expense(\"e1\", \"travel\", 900)); checkTrue(false, \"must throw\"); }\ncatch (Solution.DuplicateExpenseException ex) { checkTrue(true, \"rejected\"); }\n",
+      "hint": "Same id with different data is a conflict."
+    },
+    {
+      "name": "findByCategory filters",
+      "code": "\nSolution.ExpenseRepository r = new Solution.ExpenseRepository();\nr.save(new Solution.Expense(\"a\", \"food\", 100));\nr.save(new Solution.Expense(\"b\", \"travel\", 200));\nr.save(new Solution.Expense(\"c\", \"food\", 300));\ncheckEq(r.findByCategory(\"food\").size(), 2, \"two foods\");\ncheckEq(r.totalCents(), 600, \"sum all\");\n",
+      "hint": "Category index filters; total sums everything."
+    },
+    {
+      "name": "delete removes",
+      "code": "\nSolution.ExpenseRepository r = new Solution.ExpenseRepository();\nr.save(new Solution.Expense(\"a\", \"food\", 100));\ncheckEq(r.deleteById(\"a\"), true, \"existed\");\ncheckEq(r.deleteById(\"a\"), false, \"already gone\");\n",
+      "hint": "True on first delete, false afterwards."
+    }
+  ],
+  "level": "independent"
+}

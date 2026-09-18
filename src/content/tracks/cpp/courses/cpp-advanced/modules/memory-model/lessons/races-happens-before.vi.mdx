@@ -1,0 +1,18 @@
+## Định nghĩa quan trọng nhất
+
+**Data race** tồn tại khi hai thread truy cập cùng một ô nhớ, ít nhất một truy cập là ghi, và các truy cập không được xếp thứ tự bởi đồng bộ hóa. Truy cập bị race là **hành vi không xác định** — không phải "thắng/thua giữa hai thread", mà là *bất cứ điều gì*: đọc rách, giá trị ma, vòng lặp bị biên dịch sai. (Hai lần đọc đồng thời thì vô hại.)
+
+## Đồng bộ hóa = happens-before
+
+Mô hình xếp thứ tự thao tác bằng **happens-before**. Bạn có nó từ:
+
+- program order trong một thread,
+- việc tạo thread (`t.join()`: mọi thứ thread làm xảy ra trước khi join trả về),
+- mutex (mọi thứ trước `unlock()` xảy ra trước mọi thứ sau lần `lock()` kế tiếp),
+- các thao tác atomic được xếp thứ tự thích hợp (bài kế tiếp).
+
+Nếu hai truy cập không thể được xếp thứ tự bởi bất kỳ chuỗi happens-before nào và một trong hai là ghi — race. Nếu được xếp — hành vi xác định, và bạn nói được *giá trị nào* mà người đọc thấy.
+
+## Bản năng mặc định
+
+Không có primitive đồng bộ nào giữa hai thread cùng đụng dữ liệu chung? Race. "Chạy được trên máy tôi" chỉ có nghĩa là race chưa cắn *tại lúc đó* — race phụ thuộc thời điểm, và các bài tập chấm điểm khiến nó tất định bằng cấu trúc.

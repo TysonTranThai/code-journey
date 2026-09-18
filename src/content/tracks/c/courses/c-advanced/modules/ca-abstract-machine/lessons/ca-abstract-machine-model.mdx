@@ -1,0 +1,23 @@
+## C describes a machine; the compiler builds a different one
+
+Your C program is a *description* of an abstract machine: memory cells, sequential execution, each statement's effects finishing before the next begins. The compiler must produce a program with the same **observable behavior** — nothing more. Anything the abstract machine does that you cannot observe may be reordered, fused, or deleted.
+
+Observable behavior is exactly: writes to files, volatile accesses, and (interactively) reads from input streams. Everything else — register use, stack shape, dead stores, pure computations — is the compiler's to optimize.
+
+## What that buys the optimizer
+
+```c
+int f(void) {
+    int x = 3;
+    int y = x * x;      /* no observable effect yet */
+    return y;           /* y's computation must happen */
+}
+/* x's STORE may be deleted entirely: y is computable at compile time,
+   and x's memory cell was never observable. */
+```
+
+The abstract machine is why "it works when I print it" proves nothing: adding a `printf` adds an observation point, changing what the compiler may keep alive.
+
+## The one-way door
+
+Optimizers are licensed by the standard to *assume* your program never executes undefined behavior. A null check *after* a dereference, an overflow check *after* the addition — these can be legally deleted because the earlier UB "proves" the branch unreachable. Module 4 builds this out in full; here, internalize the principle: **the abstract machine is the contract, the hardware is just an approximation of it.**

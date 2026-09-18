@@ -1,0 +1,20 @@
+{
+  "id": "i2-url-parse-view",
+  "title": "URL to View State",
+  "prompt": "Write `viewFromUrl(url)` — parse a full URL (use the URL constructor) and return { route, id, query }. route is the pathname without the leading slash; id is the value of /:id segments for paths like \"products/42\" (null otherwise); query is an object of searchParams (empty object when none).",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function viewFromUrl(url) {\n  // your code — use the URL constructor\n}\n",
+  "tests": [
+    {
+      "name": "parses route, id, and query",
+      "code": "const fn = new Function(code + \"\\nreturn { viewFromUrl };\");\nconst { viewFromUrl } = fn();\nconst v = viewFromUrl(\"https://shop.dev/products/42?sort=price&dir=asc\");\nif (v.route !== \"products/42\") throw new Error(\"Route is pathname without leading slash.\");\nif (v.id !== \"42\") throw new Error(\"Numeric path segment becomes id.\");\nif (v.query.sort !== \"price\" || v.query.dir !== \"asc\") throw new Error(\"Search params become an object.\");\n",
+      "hint": "new URL(url) gives pathname and searchParams."
+    },
+    {
+      "name": "no id and no query still works",
+      "code": "const fn = new Function(code + \"\\nreturn { viewFromUrl };\");\nconst { viewFromUrl } = fn();\nconst v = viewFromUrl(\"https://shop.dev/about\");\nif (v.route !== \"about\") throw new Error(\"Single-segment route.\");\nif (v.id !== null) throw new Error(\"No numeric segment => id null.\");\nif (Object.keys(v.query).length !== 0) throw new Error(\"No query => empty object.\");\n",
+      "hint": "Default to null / empty — never undefined leakage."
+    }
+  ]
+}

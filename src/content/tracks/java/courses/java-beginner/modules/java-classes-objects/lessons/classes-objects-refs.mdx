@@ -1,0 +1,47 @@
+A **class** is a blueprint; an **object** is one concrete thing built from
+it. The class says what data (**fields**) and behavior (**methods**) every
+object of that kind has:
+
+```java
+class Dog {
+    String name;
+    int age;
+
+    void bark() {
+        System.out.println(name + " says woof");
+    }
+}
+
+Dog a = new Dog();     // object 1
+a.name = "Rex";
+a.age = 3;
+a.bark();              // Rex says woof
+
+Dog b = new Dog();     // object 2: own name, own age, SAME behavior
+b.name = "Lucky";
+b.bark();              // Lucky says woof
+```
+
+`new Dog()` allocates a fresh object with its own copy of every field. The
+dot accesses what the object owns: `a.name` is object a's name. Two objects
+are independent — renaming Rex never touches Lucky.
+
+**State + behavior in one place** is the point of classes. `bark()` uses
+`name` *without a parameter*, because it automatically operates on the
+object it was called on. Inside a method, `this` names that object: `this.name`
+is "the name field of the object I was called on". When a parameter shadows
+a field, `this` disambiguates:
+
+```java
+void rename(String name) {
+    this.name = name;   // field = parameter
+}
+```
+
+**Object references.** `Dog d2 = a;` does NOT copy the dog — it copies the
+*reference* (the arrow pointing at the object). Now `a` and `d2` are two
+names for one object; changing fields through either is visible through
+both. This is the object half of Module 5's "parameters are copies": the
+copy is of the arrow, not the dog.
+
+**Next:** constructors — controlling how objects are born.

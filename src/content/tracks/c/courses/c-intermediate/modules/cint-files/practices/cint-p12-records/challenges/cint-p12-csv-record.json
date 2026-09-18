@@ -1,0 +1,15 @@
+{
+  "id": "cint-p12-csv-record",
+  "title": "The Fixed-Width Record Store",
+  "prompt": "Implement a tiny record store over `/tmp/cj_records.bin`.\nThe boilerplate declares:\n\n```c\n/* file format:\n   bytes 0..3  : magic \"CJR1\"\n   bytes 4..5  : uint16 record count (little-endian)\n   then records of exactly 8 bytes each:\n     byte 0    : id (0..255)\n     bytes 1..4: int32 qty little-endian\n     bytes 5..7: zero padding\n*/\nint rs_create(const char *path);                    /* fresh empty store */\nint rs_append(const char *path, unsigned id, int qty); /* 0 ok, -1 err/bad args */\nint rs_read(const char *path, size_t index,\n            unsigned *id, int *qty);                /* 0 ok, -1 out of range/err */\nsize_t rs_count(const char *path);                  /* 0 if absent/invalid */\n```\n\nAll multi-byte fields little-endian, byte by byte (endianness tax).",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stdio.h>\n#include <stddef.h>\n#include <stdint.h>\nint rs_create(const char *path);\nint rs_append(const char *path, unsigned id, int qty);\nint rs_read(const char *path, size_t index, unsigned *id, int *qty);\nsize_t rs_count(const char *path);\n",
+  "tests": [
+    {
+      "name": "write then re-read",
+      "code": "\nconst char *p = \"/tmp/cj_records.bin\";\nCHECK_EQ(rs_create(p), 0);\nCHECK_EQ(rs_count(p), 0u);\nCHECK_EQ(rs_read(p, 0, NULL, NULL), -1);          /* empty */\nCHECK_EQ(rs_append(p, 1, 100), 0);\nCHECK_EQ(rs_append(p, 2, 200), 0);\nCHECK_EQ(rs_append(p, 3, 300), 0);\nCHECK_EQ(rs_count(p), 3u);\nunsigned id; int qty;\nCHECK_EQ(rs_read(p, 0, &id, &qty), 0);\nCHECK(id == 1 && qty == 100);\nCHECK_EQ(rs_read(p, 2, &id, &qty), 0);\nCHECK(id == 3 && qty == 300);\nCHECK_EQ(rs_read(p, 3, &id, &qty), -1);           /* past the end */\nCHECK_EQ(rs_append(p, 300, 1), -1);               /* id must fit a byte */\nCHECK_EQ(rs_count(p), 3u);                        /* unchanged */\n",
+      "hint": "Append: fseek to header, read count, fseek past last record, write 8 bytes, rewrite count. Count: read bytes 4..5."
+    }
+  ]
+}

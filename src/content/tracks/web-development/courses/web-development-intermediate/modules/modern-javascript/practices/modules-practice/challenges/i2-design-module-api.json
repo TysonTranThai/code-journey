@@ -1,0 +1,30 @@
+{
+  "id": "i2-design-module-api",
+  "title": "Design a Module's Public API",
+  "prompt": "Write a module object for a cart library. Define `createCart()` that returns an object exposing exactly three methods — `add(item)`, `total()`, `clear()` — and NO direct access to the items array.\n\n`add` accepts `{ name, price }` and returns the new item count. `total()` returns the sum of prices. `clear()` empties the cart.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function createCart() {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "add returns the running count",
+      "code": "const fn = new Function(code + \"\\nreturn { createCart };\");\nconst { createCart } = fn();\nconst cart = createCart();\nif (cart.add({ name: \"pen\", price: 2 }) !== 1) throw new Error(\"First add should return 1.\");\nif (cart.add({ name: \"ink\", price: 5 }) !== 2) throw new Error(\"Second add should return 2.\");",
+      "hint": "Keep items in a closure variable; return items.length after pushing."
+    },
+    {
+      "name": "total sums prices",
+      "code": "const fn = new Function(code + \"\\nreturn { createCart };\");\nconst { createCart } = fn();\nconst cart = createCart();\ncart.add({ name: \"pen\", price: 2 }); cart.add({ name: \"ink\", price: 5 });\nif (cart.total() !== 7) throw new Error(\"total() should be 7.\");",
+      "hint": "reduce over the closed-over items array."
+    },
+    {
+      "name": "items array stays private",
+      "code": "const fn = new Function(code + \"\\nreturn { createCart };\");\nconst { createCart } = fn();\nconst cart = createCart();\nif (\"items\" in cart) throw new Error(\"The cart must not expose its items array directly.\");",
+      "hint": "Only the three methods belong on the returned object."
+    },
+    {
+      "name": "clear resets count and total",
+      "code": "const fn = new Function(code + \"\\nreturn { createCart };\");\nconst { createCart } = fn();\nconst cart = createCart();\ncart.add({ name: \"pen\", price: 2 });\ncart.clear();\nif (cart.total() !== 0) throw new Error(\"After clear(), total() should be 0.\");",
+      "hint": "clear can reassign the closure variable to a fresh array."
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "pi6-csv-rows",
+  "title": "CSV In, Dicts Out",
+  "prompt": "Implement parse_csv(text) receiving raw CSV text (with a header row) and returning a list of dicts. Then implement to_csv_text(rows, fieldnames) doing the reverse. Use csv module round-trip via io.StringIO.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import csv, io\n\ndef parse_csv(text):\n    pass\n\ndef to_csv_text(rows, fieldnames):\n    pass\n",
+  "tests": [
+    {
+      "name": "parses header + rows",
+      "code": "text = 'name,age\\nAn,30\\nBinh,25'\nrows = parse_csv(text)\nassert rows == [{'name': 'An', 'age': '30'}, {'name': 'Binh', 'age': '25'}]",
+      "hint": "csv.DictReader over io.StringIO(text)."
+    },
+    {
+      "name": "writes back the same shape",
+      "code": "rows = [{'name': 'An', 'age': '30'}]\nout = to_csv_text(rows, ['name', 'age'])\nassert 'name,age' in out and 'An,30' in out",
+      "hint": "DictWriter over io.StringIO; writeheader first."
+    },
+    {
+      "name": "round-trip identity",
+      "code": "text = 'name,age\\nAn,30'\nassert to_csv_text(parse_csv(text), ['name', 'age']).strip().replace(chr(13), '') == text",
+      "hint": "A faithful round-trip reproduces the original text."
+    }
+  ],
+  "level": "independent"
+}

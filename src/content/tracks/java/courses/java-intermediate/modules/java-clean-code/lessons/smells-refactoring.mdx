@@ -1,0 +1,26 @@
+## Code smells and the refactoring reflex
+
+Smells don't prove a bug — they *invite a look*:
+
+- **Long method** — many blank lines and levels; extract methods
+- **Primitive obsession** — money as `int`, phone as `String` everywhere;
+  introduce tiny value types
+- **Data clumps** — `city, street, zip` traveling together forever; make
+  an `Address` record
+- **Feature envy** — a method reaching into another object's getters
+  more than its own fields; move it there
+- **Shotgun surgery** — one change touches ten files; the concept needs
+  a home
+- **Comment explaining WHAT** — the code should say what; comments say
+  *why* (constraints, links, tradeoffs)
+
+```java
+// before — primitive obsession + long method
+static boolean ok(String u, String p) { ... }
+
+// after — names and types carry the design
+static boolean isPasswordValid(Password candidate, PasswordPolicy policy) { ... }
+```
+
+Refactoring discipline (from Module 12): small verified steps, tests
+green between each, behavior unchanged by construction.

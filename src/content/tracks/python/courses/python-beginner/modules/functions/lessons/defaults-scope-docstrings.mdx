@@ -1,0 +1,49 @@
+## Default arguments
+
+```python
+def power(base, exponent=2):
+    return base ** exponent
+
+power(5)        # 25 — exponent defaults to 2
+power(5, 3)     # 125
+```
+
+Defaults make optional behavior explicit. Never use a mutable default (a list
+or dict) — it is shared across calls, a famous Python trap you will meet again
+in Intermediate.
+
+## Keyword arguments
+
+Call with `name=value` — order stops mattering and calls become readable:
+
+```python
+def make_coffee(size, milk, sugar):
+    return f"{size}, milk={milk}, sugar={sugar}"
+
+make_coffee("L", milk=False, sugar=True)
+```
+
+## Scope: local by default
+
+Names created inside a function exist only inside it:
+
+```python
+def calc():
+    result = 42     # local
+calc()
+print(result)       # NameError — result is gone
+```
+
+Parameters are local too. Functions get information **in** through parameters
+and **out** through return values — not through globals. That discipline is
+what keeps larger programs sane.
+
+## Docstrings
+
+A triple-quoted first line documents the function; `help(name)` shows it:
+
+```python
+def celsius_to_f(c):
+    '''Convert a Celsius temperature to Fahrenheit.'''
+    return c * 9 / 5 + 32
+```

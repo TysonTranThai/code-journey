@@ -1,0 +1,19 @@
+## Bốn máy dò
+
+- **AddressSanitizer (`-fsanitize=address`)** — tràn buffer heap/stack, use-after-free, use-after-return. Chạy trong mọi lần test debug.
+- **UndefinedBehaviorSanitizer (`-fsanitize=undefined`)** — signed overflow, con trỏ lệch căn chỉnh, giá trị enum sai, dereference null (phần lớn).
+- **ThreadSanitizer (`-fsanitize=thread`)** — data race qua phân tích happens-before. Chậm hơn (5–15x) nhưng bắt được bug mà đầu ra test không thể.
+- **Phân tích tĩnh (`-fanalyzer`, clang-tidy)** — tìm đường null-deref và lifetime lúc biên dịch, không cần chạy.
+
+## Hình dạng CI
+
+Build debug: ASan+UBSan bật, chỉ test nhanh. Hằng đêm: TSan chạy các test concurrency. Release: không cái nào. Một phát hiện là một bug — không bao giờ "chắc là ổn". Chính sách đó chỉ hiệu quả nếu test thực sự chạy qua các đường rủi ro, đó là lý do sanitizer đi cùng tư duy coverage.
+
+## Thiết kế để thân thiện với sanitizer
+
+- Ưu tiên `std::vector` + `at()` trong đường debug thay vì con trỏ thô + tự kiểm biên.
+- Mọi chủ sở hữu cấp phát là một kiểu (RAII) — ASan khi đó không còn leak để báo.
+- Test tất định đánh bại stress ngẫu nhiên cho CI (TSan là ngoại lệ: nó muốn concurrency, hãy chạy trên các suite dễ race).
+- Thứ tự sửa: UB thật trước, rồi warning, rồi style. Đừng dạy cả đội phớt lờ báo cáo.
+
+Bài tập chấm điểm ở đây mô phỏng *kết quả*: hàm đáng lẽ vấp ASan/UBSan sẽ trượt test bằng cấu trúc (bản có kiểm tra vs không kiểm tra phân kỳ trên đầu vào adversarial).

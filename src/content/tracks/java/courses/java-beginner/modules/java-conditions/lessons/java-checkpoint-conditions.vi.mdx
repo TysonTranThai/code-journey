@@ -1,0 +1,18 @@
+Bàn điều phối quyết định cách xử lý đơn hàng, kết hợp logic lồng với switch
+expression.
+
+Viết `public static String dispatch(String tier, int weightKg, boolean fragile)`:
+
+1. Nếu `weightKg <= 0`, trả `"rejected: bad weight"`.
+2. Còn lại xếp loại theo `tier` bằng **switch expression**:
+   - `"standard"` → `"standard-"` + loại cân nặng, với loại cân nặng là
+     `"light"` (weight < 5) hoặc `"heavy"` (từ 5 trở lên);
+   - `"express"` → `"express-"` + loại cân nặng (cùng quy tắc);
+   - `"freight"` → `"freight-quoted"` (bỏ qua loại cân nặng);
+   - tier khác bất kỳ → `"rejected: unknown tier"` (bất kể cân nặng).
+3. Đơn dễ vỡ được thêm `"+"` ở cuối cùng — nhưng CHỈ khi kết quả không phải
+   từ chối. `dispatch("standard", 3, true)` là `"standard-light+"`;
+   `dispatch("gold", 3, false)` là `"rejected: unknown tier"` không dấu cộng.
+
+Biên tại 5 thuộc `"heavy"`. Hãy xây chuỗi kết quả bằng một biến `String`,
+rồi quyết định hậu tố đúng một lần.

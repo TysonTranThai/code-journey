@@ -1,0 +1,31 @@
+{
+  "id": "ca4-guarded-add",
+  "title": "Overflow Guard, Correctly Ordered",
+  "prompt": "Implement `int safe_add3(int a, int b, int *out)`: if a + b would overflow, return 0 and leave *out untouched; otherwise store the sum and return 1. The check must happen BEFORE any signed arithmetic that could overflow — use comparisons against INT_MAX/INT_MIN. Then implement `int naive_add3(int a, int b, int *out)` that just stores a + b (defined for the tested inputs, UB-adjacent by design).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <limits.h>\n#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "normal path",
+      "code": "int r = 99;\nCHECK_EQ(safe_add3(2, 3, &r), 1);\nCHECK_EQ(r, 5);",
+      "hint": "Defined inputs store and return 1."
+    },
+    {
+      "name": "overflow rejected",
+      "code": "int r = 99;\nCHECK_EQ(safe_add3(INT_MAX, 1, &r), 0);\nCHECK_EQ(r, 99);",
+      "hint": "The comparison guard fires before any add; *out is untouched."
+    },
+    {
+      "name": "negative edge",
+      "code": "int r = 99;\nCHECK_EQ(safe_add3(INT_MIN, -1, &r), 0);\nCHECK_EQ(r, 99);",
+      "hint": "INT_MIN + (-1) overflows below; the guard must catch that side too."
+    },
+    {
+      "name": "naive exists",
+      "code": "int r = 99;\nnaive_add3(2, 3, &r);\nCHECK_EQ(r, 5);",
+      "hint": "The naive path works for in-range inputs — the lesson is that its correctness is conditional."
+    }
+  ],
+  "level": "independent"
+}

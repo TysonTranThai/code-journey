@@ -1,0 +1,21 @@
+{
+  "id": "javb-m5-decompose",
+  "title": "Receipt line, decomposed",
+  "prompt": "Implement two cooperating methods:\n\n- `static String formatMoney(double amount)` — formats as `$NN.NN` with exactly two decimals (`formatMoney(5)` is `$5.00`).\n- `static String line(String item, int qty, double price)` — returns `\"item xN = $NN.NN\"` where the money part comes from `formatMoney` of `qty * price`. Example: `line(\"pen\", 3, 1.5)` is `\"pen x3 = $4.50\"`.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String formatMoney(double amount) {\n        return \"\";\n    }\n\n    public static String line(String item, int qty, double price) {\n        return \"\";\n    }\n}\n",
+  "tests": [
+    {
+      "name": "money formatting",
+      "code": "\nCjTestBase.checkEq(Solution.formatMoney(5), \"$5.00\", \"whole dollars\");\nCjTestBase.checkEq(Solution.formatMoney(19.991), \"$19.99\", \"rounded to cents\");\n",
+      "hint": "String.format(\"$%.2f\", amount) rounds correctly."
+    },
+    {
+      "name": "receipt line",
+      "code": "\nCjTestBase.checkEq(Solution.line(\"pen\", 3, 1.5), \"pen x3 = $4.50\", \"3 pens\");\nCjTestBase.checkEq(Solution.line(\"book\", 1, 9.99), \"book x1 = $9.99\", \"single book\");\n",
+      "hint": "line() must call formatMoney — compose, don't duplicate."
+    }
+  ],
+  "level": "independent"
+}

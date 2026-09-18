@@ -1,0 +1,39 @@
+Several methods may share one name when their **parameter lists differ** —
+different types, different counts, or different order. This is
+**overloading**, and Java's compiler picks the best match at the call site:
+
+```java
+static int    max(int a, int b)        { return a >= b ? a : b; }
+static double max(double a, double b)  { return a >= b ? a : b; }
+static int    max(int a, int b, int c) { return max(max(a, b), c); }
+```
+
+All three are `max`; the compiler reads the argument list and dispatches:
+`max(3, 9)` calls the first, `max(2.5, 1.5)` the second, `max(1, 5, 3)` the
+third. The third body shows the deeper idea — overloads can *delegate* to
+each other instead of duplicating logic.
+
+What does NOT count as different: the **return type alone**. You cannot add
+`static String max(int a, int b)` — the compiler could not tell which to
+call for `max(3, 9)`. Only parameter lists create distinct overloads.
+
+**When to overload, and when not.** Overload when one concept accepts
+several shapes of input (`parse(String)`, `parse(File)`). Do not overload
+when the meaning changes — a method that returns the max and an overload
+that returns the min are different concepts wearing one confusing name.
+
+**Varargs** — a parameter that accepts any number of arguments:
+
+```java
+static int sum(int... numbers) {         // callers: sum(), sum(1), sum(1, 2, 3)
+    int t = 0;
+    for (int n : numbers) { t += n; }    // numbers is really an int[]
+    return t;
+}
+```
+
+Varargs is sugar for an array parameter and must be the LAST parameter.
+It is the right tool when the count genuinely varies ("sum any of these");
+a required, fixed list of inputs deserves fixed parameters.
+
+**Next:** designing with methods — decomposition.

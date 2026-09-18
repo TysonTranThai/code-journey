@@ -1,0 +1,21 @@
+{
+  "id": "ca7-heap",
+  "title": "Array Binary Heap",
+  "prompt": "Min-heap over a fixed int array:\n \n```c\ntypedef struct { int a[64]; size_t n; } heap_t;\nvoid heap_push(heap_t *h, int v);\nint heap_pop(heap_t *h);   /* returns min; caller ensures n>0 */\nint heap_min(const heap_t *h);\n```\n \npush appends and sifts up; pop swaps the root with the last, shrinks, sifts down.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "min pops in order",
+      "code": "heap_t h = {{{0}}, 0};\nint vals[5] = {5, 3, 8, 1, 9};\nfor (int i = 0; i < 5; i++) heap_push(&h, vals[i]);\nCHECK_EQ(heap_min(&h), 1);\nCHECK_EQ(heap_pop(&h), 1);\nCHECK_EQ(heap_pop(&h), 3);\nCHECK_EQ(heap_pop(&h), 5);\nCHECK_EQ(heap_pop(&h), 8);\nCHECK_EQ(heap_pop(&h), 9);",
+      "hint": "Five pushes then five pops emerge in sorted order — the heap property at work."
+    },
+    {
+      "name": "duplicates allowed",
+      "code": "heap_t h2 = {{{0}}, 0};\nheap_push(&h2, 4);\nheap_push(&h2, 4);\nCHECK_EQ(heap_pop(&h2), 4);\nCHECK_EQ(heap_pop(&h2), 4);",
+      "hint": "Equal keys are fine; the heap orders values, not identities."
+    }
+  ],
+  "level": "independent"
+}

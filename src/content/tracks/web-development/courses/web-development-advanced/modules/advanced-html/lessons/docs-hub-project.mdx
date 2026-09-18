@@ -1,0 +1,64 @@
+Time to prove the whole section at once. You will build the documentation hub page for
+**"Kite CLI"** — a fictional open-source command-line tool — the way a senior engineer
+would ship it: every decision in this project is one you made in the lessons above.
+
+## The brief
+
+A knowledge-base article page for Kite CLI. It must serve four audiences
+simultaneously: sighted users, screen-reader users, search engines and social
+crawlers, and the developer who maintains it after you. The artifact is a single HTML
+document; the grade is structural — every requirement below is checkable by reading
+the markup.
+
+**Document layer**
+
+- Complete document: doctype, `<html lang>`, charset, viewport, non-empty `<title>`,
+  meta description.
+- A canonical URL and Open Graph trio (`og:title`, `og:description`, `og:image` with an
+  absolute URL) so the page earns proper link previews.
+- `hreflang` alternates for `en` and `vi` — Kite's docs are bilingual.
+- Exactly one `<h1>`; heading levels never skip; `<time datetime>` marks the last-updated
+  date.
+
+**Architecture layer**
+
+- Landmarks: `header` (site mark), one `nav` (table of contents with fragment links
+  that resolve), `main`, `footer` (contact via `<address>`).
+- The article itself is an `<article>` named by its heading via `aria-labelledby`.
+- An installation section is a `<section aria-labelledby>` pairing.
+
+**Interactive layer**
+
+- An FAQ built as a native accordion: sibling `<details>` sharing a `name`, each with a
+  non-empty `<summary>`.
+- A "copy install command" affordance implemented as a disclosure (`<details>`) whose
+  content contains the command in a `<code>` block — progressively enhanced: with or
+  without JavaScript, the command is readable and selectable.
+
+**Media layer**
+
+- A responsive hero built on `<picture>`: an AVIF source, a WebP source, and a JPEG
+  fallback on the `<img>`; intrinsic `width`/`height`; meaningful `alt`.
+- An embedded demo iframe with a minimal safe sandbox (scripts allowed only), a `title`,
+  and `loading="lazy"`.
+
+**Enhancement layer**
+
+- A "Delete local config…" destructive action inside a named `<dialog>` with
+  `aria-labelledby`, an `autofocus` on the safe button, and a `method="dialog"` form.
+
+## What "done" means
+
+The practice set that follows contains three decision-verification challenges. Each
+opens the grading harness against your HTML and checks one layer of the brief —
+document + architecture, interactive + media, enhancement + metadata. Like the
+Intermediate capstone, they cannot be gamed: the checks read the artifact you built,
+so the only way to pass is to build it.
+
+## Where this connects forward
+
+This project is deliberately framework-free: every pattern here — landmarks, names,
+native state, media engineering, safe embeds — is what component libraries re-implement
+behind their APIs. When the Advanced CSS, JavaScript, and frontend-architecture
+sections arrive, you will recognize the layer you now own from the other side: as the
+thing your components must not break.

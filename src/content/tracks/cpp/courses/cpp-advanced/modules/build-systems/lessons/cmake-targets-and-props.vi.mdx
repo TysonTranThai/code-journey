@@ -1,0 +1,20 @@
+## Targets, không phải directories
+
+CMake cổ điển đặt biến toàn cục (`include_directories`, `add_definitions`) rò rỉ khắp nơi. CMake hiện đại gắn mọi thứ vào **targets**:
+
+```cpp
+add_library(fmtlib STATIC src/fmt.cpp)
+target_include_directories(fmtlib PUBLIC include)
+target_compile_features(fmtlib PUBLIC cxx_std_20)
+target_compile_definitions(fmtlib PRIVATE FMTLIB_BUILDING)
+```
+
+Từ khóa chính là hợp đồng: `PUBLIC` = consumer cũng cần (lan truyền), `PRIVATE` = chỉ khi build tôi, `INTERFACE` = chỉ cho consumer (header-only). Consumer gọi `target_link_libraries(app PRIVATE fmtlib)` kế thừa đúng những gì cần — yêu cầu sử dụng chảy qua đồ thị build.
+
+## Vì sao điều này liên quan đến tính đúng đắn
+
+Scoping theo target không phải là sự gọn gàng; đó là tính đúng đắn. Một define rò rỉ vào header bạn giao đi (vì lỡ để `PUBLIC`) trở thành **nguy cơ ODR** cho mọi consumer biên dịch với cờ khác (module 17). Build system là nơi khả năng tương thích nhị phân bắt đầu.
+
+## Presets: cấu hình tái lập được
+
+`CMakePresets.json` ghim generator, toolchain, và biến cache theo từng cấu hình để `cmake --preset release` giống nhau trên mọi máy — điểm vào mà CI dùng, và lý do "chạy trên máy tôi" ngừng là một bug build.

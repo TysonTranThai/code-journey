@@ -1,0 +1,25 @@
+`auto` asks the compiler to deduce a type from the initializer. Use it where
+the type is *obvious or irrelevant*, hide it where the type *is the meaning*.
+
+```cpp
+auto it = v.begin();            // iterator type is noise — auto shines
+auto n = words.size();          // std::size_t, spelled correctly for free
+for (const auto& [key, value] : m) { ... }   // structured bindings
+```
+
+The rules that matter:
+
+- `auto x = expr;` copies and drops references/const — `auto&` and
+  `const auto&` re-add them. `auto x = v[0];` on a vector of big objects
+  silently copies.
+- `auto` on an initializer_list braced expression deduces
+  `std::initializer_list`, not the element type.
+- Function return types can be deduced (`auto f() { return 42; }`), but a
+  public API benefits from spelled-out returns: the signature is
+  documentation.
+- `decltype(expr)` yields the type of an expression without evaluating it —
+  the tool for "same type as that other thing" declarations.
+
+The smell test: if deleting `auto` and writing the real type makes the code
+*clearer*, write the type. If it makes the line a 70-character template
+spelling, `auto` is serving you.

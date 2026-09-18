@@ -1,0 +1,34 @@
+```python
+try:
+    number = int("twelve")
+except ValueError:
+    print("Cái này không phải số")
+```
+
+`try` nghĩa là: chạy thử; nó có thể nổ. `except` bắt đúng cú nổ mà bạn đã chuẩn
+bị. Hãy bắt **ngoại lệ hẹp nhất** mà bạn xử lý được — một `except:` trần nuốt luôn
+những lỗi bạn không lường trước, kể cả lỗi gõ nhầm.
+
+## Những ngoại lệ bạn gặp hàng tuần
+
+- `ValueError` — đúng kiểu, giá trị bất khả thi (`int("abc")`)
+- `TypeError` — sai hẳn loại đối tượng (`"5" + 5`)
+- `KeyError` / `IndexError` — thiếu khóa dict / vị trí list
+- `ZeroDivisionError` — cái này bạn biết rồi
+
+## else và finally
+
+```python
+try:
+    data = load(path)
+except FileNotFoundError:
+    print("thiếu tệp — dùng dữ liệu mặc định")
+    data = []
+else:
+    print("đã nạp", len(data), "dòng")   # chỉ chạy khi KHÔNG có ngoại lệ
+finally:
+    close_resources()                    # LUÔN chạy — dọn dẹp
+```
+
+`else` giữ mã thành công nằm ngoài khối try; `finally` dành cho việc dọn dẹp
+bắt buộc phải diễn ra dù thành công hay thất bại.

@@ -1,0 +1,30 @@
+{
+  "id": "selector-scavenger-hunt",
+  "title": "Selector Scavenger Hunt",
+  "prompt": "The boilerplate has a small page. Without touching the HTML, write CSS that:\n\n- Sets `color` on every `<h2>` (element selector).\n- Sets a `background-color` on elements of class `card`.\n- Sets `color` on links *only inside* the nav (descendant selector).\n- Sets `font-family` on the single element with id `tagline`.",
+  "difficulty": "beginner",
+  "boilerplate": "<nav>\n  <a href=\"#top\">Home</a>\n  <a href=\"#posts\">Posts</a>\n</nav>\n\n<h2>Latest posts</h2>\n\n<p id=\"tagline\">Notes from a beginner who ships.</p>\n\n<div class=\"card\">First post</div>\n<div class=\"card\">Second post</div>\n\n<a href=\"https://example.com\">An outside link</a>\n\n<style>\n  /* write your rules here */\n</style>\n",
+  "tests": [
+    {
+      "name": "h2 colored via element selector",
+      "code": "const rule = code.match(/(?:^|[\\s,])(h2)\\s*{([^}]*)}/im);\nif (!rule || !/color\\s*:\\s*[^;]+;/i.test(rule[2])) {\n  throw new Error(\"Add an h2 { color: ...; } rule.\");\n}\nif (/[.#]h2/i.test(code)) {\n  throw new Error(\"Use the plain element selector h2 — no dots or hashes.\");\n}",
+      "hint": "Element selectors are bare tag names: h2 { color: …; }."
+    },
+    {
+      "name": "card class gets background",
+      "code": "const rule = code.match(/\\.card\\s*{([^}]*)}/i);\nif (!rule) {\n  throw new Error('No .card rule — classes are selected with a leading dot.');\n}\nif (!/background(-color)?\\s*:\\s*[^;]+;/i.test(rule[1])) {\n  throw new Error(\"The .card rule must set a background-color (or background).\");\n}",
+      "hint": ".card { background-color: …; } — the dot means 'class'."
+    },
+    {
+      "name": "nav links via descendant selector",
+      "code": "const rule = code.match(/nav\\s+a\\s*{([^}]*)}/i);\nif (!rule) {\n  throw new Error(\"Add a descendant selector: nav a { ... }.\");\n}\nif (!/color\\s*:\\s*[^;]+;/i.test(rule[1])) {\n  throw new Error(\"The nav a rule must set color.\");\n}\nif (/(^|\\n)\\s*a\\s*{[^}]*color\\s*:/im.test(code)) {\n  throw new Error(\"You styled ALL links — scope it to nav a so the outside link keeps its color.\");\n}",
+      "hint": "nav a { … } reads 'any <a> inside <nav>' — the outside link is untouched."
+    },
+    {
+      "name": "tagline id styled",
+      "code": "const rule = code.match(/#tagline\\s*{([^}]*)}/i);\nif (!rule) {\n  throw new Error(\"No #tagline rule — IDs are selected with a leading hash.\");\n}\nif (!/font-family\\s*:\\s*[^;]+;/i.test(rule[1])) {\n  throw new Error(\"The #tagline rule must set font-family.\");\n}",
+      "hint": "#tagline { font-family: Georgia, serif; } — the hash means 'id'."
+    }
+  ],
+  "level": "guided"
+}

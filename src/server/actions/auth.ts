@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { AuthError } from "next-auth";
 import { z } from "zod";
 
+import { betaGateEnabled, BETA_CODE_FIELD, verifyBetaCode } from "@/lib/beta/access";
 import {
   hashResetToken,
   generateResetToken,
@@ -15,7 +16,9 @@ import { signIn } from "@/lib/auth/config";
 import { sendPasswordResetEmail } from "@/lib/email/send-password-reset";
 import { db } from "@/lib/db";
 import { passwordResetTokens, profiles, sessions, users } from "@/lib/db/schema";
-import { clientIp, consume, HOUR_MS, MINUTE_MS, retryMessage } from "@/lib/rate-limit/limiter";
+import { getServerI18n } from "@/lib/i18n/server";
+import { fmt } from "@/lib/i18n/config";
+import { clientIp, consume, HOUR_MS, MINUTE_MS, retrySeconds } from "@/lib/rate-limit/limiter";
 
 /**
  * Auth server actions (AUTH-01, AUTH-05). All input is zod-validated at this
@@ -46,15 +49,31 @@ const resetConsumeSchema = z.object({
   password: z.string().min(10, "Use at least 10 characters").max(200, "Password is too long"),
 });
 
-function fieldErrorsFrom(error: z.ZodError): AuthFormState["fieldErrors"] {
+async function fieldErrorsFrom(error: z.ZodError): Promise<AuthFormState["fieldErrors"]> {
+  const { d } = await getServerI18n();
   const fieldErrors: AuthFormState["fieldErrors"] = {};
   for (const issue of error.issues) {
     const key = issue.path[0];
     if ((key === "name" || key === "email" || key === "password") && !fieldErrors[key]) {
-      fieldErrors[key] = issue.message;
+      if (key === "name") {
+        fieldErrors[key] = d.errors.enterName;
+      } else if (key === "email") {
+        fieldErrors[key] = d.errors.enterValidEmail;
+      } else if (key === "password") {
+        fieldErrors[key] =
+          issue.message === "Password is too long"
+            ? d.errors.passwordTooLong
+            : d.errors.useTenChars;
+      }
     }
   }
   return fieldErrors;
+}
+
+/** Localized "too many requests" message in the requester's language. */
+async function rateLimitError(resetMs: number): Promise<string> {
+  const { d } = await getServerI18n();
+  return fmt(d.errors.tooManyRequests, { seconds: retrySeconds(resetMs) });
 }
 
 /** Sign in with email + password (called by the login form). */
@@ -65,14 +84,14 @@ export async function loginAction(
   // Rate limit (07-03): per-IP, plus a short per-minute burst to blunt credential stuffing.
   const ip = await clientIp();
   const lim = await consume("login", ip, 10, HOUR_MS);
-  if (!lim.allowed) return { error: retryMessage(lim.resetMs).message };
+  if (!lim.allowed) return { error: await rateLimitError(lim.resetMs) };
   const burst = await consume("login-burst", ip, 5, MINUTE_MS);
-  if (!burst.allowed) return { error: retryMessage(burst.resetMs).message };
+  if (!burst.allowed) return { error: await rateLimitError(burst.resetMs) };
 
   const email = formData.get("email");
   const password = formData.get("password");
   if (typeof email !== "string" || typeof password !== "string" || !email || !password) {
-    return { error: "Enter your email and password." };
+    return { error: (await getServerI18n()).d.errors.enterEmailAndPassword };
   }
   try {
     await signIn("credentials", { email, password, redirectTo: "/learn" });
@@ -80,7 +99,7 @@ export async function loginAction(
   } catch (error) {
     if (error instanceof AuthError) {
       // Generic message: never reveal whether the email exists.
-      return { error: "Invalid email or password." };
+      return { error: (await getServerI18n()).d.errors.invalidCredentials };
     }
     // NEXT_REDIRECT and unknown errors must propagate.
     throw error;
@@ -97,7 +116,17 @@ export async function register(
   // (school labs legitimately create many accounts from one address).
   const ip = await clientIp();
   const lim = await consume("register", ip, 20, HOUR_MS);
-  if (!lim.allowed) return { error: retryMessage(lim.resetMs).message };
+  if (!lim.allowed) return { error: await rateLimitError(lim.resetMs) };
+
+  // Private-beta gate (Phase 9): when an invite code is configured, every
+  // registration must present it. Checked before parsing the rest so the
+  // gate applies even to malformed payloads.
+  const betaRequired = betaGateEnabled();
+  if (betaRequired && !verifyBetaCode(formData.get(BETA_CODE_FIELD))) {
+    return {
+      error: (await getServerI18n()).d.errors.betaRequired,
+    };
+  }
 
   const parsed = registerSchema.safeParse({
     name: formData.get("name"),
@@ -105,7 +134,7 @@ export async function register(
     password: formData.get("password"),
   });
   if (!parsed.success) {
-    return { fieldErrors: fieldErrorsFrom(parsed.error) };
+    return { fieldErrors: await fieldErrorsFrom(parsed.error) };
   }
   const { name, email, password } = parsed.data;
 
@@ -117,24 +146,27 @@ export async function register(
   if (existing) {
     // Generic by design — do not confirm whether the email is taken (D-06).
     return {
-      error:
-        "If this email can be registered, follow the instructions shown. If it belongs to an existing account, use password reset instead.",
+      error: (await getServerI18n()).d.errors.maybeExists,
     };
   }
 
   const passwordHash = await hashPassword(password);
   const [user] = await db.insert(users).values({ name, email, passwordHash }).returning();
   if (!user) {
-    return { error: "Could not create the account. Please try again." };
+    return { error: (await getServerI18n()).d.errors.couldNotCreate };
   }
   await db.insert(profiles).values({ userId: user.id, displayName: name }).onConflictDoNothing();
+  // New-account safety (inactive-cleanup policy): registration counts as the
+  // first qualifying activity, so a fresh account starts its inactivity
+  // window from a real event and is never born "already stale".
+  await db.update(users).set({ lastActiveAt: new Date() }).where(eq(users.id, user.id));
 
   try {
     await signIn("credentials", { email, password, redirectTo: "/learn" });
     return {};
   } catch (error) {
     if (error instanceof AuthError) {
-      return { error: "Account created — please log in." };
+      return { error: (await getServerI18n()).d.errors.accountCreated };
     }
     throw error;
   }
@@ -148,11 +180,11 @@ export async function requestPasswordReset(
   // Rate limit (07-03): per-IP; also prevents reset-token DB flooding.
   const ip = await clientIp();
   const lim = await consume("reset", ip, 5, HOUR_MS);
-  if (!lim.allowed) return { error: retryMessage(lim.resetMs).message };
+  if (!lim.allowed) return { error: await rateLimitError(lim.resetMs) };
 
   const parsed = emailSchema.safeParse({ email: formData.get("email") });
   if (!parsed.success) {
-    return { fieldErrors: fieldErrorsFrom(parsed.error) };
+    return { fieldErrors: await fieldErrorsFrom(parsed.error) };
   }
   const { email } = parsed.data;
 
@@ -177,8 +209,7 @@ export async function requestPasswordReset(
 
   // Identical response whether or not the account exists (D-06).
   return {
-    success:
-      "If an account exists for that email, a reset link has been created. In development, check the server console for the link.",
+    success: (await getServerI18n()).d.errors.resetSuccess,
   };
 }
 
@@ -192,7 +223,7 @@ export async function consumePasswordReset(
     password: formData.get("password"),
   });
   if (!parsed.success) {
-    return { fieldErrors: fieldErrorsFrom(parsed.error) };
+    return { fieldErrors: await fieldErrorsFrom(parsed.error) };
   }
   const { token, password } = parsed.data;
 
@@ -205,7 +236,7 @@ export async function consumePasswordReset(
 
   if (!row || !isResetTokenValid(row)) {
     return {
-      error: "This reset link is invalid or has expired. Request a new one.",
+      error: (await getServerI18n()).d.errors.resetInvalid,
     };
   }
 
@@ -222,5 +253,5 @@ export async function consumePasswordReset(
   // (the active strategy) cannot be server-revoked and expire on their own.
   await db.delete(sessions).where(eq(sessions.userId, row.userId));
 
-  return { success: "Password updated. You can now log in with your new password." };
+  return { success: (await getServerI18n()).d.errors.resetDone };
 }

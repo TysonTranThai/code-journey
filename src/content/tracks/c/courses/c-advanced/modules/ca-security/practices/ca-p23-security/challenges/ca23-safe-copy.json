@@ -1,0 +1,26 @@
+{
+  "id": "ca23-safe-copy",
+  "title": "The Refusing Copy",
+  "prompt": "ISO C. Implement `int safe_copy(char *dst, size_t dstsize, const char *src)` — copy src into dst with NUL-termination only if it fits (including the terminator); return 0 on success, -1 on truncation-or-error (dst NULL, dstsize 0, src NULL, or src longer than dstsize-1). On refusal dst is left untouched. This is snprintf's semantics, hand-rolled.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "fits exactly",
+      "code": "char b[6] = {0};\nCHECK_EQ(safe_copy(b, 6, \"world\"), 0);\nCHECK_STR_EQ(b, \"world\");",
+      "hint": "world is 5 chars + NUL = 6: fits exactly, success."
+    },
+    {
+      "name": "one too many refuses",
+      "code": "char b2[5] = {0};\nCHECK_EQ(safe_copy(b2, 5, \"world\"), -1);\nCHECK_EQ(b2[0], 0);",
+      "hint": "5 chars need 6 slots: refusal, and dst keeps its original bytes."
+    },
+    {
+      "name": "empty and NULL",
+      "code": "char b3[4] = {0};\nCHECK_EQ(safe_copy(b3, 4, \"-\"), 0);\nCHECK_EQ(safe_copy(b3, 4, NULL), -1);\nCHECK_EQ(safe_copy(NULL, 4, \"-\"), -1);\nCHECK_EQ(safe_copy(b3, 0, \"-\"), -1);",
+      "hint": "An empty source copies fine; NULL or zero-size destinations refuse."
+    }
+  ],
+  "level": "guided"
+}

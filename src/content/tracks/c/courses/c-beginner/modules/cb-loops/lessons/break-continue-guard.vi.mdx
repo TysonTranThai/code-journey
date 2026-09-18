@@ -1,0 +1,31 @@
+## break và continue
+
+- `break` — rời vòng lặp NGAY (chỉ vòng trong cùng).
+- `continue` — bỏ qua phần còn lại, sang lượt kế tiếp.
+
+```c
+for (int i = 0; i < 10; i++) {
+    if (i % 2 == 0) continue;   // bỏ qua số chẵn
+    if (i > 7) break;           // dừng sau 7
+    printf("%d ", i);           // 1 3 5 7
+}
+```
+
+## Lệch một
+
+Kinh điển: `<=` hay `<` với chỉ số bắt đầu từ 0.
+
+```c
+int a[5] = {1, 2, 3, 4, 5};
+for (int i = 0; i <= 5; i++) printf("%d ", a[i]);   // LỖI: a[5] ngoài biên
+for (int i = 0; i < 5; i++)  printf("%d ", a[i]);   // đúng
+```
+
+Truy cập ngoài biên là hành vi không xác định — quy tắc của mô-đun 9 sinh ra
+tại đây: **chỉ số hợp lệ cuối cùng là kích thước - 1.**
+
+## Điều kiện chạy trốn
+
+Nếu bước cập nhật đi XA điều kiện thoát (`for (int i = 0; i < 5; i--)`), hoặc
+không gì trong thân thay đổi biến được xét, vòng lặp không bao giờ kết thúc.
+Khi vòng lặp hành xử lạ, in biến lặp mỗi lượt và quan sát.

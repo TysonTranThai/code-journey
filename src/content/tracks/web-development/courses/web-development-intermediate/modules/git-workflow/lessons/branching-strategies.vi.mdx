@@ -1,0 +1,36 @@
+Chiến lược branch = thỏa thuận của cả team về việc code nằm ở đâu trong lúc đang viết.
+
+## GitHub Flow (mặc định cho phần lớn team web)
+
+1. Tách branch từ `main` cho mỗi thay đổi: `feat/search-filters`
+2. Commit nhỏ, push, mở **pull request**
+3. Review + CI phải pass
+4. Merge vào `main`, xóa branch, deploy
+
+Một branch sống lâu (`main`), mọi thứ khác sống ngắn. Lý tưởng cho web app deploy liên tục — và là mô hình cho các project trong khóa học này.
+
+## Git Flow
+
+`main` (phát hành) + `develop` (tích hợp) sống lâu, kèm các branch `feature/`, `release/`, `hotfix/`. Mạnh cho phần mềm phát hành theo phiên bản định kỳ (mobile app, phần mềm cài đặt) — nhưng nặng nề cho web.
+
+## Trunk-based development
+
+Mọi người commit thẳng vào `main` (hoặc branch rất ngắn, merge trong ngày). Feature chưa hoàn thành được ship ẩn, sau **feature flag**:
+
+```js
+if (flags.newCheckout) renderNewCheckout();
+else renderLegacyCheckout();
+```
+
+Đòi hỏi test mạnh và CI tốt; xóa sổ nỗi đau merge hoàn toàn. Phổ biến ở team có nhịp deploy cao.
+
+## Cách chọn
+
+| Tín hiệu                        | Phù hợp                    |
+| ------------------------------- | -------------------------- |
+| Deploy ngay khi merge           | GitHub Flow                |
+| Phát hành định kỳ, theo version | Git Flow                   |
+| Nhiều kỹ sư, một sản phẩm       | Trunk-based + feature flag |
+| Project cá nhân                 | GitHub Flow, branch nhỏ    |
+
+Dù chọn gì, quy tắc quan trọng nhất là: **branch phải sống ngắn.** Branch tách càng lâu, chi phí merge càng lớn — "merge hell" kinh điển là triệu chứng của branch sống lâu, không phải lỗi của Git.

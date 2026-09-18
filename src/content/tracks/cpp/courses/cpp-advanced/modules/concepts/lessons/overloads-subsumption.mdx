@@ -1,0 +1,24 @@
+## Subsumption in one picture
+
+If concept `B`'s constraints logically include concept `A`'s (`SizedIterable = Iterable<T> && has_size`), then `B` **subsumes** `A`. Given both overloads, a call satisfying both resolves to the `B` version — no tag dispatch, no priority tricks, no ambiguity:
+
+```cpp
+template <Iterable C>     std::string category(const C&) { return "iterable"; }
+template <SizedIterable C> std::string category(const C&) { return "sized-iterable"; }
+```
+
+`category(std::vector<int>{})` picks "sized-iterable"; a begin/end-only range picks "iterable". The compiler knows `Iterable && X` is *more constrained than* `Iterable` because it tracks the constraint expression's structure.
+
+## Why this beats tag dispatch
+
+The subsumption graph lives in the *types* — a caller cannot pick the wrong overload, and a new level in the hierarchy needs zero call-site changes. tag-dispatch code needs every site updated.
+
+## Design pattern: constraint ladders
+
+Order your overloads from most to least constrained and let subsumption route:
+
+1. `SizedRandomAccess` — indexable and sized: O(1) paths,
+2. `Iterable` — anything with begin/end: linear paths,
+3. unconstrained fallback — clear error or deferred runtime check.
+
+The graded exercise builds exactly this ladder and asks which rung served the call.

@@ -1,0 +1,30 @@
+Linear search is `std::find` — O(n), works on anything with equality.
+Binary search is different: it requires **sorted data** and random access,
+and pays back with O(log n).
+
+```cpp
+#include <algorithm>
+#include <vector>
+
+std::vector<int> v{1, 3, 5, 7, 9, 11};
+
+bool has = std::binary_search(v.begin(), v.end(), 7);      // yes/no
+
+auto lb = std::lower_bound(v.begin(), v.end(), 7);  // first >= 7
+auto ub = std::upper_bound(v.begin(), v.end(), 7);  // first > 7
+```
+
+`lower_bound`/`upper_bound` are the workhorses: `lower_bound` gives the
+first position where the value could be inserted keeping order;
+`upper_bound` gives the last. The distance between them is the count of
+equal elements. On `std::map`/`std::set`, the same-named members do this
+in O(log n) without touching iterators.
+
+The classic beginner bug: binary searching *unsorted* data. It silently
+returns wrong answers — no exception, no warning. Sort first, or use a
+structure that keeps itself sorted.
+
+Implementing your own binary search is a rite of passage precisely because
+the boundary arithmetic (`lo + (hi - lo) / 2`, `lo <= hi` vs `lo < hi`)
+has consumed generations of programmers. The standard library versions
+already survived that fight — prefer them.

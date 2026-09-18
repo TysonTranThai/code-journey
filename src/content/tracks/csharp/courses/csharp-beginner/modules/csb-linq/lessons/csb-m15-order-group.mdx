@@ -1,0 +1,22 @@
+## Ordering
+
+```csharp
+var words = new[] { "pear", "fig", "apple" };
+var sorted = words.OrderBy(w => w.Length).ThenBy(w => w);
+// fig(3), apple(5), pear(4)? no: fig, apple, pear sorted by length: fig, pear, apple
+```
+
+`OrderBy(key)` sorts ascending by the key; `OrderByDescending` flips it. `ThenBy` breaks ties: first by `Length`, equals sorted alphabetically. **Replace, don't re-order**: calling `OrderBy` twice replaces the first ordering — the second call's keys become primary. Chains read: primary, then tie-breakers.
+
+## Grouping
+
+```csharp
+var byLength = words.GroupBy(w => w.Length);
+foreach (var g in byLength)
+{
+    Console.WriteLine($"length {g.Key}: {string.Join(",", g)}");
+}
+// length 3: pear,fig — no: 3: fig  5: apple,pear
+```
+
+`GroupBy(key)` yields a sequence of groups, each with a `Key` and the elements sharing it — a `Dictionary` in fluent form. Group order is encounter order; element order within a group is source order.

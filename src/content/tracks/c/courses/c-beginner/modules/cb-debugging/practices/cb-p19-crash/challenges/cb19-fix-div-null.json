@@ -1,0 +1,26 @@
+{
+  "id": "cb19-fix-div-null",
+  "title": "Fix: Unguarded Input",
+  "prompt": "`safe_div(int a, int b)` crashes on b == 0 (and on a NULL result slot). Fix it to return 1 and write the quotient on success, or 0 and leave *out untouched when b == 0 or out == NULL.\n\n```c\nint safe_div(int a, int b, int *out) {\n    *out = a / b;\n    return 1;\n}\n```",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "success",
+      "code": "int q;\nCHECK_EQ(safe_div(10, 2, &q), 1);\nCHECK_EQ(q, 5);",
+      "hint": "Normal path."
+    },
+    {
+      "name": "zero divisor",
+      "code": "int q = -1;\nCHECK_EQ(safe_div(10, 0, &q), 0);\nCHECK_EQ(q, -1);",
+      "hint": "Rejected AND *out untouched."
+    },
+    {
+      "name": "null out",
+      "code": "CHECK_EQ(safe_div(10, 2, NULL), 0);",
+      "hint": "NULL out must not crash."
+    }
+  ],
+  "level": "independent"
+}

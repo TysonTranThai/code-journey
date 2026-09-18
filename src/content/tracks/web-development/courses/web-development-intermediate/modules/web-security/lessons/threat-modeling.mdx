@@ -1,0 +1,29 @@
+Security is not a feature you add; it's a property you avoid losing. Start every design with three questions.
+
+## The four questions
+
+1. **What are we building?** (a feature that accepts comments, uploads, payments...)
+2. **What can go wrong?** (the classic STRIDE categories: Spoofing, Tampering, Repudiation, Information disclosure, Denial of service, Elevation of privilege)
+3. **What will we do about it?** (prevent, detect, mitigate, accept — explicitly)
+4. **Did we do a good job?** (tests, reviews, audits)
+
+You don't need the vocabulary to need the discipline: _"the comment field ends up in HTML — what if it contains a script tag?"_ is threat modeling.
+
+## Trust boundaries
+
+Draw the line where data crosses: user input → server, server → database, database → HTML, third-party API → your code. Data inside a boundary is (relatively) trustworthy; data crossing IN is hostile until proven otherwise. **Every XSS, SQLi, and path traversal bug is data crossing a boundary without validation or encoding.**
+
+## The attacker's cheapest wins
+
+Professional attackers don't hack; they check for the known-open doors:
+
+- Reused/leaked credentials (module 6's secrets lesson!)
+- Missing authorization checks (the IDOR: `/api/invoices/4821` works for invoices that aren't yours)
+- Unsanitized output (XSS)
+- Old dependencies with published CVEs
+
+Defense is mostly _not being the low-hanging fruit_: validate input, encode output, check ownership on every read, patch dependencies, and never roll your own crypto.
+
+## The defender's stance (this course's stance)
+
+We practice **defensive** security only: recognize → understand → prevent → safely verify. Every exercise in this module is "here is a vulnerable pattern; find it, explain it, fix it" — never "here is how to exploit someone else's site," which is illegal as well as unhelpful.

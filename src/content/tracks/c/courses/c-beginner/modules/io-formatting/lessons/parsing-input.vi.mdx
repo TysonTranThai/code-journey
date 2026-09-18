@@ -1,0 +1,31 @@
+## Vào tương tác: scanf, cẩn thận
+
+`scanf("%d", &n)` đọc các token cách nhau bởi khoảng trắng từ đầu vào chuẩn.
+Chú ý `&` — scanf cần **địa chỉ** của `n` để lưu vào (mô-đun 11 giải thích).
+Luôn kiểm tra giá trị trả về: số mục đọc thành công.
+
+```c
+int n;
+if (scanf("%d", &n) == 1) {
+    printf("read %d\n", n);
+}
+```
+
+**Nguy hiểm:** `scanf("%s", buf)` không có độ rộng có thể làm tràn `buf` với
+đầu vào dài — tràn bộ đệm, lỗ hổng kinh điển của C. Có độ rộng thì bị chặn:
+`scanf("%63s", buf)` đọc tối đa 63 ký tự cộng dấu kết thúc vào bộ đệm 64 byte.
+
+## Mẫu được chấm: sscanf
+
+Các thử thách của khóa này chạy không tương tác, nên xử lý đầu vào được chấm
+qua `sscanf` — cùng cỗ máy phân tích, đọc từ chuỗi thay vì stdin:
+
+```c
+const char* line = "Alice 42";
+char name[32]; int age = 0;
+int got = sscanf(line, "%31s %d", name, &age);
+// got == 2, name == "Alice", age == 42
+```
+
+Kỹ năng được chấm giống hệt đọc输入 của người dùng: mô tả dạng của dòng, tách
+trường, xác minh số lượng.

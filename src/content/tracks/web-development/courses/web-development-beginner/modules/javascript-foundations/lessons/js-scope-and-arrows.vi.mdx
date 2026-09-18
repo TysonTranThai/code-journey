@@ -1,0 +1,62 @@
+## Scope: biến hiển thị ở đâu
+
+Biến được khai báo bên trong một hàm chỉ tồn tại **bên trong hàm đó**:
+
+```js
+function calc() {
+  const result = 42; // sinh bên trong, chết bên trong
+  return result;
+}
+
+console.log(result); // ReferenceError — result không hiển thị ra ngoài này
+```
+
+Nhưng chiều ngược lại hoạt động: một hàm có thể _đọc_ các biến được khai báo **bên ngoài** nó:
+
+```js
+const rate = 0.2; // phạm vi ngoài
+
+function tax(amount) {
+  return amount * rate; // đọc biến bên ngoài
+}
+```
+
+Đây là **scope**: bên trong thấy bên ngoài, bên ngoài không bao giờ thấy bên trong. Hãy giữ phần lớn biến càng cục bộ càng tốt — một biến mà chỉ một hàm cần thì thuộc về bên trong hàm đó.
+
+## Arrow function — cú pháp ngắn hơn
+
+```js
+const double = function (n) {
+  return n * 2;
+};
+
+const doubleArrow = (n) => n * 2; // hành vi giống hệt
+```
+
+Một arrow function là một biểu thức được gán cho biến. Với **một biểu thức** sau `=>`, giá trị được trả về tự động và dấu ngoặc nhọn biến mất. Với **thân khối**, tự viết `return`:
+
+```js
+const shout = (text) => text.toUpperCase() + "!"; // return ngầm định
+
+const compare = (a, b) => {
+  if (a === b) return 0;
+  return a > b ? 1 : -1;
+}; // thân khối → return tường minh
+```
+
+Bạn sẽ thấy cả hai liên tục. Khai báo `function` vẫn hoàn toàn ổn — dùng cái nào đọc dễ hơn; nhận diện được cả hai.
+
+## Arrow trong vòng lặp trên dữ liệu (một đoạn xem trước)
+
+```js
+const scores = [90, 72, 88];
+scores.map((s) => s * 2); // arrow là fit tự nhiên ở đây — bài mảng đến ngay sau
+```
+
+## Bạn đã học được gì
+
+- Scope bên trong thấy biến bên ngoài; bên ngoài không bao giờ thấy bên trong
+- Giữ biến càng cục bộ càng tốt
+- Arrow: `(params) => expression` (return ngầm) hoặc một khối với `return`
+
+**Tiếp theo:** mảng — làm việc với danh sách dữ liệu.

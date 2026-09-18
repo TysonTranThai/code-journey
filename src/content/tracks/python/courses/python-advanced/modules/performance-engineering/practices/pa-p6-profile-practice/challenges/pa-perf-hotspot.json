@@ -1,0 +1,16 @@
+{
+  "id": "pa-perf-hotspot",
+  "title": "Extract the hotspot",
+  "prompt": "Implement `hotspot_name(workload)`:\n\n- run `workload()` under `cProfile`\n- inspect the stats programmatically (`pstats.Stats(pr).stats`)\n- return the NAME of the function with the highest **tottime** (self time), excluding `workload` itself\n\nThe graded workload calls two helpers with very different self-times; the wrong implementation sorts by cumtime and names the wrong thing.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import cProfile\nimport pstats\n\n# TODO: hotspot_name(workload)",
+  "tests": [
+    {
+      "name": "names the true self-time hotspot",
+      "code": "def tiny():\n    return 1\n\ndef heavy():\n    total = 0\n    for i in range(50000):\n        total += i * i\n    return total\n\ndef workload():\n    tiny()\n    heavy()\n\nassert hotspot_name(workload) == 'heavy', f'got: {hotspot_name(workload)}'\nprint('ok')",
+      "hint": "Iterate Stats(pr).stats — (cc, nc, tt, ct, callers); tt is self time."
+    }
+  ],
+  "level": "debugging"
+}

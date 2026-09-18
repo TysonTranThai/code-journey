@@ -1,0 +1,15 @@
+{
+  "id": "pa-test-suite-audit",
+  "title": "Make the suite trustworthy",
+  "prompt": "Implement `audit_suite(records)` and `plan_fix(record)`:\n\n- `audit_suite(records)` returns `{'sound': [names], 'flaky': [names]}` — flaky when any of the four boolean causes is set (`uses_time`, `uses_random_unseeded`, `shared_state`, `order_dependent`); both lists keep input order\n- `plan_fix(record)` returns the ordered list of concrete fixes for a flaky record — the exact four strings from the diagnose drill — or `[]` for a sound one\n- the plan's fixes map 1:1 in order: time → inject a clock; randomness → seed it; shared state → isolate the world; order dependence → construct prerequisites\n\nThe invariant: after applying every fix in the plan, re-running `diagnose_flaky` on the record yields `'sound'`.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: audit_suite + plan_fix",
+  "tests": [
+    {
+      "name": "classify, plan, and the plan actually cures",
+      "code": "recs = [\n    {'name': 't1', 'uses_time': False, 'uses_random_unseeded': False, 'shared_state': False, 'order_dependent': False},\n    {'name': 't2', 'uses_time': True, 'uses_random_unseeded': False, 'shared_state': False, 'order_dependent': True},\n]\na = audit_suite(recs)\nassert a['sound'] == ['t1'] and a['flaky'] == ['t2']\nplan = plan_fix(recs[1])\nassert len(plan) == 2 and 'inject a clock' in plan[0] and 'prerequisites' in plan[1]\nprint('ok')",
+      "hint": "Sound tests are named; flaky ones get an ordered, actionable plan."
+    }
+  ]
+}

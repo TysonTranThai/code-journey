@@ -1,0 +1,21 @@
+{
+  "id": "cppa5-traits-dispatch",
+  "title": "Dispatch on Type and Value",
+  "prompt": "Implement `kindName<T>()` returning \"int\", \"double\", \"string\", or \"other\" via traits; and `pickN<K>(a, b)` where `K` is a `std::size_t` NTTP returning the K-th argument (K beyond 1 wraps).",
+  "difficulty": "advanced",
+  "level": "independent",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <string>\n#include <type_traits>\n\ntemplate <class T>\nstd::string kindName();   // traits-based classification\n\ntemplate <std::size_t K, class A, class B>\nauto pickN(A a, B b);     // K==0 -> a, K>=1 -> b (wrap)\n",
+  "tests": [
+    {
+      "name": "kindName classifies by traits",
+      "code": "CHECK_EQ(kindName<int>(), std::string(\"int\"));\nCHECK_EQ(kindName<double>(), std::string(\"double\"));\nCHECK_EQ(kindName<std::string>(), std::string(\"string\"));\nCHECK_EQ(kindName<std::size_t>(), std::string(\"int\"));   // size_t is integral\nCHECK_EQ(kindName<std::vector<int>>(), std::string(\"other\"));",
+      "hint": "if constexpr (std::is_integral_v<T>) return \"int\"; else if constexpr (std::is_floating_point_v<T>) ... else if constexpr (std::is_same_v<T, std::string>) ... else \"other\"."
+    },
+    {
+      "name": "pickN wraps by NTTP",
+      "code": "CHECK_EQ(pickN<0>(1, 2), 1);\nCHECK_EQ(pickN<1>(1, 2), 2);\nCHECK_EQ(pickN<5>(1, 2), 2);\nCHECK_EQ(pickN<4>(1, 2), 1);",
+      "hint": "return K % 2 == 0 ? a : b; — the NTTP is part of the type, so each K is a distinct instantiation."
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+## `static` has three faces
+
+`static` is one keyword with three meanings depending on where it sits. Conflating
+them is the root of many bugs:
+
+| Where | Meaning |
+|---|---|
+| File scope (`static int x;`) | **Internal linkage** — private to this TU |
+| Inside a function (`static int c = 0;`) | **Static storage duration** — one object, lives for the whole program, initialized once |
+| On a function parameter/return (`static` in `_Bool static_flag(...)` — rare) | essentially internal linkage for functions |
+
+Inside a function, a `static` variable is *not* on the stack. Every call sees —
+and can mutate — the same object:
+
+```c
+int next_id(void) {
+    static int counter = 0;   /* born once, survives all calls */
+    return ++counter;
+}
+```
+
+That is powerful and dangerous: it makes the function **stateful**, which breaks
+re-entrancy. Two "simultaneous" uses (from threads, or even recursion) mutate the
+same storage. Intermediate rule: use function-scope `static` only for genuinely
+global, single-instance state, and document it.
+
+## `extern` is a promise
+
+`extern int attempts;` says: "an object named `attempts` exists with external
+linkage — its definition is in some TU, not necessarily this one." It is the
+bridge that lets many files share one object:
+
+```c
+/* stats.c */
+int attempts = 0;            /* THE definition (external by default) */
+
+/* stats.h */
+extern int attempts;         /* declaration every includer sees */
+```
+
+Every TU that includes the header declares the same external object; exactly one
+TU defines it. Forget the definition and the linker tells you:
+`undefined reference to 'attempts'`.
+
+## Storage duration: where objects live
+
+- **Automatic** — locals, including parameters. Born at the `{`, die at the `}`.
+  A pointer to an automatic object is invalid the moment the block exits.
+- **Static** — file-scope objects and function-scope `static`. One instance,
+  whole-program life, zero-initialized if you do not initialize.
+- **Allocated** — `malloc`/`calloc`/`realloc`. Lives until you `free` it.
+  Module 3 makes ownership of this category rigorous.
+
+The classic bug this model explains:
+
+```c
+char *badge(const char *name) {
+    char buf[64];                       /* automatic */
+    snprintf(buf, sizeof buf, "%s!", name);
+    return buf;                         /* BUG: dangling on return */
+}
+```
+
+The returned pointer points into a dead stack frame. `static char buf[64];`
+"fixes" it by making the buffer outlive the call — but now every caller shares
+one buffer, and a second call overwrites the first result. The real fix is the
+caller owning the storage (Module 3).
+
+## Check your understanding
+
+- What is printed if you call `next_id()` three times? (1, 2, 3 — the static
+  persists.)
+- Is `extern int x;` a definition? (No — a declaration.)
+- Which duration does a string literal have? (Static — it lives for the whole
+  program; that is why returning a literal is safe while returning a local
+  array is not.)

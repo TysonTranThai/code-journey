@@ -1,0 +1,27 @@
+Performance without measurement is folklore. The industry standard is Core Web Vitals — three user-perceived metrics.
+
+## The three vitals
+
+- **LCP (Largest Contentful Paint)** — when the main content appears. Good < 2.5s. Usually the hero image or headline block. Enemies: slow server (TTFB), render-blocking resources, lazy-loaded hero, unoptimized images.
+- **INP (Interaction to Next Paint)** — worst-ish input latency across interactions. Good < 200ms. Enemies: long tasks on the main thread, giant event handlers.
+- **CLS (Cumulative Layout Shift)** — how much content jumps. Good < 0.1. Enemies: images without dimensions, late-loading fonts/banners/ads, injected content above existing content.
+
+All three are _field metrics_ — measured on real users (CrUX, RUM). Lab tools (Lighthouse) approximate them for diagnosis.
+
+## The loop
+
+1. **Measure** in the field (or a controlled lab reproduction).
+2. **Diagnose** — which phase is slow? TTFB? Download? Script? Layout? Each has a different fix; optimizing the wrong one is effort theater.
+3. **Fix the biggest thing first** — one change, not seven.
+4. **Re-measure.** Same tool, same conditions. Did the number move?
+5. **Guard it** with a budget (below), so the win survives the next feature.
+
+## Performance budgets
+
+A budget is a number in CI: "the JS bundle must stay under 170KB compressed; LCP under 2.5s on a mid-tier phone." Tools (bundlesize, Lighthouse CI, size-limit) fail the build when crossed. Without a budget, performance regresses silently — every "small" script and "temporary" image wins against nobody.
+
+Budget categories worth setting: total JS compressed, total CSS, largest image, number of third-party requests, LCP lab score. Start from the current numbers minus 20% — budgets you can't meet get ignored.
+
+## Device and network honesty
+
+Test on **slow devices and throttled networks** — DevTools can throttle CPU 4–6× and network to "Slow 4G". Your MacBook Pro lies to you; the median user's phone doesn't. The lab targets: mid-tier Android, 4G, cold cache.

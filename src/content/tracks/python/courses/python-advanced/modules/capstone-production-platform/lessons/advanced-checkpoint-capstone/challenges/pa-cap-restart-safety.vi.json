@@ -1,0 +1,10 @@
+{
+  "title": "Crash, khởi động lại, và sự thật còn nguyên",
+  "prompt": "Cài `simulate_crash_restart(core)` — một trình chạy kịch bản trên TaskFlowCore của bạn từ cột mốc vòng lặp lõi:\n\n1. `a = core.submit('alpha', {'op': 1})` và `b = core.submit('beta', {'op': 2})`\n2. deliver một lần; ghi lại batch đã giao\n3. MÔ PHỎNG CRASH: gọi `core.shutdown()` — phải ngừng tiếp nhận và trả mọi job in-flight về pending (hiệu ứng exactly-once khiến điều này an toàn) — rồi gọi `core.restart()` (thêm `'restarted': True` vào metrics; chạy lại)\n4. sau khởi động lại: deliver, và `process(job_id, True)` cho mọi job được giao\n\nHàm trả `{'a': core.status(a), 'b': core.status(b), 'metrics': core.metrics}` trong đó cả hai job kết thúc `'succeeded'`, và metrics cho thấy `submitted == 2`, `succeeded == 2`, `failed == 0` (crash đã trả về queue; không làm fail gì cả).\n\nThêm `shutdown()` và `restart()` vào TaskFlowCore: `shutdown()` chuyển mọi job in-flight về pending (running = False); `restart()` xóa trạng thái drained và đặt metrics['restarted'] = True.",
+  "tests": [
+    {
+      "name": "Crash không mất gì và không phá gì",
+      "hint": "Công việc in-flight được trả về queue, giao lại một lần, tạo hiệu ứng một lần."
+    }
+  ]
+}

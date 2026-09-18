@@ -1,0 +1,21 @@
+{
+  "id": "pa-cap-ops",
+  "title": "TaskFlow ops: graceful, honest, observable",
+  "prompt": "Implement `TaskFlowOps` (milestones 3+4):\n\n- `shutdown()` — stops intake (`running = False`), requeues in-flight count into `requeued`, zeroes `in_flight`, marks `drained = True`\n- `job(job_id, principal)` registers ownership; `status_for(job_id, principal)` returns the status dict for the owner, `None` for anyone else (no forbidden distinction, no as_user parameter to trust)\n- `log(level, event, job_id=None, **fields)` — appends a sorted-keys JSON line with `correlation_id` set to job_id, redacting any of password/token/secret/card_number as '[REDACTED]'\n- `trip_breaker()` / `readiness()` — readiness returns `{'ready': running and not breaker_open, 'checks': {'intake': ..., 'dependencies': ...}}`\n\nRestart-readiness: after `shutdown()`, all work is in `requeued` and nothing is lost.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "class TaskFlowOps:\n    SENSITIVE = {'password', 'token', 'secret', 'card_number'}\n\n    def __init__(self):\n        ...\n\n    def shutdown(self):\n        ...\n\n    def job(self, job_id, principal):\n        ...\n\n    def status_for(self, job_id, principal):\n        ...\n\n    def log(self, level, event, job_id=None, **fields):\n        ...\n\n    def trip_breaker(self):\n        ...\n\n    def readiness(self):\n        ...",
+  "tests": [
+    {
+      "name": "shutdown requeues; status checks ownership; logs redact",
+      "code": "import json\nops = TaskFlowOps()\nops.in_flight = 2\nops.shutdown()\nassert ops.requeued == [2] and ops.drained is True\nops.job('j1', 'alice')\nassert ops.status_for('j1', 'alice') == {'job_id': 'j1'}\nassert ops.status_for('j1', 'bob') is None\nops.log('ERROR', 'job.failed', job_id='j1', token='sekrit')\nline = json.loads(ops.lines[0])\nassert line['correlation_id'] == 'j1' and line['token'] == '[REDACTED]'\nprint('ok')",
+      "hint": "Lifecycle, authorization, and observability in one surface."
+    },
+    {
+      "name": "readiness reports the breaker",
+      "code": "ops = TaskFlowOps()\nassert ops.readiness() == {'ready': True, 'checks': {'intake': True, 'dependencies': True}}\nops.trip_breaker()\nr = ops.readiness()\nassert r['ready'] is False and r['checks']['dependencies'] is False and r['checks']['intake'] is True\nprint('ok')",
+      "hint": "The probe distinguishes which check failed — that's the point of readiness."
+    }
+  ],
+  "level": "real-world"
+}

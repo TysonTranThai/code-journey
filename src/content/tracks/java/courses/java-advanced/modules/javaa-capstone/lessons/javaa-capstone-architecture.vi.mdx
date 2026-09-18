@@ -1,0 +1,23 @@
+Kiến trúc capstone là bốn tầng với một hướng phụ thuộc:
+
+```text
+Service (LedgerService)   — điều phối, không biết gì về lưu trữ
+Engine (interface)        — put/get/all/count, không hơn
+InMemory / JsonlFile      — hai cài đặt hoán đổi cho nhau
+Wire/Report (record)      — dữ liệu vượt ranh giới
+```
+
+Service được *biên dịch dựa trên* interface và *chạy trên* một trong hai
+engine. Đổi engine không đổi gì phía trên đường interface — đó là toàn bộ ý
+nghĩa, và checkpoint xác minh điều đó bằng hành vi: cùng một chuỗi phép toán
+qua hai engine phải cho ra các báo cáo GIỐNG NHAU TỪNG BYTE. Không phải "tương
+tự" — giống hệt, vì tính tất định là thứ làm cho báo cáo đáng tin và regression
+có thể kiểm thử.
+
+Các quy tắc thiết kế mà khóa học đã trả giá: record cho dữ liệu ranh giới
+(bất biến, field final — Module 1); interface engine *hẹp* (bốn phương thức —
+bài học capture của Module 6: mỗi phương thức bạn không khai báo là một phương
+thức bạn không bao giờ phải giả lập); engine JSONL giữ một `Path` mà nó sở hữu
+và append nguyên tử (kỷ luật journal của Module 10); service chặn trên fan-out
+báo cáo bằng `orTimeout` theo nhánh (Module 12) và phơi một health check đọc
+chính counter của nó (Module 14).

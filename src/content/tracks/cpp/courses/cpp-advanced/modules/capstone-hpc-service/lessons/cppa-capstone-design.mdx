@@ -1,0 +1,17 @@
+## Decisions to lock before implementing
+
+1. **Window ownership.** Where does "current window" live? (Hint: a single
+   timestamp comparison in `admit` — not a timer, not a thread.)
+2. **Reset semantics.** A window rolls on the *first* admit at a new
+   timestamp: clear usage **and** ordinals together, or nothing.
+3. **Reject paths are ordered too.** Unknown tag and exhausted tag are both
+   rejections — one counter, two reasons, same discipline.
+4. **The report is a total order.** Timestamp asc, then code severity
+   (REJECT < ADMIT), then stable insertion — which makes `snapshot()`
+   deterministic even for equal-timestamp evidence.
+5. **Provenance.** `Admission.ordinal` must survive the roll (restart at 1)
+   — learners who store ordinals globally fail the acceptance battery.
+
+Write your answers as comments above each method, then implement. The
+acceptance battery below is the grader, in the practice and again — harder —
+in the checkpoint.

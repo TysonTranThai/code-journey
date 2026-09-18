@@ -1,0 +1,22 @@
+{
+  "title": "Đọc đúng N byte",
+  "prompt": "POSIX. Cài `ssize_t read_exact(int fd, void *buf, size_t n)` — lặp recv đến khi tích đủ n byte; trả n, hoặc -1 khi EOF trước khi đủ, lỗi, hoặc NULL (n==0 trả 0 ngay).",
+  "tests": [
+    {
+      "name": "đọc trọn vẹn",
+      "hint": "3 byte đến; read_exact trả 3 sau một recv — trường hợp tầm thường."
+    },
+    {
+      "name": "giao phân mảnh",
+      "hint": "Ba lần gửi 1 byte: vòng lặp phải recv tiếp đến khi đủ 3."
+    },
+    {
+      "name": "EOF trước khi đủ",
+      "hint": "1 byte rồi EOF: tin nhắn bị cắt là lỗi, không phải thành công."
+    },
+    {
+      "name": "không là ngay lập tức",
+      "hint": "n==0 không xin gì: trả 0 không đụng socket."
+    }
+  ]
+}

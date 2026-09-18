@@ -1,0 +1,34 @@
+## The terminator is the string's length
+
+```c
+char word[6] = {'h', 'e', 'l', 'l', 'o', '\0'};
+char word2[] = "hello";              // same thing; size 6, terminator included
+const char* msg = "hello";           // points at a read-only literal
+```
+
+Every string function finds the end by scanning for `'\0'`. No terminator =
+the scan runs off the array = undefined behavior. This is the single most
+important sentence in this module.
+
+## What's really stored
+
+`"hi"` occupies **3 bytes**: 'h', 'i', '\0'. `strlen("hi")` is 2 (terminator
+not counted); the array needs **3** slots.
+
+## Character work
+
+```c
+char c = 'A';
+if (c >= 'a' && c <= 'z') { /* lowercase letter */ }
+char up = c - 'a' + 'A';             // 'b' -> 'B' — arithmetic on codes
+char digit_val = '7' - '0';          // 7 — digit char to number
+```
+
+Characters are small integers. `'a'..'z'`, `'A'..'Z'`, `'0'..'9'` are each
+contiguous ranges (for these sets, in every toolchain you will meet here).
+
+## Literals vs arrays
+
+A string **literal** ("hello") lives in read-only storage: writing through the
+pointer is undefined behavior. A char **array** you declared is writable. When
+you need to modify, copy into an array first.

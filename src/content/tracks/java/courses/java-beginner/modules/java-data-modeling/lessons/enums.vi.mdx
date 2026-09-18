@@ -1,0 +1,45 @@
+**Enum** là một kiểu có tập giá trị cố định, được đặt tên — bảo vệ lúc biên
+dịch khỏi những trạng thái không thể tồn tại:
+
+```java
+enum OrderStatus { PENDING, PAID, SHIPPED, CANCELLED }
+
+OrderStatus s = OrderStatus.PAID;
+```
+
+`switch` trên enum được kiểm tra tính đầy đủ: thêm một trạng thái sau này và
+mọi switch thiếu nó sẽ không biên dịch — compiler trở thành checklist của bạn.
+
+```java
+boolean isFinal = switch (s) {
+    case PAID, SHIPPED -> false;      // nhiều nhãn dùng chung một nhánh
+    case CANCELLED -> true;
+    case PENDING -> false;
+};
+```
+
+Enum là class đầy đủ: có thể mang trường, constructor, và phương thức — mỗi
+hằng số chạy constructor đúng một lần:
+
+```java
+enum Planet {
+    MERCURY(0.39), EARTH(1.0), MARS(1.52);   // dấu chấm phẩy sau danh sách!
+
+    private final double auFromSun;
+    Planet(double au) { this.auFromSun = au; }
+    public double au() { return auFromSun; }
+}
+```
+
+Mỗi enum tự động có `values()` (mọi hằng theo thứ tự),
+`valueOf("PAID")` (parse; ném exception với giá trị lạ), `name()`, và
+`ordinal()` (vị trí khai báo — tránh dùng ordinal cho logic; việc đổi thứ tự
+hằng không bao giờ được phép đổi hành vi). So sánh hằng enum dùng `==` một
+cách an toàn: chúng là singleton, và đây là chỗ duy nhất `==` trên object
+là thành ngữ chuẩn.
+
+Dùng enum bất cứ khi nào giá trị hợp lệ của một biến là danh sách đóng —
+trạng thái, mùa, độ khó, phương hướng. Nó thay mã `int` (số 3 là gì?) và
+so sánh bằng chuỗi (sai chính tả bị compiler bắt).
+
+**Tiếp theo:** record — dữ liệu không nghi thức.

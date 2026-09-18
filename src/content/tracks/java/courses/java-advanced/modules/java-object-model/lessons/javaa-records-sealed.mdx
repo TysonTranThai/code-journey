@@ -1,0 +1,41 @@
+Intermediate treated records as "immutable data classes." Advanced treats
+them as **algebraic design tools**.
+
+**Records** (JEP 395, final in 21) are transparent carriers: final fields,
+accessors named like the components, generated `equals`/`hashCode`/`toString`.
+Design rule: a record *is* its data — if you find yourself hiding or mutating
+component state, it should not be a record. Validation belongs in the
+**compact constructor**:
+
+```java
+public record Price(int cents) {
+    public Price {                      // compact ctor: fields not yet assigned
+        if (cents < 0) throw new IllegalArgumentException("negative price");
+    }
+}
+```
+
+**Sealed classes** (JEP 409, final in 21) let a type *own its hierarchy*:
+
+```java
+public sealed interface Shape permits Circle, Rect {}
+public record Circle(double r) implements Shape {}
+public record Rect(double w, double h) implements Shape {}
+```
+
+Together with **pattern matching for switch** (JEP 441, final in 21) this
+gives you *exhaustive* dispatch: the compiler refuses to compile a switch
+over a sealed type that misses a case — so adding a new variant becomes a
+*compile-time-guided* change, not a runtime hunt for forgotten `else` branches.
+
+```java
+double area(Shape s) {
+    return switch (s) {
+        case Circle c -> Math.PI * c.r() * c.r();
+        case Rect r   -> r.w() * r.h();
+    }; // no default: compiler enforces exhaustiveness
+}
+```
+
+When *not* to seal: hierarchies designed for third-party extension (plugins,
+SPIs) must stay open. Sealing is a contract with your callers, not a style.

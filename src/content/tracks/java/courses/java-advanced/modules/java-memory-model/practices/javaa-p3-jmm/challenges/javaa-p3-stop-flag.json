@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p3-stop-flag",
+  "title": "Fix the stop flag with a guaranteed edge",
+  "prompt": "A broken `static boolean run = true` stop-flag must become correct using a **CountDownLatch** as the publication channel (protocol beats hoping):\n1. `static String awaitStop()` starts a virtual thread that busy-reads `run` and returns \"exited\" when the flag flips false; the worker first signals `ready`.\n2. `static void requestStop()` — waits for `ready` (guaranteed hb), sets run=false, signals `stopped`.\n3. Wire it so `awaitStop()` always returns \"exited\" because `run`'s write happens-before the worker's final read **via the latch chain**: worker awaits `stopped` before its last read.\nAdditionally implement `static boolean plainFlagIsSafe()` returning false — documenting that a plain flag WITHOUT such an edge has no visibility guarantee.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "latch protocol guarantees exit",
+      "code": "\ncheckEq(Solution.awaitStop(), \"exited\", \"stop observed via latch hb chain\");\n",
+      "hint": "Worker awaits `stopped` before deciding the loop is done."
+    },
+    {
+      "name": "plain flag honesty",
+      "code": "\ncheckTrue(!Solution.plainFlagIsSafe(), \"plain flag has no visibility guarantee\");\n",
+      "hint": "Without an hb edge the model guarantees nothing."
+    }
+  ],
+  "level": "guided"
+}

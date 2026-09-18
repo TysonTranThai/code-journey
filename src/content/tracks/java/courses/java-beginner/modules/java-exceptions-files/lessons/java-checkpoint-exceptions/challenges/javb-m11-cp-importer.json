@@ -1,0 +1,26 @@
+{
+  "id": "javb-m11-cp-importer",
+  "title": "Checkpoint: the robust importer",
+  "prompt": "Implement `importRows(lines, errors, rows)` that returns the number of imported rows. For every line index `i` (0-based): a blank line records `\"<i+1>: blank line\"`; wrong field count records `\"<i+1>: expected 2 fields, got N\"`; a non-numeric age records `\"<i+1>: bad age '<field>'\"`; an age outside 0..150 records `\"<i+1>: age out of range <age>\"`; an empty name records `\"<i+1>: empty name\"`. Valid rows append `new Row(name, age)` (trimmed). Processing never stops early.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public record Row(String name, int age) {}\n\n    public static int importRows(java.util.List<String> lines,\n                                 java.util.List<String> errors,\n                                 java.util.List<Row> rows) {\n        return 0;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "clean rows import",
+      "code": "\njava.util.List<String> lines = java.util.List.of(\"An,33\", \"Dung, 28 \", \"Hieu,44\");\njava.util.List<String> errors = new java.util.ArrayList<>();\njava.util.List<Solution.Row> rows = new java.util.ArrayList<>();\nint n = Solution.importRows(lines, errors, rows);\nCjTestBase.checkEq(n, 3, \"three clean rows\");\nCjTestBase.checkEq(rows.get(0).name(), \"An\", \"first name\");\nCjTestBase.checkEq(rows.get(1).age(), 28, \"trimmed age parsed\");\n",
+      "hint": "Trim both fields; parse the age defensively."
+    },
+    {
+      "name": "every rejection is recorded with a 1-based line number",
+      "code": "\njava.util.List<String> lines = java.util.List.of(\"An,33\", \"\", \"Binh,abc\", \"Chi,999\", \"Giang\", \",15\");\njava.util.List<String> errors = new java.util.ArrayList<>();\njava.util.List<Solution.Row> rows = new java.util.ArrayList<>();\nint n = Solution.importRows(lines, errors, rows);\nCjTestBase.checkEq(n, 1, \"only An survives\");\nCjTestBase.checkEq(errors.size(), 5, \"five rejects recorded\");\nCjTestBase.checkTrue(errors.get(0).startsWith(\"2:\"), \"blank cites line 2\");\nCjTestBase.checkTrue(errors.get(2).contains(\"out of range\"), \"999 says out of range\");\nCjTestBase.checkTrue(errors.get(4).contains(\"empty name\"), \"empty-name message\");\n",
+      "hint": "Use (i + 1) for the line number; one bad line must not stop the loop."
+    },
+    {
+      "name": "sum of ages across a mixed batch",
+      "code": "\njava.util.List<String> lines = java.util.List.of(\"An,33\", \"Binh,abc\", \"Dung, 28 \", \"Hieu,44\", \"Chi,999\");\njava.util.List<Solution.Row> rows = new java.util.ArrayList<>();\njava.util.List<String> errors = new java.util.ArrayList<>();\nSolution.importRows(lines, errors, rows);\nint total = 0;\nfor (Solution.Row r : rows) total += r.age();\nCjTestBase.checkEq(total, 105, \"33+28+44\");\n",
+      "hint": "Collect-and-continue: keep importing after recording each error."
+    }
+  ],
+  "level": "real-world"
+}

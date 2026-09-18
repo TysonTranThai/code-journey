@@ -1,0 +1,56 @@
+## The dependency problem
+
+A `OrderService` that news up its own `SqlEmailer` is welded to it: can't
+test without a database, can't swap providers, can't see what it needs.
+Dependency INVERSION flips the arrow: high-level policy (OrderService)
+defines the abstraction it needs; low-level detail (SqlEmailer) implements it:
+
+```csharp
+public interface IEmailer { void Send(string to, string body); }
+
+public sealed class OrderService
+{
+    private readonly IEmailer _emailer;
+    public OrderService(IEmailer emailer) => _emailer = emailer;   // injected
+
+    public void Place(Order o)
+    {
+        // ... business rules ...
+        _emailer.Send(o.Email, "order confirmed");
+    }
+}
+```
+
+CONSTRUCTOR INJECTION: dependencies arrive as constructor parameters,
+stored in readonly fields. The class can't be constructed half-wired.
+
+## The testability payoff
+
+A fake replaces the real thing in tests — no network, no database:
+
+```csharp
+public sealed class FakeEmailer : IEmailer
+{
+    public System.Collections.Generic.List<(string To, string Body)> Sent = new();
+    public void Send(string to, string body) => Sent.Add((to, body));
+}
+
+var fake = new FakeEmailer();
+var svc = new OrderService(fake);
+svc.Place(order);
+// assert fake.Sent has the notification
+```
+
+This is why injected classes need no mocking frameworks for unit tests.
+
+## What NOT to inject
+
+Value objects, DTOs, and truly static utilities stay as-is. Inject
+behaviors with state or I/O: gateways, repositories, clocks, config
+providers. Two constructor parameters + a news-up inside is fine; five is
+a design smell the class is doing too much.
+
+## Check your understanding
+
+- Who owns the interface — the consumer or the implementation? (The consumer; detail implements it.)
+- Why readonly fields for injected dependencies? (Fixed at construction — no half-wired instances.)

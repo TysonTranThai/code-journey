@@ -1,0 +1,35 @@
+`javac` compiles to **class files** (JVM spec §4): a constant pool of symbols
+plus per-method bytecode for a **stack machine**. You have no shell in this
+sandbox, so `javap -c` is shown here in prose — but the *consequences* of the
+constant pool are executable:
+
+**String identity** — literals live in the pool, deduplicated:
+
+```java
+String a = "adv";                 // pool entry
+String b = "adv";                 // same pool entry
+String c = new String("adv");     // fresh heap object
+a == b      // true  — same constant
+a == c      // false — different object
+a == c.intern()  // true — intern() returns the pool entry
+```
+
+**Boxing cache** — `Integer.valueOf` caches -128..127 (JLS §5.1.7):
+
+```java
+Integer.valueOf(127) == Integer.valueOf(127)  // true  (same cached box)
+Integer.valueOf(128) == Integer.valueOf(128)  // false (new box each time)
+```
+
+**Synthetic constructs** — the compiler generates members you never wrote.
+A lambda is desugared to a private synthetic method plus an `invokedynamic`
+call site. Reflection can see the synthetic method:
+
+```java
+Runnable r = () -> {};
+Arrays.stream(Solution.class.getDeclaredMethods())
+      .anyMatch(Method::isSynthetic)   // true when a lambda exists
+```
+
+Reading bytecode is a skill, but *reasoning about identity and generated
+members* is the part you will use weekly.

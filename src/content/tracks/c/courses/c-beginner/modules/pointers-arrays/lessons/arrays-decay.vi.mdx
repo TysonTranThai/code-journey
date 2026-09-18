@@ -1,0 +1,38 @@
+## Quy tắc suy biến
+
+Trong hầu hết biểu thức, tên mảng **suy biến** thành con trỏ tới phần tử đầu
+tiên của nó:
+
+```c
+int a[5] = {5, 10, 15, 20, 25};
+int *p = a;              // giống &a[0] — suy biến
+
+printf("%p\n", (void*)a);     // địa chỉ của a[0]
+printf("%p\n", (void*)&a[0]); // giống hệt
+```
+
+Ngoại lệ quan trọng: `sizeof a` vẫn biết kích thước toàn mảng (ở đây 20 với
+int 64-bit của sandbox: 5 × 4). Bên trong sizeof, suy biến không xảy ra.
+
+## Thứ hàm thực sự nhận được
+
+```c
+int sum(int arr[], int n)     // arr[] chỉ là CÁCH VIẾT
+int sum(int *arr, int n)      // trình biên dịch nhìn thấy đúng cái này
+```
+
+Hai nguyên mẫu này **giống hệt nhau** với trình biên dịch. Tham số mảng là một
+con trỏ; kích thước mảng không đi kèm — vì vậy `n` tồn tại như tham số thứ
+hai. Bên trong hàm, `sizeof arr` là kích thước của một con trỏ (8), không
+phải của mảng.
+
+## Hệ quả: hàm có thể sửa mảng của bạn
+
+Vì hàm nhận địa chỉ thật, ghi qua tham số sẽ thay đổi mảng của người gọi:
+
+```c
+void zero_first(int arr[], int n) { arr[0] = 0; }
+```
+
+Mảng là "truyền theo tham chiếu" đầu tiên bạn gặp trong C — và là duy nhất,
+cho đến khi bạn tự chọn nó với con trỏ.

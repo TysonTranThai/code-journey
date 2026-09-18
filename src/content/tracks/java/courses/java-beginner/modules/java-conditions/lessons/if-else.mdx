@@ -1,0 +1,54 @@
+Programs make decisions with `if`, `else if`, and `else`:
+
+```java
+int temperature = 31;
+
+if (temperature > 30) {
+    System.out.println("Stay hydrated");
+} else if (temperature > 20) {
+    System.out.println("Perfect weather");
+} else {
+    System.out.println("Bring a jacket");
+}
+```
+
+The conditions are tested **top to bottom**, and only the FIRST true branch
+runs — once one matches, the rest are skipped entirely. That ordering is
+part of your program's logic: testing `temperature > 20` first would make
+the `> 30` branch unreachable.
+
+The parentheses hold a boolean expression; the braces hold the code to run.
+Braces are **never optional in this course**, even for one statement:
+
+```java
+if (active) System.out.println("on");   // legal, but a maintenance trap
+```
+
+Without braces, only the next single statement belongs to the `if` — the
+famous "Apple goto fail" bug class. Always write the braces.
+
+Conditions can **nest**, but deep nesting is a smell:
+
+```java
+if (user != null) {
+    if (user.isActive()) {
+        if (user.hasPermission("write")) {
+            // three levels deep — hard to follow
+        }
+    }
+}
+```
+
+The same logic, flat and readable, using the `&&` from Module 2:
+
+```java
+if (user != null && user.isActive() && user.hasPermission("write")) {
+    // one clear gate
+}
+```
+
+**Scope note:** variables declared inside a branch disappear at its closing
+brace. Declare result variables *before* the branches if all branches
+contribute to them.
+
+**Next:** `switch` — decisions by value.

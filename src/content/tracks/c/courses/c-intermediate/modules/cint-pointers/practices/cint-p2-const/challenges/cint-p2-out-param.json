@@ -1,0 +1,16 @@
+{
+  "id": "cint-p2-out-param",
+  "title": "Return a Pointer via `T **`",
+  "prompt": "Implement the out-parameter pair:\n\n```c\n/* allocates n+1 bytes, copies s, NUL-terminates; sets *out.\n   Returns 1 on success, 0 on any failure (NULL args, malloc fail). */\nint str_dup(const char *s, char **out);\n/* frees *out and sets *out to NULL (so double-free becomes a no-op);\n   returns 1 if there was something to free, 0 otherwise. */\nint str_release(char **out);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "dup and safe release",
+      "code": "\nchar *copy = NULL;\nCHECK_EQ(str_dup(\"hello\", &copy), 1);\nCHECK_STR_EQ(copy, \"hello\");\nCHECK_EQ(str_release(&copy), 1);\nCHECK_NULL(copy);\nCHECK_EQ(str_release(&copy), 0);   /* already NULL: safe no-op */\nCHECK_EQ(str_dup(NULL, &copy), 0);\n",
+      "hint": "malloc(strlen(s)+1); memcpy; (*out)[len] = 0; free(*out) then *out = NULL."
+    }
+  ],
+  "level": "imitation"
+}

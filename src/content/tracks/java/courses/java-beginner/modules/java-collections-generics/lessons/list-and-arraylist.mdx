@@ -1,0 +1,37 @@
+The **Collections Framework** is Java's toolbox of growable data structures.
+`List` is the everyday one: an ordered, growable sequence.
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+List<String> names = new ArrayList<>();   // interface left, implementation right
+names.add("Ada");
+names.add("Grace");
+names.add(1, "Linus");                    // insert at index 1
+System.out.println(names.get(0));         // Ada
+System.out.println(names.size());         // 3
+System.out.println(names.remove("Ada"));  // true (removed)
+```
+
+Declare the **interface** type (`List`), construct the **implementation**
+(`ArrayList`). All your calling code sees the interface; swapping to
+`LinkedList` tomorrow touches exactly one line. The `<String>` is a
+**generic type parameter** — more on it in a moment, but it already pays:
+`names.get(0)` is statically known to be a String.
+
+The core List methods: `add(e)`, `add(i, e)`, `get(i)`, `set(i, e)`,
+`remove(i)`, `remove(Object)`, `size()`, `contains(e)`, `indexOf(e)`,
+`isEmpty()`, `clear()`. Iteration uses for-each like arrays:
+
+```java
+for (String n : names) { System.out.println(n); }
+```
+
+**ArrayList vs LinkedList** — the interview staple, kept honest: ArrayList
+is a resizable array; `get(i)` is instant, middle inserts shift elements.
+LinkedList is a chain; ends are cheap, `get(i)` walks from the nearest end.
+For beginners the honest summary: **use ArrayList** until you have measured
+a real problem (and in a Beginner course you almost certainly have not).
+
+**Next:** sets, maps, and the shape of lookups.

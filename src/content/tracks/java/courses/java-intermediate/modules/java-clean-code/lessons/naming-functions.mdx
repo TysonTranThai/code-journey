@@ -1,0 +1,33 @@
+## Names and functions that respect the reader
+
+A name is a contract with the next reader (usually you, in six months):
+
+```java
+// what does "d" mean? days? data? delta?
+int d = getD(u);
+
+// reads like the sentence it implements
+int daysUntilExpiry = daysBetween(today, subscription.endDate());
+```
+
+Naming rules that scale:
+- booleans read as predicates: `isExpired`, `hasChildren`, `canRetry`
+- methods are verbs: `calculateTotal`, not `total` (that's a getter's job)
+- no abbreviations unless the domain owns them (`vat`, `isbn` are fine)
+- one concept, one word: `fetch`/`get`/`retrieve` for the same idea
+  across a codebase is noise
+
+Functions:
+- **do one thing** at one level of abstraction
+- small enough that its `if`s fit your field of vision
+- few parameters (two or three; more means a parameter object wants to
+  exist)
+
+```java
+// before
+public void process(List<Order> os, boolean f, boolean d) { ... }
+
+// after — flags are usually two functions hiding
+public void processForInvoice(List<Order> orders) { ... }
+public void processForDisplay(List<Order> orders) { ... }
+```

@@ -1,0 +1,16 @@
+{
+  "id": "pa-cc-locked-counter",
+  "title": "A counter that survives concurrency",
+  "prompt": "Implement `SafeCounter` with `inc()` and a read-only `.value` property that stays EXACT under concurrent increments.\n\nThe graded test starts 6 threads, each calling `inc()` 20 times, twice. Under that concurrency any lock-free read-modify-write (`value = self.value; ...; self.value = value + 1`) — especially one that does any work between read and write — loses updates. Guard the state with a `threading.Lock`.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import threading\n\nclass SafeCounter:\n    def __init__(self):\n        self._value = 0\n\n    # TODO: inc() and .value, thread-safe",
+  "tests": [
+    {
+      "name": "exact count under 6 concurrent threads",
+      "code": "import time\nc = SafeCounter()\nraw_inc = c.inc\ndef slow_inc():\n    v = c.value\n    time.sleep(0.001)\n    # call the learner's inc through a captured original binding\n    raise AssertionError('internal')\n\nthreads = []\nfor _ in range(6):\n    t = threading.Thread(target=lambda: [c.inc() for _ in range(20)])\n    t.start()\n    threads.append(t)\nfor t in threads:\n    t.join()\nassert c.value == 120, f'value={c.value}, expected 120 (lost updates!)'\nprint('ok')",
+      "hint": "Every read and write of the shared value must hold the lock — increments are not atomic in Python."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "cppa8-memmodel-checkpoint",
+  "title": "Ordering Gauntlet",
+  "prompt": "Implement the four `Cell` methods with the right orderings: relaxed bump, acquire read, release publish in reset.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <atomic>\n\n// A histogram cell with a lock-free bump and a reset that publishes.\nstruct Cell {\n    std::atomic<unsigned> count{0};\n    std::atomic<bool> fresh{false};\n    int stamp = 0;   // ordinary int, ordered via fresh\n\n    void bump();                       // +1, relaxed\n    unsigned total() const;            // current count\n    void reset(int newStamp);          // zero the count, then publish the stamp\n    int readStamped();                 // acquire; returns -1 until a reset published\n};\n",
+  "tests": [
+    {
+      "name": "bump/total round-trip",
+      "code": "Cell c;\nfor (int i = 0; i < 7; ++i) c.bump();\nCHECK_EQ(c.total(), 7u);",
+      "hint": "void Cell::bump() { count.fetch_add(1, std::memory_order_relaxed); }  unsigned Cell::total() const { return count.load(std::memory_order_relaxed); }"
+    },
+    {
+      "name": "reset publishes the stamp",
+      "code": "Cell c;\nCHECK_EQ(c.readStamped(), -1);\nfor (int i = 0; i < 3; ++i) c.bump();\nc.reset(42);\nCHECK_EQ(c.readStamped(), 42);\nCHECK_EQ(c.total(), 0u);",
+      "hint": "reset: count.store(0, relaxed); stamp = newStamp; fresh.store(true, release);  readStamped: while (!fresh.load(acquire)) {} return stamp;"
+    }
+  ]
+}

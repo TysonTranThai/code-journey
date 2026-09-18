@@ -1,0 +1,21 @@
+{
+  "id": "cppa3-array-bound-nttp",
+  "title": "The Array Bound Is a Free NTTP",
+  "prompt": "Implement `strLen` (N - 1, excluding the terminator) and `firstChar` (s[0]) deducing the size from the array reference — both `constexpr`, usable in `static_assert`.",
+  "difficulty": "advanced",
+  "level": "independent",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n\n// strLen(\"abcd\") must be 4: the array bound carries the length.\ntemplate <std::size_t N>\nconstexpr std::size_t strLen(const char (&s)[N]);\n\n// firstChar picks s[0] the same way (used by the graded checks).\ntemplate <std::size_t N>\nconstexpr char firstChar(const char (&s)[N]);\n",
+  "tests": [
+    {
+      "name": "strLen excludes the terminator",
+      "code": "static_assert(strLen(\"abcd\") == 4, \"length\");\nstatic_assert(strLen(\"\") == 0, \"empty literal\");\nCHECK_EQ(strLen(\"template\"), std::size_t{8});",
+      "hint": "return N - 1; — the bound counts the '\\0'."
+    },
+    {
+      "name": "firstChar reads through the same NTTP",
+      "code": "static_assert(firstChar(\"knot\") == 'k', \"first\");\nCHECK_EQ(firstChar(\"zebra\"), 'z');",
+      "hint": "return s[0]; — same deduction shape, different body."
+    }
+  ]
+}

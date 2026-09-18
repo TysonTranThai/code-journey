@@ -1,0 +1,21 @@
+{
+  "id": "csi-p12-options-binding",
+  "title": "Bind JSON into Options",
+  "prompt": "Bind a JSON section into a typed options class with defaults: missing keys keep defaults, present keys override, and Validate() reports ALL problems (not just the first) by throwing OptionsValidationException with the message \"Retry: <all problems joined by '; '>\".\n\n```csharp\npublic sealed class RetryOptions\n{\n    public int MaxAttempts { get; set; } = 3;\n    public int DelayMs { get; set; } = 200;\n}\npublic sealed class OptionsBinder\n{\n    public static RetryOptions Bind(string json);            // { \"Retry\": { ... } }\n    public static void Validate(RetryOptions options);       // MaxAttempts >= 1, DelayMs >= 0\n}\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\nusing System.Text.Json;\n",
+  "tests": [
+    {
+      "name": "defaults and overrides",
+      "code": "\nvar defaults = Solution.OptionsBinder.Bind(\"{}\");\nCj.Eq(defaults.MaxAttempts, 3, \"default attempts\");\nCj.Eq(defaults.DelayMs, 200, \"default delay\");\nvar custom = Solution.OptionsBinder.Bind(\"{\\\"Retry\\\":{\\\"MaxAttempts\\\":5,\\\"DelayMs\\\":50}}\");\nCj.Eq(custom.MaxAttempts, 5, \"overridden attempts\");\nCj.Eq(custom.DelayMs, 50, \"overridden delay\");\n",
+      "hint": "JsonDocument.Parse; GetProperty(\"Retry\") when present; fill only provided keys."
+    },
+    {
+      "name": "validation reports everything",
+      "code": "\nvar bad = new Solution.RetryOptions { MaxAttempts = 0, DelayMs = -1 };\ntry\n{\n    Solution.OptionsBinder.Validate(bad);\n    Cj.True(false, \"should throw\");\n}\ncatch (System.InvalidOperationException ex)\n{\n    Cj.True(ex.Message.Contains(\"MaxAttempts\") && ex.Message.Contains(\"DelayMs\"), \"all problems listed\");\n}\n",
+      "hint": "Collect every violated rule into one message, then throw once."
+    }
+  ],
+  "level": "guided"
+}

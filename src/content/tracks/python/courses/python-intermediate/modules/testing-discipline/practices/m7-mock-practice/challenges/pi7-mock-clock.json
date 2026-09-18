@@ -1,0 +1,26 @@
+{
+  "id": "pi7-mock-clock",
+  "title": "Freeze the Clock",
+  "prompt": "Implement greeting(name, now=None) returning 'Good morning, <name>!' for hours 5-11, 'Good afternoon' for 12-17, 'Good evening' otherwise. now is a datetime; default to datetime.now(). Then write TestGreeting that patches the clock (patch the module-level datetime or inject fixed datetimes via now=) to test all three bands. Assign to SUITE_TEST.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import unittest\nfrom datetime import datetime\n\ndef greeting(name, now=None):\n    pass\n\nclass TestGreeting(unittest.TestCase):\n    pass\n\nSUITE_TEST = None\n",
+  "tests": [
+    {
+      "name": "bands work with injected times",
+      "code": "from datetime import datetime\nassert greeting('An', datetime(2026, 1, 1, 8)) == 'Good morning, An!'\nassert greeting('An', datetime(2026, 1, 1, 14)) == 'Good afternoon, An!'\nassert greeting('An', datetime(2026, 1, 1, 22)) == 'Good evening, An!'",
+      "hint": "Branch on now.hour when now is provided."
+    },
+    {
+      "name": "default path uses real clock",
+      "code": "g = greeting('An')\nassert g.startswith(('Good morning', 'Good afternoon', 'Good evening'))",
+      "hint": "now=None must fall back to datetime.now()."
+    },
+    {
+      "name": "all three bands tested",
+      "code": "import unittest, io\nseen = []\nreal = SUITE_TEST.test_morning.__globals__['greeting']\ndef spy(name, now=None):\n    if now is not None:\n        seen.append(now.hour)\n    return real(name, now)\nSUITE_TEST.test_morning.__globals__['greeting'] = spy\nresult = unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(unittest.TestLoader().loadTestsFromTestCase(SUITE_TEST))\nassert result.wasSuccessful(), 'greeting tests failed'\nbands = {'morning' if h < 12 else 'afternoon' if h < 18 else 'evening' for h in seen}\nassert {'morning', 'afternoon', 'evening'} <= bands, 'test all three bands with injected times'\n",
+      "hint": "Each band needs its own asserted case."
+    }
+  ],
+  "level": "guided"
+}

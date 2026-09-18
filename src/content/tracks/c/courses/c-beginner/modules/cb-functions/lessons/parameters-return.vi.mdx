@@ -1,0 +1,39 @@
+## Tham số là bản sao
+
+```c
+void set_to_zero(int x) {
+    x = 0;                    // sửa bản SAO — caller không đổi
+}
+
+int a = 5;
+set_to_zero(a);              // a vẫn là 5
+```
+
+C luôn truyền theo giá trị. Tham số của hàm là biến mới được khởi tạo bằng giá
+trị đối số. (Tham số đầu ra qua con trỏ ở module 11 — đây là "vì sao".)
+
+## Một giá trị trả về
+
+```c
+int clamp(int v, int lo, int hi) {
+    if (v < lo) return lo;
+    if (v > hi) return hi;
+    return v;
+}
+```
+
+`return` thoát ngay lập tức — có thể nằm bất kỳ đâu trong thân. Hàm khác
+`void` mà chạy hết thân mà không `return` sẽ trao cho caller một giá trị
+**không xác định** (hành vi không xác định nếu caller dùng nó). GCC cảnh báo
+với `-Wreturn-type`; harness biên dịch kèm cảnh báo hiển thị.
+
+## Return sớm đỡ lồng nhau
+
+```c
+// nên viết thế này                        // thay vì thế này
+int f(int x) {                              int f(int x) {
+    if (bad(x)) return -1;                      if (!bad(x)) {
+    ... đường chính ...                             ... lồng sâu ...
+}                                               }
+                                            }
+```

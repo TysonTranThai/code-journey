@@ -1,0 +1,21 @@
+{
+  "id": "ca4-fold-probe",
+  "title": "Folding vs Runtime",
+  "prompt": "Implement `int folded_sq(int x)` returning x*x with locals; `int unfolded_sq(int x)` computing x*x through a volatile local; and `long long fold_penalty(int x)` returning the *number of multiplications* each must perform — implement it as folded_count - unfolded_count where folded_count is 0 (the multiply folds away) and unfolded_count is 1 (volatile forces the runtime multiply).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "both compute",
+      "code": "CHECK_EQ(folded_sq(12), 144);\nCHECK_EQ(unfolded_sq(12), 144);",
+      "hint": "Identical observable results — folding changes nothing semantically."
+    },
+    {
+      "name": "penalty is the load",
+      "code": "CHECK_EQ(fold_penalty(12), -1);",
+      "hint": "folded does 0 runtime multiplies, unfolded does 1: 0 - 1 = -1."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "javb-m14-cp-ledger",
+  "title": "Capstone: the personal ledger",
+  "prompt": "Finish the `Ledger` class. `net(datePrefix)` = sum of amounts with sign by direction, counting only transactions whose date starts with the prefix (use `\"\"` for all). `labelsSince(datePrefix)` = labels of matching transactions, in insertion order, uppercase. `saveLines()` = every transaction rendered as `date|label|DIRECTION|amount` with exactly two decimal places, insertion order. `loadLine(line)` = parse one saved line and add it - but a malformed line must not corrupt the ledger: skip it silently if it fails the record's validation.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public enum Direction { CASH_IN, CASH_OUT }\n\n    public record Transaction(String date, String label, Direction direction, double amount) {\n        public Transaction {\n            if (date == null) {\n                throw new IllegalArgumentException(\"date must not be null\");\n            }\n            try {\n                java.time.LocalDate.parse(date);   // real calendar: rejects 2026-13-40\n            } catch (java.time.format.DateTimeParseException e) {\n                throw new IllegalArgumentException(\"bad date: \" + date);\n            }\n            if (label == null || label.isBlank()) {\n                throw new IllegalArgumentException(\"label must not be blank\");\n            }\n            if (amount <= 0) {\n                throw new IllegalArgumentException(\"amount must be positive: \" + amount);\n            }\n        }\n    }\n\n    public static class Ledger {\n        private final java.util.List<Transaction> txs = new java.util.ArrayList<>();\n\n        public void add(Transaction t) { txs.add(t); }\n\n        public int count(java.util.function.Predicate<Transaction> p) {\n            return (int) txs.stream().filter(p).count();\n        }\n\n        public double net(String datePrefix) {\n            return 0;\n        }\n\n        public java.util.List<String> labelsSince(String datePrefix) {\n            return java.util.List.of();\n        }\n\n        public java.util.List<String> saveLines() {\n            return java.util.List.of();\n        }\n\n        public void loadLine(String line) {\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "net sums signed by direction and filters by date prefix",
+      "code": "\nSolution.Ledger l = new Solution.Ledger();\nl.add(new Solution.Transaction(\"2026-01-15\", \"coffee\", Solution.Direction.CASH_OUT, 4.50));\nl.add(new Solution.Transaction(\"2026-01-16\", \"salary\", Solution.Direction.CASH_IN, 2500.00));\nl.add(new Solution.Transaction(\"2026-02-01\", \"rent\", Solution.Direction.CASH_OUT, 1200.00));\nCjTestBase.checkEq(l.net(\"\"), 1295.5, \"2500 - 4.5 - 1200\");\nCjTestBase.checkEq(l.net(\"2026-01\"), 2495.5, \"january only\");\nCjTestBase.checkEq(l.net(\"2026-03\"), 0.0, \"quiet month\");\n",
+      "hint": "map sign by direction, filter by date.startsWith(prefix), sum into a double."
+    },
+    {
+      "name": "labels are uppercase, insertion order",
+      "code": "\nSolution.Ledger l = new Solution.Ledger();\nl.add(new Solution.Transaction(\"2026-01-15\", \"coffee\", Solution.Direction.CASH_OUT, 4.50));\nl.add(new Solution.Transaction(\"2026-01-16\", \"salary\", Solution.Direction.CASH_IN, 2500.00));\nCjTestBase.checkEq(l.labelsSince(\"2026-01\"), java.util.List.of(\"COFFEE\", \"SALARY\"), \"january labels\");\n",
+      "hint": "filter, then map(String::toUpperCase) BEFORE collecting."
+    },
+    {
+      "name": "save renders two decimals in order",
+      "code": "\nSolution.Ledger l = new Solution.Ledger();\nl.add(new Solution.Transaction(\"2026-01-15\", \"coffee\", Solution.Direction.CASH_OUT, 4.5));\nl.add(new Solution.Transaction(\"2026-01-16\", \"salary\", Solution.Direction.CASH_IN, 2500));\nCjTestBase.checkEq(l.saveLines(), java.util.List.of(\n    \"2026-01-15|coffee|CASH_OUT|4.50\",\n    \"2026-01-16|salary|CASH_IN|2500.00\"), \"canonical save format\");\n",
+      "hint": "String.format(\"%s|%s|%s|%.2f\", ...) - %.2f gives exactly two decimals."
+    },
+    {
+      "name": "load round-trips, junk is skipped silently",
+      "code": "\nSolution.Ledger l = new Solution.Ledger();\nl.loadLine(\"2026-01-15|coffee|CASH_OUT|4.50\");\nl.loadLine(\"garbage line\");\nl.loadLine(\"2026-13-40|impossible date|CASH_OUT|1.00\");\nl.loadLine(\"2026-02-01|rent|CASH_OUT|1200.00\");\nCjTestBase.checkEq(l.saveLines(), java.util.List.of(\n    \"2026-01-15|coffee|CASH_OUT|4.50\",\n    \"2026-02-01|rent|CASH_OUT|1200.00\"), \"two survivors, junk skipped\");\nCjTestBase.checkEq(l.net(\"\"), -1204.5, \"survivors contribute to balance\");\n",
+      "hint": "try { add(parse-like code) } catch (IllegalArgumentException e) { /* skip */ } - never let one bad line crash the load."
+    }
+  ],
+  "level": "real-world"
+}

@@ -1,0 +1,28 @@
+Modern C++ is mostly *removing* footguns. Four idioms pay rent immediately.
+
+1. **Narrow interfaces with types.** A `std::string_view` parameter accepts
+   `std::string`, a literal, or a slice without copying:
+
+```cpp
+#include <string_view>
+
+bool is_command(std::string_view s) {
+    return s.starts_with("--");   // C++20
+}
+```
+
+   Views do not own; they must not outlive the underlying string.
+
+2. **Structured bindings for pair/tuple/struct unpacking** — `for (const
+   auto& [k, v] : map)` beats `.first/.second` for readability.
+
+3. **`constexpr` for tables and limits** — magic numbers move to named,
+   compile-time-checked constants.
+
+4. **Exhaustive `switch` over `enum class`** with no `default` — the
+   compiler then forces you to update every switch when the enum grows.
+   That is free maintenance.
+
+And one deprecation to know: `std::auto_ptr` and throwing `std::vector::operator[]`
+are history; dynamic exception specifications (`throw(...)`) are gone from
+the language. Modern code catches specific exception types — Module 10's job.

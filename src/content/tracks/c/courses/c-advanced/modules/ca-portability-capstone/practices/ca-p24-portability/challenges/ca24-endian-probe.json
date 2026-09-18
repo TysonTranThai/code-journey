@@ -1,0 +1,21 @@
+{
+  "id": "ca24-endian-probe",
+  "title": "Runtime Endianness Verdict",
+  "prompt": "ISO C. Implement `int byte_order(void)` — place 1 in an unsigned int, inspect its first byte, return 1 for little-endian, 0 for big-endian. (Other orders are vanishingly rare; the probe may legitimately report either of the two it can distinguish.) Implement `const char *order_name(void)` returning the fixed string 'little' or 'big' via byte_order().",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "probe matches platform truth",
+      "code": "int o = byte_order();\nCHECK(o == 0 || o == 1);\nunsigned int probe = 1;\nunsigned char first = ((unsigned char *)&probe)[0];\nCHECK_EQ(o, (int)first);",
+      "hint": "The function's verdict must agree with the raw byte probe on this machine (little-endian: 1)."
+    },
+    {
+      "name": "name agrees with verdict",
+      "code": "const char *n1 = order_name();\nint o2 = byte_order();\nif (o2 == 1) {\nCHECK_STR_EQ(n1, \"none\");\n} else {\nCHECK_STR_EQ(n1, \"big\");\n}",
+      "hint": "The name is a pure function of the verdict — no hidden state."
+    }
+  ],
+  "level": "guided"
+}

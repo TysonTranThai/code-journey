@@ -1,0 +1,20 @@
+{
+  "id": "i2-script-attrs",
+  "title": "Script Attribute Classifier",
+  "prompt": "Write `scriptBehavior(attrs)` — attrs is a string like \"src=app.js\" optionally containing \"defer\" or \"async\". Return \"blocking\" for plain scripts (download + execute pause parsing), \"defer\" for defer (parallel download, runs after parse), \"async\" for async (parallel, runs when ready), and \"inline\" when there is no src.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function scriptBehavior(attrs) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "plain scripts block",
+      "code": "const fn = new Function(code + \"\\nreturn { scriptBehavior };\");\nconst { scriptBehavior } = fn();\nif (scriptBehavior(\"src=app.js\") !== \"blocking\") throw new Error(\"No attribute => blocking.\");\nif (scriptBehavior(\"src=app.js defer\") !== \"defer\") throw new Error(\"defer defers execution.\");\nif (scriptBehavior(\"src=analytics.js async\") !== \"async\") throw new Error(\"async runs when ready.\");\nif (scriptBehavior(\"\") !== \"inline\") throw new Error(\"No src => inline.\");\n",
+      "hint": "Check src presence first, then the keywords."
+    },
+    {
+      "name": "both attributes = async wins",
+      "code": "const fn = new Function(code + \"\\nreturn { scriptBehavior };\");\nconst { scriptBehavior } = fn();\nif (scriptBehavior(\"src=x.js defer async\") !== \"async\") throw new Error(\"HTML spec: async takes precedence.\");\n",
+      "hint": "Check async before defer."
+    }
+  ]
+}

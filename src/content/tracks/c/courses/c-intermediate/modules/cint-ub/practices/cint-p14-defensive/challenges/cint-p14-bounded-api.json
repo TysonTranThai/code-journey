@@ -1,0 +1,15 @@
+{
+  "id": "cint-p14-bounded-api",
+  "title": "The Untrustworthy API",
+  "prompt": "Implement defensive string/number helpers. The boilerplate\ndeclares:\n\n```c\n/* copies at most cap-1 chars + '\u0000' from src to dst; returns copied\n   char count, or -1 if dstcap == 0 / NULL args. NEVER reads more\n   than src's length. */\nint str_copy_bounded(char *dst, size_t dstcap, const char *src);\n/* parses a decimal in [lo, hi]; 0 ok, -1 bad syntax/out-of-range/\n   overflow (value must fit long via digit-count guard) */\nint num_parse_bounded(const char *s, long lo, long hi, long *out);\n/* returns 1 if the n-byte region [p, p+n) is all-zero; 0 otherwise;\n   0 if p is NULL and n == 0, -1 if p is NULL and n > 0 */\nint region_zero(const unsigned char *p, size_t n);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <stddef.h>\nint str_copy_bounded(char *dst, size_t dstcap, const char *src);\nint num_parse_bounded(const char *s, long lo, long hi, long *out);\nint region_zero(const unsigned char *p, size_t n);\n",
+  "tests": [
+    {
+      "name": "nothing is trusted",
+      "code": "\nchar buf[8];\nCHECK_EQ(str_copy_bounded(buf, 8, \"ok\"), 2);\nCHECK(!strcmp(buf, \"ok\"));\nCHECK_EQ(str_copy_bounded(buf, 8, \"too long for eight\"), -1 == 0 ? 1 : 7);  /* truncation reported */\nCHECK(!strcmp(buf, \"too lon\"));\nCHECK_EQ(str_copy_bounded(NULL, 8, \"x\"), -1);\nCHECK_EQ(str_copy_bounded(buf, 0, \"x\"), -1);\nCHECK_EQ(str_copy_bounded(buf, 8, NULL), -1);\nlong v;\nCHECK_EQ(num_parse_bounded(\"42\", 0, 100, &v), 0); CHECK_EQ(v, 42);\nCHECK_EQ(num_parse_bounded(\"999999999999999999999\", 0, 100, &v), -1);  /* overflow guard */\nCHECK_EQ(num_parse_bounded(\"101\", 0, 100, &v), -1);\nCHECK_EQ(num_parse_bounded(\"12x\", 0, 100, &v), -1);\nCHECK_EQ(num_parse_bounded(\"\", 0, 100, &v), -1);\nCHECK_EQ(region_zero((const unsigned char *)\"\\0\\0\\0\", 3), 1);\nconst unsigned char nz[3] = {0, 1, 0};\nCHECK_EQ(region_zero(nz, 3), 0);\nCHECK_EQ(region_zero(NULL, 0), 0);\nCHECK_EQ(region_zero(NULL, 5), -1);\n",
+      "hint": "Copy: scan src, stop at cap-1, always terminate. Parse: digit loop with an upper digit-count bound before multiply. Region: NULL policy per contract."
+    }
+  ]
+}

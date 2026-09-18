@@ -1,0 +1,30 @@
+{
+  "id": "i3-arch-outline",
+  "title": "Outline from Requirements",
+  "prompt": "Build the heading skeleton of a field-guide page — headings only, filler content allowed: exactly one <h1>; exactly three <h2> chapters; exactly two <h3> sections under each chapter (six total); at least one <h4> inside the third chapter; a <footer>; every heading has visible text; levels never skip. Include the full document skeleton (doctype, lang, charset, title).",
+  "difficulty": "advanced",
+  "level": "independent",
+  "boilerplate": "<!-- Field guide outline -->\n\n",
+  "tests": [
+    {
+      "name": "complete document skeleton",
+      "code": "if (!/<!DOCTYPE\\s+html>/i.test(code)) {\n  throw new Error(\"Start with <!DOCTYPE html>.\");\n}\nif (!/<html[^>]*\\slang\\s*=\\s*[\"'][^\"']+[\"']/i.test(code)) {\n  throw new Error(\"<html> needs a lang attribute.\");\n}\nif (!/<meta[^>]*charset/i.test(code)) {\n  throw new Error('The head needs <meta charset=\"UTF-8\">.');\n}\nconst t = code.match(/<title>([\\s\\S]*?)<\\/title>/i);\nif (!t || !t[1].trim()) {\n  throw new Error(\"Add a non-empty <title>.\");\n}",
+      "hint": "Doctype, html lang, charset, title — the skeleton travels with every challenge now."
+    },
+    {
+      "name": "exact outline shape",
+      "code": "const count = (re) => (code.match(re) || []).length;\nconst h1 = count(/<h1[\\s>]/gi);\nconst h2 = count(/<h2[\\s>]/gi);\nconst h3 = count(/<h3[\\s>]/gi);\nconst h4 = count(/<h4[\\s>]/gi);\nif (h1 !== 1) throw new Error(\"Exactly one <h1> (found \" + h1 + \").\");\nif (h2 !== 3) throw new Error(\"Exactly three <h2> chapters (found \" + h2 + \").\");\nif (h3 !== 6) throw new Error(\"Six <h3> sections — two per chapter (found \" + h3 + \").\");\nif (h4 < 1) throw new Error(\"The third chapter needs at least one <h4>.\");",
+      "hint": "Count before you write: 1 h1, 3 h2, 6 h3, and an h4 nested in chapter three."
+    },
+    {
+      "name": "no skips, no empty headings",
+      "code": "const levels = [...code.matchAll(/<h([1-6])[\\s>]/gi)].map((m) => Number(m[1]));\nlet prev = 0;\nfor (const level of levels) {\n  if (level > prev + 1) {\n    throw new Error(\"Heading levels must not skip (h\" + prev + \" followed by h\" + level + \").\");\n  }\n  prev = level;\n}\nconst texts = [...code.matchAll(/<h[1-6]\\b[^>]*>([\\s\\S]*?)<\\/h[1-6]>/gi)].map((m) =>\n  m[1].replace(/<[^>]*>/g, \"\").trim()\n);\nconst empty = texts.filter((t) => !t).length;\nif (empty > 0) {\n  throw new Error(\"Every heading needs visible text (\" + empty + \" empty).\");\n}",
+      "hint": "Two habits in one check: monotone descent (never skip down) and no placeholder headings."
+    },
+    {
+      "name": "footer present",
+      "code": "if (!/<footer[\\s>][\\s\\S]*?<\\/footer>/i.test(code)) {\n  throw new Error(\"Add a <footer>.\");\n}",
+      "hint": "The page closes with a <footer> — the site name lives there."
+    }
+  ]
+}

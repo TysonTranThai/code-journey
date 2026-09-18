@@ -1,0 +1,21 @@
+{
+  "id": "cppa7-generator-fib",
+  "title": "A Stateful Fibonacci Generator",
+  "prompt": "With your `Generator<T>` from the previous exercise, implement `fibonacci(n)` yielding the first n Fibonacci numbers (1, 1, 2, 3, 5, ...).",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <coroutine>\n#include <cstddef>\n#include <exception>\n#include <utility>\n\n// TODO: implement the Generator<T> class from the lesson:\n//   promise_type with current_, get_return_object, initial/final suspend_always,\n//   yield_value storing by move, return_void, unhandled_exception -> std::terminate;\n//   move-only wrapper owning the handle; next() resume+done check; value() read.\ntemplate <class T>\nclass Generator;\n\n// TODO: implement with co_yield: from, from+1, ..., to (inclusive; empty if from > to).\nGenerator<int> counter(int from, int to);\n\n// TODO: yield the first n Fibonacci numbers (n >= 0).\nGenerator<long long> fibonacci(int n);\n",
+  "tests": [
+    {
+      "name": "first values are exact",
+      "code": "Generator<long long> f = fibonacci(7);\nstd::string got;\nwhile (f.next()) got += std::to_string(f.value()) + \",\";\nCHECK_EQ(got, std::string(\"1,1,2,3,5,8,13,\"));",
+      "hint": "long long a = 1, b = 1; for (int i = 0; i < n; ++i) { co_yield a; auto t = a + b; a = b; b = t; }"
+    },
+    {
+      "name": "n = 0 and n = 1",
+      "code": "Generator<long long> z = fibonacci(0);\nCHECK_EQ(z.next(), false);\nGenerator<long long> o = fibonacci(1);\nCHECK_EQ(o.next(), true);\nCHECK_EQ(o.value(), 1);\nCHECK_EQ(o.next(), false);",
+      "hint": "The loop bounds handle the degenerate cases naturally."
+    }
+  ]
+}

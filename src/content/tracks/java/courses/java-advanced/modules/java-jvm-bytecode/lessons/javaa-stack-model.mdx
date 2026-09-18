@@ -1,0 +1,19 @@
+Each method invocation pushes a **frame** (locals + operand stack + return
+address). Two consequences you can *test*:
+
+**Depth is finite.** Unbounded recursion throws `StackOverflowError` — and it
+is just an `Error` you can catch (though you almost never should):
+
+```java
+static int forever(int n) { return forever(n + 1); }
+try { forever(0); }
+catch (StackOverflowError e) { /* depth limit reached */ }
+```
+
+**Frames unwind exactly.** When an exception crosses frames, each frame's
+`finally`/catch runs inside-to-outside. Combined with the stack-only operand
+model, this is why the JVM can produce a precise stack trace at any moment.
+
+Deep recursion in production code is a design smell — prefer iteration or
+explicit stacks — but a professional must recognize the *signature* of each
+failure: SOE = depth, OOM = live set, Metaspace OOM = class churn.

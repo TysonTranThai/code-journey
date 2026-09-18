@@ -1,0 +1,20 @@
+{
+  "id": "csb-checkpoint-m14-task",
+  "title": "NotesStore",
+  "prompt": "Implement `SaveNote`, `LoadNotes`, and `Search` — one line per note, lenient loading, case-insensitive search over both fields.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "save-load",
+      "code": "var path = Path.Combine(Path.GetTempPath(), \"cj-cp14\", Guid.NewGuid().ToString() + \".notes\");\nint next = Solution.SaveNote(path, 1, \"Shopping\", \"buy oat milk\");\nnext = Solution.SaveNote(path, next, \"Ideas\", \"learn C# generics\");\nCj.Eq(next, 3, \"id advanced twice\");\nvar notes = Solution.LoadNotes(path);\nCj.Eq(notes.Count, 2, \"two notes\");\nCj.Eq(notes[0].Item2, \"Shopping\", \"first title\");\nCj.Eq(notes[1].Item3, \"learn C# generics\", \"second body\");",
+      "hint": "Append-save and the running id, then a faithful reload."
+    },
+    {
+      "name": "search-and-skip",
+      "code": "var path = Path.Combine(Path.GetTempPath(), \"cj-cp14b\", Guid.NewGuid().ToString() + \".notes\");\nDirectory.CreateDirectory(Path.GetDirectoryName(path));\nFile.WriteAllLines(path, new[] { \"1|Shopping|buy oat milk\", \"bad line\", \"2|Ideas|OAT milk forever\" });\nvar notes = Solution.LoadNotes(path);\nCj.Eq(notes.Count, 2, \"corrupt line skipped\");\nvar hits = Solution.Search(notes, \"oat\");\nCj.Eq(hits.Count, 2, \"case-insensitive over title AND body\");\nvar none = Solution.Search(notes, \"zzz\");\nCj.Eq(none.Count, 0, \"no hits, empty list\");",
+      "hint": "Lenient load plus search that checks both fields without case sensitivity."
+    }
+  ]
+}

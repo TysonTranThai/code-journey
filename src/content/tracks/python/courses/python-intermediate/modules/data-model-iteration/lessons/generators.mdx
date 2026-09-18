@@ -1,0 +1,44 @@
+A **generator function** contains `yield`. Calling it doesn't run the body —
+it returns a generator that produces values **lazily**, one at a time:
+
+```python
+def read_numbers(lines):
+    for line in lines:
+        line = line.strip()
+        if line.isdigit():
+            yield int(line)        # pause here, hand out one value
+
+gen = read_numbers(["1", "oops", "3"])
+next(gen)      # 1
+next(gen)      # 3 — the bad line was skipped inside the function
+```
+
+Two superpowers come from this laziness:
+
+- **Constant memory**: a generator never materializes the whole sequence. This streams a 10 GB log through a 1 MB loop without breaking a sweat.
+- **Composable pipelines**: generators feed generators, and each stage stays simple.
+
+```python
+def sum_big_sales(rows):
+    big = (r for r in rows if r["amount"] > 1000)   # generator expression
+    return sum(r["amount"] for r in big)
+```
+
+## yield from and delegation
+
+A generator can delegate to another iterable with `yield from`:
+
+```python
+def flatten(nested):
+    for item in nested:
+        if isinstance(item, list):
+            yield from flatten(item)     # recursively hand out each element
+        else:
+            yield item
+```
+
+## When NOT to use generators
+
+If you need the data more than once (len(), indexing, re-iteration), build a
+list. Generators are single-use streams — reach for them when data is large,
+infinite, or produced on demand.

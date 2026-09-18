@@ -1,0 +1,14 @@
+{
+  "title": "Vượt chướng ngại pipeline stage",
+  "prompt": "Cài `Stage`: `put` nạp inbox (giá trị -1 đóng), `run` chuyển giá trị inbox (+delta) sang outbox cho tới khi đóng, `take` chặn chờ giá trị outbox.",
+  "tests": [
+    {
+      "name": "giá trị biến đổi và chảy",
+      "hint": "Hai ô mailbox (mỗi ô mutex+cv+optional): run lặp lấy từ inbox (chờ có vị từ), thoát khi gặp -1, nếu không đẩy giá trị+delta vào outbox và notify."
+    },
+    {
+      "name": "take muộn vẫn chặn chờ",
+      "hint": "take chờ trên condition variable của outbox có vị từ — lệch thời điểm không được làm sai."
+    }
+  ]
+}

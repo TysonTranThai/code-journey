@@ -1,0 +1,16 @@
+{
+  "id": "javaa-p8-cache",
+  "title": "Weak keys, retired for real",
+  "prompt": "Inside Solution, keep `static class CacheKey { final String id; ... }` and a\n`private static final WeakHashMap<CacheKey, String> store` with `static void put`,\n`static String get`, plus:\n1. `static int weakRetire()` — seed 3 key/value pairs from a PRIVATE helper (so the\nkey objects are reachable ONLY through the weak map once the helper returns), call\nSystem.gc() twice, then return how many entries remain (probe store.size(), which\nexpunges cleared entries). Correct answer: 0.\n2. `static int strongRetire()` — same seeding, but ALSO retain the keys in a\n`static List<CacheKey> pinned`; gc twice; return survivors (correct: 3).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "weak keys are retired by the collector",
+      "code": "\ncheckEq(Solution.weakRetire(), 0, \"unreachable keys die at GC (after enqueue lands)\");\ncheckEq(Solution.strongRetire(), 3, \"pinned keys survive the same GC\");\n",
+      "hint": "Same collector, different reachability — different fates."
+    }
+  ],
+  "level": "real-world"
+}

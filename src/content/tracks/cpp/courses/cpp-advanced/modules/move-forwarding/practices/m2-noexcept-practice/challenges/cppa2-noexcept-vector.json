@@ -1,0 +1,21 @@
+{
+  "id": "cppa2-noexcept-vector",
+  "title": "noexcept Unlocks Moving Growth",
+  "prompt": "Complete `Buffer`'s move constructor and move assignment **noexcept** using `std::exchange`. The graded check grows a `std::vector<Buffer>` to 8 elements with push_back and requires the copy counter to stay at zero — the proof that vector relocates by move.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <algorithm>\n#include <cstddef>\n#include <utility>\n#include <vector>\n\nstruct Buffer {\n    static inline int copies = 0;   // instrumented for the graded check\n    char payload[16] = {};\n    std::size_t id = 0;\n    Buffer() = default;\n    explicit Buffer(std::size_t i) : id(i) {}\n    Buffer(const Buffer& o) : id(o.id) { std::copy(std::begin(o.payload), std::end(o.payload), std::begin(payload)); ++copies; }\n    Buffer(Buffer&& o) noexcept;            // TODO: noexcept, hand over the state\n    Buffer& operator=(Buffer&& o) noexcept; // TODO\n};\n",
+  "tests": [
+    {
+      "name": "move is noexcept",
+      "code": "static_assert(std::is_nothrow_move_constructible_v<Buffer>, \"move must be noexcept\");\nstatic_assert(std::is_nothrow_move_assignable_v<Buffer>, \"assign must be noexcept\");",
+      "hint": "Buffer(Buffer&& o) noexcept : payload(o.payload), id(std::exchange(o.id, 0)) {} — the same shape for assignment."
+    },
+    {
+      "name": "vector growth performs zero copies",
+      "code": "Buffer::copies = 0;\nstd::vector<Buffer> v;\nfor (std::size_t i = 0; i < 8; ++i) v.push_back(Buffer(i));\nCHECK_EQ(Buffer::copies, 0);\nCHECK_EQ(v.size(), std::size_t{8});\nCHECK_EQ(v[7].id, std::size_t{7});",
+      "hint": "With a noexcept move, reallocation relocates elements by move — the copy counter never increments."
+    }
+  ]
+}

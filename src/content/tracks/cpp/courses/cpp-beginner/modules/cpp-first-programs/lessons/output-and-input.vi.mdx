@@ -1,0 +1,63 @@
+## Nối chuỗi output
+
+`<<` có thể nối tự nhiên, và đó là cách bạn format các thông báo ngắn:
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string name = "Linh";
+    int age = 20;
+    std::cout << "Name: " << name << ", age: " << age << '\n';
+    return 0;
+}
+```
+
+Kết quả:
+
+```
+Name: Linh, age: 20
+```
+
+Lưu ý `name` và `age` là *giá trị* — `cout` tự biết cách in string, int, double và nhiều kiểu khác mà không cần mã định dạng.
+
+## Đọc input bằng `std::cin`
+
+`std::cin` là hình ảnh đối xứng: nó đọc từ bàn phím vào biến:
+
+```cpp
+std::string name;
+int age;
+std::cin >> name >> age;   // >> để đọc, << để ghi
+```
+
+`>>` bỏ qua khoảng trắng đầu dòng và dừng ở dấu cách hoặc xuống dòng tiếp theo. Input làm chương trình tương tác — hãy thử chạy cục bộ trên máy của bạn. Đọc input cũng là nơi người mới gặp lỗi *trạng thái* đầu tiên: đọc vào sai kiểu biến thì việc đọc âm thầm thất bại (age vẫn giữ 0). `cin >> x` rồi kiểm tra `if (std::cin.fail())` là bài học đầu tiên và trung thực nhất về validation, chúng ta sẽ phát triển đúng trong các module sau.
+
+## Vì sao challenge có chấm điểm không dùng `std::cin`
+
+Trên nền tảng này, các lần chạy có chấm điểm thực thi code của bạn tự động trong sandbox — không ai đang gõ bàn phím cả. Vì vậy quy ước chấm là:
+
+1. **Viết hàm** với tham số và giá trị trả về — test sẽ gọi trực tiếp, ví dụ `add(2, 3)` phải trả về `5`.
+2. **Hoặc viết một `void program()`** in ra nội dung nào đó — test sẽ bắt lại những gì được in và kiểm tra text.
+
+Bài học và phần khám phá tự do vẫn có thể dùng `cin`; sandbox sẽ thay nó bằng một thông báo rõ ràng trong lúc chấm, giống hệt cách nền tảng làm với Python. Điều này giữ mọi challenge tự động, khách quan, và giống nhau cho mọi học viên — cả tiếng Anh lẫn tiếng Việt.
+
+## Khung code bạn sẽ gặp
+
+Nhiều challenge điền sẵn dạng này trong trình soạn thảo:
+
+```cpp
+#include <iostream>
+
+void program() {
+    // code của bạn ở đây
+}
+
+int main() {
+    program();
+    return 0;
+}
+```
+
+Bạn viết phần thân `program()`; phần còn lại do harness lo. Khi challenge chấm một hàm cụ thể, boilerplate sẽ chứa khung rỗng của hàm đó.

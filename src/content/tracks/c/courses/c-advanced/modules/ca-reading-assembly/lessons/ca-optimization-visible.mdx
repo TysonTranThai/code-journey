@@ -1,0 +1,12 @@
+## Optimizations have signatures
+
+- **Constant folding**: a function computing 21 * 2 with locals becomes a load of an immediate (or `return 42` inline) — no multiply instruction remains.
+- **Dead-code elimination**: code whose result is never used disappears entirely.
+- **Loop-invariant code motion**: a computation that does not depend on the loop variable is hoisted before the loop — one evaluation instead of n.
+- **Strength reduction**: multiplications by powers of two become shifts.
+
+Each has a visible footprint: instruction counts, removed loads, hoisted lines. That is why this course grounds optimization talk in *comparing dumps*, not folklore.
+
+## The honest measuring loop
+
+Count something concrete: instructions in the dump, branches taken in a benchmark harness, bytes of the .text section (module 11's `size`). 'Faster' claims without a counter are vibes. The challenges below give you the counters.

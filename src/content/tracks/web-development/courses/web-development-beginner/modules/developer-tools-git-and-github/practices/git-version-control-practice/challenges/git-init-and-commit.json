@@ -1,0 +1,15 @@
+{
+  "id": "git-init-and-commit",
+  "title": "The Everyday Git Rhythm",
+  "prompt": "Write a function `commitSequence()` that RETURNS an array of git commands — in order — for this situation: you just created a new project folder, and you have finished your first page and want to record it.\n\nInclude exactly: initializing the repo, checking the state, staging everything, and committing with the message \"First page\".",
+  "difficulty": "beginner",
+  "boilerplate": "// commitSequence() returns the 4 git commands in order\n",
+  "tests": [
+    {
+      "name": "the four commands in order",
+      "code": "const fn = new Function(code + \"\\nreturn { commitSequence };\");\nconst { commitSequence } = fn();\nconst seq = commitSequence();\nif (!Array.isArray(seq) || seq.length !== 4) {\n  throw new Error(\"Return an array of exactly 4 commands.\");\n}\nconst j = seq.map((s) => String(s).trim());\nif (j[0] !== \"git init\") throw new Error(\"Step 1 is git init.\");\nif (j[1] !== \"git status\") throw new Error(\"Step 2 is git status — look before you leap.\");\nif (j[2] !== \"git add .\") throw new Error(\"Step 3 is git add . to stage everything.\");\nif (!/^git commit -m ['\\\"]First page['\\\"]$/.test(j[3])) {\n  throw new Error('Step 4 is git commit -m \"First page\" — messages go in quotes.');\n}",
+      "hint": "[\"git init\", \"git status\", \"git add .\", \"git commit -m \\\"First page\\\"\"]"
+    }
+  ],
+  "level": "guided"
+}

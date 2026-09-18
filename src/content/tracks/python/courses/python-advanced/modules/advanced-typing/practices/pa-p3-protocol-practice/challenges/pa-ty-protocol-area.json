@@ -1,0 +1,21 @@
+{
+  "id": "pa-ty-protocol-area",
+  "title": "Protocol-based area total",
+  "prompt": "Implement:\n\n1. `class Area(Protocol)` with one method `area(self) -> float` (use `...` as the body).\n2. `total_area(shapes)` summing `s.area()` over any objects that satisfy the protocol structurally (no isinstance gate — just call area()).\n3. `parse(value)` with two `@overload` stubs (`str -> list`, `bytes -> str`) and an implementation: bytes decode to str, str splits on ',' into a list.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "from typing import Protocol, overload\n\n# TODO: Area protocol, total_area, parse with overloads",
+  "tests": [
+    {
+      "name": "structural satisfaction works",
+      "code": "class Rect:\n    def __init__(self, w, h):\n        self.w, self.h = w, h\n    def area(self):\n        return self.w * self.h\n\nclass Circle:\n    def __init__(self, r):\n        self.r = r\n    def area(self):\n        return 3.14159 * self.r ** 2\n\ntotal = total_area([Rect(2, 3), Circle(1)])\nassert abs(total - (6 + 3.14159)) < 1e-6, f'total: {total}'\nprint('ok')",
+      "hint": "total_area never checks types — it calls area() and lets the protocol live in the annotations."
+    },
+    {
+      "name": "overloaded parse dispatches on input type",
+      "code": "assert parse('a,b,c') == ['a', 'b', 'c']\nassert parse(b'hello') == 'hello'\ntry:\n    Area()\nexcept TypeError:\n    pass\nelse:\n    raise AssertionError('protocols cannot be instantiated')\nprint('ok')",
+      "hint": "Runtime dispatch is a plain isinstance on bytes; overloads are checker-facing contracts."
+    }
+  ],
+  "level": "guided"
+}

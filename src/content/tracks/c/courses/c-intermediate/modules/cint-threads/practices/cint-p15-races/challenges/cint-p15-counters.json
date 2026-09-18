@@ -1,0 +1,15 @@
+{
+  "id": "cint-p15-counters",
+  "title": "Lost Updates & Their Cure",
+  "prompt": "The boilerplate declares a tiny work harness:\n\n```c\n/* runs `workers` threads, each calling inc_n_times(count_target)\n   `per_thread` times; joins them all; returns 0 if all joined ok.\n   inc_n_times is YOURS to implement. */\nint run_workers(int workers, int per_thread);\n/* the shared counter all workers increment */\nextern long g_counter;\n/* the mutex protecting it — you must USE it in inc_n_times */\nextern mtx_t g_counter_mtx;\nvoid inc_n_times(int n);        /* increments g_counter exactly n times */\n```\n\nRound 1 of the test runs your implementation with the mutex and expects\nthe exact total. Round 2 (after you pass) reveals what happens without\nit — the harness runs the *reference buggy* counter to demonstrate the\nlost update.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\n#include <threads.h>\n#include <stdatomic.h>\nlong g_counter = 0;\nmtx_t g_counter_mtx;\nstatic int run_workers(int workers, int per_thread);\nvoid inc_n_times(int n) {\n    for (int i = 0; i < n; i++) {\n        mtx_lock(&g_counter_mtx);\n        g_counter++;\n        mtx_unlock(&g_counter_mtx);\n    }\n}\n",
+  "tests": [
+    {
+      "name": "counted exactly",
+      "code": "\nmtx_init(&g_counter_mtx, mtx_plain);\ng_counter = 0;\nCHECK_EQ(run_workers(4, 1000), 0);\nCHECK_EQ(g_counter, 4000);       /* exact: no lost update */\ng_counter = 0;\nCHECK_EQ(run_workers(8, 500), 0);\nCHECK_EQ(g_counter, 4000);\nmtx_destroy(&g_counter_mtx);\n",
+      "hint": "Lock around the increment (or the whole n-loop — both pass); the exact total is what timing cannot guarantee."
+    }
+  ]
+}

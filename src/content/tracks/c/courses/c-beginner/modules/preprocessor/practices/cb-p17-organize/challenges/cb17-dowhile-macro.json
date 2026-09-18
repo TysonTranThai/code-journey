@@ -1,0 +1,26 @@
+{
+  "id": "cb17-dowhile-macro",
+  "title": "Statement Macro",
+  "prompt": "Define `#define INCREMENT_IF(var, cond)` as a do-while(0) statement macro that increments var only when cond is true. It must be usable as a single statement (with a trailing semicolon) even inside if/else.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n",
+  "tests": [
+    {
+      "name": "increments",
+      "code": "int x = 5;\nINCREMENT_IF(x, x > 0);\nCHECK_EQ(x, 6);",
+      "hint": "Condition true: +1."
+    },
+    {
+      "name": "no increment",
+      "code": "int x = 5;\nINCREMENT_IF(x, x < 0);\nCHECK_EQ(x, 5);",
+      "hint": "Condition false: unchanged."
+    },
+    {
+      "name": "dangling else safe",
+      "code": "int x = 0;\nint y = 0;\nif (1)\n    INCREMENT_IF(x, 1);\nelse\n    INCREMENT_IF(y, 1);\nCHECK_EQ(x, 1);\nCHECK_EQ(y, 0);",
+      "hint": "do-while(0) makes the macro one statement."
+    }
+  ],
+  "level": "independent"
+}

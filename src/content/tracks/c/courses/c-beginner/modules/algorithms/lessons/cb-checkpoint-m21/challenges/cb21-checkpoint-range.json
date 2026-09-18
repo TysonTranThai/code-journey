@@ -1,0 +1,30 @@
+{
+  "id": "cb21-checkpoint-range",
+  "title": "Sorted Range Reporter",
+  "prompt": "Implement `void sort_asc(int *a, int n)` (any in-place algorithm) and `int in_range(const int *sorted_a, int n, int lo, int hi)` counting elements of the ALREADY-SORTED array within [lo, hi] inclusive. For full credit, in_range should exploit sortedness with a scan that can stop early (or binary search twice) — but a correct linear scan also passes.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "sort",
+      "code": "int a[] = {5, 1, 3};\nsort_asc(a, 3);\nCHECK_EQ(a[0], 1);\nCHECK_EQ(a[2], 5);",
+      "hint": "Ascending order."
+    },
+    {
+      "name": "range middle",
+      "code": "int a[] = {1, 3, 5, 7, 9};\nCHECK_EQ(in_range(a, 5, 3, 7), 3);",
+      "hint": "3, 5, 7."
+    },
+    {
+      "name": "range edges",
+      "code": "int a[] = {1, 3, 5};\nCHECK_EQ(in_range(a, 3, 1, 5), 3);",
+      "hint": "Inclusive bounds."
+    },
+    {
+      "name": "range none",
+      "code": "int a[] = {1, 3, 5};\nCHECK_EQ(in_range(a, 3, 10, 20), 0);",
+      "hint": "Outside everything."
+    }
+  ]
+}

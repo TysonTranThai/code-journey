@@ -1,0 +1,20 @@
+{
+  "id": "i2-token-theme",
+  "title": "Dark Theme via Tokens",
+  "prompt": "Starting from the light tokens in the boilerplate, add a `[data-theme=\"dark\"]` scope that re-declares `--color-bg` and `--color-fg` with dark values, and make the `.card` consume ONLY tokens (no raw colors).",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": ":root {\n  --color-bg: #ffffff;\n  --color-fg: #111827;\n  --color-accent: #2563eb;\n}\n\n/* your dark theme + card styles */\n\n.card {\n  /* consume tokens only */\n}\n",
+  "tests": [
+    {
+      "name": "dark scope re-declares bg and fg tokens",
+      "code": "const css = code;\nif (!/data-theme=[\"\\']?dark[\"\\']?\\]\\s*{/i.test(css)) throw new Error(\"Add a [data-theme=\\\"dark\\\"] scope.\");\nif (!/data-theme[^{]*{[^}]*--color-bg\\s*:/i.test(css)) throw new Error(\"Re-declare --color-bg inside the dark scope.\");\nif (!/data-theme[^{]*{[^}]*--color-fg\\s*:/i.test(css)) throw new Error(\"Re-declare --color-fg inside the dark scope.\");",
+      "hint": "[data-theme=\"dark\"] { --color-bg: #0b1120; --color-fg: #e2e8f0; } — pick any dark values."
+    },
+    {
+      "name": "card consumes tokens, not raw colors",
+      "code": "const css = code;\nif (!/\\.card\\s*{[^}]*var\\(\\s*--color-bg/i.test(css)) throw new Error(\"The card's background should come from var(--color-bg).\");\nif (!/\\.card\\s*{[^}]*var\\(\\s*--color-fg/i.test(css)) throw new Error(\"The card's text color should come from var(--color-fg).\");\nif (!/\\.card\\s*{(?![^}]*#[0-9a-f]{3,8})/i.test(css)) throw new Error(\"No raw hex colors inside .card — tokens only.\");",
+      "hint": "background: var(--color-bg); color: var(--color-fg);"
+    }
+  ]
+}

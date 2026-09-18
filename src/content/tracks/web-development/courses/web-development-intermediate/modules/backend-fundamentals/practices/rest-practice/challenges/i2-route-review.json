@@ -1,0 +1,20 @@
+{
+  "id": "i2-route-review",
+  "title": "Route Reviewer",
+  "prompt": "Write `reviewRoute(method, path)` scoring RESTfulness: return \"good\" for resource-style routes (path has no verb words like get/list/create/delete/update/fetch/save, case-insensitive); \"verb\" when a verb word appears in the path; \"missing-id\" when the method is PUT/PATCH/DELETE but the path has no id segment (last segment not a parameter). Order of checks: verb first, then id presence.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function reviewRoute(method, path) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "clean resource routes pass",
+      "code": "const fn = new Function(code + \"\\nreturn { reviewRoute };\");\nconst { reviewRoute } = fn();\nif (reviewRoute(\"GET\", \"/api/tasks\") !== \"good\") throw new Error(\"List route.\");\nif (reviewRoute(\"PUT\", \"/api/tasks/42\") !== \"good\") throw new Error(\"Replace route with id.\");\nif (reviewRoute(\"DELETE\", \"/api/tasks/42\") !== \"good\") throw new Error(\"Delete route with id.\");\n",
+      "hint": "Check the path against the verb list, then id presence for mutating methods."
+    },
+    {
+      "name": "verbs and missing ids flagged",
+      "code": "const fn = new Function(code + \"\\nreturn { reviewRoute };\");\nconst { reviewRoute } = fn();\nif (reviewRoute(\"POST\", \"/api/createTask\") !== \"verb\") throw new Error(\"Verb in path.\");\nif (reviewRoute(\"DELETE\", \"/api/tasks\") !== \"missing-id\") throw new Error(\"Delete needs an id.\");\nif (reviewRoute(\"PATCH\", \"/api/tasks\") !== \"missing-id\") throw new Error(\"Patch needs an id.\");\n",
+      "hint": "The last path segment must exist for PUT/PATCH/DELETE."
+    }
+  ]
+}

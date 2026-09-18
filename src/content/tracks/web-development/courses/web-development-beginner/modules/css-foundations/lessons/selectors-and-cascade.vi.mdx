@@ -1,0 +1,75 @@
+CSS chỉ chính xác đến mức các selector của nó. Bài học này là hệ thống ngắm bắn.
+
+## Element, class, ID
+
+```css
+p {
+} /* mọi <p> */
+.note {
+} /* mọi phần tử có class="note" */
+#signup {
+} /* duy nhất phần tử có id="signup" */
+```
+
+- **Element selector** tô như con lăn — tốt cho typography nền.
+- **Class** là con ngựa thồ: tái sử dụng được, nhiều class mỗi phần tử (`class="card highlight"`), và chúng _không_ mang ý nghĩa có sẵn, nên bạn đặt tên theo mục đích (`.site-nav`, `.price`), không theo diện mạo (`.big-red` — đổi tên sẽ đau).
+- **ID** chọn đúng một phần tử. Chúng _cụ thể hơn_ class (xem cascade bên dưới), điều khiến chúng nguy hiểm khi dùng để định kiểu — một quy tắc ID duy nhất có thể âm thầm đánh bại bao nhiêu quy tắc class cũng được. Dùng ID cho anchor và hook JS; định kiểu bằng class.
+
+## Descendant selector
+
+Nhắm theo tổ tiên:
+
+```css
+nav a {
+  color: darkslateblue;
+}
+```
+
+Đọc nó từ phải sang trái: "bất kỳ `a` nào bên trong một `nav`". Các liên kết ở nơi khác không bị đụng đến. Đây là cách bạn định kiểu theo _vùng_: `nav a`, `article p`, `footer a`.
+
+## Nhóm
+
+```css
+h1,
+h2,
+h3 {
+  font-family: Georgia, serif;
+}
+```
+
+Một khối khai báo dùng chung bởi nhiều selector — dấu phẩy, không lặp lại.
+
+## Cascade: ai thắng?
+
+"CSS" theo nghĩa đen chứa chữ _cascading_: khi nhiều quy tắc nhắm vào cùng một phần tử, trình duyệt giải quyết xung đột theo một thứ tự xác định. Cho mục đích người mới:
+
+1. **Sau thắng trước** — với độ cụ thể ngang nhau, quy tắc viết sau cùng thắng.
+2. **Cụ thể hơn thắng ít cụ thể hơn** — ID (1,0,0) > class (0,1,0) > element (0,0,1). Đếm như thế này: `#signup .note p` là (1,1,1) — nó thắng bất kỳ quy tắc `.note` nào.
+3. **Inline style thắng cả hai** (style="…" tính như (1,0,0,0) — tránh dùng).
+
+```css
+p {
+  color: gray;
+} /* (0,0,1) */
+.note {
+  color: blue;
+} /* (0,1,0) — thắng p cho các phần tử .note */
+#hero {
+  color: teal;
+} /* (1,0,0) — thắng tất cả những gì ở trên */
+```
+
+Một ngoại lệ quan trọng — `!important` ép một khai báo thắng bất kể điều gì. Nó tồn tại cho các trường hợp biên (user style ghi đè, framework utility). Trong CSS viết tay, nó là một code smell: nếu bạn cần `!important` để thắng, các selector của bạn đang đánh nhau — hãy sửa độ cụ thể, không phải triệu chứng.
+
+## Inheritance — kẻ trầm lặng
+
+Một số thuộc tính tự chảy xuống cây: `color`, `font-family`, `line-height`. Đặt `font-family` một lần trên `body`, và mọi phần tử con thừa kế nó — đó là lý do typography toàn cục nằm trên `body`. Các thuộc tính layout như `margin` và `border` _không_ thừa kế: mỗi hộp có phần của riêng mình.
+
+## Bạn đã học được gì
+
+- Element / class / ID selector và khi nào mỗi loại phù hợp
+- Descendant selector định kiểu theo vùng; grouping chia sẻ một khối
+- Giải quyết cascade: thứ tự nguồn, rồi độ cụ thể (ID > class > element), inline trên cùng
+- `!important` là một smell; inheritance giải thích typography cấp body
+
+**Tiếp theo:** đơn vị và màu sắc — cách CSS đo lường và tô vẽ.

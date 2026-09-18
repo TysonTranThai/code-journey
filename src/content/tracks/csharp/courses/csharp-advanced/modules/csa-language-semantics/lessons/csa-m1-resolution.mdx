@@ -1,0 +1,38 @@
+## Overload resolution, conversions, and patterns
+
+When you call a method, Roslyn runs a deterministic search: find applicable
+candidates, then apply the **betterness** rules. You do not need the spec in
+your head — you need the handful of rules that decide real bugs:
+
+1. **Exact type beats implicit conversion.** `Pick(5)` prefers `Pick(int)`
+   over `Pick(long)`.
+2. **Non-generic beats generic** when both apply without conversion;
+   a *fixed* type argument beats both (`Pick<object>(5)` calls the generic).
+3. **Implicit numeric widening** never happens implicitly in overload choice
+   between `int` and `long` arguments — the int literal binds to `int`.
+4. **User-defined conversions** are consulted last and never chain.
+
+Pattern matching is compiled to type checks and value extraction:
+
+```csharp
+static string Describe(object o) => o switch
+{
+    int n when n < 0         => "negative",
+    int and > 100            => "big int",
+    string { Length: 0 }     => "empty string",
+    Point(_, 0)              => "on the X axis",
+    null                     => "null",
+    _                        => "other",
+};
+```
+
+`switch` expressions compile to a decision tree — `isinst`/`unbox` for type
+patterns, comparisons for relational patterns. Recursive patterns nest
+declarations, not behavior. The design win: exhaustive-looking shapes push
+state decisions out of `if`-ladders into one declaration the compiler can
+check (add a case for a new enum member and the `_` discards it silently —
+that silence is the tax).
+
+When patterns go wrong: matching on `object` erases generic type info
+(rely on `when` guards, not on runtime surprises), and `is` type patterns
+on value types *box* the operand — one more silent allocation on hot paths.

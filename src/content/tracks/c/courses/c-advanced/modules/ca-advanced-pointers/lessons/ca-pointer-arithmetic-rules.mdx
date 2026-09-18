@@ -1,0 +1,25 @@
+## The one legal region
+
+If `p` points into an array of `N` elements (or one past its end), you may:
+
+- add/subtract an integer, staying within `[begin, begin + N]`;
+- subtract two pointers into the same array;
+- compare two pointers into the same array;
+- dereference only while the result points at an element.
+
+Everything else is undefined. `p + N` is computable but not dereferenceable — that one-past-the-end pointer is the anchor every `for` loop and `memcpy` boundary silently relies on.
+
+```c
+int a[4];
+int *e = a + 4;        /* OK: one past the end */
+int *f = a + 5;        /* UB: not computable */
+*e = 0;                /* UB: e is not dereferenceable */
+```
+
+## The object does not need to be an array
+
+A pointer to a single object behaves as an array of one: `&obj + 1` is legal (one past it), `&obj + 2` is not. This is what makes member-wise cleanup loops correct.
+
+## struct member arithmetic
+
+Pointer arithmetic between members of a struct is NOT covered by the array rule — `offsetof`-based conversion (`(char *)&s + offsetof(struct S, b)`) is the portable way to walk members; subtracting `&s.b - &s.a` is UB even though it usually prints 4.

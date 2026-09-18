@@ -1,0 +1,40 @@
+## Executors: concurrent.futures as the default interface
+
+`concurrent.futures` wraps both threading and multiprocessing behind one API —
+and it is the right default for most programs:
+
+```python
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+def fetch(url):
+    ...  # I/O-bound work
+
+with ThreadPoolExecutor(max_workers=8) as pool:
+    futures = {pool.submit(fetch, u): u for u in urls}
+    for fut in as_completed(futures):
+        url = futures[fut]
+        try:
+            result = fut.result()
+        except Exception as e:
+            print(f"{url} failed: {e}")
+```
+
+Two iteration styles with different guarantees:
+
+- **`pool.map(fn, iterable)`** — results in INPUT order, exceptions raised
+  when you consume the result, simplest for pure transforms.
+- **`as_completed(futures)`** — results in COMPLETION order (fast items first),
+  the choice when per-item latency matters and you want progress as items finish.
+
+Professional details that bite in production:
+
+- `fut.result(timeout=...)` bounds your wait; a hung task still holds the
+  worker thread forever — cancellation of *running* threads is cooperative,
+  not forced.
+- `Executor.shutdown(cancel_futures=True)` (3.9+) drops queued-but-not-started
+  work on teardown.
+- Always use `with` (or explicit shutdown): leaked executors keep interpreter
+  exit waiting.
+- `ProcessPoolExecutor` has the same API but pickles arguments and results —
+  jobs must be picklable top-level functions; great for CPU-bound work
+  (each process has its own GIL).

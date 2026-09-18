@@ -1,0 +1,25 @@
+{
+  "id": "types-and-operators",
+  "title": "Receipt Math",
+  "prompt": "A cart holds `const price = 19.99;` and `const quantity = 3;` (declare these yourself).\n\n1. Compute `const total = price * quantity;`\n2. Log a sentence built with a template literal that includes both the quantity and the total — e.g. \"3 items cost 59.97\".\n3. Log whether `total > 50` (a boolean).\n4. Log whether the order is big AND affordable: `total > 10 && total < 100`.",
+  "difficulty": "beginner",
+  "boilerplate": "const price = 19.99;\nconst quantity = 3;\n\n// 1) total\n\n// 2) sentence via template literal\n\n// 3) is it over 50?\n\n// 4) big AND affordable\n",
+  "tests": [
+    {
+      "name": "total computed from the variables",
+      "code": "const fn = new Function(code + \"\\nreturn { total };\");\nconst { total } = fn();\nif (total !== 59.97) {\n  throw new Error(\"total should be price * quantity = 59.97.\");\n}\nif (!/(const|let)\\s+total\\s*=\\s*price\\s*\\*\\s*quantity\\s*;/.test(code)) {\n  throw new Error(\"Compute total from the variables: const total = price * quantity;\");\n}",
+      "hint": "const total = price * quantity; — use the variables, not a hard-coded number."
+    },
+    {
+      "name": "sentence uses a template literal with both values",
+      "code": "const logs = [];\nconst fakeConsole = { log: (...a) => logs.push(a.map(String).join(\" \")) };\ntry {\n  new Function(\"console\", code)(fakeConsole);\n} catch (err) {\n  throw new Error(\"Your code threw: \" + err.message);\n}\nconst sentence = logs.find((l) => l.includes(\"3\") && l.includes(\"59.97\"));\nif (!sentence) {\n  throw new Error('The logged sentence should contain both \"3\" and \"59.97\".');\n}\nconst bt = String.fromCharCode(96);\nif (!code.includes(bt)) {\n  throw new Error(\"Build the sentence with a template literal (backticks).\");\n}",
+      "hint": "console.log(`${quantity} items cost ${total}`);"
+    },
+    {
+      "name": "comparison and logic logged",
+      "code": "const logs = [];\nconst fakeConsole = { log: (...a) => logs.push(a.map(String).join(\" \")) };\nnew Function(\"console\", code)(fakeConsole);\nif (!logs.some((l) => l === \"true\")) {\n  throw new Error(\"Log the boolean comparisons — total > 50 should print true.\");\n}\nif (!/&&/.test(code)) {\n  throw new Error(\"Use the && operator for the combined condition.\");\n}",
+      "hint": "console.log(total > 50); console.log(total > 10 && total < 100);"
+    }
+  ],
+  "level": "guided"
+}

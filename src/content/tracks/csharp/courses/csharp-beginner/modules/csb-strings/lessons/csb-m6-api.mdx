@@ -1,0 +1,47 @@
+## Asking questions
+
+```csharp
+string file = "report.PDF";
+file.EndsWith(".pdf")              // false — case matters!
+file.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)  // true
+file.Contains("port")              // true
+file.StartsWith("rep")             // true
+string.Empty == file.Trim()        // is it blank?
+```
+
+String comparisons are **case-sensitive by default** — `"PDF"` does not end with `".pdf"`. For user-facing input, say what you mean with a `StringComparison` argument. Equality (`==` and `Equals`) compares *contents*, not references — strings are the reference type where `==` does what beginners expect.
+
+## Slicing and transforming
+
+```csharp
+string s = "  Code Journey  ";
+s.Trim()                       // "Code Journey"      — new string
+s.Substring(5)                 // "Journey"           — from index 5 on
+s.Substring(5, 3)              // "Jou"               — 3 chars from index 5
+s.Replace(" ", "-")            // "  Code-Journey-  "
+s.Trim().Replace(" ", "-")     // "Code-Journey"      — chained
+```
+
+`Substring(start)` takes everything from `start`; `Substring(start, length)` takes exactly `length` chars — and throws if the range leaves the string. `Replace` swaps **every** occurrence, not the first.
+
+## Split and join
+
+```csharp
+string csv = "rice,beans,oil";
+string[] items = csv.Split(',');          // ["rice", "beans", "oil"]
+string re = string.Join(" | ", items);    // "rice | beans | oil"
+```
+
+`Split` cuts a string into an array at each separator; empty fields become empty strings, and you can pass `char[]` or `string[]` separators. `string.Join` is the inverse — glue an array (of strings) with a separator. Together they're the backbone of line- and record-based text processing (CSV-ish files, logs, user records).
+
+## The number↔string boundary
+
+```csharp
+int n = 42;
+string t = n.ToString();          // "42"
+string f = n.ToString("D5");      // "00042" — format codes exist
+int back = int.Parse("42");       // throws on garbage
+bool ok  = int.TryParse("42", out int value);  // false + value=0 on garbage
+```
+
+`Parse` throws `FormatException` on bad input; `TryParse` reports success as a `bool` — remember it from Module 3, this is where it lives conceptually.

@@ -1,0 +1,72 @@
+Bug bố cục thường là bug box-model. Bài học này loại bỏ sự bất ngờ đó vĩnh viễn.
+
+## Mọi phần tử là bốn hộp lồng vào nhau
+
+```
+┌─────────────────────────────────┐
+│  margin (trong suốt, bên ngoài) │
+│  ┌───────────────────────────┐  │
+│  │  border                   │  │
+│  │  ┌─────────────────────┐  │  │
+│  │  │  padding            │  │  │
+│  │  │  ┌───────────────┐  │  │  │
+│  │  │  │  content      │  │  │  │
+│  │  │  └───────────────┘  │  │  │
+│  │  └─────────────────────┘  │  │
+│  └───────────────────────────┘  │
+└─────────────────────────────────┘
+```
+
+- **content** — chính văn bản/hình ảnh; kích thước do `width`/`height` quyết định.
+- **padding** — khoảng trống _bên trong_ border, giữa nội dung và mép. Padding mang theo nền của phần tử.
+- **border** — đường viền. `border: 2px solid`.
+- **margin** — khoảng trống trong suốt _bên ngoài_ border, đẩy các phần tử lân cận ra xa.
+
+```css
+.card {
+  padding: 1rem;
+  border: 2px solid gray;
+  margin: 1rem;
+}
+```
+
+Padding và margin đều nhận 1–4 giá trị (top/right/bottom/left, theo chiều kim đồng hồ): `padding: 4px 8px` = 4 phía trên & dưới, 8 trái & phải. Cũng có các thuộc tính đơn phía: `margin-top`, `padding-left`, …
+
+## Phép dự đoán mà mọi người mới đều đoán sai
+
+Với `box-sizing: content-box` mặc định, `width` chỉ định kích thước cho hộp _nội dung_:
+
+```css
+.box {
+  width: 200px;
+  padding: 20px; /* cả hai phía */
+  border: 4px solid;
+}
+```
+
+Chiều rộng hiển thị thực = 200 + 20 + 20 + 4 + 4 = **248px**. Không phải 200. Đặt hai hộp như vậy cạnh nhau và chúng sẽ xuống dòng dù bạn chắc chắn rằng chúng vừa.
+
+## Bản sửa phổ quát
+
+```css
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+```
+
+Với `border-box`, `width` bao gồm cả padding và border — `width: 200px` nghĩa là cả hộp rộng 200px. Duy nhất một quy tắc này (ở đầu mọi stylesheet trên Trái Đất) xóa sổ cả một lớp bất ngờ. Từ giờ bạn sẽ đặt nó trong stylesheet của mọi dự án.
+
+## Margin collapse (biết là nó tồn tại)
+
+Margin dọc giữa các phần tử anh em _hợp nhất_ thay vì cộng dồn: một `margin-bottom: 32px` đứng trên một `margin-top: 16px` cho khoảng cách 32px, không phải 48. Không phải bug — một tính năng mà bạn làm việc cùng. Quy tắc thực dụng: tạo khoảng cách giữa các section theo một hướng margin nhất quán.
+
+## Bạn đã học được gì
+
+- content → padding → border → margin, và cái nào mang theo nền
+- `width` không bao gồm padding/border với kích thước mặc định — cái bẫy 200px ≠ 200px
+- `box-sizing: border-box` cho mọi thứ là mặc định chuyên nghiệp
+- Margin dọc kề nhau hợp nhất thành giá trị lớn hơn
+
+**Tiếp theo:** `display` — cách các phần tử quyết định xếp chồng hay trôi.

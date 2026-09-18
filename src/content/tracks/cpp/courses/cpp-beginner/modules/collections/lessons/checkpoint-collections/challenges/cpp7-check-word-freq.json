@@ -1,0 +1,26 @@
+{
+  "id": "cpp7-check-word-freq",
+  "title": "Word Frequency",
+  "prompt": "Implement `word_freq(text)` returning a `std::map<std::string,int>` counting lowercase space-separated words, and `most_common(freq)` returning the alphabetically-first among the most frequent.",
+  "difficulty": "beginner",
+  "language": "cpp",
+  "boilerplate": "#include <map>\n#include <string>\n\nstd::map<std::string, int> word_freq(const std::string& text) {\n    // TODO\n}\nstd::string most_common(const std::map<std::string, int>& freq) {\n    // TODO\n}",
+  "tests": [
+    {
+      "name": "counts",
+      "code": "auto f = word_freq(std::string{\"b a b a c\"}); CHECK_EQ(f.at(std::string{\"a\"}), 2); CHECK_EQ(f.at(std::string{\"b\"}), 2); CHECK_EQ(f.at(std::string{\"c\"}), 1);",
+      "hint": "Each word counted once per occurrence."
+    },
+    {
+      "name": "empty",
+      "code": "auto f = word_freq(std::string{\"\"}); CHECK(f.empty());",
+      "hint": "No words → empty map."
+    },
+    {
+      "name": "most common",
+      "code": "CHECK(most_common(word_freq(std::string{\"b a b a c\"})) == std::string{\"a\"});",
+      "hint": "a and b tie at 2; map iterates sorted, so 'a' wins."
+    }
+  ],
+  "level": "combination"
+}

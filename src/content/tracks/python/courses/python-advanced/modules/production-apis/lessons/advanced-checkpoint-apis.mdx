@@ -1,0 +1,12 @@
+**Write code that answers these three questions for a real service:**
+
+1. When input is bad, does the client get *every* problem in one envelope-shaped
+   answer — with no internals leaked on 5xx?
+2. When load spikes, does the limiter throttle by the *injected* clock, not by
+   wall-clock luck?
+3. When a dependency is down, does readiness say so *without crashing*?
+
+The challenge below combines 2 and 3: a readiness probe whose checks are
+injected zero-arg callables. A check that raises is a dependency that is down —
+that must mark the service **not ready** (and appear as `false`), never crash
+the probe and never count as healthy.

@@ -1,0 +1,27 @@
+## DTO so với domain model
+
+**Domain model** mang hành vi nghiệp vụ; **DTO** (Data Transfer Object)
+là con thoi dữ liệu thuần giữa các lớp:
+
+```java
+// domain — biết các quy tắc
+public record Account(String id, int balanceCents) {
+    public Account withdraw(int amount) {
+        if (amount > balanceCents) throw new InsufficientFundsException();
+        return new Account(id, balanceCents - amount);
+    }
+}
+
+// DTO — băng qua ranh giới lớp, không hành vi
+public record AccountView(String id, String balance) {}
+```
+
+Kinh nghiệm:
+- các lớp nội bộ trao đổi domain object; ranh giới lộ DTO
+- hàm mapping là *tường minh* (`toView(Account)`) — không bao giờ để
+  nội bộ domain khả biến lộ ra ngoài một cách vô tình
+- field DTO theo hình trình bày (`"1,234.00"`), field domain theo hình
+  tính toán (`int cents`)
+
+App nhỏ có thể bỏ qua DTO; kỷ luật này quan trọng khi hình dạng API và
+mô hình nội bộ cần tiến hóa với tốc độ khác nhau.

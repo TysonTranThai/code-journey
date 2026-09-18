@@ -1,0 +1,21 @@
+{
+  "id": "cint-checkpoint-m3-task",
+  "title": "Checkpoint: The Owning Stack",
+  "prompt": "Compose the ownership discipline into one structure — a stack of owned\nstrings with full lifecycle:\n\n```c\ntypedef struct { char **items; size_t len, cap; } StrStack;  /* in boilerplate */\nvoid ss_init(StrStack *s);\n/* pushes a COPY of s. 0 on failure; stack unchanged then. */\nint ss_push(StrStack *s, const char *s2);\n/* pops: hands the TOP string's ownership back to the caller and removes it.\n   Returns the pointer (caller now owns and must free), or NULL if empty. */\nchar *ss_pop(StrStack *s);\n/* peeks without transferring: the stack still owns it */\nconst char *ss_peek(const StrStack *s);\n/* frees everything; safe to call twice */\nvoid ss_destroy(StrStack *s);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n\ntypedef struct { char **items; size_t len, cap; } StrStack;\n",
+  "tests": [
+    {
+      "name": "full lifecycle",
+      "code": "\nStrStack st;\nss_init(&st);\nCHECK_EQ(ss_push(&st, \"one\"), 1);\nCHECK_EQ(ss_push(&st, \"two\"), 1);\nCHECK_STR_EQ(ss_peek(&st), \"two\");\nchar *got = ss_pop(&st);\nCHECK_STR_EQ(got, \"two\");\nfree(got);                        /* caller owns it now */\nCHECK_STR_EQ(ss_peek(&st), \"one\");\nCHECK_EQ(ss_pop(&st) != NULL, 1);\nchar *none = ss_pop(&st);\nCHECK_NULL(none);\nfree(none);                        /* free(NULL) fine */\nss_destroy(&st);\nss_destroy(&st);\nCHECK_NULL(st.items);\n",
+      "hint": "Push copies (malloc+memcpy); pop returns the stored pointer and decrements; destroy frees items then array."
+    },
+    {
+      "name": "LIFO order and capacity growth",
+      "code": "\nStrStack st;\nss_init(&st);\nconst char *words[] = {\"a\", \"b\", \"c\", \"d\", \"e\", \"f\", \"g\", \"h\", \"i\", \"j\"};\nfor (int i = 0; i < 10; i++) CHECK_EQ(ss_push(&st, words[i]), 1);\nfor (int i = 9; i >= 0; i--) {\n    char *p = ss_pop(&st);\n    CHECK_STR_EQ(p, words[i]);\n    free(p);\n}\nss_destroy(&st);\n",
+      "hint": "Growth doubles; pops come back in exact reverse order."
+    }
+  ],
+  "level": "independent"
+}

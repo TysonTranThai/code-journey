@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m1-ptr-deref-sum",
+  "title": "Dereference and sum",
+  "prompt": "Implement `int sum_through(const int* a, const int* b)` returning `*a + *b`. Either pointer may be null; treat a null as 0.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\n\nint sum_through(const int* a, const int* b);\n",
+  "tests": [
+    {
+      "name": "both",
+      "code": "int x = 3, y = 4;\nCHECK_EQ(sum_through(&x, &y), 7);",
+      "hint": "Dereference each pointer once."
+    },
+    {
+      "name": "null-a",
+      "code": "int y = 4;\nCHECK_EQ(sum_through(nullptr, &y), 4);",
+      "hint": "Null means 0 — check before dereferencing."
+    },
+    {
+      "name": "both-null",
+      "code": "CHECK_EQ(sum_through(nullptr, nullptr), 0);",
+      "hint": "Two nulls sum to zero without crashing."
+    }
+  ],
+  "level": "guided"
+}

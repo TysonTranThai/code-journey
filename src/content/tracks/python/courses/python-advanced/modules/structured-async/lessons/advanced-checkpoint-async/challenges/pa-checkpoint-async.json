@@ -1,0 +1,20 @@
+{
+  "id": "pa-checkpoint-async",
+  "title": "fetch_all with per-job timeouts",
+  "prompt": "Implement fetch_all per the hardened spec: TaskGroup, per-job asyncio.timeout(0.05), timeout converted to the sentinel string, real errors still raised.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import asyncio\n\n# TODO: fetch_all(jobs)",
+  "tests": [
+    {
+      "name": "timeouts convert, successes pass through",
+      "code": "async def quick():\n    await asyncio.sleep(0.005)\n    return 'q'\nasync def slow():\n    await asyncio.sleep(0.5)\n    return 'never'\n\nloop = asyncio.new_event_loop()\nout = loop.run_until_complete(fetch_all([quick, slow, quick]))\nloop.close()\nassert out[0] == (0, 'q') and out[2] == (2, 'q'), f'out: {out}'\nassert out[1] == (1, 'timeout:0.05'), f'out: {out}'\nprint('ok')",
+      "hint": "Wrap each job's await in asyncio.timeout(0.05); catch ONLY TimeoutError."
+    },
+    {
+      "name": "real errors still raise",
+      "code": "async def bad():\n    raise ValueError('real')\n\nloop = asyncio.new_event_loop()\ntry:\n    loop.run_until_complete(fetch_all([bad]))\nexcept* ValueError:\n    pass\nelse:\n    raise AssertionError('real errors must propagate')\nfinally:\n    loop.close()\nprint('ok')",
+      "hint": "except BaseException would mask this — catch TimeoutError only."
+    }
+  ]
+}

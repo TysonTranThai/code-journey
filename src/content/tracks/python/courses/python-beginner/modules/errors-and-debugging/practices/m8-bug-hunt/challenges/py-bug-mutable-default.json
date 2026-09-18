@@ -1,0 +1,16 @@
+{
+  "id": "py-bug-mutable-default",
+  "title": "Bug Hunt 4: The Shared Default",
+  "prompt": "Every call to add_task seems to remember previous calls — tasks pile up across calls. Fix WITHOUT removing the default: make each call start from a fresh list (or make the parameter required).",
+  "difficulty": "beginner",
+  "language": "python",
+  "boilerplate": "def add_task(task, tasks=[]):\n    tasks.append(task)\n    return tasks\n\nadd_task(\"a\")\nadd_task(\"b\")\nresult = add_task(\"c\")\nprint(result)\n",
+  "tests": [
+    {
+      "name": "each call is fresh",
+      "code": "assert len(printed) == 1 and \"c\" in printed[0] and \"a\" not in printed[0] and \"b\" not in printed[0], f\"got {printed}\"\nassert \"[]\" not in code.split(\"def add_task\")[1].split(\")\")[0], \"no mutable default allowed\"",
+      "hint": "The mutable default is created ONCE at definition time and shared. Fix: tasks=None, then tasks = [] inside the function."
+    }
+  ],
+  "level": "debugging"
+}

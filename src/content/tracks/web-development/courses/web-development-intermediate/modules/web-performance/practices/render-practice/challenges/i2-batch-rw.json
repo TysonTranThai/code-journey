@@ -1,0 +1,20 @@
+{
+  "id": "i2-batch-rw",
+  "title": "Read/Write Batcher",
+  "prompt": "A DOM interaction is a list of ops: { op: \"read\" | \"write\", el, value? } (reads return the element's current height, writes set it). Write `simulate(ops)` executing with correct batching: process ALL reads first (collecting heights), then ALL writes. Return the array of read heights in order. A naive interleaved implementation causes N forced layouts; yours must cause at most 2.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function simulate(ops) {\n  // your code — a read costs a layout pass if the previous op was a write\n}\n",
+  "tests": [
+    {
+      "name": "reads are collected before writes",
+      "code": "const fn = new Function(code + \"\\nreturn { simulate };\");\nconst { simulate } = fn();\nconst ops = [\n  { op: \"read\", el: \"a\" },\n  { op: \"write\", el: \"a\", value: 100 },\n  { op: \"read\", el: \"b\" },\n  { op: \"write\", el: \"b\", value: 200 },\n];\nconst heights = simulate(ops);\n// heights: both reads happened before any write => [10, 20] (initial heights)\n",
+      "hint": "Two passes: filter reads, map heights; then filter writes."
+    },
+    {
+      "name": "layout passes counted",
+      "code": "const fn = new Function(code + \"\\nreturn { simulate };\");\nconst { simulate } = fn();\nconst ops = [\n  { op: \"read\", el: \"a\" },\n  { op: \"write\", el: \"a\", value: 100 },\n  { op: \"read\", el: \"b\" },\n  { op: \"write\", el: \"b\", value: 200 },\n];\nlet layouts = 0;\nconst heights = simulate(ops, () => layouts++);\nif (layouts > 2) throw new Error(\"Batching must cap forced layouts at 2 (initial + after writes).\");\nif (heights.length !== 2) throw new Error(\"Two reads recorded.\");\n",
+      "hint": "Accept an optional onLayout callback to count passes."
+    }
+  ]
+}

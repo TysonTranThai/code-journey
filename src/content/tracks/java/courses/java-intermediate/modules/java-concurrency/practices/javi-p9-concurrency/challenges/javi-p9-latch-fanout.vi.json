@@ -1,0 +1,18 @@
+{
+  "title": "Fan-Out đồng bộ bằng latch",
+  "prompt": "Cài `static List<String> fanOut(int n)`:\n- tạo `CountDownLatch(n)` và một list an toàn luồng\n  (`Collections.synchronizedList` hoặc `CopyOnWriteArrayList`)\n- khởi động n thread; mỗi thread nối `\"t\" + index_của_nó` vào list, rồi\n  countDown latch\n- thread chính await latch, SORT list, rồi trả về\n\nMỗi list trả về phải chứa đúng `t0..t(n-1)` — latch bảo đảm hoàn tất\ntrước khi đọc. n <= 0 trả list rỗng.",
+  "tests": [
+    {
+      "name": "Mọi worker hoàn tất",
+      "hint": "Latch + sort khiến kết quả xác định."
+    },
+    {
+      "name": "Một worker",
+      "hint": "Biên n=1."
+    },
+    {
+      "name": "Không hoặc âm",
+      "hint": "n <= 0 → list rỗng."
+    }
+  ]
+}

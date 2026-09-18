@@ -1,0 +1,25 @@
+The JVM spec (§2.5, §5) divides runtime memory into areas with different
+lifetimes and failure modes. The ones that matter daily:
+
+- **Heap**: all objects; shared by all threads; GC-managed. `OutOfMemoryError`
+  here means your *live* set does not fit.
+- **Per-thread stacks**: one frame per invoked method (locals + operand
+  stack). `StackOverflowError` means *depth*, not heap size.
+- **Metaspace**: class metadata (native memory). `OutOfMemoryError:
+  Metaspace` usually means classes are being generated at runtime and never
+  unloaded.
+- **PC register** per thread — why threads can be suspended anywhere.
+
+**Class initialization** (JLS §12.4) is lazy and triggerable. Two ways to
+name a class behave differently:
+
+```java
+Class<?> a = Loaded.class;                  // NO static init
+Class<?> b = Class.forName("Loaded");       // static init runs
+```
+
+A class literal is a compile-time constant reference — it does not *use* the
+class. `forName` initializes it. So does `new`, static method calls, and
+accessing a non-constant static field. This laziness is why a broken static
+initializer can hide for weeks until the first real use throws
+`ExceptionInInitializerError`.

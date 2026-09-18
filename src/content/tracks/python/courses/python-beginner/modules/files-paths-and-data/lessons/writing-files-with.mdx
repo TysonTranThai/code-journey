@@ -1,0 +1,31 @@
+## Writing and appending
+
+```python
+with open("out.txt", "w", encoding="utf-8") as f:
+    f.write("first line\n")     # YOU supply the newlines
+    f.write("second line\n")
+```
+
+`"w"` **replaces** the whole file. `"a"` appends to the end:
+
+```python
+with open("log.txt", "a", encoding="utf-8") as f:
+    f.write("2026-09-13 ran report\n")
+```
+
+Two beginner traps: forgetting `\n` (everything lands on one line), and using
+`"w"` on a log (yesterday's data is gone). Write mode for reports, append mode
+for logs.
+
+## Paths with pathlib
+
+```python
+from pathlib import Path
+
+p = Path("data") / "notes.txt"   # join paths portably
+print(p.exists())                # False or True
+print(Path.cwd())                # where the program runs
+```
+
+`Path` joins with `/`, checks existence, and gives you `.name`, `.suffix`, and
+`.parent` — use it instead of gluing strings with `+`.

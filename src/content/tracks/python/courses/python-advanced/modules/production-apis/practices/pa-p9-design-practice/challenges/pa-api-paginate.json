@@ -1,0 +1,21 @@
+{
+  "id": "pa-api-paginate",
+  "title": "Pagination with honest metadata",
+  "prompt": "Implement `paginate(items, page=1, per_page=20)` returning a dict with `items` (the window), `page`, `per_page`, `total`, `total_pages` (minimum 1), `has_next` (there are items after this window), `has_prev` (page > 1).\n\n- raise `ValueError` when `page < 1` or `per_page` outside 1..100 (ints only)\n- an empty list is 1 page with `has_next=False`",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "# TODO: paginate",
+  "tests": [
+    {
+      "name": "windows and metadata agree",
+      "code": "items = list(range(25))\np1 = paginate(items, 1, 10)\nassert p1['items'] == list(range(10)) and p1['total'] == 25 and p1['total_pages'] == 3\nassert p1['has_next'] is True and p1['has_prev'] is False\np3 = paginate(items, 3, 10)\nassert p3['items'] == [20, 21, 22, 23, 24] and p3['has_next'] is False and p3['has_prev'] is True\nprint('ok')",
+      "hint": "ceil(total/per_page) pages; the last window may be short."
+    },
+    {
+      "name": "empty lists and rejected params",
+      "code": "e = paginate([], 1, 20)\nassert e['total'] == 0 and e['total_pages'] == 1 and e['has_next'] is False\nfor bad in [(0, 10), (2, 0), (1, 101)]:\n    try:\n        paginate(list(range(5)), bad[0], bad[1])\n    except ValueError:\n        pass\n    else:\n        raise AssertionError(bad)\nprint('ok')",
+      "hint": "Reject the contract violations; empty input is valid, not an error."
+    }
+  ],
+  "level": "guided"
+}

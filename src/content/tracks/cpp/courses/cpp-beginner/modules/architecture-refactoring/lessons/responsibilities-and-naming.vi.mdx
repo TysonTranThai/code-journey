@@ -1,0 +1,35 @@
+## Bài test trách nhiệm
+
+Với mọi hàm, lớp, và file, hãy hoàn thành câu này một cách trung thực: "Nhiệm vụ của đơn vị này là ______ và không gì khác." Nếu câu cần thêm "và cả", hãy tách nó ra.
+
+```
+parse_line()      → text vào, các trường đã phân tích ra. Không in ấn.
+compute_totals()  → số vào, tổng ra. Không phân tích.
+print_report()    → dữ liệu vào, console ra. Không tính toán.
+```
+
+Một **chuỗi.pipeline** gồm các đơn vị nhỏ thắng một gã khổng lồ "làm cả tính năng". Mỗi chặng đều kiểm thử được (test của nền tảng gọi từng hàm), mỗi chặng dùng lại được, và mỗi chặng chỉ có một lý do để thay đổi.
+
+## Tên là tài liệu rẻ nhất
+
+```cpp
+double d(double a, double b, int c);              // hợp lệ, mơ hồ
+double invoice_total(double price, double tax_rate, int qty);   // tự dokumentasi
+```
+
+Đổi tên cho đến khi chữ ký đọc như yêu cầu. Kiểu dữ liệu cũng mang ý nghĩa: `long long cents` hơn `double money` (số học chính xác cho tiền tệ — bài học kinh điển), `enum class Status` hơn `int state`.
+
+## const correctness như kiến trúc
+
+`const` trong chữ ký là bản hợp đồng được máy kiểm tra:
+
+```cpp
+std::vector<std::string> load_rows(const std::string& path);   // sẽ không đụng vào path của bạn
+void append_row(std::string& csv, const Row& row);             // sẽ sửa csv — nhìn thấy được
+```
+
+Đọc header, bạn biết ai sửa gì mà không cần mở một file `.cpp` nào. Quy tắc của khóa này từ module 2, nâng cấp: mọi thứ const cho đến khi bị chứng minh là có sửa đổi.
+
+## Hướng phụ thuộc
+
+Code cấp cao (báo cáo) có thể dùng code cấp thấp (phân tích); cấp thấp không được với lên trên. Khi hai file cần nhau ("tròn tròn"), một khái niệm thứ ba đang trốn — hãy tách nó ra (một kiểu `Row` dùng chung, một module tiện ích nhỏ). Dữ liệu chảy xuống; phụ thuộc trỏ xuống; việc debug trở nên dễ dàng.

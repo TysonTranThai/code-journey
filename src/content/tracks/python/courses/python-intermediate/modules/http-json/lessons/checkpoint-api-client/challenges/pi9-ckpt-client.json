@@ -1,0 +1,30 @@
+{
+  "id": "pi9-ckpt-client",
+  "title": "Resilient Mini Client",
+  "prompt": "Implement MiniClient(base_url, transport=None) with get(path) -> dict. Behavior: compose url = base_url + path; call transport(url) (None → RuntimeError 'no network in sandbox'); the response object has .status and .read() -> bytes. On 200 parse and return JSON. On 5xx/429, retry up to 3 total attempts, then raise ApiError('exhausted retries'). On other 4xx, raise ApiError immediately. Non-JSON body on 200 raises ApiError('bad body').",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import json\n\nclass ApiError(Exception):\n    pass\n\nclass MiniClient:\n    def __init__(self, base_url, transport=None):\n        pass\n\n    def get(self, path):\n        pass\n",
+  "tests": [
+    {
+      "name": "success returns parsed json",
+      "code": "class R:\n    status = 200\n    def __init__(self):\n        self.n = 0\n    def read(self):\n        return b'{\"v\": 42}'\nc = MiniClient('http://api', transport=lambda u: R())\nassert c.get('/v') == {'v': 42}",
+      "hint": "200 → parse → return."
+    },
+    {
+      "name": "client error fails immediately",
+      "code": "calls = []\nclass R:\n    status = 404\n    def read(self):\n        return b'{}'\ndef transport(u):\n    calls.append(u)\n    return R()\nc = MiniClient('http://api', transport=transport)\ntry:\n    c.get('/missing')\n    failed = False\nexcept ApiError:\n    failed = True\nassert failed\nassert len(calls) == 1, 'client errors (4xx) must not be retried'\n",
+      "hint": "4xx (non-429) raises at once — no retries."
+    },
+    {
+      "name": "transient failure retried then success",
+      "code": "class Flaky:\n    def __init__(self):\n        self.calls = 0\n    def read(self):\n        return b'{}'\nflaky = Flaky()\ndef transport(u):\n    flaky.calls += 1\n    class R:\n        status = 503 if flaky.calls == 1 else 200\n        def read(self):\n            return b'{\"ok\": true}'\n    return R()\nc = MiniClient('http://api', transport=transport)\nassert c.get('/x') == {'ok': True}\nassert flaky.calls == 2",
+      "hint": "First 503 retried; second attempt succeeds."
+    },
+    {
+      "name": "exhausted retries raise",
+      "code": "def transport(u):\n    class R:\n        status = 500\n        def read(self):\n            return b'{}'\n    return R()\nc = MiniClient('http://api', transport=transport)\ntry:\n    c.get('/down')\n    failed = False\nexcept ApiError as e:\n    failed = 'exhausted' in str(e)\nassert failed",
+      "hint": "Three total attempts, then ApiError('exhausted retries')."
+    }
+  ]
+}

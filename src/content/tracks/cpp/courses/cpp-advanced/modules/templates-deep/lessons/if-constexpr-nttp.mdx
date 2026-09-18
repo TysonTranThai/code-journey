@@ -1,0 +1,24 @@
+## Non-type template parameters (NTTPs)
+
+Template parameters can be *values*: sizes, enumerations, pointers — anything constant-expression-able. The most common: `std::size_t`:
+
+```cpp
+template <std::size_t N> struct Ring {
+    int data_[N]{};
+    std::size_t head_ = 0;
+    void push(int v) { data_[head_++ % N] = v; }
+    static constexpr std::size_t capacity() { return N; }
+};
+```
+
+Every `Ring<8>` and `Ring<1024>` is a distinct type with zero heap allocations and a compile-time-known capacity.
+
+## Array-bound NTTP — free string lengths
+
+Deducing `N` from an array reference gives you the literal's length for free: `template <std::size_t N> constexpr std::size_t strLen(const char (&s)[N]) { return N - 1; }` — `strLen("abcd")` is 4, computed at compile time, no `strlen`.
+
+## Partial specialization over NTTPs
+
+The two compose: `Capacity<std::array<T, N>>` peels the size out of the *type* — the standard library's own `tuple_size` works this way.
+
+**Watch out:** each distinct `N` instantiates a distinct type. A `Ring<8>` is not a `Ring<9>`; if you need runtime-variable capacity, that is a `std::vector` job, not an NTTP job.

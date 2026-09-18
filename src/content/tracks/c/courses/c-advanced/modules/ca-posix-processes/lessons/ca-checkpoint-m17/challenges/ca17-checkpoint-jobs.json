@@ -1,0 +1,26 @@
+{
+  "id": "ca17-checkpoint-jobs",
+  "title": "Checkpoint: Job Runner",
+  "prompt": "One program over the module's machinery. Given `run_capture(cmd)` (runs `/bin/sh -c cmd`, discards output, returns the exit code). Implement `size_t run_sequence(const char *const *cmds, size_t n, int *codes)` \u2014 run each command in order, store its exit code in codes[i], and return the number of failing commands (nonzero exit). NULL cmds with n>0 returns (size_t)-1 without touching codes.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#define _POSIX_C_SOURCE 200809L\n#include <unistd.h>\n#include <sys/wait.h>\n#include <fcntl.h>\n#include <signal.h>\n#include <string.h>\n#include <errno.h>\nstatic int run_capture(const char *cmd) {\n    pid_t p = fork();\n    if (p < 0) return -1;\n    if (p == 0) {\n        int dn = open(\"/dev/null\", O_WRONLY);\n        if (dn >= 0) { dup2(dn, STDOUT_FILENO); dup2(dn, STDERR_FILENO); }\n        execl(\"/bin/sh\", \"sh\", \"-c\", cmd, (char *)NULL);\n        _exit(127);\n    }\n    int st = 0;\n    if (waitpid(p, &st, 0) < 0) return -1;\n    if (!WIFEXITED(st)) return -1;\n    return WEXITSTATUS(st);\n}\n",
+  "tests": [
+    {
+      "name": "all succeed",
+      "code": "const char *c1[2] = {\"true\", \"true\"};\nint code1[2] = {-9, -9};\nCHECK_EQ((int)run_sequence(c1, 2, code1), 0);\nCHECK_EQ(code1[0], 0);\nCHECK_EQ(code1[1], 0);",
+      "hint": "Two successful commands: zero failures and both codes recorded as 0."
+    },
+    {
+      "name": "one of three fails",
+      "code": "const char *c2[3] = {\"true\", \"exit 5\", \"true\"};\nint code2[3] = {-9, -9, -9};\nCHECK_EQ((int)run_sequence(c2, 3, code2), 1);\nCHECK_EQ(code2[1], 5);",
+      "hint": "Only the middle command fails; its code is kept and the failure is counted once."
+    },
+    {
+      "name": "NULL guard",
+      "code": "int code3[1] = {-9};\nCHECK_EQ((int)run_sequence(NULL, 1, code3), -1);",
+      "hint": "A NULL command list with nonzero n is a caller-contract violation: refuse without touching codes."
+    }
+  ],
+  "level": "mini-build"
+}

@@ -1,0 +1,11 @@
+## Checkpoint: hệ thống báo động
+
+**Nhiệm vụ:** hiện thực trong `Solution`:
+
+1. Lớp lồng `AlarmSystem`:
+   - `event Action<string, int>? Triggered;` (tên cảm biến, mức)
+   - `void Arm(string sensor, int threshold)` — ghi nhận ngưỡng của cảm biến.
+   - `void Reading(string sensor, int value)` — khi cảm biến đã được kích hoạt và `value >= threshold`, kích hoạt `Triggered` với cảm biến và giá trị đó. Cảm biến lạ bị bỏ qua.
+   - `void Disarm(string sensor)`.
+2. `static List<int> LevelsAbove(List<int> readings, int threshold)` — các giá trị lớn-hơn-nghiêm-ngặt ngưỡng, lọc bằng lambda.
+3. `static Func<int> MakeAverager()` — trả một closure cho trung bình chạy dần của mọi giá trị được truyền qua các lần gọi (lần đầu = giá trị đầu tiên).

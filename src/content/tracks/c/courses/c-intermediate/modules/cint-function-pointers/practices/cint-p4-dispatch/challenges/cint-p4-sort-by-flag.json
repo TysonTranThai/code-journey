@@ -1,0 +1,16 @@
+{
+  "id": "cint-p4-sort-by-flag",
+  "title": "Choosing Order at Runtime",
+  "prompt": "Implement a sort that picks its comparator from a mode argument:\n\n```c\n/* mode 0: ints ascending; mode 1: ints descending.\n   Other modes leave the array untouched. Returns the mode used or -1. */\nint sort_i_mode(int *arr, size_t n, int mode);\n/* a driver that inspects the array and reports its current order:\n   0 = already ascending, 1 = already descending, -1 = neither. */\nint which_mode_sorted(int *arr, size_t n);\n```",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "runtime comparator choice",
+      "code": "\nint a[] = {3, 1, 2};\nCHECK_EQ(sort_i_mode(a, 3, 0), 0);\nCHECK_EQ(a[0], 1); CHECK_EQ(a[2], 3);\nint b[] = {3, 1, 2};\nCHECK_EQ(sort_i_mode(b, 3, 1), 1);\nCHECK_EQ(b[0], 3); CHECK_EQ(b[2], 1);\nint c[] = {3, 1, 2};\nCHECK_EQ(sort_i_mode(c, 3, 9), -1);\nCHECK_EQ(c[0], 3);   /* untouched */\nint d[] = {1, 2, 3};\nCHECK_EQ(which_mode_sorted(d, 3), 0);\nint e[] = {3, 2, 1};\nCHECK_EQ(which_mode_sorted(e, 3), 1);\n",
+      "hint": "Two static comparators; pick by mode; which_mode_sorted tries mode 0 then 1 on a copy... or sorts a scratch copy."
+    }
+  ],
+  "level": "guided"
+}

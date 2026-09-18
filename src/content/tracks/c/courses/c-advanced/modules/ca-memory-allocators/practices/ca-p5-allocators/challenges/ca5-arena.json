@@ -1,0 +1,26 @@
+{
+  "id": "ca5-arena",
+  "title": "Build a Bump Arena",
+  "prompt": "Implement a bump allocator over caller-provided memory:\n \n```c\ntypedef struct { unsigned char *mem; size_t cap; size_t used; } arena_t;\nvoid arena_init(arena_t *a, unsigned char *buf, size_t cap);\nvoid *arena_alloc(arena_t *a, size_t n);\nvoid arena_reset(arena_t *a);\n```\n \n`arena_alloc` returns NULL when the request does not fit the remaining capacity; `arena_reset` rewinds `used` to 0.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "sequential slices",
+      "code": "unsigned char buf[64];\narena_t a;\narena_init(&a, buf, sizeof buf);\nunsigned char *p1 = arena_alloc(&a, 16);\nunsigned char *p2 = arena_alloc(&a, 40);\nCHECK_EQ((int)(p1 - buf), 0);\nCHECK_EQ((int)(p2 - buf), 16);",
+      "hint": "Slices hand out consecutively from the front of the buffer."
+    },
+    {
+      "name": "exhaustion is NULL",
+      "code": "unsigned char buf[64];\narena_t a;\narena_init(&a, buf, sizeof buf);\narena_alloc(&a, 56);\nCHECK_NULL(arena_alloc(&a, 16));",
+      "hint": "56 of 64 bytes used; 16 more do not fit — return NULL, never overrun."
+    },
+    {
+      "name": "reset rewinds",
+      "code": "unsigned char buf[64];\narena_t a;\narena_init(&a, buf, sizeof buf);\narena_alloc(&a, 32);\narena_reset(&a);\nCHECK_NOT_NULL(arena_alloc(&a, 64));",
+      "hint": "After reset the full capacity is available again in one slice."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,42 @@
+## The three requirements
+
+Every correct recursion has:
+
+1. a **base case** — an input answered directly, no call
+2. a **recursive case** — answer built from a call on a SMALLER input
+3. **progress** — every call moves toward the base case
+
+```c
+long fact(int n) {
+    if (n <= 1) return 1;        // base case
+    return n * fact(n - 1);      // smaller input, guaranteed progress
+}
+```
+
+Miss the base case or the progress and you get infinite recursion — which
+crashes with **stack overflow**: every call takes a stack frame, and the
+stack is finite.
+
+## The call stack picture
+
+`fact(4)` → `fact(3)` → `fact(2)` → `fact(1)`: four frames deep, then the
+answers multiply on the way back up. Depth = n, so fact(100000) is not a
+thing to attempt.
+
+## Where recursion shines
+
+Structurally recursive data: trees, nested lists, divide-and-conquer. For a
+flat loop over an array, recursion usually adds frames without adding
+clarity — the iterative form is the honest tool there.
+
+## A trace to internalize
+
+```c
+int sum_digits(int n) {
+    if (n < 10) return n;             // single digit
+    return n % 10 + sum_digits(n / 10);
+}
+// sum_digits(472) = 2 + sum_digits(47)
+//                 = 2 + (7 + sum_digits(4))
+//                 = 2 + (7 + 4) = 13
+```,

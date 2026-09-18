@@ -1,0 +1,46 @@
+Người mới test đường vui. Kỹ sư test **biên giới** - vì bug thực sự sống
+ở đó.
+
+## Bốn họ cần kiểm tra mỗi lần
+
+Với hàm `parseAge(String)` trả về `Integer`:
+
+1. **Rỗng và thiếu** - `""`, `"   "`, `null`.
+2. **Sai hình dạng** - `"abc"`, `"12x"`, `"1.5"` (double ở chỗ cần int),
+   `"+5"`.
+3. **Hai mép của khoảng hợp lệ** - đúng `0`, đúng `150`, rồi giá trị bất
+   hợp lệ đầu tiên mỗi phía: `-1`, `151`.
+4. **Ở giữa** - một giá trị hợp lệ bình thường, để biết cỗ máy vẫn chạy
+   khi các mép đều đúng.
+
+```java
+assertEquals(0,  Score.parseAge("0"));      // mép chứa trong
+assertEquals(150, Score.parseAge("150"));   // mép kia chứa trong
+assertEquals(null, Score.parseAge("-1"));   // lệch một đơn vị
+assertEquals(null, Score.parseAge("151"));  // phía kia
+```
+
+Bug lệch-một-đơn vị *chỉ* xuất hiện đúng tại mép: `<` với `<=` vô hình ở
+giữa khoảng nhưng lóe sáng tại `150`.
+
+## Mỏ đất nổ bằng số
+
+- **Số 0** - input chia, lấy trung bình, đánh chỉ số bất ngờ.
+- **Số âm** - hợp lệ cho nhiệt độ, bất hợp lệ cho tuổi; hãy quyết định và
+  thực thi.
+- **Số rất lớn** - `Integer.MAX_VALUE + 1` tràn thành số âm; tổng có thể
+  tràn dù mọi input nhỏ (`int` chỉ giữ ~2,1 tỷ).
+- **Double là xấp xỉ** - `0.1 + 0.2 != 0.3`. So sánh với dung sai, hoặc
+  dùng kiểu chính xác cho tiền tệ.
+
+## Collection và chuỗi
+
+- **Collection rỗng** - `List.of()`, đừng chỉ test danh sách đầy.
+- **Một phần tử** - trường hợp không-rỗng nhỏ nhất; vòng lặp và stream
+  thường hỏng đúng ở đây.
+- **Trùng lặp** - "đếm từ duy nhất" phải sống sót qua `"the the"`.
+- **Khoảng trắng và hoa thường** - `"  Ada "`, `"ada"` với `"Ada"`: hãy
+  quyết định chúng có bằng nhau không và test đúng quyết định đó.
+
+Bộ test chỉ có đường vui chỉ xác minh được phần demo, không phải chương
+trình.

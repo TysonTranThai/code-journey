@@ -1,0 +1,15 @@
+{
+  "id": "cppa16-abi-checkpoint",
+  "title": "Layout Probe",
+  "prompt": "Implement the four `probe` functions against the frozen `Record` struct: size, alignment, member offsets of `id` and `score`. The test checks them against the ABI facts this compiler produces — wrong probe logic (hardcoded guesses) fails on some platform by construction.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <cstdint>\n\nstruct Record {                 // frozen: reordering these members breaks the ABI\n    std::uint32_t id;\n    double score;\n    std::uint32_t flags;\n};\n\nnamespace probe {\nconstexpr std::size_t size();             // sizeof(Record)\nconstexpr std::size_t align();            // alignof(Record)\nconstexpr std::size_t offset_id();        // offsetof(Record, id)\nconstexpr std::size_t offset_score();     // offsetof(Record, score)\n} // namespace probe\n",
+  "tests": [
+    {
+      "name": "probe equals the compiler's own ABI facts",
+      "code": "static_assert(probe::size() == sizeof(Record), \"size must be sizeof(Record)\");\nstatic_assert(probe::align() == alignof(Record), \"align must be alignof(Record)\");\nstatic_assert(probe::offset_id() == offsetof(Record, id), \"id offset\");\nstatic_assert(probe::offset_score() == offsetof(Record, score), \"score offset\");\nstatic_assert(probe::offset_score() % alignof(double) == 0, \"double is aligned\");\nCHECK_EQ(probe::offset_id(), 0);\nCHECK(probe::offset_score() >= probe::offset_id() + sizeof(std::uint32_t));",
+      "hint": "Forward to the compiler: sizeof(Record), alignof(Record), offsetof(Record, member). Hardcoded numbers are exactly the ABI lie this module warns about."
+    }
+  ]
+}

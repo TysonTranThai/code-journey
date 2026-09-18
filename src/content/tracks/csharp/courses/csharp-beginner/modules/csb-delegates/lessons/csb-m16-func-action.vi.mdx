@@ -1,0 +1,18 @@
+## Phương thức như giá trị
+
+Một **delegate** là kiểu mà giá trị của nó là các phương thức. Bạn truyền một phương thức vào chỗ dữ liệu, và gọi nó sau:
+
+```csharp
+static int Apply(int x, Func<int, int> f) => f(x);
+
+Apply(5, n => n * 2);   // 10
+Apply(5, n => n + 1);   // 6
+```
+
+Ba nhân vật chính của BCL:
+
+- **`Action`** — nhận 0–16 đối số, không trả gì: `Action<string> log = msg => Console.WriteLine(msg);`
+- **`Func<T, TResult>`** — nhận tới 16 đối số, tham số kiểu CUỐI là **kiểu trả về**: `Func<string, int> len = s => s.Length;`
+- **`Predicate<T>`** — `Func<T, bool>` với tên khác: `Predicate<int> isEven = n => n % 2 == 0;`
+
+Một luật cú pháp khiến người ta vấp: trong `Func<A, B, C>`, `A` và `B` là tham số, `C` là kiểu trả về.

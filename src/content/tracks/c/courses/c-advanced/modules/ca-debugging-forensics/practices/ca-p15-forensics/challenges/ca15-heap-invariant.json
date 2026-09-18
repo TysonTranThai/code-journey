@@ -1,0 +1,26 @@
+{
+  "id": "ca15-heap-invariant",
+  "title": "Heap Invariant Checker",
+  "prompt": "Implement `bool heap_ok(const int *a, size_t n)` verifying the max-heap invariant: every node >= its children. NULL with n>0 violates; n<=1 is trivially ok.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "valid heap passes",
+      "code": "int good[5] = {9, 7, 8, 3, 1};\nCHECK(heap_ok(good, 5));",
+      "hint": "Each parent (9,7,8) dominates its children — the lattice holds."
+    },
+    {
+      "name": "broken heap caught",
+      "code": "int bad[5] = {9, 10, 8, 3, 1};\nCHECK(!heap_ok(bad, 5));",
+      "hint": "Child 10 exceeds parent 9: invariant violated at the first interior node."
+    },
+    {
+      "name": "boundary cases",
+      "code": "int good2[1] = {5};\nCHECK(heap_ok(NULL, 0));\nCHECK(heap_ok(good2, 1));",
+      "hint": "Empty and single-node heaps are trivially valid; NULL with n>0 is not a heap."
+    }
+  ],
+  "level": "guided"
+}

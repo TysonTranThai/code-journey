@@ -1,0 +1,16 @@
+## The four conditions
+
+Deadlock requires ALL of: mutual exclusion, hold-and-wait, no preemption, and **circular wait**. You rarely get to change the first three. The one you control is circular wait.
+
+## The lock-order rule
+
+If every thread acquires the same mutexes in the same global order (say, always A before B), no cycle can form — the holder of B never waits for A while someone holds A and waits for B, because nobody acquires B first. Enforce it by convention and by review: the classic production deadlock is two new features acquiring the same two locks in opposite orders.
+
+Escape hatches when order is genuinely hard:
+
+- `pthread_mutex_trylock` on the second lock; if it fails, release and retry — converts deadlock into livelock-or-progress, and livelock is at least diagnosable.
+- Lock hierarchies with `assert`-able levels, checked in debug builds.
+
+## The clinic mindset
+
+Diagnosis questions, in order: Which two threads? Which two locks? Who holds what while waiting for what? If you cannot fill in that grid, you do not have a deadlock diagnosis — you have a deadlock suspicion.

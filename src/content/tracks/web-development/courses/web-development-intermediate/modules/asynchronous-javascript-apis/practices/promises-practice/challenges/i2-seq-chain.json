@@ -1,0 +1,20 @@
+{
+  "id": "i2-seq-chain",
+  "title": "Sequential Dependency Chain",
+  "prompt": "Write `async function fetchProfile(db)` where `db` provides `getUser(id)`, `getSettings(userId)`, and `getFriends(userId)` — each returning promises. Fetch the user for id 7 first, then settings and friends IN PARALLEL using the user's id. RETURN `{ user, settings, friends }`. If the user fetch fails, RETURN `{ error: \"user-not-found\" }`.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "async function fetchProfile(db) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "user first, then settings and friends in parallel",
+      "code": "const fn = new Function(code + \"\\nreturn { fetchProfile };\");\nconst { fetchProfile } = fn();\nconst order = [];\nconst db = {\n  getUser: async (id) => { order.push(\"user\"); return { id, name: \"Ada\" }; },\n  getSettings: async (uid) => { order.push(\"settings\"); return { theme: uid === 7 ? \"dark\" : \"x\" }; },\n  getFriends: async (uid) => { order.push(\"friends\"); return [\"Grace\"]; },\n};\nconst out = await fetchProfile(db);\nif (!out.user || out.user.name !== \"Ada\") throw new Error(\"The user object should be returned.\");\nif (out.settings.theme !== \"dark\") throw new Error(\"settings should be fetched with the USER's id (7), not the literal 7 baked in.\");\nif (out.friends.join() !== \"Grace\") throw new Error(\"friends should be returned.\");\nif (order[0] !== \"user\") throw new Error(\"The user fetch must happen first (settings/friends need its id).\");",
+      "hint": "const user = await db.getUser(7); then Promise.all([db.getSettings(user.id), db.getFriends(user.id)])."
+    },
+    {
+      "name": "user failure short-circuits to an error object",
+      "code": "const fn = new Function(code + \"\\nreturn { fetchProfile };\");\nconst { fetchProfile } = fn();\nconst db = {\n  getUser: () => Promise.reject(new Error(\"nope\")),\n  getSettings: async () => { throw new Error(\"should not be called\"); },\n  getFriends: async () => { throw new Error(\"should not be called\"); },\n};\nconst out = await fetchProfile(db);\nif (out.error !== \"user-not-found\") throw new Error(\"A failed user fetch must return { error: 'user-not-found' }.\");",
+      "hint": "Wrap the getUser await in try/catch and return the error object; the parallel calls never run."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+## var: suy luận, không phải động
+
+```csharp
+var count = 10;          // compiler suy ra int — count LÀ int, vĩnh viễn
+var name = "Ada";        // string
+var price = 19.99m;      // decimal (hậu tố quyết định suy luận)
+```
+
+`var` không giống `var` của JavaScript. Kiểu được suy **lúc biên dịch** rồi cố định; `var x = 5; x = "hi";` là lỗi biên dịch. Nguyên tắc: dùng `var` khi vế phải cho thấy rõ kiểu (`new List<int>()`, lời gọi constructor); viết kiểu tường minh khi nó giúp việc đọc (`long total = 0;`).
+
+## const
+
+```csharp
+const int MaxRetries = 3;
+const double Pi = 3.14159;
+```
+
+`const` là hằng số thời gian biên dịch: giá trị được nhúng vào mọi nơi sử dụng, mặc định là static, và không bao giờ được gán lại. Dùng cho các giá trị thực sự vĩnh cửu (`MaxRetries`, `DaysInWeek`). Tên đặt: `PascalCase` là quy ước C# cho hằng.
+
+## null: sự vắng mặt của đối tượng
+
+Một biến kiểu *tham chiếu* (như `string`) hoặc trỏ tới một đối tượng hoặc là `null` — "không trỏ tới gì cả". Truy cập thành phần trên `null` ném `NullReferenceException` lúc chạy:
+
+```csharp
+string nickname = null;
+Console.WriteLine(nickname.Length);   // ném exception lúc chạy
+```
+
+Compiler C# phân tích luồng và cảnh báo về giá trị có khả năng null (nullable reference types), và kiểm tra `null` là một phần bình thường của việc kiểm chứng input. Hiện tại: hiểu từ khoá, nhớ tên exception, và coi mọi giá trị đầu vào là có-thể-vắng-mặt cho đến khi kiểm chứng. Kiểu giá trị (`int`, `decimal`, `bool`) không thể là `null` — chúng luôn giữ một giá trị.

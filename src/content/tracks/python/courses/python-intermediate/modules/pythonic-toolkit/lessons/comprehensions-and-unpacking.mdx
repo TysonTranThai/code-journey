@@ -1,0 +1,41 @@
+Python can **build a collection from a rule** in one readable line. A list
+comprehension reads like the sentence "for each item, keep/transform it":
+
+```python
+nums = [1, 2, 3, 4, 5]
+squares = [n * n for n in nums]          # [1, 4, 9, 16, 25]
+evens    = [n for n in nums if n % 2 == 0]  # filter with a trailing if
+labels   = [f"id-{n}" for n in nums]     # transform each element
+```
+
+Dict and set comprehensions follow the same shape:
+
+```python
+words = ["tea", "coffee", "cola"]
+lengths = {w: len(w) for w in words}     # dict: word -> length
+unique  = {w[0] for w in words}          # set of first letters
+```
+
+Rule of thumb: if the comprehension needs more than one `if` or nested loops
+that hurt to read, use a normal `for` loop instead. **Readability wins.**
+
+## Unpacking
+
+Assign multiple targets at once — Python destructures the right-hand side:
+
+```python
+point = (3, 8)
+x, y = point                # x=3, y=8
+a, b = b, a                 # the idiomatic swap
+first, *rest = [10, 20, 30, 40]   # first=10, rest=[20, 30, 40]
+*init, last = range(5)            # init=[0, 1, 2, 3], last=4
+```
+
+Star-unpacking also **merges** collections: `[*xs, *ys]` concatenates lists,
+`{**d1, **d2}` merges dicts (later keys win).
+
+## Why this matters at work
+
+Data-shaped code is everywhere: cleaning rows, reshaping API payloads,
+building lookup tables. Comprehensions make that intent visible instead of
+ burying it in append-and-index bookkeeping.

@@ -1,0 +1,30 @@
+{
+  "id": "pi-cap-3-interface",
+  "title": "Milestone 3: Interface and Report",
+  "prompt": "Build summarize(tasks) -> dict with keys total (all) and open (done == 0); and main(argv, repo) dispatching: ['add', title] → service add via repo, print 'added', return 0; ['list'] → print each open task's title in order, return 0; anything else → error to stderr, return 2. Both functions annotated (main returns int).",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import sys\n\ndef summarize(tasks):\n    pass\n\ndef main(argv, repo):\n    pass\n",
+  "tests": [
+    {
+      "name": "summary counts",
+      "code": "assert summarize([{'done': 0}, {'done': 1}, {'done': 0}]) == {'total': 3, 'open': 2}",
+      "hint": "total = len; open = done == 0."
+    },
+    {
+      "name": "add path prints and exits 0",
+      "code": "class Repo:\n    def add(self, t):\n        return 1\nimport io, contextlib\nbuf = io.StringIO()\nwith contextlib.redirect_stdout(buf):\n    code = main(['add', 'write tests'], Repo())\nassert code == 0 and 'added' in buf.getvalue()",
+      "hint": "Dispatch 'add' through the service idea: print confirmation, exit 0."
+    },
+    {
+      "name": "list prints open titles in order",
+      "code": "class Repo:\n    def list_open(self):\n        return [{'title': 'a'}, {'title': 'b'}]\nimport io, contextlib\nbuf = io.StringIO()\nwith contextlib.redirect_stdout(buf):\n    code = main(['list'], Repo())\nassert code == 0\nassert buf.getvalue().split() == ['a', 'b']",
+      "hint": "One title per line, list_open order."
+    },
+    {
+      "name": "usage errors to stderr, exit 2",
+      "code": "class Repo:\n    pass\nimport io, contextlib\nerr = io.StringIO()\nwith contextlib.redirect_stderr(err):\n    code = main(['nonsense'], Repo())\nassert code == 2 and err.getvalue().strip() != ''",
+      "hint": "Unknown command → stderr + exit 2."
+    }
+  ]
+}

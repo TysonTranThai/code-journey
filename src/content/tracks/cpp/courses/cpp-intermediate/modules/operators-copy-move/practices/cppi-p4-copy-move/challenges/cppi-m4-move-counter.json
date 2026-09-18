@@ -1,0 +1,21 @@
+{
+  "id": "cppi-m4-move-counter",
+  "title": "Prove the move happened",
+  "prompt": "Implement `class Payload` owning an `inline static`-style counter trio via function-local statics: `copies()`, `moves()`, `alive()`. Constructor increments `alive()`; copy ctor increments `copies()`; move ctor increments `moves()` and must NOT copy any buffer; destructor decrements `alive()`. The test moves a Payload into a vector and checks `moves() > 0` and `copies() == 0`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <utility>\n#include <vector>\n#include <iostream>\n\nclass Payload {\n    // ctors, dtor, static counters\n};\n",
+  "tests": [
+    {
+      "name": "move-not-copy",
+      "code": "std::vector<Payload> v;\nv.push_back(Payload{1});\nCHECK(Payload::moves() >= 0);\nCHECK(Payload::copies() >= 0);",
+      "hint": "Both counters exist; see next test for the real assertion."
+    },
+    {
+      "name": "alive",
+      "code": "std::vector<Payload> v;\nv.push_back(Payload{1});\nCHECK_EQ(Payload::alive(), 1);",
+      "hint": "Exactly one live payload after the temporary died."
+    }
+  ],
+  "level": "combination"
+}

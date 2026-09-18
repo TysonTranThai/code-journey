@@ -1,0 +1,26 @@
+## Identity vs equality
+
+`==` on objects asks: *is this the same object in memory?* (identity)
+`.equals()` asks: *do these two objects represent the same value?* (equality)
+
+```java
+String a = new String("hi");
+String b = new String("hi");
+a == b        // false — two distinct objects
+a.equals(b)   // true  — same value
+```
+
+The JVM caches small strings and small Integer boxes, so `==` can
+*accidentally* return true for equal values — until it doesn't. Never use
+`==` for value comparison on objects. Primitives (`int`, `long`, ...) are
+the exception: `==` is correct there because there is no object identity.
+
+```java
+Integer x = 127, y = 127;
+Integer p = 128, q = 128;
+x == y   // true — cached box (do not rely on this!)
+p == q   // false — new boxes above 127
+```
+
+This is the classic intermediate trap: code works in tests, breaks in
+production with bigger numbers.

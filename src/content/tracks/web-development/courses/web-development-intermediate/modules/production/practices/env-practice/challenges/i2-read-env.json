@@ -1,0 +1,25 @@
+{
+  "id": "i2-read-env",
+  "title": "Env Reader with Fail-Fast",
+  "prompt": "Write `readEnv(env, required)` — env is a plain object standing in for process.env; required is an array of key names. Return the full env object, but throw an Error naming EVERY missing key (comma-separated) instead of failing later at runtime. Missing means absent, empty string, or undefined.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function readEnv(env, required) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "collects all missing keys into one error",
+      "code": "const fn = new Function(code + \"\\nreturn { readEnv };\");\nconst { readEnv } = fn();\ntry {\n  readEnv({ PORT: \"3000\" }, [\"PORT\", \"DATABASE_URL\", \"SESSION_SECRET\"]);\n  throw new Error(\"should have thrown\");\n} catch (e) {\n  if (!e.message.includes(\"DATABASE_URL\") || !e.message.includes(\"SESSION_SECRET\")) {\n    throw new Error(\"Error must name every missing key.\");\n  }\n  if (e.message.includes(\"PORT\")) throw new Error(\"Present keys must not be flagged.\");\n}\n",
+      "hint": "Filter first, then throw once with the joined list — fail fast, but fail completely."
+    },
+    {
+      "name": "treats empty string as missing",
+      "code": "const fn = new Function(code + \"\\nreturn { readEnv };\");\nconst { readEnv } = fn();\ntry {\n  readEnv({ TOKEN: \"\" }, [\"TOKEN\"]);\n  throw new Error(\"should have thrown\");\n} catch (e) {\n  if (!e.message.includes(\"TOKEN\")) throw new Error(\"Empty string counts as missing.\");\n}\nif (readEnv({ TOKEN: \"x\" }, [\"TOKEN\"]) !== undefined) {\n  // returns env-ish value; just ensure no throw\n}\n",
+      "hint": "An empty variable is set to nothing — it cannot configure anything."
+    },
+    {
+      "name": "passes through when complete",
+      "code": "const fn = new Function(code + \"\\nreturn { readEnv };\");\nconst { readEnv } = fn();\nconst env = { A: \"1\", B: \"2\" };\nconst out = readEnv(env, [\"A\", \"B\"]);\nif (out.A !== \"1\" || out.B !== \"2\") throw new Error(\"Complete config passes through untouched.\");\n",
+      "hint": "No missing keys — return the config so the caller can keep working."
+    }
+  ]
+}

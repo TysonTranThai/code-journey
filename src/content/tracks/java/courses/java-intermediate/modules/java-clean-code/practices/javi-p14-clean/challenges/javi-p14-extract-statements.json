@@ -1,0 +1,26 @@
+{
+  "id": "javi-p14-extract-statements",
+  "title": "Extract, Don't Duplicate",
+  "prompt": "Re-implement `static List<String> auditLines(List<Integer> amountsCents)`\nwith EXTRACTED helpers (the grader inspects that helpers exist):\n- `static boolean isSuspicious(int cents)` — |amount| > 10000\n- `static String describe(int cents)` — `\"CREDIT \" + cents` when >= 0,\n  `\"DEBIT \" + (-cents)` otherwise\n- auditLines returns one line per amount: `describe(a)` plus\n  `\" [SUSPECT]\"` appended when isSuspicious(a).\n\nThe old version (comments in starter) had the threshold and format\nduplicated three times — your version states each once.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Implement methods below.\n}\n",
+  "tests": [
+    {
+      "name": "lines describe amounts",
+      "code": "\nList<String> out = Solution.auditLines(List.of(500, -200));\ncheckEq(out, List.of(\"CREDIT 500\", \"DEBIT 200\"), \"described\");\n",
+      "hint": "Debits show the positive magnitude."
+    },
+    {
+      "name": "suspicious amounts flagged",
+      "code": "\nList<String> out = Solution.auditLines(List.of(10001, 10000));\ncheckEq(out.get(0), \"CREDIT 10001 [SUSPECT]\", \"over threshold\");\ncheckEq(out.get(1), \"CREDIT 10000\", \"at threshold is fine\");\n",
+      "hint": "Strictly greater than 10000 is suspicious."
+    },
+    {
+      "name": "helpers exist and agree",
+      "code": "\ncheckEq(Solution.isSuspicious(15000), true, \"helper true\");\ncheckEq(Solution.isSuspicious(10000), false, \"helper false\");\ncheckEq(Solution.describe(-5), \"DEBIT 5\", \"helper format\");\n",
+      "hint": "Single source of truth for threshold and format."
+    }
+  ],
+  "level": "independent"
+}

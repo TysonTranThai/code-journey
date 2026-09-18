@@ -1,0 +1,61 @@
+Cửa trước của API quyết định phần code còn lại có thể đơn giản đến đâu. Hãy kiểm tra mọi thứ ở đó.
+
+## Kiểm tra ở ranh giới
+
+```js
+function validateTask(body) {
+  const errors = [];
+  if (typeof body.title !== "string" || body.title.trim() === "" || body.title.length > 200) {
+    errors.push({ field: "title", message: "title must be a 1-200 char string" });
+  }
+  if (body.due !== undefined && !Number.isInteger(Date.parse(body.due))) {
+    errors.push({ field: "due", message: "due must be an ISO date" });
+  }
+  return errors;
+}
+```
+
+Thu thập **tất cả** lỗi, không chỉ lỗi đầu — client render một lượt form, không phải bảy chuyến khứ hồi. Trong production bạn sẽ dùng Zod: schema vào, dữ liệu có kiểu hoặc danh sách lỗi có cấu trúc ra.
+
+## Error response: trung thực và nhất quán
+
+```text
+400  { "error": { "message": "validation failed", "details": [...] } }
+401  { "error": { "message": "authentication required" } }
+404  { "error": { "message": "task not found" } }
+500  { "error": { "message": "internal error" } }     <- không lộ gì nội bộ
+```
+
+Hai quy tắc:
+
+1. **Cùng hình dạng cho mọi lỗi** — client chỉ viết một bộ parse.
+2. **500 không bao giờ lộ nội bộ.** Không stack trace, không SQL, không đường dẫn file trong response. Log chi tiết phía server (kèm request id!), trả message chung chung. Stack trace trong response là một bug tiết lộ thông tin.
+
+## Throw và catch trong pipeline
+
+Handler không nên tự try/catch thành hình dạng JSON riêng của mình. Chúng ném domain error; một middleware ngoài cùng ánh xạ chúng:
+
+```js
+class HttpError extends Error {
+  constructor(status, message, details) {
+    super(message);
+    this.status = status;
+    this.details = details;
+  }
+}
+// handler:
+throw new HttpError(404, "task not found");
+// error middleware:
+res.writeHead(err.status ?? 500, { "Content-Type": "application/json" });
+res.end(
+  JSON.stringify({
+    error: { message: err.expose ? err.message : "internal error", details: err.details },
+  }),
+);
+```
+
+Cờ `expose` là ranh giới bảo mật: message 4xx dành cho người dùng, message 5xx dành cho log.
+
+## Lỗi bất đồng bộ không throw — chúng reject
+
+Với handler kiểu callback hay promise, một promise bị reject không tự đến được catch của bạn. Framework mỗi loại một kiểu; mô hình tinh thần cần giữ: **mọi đường bất đồng bộ phải có chủ** — await bên trong try, hoặc gắn `.catch`, hoặc để kênh lỗi của pipeline mang đi. Một rejection không có chủ trong Node từng làm crash tiến trình; các bản mới chỉ cảnh báo, nhưng người dùng của bạn vẫn thấy 500 — hoặc không thấy gì.

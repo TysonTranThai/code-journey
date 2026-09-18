@@ -1,0 +1,21 @@
+{
+  "id": "ca2-observe-folding",
+  "title": "Watch the Optimizer Fold",
+  "prompt": "Implement `int folded(void)` whose body computes `21 * 2` through plain automatic locals and returns it. Then implement `int unfolded(void)` doing the same multiplication but through a `volatile int`. Return the difference `folded() - unfolded()`; it must be 0 (folding changes nothing observable), which is the standard's own guarantee.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "difference is zero",
+      "code": "CHECK_EQ(folded() - unfolded(), 0);",
+      "hint": "Both must compute 42; volatile merely forces a runtime load/store."
+    },
+    {
+      "name": "both functions real",
+      "code": "CHECK(folded != 0 && unfolded != 0);",
+      "hint": "Both must exist as real, addressable functions — taking their addresses is the observation."
+    }
+  ],
+  "level": "guided"
+}

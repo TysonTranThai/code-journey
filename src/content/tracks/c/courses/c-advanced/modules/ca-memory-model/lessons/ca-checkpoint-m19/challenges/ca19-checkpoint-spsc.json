@@ -1,0 +1,31 @@
+{
+  "id": "ca19-checkpoint-spsc",
+  "title": "Checkpoint: SPSC Ring Buffer Core",
+  "prompt": "ISO C11. Given a pre-filled ring state `struct ring { atomic_size_t head; atomic_size_t tail; int buf[8]; }; r` (head/tail both start at 0; empty means head==tail; full means (head+1)%8==tail \u2014 one slot sacrificed). Implement `int ring_push(struct ring *r, int v)` (store v at buf[head % 8], then advance head with release ordering; return 0, or -1 when full) and `int ring_pop(struct ring *r, int *out)` (load tail with acquire, check emptiness, read buf[tail % 8] into *out, advance tail relaxed; return 0, or -1 when empty). NULL r (or NULL out for pop) returns -1.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#include <stdatomic.h>\nstruct ring {\n    atomic_size_t head;\n    atomic_size_t tail;\n    int buf[8];\n};\nstatic struct ring given_ring;\n",
+  "tests": [
+    {
+      "name": "push then pop in order",
+      "code": "struct ring r;\natomic_init(&r.head, 0);\natomic_init(&r.tail, 0);\nCHECK_EQ(ring_push(&r, 11), 0);\nCHECK_EQ(ring_push(&r, 22), 0);\nint out1 = -9;\nCHECK_EQ(ring_pop(&r, &out1), 0);\nCHECK_EQ(out1, 11);\nint out2 = -9;\nCHECK_EQ(ring_pop(&r, &out2), 0);\nCHECK_EQ(out2, 22);",
+      "hint": "FIFO: head writes, tail reads \u2014 the producer/consumer pair stays in submission order."
+    },
+    {
+      "name": "empty pop refuses",
+      "code": "struct ring e;\natomic_init(&e.head, 0);\natomic_init(&e.tail, 0);\nint out3 = -9;\nCHECK_EQ(ring_pop(&e, &out3), -1);\nCHECK_EQ(out3, -9);",
+      "hint": "head==tail is empty: pop must refuse and leave *out untouched."
+    },
+    {
+      "name": "full push refuses",
+      "code": "struct ring f;\natomic_init(&f.head, 0);\natomic_init(&f.tail, 0);\nfor (int i = 0; i < 7; i++) {\nCHECK_EQ(ring_push(&f, i), 0);\n}\nCHECK_EQ(ring_push(&f, 99), -1);",
+      "hint": "One slot is sacrificed to distinguish full from empty: the 8th push must fail."
+    },
+    {
+      "name": "NULL guard",
+      "code": "CHECK_EQ(ring_push(NULL, 1), -1);\nint out4 = 0;\nCHECK_EQ(ring_pop(NULL, &out4), -1);",
+      "hint": "A NULL ring is a caller-contract violation: refuse, never dereference."
+    }
+  ],
+  "level": "mini-build"
+}

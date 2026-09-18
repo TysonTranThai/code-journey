@@ -1,0 +1,31 @@
+{
+  "id": "ca5-checkpoint-aligned-arena",
+  "title": "Checkpoint: Aligned Arena",
+  "prompt": "Implement the arena with one addition — aligned allocation:\n \n```c\ntypedef struct { unsigned char *mem; size_t cap; size_t used; } arena_t;\nvoid arena_init(arena_t *a, unsigned char *buf, size_t cap);\nvoid *arena_alloc_aligned(arena_t *a, size_t n, size_t align);\nsize_t arena_used(const arena_t *a);\nvoid arena_reset(arena_t *a);\n```\n \n`arena_alloc_aligned` first aligns the current offset up to `align` (power of two), then places the slice; returns NULL if it cannot fit. `arena_used` reports current `used`.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "alignment skips padding",
+      "code": "unsigned char buf[128];\narena_t a;\narena_init(&a, buf, sizeof buf);\nunsigned char *p1 = arena_alloc_aligned(&a, 3, 8);\nCHECK_EQ((int)(p1 - buf), 0);\nunsigned char *p2 = arena_alloc_aligned(&a, 1, 8);\nCHECK_EQ((int)(p2 - buf), 8);",
+      "hint": "After a 3-byte slice the offset 3 aligns up to 8 — padding is consumed invisibly."
+    },
+    {
+      "name": "used counts padding",
+      "code": "unsigned char buf[128];\narena_t a;\narena_init(&a, buf, sizeof buf);\narena_alloc_aligned(&a, 3, 8);\narena_alloc_aligned(&a, 1, 8);\nCHECK_EQ((long long)arena_used(&a), 9);",
+      "hint": "used is the next free offset: 1 byte at offset 8 means 9 total."
+    },
+    {
+      "name": "exhaustion respects align",
+      "code": "unsigned char buf[128];\narena_t a;\narena_init(&a, buf, sizeof buf);\nCHECK_NULL(arena_alloc_aligned(&a, 200, 8));",
+      "hint": "A request larger than the whole buffer must fail even when the offset is aligned."
+    },
+    {
+      "name": "reset rewinds",
+      "code": "unsigned char buf[128];\narena_t a;\narena_init(&a, buf, sizeof buf);\narena_alloc_aligned(&a, 40, 8);\narena_reset(&a);\nCHECK_EQ((long long)arena_used(&a), 0);\nCHECK_NOT_NULL(arena_alloc_aligned(&a, 128, 16));",
+      "hint": "After reset the entire buffer serves one maximally aligned slice."
+    }
+  ],
+  "level": "mini-build"
+}

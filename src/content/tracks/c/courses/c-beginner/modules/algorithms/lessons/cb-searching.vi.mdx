@@ -1,0 +1,44 @@
+## Tìm tuyến tính: luôn dùng được
+
+```c
+int find(const int *a, int n, int t) {
+    for (int i = 0; i < n; i++)
+        if (a[i] == t) return i;
+    return -1;
+}
+```
+
+Không cần điều kiện tiên quyết. Chi phí: tới n phép so sánh.
+
+## Tìm nhị phân: cần dữ liệu đã sắp xếp
+
+Phép thử ở giữa lặp đi lặp lại:
+
+```c
+int bsearch_cj(const int *a, int n, int t) {
+    int lo = 0, hi = n - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;    // tránh tràn số
+        if (a[mid] == t) return mid;
+        if (a[mid] < t) lo = mid + 1;    // target nằm trong nửa PHẢI
+        else            hi = mid - 1;    // target nằm trong nửa TRÁI
+    }
+    return -1;
+}
+```
+
+Mỗi vòng lặp chia đôi khoảng còn lại: một triệu phần tử chỉ cần ~20 bước.
+
+## Các bất biến làm nó đúng
+
+- target, nếu có, luôn nằm trong [lo, hi]
+- `lo + (hi - lo) / 2` không bao giờ tràn (khác với `(lo + hi) / 2` trên
+  khoảng rất lớn)
+- vòng lặp kết thúc khi lo vượt hi — sự vắng mặt được chứng minh, không phải
+  đoán
+
+## Lựa chọn
+
+Dữ liệu chưa sắp xếp hoặc tra một lần → tuyến tính. Dữ liệu đã sắp xếp, truy
+nhiều lần → nhị phân (sắp xếp một lần tốn O(n log n), rồi mỗi truy vấn gần
+như miễn phí).

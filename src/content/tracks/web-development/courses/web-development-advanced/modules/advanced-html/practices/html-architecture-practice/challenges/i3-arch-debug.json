@@ -1,0 +1,30 @@
+{
+  "id": "i3-arch-debug",
+  "title": "Debug: Heading Soup",
+  "prompt": "This city-guide page was built by someone who styled first and architected never: two <h1>s, a skipped level, a div pretending to be a heading with role=\"heading\", and a <section> with no name. Repair the architecture: exactly one <h1>, no skipped levels, real heading elements only, and every <section> named via aria-labelledby pointing at a real heading inside it. Keep the document skeleton intact.",
+  "difficulty": "advanced",
+  "level": "debugging",
+  "boilerplate": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\"><title>City Guide</title></head>\n<body>\n  <h1>City Guide</h1>\n  <h3>Old Town</h3>\n  <div role=\"heading\" aria-level=\"2\">Districts</div>\n  <section>\n    <p>Cobbled streets and cafes.</p>\n  </section>\n  <h1>Food Scene</h1>\n  <h2>Markets</h2>\n  <article>\n    <h3>Night market</h3>\n    <p>Open Fridays.</p>\n    <section>\n      <h4>Getting there</h4>\n      <p>Bus 12.</p>\n    </section>\n  </article>\n</body>\n</html>\n",
+  "tests": [
+    {
+      "name": "exactly one h1",
+      "code": "const h1s = (code.match(/<h1[\\s>]/gi) || []).length;\nif (h1s !== 1) {\n  throw new Error(\"Exactly one <h1> (found \" + h1s + \") — demote the second to an <h2>.\");\n}",
+      "hint": "'Food Scene' is a chapter of this page, not a new page — it becomes the second <h2>."
+    },
+    {
+      "name": "no skipped levels",
+      "code": "const levels = [...code.matchAll(/<h([1-6])[\\s>]/gi)].map((m) => Number(m[1]));\nlet prev = 0;\nfor (const level of levels) {\n  if (level > prev + 1) {\n    throw new Error(\"Heading levels must not skip (h\" + prev + \" followed by h\" + level + \").\");\n  }\n  prev = level;\n}",
+      "hint": "h1 directly followed by h3 is the skip — 'Old Town' should be an h2."
+    },
+    {
+      "name": "no fake headings",
+      "code": "if (/role\\s*=\\s*[\"']heading[\"']/i.test(code)) {\n  throw new Error('Replace the role=\"heading\" hack with a real heading element.');\n}",
+      "hint": "The styled div is a symptom — make it the <h2> it always should have been."
+    },
+    {
+      "name": "every section is labelled",
+      "code": "const secs = [...code.matchAll(/<section([^>]*)>/gi)];\nif (secs.length === 0) {\n  throw new Error(\"Keep the section — label it instead of deleting it.\");\n}\nfor (const s of secs) {\n  const m = s[1].match(/aria-labelledby\\s*=\\s*[\"']([^\"']+)[\"']/i);\n  if (!m) {\n    throw new Error(\"A <section> is missing aria-labelledby.\");\n  }\n  if (!new RegExp(\"id\\\\s*=\\\\s*[\\\"']\" + m[1] + \"[\\\"']\").test(code)) {\n    throw new Error('aria-labelledby points at missing id \"' + m[1] + '\".');\n  }\n}",
+      "hint": "Each section borrows a heading: give the heading an id and reference it from the section's aria-labelledby."
+    }
+  ]
+}

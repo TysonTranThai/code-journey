@@ -1,0 +1,26 @@
+`synchronized` che phần cơ bản. Hệ thống thật cần những gì **ReentrantLock**
+thêm:
+
+- **tryLock**: thử giữ khóa *ngay* (hoặc trong timeout) thay vì chặn vĩnh
+  viễn. Xương sống của việc tránh deadlock — giữ hai khóa bằng `tryLock` +
+  backoff, hoặc bỏ đi.
+- **Fairness**: `new ReentrantLock(true)` cấp quyền theo thứ tự đến. Fair
+  lock đổi throughput lấy thời gian chờ có chặn trên; mặc định (unfair) cho
+  thread vừa nhả khóa giữ lại ngay — thường là điều bạn muốn.
+- **Giữ khóa có thể interrupt**: `lockInterruptibly()` cho phép thread bị
+  chặn phản hồi hủy — `synchronized` không làm được.
+- **Hàng đợi Condition**: một khóa, nhiều wait-set. `await()/signal()` thay
+  `wait()/notify()` theo từng Condition, nên predicate not-full và not-empty
+  của bounded buffer có hàng đợi riêng (không đánh thức mọi người cho một
+  predicate).
+
+```java
+var lock = new ReentrantLock();
+var notEmpty = lock.newCondition();
+// consumer:  lock.lock(); try { while (empty) notEmpty.await(); ... } finally { lock.unlock(); }
+// producer:  lock.lock(); try { put(x); notEmpty.signal(); } finally { lock.unlock(); }
+```
+
+Các quy tắc làm nó đúng: **await trong vòng lặp** (spurious wakeup được cho
+phép), và **unlock trong finally** (exception không được làm lộ khóa đang
+giữ).

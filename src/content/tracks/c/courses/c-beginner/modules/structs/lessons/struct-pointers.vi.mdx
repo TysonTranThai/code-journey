@@ -1,0 +1,40 @@
+## Mũi tên vs dấu chấm
+
+```c
+struct Point p = {1, 2};
+struct Point *pp = &p;
+
+p.x            // qua biến: dấu chấm
+pp->x          // qua con trỏ: mũi tên
+(*pp).x        // cùng một thứ, viết cách dài
+```
+
+## Đi bộ trên mảng struct
+
+```c
+struct Point pts[3] = {{1, 1}, {2, 4}, {3, 9}};
+struct Point *end = pts + 3;
+for (struct Point *it = pts; it < end; it++) {
+    printf("(%d,%d)\n", it->x, it->y);   // it++ tiến một STRUCT NGUYÊN
+}
+```
+
+Số học con trỏ nhân với `sizeof(struct Point)` — một bước, một struct.
+
+## Mô hình hỗn hợp
+
+Hình dạng API C phổ biến: mảng được truyền như con trỏ, mỗi phần tử dùng qua
+mũi tên:
+
+```c
+int total_x(struct Point *pts, int n) {
+    int s = 0;
+    for (int i = 0; i < n; i++) s += pts[i].x;   // hoặc (pts+i)->x
+    return s;
+}
+```
+
+## Kỷ luật NULL cũng áp dụng
+
+Con trỏ struct có thể là NULL; hàm nào nhận nó đều phải tin giao ước hoặc
+kiểm tra, giống hệt con trỏ int.

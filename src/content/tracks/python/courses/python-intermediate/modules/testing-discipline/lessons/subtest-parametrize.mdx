@@ -1,0 +1,29 @@
+Testing a function against twenty inputs by copy-pasting twenty methods is
+noise. `subTest` runs a loop of cases **inside one test method** — and keeps
+going after a failure so you see every broken case at once:
+
+```python
+import unittest
+
+class TestParse(unittest.TestCase):
+    def test_parse_counts(self):
+        cases = [
+            ("42", 42),        # plain
+            ("  7 ", 7),       # whitespace
+            ("0", 0),          # zero
+        ]
+        for text, expected in cases:
+            with self.subTest(text=text):
+                self.assertEqual(parse_count(text), expected)
+```
+
+Without `subTest`, the first bad case hides the rest. With it, one run shows
+`text='  7 '` failed AND `text='0'` failed — the full picture in a single
+run. This is unittest's native answer to pytest's `parametrize` (pytest is
+the ecosystem favorite; its shape transfers directly).
+
+## Edge cases deserve explicit rows
+
+Keep a mental checklist as you write the case list: empty, zero, one,
+negative, huge, unicode, whitespace, wrong type. Each becomes one row. A case
+list is also **executable documentation** of what your function accepts.

@@ -1,0 +1,21 @@
+{
+  "id": "pi2-dc-tasks",
+  "title": "Task Records",
+  "prompt": "Define a dataclass Task(title, done=False). Then implement finish(tasks) that returns a NEW list where every task is replaced by a copy with done=True. Use dataclasses.replace.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "from dataclasses import dataclass, replace\n\n@dataclass\nclass Task:\n    pass\n\ndef finish(tasks):\n    pass\n",
+  "tests": [
+    {
+      "name": "all tasks done in the new list",
+      "code": "ts = [Task('a'), Task('b', True)]\nout = finish(ts)\nassert all(t.done for t in out)",
+      "hint": "replace(t, done=True) copies with the field changed."
+    },
+    {
+      "name": "original list untouched",
+      "code": "ts = [Task('a')]\nfinish(ts)\nassert ts[0].done is False",
+      "hint": "Build a new list; do not mutate the input tasks."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "pi11-py-read",
+  "title": "Read the Contract",
+  "prompt": "Implement read_project(pyproject_text) that parses TOML text (tomllib.loads) and returns a dict with keys name, version, and scripts (the [project.scripts] table).",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import tomllib\n\ndef read_project(pyproject_text):\n    pass\n",
+  "tests": [
+    {
+      "name": "extracts identity",
+      "code": "text = '''[project]\\nname = \"toolkit\"\\nversion = \"1.2.0\"\\n\\n[project.scripts]\\ntoolkit = \"toolkit.cli:main\"'''\ninfo = read_project(text)\nassert info['name'] == 'toolkit'\nassert info['version'] == '1.2.0'\nassert info['scripts'] == {'toolkit': 'toolkit.cli:main'}",
+      "hint": "tomllib.loads then navigate ['project'] and ['project']['scripts']."
+    },
+    {
+      "name": "missing scripts yields empty dict",
+      "code": "text = '[project]\\nname = \"x\"\\nversion = \"0.0.1\"'\nassert read_project(text)['scripts'] == {}",
+      "hint": "Use .get with a default — absence is normal."
+    }
+  ],
+  "level": "guided"
+}

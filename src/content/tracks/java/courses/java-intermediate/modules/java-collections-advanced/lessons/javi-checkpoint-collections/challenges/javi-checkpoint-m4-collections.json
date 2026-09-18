@@ -1,0 +1,26 @@
+{
+  "id": "javi-checkpoint-m4-collections",
+  "title": "Leaderboard",
+  "prompt": "Build a leaderboard in `Solution`:\n- `record Player(String name, int score)` with natural order = score\n  DESCENDING, then name ASCENDING (implement Comparable)\n- `static List<String> top(List<Player> players, int n)` — the top n\n  names per natural order (duplicates in score allowed, name breaks ties)\n- `static NavigableSet<Player> ranked(Set<Player> players)` — a TreeSet\n  using that same natural order.\n\nVerify the ordering contract: a TreeSet of the players must iterate\nhighest-score-first, ties alphabetical.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Provide Player + top + ranked here.\n}\n",
+  "tests": [
+    {
+      "name": "top honors score then name",
+      "code": "\nList<Object> ps = List.of(\n    new Solution.Player(\"zed\", 90), new Solution.Player(\"amy\", 95),\n    new Solution.Player(\"max\", 95));\nList<String> out = Solution.top((List) ps, 2);\ncheckEq(out, List.of(\"amy\", \"max\"), \"95s alphabetical, then 90\");\n",
+      "hint": "Score descending; ties name ascending."
+    },
+    {
+      "name": "TreeSet iterates in natural order",
+      "code": "\nSet<Object> ps = Set.of(\n    new Solution.Player(\"zed\", 90), new Solution.Player(\"amy\", 95),\n    new Solution.Player(\"max\", 95));\njava.util.NavigableSet<?> ranked = Solution.ranked((Set) ps);\nList<String> names = new ArrayList<>();\nfor (Object p : ranked) names.add(((Solution.Player) p).name());\ncheckEq(names, List.of(\"amy\", \"max\", \"zed\"), \"sorted iteration\");\n",
+      "hint": "ranked() returns a TreeSet-backed NavigableSet."
+    },
+    {
+      "name": "n caps and ordering holds",
+      "code": "\nList<Object> ps = List.of(\n    new Solution.Player(\"a\", 1), new Solution.Player(\"b\", 2), new Solution.Player(\"c\", 3));\nList<String> out = Solution.top((List) ps, 1);\ncheckEq(out, List.of(\"c\"), \"just the champion\");\n",
+      "hint": "First element under the order."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,40 @@
+Phần lớn đời một chương trình gắn với mạng là **chờ** — chờ phản hồi, đĩa,
+database. Code đồng bộ chờ theo kiểu *bị chặn*: không gì khác diễn ra.
+
+```python
+# SYNC: tổng thời gian = tổng mọi lần chờ
+def fetch_all(urls):
+    results = []
+    for url in urls:
+        results.append(fetch(url))     # chặn ~200ms mỗi lần
+    return results
+```
+
+**Đồng thời (concurrency)** là xử lý nhiều lần chờ trong cùng khoảng thời
+gian (một worker xoay giữa chúng). **Song song (parallelism)** là làm nhiều
+việc tại cùng một khoảnh khắc (nhiều worker). Async Python cho bạn đồng thời
+trên **một thread duy nhất**:
+
+```python
+import asyncio
+
+async def fetch(url):
+    await asyncio.sleep(0.2)           # chỗ đứng cho một lần chờ mạng
+    return url
+
+async def fetch_all(urls):
+    return await asyncio.gather(*(fetch(u) for u in urls))
+```
+
+`async def` định nghĩa một **coroutine** — hàm có thể tạm dừng (`await`) và
+nhường **event loop** chạy việc khác trong lúc nó chờ. Khi lần chờ kết thúc,
+loop tiếp tục nó. Mười lần chờ 200ms chồng lên nhau thành ~200ms tổng,
+không phải 2 giây.
+
+## Khi nào async là (và không là) câu trả lời
+
+Async tỏa sáng cho việc **I/O-bound**: API, socket, database. Nó không giúp
+gì cho việc CPU-bound (xử lý ảnh, toán) — cái đó cần process. Và quy tắc
+cứu cánh của người mới: **không thể `await` bên trong một `def` thường**,
+và không thể gọi hàm chặn bên trong code async mà không đóng băng loop.
+`asyncio.run(main())` là cánh cổng vào vùng đất async.

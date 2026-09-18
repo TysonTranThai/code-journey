@@ -1,0 +1,22 @@
+## Số học và những bất ngờ
+
+`+ - * / %` trên số. Bạn biết `7 / 2 == 3` (chia số nguyên bị cắt). Toán tử `%` (**số dư**) hoàn thiện bộ công cụ: `n % 2 == 0` nghĩa là "n chẵn", `minutes % 60` là "số phút sau giờ". Chú ý hành vi dấu: `-7 % 2` là `-1` trong C# — số dư mang dấu của số bị chia.
+
+Gán ghép `+= -= *= /=` cập nhật tại chỗ: `total += price` là `total = total + price`. `++`/`--` cộng hoặc trừ một; ưu tiên `i += 1` cho rõ ràng trong biểu thức, giữ `++` cho vòng lặp.
+
+## Toán tử so sánh
+
+`== != < > <= >=` tạo ra `bool`. Trên kiểu số, chúng so giá trị. Trên `string`, `==` so nội dung. Trên hầu hết *class*, `==` so **tham chiếu** — hai đối tượng khác nhau với các trường bằng nhau không phải `==`. (Bạn sẽ gặp records ở Module 13, vốn sửa điều này cho kiểu dữ liệu.)
+
+## Logic và short-circuit
+
+`&&` (và), `||` (hoặc), `!` (phủ định) kết hợp các bool — và chúng có cơ chế **short-circuit**:
+
+```csharp
+if (count > 0 && total / count > 10) { ... }   // an toàn: chỉ chia khi count > 0
+if (name != null && name.Length > 0) { ... }   // an toàn: chỉ truy cập sau kiểm tra null
+```
+
+Vế phải của `&&` chỉ chạy *khi* vế trái đúng; vế phải của `||` chỉ chạy khi vế trái sai. Đây không phải tối ưu hóa trang trí — đó là cách viết kiểm tra có bảo vệ. `&` và `|` (một ký tự) tồn tại nhưng luôn tính cả hai vế; với luồng điều khiển bạn muốn `&&`/`||`.
+
+**Độ ưu tiên**: `!` chặt nhất, rồi số học, rồi so sánh, rồi `&&`, rồi `||`. Khi nghi ngờ, đặt ngoặc — `a && b || c` là `(a && b) || c`, nhưng không ai nên phải nhớ điều đó.

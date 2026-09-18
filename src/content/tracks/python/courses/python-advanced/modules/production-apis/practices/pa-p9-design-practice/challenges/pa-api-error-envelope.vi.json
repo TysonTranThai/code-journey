@@ -1,0 +1,14 @@
+{
+  "title": "Envelope lỗi không tiết lộ bí mật",
+  "prompt": "Cài `error_envelope(status, detail=None, field=None)` trả `{'error': {...}}` với:\n\n- `status` được phản chiếu và `title` lấy từ bảng cố định: 400 bad_request, 404 not_found, 409 conflict, 422 validation_failed, 429 rate_limited, 500 internal_error\n- `field` chỉ xuất hiện khi khác None\n- `detail` được đưa vào khi có — TRỪ các status >= 500, khi đó detail luôn là chuỗi chung `'an unexpected error occurred'` (nội bộ không bao giờ lên đường truyền)",
+  "tests": [
+    {
+      "name": "4xx giữ nguyên detail, 5xx dùng detail chung",
+      "hint": "Dựng dict, rồi quyết định detail nào được sống sót theo từng dải status."
+    },
+    {
+      "name": "field chỉ xuất hiện khi được truyền",
+      "hint": "Một key tùy chọn, hiện diện có điều kiện."
+    }
+  ]
+}

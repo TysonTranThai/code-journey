@@ -1,0 +1,36 @@
+## A method is a named computation
+
+```csharp
+static double Total(double price, int quantity)
+{
+    return price * quantity;
+}
+```
+
+Read the pieces: `static` (belongs to the type, not an object — you've called `Console.WriteLine` the same way), `double` (the **return type** — what comes back), `Total` (the name — a verb phrase is the convention), and the **parameter list** `(double price, int quantity)` — named inputs the body may use like local variables.
+
+`return` hands back the value and exits immediately — code after a `return` in the same path never runs. A method whose return type is not `void` must return on *every* path; the compiler enforces this ("not all code paths return a value").
+
+## void: action, not answer
+
+```csharp
+static void Greet(string name)
+{
+    Console.WriteLine("Hello, " + name + "!");
+}
+```
+
+`void` means "I produce no value — I do something." Calling a `void` method as a statement is fine; calling a value-returning method and ignoring the result is legal but usually a smell. Don't fake returns: `Greet` returning nothing is honest; returning `true` "because it worked" is not.
+
+## Expression-bodied members
+
+```csharp
+static int Square(int x) => x * x;
+static bool IsAdult(int age) => age >= 18;
+```
+
+When the body is one expression, `=> expression` replaces the braces and the `return`. Same semantics, less ceremony. Rule of thumb: if it reads like a formula, use the expression body; if it needs steps or conditionals with side effects, use a block.
+
+## Why methods at all
+
+Three reasons, in order of importance: a **name** documents intent (`Total(price, qty)` beats an unexplained `price * qty`); **reuse** means the formula lives in exactly one place — fix the bug once; **testability** means a method with inputs and an output can be graded by code — exactly what every challenge in this course does.

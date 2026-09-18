@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { courseSchema, lessonSchema, moduleSchema, trackSchema } from "@/lib/curriculum/schema";
+import {
+  courseSchema,
+  lessonSchema,
+  moduleSchema,
+  practiceSetSchema,
+  trackSchema,
+} from "@/lib/curriculum/schema";
 
 const validLesson = {
   id: "introduction-to-html",
@@ -23,6 +29,8 @@ const validCourse = {
   id: "web-development-beginner",
   title: "Web Development Foundations",
   description: "Your first course on real web pages.",
+  audience: "Beginners who have never written code.",
+  outcomes: ["Build and structure a web page with HTML, CSS, and JavaScript."],
   modules: [{ reference: "html-foundations" }],
 };
 
@@ -43,9 +51,30 @@ describe("curriculum schema (valid content)", () => {
     expect(trackSchema.parse(validTrack)).toMatchObject({ id: "web-development" });
   });
 
-  it("defaults challenges to an empty array when omitted", () => {
-    const { challenges } = lessonSchema.parse({ ...validLesson, challenges: undefined });
-    expect(challenges).toEqual([]);
+  it("parses a practice set with a deliberate-practice level", () => {
+    const set = practiceSetSchema.parse({
+      id: "css-flexbox-practice",
+      title: "Flexbox Practice",
+      description: "Climb from imitation to a mini build.",
+      afterLesson: "css-flexbox",
+      minutes: 15,
+      difficulty: "beginner",
+      challenges: ["practice-flex-navbar"],
+    });
+    expect(set.challenges).toEqual(["practice-flex-navbar"]);
+  });
+
+  it("rejects a practice set with no challenges", () => {
+    expect(() =>
+      practiceSetSchema.parse({
+        id: "empty-practice",
+        title: "Empty",
+        description: "No challenges.",
+        minutes: 5,
+        difficulty: "beginner",
+        challenges: [],
+      }),
+    ).toThrow();
   });
 });
 

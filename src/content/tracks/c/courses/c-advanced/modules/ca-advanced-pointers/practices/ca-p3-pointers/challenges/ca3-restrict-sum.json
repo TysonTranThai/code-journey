@@ -1,0 +1,21 @@
+{
+  "id": "ca3-restrict-sum",
+  "title": "Prove restrict Correct",
+  "prompt": "Implement `long long sum_doubled(const int *restrict a, size_t n)`: add every a[i] twice. Then implement `int ranges_overlap(const void *p1, size_t n1, const void *p2, size_t n2)` returning 1 iff the byte ranges intersect — the check you must run before passing overlapping buffers to a restrict API.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "sum doubles",
+      "code": "int v[3] = {1, 2, 3};\nCHECK_EQ(sum_doubled(v, 3), 12);",
+      "hint": "1+1+2+2+3+3 = 12; reads never alias writes here."
+    },
+    {
+      "name": "overlap detection",
+      "code": "int v[4] = {0, 0, 0, 0};\nCHECK_EQ(ranges_overlap(v, 3 * sizeof(int), v + 2, 2 * sizeof(int)), 1);\nCHECK_EQ(ranges_overlap(v, 2 * sizeof(int), v + 2, 2 * sizeof(int)), 0);",
+      "hint": "Byte counts, memcpy-style: [v, v+12) vs [v+8, v+16) intersect; [v, v+8) vs [v+8, v+16) do not."
+    }
+  ],
+  "level": "combination"
+}

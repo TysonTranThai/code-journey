@@ -1,0 +1,16 @@
+## UB không phải "crash"
+
+Hành vi không xác định nghĩa là chuẩn **không đặt yêu cầu nào**. Optimizer được phép giả định UB không bao giờ xảy ra — và nó giả định đúng như vậy: một kiểm tra như `if (i + 1 < i)` bị xóa vì "bất khả" (signed overflow là UB), vòng lặp chứa UB bị vector hóa bỏ đi, và code "phòng thủ" sau UB có thể không bao giờ chạy. UB là giấy phép cấp cho trình biên dịch, rút từ tay bạn.
+
+## Vườn thú, xếp theo độ nguy hiểm
+
+- **Signed integer overflow** — UB, không phải wraparound. `INT_MAX + 1` có thể làm bất cứ gì. Unsigned thì wrap; cái đó mới có định nghĩa.
+- **Truy cập ngoài biên** — `v[i]` với `i >= v.size()` đọc rác hoặc hỏng bộ nhớ. `v.at(i)` thay vào đó ném exception.
+- **Tham chiếu/iterator dang dở** — dùng đối tượng sau thời điểm sống, hoặc iterator bị vô hiệu bởi `push_back`/`erase`. Trong test "chạy tốt", nơi sản xuất thì hỏng.
+- **Data race** — hai thread, một ghi, không đồng bộ (module 8). UB kể cả khi "nhìn có vẻ ổn".
+- **Đọc giá trị chưa khởi tạo** — đọc `int` chưa khởi tạo là UB; `std::optional`/value-init chữa được.
+- **Vi phạm strict aliasing** — đọc bit của `float` qua `int*` là UB; dùng `std::bit_cast` (C++20).
+
+## Thái độ chuyên nghiệp
+
+Bạn không học thuộc từng góc trường hợp — bạn dựng hệ thống mà UB không thể chạm tới: biên giới có kiểm tra ở rìa, kiểu dữ liệu khiến trạng thái không hợp lệ không thể biểu diễn, sanitizer trong CI (các bài kế tiếp). Bài tập chấm điểm ở đây chấm *bản cài phòng thủ*, không phải quan sát UB, vì quan sát UB vốn không tái lập được.

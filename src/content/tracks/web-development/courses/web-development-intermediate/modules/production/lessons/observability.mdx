@@ -1,0 +1,27 @@
+Production code fails in ways your laptop never showed you. Observability is the instrumentation that turns "it's broken" into "here's why."
+
+## Logs: structured or useless
+
+```js
+log.info("task.created", { taskId, userId, durationMs });
+```
+
+Structured (JSON) logs beat strings: fields are searchable ("all task.created slower than 500ms"), correlatable (the same requestId through every service), and cheap to parse. Every request gets a **request id** (generated at the edge, passed through, echoed in responses) — the thread you pull to reconstruct any user's session from logs.
+
+Log levels with discipline: `error` (needs a human, today), `warn` (degraded but working), `info` (business events), `debug` (verbose, off in prod by default). And **never log secrets** — tokens, passwords, full request bodies: logs are readable by more people than you think and live longer than you expect.
+
+## Metrics: the vital signs
+
+Four golden signals: **latency** (how long, percentiles p50/p95/p99 — averages lie), **traffic** (requests/sec), **errors** (rate of failures), **saturation** (CPU, memory, queue depth). Track them per endpoint; alert on symptoms users feel (error rate, p99 latency), not on causes you guess.
+
+## Error tracking: the stack trace arrives alone
+
+Tools (Sentry, GlitchTip) capture client and server exceptions with stack traces, releases, and breadcrumbs. This is where source maps (build lesson) pay off. Group by fingerprint — 1,000 users hitting the same bug is _one_ issue with a count, not 1,000 alerts.
+
+## Alerting without crying wolf
+
+Every alert should be: **actionable** (a human can do something now), **urgent** (ignore it and users suffer), and **unique** (not duplicated by three other alerts). Everything else goes in a dashboard. On-call sanity: if a week of alerts produces no real incidents, the thresholds are wrong — tune or the team learns to ignore alerts, which is worse than having none.
+
+## Health checks
+
+`GET /healthz` returns 200 when the process can serve (fast, no DB call) and `GET /readyz` returns 200 when it can serve _correctly_ (dependencies reachable). Load balancers and platforms route by these; getting them wrong means receiving traffic you can't handle or being marked dead while healthy.

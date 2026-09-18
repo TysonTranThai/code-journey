@@ -1,0 +1,20 @@
+{
+  "id": "practice-classify-features",
+  "title": "Where Does It Run?",
+  "prompt": "For each feature, answer `\"frontend\"` or `\"backend\"`:\n- `cartAnimation`: animating items into a shopping cart icon.\n- `chargeCard`: charging the customer's credit card.\n- `stockCheck`: checking the warehouse database for stock.\n- `darkMode`: toggling the site's color theme.",
+  "difficulty": "beginner",
+  "level": "guided",
+  "boilerplate": "const answers = {\n  cartAnimation: \"\",\n  chargeCard: \"\",\n  stockCheck: \"\",\n  darkMode: \"\",\n};\n",
+  "tests": [
+    {
+      "name": "browser-only work stays frontend",
+      "code": "const fn = new Function(code + \"\\nreturn answers;\");\nconst a = fn();\nif (a.cartAnimation !== \"frontend\") throw new Error(\"cartAnimation is frontend — it's pure visual work in the browser.\");\nif (a.darkMode !== \"frontend\") throw new Error(\"darkMode is frontend — a theme toggle needs no server.\");",
+      "hint": "If it only moves pixels in the browser, it's frontend."
+    },
+    {
+      "name": "trust and data stay backend",
+      "code": "const fn = new Function(code + \"\\nreturn answers;\");\nconst a = fn();\nif (a.chargeCard !== \"backend\") throw new Error(\"chargeCard is backend — money must never be handled in the browser.\");\nif (a.stockCheck !== \"backend\") throw new Error(\"stockCheck is backend — the database is on the server side.\");",
+      "hint": "Anything involving secrets, money, or databases runs on the server."
+    }
+  ]
+}

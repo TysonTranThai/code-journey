@@ -1,0 +1,23 @@
+This checkpoint assembles the module's pieces into the engine an API-driven
+app actually runs on. No browser needed — the logic is testable pure:
+
+1. **Request engine** — a `createLoader(fetchFn)` factory: `load(key)` returns
+   a promise and caches the promise by key, so concurrent duplicate requests
+   share one flight (dedupe), and `reset()` clears the cache.
+2. **Resilient dashboard** — `loadDashboard(tasks)` that runs all sources with
+   `allSettled` and returns `{ loaded, failed }` lists.
+3. **Timeout race** — `withTimeout(promise, ms, fallback)` resolving the
+   promise's value, or `fallback` if it does not settle in `ms`.
+
+## The shape you are building toward
+
+Every data-driven interface reduces to this loop: **event → state → render**.
+The API supplies events (responses), your code maintains state (results,
+loading flag, error), and the DOM renders state. When a request is slow, the
+loading flag is your UI; when it fails, the error state is your UI; when the
+list is empty, _that_ is a screen too.
+
+The checkpoint asks you to wire the loop once more without the scaffold —
+because the next time you meet it, it will be inside a framework, and the
+framework will not change what the loop _is_. It will only change where you
+write each part.

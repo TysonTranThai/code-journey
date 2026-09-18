@@ -1,0 +1,22 @@
+{
+  "title": "Sửa lại class giá trị hỏng",
+  "prompt": "`Config` đáng lẽ là một settings key bất biến, nhưng nó hỏng:\n`hashCode` chỉ dùng một field và constructor chấp nhận null.\n\nBên trong `Solution`, cung cấp `Config` đã sửa:\n- field final `String app, String key` (cả hai tham gia equality)\n- equals qua instanceof pattern so sánh cả hai field\n- hashCode qua `Objects.hash(app, key)`\n- constructor ném `IllegalArgumentException` khi app hoặc key là null\n\nSau đó cài `static List<String> sortedKeys(List<Config> configs)` trả về\ncác giá trị `key` phân biệt theo thứ tự tự nhiên, dùng `HashSet` để khử\ntrùng lặp (chỉ hoạt động vì Config giờ giữ đúng hợp đồng hash).",
+  "tests": [
+    {
+      "name": "App khác nhau, cùng key: giữ cả hai",
+      "hint": "hashCode phải trộn app vào — key của hai app là hai phần tử phân biệt."
+    },
+    {
+      "name": "Config giống nhau bị khử trùng lặp",
+      "hint": "equals true + hashCode bằng nhau ⇒ một phần tử set."
+    },
+    {
+      "name": "Chặn field null",
+      "hint": "Fail fast trong constructor: app hoặc key null phải ném IllegalArgumentException."
+    },
+    {
+      "name": "sortedKeys khử trùng lặp và sắp xếp",
+      "hint": "Đưa list qua HashSet, map sang key, rồi sort."
+    }
+  ]
+}

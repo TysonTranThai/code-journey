@@ -1,0 +1,26 @@
+{
+  "id": "ca22-hot-cold-stride",
+  "title": "Prove the Hot/Cold Split",
+  "prompt": "ISO C. Given `struct fat { int id; int score; char name[60]; };` and `struct hot { int id; int score; };` (declared for you), implement `size_t records_per_line(size_t rec_size)` returning how many records of rec_size bytes fit in one 64-byte cache line (integer floor), and `int total_score_hot(const struct hot *h, size_t n)` summing scores (NULL with n>0 returns -1).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\nstruct fat { int id; int score; char name[60]; };\nstruct hot { int id; int score; };\n",
+  "tests": [
+    {
+      "name": "8 hot records per line",
+      "code": "CHECK_EQ(records_per_line(sizeof(struct hot)), 8);",
+      "hint": "Two ints are 8 bytes: eight records share a line — the hot/cold win."
+    },
+    {
+      "name": "fat record wastes the line",
+      "code": "size_t per = records_per_line(sizeof(struct fat));\nCHECK(per < 8);",
+      "hint": "The 68-byte struct cannot fit 8 per line — dead bytes dilute the cache."
+    },
+    {
+      "name": "sum with guards",
+      "code": "struct hot h[3] = {{1, 10}, {2, 20}, {3, 12}};\nCHECK_EQ(total_score_hot(h, 3), 42);\nCHECK_EQ(total_score_hot(NULL, 2), -1);\nCHECK_EQ(total_score_hot(NULL, 0), 0);",
+      "hint": "Summing is trivial; the guards are the engineering."
+    }
+  ],
+  "level": "guided"
+}

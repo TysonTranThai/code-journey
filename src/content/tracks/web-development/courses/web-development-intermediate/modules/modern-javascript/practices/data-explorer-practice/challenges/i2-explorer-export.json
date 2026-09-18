@@ -1,0 +1,25 @@
+{
+  "id": "i2-explorer-export",
+  "title": "CSV Export",
+  "prompt": "Write `toCsv(records, columns)` that RETURNS a CSV string: the first line is `columns` joined by commas, then one line per record with the value for each column — an empty string when the record is missing that field. Numbers are stringified. No trailing newline.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function toCsv(records, columns) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "header row matches the columns",
+      "code": "const fn = new Function(code + \"\\nreturn { toCsv };\");\nconst { toCsv } = fn();\nconst out = toCsv([{ id: 1, name: \"Ada\" }], [\"id\", \"name\"]);\nif (out.split(\"\\n\")[0] !== \"id,name\") throw new Error('The first line must be the columns joined by commas: \"id,name\".');",
+      "hint": "Start with a lines array holding columns.join(',')."
+    },
+    {
+      "name": "missing fields become empty cells",
+      "code": "const fn = new Function(code + \"\\nreturn { toCsv };\");\nconst { toCsv } = fn();\nconst out = toCsv([{ id: 1, name: \"Ada\" }, { id: 2 }], [\"id\", \"name\"]);\nif (out !== \"id,name\\n1,Ada\\n2,\") throw new Error('A record without name must render an empty cell: \"id,name\\n1,Ada\\n2,\".');",
+      "hint": "Treat undefined and null as an empty string when mapping columns."
+    },
+    {
+      "name": "numbers are stringified, no trailing newline",
+      "code": "const fn = new Function(code + \"\\nreturn { toCsv };\");\nconst { toCsv } = fn();\nconst out = toCsv([{ id: 7, score: 9.5 }], [\"id\", \"score\"]);\nif (out !== \"id,score\\n7,9.5\") throw new Error('Numbers must become their string form: \"id,score\\n7,9.5\".');\nif (out.endsWith(\"\\n\")) throw new Error(\"No trailing newline after the last row.\");",
+      "hint": "String(value) converts numbers; join lines with \\n, not an extra push."
+    }
+  ]
+}

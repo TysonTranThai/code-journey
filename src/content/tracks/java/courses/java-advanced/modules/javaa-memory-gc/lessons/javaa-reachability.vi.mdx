@@ -1,0 +1,23 @@
+Ba câu hỏi quyết định khi nào một đối tượng được chết: *ai chạm tới được nó?*
+(bộ thu gom bắt đầu từ GC roots — stack, static, thread sống), *nó cần gấp đến
+mức nào?* (thang reachability), và *khi nào bị thu gom?* (câu hỏi chính sách,
+không bao giờ là cam kết).
+
+```java
+Object strong  = new Object();               // chạm tới được — sống
+WeakReference<Object> weak = new WeakReference<>(new Object());
+System.gc();                                 // mục tiêu weak: không ai chạm tới → mất
+weak.get()                                   // giờ là null (thường ngay lập tức;
+                                             // soft ref được cho thêm hơi trước)
+```
+
+Thang reachability: **strong** (tham chiếu thường — không bao giờ bị thu khi
+còn chạm tới) → **soft** (chỉ bị thu khi *áp lực* bộ nhớ; hợp với cache muốn
+sống thêm) → **weak** (bị thu ở *lần* GC kế tiếp; hợp với metadata và map
+canonical) → **phantom** (enqueue dọn dẹp sau khi chết; thay thế finalization).
+
+Hai kỷ luật đi theo. Thứ nhất: `System.gc()` chỉ là *gợi ý* — test và chương
+trình phải viết sao cho tính đúng đắn không bao giờ phụ thuộc vào việc GC
+*xảy ra*, chỉ phụ thuộc vào ý nghĩa của GC khi nó xảy ra. Thứ hai: cache giá
+trị thuộc vào `WeakHashMap`/weak key đúng vì key không còn ai chạm tới thì
+không nên ghim giá trị của nó.

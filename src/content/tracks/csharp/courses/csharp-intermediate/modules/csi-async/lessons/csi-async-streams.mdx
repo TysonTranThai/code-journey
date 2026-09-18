@@ -1,0 +1,45 @@
+## Producing: async iterator with yield return
+
+```csharp
+async IAsyncEnumerable<int> PollAsync(CancellationToken ct = default)
+{
+    for (int i = 0; i < 10; i++)
+    {
+        await Task.Delay(10, ct);
+        yield return i;
+    }
+}
+```
+
+`yield return` inside an `async` method makes an async iterator (.NET Core
+3.0+). Items stream out as they're produced — the consumer starts before
+the producer finishes.
+
+## Consuming: await foreach
+
+```csharp
+await foreach (int item in PollAsync(ct))
+    Console.WriteLine(item);
+```
+
+`await foreach` awaits each MoveNextAsync — the loop suspends while waiting
+for the next item instead of blocking a thread.
+
+## Why not `Task<List<T>>`?
+
+`Task<List<T>>` says "everything, eventually" — the caller waits for the
+END before processing item one. `IAsyncEnumerable<T>` says "items over
+time" — process as they arrive, cancel mid-stream, keep memory flat. Choose
+by arrival pattern, not style.
+
+## CancellationToken flows through
+
+`WithCancellation(ct)` attaches the caller's token to the stream; inside
+the producer, honor the token you were given. The
+`[EnumeratorCancellation]` attribute on the default parameter merges caller
+and local tokens — the pattern used by the BCL.
+
+## Check your understanding
+
+- Which type for a log tail? (IAsyncEnumerable — items arrive over time.)
+- What does await foreach await? (Each item's availability.)

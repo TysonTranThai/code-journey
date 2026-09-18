@@ -1,0 +1,21 @@
+{
+  "id": "ca10-archive-semantics",
+  "title": "Archive Pull-In Semantics",
+  "prompt": "Implement `int archive_pulls(size_t used_syms, size_t defined_syms, int member_needed)` modeling a linker decision: given an archive member defining `defined_syms` symbols of which the link currently needs `used_syms` (0 if none), and `member_needed` 1 iff the member defines a currently-undefined referenced symbol — return 1 iff the member gets pulled into the link. This models: pull-in happens exactly when the member resolves a pending undefined reference.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "needed member is pulled",
+      "code": "CHECK_EQ(archive_pulls(1, 3, 1), 1);",
+      "hint": "The member defines a symbol the link needs: it is pulled in."
+    },
+    {
+      "name": "unneeded member costs nothing",
+      "code": "CHECK_EQ(archive_pulls(0, 5, 0), 0);",
+      "hint": "No pending reference matches: the member stays in the archive, adding zero bytes to the binary."
+    }
+  ],
+  "level": "independent"
+}

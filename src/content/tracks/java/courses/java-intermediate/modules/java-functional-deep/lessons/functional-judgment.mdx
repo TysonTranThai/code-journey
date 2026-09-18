@@ -1,0 +1,30 @@
+## Functional composition — and when NOT to stream
+
+Streams compose: `map` → `filter` → `sorted` → `collect` reads as a
+data pipeline. Function types compose too:
+
+```java
+Function<String, String> trim = String::trim;
+Function<String, String> lower = String::toLowerCase;
+Function<String, String> clean = trim.andThen(lower);
+```
+
+But the intermediate skill is *judgment*:
+
+**Stream when**: transforming data, grouping, reductions, parallelizable
+independent work.
+
+**Loop when**: early exit matters (`break` beats `takeWhile` for
+readability), you're updating external state, indices are involved, or
+the stream version needs three nested collectors to express one idea.
+
+```java
+// clear loop
+for (int i = 0; i < xs.size(); i++) {
+    if (xs.get(i).matches(q)) return i;   // index + early exit
+}
+// awkward stream
+IntStream.range(0, xs.size()).filter(i -> xs.get(i).matches(q)).findFirst().orElse(-1);
+```
+
+The loop is not a failure of style — it's the clearer program here.

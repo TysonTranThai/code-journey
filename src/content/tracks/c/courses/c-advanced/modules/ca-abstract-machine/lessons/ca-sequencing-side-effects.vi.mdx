@@ -1,0 +1,17 @@
+## Cái gì có thứ tự, cái gì không
+
+Có *sequencing* tại `&&`, `||`, `,`, `?:`; còn toán hạng của `+`, **đối số hàm**, subscript là **không có thứ tự** với nhau.
+
+```c
+int i = 0;
+int k = i++ + i++;      /* UB: i bị sửa hai lần không có thứ tự */
+int j = f() + g();      /* hợp lệ, nhưng thứ tự gọi KHÔNG xác định */
+```
+
+## Quy tắc sống sót khi review
+
+Một biểu thức vừa sửa vừa đọc cùng một đối tượng mà không có thứ tự → UB. Tách thành nhiều câu lệnh là cách chữa khả chuyển.
+
+## Unspecified cũng không phải giấy phép
+
+`f() + g()` hợp lệ nhưng bạn không biết bên nào chạy trước. Đặt hiệu ứng phụ vào danh sách đối số không có thứ tự là khó lường — thứ tự không xác định vẫn gây hại thật.

@@ -1,0 +1,16 @@
+## Đọc stack trace như pháp y
+
+Frame trên cùng = nguyên nhân trực tiếp; các frame dưới = chuỗi nhân quả. Frame nội bộ thư viện (`std::`, allocator) thường nghĩa là hư hỏng xảy ra *sớm hơn* — frame của bạn gọi vào đó là nghi phạm. Các mẫu dấu vết:
+
+- **Crash trong `memcpy`/nội bộ `std::string`** → thường là tràn buffer hoặc đối tượng nguồn đã bị hủy.
+- **Crash tại địa chỉ gần `0x0`** → dereference null; offset trong địa chỉ gọi tên trường (`offset 8` = trường thứ hai).
+- **Con trỏ vtable rác / nhảy loạn** → use-after-free hoặc gọi ảo trên đối tượng đã hủy.
+- **Heap corruption bị báo tại một lần cấp phát *sau*** → phần tràn xảy ra trước đó; lịch sử "allocated by thread" của ASan chỉ hiện trường.
+
+## Symbolization
+
+Địa chỉ vô dụng nếu không có symbol. Debug info (`-g`) ánh xạ ngược về file và dòng. Build release thường bị strip — hãy giữ file symbol của từng bản release; crash từ production + symbol của nó = stack đọc được.
+
+## Kỷ luật repro tối thiểu
+
+Thu nhỏ đầu vào, rồi thu nhỏ code: xóa nửa đầu vào — vẫn fail? cứ xóa tiếp. Xóa nửa các đường code. Repo 20 dòng với đầu vào 3 byte được sửa trong ngày; dump log 2 GB với 400 file thì không. Bisection (`git bisect`) tìm *commit* gây ra khi repro không thu nhỏ được nữa.

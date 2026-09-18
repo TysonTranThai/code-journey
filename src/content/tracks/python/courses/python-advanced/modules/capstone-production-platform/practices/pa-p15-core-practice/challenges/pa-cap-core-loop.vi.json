@@ -1,0 +1,14 @@
+{
+  "title": "TaskFlow lõi: submit idempotent, retry có ngân sách",
+  "prompt": "Cài `TaskFlowCore` (cột mốc 1+2 của capstone):\n\n- `submit(key, payload)` → job id `'job-<n>'` (n đếm số lần submit); submit LẠI cùng key trả về job id GỐC mà không đếm hay xếp hàng gì thêm (cổng idempotency, phủ cả pending, in-flight, succeeded, và dead)\n- `deliver()` → list `[job_id, key, payload, attempts]`, chuyển pending sang in-flight và giao lại các job in-flight (lease hết hạn)\n- `process(job_id, outcome)` — `True` ghi thành công; một chuỗi ghi lý do thất bại, tăng attempts, và trả về queue; khi `attempts >= 3` job chuyển sang tầng dead mang lý do CUỐI và số lần thử; job id lạ bị bỏ qua\n- `status(job_id)` — dict với `'status'` là một trong `'pending'/'in_flight'/'succeeded'/'dead'` (kèm key/payload/attempts/reason tùy hợp), hoặc `None` cho id lạ\n- property `metrics` — số đếm `{'submitted', 'succeeded', 'failed', 'dead'}`\n\nCác job đã giao mà kết quả đã ghi phải bỏ qua được: job succeeded bị giao lại không thực thi lại và không làm hỏng số đếm.",
+  "tests": [
+    {
+      "name": "Submit idempotent, hiệu ứng exactly-once",
+      "hint": "Submit trùng phát lại id gốc; xử lý trùng là no-op."
+    },
+    {
+      "name": "Retry dùng hết vào tầng dead kèm lý do",
+      "hint": "Ba lần thất bại = dead kèm lý do; metrics kể lại câu chuyện."
+    }
+  ]
+}

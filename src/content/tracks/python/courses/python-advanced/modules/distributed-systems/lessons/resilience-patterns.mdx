@@ -1,0 +1,54 @@
+## The circuit breaker
+
+Calling a dead service has a cost: each call burns a timeout, a thread, and
+user patience. The **circuit breaker** (borrowed from electrical engineering)
+tracks recent failures and trips OPEN after a threshold:
+
+- **CLOSED** — normal; calls pass through; failures increment the count.
+- **OPEN** — calls fail *instantly* (fast-fail) without touching the network;
+  this also gives the dependency room to recover. After a cool-down, allow one
+  probe through.
+- **HALF-OPEN** — the probe call decides: success closes the circuit, failure
+  re-opens it.
+
+```python
+class CircuitBreaker:
+    def __init__(self, threshold=5, cooldown=30.0):
+        ...
+    def allow(self, now): ...      # may we call right now?
+    def record(self, now, ok): ... # outcome of a real call
+```
+
+Notice both methods take `now` — deterministic, testable, injectable time.
+That's a recurring theme: every resilience mechanism is a state machine whose
+transitions depend on time, so make time a parameter.
+
+## Consistency: the cost of copying
+
+Once data lives on two machines, updates take time to propagate. During that
+window reads disagree: **eventual consistency**. Three everyday consequences:
+
+1. **Read-your-writes:** after a user updates their profile, the very next read
+   should reflect it — route that read to the primary, or version reads.
+2. **Stale reads are a product decision:** a slightly-old follower count is
+   fine; a slightly-old account balance is not. Classify data by staleness
+   tolerance.
+3. **Optimistic concurrency:** instead of locking, write with a version: `UPDATE
+   ... WHERE version = :seen` — 0 rows updated means someone raced you; re-read
+   and retry. Cheap, and correct under contention.
+
+## Distributed locks: necessary, and dangerous
+
+A lock service can grant the same lock twice (GC pause, network partition). So:
+never let correctness depend solely on a distributed lock — pair it with an
+idempotency token or fencing token (a number that increases with each grant;
+older holders get rejected). The lock is an optimization; the fencing is the
+correctness.
+
+## Health checks and graceful shutdown (service hygiene)
+
+- `/readyz` reflecting real dependency state lets the load balancer drain a
+  sick instance instead of feeding it traffic.
+- On SIGTERM: stop accepting new work, finish (or re-queue) in-flight jobs,
+  *then* exit. Kill-9 mid-job is only safe when jobs are idempotent — which is
+  the design you already have.

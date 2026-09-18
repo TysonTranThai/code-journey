@@ -1,0 +1,16 @@
+{
+  "id": "cppa18-path-sandbox",
+  "title": "Canonicalizing Path Sandboxer",
+  "prompt": "Implement `sandboxPath`: split on '/', process segments against a stack, then require the canonical result to be under \"/data\". The battery includes escapes that contain no literal \"..\" pattern naively banned, and stays-legal paths that contain \"..\" legitimately.",
+  "difficulty": "advanced",
+  "level": "real-world",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <cstdint>\n#include <optional>\n#include <string>\n#include <vector>\n\n// --- checked allocation math: fail closed on overflow ---\nstd::optional<std::size_t> checkedTotal(std::size_t a, std::size_t b, std::size_t c);\n\n// --- canonicalizing path sandboxer ---\n// Resolves '.', '..', redundant separators; then requires the result to stay\n// under the trusted root \"/data\". Returns nullopt on escape attempt.\nstd::optional<std::string> sandboxPath(const std::string& userPath);\n\n// --- shell-argument quoting: result cannot change token structure ---\nstd::string shellQuote(const std::string& arg);\n",
+  "tests": [
+    {
+      "name": "traversal battery",
+      "code": "CHECK_EQ(sandboxPath(\"/data/reports/q1.csv\").value_or(\"no\"), \"/data/reports/q1.csv\");\nCHECK_EQ(sandboxPath(\"/data/a/../b.txt\").value_or(\"no\"), \"/data/b.txt\");\nCHECK_EQ(sandboxPath(\"data/../data/../data/x\").value_or(\"no\"), \"/data/x\");\nCHECK(!sandboxPath(\"/data/../../etc/passwd\").has_value());\nCHECK(!sandboxPath(\"/etc/passwd\").has_value());\nCHECK(!sandboxPath(\"/data/../..\").has_value());\nCHECK(sandboxPath(\"/data/..hidden/file\").has_value());   // \"..hidden\" is a NAME, not traversal",
+      "hint": "Stack of segments; start with {\"data\"}. '..' pops (if non-empty; popping the root guard => escape => nullopt); '.' and '' skipped; other segments push. Rebuild as '/data/...' and that IS the check."
+    }
+  ]
+}

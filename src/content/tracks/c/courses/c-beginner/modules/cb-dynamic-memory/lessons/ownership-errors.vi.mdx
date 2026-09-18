@@ -1,0 +1,47 @@
+## Sở hữu trong một dòng
+
+Mỗi vùng cấp phát có đúng một chủ sở hữu — một hàm hoặc module chịu trách
+nhiệm free. Khi bạn nhận sở hữu, bạn nhận nghĩa vụ. Khi bạn trao đi, bạn từ
+bỏ quyền tự free. Thiết kế hàm để câu chuyện sở hữu hiện rõ từ chính tên gọi:
+
+- `create_*` / `alloc_*` → người gọi free
+- `*_destroy` / `*_free` → hàm này free; đừng free thêm lần nữa sau đó
+
+## Rò rỉ (leak)
+
+```c
+void f(void) {
+    int *p = malloc(8 * sizeof(int));
+    if (cond) return;          // RÒ RỈ: p chết mà chưa free
+    free(p);
+}
+```
+
+Rò rỉ bộ nhớ hiếm khi làm crash chương trình — chúng bóp nghẹt từ từ. Các
+chương trình chạy dài (server!) chết vì rò rỉ tích tụ.
+
+## Double free
+
+```c
+free(p);
+free(p);        // hành vi không xác định — hỏng metadata của heap
+```
+
+Gán `p = NULL` sau khi free; `free(NULL)` được định nghĩa và vô hại.
+
+## Use-after-free
+
+```c
+free(p);
+*p = 5;         // hành vi không xác định — khối có thể đã bị tái sử dụng
+```
+
+Đây là nguy hiểm nhất trong ba lỗi: nó có thể âm thầm "chạy đúng" trong test
+và hỏng dữ liệu thật ở production.
+
+## Nhận diện trong tự nhiên
+
+Không lỗi nào crash ngay tại chỗ sai. Kỹ năng ở đây là nhận ra HÌNH DẠNG:
+một nhánh return/break bỏ qua free, hai lần free cùng một tên, mọi lần dùng
+tên đó sau khi free. Rèn con mắt đó chính là mục đích của phần luyện tập
+dưới đây.

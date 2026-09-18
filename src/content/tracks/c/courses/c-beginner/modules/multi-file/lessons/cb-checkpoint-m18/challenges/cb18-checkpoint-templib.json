@@ -1,0 +1,35 @@
+{
+  "id": "cb18-checkpoint-templib",
+  "title": "templib",
+  "prompt": "Implement public `double c_to_f(double c)` (c*9/5+32) and public `double f_to_c(double f)` ((f-32)*5/9), plus public `int comfy_count(const double *cs, int n)` counting temperatures within [18.0, 26.0] inclusive. Use whatever static helpers you like.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n",
+  "tests": [
+    {
+      "name": "c to f",
+      "code": "CHECK_NEAR(c_to_f(100.0), 212.0, 1e-9);",
+      "hint": "Boiling point."
+    },
+    {
+      "name": "f to c",
+      "code": "CHECK_NEAR(f_to_c(32.0), 0.0, 1e-9);",
+      "hint": "Freezing point."
+    },
+    {
+      "name": "round trip",
+      "code": "CHECK_NEAR(f_to_c(c_to_f(23.5)), 23.5, 1e-9);",
+      "hint": "Conversions invert."
+    },
+    {
+      "name": "comfy count",
+      "code": "double ts[] = {10.0, 20.0, 26.0, 27.0};\nCHECK_EQ(comfy_count(ts, 4), 2);",
+      "hint": "Bounds are inclusive."
+    },
+    {
+      "name": "comfy none",
+      "code": "double ts[] = {5.0};\nCHECK_EQ(comfy_count(ts, 1), 0);",
+      "hint": "Too cold."
+    }
+  ]
+}

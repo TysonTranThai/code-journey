@@ -1,0 +1,55 @@
+## The pyramid, honestly
+
+- **Unit tests** — one function/class, dependencies faked. Thousands; each
+  runs in milliseconds. They pin behavior *within* the code.
+- **Integration tests** — several real pieces together (a repository against a
+  real database, a handler with its real validation). Hundreds. They pin the
+  *seams* — the places unit tests structurally cannot see.
+- **System/end-to-end tests** — the whole service from the outside. Dozens.
+  Slow and brittle; reserve them for the critical journeys (signup, checkout,
+  login).
+
+Inverted pyramids (mostly E2E) are slow, flaky, and diagnose backwards. Ice-cream
+cones (mostly manual) aren't testing at all.
+
+## Fakes, stubs, mocks — and the trade each makes
+
+- **Stub**: hard-coded answers for calls ("the clock says noon").
+- **Fake**: a working lightweight implementation (in-memory repository).
+- **Mock**: records interactions and asserts on them.
+
+Preference order for *stateful* dependencies: **fake first** — it tests
+behavior, survives refactors, and reads like the domain. Mocks shine for
+*interaction* contracts that have no meaningful state (did the email service
+get called at all?). Over-mocked suites verify the implementation, not the
+behavior — and fail on every refactor.
+
+## Flaky tests are bugs in the test
+
+A test that passes on retry is lying about something: time, randomness, network
+ordering, shared state. The standard suspects and their cures:
+
+- **time** — inject a clock; never `datetime.now()` deep inside logic under test,
+- **randomness** — seed it explicitly (`random.Random(42)`),
+- **shared fixtures** — each test constructs its own world (factory functions),
+- **order dependence** — if test B only passes after test A, B is broken.
+
+`pytest-randomly` and `-p no:cacheprovider`-style hygiene make order
+dependence visible. A suite you cannot trust at face value is worse than no
+suite: it teaches the team to ignore red.
+
+## Fixtures architecture
+
+Fixtures scale by *composition*, not inheritance: small fixtures (clock, empty
+repository) compose into bigger ones (populated world), and `conftest.py` shares
+them by directory scope. Factory functions (`make_order(customer=..., total=...)`
+with sensible defaults) beat monolithic fixtures: each test states only the
+facts it cares about.
+
+## Coverage: a smoke detector, not a goal
+
+90% coverage with weak assertions measures typing effort. Cover the *branches
+that carry risk*: error paths, boundaries (empty, one, many), and every bug you
+have ever shipped (regression tests). Mutation testing — flipping an operator
+and checking some test fails — measures whether your assertions can actually
+detect change.

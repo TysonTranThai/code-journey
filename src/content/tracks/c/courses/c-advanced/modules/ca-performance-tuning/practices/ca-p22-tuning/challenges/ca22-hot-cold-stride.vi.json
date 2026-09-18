@@ -1,0 +1,18 @@
+{
+  "title": "Chứng minh tách nóng/lạnh",
+  "prompt": "ISO C. Cho `struct fat { int id; int score; char name[60]; };` và `struct hot { int id; int score; };` (đã khai báo), cài `size_t records_per_line(size_t rec_size)` trả số bản ghi rec_size byte vừa trong một line 64 byte (lấy sàn), và `int total_score_hot(const struct hot *h, size_t n)` cộng dồn điểm (NULL với n>0 trả -1).",
+  "tests": [
+    {
+      "name": "8 bản ghi nóng mỗi line",
+      "hint": "Hai int là 8 byte: tám bản ghi dùng chung một line — thắng lợi nóng/lạnh."
+    },
+    {
+      "name": "bản ghi béo phí line",
+      "hint": "Struct 68 byte không thể chứa 8 mỗi line — byte chết pha loãng cache."
+    },
+    {
+      "name": "cộng dồn với guard",
+      "hint": "Cộng dồn là chuyện nhỏ; guard mới là kỹ thuật."
+    }
+  ]
+}

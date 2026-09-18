@@ -1,0 +1,29 @@
+## Projections: transform for algorithms
+
+Most range algorithms accept a final **projection** — a callable applied to elements before the algorithm sees them:
+
+```cpp
+std::vector<Student> roster = ...;
+std::ranges::sort(roster, std::ranges::less{}, &Student::score);   // sort by score
+auto oldest = std::ranges::max_element(roster, {}, &Student::age);
+```
+
+No copy, no pre-transform pass, no separate key vector. `{}` is the default comparator; the projection goes last.
+
+## The view interface — what "custom" means
+
+A minimal view needs: `begin`/`end` (iterators), and `empty`/`size` when cheaply available. The practical recipe: store a `std::ranges::range` reference + your parameters, expose an iterator whose `operator++` and `operator*` implement your transformation, and mark the wrapper `std::ranges::view`-compatible by inheriting view semantics (or simply deriving from `std::ranges::view_interface`).
+
+```cpp
+template <std::ranges::view V>
+class SquaredView : public std::ranges::view_interface<SquaredView<V>> {
+    V base_;
+public:
+    SquaredView() = default;
+    explicit SquaredView(V v) : base_(std::move(v)) {}
+    auto begin() const { return std::ranges::begin(base_); }   // simplified: transform iterator
+    auto end() const   { return std::ranges::end(base_); }
+};
+```
+
+The *real* custom view uses `std::views::transform`-style iterator adaptation; the graded exercise instead has you build a **stride view** (every K-th element) with a hand-written iterator — small enough to finish, complete enough to teach the machinery.

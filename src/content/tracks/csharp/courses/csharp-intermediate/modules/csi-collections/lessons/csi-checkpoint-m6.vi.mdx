@@ -1,0 +1,17 @@
+## Cổng kiểm tra (mini-build)
+
+Bốn công cụ trong một đơn vị chấm:
+
+1. `Frequency(string text)` → `IReadOnlyDictionary<string, int>` đếm từ cách
+   nhau bởi khoảng trắng, chữ thường.
+2. `FirstUnique(string text)` → từ đầu tiên (chữ thường) có số đếm 1, hoặc
+   null.
+3. `ProcessOrders(IEnumerable<string> commands)` — "push X" thêm vào hàng
+   đợi, "pop" lấy ra; trả về join các giá trị đã lấy theo thứ tự (chuỗi rỗng
+   khi không lấy gì). FIFO, không phải LIFO.
+4. `EvictCache` — cache nhỏ với `Put(k, v)` và `Get(k)`: sức chứa 3; `Put`
+   khi đầy sẽ đẩy khóa ít-dùng-gần-đây-hoặc-cập-nhật; `Get` làm mới độ gần
+   đây; `Get` trượt trả -1.
+
+Công cụ 4 là bài học composition: Dictionary + theo dõi độ gần đây, chấm theo
+hành vi.

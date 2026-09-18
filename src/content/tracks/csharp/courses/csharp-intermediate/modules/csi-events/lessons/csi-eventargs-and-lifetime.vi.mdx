@@ -1,0 +1,47 @@
+## Hợp đồng: sender + args
+
+`EventHandler<TEventArgs>` là `void(object? sender, TEventArgs e)` với cái tên
+nói lên nó là gì. Args tùy chỉnh mang mọi thứ handler cần — và không gì hơn:
+
+```csharp
+public sealed record TemperatureChangedEventArgs(
+    string Sensor, double OldValue, double NewValue);
+
+public class Thermometer
+{
+    public event EventHandler<TemperatureChangedEventArgs>? Changed;
+
+    public double Value { get; private set; }
+
+    public void Read(double newValue)
+    {
+        double old = Value;
+        Value = newValue;
+        Changed?.Invoke(this, new TemperatureChangedEventArgs("t1", old, newValue));
+    }
+}
+```
+
+Luật thiết kế: args là ảnh chụp tại thời điểm raise. Handler không được biến
+đổi publisher qua chúng; nếu handler cần *ảnh hưởng* kết quả, đó không phải
+event — đó là callback (dùng `Func` hoặc args kiểu `CancelEventArgs` một cách
+có chủ đích).
+
+## Hủy đăng ký là một phần của hợp đồng
+
+`+=` không kèm `-=` ghim subscriber trong suốt vòng đời của publisher.
+Publisher sống lâu (singleton, static event) + subscriber sống ngắn = leak:
+
+```csharp
+var t = new Thermometer();
+t.Changed += OnChanged;      // static OnChanged, nhưng t giờ bị ghim bởi nó
+t.Changed -= OnChanged;      // chỉ có dòng này là thả t ra
+```
+
+Tệ hơn: `SomeStaticClass.Event += handler` giữ subscriber *mãi mãi*. Static
+event là một quyết định vòng đời có chủ đích, không phải tiện lợi.
+
+## Kiểm tra hiểu biết
+
+- Vì sao chụp nhanh args lúc raise? (Handler chạy muộn hơn thay đổi trạng thái.)
+- Khi nào static event chấp nhận được? (Khi mọi subscriber sống bằng process.)

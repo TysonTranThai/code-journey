@@ -1,0 +1,49 @@
+## C++ tối thiểu để thi
+
+Khóa này giả định bạn đã biết biến, vòng lặp, hàm từ một khóa lập trình
+cơ bản (hoặc bạn đang học song song `cpp-beginner`). Phần dưới đây là
+*đúng những gì đề thi cần*.
+
+### Kiểu dữ liệu — quy tắc vàng
+
+```cpp
+int a;        // đến ~2.1 * 10^9 — HẠN CHẾ
+long long x;  // đến ~9.2 * 10^18 — MẶC ĐỊNH trong thi
+```
+
+Trên giấy nháp: 10^9 + 10^9 = 2·10^9 vượt `int`. Nếu tổng có thể vượt
+2.1·10^9 thì **cả phép tính phải dùng `long long`**. Đây là lý do WA số 1
+của người mới.
+
+### Nhập xuất nhanh
+
+```cpp
+ios_base::sync_with_stdio(false);
+cin.tie(nullptr);
+```
+
+Hai dòng chuẩn thi đấu: tắt đồng bộ với C I/O, tắt flush mỗi lần đọc. Với
+input hàng triệu số, khác biệt là rất lớn.
+
+### Vector — mảng của mọi bài thi
+
+```cpp
+int n; in >> n;
+vector<long long> a(n);
+for (long long& x : a) in >> x;   // đọc n phần tử
+sort(a.begin(), a.end());          // STL sort (module sắp xếp)
+```
+
+`for (long long& x : a)` — dấu `&` giúp đọc-vừa-sửa và tránh copy.
+
+### Quy ước solve
+
+```cpp
+void solve(istream& in, ostream& out) {
+    long long a, b;
+    in >> a >> b;
+    out << a + b << "\n";
+}
+```
+
+Toàn bộ logic nằm trong `solve`; hệ thống tự gọi `solve(cin, cout)`.

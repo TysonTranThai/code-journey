@@ -1,0 +1,20 @@
+{
+  "id": "i2-normalize",
+  "title": "Messy Data Normalizer",
+  "prompt": "Write `normalizeUsers(raw)` — `raw` is an array of anything. Keep only entries that are objects with string `name` and a numeric `age` (Number(value) finite). RETURN normalized objects `{ name: trimmedName, age: number }`, dropping invalid entries silently.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function normalizeUsers(raw) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "keeps and normalizes valid entries",
+      "code": "const fn = new Function(code + \"\\nreturn { normalizeUsers };\");\nconst { normalizeUsers } = fn();\nconst out = normalizeUsers([\n  { name: \"  Ada \", age: \"36\" },\n  { name: \"Bo\", age: 21 },\n]);\nif (out.length !== 2) throw new Error(\"Both entries are valid.\");\nif (out[0].name !== \"Ada\" || out[0].age !== 36) throw new Error(\"Names are trimmed; numeric strings become numbers.\");",
+      "hint": "typeof r.name === 'string' && Number.isFinite(Number(r.age))."
+    },
+    {
+      "name": "drops junk without throwing",
+      "code": "const fn = new Function(code + \"\\nreturn { normalizeUsers };\");\nconst { normalizeUsers } = fn();\nconst out = normalizeUsers([null, 42, { name: \"X\" }, { name: \"Y\", age: \"abc\" }, { name: \"Z\", age: -3 }]);\nif (out.length !== 1 || out[0].name !== \"Z\") throw new Error(\"Only the finite-age entry survives — everything else is dropped.\");",
+      "hint": "Filter first with the same predicate, then map to the normalized shape."
+    }
+  ]
+}

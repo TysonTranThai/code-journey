@@ -1,0 +1,26 @@
+{
+  "id": "cb20-da-get",
+  "title": "Bounds-checked Get",
+  "prompt": "Implement `int da_get(const DArray *a, int i, int fallback)`: return data[i] when 0 <= i < size, else fallback (never out of bounds).",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\ntypedef struct { int *data; int size; int cap; } DArray;\n",
+  "tests": [
+    {
+      "name": "inside",
+      "code": "int raw[3] = {5, 6, 7};\nDArray a = {raw, 3, 3};\nCHECK_EQ(da_get(&a, 1, -1), 6);",
+      "hint": "Plain indexing."
+    },
+    {
+      "name": "below zero",
+      "code": "int raw[1] = {5};\nDArray a = {raw, 1, 1};\nCHECK_EQ(da_get(&a, -1, -1), -1);",
+      "hint": "Negative index rejected."
+    },
+    {
+      "name": "at size",
+      "code": "int raw[2] = {5, 6};\nDArray a = {raw, 2, 2};\nCHECK_EQ(da_get(&a, 2, -1), -1);",
+      "hint": "size is one past the last valid."
+    }
+  ],
+  "level": "imitation"
+}

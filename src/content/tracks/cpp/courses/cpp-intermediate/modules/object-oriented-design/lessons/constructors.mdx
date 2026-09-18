@@ -1,0 +1,39 @@
+**Constructors** put a new object into a valid state. C++ gives you several
+kinds; you rarely need all of them, but you must recognize each.
+
+```cpp
+#include <string>
+#include <vector>
+
+class Inventory {
+public:
+    Inventory() = default;                          // default ctor
+    explicit Inventory(int cap) : cap_{cap} {}      // converting ctor → explicit!
+    Inventory(std::string owner, int cap)           // multi-parameter
+        : owner_{std::move(owner)}, cap_{cap} {}
+
+private:
+    std::string owner_{"warehouse"};
+    int cap_{0};
+    std::vector<int> items_{};
+};
+```
+
+## Member initializer lists
+
+Prefer `: member_{value}` over assigning in the body — members are initialized
+once, directly, and `const`/reference members have no other option. The order
+of the list does not matter; **members initialize in declaration order**.
+
+## explicit, always for one-argument constructors
+
+Without `explicit`, `Inventory inv = 5;` compiles — a silent conversion from
+`int`. `explicit` makes that a compile error while `Inventory inv{5};` still
+works. Default rule: single-argument constructors are `explicit` unless you
+*mean* implicit conversion.
+
+## When you write none
+
+If you declare no constructors, the compiler generates a default one that
+value-initializes members with `{}` defaults. Often that is all you need —
+`struct Point { double x{}; double y{}; };` needs nothing else.

@@ -1,0 +1,62 @@
+## Read from the right
+
+`const` binds to what is on its **left** (unless nothing is there — then to the
+right). Four placements, four contracts:
+
+```c
+const int *p;         /* pointer to const int: *p read-only, p movable */
+int const *p;         /* identical to the previous line */
+int *const p;         /* const pointer to int: p fixed, *p writable */
+const int *const p;   /* const pointer to const int: nothing movable */
+```
+
+A reading trick: sweep right-to-left. `int *const p` → "p is a const pointer
+to int". `const int *p` → "p is a pointer to int-const".
+
+## What each placement forbids — and does not
+
+```c
+int x = 1, y = 2;
+const int *a = &x;
+a = &y;               /* fine: the pointer itself moves */
+*a = 5;               /* compile error: pointee is const */
+
+int *const b = &x;
+b = &y;               /* compile error: pointer is const */
+*b = 5;               /* fine: pointee is writable */
+```
+
+**The guarantee is by type, not by reality.** `const int *p` promises *through
+p* you will not write — it does not make the object immutable:
+
+```c
+int v = 7;
+const int *spy = &v;
+/* *spy = 9;            compile error */
+v = 9;                 /* fine: v itself was never const */
+```
+
+## Signatures are where this pays
+
+```c
+size_t length(const char *s);        /* "I only read your string" */
+int clamp(int *value, int lo, int hi); /* "I will write through this" */
+const int *find(const int *a, size_t n, int key); /* read-only in, read-only out */
+```
+
+`const` in a parameter is a promise to your caller, checked by the compiler.
+APIs that read data take pointers-to-const — every string function in the
+standard library does (`strlen(const char *)`).
+
+## Casting const away
+
+`const int *` → `int *` via cast is legal syntax and undefined behavior **if
+the object was defined const**. The honest uses are rare (interfacing with an
+old API that lacks const). If you reach for it in new code, the signature is
+wrong instead.
+
+## Check your understanding
+
+- `char *const argv0` vs `const char *argv0` — which can point somewhere else?
+  (The first cannot; the second can.)
+- Why does `strlen` take `const char *`? (It promises not to modify the string.)

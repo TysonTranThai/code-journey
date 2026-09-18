@@ -1,0 +1,22 @@
+{
+  "title": "Debug: gallery nói dối",
+  "prompt": "Mọi thuộc tính trong gallery này đều sai: hero mang loading=\"lazy\" (trong khi nó là LCP), sizes=\"100vw\" trên một ô thẻ 300px, không có width/height ở đâu cả (layout shift), và một alt bị dán lên <source>. Sửa lại: hero nhận fetchpriority=\"high\" và bỏ lazy; sizes của thẻ nói 300px; thêm kích thước nội tại cho cả hai ảnh; chuyển alt về <img> mà thôi.",
+  "tests": [
+    {
+      "name": "hero eager và ưu tiên cao",
+      "hint": "Lazy-load ảnh LCP là tự phá hoại — đổi lazy lấy fetchpriority=\"high\"."
+    },
+    {
+      "name": "sizes của thẻ nói thật",
+      "hint": "sizes=\"100vw\" khiến trình duyệt tải file cỡ desktop cho một chiếc hộp 300px."
+    },
+    {
+      "name": "mọi ảnh có kích thước",
+      "hint": "Ảnh chart đánh mất kích thước của mình — phục hồi width và height để chặn layout shift."
+    },
+    {
+      "name": "alt chỉ nằm trên img",
+      "hint": "alt dán trên source là vô dụng — img mới là phần tử duy nhất mang nó."
+    }
+  ]
+}

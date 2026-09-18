@@ -1,0 +1,16 @@
+{
+  "id": "csa-p1-resolution-prediction",
+  "title": "Resolution prediction",
+  "prompt": "Overload pairs teach betterness. Implement class `Solution` with `static string Pick(int v)` returning \"int\", `static string Pick(long v)` returning \"long\", `static string Pick(object v)` returning \"object\", and `static string Pick<T>(T v)` returning \"generic\". Callers in the tests pass literals of different static types; your implementation just labels which overload is chosen by the test's own calls.",
+  "difficulty": "advanced",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
+  "tests": [
+    {
+      "name": "literal-types",
+      "code": "Cj.Eq(Solution.Pick(5), \"int\", \"int literal beats generic\");\nCj.Eq(Solution.Pick(5L), \"long\", \"long literal\");\nCj.Eq(Solution.Pick<object>(5), \"generic\", \"explicit generic wins when T fixed\");\nCj.Eq(Solution.Pick((object)5), \"object\", \"object-typed argument\");",
+      "hint": "Exact-type match beats generic inference; T fixed by the call site beats object."
+    }
+  ],
+  "level": "independent"
+}

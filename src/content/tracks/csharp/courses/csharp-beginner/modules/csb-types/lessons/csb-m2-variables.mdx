@@ -1,0 +1,29 @@
+## Declaration, initialization, assignment
+
+```csharp
+int score;              // declaration: a slot named score that holds int
+score = 10;             // assignment: put a value in
+int level = 3;          // declaration + initialization in one line
+score = score + 5;      // reassignment: the old value is read, then replaced
+```
+
+A variable's **type is fixed forever** at declaration. `int score = "ten";` is a compile error — not a runtime surprise. That's the single biggest difference from scripting languages, and it's a feature: the compiler catches a whole class of bugs before your program ever runs.
+
+**Definite assignment**: C# refuses to let you *read* a local variable before you've written it:
+
+```csharp
+int x;
+Console.WriteLine(x);   // error CS0165: use of unassigned local
+```
+
+The compiler tracks this per-path. It looks pedantic; it deletes an entire bug family (reading garbage memory) at zero cost.
+
+## Identifiers
+
+Names are case-sensitive (`score` and `Score` differ), must start with a letter or `_`, and conventionally use `camelCase` for locals. Prefer names that carry meaning: `elapsedMs` beats `e`; `invoiceCount` beats `n`. The compiler doesn't care; your teammates (and you-in-six-months) do.
+
+## Multiple declarations
+
+```csharp
+int a = 1, b = 2;   // legal, but usually clearer as two lines
+```

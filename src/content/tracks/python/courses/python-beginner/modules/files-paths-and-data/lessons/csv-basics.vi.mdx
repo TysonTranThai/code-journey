@@ -1,0 +1,30 @@
+CSV (giá trị phân tách bằng dấu phẩy) là định dạng xuất phổ quát của bảng tính.
+
+```python
+line = "minh,21,Hanoi"
+name, age, city = line.split(",")
+# "minh", "21", "Hanoi"  — lưu ý age vẫn là CHUỖI
+```
+
+Đọc cả tệp CSV:
+
+```python
+rows = []
+with open("people.csv", encoding="utf-8") as f:
+    for line in f:
+        rows.append(line.strip().split(","))
+```
+
+Dòng đầu của phần lớn CSV là tiêu đề — bỏ qua bằng cắt lát (`rows[1:]`) hoặc đọc
+nó làm tên cột. Giá trị luôn đến dưới dạng chuỗi; tự chuyển đổi số nhé.
+
+Ghi là hình ảnh phản chiếu:
+
+```python
+with open("summary.csv", "w", encoding="utf-8") as f:
+    f.write("name,total\n")
+    f.write(f"{name},{total}\n")
+```
+
+(Mô-đun `csv` thật xử lý các trường hợp ngoặc kép phức tạp — bạn sẽ gặp trong
+Intermediate. Với dữ liệu dễ bảo, split/join là công việc trung thực.)

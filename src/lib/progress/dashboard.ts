@@ -4,7 +4,13 @@ import { desc, eq } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { achievements, progressEvents } from "@/lib/db/schema";
-import { getLinearLessons, getLessonChallenges, getTracks } from "@/lib/curriculum/loaders";
+import {
+  getLinearLessons,
+  getModulePractices,
+  getPracticeChallenges,
+  getTracks,
+} from "@/lib/curriculum/loaders";
+import type { Locale } from "@/lib/i18n/config";
 import { getAchievementDefs } from "./achievement-defs";
 import { computeStreak } from "./streak";
 
@@ -40,7 +46,10 @@ export interface DashboardData {
   } | null;
 }
 
-export async function getDashboardData(userId: string): Promise<DashboardData> {
+export async function getDashboardData(
+  userId: string,
+  locale: Locale = "en",
+): Promise<DashboardData> {
   const [events, awarded] = await Promise.all([
     db
       .select()
@@ -62,14 +71,21 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
   let totalDone = 0;
   let totalAll = 0;
 
-  for (const track of getTracks()) {
-    const lessons = getLinearLessons(track.id);
-    const challenges = lessons.flatMap((lesson) =>
-      getLessonChallenges(track.id, lesson.courseId, lesson.moduleId, lesson.id).map((c) => ({
-        lesson,
-        challenge: c,
-      })),
+  for (const track of getTracks(undefined, locale)) {
+    const lessons = getLinearLessons(track.id, undefined, locale);
+    // Course 1 revision: coding progress counts practice-set challenges.
+    // (Lesson-attached checkout challenges are included via their practice
+    // sets when they exist; checkpoints are covered by their own lessons.)
+    const practiceChallenges = lessons.flatMap((lesson) =>
+      getModulePractices(track.id, lesson.courseId, lesson.moduleId, undefined, locale)
+        .filter((p) => p.afterLesson === lesson.id)
+        .flatMap((p) =>
+          getPracticeChallenges(track.id, lesson.courseId, lesson.moduleId, p.id, undefined, locale).map(
+            (challenge) => ({ lesson, challenge }),
+          ),
+        ),
     );
+    const challenges = practiceChallenges;
     const total = lessons.length + challenges.length;
     const done =
       lessons.filter((l) => completedLessons.has(l.id)).length +
@@ -87,7 +103,7 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
 
   // Achievements: earned (joined with awardedAt) + locked defs.
   const awardedMap = new Map(awarded.map((a) => [a.achievementId, a.awardedAt]));
-  const achievementRows = getAchievementDefs().map((def) => ({
+  const achievementRows = getAchievementDefs(locale).map((def) => ({
     ...def,
     earned: awardedMap.has(def.id),
     awardedAt: awardedMap.get(def.id) ?? null,
@@ -95,7 +111,7 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
 
   // Continue-learning: latest event's position in the linear order → next
   // item; with no history, the first lesson.
-  const continueLearning = deriveContinueTarget(events);
+  const continueLearning = deriveContinueTarget(events, locale);
 
   return {
     overall: {
@@ -115,11 +131,12 @@ export async function getDashboardData(userId: string): Promise<DashboardData> {
 
 function deriveContinueTarget(
   events: { contentType: "lesson" | "challenge"; contentId: string }[],
+  locale: Locale,
 ): DashboardData["continueLearning"] {
-  const tracks = getTracks();
+  const tracks = getTracks(undefined, locale);
   if (tracks.length === 0) return null;
 
-  const linearOfFirst = getLinearLessons(tracks[0]!.id);
+  const linearOfFirst = getLinearLessons(tracks[0]!.id, undefined, locale);
   if (linearOfFirst.length === 0) return null;
 
   // Find the earliest linear lesson that is NOT completed.
@@ -129,18 +146,22 @@ function deriveContinueTarget(
   const target = firstIncomplete ?? linearOfFirst[linearOfFirst.length - 1]!;
   const href = `/learn/${target.trackId}/${target.courseId}/${target.moduleId}/${target.id}`;
 
-  // If that lesson has an un-passed challenge, point at the challenge
+  // If that lesson has an un-passed practice challenge, point at it
   // (deeper into the loop); otherwise the lesson itself.
-  const challenges = getLessonChallenges(
+  const practiceSet = getModulePractices(
     target.trackId,
     target.courseId,
     target.moduleId,
-    target.id,
-  );
+    undefined,
+    locale,
+  ).find((p) => p.afterLesson === target.id);
+  const challenges = practiceSet
+    ? getPracticeChallenges(target.trackId, target.courseId, target.moduleId, practiceSet.id, undefined, locale)
+    : [];
   const nextChallenge = challenges.find((c) => !completedChallengeSet(events).has(c.id));
   if (nextChallenge) {
     return {
-      href: `${href}/challenge/${nextChallenge.id}`,
+      href: `${href}/practice/${practiceSet!.id}/${nextChallenge.id}`,
       title: nextChallenge.title,
       kind: "challenge" as const,
     };

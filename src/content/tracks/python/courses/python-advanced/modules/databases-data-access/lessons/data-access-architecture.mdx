@@ -1,0 +1,54 @@
+## The connection pool
+
+Opening a database connection costs a network handshake, an auth round-trip,
+and server-side memory. A **pool** owns a fixed set of connections and lends
+them:
+
+- `checkout()` — borrow one (wait or fail if exhausted: *backpressure*),
+- `checkin(conn)` — return it (the pool rolls back any open transaction first —
+  a borrowed connection must come back clean),
+- never share one connection between two concurrent units of work.
+
+Pool sizing is a trade: too small and requests queue; too large and the
+database drowns in context switching. Start small (a few per worker) and
+measure.
+
+## The repository: your domain's vocabulary
+
+A repository exposes **collections of domain objects**, not tables:
+
+```python
+class OrderRepository:
+    def get(self, order_id) -> Order | None: ...
+    def add(self, order) -> None: ...
+    def for_customer(self, customer_id) -> list[Order]: ...
+```
+
+Its contract: it raises *domain* errors (`OrderNotFound`), returns *domain*
+objects, and never leaks SQL or row tuples upward. That boundary lets tests
+swap an in-memory fake, lets the schema change without touching callers, and —
+the honest caveat — costs a translation layer. It earns its keep on complex
+domains, not on thin CRUD.
+
+## Unit of work: one transaction, one decision
+
+A unit of work collects changes and commits them **atomically**:
+
+```python
+with uow:
+    uow.orders.add(order)
+    uow.payments.record(payment)
+# commit happens on exit; either both persist or neither
+```
+
+The rule from the API module returns: the *handler* declares the unit of work;
+the machinery owns the connection and the transaction. Business logic never
+calls `BEGIN` or `COMMIT` itself.
+
+## Migrations: schema change is code change
+
+Schemas evolve; the database must move with the code. A migration is a small,
+ordered, versioned step (create table, add column with a default, backfill,
+add constraint). Two disciplines: every migration is reversible or explicitly
+one-way-and-dangerous, and *add-then-migrate-then-remove* for breaking column
+changes (deploy the code that tolerates both shapes first).

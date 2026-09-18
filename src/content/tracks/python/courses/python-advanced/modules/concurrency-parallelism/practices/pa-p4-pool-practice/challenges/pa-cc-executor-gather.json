@@ -1,0 +1,21 @@
+{
+  "id": "pa-cc-executor-gather",
+  "title": "Resilient concurrent gather",
+  "prompt": "Implement `gather(urls, fetch, workers=4)` using a `ThreadPoolExecutor`:\n\n- run `fetch(url)` for every url with up to `workers` concurrent tasks\n- return a tuple `(results, errors)`\n- `results` maps url → fetch result for successful calls\n- `errors` maps url → the exception's string message for failed calls\n- one failing url must never prevent others from completing",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "from concurrent.futures import ThreadPoolExecutor, as_completed\n\n# TODO: gather(urls, fetch, workers=4)",
+  "tests": [
+    {
+      "name": "all results collected, failures isolated",
+      "code": "def fetch(url):\n    if url == 'bad://x':\n        raise ValueError('boom')\n    return url.upper()\n\nresults, errors = gather(['a://1', 'bad://x', 'b://2', 'c://3'], fetch, workers=2)\nassert results == {'a://1': 'A://1', 'b://2': 'B://2', 'c://3': 'C://3'}, f'results: {results}'\nassert errors == {'bad://x': 'boom'}, f'errors: {errors}'\nprint('ok')",
+      "hint": "Wrap fut.result() in try/except and record per-url outcomes; as_completed lets each future report its own fate."
+    },
+    {
+      "name": "empty input, zero workers worth of work",
+      "code": "results, errors = gather([], lambda u: u)\nassert results == {} and errors == {}\nprint('ok')",
+      "hint": "An empty batch returns two empty dicts — no special cases needed."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "javaa-p9-sortproof",
+  "title": "Prove the sort with arithmetic",
+  "prompt": "1. `static long inversionCount(int[] a)` — count out-of-order pairs (i < j, a[i] > a[j])\nwith the honest O(n^2) double loop, as a long.\n2. `static void bubbleSort(int[] a)` — classic bubble sort, no early exit.\n3. `static long swapsFor(int[] a)` — return the number of swaps bubbleSort performs\non a defensive copy of a WITHOUT re-counting inversions (count inside the sort or\nwrap it — your choice) — it must equal inversionCount(a) for every input.\n4. `static boolean isSorted(int[] a)` — linear scan, true iff non-decreasing.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "swap count equals inversions",
+      "code": "\nint[] xs = {5, 1, 4, 2, 8};\ncheckEq(Solution.inversionCount(xs), 4L, \"4 inversions: 5>1, 5>4, 5>2, 4>2\");\ncheckEq(Solution.swapsFor(xs), 4L, \"bubble performs exactly that many swaps\");\nSolution.bubbleSort(xs);\ncheckTrue(Solution.isSorted(xs), \"array actually sorted\");\n",
+      "hint": "Data fact, algorithm work, final state — all agree."
+    },
+    {
+      "name": "empty and single",
+      "code": "\ncheckEq(Solution.inversionCount(new int[]{}), 0L, \"empty: zero inversions\");\ncheckEq(Solution.swapsFor(new int[]{7}), 0L, \"single element: zero swaps\");\n",
+      "hint": "Edge cases hold."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "pa-async-timeout-bounded",
+  "title": "Timeout-bounded job runner",
+  "prompt": "Implement `async def with_timeout(job, seconds)`:\n\n- run the zero-arg async callable `job` under `asyncio.timeout(seconds)`\n- return the job's value when it finishes in time\n- return exactly the string `f'timeout:{seconds}'` when it exceeds the budget",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import asyncio\n\n# TODO: with_timeout(job, seconds)",
+  "tests": [
+    {
+      "name": "fast job passes through",
+      "code": "async def quick():\n    await asyncio.sleep(0.01)\n    return 7\n\nloop = asyncio.new_event_loop()\nassert loop.run_until_complete(with_timeout(quick, 1)) == 7\nloop.close()\nprint('ok')",
+      "hint": "The timeout context wraps the await of the job itself."
+    },
+    {
+      "name": "slow job returns the sentinel",
+      "code": "async def slow():\n    await asyncio.sleep(5)\n    return 'late'\n\nloop = asyncio.new_event_loop()\nassert loop.run_until_complete(with_timeout(slow, 0.05)) == 'timeout:0.05', 'must return the sentinel'\nloop.close()\nprint('ok')",
+      "hint": "asyncio.timeout cancels the inner task at the deadline and raises TimeoutError inside the with."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,20 @@
+Bạn không thể chạy `javap` trong sandbox này — nhưng vẫn có thể đưa ra những
+tuyên bố *có chặn trên, trung thực* về code đã biên dịch. Số nghịch đảo (cặp
+lệch thứ tự) của bubble sort chính là số lần swap nó thực hiện:
+
+```java
+static long inversionCount(int[] a) {   // O(n^2) — vét cạn trung thực
+    long inv = 0;
+    for (int i = 0; i < a.length; i++)
+        for (int j = i + 1; j < a.length; j++)
+            if (a[i] > a[j]) inv++;
+    return inv;
+}
+```
+
+`inversionCount` là *sự thật về dữ liệu*; số swap mà một bubble sort đúng thực
+hiện bằng đúng con số đó; và một lần quét tuyến tính trên mảng cuối chứng minh
+mảng đã được sắp (nghịch đảo = 0). Ba phép đo củng cố lẫn nhau — không phép đo
+nào tin tưởng optimizer là trung thực, và optimizer không thể gian lận phép đo
+nào. Đây là mẫu để kiểm thử hành vi lân cận hiệu năng: khẳng định trên *hiệu
+ứng đếm được*, không phải trên cảm giác.

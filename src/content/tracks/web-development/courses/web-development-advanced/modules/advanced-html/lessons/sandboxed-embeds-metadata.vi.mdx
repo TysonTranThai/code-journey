@@ -1,0 +1,134 @@
+Hai kỹ năng phân biệt markup chuyên nghiệp với markup copy-paste: nhúng nội dung của
+người khác một cách *an toàn*, và làm cho tài liệu của chính bạn *máy đọc được*. Cả hai
+đều là việc của phần tử và thuộc tính — không framework, không build step.
+
+## Nhúng có sandbox: iframe có chủ đích
+
+Một `<iframe>` nhập vào trang của bạn một ngữ cảnh duyệt web hoàn chỉnh — HTML, CSS và
+JavaScript của người khác. Thuộc tính `sandbox` là cách giữ vị khách ấy trong vòng
+dây xích. **Sandbox rỗng khởi đầu từ con số không về quyền hạn:**
+
+```html
+<iframe
+  src="https://example.com/embed"
+  sandbox
+  title="Demo bảng giá tương tác"
+  loading="lazy"
+  width="640" height="360">
+</iframe>
+```
+
+Iframe trong sandbox nhận một origin riêng biệt: script (nếu bạn cho phép) không thể
+đụng vào DOM, storage hay cookie của bạn. Sau đó bạn cấp lại quyền năng từng token một,
+chỉ những gì embed thực sự cần:
+
+| Token | Cấp quyền |
+| --- | --- |
+| `allow-scripts` | Chạy JavaScript |
+| `allow-forms` | Gửi form |
+| `allow-popups` | Mở cửa sổ mới |
+| `allow-same-origin` | Giữ origin thật (storage, cookie) |
+
+Cặp kết hợp cần sợ: `sandbox="allow-scripts allow-same-origin"` trên nội dung bạn không
+tin tưởng. Khi có cả hai, trang được nhúng chạm tới storage của chính origin nó, và
+script được chạy — với nội dung cùng origin, nghĩa là embed có thể tự gỡ sandbox của
+chính nó. Nếu bạn không dám nói "embed này được hành xử như site của tôi", bạn không
+cấp cặp quyền đó.
+
+Thuộc tính `allow` chuyển giao các tính năng mạnh cụ thể (camera, fullscreen,
+clipboard) theo cú pháp Permissions Policy:
+
+```html
+<iframe src="https://meet.example/join" allow="camera; microphone" sandbox="allow-scripts" title="Tham gia cuộc gọi"></iframe>
+```
+
+Chuyển giao là chọn-gục theo từng tính năng: một embed không có `allow="camera"` thì
+không có camera, chấm hết. Và `title` trên iframe không phải trang trí — đó là accessible
+name của khung.
+
+## Metadata: API của tài liệu
+
+Mọi thứ máy móc biết về trang của bạn trước khi hiển thị đều đến từ `<head>`:
+
+```html
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kite CLI — Bắt đầu</title>
+  <meta name="description" content="Cài đặt, cấu hình và chạy lệnh đầu tiên với Kite CLI trong mười phút.">
+  <link rel="canonical" href="https://docs.example.com/kite/getting-started">
+  <meta name="robots" content="noindex, follow">
+</head>
+```
+
+- `charset` đứng đầu — trang lỗi encoding là trang hỏng.
+- `viewport` làm cho CSS responsive trở nên khả thi; thiếu nó, điện thoại dựng layout
+  desktop 980 px.
+- `canonical` gọi tên *duy nhất* URL đại diện cho nội dung này, để các bản nhân bản và
+  biến thể tham số gộp lại thay vì giành nhau.
+- `robots` điều khiển crawler theo từng trang: `noindex, follow` là pattern cho trang
+  quản trị — ẩn với tìm kiếm, liên kết vẫn được đi qua.
+
+## Metadata mạng xã hội và có cấu trúc
+
+Preview khi chia sẻ liên kết được dẫn dắt bởi Open Graph cùng markup thẻ:
+
+```html
+<meta property="og:title" content="Kite CLI — Bắt đầu">
+<meta property="og:description" content="Chạy lệnh đầu tiên trong mười phút.">
+<meta property="og:image" content="https://docs.example.com/kite-card.png">
+<meta name="twitter:card" content="summary_large_image">
+```
+
+Metadata có cấu trúc — những sự kiện máy hiểu được về các thực thể trên trang — là cùng
+một bản năng nhưng đi sâu hơn. Ở giai đoạn này điều quan trọng là khái niệm: thực thể,
+thuộc tính, và tầng máy mà công cụ tìm kiếm dựng từ chúng.
+
+## Ngôn ngữ và ý nghĩa trong văn bản
+
+Quốc tế hóa cũng là markup:
+
+```html
+<html lang="vi">
+  …
+  <p>Đặt giá trị <code lang="en" dir="ltr">fetchpriority</code> thành <code>high</code>.</p>
+  <time datetime="2026-09-12">12/09/2026</time>
+  <address><a href="mailto:team@example.com">team@example.com</a></address>
+  <abbr title="HyperText Markup Language">HTML</abbr>
+</html>
+```
+
+`lang` trên gốc tài liệu (trình đọc màn hình chọn cách phát âm từ đó; công cụ tìm kiếm
+phân đoạn theo nó), `lang`/`dir` trên các đoạn ngoại ngữ, `<time datetime>` cho ngày
+tháng một giá trị máy đọc được trong khi con người thấy định dạng tùy ý, `<address>`
+cho thông tin liên hệ, `<abbr title>` mở rộng từ viết tắt một lần ngay lần dùng đầu.
+Và `hreflang` trên các liên kết alternate báo cho công cụ tìm kiếm biết mỗi phiên bản
+phục vụ locale nào:
+
+```html
+<link rel="alternate" hreflang="en" href="https://example.com/en/getting-started">
+<link rel="alternate" hreflang="vi" href="https://example.com/vi/getting-started">
+```
+
+Đây chính là cách một sản phẩm song ngữ như Code Journey tuyên bố hai locale của mình.
+
+## Điều gì hay sai
+
+- **`sandbox="allow-scripts allow-same-origin"` trên nội dung không tin cậy** — lỗ
+  leo thang embed kinh điển.
+- **Thiếu `title` cho iframe** — người dùng trình đọc màn hình chỉ nghe "frame" và
+  không gì nữa.
+- **Thiếu viewport** trên trang responsive (hoặc `user-scalable=no` phá khả năng thu phóng).
+- **Mọi trang cùng một `title`/description**, hoặc canonical trỏ về gốc site thay vì URL
+  của chính trang.
+- **`og:image` trỏ tới URL tương đối** — crawler tải nó ngoài ngữ cảnh; ảnh mạng xã hội
+  phải là URL tuyệt đối.
+- **Không có thuộc tính `lang`** — công cụ phát âm và dịch thuật lặng lẽ suy yếu.
+
+## Thực hành và điểm nối tiếp
+
+Bạn sẽ chấm điểm các bộ token sandbox theo từng tình huống embed (bộ nào an toàn, bộ
+nào leo thang), dựng một head hoàn chỉnh với canonical + OG + hreflang, và sửa một iframe
+bị ship nguyên trạng không sandbox. Nhúng an toàn sẽ quay lại trong chuyên đề kỹ thuật
+bảo mật của khóa này; metadata quay lại trong phần SEO/observability — cả hai đều xây
+trực tiếp trên bài học này.

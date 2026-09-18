@@ -1,0 +1,21 @@
+{
+  "id": "ca24-static-assert-layout",
+  "title": "Compile-Time Layout Contract",
+  "prompt": "ISO C11. Given `struct packet { unsigned char tag; unsigned short len; unsigned int crc; };` (declared for you), implement `size_t packet_min_size(void)` returning sizeof(struct packet) — it must be at least 7 (tag + len + crc with no padding can compress to 7 on some ABIs, but padding may grow it). Then `int packet_layout_sane(void)` returns 1 when offsetof(packet, crc) >= offsetof(packet, len) + sizeof(unsigned short) and 0 otherwise — the members must not overlap.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#include <stddef.h>\nstruct packet { unsigned char tag; unsigned short len; unsigned int crc; };\n",
+  "tests": [
+    {
+      "name": "size covers all members",
+      "code": "CHECK(packet_min_size() >= 7);",
+      "hint": "One byte plus two plus four is the floor: 7. Padding may make it larger — that is the ABI's documented choice."
+    },
+    {
+      "name": "members never overlap",
+      "code": "CHECK_EQ(packet_layout_sane(), 1);",
+      "hint": "crc must start at or after the end of len — the compiler never overlaps members."
+    }
+  ],
+  "level": "combination"
+}

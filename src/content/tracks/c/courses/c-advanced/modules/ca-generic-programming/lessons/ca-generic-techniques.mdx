@@ -1,0 +1,19 @@
+## _Generic: compile-time selection
+
+```c
+#define type_name(x) _Generic((x), int: "int", double: "double", char *: "char *", default: "other")
+```
+
+The expression's *type* (not value) picks an arm at compile time. This gives C its only real compile-time overload: type-safe wrappers over type-erased machinery — for example, dispatching to `hash_int` vs `hash_str` while callers never touch the wrong one.
+
+## Tagged unions: runtime generics
+
+```c
+typedef struct { unsigned char tag; union { long i; double d; char *s; } as; } value_t;
+```
+
+The tag says which arm is live; readers switch on it. This is how interpreters, JSON libraries, and every dynamic value in C works. The union itself stores representations, not types — the discipline lives in the tag.
+
+## Macros: know the boundary
+
+Token pasting and stringizing build small DSLs (register tables, X-macro enum/string lists). But macros do not respect scope, cannot be taken as pointers, and double-evaluate arguments. The professional rule: macro for *boilerplate elimination*, functions (even tiny static ones) for logic.

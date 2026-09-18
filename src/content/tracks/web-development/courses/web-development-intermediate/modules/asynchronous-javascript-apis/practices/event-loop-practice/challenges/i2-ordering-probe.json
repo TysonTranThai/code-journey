@@ -1,0 +1,20 @@
+{
+  "id": "i2-ordering-probe",
+  "title": "Execution Order Probe",
+  "prompt": "Write `runProbe(log)` — `log` is a function that records strings. WITHOUT calling `log` directly except inside the callbacks, schedule exactly this sequence using `log`:\n\n1. synchronously: `log(\"sync\")`\n2. a microtask: `log(\"micro\")` (use Promise.resolve().then)\n3. a macrotask: `log(\"macro\")` (use setTimeout with 0)\n\nThe probe function itself must return the string \"scheduled\" immediately, and all three logs must have happened by the time the test awaits one 20ms timeout.",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function runProbe(log) {\n  // schedule the three logs\n  return \"scheduled\";\n}\n",
+  "tests": [
+    {
+      "name": "returns immediately, logs happen later",
+      "code": "const fn = new Function(code + \"\\nreturn { runProbe };\");\nconst { runProbe } = fn();\nconst seen = [];\nconst r = runProbe((s) => seen.push(s));\nif (r !== \"scheduled\") throw new Error(\"runProbe must return 'scheduled' synchronously.\");\nif (seen.length !== 1 || seen[0] !== \"sync\") throw new Error(\"Only the synchronous log should have run so far.\");\nawait new Promise((r) => setTimeout(r, 20));\nif (seen.join() !== \"sync,micro,macro\") throw new Error(\"Final order must be sync, micro, macro — got: \" + seen.join());",
+      "hint": "Log 'sync' first, then Promise.resolve().then(() => log('micro')), then setTimeout(() => log('macro'), 0)."
+    },
+    {
+      "name": "microtask beats macrotask",
+      "code": "const fn = new Function(code + \"\\nreturn { runProbe };\");\nconst { runProbe } = fn();\nconst seen = [];\nrunProbe((s) => seen.push(s));\nawait new Promise((r) => setTimeout(r, 20));\nif (seen[1] !== \"micro\" || seen[2] !== \"macro\") throw new Error(\"Microtasks always drain before the next macrotask.\");",
+      "hint": "Promise callbacks queue as microtasks; setTimeout as macrotasks — the loop drains microtasks first."
+    }
+  ]
+}

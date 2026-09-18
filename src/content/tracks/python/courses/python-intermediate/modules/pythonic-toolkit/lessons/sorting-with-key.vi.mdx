@@ -1,0 +1,34 @@
+`sorted()` không so sánh trực tiếp các đối tượng của bạn — nó so sánh giá trị
+mà **hàm `key=`** trả về. Một ý tưởng duy nhất, và bạn sắp được mọi thứ:
+
+```python
+words = ["banana", "fig", "cherry"]
+sorted(words, key=len)              # theo độ dài: fig, banana, cherry
+
+people = [
+    {"name": "An", "age": 30},
+    {"name": "Binh", "age": 25},
+]
+sorted(people, key=lambda p: p["age"])
+```
+
+**Giảm dần và sắp nhiều mức** có sẵn luôn:
+
+```python
+scores = [("An", 8), ("Binh", 9), ("Chi", 8)]
+sorted(scores, key=lambda p: p[1], reverse=True)      # cao trước
+
+# sắp theo tuổi rồi theo tên — key trả về một tuple:
+sorted(people, key=lambda p: (p["age"], p["name"]))
+```
+
+Hai điều lập trình viên siempre dựa vào:
+
+- **`sorted()` trả list mới; `list.sort()` sửa tại chỗ** (và trả `None` — lỗi kinh điển).
+- **Sắp xếp ổn định (stable)**: key bằng nhau giữ thứ tự gốc, nên có thể sắp key phụ trước rồi sắp key chính sau.
+
+## Vì sao không tự viết hàm so sánh?
+
+`key=` tách "so sánh cái gì" khỏi "so sánh thế nào". Sắp bản ghi theo trường,
+tệp theo kích thước, công việc theo hạn chót — tất cả thành một dòng thay vì
+tự viết logic so sánh thủ công.

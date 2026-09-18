@@ -1,0 +1,21 @@
+## Tệp solution
+
+```bash
+dotnet new sln -n Shop
+dotnet new console -o Shop.App
+dotnet new classlib -o Shop.Core
+dotnet sln add Shop.App Shop.Core
+```
+
+`.sln` là một danh mục liệt kê các dự án — mở trong IDE và mọi dự án được nạp cùng nhau. Phân lớp là một *hướng phụ thuộc*: `Shop.App` dùng mã của `Shop.Core`, không ngược lại.
+
+## ProjectReference
+
+```xml
+<!-- Shop.App/Shop.App.csproj -->
+<ItemGroup>
+  <ProjectReference Include="..\Shop.Core\Shop.Core.csproj" />
+</ItemGroup>
+```
+
+Với dòng đó, `Shop.App` có thể `using Shop.Core;` và hệ thống build biên dịch Core trước, rồi App. Khác biệt giữa `ProjectReference` và `PackageReference` rất quan trọng: project reference là *mã nguồn của bạn*, được build cùng solution; package reference là nhị phân do người khác phát hành qua NuGet, có phiên bản và bất biến.

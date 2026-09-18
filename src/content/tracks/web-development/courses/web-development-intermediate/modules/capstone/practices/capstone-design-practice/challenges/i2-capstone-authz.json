@@ -1,0 +1,20 @@
+{
+  "id": "i2-capstone-authz",
+  "title": "The Authorization Decision",
+  "prompt": "Declare your authorization model as `authz` with: authorOnlyEdit (boolean — can non-authors edit or close a ticket?), serverChecks (boolean — is the author check enforced server-side?), and idSource (string: where author identity comes from — \"session\", \"cookie\", or \"token\"; NEVER \"request-body\").",
+  "difficulty": "advanced",
+  "level": "independent",
+  "boilerplate": "const authz = {\n  authorOnlyEdit: false,\n  serverChecks: false,\n  idSource: \"\",\n};\n",
+  "tests": [
+    {
+      "name": "only authors close; the server enforces it",
+      "code": "const fn = new Function(code + \"\\nreturn { authz };\");\nconst { authz } = fn();\nif (authz.authorOnlyEdit !== true) throw new Error(\"Requirement R4: only the author can close or edit.\");\nif (authz.serverChecks !== true) {\n  throw new Error(\"The check must be server-side — client checks are UX, not security.\");\n}\n",
+      "hint": "R4 is a hard requirement, and trust lives on the server."
+    },
+    {
+      "name": "identity never arrives from the body",
+      "code": "const fn = new Function(code + \"\\nreturn { authz };\");\nconst { authz } = fn();\nconst src = String(authz.idSource).toLowerCase();\nif (src.includes(\"body\") || src.includes(\"payload\") || src.includes(\"form-field\")) {\n  throw new Error(\"Request-supplied author id is the textbook broken-access-control bug.\");\n}\nif (!src) throw new Error(\"Name your source: session, cookie, or token.\");\n",
+      "hint": "The server knows who the caller is — the client never tells it."
+    }
+  ]
+}

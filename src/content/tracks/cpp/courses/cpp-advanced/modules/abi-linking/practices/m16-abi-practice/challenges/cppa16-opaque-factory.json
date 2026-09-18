@@ -1,0 +1,16 @@
+{
+  "id": "cppa16-opaque-factory",
+  "title": "Opaque-Handle Factory Contract",
+  "prompt": "Implement the extern \"C\"-style factory contract (linkage-free in this harness): `wapiCreate/WapiDestroy` manage an opaque handle, and the versioned `WidgetApi` table exposes only v1 calls. Destroy must be idempotent (destroying twice is a no-op, not a double free).",
+  "difficulty": "advanced",
+  "level": "real-world",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <cstdint>\n#include <string>\n\n// --- ABI-stable widget: pimpl with disciplined lifecycle ---\nclass Widget {\npublic:\n    Widget();                       // allocates Impl\n    ~Widget();                      // YOU implement out-of-line discipline\n    Widget(const Widget&) = delete;\n    Widget& operator=(const Widget&) = delete;\n    Widget(Widget&& other) noexcept;\n    Widget& operator=(Widget&& other) noexcept;\n    void set(const std::string& key, std::int64_t value);\n    std::int64_t get(const std::string& key) const;   // 0 if absent\n    std::size_t size() const;\nprivate:\n    struct Impl;\n    Impl* impl_;\n};\n\n// --- versioned function table (pattern 3) ---\nstruct WidgetApi {\n    std::uint32_t version;          // 1\n    std::int64_t (*get)(void* self, const char* key);\n    void (*set)(void* self, const char* key, std::int64_t value);\n};\n\n// Opaque-handle factory contract used by the tests.\nextern \"C\" void* wapiCreate();\nextern \"C\" void  wapiDestroy(void** handle);   // takes the slot: can null it (idempotent)\nextern \"C\" void  wapiFillApi(WidgetApi* api);  // the library publishes its v1 table\n",
+  "tests": [
+    {
+      "name": "opaque handle + idempotent destroy",
+      "code": "void* h = wapiCreate();\nWidgetApi api{};\nwapiFillApi(&api);                    // library wires its thunks into the table\napi.set(h, \"k\", 7);\nCHECK_EQ(api.get(h, \"k\"), 7);\nwapiDestroy(&h);\nwapiDestroy(&h);                      // must be a no-op (and null the slot)",
+      "hint": "wapiDestroy(void** slot): if (!slot || !*slot) return; delete contents; *slot = nullptr. Taking the slot is what makes idempotence possible."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Giới hạn đường dẫn upload",
+  "prompt": "Cài `resolve_upload(base, name)` trả đường dẫn đã nối, đã chuẩn hóa cho một tên tệp do người dùng cung cấp — hoặc raise `ValueError('traversal')` khi tên:\n\n- rỗng, tuyệt đối (`/etc/passwd`), hoặc chứa ký tự NUL\n- chứa bất kỳ thành phần `..` nào (`../../etc/passwd`)\n- sau khi nối sẽ resolve ra ngoài `base`\n\nTên hợp lệ (`'report.pdf'`, `'sub/dir/img.png'`) resolve thành chuỗi `base/name`.",
+  "tests": [
+    {
+      "name": "Tên hợp lệ resolve bên trong base",
+      "hint": "Thư mục con thì được — thoát khỏi gốc thì không."
+    },
+    {
+      "name": "Mọi hình dạng traversal đều bị từ chối",
+      "hint": "Rỗng, tuyệt đối, `..`, tiền tố sneak, và NUL đều fail closed."
+    }
+  ]
+}

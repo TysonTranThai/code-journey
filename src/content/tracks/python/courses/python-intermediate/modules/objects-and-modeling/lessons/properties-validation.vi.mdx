@@ -1,0 +1,48 @@
+Người mới viết `obj.age = 300` rồi cầu may. Lập trình viên trung cấp làm cho
+**trạng thái sai trở nên bất khả thi** — mà không từ bỏ cú pháp attribute đơn
+giản. `@property` sinh ra chính cho việc đó:
+
+```python
+class Person:
+    def __init__(self, age):
+        self.age = age          # đi qua setter bên dưới!
+
+    @property
+    def age(self):
+        return self._age
+
+    @age.setter
+    def age(self, value):
+        if not (0 <= value <= 150):
+            raise ValueError(f"age must be 0..150, got {value}")
+        self._age = value
+```
+
+Giờ `Person(-5)` báo lỗi ngay lập tức, và `p.age = -1` cũng vậy. Quy ước:
+tên công khai `age` là một property; giá trị thô nằm trong `_age` (một gạch
+dưới = nội bộ).
+
+## Property chỉ đọc
+
+Property chỉ có getter là **chỉ đọc** — hoàn hảo cho giá trị suy ra từ trạng
+thái thật:
+
+```python
+class Rectangle:
+    def __init__(self, w, h):
+        self.w, self.h = w, h
+
+    @property
+    def area(self):
+        return self.w * self.h      # không setter: không thể gán
+```
+
+`r.area = 99` giờ raises `AttributeError` — một lỗi tốt, vì area chưa bao giờ
+là trạng thái độc lập.
+
+## Vì sao dùng property thay vì get_x()/set_x()?
+
+Phong cách Python là để lộ attribute trực tiếp và *nâng cấp thành property
+sau nếu có quy tắc xuất hiện* — code gọi không phải thay đổi. Kiểu
+getter/setter Java trên mọi trường chỉ là nhiễu. Hãy kiểm tra dữ liệu tại
+ranh giới nơi dữ liệu xấu đi vào, và giữ phần còn lại thuần túy.

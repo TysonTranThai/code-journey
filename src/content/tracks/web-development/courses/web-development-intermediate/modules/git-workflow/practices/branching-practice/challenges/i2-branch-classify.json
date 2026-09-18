@@ -1,0 +1,20 @@
+{
+  "id": "i2-branch-classify",
+  "title": "Branch Classifier",
+  "prompt": "Write `classifyBranch(name)` — branches follow `<type>/<kebab-desc>` where type ∈ feat|fix|chore|docs|refactor|test. Return \"feature\" for feat/fix branches, \"maintenance\" for chore/docs/test/refactor, and null for anything malformed (missing slash, bad type, spaces, uppercase).",
+  "difficulty": "intermediate",
+  "level": "guided",
+  "boilerplate": "function classifyBranch(name) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "classifies valid branches",
+      "code": "const fn = new Function(code + \"\\nreturn { classifyBranch };\");\nconst { classifyBranch } = fn();\nif (classifyBranch(\"feat/search-filters\") !== \"feature\") throw new Error(\"feat => feature.\");\nif (classifyBranch(\"fix/cart-total\") !== \"feature\") throw new Error(\"fix => feature.\");\nif (classifyBranch(\"chore/deps-bump\") !== \"maintenance\") throw new Error(\"chore => maintenance.\");\nif (classifyBranch(\"docs/readme\") !== \"maintenance\") throw new Error(\"docs => maintenance.\");",
+      "hint": "Split on the first '/', switch on the type."
+    },
+    {
+      "name": "rejects malformed names",
+      "code": "const fn = new Function(code + \"\\nreturn { classifyBranch };\");\nconst { classifyBranch } = fn();\nif (classifyBranch(\"feature-no-slash\") !== null) throw new Error(\"No slash => null.\");\nif (classifyBranch(\"hotfix/thing\") !== null) throw new Error(\"Unknown type => null.\");\nif (classifyBranch(\"feat/Has Spaces\") !== null) throw new Error(\"Spaces are not kebab.\");\nif (classifyBranch(\"FEAT/thing\") !== null) throw new Error(\"Types are lowercase.\");\nif (classifyBranch(\"feat/\") !== null) throw new Error(\"Empty description => null.\");",
+      "hint": "Whitelist the type list; validate the description is non-empty kebab-case."
+    }
+  ]
+}

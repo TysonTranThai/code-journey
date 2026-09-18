@@ -1,0 +1,55 @@
+## Bốn mẫu hình phủ đa số bài dễ
+
+### 1. Bộ đếm — "có bao nhiêu?"
+
+```cpp
+int cnt = 0;
+for (int i = 0; i < n; ++i) {
+    long long x; in >> x;
+    if (x % 2 == 0) ++cnt;
+}
+out << cnt << "\n";
+```
+
+Quy tắc: khai báo bộ đếm **ngoài** vòng lặp, cập nhật bên trong, in sau.
+
+### 2. Biến cộng dồn — "tổng / tích"
+
+```cpp
+long long sum = 0;
+for (long long x : a) sum += x;   // 0 là phần tử trung hòa của +
+```
+
+Chọn phần tử trung hòa cẩn thận: `0` cho tổng, `1` cho tích, `-infinity`
+cho max. Tích của 10^5 số 2? Đó là 2^100000 — không kiểu nguyên nào chứa
+nổi. Suy nghĩ tràn số bắt đầu từ đây.
+
+### 3. Tìm kiếm thoát sớm
+
+```cpp
+int idx = -1;
+for (int i = 0; i < n; ++i)
+    if (a[i] == target) { idx = i; break; }
+```
+
+`break` ngay khi gặp đầu tiên. Với n tới ~10^7, duyệt tuyến tính vẫn ổn
+trong giới hạn nền tảng — biết *khi nào* duyệt tuyến tính là đủ cũng là
+một kỹ năng.
+
+### 4. Mô phỏng — "chạy theo luật"
+
+Nếu bài tả một tiến trình (ngày trôi, bóng nảy), viết tiến trình đó thành
+vòng lặp. Hỏi: một *bước* là gì? Bước nào thay đổi gì? Dừng khi nào?
+
+```cpp
+long long x; in >> x;
+int steps = 0;
+while (x > 1) { x = (x % 2 == 0) ? x / 2 : 3 * x + 1; ++steps; }
+out << steps << "\n";
+```
+
+### Thói quen bất biến
+
+Trước khi tin vòng lặp, nói trong một câu điều gì đúng **mỗi khi chạm
+đỉnh vòng lặp**. "Sau k bước, sum = a[0]+…+a[k-1]." Câu đó là khoảng cách
+giữa phỏng đoán và chứng minh.

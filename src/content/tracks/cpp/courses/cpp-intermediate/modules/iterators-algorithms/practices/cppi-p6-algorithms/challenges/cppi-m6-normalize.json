@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m6-normalize",
+  "title": "Normalize: lowercase + sort",
+  "prompt": "Implement `std::vector<std::string> normalize(std::vector<std::string> v)` returning a copy with every string lowercased and the whole vector sorted lexicographically. Use `std::transform` in place (it may take and return `v` by value) plus `std::sort`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <algorithm>\n#include <cctype>\n#include <string>\n#include <vector>\n#include <iostream>\n\n// std::vector<std::string> normalize(std::vector<std::string> v)\n",
+  "tests": [
+    {
+      "name": "basic",
+      "code": "auto r = normalize({\"Beta\", \"alpha\", \"gamma\"});\nCHECK_EQ(r.size(), 3);\nCHECK_EQ(r[0], std::string(\"alpha\"));\nCHECK_EQ(r[1], std::string(\"beta\"));\nCHECK_EQ(r[2], std::string(\"gamma\"));",
+      "hint": "Lowercase first, then the sort sees consistent case."
+    },
+    {
+      "name": "mixed-case",
+      "code": "auto r = normalize({\"B\", \"a\"});\nCHECK_EQ(r[0], std::string(\"a\"));\nCHECK_EQ(r[1], std::string(\"b\"));",
+      "hint": "Without lowercasing, 'B' (66) sorts before 'a' (97)."
+    },
+    {
+      "name": "empty",
+      "code": "CHECK_EQ(normalize({}).size(), 0);",
+      "hint": "Nothing to do."
+    }
+  ],
+  "level": "independent"
+}

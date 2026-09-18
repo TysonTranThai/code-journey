@@ -1,0 +1,25 @@
+{
+  "id": "cppa13-debug-checkpoint",
+  "title": "Incident Response Gauntlet",
+  "prompt": "Two skills in one: `classifyCrash` (per the module-13 contract) and `repairMedian` — the incident: `medianOf` was reported to crash on empty input (it indexed v[0] before checking). Repair it: nullopt when empty, true median (average of two middles, as double) otherwise.",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <cstdint>\n#include <optional>\n#include <string>\n#include <vector>\n\n// A parsed crash-frame from a production stack trace:\n//   \"#2  0x00007f3a in App::handle + 24\"  -> frame 2, module App::handle, offset 24\nstruct Frame {\n    int index = -1;\n    std::string symbol;   // \"\" when unresolved\n    std::uint64_t offset = 0;\n};\n\n// Classify a crash from its frame list:\n//   \"null-deref\"  : frame 0 offset in {0, 8, 16} and symbol empty\n//   \"heap-corrupt\": frame 0 symbol starts with \"memcpy\" or \"malloc\"\n//   \"wild-jump\"   : frame 0 symbol empty and offset > 4096\n//   \"in-app\"      : frame 0 symbol starts with \"App::\"\n//   \"unknown\"     : everything else\n// Frames beyond index 0 are context. Empty list -> \"unknown\".\nstd::string classifyCrash(const std::vector<Frame>& frames);\n\n#include <algorithm>\n#include <optional>\n#include <vector>\n\n// The incident: crashed on empty input (indexed v[0] unguarded).\n// Contract: nullopt when empty; otherwise the median as double — for even\n// sizes, the mean of the two middle elements of the SORTED data\n// (without reordering the caller's vector).\nstd::optional<double> repairMedian(std::vector<int> v);\n",
+  "tests": [
+    {
+      "name": "classification battery",
+      "code": "CHECK_EQ(classifyCrash({{0, \"\", 8}}), \"null-deref\");\nCHECK_EQ(classifyCrash({{0, \"memcpy\", 0}}), \"heap-corrupt\");\nCHECK_EQ(classifyCrash({{0, \"\", 9000}}), \"wild-jump\");\nCHECK_EQ(classifyCrash({{0, \"App::tick\", 0}}), \"in-app\");\nCHECK_EQ(classifyCrash({}), \"unknown\");",
+      "hint": "The documented priority chain over frame 0."
+    },
+    {
+      "name": "the median incident, repaired",
+      "code": "CHECK(!repairMedian({}).has_value());\nCHECK_EQ(repairMedian({7}).value_or(-1.0), 7.0);\nCHECK_EQ(repairMedian({3, 1, 2}).value_or(-1.0), 2.0);\nCHECK_EQ(repairMedian({4, 1, 3, 2}).value_or(-1.0), 2.5);",
+      "hint": "Sort a local copy (by value parameter), then: odd -> middle; even -> mean of the two middles."
+    },
+    {
+      "name": "caller's data untouched",
+      "code": "std::vector<int> data{3, 1, 2};\nauto m = repairMedian(data);\nCHECK_EQ(m.value_or(-1.0), 2.0);\nCHECK((data == std::vector<int>{3, 1, 2}));",
+      "hint": "The parameter is by-value; even so, never mutate through it — sort the local copy only."
+    }
+  ]
+}

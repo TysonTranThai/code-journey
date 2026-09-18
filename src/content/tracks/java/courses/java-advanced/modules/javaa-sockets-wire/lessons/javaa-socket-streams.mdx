@@ -1,0 +1,23 @@
+A TCP socket is *a byte stream with no message boundaries*. Write three
+JSON objects to a socket and the reader may receive three chunks, one chunk,
+or one-and-a-half — the network owes you neither your send boundaries nor
+your read sizes. Everything message-shaped is YOUR protocol's job: framing.
+
+```java
+Socket s = new Socket("localhost", port);        // loopback: safe, instant
+s.setSoTimeout(500);                             // read() throws after 500ms idle
+BufferedReader in = new BufferedReader(
+    new InputStreamReader(s.getInputStream(), StandardCharsets.UTF_8));
+in.readLine();                                   // frame = "until newline"
+```
+
+The newline protocol is the classic first frame: sender appends `\n`, reader
+splits on it. It is text-only and it forbids embedded newlines — binary
+protocols graduate to length prefixes (`[4-byte length][payload]`), which is
+what HTTP/2 and every serious wire format do. Either way, the framing rule
+belongs to the protocol, not the stream.
+
+**Timeouts are survival**: a read against a silent peer blocks forever by
+default. `setSoTimeout` bounds every read; production servers also bound
+*idle* connections and *total request* time. A socket without a timeout is a
+thread-leak with a delay.

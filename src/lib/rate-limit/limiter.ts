@@ -86,3 +86,8 @@ export function retryMessage(resetMs: number): { message: string; retryAfterSec:
     retryAfterSec: sec,
   };
 }
+
+/** Whole seconds until the window resets (for localized templates). */
+export function retrySeconds(resetMs: number): number {
+  return Math.max(1, Math.ceil(resetMs / 1000));
+}

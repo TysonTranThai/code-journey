@@ -1,0 +1,21 @@
+{
+  "id": "ca4-uninit-discipline",
+  "title": "Initialize Everything",
+  "prompt": "Implement `int sum_known(const int *a, size_t n)` that totals the array — and if n is 0 returns 0. The trap: a wrong answer pattern is returning an uninitialized accumulator 'sometimes works'. Then implement `int *find_or_null(int *a, size_t n, int v)` returning the first match or NULL — the two functions together exercise init-discipline and null contracts.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "empty sums to zero",
+      "code": "CHECK_EQ(sum_known(0, 0), 0);",
+      "hint": "The accumulator must be initialized at declaration; the n==0 path proves it."
+    },
+    {
+      "name": "sums and finds",
+      "code": "int v[4] = {5, 6, 7, 8};\nCHECK_EQ(sum_known(v, 4), 26);\nCHECK_EQ(*find_or_null(v, 4, 7), 7);\nCHECK_NULL(find_or_null(v, 4, 42));",
+      "hint": "Both contracts hold: totals and a NULL on miss."
+    }
+  ],
+  "level": "independent"
+}

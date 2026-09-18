@@ -1,0 +1,40 @@
+## Một ngôn ngữ, một nền tảng
+
+**C# là ngôn ngữ lập trình.** **.NET là nền tảng**: một runtime thực thi chương trình cùng một thư viện chuẩn khổng lồ để bạn gọi vào. Bạn viết C#; *nền tảng* chạy nó. Người ta nói "lập trình viên C#" và "lập trình viên .NET" gần như thay thế được cho nhau — nhưng hai khái niệm này khác nhau, và phỏng vấn hay hỏi đúng chỗ đó.
+
+```csharp
+using System;
+
+public class Solution
+{
+    public static void program()
+    {
+        Console.WriteLine("C# là ngôn ngữ. WriteLine đến từ .NET.");
+    }
+}
+```
+
+`Console.WriteLine` không phải một phần của ngôn ngữ C# — đó là một phương thức do thư viện .NET cung cấp. Trình biên dịch C# (Roslyn) kiểm tra code của bạn; runtime .NET (CoreCLR) thực thi nó.
+
+| Thành phần | Là gì | Ví dụ |
+|---|---|---|
+| C# | ngôn ngữ: cú pháp, kiểu, quy tắc | `string name = "Ada";` |
+| Roslyn | trình biên dịch: code → IL | bắt `string x = 5;` |
+| .NET runtime | thực thi chương trình đã biên dịch | chạy `Console.WriteLine` |
+| Thư viện .NET | chức năng có sẵn | `Console`, `Math`, `File`, `List<T>` |
+
+Code Journey chấm điểm C# của bạn bằng **.NET SDK thật** — code của bạn được biên dịch và thực thi trong sandbox khoá kín, y như hệ thống làm trong môi trường thật.
+
+## C# dùng để làm gì
+
+C# chạy backend web (ASP.NET Core), ứng dụng desktop, game (Unity dùng C#), và dịch vụ cloud. Tất cả đều dựa trên nền tảng mà khoá này luyện: kiểu dữ liệu, luồng điều khiển, phương thức, collection, class. Framework thì đổi đổi rồi lại đổi; nền tảng căn bản trả hoá đơn hàng chục năm.
+
+## Biên dịch, không phải thông dịch
+
+Khi bạn nộp code, ba điều xảy ra:
+
+1. **Biên dịch** — Roslyn kiểm tra cú pháp và kiểu, tạo ra một assembly.
+2. **Nạp** — runtime .NET nạp code đã biên dịch.
+3. **Chạy** — mỗi test ẩn được thực thi và báo pass/fail.
+
+Nếu code không biên dịch được, bạn nhận **thông báo lỗi của trình biên dịch** — đọc từ trên xuống; nó thường chỉ đúng dòng và đúng vấn đề. Đó không phải trở ngại; đó là vòng phản hồi nhanh nhất trong ngành phần mềm.

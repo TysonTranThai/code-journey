@@ -1,0 +1,26 @@
+{
+  "id": "ca19-cas-doubling-loop",
+  "title": "CAS Loop: Double Until Even",
+  "prompt": "ISO C11. Implement `void double_until_even(atomic_int *v)` — repeatedly double `*v` using a compare-exchange loop until the new value is even. Every doubling must go through one atomic CAS (no plain `*v = *v * 2`).",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#include <stdatomic.h>\n",
+  "tests": [
+    {
+      "name": "doubles odd values once",
+      "code": "atomic_int v = 3;\ndouble_until_even(&v);\nCHECK_EQ(atomic_load(&v), 6);",
+      "hint": "3 doubled is 6 — even, so exactly one CAS round."
+    },
+    {
+      "name": "already even stays",
+      "code": "atomic_int w = 4;\ndouble_until_even(&w);\nCHECK_EQ(atomic_load(&w), 8);",
+      "hint": "4 is even but the contract is double-then-check: 8, still one round."
+    },
+    {
+      "name": "zero stays zero",
+      "code": "atomic_int z = 0;\ndouble_until_even(&z);\nCHECK_EQ(atomic_load(&z), 0);",
+      "hint": "0 doubled is 0 — the loop must terminate on the zero fixed point."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,14 @@
+{
+  "title": "RateLimitedClient",
+  "prompt": "Cài `class RateLimitedClient`:\n\n1. `__init__(self, max_concurrent=2)` — tạo giới hạn được bảo vệ bằng `asyncio.Semaphore` và bộ đếm `in_flight` cho các request đang ở trong vùng găng.\n2. `async def request(self, name, delay, fail=False)` — lấy semaphore, tăng `in_flight`, ngủ `delay`, raise `RuntimeError(f'{name} failed')` khi `fail=True`, trả về `f'{name}:ok'`, và LUÔN giảm `in_flight` (thành công, thất bại hay bị hủy).\n3. `async def run_all(self, specs, per_request_timeout=None)` — chạy mọi spec `(name, delay, fail)` đồng thời trong một TaskGroup; khi đặt `per_request_timeout`, mỗi request bị giới hạn và slot của nó nhận `f'timeout:{per_request_timeout}'` thay vì raise.\n\nKiểm tra tất định: `in_flight` không bao giờ vượt `max_concurrent` (đo bằng sleep được bọc), và mọi kết quả về đúng vị trí.",
+  "tests": [
+    {
+      "name": "Concurrency bị chặn, kết quả theo vị trí",
+      "hint": "Giữ semaphore cho toàn bộ thân hàm (async with), đếm in_flight bên trong, giảm trong finally."
+    },
+    {
+      "name": "Timeout thay thất bại; thất bại thật thì raise",
+      "hint": "Có per_request_timeout, request chậm trả về sentinel timeout vào slot của nó; sentinel chỉ áp dụng cho timeout."
+    }
+  ]
+}

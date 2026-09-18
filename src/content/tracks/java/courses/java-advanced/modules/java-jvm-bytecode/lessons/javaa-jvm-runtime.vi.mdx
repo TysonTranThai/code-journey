@@ -1,0 +1,25 @@
+JVM spec (§2.5, §5) chia bộ nhớ runtime thành các vùng khác nhau về thời gian
+sống và kiểu lỗi. Những vùng quan trọng hằng ngày:
+
+- **Heap**: mọi đối tượng; dùng chung cho mọi thread; GC quản lý.
+  `OutOfMemoryError` ở đây nghĩa là tập dữ liệu *sống* không vừa.
+- **Stack mỗi thread**: một frame cho mỗi lần gọi phương thức (locals + operand
+  stack). `StackOverflowError` nghĩa là *độ sâu*, không phải heap.
+- **Metaspace**: metadata của lớp (native memory). `OutOfMemoryError:
+  Metaspace` thường nghĩa là lớp đang được sinh runtime và không bao giờ được
+  dọn.
+- **PC register** mỗi thread — lý do thread có thể bị treo ở bất kỳ đâu.
+
+**Khởi tạo lớp** (JLS §12.4) là lazy và có thể kích chủ động. Hai cách gọi tên
+lớp hành xử khác nhau:
+
+```java
+Class<?> a = Loaded.class;                  // KHÔNG chạy static init
+Class<?> b = Class.forName("Loaded");       // static init chạy
+```
+
+Class literal là tham chiếu hằng compile-time — nó không *sử dụng* lớp.
+`forName` khởi tạo lớp. `new`, gọi static method, hay đọc static field
+không-hằng cũng vậy. Tính lazy này giải thích vì sao static initializer hỏng
+có thể trốn hàng tuần cho đến lần dùng thật đầu tiên ném
+`ExceptionInInitializerError`.

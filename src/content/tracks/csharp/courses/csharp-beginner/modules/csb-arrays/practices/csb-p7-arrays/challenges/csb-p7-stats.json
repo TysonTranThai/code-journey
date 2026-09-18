@@ -1,0 +1,21 @@
+{
+  "id": "csb-p7-stats",
+  "title": "Array statistics",
+  "prompt": "Implement `static (int Max, int Min) Bounds(int[] values)` — the largest and smallest elements in one pass. Throw `ArgumentException` when the array is null or empty.",
+  "difficulty": "beginner",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "var b = Solution.Bounds(new[] {3, -1, 4, -1, 5});\nCj.Eq(b.Max, 5, \"max\");\nCj.Eq(b.Min, -1, \"min\");\nvar c = Solution.Bounds(new[] {7});\nCj.Eq(c.Max, 7, \"single max\");\nCj.Eq(c.Min, 7, \"single min\");",
+      "hint": "One pass can track both ends; a single element is both its own max and min."
+    },
+    {
+      "name": "guards",
+      "code": "bool t1 = false;\ntry { Solution.Bounds(null); } catch (ArgumentException) { t1 = true; }\nbool t2 = false;\ntry { Solution.Bounds(new int[0]); } catch (ArgumentException) { t2 = true; }\nCj.True(t1 && t2, \"null and empty throw\");",
+      "hint": "No data — no answer. Both must throw, not return a sentinel."
+    }
+  ],
+  "level": "guided"
+}

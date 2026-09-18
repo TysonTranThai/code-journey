@@ -1,0 +1,55 @@
+## Four patterns cover most easy problems
+
+### 1. Counter — "how many?"
+
+```cpp
+int cnt = 0;
+for (int i = 0; i < n; ++i) {
+    long long x; in >> x;
+    if (x % 2 == 0) ++cnt;
+}
+out << cnt << "\n";
+```
+
+Rule: declare the counter **outside** the loop, update inside, print after.
+
+### 2. Accumulator — "sum / product"
+
+```cpp
+long long sum = 0;
+for (long long x : a) sum += x;   // 0 is the identity for +
+```
+
+Pick the identity element carefully: `0` for sums, `1` for products,
+`-infinity` for max. Product of 10^5 values of 2? That's 2^100000 — no
+integer type holds it. Overflow thinking starts here.
+
+### 3. Search with early exit
+
+```cpp
+int idx = -1;
+for (int i = 0; i < n; ++i)
+    if (a[i] == target) { idx = i; break; }
+```
+
+`break` on the first hit. For n up to ~10^7 this linear scan is fine at
+the platform's limits — knowing *when* linear is enough is a skill.
+
+### 4. Simulation — "play out the rules"
+
+If the problem describes a process (days passing, balls bouncing), write
+the process as a loop. Ask: what is one *step*? What changes each step?
+When does it stop?
+
+```cpp
+long long x; in >> x;
+int steps = 0;
+while (x > 1) { x = (x % 2 == 0) ? x / 2 : 3 * x + 1; ++steps; }
+out << steps << "\n";
+```
+
+### The invariant habit
+
+Before trusting a loop, say in one sentence what is true **every time you
+reach the top of the loop**. "After k iterations, sum holds a[0]+…+a[k-1]."
+That sentence is the difference between a guess and a proof.

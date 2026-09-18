@@ -1,0 +1,26 @@
+Hai primitive, đều về *rò rỉ thông tin*:
+
+**Tấn công thời gian** so sánh bí mật từng ký tự và dừng sớm — THỜI GIAN thất
+bại lộ số ký tự đã khớp. String.equals là so sánh thoát sớm. Bí mật phải được
+so sánh theo **thời gian hằng**:
+
+```java
+static boolean safeEquals(byte[] a, byte[] b) {
+    return MessageDigest.isEqual(a, b);   // có sẵn trong JDK: thời gian hằng
+}
+```
+
+**Rainbow table** tấn công hash không salt: digest tính sẵn của "hunter2" khớp
+với mọi người từng dùng "hunter2". Cách sửa là salt NGẪU NHIÊN theo từng
+người dùng trộn vào digest — cùng mật khẩu, byte lưu khác nhau mỗi người:
+
+```java
+byte[] salt = SecureRandom.getInstanceStrong()
+    .generateSeed(16);
+byte[] hash = sha256(salt, passwordBytes);   // lưu CẢ HAI
+```
+
+Xác minh bằng cách tính lại với salt ĐÃ LƯU và so sánh thời gian hằng. Cho lưu
+mật khẩu production, hình dạng mạnh hơn là KDF *chậm* (bcrypt/scrypt/Argon2/
+PBKDF2) — khóa học dạy hình dạng salted-digest trong sandbox; nguyên tắc mở
+rộng được: chi phí mỗi lần đoán là một tham số thiết kế.

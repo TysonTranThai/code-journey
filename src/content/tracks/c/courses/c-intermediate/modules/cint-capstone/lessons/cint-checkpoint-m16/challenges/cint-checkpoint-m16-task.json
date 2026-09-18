@@ -1,0 +1,20 @@
+{
+  "id": "cint-checkpoint-m16-task",
+  "title": "MiniKV, Integrated",
+  "prompt": "Implement kv_init/put/get/del/count/iter, kv_save, and kv_load per the documented format (669-byte snapshot, checksummed) and the error contract. Ownership, replace semantics, capacity, and validation are all graded.",
+  "difficulty": "intermediate",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n#include <stddef.h>\n#define KV_CAP 16\n#define KV_KEYMAX 32\ntypedef enum {\n    KV_OK = 0, KV_EARGS, KV_ENOMEM, KV_ENOENT,\n    KV_EFORMAT, KV_ETRUNC, KV_EBADSUM\n} KVError;\ntypedef struct { char key[KV_KEYMAX]; long value; int live; } KVSlot;\ntypedef struct { KVSlot slots[KV_CAP]; size_t count; } KVStore;\nvoid kv_init(KVStore *s);\nKVError kv_put(KVStore *s, const char *key, long value);\nKVError kv_get(const KVStore *s, const char *key, long *out);\nKVError kv_del(KVStore *s, const char *key);\nsize_t kv_count(const KVStore *s);\nvoid kv_iter(const KVStore *s, void (*fn)(const char *key, long value, void *ctx), void *ctx);\n/* ---- capture state for iteration tests (defined here) ---- */\nstatic char kv_cap_keys[16][KV_KEYMAX];\nstatic long kv_cap_vals[16];\nstatic int kv_cap_n;\nstatic void kv_capture(const char *key, long value, void *ctx) {\n    (void)ctx;\n    if (kv_cap_n < 16) {\n        snprintf(kv_cap_keys[kv_cap_n], KV_KEYMAX, \"%s\", key);\n        kv_cap_vals[kv_cap_n] = value;\n        kv_cap_n++;\n    }\n}\nstatic void kv_capture_reset(void) { kv_cap_n = 0; }\nKVError kv_save(const KVStore *s, const char *path);\nKVError kv_load(KVStore *s, const char *path);\n",
+  "tests": [
+    {
+      "name": "core + ownership",
+      "code": "\nKVStore s; kv_init(&s);\nlong v;\nchar key[16];\nsnprintf(key, sizeof key, \"temp\");\nCHECK_EQ(kv_put(&s, key, 42), KV_OK);\nmemset(key, 'x', 4);\nCHECK_EQ(kv_get(&s, \"temp\", &v), KV_OK); CHECK_EQ(v, 42);   /* owned */\nCHECK_EQ(kv_put(&s, \"temp\", 43), KV_OK);                    /* replace */\nCHECK_EQ(kv_get(&s, \"temp\", &v), KV_OK); CHECK_EQ(v, 43);\nCHECK_EQ(kv_count(&s), 1);\nchar full[KV_KEYMAX];\nfor (int i = 0; i < 15; i++) {\n    snprintf(full, sizeof full, \"f%02d\", i);\n    CHECK_EQ(kv_put(&s, full, i), KV_OK);\n}\nCHECK_EQ(kv_put(&s, \"overflow\", 1), KV_ENOMEM);             /* state */\nCHECK_EQ(kv_count(&s), 16);\n",
+      "hint": "Owned keys, replace, capacity as a state — one pass, no partial credit."
+    },
+    {
+      "name": "persistence + hostile files",
+      "code": "\nKVStore s; kv_init(&s);\nCHECK_EQ(kv_put(&s, \"alpha\", 1), KV_OK);\nCHECK_EQ(kv_del(&s, \"alpha\"), KV_OK);                       /* tombstone */\nCHECK_EQ(kv_put(&s, \"beta\", 2), KV_OK);\nCHECK_EQ(kv_save(&s, \"/tmp/cj-kv-ck.bin\"), KV_OK);\nFILE *f = fopen(\"/tmp/cj-kv-ck.bin\", \"rb\");\nCHECK_NOT_NULL(f);\nfseek(f, 0, SEEK_END);\nlong sz = ftell(f);\nfclose(f);\nCHECK_EQ(sz, 669);                                          /* full snapshot */\nKVStore b; kv_init(&b);\nCHECK_EQ(kv_load(&b, \"/tmp/cj-kv-ck.bin\"), KV_OK);\nlong v;\nCHECK_EQ(kv_get(&b, \"alpha\", &v), KV_ENOENT);               /* dead stays dead */\nCHECK_EQ(kv_get(&b, \"beta\", &v), KV_OK); CHECK_EQ(v, 2);\n/* hostile: flip checksum byte */\nf = fopen(\"/tmp/cj-kv-ck.bin\", \"r+b\");\nCHECK_NOT_NULL(f);\nfseek(f, -1, SEEK_END);\nint c = fgetc(f);\nfseek(f, -1, SEEK_END);      /* fgetc advanced to EOF: write REPLACES */\nfputc(c ^ 0x01, f);\nfclose(f);\nKVStore c2; kv_init(&c2);\nCHECK_EQ(kv_load(&c2, \"/tmp/cj-kv-ck.bin\"), KV_EBADSUM);\nCHECK_EQ(kv_count(&c2), 0);                                 /* untouched on failure */\n",
+      "hint": "Snapshot length, tombstone round-trip, checksum verdict, atomic failure."
+    }
+  ]
+}

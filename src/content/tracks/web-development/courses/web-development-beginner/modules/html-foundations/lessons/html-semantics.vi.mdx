@@ -1,0 +1,73 @@
+Đến lúc này, các trang của bạn chỉ là một heading và vài đoạn văn. Các trang thật có những vùng riêng — một banner, điều hướng, nội dung chính, footer — và HTML có một phần tử cho mỗi vùng. Đó là các **phần tử ngữ nghĩa (semantic elements)**: tên của chúng mô tả _vai trò_ của chúng.
+
+## Vì sao ngữ nghĩa quan trọng
+
+So sánh hai cách đánh dấu một trang:
+
+```html
+<!-- vô nghĩa: trình duyệt không biết gì -->
+<div class="top">…</div>
+<div class="menu">…</div>
+<div class="content">…</div>
+
+<!-- có ý nghĩa: trình duyệt biết các vai trò -->
+<header>…</header>
+<nav>…</nav>
+<main>…</main>
+```
+
+Với trình duyệt — và với trình đọc màn hình, công cụ tìm kiếm, chế độ đọc — đây không phải là một. Có ngữ nghĩa, người dùng trình đọc màn hình có thể nhảy thẳng đến `<main>` và bỏ qua điều hướng; công cụ tìm kiếm hiểu nội dung chính của trang là gì. `<div>` là lựa chọn trung thực khi _không có ý nghĩa nào áp dụng_ — nhưng nó là phương án cuối cùng, không phải mặc định.
+
+## Các phần tử cấu trúc
+
+- `<header>` — nội dung mở đầu cho trang hoặc một mục: logo, tên site, khẩu hiệu.
+- `<nav>` — điều hướng chính: một nhóm liên kết để di chuyển quanh site. Không phải mọi nhóm liên kết đều là nav — footer với các liên kết pháp lý thường không phải.
+- `<main>` — nội dung chính của trang. **Đúng một cái mỗi trang**, và nó không được lồng ghép bên trong các phần tử cấu trúc khác. Trình đọc màn hình nhảy đến đây trước tiên.
+- `<section>` — một nhóm theo chủ đề với heading riêng ("Courses", "Testimonials"). Nếu bạn không thể đặt cho nó một heading, có lẽ nó không phải là một section.
+- `<article>` — nội dung hoàn chỉnh và có ý nghĩa độc lập: một bài blog, một thẻ sản phẩm, một bài đánh giá đơn lẻ.
+- `<aside>` — nội dung bên lề: các liên kết liên quan, một trích dẫn nổi bật, một sidebar.
+- `<footer>` — nội dung kết thúc: bản quyền, liên hệ, chữ in nhỏ.
+
+Một bộ khung trang điển hình:
+
+```html
+<body>
+  <header>
+    <h1>Ada's Bakery</h1>
+  </header>
+  <nav>
+    <ul>
+      <li><a href="#bread">Bread</a></li>
+      <li><a href="#cakes">Cakes</a></li>
+    </ul>
+  </nav>
+  <main>
+    <section id="bread">
+      <h2>Bread</h2>
+      <p>Sourdough daily.</p>
+    </section>
+    <section id="cakes">
+      <h2>Cakes</h2>
+      <p>To order on Fridays.</p>
+    </section>
+  </main>
+  <footer>
+    <p>© 2026 Ada's Bakery</p>
+  </footer>
+</body>
+```
+
+Chú ý các thuộc tính `id` trên các section — kết hợp với các liên kết `#bread` trong nav, việc bấm một liên kết nav sẽ cuộn đến section đó. (Đây chính là ý tưởng URL-fragment từ bài học về liên kết, và nó là cách điều hướng một trang thực sự hoạt động.)
+
+## Cấp bậc heading bên trong ngữ nghĩa
+
+Section và article có heading riêng. Hãy giữ các cấp nhất quán: trang có một `<h1>`; mỗi `<section>` bắt đầu bằng `<h2>`; một phần con dùng `<h3>`. Người dùng trình đọc màn hình điều hướng bằng heading như lật qua các chương của một cuốn sách — các cấp bị nhảy cóc khiến việc điều hướng ấy giống như những trang bị mất.
+
+## Bạn đã học được gì
+
+- Phần tử ngữ nghĩa đặt tên cho _vai trò_ của một vùng; `<div>` nghĩa là "không vai trò"
+- `<header>`, `<nav>`, `<main>` (đúng một cái), `<section>`, `<article>`, `<aside>`, `<footer>` — và cái gì thuộc vào mỗi thứ
+- `id` + liên kết `#fragment` tạo nên điều hướng trong trang
+- Heading bước xuống mà không nhảy cóc cấp
+
+**Tiếp theo:** biểu mẫu — cách các trang thu thập dữ liệu nhập vào.

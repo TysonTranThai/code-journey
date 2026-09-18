@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m3-override-strict",
+  "title": "override catches the bug",
+  "prompt": "Implement `class Sensor` with `virtual std::string reading() const` returning `\"base\"`, and `class TempSensor : public Sensor` overriding it to return `\"22C\"`. The signature must match exactly (const included) and the override must use the `override` keyword.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <string>\\n#include <iostream>\\n\\nclass Sensor {\\n    // virtual reading() + virtual dtor\\n};\\n\\nclass TempSensor : public Sensor {\\n    // override\\n};\\n",
+  "tests": [
+    {
+      "name": "dispatch",
+      "code": "Sensor* s = new TempSensor();\nstd::string r = s->reading();\ndelete s;\nCHECK_EQ(r, std::string(\"22C\"));",
+      "hint": "Dispatch through base pointer returns the override."
+    },
+    {
+      "name": "base-fallback",
+      "code": "TempSensor t;\nSensor& ref = t;\nCHECK_EQ(ref.reading(), std::string(\"22C\"));",
+      "hint": "Reference dispatch matches pointer dispatch."
+    },
+    {
+      "name": "virtual-dtor",
+      "code": "static_assert(std::has_virtual_destructor<Sensor>::value, \"Sensor needs a virtual destructor\");",
+      "hint": "Any polymorphic base owns this obligation."
+    }
+  ],
+  "level": "independent"
+}

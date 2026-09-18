@@ -1,0 +1,31 @@
+{
+  "id": "javi-checkpoint-m13-algorithms",
+  "title": "Diagnosis Pair",
+  "prompt": "Two independent problems in `Solution`:\n\n1. `static int lowerBound(int[] sorted, int target)` — first index with\n   `sorted[i] >= target` via the half-open binary search; returning\n   `sorted.length` means none. (Not indexOf: duplicates must find the\n   FIRST.)\n\n2. `static boolean hasMajority(int[] xs)` — true when some value occurs\n   more than n/2 times, via one frequency-map pass (no sorting).\n\n[1,2,2,2,3], lowerBound(2) → 1 (not 2 — the first).\n[2,2,1,1], hasMajority → false: 1 appears twice, n/2 = 2, needs MORE\nthan 2 → false. [1,1,1,2] → true: 3 of 4.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Provide lowerBound + hasMajority here.\n}\n",
+  "tests": [
+    {
+      "name": "lower bound finds first",
+      "code": "\ncheckEq(Solution.lowerBound(new int[]{1, 2, 2, 2, 3}, 2), 1, \"first 2\");\ncheckEq(Solution.lowerBound(new int[]{1, 2, 2, 2, 3}, 4), 5, \"past end\");\n",
+      "hint": "Duplicates → leftmost qualifying index; too-big target → length."
+    },
+    {
+      "name": "lower bound smaller than all",
+      "code": "\ncheckEq(Solution.lowerBound(new int[]{10, 20}, 5), 0, \"everything qualifies\");\n",
+      "hint": "Index 0 is the first ≥ 5."
+    },
+    {
+      "name": "majority detection",
+      "code": "\ncheckEq(Solution.hasMajority(new int[]{1, 1, 1, 2}), true, \"3 of 4\");\ncheckEq(Solution.hasMajority(new int[]{2, 2, 1, 1}), false, \"2 of 4 is not > 2\");\n",
+      "hint": "Strictly more than n/2 occurrences."
+    },
+    {
+      "name": "majority edge cases",
+      "code": "\ncheckEq(Solution.hasMajority(new int[]{7}), true, \"single element\");\ncheckEq(Solution.hasMajority(new int[]{}), false, \"empty\");\n",
+      "hint": "n=1 → the element counts; empty → false."
+    }
+  ],
+  "level": "independent"
+}

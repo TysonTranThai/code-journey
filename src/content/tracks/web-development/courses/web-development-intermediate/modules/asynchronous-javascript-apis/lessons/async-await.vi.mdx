@@ -1,0 +1,39 @@
+`async/await` là đường của promise — cùng bộ máy, hình dạng dễ đọc.
+
+## Các quy tắc
+
+- `async function` **luôn luôn** trả về promise; return một giá trị thì nó được
+  bọc lại, throw thì reject.
+- `await` chỉ tạm dừng _hàm async đang chạy_, không phải luồng: phần còn lại
+  của chương trình vẫn chạy (bài event loop).
+- `await` hoạt động với mọi thenable — và được unwrap trong microtask, nên thứ
+  tự await đi theo thứ tự microtask.
+
+```js
+async function loadDashboard(userId) {
+  try {
+    const user = await getUser(userId); // tuần tự: cần user.id
+    const orders = await getOrders(user.id);
+    return { user, orders };
+  } catch (err) {
+    return { error: "Could not load dashboard" }; // bắt cả hai await
+  }
+}
+```
+
+`try/catch` hoạt động xuyên qua `await` — một trong những tính năng tốt nhất
+của nó. Hãy nhớ nó chỉ bắt lỗi _bên trong khối try tại thời điểm await_; quên
+một `await` sẽ rò rỉ một promise lơ lửng mà không ai bắt được rejection của nó.
+
+## Bẫy kinh điển: await trong vòng lặp
+
+```js
+// CHẬM: mỗi lần một request (trừ khi bước sau cần kết quả bước trước)
+for (const id of ids) results.push(await fetchOne(id));
+
+// NHANH: tất cả cùng bay một lúc
+const results = await Promise.all(ids.map(fetchOne));
+```
+
+Await tuần tự _đúng_ khi bước N cần kết quả của bước N-1; nếu không, đó là
+độ trễ bị lãng phí. Bài về combinator sẽ hệ thống hóa điều này.

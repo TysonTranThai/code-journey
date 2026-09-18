@@ -1,0 +1,26 @@
+## Layered architecture
+
+Three layers cover most services:
+
+```
+Controller/UI  →  parses input, calls service, maps result
+        ↓ depends on
+Service        →  business rules, orchestration, transactions
+        ↓ depends on
+Repository     →  persistence (Module 11)
+```
+
+The dependency rule: **arrows point down only.** A service never calls a
+controller; a repository never calls a service. Cross-layer calls flow
+through narrow interfaces.
+
+Why layers earn their keep:
+- business rules live in ONE place (the service), not scattered in UI
+  and SQL
+- each layer tests differently: fast unit tests for services,
+  contract tests for repositories
+- swapping delivery (CLI → REST) doesn't touch the service
+
+The failure mode this prevents is the *god class* — 1,200 lines that
+parse, validate, compute, persist, and print, none of it testable in
+isolation.

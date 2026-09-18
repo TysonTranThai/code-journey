@@ -1,0 +1,28 @@
+**ExecutorService** là hàng đợi tác vụ cộng các worker thread. Vòng đời có ba
+pha và hai kiểu kết thúc:
+
+- `shutdown()`: ngừng nhận tác vụ, chạy nốt những cái đã xếp hàng.
+- `shutdownNow()`: ngừng nhận, **interrupt** các tác vụ đang chạy, trả lại
+  hàng đợi cho bạn (không mất mát thầm lặng).
+- `awaitTermination(timeout)`: chờ lịch sự. Mẫu chuẩn:
+
+```java
+exec.shutdown();
+if (!exec.awaitTermination(5, TimeUnit.SECONDS)) {
+    exec.shutdownNow();   // leo thang
+}
+```
+
+**Future.get()** là nơi composition chết: `f2.get()` không thể *bắt đầu* cho
+đến khi bạn gọi nó, nên "chạy A và B đồng thời rồi ghép" biến thành chỉnh tay
+từng chỗ chặn. **CompletableFuture** sửa điều đó:
+
+```java
+var a = CompletableFuture.supplyAsync(() -> fetchA());
+var b = CompletableFuture.supplyAsync(() -> fetchB());
+var both = a.thenCombine(b, (x, y) -> x + y);   // chạy khi CẢ HAI xong
+```
+
+Các primitive composition: `thenApply` (biến đổi), `thenCompose` (chuỗi,
+flat-map), `thenCombine` (ghép hai), `exceptionally`/`handle` (phục hồi),
+`orTimeout` (JDK 9+; an toàn trong sandbox vì không cần flag thêm).

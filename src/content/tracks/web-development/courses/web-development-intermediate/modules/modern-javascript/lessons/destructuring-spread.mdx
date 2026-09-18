@@ -1,0 +1,83 @@
+Intermediate JavaScript is full of function boundaries: API responses in,
+options objects out, arrays merged. Destructuring and spread are the two
+language features that make those boundaries clean.
+
+## Object destructuring
+
+```js
+const response = { user: { name: "Ada", email: "ada@example.com" }, status: 200 };
+
+const { user, status } = response; // pick two fields
+const { name, email } = user; // or nest in one step:
+const {
+  user: { name: userName },
+} = response; // rename while unpacking
+```
+
+Destructuring in parameters is the professional default for options objects:
+
+```js
+function connect({ host, port = 5432, retries = 3 } = {}) {
+  return host + ":" + port;
+}
+connect({ host: "db.local" }); // db.local:5432 — defaults kick in per-field
+```
+
+## Array destructuring
+
+```js
+const [first, second] = [10, 20];
+const [head, ...tail] = [1, 2, 3, 4]; // head=1, tail=[2,3,4]
+let a = 1,
+  b = 2;
+[a, b] = [b, a]; // swap without a temp
+```
+
+## Spread: copy and merge
+
+The spread operator `...` _expands_ an iterable into a new context:
+
+```js
+const base = { theme: "dark", compact: false };
+const userPrefs = { compact: true };
+const settings = { ...base, ...userPrefs }; // later wins: { theme:"dark", compact:true }
+
+const merged = [...arr1, ...arr2];
+const copy = [...original]; // shallow copy — one level only!
+```
+
+**Shallow vs deep:** spread copies references one level deep. Nested objects
+still alias:
+
+```js
+const a = { meta: { count: 1 } };
+const b = { ...a };
+b.meta.count = 99;
+a.meta.count; // 99 — the inner object is shared
+```
+
+## Rest: collect instead of expand
+
+Where spread expands, rest _collects_. Same syntax, opposite direction:
+
+```js
+function log(level, ...messages) {
+  // rest parameter
+  console.log("[" + level + "]", messages.join(" "));
+}
+
+const { id, ...rest } = user; // rest = user without id — great for stripping
+```
+
+A common real use — remove a field before sending data to an API:
+
+```js
+const { password, safeUser } = user; // wrong: destructures into password var
+const { password: _omit, ...safeUser } = user; // right: everything else
+```
+
+## Why this matters at Intermediate
+
+State updates (create a new object with one field changed), prop-passing,
+and options handling all lean on these. They are also everywhere in the
+framework code you will read later.

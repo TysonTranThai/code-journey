@@ -1,0 +1,21 @@
+{
+  "id": "pa-async-taskgroup-fanout",
+  "title": "Structured fan-out with TaskGroup",
+  "prompt": "Implement `async def fetch_all(jobs)` where `jobs` is a list of zero-arg async callables:\n\n- run ALL jobs concurrently inside one `asyncio.TaskGroup`\n- return a list of `(index, value)` tuples in INPUT order\n- if any job raises, fetch_all must raise (do not swallow)\n\nDeterminism note: the graded jobs sleep for staggered durations; the total wall time must reflect concurrency, and results must come back in input order regardless of completion order.",
+  "difficulty": "advanced",
+  "language": "python",
+  "boilerplate": "import asyncio\n\n# TODO: fetch_all(jobs)",
+  "tests": [
+    {
+      "name": "concurrent execution, input-ordered results",
+      "code": "started = []\nasync def job(i, delay):\n    started.append(i)\n    await asyncio.sleep(delay)\n    return f'v{i}'\n\njobs = [lambda: job(0, 0.05), lambda: job(1, 0.01), lambda: job(2, 0.03)]\nimport time\nloop = asyncio.new_event_loop()\nt0 = time.perf_counter()\nout = loop.run_until_complete(fetch_all(jobs))\nelapsed = time.perf_counter() - t0\nloop.close()\nassert out == [(0, 'v0'), (1, 'v1'), (2, 'v2')], f'out: {out}'\nassert elapsed < 0.075, f'ran sequentially? elapsed={elapsed:.3f}'\nprint('ok')",
+      "hint": "create_task all three inside the TaskGroup, then read .result() in index order after the block exits."
+    },
+    {
+      "name": "failure propagates from the group",
+      "code": "async def bad():\n    raise ValueError('nope')\nasync def ok():\n    await asyncio.sleep(0.01)\n    return 1\n\nloop = asyncio.new_event_loop()\ntry:\n    loop.run_until_complete(fetch_all([ok, bad]))\nexcept* ValueError:\n    pass\nelse:\n    raise AssertionError('failure must propagate')\nfinally:\n    loop.close()\nprint('ok')",
+      "hint": "TaskGroup collects errors into an ExceptionGroup; use except* (3.11) in the test."
+    }
+  ],
+  "level": "guided"
+}

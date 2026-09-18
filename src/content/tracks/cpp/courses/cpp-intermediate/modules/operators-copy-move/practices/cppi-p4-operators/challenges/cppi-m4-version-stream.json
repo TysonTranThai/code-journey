@@ -1,0 +1,26 @@
+{
+  "id": "cppi-m4-version-stream",
+  "title": "Stream output and round-trip",
+  "prompt": "Implement `class Version` with `Version(int maj, int min)` and getters, `std::ostream& operator<<` printing `maj.min` (e.g. `1.4`), and `std::istream& operator>>` parsing that shape (setting failbit on malformed input).",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\n#include <sstream>\n\nclass Version { /* ... */ };\n",
+  "tests": [
+    {
+      "name": "print",
+      "code": "std::ostringstream os;\nos << Version{2, 9};\nCHECK_EQ(os.str(), std::string(\"2.9\"));",
+      "hint": "Exactly maj, a dot, then min."
+    },
+    {
+      "name": "roundtrip",
+      "code": "std::istringstream is{\"10.3\"};\nVersion v{0, 0};\nis >> v;\nCHECK_EQ(v.major(), 10);\nCHECK_EQ(v.minor(), 3);",
+      "hint": "Parsing restores the printed value."
+    },
+    {
+      "name": "bad",
+      "code": "std::istringstream is{\"oops\"};\nVersion v{0, 0};\nis >> v;\nCHECK(!is);",
+      "hint": "Malformed input sets failbit, no throw."
+    }
+  ],
+  "level": "mini-build"
+}

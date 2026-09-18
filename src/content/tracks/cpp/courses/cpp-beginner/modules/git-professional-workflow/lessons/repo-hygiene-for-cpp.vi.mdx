@@ -1,0 +1,45 @@
+## Những gì không bao giờ vào version control
+
+```
+# .gitignore cho dự án C++/CMake
+build/
+build-*/
+cmake-build-*/
+*.o
+*.out
+compile_commands.json
+```
+
+Mọi thứ compiler sinh ra đều **tái tạo được** — commit chúng làm phình lịch sử và sinh ra những cuộc merge bất khả. Đặc biệt là thư mục `build/`: nó có thể chứa hàng nghìn file phụ thuộc máy. Ai cũng tái tạo được nó bằng hai lệnh CMake.
+
+## Những gì luôn thuộc về
+
+- Mã nguồn (`src/`, header), `CMakeLists.txt`
+- Test và dữ liệu của test
+- README, LICENSE, cấu hình CI nếu có
+- Chính `.gitignore`
+
+## Bản hợp đồng README
+
+Một người lạ phải build được trong vòng hai phút:
+
+```markdown
+# Finance CLI
+
+Trình quản lý tài chính cá nhân (C++20, CMake).
+
+## Build
+cmake -B build && cmake --build build
+
+## Run
+./build/finance
+
+## Test
+ctest --test-dir build
+```
+
+Nếu build của bạn cần một cờ đặc biệt, README là nơi nó sống — không phải tri thức bộ lạc.
+
+## Quy trình
+
+Commit nhỏ với thông báo dạng mệnh lệnh ("parse csv records"), mỗi commit một thay đổi logic; branch cho tính năng; review kiểu PR dù làm một mình — tự đọc diff của chính mình trước khi merge bắt được một tỷ lệ bug đáng ngạc nhiên. Git được dạy thực hành trong track web của nền tảng; ở đây bạn học cái *đặc thù C++*: ignore output build, commit CMakeLists, bàn giao README.

@@ -1,0 +1,64 @@
+Máy tính tỏa sáng ở sự lặp lại. Một **vòng lặp (loop)** chạy lại cùng một khối với những thay đổi nhỏ mỗi lượt.
+
+## Vòng lặp for
+
+```js
+for (let i = 1; i <= 5; i++) {
+  console.log("Visitor number " + i);
+}
+```
+
+Ba phần, phân tách bằng dấu chấm phẩy:
+
+1. **Bắt đầu:** `let i = 1` — chạy một lần, trước mọi thứ khác
+2. **Điều kiện:** `i <= 5` — kiểm tra trước mỗi lượt; vòng lặp dừng khi sai
+3. **Bước nhảy:** `i++` — chạy sau mỗi lượt (cộng thêm 1)
+
+Vậy đoạn này in 1, 2, 3, 4, 5 — năm lượt.
+
+## Đếm từ 0 — cái bẫy kinh điển
+
+Mảng (bài học sau) bắt đầu ở chỉ số **0**, nên phần lớn vòng lặp trông như:
+
+```js
+for (let i = 0; i < 5; i++) {
+  // 0,1,2,3,4 — đúng 5 lượt
+  console.log(i);
+}
+```
+
+Chú ý điều kiện: `i < 5`, không phải `i <= 5`. Bắt đầu từ 0 với `<` cho đúng 5 lượt; nhầm lẫn giữa hai dạng này là bug vòng lặp phổ biến nhất của người mới. Kiểm tra code của bạn với quy tắc này mỗi lần.
+
+## while — lặp cho đến khi có gì đó thay đổi
+
+```js
+let cups = 3;
+
+while (cups > 0) {
+  console.log("Cups left: " + cups);
+  cups = cups - 1; // phải có thứ gì đó thay đổi, nếu không vòng lặp không bao giờ kết thúc!
+}
+```
+
+`while` là lựa chọn tốt nhất khi bạn không biết cần bao nhiêu lượt. Nếu điều kiện không bao giờ thành false, bạn dính một **vòng lặp vô hạn** — tab bị đóng băng.
+
+## Lặp có mục đích: tích lũy
+
+```js
+let total = 0;
+for (let n = 1; n <= 10; n++) {
+  total = total + n; // cộng từng số vào tổng đang chạy
+}
+console.log(total); // 55
+```
+
+Mẫu này — khai báo một biến tích lũy _trước_ vòng lặp, cập nhật nó _bên trong_ — là động lực của các phép tính tổng, đếm, dựng chuỗi, và phần lớn việc xử lý dữ liệu bạn sẽ làm trong module này.
+
+## Bạn đã học được gì
+
+- `for`: bắt đầu; điều kiện; bước nhảy
+- Đếm từ 0 với `i < n`; từ 1 đến n với `i <= n`
+- `while` lặp lại cho đến khi điều kiện thành false — luôn thay đổi điều gì đó bên trong
+- Mẫu tích lũy: khai báo trước, cập nhật trong
+
+**Tiếp theo:** gói code vào các hàm tái sử dụng được.

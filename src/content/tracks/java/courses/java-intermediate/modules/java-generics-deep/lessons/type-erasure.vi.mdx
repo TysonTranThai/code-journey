@@ -1,0 +1,25 @@
+## Type erasure — generic thực chất là gì
+
+Generic chỉ tồn tại lúc biên dịch. `List<String>` và `List<Integer>` là
+cùng một class lúc runtime — cả hai erase thành `List`. Hệ quả:
+
+```java
+List<String> a = new ArrayList<>();
+List<Integer> b = new ArrayList<>();
+a.getClass() == b.getClass()   // true!
+
+// không làm được những điều này:
+// new T[10]                       — không có T lúc runtime
+// if (x instanceof List<String>)  — đã bị erase
+// catch (MyEx<String> e)          — generic trong catch bị cấm
+```
+
+Quy tắc thực dụng:
+- Mảng của kiểu generic không an toàn (`new T[10]` không biên dịch; dùng
+  `ArrayList<T>`)
+- Không thể overload trên tham số bị erase:
+  `f(List<String>)` + `f(List<Integer>)` — cùng erasure, lỗi biên dịch
+- Cần thông tin kiểu lúc runtime? Truyền token `Class<T>`: `<T> T parse(String s, Class<T> type)`
+
+Erasure giải thích *vì sao* wildcard tồn tại: sự linh hoạt phải diễn đạt
+được trong hệ thống kiểu mà không tốn chi phí runtime.

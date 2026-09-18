@@ -1,0 +1,29 @@
+{
+  "id": "i2-data-explorer-checkpoint",
+  "title": "Data Explorer Core Check",
+  "prompt": "Build the core of a data explorer:\n\n1. `groupBy(records, keyFn)` RETURNS a plain object mapping each key (from `keyFn(record)`) to the array of matching records.\n2. `uniqueBy(records, keyFn)` RETURNS the records deduplicated by key, keeping the first occurrence of each.\n3. `summarize(records)` RETURNS `{ count, avgScore, top }` — the record count, the mean of the `score` fields, and the whole record with the highest score. Empty input returns `{ count: 0, avgScore: 0, top: null }`.\n4. `safeGet(records, index)` RETURNS the record at `index`, or `null` when the index is out of range or not an integer. It must never throw.",
+  "difficulty": "intermediate",
+  "boilerplate": "// Build the core of a data explorer.\n\n// 1) groupBy(records, keyFn)\n\n// 2) uniqueBy(records, keyFn)\n\n// 3) summarize(records)\n\n// 4) safeGet(records, index)\n",
+  "tests": [
+    {
+      "name": "groupBy groups records by keyFn",
+      "code": "const fn = new Function(code + \"\\nreturn { groupBy, uniqueBy, summarize, safeGet };\");\nconst { groupBy } = fn();\nconst recs = [\n  { id: 1, kind: \"fruit\", score: 2 },\n  { id: 2, kind: \"veg\", score: 5 },\n  { id: 3, kind: \"fruit\", score: 9 },\n];\nconst out = groupBy(recs, (r) => r.kind);\nif (out.fruit.length !== 2 || out.veg.length !== 1) throw new Error(\"groupBy should bucket records by the keyFn result.\");\nif (out.fruit[0].id !== 1 || out.fruit[1].id !== 3) throw new Error(\"groupBy must preserve record order within each bucket.\");",
+      "hint": "Walk the array once; for each key, push into (out[key] ??= [])."
+    },
+    {
+      "name": "uniqueBy keeps the first occurrence per key",
+      "code": "const fn = new Function(code + \"\\nreturn { groupBy, uniqueBy, summarize, safeGet };\");\nconst { uniqueBy } = fn();\nconst recs = [\n  { id: 1, kind: \"fruit\" },\n  { id: 2, kind: \"veg\" },\n  { id: 3, kind: \"fruit\" },\n];\nconst out = uniqueBy(recs, (r) => r.kind);\nif (out.length !== 2 || out[0].id !== 1 || out[1].id !== 2) throw new Error(\"uniqueBy should keep only the FIRST record per key, in order.\");",
+      "hint": "Track seen keys in a Set; push the record only when the key is new."
+    },
+    {
+      "name": "summarize computes count, average, and top",
+      "code": "const fn = new Function(code + \"\\nreturn { groupBy, uniqueBy, summarize, safeGet };\");\nconst { summarize } = fn();\nconst recs = [{ score: 4 }, { score: 8 }, { score: 6 }];\nconst s = summarize(recs);\nif (s.count !== 3) throw new Error(\"count should be the number of records.\");\nif (Math.abs(s.avgScore - 6) > 1e-9) throw new Error(\"avgScore should be the mean of the score fields (6 here).\");\nif (!s.top || s.top.score !== 8) throw new Error(\"top should be the WHOLE record with the highest score.\");\nconst empty = summarize([]);\nif (empty.count !== 0 || empty.avgScore !== 0 || empty.top !== null) throw new Error(\"Empty input must yield { count: 0, avgScore: 0, top: null }.\");",
+      "hint": "Guard the empty case first; then loop once accumulating sum and best-so-far."
+    },
+    {
+      "name": "safeGet never throws and returns null for bad indexes",
+      "code": "const fn = new Function(code + \"\\nreturn { groupBy, uniqueBy, summarize, safeGet };\");\nconst { safeGet } = fn();\nconst recs = [{ id: 1 }, { id: 2 }];\nif (safeGet(recs, 0)?.id !== 1) throw new Error(\"safeGet(recs, 0) should return the first record.\");\nif (safeGet(recs, 5) !== null) throw new Error(\"Out-of-range index must return null, not throw.\");\nif (safeGet(recs, 1.5) !== null) throw new Error(\"Non-integer index must return null.\");\nif (safeGet(recs, -1) !== null) throw new Error(\"Negative index must return null.\");",
+      "hint": "Check Number.isInteger(index) and 0 <= index < records.length before touching the array."
+    }
+  ]
+}

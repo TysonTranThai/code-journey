@@ -1,0 +1,21 @@
+{
+  "id": "javaa-checkpoint-m9-task",
+  "title": "Checkpoint: measure, don't guess",
+  "prompt": "Inside Solution, implement the harness and use it:\n1. `static long sumTo(int n)` — plain loop sum 1..n, return the sum (the workload).\n2. `static long measureSumMicros(int n, int rounds)` — warm up 2_000 untimed runs,\nthen time `rounds` runs of sumTo(n) in MICROS; return the MEDIAN. Every run's result\nmust be verified against n*(n+1)/2 (consume it).\n3. `static boolean fasterWithinEpsilon(long aMicros, long bMicros, double epsFrac)` —\ntrue iff `a < b` AND the gap `(b - a)` exceeds `epsFrac * b` (b is the slower\nbaseline; a only wins beyond the epsilon).\n4. `static String claim(long aMicros, long bMicros)` — return \"faster\" if\nfasterWithinEpsilon(a, b, 0.10), \"slower\" if fasterWithinEpsilon(b, a, 0.10),\nelse \"no measured difference\".",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "harness produces sane medians",
+      "code": "\nlong us = Solution.measureSumMicros(2_000_000, 5);\ncheckTrue(us >= 0, \"median micros non-negative: \" + us);\n",
+      "hint": "Warm, timed, verified, medianed."
+    },
+    {
+      "name": "epsilon comparison behaves",
+      "code": "\ncheckTrue(Solution.fasterWithinEpsilon(80, 100, 0.10), \"20 > 10% of 100\");\ncheckTrue(!Solution.fasterWithinEpsilon(95, 100, 0.10), \"5 <= 10% of 100\");\ncheckEq(Solution.claim(80, 100), \"faster\", \"beyond epsilon\");\ncheckEq(Solution.claim(95, 100), \"no measured difference\", \"within epsilon\");\ncheckEq(Solution.claim(120, 100), \"slower\", \"a is slower\");\n",
+      "hint": "Only gaps beyond epsilon count."
+    }
+  ],
+  "level": "real-world"
+}

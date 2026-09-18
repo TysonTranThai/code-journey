@@ -1,0 +1,25 @@
+{
+  "id": "i2-validation-error",
+  "title": "Custom ValidationError",
+  "prompt": "Define `class ValidationError extends Error` with `name` set to `\"ValidationError\"`. Write `validateAge(age)` that THROWS a ValidationError with message `\"age must be a number\"` when `age` is not a number (or is NaN), and `\"age must be non-negative\"` when it is below 0. Write `tryValidateAge(age)` that RETURNS `{ ok: true, value: age }` on success and `{ ok: false, error }` when a ValidationError was thrown — any other error must still propagate.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "class ValidationError extends Error {\n  // your code\n}\n\nfunction validateAge(age) {\n  // throws ValidationError\n}\n\nfunction tryValidateAge(age) {\n  // returns { ok, value? } or { ok: false, error }\n}\n",
+  "tests": [
+    {
+      "name": "valid ages pass without throwing",
+      "code": "const fn = new Function(code + \"\\nreturn { validateAge, tryValidateAge, ValidationError };\");\nconst { validateAge } = fn();\nvalidateAge(30);\nvalidateAge(0);",
+      "hint": "Only negative and non-number ages are invalid — 0 is a legal age."
+    },
+    {
+      "name": "invalid ages throw a ValidationError",
+      "code": "const fn = new Function(code + \"\\nreturn { validateAge, tryValidateAge, ValidationError };\");\nconst { validateAge, ValidationError } = fn();\nfor (const bad of [-1, \"30\", NaN]) {\n  let err;\n  try { validateAge(bad); } catch (e) { err = e; }\n  if (!err) throw new Error(\"validateAge(\" + String(bad) + \") must throw.\");\n  if (!(err instanceof ValidationError)) throw new Error(\"The thrown error must be a ValidationError instance, not a plain Error.\");\n  if (err.name !== \"ValidationError\") throw new Error(\"Set this.name = 'ValidationError' in the constructor.\");\n}",
+      "hint": "typeof age !== 'number' || Number.isNaN(age) covers both bad-type and NaN cases."
+    },
+    {
+      "name": "tryValidateAge returns result objects",
+      "code": "const fn = new Function(code + \"\\nreturn { validateAge, tryValidateAge, ValidationError };\");\nconst { tryValidateAge } = fn();\nconst good = tryValidateAge(42);\nif (good.ok !== true || good.value !== 42) throw new Error(\"Success must return { ok: true, value: age }.\");\nconst bad = tryValidateAge(-5);\nif (bad.ok !== false || !bad.error) throw new Error(\"Failure must return { ok: false, error } — not throw.\");",
+      "hint": "Wrap validateAge in try/catch; on ValidationError return the error object, on anything else rethrow."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "i2-normalize-check",
+  "title": "Normalization Checker",
+  "prompt": "Write `isNormalized(rows)` — rows are task rows; return false when any row has an `authorName` alongside `authorId` (denormalized duplicate — the name belongs to users), true otherwise. Write `normalize(rows, users)` producing normalized rows: drop authorName, keep authorId; users is the lookup you would join to later.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function isNormalized(rows) {\n  // your code\n}\n\nfunction normalize(rows, users) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "detects duplicated facts",
+      "code": "const fn = new Function(code + \"\\nreturn { isNormalized, normalize };\");\nconst { isNormalized, normalize } = fn();\nconst rows = [\n  { id: \"t1\", authorId: \"u1\", authorName: \"Ada\" },\n  { id: \"t2\", authorId: \"u2\" },\n];\nif (isNormalized(rows) !== false) throw new Error(\"authorName duplicates users data.\");\nif (isNormalized([{ id: \"t3\", authorId: \"u1\" }]) !== true) throw new Error(\"Clean rows are normalized.\");\n",
+      "hint": "One check: any row with both fields."
+    },
+    {
+      "name": "normalization strips the duplicate",
+      "code": "const fn = new Function(code + \"\\nreturn { isNormalized, normalize };\");\nconst { isNormalized, normalize } = fn();\nconst rows = [{ id: \"t1\", authorId: \"u1\", authorName: \"Ada\", title: \"A\" }];\nconst out = normalize(rows);\nif (\"authorName\" in out[0]) throw new Error(\"The duplicate is gone.\");\nif (out[0].authorId !== \"u1\" || out[0].title !== \"A\") throw new Error(\"Everything else survives.\");\n",
+      "hint": "Destructure out the offender, spread the rest."
+    }
+  ]
+}

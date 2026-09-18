@@ -1,0 +1,27 @@
+Chọn mô hình sở hữu trước khi chọn loại con trỏ.
+
+| Quan hệ | Mô hình | Công cụ |
+|---|---|---|
+| Tôi sở hữu, không ai khác | độc quyền | `unique_ptr` member |
+| Nhóm dùng chung, người dùng sống lâu hơn người tạo | chia sẻ | `shared_ptr` |
+| Tham chiếu ngược (con → cha) | quan sát | `weak_ptr` hoặc `T*` |
+| Chỉ sử dụng, không dính vòng đời | quan sát | tham số `T&` / `T*` |
+| Container sở hữu tất cả | ngữ nghĩa giá trị | `std::vector<T>` |
+
+Một ví dụ cụ thể — hệ thực thể:
+
+```cpp
+class Scene {
+    std::vector<std::unique_ptr<Entity>> entities_;  // scene sở hữu
+public:
+    Entity& spawn() {
+        entities_.push_back(std::make_unique<Entity>());
+        return *entities_.back();          // trả về reference, không phải sở hữu
+    }
+};
+```
+
+Chú ý kỷ luật chữ ký: `spawn()` trả `Entity&` vì caller *dùng* entity nhưng
+scene vẫn giữ quyền sở hữu. Trả `unique_ptr` sẽ mời gọi trùng sở hữu; trả
+`shared_ptr` khiến các bộ đếm vô nghĩa. Mặc định dùng `unique_ptr` và
+reference; chỉ nâng cấp lên `shared_ptr` khi nêu được lý do.

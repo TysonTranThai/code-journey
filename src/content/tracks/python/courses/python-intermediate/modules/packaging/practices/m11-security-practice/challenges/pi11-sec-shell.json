@@ -1,0 +1,21 @@
+{
+  "id": "pi11-sec-shell",
+  "title": "Kill the Shell Injection",
+  "prompt": "Implement build_ffmpeg_cmd(filename: str) returning the SAFE argv LIST form for converting a video: ['ffmpeg', '-i', filename, filename + '.mp4']. Then implement run_demo(filename) that would execute it via subprocess.run(cmd) WITHOUT shell=True and without any f-string in the command construction (graders check the source). Return the command list from build_ffmpeg_cmd.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "import subprocess\n\ndef build_ffmpeg_cmd(filename):\n    pass\n\ndef run_demo(filename):\n    pass\n",
+  "tests": [
+    {
+      "name": "argv list form",
+      "code": "cmd = build_ffmpeg_cmd('clip one; rm -rf ~')\nassert cmd[0] == 'ffmpeg'\nassert cmd[2] == 'clip one; rm -rf ~'\nassert cmd[3] == 'clip one; rm -rf ~.mp4'",
+      "hint": "The dangerous filename is a single argv element — inert."
+    },
+    {
+      "name": "no shell, no f-string",
+      "code": "assert 'shell=True' not in code, 'never delegate quoting to a shell'\nassert \"f'\" not in code and 'f\"' not in code, 'build argv, not strings'\nassert 'subprocess.run' in code",
+      "hint": "List argv + subprocess.run(cmd) without shell=True."
+    }
+  ],
+  "level": "independent"
+}

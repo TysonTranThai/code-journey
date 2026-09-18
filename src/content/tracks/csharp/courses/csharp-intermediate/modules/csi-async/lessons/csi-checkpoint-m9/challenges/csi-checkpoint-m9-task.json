@@ -1,0 +1,25 @@
+{
+  "id": "csi-checkpoint-m9-task",
+  "title": "Checkpoint: Resilient Fetch Pipeline",
+  "prompt": "Implement the pipeline described in the checkpoint:\n\n```csharp\nstatic Task<List<string>> FetchAll(IEnumerable<string> keys, TimeSpan perCall, CancellationToken ct);\nstatic string Report(List<string> results);   // \"a=ok|b=timeout\" sorted by key\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\nusing System.Threading;\nusing System.Threading.Tasks;\n\n// Provided infrastructure — do not modify.\npublic static class CjFlaky\n{\n    // Completes after delayMs. Keys starting with \"slow\" simulate a\n    // hung backend (5 s) regardless of delayMs.\n    public static async Task<string> FetchAsync(string key, int delayMs, CancellationToken ct)\n    {\n        int wait = key.StartsWith(\"slow\", StringComparison.Ordinal) ? 5000 : delayMs;\n        await Task.Delay(wait, ct);\n        return \"payload:\" + key;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "fan-out with per-call timeout",
+      "code": "\nvar sw = System.Diagnostics.Stopwatch.StartNew();\nvar results = Solution.FetchAll(new[] { \"fast1\", \"fast2\", \"slow\" }, System.TimeSpan.FromMilliseconds(150), System.Threading.CancellationToken.None).GetAwaiter().GetResult();\nsw.Stop();\nCj.True(sw.ElapsedMilliseconds < 1000, \"slow call abandoned, not waited out (5s hang skipped)\");\nCj.True(results.Contains(\"fast1=ok\") && results.Contains(\"fast2=ok\"), \"fast calls ok\");\nCj.True(results.Contains(\"slow=timeout\"), \"slow call marked timeout\");\n",
+      "hint": "Start all CjFlaky.FetchAsync tasks; await each with task.WaitAsync(perCall, ct) catching TimeoutException -> record \"key=timeout\"."
+    },
+    {
+      "name": "caller cancel aborts",
+      "code": "\nvar cts = new System.Threading.CancellationTokenSource();\nvar t = Solution.FetchAll(new[] { \"k1\", \"k2\" }, System.TimeSpan.FromSeconds(10), cts.Token);\ncts.Cancel();\ntry { t.GetAwaiter().GetResult(); Cj.True(false, \"should cancel\"); }\ncatch (System.OperationCanceledException) { }\n",
+      "hint": "ct.ThrowIfCancellationRequested() before the fan-out AND pass ct to each WaitAsync — cancel lands promptly."
+    },
+    {
+      "name": "report sorted by key",
+      "code": "\nvar results = new System.Collections.Generic.List<string> { \"b=timeout\", \"a=ok\", \"c=ok\" };\nCj.Eq(Solution.Report(results), \"a=ok|b=timeout|c=ok\", \"sorted join\");\n",
+      "hint": "results.OrderBy(r => key part).Join with '|'."
+    }
+  ]
+}

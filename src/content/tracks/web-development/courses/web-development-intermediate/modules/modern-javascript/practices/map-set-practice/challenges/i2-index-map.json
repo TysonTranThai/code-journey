@@ -1,0 +1,20 @@
+{
+  "id": "i2-index-map",
+  "title": "Index a List with Map",
+  "prompt": "Write `indexById(users)` that returns a Map from each user's `id` to the user object, and `lookup(index, id)` that returns the user or `null` when absent.\n\nThen write `groupByRole(users)` returning a Map from role to an array of users with that role.",
+  "difficulty": "intermediate",
+  "level": "independent",
+  "boilerplate": "function indexById(users) {\n  // your code\n}\n\nfunction lookup(index, id) {\n  // your code\n}\n\nfunction groupByRole(users) {\n  // your code\n}\n",
+  "tests": [
+    {
+      "name": "index maps id to user; lookup misses return null",
+      "code": "const fn = new Function(code + \"\\nreturn { indexById, lookup, groupByRole };\");\nconst { indexById, lookup } = fn();\nconst users = [{ id: 1, name: \"Ada\", role: \"admin\" }, { id: 2, name: \"Linh\", role: \"user\" }];\nconst idx = indexById(users);\nif (!(idx instanceof Map)) throw new Error(\"indexById must return a Map.\");\nif (lookup(idx, 2).name !== \"Linh\") throw new Error(\"lookup(idx, 2) should be Linh.\");\nif (lookup(idx, 99) !== null) throw new Error(\"Unknown id should return null.\");",
+      "hint": "new Map(users.map((u) => [u.id, u])) builds it in one expression."
+    },
+    {
+      "name": "groupByRole buckets users",
+      "code": "const fn = new Function(code + \"\\nreturn { indexById, lookup, groupByRole };\");\nconst { groupByRole } = fn();\nconst users = [{ id: 1, name: \"Ada\", role: \"admin\" }, { id: 2, name: \"Linh\", role: \"user\" }, { id: 3, name: \"Sam\", role: \"admin\" }];\nconst g = groupByRole(users);\nif (!(g instanceof Map)) throw new Error(\"groupByRole must return a Map.\");\nif (g.get(\"admin\").length !== 2 || g.get(\"user\").length !== 1) throw new Error(\"admin: 2 users, user: 1 user.\");",
+      "hint": "reduce into a Map: get the bucket with ?? [], push, set back."
+    }
+  ]
+}

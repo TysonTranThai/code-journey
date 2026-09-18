@@ -1,0 +1,43 @@
+`operator<<` và `operator>>` giúp kiểu của bạn in và phân tích như kiểu dựng
+sẵn. Chúng phải là non-member vì toán hạng trái là stream.
+
+```cpp
+#include <iostream>
+#include <sstream>
+#include <string>
+
+class Version {
+public:
+    Version(int maj, int min) : maj_{maj}, min_{min} {}
+    int major() const { return maj_; }
+    int minor() const { return min_; }
+
+private:
+    int maj_;
+    int min_;
+};
+
+std::ostream& operator<<(std::ostream& os, const Version& v) {
+    return os << v.major() << '.' << v.minor();     // LUÔN trả lại stream
+}
+
+std::istream& operator>>(std::istream& is, Version& v) {
+    int maj{}, min{};
+    char dot{};
+    if (is >> maj >> dot >> min && dot == '.') {
+        v = Version{maj, min};
+    } else {
+        is.setstate(std::ios::failbit);              // báo lỗi phân tích
+    }
+    return is;
+}
+```
+
+## Hai hợp đồng
+
+- `<<` trả `std::ostream&` để nối chuỗi được: `cout << a << b`.
+- `>>` kiểm tra trước khi ghi đè đích, và đặt `failbit` thay vì ném exception
+  với đầu vào xấu — đó là quy ước của stream.
+
+Mẫu in ấn: ưu tiên đầu ra có thể round-trip, grep được (`1.4`, không phải
+`Version (major=1, minor=4)`) trừ khi con người cần dạng đẹp.

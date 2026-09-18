@@ -1,0 +1,15 @@
+## Tuyến tính: mặc định trung thực
+
+Dữ liệu chưa sắp không cho bạn lựa chọn — kiểm tra từng phần tử một, O(n). Đúng, đơn giản, và là công cụ đúng khi `n` nhỏ hoặc dữ liệu không chịu sắp xếp.
+
+## Nhị phân: trả tiền cho trật tự một lần
+
+Một mảng **đã sắp** cho phép mỗi phép so sánh bỏ đi một nửa ứng viên:
+
+```text
+[1 3 5 7 9]  target 7
+lo=0 hi=4 mid=2:  5 < 7 → giữ nửa phải
+lo=3 hi=4 mid=3:  tìm thấy tại 3
+```
+
+Bất biến: *nếu đích tồn tại, nó luôn nằm trong `[lo, hi]`*. Mỗi bước giữ bất biến trong khi thu hẹp cửa sổ — O(log n). Một triệu phần tử đã sắp chỉ cần ~20 phép so sánh. Các lỗi kinh điển là lệch-một trên cửa sổ (`lo <= hi` với `lo < hi` — phần tử cuối không bao giờ được xét) và lệch-một trên bước di chuyển (`mid` với `mid ± 1` — vòng lặp vô hạn); cả hai đều do phá vỡ bất biến.

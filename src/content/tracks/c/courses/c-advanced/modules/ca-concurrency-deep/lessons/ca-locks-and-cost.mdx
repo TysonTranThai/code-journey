@@ -1,0 +1,23 @@
+## The three primitives
+
+- **Mutex** — one holder at a time. The default choice. Cheap when uncontended (musl: a single CAS in the fast path), expensive under contention.
+- **Reader/writer lock** — many readers OR one writer. Wins only when reads vastly outnumber writes *and* the critical section is long enough to matter; otherwise its bookkeeping loses to a plain mutex.
+- **Condition variable** — lets a thread sleep until state changes. Always paired with a mutex, always waited on in a loop:
+
+```c
+pthread_mutex_lock(&mtx);
+while (!ready) {                       /* while, not if */
+    pthread_cond_wait(&cv, &mtx);
+}
+pthread_mutex_unlock(&mtx);
+```
+
+The `while` is not style: `pthread_cond_wait` may return without anyone signaling (a *spurious wakeup* is allowed by POSIX), and another thread may consume the condition between signal and wake. The loop re-checks the predicate under the lock.
+
+## Barriers
+
+`pthread_barrier_wait` lets N threads meet at a phase boundary; exactly one caller receives `PTHREAD_BARRIER_SERIAL_THREAD`. Phases are how parallel algorithms express "nobody proceeds until everyone arrived".
+
+## What they cost
+
+Every lock serializes *something*. The discipline this module drills: keep critical sections small, hold locks across no I/O, and measure contention before reaching for anything fancier.

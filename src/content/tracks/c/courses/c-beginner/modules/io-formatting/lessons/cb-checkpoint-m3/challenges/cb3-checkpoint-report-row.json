@@ -1,0 +1,15 @@
+{
+  "id": "cb3-checkpoint-report-row",
+  "title": "Record to Report Row",
+  "prompt": "Implement `void report_row(const char* line)` that parses `<item> <count> <price>` (e.g. `\"bolt 12 0.05\"`) and prints one row:\n\n```\n| bolt        |  12 | 0.05 |\n```\n\nItem left-aligned width 12; count right-aligned width 3; price with exactly 2 decimals, right-aligned width 5. Spaces around `|` exactly as shown.",
+  "difficulty": "beginner",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "exact report row",
+      "code": "const char* out = cj_capture(program);\nCHECK_STR_EQ(out, \"| bolt         |  12 |  0.05 |\\n\");",
+      "hint": "char item[32]; int count; double price; sscanf(line, \"%31s %d %lf\", item, &count, &price); then printf(\"| %-12s | %3d | %5.2f |\\n\", ...)."
+    }
+  ]
+}

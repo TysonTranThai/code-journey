@@ -1,0 +1,16 @@
+## Reading a stack trace like a coroner
+
+Top frame = the immediate cause; frames below = the causal chain. Library-internal frames (`std::`, allocator) usually mean the corruption happened *earlier* — your frame that called into it is the suspect. Signature patterns:
+
+- **Crash in `memcpy`/`std::string` internals** → often a buffer overrun or a destroyed source object.
+- **Crash on `0x0`-ish addresses** → null dereference; the offset in the address names the member (`offset 8` = second field).
+- **Garbage vtable pointer / wild jump** → use-after-free or virtual call on a destroyed object.
+- **Heap corruption reported at a *later* allocation** → the overflow happened before; ASan's "allocated by thread" history names the scene.
+
+## Symbolization
+
+Addresses are useless without symbols. Debug info (`-g`) maps them back to files and lines. Release builds usually strip — keep the symbol files of each release; a crash from production + its symbols = readable stack.
+
+## The minimal-repro discipline
+
+Shrink the input, then the code: delete half the input — still fails? keep deleting. Delete half the code paths. A 20-line repro with a 3-byte input gets fixed same-day; the 2 GB log dump with 400 files does not. Bisection (`git bisect`) finds the *commit* that introduced it when the repro won't shrink further.

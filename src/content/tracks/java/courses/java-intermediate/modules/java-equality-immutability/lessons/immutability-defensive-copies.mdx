@@ -1,0 +1,44 @@
+## Immutability and defensive copying
+
+An immutable class: `final` fields, no setters, no leaked mutable state.
+Immutable objects are thread-safe by construction, safe map keys, and easy
+to reason about.
+
+```java
+public final class Range {
+    private final int lo, hi;
+    public Range(int lo, int hi) {
+        if (lo > hi) throw new IllegalArgumentException("lo > hi");
+        this.lo = lo; this.hi = hi;
+    }
+    public int lo() { return lo; }
+    public int hi() { return hi; }
+}
+```
+
+Mutability leaks in two directions:
+
+**1. Mutable field leaked** — the caller can change your state without going
+through your methods:
+
+```java
+public final class Team {
+    private final List<String> members;
+    Team(List<String> members) { this.members = members; }
+    public List<String> members() { return members; }  // LEAK
+}
+// caller: team.members().clear();  — your "final" field is now empty
+```
+
+Fix: return an unmodifiable view (or a copy) and copy on the way in:
+
+```java
+Team(List<String> members) { this.members = List.copyOf(members); }
+public List<String> members() { return Collections.unmodifiableList(members); }
+```
+
+**2. Mutable field stored** — you keep a reference to the caller's list;
+they mutate it later and your object changes underneath you.
+
+`record` solves the field-leak but still shallow-copies arrays and lists —
+a record holding a mutable `List` is only as immutable as that list allows.

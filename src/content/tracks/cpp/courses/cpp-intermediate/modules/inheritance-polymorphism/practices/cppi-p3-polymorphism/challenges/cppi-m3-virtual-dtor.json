@@ -1,0 +1,21 @@
+{
+  "id": "cppi-m3-virtual-dtor",
+  "title": "Prove the virtual destructor",
+  "prompt": "Implement `class Resource` with a public virtual destructor and `class HeavyResource : public Resource` that acquires a resource in its constructor and releases it in its destructor. A helper `int& leaked()` (free function, function-local static) must count live HeavyResource objects. The test proves deleting through `Resource*` runs the derived destructor.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <iostream>\\n\\nclass Resource {\\n    // virtual dtor + static counter\\n};\\n\\nclass HeavyResource : public Resource {\\n    // dtor bumps the counter\\n};\\n",
+  "tests": [
+    {
+      "name": "through-base",
+      "code": "Resource* r = new HeavyResource();\nCHECK_EQ(leaked(), 1);\ndelete r;\nCHECK_EQ(leaked(), 0);",
+      "hint": "With a virtual destructor the derived part is destroyed through the base pointer — the leak counter returns to 0."
+    },
+    {
+      "name": "scope",
+      "code": "{ HeavyResource h; }\nCHECK_EQ(leaked(), 0);",
+      "hint": "Scoped destruction works normally."
+    }
+  ],
+  "level": "debugging"
+}

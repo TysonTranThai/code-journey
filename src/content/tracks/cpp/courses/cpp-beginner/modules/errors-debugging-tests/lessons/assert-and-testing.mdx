@@ -1,0 +1,49 @@
+## assert: the contract you check while developing
+
+```cpp
+#include <cassert>
+
+double average(const std::vector<int>& v) {
+    assert(!v.empty() && "average of empty vector is undefined");
+    // ...
+}
+```
+
+`assert(expr)` aborts the program (with file/line) when expr is false — in debug builds. It documents and enforces *programmer mistakes* (broken internal contracts), not user input. Release builds typically compile them away: never put required behavior only in an assert.
+
+## Hand-rolled tests: the harness you already know
+
+You have been reading them all course — now write one:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int total(const std::vector<int>& v);   // under test
+
+void test_total() {
+    if (total({1, 2, 3}) != 6) { std::cerr << "FAIL total basic\n"; std::exit(1); }
+    if (total({}) != 0)        { std::cerr << "FAIL total empty\n"; std::exit(1); }
+}
+
+void test_average() { /* ... */ }
+
+int main() {
+    test_total();
+    test_average();
+    std::cout << "all tests passed\n";
+}
+```
+
+A real test suite: one function per behavior, **named after the expectation**, failing loudly with which test broke, exiting non-zero so CI notices. (Frameworks like Catch2/GoogleTest automate the plumbing — same shape, more sugar; the platform's own C++ harness is the same idea.)
+
+## What to test (the beginner checklist)
+
+- The obvious case (1,2,3 → 6).
+- The edges: empty, single element, zero, negative, maximum.
+- The documented errors: bad input must throw / return the error value.
+- One "regression": a case that failed once and was fixed — it stays in the suite forever.
+
+## Red-green discipline
+
+Write the test first, watch it fail (red), implement until it passes (green). It sounds ceremonial; it is how you *know the test can fail* — a test that has never failed tests nothing.

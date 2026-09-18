@@ -1,0 +1,51 @@
+`System.out.println` in xong rồi xuống dòng; `System.out.print` in không
+xuống dòng. Bạn có thể in giá trị của mọi kiểu dữ liệu, và nối chữ với giá
+trị bằng toán tử `+`:
+
+```java
+String name = "Ada";
+int age = 36;
+System.out.println("Name: " + name);
+System.out.println("Age next year: " + (age + 1));
+System.out.print("không xuống dòng ở đây");
+System.out.println(" ...câu này nằm trên cùng một dòng");
+```
+
+Kết quả:
+
+```text
+Name: Ada
+Age next year: 37
+không xuống dòng ở đây ...câu này nằm trên cùng một dòng
+```
+
+Hai chi tiết đáng chú ý:
+
+- `"Age next year: " + (age + 1)` — dấu ngoặc rất quan trọng. Không có nó,
+  `+` được đọc từ trái sang phải và `1` bị nối vào chữ như *ký tự* 1
+  (`...: 361`).
+- Java có các cách định dạng hiện đại: `String.formatted(...)` (Java 15+)
+  và `System.out.printf` cổ điển hơn:
+
+```java
+System.out.printf("Total: $%.2f%n", 19.991);   // Total: $19.99
+System.out.println("Hi %s, you are %d".formatted("Ada", 36));
+```
+
+`%.2f` nghĩa là "số thập phân có 2 chữ số lẻ", `%s` là chuỗi, `%d` là số
+nguyên, `%n` là xuống dòng. Format string là công cụ được ưa dùng khi cần
+output thẳng hàng theo cột.
+
+Với khối văn bản nhiều dòng, **text block** (Java 15+) giữ nguyên hình dạng
+của chữ ngay trong mã nguồn:
+
+```java
+String menu = """
+    1) Coffee
+    2) Tea
+    3) Exit
+    """;
+System.out.println(menu);
+```
+
+**Tiếp theo:** tham quan các kiểu dữ liệu của Java.

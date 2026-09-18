@@ -1,0 +1,44 @@
+Một **generator function** chứa `yield`. Gọi nó không chạy thân hàm — nó trả
+về một generator phát giá trị **lười biếng**, từng giá trị một:
+
+```python
+def read_numbers(lines):
+    for line in lines:
+        line = line.strip()
+        if line.isdigit():
+            yield int(line)        # dừng ở đây, phát một giá trị
+
+gen = read_numbers(["1", "oops", "3"])
+next(gen)      # 1
+next(gen)      # 3 — dòng lỗi bị bỏ qua bên trong hàm
+```
+
+Hai siêu năng lực đến từ sự lười này:
+
+- **Bộ nhớ hằng số**: generator không bao giờ dựng cả dãy trong bộ nhớ. Nó stream một log 10 GB qua vòng lặp 1 MB không hề khó thở.
+- **Pipeline ghép được**: generator nối vào generator, mỗi tầng vẫn đơn giản.
+
+```python
+def sum_big_sales(rows):
+    big = (r for r in rows if r["amount"] > 1000)   # generator expression
+    return sum(r["amount"] for r in big)
+```
+
+## yield from và ủy quyền
+
+Generator có thể ủy quyền cho một iterable khác bằng `yield from`:
+
+```python
+def flatten(nested):
+    for item in nested:
+        if isinstance(item, list):
+            yield from flatten(item)     # đệ quy phát từng phần tử
+        else:
+            yield item
+```
+
+## Khi nào KHÔNG dùng generator
+
+Nếu cần dữ liệu nhiều lần (len(), indexing, duyệt lại), hãy dựng list.
+Generator là stream dùng một lần — dùng khi dữ liệu lớn, vô hạn, hoặc sinh
+theo nhu cầu.

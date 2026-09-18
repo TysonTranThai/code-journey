@@ -1,0 +1,38 @@
+## Signed integer overflow
+
+`INT_MAX + 1` is UB — not wraparound. The defined replacements: wider
+types (`long long`), pre-checks (`a > INT_MAX - b`), or unsigned
+arithmetic where wraparound *is* the defined semantics (`unsigned int`
+arithmetic wraps modulo 2³² — that is specified).
+
+## Out-of-bounds access
+
+`a[n]` on an n-element array is UB even to *compute the address
+correctly* past the end plus one (the one-past pointer exists; reading
+or forming more than one-past does not). String functions that trust
+the caller's buffer (`strcpy`, `strcat`, `sprintf`) are UB factories —
+the bounded family (`snprintf`, `memcpy` with explicit sizes) is the
+replacement.
+
+## Lifetime violations
+
+`use-after-free` (object's lifetime ended), `double free`, returning a
+pointer to a local (the local dies at the return). All UB. The
+structural fix is ownership discipline (Module 3): every free paired,
+every loan documented, every dangling candidate nulled.
+
+## Invalid shifts and indeterminate reads
+
+`x << 32` on a 32-bit int, negative shifts, `1 << 31` *as a signed
+int* (overflows) — all UB. Shift amounts must be in `[0, width-1]` and
+left operands unsigned when the high bit matters. Reading an automatic
+variable never initialized (`int x; use(x);`) is indeterminate — UB in
+practice. Initialize everything; `-Wuninitialized` catches what it
+can.
+
+## The toolchain helps where it can
+
+Warnings (`-Wall -Wextra -Wpedantic` — this platform's flags) catch the
+statically visible slice. UBSan/ASan would catch more, but this
+sandbox ships without them — so the *catalog* above is what you carry,
+and the discipline is writing the defined form by reflex.

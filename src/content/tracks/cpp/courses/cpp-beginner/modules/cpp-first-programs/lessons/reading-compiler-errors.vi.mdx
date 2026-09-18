@@ -1,0 +1,45 @@
+Kỹ năng đắt giá nhất của người mới học C++ không phải cú pháp — mà là **đọc lỗi compiler một cách bình tĩnh**. Compiler không trách mắng bạn; nó là công cụ duy nhất đọc code của bạn *trước khi* chạy, và nó trích dẫn lỗi kèm số dòng.
+
+## Thói quen: đọc lỗi ĐẦU TIÊN, sửa nó, biên dịch lại
+
+GCC báo nhiều lỗi mỗi lần build, nhưng chúng dây chuyền: lỗi số 2 thường là *hậu quả* của lỗi số 1. Luôn sửa lỗi trên cùng trước.
+
+## Năm lỗi kinh điển (và ý nghĩa thật của chúng)
+
+**1. Thiếu dấu chấm phẩy** — `error: expected ';' before '}' token`
+
+```cpp
+int x = 5      // oops
+```
+Cách sửa hiển nhiên, nhưng lưu ý lỗi chỉ vào `}` *sau* chỗ sai. Số dòng là nơi compiler bỏ cuộc, không phải nơi bạn phạm lỗi.
+
+**2. Undeclared identifier** — `error: 'cont' was not declared in this scope`
+
+Thường là lỗi chính tả (`cont` thay vì `count`) hoặc thiếu `#include`. Compiler in lại đúng chính tả mà nó không tìm thấy — so từng chữ với code của bạn.
+
+**3. Không khai báo trong `std`** — `error: 'cout' was not declared in this scope; did you mean 'std::cout'?`
+
+GCC hiện đại thậm chí gợi ý cách sửa. `std::` là bắt buộc trừ khi bạn `using namespace std;` — điều khóa này chủ động tránh trong header và file lớn (nó làm ô nhiễm mọi file include nó; trong bài tập nhỏ thì chấp nhận được, nhưng chúng ta luyện thói quen chuyên nghiệp).
+
+**4. Sai kiểu** — `error: invalid conversion from 'const char*' to 'int'`
+
+```cpp
+int age = "twenty";
+```
+Kiểu tĩnh đang làm việc *cho* bạn: compiler bắt được lúc build điều mà Python phải crash lúc chạy. Đọc xem nó tìm thấy gì và nó kỳ vọng gì.
+
+**5. Biến chưa khởi tạo (chỉ là cảnh báo, không phải lỗi!)** — `'x' is used uninitialized`
+
+```cpp
+int x;
+std::cout << x;   // giá trị rác
+```
+Đoạn này *biên dịch được*. Giá trị in ra là những byte ngẫu nhiên đang nằm trong bộ nhớ — một bug thật, thường "chạy được" trên máy bạn rồi hỏng chỗ khác. Hãy biến cảnh báo thành thói quen: trong khóa này sandbox đã biên dịch với `-Wall -Wextra -Wpedantic`, code có chấm vẫn chạy dù có warning, nhưng warning sẽ được hiển thị — hãy đọc chúng.
+
+## Vòng lặp sửa lỗi
+
+```
+biên dịch → đọc lỗi đầu tiên → sửa đúng một chỗ → biên dịch lại
+```
+
+Những lần sửa nhỏ, thường xuyên thắng những đợt viết lại lớn. Đến module 3, bạn sẽ liếc một lỗi và biết ngay nó thuộc *loại* nào trước khi đọc chi tiết — lúc đó C++ không còn đáng sợ nữa.

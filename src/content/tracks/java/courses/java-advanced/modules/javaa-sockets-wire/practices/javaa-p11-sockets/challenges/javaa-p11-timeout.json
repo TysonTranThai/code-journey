@@ -1,0 +1,16 @@
+{
+  "id": "javaa-p11-timeout",
+  "title": "Timeouts are survival",
+  "prompt": "1. `static int readWithBudget(java.io.Reader r, int budgetChars)` — read up to\nbudgetChars characters into a String, then return the string LENGTH (simulates a\nbounded read; use the reader's real read(char[]) loop).\n2. `static long elapsedOf(java.util.function.Supplier<?> work)` — nanoTime around\nwork.get(), return elapsed nanos (the shape of every timeout guard).\n3. `static String statusFor(long elapsedNanos, long deadlineNanos)` — return\n\"ok\" if elapsed <= deadline else \"timeout\".",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "\npublic class Solution {\n    // Your implementation goes here.\n}\n",
+  "tests": [
+    {
+      "name": "bounded reads and deadline checks",
+      "code": "\njava.io.Reader r = new java.io.StringReader(\"abcdef\");\ncheckEq(Solution.readWithBudget(r, 4), 4, \"budget bounds the read\");\ncheckTrue(Solution.elapsedOf(() -> 42) >= 0, \"elapsed measured\");\ncheckEq(Solution.statusFor(50, 100), \"ok\", \"within deadline\");\ncheckEq(Solution.statusFor(150, 100), \"timeout\", \"past deadline\");\n",
+      "hint": "Every read has a budget; every op has a deadline."
+    }
+  ],
+  "level": "independent"
+}

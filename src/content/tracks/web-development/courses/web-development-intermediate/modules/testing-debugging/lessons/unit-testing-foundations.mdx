@@ -1,0 +1,44 @@
+Every test framework — Jest, Vitest, Mocha — is sugar over the same core: run code, compare, report. Build the core once and you'll understand all of them.
+
+## Assertions: fail loudly, precisely
+
+```js
+function assertEqual(actual, expected, msg) {
+  if (!Object.is(actual, expected)) {
+    throw new Error(`${msg ?? "assert failed"}: expected ${fmt(expected)}, got ${fmt(actual)}`);
+  }
+}
+```
+
+Design rules learned the hard way:
+
+- The **message names the expectation**, not the mechanism. "Cart total excludes negative quantities" beats "0 !== -5".
+- **Deep equality** for objects: `Object.is` compares references; you need a structural compare (or `JSON.stringify` as a crude shortcut — order-sensitive, undefined-hostile).
+- **`assertThrows(fn, ErrorType)`** must verify the _type_ (and ideally the message) — "it threw something" is too weak.
+
+## Structuring suites
+
+```js
+describe("formatPrice", () => {
+  it("formats whole dollars without cents", () => {
+    /* ... */
+  });
+  it("always shows two decimals for fractional prices", () => {
+    /* ... */
+  });
+});
+```
+
+`describe` groups one _subject_; `it` states one _behavior_. Nested describes encode context: `describe("with an empty cart")`. If a test name needs "and", split it.
+
+## Hooks
+
+- `beforeEach` — fresh state per test (the default choice; independence!)
+- `afterEach` — cleanup (restore stubbed globals, clear storage)
+- `beforeAll` — expensive shared setup (start a server); use sparingly because it _couples_ tests
+
+The classic bug source: tests sharing mutable state (a module-level array one test appends to). Fresh state per test costs milliseconds and buys reliability.
+
+## Edge cases first
+
+For any function, before the happy path, enumerate: **empty input** (array, string, object), **boundaries** (0, -1, max), **wrong types** (null, undefined, non-numbers), and **duplicates**. Most production bugs live there — write the test that would have caught yours last time.

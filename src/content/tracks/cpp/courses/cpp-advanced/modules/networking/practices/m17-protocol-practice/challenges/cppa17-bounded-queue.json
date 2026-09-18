@@ -1,0 +1,16 @@
+{
+  "id": "cppa17-bounded-queue",
+  "title": "Bounded Queue, Drop-Oldest",
+  "prompt": "Implement `BoundedQueue` with drop-oldest policy: full push drops the oldest (counted in `dropped()`), pop is `optional`, and the counters stay exact under interleavings.",
+  "difficulty": "advanced",
+  "level": "combination",
+  "language": "cpp",
+  "boilerplate": "#include <cstddef>\n#include <deque>\n#include <cstdint>\n#include <optional>\n#include <string>\n#include <vector>\n\n// --- Frame: 4-byte little-endian length, then payload; max 1 MiB ---\nstruct FrameDecoder {\n    // Feed arbitrary chunk of bytes; extract zero or more complete frames.\n    // Returns false and sets *error on protocol violation (bad length).\n    // 'error': \"too-long\" (length > kMaxFrame), \"truncated\" can never error (just incomplete).\n    static constexpr std::size_t kMaxFrame = 1024 * 1024;\n\n    explicit FrameDecoder();\n\n    // Append bytes; then drain complete frames into *out (clears it first).\n    // Returns false on protocol error (decoder is then dead — fail closed).\n    bool feed(const std::uint8_t* data, std::size_t n, std::vector<std::string>* out, std::string* error);\n\n    // Bytes buffered but not yet forming a complete frame.\n    std::size_t pending() const;\n\nprivate:\n    std::vector<std::uint8_t> buf_;\n};\n\n// --- Bounded queue with drop-oldest policy ---\nstruct BoundedQueue {\n    explicit BoundedQueue(std::size_t capacity);\n\n    // Push; if full, drop the OLDEST and still admit this one. Returns dropped count (0 or 1).\n    std::size_t push(std::string item);\n\n    // Pop oldest; nullopt when empty.\n    std::optional<std::string> pop();\n\n    std::size_t size() const;\n    std::size_t dropped() const;   // total dropped since construction\n\nprivate:\n    std::deque<std::string> items_;\n    std::size_t cap_;\n    std::size_t dropped_ = 0;\n};\n",
+  "tests": [
+    {
+      "name": "policy + counter battery",
+      "code": "{\n    BoundedQueue q(2);\n    CHECK_EQ(q.push(\"a\"), 0);\n    CHECK_EQ(q.push(\"b\"), 0);\n    CHECK_EQ(q.push(\"c\"), 1);            // \"a\" dropped\n    CHECK_EQ(q.size(), 2);\n    CHECK_EQ(q.dropped(), 1);\n    CHECK_EQ(q.pop().value_or(\"x\"), \"b\");\n    CHECK_EQ(q.pop().value_or(\"x\"), \"c\");\n    CHECK(!q.pop().has_value());\n}\n{\n    BoundedQueue q(1);\n    q.push(\"x\");\n    q.push(\"y\");\n    q.push(\"z\");\n    CHECK_EQ(q.dropped(), 2);\n    CHECK_EQ(q.pop().value_or(\"x\"), \"z\");  // only newest survives\n    CHECK_EQ(q.size(), 0);\n}",
+      "hint": "std::deque<std::string> storage. push: if size == capacity, pop_front and ++dropped_. dropped_ is a member counter — it never resets."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+Ở Trung cấp, record chỉ là "lớp dữ liệu bất biến." Ở Nâng cao, chúng là
+**công cụ thiết kế đại số**.
+
+**Record** (JEP 395, final từ 21) là carrier minh bạch: trường final, accessor
+trùng tên component, sinh sẵn `equals`/`hashCode`/`toString`. Quy tắc thiết
+kế: record *là* dữ liệu của nó — nếu bạn thấy mình đang giấu hoặc làm biến đổi
+trạng thái component thì nó không nên là record. Validation đặt trong
+**compact constructor**:
+
+```java
+public record Price(int cents) {
+    public Price {                      // compact ctor: trường chưa được gán
+        if (cents < 0) throw new IllegalArgumentException("negative price");
+    }
+}
+```
+
+**Sealed class** (JEP 409, final từ 21) cho phép một kiểu *sở hữu hệ thống
+phân cấp của nó*:
+
+```java
+public sealed interface Shape permits Circle, Rect {}
+public record Circle(double r) implements Shape {}
+public record Rect(double w, double h) implements Shape {}
+```
+
+Kết hợp với **pattern matching cho switch** (JEP 441, final từ 21), bạn có
+dispatch *đầy đủ*: compiler từ chối biên dịch switch thiếu case — nên thêm
+variant mới trở thành thay đổi *được compiler dẫn đường*, không phải truy lùng
+`else` bị quên lúc chạy.
+
+```java
+double area(Shape s) {
+    return switch (s) {
+        case Circle c -> Math.PI * c.r() * c.r();
+        case Rect r   -> r.w() * r.h();
+    }; // không default: compiler ép đủ case
+}
+```
+
+Khi *không* nên seal: hệ phân cấp cho bên thứ ba mở rộng (plugin, SPI) phải
+mở. Sealing là hợp đồng với người gọi, không phải phong cách.

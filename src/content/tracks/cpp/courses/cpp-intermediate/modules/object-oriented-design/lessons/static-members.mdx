@@ -1,0 +1,40 @@
+A **static member** belongs to the class, not to any one object: one copy
+shared by every instance. Static data members are declared in the class and
+defined once outside it (C++17 allows in-class initialization with
+`inline`).
+
+```cpp
+#include <string>
+#include <vector>
+
+class IdGenerator {
+public:
+    static int next() { return ++counter_; }   // static member function: no this
+
+private:
+    inline static int counter_{0};             // one shared int
+};
+
+class Registry {
+public:
+    void add(std::string name) { names_.push_back(std::move(name)); }
+    static std::size_t count(const Registry& r) { return r.names_.size(); }
+
+private:
+    std::vector<std::string> names_;
+};
+```
+
+## The two kinds, cleanly separated
+
+- **static data member** — shared state across all instances (counters, caches, config).
+- **static member function** — callable without an object; has no `this`,
+  so it may not touch non-static members (it may read *others'* via a parameter).
+
+## Accessing
+
+`ClassName::member` from anywhere with access; `member` from inside class
+scope. Use cases that actually justify static state: instance counting,
+shared immutable configuration, factory helpers. Everything else should be a
+plain object — global mutable state is a design smell you will meet in
+debugging challenges.

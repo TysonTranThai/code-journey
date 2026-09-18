@@ -1,0 +1,56 @@
+Các byte không tin cậy đến tại mép vào; phần lõi của bạn xứng đáng nhận giá trị
+đã kiểu hóa, đã kiểm chứng. Toàn bộ công việc của ranh giới là sự dịch thuật
+đó — và chỉ làm *một lần*.
+
+## Parse, đừng validate
+
+Chống-pattern: mọi hàm đều phải kiểm tra lại `if user is not None` vì không ai
+chắc validation xảy ra ở đâu. Cách sửa là một hàm ranh giới trả về hoặc **giá
+trị sạch, có kiểu** hoặc **trọn bộ vấn đề**:
+
+```python
+def validate_user(payload: dict) -> tuple[dict, list[dict]]:
+    clean, errors = {}, []
+    # ... chuẩn hóa + kiểm tra từng field ...
+    return clean, errors   # errors == []  <=>  payload được chấp nhận
+```
+
+Bên trong ứng dụng, `clean` mang một bảo đảm: đủ field, đã chuẩn hóa (`email`
+được strip và viết thường), đúng kiểu. Không hàm lõi nào phải validate lại.
+Bảo đảm đó *chính là* kiến trúc.
+
+## Thu thập tất cả lỗi
+
+Một form chỉ báo một lỗi mỗi lần submit là một form người dùng phải submit mười
+lần. Validate mọi field, gom đủ, báo một lần. Envelope của bài trước mang một
+entry cho mỗi vấn đề:
+
+```json
+{"error": {"status": 422, "title": "validation_failed",
+           "detail": "3 fields invalid",
+           "fields": [{"field": "email", "detail": "..."}, ...]}}
+```
+
+## Chuẩn hóa là một nửa của validation
+
+`"  A@Example.COM "` và `"a@example.com"` là cùng một địa chỉ. Chuẩn hóa
+*trước khi* kiểm tra (strip, viết thường, coerce chuỗi số) để phép kiểm tra
+nhìn thấy dữ liệu chuẩn — và để hai đầu vào bằng nhau không lọt qua như khác
+nhau.
+
+## Fail closed, fail ầm ĩ
+
+- Field lạ: từ chối (rất có thể là lỗi chính tả của field thật) — hoặc ít nhất
+  không bao giờ *tin* chúng.
+- Exception tại ranh giới trở thành envelope 422/400, không bao giờ 500. Một
+  500 nghĩa là *lỗi của bạn*; một 422 nghĩa là *đầu vào của họ*. Trộn lẫn hai
+  điều đó sẽ dạy client phớt lờ lỗi của bạn.
+- Log lỗi validation ở mức debug, không kèm toàn bộ payload — payload chứa
+  mật khẩu.
+
+## Điểm seam của DI
+
+Handler nên nhận các dependency (repository, mailer, clock) qua **tham số**,
+không import singleton. Một quyết định duy nhất đó khiến handler test được ở
+mức unit: test truyền một repository giả, và không có database nào tồn tại
+trong bài test. Checkpoint sẽ luyện đúng điểm seam đó.

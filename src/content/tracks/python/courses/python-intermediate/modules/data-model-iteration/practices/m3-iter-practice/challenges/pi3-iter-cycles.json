@@ -1,0 +1,21 @@
+{
+  "id": "pi3-iter-cycles",
+  "title": "Finite Cycler",
+  "prompt": "Create a class Cycler(items) that loops over a finite list forever when used with next() directly, BUT supports it = iter(c) producing an iterator that cycles. Implement it as an iterator whose __next__ wraps around using modulo.",
+  "difficulty": "intermediate",
+  "language": "python",
+  "boilerplate": "class Cycler:\n    def __init__(self, items):\n        pass\n",
+  "tests": [
+    {
+      "name": "wraps around",
+      "code": "from itertools import islice\nc = Cycler(['a', 'b'])\nassert list(islice(c, 5)) == ['a', 'b', 'a', 'b', 'a']",
+      "hint": "index % len(items) — StopIteration never fires."
+    },
+    {
+      "name": "empty cycler is iterable but yields nothing",
+      "code": "from itertools import islice\nassert list(islice(Cycler([]), 3)) == []",
+      "hint": "Guard the empty case to avoid ZeroDivisionError."
+    }
+  ],
+  "level": "independent"
+}

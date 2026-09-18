@@ -1,0 +1,22 @@
+## Cấp phát arena (vùng)
+
+Cấp phát một khối lớn; cắt phát liên tiếp; giải phóng *toàn bộ cùng lúc* bằng cách bỏ khối. Arena là một bump pointer cộng dung lượng:
+
+```c
+void *arena_alloc(arena_t *a, size_t n) {
+    if (a->used + n > a->cap) return NULL;
+    void *p = a->mem + a->used;
+    a->used += n;
+    return p;
+}
+```
+
+Không free từng đối tượng, không phân mảnh, overhead gần bằng 0. Kỷ luật: mọi đối tượng trong arena phải chung một vòng đời. Trình biên dịch arena theo hàm; server arena theo request.
+
+## Cấp phát pool
+
+Cùng một kích thước khối ở mọi nơi: giữ free list các slot. get() lấy một slot; put() trả lại. O(1) không cần tìm kiếm, không cần máy móc size class.
+
+## Chính sách tăng trưởng realloc
+
+Tăng gấp đôi cho chi phí khấu trừ O(1) mỗi phần tử; tăng +1 cho tổng O(n^2) lần copy. Chính sách nằm trong *code của bạn* — realloc chỉ chuyển byte khi được bảo.

@@ -1,0 +1,31 @@
+{
+  "id": "ca7-hash-linear",
+  "title": "Linear-Probing Hash Table",
+  "prompt": "Fixed-capacity int→int table with linear probing and tombstones:\n \n```c\n#define HT_CAP 16\ntypedef struct { int key; int val; unsigned char state; } ht_ent_t; /* state: 0 empty, 1 used, 2 tombstone */\nvoid ht_init(ht_ent_t *t);\nint ht_put(ht_ent_t *t, int key, int val); /* 1 stored, 0 full */\nint *ht_get(ht_ent_t *t, int key);   /* pointer to val, or NULL */\nint ht_del(ht_ent_t *t, int key);   /* 1 deleted, 0 absent */\n```\n \nHash: `((unsigned)key * 2654435761u) % HT_CAP`. Probe forward with wraparound; insert may reuse tombstones; the table is never resized.",
+  "difficulty": "advanced",
+  "language": "c",
+  "boilerplate": "#include <stdio.h>\n#include <stdbool.h>\n#include <string.h>\n#include <stdlib.h>\n",
+  "tests": [
+    {
+      "name": "insert and find",
+      "code": "ht_ent_t t[16];\nht_init(t);\nCHECK_EQ(ht_put(t, 42, 4242), 1);\nint *v = ht_get(t, 42);\nCHECK_NOT_NULL(v);\nCHECK_EQ(*v, 4242);",
+      "hint": "Hash lands somewhere; probe finds it; get returns a pointer to live storage."
+    },
+    {
+      "name": "collision probes forward",
+      "code": "ht_ent_t t[16];\nht_init(t);\nint h = (int)(((unsigned)7 * 2654435761u) % 16);\nCHECK_EQ(ht_put(t, 7, 1), 1);\nCHECK_EQ(ht_put(t, 7 + 16, 2), 1);\nCHECK_EQ(*ht_get(t, 7), 1);\nCHECK_EQ(*ht_get(t, 7 + 16), 2);",
+      "hint": "Both keys hash to the same slot; the second probes forward, and both remain findable."
+    },
+    {
+      "name": "tombstone reused",
+      "code": "ht_ent_t t[16];\nht_init(t);\nint h = (int)(((unsigned)3 * 2654435761u) % 16);\nCHECK_EQ(ht_put(t, 3, 1), 1);\nCHECK_EQ(ht_put(t, 3 + 16, 2), 1);\nCHECK_EQ(ht_del(t, 3), 1);\nCHECK_EQ(ht_put(t, 3 + 32, 3), 1);\nCHECK_EQ(*ht_get(t, 3 + 32), 3);\nCHECK_NULL(ht_get(t, 3));",
+      "hint": "Deleting the home slot leaves a tombstone; the new colliding key reuses it; the removed key is gone."
+    },
+    {
+      "name": "full table",
+      "code": "ht_ent_t t[16];\nht_init(t);\nint put_all = 1;\nfor (int k = 0; k < 16; k++) put_all &= ht_put(t, k, k);\nCHECK_EQ(put_all, 1);\nCHECK_EQ(ht_put(t, 100, 1), 0);",
+      "hint": "16 distinct keys fill the table; the 17th reports full."
+    }
+  ],
+  "level": "mini-build"
+}

@@ -1,0 +1,27 @@
+## Gỡ lỗi khi không có symbol
+
+Công việc C chuyên nghiệp xảy ra ở nơi không thể bước qua code: production, CI, nhúng, sandbox. Phương pháp bền vững là *gỡ lỗi dựa trên bất biến*: với mỗi cấu trúc dữ liệu và vòng lặp, viết ra tính chất luôn phải đúng, rồi kiểm tra hung hăng trong build debug.
+
+```c
+static void ds_invariant(const int *heap, size_t n) {
+    for (size_t i = 1; i < n; i++) {
+        size_t parent = (i - 1) / 2;
+        if (heap[parent] < heap[i]) {
+            fprintf(stderr, "heap invariant broken at %zu\nn", i);
+            abort();
+        }
+    }
+}
+```
+
+Đây là điều `-DNDEBUG` bật/tắt: có NDEBUG trình biên dịch bỏ `assert()`; các hàm `_invariant` của bạn có thể giữ lại trong build kiểm thử và loại trong production.
+
+## Trình tự điều tra
+
+1. Tái hiện — đầu vào lỗi có thể dán lại được, không phải một câu chuyện.
+2. Định vị — chia đôi: nửa nào của chương trình hủy hoại trạng thái?
+3. Giả thuyết — nêu tên bất biến bạn tin đã vỡ.
+4. Chứng minh — assertion phát trước khi crash.
+5. Sửa nguyên nhân, không phải triệu chứng — rồi giữ lại assertion.
+
+Crash là muộn. Bất biến là sớm. Sự hủy hoại phát hiện tại `free()` vốn được gây ra trước đó nhiều dòng; lưới assertion rút ngắn khoảng cách đó về gần bằng không.

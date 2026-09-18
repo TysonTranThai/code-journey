@@ -1,0 +1,39 @@
+## CORS: ai được gọi API của bạn từ trình duyệt
+
+Trình duyệt mặc định chặn việc _đọc_ chéo origin (Same-Origin Policy). **CORS** là sự cho phép của server: các header response tuyên bố origin nào được đọc response.
+
+```text
+Access-Control-Allow-Origin: https://app.example.com
+Access-Control-Allow-Methods: GET, POST
+Access-Control-Allow-Credentials: true
+```
+
+Mô hình tinh thần then chốt: **CORS bảo vệ dữ liệu của _server_ khỏi script của các site khác** — nó không bảo vệ site của bạn khỏi bị gọi. `Access-Control-Allow-Origin: *` (ai cũng được) kèm credentials không chỉ sai mà trình duyệt còn cấm. Và CORS chỉ do trình duyệt thực thi — `curl` chẳng quan tâm, nên CORS _không phải_ hệ thống kiểm soát truy cập.
+
+## CSRF: request giả mạo cưỡi lên cookie của người dùng
+
+Nếu evil.com nhúng `<form action="https://bank.example/transfer" method="POST">` và tự submit, trình duyệt đính kèm cookie ngân hàng của nạn nhân — một cuộc tấn công **CSRF**. Cookie chứng minh danh tính, không chứng minh chủ ý.
+
+Phòng thủ:
+
+- **Cookie SameSite** (`Lax` là mặc định trên trình duyệt hiện đại) — POST chéo site không mang cookie
+- **CSRF token** — một giá trị ngẫu nhiên server nhúng vào form và xác minh khi submit; evil.com không đọc được nó (Same-Origin Policy) nên không cung cấp được
+- **Đừng dùng GET cho việc thay đổi trạng thái** — GET bị bấm bởi link, ảnh, trình prefetch
+
+## Security header: gia cố rẻ, thật sự có tác dụng
+
+```text
+Content-Security-Policy: default-src 'self'; img-src 'self' data:
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY            (hoặc frame-ancestors trong CSP)
+Referrer-Policy: strict-origin-when-cross-origin
+```
+
+- **CSP** giới hạn script/style/ảnh nào được tải — tấm lưới an toàn cho XSS
+- **HSTS** ép https trong một năm (kể cả subdomain)
+- **nosniff** ngăn đoán content-type (file văn bản biến thành script)
+- **frame options** chặn clickjacking (trang của bạn bị nhúng vô hình sau các nút của kẻ tấn công)
+- **Referrer-Policy** ngừng rò rỉ URL đầy đủ (kèm token!) cho site khác
+
+Đặt một lần trong cấu hình server; xác minh bằng securityheaders.com; xem lại khi thêm bên thứ ba (nhất là CSP).

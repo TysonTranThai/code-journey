@@ -1,19 +1,21 @@
 import type { Metadata } from "next";
 
 import { noIndexMetadata } from "@/lib/seo";
+import { getServerI18n } from "@/lib/i18n/server";
 import { ResetRequestForm } from "@/components/auth/ResetRequestForm";
 
-export const metadata: Metadata = noIndexMetadata("Reset your password");
+export async function generateMetadata(): Promise<Metadata> {
+  const { d } = await getServerI18n();
+  return noIndexMetadata(d.reset.title);
+}
 
-export default function ResetRequestPage() {
+export default async function ResetRequestPage() {
+  const { d } = await getServerI18n();
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-100">Reset your password</h1>
-        <p className="mt-1 text-sm text-zinc-400">
-          Enter your email and we will create a reset link. In development the link appears in the
-          server console.
-        </p>
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-100">{d.reset.title}</h1>
+        <p className="mt-1 text-sm text-zinc-400">{d.reset.subtitle}</p>
       </div>
 
       <ResetRequestForm />

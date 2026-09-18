@@ -1,0 +1,26 @@
+{
+  "id": "javi-checkpoint-m6-exceptions",
+  "title": "Validation Pipeline",
+  "prompt": "Build `Solution`:\n- `static class ValidationException extends RuntimeException` carrying\n  `List<String> errors` (getter `errors()`); message joins the errors.\n- `static void validate(List<String> fields)`: collect ALL failures —\n  blank fields (`null` or `isBlank`) become error\n  `\"field \" + index + \" blank\"`; then throw ValidationException with the\n  full error list if any.\n- `static int firstError(RuntimeException e)`: returns 0 when e is a\n  ValidationException, -1 otherwise.\n\nFail-fast would have stopped at the first problem — you collect everything,\nwhich is what a validation *pipeline* means.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "\nimport java.util.*;\n\npublic class Solution {\n    // Provide ValidationException + validate + firstError here.\n}\n",
+  "tests": [
+    {
+      "name": "valid input passes",
+      "code": "\nSolution.validate(List.of(\"a\", \"b\"));\ncheckTrue(true, \"no throw\");\n",
+      "hint": "No exception when nothing is blank."
+    },
+    {
+      "name": "all errors collected",
+      "code": "\ntry { Solution.validate(Arrays.asList(\"ok\", \"\", null)); checkTrue(false, \"must throw\"); }\ncatch (Solution.ValidationException e) {\n    checkEq(e.errors().size(), 2, \"two errors\");\n    checkTrue(e.errors().contains(\"field 1 blank\"), \"index 1\");\n    checkTrue(e.errors().contains(\"field 2 blank\"), \"index 2\");\n}\n",
+      "hint": "Both blank fields reported — not just the first."
+    },
+    {
+      "name": "firstError discriminator",
+      "code": "\ncheckEq(Solution.firstError(new Solution.ValidationException(List.of(\"x\"))), 0, \"validation type\");\ncheckEq(Solution.firstError(new RuntimeException(\"other\")), -1, \"other type\");\n",
+      "hint": "0 for ValidationException, -1 otherwise."
+    }
+  ],
+  "level": "real-world"
+}

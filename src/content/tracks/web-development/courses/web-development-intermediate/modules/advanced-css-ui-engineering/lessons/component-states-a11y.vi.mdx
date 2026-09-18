@@ -1,0 +1,40 @@
+Một component là tổng thể các trạng thái của nó. Thiết kế chúng — nhìn thấy
+được và tiếp cận được — là ranh giới giữa trang trí và UI.
+
+## Hợp đồng trạng thái
+
+Mọi phần tử tương tác nợ người dùng: **hover** (gợi ý), **focus** (ngang hàng
+với hover khi dùng bàn phím), **active** (phản hồi), **disabled** (rõ ràng
+không tương tác nhưng vẫn nhận biết được), và **aria-disabled** khi nó bắt buộc
+vẫn giữ focus. Đừng bao giờ bỏ viền focus mà không có `:focus-visible` thay thế:
+
+```css
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+```
+
+`:focus-visible` hiện viền cho người dùng bàn phím và bỏ qua với chuột — lợi cả
+hai đường.
+
+## Stacking context
+
+`z-index` chỉ xếp hạng trong **stacking context** của nó — được tạo bởi
+position + z-index, opacity < 1, transform, filter, và nhiều thứ khác. Một
+modal nằm trong card có `transform: translateY(0)` không thể nổi trên phần tử
+anh em có z-index 10 ở context khác. Dùng chế độ xem 3D/layers của DevTools để
+soi lỗi; sửa bằng cách giữ overlay trong cây phẳng (thường là portal ra body).
+
+## Ngữ nghĩa mô tả/thu gọn
+
+Với UI bật/tắt, hãy nối ngữ nghĩa với trạng thái — không cần thư viện ARIA lớn:
+
+```html
+<button aria-expanded="false" aria-controls="menu">Menu</button>
+<div id="menu" hidden>…</div>
+```
+
+Đảo `aria-expanded` và `hidden` cùng nhau từ một nguồn sự thật duy nhất. Chỉ
+dùng `role` khi nền tảng không có phần tử gốc (dialog có `<dialog>` gốc);
+native trước, ARIA sau.
