@@ -8,10 +8,13 @@
 
 Nền tảng giáo dục lập trình thế hệ mới kết hợp giữa lộ trình bài bản, thử thách tương tác chấm điểm tự động trong môi trường sandbox cô lập, theo dõi tiến độ chuẩn xác, diễn đàn trao đổi sôi nổi, hỗ trợ song ngữ Anh – Việt 100% cùng gia sư AI theo phương pháp Socratic định hướng tư duy.
 
+🌐 **Trang Web Trực Tuyến**: [https://codejourney.shop](https://codejourney.shop/)
+
 [**English**](README.md) • [**Tiếng Việt**](README.vi.md)
 
 <br/>
 
+[![Trang Web Trực Tuyến](https://img.shields.io/badge/Trang%20Web-codejourney.shop-00DC82?style=flat-square&logo=googlechrome&logoColor=white)](https://codejourney.shop/)
 [![GitHub Release](https://img.shields.io/github/v/release/TysonTranThai/code-journey?color=2563eb&style=flat-square&label=Phi%C3%AAn%20b%E1%BA%A3n)](https://github.com/TysonTranThai/code-journey/releases)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16.3.4-000000?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![React 19](https://img.shields.io/badge/React-19.2.8-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)

@@ -8,10 +8,13 @@
 
 A modern, next-generation coding education platform combining structured curriculum, interactive challenges executed in an isolated sandbox, verified progress tracking, vibrant community discussions, 100% Vietnamese/English bilingual parity, and an AI mentor that teaches instead of solving.
 
+🌐 **Live Platform**: [https://codejourney.shop](https://codejourney.shop/)
+
 [**English**](README.md) • [**Tiếng Việt**](README.vi.md)
 
 <br/>
 
+[![Live Website](https://img.shields.io/badge/Website-codejourney.shop-00DC82?style=flat-square&logo=googlechrome&logoColor=white)](https://codejourney.shop/)
 [![GitHub Release](https://img.shields.io/github/v/release/TysonTranThai/code-journey?color=2563eb&style=flat-square&label=Release)](https://github.com/TysonTranThai/code-journey/releases)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16.3.4-000000?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![React 19](https://img.shields.io/badge/React-19.2.8-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
