@@ -1538,6 +1538,8 @@ import HsgCpM5 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-greed
 import HsgCpM5Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-greedy/lessons/hsg-cp-m5.vi.mdx";
 import HsgCpM6 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-sorting/lessons/hsg-cp-m6.mdx";
 import HsgCpM6Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-sorting/lessons/hsg-cp-m6.vi.mdx";
+import HsgCpM7 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-search/lessons/hsg-cp-m7.mdx";
+import HsgCpM7Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-search/lessons/hsg-cp-m7.vi.mdx";
 import HsgM1Bridge from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-bridge.mdx";
 import HsgM1BridgeVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-bridge.vi.mdx";
 import HsgM1Reading from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-reading.mdx";
@@ -3816,6 +3818,8 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["hsg-search/hsg-m7-basics.vi.mdx"]: HsgM7BasicsVi,
   ["hsg-search/hsg-m7-answer.mdx"]: HsgM7Answer,
   ["hsg-search/hsg-m7-answer.vi.mdx"]: HsgM7AnswerVi,
+  ["hsg-search/hsg-cp-m7.mdx"]: HsgCpM7,
+  ["hsg-search/hsg-cp-m7.vi.mdx"]: HsgCpM7Vi,
   ["hsg-sorting/hsg-m6-sort.mdx"]: HsgM6Sort,
   ["hsg-sorting/hsg-m6-sort.vi.mdx"]: HsgM6SortVi,
   ["hsg-sorting/hsg-m6-sweep.mdx"]: HsgM6Sweep,

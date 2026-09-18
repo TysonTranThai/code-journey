@@ -99,7 +99,33 @@ export function getErrorExplanation(
     };
   }
 
-  // 8. Content Security Policy (CSP) restriction on eval
+  // 8. Missing semicolon (Java, C, C++, C#)
+  if (
+    text.includes("';' expected") ||
+    text.includes("expected ';'") ||
+    text.includes("expected ';' before") ||
+    text.includes("CS1002")
+  ) {
+    return {
+      message: d.console.explainMissingSemicolon,
+      hint: d.console.explainMissingSemicolonHint,
+    };
+  }
+
+  // 9. Cannot find symbol / undeclared identifier (Java, C, C++, C#)
+  if (
+    text.includes("cannot find symbol") ||
+    text.includes("was not declared in this scope") ||
+    text.includes("undeclared identifier") ||
+    text.includes("CS0103")
+  ) {
+    return {
+      message: d.console.explainCannotFindSymbol,
+      hint: d.console.explainCannotFindSymbolHint,
+    };
+  }
+
+  // 10. Content Security Policy (CSP) restriction on eval
   if (
     text.includes("Content Security Policy") ||
     text.includes("unsafe-eval") ||
@@ -111,7 +137,7 @@ export function getErrorExplanation(
     };
   }
 
-  // 9. General runtime error
+  // 11. General runtime error
   if (text.startsWith("Error:") || text.includes("Error:") || text.startsWith("Lỗi:")) {
     return {
       message: d.console.explainGenericError,

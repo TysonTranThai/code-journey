@@ -147,5 +147,29 @@ export async function POST(request: Request) {
 
   const jobId = await enqueueExecution(payload, submission.id);
 
+  // In development, trigger background execution if no standalone worker claimed it within 300ms.
+  // This guarantees local testing never times out even if `pnpm worker` is not running.
+  if (process.env.NODE_ENV !== "production") {
+    void (async () => {
+      try {
+        await new Promise((r) => setTimeout(r, 300));
+        const { claimJob, completeJob, markRunning } = await import("@/lib/execution/queue");
+        const { executeJob } = await import("@/workers/execute");
+        const { truncateOutput } = await import("@/lib/execution/types");
+        const job = await claimJob("dev-fallback-worker");
+        if (job) {
+          await markRunning(job.id);
+          const verdict = await executeJob(job.payload);
+          await completeJob(job.id, {
+            ...verdict,
+            output: truncateOutput(verdict.output),
+          });
+        }
+      } catch (err) {
+        console.error("[dev-fallback-worker] error:", err);
+      }
+    })();
+  }
+
   return NextResponse.json({ submissionId: submission.id, jobId }, { status: 202 });
 }

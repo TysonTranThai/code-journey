@@ -120,10 +120,14 @@ export function LiveConsole({
   code,
   boilerplate,
   language,
+  serverOutput,
+  isServerRunning,
 }: {
   code: string;
   boilerplate: string;
   language?: string;
+  serverOutput?: string;
+  isServerRunning?: boolean;
 }) {
   const { d, t } = useI18n();
   const [output, setOutput] = useState("");
@@ -212,16 +216,26 @@ export function LiveConsole({
   }, [code, isJs, runCode]);
 
   const untouched = code === boilerplate;
-  const explanation = getErrorExplanation(output, d, language);
+  const displayOutput = isJs ? output : (serverOutput ?? "");
+  const effectiveStatus: ConsoleStatus = isJs
+    ? status
+    : isServerRunning
+      ? "running"
+      : "idle";
+
+  const explanation = getErrorExplanation(displayOutput, d, language);
   const isErrorOutput =
-    output.startsWith("Error:") ||
-    output.includes("SyntaxError") ||
-    output.includes("ReferenceError") ||
-    output.includes("TypeError") ||
-    output.includes("RangeError") ||
-    output.includes("Stopped:") ||
-    output.includes("Đã dừng:") ||
-    output.startsWith("Lỗi:") ||
+    displayOutput.startsWith("Error:") ||
+    displayOutput.includes("error:") ||
+    displayOutput.includes("Error:") ||
+    displayOutput.includes("SyntaxError") ||
+    displayOutput.includes("ReferenceError") ||
+    displayOutput.includes("TypeError") ||
+    displayOutput.includes("RangeError") ||
+    displayOutput.includes("Stopped:") ||
+    displayOutput.includes("Đã dừng:") ||
+    displayOutput.startsWith("Lỗi:") ||
+    displayOutput.includes("Exception") ||
     explanation !== null;
 
   return (
@@ -238,9 +252,16 @@ export function LiveConsole({
             {d.console.heading}
           </h3>
         </div>
-        {status === "stopped" && (
-          <span className="badge-pixel badge-pixel-streak text-[10px]">{d.console.stopped}</span>
-        )}
+        <div className="flex items-center gap-2">
+          {effectiveStatus === "stopped" && (
+            <span className="badge-pixel badge-pixel-streak text-[10px]">{d.console.stopped}</span>
+          )}
+          {!isJs && (
+            <span className="badge-pixel badge-pixel-level text-[10px] uppercase font-mono">
+              {(language ?? "").toUpperCase()} OUTPUT
+            </span>
+          )}
+        </div>
       </div>
       <div
         role="log"
@@ -249,16 +270,18 @@ export function LiveConsole({
           isErrorOutput ? "text-rose-300" : "text-emerald-400"
         }`}
       >
-        {untouched && output.length === 0
-          ? d.console.emptyStart
-          : output.length > 0
-            ? output
-            : status === "running"
-              ? "…"
-              : d.console.noOutput}
+        {displayOutput.length > 0
+          ? displayOutput
+          : effectiveStatus === "running"
+            ? (isJs ? "…" : d.console.runningBackend)
+            : isJs
+              ? (untouched ? d.console.emptyStart : d.console.noOutput)
+              : d.console.emptyBackend}
       </div>
       {explanation && <ErrorExplanationCard explanation={explanation} />}
-      <p className="font-mono text-[11px] text-zinc-400">● {d.console.caption}</p>
+      <p className="font-mono text-[11px] text-zinc-400">
+        ● {isJs ? d.console.caption : d.console.captionBackend}
+      </p>
     </section>
   );
 }

@@ -269,10 +269,10 @@ non-decreasing order (|a_i| <= 10^9). Next q lines: x (|x| <= 10^9).
 
 **Example:** `6 2` / `1 2 2 2 5 9` / `2` / `7` -> `3`, `0`.""",
     [
-        contest_test("sample", "6 2\\n1 2 2 2 5 9\\n2\\n7\\n", "3\\n0\\n", "2 appears three times; 7 is absent."),
-        contest_test("all same", "5 1\\n4 4 4 4 4\\n4\\n", "5\\n", "Every element equals the query."),
-        contest_test("edges", "4 2\\n1 2 3 4\\n1\\n4\\n", "1\\n1\\n", "First and last elements."),
-        contest_test("big queries", "3 2\\n-5 -5 0\\n-5\\n1\\n", "2\\n0\\n", "Negative values count too."),
+        contest_test("sample", "6 2\n1 2 2 2 5 9\n2\n7\n", "3\n0\n", "2 appears three times; 7 is absent."),
+        contest_test("all same", "5 1\n4 4 4 4 4\n4\n", "5\n", "Every element equals the query."),
+        contest_test("edges", "4 2\n1 2 3 4\n1\n4\n", "1\n1\n", "First and last elements."),
+        contest_test("big queries", "3 2\n-5 -5 0\n-5\n1\n", "2\n0\n", "Negative values count too."),
     ],
     level="imitation",
 )
@@ -290,10 +290,10 @@ integers (|a_i| <= 10^9). Next q lines: x (|x| <= 10^9).
 **Example:** `4 2` / `1 4 8 12` / `5` / `10` -> `4`, `8`
 (5 is 1 away from 4 and 3 from 8 -> 4; 10 ties 8 and 12 -> smaller, 8).""",
     [
-        contest_test("sample", "4 2\\n1 4 8 12\\n5\\n10\\n", "4\\n8\\n", "5 ties 4 vs 8 -> smaller (4); 10 is closer to 8."),
-        contest_test("below all", "3 1\\n10 20 30\\n1\\n", "10\\n", "Everything is above; nearest is the first."),
-        contest_test("above all", "3 1\\n10 20 30\\n99\\n", "30\\n", "Everything is below; nearest is the last."),
-        contest_test("exact hit", "4 1\\n2 6 7 20\\n7\\n", "7\\n", "Distance 0 wins outright."),
+        contest_test("sample", "4 2\n1 4 8 12\n5\n10\n", "4\n8\n", "5 ties 4 vs 8 -> smaller (4); 10 is closer to 8."),
+        contest_test("below all", "3 1\n10 20 30\n1\n", "10\n", "Everything is above; nearest is the first."),
+        contest_test("above all", "3 1\n10 20 30\n99\n", "30\n", "Everything is below; nearest is the last."),
+        contest_test("exact hit", "4 1\n2 6 7 20\n7\n", "7\n", "Distance 0 wins outright."),
     ],
     level="guided",
     difficulty="intermediate",
@@ -311,10 +311,10 @@ positions (0 <= p_i <= 10^9).
 
 **Example:** `5 3` / `1 2 8 4 9` -> `3` (place at 1, 4, 8 or 1, 4, 9).""",
     [
-        contest_test("sample", "5 3\\n1 2 8 4 9\\n", "3\\n", "1, 4, 8 gives min gap 3."),
-        contest_test("two cows", "2 2\\n0 1000000000\\n", "1000000000\\n", "Max separation — int would overflow at 2·10^9? no, but keep long long."),
-        contest_test("crowded", "4 4\\n1 2 3 4\\n", "1\\n", "All stalls used; adjacent gaps are 1."),
-        contest_test("sparse", "3 2\\n0 5 10\\n", "10\\n", "Two cows at the extremes."),
+        contest_test("sample", "5 3\n1 2 8 4 9\n", "3\n", "1, 4, 8 gives min gap 3."),
+        contest_test("two cows", "2 2\n0 1000000000\n", "1000000000\n", "Max separation — int would overflow at 2·10^9? no, but keep long long."),
+        contest_test("crowded", "4 4\n1 2 3 4\n", "1\n", "All stalls used; adjacent gaps are 1."),
+        contest_test("sparse", "3 2\n0 5 10\n", "10\n", "Two cows at the extremes."),
     ],
     level="guided",
     difficulty="intermediate",
@@ -332,10 +332,10 @@ possible. Print that sum.
 
 **Example:** `5 2` / `1 2 3 4 5` -> `9` (segments [1 2 3] and [4 5]).""",
     [
-        contest_test("sample", "5 2\\n1 2 3 4 5\\n", "9\\n", "Split after 3: sums 6 and 9."),
-        contest_test("one segment", "4 1\\n3 1 4 1\\n", "9\\n", "k = 1 forces the whole array."),
-        contest_test("each own", "5 5\\n2 2 2 2 2\\n", "2\\n", "k = n: every segment is a single element."),
-        contest_test("zeros", "3 2\\n0 0 5\\n", "5\\n", "Zeros pad any segment."),
+        contest_test("sample", "5 2\n1 2 3 4 5\n", "9\n", "Split after 3: sums 6 and 9."),
+        contest_test("one segment", "4 1\n3 1 4 1\n", "9\n", "k = 1 forces the whole array."),
+        contest_test("each own", "5 5\n2 2 2 2 2\n", "2\n", "k = n: every segment is a single element."),
+        contest_test("zeros", "3 2\n0 0 5\n", "5\n", "Zeros pad any segment."),
     ],
     level="combination",
     difficulty="intermediate",
@@ -353,10 +353,10 @@ sorted positive integers (1 <= a_i <= 10^9).
 
 **Example:** `5 9` / `1 2 3 4 9` -> `YES` (2+3+4).""",
     [
-        contest_test("sample", "5 9\\n1 2 3 4 9\\n", "YES\\n", "2+3+4 = 9."),
-        contest_test("single element", "1 7\\n7\\n", "YES\\n", "The element itself."),
-        contest_test("impossible", "4 20\\n1 2 3 4\\n", "NO\\n", "Total is 10 < 20."),
-        contest_test("whole array", "3 6\\n1 2 3\\n", "YES\\n", "The full array sums to s."),
+        contest_test("sample", "5 9\n1 2 3 4 9\n", "YES\n", "2+3+4 = 9."),
+        contest_test("single element", "1 7\n7\n", "YES\n", "The element itself."),
+        contest_test("impossible", "4 20\n1 2 3 4\n", "NO\n", "Total is 10 < 20."),
+        contest_test("whole array", "3 6\n1 2 3\n", "YES\n", "The full array sums to s."),
     ],
     level="independent",
     difficulty="intermediate",
@@ -376,15 +376,15 @@ write_practice(
     },
     solutions=[
         ("hsg-p7-count-x",
-         CPP_STD + '    int n, q; in >> n >> q;\n    vector<long long> a(n);\n    for (long long& x : a) in >> x;\n    while (q--) {\n        long long x; in >> x;\n        int lb = int(lower_bound(a.begin(), a.end(), x) - a.begin());\n        int ub = int(upper_bound(a.begin(), a.end(), x) - a.begin());\n        out << ub - lb << "\\n";\n    }\n}'),
+         CPP_STD + '    int n, q; in >> n >> q;\n    vector<long long> a(n);\n    for (long long& x : a) in >> x;\n    while (q--) {\n        long long x; in >> x;\n        int lb = int(lower_bound(a.begin(), a.end(), x) - a.begin());\n        int ub = int(upper_bound(a.begin(), a.end(), x) - a.begin());\n        out << ub - lb << "\\n";\n    }\n}', "#include <iostream>\n#include <algorithm>\nusing namespace std;\nvoid solve(std::istream& in, std::ostream& out) {\n    int n, q; in >> n >> q;\n    vector<long long> a(n);\n    for (long long& x : a) in >> x;\n    while (q--) {\n        long long x; in >> x;\n        // near-miss: prints how many elements are STRICTLY BELOW x\n        int lb = int(lower_bound(a.begin(), a.end(), x) - a.begin());\n        out << lb << \"\\n\";\n    }\n}\n"),
         ("hsg-p7-closest",
-         CPP_STD + '    int n, q; in >> n >> q;\n    vector<long long> a(n);\n    for (long long& x : a) in >> x;\n    while (q--) {\n        long long x; in >> x;\n        int lb = int(lower_bound(a.begin(), a.end(), x) - a.begin());\n        long long best;\n        if (lb == n) best = a[n-1];\n        else if (lb == 0) best = a[0];\n        else {\n            long long hi = a[lb], lo = a[lb-1];\n            long long dh = hi - x, dl = x - lo;\n            best = (dh < dl) ? hi : lo;   // tie -> smaller (lo)\n        }\n        out << best << "\\n";\n    }\n}'),
+         CPP_STD + '    int n, q; in >> n >> q;\n    vector<long long> a(n);\n    for (long long& x : a) in >> x;\n    while (q--) {\n        long long x; in >> x;\n        int lb = int(lower_bound(a.begin(), a.end(), x) - a.begin());\n        long long best;\n        if (lb == n) best = a[n-1];\n        else if (lb == 0) best = a[0];\n        else {\n            long long hi = a[lb], lo = a[lb-1];\n            long long dh = hi - x, dl = x - lo;\n            best = (dh < dl) ? hi : lo;   // tie -> smaller (lo)\n        }\n        out << best << "\\n";\n    }\n}', "#include <iostream>\n#include <algorithm>\nusing namespace std;\nvoid solve(std::istream& in, std::ostream& out) {\n    int n, q; in >> n >> q;\n    vector<long long> a(n);\n    for (long long& x : a) in >> x;\n    while (q--) {\n        long long x; in >> x;\n        int lb = int(lower_bound(a.begin(), a.end(), x) - a.begin());\n        long long best;\n        if (lb == n) best = a[n-1];\n        else if (lb == 0) best = a[0];\n        else {\n            long long hi = a[lb], lo = a[lb-1];\n            long long dh = hi - x, dl = x - lo;\n            // near-miss: ties broken toward the LARGER value\n            best = (dh <= dl) ? hi : lo;\n        }\n        out << best << \"\\n\";\n    }\n}\n"),
         ("hsg-p7-cows",
-         CPP_STD + '    int n, k; in >> n >> k;\n    vector<long long> p(n);\n    for (long long& x : p) in >> x;\n    sort(p.begin(), p.end());\n    long long lo = 1, hi = p[n-1] - p[0];\n    auto feasible = [&](long long d) {\n        int used = 1; long long last = p[0];\n        for (int i = 1; i < n; ++i)\n            if (p[i] - last >= d) { ++used; last = p[i]; }\n        return used >= k;\n    };\n    while (lo < hi) {\n        long long mid = lo + (hi - lo + 1) / 2;\n        if (feasible(mid)) lo = mid; else hi = mid - 1;\n    }\n    out << lo << "\\n";\n}'),
+         CPP_STD + '    int n, k; in >> n >> k;\n    vector<long long> p(n);\n    for (long long& x : p) in >> x;\n    sort(p.begin(), p.end());\n    long long lo = 1, hi = p[n-1] - p[0];\n    auto feasible = [&](long long d) {\n        int used = 1; long long last = p[0];\n        for (int i = 1; i < n; ++i)\n            if (p[i] - last >= d) { ++used; last = p[i]; }\n        return used >= k;\n    };\n    while (lo < hi) {\n        long long mid = lo + (hi - lo + 1) / 2;\n        if (feasible(mid)) lo = mid; else hi = mid - 1;\n    }\n    out << lo << "\\n";\n}', "#include <iostream>\n#include <algorithm>\nusing namespace std;\nvoid solve(std::istream& in, std::ostream& out) {\n    int n, k; in >> n >> k;\n    vector<long long> p(n);\n    for (long long& x : p) in >> x;\n    sort(p.begin(), p.end());\n    long long lo = 1, hi = p[n-1] - p[0];\n    auto feasible = [&](long long d) {\n        int used = 1; long long last = p[0];\n        for (int i = 1; i < n; ++i)\n            // near-miss: strict > skips positions exactly d apart\n            if (p[i] - last > d) { ++used; last = p[i]; }\n        return used >= k;\n    };\n    while (lo < hi) {\n        long long mid = lo + (hi - lo + 1) / 2;\n        if (feasible(mid)) lo = mid; else hi = mid - 1;\n    }\n    out << lo << \"\\n\";\n}\n"),
         ("hsg-p7-router",
-         CPP_STD + '    int n, k; in >> n >> k;\n    vector<long long> a(n);\n    for (long long& x : a) in >> x;\n    long long lo = *max_element(a.begin(), a.end()), hi = 0;\n    for (long long x : a) hi += x;\n    auto feasible = [&](long long cap) {\n        int segs = 1; long long cur = 0;\n        for (long long x : a) {\n            if (cur + x > cap) { ++segs; cur = x; }\n            else cur += x;\n        }\n        return segs <= k;\n    };\n    while (lo < hi) {\n        long long mid = lo + (hi - lo) / 2;\n        if (feasible(mid)) hi = mid; else lo = mid + 1;\n    }\n    out << lo << "\\n";\n}'),
+         CPP_STD + '    int n, k; in >> n >> k;\n    vector<long long> a(n);\n    for (long long& x : a) in >> x;\n    long long lo = *max_element(a.begin(), a.end()), hi = 0;\n    for (long long x : a) hi += x;\n    auto feasible = [&](long long cap) {\n        int segs = 1; long long cur = 0;\n        for (long long x : a) {\n            if (cur + x > cap) { ++segs; cur = x; }\n            else cur += x;\n        }\n        return segs <= k;\n    };\n    while (lo < hi) {\n        long long mid = lo + (hi - lo) / 2;\n        if (feasible(mid)) hi = mid; else lo = mid + 1;\n    }\n    out << lo << "\\n";\n}', "#include <iostream>\n#include <algorithm>\nusing namespace std;\nvoid solve(std::istream& in, std::ostream& out) {\n    int n, k; in >> n >> k;\n    vector<long long> a(n);\n    for (long long& x : a) in >> x;\n    long long lo = *max_element(a.begin(), a.end()), hi = 0;\n    for (long long x : a) hi += x;\n    auto feasible = [&](long long cap) {\n        // near-miss: counts SPLITS, not segments — allows one too many\n        int segs = 0; long long cur = 0;\n        for (long long x : a) {\n            if (cur + x > cap) { ++segs; cur = x; }\n            else cur += x;\n        }\n        return segs <= k;\n    };\n    while (lo < hi) {\n        long long mid = lo + (hi - lo) / 2;\n        if (feasible(mid)) hi = mid; else lo = mid + 1;\n    }\n    out << lo << \"\\n\";\n}\n"),
         ("hsg-p7-sub-sum",
-         CPP_STD + '    int n; long long s; in >> n >> s;\n    vector<long long> a(n);\n    for (long long& x : a) in >> x;\n    // two pointers over sorted positive values: window sum == s?\n    long long cur = 0; int l = 0;\n    bool ok = false;\n    for (int r = 0; r < n && !ok; ++r) {\n        cur += a[r];\n        while (l <= r && cur > s) { cur -= a[l]; ++l; }\n        if (cur == s) ok = true;\n    }\n    out << (ok ? "YES" : "NO") << "\\n";\n}'),
+         CPP_STD + '    int n; long long s; in >> n >> s;\n    vector<long long> a(n);\n    for (long long& x : a) in >> x;\n    // two pointers over sorted positive values: window sum == s?\n    long long cur = 0; int l = 0;\n    bool ok = false;\n    for (int r = 0; r < n && !ok; ++r) {\n        cur += a[r];\n        while (l <= r && cur > s) { cur -= a[l]; ++l; }\n        if (cur == s) ok = true;\n    }\n    out << (ok ? "YES" : "NO") << "\\n";\n}', "#include <iostream>\n#include <algorithm>\nusing namespace std;\nvoid solve(std::istream& in, std::ostream& out) {\n    int n; long long s; in >> n >> s;\n    vector<long long> a(n);\n    for (long long& x : a) in >> x;\n    long long cur = 0; int l = 0;\n    bool ok = false;\n    for (int r = 0; r < n && !ok; ++r) {\n        cur += a[r];\n        // near-miss: >= s in the shrink loop discards exact hits\n        while (l <= r && cur >= s) { cur -= a[l]; ++l; }\n        if (cur == s) ok = true;\n    }\n    out << (ok ? \"YES\" : \"NO\") << \"\\n\";\n}\n"),
     ],
 )
 write_checkpoint(
@@ -394,7 +394,7 @@ write_checkpoint(
     "**Checkpoint — tìm kiếm.** Vượt qua challenge có chấm bên dưới để hoàn thành module.",
     challenge(
         "hsg-cp-m7-climb", "Plank the Trail", "**Description:** A trail has n checkpoints with heights h_1..h_n. Between checkpoint i-1 and i the climbers face an upward step of max(0, h_i - h_{i-1}). You may install wooden planks: one plank reduces the upward step along one gap by 1 (any number per gap). With at most k planks, minimize the **largest remaining upward step**. Print that step.\n\n**Input:** Line 1: n k (2 <= n <= 10^5, 0 <= k <= 10^14). Line 2: n heights (0 <= h_i <= 10^9).\n**Output:** One integer.\n\n**Example:** `4 2` / `1 5 5 9` -> up-steps 4, 0, 4; two planks on one gap leave 2 -> `2`.",
-        [contest_test("sample", "4 2\\n1 5 5 9\\n", "2\\n", "Up-steps 4, 0, 4; 2 planks on a 4-step gap leave 2."), contest_test("no planks", "3 0\\n1 3 2\\n", "2\\n", "k = 0: the max up-step stays 2."), contest_test("flatten", "3 100\\n1 10 5\\n", "0\\n", "Plenty of planks: the 9-step gap is erased entirely."), contest_test("single gap", "2 3\\n0 7\\n", "4\\n", "One gap of 7 with 3 planks leaves 4.")],
+        [contest_test("sample", "4 2\n1 5 5 9\n", "3\n", "Up-steps 4, 0, 4; d=3 needs 1+1=2 planks, d=2 would need 4."), contest_test("no planks", "3 0\n1 3 2\n", "2\n", "k = 0: the max up-step stays 2."), contest_test("flatten", "3 100\n1 10 5\n", "0\n", "Plenty of planks: the 9-step gap is erased entirely."), contest_test("single gap", "2 3\n0 7\n", "4\n", "One gap of 7 with 3 planks leaves 4."), contest_test("tall gap", "2 5\n0 10\n", "5\n", "One 10-high gap: 5 planks leave step 5; a wrong solver that counts gaps instead of planks says 10.")],
         difficulty="intermediate",
     ),
     vi_challenge("Lắp ván cho đường leo", "**Mô tả:** Đường trail có n điểm cao h_1..h_n. Giữa điểm i-1 và i người leo phải bậc lên max(0, h_i - h_{i-1}). Mỗi ván gỗ giảm bậc lên của một khoảng đi 1 (mỗi khoảng bao nhiêu ván cũng được). Với tối đa k ván, cực tiểu **bậc lên lớn nhất còn lại**. In giá trị đó.\n\n**Dữ liệu vào:** Dòng 1: n k (2 <= n <= 10^5, 0 <= k <= 10^14). Dòng 2: n chiều cao.\n**Dữ liệu ra:** Một số nguyên.\n\n**Ví dụ:** `4 2` / `1 5 5 9` -> các bậc lên 4, 0, 4; hai ván vào khoảng 4 bậc còn 2 -> `2`.", [("ví dụ đề bài", "Bậc lên 4, 0, 4; 2 ván vào khoảng 4 bậc còn 2."), ("không ván", "k = 0: bậc lên lớn nhất giữ nguyên 2."), ("san phẳng", "Ván dư dùng: khoảng 9 bậc bị xóa hẳn."), ("một khoảng", "Một khoảng 7 bậc với 3 ván còn 4.")]),

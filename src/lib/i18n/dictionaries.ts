@@ -320,6 +320,17 @@ const en = {
       "Security Policy Notice: In-browser code evaluation was restricted by Content Security Policy.",
     explainCspErrorHint:
       "Click the 'Submit' button above to compile and run your code safely inside the isolated container sandbox.",
+    emptyBackend: "Click 'Submit' to compile and run your code in the sandbox.",
+    captionBackend: "Compiled and executed in an isolated container sandbox.",
+    runningBackend: "Compiling and running code in sandbox...",
+    explainMissingSemicolon:
+      "Compilation Error: Missing semicolon ';' at the end of statement.",
+    explainMissingSemicolonHint:
+      "Check the indicated line in your code and add a ';' at the end of the statement.",
+    explainCannotFindSymbol:
+      "Compilation Error: Cannot find symbol (variable, method, or class).",
+    explainCannotFindSymbolHint:
+      "Check for spelling mistakes in the identifier name, or make sure it has been properly declared before use.",
   },
   mentor: {
     aria: "Mentor",
@@ -838,6 +849,17 @@ const vi: Dictionary = {
       "Thông báo chính sách bảo mật: Việc chạy mã trực tiếp trong trình duyệt bị hạn chế bởi CSP.",
     explainCspErrorHint:
       "Nhấn nút 'Nộp bài' ở trên để biên dịch và chạy mã an toàn trong container sandbox cô lập.",
+    emptyBackend: "Nhấn 'Nộp bài' để biên dịch và chạy mã nguồn của bạn trong sandbox.",
+    captionBackend: "Được biên dịch và thực thi trong container sandbox cô lập.",
+    runningBackend: "Đang biên dịch và chạy mã nguồn trong sandbox...",
+    explainMissingSemicolon:
+      "Lỗi biên dịch: Thiếu dấu chấm phẩy ';' ở cuối câu lệnh.",
+    explainMissingSemicolonHint:
+      "Kiểm tra dòng được chỉ ra trong thông báo lỗi và thêm dấu ';' vào cuối câu lệnh.",
+    explainCannotFindSymbol:
+      "Lỗi biên dịch: Không tìm thấy ký hiệu (biến, hàm hoặc lớp).",
+    explainCannotFindSymbolHint:
+      "Kiểm tra xem tên biến/hàm có bị gõ sai chính tả hoặc chưa được khai báo trước khi dùng hay không.",
   },
   mentor: {
     aria: "Người hướng dẫn",

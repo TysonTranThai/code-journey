@@ -1,0 +1,35 @@
+{
+  "id": "hsg-cp-m7-climb",
+  "title": "Plank the Trail",
+  "prompt": "**Description:** A trail has n checkpoints with heights h_1..h_n. Between checkpoint i-1 and i the climbers face an upward step of max(0, h_i - h_{i-1}). You may install wooden planks: one plank reduces the upward step along one gap by 1 (any number per gap). With at most k planks, minimize the **largest remaining upward step**. Print that step.\n\n**Input:** Line 1: n k (2 <= n <= 10^5, 0 <= k <= 10^14). Line 2: n heights (0 <= h_i <= 10^9).\n**Output:** One integer.\n\n**Example:** `4 2` / `1 5 5 9` -> up-steps 4, 0, 4; two planks on one gap leave 2 -> `2`.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"4 2\\n1 5 5 9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "Up-steps 4, 0, 4; d=3 needs 1+1=2 planks, d=2 would need 4."
+    },
+    {
+      "name": "no planks",
+      "code": "std::istringstream in(\"3 0\\n1 3 2\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "k = 0: the max up-step stays 2."
+    },
+    {
+      "name": "flatten",
+      "code": "std::istringstream in(\"3 100\\n1 10 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Plenty of planks: the 9-step gap is erased entirely."
+    },
+    {
+      "name": "single gap",
+      "code": "std::istringstream in(\"2 3\\n0 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\n\"));",
+      "hint": "One gap of 7 with 3 planks leaves 4."
+    },
+    {
+      "name": "tall gap",
+      "code": "std::istringstream in(\"2 5\\n0 10\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n\"));",
+      "hint": "One 10-high gap: 5 planks leave step 5; a wrong solver that counts gaps instead of planks says 10."
+    }
+  ]
+}

@@ -74,101 +74,71 @@ export function VerdictPanel({
   if (state.phase === "idle") {
     const [before, after] = d.verdict.idle.split("{submit}");
 
-    if (isBackend) {
-      return (
-        <section
-          aria-label={d.verdict.sandboxOutput}
-          className="glass-card p-4 rounded-2xl flex flex-col gap-2.5 shadow-xl border border-white/[0.08] bg-[#0c101b]"
-        >
-          <div className="flex items-center justify-between gap-2 border-b border-white/[0.08] pb-2">
-            <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-rose-500/80 inline-block" aria-hidden="true" />
-              <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80 inline-block" aria-hidden="true" />
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80 inline-block" aria-hidden="true" />
-              <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-300 ml-1">
-                {d.verdict.sandboxOutput}
-              </h3>
-            </div>
-            <span className="badge-pixel badge-pixel-level text-[10px] uppercase font-mono">
-              {(language ?? "").toUpperCase()} SANDBOX
-            </span>
-          </div>
-          <div className="rounded-xl border border-white/[0.08] bg-[#070a18] p-3.5 text-xs font-mono leading-relaxed text-zinc-400 shadow-inner">
-            <p className="mb-2 text-zinc-300">
-              {before}
-              <span className="font-semibold text-emerald-400">{d.workspace.submit}</span>
-              {after}
-            </p>
-            {testNames && testNames.length > 0 && (
-              <div className="mt-3 border-t border-white/[0.06] pt-2.5">
-                <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5 font-mono">
-                  {d.verdict.expectedTests} ({testNames.length}):
-                </p>
-                <ul className="flex flex-col gap-1 text-[11px] font-mono text-zinc-400">
-                  {testNames.map((name, i) => (
-                    <li key={i} className="flex items-center gap-1.5 truncate">
-                      <span className="text-zinc-600">○</span>
-                      <span className="truncate">{name}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-          <p className="font-mono text-[11px] text-zinc-500">
-            ● {t(d.verdict.backendIdleCaption, { lang: (language ?? "").toUpperCase() })}
-          </p>
-        </section>
-      );
-    }
-
     return (
-      <p className="text-sm text-zinc-400">
-        {before}
-        <span className="font-semibold text-zinc-300">{d.workspace.submit}</span>
-        {after}
-      </p>
+      <section
+        aria-label={d.verdict.backendSandboxTitle}
+        className="glass-card p-4 rounded-2xl flex flex-col gap-2.5 shadow-xl border border-white/[0.08] bg-[#0c101b]"
+      >
+        <div className="flex items-center justify-between gap-2 border-b border-white/[0.08] pb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-sm">🧪</span>
+            <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-300">
+              {d.verdict.backendSandboxTitle}
+            </h3>
+          </div>
+          <span className="badge-pixel badge-pixel-level text-[10px] uppercase font-mono">
+            {(language ?? "SANDBOX").toUpperCase()}
+          </span>
+        </div>
+        <p className="text-xs text-zinc-400">
+          {before}
+          <span className="font-semibold text-emerald-400">{d.workspace.submit}</span>
+          {after}
+        </p>
+        {testNames && testNames.length > 0 && (
+          <div className="mt-2 border-t border-white/[0.06] pt-2">
+            <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5 font-mono">
+              {d.verdict.expectedTests} ({testNames.length}):
+            </p>
+            <ul className="flex flex-col gap-1 text-[11px] font-mono text-zinc-400">
+              {testNames.map((name, i) => (
+                <li key={i} className="flex items-center gap-1.5 truncate">
+                  <span className="text-zinc-600">○</span>
+                  <span className="truncate">{name}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </section>
     );
   }
 
   if (state.phase === "running") {
-    if (isBackend) {
-      return (
-        <section
-          aria-label={d.verdict.sandboxOutput}
-          className="glass-card p-4 rounded-2xl flex flex-col gap-2.5 shadow-xl border border-white/[0.08] bg-[#0c101b]"
-        >
-          <div className="flex items-center justify-between gap-2 border-b border-white/[0.08] pb-2">
-            <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-rose-500/80 inline-block" aria-hidden="true" />
-              <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80 inline-block" aria-hidden="true" />
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80 inline-block" aria-hidden="true" />
-              <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-300 ml-1">
-                {d.verdict.sandboxOutput}
-              </h3>
-            </div>
-            <span className="badge-pixel badge-pixel-level text-[10px] uppercase font-mono">
-              {(language ?? "").toUpperCase()} SANDBOX
-            </span>
-          </div>
-          <p className="flex items-center gap-2 text-sm text-zinc-300 p-3 font-mono" role="status" aria-live="polite">
-            <span
-              className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-emerald-400 border-t-transparent motion-reduce:animate-none"
-              aria-hidden="true"
-            />
-            {d.verdict.running}
-          </p>
-        </section>
-      );
-    }
     return (
-      <p className="flex items-center gap-2 text-sm text-zinc-400" role="status" aria-live="polite">
-        <span
-          className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-emerald-400 border-t-transparent motion-reduce:animate-none"
-          aria-hidden="true"
-        />
-        {d.verdict.running}
-      </p>
+      <section
+        aria-label={d.verdict.backendSandboxTitle}
+        className="glass-card p-4 rounded-2xl flex flex-col gap-2.5 shadow-xl border border-white/[0.08] bg-[#0c101b]"
+      >
+        <div className="flex items-center justify-between gap-2 border-b border-white/[0.08] pb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-sm">🧪</span>
+            <h3 className="font-mono text-xs font-semibold uppercase tracking-wider text-zinc-300">
+              {d.verdict.backendSandboxTitle}
+            </h3>
+          </div>
+          <span className="badge-pixel badge-pixel-level text-[10px] uppercase font-mono">
+            {(language ?? "SANDBOX").toUpperCase()}
+          </span>
+        </div>
+        <p className="flex items-center gap-2 text-sm text-zinc-300 p-2 font-mono" role="status" aria-live="polite">
+          <span
+            className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-emerald-400 border-t-transparent motion-reduce:animate-none"
+            aria-hidden="true"
+          />
+          {d.verdict.running}
+        </p>
+      </section>
     );
   }
 

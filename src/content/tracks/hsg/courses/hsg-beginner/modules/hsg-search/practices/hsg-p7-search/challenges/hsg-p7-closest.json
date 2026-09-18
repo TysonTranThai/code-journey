@@ -8,22 +8,22 @@
   "tests": [
     {
       "name": "sample",
-      "code": "std::istringstream in(\"4 2\\\\n1 4 8 12\\\\n5\\\\n10\\\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\\\n8\\\\n\"));",
+      "code": "std::istringstream in(\"4 2\\n1 4 8 12\\n5\\n10\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\n8\\n\"));",
       "hint": "5 ties 4 vs 8 -> smaller (4); 10 is closer to 8."
     },
     {
       "name": "below all",
-      "code": "std::istringstream in(\"3 1\\\\n10 20 30\\\\n1\\\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"10\\\\n\"));",
+      "code": "std::istringstream in(\"3 1\\n10 20 30\\n1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"10\\n\"));",
       "hint": "Everything is above; nearest is the first."
     },
     {
       "name": "above all",
-      "code": "std::istringstream in(\"3 1\\\\n10 20 30\\\\n99\\\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"30\\\\n\"));",
+      "code": "std::istringstream in(\"3 1\\n10 20 30\\n99\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"30\\n\"));",
       "hint": "Everything is below; nearest is the last."
     },
     {
       "name": "exact hit",
-      "code": "std::istringstream in(\"4 1\\\\n2 6 7 20\\\\n7\\\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\\\n\"));",
+      "code": "std::istringstream in(\"4 1\\n2 6 7 20\\n7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n\"));",
       "hint": "Distance 0 wins outright."
     }
   ],

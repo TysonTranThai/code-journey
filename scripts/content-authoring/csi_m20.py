@@ -256,6 +256,35 @@ COUNTING_STRINGS = (
     "    public static void Bump() => Allocations++;\n"
     "}\n"
 )
+COUNT_PROBE = (
+    "\n"
+    "// Provided infrastructure — do not modify. Counts source enumerations:\n"
+    "// each foreach pass over Src() bumps Hits exactly once.\n"
+    "public sealed class CountingProbe\n"
+    "{\n"
+    "    public int Hits;\n"
+    "    public System.Collections.Generic.IEnumerable<int> Src(params int[] xs)\n"
+    "    {\n"
+    "        Hits++;\n"
+    "        foreach (var x in xs) yield return x;\n"
+    "    }\n"
+    "}\n"
+)
+
+SCAN_PROBE = (
+    "\n"
+    "// Provided infrastructure — do not modify. Counts enumerations of Src():\n"
+    "// each pass bumps Scans exactly once. HashSet lookups never enumerate.\n"
+    "public static class ScanProbe\n"
+    "{\n"
+    "    public static int Scans;\n"
+    "    public static System.Collections.Generic.IEnumerable<string> Src(params string[] xs)\n"
+    "    {\n"
+    "        Scans++;\n"
+    "        foreach (var x in xs) yield return x;\n"
+    "    }\n"
+    "}\n"
+)
 
 write_practice(
     M,
@@ -328,9 +357,9 @@ Cj.Eq(Solution.Report(lines).Length, 500 * 10, "6 chars + newline per line");
             "HashSet Against the Quadratic",
             r"""`DuplicateFinder.HasAny(List<int>, List<int>)` scans the whole
 `List` per candidate — O(n·m). Rewrite as
-`Solution.HasAny(List<int> haystack, List<int> needles)` that puts the
-haystack in a `System.Collections.Generic.HashSet<int>` once and tests each
-needle in ~O(1):
+`Solution.HasAny(IEnumerable<int> haystack, List<int> needles)` that puts the
+haystack in a `System.Collections.Generic.HashSet<int>` once (one enumeration)
+and tests each needle in ~O(1):
 
 - true iff at least one needle is present,
 - empty needles → false, empty haystack → false,
@@ -339,17 +368,21 @@ needle in ~O(1):
 ```csharp
 public static class Solution
 {
-    public static bool HasAny(System.Collections.Generic.List<int> haystack,
-                              System.Collections.Generic.List<int> needles);
+    public static bool HasAny(
+        System.Collections.Generic.IEnumerable<int> haystack,
+        System.Collections.Generic.List<int> needles);
 }
+// provided: public sealed class CountingProbe { public int Hits; public IEnumerable<int> Src(params int[] xs); }
 ```""",
-            CS_PRELUDE,
+            CS_PRELUDE + COUNT_PROBE,
             [
                 (
                     "membership semantics",
                     r"""
-var hay = new System.Collections.Generic.List<int> { 1, 2, 3 };
+var probe = new CountingProbe();
+var hay = probe.Src(1, 2, 3);
 Cj.True(Solution.HasAny(hay, new System.Collections.Generic.List<int> { 9, 2 }), "2 is present");
+Cj.Eq(probe.Hits, 1, "haystack enumerated once, not per needle");
 Cj.False(Solution.HasAny(hay, new System.Collections.Generic.List<int> { 9, 10 }), "none present");
 """,
                     "Build the set once, test each needle against it.",
@@ -381,7 +414,7 @@ Cj.True(Solution.HasAny(hay, new System.Collections.Generic.List<int> { 5, 5 }),
             "Enumerate Once",
             r"""`FilterTwice` enumerates its pipeline two times (a `Count()` gate,
 then the render loop) — the filter (and the source!) runs twice. Write
-`Solution.Heavy(int[] source)` that:
+`Solution.Heavy(IEnumerable<int> source)` that:
 
 - filters to even numbers (in order),
 - enumerates the pipeline **exactly once** in total,
@@ -391,7 +424,7 @@ then the render loop) — the filter (and the source!) runs twice. Write
 public static class Solution
 {
     public sealed class Stats { public int Count; public string Joined = ""; }
-    public static Stats Heavy(int[] source);   // e.g. [1,2,3,4] -> Count=2, Joined="2|4"
+    public static Stats Heavy(System.Collections.Generic.IEnumerable<int> source);   // e.g. [1,2,3,4] -> Count=2, Joined="2|4"
 }
 ```
 
@@ -401,7 +434,7 @@ it via `probe.Src()` so the tests can see the true enumeration count.
 ```csharp
 // provided: public sealed class CountingProbe { public int Hits; public IEnumerable<int> Src(params int[] xs); }
 ```""",
-            CS_PRELUDE,
+            CS_PRELUDE + COUNT_PROBE,
             [
                 (
                     "values and counts are right",
@@ -453,7 +486,7 @@ public static string Check(List<string> catalog, string sku)   // BROKEN
 }
 ```
 
-Write `Solution.BuildChecker(List<string> catalog)` returning a delegate
+Write `Solution.BuildChecker(IEnumerable<string> catalog)` returning a delegate
 `Func<string, string>` with the same contract ("known" / "cheap-others" /
 "unknown") but with ALL expensive work done once at build time:
 
@@ -464,15 +497,16 @@ Write `Solution.BuildChecker(List<string> catalog)` returning a delegate
 ```csharp
 public static class Solution
 {
-    public static System.Func<string, string> BuildChecker(System.Collections.Generic.List<string> catalog);
+    public static System.Func<string, string> BuildChecker(System.Collections.Generic.IEnumerable<string> catalog);
 }
+// provided: public static class ScanProbe { public static int Scans; public static IEnumerable<string> Src(params string[] xs); }
 ```""",
-            CS_PRELUDE,
+            CS_PRELUDE + SCAN_PROBE,
             [
                 (
                     "same answers, new shape",
                     r"""
-var check = Solution.BuildChecker(new System.Collections.Generic.List<string> { "ab", "cde", "xyz" });
+var check = Solution.BuildChecker(ScanProbe.Src("ab", "cde", "xyz"));
 Cj.Eq(check("ab"), "known", "member");
 Cj.Eq(check("cde"), "known", "member regardless of length");
 Cj.Eq(check("qq"), "cheap-others", "not known, but cheap others exist");
@@ -482,7 +516,7 @@ Cj.Eq(check("qq"), "cheap-others", "not known, but cheap others exist");
                 (
                     "no cheap others -> unknown",
                     r"""
-var check = Solution.BuildChecker(new System.Collections.Generic.List<string> { "abcd", "efgh" });
+var check = Solution.BuildChecker(ScanProbe.Src("abcd", "efgh"));
 Cj.Eq(check("zz"), "unknown", "no cheap others");
 Cj.Eq(check("abcd"), "known", "membership still works");
 """,
@@ -491,11 +525,13 @@ Cj.Eq(check("abcd"), "known", "membership still works");
                 (
                     "delegate does no per-call scanning",
                     r"""
-var check = Solution.BuildChecker(new System.Collections.Generic.List<string> { "a", "bc" });
+var check = Solution.BuildChecker(ScanProbe.Src("a", "bc"));
+int afterBuild = ScanProbe.Scans;
 Cj.Eq(check("a"), "known", "sanity");
-Cj.Eq(ScanProbe.Scans, 0, "no list scan inside the delegate");
+Cj.Eq(check("zz"), "cheap-others", "fallback branch is also cheap");
+Cj.Eq(ScanProbe.Scans, afterBuild, "no scan inside the delegate");
 """,
-                    "Provided ScanProbe counts List scans: prebuilt HashSet lookups do not scan.",
+                    "Snapshot Scans after building; the returned delegate must add zero.",
                 ),
             ],
             level="debugging",
@@ -514,7 +550,7 @@ Cj.Eq(ScanProbe.Scans, 0, "no list scan inside the delegate");
         ),
         "csi-p20-set-membership": vi_challenge(
             "HashSet chống bình phương hóa",
-            "`DuplicateFinder.HasAny(List<int>, List<int>)` quét toàn bộ `List` cho mỗi phần tử cần tìm — O(n·m). Viết `Solution.HasAny(List<int> haystack, List<int> needles)` đưa haystack vào một `System.Collections.Generic.HashSet<int>` một lần rồi kiểm từng needle trong ~O(1): true khi có ít nhất một needle; needles rỗng -> false; haystack rỗng -> false; trùng lặp ở hai bên không quan trọng.",
+            "`DuplicateFinder.HasAny(List<int>, List<int>)` quét toàn bộ `List` cho mỗi phần tử cần tìm — O(n·m). Viết `Solution.HasAny(IEnumerable<int> haystack, List<int> needles)` đưa haystack vào một `System.Collections.Generic.HashSet<int>` một lần rồi kiểm từng needle trong ~O(1): true khi có ít nhất một needle; needles rỗng -> false; haystack rỗng -> false; trùng lặp ở hai bên không quan trọng.",
             [
                 ("membership semantics", "Dựng set một lần, kiểm từng needle trên set đó."),
                 ("degenerate inputs", "Bên rỗng nghĩa là không thể có match."),
@@ -523,7 +559,7 @@ Cj.Eq(ScanProbe.Scans, 0, "no list scan inside the delegate");
         ),
         "csi-p20-materialize": vi_challenge(
             "Enumerate một lần",
-            "`FilterTwice` enumerate pipeline của nó hai lần (cổng `Count()`, rồi vòng render) — filter (và cả nguồn!) chạy hai lần. Viết `Solution.Heavy(int[] source)`: lọc số chẵn (giữ thứ tự), enumerate pipeline **đúng một lần**, trả `Stats { int Count; string Joined }` — ví dụ [1,2,3,4] -> Count=2, Joined=\"2|4\". CountingProbe (cấp sẵn) ghi nhận nguồn bị enumerate bao nhiêu lần: bọc nguồn qua `probe.Src()` để test thấy số lần thật.",
+            "`FilterTwice` enumerate pipeline của nó hai lần (cổng `Count()`, rồi vòng render) — filter (và cả nguồn!) chạy hai lần. Viết `Solution.Heavy(IEnumerable<int> source)`: lọc số chẵn (giữ thứ tự), enumerate pipeline **đúng một lần**, trả `Stats { int Count; string Joined }` — ví dụ [1,2,3,4] -> Count=2, Joined=\"2|4\". CountingProbe (cấp sẵn) ghi nhận nguồn bị enumerate bao nhiêu lần: bọc nguồn qua `probe.Src()` để test thấy số lần thật.",
             [
                 ("values and counts are right", "Lọc số chẵn; đếm và join từ một snapshot đã materialize."),
                 ("the source is enumerated exactly once", "Materialize một lần (ToList), rồi lấy Count và Joined từ snapshot."),
@@ -532,7 +568,7 @@ Cj.Eq(ScanProbe.Scans, 0, "no list scan inside the delegate");
         ),
         "csi-p20-hotloop-debug": vi_challenge(
             "Debug: Query trong vòng lặp",
-            "Một bộ kiểm tra giá \"chạy được\" nhưng chạy lại cả query LINQ *bên trong* vòng lặp từng phần tử, trên nền `List.Contains`. Với 1 phần tử thì vô hình; với catalog thì bình phương hóa. Viết `Solution.BuildChecker(List<string> catalog)` trả delegate `Func<string, string>` cùng hợp đồng (\"known\"/\"cheap-others\"/\"unknown\") nhưng MỌI công việc đắt làm một lần lúc dựng: membership qua `HashSet` dựng sẵn, số lượng cheap đếm một lần lúc dựng, delegate trả về không dùng LINQ và không quét list.",
+            "Một bộ kiểm tra giá \"chạy được\" nhưng chạy lại cả query LINQ *bên trong* vòng lặp từng phần tử, trên nền `List.Contains`. Với 1 phần tử thì vô hình; với catalog thì bình phương hóa. Viết `Solution.BuildChecker(IEnumerable<string> catalog)` trả delegate `Func<string, string>` cùng hợp đồng (\"known\"/\"cheap-others\"/\"unknown\") nhưng MỌI công việc đắt làm một lần lúc dựng: membership qua `HashSet` dựng sẵn, số lượng cheap đếm một lần lúc dựng, delegate trả về không dùng LINQ và không quét list.",
             [
                 ("same answers, new shape", "Dựng sẵn set và count; delegate chỉ rẽ nhánh."),
                 ("no cheap others -> unknown", "Số lượng đếm lúc dựng quyết định nhánh fallback."),
@@ -548,18 +584,18 @@ Cj.Eq(ScanProbe.Scans, 0, "no list scan inside the delegate");
         ),
         (
             "csi-p20-set-membership",
-            'public static class Solution\n{\n    public static bool HasAny(\n        System.Collections.Generic.List<int> haystack,\n        System.Collections.Generic.List<int> needles)\n    {\n        var set = new System.Collections.Generic.HashSet<int>(haystack);\n        foreach (var n in needles)\n            if (set.Contains(n)) return true;\n        return false;\n    }\n}\n',
-            'public static class Solution\n{\n    public static bool HasAny(\n        System.Collections.Generic.List<int> haystack,\n        System.Collections.Generic.List<int> needles)\n    {\n        // near-miss: builds the set but still scans the LIST per needle —\n        // the set exists, the quadratic shape does too\n        var set = new System.Collections.Generic.HashSet<int>(haystack);\n        foreach (var n in needles)\n            foreach (var h in haystack)\n                if (h == n && set.Contains(n)) return true;\n        return false;\n    }\n}\n',
+            'public static class Solution\n{\n    public static bool HasAny(\n        System.Collections.Generic.IEnumerable<int> haystack,\n        System.Collections.Generic.List<int> needles)\n    {\n        var set = new System.Collections.Generic.HashSet<int>(haystack);\n        foreach (var n in needles)\n            if (set.Contains(n)) return true;\n        return false;\n    }\n}\n',
+            'public static class Solution\n{\n    public static bool HasAny(\n        System.Collections.Generic.IEnumerable<int> haystack,\n        System.Collections.Generic.List<int> needles)\n    {\n        // near-miss: builds the set but still scans the LIST per needle —\n        // the set exists, the quadratic shape does too\n        var set = new System.Collections.Generic.HashSet<int>(haystack);\n        foreach (var n in needles)\n            foreach (var h in haystack)\n                if (h == n && set.Contains(n)) return true;\n        return false;\n    }\n}\n',
         ),
         (
             "csi-p20-materialize",
-            'public static class Solution\n{\n    public sealed class Stats { public int Count; public string Joined = ""; }\n\n    public static Stats Heavy(int[] source)\n    {\n        var snapshot = new System.Collections.Generic.List<int>();\n        foreach (var x in source)\n            if (x % 2 == 0) snapshot.Add(x);\n\n        var joined = new System.Text.StringBuilder();\n        for (int i = 0; i < snapshot.Count; i++)\n        {\n            if (i > 0) joined.Append(\'|\');\n            joined.Append(snapshot[i]);\n        }\n        return new Stats { Count = snapshot.Count, Joined = joined.ToString() };\n    }\n}\n',
-            'public static class Solution\n{\n    public sealed class Stats { public int Count; public string Joined = ""; }\n\n    public static Stats Heavy(int[] source)\n    {\n        // near-miss: two separate enumerations of the source — count first,\n        // then join. Same answers, wrong shape.\n        int count = 0;\n        foreach (var x in source) if (x % 2 == 0) count++;\n\n        var joined = new System.Text.StringBuilder();\n        bool first = true;\n        foreach (var x in source)\n            if (x % 2 == 0)\n            {\n                if (!first) joined.Append(\'|\');\n                first = false;\n                joined.Append(x);\n            }\n        return new Stats { Count = count, Joined = joined.ToString() };\n    }\n}\n',
+            'public static class Solution\n{\n    public sealed class Stats { public int Count; public string Joined = ""; }\n\n    public static Stats Heavy(System.Collections.Generic.IEnumerable<int> source)\n    {\n        var snapshot = new System.Collections.Generic.List<int>();\n        foreach (var x in source)\n            if (x % 2 == 0) snapshot.Add(x);\n\n        var joined = new System.Text.StringBuilder();\n        for (int i = 0; i < snapshot.Count; i++)\n        {\n            if (i > 0) joined.Append(\'|\');\n            joined.Append(snapshot[i]);\n        }\n        return new Stats { Count = snapshot.Count, Joined = joined.ToString() };\n    }\n}\n',
+            'public static class Solution\n{\n    public sealed class Stats { public int Count; public string Joined = ""; }\n\n    public static Stats Heavy(System.Collections.Generic.IEnumerable<int> source)\n    {\n        // near-miss: two separate enumerations of the source — count first,\n        // then join. Same answers, wrong shape.\n        int count = 0;\n        foreach (var x in source) if (x % 2 == 0) count++;\n\n        var joined = new System.Text.StringBuilder();\n        bool first = true;\n        foreach (var x in source)\n            if (x % 2 == 0)\n            {\n                if (!first) joined.Append(\'|\');\n                first = false;\n                joined.Append(x);\n            }\n        return new Stats { Count = count, Joined = joined.ToString() };\n    }\n}\n',
         ),
         (
             "csi-p20-hotloop-debug",
-            'public static class Solution\n{\n    public static System.Func<string, string> BuildChecker(\n        System.Collections.Generic.List<string> catalog)\n    {\n        var known = new System.Collections.Generic.HashSet<string>(catalog);\n        int cheap = 0;\n        foreach (var s in catalog)\n            if (s.Length < 4) cheap++;\n\n        return sku =>\n        {\n            if (known.Contains(sku)) return "known";\n            return cheap > 0 ? "cheap-others" : "unknown";\n        };\n    }\n}\n',
-            'public static class Solution\n{\n    public static System.Func<string, string> BuildChecker(\n        System.Collections.Generic.List<string> catalog)\n    {\n        var known = new System.Collections.Generic.HashSet<string>(catalog);\n\n        return sku =>\n        {\n            if (known.Contains(sku)) return "known";\n            // near-miss: the "expensive" count is still recomputed per call —\n            // the loop moved out of sight, not out of the hot path\n            int cheap = 0;\n            foreach (var s in catalog)\n                if (s.Length < 4) cheap++;\n            return cheap > 0 ? "cheap-others" : "unknown";\n        };\n    }\n}\n',
+            'public static class Solution\n{\n    public static System.Func<string, string> BuildChecker(\n        System.Collections.Generic.IEnumerable<string> catalog)\n    {\n        var known = new System.Collections.Generic.HashSet<string>(catalog);\n        int cheap = 0;\n        foreach (var s in catalog)\n            if (s.Length < 4) cheap++;\n\n        return sku =>\n        {\n            if (known.Contains(sku)) return "known";\n            return cheap > 0 ? "cheap-others" : "unknown";\n        };\n    }\n}\n',
+            'public static class Solution\n{\n    public static System.Func<string, string> BuildChecker(\n        System.Collections.Generic.IEnumerable<string> catalog)\n    {\n        var known = new System.Collections.Generic.HashSet<string>(catalog);\n\n        return sku =>\n        {\n            if (known.Contains(sku)) return "known";\n            // near-miss: the "expensive" count is still recomputed per call —\n            // the loop moved out of sight, not out of the hot path\n            int cheap = 0;\n            foreach (var s in catalog)\n                if (s.Length < 4) cheap++;\n            return cheap > 0 ? "cheap-others" : "unknown";\n        };\n    }\n}\n',
         ),
     ],
 )

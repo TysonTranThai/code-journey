@@ -1,25 +1,25 @@
 {
   "id": "csi-p20-hotloop-debug",
   "title": "Debug: The Query in the Loop",
-  "prompt": "A price checker \"works\" but re-runs a whole LINQ query *inside* the\nper-item loop, and its cache check uses `List.Contains` on top. For 1 item it\nis invisible; for a catalog it is quadratic. The broken shape:\n\n```csharp\npublic static string Check(List<string> catalog, string sku)   // BROKEN\n{\n    if (catalog.Contains(sku)) return \"known\";\n    var cheap = catalog.Where(s => s.Length < 4).Count();      // query per call!\n    return cheap > 0 ? \"cheap-others\" : \"unknown\";\n}\n```\n\nWrite `Solution.BuildChecker(List<string> catalog)` returning a delegate\n`Func<string, string>` with the same contract (\"known\" / \"cheap-others\" /\n\"unknown\") but with ALL expensive work done once at build time:\n\n- membership via a prebuilt `HashSet`,\n- the cheap-count computed once at build,\n- the returned delegate does no LINQ and no list scans.\n\n```csharp\npublic static class Solution\n{\n    public static System.Func<string, string> BuildChecker(System.Collections.Generic.List<string> catalog);\n}\n```",
+  "prompt": "A price checker \"works\" but re-runs a whole LINQ query *inside* the\nper-item loop, and its cache check uses `List.Contains` on top. For 1 item it\nis invisible; for a catalog it is quadratic. The broken shape:\n\n```csharp\npublic static string Check(List<string> catalog, string sku)   // BROKEN\n{\n    if (catalog.Contains(sku)) return \"known\";\n    var cheap = catalog.Where(s => s.Length < 4).Count();      // query per call!\n    return cheap > 0 ? \"cheap-others\" : \"unknown\";\n}\n```\n\nWrite `Solution.BuildChecker(IEnumerable<string> catalog)` returning a delegate\n`Func<string, string>` with the same contract (\"known\" / \"cheap-others\" /\n\"unknown\") but with ALL expensive work done once at build time:\n\n- membership via a prebuilt `HashSet`,\n- the cheap-count computed once at build,\n- the returned delegate does no LINQ and no list scans.\n\n```csharp\npublic static class Solution\n{\n    public static System.Func<string, string> BuildChecker(System.Collections.Generic.IEnumerable<string> catalog);\n}\n// provided: public static class ScanProbe { public static int Scans; public static IEnumerable<string> Src(params string[] xs); }\n```",
   "difficulty": "intermediate",
   "language": "csharp",
-  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n\n// Provided infrastructure — do not modify. Counts enumerations of Src():\n// each pass bumps Scans exactly once. HashSet lookups never enumerate.\npublic static class ScanProbe\n{\n    public static int Scans;\n    public static System.Collections.Generic.IEnumerable<string> Src(params string[] xs)\n    {\n        Scans++;\n        foreach (var x in xs) yield return x;\n    }\n}\n",
   "tests": [
     {
       "name": "same answers, new shape",
-      "code": "\nvar check = Solution.BuildChecker(new System.Collections.Generic.List<string> { \"ab\", \"cde\", \"xyz\" });\nCj.Eq(check(\"ab\"), \"known\", \"member\");\nCj.Eq(check(\"cde\"), \"known\", \"member regardless of length\");\nCj.Eq(check(\"qq\"), \"cheap-others\", \"not known, but cheap others exist\");\n",
+      "code": "\nvar check = Solution.BuildChecker(ScanProbe.Src(\"ab\", \"cde\", \"xyz\"));\nCj.Eq(check(\"ab\"), \"known\", \"member\");\nCj.Eq(check(\"cde\"), \"known\", \"member regardless of length\");\nCj.Eq(check(\"qq\"), \"cheap-others\", \"not known, but cheap others exist\");\n",
       "hint": "Prebuild the set and the count; the delegate just branches."
     },
     {
       "name": "no cheap others -> unknown",
-      "code": "\nvar check = Solution.BuildChecker(new System.Collections.Generic.List<string> { \"abcd\", \"efgh\" });\nCj.Eq(check(\"zz\"), \"unknown\", \"no cheap others\");\nCj.Eq(check(\"abcd\"), \"known\", \"membership still works\");\n",
+      "code": "\nvar check = Solution.BuildChecker(ScanProbe.Src(\"abcd\", \"efgh\"));\nCj.Eq(check(\"zz\"), \"unknown\", \"no cheap others\");\nCj.Eq(check(\"abcd\"), \"known\", \"membership still works\");\n",
       "hint": "The build-time count decides the fallback branch."
     },
     {
       "name": "delegate does no per-call scanning",
-      "code": "\nvar check = Solution.BuildChecker(new System.Collections.Generic.List<string> { \"a\", \"bc\" });\nCj.Eq(check(\"a\"), \"known\", \"sanity\");\nCj.Eq(ScanProbe.Scans, 0, \"no list scan inside the delegate\");\n",
-      "hint": "Provided ScanProbe counts List scans: prebuilt HashSet lookups do not scan."
+      "code": "\nvar check = Solution.BuildChecker(ScanProbe.Src(\"a\", \"bc\"));\nint afterBuild = ScanProbe.Scans;\nCj.Eq(check(\"a\"), \"known\", \"sanity\");\nCj.Eq(check(\"zz\"), \"cheap-others\", \"fallback branch is also cheap\");\nCj.Eq(ScanProbe.Scans, afterBuild, \"no scan inside the delegate\");\n",
+      "hint": "Snapshot Scans after building; the returned delegate must add zero."
     }
   ],
   "level": "debugging"

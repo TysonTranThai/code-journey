@@ -209,4 +209,26 @@ describe("getErrorExplanation (bilingual error explainer and Socratic hints)", (
     expect(expEn?.message).toContain("Content Security Policy");
     expect(expEn?.hint).toContain("Submit");
   });
+
+  it("explains Java missing semicolon compiler error in Vietnamese and English", () => {
+    const raw = "Solution.java:3: error: ';' expected\n        System.out.println(\"Hi\")\n                                ^\n1 error";
+    const expVi = getErrorExplanation(raw, dVi, "java");
+    expect(expVi).not.toBeNull();
+    expect(expVi?.message).toContain("chấm phẩy");
+
+    const expEn = getErrorExplanation(raw, dEn, "java");
+    expect(expEn).not.toBeNull();
+    expect(expEn?.message).toContain("semicolon");
+  });
+
+  it("explains cannot find symbol error in Vietnamese and English", () => {
+    const raw = "Solution.java:2: error: cannot find symbol\n  symbol:   variable x";
+    const expVi = getErrorExplanation(raw, dVi, "java");
+    expect(expVi).not.toBeNull();
+    expect(expVi?.message).toContain("ký hiệu");
+
+    const expEn = getErrorExplanation(raw, dEn, "java");
+    expect(expEn).not.toBeNull();
+    expect(expEn?.message).toContain("symbol");
+  });
 });
