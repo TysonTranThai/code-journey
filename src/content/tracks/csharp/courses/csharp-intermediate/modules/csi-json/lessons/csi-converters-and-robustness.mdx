@@ -1,0 +1,55 @@
+## When the shape doesn't match your model
+
+External APIs send `"2026-09-17"` as a date-in-a-string, enums as names,
+sometimes numbers as strings. A custom converter adapts without polluting
+callers:
+
+```csharp
+public sealed class FlexibleIntConverter : JsonConverter<int>
+{
+    public override int Read(ref Utf8JsonReader reader, Type t, JsonSerializerOptions o)
+        => reader.TokenType switch
+        {
+            JsonTokenType.Number => reader.GetInt32(),
+            JsonTokenType.String => int.Parse(reader.GetString()!),
+            _ => throw new JsonException(),
+        };
+
+    public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions o)
+        => writer.WriteNumberValue(value);
+}
+
+var options = new JsonSerializerOptions { Converters = { new FlexibleIntConverter() } };
+```
+
+Register per-options (or per-property with `[JsonConverter]`). Read handles
+every token type you accept; Write is the simple direction.
+
+## The boundary: malformed input is NORMAL
+
+User uploads, third-party APIs, queues — malformed JSON is an everyday
+event, not an edge case. `JsonSerializer.Deserialize` throws
+`JsonException` with position info; catch it AT the boundary:
+
+```csharp
+try { return JsonSerializer.Deserialize<T>(payload, options); }
+catch (JsonException ex)
+{
+    throw new InvalidOperationException("bad payload", ex);  // or return Result<T>
+}
+```
+
+Letting JsonException escape into business layers couples them to the
+wire format.
+
+## Missing, null, and the difference
+
+Missing property → target stays at its default. Explicit `"prop": null` →
+assigns null (nullable members) or throws for non-nullable value types.
+A field that must exist deserves a check after deserialization — the
+serializer will not invent one.
+
+## Check your understanding
+
+- Which two methods does JsonConverter<T> override? (Read and Write.)
+- Why catch JsonException at the boundary? (Business layers shouldn't know about wire formats.)

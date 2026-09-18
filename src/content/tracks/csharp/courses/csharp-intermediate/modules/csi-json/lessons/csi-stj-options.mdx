@@ -1,0 +1,46 @@
+## The two workhorses
+
+```csharp
+string json = JsonSerializer.Serialize(order);
+var back = JsonSerializer.Deserialize<Order>(json);
+```
+
+Serialize turns objects into JSON text; Deserialize parses text into a
+typed object. Deserialization REQUIRES the target type — that's how JSON
+becomes checked C# instead of string soup.
+
+## Naming policies
+
+C# is PascalCase, JSON APIs usually camelCase:
+
+```csharp
+var options = new JsonSerializerOptions
+{
+    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+};
+string json = JsonSerializer.Serialize(order, options);
+```
+
+Without the policy, `OrderTotal` serializes as `"OrderTotal"` — surprising
+every JavaScript caller. Pick one convention per API and keep it.
+
+## Case sensitivity is a feature
+
+By default, deserialization is CASE-SENSITIVE: `"total"` does NOT bind to
+a `Total` property, and silently stays default. ASP.NET's web defaults
+differ (`PropertyNameCaseInsensitive = true`) — know which world you're in.
+When parsing external payloads, decide deliberately; mismatches become
+nulls/zeros, not errors.
+
+## Round-trip fidelity
+
+Serialize(Deserialize(json)) should preserve data. Frequent breakers:
+- properties without setters (silently skipped on deserialize),
+- `object`-typed members (typed as JsonElement on the way back),
+- dictionaries with non-string keys,
+- timezone-less DateTimes (kind is preserved, but check your contract).
+
+## Check your understanding
+
+- What happens to `"orderTotal"` with no naming policy? (Doesn't bind to OrderTotal — silently default.)
+- Why prefer typed deserialization over JsonDocument for API payloads? (Type checks shape; defaults surface missing data; refactoring is compiler-checked.)

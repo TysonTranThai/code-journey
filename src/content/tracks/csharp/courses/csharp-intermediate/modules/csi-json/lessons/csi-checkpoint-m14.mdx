@@ -1,0 +1,14 @@
+## The gate (mini-build)
+
+A product catalog exchange — import, export, and transform:
+
+1. `Export(IEnumerable<Product> products)` → camelCase JSON array:
+   `[{"name":"bolt","price":0.5},...]` (name string, price number).
+2. `Import(string json)` → products; tolerant of price as number OR string
+   (via a custom converter); malformed JSON or a missing/empty name →
+   `InvalidOperationException("bad payload")`.
+3. `Merge(string jsonA, string jsonB)` → union by name (first wins),
+   exported as `Export` would.
+
+Product: `record Product(string Name, decimal Price)`. Input JSON shape:
+`{"products":[{"name":"bolt","price":0.5}]}`.

@@ -658,11 +658,12 @@ public sealed class ApiClient
             (
                 "success and notfound",
                 r"""
-var http = new System.Net.Http.HttpClient(CjStubHandler.Scripted(new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<System.Net.Http.HttpResponseMessage>>
+var script = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<System.Net.Http.HttpResponseMessage>>
 {
     ["/users/1"] = new System.Collections.Generic.List<System.Net.Http.HttpResponseMessage> { CjStubHandler.Json(200, "{\"name\":\"ada\"}") },
-    ["/users/404"] = new System.Collections.Generic.List<System.Net.Http.HttpResponseMessage> { CjStubHandler.Json(404, "") },
-}));
+    ["/users/404"] = CjStubHandler.One(CjStubHandler.Json(404, "")),
+};
+var http = new System.Net.Http.HttpClient(new CjStubHandler(script)) { BaseAddress = new System.Uri("https://api.test") };
 var client = new Solution.ApiClient(http);
 Cj.True(client.GetUserAsync(1).GetAwaiter().GetResult().StartsWith("user:"), "200 -> user:<name>");
 Cj.Eq(client.GetUserAsync(404).GetAwaiter().GetResult(), "notfound", "404 mapped");
@@ -672,7 +673,7 @@ Cj.Eq(client.GetUserAsync(404).GetAwaiter().GetResult(), "notfound", "404 mapped
                 (
                     "retry on 5xx only, capped delays",
                     r"""
-var http = new System.Net.Http.HttpClient(CjStubHandler.Scripted(new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<System.Net.Http.HttpResponseMessage>>
+var script = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<System.Net.Http.HttpResponseMessage>>
 {
     ["/users/5"] = new System.Collections.Generic.List<System.Net.Http.HttpResponseMessage>
     {
@@ -685,7 +686,8 @@ var http = new System.Net.Http.HttpClient(CjStubHandler.Scripted(new System.Coll
         CjStubHandler.Json(404, ""),
         CjStubHandler.Json(200, "{\"name\":\"eve\"}"),
     },
-}));
+};
+var http = new System.Net.Http.HttpClient(new CjStubHandler(script)) { BaseAddress = new System.Uri("https://api.test") };
 var client = new Solution.ApiClient(http);
 Cj.True(client.GetUserWithRetryAsync(5, 3).GetAwaiter().GetResult().StartsWith("user:"), "third attempt wins");
 Cj.Eq(client.GetUserWithRetryAsync(6, 3).GetAwaiter().GetResult(), "notfound", "404 not retried");
@@ -697,7 +699,8 @@ Cj.True(delays.Count >= 2 && delays.TrueForAll(d => d <= 50), "delays recorded a
                 (
                     "cancellation wins",
                     r"""
-var http = new System.Net.Http.HttpClient(CjStubHandler.Scripted(new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<System.Net.Http.HttpResponseMessage>>()));
+var script = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<System.Net.Http.HttpResponseMessage>>();
+var http = new System.Net.Http.HttpClient(new CjStubHandler(script)) { BaseAddress = new System.Uri("https://api.test") };
 var client = new Solution.ApiClient(http);
 var cts = new System.Threading.CancellationTokenSource();
 cts.Cancel();

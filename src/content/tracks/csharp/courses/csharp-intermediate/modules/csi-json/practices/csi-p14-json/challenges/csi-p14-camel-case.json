@@ -1,0 +1,16 @@
+{
+  "id": "csi-p14-camel-case",
+  "title": "camelCase Round Trip",
+  "prompt": "Implement the OrderService: SerializeOrder produces camelCase JSON (\"orderId\", \"orderTotal\"); DeserializeOrder parses both exact-camelCase and PascalCase JSON (case-insensitive on deserialize).\n\n```csharp\npublic sealed record Order(int OrderId, decimal OrderTotal);\nstatic string SerializeOrder(Solution.Order order);\nstatic Solution.Order? DeserializeOrder(string json);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\nusing System.Text.Json;\n",
+  "tests": [
+    {
+      "name": "camelCase out, both cases in",
+      "code": "\nvar order = new Solution.Order(7, 42.5m);\nstring json = Solution.SerializeOrder(order);\nCj.True(json.Contains(\"\\\"orderId\\\":7\") && json.Contains(\"\\\"orderTotal\\\":42.5\"), \"camelCase emitted\");\nvar back = Solution.DeserializeOrder(json);\nCj.Eq(back!.OrderId, 7, \"round trip id\");\nCj.Eq(back.OrderTotal, 42.5m, \"round trip total\");\nvar pascal = Solution.DeserializeOrder(\"{\\\"OrderId\\\":9,\\\"OrderTotal\\\":10}\");\nCj.Eq(pascal!.OrderId, 9, \"PascalCase input accepted\");\n",
+      "hint": "Write with PropertyNamingPolicy.CamelCase; read with PropertyNameCaseInsensitive = true."
+    }
+  ],
+  "level": "guided"
+}

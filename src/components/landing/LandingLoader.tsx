@@ -47,7 +47,7 @@ export function LandingLoader({ dict }: LandingLoaderProps) {
             if (letter === " " || letter === "/" || letter === "_") return letter;
             return chars[Math.floor(Math.random() * chars.length)];
           })
-          .join("")
+          .join(""),
       );
 
       if (iteration >= target.length) {
@@ -74,8 +74,8 @@ export function LandingLoader({ dict }: LandingLoaderProps) {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
     ) {
       document.documentElement.dataset.pageReady = "true";
-      setIsFinished(true);
-      return;
+      const timer = setTimeout(() => setIsFinished(true), 0);
+      return () => clearTimeout(timer);
     }
 
     // Mark page as waiting for loader sequence
@@ -149,7 +149,10 @@ export function LandingLoader({ dict }: LandingLoaderProps) {
       }`}
     >
       {/* CRT Scanline & Phosphor Overlay */}
-      <div className="crt-scanlines pointer-events-none absolute inset-0 opacity-40 z-10" aria-hidden="true" />
+      <div
+        className="crt-scanlines pointer-events-none absolute inset-0 opacity-40 z-10"
+        aria-hidden="true"
+      />
 
       {/* Sweeping Laser Beam */}
       <div
@@ -205,7 +208,9 @@ export function LandingLoader({ dict }: LandingLoaderProps) {
         {/* Matrix Scrambled Phase Log */}
         <div className="min-h-[46px] flex flex-col justify-center">
           <div className="flex items-center gap-2 font-mono text-sm font-semibold text-white">
-            <span className="text-emerald-400" aria-hidden="true">&gt;</span>
+            <span className="text-emerald-400" aria-hidden="true">
+              &gt;
+            </span>
             <span className="tracking-wide text-zinc-100">{scrambleText}</span>
             <span className="h-4 w-2 bg-emerald-400 animate-pulse ml-0.5" aria-hidden="true" />
           </div>
@@ -219,9 +224,7 @@ export function LandingLoader({ dict }: LandingLoaderProps) {
                 ? dict.ready
                 : dict.sysLoad.replace("{current}", String(phaseIndex + 1))}
             </span>
-            <span className="font-bold text-emerald-400 tracking-widest">
-              {percent}%
-            </span>
+            <span className="font-bold text-emerald-400 tracking-widest">{percent}%</span>
           </div>
 
           <div

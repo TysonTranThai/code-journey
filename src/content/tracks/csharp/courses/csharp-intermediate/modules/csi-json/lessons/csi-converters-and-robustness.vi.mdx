@@ -1,0 +1,54 @@
+## Khi hình dạng không khớp mô hình của bạn
+
+API ngoài gửi `"2026-09-17"` dạng chuỗi ngày, enum dạng tên, thỉnh thoảng
+số dạng chuỗi. Converter tùy chỉnh thích ứng mà không làm bẩn caller:
+
+```csharp
+public sealed class FlexibleIntConverter : JsonConverter<int>
+{
+    public override int Read(ref Utf8JsonReader reader, Type t, JsonSerializerOptions o)
+        => reader.TokenType switch
+        {
+            JsonTokenType.Number => reader.GetInt32(),
+            JsonTokenType.String => int.Parse(reader.GetString()!),
+            _ => throw new JsonException(),
+        };
+
+    public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions o)
+        => writer.WriteNumberValue(value);
+}
+
+var options = new JsonSerializerOptions { Converters = { new FlexibleIntConverter() } };
+```
+
+Đăng ký theo options (hoặc theo property với `[JsonConverter]`). Read xử lý
+mọi token type bạn chấp nhận; Write là chiều đơn giản.
+
+## Biên giới: dữ liệu lỗi là CHUYỆN THƯỜNG
+
+Upload của người dùng, API bên thứ ba, hàng đợi — JSON lỗi là sự kiện hằng
+ngày, không phải trường hợp hiếm. `JsonSerializer.Deserialize` ném
+`JsonException` kèm thông tin vị trí; hãy bắt nó TẠI BIÊN GIỚI:
+
+```csharp
+try { return JsonSerializer.Deserialize<T>(payload, options); }
+catch (JsonException ex)
+{
+    throw new InvalidOperationException("bad payload", ex);  // hoặc trả Result<T>
+}
+```
+
+Để JsonException chảy vào tầng nghiệp vụ là buộc chúng biết về định dạng
+truyền dẫn.
+
+## Thiếu, null, và sự khác nhau
+
+Property thiếu → đích giữ mặc định. `"prop": null` tường minh → gán null
+(thành viên nullable) hoặc ném với value type không nullable. Một trường
+bắt buộc phải có deserve một kiểm tra sau khi deserialize — serializer sẽ
+không tự bịa.
+
+## Kiểm tra hiểu biết
+
+- JsonConverter<T> ghi đè hai phương thức nào? (Read và Write.)
+- Vì sao bắt JsonException tại biên giới? (Tầng nghiệp vụ không nên biết định dạng truyền dẫn.)

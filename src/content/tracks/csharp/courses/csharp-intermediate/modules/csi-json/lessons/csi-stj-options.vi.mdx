@@ -1,0 +1,46 @@
+## Hai công cụ chính
+
+```csharp
+string json = JsonSerializer.Serialize(order);
+var back = JsonSerializer.Deserialize<Order>(json);
+```
+
+Serialize biến đối tượng thành văn bản JSON; Deserialize parse văn bản
+thành đối tượng có kiểu. Deserialize YÊU CẦU kiểu đích — đó là cách JSON
+trở thành C# có kiểm tra thay vì cháo string.
+
+## Naming policy
+
+C# là PascalCase, JSON API thường camelCase:
+
+```csharp
+var options = new JsonSerializerOptions
+{
+    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+};
+string json = JsonSerializer.Serialize(order, options);
+```
+
+Không có policy, `OrderTotal` serialize thành `"OrderTotal"` — gây bất ngờ
+cho mọi caller JavaScript. Chọn một quy ước cho mỗi API và giữ nguyên.
+
+## Phân biệt hoa thường là một tính năng
+
+Mặc định, deserialize phân biệt HOA THƯỜNG: `"total"` KHÔNG bó vào property
+`Total` và âm thầm giữ mặc định. Web defaults của ASP.NET khác
+(`PropertyNameCaseInsensitive = true`) — biết mình đang ở thế giới nào. Khi
+parse payload ngoài, quyết định tường minh; lệch khớp thành null/zero,
+không phải lỗi.
+
+## Trung thực vòng lập
+
+Serialize(Deserialize(json)) phải bảo toàn dữ liệu. Thường gặp hỏng:
+- property không có setter (bị bỏ qua im lặng khi deserialize),
+- thành phần kiểu `object` (trở về là JsonElement),
+- dictionary với key không phải string,
+- DateTime không có múi giờ (kind được giữ, nhưng xem lại hợp đồng).
+
+## Kiểm tra hiểu biết
+
+- `"orderTotal"` xảy ra gì khi không có naming policy? (Không bó vào OrderTotal — âm thầm giữ mặc định.)
+- Vì sao ưu tiên deserialize có kiểu thay vì JsonDocument cho payload API? (Kiểu kiểm tra hình dạng; mặc định lộ dữ liệu thiếu; refactor do compiler kiểm tra.)

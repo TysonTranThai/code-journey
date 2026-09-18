@@ -1,0 +1,14 @@
+## Cổng kiểm tra (mini-build)
+
+Trao đổi danh mục sản phẩm — nhập, xuất, và biến đổi:
+
+1. `Export(IEnumerable<Product> products)` → mảng JSON camelCase:
+   `[{"name":"bolt","price":0.5},...]` (name chuỗi, price số).
+2. `Import(string json)` → sản phẩm; chấp nhận price dạng số HOẶC chuỗi
+   (qua converter tùy chỉnh); JSON lỗi hoặc name thiếu/rỗng →
+   `InvalidOperationException("bad payload")`.
+3. `Merge(string jsonA, string jsonB)` → hợp theo name (cái trước thắng),
+   xuất như `Export`.
+
+Product: `record Product(string Name, decimal Price)`. Hình dạng JSON vào:
+`{"products":[{"name":"bolt","price":0.5}]}`.

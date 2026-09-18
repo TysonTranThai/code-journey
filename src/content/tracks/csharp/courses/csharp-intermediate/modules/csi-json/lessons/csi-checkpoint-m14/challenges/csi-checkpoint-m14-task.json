@@ -1,0 +1,25 @@
+{
+  "id": "csi-checkpoint-m14-task",
+  "title": "Checkpoint: Catalog Exchange",
+  "prompt": "Implement the catalog service described in the checkpoint:\n\n```csharp\npublic sealed record Product(string Name, decimal Price);\nstatic string Export(System.Collections.Generic.IEnumerable<Solution.Product> products);\nstatic System.Collections.Generic.List<Solution.Product> Import(string json);\nstatic string Merge(string jsonA, string jsonB);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\nusing System.Text.Json;\n",
+  "tests": [
+    {
+      "name": "export camelCase",
+      "code": "\nstring json = Solution.Export(new System.Collections.Generic.List<Solution.Product>\n{\n    new Solution.Product(\"bolt\", 0.5m),\n    new Solution.Product(\"nut\", 0.2m),\n});\nCj.True(json.Contains(\"\\\"name\\\":\\\"bolt\\\"\") && json.Contains(\"\\\"price\\\":0.5\"), \"camelCase fields\");\nCj.True(json.StartsWith(\"[\"), \"array shape\");\n",
+      "hint": "Serialize with PropertyNamingPolicy.CamelCase."
+    },
+    {
+      "name": "import: both price shapes, bad payload defense",
+      "code": "\nvar items = Solution.Import(\"{\\\"products\\\":[{\\\"name\\\":\\\"bolt\\\",\\\"price\\\":0.5},{\\\"name\\\":\\\"nut\\\",\\\"price\\\":\\\"0.2\\\"}]}\");\nCj.Eq(items.Count, 2, \"number and string prices\");\nCj.Eq(items[1].Price, 0.2m, \"string price converted\");\ntry { Solution.Import(\"{oops\"); Cj.True(false, \"should throw\"); }\ncatch (System.InvalidOperationException ex) { Cj.True(ex.Message.Contains(\"bad payload\"), \"boundary message\"); }\ntry { Solution.Import(\"{\\\"products\\\":[{\\\"price\\\":1}]}\"); Cj.True(false, \"should throw\"); }\ncatch (System.InvalidOperationException) { }\n",
+      "hint": "Flexible decimal converter; wrap parse in try/catch(JsonException); validate names after."
+    },
+    {
+      "name": "merge: first wins, exported shape",
+      "code": "\nstring a = \"{\\\"products\\\":[{\\\"name\\\":\\\"bolt\\\",\\\"price\\\":0.5}]}\";\nstring b = \"{\\\"products\\\":[{\\\"name\\\":\\\"bolt\\\",\\\"price\\\":9.9},{\\\"name\\\":\\\"nut\\\",\\\"price\\\":0.2}]}\";\nstring merged = Solution.Merge(a, b);\nvar items = Solution.Import(merged);\nCj.Eq(items.Count, 2, \"union by name\");\nCj.True(merged.Contains(\"0.5\") && !merged.Contains(\"9.9\"), \"first occurrence wins\");\n",
+      "hint": "Import both, dedupe by name preserving first, Export the result."
+    }
+  ]
+}
