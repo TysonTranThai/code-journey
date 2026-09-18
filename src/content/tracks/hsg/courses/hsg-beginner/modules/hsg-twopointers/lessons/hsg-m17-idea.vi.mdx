@@ -1,0 +1,33 @@
+## Hai đầu hội tụ: tổng cặp trên mảng đã sắp
+
+Tìm hai giá trị có tổng S trong mảng ĐÃ SẮP. Đặt l = 0, r = n-1:
+
+- a[l] + a[r] < S: tổng quá nhỏ — chỉ đưa l lên mới giúp được.
+- a[l] + a[r] > S: quá lớn — chỉ hạ r xuống mới giúp được.
+- bằng: báo kết quả.
+
+Mỗi bước vứt bỏ một phần tử mãi mãi, nên tối đa n bước — đó là toàn bộ
+lập luận O(n). Trên dữ liệu CHƯA sắp, bất biến này sụp đổ (dùng hash
+set hoặc sort kèm chỉ số).
+
+```cpp
+int l = 0, r = n - 1;
+while (l < r) {
+    long long s = a[l] + a[r];
+    if (s == S) { found; break; }
+    if (s < S) ++l; else --r;
+}
+```
+
+## Cùng chiều: các mẫu bỏ/nhảy
+
+Cả hai con trỏ đi trái sang phải, con trỏ nhanh đọc, con trỏ chậm ghi
+hoặc neo: khử trùng lặp, trộn hai mảng đã sắp, phân hoạch. Lập luận
+chi phí y hệt: mỗi con trỏ tiến tối đa n lần, nên thân vòng lặp chạy
+tổng cộng O(n).
+
+## Chống-mẫu
+
+Vòng lặp lồng quét LẠI từ 0 mỗi lần là O(n^2) và triệu chứng quen thuộc
+là TLE tại n = 10^5. Nếu vòng trong có thể tiếp tục từ chỗ dừng — tính
+đơn điệu — thì hai con trỏ áp dụng được.

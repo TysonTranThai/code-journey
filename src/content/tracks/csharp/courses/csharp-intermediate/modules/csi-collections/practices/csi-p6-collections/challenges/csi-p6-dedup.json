@@ -1,0 +1,21 @@
+{
+  "id": "csi-p6-dedup",
+  "title": "Dedup: Pick the Structure",
+  "prompt": "Implement `Dedup` preserving FIRST-occurrence order, and `Common` returning the sorted intersection of two sequences (no duplicates in the result).\n\n```csharp\nstatic List<string> Dedup(IEnumerable<string> items);\nstatic List<int> Common(IEnumerable<int> a, IEnumerable<int> b);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "order-preserving dedup",
+      "code": "\nCj.Eq(string.Join(\",\", Solution.Dedup(new[] { \"b\", \"a\", \"b\", \"c\", \"a\" })), \"b,a,c\", \"first occurrence kept\");\nCj.Eq(string.Join(\",\", Solution.Dedup(new[] { \"b\", \"a\", \"b\" })), \"b,a\", \"repeated-first stays first: last-keep would give a,b\");\nCj.Eq(Solution.Dedup(System.Array.Empty<string>()).Count, 0, \"empty in, empty out\");\n",
+      "hint": "HashSet<string> seen + List result — O(n), order intact."
+    },
+    {
+      "name": "sorted set intersection",
+      "code": "\nCj.Eq(string.Join(\",\", Solution.Common(new[] { 4, 1, 2, 2 }, new[] { 2, 4, 4, 9 })), \"2,4\", \"intersection, sorted, no dups\");\nCj.Eq(Solution.Common(new[] { 1 }, new[] { 2 }).Count, 0, \"disjoint\");\n",
+      "hint": "HashSet b, filter a where seen-in-b, then OrderBy + Distinct — or rely on set IntersectWith then sort."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "csi-p2-out-parser",
+  "title": "Out Params: Assign Before You Return",
+  "prompt": "Implement a Try-style parser for \"left:right\" where BOTH numbers must be strictly positive. On ANY failure (bad shape, unparseable part, non-positive value), return false and leave BOTH out params at 0 — out params carry data only on success.\n\n```csharp\nstatic bool TryParsePair(string input, out int a, out int b);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "happy path",
+      "code": "\nCj.Eq(Solution.TryParsePair(\"3:4\", out int a, out int b), true, \"valid pair parses\");\nCj.Eq(a, 3, \"a assigned\");\nCj.Eq(b, 4, \"b assigned\");\n",
+      "hint": "Split on ':', require exactly 2 parts, int.TryParse each, both must be > 0."
+    },
+    {
+      "name": "failure leaves zeros",
+      "code": "\nCj.Eq(Solution.TryParsePair(\"3:0\", out int a1, out int b1), false, \"zero is not positive\");\nCj.Eq(a1, 0, \"a zeroed on failure\");\nCj.Eq(b1, 0, \"b zeroed on failure\");\nCj.Eq(Solution.TryParsePair(\"x:9\", out int a2, out int b2), false, \"unparseable part\");\nCj.Eq(Solution.TryParsePair(\"3\", out int a3, out int b3), false, \"wrong shape\");\nCj.Eq(Solution.TryParsePair(\"\", out int a4, out int b4), false, \"empty input\");\n",
+      "hint": "Parse into locals, check positivity, and only THEN write the out params — failure paths leave them 0."
+    }
+  ],
+  "level": "guided"
+}

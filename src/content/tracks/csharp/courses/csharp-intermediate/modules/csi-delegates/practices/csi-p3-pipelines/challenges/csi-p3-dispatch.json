@@ -1,0 +1,21 @@
+{
+  "id": "csi-p3-dispatch",
+  "title": "Callback Dispatch Table",
+  "prompt": "Implement a command router backed by `Action<string>` callbacks. `Register` stores a callback under a name (re-registering REPLACES). `Dispatch` invokes the callback with a payload and returns true; unknown names return false without throwing.\n\n```csharp\nstatic void Register(string name, Action<string> callback);\nstatic bool Dispatch(string name, string payload);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "register, replace, dispatch",
+      "code": "\nvar seen = new List<string>();\nSolution.Register(\"log\", m => seen.Add(\"a:\" + m));\nCj.Eq(Solution.Dispatch(\"log\", \"x\"), true, \"known command\");\nSolution.Register(\"log\", m => seen.Add(\"b:\" + m));   // replaces\nSolution.Dispatch(\"log\", \"y\");\nCj.Eq(string.Join(\"|\", seen), \"a:x|b:y\", \"re-registration replaced, not added\");\n",
+      "hint": "Dictionary indexer assignment replaces; TryGetValue finds the current callback."
+    },
+    {
+      "name": "unknown is safe",
+      "code": "\nCj.Eq(Solution.Dispatch(\"nope\", \"z\"), false, \"unknown returns false\");\nSolution.Register(\"multi\", m => { });   // ok to register, never dispatched\nCj.Eq(Solution.Dispatch(\"multi\", \"w\"), true, \"registered-but-unused dispatches fine\");\n",
+      "hint": "Miss path: return false — no exception, no null deref."
+    }
+  ],
+  "level": "independent"
+}

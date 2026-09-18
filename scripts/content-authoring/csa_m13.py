@@ -109,9 +109,11 @@ def build() -> None:
             "    public static WeakReference MakeWeak()\n"
             "    {\n"
             "        var o = new object();\n"
+            "        LeakRoot = o;            // WRONG: static field roots the object\n"
             "        var wr = new WeakReference(o);\n"
-            "        return wr;   // OK here, but o may still be live in tier-0 registers — the lesson's liveness gotcha\n"
-            "    }\n}"
+            "        return wr;\n"
+            "    }\n"
+            "    public static object? LeakRoot;\n}"
         ),
         checkpoint=True,
     )
@@ -138,14 +140,19 @@ def build() -> None:
                 "name": "unsubscribe-breaks-root",
                 "code": (
                     "var p = new Publisher();\n"
-                    "var subs = Enumerable.Range(0, 10).Select(_ => new Subscriber(p)).ToList();\n"
-                    "var wr = MakeWeak(subs[0]);\n"
-                    "Solution.UnsubscribeAll(p, subs);\n"
-                    "subs.Clear();\n"
+                    "var wr = Build(p);\n"
                     "GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();\n"
                     'Cj.False(wr.IsAlive, "disposed subscriber is collectible");'
                     "\n"
-                    "static WeakReference MakeWeak(object o) => new(o);   // helper: nothing keeps `o` alive here"
+                    "static WeakReference Build(Publisher p)\n"
+                    "{\n"
+                    "    var inner = new List<Subscriber>();\n"
+                    "    for (int i = 0; i < 10; i++) inner.Add(new Subscriber(p));\n"
+                    "    var wr = new WeakReference(inner[0]);\n"
+                    "    Solution.UnsubscribeAll(p, inner);\n"
+                    "    inner.Clear();\n"
+                    "    return wr;   // helper scope: no strong ref to the subscriber escapes\n"
+                    "}"
                 ),
                 "hint": "Subscriber.Dispose must do p.Tick -= OnTick; the -= is what breaks the publisher→subscriber root.",
             },
@@ -238,6 +245,7 @@ def build() -> None:
             },
         ],
         reference=(
+            "using System.Runtime.InteropServices;\n\n"
             "public class Solution\n{\n"
             "    public static long PooledSum(int[] values)\n"
             "    {\n"
@@ -247,7 +255,7 @@ def build() -> None:
             "        try\n"
             "        {\n"
             "            Buffer.BlockCopy(values, 0, rented, 0, byteLen);\n"
-            "            var ints = System.Buffers.ArrayPoolExtensions.AsSpan(rented, 0, values.Length);\n"
+            "            var ints = MemoryMarshal.Cast<byte, int>(rented.AsSpan(0, byteLen));\n"
             "            long sum = 0;\n"
             "            foreach (var v in ints) sum += v;\n"
             "            return sum;\n"

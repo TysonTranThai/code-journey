@@ -1,0 +1,36 @@
+{
+  "id": "hsg-p18-partial",
+  "title": "Sum of Digits In Range",
+  "prompt": "**Description:** Print the sum of decimal digit sums of every integer from 1 to N.\n\n**Input:** One line: N (1 <= N <= 10^6).\n**Output:** One integer — the total (fits in 64 bits).\n\n**Example:** `12` -> `45` (digits 1..9 sum 45; 10,11,12 add 1+2+3=6... total 51?\nNo: 1..9 gives 45, plus 1+0+1+1+1+2 = 6, so 45+6 = 51).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample small",
+      "code": "std::istringstream in(\"12\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"51\\n\"));",
+      "hint": "45 from 1..9 plus 1+0 + 1+1 + 1+2 = 6."
+    },
+    {
+      "name": "n 1",
+      "code": "std::istringstream in(\"1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Single digit."
+    },
+    {
+      "name": "n 9",
+      "code": "std::istringstream in(\"9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"45\\n\"));",
+      "hint": "Digits 1..9."
+    },
+    {
+      "name": "n 10",
+      "code": "std::istringstream in(\"10\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"46\\n\"));",
+      "hint": "45 + 1."
+    },
+    {
+      "name": "max n",
+      "code": "std::istringstream in(\"1000000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"27000001\\n\"));",
+      "hint": "Digit-sum of 1..999999 is 27*10^5 per digit-position average -> 27,000,000; plus 1 for 10^6."
+    }
+  ],
+  "level": "independent"
+}

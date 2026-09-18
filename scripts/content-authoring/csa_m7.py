@@ -91,8 +91,8 @@ def build() -> None:
             "        var comp = CSharpCompilation.Create(\"gen\", new[] { tree }, refs,\n"
             "            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));\n"
             "        var driver = CSharpGeneratorDriver.Create(new CatalogGen().AsSourceGenerator());\n"
-            "        driver.RunGeneratorsAndUpdateCompilation(comp, out var output, out _);\n"
-            "        var run = ((CSharpGeneratorDriver)driver).GetRunResult();\n"
+            "        driver = (CSharpGeneratorDriver)driver.RunGeneratorsAndUpdateCompilation(comp, out var output, out _);\n"
+            "        var run = driver.GetRunResult();\n"
             "        var sym = ((CSharpCompilation)output).GetTypeByMetadataName(\"GenCatalog\");\n"
             "        return (run.GeneratedTrees.Length, sym is not null);\n"
             "    }\n}"
@@ -234,9 +234,10 @@ def build() -> None:
             {
                 "name": "end-to-end",
                 "code": (
-                    'Cj.True(Solution.GeneratedCatalogCompiles("[Gen] public class A { }"), "valid input");\n'
-                    "// A struct marked [Gen] still generates; class-only filter makes it skip, catalog empty but valid:\n"
-                    'Cj.True(Solution.GeneratedCatalogCompiles("[Gen] public struct S { }"), "no marked classes still compiles");'
+                    'Cj.True(Solution.GeneratedCatalogCompiles("[Gen2] public class A { }"), "valid input");\n'
+                    "// A struct marked [Gen2] is skipped by the class-only filter; catalog is empty but the\n"
+                    "// generated file must still compile:\n"
+                    'Cj.True(Solution.GeneratedCatalogCompiles("[Gen2] public struct S { }"), "no marked classes still compiles");'
                 ),
                 "hint": "Reuse the driver pattern; additionally run comp.GetDiagnostics() on the OUTPUT compilation.",
             },

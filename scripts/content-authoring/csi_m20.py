@@ -343,8 +343,8 @@ Cj.Eq(s, "x\ny\nz\n", "output unchanged");
                     r"""
 StringOps.Reset();
 var lines = new string[500];
-for (int i = 0; i < 500; i++) lines[i] = "line-" + i;
-Cj.Eq(Solution.Report(lines).Length, 500 * 10, "6 chars + newline per line");
+for (int i = 0; i < 500; i++) lines[i] = "line-" + (1000 + i);
+Cj.Eq(Solution.Report(lines).Length, 500 * 10, "9 chars + newline per line");
 """,
                     "500 lines of 'line-NNN' (7 chars) + '\n' = 8 per line, 4000 total — prove the loop is linear by surviving it.",
                 ),
@@ -545,7 +545,7 @@ Cj.Eq(ScanProbe.Scans, afterBuild, "no scan inside the delegate");
             [
                 ("output shape is exact", "Append từng dòng + '\\n'; input rỗng không append gì."),
                 ("no intermediate string allocations", "StringBuilder giữ buffer; chỉ một ToString cuối (harness không đếm)."),
-                ("long input finishes", "500 dòng 'line-NNN' (7 ký tự) + '\\n' = 8 mỗi dòng, tổng 4000 — chứng minh vòng lặp tuyến tính bằng cách sống sót qua nó."),
+                ("long input finishes", "500 dòng 'line-' + chỉ số 4 chữ số (9 ký tự) + '\\n' = 10 mỗi dòng, tổng 5000 — chứng minh vòng lặp tuyến tính bằng cách sống sót qua nó."),
             ],
         ),
         "csi-p20-set-membership": vi_challenge(

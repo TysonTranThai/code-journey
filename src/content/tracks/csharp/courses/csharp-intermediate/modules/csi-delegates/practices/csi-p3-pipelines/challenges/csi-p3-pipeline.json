@@ -1,0 +1,21 @@
+{
+  "id": "csi-p3-pipeline",
+  "title": "Compose a Pipeline",
+  "prompt": "Implement `Compose`: given a list of `Func<int, int>`, return one function applying them IN ORDER (first element first). Empty list = identity.\n\n```csharp\nstatic Func<int, int> Compose(List<Func<int, int>> steps);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "order matters",
+      "code": "\nvar steps = new List<Func<int, int>>\n{\n    x => x + 1,\n    x => x * 10,\n    x => x - 5,\n};\nCj.Eq(Solution.Compose(steps)(2), 25, \"(+1) then (*10) then (-5): 2->3->30->25\");\nCj.Eq(Solution.Compose(steps)(0), 5, \"0->1->10->5\");\n",
+      "hint": "Fold left to right: acc = step(acc) for each step in order."
+    },
+    {
+      "name": "empty is identity",
+      "code": "\nCj.Eq(Solution.Compose(new List<Func<int, int>>())(42), 42, \"empty = identity\");\nvar single = Solution.Compose(new List<Func<int, int>> { x => x * 2 });\nCj.Eq(single(21), 42, \"single step applies once\");\n",
+      "hint": "Return x => x when there are no steps."
+    }
+  ],
+  "level": "guided"
+}

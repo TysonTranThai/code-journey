@@ -1,0 +1,33 @@
+## Hai nguyên liệu
+
+Một bài toán dùng được QHD khi nó có:
+
+1. **Cấu trúc con tối ưu** — đáp án tốt nhất cho cỡ n được dựng từ các
+   đáp án tốt nhất cho cỡ nhỏ hơn.
+2. **Bài toán con trùng lặp** — đệ quy nguội tính lại cùng một trạng
+   thái rất nhiều lần.
+
+Fibonacci là ví dụ kinh điển. `fib(5)` gọi `fib(3)` hai lần, `fib(2)`
+ba lần... riêng `fib(30)` đã hơn một triệu lần gọi. Ghi đáp án lại
+(`dp[i] = fib(i)`) thì mỗi trạng thái chỉ tính một lần — 30 ô bảng
+thay vì một triệu lần gọi.
+
+### Bottom-up là điền bảng
+
+```cpp
+dp[0] = 0; dp[1] = 1;              // trường hợp cơ sở
+for (int i = 2; i <= n; ++i)
+    dp[i] = dp[i-1] + dp[i-2];     // công thức chuyển
+answer = dp[n];                    // trạng thái cuối
+```
+
+Bốn câu hỏi bắt buộc với MỌI bài QHD: trạng thái là gì, `dp[i]` **có
+nghĩa là gì**, trạng thái lớn dựng từ trạng thái nhỏ thế nào (chuyển),
+ô nào là cơ sở. Hiểu SAI nghĩa thì công thức chuyển vẫn nhìn hợp lý
+trong khi tính ra thứ vô dụng.
+
+### Tại sao thứ tự quan trọng
+
+Bảng phải được điền sao cho mọi phụ thuộc sẵn sàng trước khi dùng.
+`dp[i]` cần `dp[i-1]`, nên duyệt i tăng dần. Sau này (đồ thị) thứ tự
+không còn là vòng lặp đơn giản — nhưng với QHD dãy thì luôn là vậy.

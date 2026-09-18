@@ -1,0 +1,36 @@
+## Ba cách biểu diễn
+
+- **Ma trận kề** `g[u][v]`: bộ nhớ O(V^2) — ổn với `V <= ~4000`, lãng
+  phí lớn hơn. Hỏi "u kề v?" trong O(1).
+- **Danh sách kề** `vector<int> adj[V]`: bộ nhớ O(V + E) — mặc định
+  của thi đấu. Duyệt láng giềng của u trong deg(u).
+- **Danh sách cạnh**: chỉ các cạnh — hữu ích cho thuật toán xử lý
+  cạnh (sau này: DSU, MST).
+
+## Đọc định dạng nhập chuẩn
+
+```
+n m            (đỉnh 1..n, m cạnh)
+u v            (m dòng: một cạnh vô hướng giữa u và v)
+```
+
+```cpp
+int n, m; in >> n >> m;
+vector<vector<int>> adj(n + 1);
+for (int i = 0; i < m; ++i) {
+    int u, v; in >> u >> v;
+    adj[u].push_back(v);
+    adj[v].push_back(u);   // bỏ dòng này với đồ thị CÓ HƯỚNG
+}
+```
+
+Khác biệt một dòng có hướng/vô hướng là lỗi đọc đề kinh điển: dựng
+sai và số thành phần liên thông sai âm thầm. Chú ý đỉnh đánh số
+**từ 1** trong gần như mọi đề Việt Nam — cấp phát n+1 và bỏ qua chỉ
+số 0.
+
+### Cây cũng là đồ thị
+
+Cây n đỉnh có đúng n-1 cạnh và liên thông. Mọi thuật toán trên cây là
+một phép duyệt đồ thị không có bất ngờ về visited — nhưng chỉ khi bạn
+thực sự dựng danh sách vô hướng (cha cũng xuất hiện như "con").

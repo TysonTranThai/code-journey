@@ -62,7 +62,7 @@ def build() -> None:
                     "var root = new InvalidOperationException(\"r\");\n"
                     "var nested = new Exception(\"a\", new Exception(\"b\", new Exception(\"c\", root)));\n"
                     "var (d, rootType) = Solution.Analyze(nested);\n"
-                    'Cj.Eq(d, 4, "four levels deep");\n'
+                    'Cj.Eq(d, 3, "three hops to the root");\n'
                     'Cj.Eq(rootType, "InvalidOperationException", "root type found");'
                 ),
                 "hint": "Count hops to InnerException == null; record the last exception's GetType().Name.",
@@ -275,7 +275,7 @@ def build() -> None:
             "        for (int i = 0; i < maxAttempts; i++)\n"
             "        {\n"
             "            try { return attempt(); }\n"
-            "            catch { await Task.Delay(baseDelayMs); }   // WRONG: flat delay, retries after last attempt too\n"
+            "            catch { await Task.Delay(baseDelayMs); }   // WRONG: flat delay\n"
             "        }\n"
             "        return -1;   // WRONG: sentinel instead of throwing\n"
             "    }\n}"

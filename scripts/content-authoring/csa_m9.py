@@ -60,7 +60,7 @@ def build() -> None:
             {
                 "name": "timeout-fires",
                 "code": (
-                    "var slow = Task.Delay(60_000);\n"
+                    "var slow = Task.Delay(60_000).ContinueWith<string>(_ => \"never\");\n"
                     "var ex = await Cj.ThrowsAsync<TimeoutException>(() => Solution.WithTimeout(slow, TimeSpan.FromMilliseconds(50)));\n"
                     'Cj.True(ex is not null, "timeout throws");'
                 ),

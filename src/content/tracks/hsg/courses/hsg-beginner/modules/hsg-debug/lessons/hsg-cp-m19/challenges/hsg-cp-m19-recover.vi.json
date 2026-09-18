@@ -1,0 +1,26 @@
+{
+  "title": "Gỡ lỗi: Cái reset bị mất",
+  "prompt": "**Đề bài:** Chương trình này phải in, với mỗi giá trị x trong q truy vấn, số phần\ntử mảng nhỏ hơn x — nhưng nó suy giảm sau truy vấn đầu. Tìm và sửa bug.\n\n**Mã lỗi:**\n```cpp\nvoid solve(std::istream& in, std::ostream& out) {\n    int n, q; in >> n >> q;\n    vector<long long> a(n);\n    for (auto& x : a) in >> x;\n    sort(a.begin(), a.end());\n    int cnt = 0;\n    for (int i = 0; i < q; ++i) {\n        long long x; in >> x;\n        while (cnt < n && a[cnt] < x) ++cnt;\n        out << cnt << \"\\\\n\";\n    }\n}\n```\n\n**Dữ liệu vào:** Dòng 1: n q (1 <= n, q <= 100000). Dòng 2: n số nguyên (|a[i]| <= 10^9).\nq dòng tiếp: x (|x| <= 10^9).\n**Dữ liệu ra:** q dòng: số phần tử nhỏ hơn x một cách nghiêm ngặt.\n\n**Ví dụ:** `4 2` / `1 3 5 7` / `6` / `4` -> `3` / `2`.\n",
+  "tests": [
+    {
+      "name": "sample",
+      "hint": "Con trỏ đơn điệu không bao giờ được reset — case x=6 trước, x=4 sau sẽ lộ bug."
+    },
+    {
+      "name": "descending queries",
+      "hint": "Case sát thủ — con trỏ cũ đếm thừa truy vấn sau."
+    },
+    {
+      "name": "below all",
+      "hint": "Không gì nhỏ hơn 0."
+    },
+    {
+      "name": "above all",
+      "hint": "Tất cả đều nhỏ hơn."
+    },
+    {
+      "name": "equal boundary",
+      "hint": "Nghiêm ngặt: 5 không được tính khi x=5."
+    }
+  ]
+}

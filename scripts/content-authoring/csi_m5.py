@@ -465,3 +465,180 @@ Cj.Eq(orders.FirstMatching(o => o.Total > 99m), null, "no match -> null");
     wrong='public class Solution\n{\n    public abstract class Entity<TId>\n    {\n        public abstract TId Id { get; }\n    }\n\n    public sealed class User : Entity<int>\n    {\n        public User(int id, string name) { Id = id; Name = name; }\n        public override int Id { get; }\n        public string Name { get; }\n    }\n\n    public sealed class Order : Entity<string>\n    {\n        public Order(string id, decimal total) { Id = id; Total = total; }\n        public override string Id { get; }\n        public decimal Total { get; }\n    }\n\n    public class DataStore<TId, TEntity>\n        where TEntity : Entity<TId>\n        where TId : IComparable<TId>\n    {\n        private readonly Dictionary<TId, TEntity> _items = new();\n\n        public void Add(TEntity entity) => _items[entity.Id] = entity;\n\n        public TEntity? Get(TId id) => _items.TryGetValue(id, out TEntity? e) ? e : default;\n\n        public bool Delete(TId id) => _items.Remove(id);\n\n        public List<TEntity> AllOrdered() =>\n            // near-miss: insertion order, not Id order — the "ordered by id"\n            // test fails after a delete reshuffles expectations\n            _items.Values.ToList();\n\n        public TEntity? FirstMatching(Predicate<TEntity> match)\n        {\n            foreach (TEntity e in _items.Values)\n                if (match(e)) return e;\n            return default;\n        }\n    }\n}\n',
 )
 print("module 5 authored")
+
+# ---------------------------------------------------------------- practices
+write_practice(
+    M,
+    "csi-p5-generics",
+    "Generic Design Practice",
+    "Constraints that promise, algorithms that stay type-safe, and variance you can predict without the compiler guessing for you.",
+    "Luyện thiết kế generic",
+    "Ràng buộc ghi đúng lời hứa, thuật toán giữ an toàn kiểu, và variance bạn tự đoán được mà không cần compiler đoán hộ.",
+    "csi-variance",
+    25,
+    "intermediate",
+    [
+        challenge(
+            "csi-p5-max",
+            "A Generic Max That Can Actually Compare",
+            """Implement `Max`: returns the largest of two values for any type that knows how to compare itself. A null argument makes it return the other one (both null returns default).
+
+```csharp
+static T? Max<T>(T? a, T? b) where T : IComparable<T>;
+```""",
+            CS_PRELUDE,
+            [
+                (
+                    "comparable types",
+                    r"""
+Cj.Eq(Solution.Max(3, 7), 7, "ints");
+Cj.Eq(Solution.Max("apple", "banana"), "banana", "strings compare ordinally");
+Cj.Eq(Solution.Max(2.5m, 2.4m), 2.5m, "decimals");
+""",
+                    "a.CompareTo(b) >= 0 means a wins — the constraint unlocks CompareTo.",
+                ),
+                (
+                    "null handling",
+                    r"""
+Cj.Eq(Solution.Max<string>(null, "b"), "b", "null a -> b");
+Cj.Eq(Solution.Max<string>("a", null), "a", "null b -> a");
+Cj.True(Solution.Max<string>(null, null) is null, "both null -> null");
+// note: int? cannot satisfy IComparable<int?> — Nullable<T> implements no
+// interfaces. That IS the lesson: the constraint gates value-type nulls out.
+Cj.Eq(Solution.Max("b", null), "b", "constraint keeps nulls flowing on the null side only");
+""",
+                    "Null-check first: reference-type T? and lifted struct T? both flow through here.",
+                ),
+            ],
+            level="guided",
+            difficulty="intermediate",
+        ),
+        challenge(
+            "csi-p5-repository",
+            "The Typed Repository",
+            """Implement `Repository<T>` where `T : IHasId`: `Add` stores by Id (re-adding REPLACES), `Get` returns default when absent, `Count` and `All` round out the surface.
+
+```csharp
+public interface IHasId { int Id { get; } }
+public class Repository<T> where T : IHasId
+{
+    public void Add(T entity);
+    public T? Get(int id);
+    public int Count { get; }
+    public IReadOnlyCollection<T> All();
+}
+```""",
+            CS_PRELUDE,
+            [
+                (
+                    "store, replace, count",
+                    r"""
+var repo = new Solution.Repository<Solution.User>();
+repo.Add(new Solution.User(1, "ann"));
+repo.Add(new Solution.User(2, "bob"));
+Cj.Eq(repo.Count, 2, "two users");
+repo.Add(new Solution.User(1, "ann2"));
+Cj.Eq(repo.Count, 2, "re-add replaces, not duplicates");
+Cj.Eq(repo.Get(1)!.Name, "ann2", "replacement is what Get returns");
+""",
+                    "Dictionary<int, T> indexed by entity.Id — indexer assignment replaces.",
+                ),
+                (
+                    "misses and enumeration",
+                    r"""
+var repo2 = new Solution.Repository<Solution.User>();
+Cj.True(repo2.Get(42) is null, "absent id -> default");
+repo2.Add(new Solution.User(7, "cy"));
+Cj.Eq(repo2.All().Count, 1, "All mirrors contents");
+Cj.True(repo2.All() is IReadOnlyCollection<Solution.User>, "readonly surface");
+""",
+                    "Get: TryGetValue, return default on miss. All: return the Values as a read-only surface.",
+                ),
+            ],
+            level="independent",
+            difficulty="intermediate",
+        ),
+        challenge(
+            "csi-p5-copy-bug-debug",
+            "Debug: The Variance Crash",
+            """`CopyAll` was written for `List<object>` but callers hold `IEnumerable<string>` — and the current version does not compile OR (after someone "fixed" it with a cast) crashes. Fix `CopyAll` so it accepts ANY sequence of references-to-string-or-base and returns a fresh `List<string>` of the same elements.
+
+```csharp
+static List<string> CopyAll(IEnumerable<string> source);
+// and a generic overload usable for ANY element type:
+static List<T> CopyAll<T>(IEnumerable<T> source);
+```""",
+            CS_PRELUDE,
+            [
+                (
+                    "string sequence accepted",
+                    r"""
+var words = new List<string> { "a", "b" };
+var copy = Solution.CopyAll(words);
+Cj.Eq(copy.Count, 2, "copied");
+copy.Add("c");
+Cj.Eq(words.Count, 2, "copy is independent of source");
+""",
+                    "IEnumerable<out T> is covariant — accept IEnumerable<string>, return a NEW list (no shared storage).",
+                ),
+                (
+                    "generic overload works for any T",
+                    r"""
+var nums = new[] { 1, 2, 3 };
+var numCopy = Solution.CopyAll<int>(nums);
+Cj.Eq(numCopy.Count, 3, "ints copy too");
+Cj.Eq(string.Join(",", Solution.CopyAll(new List<string> { "x" })), "x", "generic inference picks the overload");
+""",
+                    "One generic method handles every T — the variance is in the parameter type, not the algorithm.",
+                ),
+            ],
+            level="debugging",
+            difficulty="intermediate",
+        ),
+    ],
+    {
+        "csi-p5-max": vi_challenge(
+            "Generic Max biết so sánh",
+            "Hiện thực `Max`: trả giá trị lớn hơn trong hai giá trị cho bất kỳ kiểu nào tự so sánh được. Đối số null thì trả cái còn lại (cả hai null trả default).",
+            [
+                ("comparable types", "a.CompareTo(b) >= 0 nghĩa là a thắng — ràng buộc mở khóa CompareTo."),
+                ("null handling", "Kiểm tra null trước: T? kiểu tham chiếu và T? struct lifted đều chảy qua đây."),
+            ],
+        ),
+        "csi-p5-repository": vi_challenge(
+            "Repository có kiểu",
+            "Hiện thực `Repository<T>` với `T : IHasId`: `Add` lưu theo Id (thêm lại là THAY THẾ), `Get` trả default khi thiếu, `Count` và `All` hoàn thiện bề mặt.",
+            [
+                ("store, replace, count", "Dictionary<int, T> đánh chỉ số theo entity.Id — gán indexer là thay thế."),
+                ("misses and enumeration", "Get: TryGetValue, trả default khi miss. All: trả Values dưới bề mặt read-only."),
+            ],
+        ),
+        "csi-p5-copy-bug-debug": vi_challenge(
+            "Debug: cú va chạm variance",
+            "`CopyAll` viết cho `List<object>` nhưng caller cầm `IEnumerable<string>` — và bản hiện tại không biên dịch được HOẶC (sau khi ai đó \"sửa\" bằng cast) bị sập. Sửa `CopyAll` để nhận BẤT KỲ chuỗi phần tử nào kế thừa-được và trả một `List<string>` mới chứa cùng phần tử.",
+            [
+                ("string sequence accepted", "IEnumerable<out T> là covariant — nhận IEnumerable<string>, trả list MỚI (không chia sẻ bộ nhớ)."),
+                ("generic overload works for any T", "Một phương thức generic lo cho mọi T — variance nằm ở kiểu tham số, không ở thuật toán."),
+            ],
+        ),
+    },
+    solutions=[
+        (
+            "csi-p5-max",
+            'public class Solution\n{\n    public static T? Max<T>(T? a, T? b) where T : IComparable<T>\n    {\n        if (a is null) return b;\n        if (b is null) return a;\n        return a.CompareTo(b) >= 0 ? a : b;\n    }\n}\n',
+            'public class Solution\n{\n    // near-miss: compares via object.Equals — values that compare equal\n    // (2.50 vs 2.5) hit the wrong branch, and CompareTo ordering is ignored\n    public static T? Max<T>(T? a, T? b) where T : IComparable<T>\n    {\n        if (a is null) return b;\n        if (b is null) return a;\n        return a.Equals(b) ? a : b;\n    }\n}\n',
+        ),
+        (
+            "csi-p5-repository",
+            'public class Solution\n{\n    public interface IHasId { int Id { get; } }\n\n    public class User : IHasId\n    {\n        public User(int id, string name) { Id = id; Name = name; }\n        public int Id { get; }\n        public string Name { get; }\n    }\n\n    public class Repository<T> where T : IHasId\n    {\n        private readonly Dictionary<int, T> _items = new();\n\n        public void Add(T entity) => _items[entity.Id] = entity;\n\n        public T? Get(int id) => _items.TryGetValue(id, out var e) ? e : default;\n\n        public int Count => _items.Count;\n\n        public IReadOnlyCollection<T> All() => _items.Values.ToList();\n    }\n}\n',
+            'public class Solution\n{\n    public interface IHasId { int Id { get; } }\n\n    public class User : IHasId\n    {\n        public User(int id, string name) { Id = id; Name = name; }\n        public int Id { get; }\n        public string Name { get; }\n    }\n\n    public class Repository<T> where T : IHasId\n    {\n        private readonly List<T> _items = new();\n\n        public void Add(T entity)\n        {\n            // near-miss: Add appends — re-adding the same Id duplicates\n            // instead of replacing\n            _items.Add(entity);\n        }\n\n        public T? Get(int id)\n        {\n            foreach (var e in _items)\n                if (e.Id == id) return e;\n            return default;\n        }\n\n        public int Count => _items.Count;\n\n        public IReadOnlyCollection<T> All() => _items;\n    }\n}\n',
+        ),
+        (
+            "csi-p5-copy-bug-debug",
+            'public class Solution\n{\n    public static List<string> CopyAll(System.Collections.Generic.IEnumerable<string> source)\n        => source.ToList();\n\n    public static List<T> CopyAll<T>(System.Collections.Generic.IEnumerable<T> source)\n        => source.ToList();\n}\n',
+            'public class Solution\n{\n    // near-miss: returns the SAME instance cast back — mutations of the\n    // "copy" leak into the source list\n    public static List<string> CopyAll(System.Collections.Generic.IEnumerable<string> source)\n        => source as List<string> ?? source.ToList();\n\n    public static List<T> CopyAll<T>(System.Collections.Generic.IEnumerable<T> source)\n        => source as List<T> ?? source.ToList();\n}\n',
+        ),
+    ],
+)
+
+print("module 5 authored")

@@ -1,0 +1,36 @@
+{
+  "id": "hsg-cp-m17-toys",
+  "title": "Toy Shelf",
+  "prompt": "**Description:** A shelf holds n toys in a row; toy i has type t[i] (1..100). Choose\none contiguous segment containing at most k DISTINCT types, maximizing the number\nof toys taken.\n\n**Input:** Line 1: n k (1 <= n <= 200000, 1 <= k <= 100). Line 2: n integers\n(1 <= t[i] <= 100).\n**Output:** One integer — the maximum segment length.\n\n**Example:** `6 2` / `1 2 1 3 4 3` -> `3` (1 2 1 and 3 4 3 are the best\n2-distinct segments).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"6 2\\n1 2 1 3 4 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "Best windows of 2 distinct types have length 3 (1 2 1 or 3 4 3)."
+    },
+    {
+      "name": "all one type",
+      "code": "std::istringstream in(\"5 1\\n4 4 4 4 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n\"));",
+      "hint": "Single type fills the shelf."
+    },
+    {
+      "name": "k covers all",
+      "code": "std::istringstream in(\"4 3\\n1 2 3 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\n\"));",
+      "hint": "Three types fit everything."
+    },
+    {
+      "name": "single toy",
+      "code": "std::istringstream in(\"1 1\\n7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Trivial."
+    },
+    {
+      "name": "alternating",
+      "code": "std::istringstream in(\"6 1\\n1 2 1 2 1 2\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "k=1 — every neighbor differs."
+    }
+  ],
+  "level": "combination"
+}

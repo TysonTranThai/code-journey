@@ -1,0 +1,36 @@
+{
+  "id": "hsg-p16-grid-dist",
+  "title": "Maze Escape",
+  "prompt": "**Description:** Shortest walk length from S to E on a grid moving through '.' cells\n(up/down/left/right), or -1 if E is unreachable. S and E count as walkable.\n\n**Input:** Line 1: n m (1 <= n, m <= 1000). Next n lines: m characters each\n('.' open, '#' wall, exactly one 'S', exactly one 'E').\n**Output:** One integer — the minimum number of moves, or -1.\n\n**Example:** `2 3` / `S..` / `.#E` -> `3` (right, right, down).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"2 3\\nS..\\n.#E\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "Around the wall."
+    },
+    {
+      "name": "adjacent",
+      "code": "std::istringstream in(\"2 2\\nS.\\n.E\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Down then right."
+    },
+    {
+      "name": "blocked",
+      "code": "std::istringstream in(\"2 3\\nS#.\\n.#E\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-1\\n\"));",
+      "hint": "The wall column is complete."
+    },
+    {
+      "name": "long detour",
+      "code": "std::istringstream in(\"3 3\\nS#E\\n...\\n...\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\n\"));",
+      "hint": "Down, right, right, up: four moves around the wall."
+    },
+    {
+      "name": "adjacent columns",
+      "code": "std::istringstream in(\"1 2\\nSE\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "One move."
+    }
+  ],
+  "level": "independent"
+}

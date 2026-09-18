@@ -1,0 +1,36 @@
+{
+  "id": "hsg-p17-ksum",
+  "title": "Fixed Window Maximum Sum",
+  "prompt": "**Description:** Print the maximum sum of any k consecutive elements.\n\n**Input:** Line 1: n k (1 <= k <= n <= 200000). Line 2: n integers\n(|a[i]| <= 10^9).\n**Output:** One integer — the maximum window sum.\n\n**Example:** `6 3` / `2 1 5 1 3 2` -> `9` (5+1+3).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"6 3\\n2 1 5 1 3 2\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"9\\n\"));",
+      "hint": "5+1+3."
+    },
+    {
+      "name": "k equals n",
+      "code": "std::istringstream in(\"4 4\\n1 2 3 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"10\\n\"));",
+      "hint": "Only one window."
+    },
+    {
+      "name": "negatives",
+      "code": "std::istringstream in(\"5 2\\n-1 -2 -3 -4 -5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-3\\n\"));",
+      "hint": "Least negative pair."
+    },
+    {
+      "name": "k 1",
+      "code": "std::istringstream in(\"5 1\\n4 -2 9 1 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"9\\n\"));",
+      "hint": "Single best element."
+    },
+    {
+      "name": "tail window",
+      "code": "std::istringstream in(\"6 2\\n1 1 1 1 1 100\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"101\\n\"));",
+      "hint": "Best window touches the end."
+    }
+  ],
+  "level": "independent"
+}

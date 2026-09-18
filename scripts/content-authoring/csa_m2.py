@@ -187,7 +187,7 @@ def build() -> None:
             "public struct Mut { public int Value; }\n\n"
             "public struct Container\n{\n"
             "    private readonly Mut _m;\n"
-            "    public int Get() => _m.Value * _m.Value;   // wrong operation\n"
+            "    public int Get() => _m.Value + _m.Value + 1;   // WRONG: not the documented sum semantics\n"
             "}\n\n"
             "public class Solution { }"
         ),
@@ -418,7 +418,7 @@ profiler chỉ thấy CPU, không thấy allocation, vì không có gì được
 các byte chỉ di chuyển.
 """
 
-_m2_spans = r"""## Span<T>, ReadOnlySpan<T>, and stackalloc
+_m2_spans = r"""## `Span<T>`, `ReadOnlySpan<T>`, and stackalloc
 
 `Span<T>` is a stack-only window over memory: (ref T, int length). It can
 slice an array, a string, a rented pool buffer, or native memory — without
@@ -467,7 +467,7 @@ plus `int.Parse(span)` is the standard zero-allocation parse path — the
 checkpoint's tests enforce it with the allocation probe.
 """
 
-_m2_spans_vi = r"""## Span<T>, ReadOnlySpan<T>, và stackalloc
+_m2_spans_vi = r"""## `Span<T>`, `ReadOnlySpan<T>`, và stackalloc
 
 `Span<T>` là một cửa sổ chỉ-đứng-trên-stack vào vùng nhớ: (ref T, int
 length). Nó có thể slice một mảng, một string, một buffer thuê từ pool, hay

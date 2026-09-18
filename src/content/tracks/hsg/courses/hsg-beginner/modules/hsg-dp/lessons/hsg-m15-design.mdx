@@ -1,0 +1,50 @@
+## Design 1 — counting: stairs
+
+"How many ways to climb n stairs taking 1 or 2 steps?" State: `dp[i]`
+= number of ways to reach step i. Last move was from i-1 (one step) or
+i-2 (two steps), so:
+
+```cpp
+dp[0] = 1; dp[1] = 1;
+for (int i = 2; i <= n; ++i) dp[i] = dp[i-1] + dp[i-2];
+```
+
+Same recurrence as Fibonacci — recognizing that is a competition skill:
+many problems ARE fib in disguise.
+
+## Design 2 — min-cost: coin change
+
+Fewest coins summing to S with coin values c1..ck. State: `dp[s]` =
+min coins to make sum s. Transition: try every coin as the last one:
+
+```cpp
+dp[0] = 0;                            // zero coins make zero
+for (int s = 1; s <= S; ++s) {
+    dp[s] = INF;
+    for (int c : coins)
+        if (c <= s) dp[s] = min(dp[s], dp[s-c] + 1);
+}
+```
+
+Unreachable sums stay INF — printing dp[S] when it is still INF is a
+real bug (print -1 or "impossible" per the statement).
+
+## Design 3 — take-or-skip: 0/1 knapsack
+
+Items with weight w[i], value v[i], capacity W. State: `dp[i][cap]` =
+best value using the first i items with capacity cap. The i-th item is
+skipped (`dp[i-1][cap]`) or taken (`dp[i-1][cap-w[i]] + v[i]`):
+
+```cpp
+for (int i = 1; i <= n; ++i)
+  for (int cap = 0; cap <= W; ++cap) {
+    dp[i][cap] = dp[i-1][cap];
+    if (w[i] <= cap)
+        dp[i][cap] = max(dp[i][cap], dp[i-1][cap-w[i]] + v[i]);
+  }
+```
+
+Note the loop direction: 2D knapsack reads row i-1, so any direction
+works. The 1D memory-saving form (`for cap: W..w[i]`, descending) is
+the classic interview trap — ascending would allow taking an item
+twice. Beginner rule: 2D first, optimize later.

@@ -632,4 +632,334 @@ Cj.Eq(Solution.Route("double", 3), 30, "re-registration replaces");
     solution='public class Solution\n{\n    public static Func<int, int> MakeAccumulator(int seed)\n    {\n        int total = seed;\n        return add => total += add;\n    }\n\n    public static Action SumActions(params Action?[] steps)\n    {\n        return () =>\n        {\n            foreach (Action? step in steps)\n            {\n                step?.Invoke();\n            }\n        };\n    }\n\n    private static readonly Dictionary<string, Func<int, int>> Commands = new();\n\n    public static void RegisterCommand(string name, Func<int, int> fn)\n    {\n        Commands[name] = fn;\n    }\n\n    public static int Route(string command, int value)\n    {\n        return Commands.TryGetValue(command, out Func<int, int>? fn) ? fn(value) : -1;\n    }\n}\n',
     wrong='public class Solution\n{\n    // near-miss: ONE static total shared by all accumulators — the\n    // independence test fails because acc2 keeps counting acc1\'s total\n    private static int _shared;\n\n    public static Func<int, int> MakeAccumulator(int seed)\n    {\n        _shared = seed;\n        return add => _shared += add;\n    }\n\n    public static Action SumActions(params Action?[] steps)\n    {\n        return () =>\n        {\n            foreach (Action? step in steps)\n            {\n                step?.Invoke();\n            }\n        };\n    }\n\n    private static readonly Dictionary<string, Func<int, int>> Commands = new();\n\n    public static void RegisterCommand(string name, Func<int, int> fn)\n    {\n        Commands[name] = fn;\n    }\n\n    public static int Route(string command, int value)\n    {\n        return Commands.TryGetValue(command, out Func<int, int>? fn) ? fn(value) : -1;\n    }\n}\n',
 )
+# ---------------------------------------------------------------- practices
+write_practice(
+    M,
+    "csi-p3-closures",
+    "Closure Capture Practice",
+    "Closures capture VARIABLES, not values — prove it with shared-state counters and the classic loop-capture bug.",
+    "Luyện capture của closure",
+    "Closure capture BIẾN, không phải giá trị — chứng minh bằng bộ đếm chia sẻ trạng thái và bug loop-capture kinh điển.",
+    "csi-closures-capture",
+    25,
+    "intermediate",
+    [
+        challenge(
+            "csi-p3-shared-counter",
+            "One Variable, Many Calls",
+            """Implement `MakeCounter`: each call to the factory returns a FRESH `Func<int>` — invoking it returns 1, 2, 3, … for that instance. Two counters must not interfere.
+
+```csharp
+static Func<int> MakeCounter();
+```""",
+            CS_PRELUDE,
+            [
+                (
+                    "independent instances",
+                    r"""
+var c1 = Solution.MakeCounter();
+var c2 = Solution.MakeCounter();
+Cj.Eq(c1(), 1, "first tick");
+Cj.Eq(c1(), 2, "second tick — same instance");
+Cj.Eq(c2(), 1, "fresh instance starts at 1");
+Cj.Eq(c1(), 3, "c1 unaffected by c2");
+""",
+                    "The count variable must live INSIDE the factory — one closure per call.",
+                ),
+            ],
+            level="guided",
+            difficulty="intermediate",
+        ),
+        challenge(
+            "csi-p3-loop-capture-debug",
+            "Debug: Every Button Fires Three Times",
+            """Classic bug: a loop registers three "print i" lambdas, but pressing any single button prints 3 — the last value. `Build` below reproduces it. Fix `Build` so each lambda remembers its OWN index, and keep `Sum` as is (it is correct).
+
+```csharp
+static List<Func<int>> Build(int n);      // lambda i returns i
+static int Sum(List<Func<int>> fs);       // invoke all, total
+```""",
+            CS_PRELUDE,
+            [
+                (
+                    "each lambda remembers its own i",
+                    r"""
+var fs = Solution.Build(3);
+Cj.Eq(fs[0](), 0, "lambda 0 sees 0");
+Cj.Eq(fs[1](), 1, "lambda 1 sees 1");
+Cj.Eq(fs[2](), 2, "lambda 2 sees 2");
+""",
+                    "Capture a per-iteration copy: `int i = index;` inside the loop body, or a foreach over a range.",
+                ),
+                (
+                    "sum still works",
+                    r"""
+Cj.Eq(Solution.Sum(Solution.Build(4)), 6, "0+1+2+3");
+Cj.Eq(Solution.Sum(Solution.Build(0)), 0, "empty build");
+""",
+                    "Sum only invokes — the fix must not change its contract.",
+                ),
+            ],
+            level="debugging",
+            difficulty="intermediate",
+        ),
+    ],
+    {
+        "csi-p3-shared-counter": vi_challenge(
+            "Một biến, nhiều lần gọi",
+            "Hiện thực `MakeCounter`: mỗi lần gọi factory trả về `Func<int>` MỚI — invoking nó trả 1, 2, 3, … cho chính instance đó. Hai bộ đếm không được nhiễu nhau.",
+            [
+                ("independent instances", "Biến đếm phải sống TRONG factory — một closure cho mỗi lần gọi."),
+            ],
+        ),
+        "csi-p3-loop-capture-debug": vi_challenge(
+            "Debug: mỗi nút bấm phát ba lần",
+            "Bug kinh điển: vòng lặp đăng ký ba lambda \"in i\", nhưng bấm nút nào cũng in 3 — giá trị cuối. `Build` dưới đây tái hiện lỗi. Sửa `Build` để mỗi lambda nhớ CHỈ SỐ CỦA CHÍNH NÓ, và giữ `Sum` nguyên (nó đúng rồi).",
+            [
+                ("each lambda remembers its own i", "Capture bản sao theo từng vòng: `int i = index;` trong thân vòng, hoặc foreach qua một range."),
+                ("sum still works", "Sum chỉ invoke — bản sửa không được đổi hợp đồng của nó."),
+            ],
+        ),
+    },
+    solutions=[
+        (
+            "csi-p3-shared-counter",
+            r'''public class Solution
+{
+    public static Func<int> MakeCounter()
+    {
+        int count = 0;                 // per-instance: the closure owns it
+        return () => ++count;
+    }
+}''',
+            r'''public class Solution
+{
+    // near-miss: the count lives in a STATIC field — every "instance"
+    // shares one counter, so c2 starts where c1 stopped
+    private static int _shared;
+
+    public static Func<int> MakeCounter()
+    {
+        return () => ++_shared;
+    }
+}''',
+        ),
+        (
+            "csi-p3-loop-capture-debug",
+            r'''public class Solution
+{
+    public static List<Func<int>> Build(int n)
+    {
+        var result = new List<Func<int>>();
+        for (int index = 0; index < n; index++)
+        {
+            int i = index;             // fresh variable per iteration
+            result.Add(() => i);
+        }
+        return result;
+    }
+
+    public static int Sum(List<Func<int>> fs)
+    {
+        int total = 0;
+        foreach (var f in fs) total += f();
+        return total;
+    }
+}''',
+            r'''public class Solution
+{
+    // near-miss: the loop variable is captured directly — every lambda
+    // closes over the SAME i, which is n-1 by the time anyone invokes
+    public static List<Func<int>> Build(int n)
+    {
+        var result = new List<Func<int>>();
+        for (int i = 0; i < n; i++)
+        {
+            result.Add(() => i);
+        }
+        return result;
+    }
+
+    public static int Sum(List<Func<int>> fs)
+    {
+        int total = 0;
+        foreach (var f in fs) total += f();
+        return total;
+    }
+}''',
+        ),
+    ],
+)
+
+write_practice(
+    M,
+    "csi-p3-pipelines",
+    "Composition & Callback Practice",
+    "Build Func pipelines that compose, wire callbacks with Action, and route through a dispatch table of method groups.",
+    "Luyện ghép pipeline & callback",
+    "Dựng pipeline Func có thể ghép, nối callback bằng Action, và định tuyến qua bảng dispatch của method group.",
+    "csi-composition-pipelines",
+    25,
+    "intermediate",
+    [
+        challenge(
+            "csi-p3-pipeline",
+            "Compose a Pipeline",
+            """Implement `Compose`: given a list of `Func<int, int>`, return one function applying them IN ORDER (first element first). Empty list = identity.
+
+```csharp
+static Func<int, int> Compose(List<Func<int, int>> steps);
+```""",
+            CS_PRELUDE,
+            [
+                (
+                    "order matters",
+                    r"""
+var steps = new List<Func<int, int>>
+{
+    x => x + 1,
+    x => x * 10,
+    x => x - 5,
+};
+Cj.Eq(Solution.Compose(steps)(2), 25, "(+1) then (*10) then (-5): 2->3->30->25");
+Cj.Eq(Solution.Compose(steps)(0), 5, "0->1->10->5");
+""",
+                    "Fold left to right: acc = step(acc) for each step in order.",
+                ),
+                (
+                    "empty is identity",
+                    r"""
+Cj.Eq(Solution.Compose(new List<Func<int, int>>())(42), 42, "empty = identity");
+var single = Solution.Compose(new List<Func<int, int>> { x => x * 2 });
+Cj.Eq(single(21), 42, "single step applies once");
+""",
+                    "Return x => x when there are no steps.",
+                ),
+            ],
+            level="guided",
+            difficulty="intermediate",
+        ),
+        challenge(
+            "csi-p3-dispatch",
+            "Callback Dispatch Table",
+            """Implement a command router backed by `Action<string>` callbacks. `Register` stores a callback under a name (re-registering REPLACES). `Dispatch` invokes the callback with a payload and returns true; unknown names return false without throwing.
+
+```csharp
+static void Register(string name, Action<string> callback);
+static bool Dispatch(string name, string payload);
+```""",
+            CS_PRELUDE,
+            [
+                (
+                    "register, replace, dispatch",
+                    r"""
+var seen = new List<string>();
+Solution.Register("log", m => seen.Add("a:" + m));
+Cj.Eq(Solution.Dispatch("log", "x"), true, "known command");
+Solution.Register("log", m => seen.Add("b:" + m));   // replaces
+Solution.Dispatch("log", "y");
+Cj.Eq(string.Join("|", seen), "a:x|b:y", "re-registration replaced, not added");
+""",
+                    "Dictionary indexer assignment replaces; TryGetValue finds the current callback.",
+                ),
+                (
+                    "unknown is safe",
+                    r"""
+Cj.Eq(Solution.Dispatch("nope", "z"), false, "unknown returns false");
+Solution.Register("multi", m => { });   // ok to register, never dispatched
+Cj.Eq(Solution.Dispatch("multi", "w"), true, "registered-but-unused dispatches fine");
+""",
+                    "Miss path: return false — no exception, no null deref.",
+                ),
+            ],
+            level="independent",
+            difficulty="intermediate",
+        ),
+    ],
+    {
+        "csi-p3-pipeline": vi_challenge(
+            "Ghép một pipeline",
+            "Hiện thực `Compose`: cho danh sách `Func<int, int>`, trả về một hàm áp chúng THEO THỨ TỰ (phần tử đầu áp trước). Danh sách rỗng = identity.",
+            [
+                ("order matters", "Fold trái sang phải: acc = step(acc) cho từng step theo thứ tự."),
+                ("empty is identity", "Trả x => x khi không có step nào."),
+            ],
+        ),
+        "csi-p3-dispatch": vi_challenge(
+            "Bảng dispatch callback",
+            "Hiện thực bộ định tuyến lệnh dựa trên callback `Action<string>`. `Register` lưu callback dưới một tên (đăng ký lại sẽ THAY THẾ). `Dispatch` gọi callback với payload và trả true; tên lạ trả false không ném lỗi.",
+            [
+                ("register, replace, dispatch", "Gán indexer Dictionary là thay thế; TryGetValue lấy callback hiện tại."),
+                ("unknown is safe", "Đường miss: trả false — không exception, không null deref."),
+            ],
+        ),
+    },
+    solutions=[
+        (
+            "csi-p3-pipeline",
+            r'''public class Solution
+{
+    public static Func<int, int> Compose(List<Func<int, int>> steps)
+    {
+        return x =>
+        {
+            foreach (var step in steps) x = step(x);
+            return x;
+        };
+    }
+}''',
+            r'''public class Solution
+{
+    public static Func<int, int> Compose(List<Func<int, int>> steps)
+    {
+        // near-miss: reverses the step order — (*10) applied before (+1)
+        // turns 2 into 25->26 instead of 3->30
+        var rev = steps.AsEnumerable().Reverse().ToList();
+        return x =>
+        {
+            foreach (var step in rev) x = step(x);
+            return x;
+        };
+    }
+}''',
+        ),
+        (
+            "csi-p3-dispatch",
+            r'''public class Solution
+{
+    private static readonly Dictionary<string, Action<string>> Table = new();
+
+    public static void Register(string name, Action<string> callback)
+        => Table[name] = callback;   // indexer: replace on re-register
+
+    public static bool Dispatch(string name, string payload)
+    {
+        if (!Table.TryGetValue(name, out var cb)) return false;
+        cb(payload);
+        return true;
+    }
+}''',
+            r'''public class Solution
+{
+    private static readonly Dictionary<string, Action<string>> Table = new();
+
+    public static void Register(string name, Action<string> callback)
+    {
+        // near-miss: multicast += — re-registering ADDS instead of replaces,
+        // so both callbacks fire after re-registration
+        if (Table.TryGetValue(name, out var old)) Table[name] = old + callback;
+        else Table[name] = callback;
+    }
+
+    public static bool Dispatch(string name, string payload)
+    {
+        if (!Table.TryGetValue(name, out var cb)) return false;
+        cb(payload);
+        return true;
+    }
+}''',
+        ),
+    ],
+)
+
 print("module 3 authored")

@@ -1,0 +1,41 @@
+## How subtasks work
+
+A problem worth 100 points may be split: Subtask 1 (30%) has small N
+where brute force passes; Subtask 2 (30%) needs a medium idea;
+Subtask 3 (40%) needs the full algorithm. Your score is the sum of
+subtasks your solution handles — a correct-but-slow program still
+banks the small ones.
+
+## The pipeline
+
+1. Write the dumbest correct solution (brute force). It already earns
+   subtask 1.
+2. Only then look for the optimization. If you find nothing in 20
+   minutes, submit the brute force and move on — points in hand beat
+   points in theory.
+3. If the optimization only handles subtask 2 (say `N <= 5,000`), that
+   is still more points. Do not hold out for the full solution.
+
+## Example shape
+
+`N <= 20`: enumerate everything. `N <= 5,000`: O(n^2). `N <= 100,000`:
+sort + sweep / two pointers / prefix sums. Each tier is a DIFFERENT
+program or a branch inside one program:
+
+```cpp
+if (n <= 20) brute();        // subtask 1
+else if (n <= 5000) square(); // subtask 2
+else fast();                  // subtask 3
+```
+
+Mixing tiers in one submission is normal contest practice — just keep
+each branch correct.
+
+## Anti-patterns
+
+- Rewriting the whole solution from scratch for the last subtask and
+  breaking subtask 1 in the process (always re-test the small cases).
+- Spending 90 minutes on one problem while two easy ones sit unsolved.
+- Guessing that "the sample passes, ship it" — samples never cover
+  the boundaries; construct your own: N = 1, N = max, all equal,
+  extreme values.

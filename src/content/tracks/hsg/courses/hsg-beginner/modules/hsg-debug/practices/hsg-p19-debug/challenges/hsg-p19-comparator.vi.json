@@ -1,0 +1,26 @@
+{
+  "title": "Gỡ lỗi: Sắp ngược",
+  "prompt": "**Đề bài:** Chương trình phải sắp n cặp theo phần tử đầu TĂNG DẦN (bằng nhau:\nthứ tự bất kỳ) và in các phần tử đầu. Tìm và sửa bug.\n\n**Mã lỗi:**\n```cpp\nvoid solve(std::istream& in, std::ostream& out) {\n    int n; in >> n;\n    vector<pair<int,int>> v(n);\n    for (auto& p : v) in >> p.first >> p.second;\n    sort(v.begin(), v.end(), [](const pair<int,int>& x, const pair<int,int>& y) {\n        return x.first > y.first;\n    });\n    for (int i = 0; i < n; ++i)\n        out << v[i].first << (i + 1 < n ? \" \" : \"\");\n    out << \"\\\\n\";\n}\n```\n\n**Dữ liệu vào:** Dòng 1: n (1 <= n <= 100000). n dòng tiếp: a b (|a|, |b| <= 10^9).\n**Dữ liệu ra:** Một dòng: các phần tử đầu theo thứ tự tăng, cách nhau dấu cách.\n\n**Ví dụ:** `3` / `3 0` / `1 9` / `2 4` -> `1 2 3`.\n",
+  "tests": [
+    {
+      "name": "sample",
+      "hint": "Mã lỗi in 3 2 1."
+    },
+    {
+      "name": "already sorted",
+      "hint": "Che được bug."
+    },
+    {
+      "name": "duplicates",
+      "hint": "Bằng nhau giữ thứ tự bất kỳ — các first phải là 3 5 5 5."
+    },
+    {
+      "name": "negatives",
+      "hint": "Số âm đứng trước."
+    },
+    {
+      "name": "single",
+      "hint": "Một phần tử."
+    }
+  ]
+}

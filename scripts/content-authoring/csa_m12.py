@@ -255,7 +255,7 @@ def build() -> None:
 
 # ── Lesson bodies ───────────────────────────────────────────────────────────
 
-_m12_model = r"""## The Channel<T> model
+_m12_model = r"""## The `Channel<T>` model
 
 `Channel<T>` splits into two halves with deliberately different
 capabilities: `ChannelWriter<T>` can write and complete; `ChannelReader<T>`
@@ -293,7 +293,7 @@ have no flow control at all. Channel is the standard library's answer to
 "go-like pipelines in C#".
 """
 
-_m12_model_vi = r"""## Mô hình Channel<T>
+_m12_model_vi = r"""## Mô hình `Channel<T>`
 
 `Channel<T>` tách thành hai nửa với năng lực khác nhau một cách cố ý:
 `ChannelWriter<T>` có thể ghi và complete; `ChannelReader<T>` có thể đọc,

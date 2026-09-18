@@ -52,7 +52,7 @@ def build() -> None:
                 "name": "inspect-sealed",
                 "code": (
                     "var (name, sealed_, count) = Solution.Inspect<string>();\n"
-                    'Cj.True(name.Contains("String"), "full name");\n'
+                    'Cj.True(name.StartsWith("System.String"), "FullName, not bare Name");\n'
                     'Cj.True(sealed_, "string is sealed");\n'
                     'Cj.True(count > 0, "has methods");'
                 ),
@@ -64,9 +64,7 @@ def build() -> None:
                     "var v = new V();\n"   # no virtual, no interface
                     "var o = new O();\n"   # declares virtual; D derives and overrides
                     'Cj.Eq(Solution.DispatchDescription(typeof(V)), "direct", "plain class: direct");\n'
-                    'Cj.Eq(Solution.DispatchDescription(typeof(O)), "virtual", "class declaring virtual: virtual");\n'
-                    "class V { public int M() => 1; }\n"
-                    "class O { public virtual int M() => 2; }"
+                    'Cj.Eq(Solution.DispatchDescription(typeof(O)), "virtual", "class declaring virtual: virtual");'
                 ),
                 "hint": "m.IsVirtual is true for overrides too — require the method to declare a new virtual slot (IsVirtual && !IsFinal) or use DeclaredOnly and check for the `virtual` keyword via attributes.",
             },
@@ -93,7 +91,10 @@ def build() -> None:
             "        if (methods.Any(m => m.IsVirtual && !m.IsFinal)) return \"virtual\";\n"
             "        if (t.GetInterfaces().Length > 0) return \"interface\";\n"
             "        return \"direct\";\n"
-            "    }\n}\n"
+            "    }\n}\n\n"
+            "// test fixtures under dispatch (DeliberatelyShadowed must not leak into other tests)\n"
+            "public class V { public int M() => 1; }\n"
+            "public class O { public virtual int M() => 2; }\n"
         ),
         wrong=(
             "using System.Reflection;\n\n"
@@ -107,7 +108,9 @@ def build() -> None:
             "    public static string DispatchDescription(Type t)\n"
             "    {\n"
             "        return \"direct\";   // WRONG: never inspects\n"
-            "    }\n}"
+            "    }\n}\n\n"
+            "public class V { public int M() => 1; }\n"
+            "public class O { public virtual int M() => 2; }"
         ),
         checkpoint=True,
     )
@@ -183,7 +186,8 @@ def build() -> None:
             "public class Solution\n{\n"
             "    public static int Divide(int a, int b)\n"
             "    {\n"
-            "        return a / b;   // WRONG: relies on hardware division fault instead of explicit check\n"
+            "        if (b == 0) return int.MinValue;   // WRONG: sentinel instead of an exception — the API contract says throw\n"
+            "        return a / b;\n"
             "    }\n\n"
             "    public static long ThrowCatchCost(int iterations)\n"
             "    {\n"

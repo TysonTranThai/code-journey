@@ -1,0 +1,26 @@
+{
+  "id": "csi-p2-discount-debug",
+  "title": "Debug: The Discount That Pays Customers",
+  "prompt": "A checkout bug report: one customer paid 50 for a 150%-off coupon and the balance went NEGATIVE. Fix `ApplyDiscount` so percent is clamped to [0, 100] before use. `CountNonEmpty` is correct — leave it alone.\n\n```csharp\nstatic void ApplyDiscount(ref decimal price, decimal percent);\nstatic int CountNonEmpty(params string?[] items);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal discount",
+      "code": "\ndecimal price = 100m;\nSolution.ApplyDiscount(ref price, 25m);\nCj.Eq(price, 75m, \"25% off\");\n",
+      "hint": "price -= price * percent / 100m, after clamping percent."
+    },
+    {
+      "name": "clamp both ends",
+      "code": "\ndecimal p2 = 50m;\nSolution.ApplyDiscount(ref p2, 150m);\nCj.Eq(p2, 0m, \"percent clamped to 100 -> free\");\ndecimal p3 = 80m;\nSolution.ApplyDiscount(ref p3, -5m);\nCj.Eq(p3, 80m, \"negative percent clamped to 0 -> no change\");\n",
+      "hint": "Math.Clamp(percent, 0m, 100m) before the arithmetic."
+    },
+    {
+      "name": "params counting",
+      "code": "\nCj.Eq(Solution.CountNonEmpty(\"a\", null, \"\", \"b\"), 2, \"null and empty skipped\");\nCj.Eq(Solution.CountNonEmpty(), 0, \"zero args is legal\");\n",
+      "hint": "params gives an array — Count(i => !string.IsNullOrEmpty(i))."
+    }
+  ],
+  "level": "debugging"
+}

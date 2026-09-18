@@ -463,6 +463,7 @@ VI: dict[str, dict] = {
         "hints": {
             "safe-transfer": "Xếp theo Id: first = a.Id < b.Id ? a : b; TryEnter(first, 1000); TryEnter(second, 1000); "
                              "finally nhả cả hai.",
+            "funds-guarded": "Kiểm tra a.Balance < amount BÊN TRONG cặp khóa và thoát với 0 trước mọi Debit.",
             "reverse-direction-safe": "Cùng thứ tự khóa bất kể thứ tự đối số — đó là toàn bộ bản sửa.",
         },
     },

@@ -20,25 +20,34 @@ import {
   getPracticeChallenges,
   getPracticeSet,
 } from "@/lib/curriculum/loaders";
-import { mkdtempSync, mkdirSync, copyFileSync, symlinkSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, cpSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
 const TRACK = "csharp";
 const COURSE = "csharp-advanced";
 
-// Scoped root: <tmp>/csharp/{track.json copy, courses -> real courses dir}.
+// Scoped root: <tmp>/csharp/{track.json copy, courses/csharp-advanced deep copy}.
 // (loadCurriculum treats the root as the tracks dir and SKIPS symlinked
-// track dirs — Dirent.isDirectory() is false for symlinks — so the track
-// itself must be a real directory with only its courses symlinked.)
+// track dirs — Dirent.isDirectory() is false for symlinks. A symlinked
+// `courses` dir works but drags in the OTHER csharp courses, whose in-flight
+// state from other agents' editors may not load. So: real `courses` dir with
+// ONLY this course deep-copied into it.)
 const root = mkdtempSync(path.join(tmpdir(), "csa-validate-"));
-const trackDir = path.join(root, "csharp");
+const trackDir = path.join(root, TRACK);
 mkdirSync(trackDir);
-copyFileSync("src/content/tracks/csharp/track.json", path.join(trackDir, "track.json"));
-symlinkSync(
-  path.resolve("src/content/tracks/csharp/courses"),
-  path.join(trackDir, "courses"),
-  "dir",
+// track.json copy with the other courses stripped (their files aren't copied
+// and would fail the loader's reference check):
+const trackJson = JSON.parse(readFileSync("src/content/tracks/csharp/track.json", "utf8")) as {
+  courses: { reference: string }[];
+};
+trackJson.courses = trackJson.courses.filter((c) => c.reference === COURSE);
+writeFileSync(path.join(trackDir, "track.json"), JSON.stringify(trackJson, null, 2));
+mkdirSync(path.join(trackDir, "courses"));
+cpSync(
+  path.resolve("src/content/tracks/csharp/courses", COURSE),
+  path.join(trackDir, "courses", COURSE),
+  { recursive: true },
 );
 
 let failed = false;

@@ -1,0 +1,48 @@
+## BFS — từng lớp một
+
+```cpp
+vector<int> dist(n + 1, -1);
+queue<int> q;
+dist[s] = 0; q.push(s);          // đánh dấu KHI PUSH, không phải khi pop
+while (!q.empty()) {
+    int u = q.front(); q.pop();
+    for (int v : adj[u])
+        if (dist[v] == -1) { dist[v] = dist[u] + 1; q.push(v); }
+}
+```
+
+dist[v] là đúng số cạnh ít nhất từ s. Bug kinh điển: đánh dấu visited
+khi **pop** — cùng một đỉnh chen vào hàng đợi nhiều lần, bộ nhớ và
+thời gian nổ tung trên đồ thị dày.
+
+## DFS — cùng đồ thị, thứ tự khác
+
+Dạng đệ quy ngắn nhất để viết; độ sâu có thể chạm V, nên V = 10^5 cần
+dạng ngăn xếp tường minh (hoặc tăng ngăn xếp — không khả chuyển):
+
+```cpp
+vector<int> st;
+vis[s] = true; st.push_back(s);   // đánh dấu KHI PUSH ở đây nữa
+while (!st.empty()) {
+    int u = st.back(); st.pop_back();
+    for (int v : adj[u])
+        if (!vis[v]) { vis[v] = true; st.push_back(v); }
+}
+```
+
+## Thành phần liên thông
+
+Duyệt tất cả đỉnh; mỗi đỉnh chưa thăm mở đầu một lần duyệt, và lần
+duyệt đó đánh dấu đúng thành phần của nó:
+
+```cpp
+int comps = 0;
+for (int v = 1; v <= n; ++v)
+    if (!vis[v]) { ++comps; /* duyệt từ v */ }
+```
+
+## Lưới chính là đồ thị
+
+Mỗi ô trống là một đỉnh; láng giềng là các ô mở trên/dưới/trái/phải.
+Flood fill = BFS/DFS trên đồ thị ẩn đó — cùng kỷ luật visited, dùng
+tọa độ thay vì chỉ số.

@@ -1,0 +1,34 @@
+## The two ingredients
+
+A problem admits DP when it has:
+
+1. **Optimal substructure** — the best answer for size n is built from
+   best answers for smaller sizes.
+2. **Overlapping subproblems** — a naive recursion recomputes the same
+   states many times.
+
+Fibonacci is the canonical example. `fib(5)` calls `fib(3)` twice,
+`fib(2)` three times... `fib(30)` alone makes over a million calls.
+Write the answers down (`dp[i] = fib(i)`) and each state is computed
+once — 30 table cells instead of a million calls.
+
+### Bottom-up fills a table
+
+```cpp
+dp[0] = 0; dp[1] = 1;              // base cases
+for (int i = 2; i <= n; ++i)
+    dp[i] = dp[i-1] + dp[i-2];     // transition
+answer = dp[n];                    // final state
+```
+
+The four questions you must answer for EVERY dp problem: what is a
+state, what does dp[i] **mean**, how does a bigger state build on
+smaller ones (transition), and which cells are the base cases. Get the
+**meaning** wrong and the transition will look plausible while
+computing something useless.
+
+### Why order matters
+
+The table must be filled so that every dependency is ready before use.
+`dp[i]` needs `dp[i-1]`, so loop i upward. Later (graphs) the order is
+not a simple loop — but for sequence DP it always is.

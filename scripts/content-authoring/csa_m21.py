@@ -70,7 +70,13 @@ def build() -> None:
                     'Cj.False(s1.SequenceEqual(s2), "two salts differ (cryptographic randomness)");\n'
                     "var h1 = Solution.HashPassword(\"same password\", s1);\n"
                     "var h2 = Solution.HashPassword(\"same password\", s2);\n"
-                    'Cj.False(h1 == h2, "same password + different salt = different hash (rainbow-table defense)");'
+                    'Cj.False(h1 == h2, "same password + different salt = different hash (rainbow-table defense)");\n'
+                    "// cryptographic RNG must not be seed-replayable: two fresh generators\n"
+                    "// with the most common seed (0) must disagree with each other and with the salts\n"
+                    "var replay = new byte[16];\n"
+                    "new Random(0).NextBytes(replay);\n"
+                    'Cj.False(replay.SequenceEqual(s1), "salt must not match a seeded System.Random stream");\n'
+                    'Cj.False(replay.SequenceEqual(s2), "salt must not match a seeded System.Random stream (2)");'
                 ),
                 "hint": "RandomNumberGenerator.GetBytes(16) — never new Random() for secrets.",
             },

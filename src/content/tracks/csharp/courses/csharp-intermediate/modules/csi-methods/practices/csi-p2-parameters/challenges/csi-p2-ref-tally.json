@@ -1,0 +1,21 @@
+{
+  "id": "csi-p2-ref-tally",
+  "title": "ref: State That Survives the Call",
+  "prompt": "Two contracts. `Total` adds every item to the CALLER's `running` and returns the new total. `Swap` exchanges two ints through ref.\n\n```csharp\nstatic long Total(ref long running, int[] additions);\nstatic void Swap(ref int x, ref int y);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "write-back observable",
+      "code": "\nlong t = 0;\nCj.Eq(Solution.Total(ref t, new[] { 1, 2, 3 }), 6, \"returns the new total\");\nCj.Eq(t, 6, \"caller sees the write-back\");\nCj.Eq(Solution.Total(ref t, new[] { 10 }), 16, \"state survives across calls\");\nCj.Eq(t, 16, \"running updated again\");\n",
+      "hint": "Mutate the ref parameter itself — a local copy will not reach the caller."
+    },
+    {
+      "name": "swap through ref",
+      "code": "\nint x = 1, y = 2;\nSolution.Swap(ref x, ref y);\nCj.Eq(x, 2, \"x took y's old value\");\nCj.Eq(y, 1, \"y took x's old value\");\n",
+      "hint": "Tuple swap: (x, y) = (y, x) — both sides are ref locals."
+    }
+  ],
+  "level": "guided"
+}

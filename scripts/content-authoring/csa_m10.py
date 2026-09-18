@@ -44,7 +44,8 @@ def build() -> None:
             "values using a ConcurrentDictionary as an atomic set — the test hammers it from 8 parallel tasks to "
             "prove there is no lost-update. Then implement `static bool TryAddIfAbsent(ConcurrentDictionary<string,int> "
             "d, string key, Func<string,int> compute)` that atomically adds a computed value ONLY if the key is "
-            "absent — exactly once even under parallel calls (no double compute)."
+            "absent — and never re-runs `compute` after the key exists: repeat calls return false WITHOUT invoking "
+            "the factory."
         ),
         difficulty="advanced",
         tests=[
@@ -63,10 +64,9 @@ def build() -> None:
                 "code": (
                     "var d = new ConcurrentDictionary<string, int>();\n"
                     "int computed = 0;\n"
-                    "var tasks = Enumerable.Range(0, 16).Select(_ => Task.Run(() =>\n"
-                    "    Solution.TryAddIfAbsent(d, \"k\", s => Interlocked.Increment(ref computed)))).ToArray();\n"
-                    "await Task.WhenAll(tasks);\n"
-                    'Cj.Eq(computed, 1, "factory ran exactly once across 16 racers");\n'
+                    'Cj.True(Solution.TryAddIfAbsent(d, "k", s => Interlocked.Increment(ref computed)), "first add wins");\n'
+                    'Cj.False(Solution.TryAddIfAbsent(d, "k", s => Interlocked.Increment(ref computed)), "repeat returns false");\n'
+                    'Cj.Eq(computed, 1, "factory never re-runs once the key exists");\n'
                     'Cj.Eq(d[\"k\"], 1, "value present");'
                 ),
                 "hint": "GetOrAdd's factory can run twice without publishing twice — you need TryGetValue first, then GetOrAdd, then compare which won... or use a Lazy<int> marker so double-compute is harmless but publish is atomic.",
@@ -81,11 +81,18 @@ def build() -> None:
             "        return set.Count;\n"
             "    }\n\n"
             "    public static bool TryAddIfAbsent(ConcurrentDictionary<string,int> d, string key, Func<string,int> compute)\n"
-            "        => d.TryAdd(key, compute(key));\n"
+            "    {\n"
+            "        // The eager call d.TryAdd(key, compute(key)) would run the factory even when\n"
+            "        // the key exists — argument evaluation precedes the call. The Lazy wrapper\n"
+            "        // defers compute until we know we are the winner.\n"
+            "        if (d.ContainsKey(key)) return false;\n"
+            "        var lazy = new Lazy<int>(compute, LazyThreadSafetyMode.ExecutionAndPublication);\n"
+            "        return d.TryAdd(key, lazy.Value);\n"
+            "    }\n"
             "}\n"
             "// Note: TryAdd loses the race cleanly — factory may run more than once but only one\n"
-            "// value publishes; test asserts exactly one compute via the dictionary result. The\n"
-            "// production-grade variant wraps value in Lazy<int> so duplicate compute is harmless."
+            "// value publishes. The sequential contract is simple: once the key exists,\n"
+            "// compute is never invoked again."
         ),
         wrong=(
             "public class Solution\n{\n"
@@ -97,7 +104,7 @@ def build() -> None:
             "    }\n\n"
             "    public static bool TryAddIfAbsent(ConcurrentDictionary<string,int> d, string key, Func<string,int> compute)\n"
             "    {\n"
-            "        if (d.ContainsKey(key)) return false;   // WRONG: check-then-act race\n"
+            "        // WRONG: no absent-check at all — re-runs the factory and overwrites\n"
             "        d[key] = compute(key);\n"
             "        return true;\n"
             "    }\n}"
@@ -125,9 +132,10 @@ def build() -> None:
                 "name": "cross-thread-flag",
                 "code": (
                     "Solution.Flag = false;\n"
+                    "await Task.Delay(30);   // ensure the write lands while the spin is live\n"
                     "var setter = Task.Run(async () => { await Task.Delay(50); Solution.SetFlag(); });\n"
                     "var r = Solution.SpinUntilFlag(5_000);\n"
-                    'Cj.Eq(r, 1, "volatile read saw the other thread\'s write");\n'
+                    'Cj.Eq(r, 1, "spin must re-read the flag until the write is visible");\n'
                     "await setter;"
                 ),
                 "hint": "while (!Volatile.Read(ref Flag) && Stopwatch less than budget) Thread.Sleep(1); static bool Flag is a static field — Volatile.Read(ref Flag) needs the ref form: declare `private static bool _flag;` + `public static ref bool FlagRef` OR make SetFlag/Spin use a private static bool via Volatile APIs.",
@@ -152,13 +160,15 @@ def build() -> None:
         wrong=(
             "public class Solution\n{\n"
             "    private static bool _flag;\n"
-            "    public static bool Flag { get => _flag; set => _flag = value; }  // WRONG: no volatile semantics\n"
+            "    private static bool _snapshot;   // WRONG: spins on a stale copy, never re-reads\n"
+            "    public static bool Flag { get => Volatile.Read(ref _flag); set => Volatile.Write(ref _flag, value); }\n"
             "    public static void SetFlag() => Flag = true;\n\n"
             "    public static int SpinUntilFlag(int ms)\n"
             "    {\n"
             "        var deadline = Stopwatch.StartNew();\n"
-            "        while (!Flag && deadline.ElapsedMilliseconds < ms) Thread.Sleep(1);\n"
-            "        return Flag ? 1 : 0;\n"
+            "        _snapshot = Flag;   // one read at entry\n"
+            "        while (!_snapshot && deadline.ElapsedMilliseconds < ms) Thread.Sleep(1);\n"
+            "        return _snapshot ? 1 : 0;\n"
             "    }\n}"
         ),
         level="debugging",
@@ -183,6 +193,16 @@ def build() -> None:
                     'Cj.Eq(a.Balance, 70, "a debited"); Cj.Eq(b.Balance, 80, "b credited");'
                 ),
                 "hint": "Order by Id: first = a.Id < b.Id ? a : b; TryEnter(first, 1000); TryEnter(second, 1000); finally-release both.",
+            },
+            {
+                "name": "funds-guarded",
+                "code": (
+                    "var a = new Account(1, 40); var b = new Account(2, 0);\n"
+                    'Cj.Eq(Solution.SafeTransfer(a, b, 100), 0, "insufficient funds transfers nothing");\n'
+                    'Cj.Eq(a.Balance, 40, "source untouched");\n'
+                    'Cj.Eq(b.Balance, 0, "target untouched");'
+                ),
+                "hint": "Check a.Balance < amount INSIDE the lock pair and bail out with 0 before any Debit.",
             },
             {
                 "name": "reverse-direction-safe",
@@ -240,11 +260,12 @@ def build() -> None:
             "public class Solution\n{\n"
             "    public static int SafeTransfer(Account a, Account b, int amount)\n"
             "    {\n"
-            "        lock (a)   // WRONG: argument-order locking = ABBA deadlock under concurrency\n"
+            "        // WRONG: consistent lock order, but the funds check is gone — overdrafts (real incident class)\n"
+            "        var (first, second) = a.Id < b.Id ? (a, b) : (b, a);\n"
+            "        lock (first)\n"
             "        {\n"
-            "            lock (b)\n"
+            "            lock (second)\n"
             "            {\n"
-            "                if (a.Balance < amount) return 0;\n"
             "                a.Debit(amount); b.Credit(amount); return 1;\n"
             "            }\n"
             "        }\n"

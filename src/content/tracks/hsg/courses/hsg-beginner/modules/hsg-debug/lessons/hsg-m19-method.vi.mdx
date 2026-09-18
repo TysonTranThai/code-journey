@@ -1,0 +1,32 @@
+## Vòng lặp
+
+1. **Tái hiện** trên input failing nhỏ nhất. Bug chỉ lộ ở N = 100,000
+   thường lộ ở N = 7 một khi bạn biết tìm đâu.
+2. **Cô lập** — in trạng thái trung gian (mảng cộng dồn, biến vòng
+   lặp) hoặc cắt đôi chương trình.
+3. **Đặt giả thuyết**, đoán output, chạy. Đoán sai thu hẹp không gian
+   tìm kiếm; đoán đúng nghĩa là bạn đã tìm ra nó.
+4. **Sửa nguyên nhân**, không sửa triệu chứng. Chèn `if (x == 42)`
+   xử lý đặc biệt là cách biến bug thành quái vật.
+5. **Chạy lại mọi case cũ** cộng đúng biên vừa làm bạn thất bại.
+
+## Stress testing (siêu năng lực)
+
+Viết một solver chậm-nhưng-chắc-chắn-đúng cộng một bộ sinh input nhỏ
+ngẫu nhiên, rồi so sánh đầu ra trong vòng lặp:
+
+```
+gen > in.txt && slow < in.txt > slow.txt && fast < in.txt > fast.txt
+diff slow.txt fast.txt  # lệch = bằng chứng tối tiểu của bạn
+```
+
+Mười giây làm cái này hơn một giờ nhìn màn hình. Nó tìm GIÙM bạn
+input gây lỗi.
+
+## Đọc verdict từ máy chấm
+
+- **WA** ở test nhỏ: bug logic. Chỉ ở test to: tràn số hoặc độ phức
+  tạp.
+- **TLE**: đếm phép tính; không chắc thì in bộ đếm.
+- **RTE**: tràn mảng, chia cho 0, độ sâu ngăn xếp.
+- **WA chỉ ở sample có số âm**: khởi tạo (0 không trung tính cho max).

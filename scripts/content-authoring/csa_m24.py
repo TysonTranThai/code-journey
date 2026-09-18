@@ -167,9 +167,9 @@ def build() -> None:
             {
                 "name": "budget-math",
                 "code": (
-                    'Cj.Eq(Slo.BudgetSeconds(2592000, 0.999), 2592.0, "0.1% of 30 days");\n'
+                    'Cj.Near(Slo.BudgetSeconds(2592000, 0.999), 2592.0, 1e-6, "0.1% of 30 days");\n'
                     'var (rem, ok) = Slo.Spend(2592000, 0.999, 1500);\n'
-                    'Cj.Eq(rem, 1092.0, "2592 − 1500");\n'
+                    'Cj.Near(rem, 1092.0, 1e-6, "2592 − 1500");\n'
                     'Cj.Eq(ok, true, "within budget");\n'
                     'var (rem2, ok2) = Slo.Spend(2592000, 0.999, 3000);\n'
                     'Cj.Eq(ok2, false, "over budget");'

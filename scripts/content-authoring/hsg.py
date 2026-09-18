@@ -170,6 +170,8 @@ def write_module(m, title, summary, vi_title, vi_summary, lessons, practices):
 
 
 def write_lesson(m, lid, title, description, minutes, mdx, vi_title, vi_description, vi_mdx, difficulty="beginner"):
+    if difficulty not in ("beginner", "intermediate", "advanced"):
+        difficulty = "beginner"
     lid = _cid(lid)
     d = os.path.join(mod_dir(m), "lessons")
     _w(

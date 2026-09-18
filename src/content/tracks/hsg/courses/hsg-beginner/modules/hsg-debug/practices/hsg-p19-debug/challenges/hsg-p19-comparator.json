@@ -1,0 +1,36 @@
+{
+  "id": "hsg-p19-comparator",
+  "title": "Debug: Backwards Sort",
+  "prompt": "**Description:** The program must sort n pairs by their first element ASCENDING\n(ties: any order) and print the first elements. Find and fix the bug.\n\n**Broken code:**\n```cpp\nvoid solve(std::istream& in, std::ostream& out) {\n    int n; in >> n;\n    vector<pair<int,int>> v(n);\n    for (auto& p : v) in >> p.first >> p.second;\n    sort(v.begin(), v.end(), [](const pair<int,int>& x, const pair<int,int>& y) {\n        return x.first > y.first;\n    });\n    for (int i = 0; i < n; ++i)\n        out << v[i].first << (i + 1 < n ? \" \" : \"\");\n    out << \"\\\\n\";\n}\n```\n\n**Input:** Line 1: n (1 <= n <= 100000). Next n lines: a b (|a|, |b| <= 10^9).\n**Output:** One line: the first elements in ascending order, space-separated.\n\n**Example:** `3` / `3 0` / `1 9` / `2 4` -> `1 2 3`.\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"3\\n3 0\\n1 9\\n2 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1 2 3\\n\"));",
+      "hint": "The broken code prints 3 2 1."
+    },
+    {
+      "name": "already sorted",
+      "code": "std::istringstream in(\"2\\n1 0\\n2 0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1 2\\n\"));",
+      "hint": "Hides the bug."
+    },
+    {
+      "name": "duplicates",
+      "code": "std::istringstream in(\"4\\n5 1\\n5 2\\n3 9\\n5 0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3 5 5 5\\n\"));",
+      "hint": "Ties keep any order — the firsts must be 3 5 5 5."
+    },
+    {
+      "name": "negatives",
+      "code": "std::istringstream in(\"3\\n-1 0\\n-9 0\\n4 0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-9 -1 4\\n\"));",
+      "hint": "Negative firsts sort first."
+    },
+    {
+      "name": "single",
+      "code": "std::istringstream in(\"1\\n7 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n\"));",
+      "hint": "One element."
+    }
+  ],
+  "level": "independent"
+}

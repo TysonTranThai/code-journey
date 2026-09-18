@@ -152,7 +152,7 @@ def build() -> None:
             "public class Person { public string Name { get; set; } = \"\"; public int Age { get; set; } }\n\n"
             "public class Solution\n{\n"
             "    public static Func<object?, object?> BuildGetter(Type type, string propertyName)\n"
-            "        => target => type.GetProperty(propertyName)!.GetValue(target);   // resolves EVERY call\n\n"
+            "        => target => type.GetProperty(propertyName)!.GetValue(target);   // resolves EVERY call (busts the budget)\n\n"
             "    public static object? Read(object target, string prop) =>\n"
             "        BuildGetter(target.GetType(), prop)(target);\n}"
         ),
@@ -178,7 +178,11 @@ def build() -> None:
                     'Cj.Eq(r.Count, 1, "one failure");\n'
                     'Cj.Eq(r[0], "Age", "Age out of range");\n'
                     "var ok = new Account { Age = 30, Score = 50 };\n"
-                    'Cj.Eq(Solution.Validate(ok).Count, 0, "clean object");'
+                    'Cj.Eq(Solution.Validate(ok).Count, 0, "clean object");\n'
+                    "var badProp = new Dto { Level = 500 };\n"
+                    "var r2 = Solution.Validate(badProp);\n"
+                    'Cj.Eq(r2.Count, 1, "property members validated too");\n'
+                    'Cj.Eq(r2[0], "Level", "property name reported");'
                 ),
                 "hint": "type.GetMembers(BindingFlags.Public | BindingFlags.Instance); check MemberInfo.GetCustomAttribute<RangeAttribute>() — handle FieldInfo and PropertyInfo.",
             },
@@ -192,6 +196,8 @@ def build() -> None:
             "public class Account\n{\n"
             "    [Range(1, 120)] public int Age;\n"
             "    [Range(0, 100)] public int Score;\n}\n\n"
+            "public class Dto\n{\n"
+            "    [Range(0, 100)] public int Level { get; set; }\n}\n\n"
             "public class Solution\n{\n"
             "    public static List<string> Validate(object obj)\n    {\n"
             "        var r = new List<string>();\n"
@@ -214,6 +220,8 @@ def build() -> None:
             "public class Account\n{\n"
             "    [Range(1, 120)] public int Age;\n"
             "    [Range(0, 100)] public int Score;\n}\n\n"
+            "public class Dto\n{\n"
+            "    [Range(0, 100)] public int Level { get; set; }\n}\n\n"
             "public class Solution\n{\n"
             "    public static List<string> Validate(object obj)\n    {\n"
             "        var r = new List<string>();\n"

@@ -1,0 +1,33 @@
+## 1. Boundary bugs
+
+`<` vs `<=`, `n-1` vs `n`, 0-based vs 1-based. Symptom: wrong on the
+smallest or largest input only. Test: N = 1 and N = max, always.
+
+## 2. Initialization bugs
+
+`max = 0` with all-negative input; forgetting to reset a counter
+between test cases. Symptom: correct except on extreme values or
+later cases.
+
+## 3. Overflow bugs
+
+`int a = 100000; long long s = a * a;` — the product happens in int
+FIRST. Symptom: WA on big tests only, garbage-looking numbers.
+
+## 4. Comparison bugs
+
+Wrong comparator direction (sorts descending when you need ascending)
+or `<=` where strictness matters (ties counted twice). Symptom:
+almost-right order, or off-by-small amounts.
+
+## 5. State bugs
+
+Missing `visited` reset between queries, mutating shared data during
+iteration, forgetting the undo in backtracking. Symptom: first query
+correct, later ones garbage — or only the first test passes.
+
+## The fix discipline
+
+After ANY fix: re-run every test you have, plus the one that failed.
+Two bugs often hide in one wrong program — fixing the first can
+change the symptoms of the second.

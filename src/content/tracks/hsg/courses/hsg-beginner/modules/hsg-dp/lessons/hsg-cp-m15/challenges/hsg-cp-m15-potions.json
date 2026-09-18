@@ -1,0 +1,36 @@
+{
+  "id": "hsg-cp-m15-potions",
+  "title": "Potion Mixing",
+  "prompt": "**Description:** A potion recipe is a sequence of n steps; step i takes t[i] minutes\nand must be preceded by every step it depends on. Dependency j < i is given as a\n0/1 matrix: cell (i, j) = 1 means step i requires step j finished first. Compute\nthe minimum time to finish all steps if independent steps run in parallel.\n\n**Input:** Line 1: n (1 <= n <= 100). Line 2: n times t[i] (1 <= t[i] <= 1000).\nNext n lines: n characters each, '0' or '1' — row i, column j (1-based rows;\ndiagonal is '0'; the matrix is guaranteed acyclic).\n**Output:** One integer — the minimum total minutes.\n\n**Example:** `3` / `2 3 4` / `000` / `100` / `110` -> `9`: step 1 done at 2,\nstep 2 (needs 1) done at 5, step 3 (needs 1 and 2) done at max(2,5)+4 = 9.\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"3\\n2 3 4\\n000\\n100\\n110\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"9\\n\"));",
+      "hint": "finish(1)=2; finish(2)=2+3=5; finish(3)=max(2,5)+4=9."
+    },
+    {
+      "name": "no deps",
+      "code": "std::istringstream in(\"3\\n5 2 7\\n000\\n000\\n000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n\"));",
+      "hint": "All parallel — the longest single step."
+    },
+    {
+      "name": "chain",
+      "code": "std::istringstream in(\"3\\n1 1 1\\n000\\n100\\n010\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "1 -> 2 -> 3 forces serial execution."
+    },
+    {
+      "name": "single",
+      "code": "std::istringstream in(\"1\\n9\\n0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"9\\n\"));",
+      "hint": "One step, no deps."
+    },
+    {
+      "name": "diamond",
+      "code": "std::istringstream in(\"4\\n1 5 2 4\\n0000\\n1000\\n1000\\n0110\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"10\\n\"));",
+      "hint": "finish(2)=6, finish(3)=3, finish(4)=max(6,3)+4=10 — the LONGEST branch is listed first, so last-dependency logic fails."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,36 @@
+## Bất biến
+
+Duy trì cửa sổ [l, r] sao cho luôn *hợp lệ* (hoặc cách một bước thu).
+Biên phải mở rộng từng bước; khi bất biến bị phá, biên trái tiến tới
+khi nó giữ lại:
+
+```cpp
+int l = 0;
+for (int r = 0; r < n; ++r) {
+    add(a[r]);                        // sổ sách O(1)
+    while (invalid()) remove(a[l++]); // mỗi l tiến <= n lần tổng cộng
+    answer(r - l + 1);                // cửa sổ kết thúc tại r
+}
+```
+
+Vòng while không tốn O(n) mỗi bước: l chỉ tiến về trước, nên nó tiến
+tối đa n lần trong TOÀN bộ — khấu trừ O(1) mỗi bước phải.
+
+## Cửa sổ phần tử phân biệt
+
+Đếm giá trị phân biệt bằng bảng tần suất (`cnt[v]`) và một bộ đếm số
+giá trị có cnt > 0. Thêm: nếu cnt[v]++ thành 1 thì ++distinct. Bỏ:
+nếu --cnt[v] chạm 0 thì --distinct.
+
+## Cửa sổ cỡ cố định
+
+Khi k là hằng số, cửa sổ không bao giờ thu: thêm a[r], bỏ a[r-k], giữ
+tổng chạy — trung bình động, tổng-k lớn nhất. Đây là anh em với mảng
+cộng dồn; ưu tiên khi chỉ cần tổng.
+
+## Khi cửa sổ KHÔNG áp dụng được
+
+Số âm phá các bài cửa-sổ-max (deque đơn điệu, khóa sau) và tính hợp lệ
+không đơn điệu (l phải nhảy) cần tìm kiếm nhị phân hoặc công cụ khác.
+Kiểm tra "cửa sổ áp dụng được không?" trước khi code chính là kỹ năng
+thi đấu.

@@ -1,0 +1,37 @@
+## The three representations
+
+- **Adjacency matrix** `g[u][v]`: O(V^2) memory — fine for `V <= ~4000`,
+  wasteful beyond. Check "is u adjacent to v?" in O(1).
+- **Adjacency list** `vector<int> adj[V]`: O(V + E) memory — the
+  contest default. Iterate neighbors of u in deg(u).
+- **Edge list**: just the edges — useful for algorithms that process
+  edges (later: DSU, MST).
+
+## Reading the standard input format
+
+```
+n m            (vertices 1..n, m edges)
+u v            (m lines: an undirected edge between u and v)
+```
+
+```cpp
+int n, m; in >> n >> m;
+vector<vector<int>> adj(n + 1);
+for (int i = 0; i < m; ++i) {
+    int u, v; in >> u >> v;
+    adj[u].push_back(v);
+    adj[v].push_back(u);   // drop this line for DIRECTED graphs
+}
+```
+
+The one-line-difference directed/undirected switch is a classic
+misread: build the wrong one and your component counts are silently
+wrong. Note vertices are **1-based** in nearly every Vietnamese
+problem — sized n+1 and ignore index 0.
+
+### Trees are graphs
+
+A tree with n vertices has exactly n-1 edges and is connected. Every
+tree algorithm is a graph traversal with no visited-check surprises —
+but only if you actually build the undirected list (parent can appear
+as a "child").

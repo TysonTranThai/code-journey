@@ -1,0 +1,26 @@
+{
+  "id": "csi-p4-telemetry",
+  "title": "TelemetrySource: Custom EventArgs and Unsubscribe",
+  "prompt": "Implement `TelemetrySource` with a custom args record and honest lifecycle: `Emit` raises `Reading` for current subscribers with the channel and value; `SubscriberCount` reflects += and -= truthfully; a handler that unsubscribed stops receiving (but other subscribers keep working).\n\n```csharp\npublic sealed record ReadingEventArgs(string Channel, double Value);\npublic class TelemetrySource\n{\n    public event EventHandler<ReadingEventArgs>? Reading;\n    public void Emit(string channel, double value);\n    public int SubscriberCount { get; }\n}\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "custom args delivered",
+      "code": "\nvar t = new Solution.TelemetrySource();\nSolution.ReadingEventArgs? got = null;\nt.Reading += (_, e) => got = e;\nt.Emit(\"temp\", 21.5);\nCj.True(got is not null, \"subscriber received args\");\nCj.Eq(got!.Channel, \"temp\", \"channel carried\");\nCj.Eq(got!.Value, 21.5, \"value carried\");\n",
+      "hint": "Raise with a new ReadingEventArgs — sender is the source, args carries the data."
+    },
+    {
+      "name": "unsubscribe hygiene",
+      "code": "\nvar t2 = new Solution.TelemetrySource();\nvar hits = new List<double>();\nEventHandler<Solution.ReadingEventArgs> h = (_, e) => hits.Add(e.Value);\nt2.Reading += h;\nt2.Emit(\"cpu\", 1.0);\nCj.Eq(t2.SubscriberCount, 1, \"one subscriber\");\nt2.Reading -= h;\nCj.Eq(t2.SubscriberCount, 0, \"unsubscribed\");\nt2.Emit(\"cpu\", 2.0);\nCj.Eq(hits.Count, 1, \"only the pre-unsubscribe emit arrived\");\n",
+      "hint": "Keep the handler in a variable so -= references the SAME delegate instance."
+    },
+    {
+      "name": "survivors keep receiving",
+      "code": "\nvar t3 = new Solution.TelemetrySource();\nvar a = new List<double>();\nvar b = new List<double>();\nvar c = new List<double>();\nEventHandler<Solution.ReadingEventArgs> ha = (_, e) => a.Add(e.Value);\nEventHandler<Solution.ReadingEventArgs> hb = (_, e) => b.Add(e.Value);\nEventHandler<Solution.ReadingEventArgs> hc = (_, e) => c.Add(e.Value);\nt3.Reading += ha;\nt3.Reading += hb;\nt3.Reading += hc;\nCj.Eq(t3.SubscriberCount, 3, \"three registered\");\nt3.Reading -= hb;                       // remove the MIDDLE one\nCj.Eq(t3.SubscriberCount, 2, \"two remain\");\nt3.Emit(\"mem\", 7.0);\nCj.Eq(a.Count, 1, \"first handler survives\");\nCj.Eq(b.Count, 0, \"middle handler removed\");\nCj.Eq(c.Count, 1, \"last handler survives\");\n",
+      "hint": "Multicast removal only detaches the exact delegate — the rest of the list is untouched."
+    }
+  ],
+  "level": "independent"
+}

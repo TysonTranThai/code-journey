@@ -1,0 +1,16 @@
+{
+  "id": "csi-p2-tag",
+  "title": "Optional and Named Arguments",
+  "prompt": "Implement `Tag`: returns \"kind#count\" and appends \"!urgent\" when urgent. Defaults: count 1, urgent false. The tests call it positionally, with named args out of order, and skipping the middle parameter.\n\n```csharp\nstatic string Tag(string kind, int count = 1, bool urgent = false);\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "defaults and named args",
+      "code": "\nCj.Eq(Solution.Tag(\"bug\"), \"bug#1\", \"defaults\");\nCj.Eq(Solution.Tag(\"bug\", 3), \"bug#3\", \"positional count\");\nCj.Eq(Solution.Tag(count: 2, kind: \"feat\"), \"feat#2\", \"named args, reordered\");\nCj.Eq(Solution.Tag(\"fix\", urgent: true), \"fix#1!urgent\", \"skip the middle with named\");\nCj.Eq(Solution.Tag(\"chore\", 2, true), \"chore#2!urgent\", \"all positional\");\n",
+      "hint": "The default value lives in the parameter list; named callers rely on it."
+    }
+  ],
+  "level": "guided"
+}

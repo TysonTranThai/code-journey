@@ -1,0 +1,32 @@
+## 1. Bug biên
+
+`<` với `<=`, `n-1` với `n`, 0-based với 1-based. Triệu chứng: sai
+chỉ ở input nhỏ nhất hoặc lớn nhất. Test: luôn thử N = 1 và N = max.
+
+## 2. Bug khởi tạo
+
+`max = 0` với input toàn âm; quên reset bộ đếm giữa các test. Triệu
+chứng: đúng trừ các giá trị cực đoan hoặc các case sau.
+
+## 3. Bug tràn số
+
+`int a = 100000; long long s = a * a;` — phép nhân xảy ra trong int
+TRƯỚC. Triệu chứng: WA chỉ ở test to, số ra rác.
+
+## 4. Bug so sánh
+
+Sai hướng bộ so sánh (sắp giảm khi cần tăng) hoặc `<=` chỗ cần nghiêm
+ngặt (bị đếm hai lần). Triệu chứng: thứ tự gần đúng, hoặc lệch một
+lượng nhỏ.
+
+## 5. Bug trạng thái
+
+Quên reset `visited` giữa các truy vấn, sửa dữ liệu chung khi đang
+duyệt, quên hoàn tác trong quay lui. Triệu chứng: truy vấn đầu đúng,
+sau đó ra rác — hoặc chỉ test đầu tiên passes.
+
+## Kỷ luật sửa lỗi
+
+Sau MỌI lần sửa: chạy lại mọi test đang có, cộng đúng test vừa fail.
+Hai bug thường trú chung một chương trình sai — sửa bug đầu có thể
+thay đổi triệu chứng của bug hai.

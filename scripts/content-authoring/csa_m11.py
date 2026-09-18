@@ -127,8 +127,9 @@ def build() -> None:
                 "code": (
                     "var data = new int[100_000];\n"
                     "for (int i = 0; i < data.Length; i++) data[i] = i;\n"
-                    "data[42_000] = -1;\n"
-                    'Cj.Eq(Solution.FirstMatch(data, x => x == -1, 4), 42_000, "lowest index wins under parallelism");'
+                    "data[42_000] = -1; data[42_001] = -1;\n"
+                    "for (int rep = 0; rep < 50; rep++)\n"
+                    '    Cj.Eq(Solution.FirstMatch(data, x => x == -1, 8), 42_000, "lowest index wins, every rep");'
                 ),
                 "hint": "Interlocked.CompareExchange(ref best, i, int.MaxValue) wins only when best is still MaxValue OR i is lower — a CAS loop keeping the minimum.",
             },
@@ -169,9 +170,13 @@ def build() -> None:
             "        var options = new ParallelOptions { MaxDegreeOfParallelism = workers };\n"
             "        Parallel.For(0, data.Length, options, (i, loopState) =>\n"
             "        {\n"
+            "            // WRONG: no coordination at all — every worker overwrites 'best' with its own\n"
+            "            // match, so with chunks running in parallel the result can be ANY matching\n"
+            "            // index (or a torn value). The test plants the match at 42_000 AND 42_001 with\n"
+            "            // the contract that the LOWEST index must always come back.\n"
             "            if (predicate(data[i]) && i < best)\n"
             "            {\n"
-            "                best = i;            // WRONG: unsynchronized write; races lose updates\n"
+            "                best = i;\n"
             "                loopState.Stop();\n"
             "            }\n"
             "        });\n"
@@ -198,7 +203,7 @@ def build() -> None:
                 "code": (
                     'Cj.True(Math.Abs(Solution.Speedup(0.1, 4) - 1.0 / (0.1 + 0.9 / 4)) < 1e-9, "formula exact");\n'
                     'Cj.True(Solution.Speedup(0.1, 1_000_000) < 10.0, "serial 10% caps speedup below 10x");\n'
-                    'Cj.Eq(Solution.BreakEvenCores(0.1, 5.0), 13, "smallest n reaching 5x with S=0.1");'
+                    'Cj.Eq(Solution.BreakEvenCores(0.1, 5.0), 9, "smallest n reaching 5x with S=0.1");'
                 ),
                 "hint": "Speedup = 1/(S + (1-S)/n). BreakEven: solve 1/(S + (1-S)/n) >= target for n, ceil it — unless S*target >= 1, then unreachable (-1).",
             },

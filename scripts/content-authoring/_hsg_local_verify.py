@@ -26,7 +26,7 @@ STUBS = ("write_module", "write_lesson", "write_practice",
 def load_module(path):
     src = open(path, encoding="utf-8").read()
     tree = ast.parse(src)
-    env = {"__builtins__": {}, "Q": Q, "NL": NL}
+    env = {"__builtins__": __builtins__, "Q": Q, "NL": NL}
 
     # find where the module body starts (M = "...") and exec the header
     m_marker = None
@@ -48,7 +48,14 @@ def load_module(path):
     for fn in STUBS:
         mod[fn] = (lambda *a, **k: None)
     exec(compile(header, path, "exec"), mod)
-    env.update({k: v for k, v in mod.items() if k in ("Q", "NL", "CPP_STD")})
+    # bind every helper/constant the header defines (T, cpp, CPP_STD, ...)
+    # except the stubbed write_* APIs and the module machinery itself
+    for k, v in mod.items():
+        if k.startswith("__") or k in STUBS or k in ("sys", "os"):
+            continue
+        if callable(v) and getattr(v, "__module__", None) == "hsg":
+            continue
+        env.setdefault(k, v)
 
     def ev(node):
         return eval(compile(ast.Expression(node), "<x>", "eval"), env, {})
@@ -105,7 +112,10 @@ def compile_run(driver_lines):
     )
     if r.returncode != 0:
         return "COMPILE-FAIL: " + r.stderr[:200]
-    r2 = subprocess.run([exe], capture_output=True, text=True, timeout=30)
+    try:
+        r2 = subprocess.run([exe], capture_output=True, text=True, timeout=10)
+    except subprocess.TimeoutExpired:
+        return "TIMEOUT(>10s)"
     if r2.returncode == 0 and r2.stdout.strip() == "OK":
         return "PASS"
     return "FAIL(" + ((r2.stderr or r2.stdout).strip().replace(NL, " | ")[:110]) + ")"

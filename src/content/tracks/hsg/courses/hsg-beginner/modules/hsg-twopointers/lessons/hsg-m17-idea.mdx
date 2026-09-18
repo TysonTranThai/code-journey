@@ -1,0 +1,34 @@
+## Opposite ends: pair sums on sorted data
+
+Find two values summing to S in a SORTED array. Start l = 0,
+r = n-1:
+
+- a[l] + a[r] < S: the sum is too small — only moving l up can help.
+- a[l] + a[r] > S: too big — only moving r down can help.
+- equal: report.
+
+Every step discards one element forever, so at most n steps total —
+that is the whole proof of O(n). On UNSORTED data the invariant dies
+(hash set or sort-with-index instead).
+
+```cpp
+int l = 0, r = n - 1;
+while (l < r) {
+    long long s = a[l] + a[r];
+    if (s == S) { found; break; }
+    if (s < S) ++l; else --r;
+}
+```
+
+## Same direction: remove/skip patterns
+
+Both pointers walk left-to-right, the fast one reading, the slow one
+writing or anchoring: deduplication, merging sorted arrays, partition.
+The cost argument is the same: each pointer advances at most n times,
+so the loop body runs O(n) total.
+
+## The anti-pattern
+
+Nested loops that RESCAN from 0 every iteration are O(n^2) and the
+usual symptom is TLE at n = 10^5. If your inner loop can be made to
+continue from where it left off — monotonicity — two pointers apply.

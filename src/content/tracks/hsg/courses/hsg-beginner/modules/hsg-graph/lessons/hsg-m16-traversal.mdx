@@ -1,0 +1,48 @@
+## BFS — level by level
+
+```cpp
+vector<int> dist(n + 1, -1);
+queue<int> q;
+dist[s] = 0; q.push(s);          // mark AT PUSH, not at pop
+while (!q.empty()) {
+    int u = q.front(); q.pop();
+    for (int v : adj[u])
+        if (dist[v] == -1) { dist[v] = dist[u] + 1; q.push(v); }
+}
+```
+
+dist[v] is the exact shortest edge-count from s. The classic bug:
+marking visited at **pop** — the same vertex enters the queue many
+times, memory and time blow up on dense graphs.
+
+## DFS — the same graph, different order
+
+Recursive form is shortest to write; depth can hit V, so V = 10^5
+needs the explicit-stack form (or a bigger stack — not portable):
+
+```cpp
+vector<int> st;
+vis[s] = true; st.push_back(s);   // mark AT PUSH here too
+while (!st.empty()) {
+    int u = st.back(); st.pop_back();
+    for (int v : adj[u])
+        if (!vis[v]) { vis[v] = true; st.push_back(v); }
+}
+```
+
+## Connected components
+
+Loop all vertices; each unvisited vertex starts one traversal, and
+that traversal marks exactly its component:
+
+```cpp
+int comps = 0;
+for (int v = 1; v <= n; ++v)
+    if (!vis[v]) { ++comps; /* traverse from v */ }
+```
+
+## Grids are graphs
+
+Each open cell is a vertex; neighbors are the up/down/left/right open
+cells. Flood fill = BFS/DFS on that implicit graph — the same visited
+discipline, coordinates instead of indices.

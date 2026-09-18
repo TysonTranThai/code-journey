@@ -1,0 +1,33 @@
+## The loop
+
+1. **Reproduce** on the smallest failing input. A bug that only shows
+   at N = 100,000 usually shows at N = 7 once you know where to look.
+2. **Isolate** — print intermediate state (prefix sums, loop
+   variables) or cut the program in half.
+3. **Form a hypothesis**, predict the output, run. Wrong prediction
+   narrows the search space; right prediction means you found it.
+4. **Fix the cause**, not the symptom. Adding `if (x == 42)` special
+   cases is how bugs become monsters.
+5. **Re-test every old case** plus the boundary that broke you.
+
+## Stress testing (the superpower)
+
+Write a slow-but-obviously-correct solver plus a tiny random-input
+generator, then compare outputs in a loop:
+
+```
+gen > in.txt && slow < in.txt > slow.txt && fast < in.txt > fast.txt
+diff slow.txt fast.txt  # mismatch = your minimal witness
+```
+
+Ten seconds of this beats an hour of staring. It finds the failing
+input FOR you.
+
+## Reading judge verdicts
+
+- **WA** on a small test: logic bug. On a big test only: overflow or
+  complexity.
+- **TLE**: count your operations; print a counter if unsure.
+- **RTE**: array bounds, division by zero, stack depth.
+- **WA only on samples with negatives**: initialization (0 is not
+  neutral for max).

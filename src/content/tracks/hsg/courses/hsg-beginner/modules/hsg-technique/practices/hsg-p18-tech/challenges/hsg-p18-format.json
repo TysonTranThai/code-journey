@@ -1,0 +1,36 @@
+{
+  "id": "hsg-p18-format",
+  "title": "Byte-Exact Echo",
+  "prompt": "**Description:** Read t test cases; each is two integers a b. For each, print\n`a+b` — but format matters: one number per line, no trailing spaces, and a final\nnewline after the last line.\n\n**Input:** Line 1: t (1 <= t <= 100000). Next t lines: a b (|a|, |b| <= 10^9).\n**Output:** t lines, each the sum.\n\n**Example:** `3` / `1 2` / `10 -3` / `0 0` -> `3` / `7` / `0`.\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"3\\n1 2\\n10 -3\\n0 0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n7\\n0\\n\"));",
+      "hint": "Three sums."
+    },
+    {
+      "name": "single",
+      "code": "std::istringstream in(\"1\\n5 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"10\\n\"));",
+      "hint": "One line."
+    },
+    {
+      "name": "negatives",
+      "code": "std::istringstream in(\"2\\n-1 -1\\n-5 9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-2\\n4\\n\"));",
+      "hint": "Sign handling."
+    },
+    {
+      "name": "zeros",
+      "code": "std::istringstream in(\"2\\n0 0\\n0 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n5\\n\"));",
+      "hint": "Zero sums still print."
+    },
+    {
+      "name": "max t",
+      "code": "std::istringstream in(\"5\\n1000000000 1000000000\\n-1000000000 -1000000000\\n999999999 1\\n-999999999 1\\n0 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2000000000\\n-2000000000\\n1000000000\\n-999999998\\n1\\n\"));",
+      "hint": "Overflow discipline: sums reach 2*10^9 — int is not enough."
+    }
+  ],
+  "level": "independent"
+}

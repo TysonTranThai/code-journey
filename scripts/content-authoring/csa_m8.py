@@ -113,9 +113,9 @@ def build() -> None:
                     "var folded = Solution.FoldExpr(e);\n"
                     "var f = folded.Compile();\n"
                     "Cj.Eq(f(4), 10, \"x + 6\");\n"
-                    "// After folding, the tree no longer contains a Multiply node:\n"
                     "bool hasMul = false;\n"
-                    "new System.Linq.Expressions.ExpressionVisitor[] { };"
+                    "new Visitor(v => { if (v.NodeType == ExpressionType.Multiply) hasMul = true; }).Visit(folded);\n"
+                    'Cj.False(hasMul, "the constant 2*3 was folded away — no Multiply node remains");'
                 ),
                 "hint": "Override VisitBinary: if Left/Right are ConstantExpression of int, return Expression.Constant(computed).",
             },
@@ -142,7 +142,15 @@ def build() -> None:
             "    }\n}\n\n"
             "public class Solution\n{\n"
             "    public static Expression<Func<int, int>> FoldExpr(Expression<Func<int, int>> e)\n"
-            "        => (Expression<Func<int, int>>)new FoldVisitor().Visit(e);\n}"
+            "        => (Expression<Func<int, int>>)new FoldVisitor().Visit(e);\n}\n\n"
+            "public class Visitor : ExpressionVisitor\n{\n"
+            "    private readonly Action<Expression> _see;\n"
+            "    public Visitor(Action<Expression> see) { _see = see; }\n"
+            "    public override Expression? Visit(Expression? node)\n"
+            "    {\n"
+            "        if (node is not null) _see(node);\n"
+            "        return base.Visit(node);\n"
+            "    }\n}"
         ),
         wrong=(
             "using System.Linq.Expressions;\n\n"
@@ -166,7 +174,15 @@ def build() -> None:
             "    }\n}\n\n"
             "public class Solution\n{\n"
             "    public static Expression<Func<int, int>> FoldExpr(Expression<Func<int, int>> e)\n"
-            "        => (Expression<Func<int, int>>)new FoldVisitor().Visit(e);\n}"
+            "        => (Expression<Func<int, int>>)new FoldVisitor().Visit(e);\n}\n\n"
+            "public class Visitor : ExpressionVisitor\n{\n"
+            "    private readonly Action<Expression> _see;\n"
+            "    public Visitor(Action<Expression> see) { _see = see; }\n"
+            "    public override Expression? Visit(Expression? node)\n"
+            "    {\n"
+            "        if (node is not null) _see(node);\n"
+            "        return base.Visit(node);\n"
+            "    }\n}"
         ),
         level="guided",
     )

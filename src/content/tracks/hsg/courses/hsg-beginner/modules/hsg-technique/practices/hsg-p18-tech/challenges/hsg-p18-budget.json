@@ -1,0 +1,46 @@
+{
+  "id": "hsg-p18-budget",
+  "title": "Complexity Picker",
+  "prompt": "**Description:** Given the constraint ceiling N and the time limit in seconds,\nprint the intended complexity class. Use the standard budget: ~5*10^7 simple\noperations per second in this judge.\n\n**Input:** One line: N TL (1 <= N <= 10^9, 1 <= TL <= 10).\n**Output:** One of: `exponential` (N <= 25), `cubic` (N^3 fits), `quadratic`\n(N^2 fits), `linearithmic` (N log N fits), `linear` (otherwise). Print the FIRST\nclass in that order whose cost fits the budget N-tier * cost <= 5*10^7 * TL.\n\n**Example:** `100 1` -> `cubic` (10^6 <= 5*10^7).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "cubic fits",
+      "code": "std::istringstream in(\"100 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"cubic\\n\"));",
+      "hint": "N^3 = 10^6 fits."
+    },
+    {
+      "name": "quadratic",
+      "code": "std::istringstream in(\"5000 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"quadratic\\n\"));",
+      "hint": "2.5*10^7 fits; 1.25*10^11 does not."
+    },
+    {
+      "name": "linearithmic",
+      "code": "std::istringstream in(\"100000 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"linearithmic\\n\"));",
+      "hint": "N log N ~ 1.7*10^6."
+    },
+    {
+      "name": "exponential",
+      "code": "std::istringstream in(\"20 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"exponential\\n\"));",
+      "hint": "N <= 25 is the exponent zone."
+    },
+    {
+      "name": "more time",
+      "code": "std::istringstream in(\"5000 10\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"quadratic\\n\"));",
+      "hint": "10x budget: N^3 = 1.25*10^11 still exceeds 5*10^8 — quadratic remains."
+    },
+    {
+      "name": "budget boundary",
+      "code": "std::istringstream in(\"8000 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"linearithmic\\n\"));",
+      "hint": "N^2 = 6.4*10^7 just over 5*10^7 — double-counted budgets print quadratic."
+    },
+    {
+      "name": "time scaling",
+      "code": "std::istringstream in(\"12000 2\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"linearithmic\\n\"));",
+      "hint": "N^2 = 1.44*10^8 exceeds the 10^8 budget; solutions that multiply TL twice print quadratic."
+    }
+  ],
+  "level": "guided"
+}

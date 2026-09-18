@@ -1,0 +1,50 @@
+## Thiết kế 1 — đếm: cầu thang
+
+"Có bao nhiêu cách leo n bậc, mỗi lần 1 hoặc 2 bậc?" Trạng thái:
+`dp[i]` = số cách tới bậc i. Bước cuối tới từ i-1 (một bậc) hoặc i-2
+(hai bậc), nên:
+
+```cpp
+dp[0] = 1; dp[1] = 1;
+for (int i = 2; i <= n; ++i) dp[i] = dp[i-1] + dp[i-2];
+```
+
+Cùng một công thức với Fibonacci — nhận ra điều đó là kỹ năng thi đấu:
+nhiều bài toán CHÍNH LÀ fib đeo mặt nạ.
+
+## Thiết kế 2 — chi phí nhỏ nhất: đổi xu
+
+Ít xu nhất để tạo tổng S với các mệnh giá c1..ck. Trạng thái: `dp[s]`
+= số xu nhỏ nhất tạo tổng s. Chuyển: thử mọi loại xu làm xu cuối:
+
+```cpp
+dp[0] = 0;                            // không xu tạo tổng không
+for (int s = 1; s <= S; ++s) {
+    dp[s] = INF;
+    for (int c : coins)
+        if (c <= s) dp[s] = min(dp[s], dp[s-c] + 1);
+}
+```
+
+Các tổng không tạo được vẫn giữ INF — in thẳng dp[S] khi nó còn INF là
+bug thật (phải in -1 hoặc "impossible" theo đề).
+
+## Thiết kế 3 — lấy-hoặc-bỏ: balo 0/1
+
+Vật phẩm có khối lượng w[i], giá trị v[i], sức chứa W. Trạng thái:
+`dp[i][cap]` = giá trị tốt nhất dùng i vật đầu với sức chứa cap. Vật
+thứ i bị bỏ (`dp[i-1][cap]`) hoặc lấy (`dp[i-1][cap-w[i]] + v[i]`):
+
+```cpp
+for (int i = 1; i <= n; ++i)
+  for (int cap = 0; cap <= W; ++cap) {
+    dp[i][cap] = dp[i-1][cap];
+    if (w[i] <= cap)
+        dp[i][cap] = max(dp[i][cap], dp[i-1][cap-w[i]] + v[i]);
+  }
+```
+
+Chú ý hướng vòng lặp: balo 2D đọc hàng i-1, nên chiều nào cũng được.
+Dạng 1D tiết kiệm bộ nhớ (`for cap: W..w[i]`, giảm dần) là cái bẫy
+kinh điển — tăng dần sẽ cho phép lấy một vật hai lần. Quy tắc người
+mới: 2D trước, tối ưu sau.

@@ -1,0 +1,21 @@
+{
+  "id": "csi-p7-deferred",
+  "title": "Deferred, Not Cached",
+  "prompt": "`Double` is an iterator over a counting source. Implement `Double(IEnumerable<int>)` (each value ×2) and `RunOnce(IEnumerable<int>)` that materializes the doubled values with ONE pass over the source. The tests prove the source is pulled only when enumerated — and only once.\n\n```csharp\npublic sealed class CountingSource : IEnumerable<int>   // provided by tests\n{\n    public int ReadCount { get; }        // items actually pulled\n}\nstatic IEnumerable<int> Double(IEnumerable<int> source);\nstatic List<int> RunOnce(IEnumerable<int> source);      // exactly one pass\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\npublic sealed class CountingSource : IEnumerable<int>\n{\n    private readonly int[] _items;\n    public CountingSource(params int[] items) => _items = items;\n    public int ReadCount { get; private set; }\n    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();\n    public IEnumerator<int> GetEnumerator()\n    {\n        foreach (var i in _items) { ReadCount++; yield return i; }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "deferred: nothing moves until enumerated",
+      "code": "\nvar src = new CountingSource(1, 2, 3);\nvar doubled = Solution.Double(src);\nCj.Eq(src.ReadCount, 0, \"no pull before enumeration\");\nCj.Eq(string.Join(\",\", doubled), \"2,4,6\", \"values doubled\");\nCj.Eq(src.ReadCount, 3, \"pulled during enumeration\");\n",
+      "hint": "Iterator methods don't run until MoveNext — building the query costs nothing."
+    },
+    {
+      "name": "single-pass materialization",
+      "code": "\nvar src2 = new CountingSource(5, 6);\nvar list = Solution.RunOnce(src2);\nCj.Eq(string.Join(\",\", list), \"10,12\", \"materialized doubled\");\nCj.Eq(src2.ReadCount, 2, \"exactly one pass\");\n",
+      "hint": "Materialize inside one foreach (or ToList once) — a second Count()/Max() would pull again."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,26 @@
+{
+  "title": "Gỡ lỗi: Tính-tới-một-lần",
+  "prompt": "**Đề bài:** Chương trình trả lời q truy vấn tính-tới-được trên đồ thị vô hướng,\nnhưng chỉ truy vấn đầu bao giờ đúng. Tìm và sửa bug.\n\n**Mã lỗi:**\n```cpp\nvoid solve(std::istream& in, std::ostream& out) {\n    int n, m, q; in >> n >> m >> q;\n    vector<vector<int>> adj(n + 1);\n    for (int i = 0; i < m; ++i) {\n        int u, v; in >> u >> v;\n        adj[u].push_back(v); adj[v].push_back(u);\n    }\n    vector<char> vis(n + 1, 0);\n    for (int i = 0; i < q; ++i) {\n        int a, b; in >> a >> b;\n        vector<int> st{a};\n        vis[a] = 1;\n        while (!st.empty()) {\n            int u = st.back(); st.pop_back();\n            for (int v : adj[u]) if (!vis[v]) { vis[v] = 1; st.push_back(v); }\n        }\n        out << (vis[b] ? \"YES\" : \"NO\") << \"\\\\n\";\n    }\n}\n```\n\n**Dữ liệu vào:** Dòng 1: n m q (1 <= n <= 1000, 0 <= m <= 5000, 1 <= q <= 1000).\nm dòng tiếp: u v. q dòng tiếp: a b.\n**Dữ liệu ra:** q dòng: `YES` nếu b tới được từ a, ngược lại `NO`.\n\n**Ví dụ:** `3 1 2` / `1 2` / `1 2` / `2 3` -> `YES` / `NO`.\n",
+  "tests": [
+    {
+      "name": "sample",
+      "hint": "Mã lỗi trả lời truy vấn hai bằng trạng thái visited cũ."
+    },
+    {
+      "name": "repeat query",
+      "hint": "Cùng một truy vấn hai lần phải đồng nhất."
+    },
+    {
+      "name": "self",
+      "hint": "Ai cũng tới được chính mình."
+    },
+    {
+      "name": "reverse edge",
+      "hint": "Vô hướng — chiều ngược cũng phải hoạt động."
+    },
+    {
+      "name": "cross component",
+      "hint": "Truy vấn 1 đánh dấu {1,2}; truy vấn 3->1 sang thành phần khác — visited cũ sẽ trả lời YES."
+    }
+  ]
+}

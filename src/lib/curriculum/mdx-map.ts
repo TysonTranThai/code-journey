@@ -1549,6 +1549,16 @@ import HsgCpM13 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-recu
 import HsgCpM13Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-recursion/lessons/hsg-cp-m13.vi.mdx";
 import HsgCpM14 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-backtrack/lessons/hsg-cp-m14.mdx";
 import HsgCpM14Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-backtrack/lessons/hsg-cp-m14.vi.mdx";
+import HsgCpM15 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-dp/lessons/hsg-cp-m15.mdx";
+import HsgCpM15Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-dp/lessons/hsg-cp-m15.vi.mdx";
+import HsgCpM16 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-graph/lessons/hsg-cp-m16.mdx";
+import HsgCpM16Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-graph/lessons/hsg-cp-m16.vi.mdx";
+import HsgCpM17 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-twopointers/lessons/hsg-cp-m17.mdx";
+import HsgCpM17Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-twopointers/lessons/hsg-cp-m17.vi.mdx";
+import HsgCpM18 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-technique/lessons/hsg-cp-m18.mdx";
+import HsgCpM18Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-technique/lessons/hsg-cp-m18.vi.mdx";
+import HsgCpM19 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-debug/lessons/hsg-cp-m19.mdx";
+import HsgCpM19Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-debug/lessons/hsg-cp-m19.vi.mdx";
 import HsgCpM1Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-cp-m1.vi.mdx";
 import HsgCpM2 from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-cp-m2.mdx";
 import HsgCpM2Vi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-loops/lessons/hsg-cp-m2.vi.mdx";
@@ -1586,6 +1596,26 @@ import HsgM14Idea from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-ba
 import HsgM14IdeaVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-backtrack/lessons/hsg-m14-idea.vi.mdx";
 import HsgM14Prune from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-backtrack/lessons/hsg-m14-prune.mdx";
 import HsgM14PruneVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-backtrack/lessons/hsg-m14-prune.vi.mdx";
+import HsgM15Design from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-dp/lessons/hsg-m15-design.mdx";
+import HsgM15DesignVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-dp/lessons/hsg-m15-design.vi.mdx";
+import HsgM15Idea from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-dp/lessons/hsg-m15-idea.mdx";
+import HsgM15IdeaVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-dp/lessons/hsg-m15-idea.vi.mdx";
+import HsgM16Idea from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-graph/lessons/hsg-m16-idea.mdx";
+import HsgM16IdeaVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-graph/lessons/hsg-m16-idea.vi.mdx";
+import HsgM16Traversal from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-graph/lessons/hsg-m16-traversal.mdx";
+import HsgM16TraversalVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-graph/lessons/hsg-m16-traversal.vi.mdx";
+import HsgM17Idea from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-twopointers/lessons/hsg-m17-idea.mdx";
+import HsgM17IdeaVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-twopointers/lessons/hsg-m17-idea.vi.mdx";
+import HsgM17Window from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-twopointers/lessons/hsg-m17-window.mdx";
+import HsgM17WindowVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-twopointers/lessons/hsg-m17-window.vi.mdx";
+import HsgM18Budget from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-technique/lessons/hsg-m18-budget.mdx";
+import HsgM18BudgetVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-technique/lessons/hsg-m18-budget.vi.mdx";
+import HsgM18Subtask from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-technique/lessons/hsg-m18-subtask.mdx";
+import HsgM18SubtaskVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-technique/lessons/hsg-m18-subtask.vi.mdx";
+import HsgM19Method from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-debug/lessons/hsg-m19-method.mdx";
+import HsgM19MethodVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-debug/lessons/hsg-m19-method.vi.mdx";
+import HsgM19Taxonomy from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-debug/lessons/hsg-m19-taxonomy.mdx";
+import HsgM19TaxonomyVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-debug/lessons/hsg-m19-taxonomy.vi.mdx";
 import HsgM1Bridge from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-bridge.mdx";
 import HsgM1BridgeVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-bridge.vi.mdx";
 import HsgM1Reading from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-vao-mon/lessons/hsg-m1-reading.mdx";
@@ -3868,12 +3898,30 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["hsg-backtrack/hsg-m14-prune.vi.mdx"]: HsgM14PruneVi,
   ["hsg-backtrack/hsg-cp-m14.mdx"]: HsgCpM14,
   ["hsg-backtrack/hsg-cp-m14.vi.mdx"]: HsgCpM14Vi,
+  ["hsg-debug/hsg-m19-method.mdx"]: HsgM19Method,
+  ["hsg-debug/hsg-m19-method.vi.mdx"]: HsgM19MethodVi,
+  ["hsg-debug/hsg-m19-taxonomy.mdx"]: HsgM19Taxonomy,
+  ["hsg-debug/hsg-m19-taxonomy.vi.mdx"]: HsgM19TaxonomyVi,
+  ["hsg-debug/hsg-cp-m19.mdx"]: HsgCpM19,
+  ["hsg-debug/hsg-cp-m19.vi.mdx"]: HsgCpM19Vi,
   ["hsg-diff/hsg-m9-basics.mdx"]: HsgM9Basics,
   ["hsg-diff/hsg-m9-basics.vi.mdx"]: HsgM9BasicsVi,
   ["hsg-diff/hsg-m9-2d.mdx"]: HsgM92d,
   ["hsg-diff/hsg-m9-2d.vi.mdx"]: HsgM92dVi,
   ["hsg-diff/hsg-cp-m9.mdx"]: HsgCpM9,
   ["hsg-diff/hsg-cp-m9.vi.mdx"]: HsgCpM9Vi,
+  ["hsg-dp/hsg-m15-idea.mdx"]: HsgM15Idea,
+  ["hsg-dp/hsg-m15-idea.vi.mdx"]: HsgM15IdeaVi,
+  ["hsg-dp/hsg-m15-design.mdx"]: HsgM15Design,
+  ["hsg-dp/hsg-m15-design.vi.mdx"]: HsgM15DesignVi,
+  ["hsg-dp/hsg-cp-m15.mdx"]: HsgCpM15,
+  ["hsg-dp/hsg-cp-m15.vi.mdx"]: HsgCpM15Vi,
+  ["hsg-graph/hsg-m16-idea.mdx"]: HsgM16Idea,
+  ["hsg-graph/hsg-m16-idea.vi.mdx"]: HsgM16IdeaVi,
+  ["hsg-graph/hsg-m16-traversal.mdx"]: HsgM16Traversal,
+  ["hsg-graph/hsg-m16-traversal.vi.mdx"]: HsgM16TraversalVi,
+  ["hsg-graph/hsg-cp-m16.mdx"]: HsgCpM16,
+  ["hsg-graph/hsg-cp-m16.vi.mdx"]: HsgCpM16Vi,
   ["hsg-greedy/hsg-m5-choice.mdx"]: HsgM5Choice,
   ["hsg-greedy/hsg-m5-choice.vi.mdx"]: HsgM5ChoiceVi,
   ["hsg-greedy/hsg-m5-proof.mdx"]: HsgM5Proof,
@@ -3934,6 +3982,18 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["hsg-strings/hsg-m10-transform.vi.mdx"]: HsgM10TransformVi,
   ["hsg-strings/hsg-cp-m10.mdx"]: HsgCpM10,
   ["hsg-strings/hsg-cp-m10.vi.mdx"]: HsgCpM10Vi,
+  ["hsg-technique/hsg-m18-budget.mdx"]: HsgM18Budget,
+  ["hsg-technique/hsg-m18-budget.vi.mdx"]: HsgM18BudgetVi,
+  ["hsg-technique/hsg-m18-subtask.mdx"]: HsgM18Subtask,
+  ["hsg-technique/hsg-m18-subtask.vi.mdx"]: HsgM18SubtaskVi,
+  ["hsg-technique/hsg-cp-m18.mdx"]: HsgCpM18,
+  ["hsg-technique/hsg-cp-m18.vi.mdx"]: HsgCpM18Vi,
+  ["hsg-twopointers/hsg-m17-idea.mdx"]: HsgM17Idea,
+  ["hsg-twopointers/hsg-m17-idea.vi.mdx"]: HsgM17IdeaVi,
+  ["hsg-twopointers/hsg-m17-window.mdx"]: HsgM17Window,
+  ["hsg-twopointers/hsg-m17-window.vi.mdx"]: HsgM17WindowVi,
+  ["hsg-twopointers/hsg-cp-m17.mdx"]: HsgCpM17,
+  ["hsg-twopointers/hsg-cp-m17.vi.mdx"]: HsgCpM17Vi,
   ["hsg-vao-mon/hsg-m1-reading.mdx"]: HsgM1Reading,
   ["hsg-vao-mon/hsg-m1-reading.vi.mdx"]: HsgM1ReadingVi,
   ["hsg-vao-mon/hsg-m1-bridge.mdx"]: HsgM1Bridge,

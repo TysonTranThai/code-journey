@@ -35,6 +35,7 @@ const COURSE_TRACKS: Array<{ track: string; course: string }> = [
   { track: "c", course: "c-intermediate" },
   { track: "c", course: "c-advanced" },
   { track: "csharp", course: "csharp-beginner" },
+  { track: "csharp", course: "csharp-intermediate" },
   { track: "csharp", course: "csharp-advanced" },
 ];
 const baseDir = path.join("src/content/tracks");

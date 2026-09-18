@@ -1,0 +1,36 @@
+{
+  "id": "hsg-p18-bruteforce",
+  "title": "Small-N Triple",
+  "prompt": "**Description:** Count triples (i, j, k), i < j < k, whose sum is exactly S.\nConstraints are small enough for O(n^3) — but O(n^2) with a hash set also works.\n\n**Input:** Line 1: n S (1 <= n <= 300, |S| <= 10^15). Line 2: n integers\n(|a[i]| <= 10^9).\n**Output:** One integer — the number of triples.\n\n**Example:** `5 10` / `1 2 3 4 5` -> `2` (1+4+5, 2+3+5).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"5 10\\n1 2 3 4 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Two triples."
+    },
+    {
+      "name": "n 1",
+      "code": "std::istringstream in(\"1 5\\n5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "No triple exists."
+    },
+    {
+      "name": "duplicates",
+      "code": "std::istringstream in(\"4 3\\n1 1 1 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\n\"));",
+      "hint": "C(4,3) = 4 index-triples."
+    },
+    {
+      "name": "negatives",
+      "code": "std::istringstream in(\"3 0\\n-1 0 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "One exact triple."
+    },
+    {
+      "name": "none",
+      "code": "std::istringstream in(\"3 100\\n1 2 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Sum too small."
+    }
+  ],
+  "level": "independent"
+}

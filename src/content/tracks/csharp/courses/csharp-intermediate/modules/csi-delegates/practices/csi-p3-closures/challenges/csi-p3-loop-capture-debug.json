@@ -1,0 +1,21 @@
+{
+  "id": "csi-p3-loop-capture-debug",
+  "title": "Debug: Every Button Fires Three Times",
+  "prompt": "Classic bug: a loop registers three \"print i\" lambdas, but pressing any single button prints 3 — the last value. `Build` below reproduces it. Fix `Build` so each lambda remembers its OWN index, and keep `Sum` as is (it is correct).\n\n```csharp\nstatic List<Func<int>> Build(int n);      // lambda i returns i\nstatic int Sum(List<Func<int>> fs);       // invoke all, total\n```",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "each lambda remembers its own i",
+      "code": "\nvar fs = Solution.Build(3);\nCj.Eq(fs[0](), 0, \"lambda 0 sees 0\");\nCj.Eq(fs[1](), 1, \"lambda 1 sees 1\");\nCj.Eq(fs[2](), 2, \"lambda 2 sees 2\");\n",
+      "hint": "Capture a per-iteration copy: `int i = index;` inside the loop body, or a foreach over a range."
+    },
+    {
+      "name": "sum still works",
+      "code": "\nCj.Eq(Solution.Sum(Solution.Build(4)), 6, \"0+1+2+3\");\nCj.Eq(Solution.Sum(Solution.Build(0)), 0, \"empty build\");\n",
+      "hint": "Sum only invokes — the fix must not change its contract."
+    }
+  ],
+  "level": "debugging"
+}

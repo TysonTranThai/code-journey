@@ -64,7 +64,7 @@ def build() -> None:
                     "long v = 0x0001_0002_0003_0004;   // little-endian bytes: 04 03 02 01\n"
                     "var us = Solution.Reinterpret(v);\n"
                     'Cj.Eq(us.Length, 4, "long = 4 ushorts");\n'
-                    'Cj.Eq(us[0], 2, "low ushort first (LE)");\n'
+                    'Cj.Eq(us[0], 4, "low ushort first (LE)");\n'
                     'Cj.Eq(us[3], 1, "high ushort last");'
                 ),
                 "hint": "var src = MemoryMarshal.CreateReadOnlySpan(ref value, 1); var dst = MemoryMarshal.AsBytes(src); then two ushort reads — or simpler: MemoryMarshal.Cast<long, ushort>(new Span<long>(ref value, 1)).ToArray()",
@@ -156,15 +156,14 @@ def build() -> None:
         ),
         wrong=(
             "public class Solution\n{\n"
-            "    public static unsafe byte* CachedPointer = null;   // WRONG shape: storing pointers\n\n"
             "    public static unsafe void CopyBytes(byte[] src, int srcOffset, byte[] dst, int dstOffset, int count)\n"
             "    {\n"
             "        fixed (byte* ps = src)\n"
+            "        fixed (byte* pd = dst)\n"
             "        {\n"
-            "            CachedPointer = ps;   // WRONG: pointer escapes the pin — GC may move the array\n"
+            "            for (int i = 0; i < count; i++)\n"
+            "                pd[i] = ps[srcOffset + i];   // WRONG: ignores dstOffset — writes from the start\n"
             "        }\n"
-            "        for (int i = 0; i < count; i++)\n"
-            "            dst[dstOffset + i] = CachedPointer[srcOffset + i];   // reads through a stale pointer\n"
             "    }\n}"
         ),
         level="guided",
@@ -264,7 +263,7 @@ boundary that matters).
 The discipline this course demands: unsafe blocks are *small, scoped, and
 non-escaping*. Pointers never become fields, never cross `await`, never
 outlive their `fixed`. If you cannot draw the box around the unsafe region,
-the design is wrong. Span<T> (Module 2) covers most of what unsafe used to
+the design is wrong. `Span<T>` (Module 2) covers most of what unsafe used to
 be needed for — reach for `unsafe` when spans genuinely cannot express it.
 """
 
@@ -304,7 +303,7 @@ của nó; container là biên giới quan trọng).
 Kỷ luật khóa học yêu cầu: khối unsafe phải *nhỏ, có phạm vi, không thoát
 ra ngoài*. Con trỏ không bao giờ thành field, không bao giờ vượt `await`,
 không bao giờ sống lâu hơn `fixed` của nó. Nếu bạn không vẽ được cái hộp
-quanh vùng unsafe, thiết kế đã sai. Span<T> (Module 2) phủ được phần lớn
+quanh vùng unsafe, thiết kế đã sai. `Span<T>` (Module 2) phủ được phần lớn
 những gì unsafe từng cần — hãy dùng `unsafe` khi span thật sự không diễn
 đạt nổi.
 """
@@ -336,7 +335,7 @@ Pointer arithmetic rules worth internalizing:
   element-typed, not byte-typed.
 - `void*` has no element size — cast to a typed pointer before indexing.
 - `&arr[0]`, `&local`, `&struct.Field` are all legal on unmanaged types.
-- `stackalloc int[64]` yields an `int*` (or Span<int>) — stack memory, no
+- `stackalloc int[64]` yields an `int*` (or `Span<int>`) — stack memory, no
   pinning needed, freed on frame exit.
 
 The modern hierarchy: spans first (`buffer.AsSpan()` — safe, optimizes to
@@ -373,7 +372,7 @@ Các luật số học con trỏ đáng thuộc:
 - `void*` không có kích thước phần tử — cast sang con trỏ có kiểu trước khi
   đánh chỉ mục.
 - `&arr[0]`, `&local`, `&struct.Field` đều hợp lệ trên kiểu unmanaged.
-- `stackalloc int[64]` cho một `int*` (hoặc Span<int>) — bộ nhớ stack,
+- `stackalloc int[64]` cho một `int*` (hoặc `Span<int>`) — bộ nhớ stack,
   không cần pin, giải phóng khi thoát khung.
 
 Phân cấp hiện đại: span trước (`buffer.AsSpan()` — an toàn, tối ưu thành

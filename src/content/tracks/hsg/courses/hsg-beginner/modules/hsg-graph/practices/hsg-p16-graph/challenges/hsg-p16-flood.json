@@ -1,0 +1,36 @@
+{
+  "id": "hsg-p16-flood",
+  "title": "Flood Fill Rooms",
+  "prompt": "**Description:** A grid of '.' (open) and '#' (wall) cells. Two open cells are in\nthe same room if connected horizontally or vertically. Count the rooms.\n\n**Input:** Line 1: n m (1 <= n, m <= 1000). Next n lines: m characters each.\n**Output:** One integer — the number of rooms.\n\n**Example:** `3 4` / `.#..` / `.#.#` / `.#..` -> `2`.\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"3 4\\n.#..\\n.#.#\\n.#..\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Left column wall splits two regions."
+    },
+    {
+      "name": "all walls",
+      "code": "std::istringstream in(\"2 2\\n##\\n##\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "No open cells."
+    },
+    {
+      "name": "all open",
+      "code": "std::istringstream in(\"2 2\\n..\\n..\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "One big room."
+    },
+    {
+      "name": "diagonal not connected",
+      "code": "std::istringstream in(\"2 2\\n.#\\n#.\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Touching only diagonally does NOT connect."
+    },
+    {
+      "name": "requires left",
+      "code": "std::istringstream in(\"2 2\\n#.\\n..\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "The room bends left — up/left moves are mandatory, right/down-only floods split it."
+    }
+  ],
+  "level": "independent"
+}

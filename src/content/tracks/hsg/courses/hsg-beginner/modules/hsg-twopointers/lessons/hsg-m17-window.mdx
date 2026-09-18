@@ -1,0 +1,36 @@
+## The invariant
+
+A window [l, r] is maintained so that it is always *valid* (or one
+shrink away from valid). Right expands one step at a time; whenever
+the invariant breaks, left advances until it holds again:
+
+```cpp
+int l = 0;
+for (int r = 0; r < n; ++r) {
+    add(a[r]);                       // O(1) bookkeeping
+    while (invalid()) remove(a[l++]); // each l advances <= n times total
+    answer(r - l + 1);                // window ending at r
+}
+```
+
+The while is not O(n) per step: l only ever moves forward, so it moves
+at most n times across the WHOLE run — amortized O(1) per right step.
+
+## Distinct-elements window
+
+Count of distinct values via a frequency array (`cnt[v]`) and a
+counter of values with cnt > 0. Add: if cnt[v]++ becomes 1, ++distinct.
+Remove: if --cnt[v] hits 0, --distinct.
+
+## Fixed-size windows
+
+When k is constant, the window never shrinks: add a[r], remove a[r-k],
+keep a running sum — moving averages, max-sum-k. This is the prefix-
+sum cousin; prefer it when only sums are needed.
+
+## When windows do NOT apply
+
+Negative numbers break max-window-deque problems (monotonic deque,
+later course) and non-monotone validity (need l to jump) needs binary
+search or another tool. Checking "does the window apply?" before
+coding is the competition skill.

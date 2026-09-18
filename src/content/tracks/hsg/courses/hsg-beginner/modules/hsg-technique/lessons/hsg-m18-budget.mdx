@@ -1,0 +1,35 @@
+## The 10^8 rule of thumb
+
+A typical judge executes roughly 10^8 simple operations per second
+(our sandbox is slower — write for ~5 * 10^7 at 1 s). The constraint
+ceiling N tells you what complexity the setters expect:
+
+| N up to    | Intended complexity      |
+| ---------- | ------------------------ |
+| 10–20      | O(2^n) or O(n * 2^n)     |
+| ~500       | O(n^3)                   |
+| ~5,000     | O(n^2)                   |
+| ~100,000   | O(n log n) / O(n sqrt n) |
+| ~10^6–10^7 | O(n)                     |
+
+This is a heuristic, not a law — but if N = 100,000 and your idea is
+O(n^2), either your idea is wrong or there is a smarter angle.
+
+## Read the constraints FIRST
+
+Before the story, before the examples: What is the max N? What is the
+max value (overflow!)? How many test cases (multiply the budget!)? A
+sum over test cases (`T * N <= 10^5`) is a different beast from T
+independent maxima (T * 10^5 each).
+
+## The overflow audit
+
+`long long` before multiplying two ints. 10^9 + 10^9 fits; (10^9)^2
+does not. Every product, every sum of many terms, every a*b in a
+comparator — audit them at the end of writing, not after WA.
+
+## Output format is a constraint too
+
+Trailing spaces, missing final newline, YES/yes/Yes — byte-exact
+judges reject all of them. When the statement shows an example, your
+output must match it byte for byte.

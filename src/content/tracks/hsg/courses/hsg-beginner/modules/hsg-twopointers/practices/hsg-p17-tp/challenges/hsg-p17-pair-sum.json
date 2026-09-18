@@ -1,0 +1,36 @@
+{
+  "id": "hsg-p17-pair-sum",
+  "title": "Sorted Pair Sum",
+  "prompt": "**Description:** In a sorted array of n integers, decide whether two elements at\nDIFFERENT positions sum exactly to S.\n\n**Input:** Line 1: n S (2 <= n <= 200000, |S| <= 10^18). Line 2: n sorted integers\n(|a[i]| <= 10^9).\n**Output:** Print `YES` if such a pair exists, otherwise `NO`.\n\n**Example:** `5 9` / `1 2 4 7 11` -> `YES` (2 + 7).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"5 9\\n1 2 4 7 11\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"YES\\n\"));",
+      "hint": "2 + 7 = 9."
+    },
+    {
+      "name": "asymmetric move",
+      "code": "std::istringstream in(\"4 6\\n2 3 4 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"YES\\n\"));",
+      "hint": "2+4: requires lowering r twice while l stays — move-both-pointer code prints NO."
+    },
+    {
+      "name": "duplicates",
+      "code": "std::istringstream in(\"4 6\\n3 3 3 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"YES\\n\"));",
+      "hint": "Different POSITIONS, equal values — two 3s."
+    },
+    {
+      "name": "negatives",
+      "code": "std::istringstream in(\"3 -5\\n-9 -4 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NO\\n\"));",
+      "hint": "Pair sums are -13, -8, -3 — none equals -5."
+    },
+    {
+      "name": "two elements",
+      "code": "std::istringstream in(\"2 0\\n-3 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"YES\\n\"));",
+      "hint": "Opposite signs meet."
+    }
+  ],
+  "level": "guided"
+}

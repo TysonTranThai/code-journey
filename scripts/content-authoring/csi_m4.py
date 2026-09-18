@@ -456,4 +456,167 @@ Cj.Eq(string.Join("|", log2), "P:before", "after UnsubscribeAll nothing fires");
     solution='public class Solution\n{\n    public sealed record NotificationEventArgs(string Id, string Channel, string Message);\n\n    public class NotificationCenter\n    {\n        public event EventHandler<NotificationEventArgs>? Published;\n        public event EventHandler<NotificationEventArgs>? Filtered;\n\n        private int _nextId = 1;\n\n        public void Publish(string channel, string message, Predicate<string>? filter)\n        {\n            var args = new NotificationEventArgs("n-" + _nextId, channel, message);\n            _nextId++;\n            if (filter is null || filter(message))\n            {\n                Published?.Invoke(this, args);\n            }\n            else\n            {\n                Filtered?.Invoke(this, args);\n            }\n        }\n\n        public void UnsubscribeAll()\n        {\n            Published = null;\n            Filtered = null;\n        }\n    }\n}\n',
     wrong='public class Solution\n{\n    public sealed record NotificationEventArgs(string Id, string Channel, string Message);\n\n    public class NotificationCenter\n    {\n        public event EventHandler<NotificationEventArgs>? Published;\n        public event EventHandler<NotificationEventArgs>? Filtered;\n\n        private int _nextId = 1;\n\n        public void Publish(string channel, string message, Predicate<string>? filter)\n        {\n            // near-miss: the id counter only advances for ACCEPTED messages,\n            // so the filtered publish reuses n-1 and later ids shift\n            if (filter is null || filter(message))\n            {\n                var args = new NotificationEventArgs("n-" + _nextId, channel, message);\n                _nextId++;\n                Published?.Invoke(this, args);\n            }\n            else\n            {\n                Filtered?.Invoke(this, new NotificationEventArgs("n-" + _nextId, channel, message));\n            }\n        }\n\n        public void UnsubscribeAll()\n        {\n            Published = null;\n            Filtered = null;\n        }\n    }\n}\n',
 )
+# ---------------------------------------------------------------- practices
+write_practice(
+    M,
+    "csi-p4-events",
+    "Events Practice: Publish, Subscribe, Unsubscribe",
+    "Encapsulated multicast in action — wire a publisher, custom EventArgs, replacement semantics, and unsubscribe hygiene.",
+    "Luyện sự kiện: phát, đăng ký, hủy đăng ký",
+    "Multicast được đóng gói trong thực tế — nối một publisher, EventArgs tùy chỉnh, ngữ nghĩa thay thế, và vệ sinh hủy đăng ký.",
+    "csi-eventargs-and-lifetime",
+    25,
+    "intermediate",
+    [
+        challenge(
+            "csi-p4-broadcaster",
+            "The Broadcaster",
+            """Implement `Broadcaster`: an event `Message` (EventHandler<string>) raised for every `Publish`. It must deliver to every subscriber IN ORDER, pass the broadcaster itself as sender, and never throw when there are no subscribers.
+
+```csharp
+public class Broadcaster
+{
+    public event EventHandler<string>? Message;
+    public void Publish(string message);
+}
+```""",
+            CS_PRELUDE,
+            [
+                (
+                    "multicast in order",
+                    r"""
+var b = new Solution.Broadcaster();
+var seen = new List<string>();
+b.Message += (_, m) => seen.Add("1:" + m);
+b.Message += (_, m) => seen.Add("2:" + m);
+b.Publish("go");
+string? capturedSender = null;
+b.Message += (sender, _) => capturedSender = sender?.GetType().Name;
+b.Publish("go2");
+Cj.Eq(capturedSender, "Broadcaster", "sender is the broadcaster instance");
+Cj.Eq(string.Join("|", seen.GetRange(2, 2)), "1:go2|2:go2", "each subscriber got go2 exactly once");
+Cj.Eq(seen.Count, 4, "two subscribers x two publishes — no echo deliveries");
+""",
+                    "Raise with Message?.Invoke(this, message) — the field-like event does the multicast.",
+                ),
+
+                (
+                    "no subscribers is fine",
+                    r"""
+var b2 = new Solution.Broadcaster();
+b2.Publish("nobody listens");   // must not throw
+Cj.True(true, "publish with zero subscribers survived");
+""",
+                    "The null-conditional ?.Invoke is what makes zero subscribers safe.",
+                ),
+            ],
+            level="guided",
+            difficulty="intermediate",
+        ),
+        challenge(
+            "csi-p4-telemetry",
+            "TelemetrySource: Custom EventArgs and Unsubscribe",
+            """Implement `TelemetrySource` with a custom args record and honest lifecycle: `Emit` raises `Reading` for current subscribers with the channel and value; `SubscriberCount` reflects += and -= truthfully; a handler that unsubscribed stops receiving (but other subscribers keep working).
+
+```csharp
+public sealed record ReadingEventArgs(string Channel, double Value);
+public class TelemetrySource
+{
+    public event EventHandler<ReadingEventArgs>? Reading;
+    public void Emit(string channel, double value);
+    public int SubscriberCount { get; }
+}
+```""",
+            CS_PRELUDE,
+            [
+                (
+                    "custom args delivered",
+                    r"""
+var t = new Solution.TelemetrySource();
+Solution.ReadingEventArgs? got = null;
+t.Reading += (_, e) => got = e;
+t.Emit("temp", 21.5);
+Cj.True(got is not null, "subscriber received args");
+Cj.Eq(got!.Channel, "temp", "channel carried");
+Cj.Eq(got!.Value, 21.5, "value carried");
+""",
+                    "Raise with a new ReadingEventArgs — sender is the source, args carries the data.",
+                ),
+                (
+                    "unsubscribe hygiene",
+                    r"""
+var t2 = new Solution.TelemetrySource();
+var hits = new List<double>();
+EventHandler<Solution.ReadingEventArgs> h = (_, e) => hits.Add(e.Value);
+t2.Reading += h;
+t2.Emit("cpu", 1.0);
+Cj.Eq(t2.SubscriberCount, 1, "one subscriber");
+t2.Reading -= h;
+Cj.Eq(t2.SubscriberCount, 0, "unsubscribed");
+t2.Emit("cpu", 2.0);
+Cj.Eq(hits.Count, 1, "only the pre-unsubscribe emit arrived");
+""",
+                    "Keep the handler in a variable so -= references the SAME delegate instance.",
+                ),
+                (
+                    "survivors keep receiving",
+                    r"""
+var t3 = new Solution.TelemetrySource();
+var a = new List<double>();
+var b = new List<double>();
+var c = new List<double>();
+EventHandler<Solution.ReadingEventArgs> ha = (_, e) => a.Add(e.Value);
+EventHandler<Solution.ReadingEventArgs> hb = (_, e) => b.Add(e.Value);
+EventHandler<Solution.ReadingEventArgs> hc = (_, e) => c.Add(e.Value);
+t3.Reading += ha;
+t3.Reading += hb;
+t3.Reading += hc;
+Cj.Eq(t3.SubscriberCount, 3, "three registered");
+t3.Reading -= hb;                       // remove the MIDDLE one
+Cj.Eq(t3.SubscriberCount, 2, "two remain");
+t3.Emit("mem", 7.0);
+Cj.Eq(a.Count, 1, "first handler survives");
+Cj.Eq(b.Count, 0, "middle handler removed");
+Cj.Eq(c.Count, 1, "last handler survives");
+""",
+                    "Multicast removal only detaches the exact delegate — the rest of the list is untouched.",
+                ),
+            ],
+            level="independent",
+            difficulty="intermediate",
+        ),
+    ],
+    {
+        "csi-p4-broadcaster": vi_challenge(
+            "The Broadcaster",
+            "Hiện thực `Broadcaster`: một sự kiện `Message` (EventHandler<string>) được phát CHÍNH XÁC MỘT LẦN cho mỗi `Publish`. Phải chuyển tới mọi subscriber THEO THỨ TỰ, sender phải là chính publisher, và không bao giờ ném lỗi khi không có subscriber.",
+            [
+                ("multicast in order", "Phát bằng Message?.Invoke(this, message) — field-like event lo phần multicast."),
+                ("no subscribers is fine", "Toán tử ?.Invoke là thứ làm cho không-subscriber trở nên an toàn."),
+            ],
+        ),
+        "csi-p4-telemetry": vi_challenge(
+            "TelemetrySource: EventArgs tùy chỉnh và hủy đăng ký",
+            "Hiện thực `TelemetrySource` với record args tùy chỉnh và vòng đời trung thực: `Emit` phát `Reading` cho các subscriber hiện tại với channel và giá trị; `SubscriberCount` phản ánh trung thực += và -=; handler đã hủy đăng ký không còn nhận (nhưng subscriber khác vẫn hoạt động).",
+            [
+                ("custom args delivered", "Phát với một ReadingEventArgs mới — sender là nguồn, args mang dữ liệu."),
+                ("unsubscribe hygiene", "Giữ handler trong một biến để -= tham chiếu ĐÚNG thể delegate đó."),
+                ("survivors keep receiving", "Việc gỡ khỏi multicast chỉ tách đúng delegate đó — phần còn lại của danh sách không bị đụng tới."),
+            ],
+        ),
+    },
+    solutions=[
+        (
+            "csi-p4-broadcaster",
+            'public class Solution\n{\n    public class Broadcaster\n    {\n        public event EventHandler<string>? Message;\n\n        public void Publish(string message) => Message?.Invoke(this, message);\n    }\n}\n',
+            'public class Solution\n{\n    public class Broadcaster\n    {\n        public event EventHandler<string>? Message;\n\n        public void Publish(string message)\n        {\n            // near-miss: invokes a SNAPSHOT taken before the multicast —\n            // a subscriber that joins during the raise misses this publish\n            var handlers = Message;\n            Message?.Invoke(this, message);\n            handlers?.Invoke(this, "echo:" + message);\n        }\n    }\n}\n',
+        ),
+        (
+            "csi-p4-telemetry",
+            'public class Solution\n{\n    public sealed record ReadingEventArgs(string Channel, double Value);\n\n    public class TelemetrySource\n    {\n        public event EventHandler<ReadingEventArgs>? Reading;\n\n        public void Emit(string channel, double value)\n            => Reading?.Invoke(this, new ReadingEventArgs(channel, value));\n\n        public int SubscriberCount => Reading?.GetInvocationList().Length ?? 0;\n    }\n}\n',
+            'public class Solution\n{\n    public sealed record ReadingEventArgs(string Channel, double Value);\n\n    public class TelemetrySource\n    {\n        private EventHandler<ReadingEventArgs>? _reading;\n\n        public event EventHandler<ReadingEventArgs>? Reading\n        {\n            add { _reading = value; }        // near-miss: assignment, not +=\n            remove { _reading -= value; }\n        }\n\n        public void Emit(string channel, double value)\n            => _reading?.Invoke(this, new ReadingEventArgs(channel, value));\n\n        public int SubscriberCount => _reading?.GetInvocationList().Length ?? 0;\n    }\n}\n',
+        ),
+    ],
+)
+
 print("module 4 authored")

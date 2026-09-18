@@ -230,6 +230,8 @@ def write_module(m, title, summary, vi_title, vi_summary, lessons, practices):
 
 
 def write_lesson(m, lid, title, description, minutes, mdx, vi_title, vi_description, vi_mdx, difficulty="intermediate"):
+    if difficulty not in ("beginner", "intermediate", "advanced"):
+        difficulty = "intermediate"
     if not lid.startswith("csi-"):
         lid = "csi-" + lid  # course-level namespace
     d = os.path.join(mod_dir(m), "lessons")

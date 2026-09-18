@@ -197,9 +197,9 @@ def build() -> None:
             {
                 "name": "same-count",
                 "code": (
-                    "var vals = Enumerable.Range(0, 1000).ToArray();\n"
+                    "var vals = Enumerable.Range(0, 999).Select(i => i * 7 - 3).ToArray();   // mixed parity\n"
                     'Cj.Eq(Solution.CountEvenLinq(vals), Solution.CountEvenLoop(vals), "identical counts");\n'
-                    'Cj.Eq(Solution.CountEvenLoop(vals), 500, "known count");'
+                    'Cj.Eq(Solution.CountEvenLoop(vals), 499, "known count for this data");'
                 ),
                 "hint": "Both count x % 2 == 0; the loop version uses a for and a counter.",
             },
