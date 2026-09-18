@@ -92,7 +92,16 @@ export function getErrorExplanation(
   }
 
   // 7. Test assertion failure
-  if (text.includes("AssertionError") || (text.includes("expected") && text.includes("to be"))) {
+  if (
+    text.includes("AssertionError") ||
+    (text.includes("expected") &&
+      (text.includes("to be") || text.includes("but got") || text.includes("got "))) ||
+    text.includes("expected ~") ||
+    text.includes("expected output to contain") ||
+    text.includes("check failed") ||
+    text.includes("kỳ vọng") ||
+    text.includes("kiểm tra thất bại")
+  ) {
     return {
       message: d.console.explainAssertionError,
       hint: d.console.explainAssertionErrorHint,

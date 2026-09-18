@@ -122,12 +122,14 @@ export function LiveConsole({
   language,
   serverOutput,
   isServerRunning,
+  failedTestMessage,
 }: {
   code: string;
   boilerplate: string;
   language?: string;
   serverOutput?: string;
   isServerRunning?: boolean;
+  failedTestMessage?: string;
 }) {
   const { d, t } = useI18n();
   const [output, setOutput] = useState("");
@@ -223,7 +225,10 @@ export function LiveConsole({
       ? "running"
       : "idle";
 
-  const explanation = getErrorExplanation(displayOutput, d, language);
+  const stdoutExplanation = getErrorExplanation(displayOutput, d, language);
+  const explanation =
+    stdoutExplanation ??
+    (failedTestMessage ? getErrorExplanation(failedTestMessage, d, language) : null);
   const isErrorOutput =
     displayOutput.startsWith("Error:") ||
     displayOutput.includes("error:") ||
@@ -236,7 +241,7 @@ export function LiveConsole({
     displayOutput.includes("Đã dừng:") ||
     displayOutput.startsWith("Lỗi:") ||
     displayOutput.includes("Exception") ||
-    explanation !== null;
+    stdoutExplanation !== null;
 
   return (
     <section
@@ -281,7 +286,9 @@ export function LiveConsole({
             ? (isJs ? "…" : d.console.runningBackend)
             : isJs
               ? (untouched ? d.console.emptyStart : d.console.noOutput)
-              : d.console.emptyBackend}
+              : serverOutput !== undefined
+                ? d.console.noOutputBackend
+                : d.console.emptyBackend}
       </div>
       {explanation && <ErrorExplanationCard explanation={explanation} />}
       <p className="font-mono text-[11px] text-zinc-400">

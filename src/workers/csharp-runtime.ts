@@ -47,6 +47,21 @@
 import { sanitizeTestName } from "./sanitize-name";
 
 /**
+ * Roslyn usings are appended per-test by buildCSharpTestFile when the test
+ * body actually references compiler-API types. They are NOT unconditional:
+ * some consumers compile test files without the SDK Roslyn reference set
+ * (e.g. the Beginner QA harness), where a bare "using Microsoft.CodeAnalysis"
+ * fails with CS0234 for every challenge. Tests that only CALL into a
+ * Solution that uses Roslyn need no usings of their own — Solution.cs
+ * carries its own.
+ */
+export const CS_ROSLYN_USINGS = [
+  "using Microsoft.CodeAnalysis;",
+  "using Microsoft.CodeAnalysis.CSharp;",
+  "using Microsoft.CodeAnalysis.CSharp.Syntax;",
+].join("\n");
+
+/**
  * The C# harness injected at the top of every generated test file. Defined
  * once here so the sandbox worker and the QA harness build byte-identical
  * test files. One static class `Cj` (helper) — the per-test entry class
@@ -71,9 +86,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 // Runs when the test assembly loads — before any JIT token resolution, so
 // compiler-API tests can bind the SDK's Roslyn assemblies at runtime.
@@ -178,7 +190,11 @@ static class Cj
         var original = Console.Out;
         Console.SetOut(buffer);
         try { action(); }
-        finally { Console.SetOut(original); }
+        finally {
+            Console.SetOut(original);
+            original.Write(buffer.ToString());
+            original.Flush();
+        }
         return buffer.ToString();
     }
 
@@ -273,8 +289,13 @@ export function buildCSharpTestFile(test: { name: string; code: string }): strin
   const bodySig = isAsync ? "static async Task<int> Body()" : "static void Body()";
   const bodyCall = isAsync ? "await Body();" : "Body();";
   const bodyClose = isAsync ? "        return 0;\n    }" : "    }";
+  // Compiler-API types in the TEST body require the Roslyn usings (and the
+  // job must reference the SDK Roslyn assemblies — production always does).
+  const usesRoslyn =
+    /\b(Microsoft\.CodeAnalysis|CSharpCompilation|CSharpSyntaxTree|CSharpGeneratorDriver|CSharpParseOptions|MetadataReference|DiagnosticSeverity|OutputKind|IIncrementalGenerator|IncrementalGenerator|SourceText|SyntaxTree|SyntaxNode|SyntaxToken|ExpressionSyntax|ClassDeclarationSyntax)\b/.test(test.code);
+  const head = usesRoslyn ? CS_ROSLYN_USINGS + "\n\n" + CS_TEST_HARNESS : CS_TEST_HARNESS;
   return [
-    CS_TEST_HARNESS,
+    head,
     "static class CjTest",
     "{",
     `    ${bodySig}`,

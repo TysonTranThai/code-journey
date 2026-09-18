@@ -47,22 +47,36 @@ export type RunState =
       output: string;
     };
 
+function formatAssertionMessage(message: string, isVi: boolean): string {
+  if (!isVi) return message;
+  let text = message.trim();
+  text = text.replace(/exact three lines/gi, "in đúng ba dòng");
+  text = text.replace(/(?:—\s*|\s*-\s*|\s*)expected\s+(.+?)\s+but got\s+(.+)/i, "— kỳ vọng $1 nhưng nhận được $2");
+  text = text.replace(/expected\s+(.+?),\s+got\s+(.+)/i, "kỳ vọng $1 nhưng nhận được $2");
+  text = text.replace(/expected output to contain, in order:\s*"?(.+?)"?$/i, "kỳ vọng kết quả in ra theo thứ tự: \"$1\"");
+  text = text.replace(/expected output to contain\s*"?(.+?)"?$/i, "kỳ vọng kết quả in ra chứa: \"$1\"");
+  text = text.replace(/expected true, got false/gi, "kỳ vọng true nhưng nhận được false");
+  text = text.replace(/expected false, got true/gi, "kỳ vọng false nhưng nhận được true");
+  text = text.replace(/expected an exception,? but none was thrown/gi, "kỳ vọng có lỗi ngoại lệ nhưng không có lỗi nào được ném ra");
+  text = text.replace(/expected no exception, got\s+(.+)/gi, "kỳ vọng không có ngoại lệ nhưng nhận được $1");
+  text = text.replace(/expected\s+(.+?)\s+to be NULL/gi, "kỳ vọng $1 là NULL");
+  text = text.replace(/expected\s+(.+?)\s+to be non-NULL/gi, "kỳ vọng $1 không phải NULL");
+  text = text.replace(/expected ~([^,]+),\s*got\s+(.+)/i, "kỳ vọng xấp xỉ $1 nhưng nhận được $2");
+  text = text.replace(/expected ~([^ ]+)\s+within\s+([^,]+),\s*got\s+(.+)/i, "kỳ vọng xấp xỉ $1 (sai số $2) nhưng nhận được $3");
+  text = text.replace(/check failed:\s*(.+)/i, "kiểm tra thất bại: $1");
+  return text;
+}
+
 export function VerdictPanel({
   state,
   testNames,
   language,
 }: {
   state: RunState;
-  /**
-   * Authoritative, locale-correct test names from the challenge data
-   * (same order as the tests the worker ran). Preferred over the
-   * worker's sanitized marker id for display — the id is an execution
-   * detail; the learner should read the authored name (e.g. Vietnamese).
-   */
   testNames?: string[];
   language?: string;
 }) {
-  const { d } = useI18n();
+  const { d, locale } = useI18n();
   const isBackend =
     Boolean(language) &&
     language !== "javascript" &&
@@ -191,7 +205,9 @@ export function VerdictPanel({
                   </span>
                 </span>
                 {!result.passed && result.message && (
-                  <span className="ml-6 text-xs text-zinc-300 font-mono">{result.message}</span>
+                  <span className="ml-6 text-xs text-zinc-300 font-mono">
+                    {formatAssertionMessage(result.message, locale === "vi")}
+                  </span>
                 )}
               </li>
             ))}

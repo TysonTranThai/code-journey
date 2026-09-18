@@ -115,7 +115,7 @@ def build() -> None:
         "csa-p11-parallel-cancel", MID,
         title='Parallel scan with early exit',
         prompt=(
-            "Implement `static int FirstMatch(int[] data, Func<int, bool> predicate, int workers)` that finds the first index (lowest i) where predicate(data[i]) is true, running the scan in parallel chunks — using Parallel.For with a shared 'found index' guarded by Interlocked.CompareExchange so only a LOWER index ever wins, and stopping other iterations once found (loopState.Stop()). Return -1 if absent. The test proves the Stop() matters: with a slow predicate and a match at index 5 of a 10-million array, a solution that scans everything takes seconds — yours must return well under a second."
+            "Implement `static int FirstMatch(int[] data, Func<int, bool> predicate, int workers)` that finds the first index (lowest i) where predicate(data[i]) is true, running the scan in parallel chunks — using Parallel.For with a shared 'found index' guarded by Interlocked.CompareExchange so only a LOWER index ever wins, and stopping other iterations once found (loopState.Stop()). Return -1 if absent. The test counts predicate invocations: without Stop() the full scan runs all 10 million calls for a match at index 5 — the test requires fewer than 1 million."
         ),
         difficulty='advanced',
         tests=[
@@ -136,9 +136,9 @@ def build() -> None:
             {
                 "name": 'early-exit',
                 "code": (
-                    '// 10M elements, match at index 5, predicate costs ~100ns (SpinWait) - a full scan of all\n// workers costs >1s; Stop() must cut it to well under 500ms.\nvar data = new int[10_000_000];\ndata[5] = -1;\nvar sw = System.Diagnostics.Stopwatch.StartNew();\nint hit = Solution.FirstMatch(data, x => { if (x == -1) return true; System.Threading.SpinWait.SpinBetween(50); return false; }, 4);\nsw.Stop();\nCj.Eq(hit, 5, "finds the early match");\nCj.True(sw.ElapsedMilliseconds < 500, $"early exit required: took {sw.ElapsedMilliseconds}ms (full scan would exceed 1000ms)");'
+                    '// 10M elements, match at index 5. Without Stop() the full scan runs ALL\n// 10,000,000 predicate calls; with Stop() it must be orders of magnitude less.\nvar data = new int[10_000_000];\ndata[5] = -1;\nlong calls = 0;\nint hit = Solution.FirstMatch(data, x => { System.Threading.Interlocked.Increment(ref calls); return x == -1; }, 4);\nCj.Eq(hit, 5, "finds the early match");\nCj.True(calls < 1_000_000, $"Stop() must cut the scan: {calls:N0} predicate calls (full scan = 10,000,000)");'
                 ),
-                "hint": 'After the CAS wins, call loopState.Stop() so Parallel.For stops scheduling further iterations.',
+                "hint": 'After the CAS wins, call loopState.Stop() so Parallel.For stops scheduling further iterations — the test counts predicate invocations and a full scan is 10,000,000.',
             },
         ],
         reference=(

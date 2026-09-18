@@ -333,7 +333,7 @@ VI: dict[str, dict] = {
             "Hiện thực `class FoldVisitor : ExpressionVisitor` thay mọi BinaryExpression có hai toán hạng "
             "Constant bằng một Constant của giá trị tính được (chỉ int; hỗ trợ Add, Multiply, Subtract). "
             "Việc gấp phải ĐỆ QUY: khi các node nhị phân bên trong gấp thành hằng số thì node nhị phân bao "
-            "ngoài cũng gấp theo. Rồi hiện thực `static Expression<Func<int,int>> "
+            "ngoài cũng gấp theo. Test dựng cây bằng các lời gọi Expression.* tường minh vì compiler đã tự gấp hằng số trong lambda literal lúc biên dịch — x => 2 + 3 + x đến tay visitor dưới dạng (5 + x), không còn gì để gấp. Rồi hiện thực `static Expression<Func<int,int>> "
             "FoldExpr(Expression<Func<int,int>> e)` trả về biểu thức đã được duyệt (đã gấp)."
         ),
         "hints": {
@@ -496,15 +496,14 @@ VI: dict[str, dict] = {
             "số đầu tiên (i thấp nhất) mà predicate(data[i]) đúng, chạy quét theo chunk song song — dùng "
             "Parallel.For với 'chỉ số tìm thấy' dùng chung được bảo vệ bởi Interlocked.CompareExchange nên "
             "chỉ chỉ số THẤP HƠN mới thắng, và dừng các vòng lặp còn lại khi đã tìm thấy (loopState.Stop()). "
-            "Trả về -1 nếu vắng mặt. Test chứng minh Stop() là cần thiết: với predicate chậm và match ở chỉ "
-            "số 5 của mảng 10 triệu phần tử, solution quét hết mất hàng giây — của bạn phải trả về trong "
-            "vài trăm ms."
+            "Trả về -1 nếu vắng mặt. Test đếm số lần gọi predicate: không có Stop() thì cả 10 triệu "
+            "lần đều chạy cho match ở chỉ số 5 — test yêu cầu dưới 1 triệu lần gọi."
         ),
         "hints": {
             "first-match": "Interlocked.CompareExchange(ref best, i, int.MaxValue) chỉ thắng khi best vẫn là MaxValue HOẶC i thấp "
                            "hơn — vòng CAS giữ giá trị nhỏ nhất.",
             "absent": "Cùng vòng lặp; không CAS nào thành công.",
-            "early-exit": "Sau khi CAS thắng, gọi loopState.Stop() để Parallel.For ngừng điều phối các iteration tiếp theo.",
+            "early-exit": "Sau khi CAS thắng, gọi loopState.Stop() để Parallel.For ngừng điều phối các iteration tiếp theo — test đếm số lần gọi predicate và quét hết là 10.000.000 lần.",
         },
     },
     "csa-p11-amdahl": {

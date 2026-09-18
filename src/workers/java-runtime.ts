@@ -162,6 +162,9 @@ class CjTestBase {
         } finally {
             System.out.flush();
             System.setOut(old);
+            byte[] bytes = buf.toByteArray();
+            old.write(bytes, 0, bytes.length);
+            old.flush();
         }
         return buf.toString(StandardCharsets.UTF_8);
     }

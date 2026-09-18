@@ -1,6 +1,6 @@
 {
   "title": "Visitor gấp hằng số",
-  "prompt": "Hiện thực `class FoldVisitor : ExpressionVisitor` thay mọi BinaryExpression có hai toán hạng Constant bằng một Constant của giá trị tính được (chỉ int; hỗ trợ Add, Multiply, Subtract). Việc gấp phải ĐỆ QUY: khi các node nhị phân bên trong gấp thành hằng số thì node nhị phân bao ngoài cũng gấp theo. Rồi hiện thực `static Expression<Func<int,int>> FoldExpr(Expression<Func<int,int>> e)` trả về biểu thức đã được duyệt (đã gấp).",
+  "prompt": "Hiện thực `class FoldVisitor : ExpressionVisitor` thay mọi BinaryExpression có hai toán hạng Constant bằng một Constant của giá trị tính được (chỉ int; hỗ trợ Add, Multiply, Subtract). Việc gấp phải ĐỆ QUY: khi các node nhị phân bên trong gấp thành hằng số thì node nhị phân bao ngoài cũng gấp theo. Test dựng cây bằng các lời gọi Expression.* tường minh vì compiler đã tự gấp hằng số trong lambda literal lúc biên dịch — x => 2 + 3 + x đến tay visitor dưới dạng (5 + x), không còn gì để gấp. Rồi hiện thực `static Expression<Func<int,int>> FoldExpr(Expression<Func<int,int>> e)` trả về biểu thức đã được duyệt (đã gấp).",
   "tests": [
     {
       "name": "folds",

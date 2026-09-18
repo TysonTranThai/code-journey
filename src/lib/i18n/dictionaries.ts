@@ -326,6 +326,7 @@ const en = {
     explainCspErrorHint:
       "Click the 'Submit' button above to compile and run your code safely inside the isolated container sandbox.",
     emptyBackend: "Click 'Submit' (or ⌘/Ctrl+Enter) to compile and run your code in the sandbox.",
+    noOutputBackend: "No output produced — your program ran without printing to standard output.",
     captionBackend: "Compiled and executed in an isolated container sandbox upon submission.",
     runningBackend: "Compiling and running code in sandbox...",
     explainMissingSemicolon:
@@ -860,6 +861,7 @@ const vi: Dictionary = {
     explainCspErrorHint:
       "Nhấn nút 'Nộp bài' ở trên để biên dịch và chạy mã an toàn trong container sandbox cô lập.",
     emptyBackend: "Nhấn 'Nộp bài' (hoặc ⌘/Ctrl+Enter) để biên dịch và chạy mã nguồn của bạn trong sandbox.",
+    noOutputBackend: "Không có kết quả in ra — chương trình của bạn chạy nhưng không in dữ liệu ra console.",
     captionBackend: "Được biên dịch và thực thi trong container sandbox cô lập khi nộp bài.",
     runningBackend: "Đang biên dịch và chạy mã nguồn trong sandbox...",
     explainMissingSemicolon:

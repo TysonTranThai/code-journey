@@ -303,7 +303,15 @@ export function ChallengeWorkspace({
   // The latest failing test (if the verdict is done + failed) feeds "explain my error".
   const failedTest =
     runState.phase === "done" && runState.verdict === "failed"
-      ? (runState.perTestResults.find((r) => !r.passed) ?? null)
+      ? (() => {
+          const idx = runState.perTestResults.findIndex((r) => !r.passed);
+          const raw = idx >= 0 ? runState.perTestResults[idx] : null;
+          if (!raw) return null;
+          return {
+            name: testNames?.[idx] ?? raw.name,
+            message: raw.message,
+          };
+        })()
       : null;
 
   const instructions = (
@@ -388,6 +396,7 @@ export function ChallengeWorkspace({
           language={language}
           serverOutput={runState.phase === "done" ? runState.output : undefined}
           isServerRunning={runState.phase === "running"}
+          failedTestMessage={failedTest?.message}
         />
       )}
       <VerdictPanel state={runState} testNames={testNames} language={language} />

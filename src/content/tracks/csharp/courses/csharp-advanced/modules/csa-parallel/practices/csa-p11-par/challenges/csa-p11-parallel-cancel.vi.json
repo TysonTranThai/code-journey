@@ -1,6 +1,6 @@
 {
   "title": "Quét song song có hủy",
-  "prompt": "Hiện thực `static int FirstMatch(int[] data, Func<int, bool> predicate, int workers)` tìm chỉ số đầu tiên (i thấp nhất) mà predicate(data[i]) đúng, chạy quét theo chunk song song — dùng Parallel.For với 'chỉ số tìm thấy' dùng chung được bảo vệ bởi Interlocked.CompareExchange nên chỉ chỉ số THẤP HƠN mới thắng, và dừng các vòng lặp còn lại khi đã tìm thấy (loopState.Stop()). Trả về -1 nếu vắng mặt. Test chứng minh Stop() là cần thiết: với predicate chậm và match ở chỉ số 5 của mảng 10 triệu phần tử, solution quét hết mất hàng giây — của bạn phải trả về trong vài trăm ms.",
+  "prompt": "Hiện thực `static int FirstMatch(int[] data, Func<int, bool> predicate, int workers)` tìm chỉ số đầu tiên (i thấp nhất) mà predicate(data[i]) đúng, chạy quét theo chunk song song — dùng Parallel.For với 'chỉ số tìm thấy' dùng chung được bảo vệ bởi Interlocked.CompareExchange nên chỉ chỉ số THẤP HƠN mới thắng, và dừng các vòng lặp còn lại khi đã tìm thấy (loopState.Stop()). Trả về -1 nếu vắng mặt. Test đếm số lần gọi predicate: không có Stop() thì cả 10 triệu lần đều chạy cho match ở chỉ số 5 — test yêu cầu dưới 1 triệu lần gọi.",
   "tests": [
     {
       "name": "first-match",
@@ -12,7 +12,7 @@
     },
     {
       "name": "early-exit",
-      "hint": "Sau khi CAS thắng, gọi loopState.Stop() để Parallel.For ngừng điều phối các iteration tiếp theo."
+      "hint": "Sau khi CAS thắng, gọi loopState.Stop() để Parallel.For ngừng điều phối các iteration tiếp theo — test đếm số lần gọi predicate và quét hết là 10.000.000 lần."
     }
   ]
 }

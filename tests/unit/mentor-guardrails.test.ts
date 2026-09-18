@@ -231,4 +231,33 @@ describe("getErrorExplanation (bilingual error explainer and Socratic hints)", (
     expect(expEn).not.toBeNull();
     expect(expEn?.message).toContain("symbol");
   });
+
+  it("explains assertion mismatch in Vietnamese and English", () => {
+    const raw = "exact three lines — expected [Hello, Code Journey!] but got [Hi]";
+    const expVi = getErrorExplanation(raw, dVi, "java");
+    expect(expVi).not.toBeNull();
+    expect(expVi?.message).toContain("Kiểm thử không đạt");
+
+    const expEn = getErrorExplanation(raw, dEn, "java");
+    expect(expEn).not.toBeNull();
+    expect(expEn?.message).toContain("Test Assertion Failed");
+  });
+
+  it("nullMentor translates Java assertion error in Vietnamese", async () => {
+    const viContext = {
+      challengeId: "javb-m1-intro-print",
+      challengeTitle: "Chào khóa học",
+      prompt: "In đúng ba dòng",
+      testHints: ["Bắt những gì main in ra"],
+      locale: "vi",
+    };
+    const res = await nullMentor.explainError(
+      viContext,
+      "In đúng ba dòng",
+      "exact three lines — expected [Hello, Code Journey!] but got [Hi]",
+    );
+    expect(res.text).toContain('Bài kiểm tra bị trượt "In đúng ba dòng"');
+    expect(res.text).toContain("kỳ vọng [Hello, Code Journey!] nhưng nhận được [Hi]");
+    expect(res.text).not.toContain("exact three lines");
+  });
 });

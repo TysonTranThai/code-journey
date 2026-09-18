@@ -81,6 +81,10 @@ static const char *cj_capture(void (*fn)(void)) {
     dup2(saved, 1);
     close(saved);
     close(fds[0]);
+    if (n > 0) {
+        fwrite(cj_cap_buf, 1, (size_t)n, stdout);
+        fflush(stdout);
+    }
     return cj_cap_buf;
 }
 

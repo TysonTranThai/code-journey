@@ -77,9 +77,13 @@ std::string capture(F&& fn) {
         fn();
     } catch (...) {
         std::cout.rdbuf(_cj_old);
+        std::cout << _cj_oss.str();
+        std::cout.flush();
         throw;
     }
     std::cout.rdbuf(_cj_old);
+    std::cout << _cj_oss.str();
+    std::cout.flush();
     return _cj_oss.str();
 }
 

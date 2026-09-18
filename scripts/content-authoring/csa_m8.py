@@ -99,14 +99,14 @@ def build() -> None:
         "csa-p8-constant-fold", MID,
         title='Constant-folding visitor',
         prompt=(
-            'Implement `class FoldVisitor : ExpressionVisitor` that replaces any BinaryExpression with two Constant operands by a single Constant of its computed value (ints only; support Add, Multiply, Subtract). Folding must be RECURSIVE: once inner binary nodes fold to constants, the enclosing binary folds too. Also implement `static Expression<Func<int,int>> FoldExpr(Expression<Func<int,int>> e)` returning the visited (folded) expression.'
+            'Implement `class FoldVisitor : ExpressionVisitor` that replaces any BinaryExpression with two Constant operands by a single Constant of its computed value (ints only; support Add, Multiply, Subtract). Folding must be RECURSIVE: once inner binary nodes fold to constants, the enclosing binary folds too. The test builds the tree with explicit Expression.* calls because the compiler already constant-folds lambda literals at compile time — x => 2 + 3 + x arrives as (5 + x) with nothing left to fold. Also implement `static Expression<Func<int,int>> FoldExpr(Expression<Func<int,int>> e)` returning the visited (folded) expression.'
         ),
         difficulty='advanced',
         tests=[
             {
                 "name": 'folds',
                 "code": (
-                    'Expression<Func<int, int>> e = x => 2 + 3 + x;\nvar folded = Solution.FoldExpr(e);\nvar f = folded.Compile();\nCj.Eq(f(4), 9, "(2+3)+x must fold to 5+x");\nint constAdds = 0;\nnew Visitor(v =>\n{\n    if (v is BinaryExpression b && v.NodeType == ExpressionType.Add\n        && b.Left is ConstantExpression && b.Right is ConstantExpression) constAdds++;\n}).Visit(folded);\nCj.Eq(constAdds, 0, "no constant-only Add remains — inner folds, then the enclosing node folds too");'
+                    '// The compiler constant-folds lambda literals: x => 2 + 3 + x arrives as (5 + x).\n// Build the tree with the Expression API so the visitor genuinely has work to do:\nvar x = Expression.Parameter(typeof(int), "x");\nExpression<Func<int, int>> e =\n    Expression.Lambda<Func<int, int>>(\n        Expression.Add(Expression.Add(Expression.Constant(2), Expression.Constant(3)), x), x);\nvar folded = Solution.FoldExpr(e);\nvar f = folded.Compile();\nCj.Eq(f(4), 9, "(2+3)+x must fold to 5+x");\nint constAdds = 0;\nnew Visitor(v =>\n{\n    if (v is BinaryExpression b && v.NodeType == ExpressionType.Add\n        && b.Left is ConstantExpression && b.Right is ConstantExpression) constAdds++;\n}).Visit(folded);\nCj.Eq(constAdds, 0, "no constant-only Add remains — inner folds, then the enclosing node folds too");'
                 ),
                 "hint": 'Override VisitBinary: Visit the operands FIRST, then if both are int constants return Expression.Constant(computed) — recursing makes (2+3) fold before the outer Add sees it.',
             },
