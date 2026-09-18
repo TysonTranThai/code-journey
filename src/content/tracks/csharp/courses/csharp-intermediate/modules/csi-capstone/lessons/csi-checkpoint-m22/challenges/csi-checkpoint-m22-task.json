@@ -1,0 +1,41 @@
+{
+  "id": "csi-checkpoint-m22-task",
+  "title": "Wire the Engine",
+  "prompt": "JSON snapshot round-trip with case-insensitive load, plus the DI-wired async service with cancellation.",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n\n// Provided infrastructure — do not modify. The engine's shared domain\n// types (all milestones build on these).\npublic enum Priority { Low, Medium, High }\npublic enum Status { Todo, InProgress, Done }\npublic enum Role { Member, Admin }\n\npublic sealed record User(int Id, string Name, Role Role);\npublic sealed record Project(int Id, string Name, int OwnerId);\npublic sealed record TaskItem(\n    int Id, int ProjectId, string Title,\n    int? AssigneeId, Priority Priority, Status Status);\n\npublic static class DomainGuard\n{\n    public static void ValidTitle(string title)\n    {\n        if (title == null || title.Trim().Length == 0)\n            throw new System.ArgumentException(\"title required\");\n        if (title.Trim().Length > 120)\n            throw new System.ArgumentException(\"title too long\");\n    }\n\n    public static void Defined(Priority p)\n    {\n        if (!System.Enum.IsDefined(typeof(Priority), p))\n            throw new System.ArgumentException(\"bad priority\");\n    }\n\n    public static void Defined(Status s)\n    {\n        if (!System.Enum.IsDefined(typeof(Status), s))\n            throw new System.ArgumentException(\"bad status\");\n    }\n}\n\n// Provided infrastructure — do not modify. The async fake store the\n// engine's service is wired against: records puts, seeds initial items,\n// and completes synchronously (a fake, not a real DB).\npublic sealed class FakeStore\n{\n    public System.Collections.Generic.List<TaskItem> Puts { get; } = new System.Collections.Generic.List<TaskItem>();\n    public System.Collections.Generic.List<TaskItem> Seeds { get; } = new System.Collections.Generic.List<TaskItem>();\n    public bool Clog { get; set; }\n    public void Seed(TaskItem item) => Seeds.Add(item);\n    public System.Threading.Tasks.Task PutAsync(TaskItem item, System.Threading.CancellationToken ct)\n    {\n        if (Clog) throw new System.IO.IOException(\"disk full (simulated)\");\n        Puts.Add(item);\n        return System.Threading.Tasks.Task.CompletedTask;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "snapshot round-trips exactly",
+      "code": "\nvar tasks = new System.Collections.Generic.List<TaskItem> {\n    new TaskItem(1, 10, \"alpha\", null, Priority.High, Status.Todo),\n    new TaskItem(2, 10, \"beta\", 7, Priority.Low, Status.InProgress),\n};\nvar back = Solution.Load(Solution.Snapshot(tasks));\nCj.Eq(back.Length, 2, \"two items\");\nCj.Eq(back[0].Title, \"alpha\", \"first preserved\");\nCj.Eq(back[1].AssigneeId, 7, \"assignee preserved\");\nCj.Eq(back[1].Status, Status.InProgress, \"status preserved\");\n",
+      "hint": "Serialize camelCase + string enums; parse case-insensitively."
+    },
+    {
+      "name": "load tolerates its own output shape and case",
+      "code": "\nvar json = Solution.Snapshot(new System.Collections.Generic.List<TaskItem> {\n    new TaskItem(9, 3, \"gamma\", null, Priority.Medium, Status.Done),\n});\nCj.True(json.Contains(\"\\\"title\\\"\") || json.Contains(\"\\\"Title\\\"\"), \"looks like JSON\");\nvar back = Solution.Load(json);\nCj.Eq(back[0].Priority, Priority.Medium, \"enum decoded\");\nCj.True(back[0].AssigneeId == null, \"null assignee survives\");\n",
+      "hint": "Your loader must read what your writer wrote, whatever the casing."
+    },
+    {
+      "name": "BuildEngine hands the store to the service",
+      "code": "\nvar store = new FakeStore();\nvar engine = Solution.BuildEngine(store);\nvar id = engine.CreateAsync(10, \"wire me\", Priority.High, System.Threading.CancellationToken.None).GetAwaiter().GetResult();\nCj.Eq(id, 1, \"first id\");\nCj.Eq(store.Puts.Count, 1, \"one put\");\nCj.Eq(store.Puts[0].Title, \"wire me\", \"right item stored\");\nCj.Eq(store.Puts[0].Status, Status.Todo, \"opens in Todo\");\n",
+      "hint": "The composition root's job: one graph, collaborators injected."
+    },
+    {
+      "name": "ids continue across the store, cancellation is honored",
+      "code": "\nvar store = new FakeStore();\nstore.Seed(new TaskItem(41, 10, \"seeded\", null, Priority.Low, Status.Todo));\nvar engine = Solution.BuildEngine(store);\nvar id = engine.CreateAsync(10, \"next\", Priority.Low, System.Threading.CancellationToken.None).GetAwaiter().GetResult();\nCj.Eq(id, 42, \"id continues past seeds\");\nint putsBefore = store.Puts.Count;\nusing var cts = new System.Threading.CancellationTokenSource();\ncts.Cancel();\nbool cancelled = false;\ntry { engine.CreateAsync(10, \"never\", Priority.Low, cts.Token).GetAwaiter().GetResult(); }\ncatch (System.OperationCanceledException) { cancelled = true; }\nCj.True(cancelled, \"cancelled create throws OperationCanceledException\");\nCj.Eq(store.Puts.Count, putsBefore, \"cancelled create must persist nothing\");\n",
+      "hint": "Check the token before the store sees anything."
+    },
+    {
+      "name": "invalid input never reaches the store",
+      "code": "\nvar store = new FakeStore();\nvar engine = Solution.BuildEngine(store);\nbool threw = false;\ntry { engine.CreateAsync(10, \"   \", Priority.Low, System.Threading.CancellationToken.None).GetAwaiter().GetResult(); }\ncatch (System.ArgumentException) { threw = true; }\nCj.True(threw, \"blank title throws\");\nCj.Eq(store.Puts.Count, 0, \"store untouched\");\n",
+      "hint": "Validation gates before persistence — always."
+    },
+    {
+      "name": "store failures propagate to the caller",
+      "code": "\nvar store = new FakeStore();\nstore.Clog = true;\nvar engine = Solution.BuildEngine(store);\nbool failed = false;\ntry { engine.CreateAsync(10, \"blocked\", Priority.Low, System.Threading.CancellationToken.None).GetAwaiter().GetResult(); }\ncatch (System.IO.IOException) { failed = true; }\nCj.True(failed, \"the store failure reaches the caller\");\nCj.Eq(store.Puts.Count, 0, \"the failed put is not recorded as a success\");\n",
+      "hint": "Observe the store task; failures must surface, not vanish."
+    }
+  ],
+  "level": "mini-build"
+}

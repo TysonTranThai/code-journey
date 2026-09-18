@@ -1,0 +1,30 @@
+## The gate (mini-build)
+
+A `SecureUserStore` + file gateway, security-graded:
+
+1. `Register(username, password, byte[] salt)` — stores the PBKDF2 hash
+   (`KdfShape.Derive(password, salt, 100_000)`, hex via `KdfShape.Hex`);
+   registering an existing username throws `System.InvalidOperationException`.
+2. `Validate(username, password)` — true only for an existing user whose
+   recomputed hash matches; unknown user or wrong password → `false`, never
+   throws.
+3. Per-user salting — two users with the same password but different salts
+   must end up with *different* stored hashes (the test reads the store via
+   `HashOf(username)` and compares against the PBKDF2 reference).
+4. `FindUsername(string raw)` — treats the input strictly as data and returns
+   the matching username or `null` (an injection-shaped input is just a
+   non-existent username — the store is parameterized by construction).
+5. `OpenFile(string baseDir, string userPath)` — returns the resolved path or
+   `null` when it escapes (same rule as the practice set).
+
+```csharp
+public static class Solution
+{
+    public static void Register(string username, string password, byte[] salt);
+    public static bool Validate(string username, string password);
+    public static string HashOf(string username);          // stored hash, for the test
+    public static string FindUsername(string raw);         // data, not query text
+    public static string OpenFile(string baseDir, string userPath);
+}
+// provided: KdfShape.Derive / KdfShape.Hex (PBKDF2-SHA256, 32 bytes)
+```

@@ -1,0 +1,26 @@
+{
+  "id": "csi-p21-param-query",
+  "title": "Parameterize the Query",
+  "prompt": "`LoginQuery(sql)` builds a login lookup by pasting the username into\nthe query text — the classic injection. Write\n`Solution.BuildLoginQuery(string username)` returning the safe pair\n`(sql, parameterValue)`:\n\n```csharp\npublic static class Solution\n{\n    public static (string Sql, string Value) BuildLoginQuery(string username);\n}\n```\n\nContract, graded through the provided `CjQuery` engine (which mimics a real\ndriver: placeholders mean \"data\", pasted text means \"query\"):\n\n- the SQL contains a `@p0` placeholder — the username never appears in the\n  SQL text,\n- the username travels as the parameter value,\n- `CjQuery.MatchedUsers(sql, value)` returns `1` for a normal username and\n  for the injection attempt `\"' OR '1'='1\"` — the attack must be treated as\n  just a (nonexistent) username, never as \"match everything\".",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n\n// Provided infrastructure — do not modify. A toy SQL-shaped engine:\n// Run(sql, parameterValues) matches @pN placeholders with the given values\n// and reports how many Users rows the WHERE clause matched. Concatenated\n// \"values\" arrive as query TEXT and match everything — exactly like a real\n// injection.\npublic static class CjQuery\n{\n    public static int TotalUsers = 25;\n\n    public static int MatchedUsers(string sql, params string[] parameterValues)\n    {\n        if (!sql.Contains(\"WHERE\")) return TotalUsers;\n        int where = sql.IndexOf(\"WHERE\");\n        var clause = sql.Substring(where);\n        // real parameter placeholders (@p0, @p1, ...) mean the value is data\n        foreach (var pv in parameterValues)\n            clause = clause.Replace(\"'\" + pv + \"'\", \"\");\n        if (clause.Contains(\"'\")) return TotalUsers;   // a quote made it into query text\n        return 1;   // one user matched by value\n    }\n}\n",
+  "tests": [
+    {
+      "name": "normal user matches exactly one row",
+      "code": "\nvar (sql, val) = Solution.BuildLoginQuery(\"ada\");\nCj.True(sql.Contains(\"@p0\"), \"placeholder in SQL\");\nCj.Eq(val, \"ada\", \"username travels as the value\");\nCj.Eq(CjQuery.MatchedUsers(sql, val), 1, \"one row\");\n",
+      "hint": "The placeholder is in the SQL; the username is the parameter."
+    },
+    {
+      "name": "injection attempts match one row, not all",
+      "code": "\nvar (sql, val) = Solution.BuildLoginQuery(\"' OR '1'='1\");\nCj.True(!sql.Contains(\"' OR\"), \"attack text never enters the SQL\");\nCj.Eq(CjQuery.MatchedUsers(sql, val), 1, \"treated as a (nonexistent) username\");\n",
+      "hint": "If a quote reaches the query text, the engine matches everything."
+    },
+    {
+      "name": "sql shape stays parameterized for any input",
+      "code": "\nvar (sql, val) = Solution.BuildLoginQuery(\"'; DROP TABLE Users; --\");\nCj.True(sql.Contains(\"@p0\"), \"still a placeholder\");\nCj.True(!sql.Contains(\";\"), \"no terminator smuggled into SQL\");\nCj.Eq(val, \"'; DROP TABLE Users; --\", \"value carried intact as data\");\n",
+      "hint": "The value may be anything; the SQL must stay placeholder-shaped."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "csi-p22-reporting",
+  "title": "Milestone 4 — Reporting Pipelines",
+  "prompt": "LINQ over the store (all inputs are `TaskItem` lists; no mutation):\n\n```csharp\npublic static class Solution\n{\n    // \"P<projectId>:<openCount>:<doneCount>\" ordered by projectId ascending\n    public static System.Collections.Generic.List<string> Progress(\n        System.Collections.Generic.IReadOnlyList<TaskItem> tasks);\n\n    // ids of open (not Done) tasks of the given priority, highest priority\n    // first, ties by id ascending\n    public static System.Collections.Generic.List<int> Backlog(\n        System.Collections.Generic.IReadOnlyList<TaskItem> tasks, Priority priority);\n\n    // assigneeId -> count of their open tasks; unassigned (null) tasks are\n    // excluded; absent assignees simply do not appear\n    public static System.Collections.Generic.Dictionary<int, int> Workload(\n        System.Collections.Generic.IReadOnlyList<TaskItem> tasks);\n}\n```\n\nProvided types: `TaskItem`, `Priority`, `Status`.",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n\n// Provided infrastructure — do not modify. The engine's shared domain\n// types (all milestones build on these).\npublic enum Priority { Low, Medium, High }\npublic enum Status { Todo, InProgress, Done }\npublic enum Role { Member, Admin }\n\npublic sealed record User(int Id, string Name, Role Role);\npublic sealed record Project(int Id, string Name, int OwnerId);\npublic sealed record TaskItem(\n    int Id, int ProjectId, string Title,\n    int? AssigneeId, Priority Priority, Status Status);\n\npublic static class DomainGuard\n{\n    public static void ValidTitle(string title)\n    {\n        if (title == null || title.Trim().Length == 0)\n            throw new System.ArgumentException(\"title required\");\n        if (title.Trim().Length > 120)\n            throw new System.ArgumentException(\"title too long\");\n    }\n\n    public static void Defined(Priority p)\n    {\n        if (!System.Enum.IsDefined(typeof(Priority), p))\n            throw new System.ArgumentException(\"bad priority\");\n    }\n\n    public static void Defined(Status s)\n    {\n        if (!System.Enum.IsDefined(typeof(Status), s))\n            throw new System.ArgumentException(\"bad status\");\n    }\n}\n",
+  "tests": [
+    {
+      "name": "progress counts open vs done per project",
+      "code": "\nvar tasks = new System.Collections.Generic.List<TaskItem> {\n    new TaskItem(1, 10, \"a\", null, Priority.Low, Status.Done),\n    new TaskItem(2, 10, \"b\", null, Priority.Low, Status.Todo),\n    new TaskItem(3, 20, \"c\", null, Priority.Low, Status.InProgress),\n};\nCj.Eq(string.Join(\"|\", Solution.Progress(tasks)), \"P10:1:1|P20:1:0\", \"open/done per project, id order\");\n",
+      "hint": "GroupBy project, count by status, order by id."
+    },
+    {
+      "name": "backlog filters, sorts deterministically",
+      "code": "\nvar tasks = new System.Collections.Generic.List<TaskItem> {\n    new TaskItem(1, 10, \"a\", null, Priority.High, Status.Todo),\n    new TaskItem(2, 10, \"b\", null, Priority.High, Status.Done),\n    new TaskItem(3, 10, \"c\", null, Priority.High, Status.Todo),\n    new TaskItem(4, 10, \"d\", null, Priority.Medium, Status.Todo),\n};\nCj.Eq(string.Join(\",\", Solution.Backlog(tasks, Priority.High)), \"1,3\", \"open high, id order\");\n",
+      "hint": "Done tasks leave the backlog even at the same priority."
+    },
+    {
+      "name": "workload counts open tasks per assignee",
+      "code": "\nvar tasks = new System.Collections.Generic.List<TaskItem> {\n    new TaskItem(1, 10, \"a\", 5, Priority.Low, Status.Todo),\n    new TaskItem(2, 10, \"b\", 5, Priority.Low, Status.InProgress),\n    new TaskItem(3, 10, \"c\", 5, Priority.Low, Status.Done),\n    new TaskItem(4, 10, \"d\", 6, Priority.Low, Status.Todo),\n    new TaskItem(5, 10, \"e\", null, Priority.Low, Status.Todo),\n};\nvar w = Solution.Workload(tasks);\nCj.True(w.ContainsKey(5) && w[5] == 2, \"5 has two open\");\nCj.True(w.ContainsKey(6) && w[6] == 1, \"6 has one open\");\nCj.True(!w.ContainsKey(0), \"unassigned excluded\");\n",
+      "hint": "Done tasks do not weigh on anyone; nulls never become key 0."
+    }
+  ],
+  "level": "independent"
+}

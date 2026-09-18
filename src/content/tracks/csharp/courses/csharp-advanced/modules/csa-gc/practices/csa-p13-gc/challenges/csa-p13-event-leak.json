@@ -8,7 +8,7 @@
   "tests": [
     {
       "name": "unsubscribe-breaks-root",
-      "code": "var p = new Publisher();\nvar subs = Enumerable.Range(0, 10).Select(_ => new Subscriber(p)).ToList();\nvar wr = MakeWeak(subs[0]);\nSolution.UnsubscribeAll(p, subs);\nsubs.Clear();\nGC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();\nCj.False(wr.IsAlive, \"disposed subscriber is collectible\");\nstatic WeakReference MakeWeak(object o) => new(o);   // helper: nothing keeps `o` alive here",
+      "code": "var p = new Publisher();\nvar wr = Build(p);\nGC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();\nCj.False(wr.IsAlive, \"disposed subscriber is collectible\");\nstatic WeakReference Build(Publisher p)\n{\n    var inner = new List<Subscriber>();\n    for (int i = 0; i < 10; i++) inner.Add(new Subscriber(p));\n    var wr = new WeakReference(inner[0]);\n    Solution.UnsubscribeAll(p, inner);\n    inner.Clear();\n    return wr;   // helper scope: no strong ref to the subscriber escapes\n}",
       "hint": "Subscriber.Dispose must do p.Tick -= OnTick; the -= is what breaks the publisher→subscriber root."
     }
   ],

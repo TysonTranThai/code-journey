@@ -8,7 +8,7 @@
   "tests": [
     {
       "name": "cross-thread-flag",
-      "code": "Solution.Flag = false;\nvar setter = Task.Run(async () => { await Task.Delay(50); Solution.SetFlag(); });\nvar r = Solution.SpinUntilFlag(5_000);\nCj.Eq(r, 1, \"volatile read saw the other thread's write\");\nawait setter;",
+      "code": "Solution.Flag = false;\nawait Task.Delay(30);   // ensure the write lands while the spin is live\nvar setter = Task.Run(async () => { await Task.Delay(50); Solution.SetFlag(); });\nvar r = Solution.SpinUntilFlag(5_000);\nCj.Eq(r, 1, \"spin must re-read the flag until the write is visible\");\nawait setter;",
       "hint": "while (!Volatile.Read(ref Flag) && Stopwatch less than budget) Thread.Sleep(1); static bool Flag is a static field — Volatile.Read(ref Flag) needs the ref form: declare `private static bool _flag;` + `public static ref bool FlagRef` OR make SetFlag/Spin use a private static bool via Volatile APIs."
     }
   ],

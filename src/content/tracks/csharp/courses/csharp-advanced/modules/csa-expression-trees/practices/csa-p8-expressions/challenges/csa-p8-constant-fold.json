@@ -8,7 +8,7 @@
   "tests": [
     {
       "name": "folds",
-      "code": "Expression<Func<int, int>> e = x => x + (2 * 3);\nvar folded = Solution.FoldExpr(e);\nvar f = folded.Compile();\nCj.Eq(f(4), 10, \"x + 6\");\n// After folding, the tree no longer contains a Multiply node:\nbool hasMul = false;\nnew System.Linq.Expressions.ExpressionVisitor[] { };",
+      "code": "Expression<Func<int, int>> e = x => x + (2 * 3);\nvar folded = Solution.FoldExpr(e);\nvar f = folded.Compile();\nCj.Eq(f(4), 10, \"x + 6\");\nbool hasMul = false;\nnew Visitor(v => { if (v.NodeType == ExpressionType.Multiply) hasMul = true; }).Visit(folded);\nCj.False(hasMul, \"the constant 2*3 was folded away — no Multiply node remains\");",
       "hint": "Override VisitBinary: if Left/Right are ConstantExpression of int, return Expression.Constant(computed)."
     }
   ],

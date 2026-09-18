@@ -1,0 +1,19 @@
+## Cổng kiểm tra (mini-build)
+
+Hai đường nối, hình dạng cuối:
+
+1. **Vòng lặp JSON snapshot** — hiện thực
+   `Solution.Snapshot(...)` trả chuỗi JSON của danh sách (tên property
+   camelCase, enum dạng string) và `Solution.Load(string json)` phân tích lại
+   với tên case-insensitive. Round-trip phải giữ chính xác id, projectId,
+   title, assigneeId, priority, status (kể cả thứ tự).
+2. **Wiring** — `Solution.BuildEngine(FakeStore store)` dựng engine
+   như composition root: một `Service` trên kho đã cho. `Service` (lồng trong
+   `Solution`) phải có
+   `CreateAsync(...)`: validate title (`DomainGuard.ValidTitle`), cấp id
+   1,2,3…, lưu qua `PutAsync` của kho, tôn trọng hủy (kiểm tra
+   `ct.IsCancellationRequested` trước khi lưu; ném
+   `System.OperationCanceledException`), và trả id mới. `FakeStore` (cấp sẵn)
+   ghi nhận các lần put và có thể seed trước.
+
+Xem chữ ký `Solution` trong bản tiếng Anh.

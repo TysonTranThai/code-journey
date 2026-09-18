@@ -12,6 +12,11 @@
       "hint": "Order by Id: first = a.Id < b.Id ? a : b; TryEnter(first, 1000); TryEnter(second, 1000); finally-release both."
     },
     {
+      "name": "funds-guarded",
+      "code": "var a = new Account(1, 40); var b = new Account(2, 0);\nCj.Eq(Solution.SafeTransfer(a, b, 100), 0, \"insufficient funds transfers nothing\");\nCj.Eq(a.Balance, 40, \"source untouched\");\nCj.Eq(b.Balance, 0, \"target untouched\");",
+      "hint": "Check a.Balance < amount INSIDE the lock pair and bail out with 0 before any Debit."
+    },
+    {
       "name": "reverse-direction-safe",
       "code": "var a = new Account(1, 100); var b = new Account(2, 50);\nCj.Eq(Solution.SafeTransfer(b, a, 20), 1, \"b->a also succeeds (consistent order)\");\nCj.Eq(b.Balance, 30, \"reverse direction credited\"); Cj.Eq(a.Balance, 120, \"reverse direction debited\");",
       "hint": "Same lock order regardless of argument order — that is the whole fix."

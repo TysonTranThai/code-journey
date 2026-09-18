@@ -1,0 +1,18 @@
+{
+  "title": "Tham số hóa truy vấn",
+  "prompt": "`LoginQuery(sql)` dựng lookup đăng nhập bằng cách dán username vào văn bản query — injection kinh điển. Viết `Solution.BuildLoginQuery(string username)` trả cặp an toàn `(sql, parameterValue)`: SQL chứa placeholder `@p0`, username đi với tư cách giá trị tham số. Chấm qua engine `CjQuery` cấp sẵn: `MatchedUsers(sql, value)` phải trả 1 cho username thường và cho chuỗi tấn công `\"' OR '1'='1\"` — tấn công chỉ là một username (không tồn tại), không bao giờ là \"match mọi hàng\".",
+  "tests": [
+    {
+      "name": "normal user matches exactly one row",
+      "hint": "Placeholder nằm trong SQL; username là tham số."
+    },
+    {
+      "name": "injection attempts match one row, not all",
+      "hint": "Dấu nháy lọt vào văn bản query thì engine match tất cả."
+    },
+    {
+      "name": "sql shape stays parameterized for any input",
+      "hint": "Giá trị có thể là bất cứ gì; SQL phải giữ dạng placeholder."
+    }
+  ]
+}

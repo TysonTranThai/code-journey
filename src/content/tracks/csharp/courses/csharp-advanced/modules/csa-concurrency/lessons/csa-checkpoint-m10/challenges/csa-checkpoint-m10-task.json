@@ -1,7 +1,7 @@
 {
   "id": "csa-checkpoint-m10-task",
   "title": "Concurrency checkpoint",
-  "prompt": "Fix the counter race: implement `static long CountUnique(int[] values)` returning the count of distinct values using a ConcurrentDictionary as an atomic set — the test hammers it from 8 parallel tasks to prove there is no lost-update. Then implement `static bool TryAddIfAbsent(ConcurrentDictionary<string,int> d, string key, Func<string,int> compute)` that atomically adds a computed value ONLY if the key is absent — exactly once even under parallel calls (no double compute).",
+  "prompt": "Fix the counter race: implement `static long CountUnique(int[] values)` returning the count of distinct values using a ConcurrentDictionary as an atomic set — the test hammers it from 8 parallel tasks to prove there is no lost-update. Then implement `static bool TryAddIfAbsent(ConcurrentDictionary<string,int> d, string key, Func<string,int> compute)` that atomically adds a computed value ONLY if the key is absent — and never re-runs `compute` after the key exists: repeat calls return false WITHOUT invoking the factory.",
   "difficulty": "advanced",
   "language": "csharp",
   "boilerplate": "using System;\nusing System.Buffers;\nusing System.Collections.Concurrent;\nusing System.Collections.Generic;\nusing System.Collections.Immutable;\nusing System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing System.Diagnostics.Tracing;\nusing System.Globalization;\nusing System.IO;\nusing System.IO.Pipelines;\nusing System.Linq;\nusing System.Linq.Expressions;\nusing System.Net;\nusing System.Net.Http;\nusing System.Net.Sockets;\nusing System.Reflection;\nusing System.Reflection.Metadata;\nusing System.Reflection.PortableExecutable;\nusing System.Runtime.CompilerServices;\nusing System.Runtime.InteropServices;\nusing System.Runtime.Loader;\nusing System.Security.Cryptography;\nusing System.Text;\nusing System.Text.Json;\nusing System.Threading;\nusing System.Threading.Channels;\nusing System.Threading.Tasks;\n",
@@ -13,7 +13,7 @@
     },
     {
       "name": "compute-once",
-      "code": "var d = new ConcurrentDictionary<string, int>();\nint computed = 0;\nvar tasks = Enumerable.Range(0, 16).Select(_ => Task.Run(() =>\n    Solution.TryAddIfAbsent(d, \"k\", s => Interlocked.Increment(ref computed)))).ToArray();\nawait Task.WhenAll(tasks);\nCj.Eq(computed, 1, \"factory ran exactly once across 16 racers\");\nCj.Eq(d[\"k\"], 1, \"value present\");",
+      "code": "var d = new ConcurrentDictionary<string, int>();\nint computed = 0;\nCj.True(Solution.TryAddIfAbsent(d, \"k\", s => Interlocked.Increment(ref computed)), \"first add wins\");\nCj.False(Solution.TryAddIfAbsent(d, \"k\", s => Interlocked.Increment(ref computed)), \"repeat returns false\");\nCj.Eq(computed, 1, \"factory never re-runs once the key exists\");\nCj.Eq(d[\"k\"], 1, \"value present\");",
       "hint": "GetOrAdd's factory can run twice without publishing twice — you need TryGetValue first, then GetOrAdd, then compare which won... or use a Lazy<int> marker so double-compute is harmless but publish is atomic."
     }
   ]

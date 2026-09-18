@@ -1,0 +1,52 @@
+## Một quy tắc duy nhất
+
+**Dữ liệu người dùng là dữ liệu, không bao giờ là cấu trúc.** Cả họ injection
+xuất phát từ việc cho dữ liệu được phân tích như code hoặc cấu trúc:
+
+- SQL dựng bằng nối chuỗi → dữ liệu trở thành SQL,
+- đường dẫn chưa xử lý → dữ liệu trở thành một vị trí ngoài sandbox,
+- bí mật thô trong log → tệp log trở thành nơi rò rỉ.
+
+## SQL injection: nối chuỗi = dễ tổn thương
+
+```csharp
+// DỄ TỔN THƯƠNG: input được dán vào văn bản query
+var sql = "SELECT * FROM Users WHERE Name = '" + username + "'";
+// username = "' OR '1'='1"  ->  trả về mọi dòng
+```
+
+Chữa là **truy vấn tham số hóa**: gửi văn bản query với placeholder và giá trị
+tách riêng, để driver không bao giờ phân tích lại giá trị thành SQL:
+
+```csharp
+// AN TOÀN: giá trị đi dưới dạng dữ liệu
+var sql = "SELECT * FROM Users WHERE Name = @name";
+// command.Parameters.AddWithValue("@name", username);
+```
+
+Mọi data API thật (ADO.NET, EF Core, Dapper) đều hỗ trợ tham số. Dựng WHERE
+bằng nối chuỗi là lỗi kể cả khi "input đã được validate hôm nay" — validation
+trôi dạt, tham số thì không.
+
+## Path traversal: xử lý trước, giới hạn sau
+
+`Path.Combine(baseDir, userInput)` sẵn sàng tạo ra `/app/data/../../etc/passwd`.
+Hình dạng phòng thủ là **resolve trước, giới hạn sau**: triển khai đường dẫn
+gộp bằng `Path.GetFullPath`, rồi yêu cầu kết quả vẫn nằm trong thư mục gốc:
+
+```csharp
+var full = Path.GetFullPath(Path.Combine(baseDir, userInput));
+bool allowed = full.StartsWith(
+    Path.GetFullPath(baseDir) + Path.DirectorySeparatorChar);
+if (!allowed) throw new UnauthorizedAccessException();
+```
+
+`GetFullPath` là thứ gộp các đoạn `..` — kiểm tra chuỗi *chưa xử lý* không bắt
+được gì.
+
+## Log là một giao diện công khai
+
+Dòng log được tổng hợp, xuất đi, và đọc bởi người lẫn công cụ không có lý do gì
+biết bí mật của người dùng. Không bao giờ log: mật khẩu, token, số thẻ đầy đủ,
+định danh cá nhân không che. Log **chuyện gì xảy ra**, không log thông tin xác
+thực khiến nó xảy ra. Nếu cần định danh để đối chiếu, che nó (`"email=***"`).

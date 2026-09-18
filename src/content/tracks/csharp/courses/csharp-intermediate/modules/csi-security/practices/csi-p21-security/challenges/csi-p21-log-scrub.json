@@ -1,0 +1,26 @@
+{
+  "id": "csi-p21-log-scrub",
+  "title": "Audit Without Leaking",
+  "prompt": "`AuditLog.Write(action, email)` pastes the raw email into every\nline — the log file becomes a personal-data store. Write\n`Solution.Audit(string action, string email)` returning the safe line:\n\n```csharp\npublic static class Solution\n{\n    public static string Audit(string action, string email);\n}\n```\n\nContract:\n\n- the line is exactly `\"<action> email=***\"` — the email never appears,\n  not even partially, whatever its content,\n- `email` of `null` or empty produces the same `email=***` (nothing to\n  correlate, nothing to leak),\n- the action text is preserved verbatim (including spaces).",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "the raw email never reaches the line",
+      "code": "\nvar line = Solution.Audit(\"LOGIN_OK\", \"ada@example.com\");\nCj.Eq(line, \"LOGIN_OK email=***\", \"masked\");\nCj.True(!line.Contains(\"ada\"), \"no fragment of the identity\");\n",
+      "hint": "Mask fully; partial masking leaks partial identities."
+    },
+    {
+      "name": "empty or missing email still logs the action",
+      "code": "\nCj.Eq(Solution.Audit(\"LOGOUT\", \"\"), \"LOGOUT email=***\", \"empty email\");\nCj.Eq(Solution.Audit(\"LOGOUT\", null), \"LOGOUT email=***\", \"null email\");\n",
+      "hint": "No identity is not an error — it is just nothing to leak."
+    },
+    {
+      "name": "action text is preserved verbatim",
+      "code": "\nCj.Eq(Solution.Audit(\"PWD RESET REQUESTED\", \"x@y.z\"), \"PWD RESET REQUESTED email=***\", \"verbatim action\");\n",
+      "hint": "The event description is the useful part — keep it exact."
+    }
+  ],
+  "level": "imitation"
+}

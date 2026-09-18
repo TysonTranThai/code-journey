@@ -1,0 +1,41 @@
+## Two different questions
+
+- **Authentication** — *who* is this requester? (verify a credential: password
+  check, token validation.)
+- **Authorization** — *what* is this authenticated identity allowed to do?
+  (roles, ownership checks, least privilege.)
+
+They fail differently: a missing authn check lets strangers in; a missing
+authz check lets *valid* users do things they shouldn't (IDOR — acting on
+someone else's record id). Check both, in that order, at every boundary.
+
+## Password storage: salted slow hashes
+
+Databases get dumped. The stored form must be useless to the attacker:
+
+1. **Never plaintext.** Anyone with the file knows every password.
+2. **Never a bare digest** (`SHA256(password)`): digests are fast — GPUs try
+   billions per second — and identical passwords produce identical hashes
+   (rainbow tables).
+3. **Store `salt + slow-KDF(password, salt)`.** The salt is random per user,
+   stored in the clear next to the hash; it kills precomputation and makes
+   identical passwords hash differently across users. The KDF is a
+   *deliberately slow* function — PBKDF2 is in the box:
+
+```csharp
+using var kdf = new Rfc2898DeriveBytes(
+    password, salt, iterations: 100_000, HashAlgorithmName.SHA256);
+byte[] hash = kdf.GetBytes(32);
+```
+
+Verification recomputes with the *stored* salt and compares. Per-user salt +
+slow KDF are the two halves; either one alone is half a defense.
+
+## Least privilege and secrets
+
+- Run with the narrowest rights that work; a compromised component then
+  compromises less. Admin-only operations demand an explicit role check —
+  "the UI hides the button" is not a check.
+- Secrets (connection strings, API keys) live in configuration/environment,
+  referenced by code — never literals in source, and never in logs or
+  exception messages.

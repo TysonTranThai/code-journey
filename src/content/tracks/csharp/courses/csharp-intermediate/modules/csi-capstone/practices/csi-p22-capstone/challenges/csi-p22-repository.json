@@ -1,0 +1,31 @@
+{
+  "id": "csi-p22-repository",
+  "title": "Milestone 2 — Task Repository",
+  "prompt": "Implement the in-memory task store behind its interface — ID\nallocation included:\n\n```csharp\npublic sealed class TaskRepo : Solution.ITaskRepo\n{\n    public TaskRepo();                       // empty store\n    public int NextId();                     // starts at 1, monotonic\n    public TaskItem Add(int projectId, string title, Priority priority);  // allocates id, Todo, unassigned\n    public bool TryFind(int id, out TaskItem task);\n    public bool Update(TaskItem task);       // replace by id; false when missing\n    public System.Collections.Generic.IReadOnlyList<TaskItem> All();\n}\n\npublic interface ITaskRepo\n{\n    int NextId();\n    TaskItem Add(int projectId, string title, Priority priority);\n    bool TryFind(int id, out TaskItem task);\n    bool Update(TaskItem task);\n    System.Collections.Generic.IReadOnlyList<TaskItem> All();\n}\n```\n\nBoth types nest inside `Solution`. Rules:\n\n- IDs start at 1 and increase by one per `Add`, independent of removal\n  attempts (there are none — this repo never deletes),\n- `Add` stores the item as given (validation already happened at the\n  service),\n- `Update` replaces the whole item; unknown ids return `false` and change\n  nothing,\n- `All` returns a snapshot safe to enumerate while the repo keeps changing\n  (copy, not live view).",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n\n// Provided infrastructure — do not modify. The engine's shared domain\n// types (all milestones build on these).\npublic enum Priority { Low, Medium, High }\npublic enum Status { Todo, InProgress, Done }\npublic enum Role { Member, Admin }\n\npublic sealed record User(int Id, string Name, Role Role);\npublic sealed record Project(int Id, string Name, int OwnerId);\npublic sealed record TaskItem(\n    int Id, int ProjectId, string Title,\n    int? AssigneeId, Priority Priority, Status Status);\n\npublic static class DomainGuard\n{\n    public static void ValidTitle(string title)\n    {\n        if (title == null || title.Trim().Length == 0)\n            throw new System.ArgumentException(\"title required\");\n        if (title.Trim().Length > 120)\n            throw new System.ArgumentException(\"title too long\");\n    }\n\n    public static void Defined(Priority p)\n    {\n        if (!System.Enum.IsDefined(typeof(Priority), p))\n            throw new System.ArgumentException(\"bad priority\");\n    }\n\n    public static void Defined(Status s)\n    {\n        if (!System.Enum.IsDefined(typeof(Status), s))\n            throw new System.ArgumentException(\"bad status\");\n    }\n}\n",
+  "tests": [
+    {
+      "name": "ids are monotonic and Add stores the opening state",
+      "code": "\nvar repo = new Solution.TaskRepo();\nCj.Eq(repo.NextId(), 1, \"first id\");\nvar a = repo.Add(1, \"a\", Priority.Low);\nvar b = repo.Add(1, \"b\", Priority.High);\nCj.Eq(a.Id, 1, \"a gets 1\");\nCj.Eq(b.Id, 2, \"b gets 2\");\nCj.Eq(a.Status, Status.Todo, \"opens in Todo\");\nCj.True(a.AssigneeId == null, \"unassigned\");\n",
+      "hint": "The repo owns identity; the service never invents ids."
+    },
+    {
+      "name": "TryFind and Update round-trip",
+      "code": "\nvar repo = new Solution.TaskRepo();\nvar t = repo.Add(2, \"t\", Priority.Medium);\nCj.True(repo.TryFind(t.Id, out var found), \"found\");\nCj.Eq(found.Title, \"t\", \"same item\");\nvar moved = found with { Status = Status.InProgress, AssigneeId = 5 };\nCj.True(repo.Update(moved), \"update ok\");\nrepo.TryFind(t.Id, out var after);\nCj.Eq(after.Status, Status.InProgress, \"state advanced\");\nCj.Eq(after.AssigneeId, 5, \"assignee set\");\n",
+      "hint": "Update is replace-by-id; records make transitions explicit."
+    },
+    {
+      "name": "unknown ids fail without side effects",
+      "code": "\nvar repo = new Solution.TaskRepo();\nvar t = repo.Add(1, \"t\", Priority.Low);\nCj.True(!repo.Update(t with { Id = 999, Title = \"x\" }), \"unknown update false\");\nCj.True(repo.TryFind(t.Id, out var still) && still.Title == \"t\", \"store untouched\");\n",
+      "hint": "A failed mutation must leave the store exactly as it was."
+    },
+    {
+      "name": "All is a snapshot",
+      "code": "\nvar repo = new Solution.TaskRepo();\nrepo.Add(1, \"a\", Priority.Low);\nvar snap = repo.All();\nrepo.Add(1, \"b\", Priority.Low);\nCj.Eq(snap.Count, 1, \"snapshot is stable\");\nCj.Eq(repo.All().Count, 2, \"repo moved on\");\n",
+      "hint": "Enumerating a changing store needs a copy, not a view."
+    }
+  ],
+  "level": "independent"
+}

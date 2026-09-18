@@ -1,0 +1,55 @@
+## The one rule
+
+**User input is data, never structure.** The whole injection family comes
+from letting data be parsed as code or structure:
+
+- string-concatenated SQL → the data becomes SQL,
+- unresolved file paths → the data becomes a location outside the sandbox,
+- raw secrets in logs → the log file becomes the leak.
+
+## SQL injection: concatenate = vulnerable
+
+```csharp
+// VULNERABLE: input is pasted into the query text
+var sql = "SELECT * FROM Users WHERE Name = '" + username + "'";
+// username = "' OR '1'='1"  ->  returns every row
+// username = "'; DROP TABLE Users; --"  ->  destroys the table
+```
+
+The fix is **parameterized queries**: send the query text with placeholders
+and the values separately, so the driver can never re-parse values as SQL:
+
+```csharp
+// SAFE: value travels as data
+var sql = "SELECT * FROM Users WHERE Name = @name";
+// command.Parameters.AddWithValue("@name", username);
+```
+
+A parameter is honored by every real data API (ADO.NET, EF Core, Dapper).
+Building a WHERE clause by concatenation is a bug even when "input is
+validated today" — validation drifts, parameters don't.
+
+## Path traversal: resolve, then confine
+
+`Path.Combine(baseDir, userInput)` happily produces
+`/app/data/../../etc/passwd`. The defensive shape is **resolve first, then
+confine**: expand the combined path with `Path.GetFullPath`, then require
+the result to still be under the base directory:
+
+```csharp
+var full = Path.GetFullPath(Path.Combine(baseDir, userInput));
+bool allowed = full.StartsWith(
+    Path.GetFullPath(baseDir) + Path.DirectorySeparatorChar);
+if (!allowed) throw new UnauthorizedAccessException();
+```
+
+`GetFullPath` is what collapses `..` segments — checking the *unresolved*
+string catches nothing.
+
+## Logs are a public interface
+
+Log lines get aggregated, exported, and read by people and tools with no
+business knowing users' secrets. Never log: passwords, tokens, full card
+numbers, unmasked personal identifiers. Log **what happened**, not the
+credential that made it happen. If an identifier is needed for correlation,
+mask it (`"email=***"`).

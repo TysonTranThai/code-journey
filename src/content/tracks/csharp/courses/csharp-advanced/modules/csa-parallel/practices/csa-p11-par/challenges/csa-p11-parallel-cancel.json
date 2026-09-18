@@ -8,7 +8,7 @@
   "tests": [
     {
       "name": "first-match",
-      "code": "var data = new int[100_000];\nfor (int i = 0; i < data.Length; i++) data[i] = i;\ndata[42_000] = -1;\nCj.Eq(Solution.FirstMatch(data, x => x == -1, 4), 42_000, \"lowest index wins under parallelism\");",
+      "code": "var data = new int[100_000];\nfor (int i = 0; i < data.Length; i++) data[i] = i;\ndata[42_000] = -1; data[42_001] = -1;\nfor (int rep = 0; rep < 50; rep++)\n    Cj.Eq(Solution.FirstMatch(data, x => x == -1, 8), 42_000, \"lowest index wins, every rep\");",
       "hint": "Interlocked.CompareExchange(ref best, i, int.MaxValue) wins only when best is still MaxValue OR i is lower — a CAS loop keeping the minimum."
     },
     {

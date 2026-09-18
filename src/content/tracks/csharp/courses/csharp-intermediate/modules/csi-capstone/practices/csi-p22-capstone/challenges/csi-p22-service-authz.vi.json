@@ -1,0 +1,22 @@
+{
+  "title": "Cột mốc 3 — Service layer có phân quyền",
+  "prompt": "Các cổng của engine trong một service (kiểu lồng trong `Solution`): 1) **hợp lệ** — title qua `DomainGuard.ValidTitle`, priority hợp lệ; xấu -> `System.ArgumentException`; 2) **được phép** — `CreateTask`/`Assign` yêu cầu caller là chủ project hoặc `Admin`; không -> `System.InvalidOperationException`; 3) **có thể** — project/task/assignee không tồn tại -> `System.Collections.Generic.KeyNotFoundException`; 4) thành công — lưu task `Todo`, id tăng dần từ 1, `FindTask` trả item hoặc `null`.",
+  "tests": [
+    {
+      "name": "owner creates, admin creates, stranger does not",
+      "hint": "Phân quyền tường minh: chủ hoặc Admin, không ai khác."
+    },
+    {
+      "name": "validation fires before authorization",
+      "hint": "Thứ tự cổng là validate, phân quyền, tra tồn tại."
+    },
+    {
+      "name": "assign checks project ownership and known assignee",
+      "hint": "Gán lại theo cùng quy tắc chủ-hoặc-admin."
+    },
+    {
+      "name": "unknown references throw KeyNotFound",
+      "hint": "Lỗi tham chiếu là KeyNotFoundException — một cổng khác."
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+## What you are building
+
+A **Task Management Engine** — the core of a project tracker:
+
+- **Users** (`Id`, `Name`, `Role` ∈ `Admin`/`Member`),
+- **Projects** (`Id`, `Name`, `OwnerId`),
+- **Tasks** (`Id`, `ProjectId`, `Title`, `AssigneeId?`, `Priority` ∈
+  `Low`/`Medium`/`High`, `Status` ∈ `Todo`/`InProgress`/`Done`),
+- operations wrapped in a service layer with validation and authorization,
+  backed by a repository, reporting via LINQ, state persisted as JSON.
+
+## Domain first, and make invalid states unrepresentable
+
+Model choices as enums, not strings — the compiler then rejects half the bug
+space:
+
+```csharp
+public enum Priority { Low, Medium, High }
+public enum Status { Todo, InProgress, Done }
+```
+
+Validation lives **at the boundary** (the service methods that accept input),
+one place, not smeared through every consumer:
+
+- title: required, non-empty after trimming, ≤ 120 chars,
+- priority/status: must be a defined enum value (`Enum.IsDefined` — a cast
+  `(Priority)99` compiles and is garbage),
+- assignee must exist and belong to the same system the task belongs to.
+
+A failed check throws `ArgumentException` (input problem) — the service's
+contract. `InvalidOperationException` is reserved for state problems
+(completing an already-done task).
+
+## Records for entities
+
+Entities are immutable-with-replacement here: changing a task produces a new
+record in the store. Records give value equality and `with` — the engine's
+mutations become visible, comparable state transitions:
+
+```csharp
+public sealed record Task(
+    int Id, int ProjectId, string Title,
+    int? AssigneeId, Priority Priority, Status Status);
+
+var opened = t with { Status = Status.InProgress, AssigneeId = uid };
+```
+
+## IDs and the store
+
+The repository owns ID allocation (monotonic counter). Services never invent
+IDs. Everything else in the engine is built on this foundation.

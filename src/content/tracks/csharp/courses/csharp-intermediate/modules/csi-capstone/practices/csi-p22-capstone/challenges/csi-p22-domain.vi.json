@@ -1,0 +1,22 @@
+{
+  "title": "Cột mốc 1 — Validation domain task",
+  "prompt": "Cổng đầu tiên của engine: `Solution.ValidateTaskInput(string title, Priority priority, Status status)` ném `System.ArgumentException` khi title null/rỗng/khoảng trắng/đài hơn 120 ký tự sau trim hoặc enum không hợp lệ (ví dụ `(Priority)99`), trả title đã trim khi hợp lệ; và `Solution.NewTask(...)` trả `TaskItem` mới với `Status.Todo`, không gán. Dùng lại helper `DomainGuard` cấp sẵn, đừng viết lại kiểm tra.",
+  "tests": [
+    {
+      "name": "valid input trims and returns",
+      "hint": "Trim một lần ở ranh giới; mọi nơi dưới tin tưởng."
+    },
+    {
+      "name": "bad titles throw ArgumentException",
+      "hint": "Mọi quy tắc title cách nhau một ArgumentException."
+    },
+    {
+      "name": "out-of-range enum values are rejected",
+      "hint": "Cast không phải validation — Enum.IsDefined mới là."
+    },
+    {
+      "name": "NewTask opens in Todo with no assignee",
+      "hint": "Factory ghép validation và trạng thái mở."
+    }
+  ]
+}

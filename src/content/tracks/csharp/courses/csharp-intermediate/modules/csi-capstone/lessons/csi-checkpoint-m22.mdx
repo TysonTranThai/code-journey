@@ -1,0 +1,41 @@
+## The gate (mini-build)
+
+Two seams, final form:
+
+1. **JSON snapshot round-trip** — implement
+   `Solution.Snapshot(System.Collections.Generic.IReadOnlyList<TaskItem> tasks)` returning
+   the JSON string for the list (camelCase property names, enums as strings),
+   and
+   `Solution.Load(string json)` parsing it back with case-insensitive names.
+   Round-trip must preserve id, projectId, title, assigneeId, priority, and
+   status exactly (order included).
+2. **Wiring** — implement
+   `Solution.BuildEngine(FakeStore store)` that constructs the
+   engine as the composition root would: a `Service` over the given store,
+   returning it. The `Service` (nested in `Solution`, constructor takes
+   `FakeStore`) must expose
+   `System.Threading.Tasks.Task<int> CreateAsync(int projectId, string title, Priority priority, System.Threading.CancellationToken ct)`
+   — validates the title (`DomainGuard.ValidTitle`), allocates ids 1,2,3…,
+   stores via the store's
+   `Task PutAsync(TaskItem item, System.Threading.CancellationToken ct)`,
+   respects cancellation (a cancelled caller gets
+   `System.OperationCanceledException` and nothing is stored), surfaces store
+   failures to its caller, and returns the new id. `FakeStore` (provided) records puts and can be pre-seeded with
+   `Seed(TaskItem)`; its `Task PutAsync` completes synchronously (a fake),
+   and `Puts` lists what arrived.
+
+```csharp
+public static class Solution
+{
+    public static string Snapshot(System.Collections.Generic.IReadOnlyList<TaskItem> tasks);
+    public static TaskItem[] Load(string json);
+    public sealed class Service
+    {
+        public Service(FakeStore store);
+        public System.Threading.Tasks.Task<int> CreateAsync(int projectId, string title, Priority priority, System.Threading.CancellationToken ct);
+    }
+    public static Service BuildEngine(FakeStore store);
+}
+// provided: TaskItem, Priority, Status, DomainGuard.ValidTitle,
+// FakeStore { Task PutAsync(TaskItem, CancellationToken); List<TaskItem> Puts; void Seed(TaskItem); }
+```

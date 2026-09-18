@@ -1,0 +1,31 @@
+{
+  "id": "csi-p22-service-authz",
+  "title": "Milestone 3 — The Authorized Service Layer",
+  "prompt": "The engine's gates, in one service. Given provided user/project\nregistries (test seeds them through `Solution.Register`/`Solution.AddProject`),\nimplement:\n\n```csharp\npublic static class Solution\n{\n    public static void Register(int id, string name, Role role);\n    public static void AddProject(int id, string name, int ownerId);\n    public static int CreateTask(int callerId, int projectId, string title, Priority priority);\n    public static void Assign(int callerId, int taskId, int assigneeId);\n    public static TaskItem? FindTask(int taskId);\n}\n```\n\nBoth types nest inside `Solution`. Gates, in order:\n\n1. **valid input** — title via `DomainGuard.ValidTitle`, priority defined;\n   bad → `System.ArgumentException`,\n2. **allowed** — `CreateTask` requires the caller to be the project's owner\n   or an `Admin`; `Assign` requires the caller to be the task's project\n   owner or an `Admin`. Not allowed → `System.InvalidOperationException`,\n3. **possible** — unknown project/task/assignee/user →\n   `System.Collections.Generic.KeyNotFoundException`,\n4. success — `CreateTask` stores a `Todo` task (via your own repo logic or a\n   plain list — your choice, IDs 1,2,3…) and returns its id; `Assign` sets\n   the assignee; `FindTask` returns the item or `null`.",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n\n// Provided infrastructure — do not modify. The engine's shared domain\n// types (all milestones build on these).\npublic enum Priority { Low, Medium, High }\npublic enum Status { Todo, InProgress, Done }\npublic enum Role { Member, Admin }\n\npublic sealed record User(int Id, string Name, Role Role);\npublic sealed record Project(int Id, string Name, int OwnerId);\npublic sealed record TaskItem(\n    int Id, int ProjectId, string Title,\n    int? AssigneeId, Priority Priority, Status Status);\n\npublic static class DomainGuard\n{\n    public static void ValidTitle(string title)\n    {\n        if (title == null || title.Trim().Length == 0)\n            throw new System.ArgumentException(\"title required\");\n        if (title.Trim().Length > 120)\n            throw new System.ArgumentException(\"title too long\");\n    }\n\n    public static void Defined(Priority p)\n    {\n        if (!System.Enum.IsDefined(typeof(Priority), p))\n            throw new System.ArgumentException(\"bad priority\");\n    }\n\n    public static void Defined(Status s)\n    {\n        if (!System.Enum.IsDefined(typeof(Status), s))\n            throw new System.ArgumentException(\"bad status\");\n    }\n}\n",
+  "tests": [
+    {
+      "name": "owner creates, admin creates, stranger does not",
+      "code": "\nSolution.Register(1, \"own\", Role.Member);\nSolution.Register(2, \"adm\", Role.Admin);\nSolution.Register(3, \"out\", Role.Member);\nSolution.AddProject(10, \"p\", 1);\nCj.Eq(Solution.CreateTask(1, 10, \"owner task\", Priority.Low), 1, \"owner allowed\");\nCj.Eq(Solution.CreateTask(2, 10, \"admin task\", Priority.Low), 2, \"admin allowed\");\nbool threw = false;\ntry { Solution.CreateTask(3, 10, \"nope\", Priority.Low); }\ncatch (System.InvalidOperationException) { threw = true; }\nCj.True(threw, \"outsider refused\");\n",
+      "hint": "Authorization is explicit: owner or Admin, nobody else."
+    },
+    {
+      "name": "validation fires before authorization",
+      "code": "\nSolution.Register(1, \"own\", Role.Member);\nSolution.AddProject(10, \"p\", 1);\nbool threw = false;\ntry { Solution.CreateTask(99, 999, \"\", Priority.Low); }\ncatch (System.ArgumentException) { threw = true; }\nCj.True(threw, \"invalid input wins first\");\n",
+      "hint": "The gate order is validate, authorize, resolve."
+    },
+    {
+      "name": "assign checks project ownership and known assignee",
+      "code": "\nSolution.Register(1, \"own\", Role.Member);\nSolution.Register(5, \"dev\", Role.Member);\nSolution.AddProject(10, \"p\", 1);\nvar tid = Solution.CreateTask(1, 10, \"t\", Priority.Medium);\nSolution.Assign(1, tid, 5);\nCj.True(Solution.FindTask(tid)!.AssigneeId == 5, \"assigned\");\nbool threw = false;\ntry { Solution.Assign(5, tid, 1); }\ncatch (System.InvalidOperationException) { threw = true; }\nCj.True(threw, \"non-owner cannot assign\");\n",
+      "hint": "Reassignment follows the same owner-or-admin rule."
+    },
+    {
+      "name": "unknown references throw KeyNotFound",
+      "code": "\nSolution.Register(1, \"own\", Role.Member);\nSolution.AddProject(10, \"p\", 1);\nbool threwProject = false;\ntry { Solution.CreateTask(1, 999, \"t\", Priority.Low); }\ncatch (System.Collections.Generic.KeyNotFoundException) { threwProject = true; }\nCj.True(threwProject, \"unknown project\");\nbool threwAssign = false;\ntry { Solution.Assign(1, 999, 1); }\ncatch (System.Collections.Generic.KeyNotFoundException) { threwAssign = true; }\nCj.True(threwAssign, \"unknown task\");\n",
+      "hint": "Referential failures are KeyNotFoundException — a different gate."
+    }
+  ],
+  "level": "mini-build"
+}

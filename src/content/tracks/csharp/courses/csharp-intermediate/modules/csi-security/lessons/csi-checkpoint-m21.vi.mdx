@@ -1,0 +1,19 @@
+## Cổng kiểm tra (mini-build)
+
+`SecureUserStore` + cổng tệp, chấm theo bảo mật:
+
+1. `Register(username, password, byte[] salt)` — lưu hash PBKDF2
+   (`KdfShape.Derive(password, salt, 100_000)`, hex qua `KdfShape.Hex`);
+   đăng ký username đã tồn tại ném `System.InvalidOperationException`.
+2. `Validate(username, password)` — true chỉ khi người dùng tồn tại và hash
+   tính lại khớp; người lạ hoặc sai mật khẩu → `false`, không ném exception.
+3. Salt theo người dùng — hai người dùng cùng mật khẩu, salt khác nhau phải có
+   hash *khác nhau* (test đọc qua `HashOf(username)` và đối chiếu với tham
+   chiếu PBKDF2).
+4. `FindUsername(string raw)` — coi input thuần là dữ liệu, trả username khớp
+   hoặc `null` (input dạng injection chỉ là username không tồn tại — kho được
+   tham số hóa từ gốc).
+5. `OpenFile(string baseDir, string userPath)` — trả đường dẫn đã resolve hoặc
+   `null` khi thoát ra ngoài (cùng quy tắc với practice set).
+
+Xem chữ ký `Solution` trong bản tiếng Anh.

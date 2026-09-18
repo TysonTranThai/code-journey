@@ -8,7 +8,7 @@
   "tests": [
     {
       "name": "budget-math",
-      "code": "Cj.Eq(Slo.BudgetSeconds(2592000, 0.999), 2592.0, \"0.1% of 30 days\");\nvar (rem, ok) = Slo.Spend(2592000, 0.999, 1500);\nCj.Eq(rem, 1092.0, \"2592 − 1500\");\nCj.Eq(ok, true, \"within budget\");\nvar (rem2, ok2) = Slo.Spend(2592000, 0.999, 3000);\nCj.Eq(ok2, false, \"over budget\");",
+      "code": "Cj.Near(Slo.BudgetSeconds(2592000, 0.999), 2592.0, 1e-6, \"0.1% of 30 days\");\nvar (rem, ok) = Slo.Spend(2592000, 0.999, 1500);\nCj.Near(rem, 1092.0, 1e-6, \"2592 − 1500\");\nCj.Eq(ok, true, \"within budget\");\nvar (rem2, ok2) = Slo.Spend(2592000, 0.999, 3000);\nCj.Eq(ok2, false, \"over budget\");",
       "hint": "budget = window × (1 − slo); remaining = budget − downtime; within = downtime ≤ budget."
     }
   ],

@@ -1,0 +1,35 @@
+## Các thao tác và cổng của chúng
+
+Mỗi thao tác service trả lời ba câu hỏi, theo thứ tự:
+
+1. **Hợp lệ?** — hình dạng input (lesson 1). Input xấu → `ArgumentException`.
+2. **Được phép?** — phân quyền. Chỉ `Admin` thêm người dùng vào hệ thống; chỉ
+   chủ `OwnerId` của dự án (hoặc `Admin`) tạo task trong đó hoặc gán lại.
+   Không được phép → `InvalidOperationException` (vấn đề *trạng thái*).
+   Trong API thật, đây là 401/403; ở đây loại exception mang cùng ranh giới.
+3. **Có thể?** — project/task được tham chiếu có tồn tại? Thiếu →
+   `KeyNotFoundException` hoặc trả về `TryXxx`, tùy hợp đồng.
+
+## Repository sau interface
+
+Service của engine phụ thuộc interface `IUserStore`/`IProjectStore`/
+`ITaskStore`; bản in-memory phục vụ test, bản JSON-file phục vụ snapshot.
+Cùng code, rìa hoán đổi được — bài học module 11/15/19 ghép thành một hệ
+thống (xem chữ ký trong bản tiếng Anh).
+
+## Báo cáo chỉ là LINQ
+
+Quá hạn, khối lượng theo assignee, tiến độ dự án — đều là pipeline một lượt
+trên `All()` (ví dụ trong bản tiếng Anh).
+
+## Persistence như một snapshot
+
+JSON hai chiều: khi cần, serialize các kho (giá trị enum dạng string cho dễ
+đọc) ra tệp; khi khởi động, nạp vào. Quy tắc module 14 vẫn đúng — đọc
+case-insensitive, enum dạng string, và không bao giờ tin hình dạng tệp.
+
+## Async ở rìa
+
+I/O của kho là `async` (database thật cũng vậy); service ghép bằng `await`,
+truyền `CancellationToken`, và lớp UI không bao giờ block bằng `.Result` —
+hợp đồng module 9, lần cuối.

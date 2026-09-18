@@ -1,0 +1,35 @@
+## Hai câu hỏi khác nhau
+
+- **Xác thực (authentication)** — người yêu cầu *là ai*? (xác minh thông tin
+  xác thực: kiểm tra mật khẩu, xác thực token.)
+- **Phân quyền (authorization)** — định danh đã xác thực *được làm gì*?
+  (vai trò, kiểm tra quyền sở hữu, đặc quyền tối thiểu.)
+
+Chúng thất bại khác nhau: thiếu authn để người lạ vào; thiếu authz cho *người
+dùng hợp lệ* làm việc họ không được phép (IDOR — tác động lên bản ghi của
+người khác). Kiểm tra cả hai, theo thứ tự đó, tại mọi ranh giới.
+
+## Lưu trữ mật khẩu: hash chậm có salt
+
+Database bị đổ ra. Dạng lưu trữ phải vô dụng với kẻ tấn công:
+
+1. **Không bao giờ plaintext.** Ai có tệp là biết mọi mật khẩu.
+2. **Không bao giờ digest trần** (`SHA256(password)`): digest rất nhanh — GPU
+   thử hàng tỷ lần mỗi giây — và mật khẩu giống nhau cho hash giống nhau
+   (rainbow table).
+3. **Lưu `salt + slow-KDF(password, salt)`.** Salt ngẫu nhiên cho từng người
+   dùng, lưu rõ cạnh hash; nó vô hiệu hóa tính toán trước và làm mật khẩu
+   giống nhau hash khác nhau giữa các người dùng. KDF là hàm *cố ý chậm* —
+   PBKDF2 có sẵn trong .NET (xem ví dụ trong bản tiếng Anh).
+
+Xác minh tính lại với *salt đã lưu* rồi so sánh. Salt theo người dùng + KDF
+chậm là hai nửa của bài phòng thủ; thiếu một nửa là nửa vời.
+
+## Đặc quyền tối thiểu và bí mật
+
+- Chạy với quyền hẹp nhất còn chạy được; một thành phần bị chiếm sẽ chiếm được
+  ít hơn. Thao tác admin-only yêu cầu kiểm tra vai trò tường minh — "UI ẩn nút"
+  không phải là kiểm tra.
+- Bí mật (connection string, API key) nằm trong cấu hình/biến môi trường, code
+  tham chiếu đến — không bao giờ là literal trong source, và không bao giờ
+  xuất hiện trong log hay thông báo lỗi.

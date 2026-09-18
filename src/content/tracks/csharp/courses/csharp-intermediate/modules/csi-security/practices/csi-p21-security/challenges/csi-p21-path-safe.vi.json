@@ -1,0 +1,18 @@
+{
+  "title": "Giới hạn đường dẫn",
+  "prompt": "`FileLoader.Read(baseDir, userPath)` phục vụ tệp bằng cách gộp `baseDir` với bất cứ gì request mang theo — `../../secrets.txt` thoát ra ngoài. Viết `Solution.SafeResolve(string baseDir, string userPath)` trả đường dẫn đã resolve đầy đủ **hoặc `null` khi thoát khỏi `baseDir`**: resolve bằng `Path.GetFullPath(Path.Combine(...))`, rồi yêu cầu kết quả nằm dưới base đã resolve; đường dẫn trong (`\"reports/2026.csv\"`, `\"a/../b.txt\"` còn ở trong) hợp lệ; mọi lối thoát trả `null`; đường dẫn resolve đúng bằng `baseDir` cũng là `null`.",
+  "tests": [
+    {
+      "name": "normal paths resolve under the base",
+      "hint": "GetFullPath gộp các đoạn .. bên trong; kết quả vẫn ở trong."
+    },
+    {
+      "name": "traversal escapes are rejected",
+      "hint": "Resolve rồi yêu cầu prefix — kiểm tra chuỗi chưa resolve không thấy gì."
+    },
+    {
+      "name": "the base itself is not a servable file",
+      "hint": "Đường dẫn đúng bằng base là thư mục — từ chối."
+    }
+  ]
+}

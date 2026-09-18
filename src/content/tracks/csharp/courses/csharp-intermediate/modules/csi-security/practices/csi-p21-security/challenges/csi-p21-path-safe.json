@@ -1,0 +1,26 @@
+{
+  "id": "csi-p21-path-safe",
+  "title": "Confine the Path",
+  "prompt": "`FileLoader.Read(baseDir, userPath)` serves files by combining\n`baseDir` with whatever the request carries — `../../secrets.txt` escapes the\nsandbox. Write `Solution.SafeResolve(string baseDir, string userPath)`\nreturning the fully-resolved path **or `null` when it escapes `baseDir`**:\n\n```csharp\npublic static class Solution\n{\n    public static string SafeResolve(string baseDir, string userPath);\n}\n```\n\nRules:\n\n- resolve with `Path.GetFullPath(Path.Combine(...))`, then require the result\n  to stay under the resolved base directory (`GetFullPath(baseDir)` +\n  separator),\n- plain names and nested subpaths (`\"reports/2026.csv\"`, `\"a/../b.txt\"` as\n  long as the result stays inside) are allowed and returned fully resolved,\n- any escape — leading `/`, drive root, `..` past the top — returns `null`,\n- `userPath` that resolves exactly to `baseDir` itself is `null` (only files\n  under it are served).",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n",
+  "tests": [
+    {
+      "name": "normal paths resolve under the base",
+      "code": "\nvar p = Solution.SafeResolve(\"/app/data\", \"reports/2026.csv\");\nCj.True(p != null && p.EndsWith(\"reports/2026.csv\"), \"nested file allowed\");\nvar p2 = Solution.SafeResolve(\"/app/data\", \"a/../b.txt\");\nCj.True(p2 != null && p2.EndsWith(\"b.txt\"), \"inner .. that stays inside is fine\");\n",
+      "hint": "GetFullPath collapses inner .. segments; the result stays inside."
+    },
+    {
+      "name": "traversal escapes are rejected",
+      "code": "\nCj.Eq(Solution.SafeResolve(\"/app/data\", \"../../etc/passwd\"), null, \"up and out\");\nCj.Eq(Solution.SafeResolve(\"/app/data\", \"/etc/passwd\"), null, \"absolute escape\");\n",
+      "hint": "Resolve, then require the prefix — unresolved checks see nothing."
+    },
+    {
+      "name": "the base itself is not a servable file",
+      "code": "\nCj.Eq(Solution.SafeResolve(\"/app/data\", \".\"), null, \"the directory is not a file path\");\nCj.True(Solution.SafeResolve(\"/app/data\", \"notes.txt\") != null, \"a direct child still works\");\n",
+      "hint": "Exactly-base resolves to the base — refuse it."
+    }
+  ],
+  "level": "independent"
+}

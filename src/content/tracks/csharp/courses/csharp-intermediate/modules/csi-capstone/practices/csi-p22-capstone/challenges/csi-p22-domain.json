@@ -1,0 +1,31 @@
+{
+  "id": "csi-p22-domain",
+  "title": "Milestone 1 — Task Domain Validation",
+  "prompt": "The engine's first gate: `CreateTask` input validation. Write\n`Solution.ValidateTaskInput(string title, Priority priority, Status status)`\nwhich:\n\n- throws `System.ArgumentException` when the title is null, empty/whitespace\n  after trimming, or over 120 chars (after trim),\n- throws `System.ArgumentException` when priority or status is not a defined\n  enum value (e.g. `(Priority)99`),\n- returns the **trimmed** title when everything is valid,\n\nand `Solution.NewTask(int id, int projectId, string title, Priority priority)`\nreturning a new `TaskItem` with `Status = Status.Todo`, `AssigneeId = null`\n(title already validated/trimmed by you).\n\nProvided: `DomainGuard.ValidTitle/Defined` helpers — reuse them, do not\nre-implement the checks.\n\n```csharp\npublic static class Solution\n{\n    public static string ValidateTaskInput(string title, Priority priority, Status status);\n    public static TaskItem NewTask(int id, int projectId, string title, Priority priority);\n}\n```\n\nProvided types: `TaskItem(int Id, int ProjectId, string Title, int? AssigneeId, Priority Priority, Status Status)`, `Priority`, `Status`.",
+  "difficulty": "intermediate",
+  "language": "csharp",
+  "boilerplate": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Linq;\nusing System.Text;\n\n// Provided infrastructure — do not modify. The engine's shared domain\n// types (all milestones build on these).\npublic enum Priority { Low, Medium, High }\npublic enum Status { Todo, InProgress, Done }\npublic enum Role { Member, Admin }\n\npublic sealed record User(int Id, string Name, Role Role);\npublic sealed record Project(int Id, string Name, int OwnerId);\npublic sealed record TaskItem(\n    int Id, int ProjectId, string Title,\n    int? AssigneeId, Priority Priority, Status Status);\n\npublic static class DomainGuard\n{\n    public static void ValidTitle(string title)\n    {\n        if (title == null || title.Trim().Length == 0)\n            throw new System.ArgumentException(\"title required\");\n        if (title.Trim().Length > 120)\n            throw new System.ArgumentException(\"title too long\");\n    }\n\n    public static void Defined(Priority p)\n    {\n        if (!System.Enum.IsDefined(typeof(Priority), p))\n            throw new System.ArgumentException(\"bad priority\");\n    }\n\n    public static void Defined(Status s)\n    {\n        if (!System.Enum.IsDefined(typeof(Status), s))\n            throw new System.ArgumentException(\"bad status\");\n    }\n}\n",
+  "tests": [
+    {
+      "name": "valid input trims and returns",
+      "code": "\nvar t = Solution.ValidateTaskInput(\"  Ship the beta  \", Priority.High, Status.Todo);\nCj.Eq(t, \"Ship the beta\", \"trimmed\");\n",
+      "hint": "Trim once at the boundary; everyone downstream trusts it."
+    },
+    {
+      "name": "bad titles throw ArgumentException",
+      "code": "\nbool Threw(System.Action a) { try { a(); return false; } catch (System.ArgumentException) { return true; } }\nCj.True(Threw(() => Solution.ValidateTaskInput(\"\", Priority.Low, Status.Todo)), \"empty\");\nCj.True(Threw(() => Solution.ValidateTaskInput(\"   \", Priority.Low, Status.Todo)), \"whitespace\");\nCj.True(Threw(() => Solution.ValidateTaskInput(null, Priority.Low, Status.Todo)), \"null\");\nCj.True(Threw(() => Solution.ValidateTaskInput(new string('x', 121), Priority.Low, Status.Todo)), \"too long\");\n",
+      "hint": "Every title rule is one ArgumentException away."
+    },
+    {
+      "name": "out-of-range enum values are rejected",
+      "code": "\nbool ThrewP(Priority p) { try { Solution.ValidateTaskInput(\"t\", p, Status.Todo); return false; } catch (System.ArgumentException) { return true; } }\nbool ThrewS(Status s) { try { Solution.ValidateTaskInput(\"t\", Priority.Low, s); return false; } catch (System.ArgumentException) { return true; } }\nCj.True(ThrewP((Priority)99), \"undefined priority\");\nCj.True(ThrewS((Status)42), \"undefined status\");\nCj.True(!ThrewP(Priority.Medium), \"defined priority passes\");\n",
+      "hint": "A cast is not a validation — Enum.IsDefined is."
+    },
+    {
+      "name": "NewTask opens in Todo with no assignee",
+      "code": "\nvar task = Solution.NewTask(7, 3, \"  Wire the CI  \", Priority.High);\nCj.Eq(task.Id, 7, \"id preserved\");\nCj.Eq(task.ProjectId, 3, \"project preserved\");\nCj.Eq(task.Title, \"Wire the CI\", \"trimmed title\");\nCj.Eq(task.Status, Status.Todo, \"starts in Todo\");\nCj.True(task.AssigneeId == null, \"unassigned\");\n",
+      "hint": "The factory composes validation and the opening state."
+    }
+  ],
+  "level": "independent"
+}

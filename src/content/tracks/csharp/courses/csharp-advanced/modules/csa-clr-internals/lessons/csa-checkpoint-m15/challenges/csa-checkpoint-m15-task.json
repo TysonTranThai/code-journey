@@ -8,12 +8,12 @@
   "tests": [
     {
       "name": "inspect-sealed",
-      "code": "var (name, sealed_, count) = Solution.Inspect<string>();\nCj.True(name.Contains(\"String\"), \"full name\");\nCj.True(sealed_, \"string is sealed\");\nCj.True(count > 0, \"has methods\");",
+      "code": "var (name, sealed_, count) = Solution.Inspect<string>();\nCj.True(name.StartsWith(\"System.String\"), \"FullName, not bare Name\");\nCj.True(sealed_, \"string is sealed\");\nCj.True(count > 0, \"has methods\");",
       "hint": "typeof(T).FullName, .IsSealed, .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Length."
     },
     {
       "name": "dispatch-desc",
-      "code": "var v = new V();\nvar o = new O();\nCj.Eq(Solution.DispatchDescription(typeof(V)), \"direct\", \"plain class: direct\");\nCj.Eq(Solution.DispatchDescription(typeof(O)), \"virtual\", \"class declaring virtual: virtual\");\nclass V { public int M() => 1; }\nclass O { public virtual int M() => 2; }",
+      "code": "var v = new V();\nvar o = new O();\nCj.Eq(Solution.DispatchDescription(typeof(V)), \"direct\", \"plain class: direct\");\nCj.Eq(Solution.DispatchDescription(typeof(O)), \"virtual\", \"class declaring virtual: virtual\");",
       "hint": "m.IsVirtual is true for overrides too — require the method to declare a new virtual slot (IsVirtual && !IsFinal) or use DeclaredOnly and check for the `virtual` keyword via attributes."
     }
   ]

@@ -1,0 +1,44 @@
+## Bạn đang dựng gì
+
+Một **Task Management Engine** — lõi của một trình quản lý dự án:
+
+- **Users** (`Id`, `Name`, `Role` ∈ `Admin`/`Member`),
+- **Projects** (`Id`, `Name`, `OwnerId`),
+- **Tasks** (`Id`, `ProjectId`, `Title`, `AssigneeId?`, `Priority` ∈
+  `Low`/`Medium`/`High`, `Status` ∈ `Todo`/`InProgress`/`Done`),
+- các thao tác bọc trong service layer với validation và phân quyền, tựa trên
+  repository, báo cáo bằng LINQ, trạng thái lưu thành JSON.
+
+## Domain trước, và biến trạng thái sai thành không thể diễn đạt
+
+Model lựa chọn bằng enum, không phải string — compiler từ chối luôn một nửa
+không gian lỗi:
+
+```csharp
+public enum Priority { Low, Medium, High }
+public enum Status { Todo, InProgress, Done }
+```
+
+Validation nằm **tại ranh giới** (các method service nhận input), một chỗ,
+không rải khắp mọi nơi tiêu thụ:
+
+- title: bắt buộc, không rỗng sau khi trim, ≤ 120 ký tự,
+- priority/status: phải là giá trị enum hợp lệ (`Enum.IsDefined` — cast
+  `(Priority)99` vẫn compile và là rác),
+- assignee phải tồn tại trong cùng hệ thống với task.
+
+Kiểm tra thất bại ném `ArgumentException` (vấn đề input) — hợp đồng của
+service. `InvalidOperationException` dành cho vấn đề trạng thái (hoàn thành
+một task đã Done).
+
+## Record cho entity
+
+Entity ở đây là bất-variant-quá-thay-thế: đổi một task sinh một record mới
+trong kho. Record cho value equality và `with` — các mutation của engine trở
+thành chuyển đổi trạng thái nhìn thấy được, so sánh được (xem ví dụ trong bản
+tiếng Anh).
+
+## ID và kho
+
+Repository nắm việc cấp ID (bộ đếm tăng dần). Service không bao giờ tự đặt ID.
+Mọi thứ còn lại của engine dựng trên nền này.

@@ -13,7 +13,7 @@
     },
     {
       "name": "analyze-depth",
-      "code": "var root = new InvalidOperationException(\"r\");\nvar nested = new Exception(\"a\", new Exception(\"b\", new Exception(\"c\", root)));\nvar (d, rootType) = Solution.Analyze(nested);\nCj.Eq(d, 4, \"four levels deep\");\nCj.Eq(rootType, \"InvalidOperationException\", \"root type found\");",
+      "code": "var root = new InvalidOperationException(\"r\");\nvar nested = new Exception(\"a\", new Exception(\"b\", new Exception(\"c\", root)));\nvar (d, rootType) = Solution.Analyze(nested);\nCj.Eq(d, 3, \"three hops to the root\");\nCj.Eq(rootType, \"InvalidOperationException\", \"root type found\");",
       "hint": "Count hops to InnerException == null; record the last exception's GetType().Name."
     }
   ]

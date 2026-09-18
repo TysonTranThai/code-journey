@@ -1,0 +1,52 @@
+## Operations and their gates
+
+Each service operation answers three questions, in order:
+
+1. **Valid?** — input shape (lesson 1). Bad input → `ArgumentException`.
+2. **Allowed?** — authorization. Only an `Admin` adds users to the system;
+   only the project's `OwnerId` (or an `Admin`) creates tasks in it or
+   reassigns them. Not allowed → `InvalidOperationException` (a *state*
+   problem: this caller, this state). Bad actor knowledge is a 401/403 in a
+   real API; here the exception type carries the same boundary.
+3. **Possible?** — does the referenced project/task exist? Missing →
+   `KeyNotFoundException` or a `TryXxx` return, per the operation's contract.
+
+## Repositories behind interfaces
+
+The engine's services depend on `IUserStore`/`IProjectStore`/`ITaskStore`
+interfaces; an in-memory implementation backs tests, a JSON-file
+implementation backs snapshots. Same code, swappable edge — the module 11/15
+/19 lesson composed into one system:
+
+```csharp
+public interface ITaskStore
+{
+    Task Add(Task t);                 // Task = System.Threading.Tasks.Task
+    Task<Task?> Find(int id);
+    Task Update(Task t);
+    Task<System.Collections.Generic.IReadOnlyList<Task>> All();
+}
+```
+
+## Reporting is just LINQ
+
+Overdue, workload per assignee, project progress — all one-pass pipelines
+over `All()`:
+
+```csharp
+var open = tasks.Where(t => t.Status != Status.Done)
+                .GroupBy(t => t.AssigneeId)
+                .OrderByDescending(g => g.Count());
+```
+
+## Persistence as a snapshot
+
+JSON round-trip: on demand, serialize the stores (enum values as strings for
+readability) to a file; on boot, load. The rules from module 14 apply —
+case-insensitive reads, string enums, and never trusting a file's shape.
+
+## Async at the edges
+
+Store I/O is `async` (a real DB would be); the service composes with
+`await`, propagates `CancellationToken`, and the UI layer never blocks on
+`.Result` — the module 9 contract, one last time.

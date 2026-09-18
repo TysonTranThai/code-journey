@@ -13,7 +13,7 @@
     },
     {
       "name": "timeout-fires",
-      "code": "var slow = Task.Delay(60_000);\nvar ex = await Cj.ThrowsAsync<TimeoutException>(() => Solution.WithTimeout(slow, TimeSpan.FromMilliseconds(50)));\nCj.True(ex is not null, \"timeout throws\");",
+      "code": "var slow = Task.Delay(60_000).ContinueWith<string>(_ => \"never\");\nvar ex = await Cj.ThrowsAsync<TimeoutException>(() => Solution.WithTimeout(slow, TimeSpan.FromMilliseconds(50)));\nCj.True(ex is not null, \"timeout throws\");",
       "hint": "cts.CancelAfter(timeout); await task.WaitAsync(cts.Token) then translate OperationCanceledException to TimeoutException."
     }
   ]

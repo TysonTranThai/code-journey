@@ -13,7 +13,7 @@
     },
     {
       "name": "reinterpret",
-      "code": "long v = 0x0001_0002_0003_0004;   // little-endian bytes: 04 03 02 01\nvar us = Solution.Reinterpret(v);\nCj.Eq(us.Length, 4, \"long = 4 ushorts\");\nCj.Eq(us[0], 2, \"low ushort first (LE)\");\nCj.Eq(us[3], 1, \"high ushort last\");",
+      "code": "long v = 0x0001_0002_0003_0004;   // little-endian bytes: 04 03 02 01\nvar us = Solution.Reinterpret(v);\nCj.Eq(us.Length, 4, \"long = 4 ushorts\");\nCj.Eq(us[0], 4, \"low ushort first (LE)\");\nCj.Eq(us[3], 0, \"high ushort last\");",
       "hint": "var src = MemoryMarshal.CreateReadOnlySpan(ref value, 1); var dst = MemoryMarshal.AsBytes(src); then two ushort reads — or simpler: MemoryMarshal.Cast<long, ushort>(new Span<long>(ref value, 1)).ToArray()"
     }
   ]

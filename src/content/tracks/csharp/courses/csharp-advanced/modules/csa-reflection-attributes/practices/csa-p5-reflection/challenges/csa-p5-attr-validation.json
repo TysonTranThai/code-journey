@@ -8,7 +8,7 @@
   "tests": [
     {
       "name": "validation",
-      "code": "var bad = new Account { Age = 150, Score = 99 };\nvar r = Solution.Validate(bad);\nCj.Eq(r.Count, 1, \"one failure\");\nCj.Eq(r[0], \"Age\", \"Age out of range\");\nvar ok = new Account { Age = 30, Score = 50 };\nCj.Eq(Solution.Validate(ok).Count, 0, \"clean object\");",
+      "code": "var bad = new Account { Age = 150, Score = 99 };\nvar r = Solution.Validate(bad);\nCj.Eq(r.Count, 1, \"one failure\");\nCj.Eq(r[0], \"Age\", \"Age out of range\");\nvar ok = new Account { Age = 30, Score = 50 };\nCj.Eq(Solution.Validate(ok).Count, 0, \"clean object\");\nvar badProp = new Dto { Level = 500 };\nvar r2 = Solution.Validate(badProp);\nCj.Eq(r2.Count, 1, \"property members validated too\");\nCj.Eq(r2[0], \"Level\", \"property name reported\");",
       "hint": "type.GetMembers(BindingFlags.Public | BindingFlags.Instance); check MemberInfo.GetCustomAttribute<RangeAttribute>() — handle FieldInfo and PropertyInfo."
     }
   ],
