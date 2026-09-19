@@ -1,0 +1,26 @@
+{
+  "id": "hsgi-cp-m12-vault",
+  "title": "Checkpoint — Két sắt đúng mã",
+  "prompt": "**Bài toán.** K loại \"chìa khóa số\" mệnh giá c_k (dùng vô hạn). Mã\nkét là tổng ĐÚNG S. Hãy mở két với ÍT CHÌA KHÓA NHẤT; không mở được\nin −1.\n\n**Ràng buộc:** 1 ≤ K ≤ 100; 1 ≤ S ≤ 100000; 1 ≤ c_k ≤ 100000.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "tham lam gãy",
+      "code": "std::istringstream in(\"2 6\\n3 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "3+3 = 2; tham-lam-lớn-nhất chọn 4 trước rồi kẹt: 6−4 = 2 không đổi được → −1."
+    },
+    {
+      "name": "vô nghiệm",
+      "code": "std::istringstream in(\"2 3\\n5 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-1\\n\"));",
+      "hint": "Không tổ hợp nào ra 3."
+    },
+    {
+      "name": "S lớn — xu đơn",
+      "code": "std::istringstream in(\"1 100000\\n77777\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-1\\n\"));",
+      "hint": "77777×1 < 100000, ×2 = 155554 ≠ 100000 — một mệnh giá không chia hết: vô nghiệm."
+    }
+  ],
+  "level": "real-world"
+}

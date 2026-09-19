@@ -1,0 +1,52 @@
+## Tập hợp thành số
+
+n ≤ 20 phần tử → mọi tập con là một số nguyên mask: bit i bật = phần tử
+i được chọn. Các phép toán:
+
+- kiểm tra: `(mask >> i) & 1`
+- bật: `mask | (1 << i)`; tắt: `mask & ~(1 << i)`
+- đếm bit: `__builtin_popcount(mask)` (g++/clang đều có)
+- duyệt mọi tập con: `for (int m = 0; m < (1 << n); ++m)`
+
+2^20 ≈ 10^6 — vừa vặn; 2^25 ≈ 33 triệu × chi tiết trạng thái là chết.
+Ràng buộc n ≤ 20 là TÍN HIỆU bitmask.
+
+## Bài xếp lịch kinh điển
+
+n người, n việc, c[i][j] = chi phí gán người i làm việc j; mỗi việc một
+người. dp[mask] = chi phí nhỏ nhất gán xong popcount(mask) người ĐẦU
+TIÊN cho đúng các việc trong mask:
+
+```cpp
+const int FULL = (1 << n) - 1;
+vector<int> dp(1 << n, 1e9);
+dp[0] = 0;
+for (int m = 0; m < (1 << n); ++m) {
+    int i = __builtin_popcount(m);        // người kế tiếp
+    if (i >= n) continue;
+    for (int j = 0; j < n; ++j)
+        if (!(m & (1 << j)))
+            dp[m | (1 << j)] = min(dp[m | (1 << j)],
+                                   dp[m] + c[i][j]);
+}
+```
+
+Đáp án dp[FULL]. Thứ tự duyệt mask tăng dần an toàn: m | bit > m luôn.
+
+## Vì sao tham lam gãy
+
+Chọn người-i việc-rẻ-nhất trước có thể cướp việc rẻ của người khác.
+Ví dụ 2×2: c = [[1, 100], [2, 2]] — tham lam hàng cho i0→j0 (1), i1→j1
+(2): tổng 3... trùng tối ưu; đổi [[1,100],[1,2]]: tham lam 1+2 = 3 =
+tối ưu; một ví dụ gãy thật: [[1,2],[2,1]]: tham lam 1+1 = 2 — tối ưu;
+2×2 khó gãy, 3×3 mới lộ: bài tập sẽ có test cụ thể. Bitmask DP luôn
+ĐÚNG vì xét mọi cách phân — 2^n·n phép.
+
+## Mẹo duyệt
+
+Không cần kiểm popcount mỗi lần nếu gán người = popcount — đó là "trục
+thời gian". Với bài không có trục (ví dụ gói thùng), duyệt trực tiếp
+mọi mask và dùng bit thấp nhất (m & −m) để tách.
+
+**Điểm mấu chốt:** mask = tập; popcount = số người đã gán; mỗi chuyển
+thstates bật một bit; n ≤ 20 là điều kiện sống.

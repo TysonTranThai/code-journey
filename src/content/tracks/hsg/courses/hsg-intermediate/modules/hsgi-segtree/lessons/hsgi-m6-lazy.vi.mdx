@@ -1,0 +1,67 @@
+## Khoảng trống
+
+Cộng x vào mọi a[i] trong [l, r] — tức 2·10^5 cập nhật điểm, O(n log n)
+mỗi thao tác: chết. Lười hóa đưa CẬP NHẬT ĐOẠN về O(log n).
+
+### Bất biến thức
+
+Nút bị phủ toàn bộ KHÔNG đi xuống. Nó áp thay đổi lên giá trị của chính
+mình ngay lập tức (cộng đoạn x trên nút phủ k phần tử: value += x·k) và
+ghi TAG: "mọi thứ bên dưới còn nợ +x". Tag chỉ bị đẩy xuống con khi một
+thao tác sau này thực sự đi qua nút.
+
+```cpp
+struct LazySeg {                       // cộng đoạn, tổng đoạn
+    int n;
+    vector<long long> t, lz;           // t[v] = tổng của nút
+    LazySeg(int n_) : n(n_), t(4*n_), lz(4*n_) {}
+    void push(int v, int lo, int mid, int hi) {   // trao tag cho con
+        if (lz[v]) {
+            t[2*v]   += lz[v] * (mid - lo + 1);
+            t[2*v+1] += lz[v] * (hi - mid);
+            lz[2*v]   += lz[v];        // tag CỘNG dồn (cập nhật cộng)
+            lz[2*v+1] += lz[v];
+            lz[v] = 0;
+        }
+    }
+    void add(int v, int lo, int hi, int l, int r, long long x) {
+        if (r < lo || hi < l) return;
+        if (l <= lo && hi <= r) {      // phủ trọn: dừng, đặt tag
+            t[v] += x * (hi - lo + 1);
+            lz[v] += x;
+            return;
+        }
+        int mid = (lo + hi) / 2;
+        push(v, lo, mid, hi);
+        add(2*v, lo, mid, l, r, x);
+        add(2*v+1, mid+1, hi, l, r, x);
+        t[v] = t[2*v] + t[2*v+1];
+    }
+    long long query(int v, int lo, int hi, int l, int r) {
+        if (r < lo || hi < l) return 0;
+        if (l <= lo && hi <= r) return t[v];
+        int mid = (lo + hi) / 2;
+        push(v, lo, mid, hi);          // phải push trước khi xuống
+        return query(2*v, lo, mid, l, r) + query(2*v+1, mid+1, hi, l, r);
+    }
+};
+```
+
+### Hai lỗi kinh điển
+
+1. **Quên push trước khi đi xuống** trong query — đọc giá trị cũ bên
+   dưới tag chưa đẩy. (Trong `add`, push nằm ngay trước khi đệ quy; còn
+   trong query đó là chỗ duy nhất con được biết tag.)
+2. **Quy tắc dồn tag sai loại cập nhật.** Cộng đoạn: tag CỘNG dồn
+   (lz[child] += lz[parent]). Gán đoạn (a[i] := x): tag GHI ĐÈ
+   (lz[child] = x) và cần giá trị "không tag" đánh dấu. Trộn hai quy tắc
+   = sai im lặng.
+
+### Trung thực về khấu hao
+
+Mỗi thao tác đẩy O(log n) tag trên một đường gốc — xấu nhất thật sự là
+O(log n) mỗi thao tác, không phải khấu hao. n, q = 2·10^5 cho
+2·10^5 · 18 · (hằng số) ≈ 10^7: dư dả ngân sách.
+
+**Điểm mấu chốt:** nút phủ trọn → áp dụng + đặt tag, không đi xuống;
+push chỉ khi đi qua; quy tắc tag theo loại cập nhật.

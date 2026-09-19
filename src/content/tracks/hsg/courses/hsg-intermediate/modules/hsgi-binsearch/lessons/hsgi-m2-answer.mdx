@@ -1,0 +1,51 @@
+## The pattern
+
+The answer is a *number*, and feasibility is **monotonic**: if x works, every
+x' ≤ x works (minimization) or every x' ≥ x works (maximization). Then binary
+search the answer over its range.
+
+Signatures that scream "binary search on answer":
+- "tối thiểu hóa khoảng cách lớn nhất", "tối đa hóa khoảng cách nhỏ nhất"
+- "chia thành k phần sao cho phần lớn nhất nhỏ nhất"
+- "đặt m trạm sao cho khoảng cách tối thiểu lớn nhất"
+- ANY "min-max" / "max-min" phrasing
+
+### Worked example — aggressive signal placement
+
+"n vị trí trục, đặt c trạm, khoảng cách giữa hai trạm gần nhau nhất phải lớn
+nhất có thể."
+
+F(d) = "đặt được ≥ c trạm, mỗi trạm cách trạm trước ≥ d" — greedy: place the
+first at the leftmost point, then always the next point ≥ last + d. O(n) per
+check, monotonic (nếu đặt được với khoảng cách d thì đặt được với d' < d) →
+binary search d.
+
+```cpp
+bool F(long long d) {
+    int placed = 1;
+    long long last = a[0];
+    for (int i = 1; i < n; ++i)
+        if (a[i] - last >= d) { ++placed; last = a[i]; }
+    return placed >= c;
+}
+// Shape B over d in [1, a[n-1] - a[0]]
+```
+
+### The check must be HONEST
+
+Two ways students cheat `check(x)`:
+1. **Silent approximation** — "đủ gần đúng là được". The check must be the
+   *exact* decision procedure for the reduced problem, or the search converges
+   to garbage. The garbage is silent: no crash, just wrong answers on
+   adversarial tests.
+2. **Wrong complexity** — a check that is O(n^2) turns the whole thing into
+   O(n^2 log n). Compute it: n = 10^5 → 10^10 · 17 — dead. The check needs to
+   fit the same budget logic as everything else.
+
+### What binary search on answer is NOT for
+
+- Non-monotonic feasibility (then: sweep, DP, or parametric search — Advanced).
+- When the answer is not a simple number but a structure (then: constructive /
+  greedy with proof — M4).
+
+**Next:** [Checkpoint](./hsgi-cp-m2)

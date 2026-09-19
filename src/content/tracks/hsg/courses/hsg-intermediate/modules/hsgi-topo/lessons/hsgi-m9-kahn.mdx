@@ -1,0 +1,50 @@
+## The problem
+
+n công việc, m ràng buộc "u phải trước v". In MỘT thứ tự hợp lệ — hoặc
+báo IMPOSSIBLE khi ràng buộc xoay vòng. Đây là thứ tự topo (topological
+order) trên đồ thị CÓ HƯỚNG KHÔNG CHU TRÌNH (DAG).
+
+### Kahn's algorithm
+
+Đỉnh in-degree 0 là đỉnh không phụ thuộc ai — lấy trước. Lấy ra, trừ
+in-degree của mọi đỉnh nó trỏ tới; về 0 thì vào hàng đợi.
+
+```cpp
+int n, m;
+vector<vector<int>> adj;          // u -> v
+vector<int> deg;                  // in-degree
+
+vector<int> topo() {
+    queue<int> bq;
+    for (int i = 1; i <= n; ++i)
+        if (deg[i] == 0) bq.push(i);
+    vector<int> order;
+    while (!bq.empty()) {
+        int u = bq.front(); bq.pop();
+        order.push_back(u);
+        for (int v : adj[u])
+            if (--deg[v] == 0) bq.push(v);
+    }
+    // ít hơn n đỉnh: chu trình chặn các đỉnh còn lại
+    return order;                 // size() < n ⇒ IMPOSSIBLE
+}
+```
+
+### The cycle verdict
+
+order.size() < n: các đỉnh còn lại nằm trên (hoặc sau) chu trình —
+in-degree không bao giờ về 0. In −1. Đây là bài kiểm tra chu trình
+CÓ HƯỚNG rẻ nhất (O(n + m)) — khác với chu trình vô hướng của Beginner.
+
+### Tie-breaking (đề hay đòi)
+
+"Thứ tự nhỏ nhất theo từ điển": thay queue bằng min-heap, mỗi bước lấy
+đỉnh NHỎ NHẤT trong số in-degree 0. O((n + m) log n).
+
+### Two classic bugs
+
+1. Quên ++deg[v] cho cạnh — mọi đỉnh trông tự do, thứ tự sai ngay.
+2. Kiểm tra deg[v] == 0 TRƯỚC khi trừ — mất đỉnh. Luôn trừ rồi kiểm.
+
+**Điểm mấu chốt:** in-degree 0 vào hàng; lấy ra → trừ con; thiếu n =
+chu trình.

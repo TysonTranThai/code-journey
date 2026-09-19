@@ -1,0 +1,50 @@
+## Kadane — tổng đoạn liên tiếp lớn nhất
+
+best(i) = tổng đoạn lớn nhất KẾT THÚC tại i. Mỗi bước một quyết định:
+nối vào đoạn trước (best(i-1) + a[i]) hay khởi động lại (a[i]):
+
+```cpp
+long long best = a[0], cur = a[0];
+for (int i = 1; i < n; ++i) {
+    cur = max((long long)a[i], cur + a[i]);   // nối hay khởi động lại
+    best = max(best, cur);
+}
+```
+
+Lỗi kinh điển: khởi tạo best = 0. Nếu MỌI phần tử âm (cho phép), đáp án
+là phần tử ít âm nhất — KHÔNG phải 0, trừ khi đề cho phép đoạn rỗng.
+Đọc kỹ: "đoạn rỗng có được chọn không?"
+
+### LCS — bảng đầy đủ thì chết
+
+dp[i][j] = LCS của tiền tố a[0..i) và b[0..j):
+
+- a[i-1] == b[j-1]: dp = dp[i-1][j-1] + 1
+- khác: dp = max(dp[i-1][j], dp[i][j-1])
+
+Bảng n×m với n = m = 5000 → 25 triệu long long ≈ 200 MB: quá bộ nhớ
+2 − 256 MB tùy judge. Nhìn chuyển trạng thái: hàng i chỉ đọc hàng i−1
+→ giữ HAI hàng (cuộn):
+
+```cpp
+vector<long long> prev(m + 1), cur(m + 1);
+for (int i = 1; i <= n; ++i) {
+    for (int j = 1; j <= m; ++j) {
+        if (a[i-1] == b[j-1]) cur[j] = prev[j-1] + 1;
+        else cur[j] = max(prev[j], cur[j-1]);
+    }
+    swap(prev, cur);      // hàng cũ thành hàng trước
+}
+```
+
+Đáp án = prev[m] sau vòng lặp. O(n·m) thời gian, O(m) bộ nhớ.
+
+### Nhận diện
+
+- "đoạn liên tiếp, tổng lớn nhất" → Kadane.
+- "dãy con chung" hai chuỗi → LCS.
+- Khối lượng n·m tới 25 triệu là bình thường cho thời gian; chỉ bộ nhớ
+  mới buộc cuộn hàng.
+
+**Điểm mấu chốt:** Kadane = max(nối, khởi động lại); LCS = hai hàng là
+đủ — thời gian giữ nguyên, bộ nhớ giảm n lần.

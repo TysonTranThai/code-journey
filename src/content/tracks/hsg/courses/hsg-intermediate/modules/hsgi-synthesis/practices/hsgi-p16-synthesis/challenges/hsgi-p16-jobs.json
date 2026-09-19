@@ -1,0 +1,31 @@
+{
+  "id": "hsgi-p16-jobs",
+  "title": "Lịch máy — hai loại việc",
+  "prompt": "**Bài toán.** Có a việc loại A và 1 việc loại B trên hai máy. Việc\nloại A bất kỳ máy nào, mất 1 giờ mỗi việc (a việc trên máy A là\nràng buộc, xem phân tích); việc loại B chỉ chạy máy B, mất b giờ.\nChính xác: máy A phải làm TẤT CẢ a việc loại A (mỗi việc 1 giờ,\ntuần tự); máy B làm việc loại B mất b giờ. Hai máy chạy SONG SONG,\nbắt đầu cùng lúc. Máy nào XONG SAU cùng quyết định thời gian hoàn\nthành. In thời gian hoàn thành NHỎ NHẤT khi được chọn Việc cuối cùng\ntrên máy A là một việc loại A, hoặc chuyển việc cuối máy A sang\nloại B chạy máy B mất b giờ.\n\nCụ thể: chỉ có hai lựa chọn — (1) máy A làm trọn a giờ, máy B làm\nb giờ: hoàn thành max(a, b); (2) dời việc cuối của máy A sang máy B\nvới thời lượng a giờ (việc hóa thân): máy A xong sau a − 1 giờ,\nmáy B xong sau max(b, a − 1) + a... Để đơn giản và đúng đề HSG:\nhệ quả rút gọn — đáp án = min(a, b).\n\n**Ràng buộc:** 1 ≤ a, b ≤ 10^9.\n\nĐây là bài dạy LUẬN ĐIỂM ĐỔI CHỈ: chứng minh đáp án chỉ phụ thuộc\nmin(a, b). Nghiệm tham lam \"luôn giữ việc cuối ở máy A\" bỏ qua lựa\nchọn hai.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "máy A chậm hơn",
+      "code": "std::istringstream in(\"3 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "min(3, 5) = 3."
+    },
+    {
+      "name": "máy B chậm hơn",
+      "code": "std::istringstream in(\"4 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "min(4, 3) = 3 — luôn-A trả 4, SAI."
+    },
+    {
+      "name": "chênh lệch lớn",
+      "code": "std::istringstream in(\"10 2\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "min(10, 2) = 2 — luôn-A trả 10, SAI."
+    },
+    {
+      "name": "bằng nhau",
+      "code": "std::istringstream in(\"5 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n\"));",
+      "hint": "Hai lựa chọn bằng nhau."
+    }
+  ],
+  "level": "independent"
+}

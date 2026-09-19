@@ -1,0 +1,47 @@
+## Vấn đề
+
+Đếm vị trí p trong t: quét từng vị trí O(|t|·|p|) — 10^6 × 10^6 chết.
+
+## Hàm tiền tố
+
+pi[i] = biên dài nhất của p[0..i] (tiền tố = hậu tố, không tính cả
+xâu):
+
+```cpp
+vector<int> pi(m, 0);
+for (int i = 1; i < m; ++i) {
+    int j = pi[i-1];
+    while (j > 0 && p[i] != p[j]) j = pi[j-1];
+    if (p[i] == p[j]) ++j;
+    pi[i] = j;
+}
+```
+
+## Quét văn bản — không lùi
+
+```cpp
+int j = 0;
+for (int i = 0; i < n; ++i) {
+    while (j > 0 && t[i] != p[j]) j = pi[j-1];
+    if (t[i] == p[j]) ++j;
+    if (j == m) {
+        // khớp kết thúc tại i
+        j = pi[j-1];
+    }
+}
+```
+
+i chỉ tăng; j giảm bị chặn bởi j tăng: O(n + m) amortized.
+
+## Khung nhớ nhanh
+
+s = p + '#' + t; tính pi trên s; pi[i] == m → một lần xuất hiện kết
+thúc tại i.
+
+## Khi nào KHÔNG cần KMP
+
+So một cặp: trực tiếp. Nhiều cặp cùng xâu: băm tiền tố. KMP cho "mẫu
+ở đâu" — |p| nhỏ |t| lớn, hoặc cần mọi vị trí.
+
+**Điểm mấu chốt:** pi = biên dài nhất; text không lùi; O(n+m);
+p+'#'+t.

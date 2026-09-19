@@ -1,0 +1,31 @@
+## 1. Tìm kiếm nhị phân — off-by-one ranh giới
+
+`lo + (hi - lo) / 2` không phóng to cho phép "nhảy qua" đáp án nằm ở
+hi. Dạng chuẩn cho "thấp nhất thỏa": giữ thêm biến `ans` ghi lại vị
+trí hợp lệ cuối cùng; không phụ thuộc vào việc hi kết thúc ở đâu.
+
+## 2. Comparator EDF — sai chiều sort
+
+deadline SỚM phải xử lý TRƯỚC → sort tăng dần theo deadline. Đảo chiều
+(vì vô tình so `a.deadline > b.deadline` trong `operator<`) làm toàn bộ
+lịch hỏng: test nhỏ 2 việc đã phát hiện.
+
+## 3. Tham lam sai hướng — dấu của t
+
+Mỗi phần tử có thời lượng riêng; sort theo TỐT NHẤT CỦA TỪNG PHẦN TỬ
+(không phải theo hàng đứng của ma trận lợi nhuận). Trước khi tin một
+tham lam: dựng test phản ví dụ 2–3 phần tử.
+
+## 4. Tràn số do init
+
+`long long best = 0` sai khi đáp án hợp lệ có thể âm. Kiểu "biến phụ
++ cờ đầu tiên" an toàn tuyệt đối.
+
+## 5. Modulo âm
+
+C++: `(x % p)` giữ dấu của x. Sau mọi phép trừ: `r = (r % p + p) % p`.
+Tràn trước modulo — 10^18 chia dư 10^9+7 vẫn sai nếu nhân hai số
+10^9 (dùng __int128 hoặc nhân Nga).
+
+**Điểm mấu chốt:** mỗi lỗi có test phản ví dụ điển hình; học test đó
+là học sửa lỗi đó.

@@ -1,0 +1,31 @@
+{
+  "id": "hsgi-p14-primecheck",
+  "title": "Kiểm tra số lớn",
+  "prompt": "**Bài toán.** Q truy vấn số x_i (tới 10^12); in PRIME hoặc\nCOMPOSITE (mỗi dòng một kết quả). x_i = 1 → COMPOSITE.\n\n**Ràng buộc:** 1 ≤ Q ≤ 100; 1 ≤ x_i ≤ 10^12.\n\nMột số lớn một lần → chia thử tới sqrt (10^6 phép) — không cần sàng.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ",
+      "code": "std::istringstream in(\"4\\n2\\n999999999989\\n1000000000000\\n1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"PRIME\\nPRIME\\nCOMPOSITE\\nCOMPOSITE\\n\"));",
+      "hint": "999999999989 là nguyên tố lớn (kiểm biết); 10^12 = (10^6)² hợp số; 1 → COMPOSITE."
+    },
+    {
+      "name": "bình phương nguyên tố",
+      "code": "std::istringstream in(\"2\\n104729\\n10968163441\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"PRIME\\nCOMPOSITE\\n\"));",
+      "hint": "104729 nguyên tố; 10968163441 = 104729² — hợp số có ước duy nhất lớn (chia thử tới 10^5 mới tìm ra)."
+    },
+    {
+      "name": "số chẵn lớn",
+      "code": "std::istringstream in(\"2\\n999999999998\\n999999999989\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"COMPOSITE\\nPRIME\\n\"));",
+      "hint": "Chẵn > 2 luôn hợp số — thoát sớm; 999999999989 nguyên tố (ước nhỏ nhất > 10^6)."
+    },
+    {
+      "name": "Q trùng",
+      "code": "std::istringstream in(\"3\\n998244353\\n998244353\\n998244353\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"PRIME\\nPRIME\\nPRIME\\n\"));",
+      "hint": "998244353 — hằng số NTT kinh điển, nguyên tố."
+    }
+  ],
+  "level": "independent"
+}

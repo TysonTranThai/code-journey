@@ -1,0 +1,49 @@
+## Minimum points to cover intervals
+
+"Chọn ít điểm nhất sao cho mỗi đoạn chứa ít nhất một điểm." Sort by **right
+end**; always place the point at the right end of the first uncovered interval.
+
+```cpp
+sort(v.begin(), v.end(), [](auto& a, auto& b){ return a.second < b.second; });
+long long last = LLONG_MIN;   // point already placed
+int cnt = 0;
+for (auto [l, r] : v)
+    if (l > last) { ++cnt; last = r; }    // new point at r
+```
+
+Why right ends? Placing a point further right can never hurt intervals
+*starting later*, and it covers the current interval. (Exchange argument:
+any optimal solution's points can be slid right to their first covered
+interval's end without losing coverage.)
+
+### Minimum rooms — the tie convention
+
+"n ca học [l, r], cần tối thiểu bao nhiêu phòng?" — the classic answer: sweep
+events +1 at every start, −1 at every end, **but the tie order depends on the
+statement**:
+
+- a class ending at time t and another starting at t **can share a room**
+  (room frees instantly): process **ends before starts** at equal time →
+  −1 before +1;
+- if the problem says cleanup takes a moment (or intervals are closed and
+  sharing is forbidden): process **starts before ends** → +1 before −1.
+
+M1's overlap counting (−1 at r+1) is the second convention: touching
+intervals overlapped. Here the statement decides. **Read the statement, pick
+the convention, state it in your solution.**
+
+```cpp
+// reusable-room convention: (time, type) with end < start in sort order
+vector<pair<long long,int>> ev;
+for (auto [l, r] : v) { ev.push_back({r, -1}); ev.push_back({l, +1}); }
+sort(ev.begin(), ev.end());      // (-1 sorts before +1 at equal time)
+int cur = 0, rooms = 0;
+for (auto [t, d] : ev) { cur += d; rooms = max(rooms, cur); }
+```
+
+### Free time
+
+"Khoảng rảnh chung của mọi người" = complement of the union of busy intervals:
+merge busy (lesson 3.1), then walk gaps between merged intervals.
+
+**Next:** [Checkpoint](./hsgi-cp-m3)

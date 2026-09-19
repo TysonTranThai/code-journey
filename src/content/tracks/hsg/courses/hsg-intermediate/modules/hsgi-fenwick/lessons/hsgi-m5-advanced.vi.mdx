@@ -1,0 +1,57 @@
+## Nén tọa độ
+
+Chỉ số Fenwick là vị trí, nhưng đề nói bằng GIÁ TRỊ tới 10^9 — không thể cấp
+phát 10^9 ô. Nếu chỉ n ≤ 2·10^5 giá trị *có vai trò* (chỉ thứ tự tương đối),
+ánh xạ giá trị → hạng:
+
+```cpp
+vector<int> vals = a;                     // bản sao
+sort(vals.begin(), vals.end());
+vals.erase(unique(vals.begin(), vals.end()), vals.end());
+int rank_of = lower_bound(vals.begin(), vals.end(), x) - vals.begin() + 1;
+// hạng trong [1, m], m ≤ n — Fenwick cỡ m
+```
+
+Nhận diện: đáp án chỉ phụ thuộc THỨ TỰ (so sánh), không độ lớn. Nếu cần tổng
+các giá trị thật, nén mất thông tin — đừng.
+
+### Prefix MAX — cây một chiều
+
+tree[i] = max trên phạm vi lowbit của nó. Cập nhật leo LÊN bằng
+`i += i & -i`, nên phần tử chỉ có thể tăng — cây này **không xóa hay giảm
+được**. Thường là đủ: "max prefix nhìn thấy tới thời điểm t" chỉ tăng.
+
+```cpp
+void update(int i, int v) {          // ch=max(tree[i], v), một chiều
+    for (; i <= n; i += i & -i) t[i] = max(t[i], v);
+}
+int query(int i) {                   // max a[1..i]
+    int s = 0;
+    for (; i > 0; i -= i & -i) s = max(s, t[i]);
+    return s;
+}
+```
+
+Cần giảm → segment tree (M6).
+
+### Nghịch thế — phép ghép kinh điển
+
+"Nghịch thế" = cặp (i, j), i < j, a[i] > a[j]. Đếm trong O(n log n):
+quét trái→phải; với mỗi a[j], số nghịch thế KẾT TẠI j = số phần tử trước
+LỚN HƠN a[j].
+
+```cpp
+// nén, Fenwick trên hạng giá trị
+long long inv = 0;
+for (int j = 0; j < n; ++j) {
+    int r = rank(a[j]);
+    inv += (long long)(j) - query(r);   // đã thấy j phần tử, query(r) trong đó ≤ a[j]
+    add(r, 1);
+}
+```
+
+Tổng nghịch thế tới n(n−1)/2 ≈ 2·10^10 với n = 2·10^5 — **bắt buộc long long**.
+Phép ghép này (nén → Fenwick → quét với một đồng nhất thức đếm) là mẫu TÁI SỬ
+DỤNG nhất của khóa học.
+
+**Tiếp:** [Điểm kiểm tra](./hsgi-cp-m5)

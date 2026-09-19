@@ -1,0 +1,31 @@
+{
+  "id": "hsgi-p13-hampath",
+  "title": "Đếm đường đi qua mọi đỉnh",
+  "prompt": "**Bài toán.** Đồ thị VÔ HƯỚNG n đỉnh, m cạnh. Đếm số đường đi từ\nđỉnh 0 qua MỌI đỉnh ĐÚNG MỘT LẦN, theo mô-đun 10^9 + 7.\n\n**Ràng buộc:** 1 ≤ n ≤ 18; 0 ≤ m ≤ n(n−1)/2; đỉnh đánh số 1..n (0 là\nđỉnh 1).",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ — chuỗi",
+      "code": "std::istringstream in(\"4 3\\n1 2\\n2 3\\n3 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Chuỗi 1-2-3-4: đường duy nhất."
+    },
+    {
+      "name": "một đỉnh",
+      "code": "std::istringstream in(\"1 0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Đường rỗng ghé đỉnh 0: đúng một cách."
+    },
+    {
+      "name": "ngôi sao — không thể",
+      "code": "std::istringstream in(\"4 3\\n1 2\\n1 3\\n1 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Lá phải quay lại trung tâm: không có đường Hamilton → 0."
+    },
+    {
+      "name": "đủ cạnh — phức hợp",
+      "code": "std::istringstream in(\"4 5\\n1 2\\n1 3\\n1 4\\n2 3\\n3 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Từ đỉnh 1: 1-2-3-4 và 1-4-3-2 — đúng hai đường (bắt đầu cố định)."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,42 @@
+## Balo 0/1 — bảng đầy đủ
+
+n món (w_i, v_i), sức chứa W. Bảng 2D nén một mảng, duyệt j TỪ LỚN
+XUỐNG:
+
+```cpp
+vector<long long> dp(W + 1, 0);
+for (int i = 0; i < n; ++i)
+    for (int j = W; j >= w[i]; --j)          // NGƯỢC
+        dp[j] = max(dp[j], dp[j - w[i]] + v[i]);
+```
+
+### Vì sao ngược
+
+Khi tính dp[j], dp[j − w_i] còn là giá trị HÀNG TRƯỚC (chưa đụng món
+i) → mỗi món MỘT lần. Duyệt xuôi: dp[j − w_i] vừa cập nhật bằng món i
+→ món dùng LẠI — bài không giới hạn!
+
+### Không giới hạn — xuôi
+
+Đổi tiền kiểu k, tổng S:
+
+```cpp
+vector<int> dp(S + 1, INF); dp[0] = 0;
+for (int k = 0; k < K; ++k)
+    for (int s = w[k]; s <= S; ++s)          // XUÔI
+        if (dp[s - w[k]] + 1 < dp[s]) dp[s] = dp[s - w[k]] + 1;
+```
+
+### Một mảng, hai chính sách
+
+- 0/1: NGƯỢC — mỗi món một lần.
+- Unbounded: XUÔI — vô hạn.
+Lỗi contest kinh điển: khung 0/1 nhưng vòng xuôi → kết quả phình âm
+thầm trên test lớn.
+
+### Bộ nhớ và thời gian
+
+O(n·W) thời gian, O(W) bộ nhớ. n = 3000, W = 8000 → 24 triệu phép:
+thoải mái. W tới 10^9 → KHÔNG dùng balo thường.
+
+**Điểm mấu chốt:** "ngược một lần, xuôi vô hạn".

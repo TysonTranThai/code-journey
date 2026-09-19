@@ -1,0 +1,50 @@
+## The definition
+
+Đường kính: số cạnh (hoặc tổng trọng số) của đường đi DÀI NHẤT trên cây.
+Đường đi trên cây = đường giữa hai đỉnh — KHÔNG nhất quán đi qua gốc.
+
+### The near-miss to kill first
+
+"Chiều cao cây từ gốc" ≠ đường kính. Cây 1–2, 1–3, 2–4, 3–5: chiều cao
+từ 1 là 2, đường kính là 4 (4–2–1–3–5). Mọi nghiệm "từ gốc đi
+xuống" đều sai khi đường dài nhất nằm giữa hai nhánh.
+
+### The DP
+
+Với mỗi u, down[u] = đường đi dài nhất XUỐNG XUỐNG từ u (đi vào một cây
+con). Khi duyệt u, hai giá trị tốt nhất trong các down[child] + w(u, c)
+cho đường đi tốt nhất CHỨA u như khúc khuỷu:
+
+```cpp
+long long best = 0;
+// duyệt theo BFS order (cha trước con), xử lý NGƯỢC:
+for (int i = order.size() - 1; i >= 0; --i) {
+    int u = order[i];
+    // down[u] đã sẵn sàng (đã cộng từ con)
+    long long d1 = 0, d2 = 0;          // hai nhánh tốt nhất
+    // khi xử lý u: gộp mỗi con c một lần
+    // d1 ≥ d2
+    // best = max(best, d1 + d2);        // đường qua u
+    // xuống cha: down[par] = max(down[par], d1 + w)
+}
+```
+
+Chi tiết cài đặt: duyệt ngược BFS order; với mỗi u giữ d1, d2 = hai giá
+trị lớn nhất của (down[c] + w(u,c)) cho con c; cập nhật best bằng
+d1 + d2 và đẩy d1 + w lên cha. Mỗi cạnh xử lý đúng một lần: O(n).
+
+### The two-BFS alternative
+
+Phép "ma thuật" kinh điển: BFS từ đỉnh bất kỳ → đỉnh a xa nhất; BFS từ
+a → đỉnh b xa nhất; khoảng cách a–b là đường kính. ĐÚNG cho cây (có
+chứng minh) nhưng bí ẩn hơn; DP ở trên là khung tổng quát dùng lại được
+cho trọng số, đếm đường, v.v. Hãy thuộc DP; two-BFS chỉ để kiểm chéo.
+
+### Why graphs break this
+
+Trên đồ thị tổng quát, đường dài nhất là NP-khó. Cây đặc biệt: đường
+giữa hai đỉnh DUY NHẤT — DP hợp lệ. Nhận diện "cây + đường dài nhất" →
+DP hai nhánh.
+
+**Điểm mấu chốt:** down[u] = nhánh tốt nhất; đường qua u = d1 + d2;
+đáp án KHÔNG phải chiều cao từ gốc.

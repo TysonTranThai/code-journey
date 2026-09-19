@@ -1,0 +1,46 @@
+## Bài toán cộng dồn thường không giải nổi
+
+Mảng cộng dồn trả tổng đoạn trong O(1) — nhưng một lần a[i] += x buộc dựng
+lại O(n). Với n, q = 2·10^5 trộn cập nhật và truy vấn, O(nq) = 4·10^10: chết.
+
+Cây Fenwick giữ *một số* tổng riêng phần để cả hai thao tác tốn O(log n).
+
+### Giải phẫu: i & -i
+
+`i & -i` cô lập bit 1 thấp nhất của i:
+- tree[i] lưu tổng đoạn kết thúc tại i với độ dài lowbit(i):
+  tree[6] = a[5] + a[6] (lowbit(6) = 2), tree[8] = a[1..8] (lowbit = 8).
+
+```cpp
+int n;
+vector<long long> t;                 // ĐÁNH SỐ TỪ 1 — chỉ số 0 không dùng!
+
+void add(int i, long long v) {       // a[i] += v
+    for (; i <= n; i += i & -i) t[i] += v;
+}
+long long query(int i) {             // tổng a[1..i]
+    long long s = 0;
+    for (; i > 0; i -= i & -i) s += t[i];
+    return s;
+}
+// đoạn [l, r] = query(r) - query(l - 1)
+```
+
+Vì sao O(log n)? `i += i & -i` leo lên node phủ tiếp phạm vi của i (tối đa
+log2 n bước với n ≤ 2·10^5: cỡ 18); `i -= i & -i` gỡ bit thấp nhất (cũng
+≤ 18 bước).
+
+### Kỷ luật đánh số từ 1
+
+Chỉ số 0 phá vỡ sơ đồ: lowbit(0) = 0 → lặp vô hạn. Mọi lỗi Fenwick dạng "chạy
+mãi mãi" hay "truy vấn sai ở đầu mảng" đều là rò rỉ chỉ số 0. Đổi sang 1-index
+ngay lúc đọc dữ liệu.
+
+### Khi nào Fenwick, khi nào cộng dồn?
+
+- mảng tĩnh, nhiều tổng → cộng dồn (đơn giản hơn, O(1)/truy vấn);
+- cập nhật xen truy vấn → Fenwick;
+- cập nhật ĐOẠN cộng v vào mọi phần tử → hai Fenwick (mẹo: mảng hiệu + Fenwick)
+  hoặc segment tree có lazy (M6).
+
+**Tiếp:** [Nén, Max, Nghịch thế](./hsgi-m5-advanced)

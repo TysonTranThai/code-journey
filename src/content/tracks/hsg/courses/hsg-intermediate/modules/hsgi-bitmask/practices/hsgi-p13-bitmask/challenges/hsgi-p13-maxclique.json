@@ -1,0 +1,31 @@
+{
+  "id": "hsgi-p13-maxclique",
+  "title": "Nhóm bạn thân thiết",
+  "prompt": "**Bài toán.** n bạn, m cặp \"thân thiết\". Chọn nhóm LỚN NHẤT mà mọi\ncặp trong nhóm đều thân thiết (clique). In kích thước nhóm.\n\n**Ràng buộc:** 1 ≤ n ≤ 20; 0 ≤ m ≤ 100.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ — tam giác",
+      "code": "std::istringstream in(\"4 3\\n1 2\\n2 3\\n1 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "{1,2,3} clique; đỉnh 4 không nối ai."
+    },
+    {
+      "name": "không cặp nào",
+      "code": "std::istringstream in(\"3 0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Nhóm một người luôn hợp lệ."
+    },
+    {
+      "name": "toàn bộ",
+      "code": "std::istringstream in(\"4 6\\n1 2\\n1 3\\n1 4\\n2 3\\n2 4\\n3 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\n\"));",
+      "hint": "Đồ thị đầy đủ: cả bốn."
+    },
+    {
+      "name": "hai tam giác ghép",
+      "code": "std::istringstream in(\"6 7\\n1 2\\n2 3\\n1 3\\n3 4\\n4 5\\n5 6\\n4 6\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "Tam giác {1,2,3} hoặc {4,5,6}; 3 là cầu — nhóm 4+ không clique."
+    }
+  ],
+  "level": "independent"
+}

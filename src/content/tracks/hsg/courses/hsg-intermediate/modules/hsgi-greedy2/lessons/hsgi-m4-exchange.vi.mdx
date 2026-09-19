@@ -1,0 +1,44 @@
+## Mẫu chứng minh
+
+Tham lam khẳng định: một thứ tự sắp nào đó (theo p, theo deadline, theo tỉ
+số...) là tối ưu. Chứng minh bằng **đổi chỗ kề nhau**: lấy bất kỳ lời giải tối
+ưu nào mà hai phần tử kề nhau vi phạm thứ tự đó; đổi chỗ chúng; chứng minh
+mục tiêu không tệ đi. Lặp lại thu hẹp khoảng cách giữa "một lời giải tối ưu"
+và "thứ tự đã sắp".
+
+### Ví dụ 1 — tối thiểu tổng thời gian chờ (SPT)
+
+Một máy, công việc có thời gian p_i, thời gian chờ của việc i = tổng p của
+mọi việc trước nó. Khẳng định: việc ngắn nhất trước là tối ưu.
+
+Chứng minh đổi chỗ: với hai việc kề a (dài) trước b (ngắn), đổi chỗ làm tổng
+chờ thay đổi p_a − p_b ≥ 0... dễ nhất là tính delta của cặp trên một ví dụ
+2 việc bằng số rồi khái quát — ĐÓ chính là kỹ năng phòng thi: tính delta đổi
+chỗ bằng ví dụ nhỏ, không cần đại số.
+
+### Ví dụ 2 — tối thiểu trễ tối đa (EDF)
+
+Việc (p_i, d_i); thời điểm xong f_i; độ trễ L_i = max(0, f_i − d_i). Khẳng
+định: sắp theo deadline (sớm nhất trước) tối thiểu hóa max L. Đổi chỗ: nếu
+d_a > d_b mà a trước b, đổi chỗ giữ nguyên tập thời điểm xong là f và f + p của
+cặp, và deadline MUỘN nhận thời điểm xong MUỘN không làm max tăng.
+
+### Ví dụ 3 — chi phí ghép (kiểu Huffman)
+
+n sợi dây, ghép hai sợi tốn tổng độ dài; ghép tất cả thành một, tối thiểu tổng
+chi phí. Khẳng định: luôn ghép hai sợi NHỎ NHẤT. Cấu trúc chứng minh giống hệt:
+tối ưu cục bộ (cặp nhỏ nhất) sống sót qua các phép đổi chỗ. Cài đặt: min-heap,
+lấy hai nhỏ nhất, đẩy tổng, cộng dồn — O(n log n).
+
+## Khi nào tham lam SAI — nhận diện nhanh
+
+- Tiền không chuẩn hóa (1, 3, 4 cho 6: tham lam 4+1+1 = 3 xu vs 3+3 = 2) →
+  DP (mẫu Beginner M15).
+- Sắp lịch khoảng CÓ TRỌNG SỐ → DP thay vì tham lam kết-thúc-sớm-nhất.
+- Mọi bài "mỗi lựa chọn ảnh hưởng các lựa chọn sau theo cách không đơn
+  điệu" — thử một phản ví dụ nhỏ trên giấy TRƯỚC khi tin tham lam.
+
+Thói quen: 30 giây với giấy. Hai phần tử phản đề. Nếu delta đổi chỗ không bao
+giờ âm, tin tham lam; nếu tìm ra một phản ví dụ, chuyển DP.
+
+**Tiếp:** [Heap làm việc thay bạn](./hsgi-m4-heaps)

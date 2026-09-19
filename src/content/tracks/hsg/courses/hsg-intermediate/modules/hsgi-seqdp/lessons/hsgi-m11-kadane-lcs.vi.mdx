@@ -1,0 +1,45 @@
+## Kadane — tổng đoạn liên tiếp lớn nhất
+
+best(i) = tổng đoạn lớn nhất KẾT THÚC tại i. Nối hay khởi động lại:
+
+```cpp
+long long best = a[0], cur = a[0];
+for (int i = 1; i < n; ++i) {
+    cur = max((long long)a[i], cur + a[i]);
+    best = max(best, cur);
+}
+```
+
+Lỗi kinh điển: best = 0. Mọi phần tử âm → đáp án là phần tử ít âm nhất,
+KHÔNG phải 0 (trừ khi đề cho đoạn rỗng). Đọc kỹ phát biểu.
+
+### LCS — bảng đầy đủ thì chết
+
+dp[i][j] = LCS của a[0..i), b[0..j):
+
+- bằng: dp = dp[i-1][j-1] + 1
+- khác: dp = max(dp[i-1][j], dp[i][j-1])
+
+5000×5000 long long ≈ 200 MB: chết bộ nhớ. Hàng i chỉ đọc hàng i−1 →
+cuộn HAI hàng:
+
+```cpp
+vector<long long> prev(m + 1), cur(m + 1);
+for (int i = 1; i <= n; ++i) {
+    for (int j = 1; j <= m; ++j) {
+        if (a[i-1] == b[j-1]) cur[j] = prev[j-1] + 1;
+        else cur[j] = max(prev[j], cur[j-1]);
+    }
+    swap(prev, cur);
+}
+```
+
+Đáp án = prev[m]. O(n·m) thời gian, O(m) bộ nhớ.
+
+### Nhận diện
+
+- "đoạn liên tiếp, tổng lớn nhất" → Kadane.
+- "dãy con chung" → LCS.
+- n·m = 25 triệu OK thời gian; bộ nhớ mới buộc cuộn.
+
+**Điểm mấu chốt:** Kadane = max(nối, restart); LCS = hai hàng đủ.

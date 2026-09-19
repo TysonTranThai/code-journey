@@ -1,0 +1,51 @@
+## The spectrum
+
+| trọng số | thuật toán | độ phức tạp |
+| --- | --- | --- |
+| mọi cạnh = 1 | BFS thuần | O(n + m) |
+| cạnh bằng 0 hoặc 1 | 0-1 BFS | O(n + m) |
+| trọng số bất kỳ ≥ 0 | Dijkstra | O(m log m) |
+
+Chọn sai là đốt ngân sách: Dijkstra đúng cho mọi trường hợp trên, nhưng
+0-1 BFS nhanh gấp log và ĐƠN GIẢN hơn để viết không lỗi.
+
+### The invariant
+
+Giữ deque các cặp (dist, u) với dist TĂNG DẦN hai đầu (chênh lệch tối
+đa 1). Nới lỏng cạnh (u, v, w):
+- w = 0: dist[v] không đổi → push vào ĐẦU deque;
+- w = 1: dist[v] = dist[u] + 1 → push vào CUỐI deque.
+
+```cpp
+vector<long long> d(n + 1, LLONG_MAX);
+deque<pair<long long,int>> dq;
+d[s] = 0;
+dq.push_back({0, s});
+while (!dq.empty()) {
+    auto [du, u] = dq.front(); dq.pop_front();
+    if (du != d[u]) continue;
+    for (auto& [v, w] : adj[u]) {
+        long long nd = du + w;
+        if (nd < d[v]) {
+            d[v] = nd;
+            if (w == 0) dq.push_front({nd, v});
+            else        dq.push_back({nd, v});
+        }
+    }
+}
+```
+
+### Why sorted order survives
+
+Mọi cạnh chỉ thay đổi khoảng cách thêm 0 hoặc 1: đỉnh mới luôn chen được
+đúng vị trí — đầu (bằng với front) hoặc cuối (front + 1). Đây là lý do
+deque thay heap được: THỨ TỰ tự giữ mình.
+
+### Recognition drill
+
+"Free rides / phí bằng 0 cho một số cạnh" → 0-1 BFS. "Bật/tắt, đổi
+trạng thái tốn 1" → 0-1 BFS trên đồ thị trạng thái. "Trọng số âm" →
+không phải 0-1 cũng không phải Dijkstra.
+
+**Điểm mấu chốt:** 0-đẩy lên đầu, 1-đẩy xuống cuối; deque giữ thứ tự
+tăng dần thay heap; stale-skip vẫn cần.

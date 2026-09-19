@@ -1,0 +1,36 @@
+{
+  "id": "hsgi-p12-subsetcount",
+  "title": "Đếm tập con bằng tổng",
+  "prompt": "**Bài toán.** n số a_i; in số tập con (mỗi phần tử chọn/ không) có\ntổng ĐÚNG T, theo mô-đun 10^9 + 7.\n\n**Ràng buộc:** 1 ≤ n ≤ 100; 1 ≤ a_i ≤ 100; 1 ≤ T ≤ 10000.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ — phần tử lặp",
+      "code": "std::istringstream in(\"3 3\\n1 1 2\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "{1a,2}, {1b,2} = 2 cách ({1a,1b} tổng 2, không tính) — vòng XUÔI sẽ đếm phình dùng lại."
+    },
+    {
+      "name": "một phần tử khớp",
+      "code": "std::istringstream in(\"1 4\\n4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Chọn nó."
+    },
+    {
+      "name": "không đạt",
+      "code": "std::istringstream in(\"2 9\\n3 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Tổng max 7 < 9."
+    },
+    {
+      "name": "T = 0 ẩn",
+      "code": "std::istringstream in(\"3 2\\n1 1 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "Tổng 2 từ ba số 1: chọn 2 trong 3 — 3 cách."
+    },
+    {
+      "name": "n lớn — toàn 1",
+      "code": "std::istringstream in(\"100 50\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"538992043\\n\"));",
+      "hint": "C(100,50) mô-đun 10^9+7 — kỳ vọng tính bằng comb chính xác."
+    }
+  ],
+  "level": "independent"
+}

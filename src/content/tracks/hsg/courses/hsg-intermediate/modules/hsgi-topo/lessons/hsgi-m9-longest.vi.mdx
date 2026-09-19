@@ -1,0 +1,36 @@
+## Vì sao DAG quan trọng
+
+Đường dài nhất trên đồ thị tổng quát là NP-khó. Trên DAG không đi lại
+được — topo order cho phép MỘT lượt:
+
+```cpp
+vector<long long> dp(n + 1, 0);   // dp[u] = đường dài nhất KẾT THÚC tại u
+for (int u : order)               // thứ tự topo
+    for (int v : adj[u])
+        dp[v] = max(dp[v], dp[u] + 1);   // +w nếu có trọng số
+```
+
+Mỗi cạnh nới lỏng ĐÚNG MỘT LẦN, khi đầu đã chốt — O(n + m). max(dp)
+cho toàn đồ thị; dp[v] cho đường kết thúc tại v.
+
+### Hai chiều, một mẹo
+
+- Kết thúc TẠI u: duyệt topo, relax cạnh ra.
+- Bắt đầu TẠI u: duyệt ngược topo, hoặc đảo đồ thị.
+
+### Gia đình bài toán
+
+Cùng khung, đổi phép hợp:
+- số đường đi 1→n: ways[v] += ways[u];
+- critical path: fin[v] = max(fin[u] + t_v);
+- số đỉnh tối đa: dp[v] = max(dp[u]) + 1.
+
+Nhận diện: "thứ tự + tối ưu trên chuỗi phụ thuộc" → DAG DP. Có chu
+trình mà hỏi đường dài nhất: vô hạn — đọc lại ràng buộc.
+
+### Drill kiểm tra
+
+Chuỗi 1..n: topo duy nhất, đường dài nhất n−1 cạnh. Không cạnh: dp = 0.
+Chu trình: order thiếu đỉnh — IMPOSSIBLE.
+
+**Điểm mấu chốt:** topo order = mỗi cạnh tính một lần; một lượt quét.

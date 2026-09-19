@@ -1,0 +1,36 @@
+{
+  "id": "hsgi-p12-coinmin",
+  "title": "Đổi tiền ít xu nhất",
+  "prompt": "**Bài toán.** K loại xu mệnh giá c_k (DÙNG VÔ HẠN LẦN). Tổng đúng S,\nít xu nhất; không đổi được → in −1.\n\n**Ràng buộc:** 1 ≤ K ≤ 100; 1 ≤ S ≤ 100000; 1 ≤ c_k ≤ S.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ — tham lam gãy",
+      "code": "std::istringstream in(\"2 6\\n3 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "3+3 = 2 xu; tham-lam-lớn-nhất chọn 4 trước, phần dư 2 không đổi được → trả −1 sai."
+    },
+    {
+      "name": "một xu khớp",
+      "code": "std::istringstream in(\"2 5\\n5 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Mệnh giá 5 cho S = 5."
+    },
+    {
+      "name": "không đổi được",
+      "code": "std::istringstream in(\"2 3\\n5 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-1\\n\"));",
+      "hint": "Mọi tổng từ 5,7 > 3: vô nghiệm."
+    },
+    {
+      "name": "S lớn — xu 1",
+      "code": "std::istringstream in(\"1 100000\\n1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"100000\\n\"));",
+      "hint": "Chỉ xu 1: 100000 xu — O(K·S) một lượt; không được đệ quy mỏi."
+    },
+    {
+      "name": "lẻ — xu 6 và 5",
+      "code": "std::istringstream in(\"2 11\\n6 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "6+5 = 11."
+    }
+  ],
+  "level": "independent"
+}

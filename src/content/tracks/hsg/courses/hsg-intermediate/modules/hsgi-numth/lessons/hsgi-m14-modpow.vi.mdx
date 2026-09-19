@@ -1,0 +1,45 @@
+## gcd — và thứ tự tính lcm
+
+std::gcd có sẵn. lcm: a / gcd(a,b) * b — CHIA TRƯỚC, NHÂN SAU:
+
+```cpp
+long long lcm_ll(long long a, long long b) {
+    return a / std::gcd(a, b) * b;
+}
+```
+
+Nhân trước tràn khi a, b ~ 10^18; chia trước là phao cứu sinh.
+
+## Luỹ thừa mô-đun — nhị phân
+
+a^b mod m, b tới 10^18:
+
+```cpp
+long long power(long long a, long long b, long long m) {
+    long long r = 1 % m;
+    a %= m;
+    while (b > 0) {
+        if (b & 1) r = r * a % m;
+        a = a * a % m;
+        b >>= 1;
+    }
+    return r;
+}
+```
+
+O(log b) ≈ 60 phép. a * a % m an toàn khi m < ~3·10^9; m tới 10^18
+cần __int128.
+
+## Ba bẫy mô-đun
+
+1. SỐ ÂM: (−3) % p = −3 — sau trừ: `x = ((x % p) + p) % p`.
+2. QUÊN MOD GIỮA CHỪNG: nhân hai số chưa mod là chết; mod sau mỗi
+   phép nhân.
+3. MOD LỖI CHỖ: mod khi in nhưng quên trong vòng — lệch âm thầm.
+
+## Kết hợp
+
+power là nền nghịch đảo mô-đun (a^(p−2) mod p) — "chia" trong mô-đun.
+
+**Điểm mấu chốt:** lcm = a/gcd*b; power mod từng bước; âm → cộng p;
+m ≤ 3·10^9 cho nhân 64-bit.

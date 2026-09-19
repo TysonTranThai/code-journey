@@ -1,0 +1,45 @@
+## Tập hợp thành số
+
+n ≤ 20 → mọi tập con là một số mask: bit i bật = chọn phần tử i.
+
+- kiểm tra: `(mask >> i) & 1`
+- bật: `mask | (1 << i)`; tắt: `mask & ~(1 << i)`
+- đếm bit: `__builtin_popcount(mask)`
+
+2^20 ≈ 10^6 vừa sức; 2^25 × chi tiết là chết. Ràng buộc n ≤ 20 là TÍN
+HIỆU bitmask.
+
+## Bài xếp lịch kinh điển
+
+n người, n việc, c[i][j]. dp[mask] = chi phí nhỏ nhất gán xong
+popcount(mask) người ĐẦU cho các việc trong mask:
+
+```cpp
+const int FULL = (1 << n) - 1;
+vector<int> dp(1 << n, 1e9);
+dp[0] = 0;
+for (int m = 0; m < (1 << n); ++m) {
+    int i = __builtin_popcount(m);
+    if (i >= n) continue;
+    for (int j = 0; j < n; ++j)
+        if (!(m & (1 << j)))
+            dp[m | (1 << j)] = min(dp[m | (1 << j)],
+                                   dp[m] + c[i][j]);
+}
+```
+
+Đáp án dp[FULL]. Duyệt mask tăng dần an toàn: m | bit > m.
+
+## Vì sao tham lam gãy
+
+Chọn việc rẻ nhất từng hàng có thể cướp việc rẻ của hàng khác; 2×2
+thường trùng, 3×3 mới lộ. Bitmask luôn ĐÚNG — xét mọi cách phân,
+2^n·n phép.
+
+## Mẹo duyệt
+
+popcount làm "trục thời gian"; bài không trục (gói thùng) dùng bit
+thấp nhất (m & −m) để tách.
+
+**Điểm mấu chốt:** mask = tập; popcount = số người đã gán; n ≤ 20 là
+điều kiện sống.

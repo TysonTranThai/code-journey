@@ -1,0 +1,47 @@
+## The problem prefix sums cannot solve
+
+Prefix sums answer range sums in O(1) — but a single a[i] += x forces an O(n)
+rebuild. With n, q = 2·10^5 mixed updates and queries, O(nq) = 4·10^10: dead.
+
+The Fenwick tree (cây Fenwick, Binary Indexed Tree) keeps *some* partial sums
+so both operations cost O(log n).
+
+### The anatomy: i & -i
+
+`i & -i` isolates the lowest set bit of i:
+- tree[i] stores the sum of the range ending at i with length lowbit(i):
+  tree[6] = a[5] + a[6] (lowbit(6) = 2), tree[8] = a[1..8] (lowbit = 8).
+
+```cpp
+int n;
+vector<long long> t;                 // 1-INDEXED — index 0 unused!
+
+void add(int i, long long v) {       // a[i] += v
+    for (; i <= n; i += i & -i) t[i] += v;
+}
+long long query(int i) {             // sum a[1..i]
+    long long s = 0;
+    for (; i > 0; i -= i & -i) s += t[i];
+    return s;
+}
+// range [l, r] = query(r) - query(l - 1)
+```
+
+Why O(log n)? `i += i & -i` climbs to the next node covering i's range
+(at most log2 n steps for n ≤ 2·10^5: about 18); `i -= i & -i` strips the
+lowest bit (also ≤ 18 steps).
+
+### The 1-indexed discipline
+
+Index 0 breaks the scheme: lowbit(0) = 0 → infinite loop. Every Fenwick bug
+of the form "chạy mãi mãi" or "truy vấn sai ở đầu mảng" is a 0-index leak.
+Convert to 1-indexed at read time.
+
+### When Fenwick, when prefix sums?
+
+- static array, many sums → prefix sums (simpler, O(1) queries);
+- updates interleaved with sums → Fenwick;
+- range [l, r] updates adding v to every element → TWO Fenwicks (trick:
+  difference array + Fenwick) or segment tree with lazy (M6).
+
+**Next:** [Compression, Max, Inversions](./hsgi-m5-advanced)

@@ -1,0 +1,66 @@
+## The 20-second question
+
+At HSG provincials your program gets a time limit measured in seconds; here a
+submission job gets **20 seconds for compile + all tests**. The honest skill is
+not memorizing "N ≤ 10^5 means O(N log N)" — it is *computing the budget*:
+
+```text
+budget ≈ (time limit) × (operations per second your code achieves)
+```
+
+Under `-O0` (how graded tests build here) simple loops run roughly **10^7–10^8
+elementary ops per second**. So for a 2-second-problem mindset, plan on
+**≈ 10^8 ops** and leave slack for constants (recursion, division, map lookups).
+
+### Constraint → complexity table
+
+| Constraint (n) | Max acceptable | Why |
+| --- | --- | --- |
+| ≤ 12 | O(n!) | permutations: 12! ≈ 4.8·10^8 |
+| ≤ 24 | O(2^(n/2) · poly) | meet-in-the-middle |
+| ≤ 25 | O(2^n) | subsets: 2^25 = 3.3·10^7 |
+| ≤ 5 000 | O(n^2) | 2.5·10^7 |
+| ≤ 100 000 | O(n log n), O(n √n) | 10^6 · log |
+| ≤ 10^7 | O(n) | with tiny constant |
+
+These are planning numbers, not laws — a heavy inner loop (division, modulo,
+map) costs 10–50× a simple add. When in doubt, test locally.
+
+### Worked example — from constraint to algorithm
+
+"Bài toán: n ≤ 100 000 điểm, q ≤ 100 000 truy vấn đoạn [l, r], mỗi truy vấn
+tính tổng. Time limit 2 s."
+
+Budget: (n + q) must fit ~10^8 → per-query work must be **O(1)** → prefix sums
+(Beginner M8), or Fenwick (this course, M6) if values update.
+
+```cpp
+// The instinct to check: is there an update between queries?
+//   no updates  → prefix sums O(n + q)
+//   updates     → Fenwick tree O((n + q) log n)
+```
+
+### Amortized reasoning — the halving trap
+
+How many times can you halve n until it reaches 1? ⌊log2 n⌋ + 1. For
+n = 10^9 that is **30**. So:
+
+- doubling/halving loops are O(log n), never O(n)
+- building a segment tree over n leaves is O(n) total (sum of 2^k levels)
+- repeatedly extracting the max n times from a heap is O(n log n), but
+  *building* the heap bottom-up is O(n) — amortized, most nodes sift little
+
+### Recognizing amortized problems
+
+Keywords: "mỗi phần tử được thêm và xóa tối đa một lần", "queue simulated by
+two stacks", "đường đi không quay lại". If each element causes O(1) work
+across the whole run, the *total* is O(n) even when a single step looks
+expensive.
+
+## Practice recognition (write the answer before running code)
+
+For each: n = 200 000, q = 200 000. Is O(nq) acceptable? What is?
+(Answer: no — 4·10^10. Prefix sums / Fenwick / offline sweep, depending on
+what the query asks.)
+
+**Next:** [Meet-in-the-Middle](./hsgi-m1-mitm)

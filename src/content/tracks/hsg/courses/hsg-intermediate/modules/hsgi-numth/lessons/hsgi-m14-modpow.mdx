@@ -1,0 +1,49 @@
+## gcd — và thứ tự tính lcm
+
+std::gcd có sẵn (C++17). lcm là nơi gãy: a / gcd(a,b) * b — CHIA
+TRƯỚC, NHÂN SAU. Nhân trước (a * b / gcd) tràn với a, b ~ 10^9 (tích
+10^18 vẫn long long... nhưng a, b ~ 10^18 thì chết); thói quen chia
+trước là phao cứu sinh:
+
+```cpp
+long long lcm_ll(long long a, long long b) {
+    return a / std::gcd(a, b) * b;
+}
+```
+
+## Luỹ thừa mô-đun — nhị phân
+
+a^b mod m với b tới 10^18: nhân dần mất O(b) — chết. Bình phương:
+
+```cpp
+long long power(long long a, long long b, long long m) {
+    long long r = 1 % m;
+    a %= m;
+    while (b > 0) {
+        if (b & 1) r = r * a % m;
+        a = a * a % m;
+        b >>= 1;
+    }
+    return r;
+}
+```
+
+O(log b) ≈ 60 phép. a * a % m: tích trước mô-đun phải < m² < 2^63 → m
+< ~3·10^9 an toàn; m tới 10^18 cần nhân 128-bit (__int128).
+
+## Ba bẫy mô-đun
+
+1. SỐ ÂM: (−3) % 10^9+7 = −3 trong C++ (cắt về 0). Sau phép trừ luôn
+   `x = ((x % MOD) + MOD) % MOD`.
+2. QUÊN MÔ-ĐUN GIỮA CHỪNG: cộng 10^9 vài lần trong long long là ổn,
+   nhưng NHÂN hai số chưa mod là chết. Quy tắc: mod sau mỗi phép nhân.
+3. MOD LỖI CHỖ: mod TỔNG trước khi in nhưng quên trong vòng — kết quả
+   lệch âm hoặc tràn âm thầm.
+
+## Kết hợp
+
+power là nền của nghịch đảo mô-đun (Fermat: a^(p−2) mod p khi p nguyên
+tố) — dùng lại mọi nơi cần "chia" trong mô-đun (tổ hợp, hệ số).
+
+**Điểm mấu chốt:** lcm = a/gcd*b; power O(log b) mod từng bước; âm
+hàng → cộng MOD; m ≤ ~3·10^9 cho nhân 64-bit.

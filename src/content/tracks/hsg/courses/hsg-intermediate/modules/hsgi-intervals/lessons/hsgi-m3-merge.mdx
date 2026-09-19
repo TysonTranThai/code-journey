@@ -1,0 +1,47 @@
+## The invariant
+
+Sort intervals by left endpoint. Then any overlap is **local**: while merging,
+you only ever compare the current merged interval's right end with the next
+interval's left end.
+
+```cpp
+sort(v.begin(), v.end());                 // by (l, r)
+vector<pair<long long,long long>> out;
+for (auto [l, r] : v) {
+    if (!out.empty() && l <= out.back().second)
+        out.back().second = max(out.back().second, r);   // absorb
+    else
+        out.push_back({l, r});
+}
+```
+
+Why `max(...)`? Because a later interval can be **contained** in the merged
+one: [1, 100] then [2, 3] — the naive `out.back().second = r` shrinks the
+merged interval to 3. This is the single most common merge bug.
+
+### Inserting into a sorted list
+
+Insert [l, r] into already-merged intervals:
+1. everything ending **before l** stays (ends < l, no touch),
+2. everything **touching or overlapping** [l, r] merges with it
+   (start ≤ r AND end ≥ l),
+3. everything starting **after r** stays.
+
+```cpp
+// three passes with lower_bound on the left endpoints, then one merge
+```
+
+Complexity: O(log n) to locate + O(n) to splice (output rebuilt).
+
+### When NOT to merge
+
+If the problem asks "how many intervals overlap at each point", merging
+destroys information — sweep events (M1) answer it without collapsing.
+
+## Practice recognition
+
+"n đoạn, hợp tất cả giao..." — merging is right. "n đoạn, điểm nào bị phủ
+nhiều nhất" — sweep is right. "đoạn nào chứa đoạn nào" — sort + stack / upper
+bounds, no merging.
+
+**Next:** [Covering and Rooms](./hsgi-m3-cover)

@@ -1,0 +1,57 @@
+## Vấn đề Fenwick không giải được
+
+Fenwick mạnh với tổng tiền tố, nhưng "max trên a[l..r]" hay "đếm giá trị
+≥ k trên a[l..r]" không có phép đảo ngược — không thể lấy hiệu. Cây phân
+đoạn trả lời truy vấn đoạn bất kỳ kèm cập nhật, cả hai O(log n).
+
+### Giải phẫu
+
+Mỗi nút phủ một đoạn. Nút [l, r] với l < r chia tại mid = (l + r) / 2
+thành [l, mid] và [mid+1, r]; lá phủ một chỉ số. node[v] lưu PHÉP HỢP
+của hai con (tổng, max, gcd...).
+
+```cpp
+int n;
+vector<long long> t;          // 4n chỗ luôn an toàn
+
+void build(const vector<long long>& a, int v, int lo, int hi) {
+    if (lo == hi) { t[v] = a[lo]; return; }
+    int mid = (lo + hi) / 2;
+    build(a, 2*v, lo, mid);
+    build(a, 2*v+1, mid+1, hi);
+    t[v] = t[2*v] + t[2*v+1];             // hợp = tổng ở đây
+}
+
+long long query(int v, int lo, int hi, int l, int r) {
+    if (r < lo || hi < l) return 0;       // phần tử trung tính
+    if (l <= lo && hi <= r) return t[v];  // bị phủ hoàn toàn
+    int mid = (lo + hi) / 2;
+    return query(2*v, lo, mid, l, r) + query(2*v+1, mid+1, hi, l, r);
+}
+
+void update(int v, int lo, int hi, int i, long long x) {  // a[i] = x
+    if (lo == hi) { t[v] = x; return; }
+    int mid = (lo + hi) / 2;
+    if (i <= mid) update(2*v, lo, mid, i, x);
+    else          update(2*v+1, mid+1, hi, i, x);
+    t[v] = t[2*v] + t[2*v+1];             // hợp lại khi đi lên
+}
+```
+
+### Vì sao O(log n)
+
+- Truy vấn phân rã [l, r] thành O(log n) nút rời rạc: mỗi mức tối đa 4
+  nút "phủ một nửa", và nút phủ một nửa không đệ quy sâu hơn.
+- Cập nhật đi đúng một nút mỗi mức: đường gốc → lá i.
+
+### Chi phí không được quên
+
+build là O(n), độ sâu đệ quy ⌈log₂ n⌉ ≈ 18 với n = 2·10^5 — an toàn.
+Nhưng DEPTH đệ quy và COUNT phép đệ quy là hai ngân sách khác nhau
+(bài học module 1 trong bộ áo mới).
+
+Phép hợp phải GIAO HOÁN-KẾT-HỢP (tổng, min, max, gcd có; trung bình
+không). Toàn bộ cấu trúc trong module này chỉ là "một phép hợp nào đó".
+
+**Điểm mấu chốt:** cây phân đoạn = cây nhị phân trên đoạn; query phân rã
+thành O(log n) nút; update đi một đường.

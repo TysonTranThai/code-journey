@@ -1,0 +1,31 @@
+{
+  "id": "hsgi-p15-subcount",
+  "title": "Đếm xâu con phân biệt",
+  "prompt": "**Bài toán.** Xâu s thường (≤ 1000 ký tự). In số LƯỢNG xâu con LIÊN\nTIẾP phân biệt của s (hai xâu con cùng nội dung đếm một).\n\n**Ràng buộc:** 1 ≤ |s| ≤ 1000.\n\nO(n²) đoạn × hash + sort mỗi độ dài: O(n² log n) — chấp nhận được.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ",
+      "code": "std::istringstream in(\"aba\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n\"));",
+      "hint": "a, b, ab, ba, aba — 'a' lặp đếm một: 5."
+    },
+    {
+      "name": "một ký tự",
+      "code": "std::istringstream in(\"q\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Chỉ 'q'."
+    },
+    {
+      "name": "toàn giống",
+      "code": "std::istringstream in(\"aaaa\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\n\"));",
+      "hint": "a, aa, aaa, aaaa — 4."
+    },
+    {
+      "name": "n = 1000 — đan xen",
+      "code": "std::istringstream in(\"abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1999\\n\"));",
+      "hint": "Mỗi độ dài 1..n−1 có đúng 2 xâu ('ab…'/'ba…') + 1 cả xâu: 2·999 + 1 = 1999."
+    }
+  ],
+  "level": "independent"
+}

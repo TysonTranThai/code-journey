@@ -1,0 +1,31 @@
+{
+  "id": "hsgi-p1-subset-sum",
+  "title": "Tập con tổng gần S nhất (chia để trị tìm kiếm)",
+  "prompt": "**Bài toán.** Cho n số và tổng mục tiêu S. Chọn một tập con (có thể rỗng)\ncó |tổng − S| nhỏ nhất. In hiệu đó.\n\n**Ràng buộc:** 1 ≤ n ≤ 30; |a[i]| ≤ 10^9; |S| ≤ 10^12.\n\n**Vào:** dòng đầu n S; dòng hai n số.\n**Ra:** một số — min |tổng tập con − S| (tập rỗng cho 0).\n\n**Điểm:** 100. 2^30 ≈ 10^9 — vét cạn thường quá chậm ở -O0. Chia đôi.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ",
+      "code": "std::istringstream in(\"4 10\\n3 5 7 9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "3 + 7 = 10. Liệt kê từng nửa 2^15, sắp một nửa, chăm nhị phân bạn của S − x."
+    },
+    {
+      "name": "tập rỗng tốt nhất",
+      "code": "std::istringstream in(\"3 100\\n1 2 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"94\\n\"));",
+      "hint": "Không tổ hợp nào gần 100 hơn tập rỗng (hiệu 94) — đáp án có thể đến từ nửa rỗng."
+    },
+    {
+      "name": "n = 1",
+      "code": "std::istringstream in(\"1 5\\n8\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "Chọn 8 (hiệu 3) hay rỗng (hiệu 5): 3. Cần xử lý cả hai nửa khi n lẻ."
+    },
+    {
+      "name": "n = 30 (kích thước thật)",
+      "code": "std::istringstream in(\"30 123456789\\n1000000000 999999993 999999986 999999979 999999972 999999965 999999958 999999951 999999944 999999937 999999930 999999923 999999916 999999909 999999902 999999895 999999888 999999881 999999874 999999867 999999860 999999853 999999846 999999839 999999832 999999825 999999818 999999811 999999804 999999797\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"123456789\\n\"));",
+      "hint": "2^15×2 = 65536 tổng + sắp xếp + 32768 chăm nhị phân: chạy ngay lập tức; 2^30 thì không. Mọi phần tử ≈ 10^9 đều vượt xa S = 1.2·10^8 nên tập rỗng thắng: hiệu = S."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,52 @@
+## Bối cảnh
+
+Đồ thị có hướng, trọng số KHÔNG ÂM. Tìm đường ngắn nhất từ s đến mọi
+đỉnh. Ý tưởng: luôn "khóa" đỉnh chưa khóa có khoảng cách NHỎ NHẤT — vì
+mọi đường khác đều thêm trọng số dương, khoảng cách đó không thể tệ hơn.
+
+```cpp
+vector<vector<pair<int,long long>>> adj;   // adj[u] = {(v, w)}
+vector<long long> dist;
+
+void dijkstra(int s) {
+    dist.assign(n + 1, LLONG_MAX);
+    dist[s] = 0;
+    priority_queue<pair<long long,int>,
+                   vector<pair<long long,int>>,
+                   greater<>> pq;          // min-heap theo dist
+    pq.push({0, s});
+    while (!pq.empty()) {
+        auto [d, u] = pq.top(); pq.pop();
+        if (d != dist[u]) continue;       // entry cũ — bỏ
+        for (auto& [v, w] : adj[u])
+            if (dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                pq.push({dist[v], v});
+            }
+    }
+}
+```
+
+### Hai dòng sinh viên hay xóa
+
+- `if (d != dist[u]) continue;` — "xóa lười": mỗi đỉnh có thể vào heap
+  nhiều lần, entry cũ phải bỏ. Không có nó, cùng một đỉnh nới lỏng HAI
+  lần → chi phí phình, và nếu bạn cộng dồn cạnh khi xử lý lại, kết quả
+  SAI.
+- `greater<>` — PQ mặc định là MAX-heap; thiếu greater là lấy đỉnh XA
+  nhất trước: sai hoàn toàn nhưng vẫn chạy.
+
+### Vì sao cạnh âm phá bất biến
+
+Khóa u khi d[u] nhỏ nhất, giả định mọi đường tới u chỉ thêm độ dài.
+Cạnh âm phá giả định: đỉnh "xa" chưa khóa có thể RẺ hơn sau cạnh âm.
+Dijkstra không sửa đỉnh đã khóa — sai IM LẶNG. (Bellman–Ford để dành
+cho Advanced; ở đây nhận diện ràng buộc trọng số không âm.)
+
+### Độ phức tạp
+
+m push + m pop, mỗi O(log m): O(m log m). n, m = 2·10^5 → ~4·10^5 phép
+toán heap: dư dả.
+
+**Điểm mấu chốt:** min-heap + khóa gần nhất + stale-skip; cạnh âm = sai
+im lặng.

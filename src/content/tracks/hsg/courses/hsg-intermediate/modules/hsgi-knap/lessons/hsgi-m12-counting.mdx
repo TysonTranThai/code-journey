@@ -1,0 +1,59 @@
+## Đếm tập con có tổng T
+
+dp[s] = số tập con có tổng s. Mỗi món một lần → NGƯỢC, và phép hợp
+thay max là CỘNG:
+
+```cpp
+vector<long long> dp(T + 1, 0);
+dp[0] = 1;
+for (int i = 0; i < n; ++i)
+    for (int s = T; s >= a[i]; --s)
+        dp[s] = (dp[s] + dp[s - a[i]]) % MOD;
+```
+
+dp[0] = 1 là "tập rỗng" — quên nó làm mọi kết quả lệch đúng một lớp.
+Xuôi vòng → đếm "dùng lại" — kết quả phình: test phân biệt phải có
+phần tử lặp lại nhỏ.
+
+## Chia đôi mảng
+
+Tổng S; hỏi tách thành hai nửa BẰNG NHAU ⇔ tồn tại tập con tổng S/2.
+S lẻ → NO ngay (không cần DP). Sẵn sàng boolean dp[0..S/2]:
+
+```cpp
+vector<char> dp(half + 1, 0);
+dp[0] = 1;
+for (int i = 0; i < n; ++i)
+    for (int s = half; s >= a[i]; --s)
+        if (dp[s - a[i]]) dp[s] = 1;
+```
+
+## Lấp ĐÚNG sức chứa
+
+Variant khó hơn max-thường: chọn món sao cho TỔNG TRỌNG LƯỢNG ĐÚNG
+BẰNG W (không thừa không thiếu), tối đa giá trị; không được → in −1.
+dp[j] = giá trị tốt nhất đạt TỔNG ĐÚNG j; khởi tạo −INF, dp[0] = 0:
+
+```cpp
+const long long NEG = -(1LL << 60);
+vector<long long> dp(W + 1, NEG);
+dp[0] = 0;
+for (int i = 0; i < n; ++i)
+    for (int j = W; j >= w[i]; --j)
+        if (dp[j - w[i]] != NEG)
+            dp[j] = max(dp[j], dp[j - w[i]] + v[i]);
+if (dp[W] < 0) out << -1;
+```
+
+Khác biệt so với balo thường: những j không đạt ĐÚNG giữ −INF, không
+bao giờ góp vào kết quả. W "bal ≤ thường" sẽ in giá trị balo bình
+thường — sai khi lấp không đầy.
+
+## Nhận diện
+
+- "số cách" → cộng, mô-đun, cẩn thận dp[0] = 1.
+- "tách hai nửa" → subset-sum về S/2.
+- "đúng sức chứa / đúng tổng" → nền −INF thay vì 0.
+
+**Điểm mấu chốt:** đếm = max đổi thành cộng (mô-đun!); exact = −INF
+nền; mọi variant vẫn còn chiềuu duyệt quyết định tái sử dụng.

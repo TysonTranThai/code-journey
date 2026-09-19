@@ -1,0 +1,31 @@
+{
+  "id": "hsgi-p14-lcmrange",
+  "title": "BCNN đoạn",
+  "prompt": "**Bài toán.** Cho L, R (1 ≤ L ≤ R ≤ 10^6). In BCNN của TẤT CẢ số\nnguyên trong [L, R], theo mô-đun 10^9 + 7. Nếu BCNN thật ≥ 10^9+7,\nkết quả vẫn là phần dư (in phần dư).\n\n**Ràng buộc:** 1 ≤ L ≤ R ≤ 10^6.\n\nBCNN thật có thể khổng lồ (nhiều chữ số) — chỉ in phần dư. Ghép bằng\nđồng nhất thức lcm với chia-trước; mô-đun từng bước. LƯU Ý: với\nmod, a/gcd không đơn giản — hãy giữ số nguyên tố mũ cao nhất: với mỗi\nsố nguyên tố p ≤ R, lấy mũ lớn nhất e sao cho p^e ≤ R... trong [L, R]\nchọn p^e ≥ L lớn nhất.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ — đoạn nhỏ",
+      "code": "std::istringstream in(\"1 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"12\\n\"));",
+      "hint": "lcm(1,2,3,4) = 12."
+    },
+    {
+      "name": "một số",
+      "code": "std::istringstream in(\"7 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n\"));",
+      "hint": "lcm của một số là chính nó."
+    },
+    {
+      "name": "đoạn lũy thừa",
+      "code": "std::istringstream in(\"8 10\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"360\\n\"));",
+      "hint": "lcm(8,9,10) = 2^3·3^2·5 = 360."
+    },
+    {
+      "name": "R lớn — phần dư",
+      "code": "std::istringstream in(\"999983 1000000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"982831551\\n\"));",
+      "hint": "BCNN thật khổng lồ; kỳ vọng theo R sau probe Python (tính bằng tích mũ nguyên tố + mod)."
+    }
+  ],
+  "level": "real-world"
+}

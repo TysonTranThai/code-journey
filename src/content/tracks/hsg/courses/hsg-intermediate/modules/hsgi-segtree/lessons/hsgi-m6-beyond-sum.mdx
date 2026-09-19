@@ -1,0 +1,52 @@
+## One skeleton, many merges
+
+Swap the identity and merge, keep everything else:
+
+| merge | identity (out-of-range) | what a range query returns |
+| --- | --- | --- |
+| sum | 0 | range sum |
+| max | −∞ (LLONG_MIN) | range max |
+| gcd | 0 | range gcd |
+| (count, sum) pair | (0, 0) | count + sum in one query |
+
+### Worked example: range max with point updates
+
+```cpp
+struct SegMax {
+    int n;
+    vector<long long> t;
+    SegMax(int n_) : n(n_), t(4 * n_, LLONG_MIN) {}
+    void update(int v, int lo, int hi, int i, long long x) {
+        if (lo == hi) { t[v] = x; return; }
+        int mid = (lo + hi) / 2;
+        if (i <= mid) update(2*v, lo, mid, i, x);
+        else          update(2*v+1, mid+1, hi, i, x);
+        t[v] = max(t[2*v], t[2*v+1]);
+    }
+    long long query(int v, int lo, int hi, int l, int r) {
+        if (r < lo || hi < l) return LLONG_MIN;   // identity
+        if (l <= lo && hi <= r) return t[v];
+        int mid = (lo + hi) / 2;
+        return max(query(2*v, lo, mid, l, r),
+                   query(2*v+1, mid+1, hi, l, r));
+    }
+};
+```
+
+### The composite trap: (count, sum) vs two trees
+
+Counting "values > k in [l, r]" via two separate trees (one for count,
+one for sum) forces two traversals; a single tree of PAIRS (cnt, sum)
+merges both in one traversal with
+`{a.first + b.first, a.second + b.second}`. Same complexity, half the
+constant. When you need two dependent statistics, compose them into one
+node type.
+
+### Recognition pattern
+
+"Range query + point update + merge not invertible" → segment tree.
+If the merge IS invertible (sum/xor) and updates are point-only,
+Fenwick is smaller and faster. Choose deliberately.
+
+**Điểm mấu chốt:** đổi identity + merge là đổi bài toán; hai đại lượng
+phụ thuộc nên gộp thành một nút cặp giá trị.

@@ -1,0 +1,45 @@
+## Bất biến
+
+Sắp các đoạn theo đầu trái. Khi đó mọi giao là **cục bộ**: trong khi ghép, bạn
+chỉ so right-end của đoạn đã ghép với left-end của đoạn kế tiếp.
+
+```cpp
+sort(v.begin(), v.end());                 // theo (l, r)
+vector<pair<long long,long long>> out;
+for (auto [l, r] : v) {
+    if (!out.empty() && l <= out.back().second)
+        out.back().second = max(out.back().second, r);   // hấp thụ
+    else
+        out.push_back({l, r});
+}
+```
+
+Vì sao `max(...)`? Vì đoạn sau có thể **nằm trọn** trong đoạn đã ghép:
+[1, 100] rồi [2, 3] — cách `out.back().second = r` ngây thơ làm đoạn ghép co
+còn 3. Đây là lỗi ghép phổ biến nhất.
+
+### Chèn vào danh sách đã sắp
+
+Chèn [l, r] vào các đoạn đã ghép:
+1. mọi đoạn kết thúc **trước l** giữ nguyên,
+2. mọi đoạn **chạm hoặc giao** [l, r] ghép vào nó
+   (bắt đầu ≤ r VÀ kết thúc ≥ l),
+3. mọi đoạn bắt đầu **sau r** giữ nguyên.
+
+```cpp
+// ba lượt với lower_bound trên đầu trái, rồi một lần ghép
+```
+
+Độ phức tạp: O(log n) định vị + O(n) nối (dựng lại output).
+
+### Khi nào KHÔNG ghép
+
+Nếu đề hỏi "mỗi điểm bị bao nhiêu đoạn phủ", ghép phá thông tin — quét sự kiện
+(M1) trả lời mà không gộp.
+
+## Luyện nhận diện
+
+"n đoạn, hợp tất cả giao..." — ghép đúng. "n đoạn, điểm nào bị phủ nhiều nhất"
+— quét đúng. "đoạn nào chứa đoạn nào" — sắp + stack / chặn nhị phân, không ghép.
+
+**Tiếp:** [Phủ và Phòng](./hsgi-m3-cover)

@@ -1,0 +1,67 @@
+## Meet-in-the-middle — 2^n becomes 2^(n/2)
+
+n ≤ 40 kills plain brute force (2^40 ≈ 10^12). But 2^20 ≈ 10^6 — split the
+items in half, enumerate each side separately, then combine.
+
+Classic: "choose a subset of n ≤ 40 numbers with sum closest to S".
+
+```cpp
+// enumerate all subset sums of each half, sort one side,
+// for each x in side A binary-search the best partner in side B
+vector<long long> sumsA, sumsB;   // 2^20 each — fits
+sort(sumsB.begin(), sumsB.end());
+for (long long x : sumsA) {
+    // need y ≈ S - x: two binary searches bracket the best candidate
+}
+```
+
+Cost: 2·2^(n/2) enumeration + 2^(n/2) · log searches. For n = 40: ~2·10^6 · 21.
+
+### Sparse table — static RMQ in O(1)
+
+If the array **never changes**, a segment tree is overkill. Sparse table
+precomputes min over every power-of-two block: O(n log n) memory/time build,
+then `min(st[k][l], st[k][r - 2^k + 1])` answers any range min in O(1)
+(the two blocks may overlap — harmless for min/max, fatal for sums).
+
+```cpp
+int K = 1; while ((1 << K) <= n) ++K;
+vector<vector<int>> st(K, vector<int>(n + 1));
+st[0] = a;
+for (int k = 1; k < K; ++k)
+    for (int i = 1; i + (1 << k) - 1 <= n; ++i)
+        st[k][i] = min(st[k-1][i], st[k-1][i + (1 << (k-1))]);
+// query [l, r]:
+int k = __lg(r - l + 1);            // floor log2
+answer = min(st[k][l], st[k][r - (1 << k) + 1]);
+```
+
+Recognition: "n, q ≤ 2·10^5, array static, query = min/max/gcd on range".
+If there are updates → Fenwick/segment tree (M6–M7).
+
+### Sweep events — intervals as ±1 triples
+
+Any problem of the form "how many intervals cover point x / what is the max
+overlap" becomes sorting 2n events: `(start, +1)`, `(end+1, −1)`, then one
+prefix pass.
+
+```cpp
+vector<tuple<int,int,int>> ev;              // (coordinate, delta)
+for (auto [l, r] : intervals) {
+    ev.push_back({l, +1});
+    ev.push_back({r + 1, -1});              // end+1: closed [l, r]
+}
+sort(ev.begin(), ev.end());
+int cur = 0, best = 0;
+for (auto [x, d] : ev) { cur += d; best = max(best, cur); }
+```
+
+Two traps worth naming:
+1. **end vs end+1** — closed intervals touching at a point (r1 = l2) count as
+   overlap if you add +1 at l and −1 at r. Decide the convention from the
+   statement, not from habit.
+2. **same-coordinate order** — if the answer must count intervals *starting*
+   before others *end*, sort starts before ends at equal coordinates. The
+   delta sign encodes this automatically when you use r+1 for ends.
+
+**Next:** [Checkpoint](./hsgi-cp-m1)

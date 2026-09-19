@@ -1,0 +1,26 @@
+{
+  "id": "hsgi-cp-m2-wifi",
+  "title": "Checkpoint — Bộ thu WiFi",
+  "prompt": "**Bài toán.** Dọc hành lang có n lớp học tại vị trí x_1 < x_2 < ... < x_n.\nTrường mua **k bộ thu WiFi** (k ≤ n). Đặt các bộ thu TẠI các vị trí lớp học,\nmỗi vị trí nhiều nhất một bộ. Khoảng cách phát của hệ thống là khoảng cách\n**lớn nhất** giữa hai lớp kề nhau được phủ bởi **cùng một** bộ thu... đơn\ngiản hơn: mỗi bộ thu phủ liên tiếp các lớp từ vị trí của nó tới bộ thu kế;\nkhoảng cách phát = khoảng cách xa nhất giữa một lớp và bộ thu của nó. Tối\nthiểu hóa khoảng cách phát đó.\n\n**Ràng buộc:** 1 ≤ k ≤ n ≤ 100 000; 0 ≤ x_i ≤ 10^9.\n\n**Vào:** dòng đầu n k; dòng hai n vị trí (sắp tăng).\n**Ra:** một số — khoảng cách phát nhỏ nhất.\n\n**Điểm:** 100. F(d) = \"đặt được ≤ k bộ thu phủ mọi lớp với bán kính d\" — tham\nlam quét từ trái, mở bộ mới khi lớp hiện tại vượt vùng phủ; đơn điệu trên d.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ",
+      "code": "std::istringstream in(\"5 2\\n1 2 8 9 100\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"8\\n\"));",
+      "hint": "F(8): bộ tại 1 phủ [1,9] (lớp 1,2,8,9), bộ tại 100 phủ lớp 100 → 2 bộ ✓. F(7): bộ tại 1 phủ [1,8], lớp 9 phải mở bộ thứ hai tại 9, lớp 100 lại mở bộ thứ ba → ✗. Đáp án 8."
+    },
+    {
+      "name": "một bộ thu",
+      "code": "std::istringstream in(\"3 1\\n0 5 10\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"10\\n\"));",
+      "hint": "Một bộ phủ mọi lớp: bán kính = max(x) − min(x) = 10."
+    },
+    {
+      "name": "bộ nhiều như lớp",
+      "code": "std::istringstream in(\"4 4\\n3 6 9 12\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Mỗi lớp một bộ: bán kính 0."
+    }
+  ],
+  "level": "real-world"
+}

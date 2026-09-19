@@ -1,0 +1,47 @@
+## 0/1 knapsack — bảng đầy đủ
+
+n món, món i (w_i, v_i), balo sức chứa W. dp[j] = giá trị lớn nhất với
+sức chứa j. Bảng 2D: dp[i][j] = max(dp[i-1][j], dp[i-1][j-w_i] + v_i) —
+hàng i chỉ đọc hàng i−1 → cuộn một mảng, nhưng PHẢI duyệt j TỪ LỚN VỀ
+NHỎ:
+
+```cpp
+vector<long long> dp(W + 1, 0);
+for (int i = 0; i < n; ++i)
+    for (int j = W; j >= w[i]; --j)          // NGƯỢC
+        dp[j] = max(dp[j], dp[j - w[i]] + v[i]);
+```
+
+### Vì sao ngược
+
+Duyệt ngược: khi tính dp[j], dp[j − w_i] vẫn là giá trị HÀNG TRƯỚC
+(chưa đụng tới món i) → món i dùng MỘT lần. Duyệt xuôi: dp[j − w_i]
+có thể vừa được cập nhật bằng món i → món i được dùng LẠI — chính là
+bài không giới hạn!
+
+### Không giới hạn — xuôi
+
+Đổi tiền: đồng xu kiểu k (w_k), cần tổng S. Xuôi duyệt:
+
+```cpp
+vector<int> dp(S + 1, INF); dp[0] = 0;
+for (int k = 0; k < K; ++k)
+    for (int s = w[k]; s <= S; ++s)          // XUÔI — dùng lại được
+        if (dp[s - w[k]] + 1 < dp[s]) dp[s] = dp[s - w[k]] + 1;
+```
+
+### Một mảng, hai chính sách
+
+- 0/1: NGƯỢC — mỗi món một lần.
+- Unbounded: XUÔI — dùng vô hạn.
+Đây là lỗi sinh viên lặp lại nhiều nhất trong contest: chép khung balo
+0/1 rồi để vòng xuôi → kết quả phình to âm thầm trên test lớn.
+
+### Bộ nhớ và thời gian
+
+O(n·W) thời gian; O(W) bộ nhớ. n = 3000, W = 8000 → 24 triệu phép
+tính: thoải mái. W tới 10^9 → KHÔNG dùng balo thường (đổi hướng: balo
+trên GIÁ TRỊ, hoặc greedy có chứng minh).
+
+**Điểm mấu chốt:** chiều duyệt là chính sách tái sử dụng; nhớ bằng
+câu "ngược một lần, xuôi vô hạn".

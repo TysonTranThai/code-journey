@@ -1,0 +1,36 @@
+{
+  "id": "hsgi-p17-moneysort",
+  "title": "Debug: Tham lam sai hướng",
+  "prompt": "**Bài toán (đã đúng):** Có n đồng xu (giá trị có thể ÂM). Chọn một TẬP\nCON KHÔNG RỖNG sao cho tổng lớn nhất; in tổng đó.\n\nPhân tích đúng: chọn phần tử BẤT KỲ (không cần liên tiếp) → chọn mọi\nphần tử dương; nếu không có phần tử dương nào, chọn đúng MỘT phần tử\nlớn nhất (bắt buộc khác rỗng).\n\n**Bản thảo sai:** quét LIÊN TIẾP (Kadane) với init best = 0 — liên\ntiếp bỏ cơ hội nhảy qua đoạn âm lớn, và init 0 sai khi mọi xu âm.\n\n**Yêu cầu:** viết bản đúng, pass mọi test.\n\n**Input:** n; n giá trị (|a[i]| ≤ 10^4, n ≤ 2·10^5).\n**Output:** tổng lớn nhất của tập con không rỗng.\n\n**Ví dụ:** `4` / `2 -5 3 1` -> `6` (2+3+1; bỏ −5).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ",
+      "code": "std::istringstream in(\"4\\n2 -5 3 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"6\\n\"));",
+      "hint": "Tổng mọi phần tử dương."
+    },
+    {
+      "name": "mọi phần tử âm",
+      "code": "std::istringstream in(\"3\\n-5 -2 -9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-2\\n\"));",
+      "hint": "Bắt buộc chọn một xu: −2 là ít xấu nhất. Init 0 là SAI."
+    },
+    {
+      "name": "một phần tử",
+      "code": "std::istringstream in(\"1\\n-7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-7\\n\"));",
+      "hint": "n = 1 âm."
+    },
+    {
+      "name": "xen kẽ",
+      "code": "std::istringstream in(\"5\\n3 -1 4 -1 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"12\\n\"));",
+      "hint": "Tập con bất kỳ: chọn mọi phần tử dương 3+4+5 = 12 (bỏ hai −1)."
+    },
+    {
+      "name": "toàn dương",
+      "code": "std::istringstream in(\"3\\n1 2 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"6\\n\"));",
+      "hint": "Chọn hết."
+    }
+  ],
+  "level": "guided"
+}

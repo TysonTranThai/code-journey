@@ -1,0 +1,57 @@
+## The problem
+
+n người, m quan hệ bạn bè: "hai người này có chung một nhóm bạn?" — trả
+lời mỗi câu trong O(1)? Không hoàn toàn, nhưng O(α(n)) — nghịch đảo Ackermann,
+≤ 4 cho mọi kích thước thực tế — đủ gần.
+
+### The structure: a forest of parent pointers
+
+Mỗi tập hợp là một cây: mỗi đỉnh trỏ lên cha; gốc là "đại diện" của tập.
+
+```cpp
+vector<int> par, sz_;
+
+void init(int n) {
+    par.resize(n + 1); sz_.assign(n + 1, 1);
+    for (int i = 1; i <= n; ++i) par[i] = i;
+}
+
+int find(int x) {                    // path HALVING
+    while (par[x] != x) {
+        par[x] = par[par[x]];        // nhảy cóc lên ông nội
+        x = par[x];
+    }
+    return x;
+}
+
+bool unite(int a, int b) {           // union by SIZE
+    a = find(a); b = find(b);
+    if (a == b) return false;        // đã cùng tập — KHÔNG hợp lại
+    if (sz_[a] < sz_[b]) swap(a, b);
+    par[b] = a; sz_[a] += sz_[b];
+    return true;
+}
+```
+
+### The two optimizations are not optional
+
+- **Path halving** (mỗi lần tìm lại nối x lên ông nội) làm cây phẳng dần
+  sau mỗi truy vấn.
+- **Union by size** (cây NHỎER nhập vào cây LỚN hơn) giữ chiều sâu cây
+  O(log n) ngay cả khi không có path compression.
+
+Chỉ một trong hai: O(log n). Cả hai: O(α(n)) — thực tế là hằng số.
+
+### The counter pattern
+
+Đếm thành phần: khởi đầu là n; mỗi lần unite TRẢ VỀ TRUE (hai tập khác
+nhau vừa nhập) giảm 1. Mọi lần unite trả về FALSE (u, v đã liên thông)
+KHÔNG đổi số đếm — quên nhánh này là lỗi kinh điển (bài 7.1).
+
+### Find without recursion
+
+find VIẾT Đệ quy dễ nhưng sâu 10^5 gây tràn ngăn xếp trong sandbox —
+vòng while ở trên là hình thức an toàn duy nhất bạn cần nhớ.
+
+**Điểm mấu chốt:** DSU = rừng cha + path halving + union by size;
+unite trả về FALSE khi hai đỉnh đã liên thông — tín hiệu.cycle.

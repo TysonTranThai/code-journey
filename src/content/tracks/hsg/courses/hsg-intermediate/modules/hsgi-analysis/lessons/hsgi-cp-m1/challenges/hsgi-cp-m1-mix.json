@@ -1,0 +1,26 @@
+{
+  "id": "hsgi-cp-m1-mix",
+  "title": "Checkpoint — Ca học thêm",
+  "prompt": "**Bài toán.** Trung tâm có m lớp học, mỗi lớp mượn phòng từ ngày l_i đến\nr_i (đóng hai đầu). Phòng học được \"quá tải\" trong một ngày nếu **hơn k** lớp\ncùng dùng. Hãy in **số ngày quá tải** (không phải ngày đầu tiên — tổng số\nngày!).\n\n**Ràng buộc:** 1 ≤ m, k ≤ 200 000; 1 ≤ l_i ≤ r_i ≤ 10^9.\n\n**Vào:** dòng đầu m k; m dòng: l r.\n**Ra:** một số — tổng số ngày có hơn k lớp.\n\n**Điểm:** 100. Kết hợp cả ba kỹ thuật của module: ngân sách (m lớn cấm O(m·t)),\nquét sự kiện (±1), và quy ước đóng/mở đúng (r+1).",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ",
+      "code": "std::istringstream in(\"3 1\\n1 3\\n2 4\\n6 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Ngày 2..3 có 2 lớp (> 1): đúng 2 ngày quá tải. Ngày 6..7 chỉ có 1 lớp: không."
+    },
+    {
+      "name": "một ngày chật duy nhất",
+      "code": "std::istringstream in(\"2 0\\n5 5\\n5 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Hai lớp cùng ngày 5: duy nhất ngày 5 quá tải (k = 0)."
+    },
+    {
+      "name": "không quá tải",
+      "code": "std::istringstream in(\"1 1\\n1 1000000000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Một lớp, k = 1: không bao giờ > 1. Đáp án 0 — và tọa độ 10^9 vẫn an toàn nhờ quét sự kiện."
+    }
+  ],
+  "level": "real-world"
+}

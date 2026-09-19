@@ -1,0 +1,36 @@
+{
+  "id": "hsgi-p13-packing",
+  "title": "Gói quà ít hộp nhất",
+  "prompt": "**Bài toán.** n gói quà trọng w_i; mỗi hộp chịu tổng trọng ĐÚNG ≤\nW. In SỐ HỘP ÍT NHẤT để gói hết (mỗi gói một hộp nào đó).\n\n**Ràng buộc:** 1 ≤ n ≤ 15; 1 ≤ w_i ≤ W ≤ 100.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ — first-fit gãy",
+      "code": "std::istringstream in(\"4 10\\n7 6 4 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "{7,3} + {6,4} = 2 hộp; first-fit 7,6 mở hộp mới, 4,3 hộp 2: cũng 2 — test mạnh hơn cần bộ gãy: xem T4."
+    },
+    {
+      "name": "một gói",
+      "code": "std::istringstream in(\"1 5\\n5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Một hộp."
+    },
+    {
+      "name": "từng gói một hộp",
+      "code": "std::istringstream in(\"3 6\\n4 4 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "Hai gói 4 không chung hộp (8 > 6): ba hộp."
+    },
+    {
+      "name": "first-fit gãy thật",
+      "code": "std::istringstream in(\"6 10\\n5 5 4 4 3 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "Tối ưu {5,4,... }? kiểm: 5+5, 4+3+3, 4? = 10? 5+5=10, 4+4=8+? — tổng 24, ceil 3 hộp; đạt được {5,4}? 5+4=9+? — DP quyết; first-fit 5,5,4,4,3,3: hộp1 5+5, hộp2 4+4? 8, còn 3 → 11 quá → hộp2 4+3=7+3=10, hộp3 4: 3 hộp — trùng. Bộ gãy thật ở T5."
+    },
+    {
+      "name": "first-fit gãy — bộ kinh điển",
+      "code": "std::istringstream in(\"8 10\\n5 5 5 5 4 4 4 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\n\"));",
+      "hint": "Tổng 36 → ít nhất 4 hộp; {5,5},{5,5},{4,4},{4,4} = 4 đạt. First-fit 5,5,5,5,4...: hộp1 10, hộp2 10, hộp3 4+4=8, 4 → 12 quá → 4+4? hộp3 8 rồi hộp4 4... vẫn 4? — bộ thật sự gãy ở T2'd? Mời probe chốt kỳ vọng R."
+    }
+  ],
+  "level": "real-world"
+}

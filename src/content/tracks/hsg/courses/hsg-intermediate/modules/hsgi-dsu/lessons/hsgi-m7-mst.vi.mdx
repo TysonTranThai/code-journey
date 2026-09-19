@@ -1,0 +1,43 @@
+## Thuật toán
+
+Cây khung nhỏ nhất: chọn n−1 cạnh tổng nhỏ nhất giữ liên thông. Kruskal:
+
+1. Sắp mọi cạnh theo trọng số TĂNG DẦN.
+2. Duyệt lần lượt: cạnh (u, v, w) — nếu find(u) ≠ find(v), unite và
+   NHẬN cạnh; ngược lại BỎ (tạo chu trình).
+3. Dừng sau n−1 cạnh nhận.
+
+Độ phức tạp: O(m log m) cho sort — DSU chỉ O(m α(n)).
+
+```cpp
+long long kruskal(int n, vector<array<long long,3>>& e) {
+    sort(e.begin(), e.end());            // theo w
+    long long total = 0; int taken = 0;
+    for (auto& [w, u, v] : e) {
+        if (unite(u, v)) { total += w; ++taken; }
+        if (taken == n - 1) break;
+    }
+    return taken == n - 1 ? total : -1;  // -1: không liên thông
+}
+```
+
+### Vì sao tham lam an toàn (tính chất chu trình)
+
+Cạnh nhẹ nhất của MỌI "cắt" luôn thuộc một MST nào đó. Khi Kruskal nhặt
+cạnh w nhỏ nhất nối hai thành phần, không cạnh đắt hơn có thể thay nó —
+đổi vào chỉ làm tổng tăng. Đây là một trong ít tham lam có CHỨNG MINH
+ngắn gọn — nhớ cảm giác: "cạnh nhỏ nhất vượt qua mỗi ranh giới".
+
+### Tính chất bottleneck (dùng lại ở bài 7.4)
+
+Trên đường u→v trong MST, cạnh TỐI ĐA là nhỏ nhất có thể so với mọi
+đường khác. Hệ quả: trả lời truy vấn bottleneck bằng cách ghi lại cạnh
+Kruskal vừa làm hai đỉnh truy vấn nhập chung thành phần — đó là đáp án.
+
+### Khi đáp án là −1
+
+Duyệt hết m cạnh mà chưa nhận đủ n−1: đồ thị KHÔNG liên thông — in −1.
+Kiểm tra này rẻ nhưng dễ quên.
+
+**Điểm mấu chốt:** sort tăng + nhận/bỏ theo tập; đủ n−1 = MST; hết cạnh
+chưa đủ = −1.

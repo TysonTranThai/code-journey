@@ -1,0 +1,60 @@
+## Điều gì làm cây khác biệt
+
+Cây: n đỉnh, n−1 cạnh, liên thông, không chu trình. Ba hệ quả: (1) mọi
+cặp đỉnh nối bằng ĐÚNG MỘT đường; (2) bỏ một cạnh → tách đôi; (3) thêm
+một cạnh → đúng một chu trình.
+
+### Mẫu parent-skip
+
+Lưu cạnh VÔ HƯỚNG, duyệt từ gốc 1, bỏ qua cha:
+
+```cpp
+vector<vector<int>> adj;          // CẢ HAI CHIỀU
+vector<int> par, dep;
+
+void bfs(int root) {
+    par.assign(n + 1, 0);
+    dep.assign(n + 1, 0);
+    queue<int> bq;
+    bq.push(root);
+    while (!bq.empty()) {
+        int u = bq.front(); bq.pop();
+        for (int v : adj[u])
+            if (v != par[u]) {    // parent-skip
+                par[v] = u;
+                dep[v] = dep[u] + 1;
+                bq.push(v);
+            }
+    }
+}
+```
+
+Không cần visited: mọi đỉnh chỉ MỘT cha — parent-skip chặn duy nhất
+đường quay lại.
+
+### Một hướng phải nhớ
+
+Quên `adj[v].push_back(u)`: cạnh "con trước, cha sau" bị mất — một
+phần cây biến mất. Test phản đối: ít nhất một cạnh liệt kê theo kiểu
+con-cha.
+
+### Khử đệ quy
+
+Chuỗi n = 200 000 → DFS đệ quy sâu 200 000 khung: rủi ro tràn ngăn xếp.
+BFS (hoặc stack tường minh) là hình thức an toàn.
+
+### Kích thước cây con không đệ quy
+
+BFS từ gốc: cha luôn TRƯỚC con. Đảo thứ tự và cộng:
+
+```cpp
+vector<int> order;                // từ BFS
+vector<long long> sz(n + 1, 1);
+for (int i = n - 1; i >= 0; --i) {
+    int u = order[i];
+    if (par[u]) sz[par[u]] += sz[u];
+}
+```
+
+**Điểm mấu chốt:** hai chiều + parent-skip; cha trước con; đảo BFS =
+post-order rẻ.

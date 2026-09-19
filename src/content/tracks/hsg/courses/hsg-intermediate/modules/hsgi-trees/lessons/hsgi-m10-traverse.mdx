@@ -1,0 +1,64 @@
+## What makes a tree different
+
+Cây: n đỉnh, n−1 cạnh, liên thông, không chu trình. Ba hệ quả dùng liên
+tục: (1) mọi cặp đỉnh nối bằng ĐÚNG MỘT đường; (2) bỏ đi một cạnh → đồ
+thị tách đôi; (3) thêm một cạnh → tạo đúng một chu trình.
+
+### The parent-skip pattern
+
+Lưu cạnh VÔ HƯỚNG (cả hai chiều), duyệt BFS/DFS từ gốc 1, và khi đứng ở
+u bỏ qua đỉnh vừa đi từ nó (cha):
+
+```cpp
+vector<vector<int>> adj;          // CẢ HAI CHIỀU
+vector<int> par, dep;
+
+void bfs(int root) {
+    par.assign(n + 1, 0);
+    dep.assign(n + 1, 0);
+    queue<int> bq;
+    bq.push(root);
+    par[root] = 0;                // gốc không có cha
+    while (!bq.empty()) {
+        int u = bq.front(); bq.pop();
+        for (int v : adj[u])
+            if (v != par[u]) {    // parent-skip
+                par[v] = u;
+                dep[v] = dep[u] + 1;
+                bq.push(v);
+            }
+    }
+}
+```
+
+Không cần visited: mọi đỉnh chỉ có MỘT cha — parent-skip chặn đường quay
+lại duy nhất.
+
+### The one direction to store
+
+Quên `adj[v].push_back(u)` là lỗi phổ biến nhất: cây trở thành đồ thị
+CÓ HƯỚNG theo thứ tự đọc; các cạnh "con trước, cha sau" bị mất — một
+phần cây biến mất khỏi phép duyệt. Test phản đối: liệt kê ít nhất một
+cạnh theo thứ tự con-cha.
+
+### Iterative only
+
+Chuỗi n = 200 000 làm DFS đệ quy sâu 200 000 khung — rủi ro tràn ngăn
+xếp. BFS ở trên (hoặc DFS với stack tường minh) là hình thức an toàn.
+
+### Subtree sizes without recursion
+
+Thứ tự BFS từ gốc có tính chất: cha luôn đứng TRƯỚC con. Đảo lại và cộng
+size[par] += size[u]: được post-order mà không đệ quy.
+
+```cpp
+vector<int> order;                // từ BFS
+vector<long long> sz(n + 1, 1);
+for (int i = n - 1; i >= 0; --i) {
+    int u = order[i];
+    if (par[u]) sz[par[u]] += sz[u];
+}
+```
+
+**Điểm mấu chốt:** hai chiều + parent-skip; cha trước con trong BFS;
+đảo BFS = post-order rẻ.

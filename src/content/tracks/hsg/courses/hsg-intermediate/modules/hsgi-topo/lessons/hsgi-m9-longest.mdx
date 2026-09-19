@@ -1,0 +1,38 @@
+## Why the DAG matters
+
+Đường dài nhất trên đồ thị tổng quát là NP-khó (chu trình dương cho đi
+vòng mãi). Trên DAG không đi lại được — topo order cho phép MỘT lượt:
+
+```cpp
+vector<long long> dp(n + 1, 0);   // dp[u] = đường dài nhất KẾT THÚC tại u
+for (int u : order)               // thứ tự topo
+    for (int v : adj[u])
+        dp[v] = max(dp[v], dp[u] + 1);   // +w nếu có trọng số
+```
+
+Mỗi cạnh nới lỏng ĐÚNG MỘT LẦN, khi đầu nó đã chốt — O(n + m). Trả lời
+max(dp) cho toàn đồ thị; dp[v] cho đường kết thúc tại v.
+
+### Two directions, one trick
+
+- Kết thúc TẠI u: duyệt theo topo, relax cạnh ra.
+- Bắt đầu TẠI u: duyệt NGƯỢC topo, hoặc đảo đồ thị rồi làm như trên.
+
+### The family
+
+Cùng khung, đổi phép hợp:
+- số đường đi từ 1 đến n: ways[v] += ways[u] trên cạnh vào;
+- critical path: fin[v] = max(fin[u] + t_v);
+- số đỉnh tối đa trên đường: dp[v] = max(dp[u]) + 1.
+
+Nhận diện: "thứ tự công việc + tối ưu trên chuỗi phụ thuộc" → DAG DP.
+Đồ thị CÓ chu trình mà hỏi đường dài nhất: vô hạn — hoặc bạn đọc thiếu
+ràng buộc.
+
+### Sanity drill
+
+Chuỗi 1→2→...→n: topo duy nhất, đường dài nhất có n−1 cạnh. Không có
+cạnh: mọi dp = 0. Chu trình: order thiếu đỉnh — IMPOSSIBLE, đừng dùng
+dp của chúng.
+
+**Điểm mấu chốt:** topo order = mỗi cạnh tính một lần; một lượt quét.

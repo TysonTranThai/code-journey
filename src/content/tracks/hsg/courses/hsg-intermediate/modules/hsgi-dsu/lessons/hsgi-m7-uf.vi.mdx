@@ -1,0 +1,54 @@
+## Vấn đề
+
+n người, m quan hệ bạn bè: "hai người này cùng nhóm?" — trả lời mỗi câu
+trong O(α(n)) — nghịch đảo Ackermann, ≤ 4 cho mọi kích thước thực tế.
+
+### Cấu trúc: rừng con trỏ cha
+
+Mỗi tập là một cây: mỗi đỉnh trỏ lên cha; gốc là đại diện của tập.
+
+```cpp
+vector<int> par, sz_;
+
+void init(int n) {
+    par.resize(n + 1); sz_.assign(n + 1, 1);
+    for (int i = 1; i <= n; ++i) par[i] = i;
+}
+
+int find(int x) {                    // path HALVING
+    while (par[x] != x) {
+        par[x] = par[par[x]];        // nhảy cóc lên ông nội
+        x = par[x];
+    }
+    return x;
+}
+
+bool unite(int a, int b) {           // union by SIZE
+    a = find(a); b = find(b);
+    if (a == b) return false;        // đã cùng tập — KHÔNG hợp lại
+    if (sz_[a] < sz_[b]) swap(a, b);
+    par[b] = a; sz_[a] += sz_[b];
+    return true;
+}
+```
+
+### Hai tối ưu không phải tùy chọn
+
+- **Path halving** làm cây phẳng dần sau mỗi truy vấn.
+- **Union by size** giữ chiều sâu O(log n) ngay cả khi không có path
+  compression.
+
+Chỉ một: O(log n). Cả hai: O(α(n)) — thực tế là hằng số.
+
+### Mẫu bộ đếm
+
+Đếm thành phần: khởi đầu n; mỗi unite trả TRUE giảm 1. unite trả FALSE
+(u, v đã liên thông) KHÔNG đổi số đếm — quên nhánh này là lỗi kinh điển.
+
+### find không đệ quy
+
+find đệ quy sâu 10^5 gây tràn ngăn xếp trong sandbox — vòng while là
+hình thức an toàn duy nhất cần nhớ.
+
+**Điểm mấu chốt:** DSU = rừng cha + path halving + union by size;
+unite trả FALSE khi đã liên thông.

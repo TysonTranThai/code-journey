@@ -1,0 +1,49 @@
+## Mẫu bài
+
+Đáp án là một *con số*, và tính khả thi **đơn điệu**: nếu x thỏa thì mọi
+x' ≤ x thỏa (bài tối thiểu hóa) hoặc mọi x' ≥ x thỏa (bài tối đa hóa). Khi đó
+tìm nhị phân đáp án trên đoạn giá trị của nó.
+
+Dấu hiệu hô to "tìm nhị phân trên đáp án":
+- "tối thiểu hóa khoảng cách lớn nhất", "tối đa hóa khoảng cách nhỏ nhất"
+- "chia thành k phần sao cho phần lớn nhất nhỏ nhất"
+- "đặt m trạm sao cho khoảng cách tối thiểu lớn nhất"
+- MỌI cách diễn đạt dạng "min-max" / "max-min"
+
+### Ví dụ làm mẫu — đặt trạm thông minh
+
+"n vị trí trên trục, đặt c trạm, khoảng cách giữa hai trạm gần nhau nhất phải
+lớn nhất có thể."
+
+F(d) = "đặt được ≥ c trạm, mỗi trạm cách trạm trước ≥ d" — tham lam: đặt trạm
+đầu ở điểm trái nhất, sau đó luôn chọn điểm ≥ trạm trước + d. O(n) mỗi lần
+check, đơn điệu (đặt được với d thì đặt được với d' < d) → tìm nhị phân d.
+
+```cpp
+bool F(long long d) {
+    int placed = 1;
+    long long last = a[0];
+    for (int i = 1; i < n; ++i)
+        if (a[i] - last >= d) { ++placed; last = a[i]; }
+    return placed >= c;
+}
+// Khuôn B trên d trong [1, a[n-1] - a[0]]
+```
+
+### Hàm check phải TRUNG THỰC
+
+Hai kiểu gian lận trong `check(x)`:
+1. **Xấp xỉ trong im lặng** — "đủ gần đúng là được". Check phải là thủ tục
+   quyết định *chính xác* cho bài con, nếu không tìm nhị phân hội tụ về kết
+   quả rác. Rác này im lặng: không crash, chỉ sai trên test mốc.
+2. **Sai độ phức tạp** — check O(n^2) biến mọi thứ thành O(n^2 log n).
+   Tính: n = 10^5 → 10^10 · 17 — chết. Check cũng phải nằm trong cùng ngân
+   sách như mọi thứ khác.
+
+### Khi nào KHÔNG dùng tìm nhị phân trên đáp án
+
+- Tính khả thi không đơn điệu (khi đó: quét, DP, hoặc tham số hóa — Advanced).
+- Đáp án là một cấu trúc chứ không phải một số (khi đó: dựng nghiệm /
+  tham lam có chứng minh — M4).
+
+**Tiếp:** [Điểm kiểm tra](./hsgi-cp-m2)

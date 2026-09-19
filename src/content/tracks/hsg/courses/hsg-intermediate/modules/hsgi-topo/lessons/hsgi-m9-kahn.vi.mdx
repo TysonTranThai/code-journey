@@ -1,0 +1,47 @@
+## Vấn đề
+
+n công việc, m ràng buộc "u trước v". In MỘT thứ tự hợp lệ — hoặc
+IMPOSSIBLE khi xoay vòng. Thứ tự topo trên DAG.
+
+### Thuật toán Kahn
+
+Đỉnh in-degree 0 không phụ thuộc ai — lấy trước. Lấy ra, trừ in-degree
+của mọi đỉnh nó trỏ tới; về 0 thì vào hàng đợi.
+
+```cpp
+int n, m;
+vector<vector<int>> adj;          // u -> v
+vector<int> deg;                  // in-degree
+
+vector<int> topo() {
+    queue<int> bq;
+    for (int i = 1; i <= n; ++i)
+        if (deg[i] == 0) bq.push(i);
+    vector<int> order;
+    while (!bq.empty()) {
+        int u = bq.front(); bq.pop();
+        order.push_back(u);
+        for (int v : adj[u])
+            if (--deg[v] == 0) bq.push(v);
+    }
+    return order;                 // size() < n ⇒ IMPOSSIBLE
+}
+```
+
+### Phán quyết chu trình
+
+order.size() < n: đỉnh còn lại nằm trên (hoặc sau) chu trình — in −1.
+Bài kiểm tra chu trình CÓ HƯỚNG rẻ nhất (O(n + m)).
+
+### Tie-breaking (đề hay đòi)
+
+"Thứ tự nhỏ nhất theo từ điển": queue → min-heap, mỗi bước lấy đỉnh
+NHỎ NHẤT trong số in-degree 0. O((n + m) log n).
+
+### Hai lỗi kinh điển
+
+1. Quên ++deg[v] — mọi đỉnh trông tự do, thứ tự sai ngay.
+2. Kiểm deg[v] == 0 TRƯỚC khi trừ — mất đỉnh. Luôn trừ rồi kiểm.
+
+**Điểm mấu chốt:** in-degree 0 vào hàng; lấy ra → trừ con; thiếu n =
+chu trình.

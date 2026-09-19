@@ -1,0 +1,36 @@
+{
+  "id": "hsgi-p17-edfcmp",
+  "title": "Debug: Comparator EDF đảo chiều",
+  "prompt": "**Bài toán:** n việc, việc i cần t[i] giờ và có deadline d[i]. Một máy,\nbắt đầu tại thời điểm 0. In 'YES' nếu có thứ tự làm tất cả việc đúng\ndeadline, ngược lại 'NO'.\n\n**Code lỗi:** deadline SỚM phải xếp TRƯỚC — comparator dưới đây sort\nSAI CHIỀU. Mô phỏng đúng phần còn lại của mã: cộng thời lượng tuần tự,\nnếu tổng vượt deadline bất kỳ thì 'NO'.\n\n```cpp\n// BROKEN: sort giảm dần theo deadline (ngược EDF)\n// sort theo d giảm dần, sau đó quét cộng dồn kiểm tra\n```\n\n**Yêu cầu:** Hãy VIẾT LẠI bản sửa đúng (EDF chuẩn) và pass các test.\nBản nộp của bạn là bản ĐÃ SỬA — code lỗi chỉ để tham khảo.\n\n**Input:** n; n dòng t[i] d[i] (1 ≤ t[i], d[i] ≤ 10^9).\n**Output:** YES hoặc NO.\n\n**Ví dụ:** `2` / `3 10` / `4 5` -> `YES` (EDF: 4 (d=5) rồi 3 (d=10):\n4 ≤ 5 và 7 ≤ 10).\n",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ",
+      "code": "std::istringstream in(\"2\\n3 10\\n4 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"YES\\n\"));",
+      "hint": "EDF: 4 (d=5) rồi 3 (d=10); 4 ≤ 5 và 7 ≤ 10."
+    },
+    {
+      "name": "hai việc — đảo chiều cứu được",
+      "code": "std::istringstream in(\"2\\n5 3\\n2 9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NO\\n\"));",
+      "hint": "EDF: 5 (d=3) rồi 2: 5 > 3 → NO bất kể thứ tự."
+    },
+    {
+      "name": "thứ tự đúng duy nhất",
+      "code": "std::istringstream in(\"3\\n2 4\\n3 7\\n1 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"YES\\n\"));",
+      "hint": "EDF: 1 (d=3), 2 (d=4), 3 (d=7): 1 ≤ 3, 3 ≤ 4, 6 ≤ 7."
+    },
+    {
+      "name": "việc đầu đã trễ",
+      "code": "std::istringstream in(\"1\\n5 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NO\\n\"));",
+      "hint": "Một việc dài hơn deadline của chính nó."
+    },
+    {
+      "name": "việc bằng deadline",
+      "code": "std::istringstream in(\"3\\n3 3\\n2 6\\n1 10\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"YES\\n\"));",
+      "hint": "3 ≤ 3, 5 ≤ 6, 6 ≤ 10 — biên trên bằng đúng."
+    }
+  ],
+  "level": "guided"
+}

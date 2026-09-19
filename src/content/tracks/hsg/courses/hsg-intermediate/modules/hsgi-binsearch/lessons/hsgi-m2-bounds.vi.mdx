@@ -1,0 +1,60 @@
+## Hai đường biên — ý nghĩa chính xác
+
+Trên dãy đã sắp, `lower_bound(x)` trỏ tới **phần tử đầu ≥ x**;
+`upper_bound(x)` trỏ tới **phần tử đầu > x**. Mọi thứ khác suy ra được:
+
+```cpp
+int lo = lower_bound(v.begin(), v.end(), x) - v.begin();  // số phần tử < x
+int up = upper_bound(v.begin(), v.end(), x) - v.begin();  // số phần tử <= x
+int cnt = up - lo;                                        // số phần tử == x
+bool present = (lo < n && v[lo] == x);
+```
+
+Ba thành ngữ cần thuộc:
+1. **đếm trong đoạn giá trị [a, b]** = `upper_bound(b) − lower_bound(a)`.
+2. **tiền nhiệm** (phần tử lớn nhất ≤ x) = `upper_bound(x) − 1` — kiểm tra
+   iterator đã dịch chuyển trước khi trừ.
+3. **hậu nhiệm** (phần tử nhỏ nhất ≥ x) = `lower_bound(x)` — kiểm tra với
+   `end()`.
+
+### Tìm nhị phân tự viết — hai khuôn vòng lặp
+
+```cpp
+// Khuôn A: tìm chỉ số đầu có a[i] >= x (bộ khung lower_bound)
+int l = 0, r = n;              // nửa mở [l, r)
+while (l < r) {
+    int mid = l + (r - l) / 2;
+    if (a[mid] >= x) r = mid; else l = mid + 1;
+}
+// l == r == đáp án (n nếu không có)
+```
+
+```cpp
+// Khuôn B: cực đại hóa ans sao cho F(ans) đúng trên [lo, hi] (đơn điệu!)
+int l = lo, r = hi;            // đóng [l, r]
+while (l < r) {
+    int mid = l + (r - l + 1) / 2;   // mid TRẦN — diệt vòng lặp l=mid
+    if (F(mid)) l = mid; else r = mid - 1;
+}
+// l == r == giá trị khả thi lớn nhất
+```
+
+Hai bệnh kinh điển:
+- **mid sàn với `l = mid`** → lặp vô hạn khi `r = l + 1`.
+- **`r = mid` với biên đóng và mid sàn** → bỏ qua chính `r`, có thể mất đáp án
+  nằm ngay biên.
+
+Chọn khuôn TRƯỚC, rồi không bao giờ trộn linh kiện giữa hai khuôn.
+
+### Đếm bên trong cửa sổ
+
+"Trong dãy đã sắp, có bao nhiêu phần tử trong [l, r]?" — với *giá trị*, dùng
+hai đường biên. Với *vị trí*, dãy vị trí đã sắp sẵn — chỉ là số học chỉ số.
+Nhận ra **cái gì đã sắp** là một nửa bài toán.
+
+## Luyện nhận diện
+
+H: "mảng đã sắp, truy vấn: phần tử lớn nhất ≤ x" — thành ngữ nào?
+Đ: `upper_bound(x)`; nếu trả về `begin()` thì đáp án "không có".
+
+**Tiếp:** [Tìm kiếm nhị phân trên đáp án](./hsgi-m2-answer)

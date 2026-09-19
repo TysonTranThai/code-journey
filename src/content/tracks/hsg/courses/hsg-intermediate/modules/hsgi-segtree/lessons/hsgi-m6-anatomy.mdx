@@ -1,0 +1,62 @@
+## The problem Fenwick leaves open
+
+Fenwick gives prefix sums with updates. But "max on a[l..r]" or "count
+of values ≥ k on a[l..r]" has no invertible operation — subtraction does
+not work. The segment tree (cây phân đoạn) answers arbitrary range
+queries with updates, at O(log n) for both.
+
+### The anatomy
+
+Each node covers a segment. A node covering [l, r] with l < r splits at
+mid = (l + r) / 2 into [l, mid] and [mid+1, r]; leaves cover single
+indices. node[v] stores the MERGE of its two children (sum, max, gcd...).
+
+```cpp
+int n;
+vector<long long> t;          // 4n space is always safe
+
+void build(const vector<long long>& a, int v, int lo, int hi) {
+    if (lo == hi) { t[v] = a[lo]; return; }
+    int mid = (lo + hi) / 2;
+    build(a, 2*v, lo, mid);
+    build(a, 2*v+1, mid+1, hi);
+    t[v] = t[2*v] + t[2*v+1];             // merge = sum here
+}
+
+long long query(int v, int lo, int hi, int l, int r) {
+    if (r < lo || hi < l) return 0;       // identity (0 for sum)
+    if (l <= lo && hi <= r) return t[v];  // fully covered
+    int mid = (lo + hi) / 2;
+    return query(2*v, lo, mid, l, r) + query(2*v+1, mid+1, hi, l, r);
+}
+
+void update(int v, int lo, int hi, int i, long long x) {  // a[i] = x
+    if (lo == hi) { t[v] = x; return; }
+    int mid = (lo + hi) / 2;
+    if (i <= mid) update(2*v, lo, mid, i, x);
+    else          update(2*v+1, mid+1, hi, i, x);
+    t[v] = t[2*v] + t[2*v+1];             // re-merge on the way back up
+}
+```
+
+### Why O(log n)
+
+- A query decomposes [l, r] into O(log n) disjoint node segments: at
+  every level at most 4 nodes are "half-covered", and half-covered nodes
+  do not recurse further.
+- An update touches exactly one node per level: the path root → leaf i.
+
+### The cost you must not ignore
+
+build is O(n) but RECURSES depth ⌈log₂ n⌉ ≈ 18 for n = 2·10^5 — depth is
+fine (≈ 18 frames). But writing build RECURSIVELY over 4·10^5 nodes is
+fine; writing a RECURSIVE solution that recurses once per element (like
+a linked-list walk) is not. Recursion depth and recursion COUNT are
+different budgets (module 1's lesson, in a new costume).
+
+Note the merge must be ASSOCIATIVE (sums, min, max, gcd are; average is
+not). Every structure in this module is just "some associative merge".
+
+**Điểm mấu chốt:** segment tree = cây nhị phân trên các đoạn; node lưu
+PHÉP HỢP của hai con; query phân rã đoạn thành O(log n) nút rời rạc;
+update đi đúng một đường từ gốc đến lá.

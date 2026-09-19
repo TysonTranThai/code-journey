@@ -1,0 +1,35 @@
+## Ràng buộc nói lên thuật toán
+
+Trước khi nghĩ "giải thế nào", hỏi "giới hạn cho phép gì":
+
+| Ràng buộc | Gia đình khả dĩ |
+|---|---|
+| n ≤ 20 | vét cạn 2^n, đệ quy quay lui |
+| n ≤ 500 | O(n^3) |
+| n ≤ 5000 | O(n^2) |
+| n ≤ 2·10^5 | O(n log n) — sort, Fenwick, map |
+| giá trị ≤ 10^6 | mảng đếm, cửa sổ trượt tần suất |
+| Q truy vấn + n lớn | tiền tố hóa / cấu trúc dữ liệu |
+
+## Ba dấu hiệu nhận diện
+
+**Cửa sổ trượt** — "đoạn con liên tiếp dài nhất/nhỏ nhất thỏa điều kiện
+đơn điệu": mở rộng phải, thu trái khi vi phạm. Mỗi phần tử vào/ra cửa
+sổ đúng một lần → O(n).
+
+**Tiền tố + map** — "đếm đoạn con có tổng = K" (cho phép số âm): tổng
+đoạn (i, j] = P[j] − P[i]; đếm cặp bằng map tại giá trị P hiện tại. Với
+mảng không âm: cửa sổ trượt cũng đủ.
+
+**Kadane** — "tổng đoạn con liên tiếp lớn nhất": dp[i] = max(dp[i−1] +
+a[i], a[i]) — đoạn kết thúc tại i hoặc bắt đầu mới tại i.
+
+## Luận điểm đổi chỗ (exchange argument)
+
+Mọi tham lam của Intermediate cần một câu "đổi chỗ không xấu đi":
+hai nghiệm chỉ khác thứ tự hai phần tử liền nhau → so sánh đúng hai
+trạng thái đó. Nếu không chứng minh được, khả năng cao là có test phản
+ví dụ — và contest thật sẽ có test đó.
+
+**Điểm mấu chốt:** ràng buộc → gia đình thuật toán; đoạn liên tiếp →
+cửa sổ/Kadane; đếm đoạn có điều kiện → tiền tố + map; thứ tự → đổi chỗ.

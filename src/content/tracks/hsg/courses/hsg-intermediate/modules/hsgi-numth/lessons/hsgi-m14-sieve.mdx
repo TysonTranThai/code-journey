@@ -1,0 +1,66 @@
+## Sàng Eratosthenes
+
+Bảng nguyên tố tới N:
+
+```cpp
+const int N = 10000000;
+vector<char> is_composite(N + 1, 0);
+vector<int> primes;
+for (int i = 2; i <= N; ++i) {
+    if (!is_composite[i]) {
+        primes.push_back(i);
+        if ((long long)i * i <= N)
+            for (long long j = (long long)i * i; j <= N; j += i)
+                is_composite[j] = 1;
+    }
+}
+```
+
+Độ phức tạp O(n log log n) ≈ tuyến tính; 10^7 bool ≈ 10 MB. Chi tiết
+quan trọng: bắt đầu từ i*i (bội nhỏ hơn đã bị sàng bởi số nhỏ hơn);
+vòng trong dùng long long tránh tràn i*i.
+
+## Kiểm tra một số — không cần sàng
+
+Một số x: thử chia các i = 2, 3, 5, 7... tới sqrt(x). Nếu x ≤ 10^12,
+sqrt = 10^6 phép — nhanh:
+
+```cpp
+bool isPrime(long long x) {
+    if (x < 2) return false;
+    for (long long i = 2; i * i <= x; ++i)
+        if (x % i == 0) return false;
+    return true;
+}
+```
+
+i*i ≤ x với i kiểu long long: x tới ~9·10^18 mới tràn (2^63).
+
+## Phân tích thừa số
+
+SPF (smallest prime factor) từ sàng, hoặc chia thử:
+
+```cpp
+vector<pair<long long,int>> factorize(long long x) {
+    vector<pair<long long,int>> f;
+    for (long long d = 2; d * d <= x; ++d) {
+        if (x % d == 0) {
+            int k = 0;
+            while (x % d == 0) { x /= d; ++k; }
+            f.push_back({d, k});
+        }
+    }
+    if (x > 1) f.push_back({x, 1});
+    return f;
+}
+```
+
+Sau vòng lặp x là thừa số nguyên tố còn lại > sqrt(x gốc).
+
+## Số ước
+
+Từ phân tích: d(n) = ∏ (k_i + 1). n ≤ 10^12 → tối đa ~6720 ước — liệt
+kê bằng chia thử tới sqrt cũng nhanh.
+
+**Điểm mấu chốt:** sàng cho NHIỀU truy vấn; chia thử sqrt cho MỘT số
+lớn; i*i dùng long long; bắt đầu sàng từ i*i.

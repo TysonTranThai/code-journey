@@ -1,0 +1,52 @@
+## Đường đi qua mọi đỉnh
+
+Đường đi Hamilton: ghé MỌI đỉnh đúng một lần. Trạng thái cần hai tin:
+đã ghé đâu (mask) và đang đứng đâu (last):
+
+```cpp
+// dp[mask][v] = đường đi dài nhất (hoặc số đường, tùy bài)
+// bắt đầu ở đỉnh 0 (hoặc đếm từ mọi đỉnh), kết thúc tại v, ghé đúng mask
+for (int m = 1; m < (1 << n); ++m)
+    for (int v = 0; v < n; ++v)
+        if (m & (1 << v))
+            for (int u = 0; u < n; ++u)
+                if ((m & (1 << u)) && adj[u][v])
+                    // chuyển: dp[m][v] từ dp[m ^ (1 << v)][u]
+```
+
+Bộ nhớ 2^n·n: n = 20 → 20 triệu ô int = 80 MB — cẩn thận! n = 18 → 18
+MB ổn. Bài đếm: thay min bằng CỘNG mô-đun.
+
+## Gói thùng — không trục thời gian
+
+Chia n gói vào ít thùng nhất, mỗi thùng tổng trọng ≤ W (n ≤ 15).
+dp[mask] = cặp (số thùng ít nhất, trọng dư nhỏ nhất của thùng hiện mở):
+
+```cpp
+vector<pair<int,int>> dp(1 << n, {1e9, 0});
+dp[0] = {1, 0};                       // đã mở 1 thùng rỗng
+for (int m = 1; m < (1 << n); ++m) {
+    int i = __builtin_ctz(m);         // bit thấp nhất — gói đầu tiên
+    // cách 1: thùng cũ còn chỗ
+    // cách 2: mở thùng mới
+    for (auto [bins, rem] : {các trạng thái của m ^ (1 << i)}) ...
+}
+```
+
+Chốt gói bit-thấp-nhất trước đảm bảo mọi thứ tự chỉ xét MỘT lần —
+không nhân đôi đếm do hoán vị.
+
+## 2^n độc lập với n·2^n
+
+Gói thùng: mỗi mask chỉ tính O(2^n) tổng. Xếp việc: n·2^n. Đường
+Hamilton: n²·2^n. Đều "được" khi n nhỏ — nhưng hằng số quyết định n
+tối đa khả thi trong hạn thực tế.
+
+## Nhận diện
+
+- "n ≤ 20" + "mỗi phần tử đúng một lần" → bitmask.
+- "mọi thứ tự / mọi cách chia nhóm" → mask không trục: bit thấp nhất.
+- 2^n·n vượt (n = 25) → bitmask rơi; tìm cấu trúc khác.
+
+**Điểm mấu chốt:** (mask, last) cho đường đi; bit thấp nhất cho gói
+thùng; bộ nhớ 2^n·n là ranh giới thật.

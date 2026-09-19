@@ -1,0 +1,58 @@
+## Coordinate compression (nén tọa độ)
+
+Fenwick indexes are positions, but problems speak in VALUES up to 10^9 — you
+cannot allocate 10^9 cells. If only n ≤ 2·10^5 values *matter* (only their
+relative order), map value → rank:
+
+```cpp
+vector<int> vals = a;                     // copy
+sort(vals.begin(), vals.end());
+vals.erase(unique(vals.begin(), vals.end()), vals.end());
+int rank_of = lower_bound(vals.begin(), vals.end(), x) - vals.begin() + 1;
+// rank in [1, m], m ≤ n — Fenwick of size m
+```
+
+Recognition: the answer depends only on ORDER (comparisons), not magnitudes.
+If actual sums of values are needed, compression loses information — don't.
+
+### Prefix MAX — the one-way tree
+
+tree[i] = max over its lowbit range. Update climbs UP with
+`i += i & -i`, so an element can only be increased — this tree **cannot
+delete or decrease**. That is usually fine: "max prefix độ khó thấy tới thời
+điểm t" only grows.
+
+```cpp
+void update(int i, int v) {          // ch=max(tree[i], v), one-way
+    for (; i <= n; i += i & -i) t[i] = max(t[i], v);
+}
+int query(int i) {                   // max a[1..i]
+    int s = 0;
+    for (; i > 0; i -= i & -i) s = max(s, t[i]);
+    return s;
+}
+```
+
+Need decreases → segment tree (M6).
+
+### Inversions — the classic composition
+
+"Nghịch thế" = pair (i, j), i < j, a[i] > a[j]. Count in O(n log n):
+sweep left to right; for each a[j], the inversions ENDING at j are the number
+of previous elements GREATER than a[j].
+
+```cpp
+// compress, Fenwick over value-ranks
+long long inv = 0;
+for (int j = 0; j < n; ++j) {
+    int r = rank(a[j]);
+    inv += (long long)(j) - query(r);   // j items seen, query(r) of them ≤ a[j]
+    add(r, 1);
+}
+```
+
+Total inversions can reach n(n−1)/2 ≈ 2·10^10 for n = 2·10^5 — **long long
+mandatory**. This composition (compress → Fenwick → sweep with a counting
+identity) is THE reusable pattern of this course.
+
+**Next:** [Checkpoint](./hsgi-cp-m5)

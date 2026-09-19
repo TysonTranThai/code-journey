@@ -1,0 +1,31 @@
+{
+  "id": "hsgi-p14-modpowsum",
+  "title": "Tổng luỹ thừa mô-đun",
+  "prompt": "**Bài toán.** Cho a, b, m (1 ≤ a, b ≤ 10^18; 1 ≤ m ≤ 10^9). In\n(a^b) mod m. LƯU Ý: a có thể ≥ m, b khổng lồ — luỹ thừa nhị phân với\nmod từng bước là bắt buộc.\n\n**Ràng buộc:** 1 ≤ Q ≤ 100; 1 ≤ a ≤ 10^18; 1 ≤ b ≤ 10^18; 1 ≤ m ≤ 10^9.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ",
+      "code": "std::istringstream in(\"3\\n2 10 1000\\n1 999999999999999999 998244353\\n998244353 2 1000000007\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"24\\n1\\n320946142\\n\"));",
+      "hint": "2^10 = 1024 mod 1000 = 24; 1^anything = 1; 998244353² mod (10^9+7) = 320946142 (pow xác nhận)."
+    },
+    {
+      "name": "a > m",
+      "code": "std::istringstream in(\"2\\n1000000007 5 7\\n123456789123456789 3 1000000007\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"6\\n275772668\\n\"));",
+      "hint": "10^9+7 ≡ 6 (−1) mod 7: (−1)^5 = 6 — mod a TRƯỚC rồi bình phương; giá trị thứ hai xác nhận bằng pow Python."
+    },
+    {
+      "name": "b = 0 ẩn",
+      "code": "std::istringstream in(\"1\\n5 1 13\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n\"));",
+      "hint": "b ≥ 1 theo đề; b=1 → a mod m."
+    },
+    {
+      "name": "m = 1",
+      "code": "std::istringstream in(\"2\\n999 999999999999999999 1\\n7 3 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n0\\n\"));",
+      "hint": "Mọi số mod 1 = 0 — r % m với r khởi tạo 1 % m = 0 đúng."
+    }
+  ],
+  "level": "real-world"
+}

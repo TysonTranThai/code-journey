@@ -1,0 +1,63 @@
+## Câu hỏi 20 giây
+
+Ở HSG cấp tỉnh, bài của bạn có giới hạn thời gian tính bằng giây; ở đây một
+lần nộp có **20 giây cho cả compile và toàn bộ test**. Kỹ năng thật không phải
+là học thuộc "N ≤ 10^5 nghĩa là O(N log N)" — mà là *tính ngân sách*:
+
+```text
+ngân sách ≈ (giới hạn thời gian) × (phép toán/giây code của bạn đạt được)
+```
+
+Với `-O0` (cách test được build) vòng lặp đơn giản chạy cỡ **10^7–10^8 phép
+toán cơ bản mỗi giây**. Vậy với tư duy đề 2 giây, hãy nhắm **≈ 10^8 phép
+toán** và để dư cho hằng số (đệ quy, phép chia, lookup trên map).
+
+### Bảng ràng buộc → độ phức tạp
+
+| Ràng buộc (n) | Chấp nhận được tối đa | Vì sao |
+| --- | --- | --- |
+| ≤ 12 | O(n!) | hoán vị: 12! ≈ 4.8·10^8 |
+| ≤ 24 | O(2^(n/2) · đa thức) | chia để trị tìm kiếm |
+| ≤ 25 | O(2^n) | tập con: 2^25 = 3.3·10^7 |
+| ≤ 5 000 | O(n^2) | 2.5·10^7 |
+| ≤ 100 000 | O(n log n), O(n √n) | 10^6 · log |
+| ≤ 10^7 | O(n) | hằng số nhỏ |
+
+Đây là số *lập kế hoạch*, không phải định luật — một vòng trong nặng (chia,
+modulo, map) tốn gấp 10–50 lần một phép cộng. Nghĩ không chắc thì tự đo.
+
+### Ví dụ làm mẫu — từ ràng buộc đến thuật toán
+
+"Bài toán: n ≤ 100 000 điểm, q ≤ 100 000 truy vấn đoạn [l, r], mỗi truy vấn
+tính tổng. Time limit 2 s."
+
+Ngân sách: (n + q) phải gói trong ~10^8 → mỗi truy vấn phải **O(1)** → mảng
+cộng dồn (Beginner M8), hoặc cây Fenwick (khóa này, M6) nếu giá trị có cập nhật.
+
+```cpp
+// Bản năng cần kiểm tra: giữa các truy vấn có cập nhật không?
+//   không cập nhật → mảng cộng dồn O(n + q)
+//   có cập nhật    → Fenwick O((n + q) log n)
+```
+
+### Suy luận khấu hao — cái bẫy chia đôi
+
+Chia n đôi bao nhiêu lần đến 1? ⌊log2 n⌋ + 1. Với n = 10^9 là **30**. Vậy:
+
+- vòng lặp nhân đôi/chia đôi là O(log n), không bao giờ O(n)
+- dựng segment tree trên n lá tốn O(n) tổng (tổng các tầng 2^k)
+- n lần lấy max từ heap là O(n log n), nhưng *dựng* heap bottom-up là O(n) —
+  khấu hao, vì đa số node sift rất ít
+
+### Nhận diện bài khấu hao
+
+Từ khóa: "mỗi phần tử được thêm và xóa tối đa một lần", "queue dựng bằng hai
+stack", "đường đi không quay lại". Nếu mỗi phần tử chỉ gây O(1) công trong cả
+quá trình thì *tổng* là O(n) dù một bước đơn lẻ trông đắt.
+
+## Luyện nhận diện (viết đáp án trước khi chạy code)
+
+Với mỗi ý: n = 200 000, q = 200 000. O(nq) được không? Thay bằng gì?
+(Đáp án: không — 4·10^10. Cộng dồn / Fenwick / quét offline, tùy truy vấn.)
+
+**Tiếp:** [Chia để trị tìm kiếm](./hsgi-m1-mitm)

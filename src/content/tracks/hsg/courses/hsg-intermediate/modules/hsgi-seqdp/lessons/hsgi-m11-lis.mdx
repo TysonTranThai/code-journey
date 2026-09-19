@@ -1,0 +1,54 @@
+## The state that works
+
+LIS: chọn dãy con (giữ thứ tự, không cần liền) tăng dần dài nhất.
+
+Định nghĩa dp[i] = độ dài dãy con tăng dài nhất KẾT THÚC tại i:
+
+```cpp
+for (int i = 0; i < n; ++i) {
+    dp[i] = 1;                          // chỉ phần tử i
+    for (int j = 0; j < i; ++j)
+        if (a[j] < a[i]) dp[i] = max(dp[i], dp[j] + 1);
+}
+```
+
+Đáp án = max(dp). O(n²) — đủ tới n ≈ 5000.
+
+### The bottleneck
+
+dp[i] cần max của dp[j] với a[j] < a[i] — hai điều kiện, một cái là VỊ
+TRÍ (j < i), một là GIÁ TRỊ. O(n²) quét cả hai. Nhưng nếu duyệt i từ
+trái sang phải, j < i tự động; chỉ còn điều kiện giá trị: max dp[j] với
+a[j] < a[i] → là truy vấn tiền tố có điều kiện!
+
+### Patience — O(n log n)
+
+Giữ mảng tails: tails[k] = đuôi NHỎ NHẤT của dãy tăng dài k+1. Với mỗi
+a[i]: chèn a[i] thay thế phần tử ĐẦU TIÊN ≥ a[i] (lower_bound). Độ dài
+mảng = LIS:
+
+```cpp
+vector<int> tails;
+for (int i = 0; i < n; ++i) {
+    auto it = lower_bound(tails.begin(), tails.end(), a[i]);
+    if (it == tails.end()) tails.push_back(a[i]);  // kéo dài
+    else *it = a[i];                               // hạ đuôi
+}
+```
+
+tails LUÔN tăng ngặt — bất biến này là chứng minh: mỗi lần thay thế chỉ
+hạ đuôi của một độ dài, không phá tính tăng.
+
+### Strict vs non-strict
+
+`a[j] < a[i]` + lower_bound = TĂNG NGẶT. Dãy không giảm (cho phép bằng)
+→ đổi lower_bound thành upper_bound, hoặc điều kiện thành `a[j] <= a[i]`.
+Đổi sai một chỗ → sai trên test có phần tử bằng.
+
+### Which to write in contest
+
+n ≤ 5000: O(n²) — ngắn, khó sai. n lớn: patience. Đọc ràng buộc TRƯỚC
+khi chọn.
+
+**Điểm mấu chốt:** dp[i] kết-thúc-tại-i là khung; patience = chuyển điều
+kiện giá trị thành truy vấn nhị phân trên mảng tails tăng ngặt.

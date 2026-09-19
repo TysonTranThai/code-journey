@@ -1,0 +1,51 @@
+## Một bộ khung, nhiều phép hợp
+
+Đổi phần tử trung tính và phép hợp, giữ nguyên phần còn lại:
+
+| phép hợp | trung tính (ngoài đoạn) | truy vấn trả về |
+| --- | --- | --- |
+| tổng | 0 | tổng đoạn |
+| max | −∞ (LLONG_MIN) | max đoạn |
+| gcd | 0 | gcd đoạn |
+| cặp (đếm, tổng) | (0, 0) | đếm + tổng cùng lúc |
+
+### Ví dụ: max đoạn với cập nhật điểm
+
+```cpp
+struct SegMax {
+    int n;
+    vector<long long> t;
+    SegMax(int n_) : n(n_), t(4 * n_, LLONG_MIN) {}
+    void update(int v, int lo, int hi, int i, long long x) {
+        if (lo == hi) { t[v] = x; return; }
+        int mid = (lo + hi) / 2;
+        if (i <= mid) update(2*v, lo, mid, i, x);
+        else          update(2*v+1, mid+1, hi, i, x);
+        t[v] = max(t[2*v], t[2*v+1]);
+    }
+    long long query(int v, int lo, int hi, int l, int r) {
+        if (r < lo || hi < l) return LLONG_MIN;   // trung tính
+        if (l <= lo && hi <= r) return t[v];
+        int mid = (lo + hi) / 2;
+        return max(query(2*v, lo, mid, l, r),
+                   query(2*v+1, mid+1, hi, l, r));
+    }
+};
+```
+
+### Bẫy ghép: (đếm, tổng) và hai cây
+
+Đếm "giá trị > k trong [l, r]" bằng hai cây riêng (một cây đếm, một cây
+tổng) buộc hai lần duyệt; một cây duy nhất lưu CẶP (cnt, sum) hợp cả hai
+trong một lần duyệt với `{a.first + b.first, a.second + b.second}`. Cùng
+độ phức tạp, hằng số nhỏ hơn. Khi hai đại lượng PHỤ THUỘC nhau, gộp thành
+một kiểu nút.
+
+### Mẫu nhận diện
+
+"Truy vấn đoạn + cập nhật điểm + phép hợp không đảo ngược" → cây phân
+đoạn. Nếu phép hợp CÓ đảo ngược (tổng/xor) và chỉ có cập nhật điểm,
+Fenwick gọn và nhanh hơn. Chọn có chủ đích.
+
+**Điểm mấu chốt:** identity + merge định nghĩa bài toán; đại lượng kép →
+nút cặp.

@@ -137,7 +137,8 @@ def main():
             driver = [
                 "#include <sstream>", "#include <iostream>",
                 "#include <string>", "#include <vector>",
-                "#include <algorithm>",
+                "#include <algorithm>", "#include <numeric>",
+                "#include <climits>",
             ]
             driver.append(body)
             driver.append("int main() {")

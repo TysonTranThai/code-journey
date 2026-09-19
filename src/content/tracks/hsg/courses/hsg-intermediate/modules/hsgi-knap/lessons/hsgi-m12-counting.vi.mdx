@@ -1,0 +1,47 @@
+## Đếm tập con có tổng T
+
+dp[s] = số tập con tổng s. NGƯỢC, max đổi CỘNG:
+
+```cpp
+vector<long long> dp(T + 1, 0);
+dp[0] = 1;
+for (int i = 0; i < n; ++i)
+    for (int s = T; s >= a[i]; --s)
+        dp[s] = (dp[s] + dp[s - a[i]]) % MOD;
+```
+
+dp[0] = 1 là tập rỗng — quên nó lệch cả bảng. Xuôi vòng → đếm "dùng
+lại" — kết quả phình.
+
+## Chia đôi mảng
+
+Tổng S; tách hai nửa bằng nhau ⇔ tập con tổng S/2. S lẻ → NO ngay.
+Boolean dp[0..S/2] như trên.
+
+## Lấp ĐÚNG sức chứa
+
+Tổng trọng lượng ĐÚNG BẰNG W, tối đa giá trị; không được → −1. Nền
+−INF thay vì 0:
+
+```cpp
+const long long NEG = -(1LL << 60);
+vector<long long> dp(W + 1, NEG);
+dp[0] = 0;
+for (int i = 0; i < n; ++i)
+    for (int j = W; j >= w[i]; --j)
+        if (dp[j - w[i]] != NEG)
+            dp[j] = max(dp[j], dp[j - w[i]] + v[i]);
+if (dp[W] < 0) out << -1;
+```
+
+j không đạt ĐÚNG giữ −INF, không góp kết quả. Balo thường (nền 0) sẽ
+in giá trị balo bình thường — sai khi lấp không đầy.
+
+## Nhận diện
+
+- "số cách" → cộng + mô-đun + dp[0] = 1.
+- "tách hai nửa" → subset-sum S/2.
+- "đúng sức" → nền −INF.
+
+**Điểm mấu chốt:** đếm = cộng; exact = −INF; chiều duyệt vẫn là
+chính sách.

@@ -1668,6 +1668,122 @@ import HsgM92d from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-diff/
 import HsgM92dVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-diff/lessons/hsg-m9-2d.vi.mdx";
 import HsgM9Basics from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-diff/lessons/hsg-m9-basics.mdx";
 import HsgM9BasicsVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-diff/lessons/hsg-m9-basics.vi.mdx";
+import HsgiCpM1 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-analysis/lessons/hsgi-cp-m1.mdx";
+import HsgiCpM10 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-trees/lessons/hsgi-cp-m10.mdx";
+import HsgiCpM10Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-trees/lessons/hsgi-cp-m10.vi.mdx";
+import HsgiCpM11 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-seqdp/lessons/hsgi-cp-m11.mdx";
+import HsgiCpM11Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-seqdp/lessons/hsgi-cp-m11.vi.mdx";
+import HsgiCpM12 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-knap/lessons/hsgi-cp-m12.mdx";
+import HsgiCpM12Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-knap/lessons/hsgi-cp-m12.vi.mdx";
+import HsgiCpM13 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-bitmask/lessons/hsgi-cp-m13.mdx";
+import HsgiCpM13Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-bitmask/lessons/hsgi-cp-m13.vi.mdx";
+import HsgiCpM14 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-numth/lessons/hsgi-cp-m14.mdx";
+import HsgiCpM14Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-numth/lessons/hsgi-cp-m14.vi.mdx";
+import HsgiCpM15 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-strings/lessons/hsgi-cp-m15.mdx";
+import HsgiCpM15Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-strings/lessons/hsgi-cp-m15.vi.mdx";
+import HsgiCpM16 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-synthesis/lessons/hsgi-cp-m16.mdx";
+import HsgiCpM16Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-synthesis/lessons/hsgi-cp-m16.vi.mdx";
+import HsgiCpM17 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-debug/lessons/hsgi-cp-m17.mdx";
+import HsgiCpM17Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-debug/lessons/hsgi-cp-m17.vi.mdx";
+import HsgiCpM18a from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-contests/lessons/hsgi-cp-m18a.mdx";
+import HsgiCpM18aVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-contests/lessons/hsgi-cp-m18a.vi.mdx";
+import HsgiCpM18b from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-contests/lessons/hsgi-cp-m18b.mdx";
+import HsgiCpM18bVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-contests/lessons/hsgi-cp-m18b.vi.mdx";
+import HsgiCpM18c from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-contests/lessons/hsgi-cp-m18c.mdx";
+import HsgiCpM18cVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-contests/lessons/hsgi-cp-m18c.vi.mdx";
+import HsgiCpM18d from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-contests/lessons/hsgi-cp-m18d.mdx";
+import HsgiCpM18dVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-contests/lessons/hsgi-cp-m18d.vi.mdx";
+import HsgiCpM1Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-analysis/lessons/hsgi-cp-m1.vi.mdx";
+import HsgiCpM2 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-binsearch/lessons/hsgi-cp-m2.mdx";
+import HsgiCpM2Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-binsearch/lessons/hsgi-cp-m2.vi.mdx";
+import HsgiCpM3 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-intervals/lessons/hsgi-cp-m3.mdx";
+import HsgiCpM3Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-intervals/lessons/hsgi-cp-m3.vi.mdx";
+import HsgiCpM4 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-greedy2/lessons/hsgi-cp-m4.mdx";
+import HsgiCpM4Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-greedy2/lessons/hsgi-cp-m4.vi.mdx";
+import HsgiCpM5 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-fenwick/lessons/hsgi-cp-m5.mdx";
+import HsgiCpM5Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-fenwick/lessons/hsgi-cp-m5.vi.mdx";
+import HsgiCpM6 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-segtree/lessons/hsgi-cp-m6.mdx";
+import HsgiCpM6Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-segtree/lessons/hsgi-cp-m6.vi.mdx";
+import HsgiCpM7 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-dsu/lessons/hsgi-cp-m7.mdx";
+import HsgiCpM7Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-dsu/lessons/hsgi-cp-m7.vi.mdx";
+import HsgiCpM8 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-dijkstra/lessons/hsgi-cp-m8.mdx";
+import HsgiCpM8Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-dijkstra/lessons/hsgi-cp-m8.vi.mdx";
+import HsgiCpM9 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-topo/lessons/hsgi-cp-m9.mdx";
+import HsgiCpM9Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-topo/lessons/hsgi-cp-m9.vi.mdx";
+import HsgiM10Diameter from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-trees/lessons/hsgi-m10-diameter.mdx";
+import HsgiM10DiameterVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-trees/lessons/hsgi-m10-diameter.vi.mdx";
+import HsgiM10Traverse from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-trees/lessons/hsgi-m10-traverse.mdx";
+import HsgiM10TraverseVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-trees/lessons/hsgi-m10-traverse.vi.mdx";
+import HsgiM11KadaneLcs from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-seqdp/lessons/hsgi-m11-kadane-lcs.mdx";
+import HsgiM11KadaneLcsVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-seqdp/lessons/hsgi-m11-kadane-lcs.vi.mdx";
+import HsgiM11Lis from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-seqdp/lessons/hsgi-m11-lis.mdx";
+import HsgiM11LisVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-seqdp/lessons/hsgi-m11-lis.vi.mdx";
+import HsgiM12Counting from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-knap/lessons/hsgi-m12-counting.mdx";
+import HsgiM12CountingVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-knap/lessons/hsgi-m12-counting.vi.mdx";
+import HsgiM12Knapsack from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-knap/lessons/hsgi-m12-knapsack.mdx";
+import HsgiM12KnapsackVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-knap/lessons/hsgi-m12-knapsack.vi.mdx";
+import HsgiM13Bits from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-bitmask/lessons/hsgi-m13-bits.mdx";
+import HsgiM13BitsVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-bitmask/lessons/hsgi-m13-bits.vi.mdx";
+import HsgiM13Hamilton from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-bitmask/lessons/hsgi-m13-hamilton.mdx";
+import HsgiM13HamiltonVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-bitmask/lessons/hsgi-m13-hamilton.vi.mdx";
+import HsgiM14Modpow from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-numth/lessons/hsgi-m14-modpow.mdx";
+import HsgiM14ModpowVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-numth/lessons/hsgi-m14-modpow.vi.mdx";
+import HsgiM14Sieve from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-numth/lessons/hsgi-m14-sieve.mdx";
+import HsgiM14SieveVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-numth/lessons/hsgi-m14-sieve.vi.mdx";
+import HsgiM15Hash from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-strings/lessons/hsgi-m15-hash.mdx";
+import HsgiM15HashVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-strings/lessons/hsgi-m15-hash.vi.mdx";
+import HsgiM15Kmp from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-strings/lessons/hsgi-m15-kmp.mdx";
+import HsgiM15KmpVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-strings/lessons/hsgi-m15-kmp.vi.mdx";
+import HsgiM16Combine from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-synthesis/lessons/hsgi-m16-combine.mdx";
+import HsgiM16CombineVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-synthesis/lessons/hsgi-m16-combine.vi.mdx";
+import HsgiM16Recognize from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-synthesis/lessons/hsgi-m16-recognize.mdx";
+import HsgiM16RecognizeVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-synthesis/lessons/hsgi-m16-recognize.vi.mdx";
+import HsgiM17Catalog from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-debug/lessons/hsgi-m17-catalog.mdx";
+import HsgiM17CatalogVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-debug/lessons/hsgi-m17-catalog.vi.mdx";
+import HsgiM17Method from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-debug/lessons/hsgi-m17-method.mdx";
+import HsgiM17MethodVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-debug/lessons/hsgi-m17-method.vi.mdx";
+import HsgiM18Manage from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-contests/lessons/hsgi-m18-manage.mdx";
+import HsgiM18ManageVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-contests/lessons/hsgi-m18-manage.vi.mdx";
+import HsgiM18Strategy from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-contests/lessons/hsgi-m18-strategy.mdx";
+import HsgiM18StrategyVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-contests/lessons/hsgi-m18-strategy.vi.mdx";
+import HsgiM1Budget from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-analysis/lessons/hsgi-m1-budget.mdx";
+import HsgiM1BudgetVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-analysis/lessons/hsgi-m1-budget.vi.mdx";
+import HsgiM1Mitm from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-analysis/lessons/hsgi-m1-mitm.mdx";
+import HsgiM1MitmVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-analysis/lessons/hsgi-m1-mitm.vi.mdx";
+import HsgiM2Answer from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-binsearch/lessons/hsgi-m2-answer.mdx";
+import HsgiM2AnswerVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-binsearch/lessons/hsgi-m2-answer.vi.mdx";
+import HsgiM2Bounds from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-binsearch/lessons/hsgi-m2-bounds.mdx";
+import HsgiM2BoundsVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-binsearch/lessons/hsgi-m2-bounds.vi.mdx";
+import HsgiM3Cover from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-intervals/lessons/hsgi-m3-cover.mdx";
+import HsgiM3CoverVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-intervals/lessons/hsgi-m3-cover.vi.mdx";
+import HsgiM3Merge from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-intervals/lessons/hsgi-m3-merge.mdx";
+import HsgiM3MergeVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-intervals/lessons/hsgi-m3-merge.vi.mdx";
+import HsgiM4Exchange from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-greedy2/lessons/hsgi-m4-exchange.mdx";
+import HsgiM4ExchangeVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-greedy2/lessons/hsgi-m4-exchange.vi.mdx";
+import HsgiM4Heaps from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-greedy2/lessons/hsgi-m4-heaps.mdx";
+import HsgiM4HeapsVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-greedy2/lessons/hsgi-m4-heaps.vi.mdx";
+import HsgiM5Advanced from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-fenwick/lessons/hsgi-m5-advanced.mdx";
+import HsgiM5AdvancedVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-fenwick/lessons/hsgi-m5-advanced.vi.mdx";
+import HsgiM5Lowbit from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-fenwick/lessons/hsgi-m5-lowbit.mdx";
+import HsgiM5LowbitVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-fenwick/lessons/hsgi-m5-lowbit.vi.mdx";
+import HsgiM6Anatomy from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-segtree/lessons/hsgi-m6-anatomy.mdx";
+import HsgiM6AnatomyVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-segtree/lessons/hsgi-m6-anatomy.vi.mdx";
+import HsgiM6BeyondSum from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-segtree/lessons/hsgi-m6-beyond-sum.mdx";
+import HsgiM6BeyondSumVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-segtree/lessons/hsgi-m6-beyond-sum.vi.mdx";
+import HsgiM6Lazy from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-segtree/lessons/hsgi-m6-lazy.mdx";
+import HsgiM6LazyVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-segtree/lessons/hsgi-m6-lazy.vi.mdx";
+import HsgiM7Mst from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-dsu/lessons/hsgi-m7-mst.mdx";
+import HsgiM7MstVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-dsu/lessons/hsgi-m7-mst.vi.mdx";
+import HsgiM7Uf from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-dsu/lessons/hsgi-m7-uf.mdx";
+import HsgiM7UfVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-dsu/lessons/hsgi-m7-uf.vi.mdx";
+import HsgiM8Dijkstra from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-dijkstra/lessons/hsgi-m8-dijkstra.mdx";
+import HsgiM8DijkstraVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-dijkstra/lessons/hsgi-m8-dijkstra.vi.mdx";
+import HsgiM8ZeroOne from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-dijkstra/lessons/hsgi-m8-zero-one.mdx";
+import HsgiM8ZeroOneVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-dijkstra/lessons/hsgi-m8-zero-one.vi.mdx";
+import HsgiM9Kahn from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-topo/lessons/hsgi-m9-kahn.mdx";
+import HsgiM9KahnVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-topo/lessons/hsgi-m9-kahn.vi.mdx";
+import HsgiM9Longest from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-topo/lessons/hsgi-m9-longest.mdx";
+import HsgiM9LongestVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-topo/lessons/hsgi-m9-longest.vi.mdx";
 import HtmlArchitecture from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/html-architecture.mdx";
 import HtmlArchitectureVi from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/html-architecture.vi.mdx";
 import HtmlAttributes from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-attributes.mdx";
@@ -4032,6 +4148,122 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["hsg-vao-mon/hsg-m1-bridge.vi.mdx"]: HsgM1BridgeVi,
   ["hsg-vao-mon/hsg-cp-m1.mdx"]: HsgCpM1,
   ["hsg-vao-mon/hsg-cp-m1.vi.mdx"]: HsgCpM1Vi,
+  ["hsgi-analysis/hsgi-m1-budget.mdx"]: HsgiM1Budget,
+  ["hsgi-analysis/hsgi-m1-budget.vi.mdx"]: HsgiM1BudgetVi,
+  ["hsgi-analysis/hsgi-m1-mitm.mdx"]: HsgiM1Mitm,
+  ["hsgi-analysis/hsgi-m1-mitm.vi.mdx"]: HsgiM1MitmVi,
+  ["hsgi-analysis/hsgi-cp-m1.mdx"]: HsgiCpM1,
+  ["hsgi-analysis/hsgi-cp-m1.vi.mdx"]: HsgiCpM1Vi,
+  ["hsgi-binsearch/hsgi-m2-bounds.mdx"]: HsgiM2Bounds,
+  ["hsgi-binsearch/hsgi-m2-bounds.vi.mdx"]: HsgiM2BoundsVi,
+  ["hsgi-binsearch/hsgi-m2-answer.mdx"]: HsgiM2Answer,
+  ["hsgi-binsearch/hsgi-m2-answer.vi.mdx"]: HsgiM2AnswerVi,
+  ["hsgi-binsearch/hsgi-cp-m2.mdx"]: HsgiCpM2,
+  ["hsgi-binsearch/hsgi-cp-m2.vi.mdx"]: HsgiCpM2Vi,
+  ["hsgi-bitmask/hsgi-m13-bits.mdx"]: HsgiM13Bits,
+  ["hsgi-bitmask/hsgi-m13-bits.vi.mdx"]: HsgiM13BitsVi,
+  ["hsgi-bitmask/hsgi-m13-hamilton.mdx"]: HsgiM13Hamilton,
+  ["hsgi-bitmask/hsgi-m13-hamilton.vi.mdx"]: HsgiM13HamiltonVi,
+  ["hsgi-bitmask/hsgi-cp-m13.mdx"]: HsgiCpM13,
+  ["hsgi-bitmask/hsgi-cp-m13.vi.mdx"]: HsgiCpM13Vi,
+  ["hsgi-contests/hsgi-m18-strategy.mdx"]: HsgiM18Strategy,
+  ["hsgi-contests/hsgi-m18-strategy.vi.mdx"]: HsgiM18StrategyVi,
+  ["hsgi-contests/hsgi-m18-manage.mdx"]: HsgiM18Manage,
+  ["hsgi-contests/hsgi-m18-manage.vi.mdx"]: HsgiM18ManageVi,
+  ["hsgi-contests/hsgi-cp-m18a.mdx"]: HsgiCpM18a,
+  ["hsgi-contests/hsgi-cp-m18a.vi.mdx"]: HsgiCpM18aVi,
+  ["hsgi-contests/hsgi-cp-m18b.mdx"]: HsgiCpM18b,
+  ["hsgi-contests/hsgi-cp-m18b.vi.mdx"]: HsgiCpM18bVi,
+  ["hsgi-contests/hsgi-cp-m18c.mdx"]: HsgiCpM18c,
+  ["hsgi-contests/hsgi-cp-m18c.vi.mdx"]: HsgiCpM18cVi,
+  ["hsgi-contests/hsgi-cp-m18d.mdx"]: HsgiCpM18d,
+  ["hsgi-contests/hsgi-cp-m18d.vi.mdx"]: HsgiCpM18dVi,
+  ["hsgi-debug/hsgi-m17-method.mdx"]: HsgiM17Method,
+  ["hsgi-debug/hsgi-m17-method.vi.mdx"]: HsgiM17MethodVi,
+  ["hsgi-debug/hsgi-m17-catalog.mdx"]: HsgiM17Catalog,
+  ["hsgi-debug/hsgi-m17-catalog.vi.mdx"]: HsgiM17CatalogVi,
+  ["hsgi-debug/hsgi-cp-m17.mdx"]: HsgiCpM17,
+  ["hsgi-debug/hsgi-cp-m17.vi.mdx"]: HsgiCpM17Vi,
+  ["hsgi-dijkstra/hsgi-m8-dijkstra.mdx"]: HsgiM8Dijkstra,
+  ["hsgi-dijkstra/hsgi-m8-dijkstra.vi.mdx"]: HsgiM8DijkstraVi,
+  ["hsgi-dijkstra/hsgi-m8-zero-one.mdx"]: HsgiM8ZeroOne,
+  ["hsgi-dijkstra/hsgi-m8-zero-one.vi.mdx"]: HsgiM8ZeroOneVi,
+  ["hsgi-dijkstra/hsgi-cp-m8.mdx"]: HsgiCpM8,
+  ["hsgi-dijkstra/hsgi-cp-m8.vi.mdx"]: HsgiCpM8Vi,
+  ["hsgi-dsu/hsgi-m7-uf.mdx"]: HsgiM7Uf,
+  ["hsgi-dsu/hsgi-m7-uf.vi.mdx"]: HsgiM7UfVi,
+  ["hsgi-dsu/hsgi-m7-mst.mdx"]: HsgiM7Mst,
+  ["hsgi-dsu/hsgi-m7-mst.vi.mdx"]: HsgiM7MstVi,
+  ["hsgi-dsu/hsgi-cp-m7.mdx"]: HsgiCpM7,
+  ["hsgi-dsu/hsgi-cp-m7.vi.mdx"]: HsgiCpM7Vi,
+  ["hsgi-fenwick/hsgi-m5-lowbit.mdx"]: HsgiM5Lowbit,
+  ["hsgi-fenwick/hsgi-m5-lowbit.vi.mdx"]: HsgiM5LowbitVi,
+  ["hsgi-fenwick/hsgi-m5-advanced.mdx"]: HsgiM5Advanced,
+  ["hsgi-fenwick/hsgi-m5-advanced.vi.mdx"]: HsgiM5AdvancedVi,
+  ["hsgi-fenwick/hsgi-cp-m5.mdx"]: HsgiCpM5,
+  ["hsgi-fenwick/hsgi-cp-m5.vi.mdx"]: HsgiCpM5Vi,
+  ["hsgi-greedy2/hsgi-m4-exchange.mdx"]: HsgiM4Exchange,
+  ["hsgi-greedy2/hsgi-m4-exchange.vi.mdx"]: HsgiM4ExchangeVi,
+  ["hsgi-greedy2/hsgi-m4-heaps.mdx"]: HsgiM4Heaps,
+  ["hsgi-greedy2/hsgi-m4-heaps.vi.mdx"]: HsgiM4HeapsVi,
+  ["hsgi-greedy2/hsgi-cp-m4.mdx"]: HsgiCpM4,
+  ["hsgi-greedy2/hsgi-cp-m4.vi.mdx"]: HsgiCpM4Vi,
+  ["hsgi-intervals/hsgi-m3-merge.mdx"]: HsgiM3Merge,
+  ["hsgi-intervals/hsgi-m3-merge.vi.mdx"]: HsgiM3MergeVi,
+  ["hsgi-intervals/hsgi-m3-cover.mdx"]: HsgiM3Cover,
+  ["hsgi-intervals/hsgi-m3-cover.vi.mdx"]: HsgiM3CoverVi,
+  ["hsgi-intervals/hsgi-cp-m3.mdx"]: HsgiCpM3,
+  ["hsgi-intervals/hsgi-cp-m3.vi.mdx"]: HsgiCpM3Vi,
+  ["hsgi-knap/hsgi-m12-knapsack.mdx"]: HsgiM12Knapsack,
+  ["hsgi-knap/hsgi-m12-knapsack.vi.mdx"]: HsgiM12KnapsackVi,
+  ["hsgi-knap/hsgi-m12-counting.mdx"]: HsgiM12Counting,
+  ["hsgi-knap/hsgi-m12-counting.vi.mdx"]: HsgiM12CountingVi,
+  ["hsgi-knap/hsgi-cp-m12.mdx"]: HsgiCpM12,
+  ["hsgi-knap/hsgi-cp-m12.vi.mdx"]: HsgiCpM12Vi,
+  ["hsgi-numth/hsgi-m14-sieve.mdx"]: HsgiM14Sieve,
+  ["hsgi-numth/hsgi-m14-sieve.vi.mdx"]: HsgiM14SieveVi,
+  ["hsgi-numth/hsgi-m14-modpow.mdx"]: HsgiM14Modpow,
+  ["hsgi-numth/hsgi-m14-modpow.vi.mdx"]: HsgiM14ModpowVi,
+  ["hsgi-numth/hsgi-cp-m14.mdx"]: HsgiCpM14,
+  ["hsgi-numth/hsgi-cp-m14.vi.mdx"]: HsgiCpM14Vi,
+  ["hsgi-segtree/hsgi-m6-anatomy.mdx"]: HsgiM6Anatomy,
+  ["hsgi-segtree/hsgi-m6-anatomy.vi.mdx"]: HsgiM6AnatomyVi,
+  ["hsgi-segtree/hsgi-m6-beyond-sum.mdx"]: HsgiM6BeyondSum,
+  ["hsgi-segtree/hsgi-m6-beyond-sum.vi.mdx"]: HsgiM6BeyondSumVi,
+  ["hsgi-segtree/hsgi-m6-lazy.mdx"]: HsgiM6Lazy,
+  ["hsgi-segtree/hsgi-m6-lazy.vi.mdx"]: HsgiM6LazyVi,
+  ["hsgi-segtree/hsgi-cp-m6.mdx"]: HsgiCpM6,
+  ["hsgi-segtree/hsgi-cp-m6.vi.mdx"]: HsgiCpM6Vi,
+  ["hsgi-seqdp/hsgi-m11-lis.mdx"]: HsgiM11Lis,
+  ["hsgi-seqdp/hsgi-m11-lis.vi.mdx"]: HsgiM11LisVi,
+  ["hsgi-seqdp/hsgi-m11-kadane-lcs.mdx"]: HsgiM11KadaneLcs,
+  ["hsgi-seqdp/hsgi-m11-kadane-lcs.vi.mdx"]: HsgiM11KadaneLcsVi,
+  ["hsgi-seqdp/hsgi-cp-m11.mdx"]: HsgiCpM11,
+  ["hsgi-seqdp/hsgi-cp-m11.vi.mdx"]: HsgiCpM11Vi,
+  ["hsgi-strings/hsgi-m15-hash.mdx"]: HsgiM15Hash,
+  ["hsgi-strings/hsgi-m15-hash.vi.mdx"]: HsgiM15HashVi,
+  ["hsgi-strings/hsgi-m15-kmp.mdx"]: HsgiM15Kmp,
+  ["hsgi-strings/hsgi-m15-kmp.vi.mdx"]: HsgiM15KmpVi,
+  ["hsgi-strings/hsgi-cp-m15.mdx"]: HsgiCpM15,
+  ["hsgi-strings/hsgi-cp-m15.vi.mdx"]: HsgiCpM15Vi,
+  ["hsgi-synthesis/hsgi-m16-recognize.mdx"]: HsgiM16Recognize,
+  ["hsgi-synthesis/hsgi-m16-recognize.vi.mdx"]: HsgiM16RecognizeVi,
+  ["hsgi-synthesis/hsgi-m16-combine.mdx"]: HsgiM16Combine,
+  ["hsgi-synthesis/hsgi-m16-combine.vi.mdx"]: HsgiM16CombineVi,
+  ["hsgi-synthesis/hsgi-cp-m16.mdx"]: HsgiCpM16,
+  ["hsgi-synthesis/hsgi-cp-m16.vi.mdx"]: HsgiCpM16Vi,
+  ["hsgi-topo/hsgi-m9-kahn.mdx"]: HsgiM9Kahn,
+  ["hsgi-topo/hsgi-m9-kahn.vi.mdx"]: HsgiM9KahnVi,
+  ["hsgi-topo/hsgi-m9-longest.mdx"]: HsgiM9Longest,
+  ["hsgi-topo/hsgi-m9-longest.vi.mdx"]: HsgiM9LongestVi,
+  ["hsgi-topo/hsgi-cp-m9.mdx"]: HsgiCpM9,
+  ["hsgi-topo/hsgi-cp-m9.vi.mdx"]: HsgiCpM9Vi,
+  ["hsgi-trees/hsgi-m10-traverse.mdx"]: HsgiM10Traverse,
+  ["hsgi-trees/hsgi-m10-traverse.vi.mdx"]: HsgiM10TraverseVi,
+  ["hsgi-trees/hsgi-m10-diameter.mdx"]: HsgiM10Diameter,
+  ["hsgi-trees/hsgi-m10-diameter.vi.mdx"]: HsgiM10DiameterVi,
+  ["hsgi-trees/hsgi-cp-m10.mdx"]: HsgiCpM10,
+  ["hsgi-trees/hsgi-cp-m10.vi.mdx"]: HsgiCpM10Vi,
   ["java-executors-vt/javaa-executor-lifecycle.mdx"]: JavaaExecutorLifecycle,
   ["java-executors-vt/javaa-executor-lifecycle.vi.mdx"]: JavaaExecutorLifecycleVi,
   ["java-executors-vt/javaa-cf-composition.mdx"]: JavaaCfComposition,

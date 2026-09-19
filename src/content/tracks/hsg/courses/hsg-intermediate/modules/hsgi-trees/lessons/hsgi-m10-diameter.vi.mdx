@@ -1,0 +1,44 @@
+## Định nghĩa
+
+Đường kính: đường đi DÀI NHẤT trên cây (số cạnh hoặc tổng trọng số).
+Đường giữa hai đỉnh — KHÔNG nhất quán qua gốc.
+
+### Near-miss cần diệt ngay
+
+"Chiều cao từ gốc" ≠ đường kính. Cây 1–2, 1–3, 2–4, 3–5: chiều cao 2,
+đường kính 4 (4–2–1–3–5). Mọi nghiệm "từ gốc xuống" sai khi đường dài
+nhất nằm giữa hai nhánh.
+
+### DP
+
+down[u] = đường dài nhất từ u đi XUỐNG một cây con. Với u: d1, d2 = hai
+giá trị (down[c] + w) lớn nhất trong các con; đường qua u = d1 + d2:
+
+```cpp
+long long best = 0;
+for (int i = order.size() - 1; i >= 0; --i) {   // ngược BFS
+    int u = order[i];
+    long long d1 = 0, d2 = 0;
+    // với mỗi con c: val = down[c] + w(u, c)
+    //   cập nhật d1/d2 (hai giá trị lớn nhất)
+    // best = max(best, d1 + d2);
+    // down[par[u]] = max(down[par[u]], d1 + w(u, par));
+}
+```
+
+Mỗi cạnh một lần: O(n).
+
+### Hai lần BFS
+
+BFS từ đỉnh bất kỳ → a xa nhất; BFS từ a → b xa nhất: a–b là đường
+kính. ĐÚNG nhưng bí ẩn; DP tổng quát hơn (trọng số, đếm đường). Thuộc
+DP; two-BFS để kiểm chéo.
+
+### Vì sao đồ thị phá nó
+
+Đường dài nhất trên đồ thị tổng quát là NP-khó. Cây đặc biệt: đường
+giữa hai đỉnh DUY NHẤT. Nhận diện "cây + đường dài nhất" → DP hai
+nhánh.
+
+**Điểm mấu chốt:** down[u] = nhánh tốt nhất; qua u = d1 + d2; KHÔNG
+phải chiều cao gốc.

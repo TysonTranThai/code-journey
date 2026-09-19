@@ -1,0 +1,55 @@
+## The setup
+
+Đồ thị có hướng, trọng số KHÔNG ÂM. Tìm đường ngắn nhất từ s đến mọi
+đỉnh. Ý tưởng: giữ khoảng cách hiện tại của từng đỉnh, luôn "khóa" đỉnh
+chưa khóa có khoảng cách NHỎ NHẤT — vì mọi đường khác đều đi qua đỉnh
+trọng số dương, khoảng cách đó không thể được cải thiện nữa.
+
+```cpp
+vector<vector<pair<int,long long>>> adj;   // adj[u] = {(v, w)}
+vector<long long> dist;
+
+void dijkstra(int s) {
+    dist.assign(n + 1, LLONG_MAX);
+    dist[s] = 0;
+    priority_queue<pair<long long,int>,
+                   vector<pair<long long,int>>,
+                   greater<>> pq;          // min-heap theo dist
+    pq.push({0, s});
+    while (!pq.empty()) {
+        auto [d, u] = pq.top(); pq.pop();
+        if (d != dist[u]) continue;       // stale entry — bỏ
+        for (auto& [v, w] : adj[u])
+            if (dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                pq.push({dist[v], v});
+            }
+    }
+}
+```
+
+### The two lines students delete (and shouldn't)
+
+- `if (d != dist[u]) continue;` — "xóa lười": mỗi đỉnh có thể vào heap
+  nhiều lần, entry cũ (lớn hơn) phải bị bỏ. Không có dòng này, một đỉnh
+  được nới lỏng HAI lần → kết quả vẫn đúng trong nhiều test đơn giản
+  nhưng chi phí phình và trên đồ thị dày đặc có thể sai nếu bạn xử lý
+  cạnh hai lần.
+- `greater<>` — PQ mặc định của C++ là MAX-heap; thiếu greater là lấy
+  đỉnh XA nhất trước: sai hoàn toàn nhưng vẫn chạy.
+
+### Why negative edges break the invariant
+
+Khóa u khi d[u] nhỏ nhất hiện có, giả định mọi đường tới u chỉ thêm
+độ dài. Cạnh âm (u→v với w âm) phá giả định: một đỉnh "xa" chưa khóa
+có thể trở nên RẼ hơn sau khi qua cạnh âm. Dijkstra không sửa khoảng
+cách đỉnh đã khóa — kết quả sai IM LẶNG. Cần Bellman–Ford/SPFA — để
+đó cho Advanced; ở đây hãy nhận diện đề cho trọng số không âm.
+
+### Complexity
+
+m push + m pop, mỗi O(log m): O(m log m). n, m = 2·10^5 → ~4·10^5 heap
+phép toán: thoải mái ngân sách.
+
+**Điểm mấu chốt:** min-heap + khóa đỉnh gần nhất + stale-skip; cạnh âm
+= sai im lặng, không phải compile error.

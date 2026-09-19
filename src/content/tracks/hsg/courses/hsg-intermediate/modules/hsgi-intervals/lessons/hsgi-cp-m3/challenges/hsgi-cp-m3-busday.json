@@ -1,0 +1,26 @@
+{
+  "id": "hsgi-cp-m3-busday",
+  "title": "Checkpoint — Ngày bận nhất của quán",
+  "prompt": "**Bài toán.** Quán có n lượt đặt bàn, lượt i từ l_i đến r_i (đóng;\nl = r cho phép — lượt 0 phút). Quán phục vụ trong ngày [0, D]. Cần thuê tối\nthiểu bao nhiêu bàn để **một lượt không phải chờ** — bàn kết thúc lúc t có thể\nnhận lượt bắt đầu tại t? Lượt 0 phút vẫn chiếm một bàn tại đúng khoảnh khắc\nđó (hai lượt điểm cùng thời điểm cần hai bàn). In số bàn tối thiểu.\n\n**Ràng buộc:** 1 ≤ n ≤ 200 000; 0 ≤ D ≤ 10^9; 0 ≤ l ≤ r ≤ D.\n\n**Vào:** dòng đầu n D; n dòng: l r.\n**Ra:** một số — số bàn tối thiểu.\n\n**Điểm:** 100. Quét sự kiện với BỨC LOẠI ba lớp tại cùng thời điểm:\nstart-điểm (l = r) đếm trước, rồi end, rồi start-thường — lượt điểm phải\nhiện diện khoảnh khắc đó, trong khi start-thường tái dụng bàn vừa gỡ.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ",
+      "code": "std::istringstream in(\"4 10\\n1 3\\n3 5\\n5 7\\n2 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Tại t=3: lượt 1 kết thúc trước lượt 2 bắt đầu (tái dụng) → tối đa 2 lượt đồng thời (t=2..3: lượt 1,4). Đáp án 2."
+    },
+    {
+      "name": "chỉ lượt 0 phút",
+      "code": "std::istringstream in(\"2 5\\n2 2\\n2 2\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Hai lượt điểm cùng thời điểm 2: cả hai chiếm bàn tại khoảnh khắc đó → 2."
+    },
+    {
+      "name": "không giao nào",
+      "code": "std::istringstream in(\"2 10\\n0 4\\n5 9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Một bàn tái dụng mãi — và tọa độ 10^9 không sao với quét sự kiện."
+    }
+  ],
+  "level": "real-world"
+}

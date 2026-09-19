@@ -1,0 +1,66 @@
+## Chia để trị tìm kiếm — 2^n thành 2^(n/2)
+
+n ≤ 40 hạ gục vét cạn thường (2^40 ≈ 10^12). Nhưng 2^20 ≈ 10^6 — chia các
+phần tử làm hai nửa, liệt kê từng nửa, rồi ghép.
+
+Kinh điển: "chọn tập con của n ≤ 40 số có tổng gần S nhất".
+
+```cpp
+// liệt kê mọi tổng tập con của từng nửa, sắp xếp một phía,
+// với mỗi x ở nửa A tìm nhị phân bạn tốt nhất ở nửa B
+vector<long long> sumsA, sumsB;   // 2^20 mỗi nửa — vừa
+sort(sumsB.begin(), sumsB.end());
+for (long long x : sumsA) {
+    // cần y ≈ S - x: hai chăm nhị phân giới hạn ứng viên tốt nhất
+}
+```
+
+Chi phí: liệt kê 2·2^(n/2) + tìm kiếm 2^(n/2) · log. Với n = 40: ~2·10^6 · 21.
+
+### Bảng thưa — RMQ tĩnh trong O(1)
+
+Nếu mảng **không bao giờ đổi**, segment tree là thừa. Bảng thưa tiền xử lý min
+trên mọi khối lũy thừa 2: dựng O(n log n) bộ nhớ/thời gian, rồi
+`min(st[k][l], st[k][r - 2^k + 1])` trả lời bất kỳ truy vấn min đoạn nào trong
+O(1) (hai khối có thể chồng nhau — vô hại với min/max, chết người với tổng).
+
+```cpp
+int K = 1; while ((1 << K) <= n) ++K;
+vector<vector<int>> st(K, vector<int>(n + 1));
+st[0] = a;
+for (int k = 1; k < K; ++k)
+    for (int i = 1; i + (1 << k) - 1 <= n; ++i)
+        st[k][i] = min(st[k-1][i], st[k-1][i + (1 << (k-1))]);
+// truy vấn [l, r]:
+int k = __lg(r - l + 1);            // floor log2
+answer = min(st[k][l], st[k][r - (1 << k) + 1]);
+```
+
+Nhận diện: "n, q ≤ 2·10^5, mảng tĩnh, truy vấn = min/max/gcd trên đoạn".
+Nếu có cập nhật → Fenwick/segment tree (M6–M7).
+
+### Quét sự kiện — khoảng thành bộ ba ±1
+
+Mọi bài dạng "bao nhiêu đoạn phủ điểm x / phủ trùng nhiều nhất là bao nhiêu"
+đưa về sắp xếp 2n sự kiện: `(bắt_đầu, +1)`, `(kết_thúc+1, −1)`, rồi một lượt
+quét cộng dồn.
+
+```cpp
+vector<tuple<int,int,int>> ev;              // (tọa độ, biến thiên)
+for (auto [l, r] : intervals) {
+    ev.push_back({l, +1});
+    ev.push_back({r + 1, -1});              // end+1: đoạn đóng [l, r]
+}
+sort(ev.begin(), ev.end());
+int cur = 0, best = 0;
+for (auto [x, d] : ev) { cur += d; best = max(best, cur); }
+```
+
+Hai cái bẫy đáng nêu tên:
+1. **end so với end+1** — các đoạn đóng chạm nhau tại một điểm (r1 = l2) bị
+   tính là phủ trùng nếu bạn cộng +1 tại l và −1 tại r. Quy ước phải lấy từ đề.
+2. **thứ tự cùng tọa độ** — nếu đáp án phải đếm đoạn *bắt đầu* trước khi đoạn
+   khác *kết thúc*, sắp các sự kiện bắt đầu trước kết thúc tại cùng tọa độ.
+   Dấu biến thiên tự mã hóa điều này khi kết thúc dùng r+1.
+
+**Tiếp:** [Điểm kiểm tra](./hsgi-cp-m1)

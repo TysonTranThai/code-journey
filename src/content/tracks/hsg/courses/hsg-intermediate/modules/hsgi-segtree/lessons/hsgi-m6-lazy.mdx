@@ -1,0 +1,71 @@
+## The gap
+
+Add x to every a[i] in [l, r] — that is 2·10^5 point updates, O(n log n)
+per operation: dead. Lazy propagation (lười hóa) makes RANGE updates
+O(log n) too.
+
+### The invariant
+
+A node fully covered by an update does not descend. It applies the
+change to its own value instantly (for range ADD of x on a node covering
+k elements: value += x·k) and records a TAG: "everything below me still
+owes +x". The tag is only pushed to children when some later operation
+actually walks through the node.
+
+```cpp
+struct LazySeg {                       // range add, range sum
+    int n;
+    vector<long long> t, lz;           // t[v] = sum of node segment
+    LazySeg(int n_) : n(n_), t(4*n_), lz(4*n_) {}
+    void push(int v, int lo, int mid, int hi) {   // hand tag to children
+        if (lz[v]) {
+            t[2*v]   += lz[v] * (mid - lo + 1);
+            t[2*v+1] += lz[v] * (hi - mid);
+            lz[2*v]   += lz[v];        // tags ADD (for additive updates)
+            lz[2*v+1] += lz[v];
+            lz[v] = 0;
+        }
+    }
+    void add(int v, int lo, int hi, int l, int r, long long x) {
+        if (r < lo || hi < l) return;
+        if (l <= lo && hi <= r) {      // fully covered: stop, tag it
+            t[v] += x * (hi - lo + 1);
+            lz[v] += x;
+            return;
+        }
+        int mid = (lo + hi) / 2;
+        push(v, lo, mid, hi);
+        add(2*v, lo, mid, l, r, x);
+        add(2*v+1, mid+1, hi, l, r, x);
+        t[v] = t[2*v] + t[2*v+1];
+    }
+    long long query(int v, int lo, int hi, int l, int r) {
+        if (r < lo || hi < l) return 0;
+        if (l <= lo && hi <= r) return t[v];
+        int mid = (lo + hi) / 2;
+        push(v, lo, mid, hi);          // must push before descending
+        return query(2*v, lo, mid, l, r) + query(2*v+1, mid+1, hi, l, r);
+    }
+};
+```
+
+### The two classic bugs
+
+1. **Forgetting to push before descending** in query — reads stale
+   values below an unpushed tag. (In `add`, push happens implicitly by
+   recursing after push; in query it is the only place children learn
+   the tag.)
+2. **Tag composition wrong for the update type.** For range ADD, tags
+   accumulate additively (lz[child] += lz[parent]). For range ASSIGN
+   (set a[i] := x), tags OVERRIDE (lz[child] = x) and you need a "no
+   tag" sentinel. Mixing the two rules is a silent wrong answer.
+
+### Amortized honesty
+
+Each operation pushes O(log n) tags along one root path — worst case is
+genuinely O(log n) per op, not amortized. n, q = 2·10^5 gives
+2·10^5 · 18 · (tag ops) ≈ 10^7·(constant): comfortably inside budget.
+
+**Điểm mấu chốt:** node phủ toàn bộ → áp dụng ngay + đặt tag, không đi
+xuống; push CHỈ xảy ra khi có thao tác đi qua; quy tắc cộng tag phụ thuộc
+loại cập nhật (cộng ↔ cộng, gán ↔ ghi đè).

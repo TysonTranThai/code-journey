@@ -1,0 +1,67 @@
+## Two heaps for a running median
+
+Stream of numbers; after each insert report the upper median (the ⌊m/2⌋+1-th
+smallest). Keep:
+- `left`: max-heap of the smaller half,
+- `right`: min-heap of the larger half,
+with sizes |right| ≤ |left| ≤ |right| + 1.
+
+```cpp
+priority_queue<int> left;                       // max-heap
+priority_queue<int, vector<int>, greater<int>> right;   // min-heap
+// push:
+if (left.empty() || x <= left.top()) left.push(x);
+else right.push(x);
+// balance:
+if (left.size() > right.size() + 1) { right.push(left.top()); left.pop(); }
+if (right.size() > left.size())     { left.push(right.top()); right.pop(); }
+// report: m odd → left.top();  m even → right.top()
+```
+
+The invariant decides the answer — one flipped comparison and every median
+drifts. Draw the sizes on paper for m = 1..5 to convince yourself.
+
+### Latest-free-slot (unit jobs with deadlines)
+
+Each job takes 1 of the n slots, has deadline d and profit w; maximize total
+profit. Sort by **profit descending**; for each job take the LATEST free slot
+≤ d; if none, drop the job.
+
+```cpp
+sort(jobs.begin(), jobs.end(), [](auto& a, auto& b){ return a.w > b.w; });
+vector<bool> used(n + 1, false);
+long long total = 0;
+for (auto [d, w] : jobs)
+    for (int s = min(d, n); s >= 1; --s)
+        if (!used[s]) { used[s] = true; total += w; break; }
+```
+
+Why latest? Early slots are the scarcest resource — a job with a late deadline
+can use them, but need not. (Naive DSU makes the scan O(α); the honest loop is
+O(n^2) worst — fine at n ≤ 10^4, and the statement's constraint says which.)
+
+### Lookahead — defer the decision (fuel stops)
+
+"Đi hết D km, bình chứa T, trạm ở p_i (châm đầy)." Minimize stops: drive, and
+only when the NEXT stretch is unreachable, refuel at the **best station
+already passed** (max capacity → but all fills are full, so the best station
+is simply any — the trick is to keep a max-heap of PASSED-but-unused stations
+and pop one only when forced).
+
+```cpp
+priority_queue<long long> passed;
+long long pos = 0, fuel = T;     // start with a full tank
+int stops = 0;
+for each next gap g:
+    while (fuel < g) {
+        if (passed.empty()) { unreachable; }
+        fuel += passed.top(); passed.pop(); ++stops;   // retro-fill
+    }
+    fuel -= g; pos += g;
+    if (is a station at pos) passed.push(T);           // remember, don't spend
+```
+
+Deferring the choice is the pattern: greedy decisions made at the LAST
+responsible moment dominate early commitments.
+
+**Next:** [Checkpoint](./hsgi-cp-m4)

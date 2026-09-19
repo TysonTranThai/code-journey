@@ -1,0 +1,31 @@
+{
+  "id": "hsgi-p13-tsp",
+  "title": "Chuyến giao hàng ngắn nhất",
+  "prompt": "**Bài toán.** n điểm, ma trận khoảng cách d[i][j] (chiều đi và về\ncó thể khác nhau); giao hàng từ điểm 0, ghé TẤT CẢ điểm đúng một\nlần, KHÔNG cần quay về. In tổng quãng đường NGẮN NHẤT.\n\n**Ràng buộc:** 1 ≤ n ≤ 16; 0 ≤ d[i][j] ≤ 10^6.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "một điểm",
+      "code": "std::istringstream in(\"1\\n0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Không di chuyển."
+    },
+    {
+      "name": "hai điểm",
+      "code": "std::istringstream in(\"2\\n0 5\\n5 0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n\"));",
+      "hint": "0 → 1: 5."
+    },
+    {
+      "name": "vì sao nearest-neighbor gãy",
+      "code": "std::istringstream in(\"4\\n0 2 9 10\\n1 0 6 4\\n15 7 0 8\\n6 3 12 0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"16\\n\"));",
+      "hint": "Ma trận lệch chiều: NN đi 0→1→2→3 = 18; tối ưu 0→1→3→2 = 16 — tham lam cục bộ không thấy bước sau."
+    },
+    {
+      "name": "n = 16 — vòng xa",
+      "code": "std::istringstream in(\"16\\n1000 1017 1034 1051 1068 1085 1102 1119 1136 1153 1170 1187 1204 1221 1238 1255\\n1031 1048 1065 1082 1099 1116 1133 1150 1167 1184 1201 1218 1235 1252 1269 1286\\n1062 1079 1096 1113 1130 1147 1164 1181 1198 1215 1232 1249 1266 1283 1300 1317\\n1093 1110 1127 1144 1161 1178 1195 1212 1229 1246 1263 1280 1297 1314 1331 1348\\n1124 1141 1158 1175 1192 1209 1226 1243 1260 1277 1294 1311 1328 1345 1362 1379\\n1155 1172 1189 1206 1223 1240 1257 1274 1291 1308 1325 1342 1359 1376 1393 1010\\n1186 1203 1220 1237 1254 1271 1288 1305 1322 1339 1356 1373 1390 1007 1024 1041\\n1217 1234 1251 1268 1285 1302 1319 1336 1353 1370 1387 1004 1021 1038 1055 1072\\n1248 1265 1282 1299 1316 1333 1350 1367 1384 1001 1018 1035 1052 1069 1086 1103\\n1279 1296 1313 1330 1347 1364 1381 1398 1015 1032 1049 1066 1083 1100 1117 1134\\n1310 1327 1344 1361 1378 1395 1012 1029 1046 1063 1080 1097 1114 1131 1148 1165\\n1341 1358 1375 1392 1009 1026 1043 1060 1077 1094 1111 1128 1145 1162 1179 1196\\n1372 1389 1006 1023 1040 1057 1074 1091 1108 1125 1142 1159 1176 1193 1210 1227\\n1003 1020 1037 1054 1071 1088 1105 1122 1139 1156 1173 1190 1207 1224 1241 1258\\n1034 1051 1068 1085 1102 1119 1136 1153 1170 1187 1204 1221 1238 1255 1272 1289\\n1065 1082 1099 1116 1133 1150 1167 1184 1201 1218 1235 1252 1269 1286 1303 1320\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"16236\\n\"));",
+      "hint": "2^16·16 ≈ 1 triệu — bitmask OK; NN trả 16326 (thiếu 90): hằng số nhỏ ăn cả when n = 16."
+    }
+  ],
+  "level": "real-world"
+}

@@ -1,0 +1,45 @@
+## Phủ đoạn bằng ít điểm nhất
+
+"Chọn ít điểm nhất sao cho mỗi đoạn chứa ít nhất một điểm." Sắp theo **đầu
+phải**; luôn đặt điểm ở đầu phải của đoạn đầu chưa được phủ.
+
+```cpp
+sort(v.begin(), v.end(), [](auto& a, auto& b){ return a.second < b.second; });
+long long last = LLONG_MIN;   // điểm đã đặt
+int cnt = 0;
+for (auto [l, r] : v)
+    if (l > last) { ++cnt; last = r; }    // điểm mới tại r
+```
+
+Vì sao đầu phải? Đặt điểm xa hơn bên phải không bao giờ làm mất đoạn *bắt đầu
+sau*, và nó phủ đoạn hiện tại. (Lập luận đổi chỗ: điểm của mọi lời giải tối
+ưu có thể trượt phải về đầu phải của đoạn đầu nó phủ mà không mất phủ.)
+
+### Số phòng tối thiểu — quy ước chạm biên
+
+"n ca học [l, r], cần tối thiểu bao nhiêu phòng?" — đáp án kinh điển: quét sự
+kiện +1 tại mỗi bắt đầu, −1 tại mỗi kết thúc, **nhưng thứ tự chạm tùy đề**:
+
+- ca kết thúc lúc t và ca bắt đầu lúc t **dùng chung phòng được** (phòng rảnh
+  ngay): xử lý **kết thúc trước bắt đầu** tại cùng thời điểm → −1 trước +1;
+- nếu đề nói dọn phòng mất thời gian (hoặc đoạn đóng và cấm dùng chung):
+  xử lý **bắt đầu trước kết thúc** → +1 trước −1.
+
+Cách đếm phủ trùng ở M1 (−1 tại r+1) là quy ước thứ hai: đoạn chạm nhau vẫn
+tính trùng. Ở đây đề quyết định. **Đọc đề, chọn quy ước, nêu rõ trong lời giải.**
+
+```cpp
+// quy ước phòng-tái-dụng: (thời điểm, loại) với end < end trong sắp xếp
+vector<pair<long long,int>> ev;
+for (auto [l, r] : v) { ev.push_back({r, -1}); ev.push_back({l, +1}); }
+sort(ev.begin(), ev.end());      // (−1 đứng trước +1 tại cùng thời điểm)
+int cur = 0, rooms = 0;
+for (auto [t, d] : ev) { cur += d; rooms = max(rooms, cur); }
+```
+
+### Khoảng rảnh
+
+"Khoảng rảnh chung của mọi người" = phần bù của hợp các đoạn bận: ghép đoạn
+bận (bài 3.1), rồi đi qua các khe giữa chúng.
+
+**Tiếp:** [Điểm kiểm tra](./hsgi-cp-m3)

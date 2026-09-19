@@ -1,0 +1,31 @@
+{
+  "id": "hsgi-p12-equal",
+  "title": "Chia hai nửa bằng nhau",
+  "prompt": "**Bài toán.** n số; tách thành hai nhóm có tổng BẰNG NHAU? In YES\nhoặc NO. (Số 0 nhóm nào cũng được; nhóm có thể rỗng nếu tổng = 0 —\nnhưng với a_i ≥ 1 hai nhóm đều khác rỗng.)\n\n**Ràng buộc:** 1 ≤ n ≤ 100; 1 ≤ a_i ≤ 500.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ — tổng lẻ",
+      "code": "std::istringstream in(\"3\\n1 2 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NO\\n\"));",
+      "hint": "Tổng 7 lẻ: NO ngay không cần DP."
+    },
+    {
+      "name": "được",
+      "code": "std::istringstream in(\"4\\n2 4 3 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"YES\\n\"));",
+      "hint": "Tổng 10: {4,1} và {2,3}."
+    },
+    {
+      "name": "không được dù chẵn",
+      "code": "std::istringstream in(\"3\\n1 2 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NO\\n\"));",
+      "hint": "Tổng 8, nửa 4: không tập con nào = 4 — vòng XUÔI (dùng lại) sẽ YES do 2+2!"
+    },
+    {
+      "name": "một phần tử",
+      "code": "std::istringstream in(\"1\\n0\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"YES\\n\"));",
+      "hint": "Tổng 0: hai nửa rỗng 0 = 0."
+    }
+  ],
+  "level": "independent"
+}

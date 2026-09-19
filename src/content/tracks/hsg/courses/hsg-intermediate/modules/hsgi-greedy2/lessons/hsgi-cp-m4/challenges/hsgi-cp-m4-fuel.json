@@ -1,0 +1,26 @@
+{
+  "id": "hsgi-cp-m4-fuel",
+  "title": "Checkpoint — Chuyến xe tải xuyên tỉnh",
+  "prompt": "**Bài toán.** Xe tải đi từ A đến B cách D km, bình chứa T lít, mỗi lít đi\n1 km, xuất phát với bình ĐẦY. Dọc đường có n trạm xăng tại km p_i\n(0 < p_1 < p_2 < ... < p_n < D), đến trạm có thể CHÂM ĐẦY bình. Tối thiểu bao\nnhiêu lần châm để tới B? Không thể → in −1.\n\n**Ràng buộc:** 1 ≤ D, T ≤ 10^9; 1 ≤ n ≤ 200 000; 0 < p_i < D.\n\n**Vào:** dòng đầu D T n; n dòng: p_i (sắp tăng).\n**Ra:** một số — số lần châm ít nhất hoặc −1.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ",
+      "code": "std::istringstream in(\"30 10 4\\n4\\n8\\n13\\n21\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Bình 10: đi 4, 8 (còn 2). 13 vượt — châm tại 8 (đầy), đi 13, 21 (còn 5). 30 vượt — châm tại 21. Đáp án 2."
+    },
+    {
+      "name": "không cần châm",
+      "code": "std::istringstream in(\"10 10 2\\n3\\n6\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Bình đầy đủ đi hết 10 km: 0 lần châm."
+    },
+    {
+      "name": "khoảng trống vô vọng",
+      "code": "std::istringstream in(\"100 10 1\\n50\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-1\\n\"));",
+      "hint": "Giữa km 50 và 100 hụt 40 km không trạm: bình 10 không bao giờ vượt — −1."
+    }
+  ],
+  "level": "real-world"
+}

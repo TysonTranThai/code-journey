@@ -1,0 +1,42 @@
+## Ý tưởng
+
+So hai đoạn con trực tiếp O(độ dài). Băm đa thức: xâu là số cơ số B:
+
+h(s) = s[0]·B^(k−1) + ... + s[k−1]
+
+Tiền tố H[i]; đoạn (l, r] = H[r] − H[l]·B^(r−l). Chuẩn bị O(n), truy
+vấn O(1):
+
+```cpp
+const long long MOD = 1000000007;
+const long long B = 131;
+vector<long long> H(n + 1, 0), P(n + 1, 1);
+for (int i = 0; i < n; ++i) {
+    H[i+1] = (H[i] * B + s[i]) % MOD;
+    P[i+1] = P[i] * B % MOD;
+}
+// (H[r] - H[l]*P[r-l] % MOD + MOD) % MOD
+```
+
+Trừ ra số ÂM: +MOD rồi %MOD.
+
+## Va chạm
+
+Hai xâu khác nhau trùng hash: ~1/MOD mỗi cặp. Kẻ địch cố tình tìm được
+cặp hạ đơn-băm nhỏ. Contest: HAI băm (MOD, B khác nhau), so CẢ HAI —
+va chạm đồng thời ~10^-18.
+
+## Tiền tố đối xứng
+
+s[0..k) palindrome ⇔ == reverse. Precompute hash xâu + xâu đảo; quét
+k (đơn điệu SAI — ví dụ "abcba": k=5 có, k=4 không, k=1 có) — quét O(n)
+vẫn nhanh.
+
+## Đếm xâu con phân biệt
+
+Với mỗi độ dài L: hash các đoạn, sort, đếm khác — O(n² log n). n ≤
+1000 ổn; n = 10^5 chết (cần suffix automaton — chưa học). Biết giới
+hạn công cụ.
+
+**Điểm mấu chốt:** băm tiền tố O(1); băm kép; số âm +MOD; đếm phân
+biệt tới n ≈ 1000.

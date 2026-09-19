@@ -1,0 +1,49 @@
+## State đúng
+
+LIS: dãy con tăng dài nhất (giữ thứ tự, không cần liền).
+
+dp[i] = LIS KẾT THÚC tại i:
+
+```cpp
+for (int i = 0; i < n; ++i) {
+    dp[i] = 1;
+    for (int j = 0; j < i; ++j)
+        if (a[j] < a[i]) dp[i] = max(dp[i], dp[j] + 1);
+}
+```
+
+Đáp án = max(dp). O(n²) — đủ tới n ≈ 5000.
+
+### Nút cổ chai
+
+dp[i] cần max dp[j] với a[j] < a[i] — hai điều kiện: VỊ TRÍ và GIÁ
+TRỊ. Duyệt trái→phải thì j < i tự động; còn lại truy vấn max có điều
+kiện giá trị → nhị phân!
+
+### Patience — O(n log n)
+
+tails[k] = đuôi NHỎ NHẤT của dãy tăng dài k+1. Với a[i]: lower_bound,
+không có thì push, có thì thay:
+
+```cpp
+vector<int> tails;
+for (int i = 0; i < n; ++i) {
+    auto it = lower_bound(tails.begin(), tails.end(), a[i]);
+    if (it == tails.end()) tails.push_back(a[i]);
+    else *it = a[i];
+}
+```
+
+tails tăng ngặt — bất biến: thay thế chỉ hạ đuôi, không phá tính tăng.
+
+### Ngặt vs không ngặt
+
+`a[j] < a[i]` + lower_bound = TĂNG NGẶT. Cho phép bằng → upper_bound.
+Đổi sai → sai trên test có phần tử bằng.
+
+### Chọn trong contest
+
+n ≤ 5000: O(n²) — ngắn, khó sai. n lớn: patience. Đọc ràng buộc trước.
+
+**Điểm mấu chốt:** dp[i] kết-thúc-tại-i; patience = nhị phân trên
+tails tăng ngặt.

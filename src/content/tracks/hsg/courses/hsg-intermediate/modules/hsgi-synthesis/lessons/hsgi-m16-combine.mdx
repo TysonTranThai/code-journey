@@ -1,0 +1,35 @@
+## Kết hợp cấu trúc + tham lam
+
+Nhiều bài "dựng đáp án" có dạng: lặp lại chọn phần tử TỐT NHẤT còn tồn
+tại, xóa nó, tiếp tục. Cấu trúc dữ liệu giữ "còn tồn tại" theo THỨ TỰ
+GIÁ TRỊ; tham lam thao tác theo THỨ TỰ VỊ TRÍ.
+
+Cặp kinh điển: Fenwick đếm (vị trí trong sorted copy) — truy vấn "phần
+tử nhỏ thứ k còn tồn tại" bằng tìm kiếm nhị phân trên tổng tiền tố:
+
+```cpp
+int kth(long long k) {           // phần tử nhỏ thứ k còn lại
+    int lo = 1, hi = n;
+    while (lo < hi) {
+        int mid = (lo + hi) / 2;
+        if (query(mid) >= k) hi = mid; else lo = mid + 1;
+    }
+    return lo;                    // rank 1-based trong giá trị
+}
+```
+
+## Cái bẫy rank ↔ index
+
+Fenwick đánh chỉ số theo RANK GIÁ TRỊ (vị trí trong mảng đã sort).
+"Phần tử nhỏ thứ k" trả về rank — giá trị thật là sorted[rank − 1].
+Nhầm rank với index gốc là lỗi lặp đi lặp lại trong contest.
+
+## Quy trình 4 bước khi kết hợp
+
+1. Suy luận tham lam từng bước (có luận điểm đổi chỗ).
+2. Mỗi bước cần truy vấn gì trên phần còn lại?
+3. Chọn cấu trúc hỗ trợ đúng truy vấn đó.
+4. Kiểm N = 1 và toàn phần tử bằng nhau.
+
+**Điểm mấu chốt:** cấu trúc trả lời "còn lại", tham lam ra quyết định;
+rank ≠ index.

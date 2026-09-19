@@ -1,0 +1,48 @@
+## The proof pattern
+
+Greedy claims: some sorted order (by p, by deadline, by ratio...) is optimal.
+Proof by **adjacent exchange**: take any optimal solution where two adjacent
+items violate the claimed order; swap them; show the objective does not get
+worse. Repeating closes the gap between "some optimum" and "the sorted order".
+
+### Example 1 — minimize total waiting (SPT)
+
+One machine, jobs with times p_i, waiting of job i = sum of p of everyone
+before it. Claim: shortest job first is optimal.
+
+Swap proof: with adjacent jobs a (longer) before b (shorter), swapping changes
+total waiting by p_a − p_b ≥ 0... precisely: everything before the pair is
+unchanged; between the two orders the pair contributes (0·p_a + p_a·p_b) vs
+(0·p_b + p_b·p_a) for the pair members — the other jobs after shift by
+p_a + p_b either way. Total difference = p_a − p_b... anyway: shorter first
+never loses. Easier to verify on numbers than on algebra — THAT is the exam
+skill: compute the swap delta on a 2-job example, generalize.
+
+### Example 2 — minimize maximum lateness (EDF)
+
+Jobs (p_i, d_i); finish times f_i; lateness L_i = max(0, f_i − d_i). Claim:
+sort by deadline (earliest first) minimizes max L. The adjacent exchange: if
+d_a > d_b with a before b, swapping keeps the pair's finish times the same set
+the two finishes f and f + p, and the LATER deadline getting the LATER finish never increases
+the max. So EDF dominates.
+
+### Example 3 — merge cost (Huffman-style)
+
+n ropes, merging two costs their length sum; merge all into one, minimize
+total cost. Claim: always merge the two SMALLEST. The exchange argument is
+deeper (the smallest two must both be merged last-ish), but the *structure* is
+the same: local optimum (smallest pair) survives swaps. Implementation: a
+min-heap, pop two, push sum, accumulate — O(n log n).
+
+## When greedy is WRONG — recognize fast
+
+- Coins non-canonical (1, 3, 4 for 6: greedy 4+1+1 = 3 coins vs 3+3 = 2) →
+  DP (Beginner M15 pattern).
+- Interval scheduling with WEIGHTS → DP instead of earliest-end greedy.
+- Anything with "mỗi lựa chọn ảnh hưởng các lựa chọn sau theo cách không đơn
+  điệu" — test a tiny counterexample by hand BEFORE trusting greedy.
+
+Habit: 30 seconds with paper. Two adversarial items. If the swap delta is
+never negative, trust greedy; if you find one counterexample, go DP.
+
+**Next:** [Heaps Do the Work](./hsgi-m4-heaps)

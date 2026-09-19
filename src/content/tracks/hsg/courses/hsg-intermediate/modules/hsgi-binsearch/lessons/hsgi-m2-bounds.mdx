@@ -1,0 +1,62 @@
+## The two bounds — precise meanings
+
+On a sorted range, `lower_bound(x)` points to the **first element ≥ x**;
+`upper_bound(x)` points to the **first element > x**. Everything else is
+derived:
+
+```cpp
+int lo = lower_bound(v.begin(), v.end(), x) - v.begin();  // # of elements < x
+int up = upper_bound(v.begin(), v.end(), x) - v.begin();  // # of elements <= x
+int cnt = up - lo;                                        // # of elements == x
+bool present = (lo < n && v[lo] == x);
+```
+
+Three idioms worth drilling:
+1. **range [a, b] count** = `upper_bound(b) − lower_bound(a)`.
+2. **predecessor** (largest element ≤ x) = `upper_bound(x) − 1` — check the
+   iterator did not move before subtracting.
+3. **successor** (smallest element ≥ x) = `lower_bound(x)` — check against
+   `end()`.
+
+### Hand-rolled binary search — the two loop shapes
+
+```cpp
+// Shape A: find first index with a[i] >= x (the lower_bound skeleton)
+int l = 0, r = n;              // half-open [l, r)
+while (l < r) {
+    int mid = l + (r - l) / 2;
+    if (a[mid] >= x) r = mid; else l = mid + 1;
+}
+// l == r == answer (n if none)
+```
+
+```cpp
+// Shape B: maximize ans where F(ans) holds on [lo, hi] (monotonic!)
+int l = lo, r = hi;            // closed [l, r]
+while (l < r) {
+    int mid = l + (r - l + 1) / 2;   // CEILING mid — kills the l=mid loop
+    if (F(mid)) l = mid; else r = mid - 1;
+}
+// l == r == largest feasible value
+```
+
+The two classic diseases:
+- **floor mid with `l = mid`** → infinite loop when `r = l + 1`.
+- **`r = mid` with closed bounds and floor mid** → skips `r` itself, may
+  miss the answer sitting at the boundary.
+
+Decide the shape FIRST, then never mix pieces across shapes.
+
+### Counting inside a window
+
+"Trong dãy đã sắp, có bao nhiêu phần tử trong [l, r]?" — with values, use the
+two bounds. With *positions*, same thing: the answer is `up − lo + ... ` —
+no, positions are already sorted, it is plain index arithmetic. Recognizing
+*what is sorted* is half the problem.
+
+## Practice recognition
+
+Q: "mảng đã sắp, truy vấn: phần tử lớn nhất ≤ x" — which idiom?
+A: `upper_bound(x)`; if it returned `begin()`, answer "không có".
+
+**Next:** [Binary Search on the Answer](./hsgi-m2-answer)

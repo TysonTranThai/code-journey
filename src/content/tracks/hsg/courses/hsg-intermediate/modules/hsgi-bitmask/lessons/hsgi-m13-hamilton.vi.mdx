@@ -1,0 +1,31 @@
+## Đường qua mọi đỉnh
+
+Đường đi Hamilton: ghé MỌI đỉnh đúng một lần. Cần (mask, last):
+
+```cpp
+// dp[mask][v] — kết thúc tại v, ghé đúng mask
+// chuyển từ dp[m ^ (1 << v)][u] khi adj[u][v]
+```
+
+Bộ nhớ 2^n·n: n = 20 → 80 MB int — cẩn thận! n = 18 ổn. Bài đếm: min
+đổi CỘNG mô-đun.
+
+## Gói thùng — không trục
+
+n ≤ 15 gói vào ít thùng nhất, mỗi thùng ≤ W. dp[mask] = cặp (số thùng,
+trọng dư của thùng đang mở); gói bit-thấp-nhất (ctz) chốt trước — mọi
+thứ tự chỉ xét một lần.
+
+## Hằng số quyết định n
+
+Gói thùng O(2^n); xếp việc O(n·2^n); Hamilton O(n²·2^n). "Được" khi n
+nhỏ — hằng số quyết giới hạn thật trong hạn.
+
+## Nhận diện
+
+- "n ≤ 20" + "mỗi phần tử một lần" → bitmask.
+- "mọi cách chia" → bit thấp nhất.
+- n = 25 → bitmask rơi; tìm cấu trúc khác.
+
+**Điểm mấu chốt:** (mask, last) cho đường; bit thấp nhất cho gói;
+2^n·n là ranh giới bộ nhớ thật.

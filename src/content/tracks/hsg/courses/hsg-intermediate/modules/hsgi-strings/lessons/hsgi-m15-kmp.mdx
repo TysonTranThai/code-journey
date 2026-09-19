@@ -1,0 +1,54 @@
+## Vấn đề
+
+Đếm/ liệt kê vị trí mẫu p xuất hiện trong văn bản t: duyệt mỗi vị trí
+so từ đầu là O(|t|·|p|) — t, p tới 10^6 thì chết.
+
+## Hàm tiền tố (failure function)
+
+pi[i] = độ dài biên dài nhất của p[0..i] — tiền tố cũng là hậu tố
+(không tính cả xâu):
+
+```cpp
+vector<int> pi(m, 0);
+for (int i = 1; i < m; ++i) {
+    int j = pi[i-1];
+    while (j > 0 && p[i] != p[j]) j = pi[j-1];
+    if (p[i] == p[j]) ++j;
+    pi[i] = j;
+}
+```
+
+pi[i] cho biết khi KHÔNG khớp tại vị trí kế, nhảy về đâu mà không so
+lại phần đã khớp.
+
+## Quét văn bản — con trỏ text không lùi
+
+```cpp
+int j = 0;                       // số ký tự p đã khớp
+for (int i = 0; i < n; ++i) {
+    while (j > 0 && t[i] != p[j]) j = pi[j-1];
+    if (t[i] == p[j]) ++j;
+    if (j == m) {
+        // khớp kết thúc tại i → bắt đầu tại i - m + 1
+        j = pi[j-1];             // tiếp tục tìm khớp kế
+    }
+}
+```
+
+i CHỈ tăng — tổng số lần j giảm bị chặn bởi số lần j tăng: O(n + m)
+ amortized.
+
+## Chuẩn hóa hai xâu — ghép với dấu ngăn
+
+Cách nhớ nhanh: s = p + '#' + t ('#' không có trong hai xâu); tính pi
+trên s; mọi vị trí i với pi[i] == m là một lần xuất hiện. Một khung
+code duy nhất.
+
+## Khi nào KHÔNG cần KMP
+
+Đếm xâu con phân biệt: băm/sort. So SÁI MỘT cặp: trực tiếp. So nhiều
+cặp cùng xâu: băm tiền tố. KMP dành cho "mẫu xuất hiện ở đâu" — đặc
+biệt khi |p| nhỏ và |t| lớn, hoặc cần TẤT CẢ vị trí.
+
+**Điểm mấu chốt:** pi = biên dài nhất; con trỏ text không lùi; O(n+m)
+amortized; p+'#'+t là khung nhớ nhanh.

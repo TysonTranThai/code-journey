@@ -1,0 +1,31 @@
+{
+  "id": "hsgi-p13-assign",
+  "title": "Xếp ca trực",
+  "prompt": "**Bài toán.** n nhân viên, n ca; c[i][j] = mức mệt của nhân viên i\nkhi trực ca j. Mỗi người đúng một ca, mỗi ca đúng một người. In tổng\nmệt NHỎ NHẤT.\n\n**Ràng buộc:** 1 ≤ n ≤ 14; 1 ≤ c[i][j] ≤ 1000.",
+  "difficulty": "intermediate",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "ví dụ — tham lam gãy",
+      "code": "std::istringstream in(\"3\\n5 6 100\\n5 100 100\\n100 100 100\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"111\\n\"));",
+      "hint": "Tham lam hàng 0 chốt cột 0 (5) cướp số 5 duy nhất của hàng 1 → 5+100+100 = 205; tối ưu 0→1 (6), 1→0 (5), 2→2 (100) = 111."
+    },
+    {
+      "name": "một người",
+      "code": "std::istringstream in(\"1\\n7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n\"));",
+      "hint": "Đúng một cách: 7."
+    },
+    {
+      "name": "hai người — đơn vị",
+      "code": "std::istringstream in(\"2\\n1 1000\\n1 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "0→0, 1→1: 1+1 = 2; chọn 0→1 là 1001."
+    },
+    {
+      "name": "n = 14 — hàng đơn điệu",
+      "code": "std::istringstream in(\"14\\n1 2 3 4 5 6 7 1 2 3 4 5 6 7\\n2 3 4 5 6 7 1 2 3 4 5 6 7 1\\n3 4 5 6 7 1 2 3 4 5 6 7 1 2\\n4 5 6 7 1 2 3 4 5 6 7 1 2 3\\n5 6 7 1 2 3 4 5 6 7 1 2 3 4\\n6 7 1 2 3 4 5 6 7 1 2 3 4 5\\n7 1 2 3 4 5 6 7 1 2 3 4 5 6\\n1 2 3 4 5 6 7 1 2 3 4 5 6 7\\n2 3 4 5 6 7 1 2 3 4 5 6 7 1\\n3 4 5 6 7 1 2 3 4 5 6 7 1 2\\n4 5 6 7 1 2 3 4 5 6 7 1 2 3\\n5 6 7 1 2 3 4 5 6 7 1 2 3 4\\n6 7 1 2 3 4 5 6 7 1 2 3 4 5\\n7 1 2 3 4 5 6 7 1 2 3 4 5 6\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"14\\n\"));",
+      "hint": "2^14·14 ≈ 230 nghìn phép — bitmask chạy tức thì; kỳ vọng theo R (kiểm bằng Python 24 giờ? — mã hóa sau probe)."
+    }
+  ],
+  "level": "imitation"
+}
