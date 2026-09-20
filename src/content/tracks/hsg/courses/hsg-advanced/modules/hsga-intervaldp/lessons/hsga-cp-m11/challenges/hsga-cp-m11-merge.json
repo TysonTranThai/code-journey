@@ -1,0 +1,26 @@
+{
+  "id": "hsga-cp-m11-merge",
+  "title": "Minimum-Cost Merging",
+  "prompt": "**Problem.** Line 1: n. Line 2: n pile sizes in row order. Merging\ntwo ADJACENT piles costs their total size; make one pile with minimum\ntotal cost.\n\n**Constraints:** 1 ≤ n ≤ 500; 1 ≤ a[i] ≤ 10^6.\n\nInterval DP with prefix sums: O(n^3) is fine at n = 500.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "four piles checkpoint",
+      "code": "std::istringstream in(\"4\\n4 3 3 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"28\\n\"));",
+      "hint": "DP optimum 28; greedy adjacent-merge gives 29."
+    },
+    {
+      "name": "three piles checkpoint",
+      "code": "std::istringstream in(\"3\\n1 2 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"9\\n\"));",
+      "hint": "Both orders coincide here: 9."
+    },
+    {
+      "name": "greedy bait",
+      "code": "std::istringstream in(\"5\\n3 1 2 5 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"33\\n\"));",
+      "hint": "The locally-cheapest adjacent merges are not globally optimal; the DP finds the true optimum."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,19 @@
+# Meet in the Middle
+
+Exhaustive search dies at n ≈ 25 because 2^n explodes. Split the items into
+two halves: enumerate each half (2^(n/2) each), then **join** the two lists
+with sorting + binary search or a hash table. For n = 30 that is about
+10^4–10^5 operations — feasible where 2^30 ≈ 10^9 is not.
+
+Worked problem — count subsets of 30 items with weight sum exactly S:
+
+1. Enumerate all subset sums of the first 15 items (~32768 values).
+2. Enumerate all subset sums of the last 15 items.
+3. Sort one list; for every sum x in the other list, count occurrences of
+   S − x with binary search (or a hash map in one pass).
+
+Complexity: O(2^(n/2) · n/2) time, O(2^(n/2)) memory — the memory line is
+the real engineering limit on the sandbox.
+
+Recognition cues: n ≤ 40, a "pick some items" objective, no polynomial
+structure in sight. If n ≤ 20 plain 2^n enumeration already fits.

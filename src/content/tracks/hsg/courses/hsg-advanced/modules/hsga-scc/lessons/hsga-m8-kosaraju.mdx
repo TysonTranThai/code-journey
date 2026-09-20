@@ -1,0 +1,12 @@
+# Two passes, one theorem
+
+Pass 1: DFS over G, push each node when its DFS finishes. Pass 2: DFS
+over the REVERSE graph G^T, starting from unvisited nodes in decreasing
+finish order; each pass-2 tree is exactly one SCC.
+
+Why it is correct: the node u with the largest finish time lies in a
+"source" SCC C of the condensation. Reversing the graph makes C a sink —
+no edges leave C in G^T, so its pass-2 DFS cannot escape. Induction on
+the condensation finishes the proof.
+
+Implementation must be ITERATIVE on both passes; build G^T once.

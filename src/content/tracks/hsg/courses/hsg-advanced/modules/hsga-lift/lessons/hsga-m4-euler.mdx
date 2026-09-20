@@ -1,0 +1,18 @@
+# The Euler tour
+
+DFS the tree, recording `tin[v]` on entry and `tout[v]` on exit. Two facts
+do enormous work:
+
+- u is an ancestor of v **iff** `tin[u] \<= tin[v] && tin[v] \<= tout[u]`
+  (the interval of u contains the interval of v).
+- the subtree of v is exactly the interval `[tin[v], tout[v]]` — so any
+  range structure (Fenwick, segment tree) now answers subtree sums, subtree
+  adds, and "count marked nodes in a subtree".
+
+Combining with LCA: a path (u, v) splits at l = LCA(u, v) into
+`root..u` + `root..v` − `root..l` (minus 2·root..parent(l) depending on
+what you count). "Add on path" = add on two root-paths with a difference
+trick at l; "sum over path" = depth-weighted sums maintained per node.
+
+This flattening is the foundation for Module 7 (HLD): heavy chains become
+contiguous array segments precisely because of the tour.

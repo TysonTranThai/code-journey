@@ -1,0 +1,15 @@
+# Đi xuống Fenwick tìm phần tử thứ k
+
+Cây Fenwick lưu tổng tiền tố. Cho k, tìm vị trí nhỏ nhất sao cho
+`prefix(pos) >= k` — vị trí phần tử thứ k trong mảng 0/1. Mẹo kinh điển:
+đi từ trên xuống theo luỹ thừa 2; nếu khối `fen[np]` vừa trong `rem` thì
+nhảy qua và trừ đi. Sau vòng lặp, `pos` là chỉ số lớn nhất có tiền tố
+`\< k`, đáp án là `pos + 1`. Tổng O(log n) — nhanh hơn tìm kiếm nhị phân
+trên `prefix(i)` (O(log² n)).
+
+Lỗi hay gặp: quên trừ `rem -= fen[np]` sau khi nhảy — phép đi vượt đích,
+thậm chí trả về n + 1. Luôn thử k = 1 trên cây rỗng.
+
+Cùng phép đi này tìm ô trống thứ k: đi trên BIT "đã chiếm" và so sánh
+`len − occupied` (số ô trống trong khối) với `rem`. Truy vấn hạng multiset:
+chèn v là `upd(v, 1)`; phần tử nhỏ thứ k là phép đi với k.

@@ -1,0 +1,21 @@
+{
+  "id": "hsga-p20-digitdp",
+  "title": "Digit Harmony",
+  "prompt": "**Problem.** Line 1: N (up to 1e18, given as a string). Line 2: k.\nPrint how many x in [1, N] have digitSum(x) divisible by k.\n\n**Constraints:** 1 <= N <= 1e18; 2 <= k <= 100.\n\n**R versus W.** The graded wrong solution enumerates every number.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "small bound",
+      "code": "std::istringstream in(\"20 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"6\\n\"));",
+      "hint": "Digit sums divisible by 3 up to 20: 3, 6, 9, 12, 15, 18 — plus 20? 2+0=2 no. Brute-verified."
+    },
+    {
+      "name": "load: N = 1e18, k = 7",
+      "code": "std::istringstream in(\"1000000000000000000 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"142857142856594041\\n\"));",
+      "hint": "Digit DP walks 19 positions x k states; enumeration never terminates."
+    }
+  ],
+  "level": "combination"
+}

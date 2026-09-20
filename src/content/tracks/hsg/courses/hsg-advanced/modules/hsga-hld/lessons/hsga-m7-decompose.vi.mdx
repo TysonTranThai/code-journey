@@ -1,0 +1,28 @@
+# Vòng phân rã
+
+DFS thứ hai, preorder, con nặng trước:
+
+```
+pos[u]  = cnt++;                          // thứ tự vào
+head[u] = (hv[par[u]] == u) ? head[par[u]] : u;
+```
+
+Thứ tự vào nặng-trước biến mỗi chuỗi thành một đoạn vị trí liền kề —
+chuỗi [1,2,4] nhận pos 0,1,2 trên cây tay. Cây đoạn dựng trên VỊ TRÍ:
+`a[pos[v]] = val[v]`.
+
+Vòng truy vấn đường đi:
+
+```
+while (head[u] != head[v]) {                if (dep[head[u]] < dep[head[v]]) swap(u, v);
+    apply(pos[head[u]], pos[u]);          // cả đoạn đầu chuỗi..u
+    u = par[head[u]];                     // nhảy lên trên chuỗi
+}
+if (pos[u] > pos[v]) swap(u, v);
+apply(pos[u], pos[v]);                    // đoạn cuối cùng chuỗi
+```
+
+Nâng ĐẦU chuỗi sâu hơn (không phải nút sâu hơn). Hai lỗi thật kinh
+điển: quên đoạn cuối cùng chuỗi (hoặc quên swap của nó), và đánh chỉ số
+cây theo id đỉnh thay vì `pos`. Cả hai đều qua mẫu nhỏ và chết trên test
+thật.

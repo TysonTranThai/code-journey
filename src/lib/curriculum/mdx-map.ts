@@ -1668,6 +1668,172 @@ import HsgM92d from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-diff/
 import HsgM92dVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-diff/lessons/hsg-m9-2d.vi.mdx";
 import HsgM9Basics from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-diff/lessons/hsg-m9-basics.mdx";
 import HsgM9BasicsVi from "@/content/tracks/hsg/courses/hsg-beginner/modules/hsg-diff/lessons/hsg-m9-basics.vi.mdx";
+import HsgaCpM1 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-attack/lessons/hsga-cp-m1.mdx";
+import HsgaCpM10 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-digitdp/lessons/hsga-cp-m10.mdx";
+import HsgaCpM10Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-digitdp/lessons/hsga-cp-m10.vi.mdx";
+import HsgaCpM11 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-intervaldp/lessons/hsga-cp-m11.mdx";
+import HsgaCpM11Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-intervaldp/lessons/hsga-cp-m11.vi.mdx";
+import HsgaCpM12 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-suffix/lessons/hsga-cp-m12.mdx";
+import HsgaCpM12Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-suffix/lessons/hsga-cp-m12.vi.mdx";
+import HsgaCpM13 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-numth2/lessons/hsga-cp-m13.mdx";
+import HsgaCpM13Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-numth2/lessons/hsga-cp-m13.vi.mdx";
+import HsgaCpM14 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-combi/lessons/hsga-cp-m14.mdx";
+import HsgaCpM14Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-combi/lessons/hsga-cp-m14.vi.mdx";
+import HsgaCpM15 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-geom/lessons/hsga-cp-m15.mdx";
+import HsgaCpM15Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-geom/lessons/hsga-cp-m15.vi.mdx";
+import HsgaCpM16 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-synth/lessons/hsga-cp-m16.mdx";
+import HsgaCpM16Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-synth/lessons/hsga-cp-m16.vi.mdx";
+import HsgaCpM17 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-debug/lessons/hsga-cp-m17.mdx";
+import HsgaCpM17Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-debug/lessons/hsga-cp-m17.vi.mdx";
+import HsgaCpM18a from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests/lessons/hsga-cp-m18a.mdx";
+import HsgaCpM18aVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests/lessons/hsga-cp-m18a.vi.mdx";
+import HsgaCpM18b from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests/lessons/hsga-cp-m18b.mdx";
+import HsgaCpM18bVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests/lessons/hsga-cp-m18b.vi.mdx";
+import HsgaCpM18c from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests/lessons/hsga-cp-m18c.mdx";
+import HsgaCpM18cVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests/lessons/hsga-cp-m18c.vi.mdx";
+import HsgaCpM18d from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests/lessons/hsga-cp-m18d.mdx";
+import HsgaCpM18dVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests/lessons/hsga-cp-m18d.vi.mdx";
+import HsgaCpM19a from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests2/lessons/hsga-cp-m19a.mdx";
+import HsgaCpM19aVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests2/lessons/hsga-cp-m19a.vi.mdx";
+import HsgaCpM19b from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests2/lessons/hsga-cp-m19b.mdx";
+import HsgaCpM19bVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests2/lessons/hsga-cp-m19b.vi.mdx";
+import HsgaCpM19c from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests2/lessons/hsga-cp-m19c.mdx";
+import HsgaCpM19cVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests2/lessons/hsga-cp-m19c.vi.mdx";
+import HsgaCpM19d from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests2/lessons/hsga-cp-m19d.mdx";
+import HsgaCpM19dVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests2/lessons/hsga-cp-m19d.vi.mdx";
+import HsgaCpM1Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-attack/lessons/hsga-cp-m1.vi.mdx";
+import HsgaCpM2 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-lazy/lessons/hsga-cp-m2.mdx";
+import HsgaCpM20a from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests3/lessons/hsga-cp-m20a.mdx";
+import HsgaCpM20aVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests3/lessons/hsga-cp-m20a.vi.mdx";
+import HsgaCpM20b from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests3/lessons/hsga-cp-m20b.mdx";
+import HsgaCpM20bVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests3/lessons/hsga-cp-m20b.vi.mdx";
+import HsgaCpM20c from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests3/lessons/hsga-cp-m20c.mdx";
+import HsgaCpM20cVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests3/lessons/hsga-cp-m20c.vi.mdx";
+import HsgaCpM20d from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests3/lessons/hsga-cp-m20d.mdx";
+import HsgaCpM20dVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests3/lessons/hsga-cp-m20d.vi.mdx";
+import HsgaCpM2Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-lazy/lessons/hsga-cp-m2.vi.mdx";
+import HsgaCpM3 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-fenwick2/lessons/hsga-cp-m3.mdx";
+import HsgaCpM3Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-fenwick2/lessons/hsga-cp-m3.vi.mdx";
+import HsgaCpM4 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-lift/lessons/hsga-cp-m4.mdx";
+import HsgaCpM4Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-lift/lessons/hsga-cp-m4.vi.mdx";
+import HsgaCpM5 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-euler/lessons/hsga-cp-m5.mdx";
+import HsgaCpM5Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-euler/lessons/hsga-cp-m5.vi.mdx";
+import HsgaCpM6 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-treedp/lessons/hsga-cp-m6.mdx";
+import HsgaCpM6Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-treedp/lessons/hsga-cp-m6.vi.mdx";
+import HsgaCpM7 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-hld/lessons/hsga-cp-m7.mdx";
+import HsgaCpM7Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-hld/lessons/hsga-cp-m7.vi.mdx";
+import HsgaCpM8 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-scc/lessons/hsga-cp-m8.mdx";
+import HsgaCpM8Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-scc/lessons/hsga-cp-m8.vi.mdx";
+import HsgaCpM9 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-flow/lessons/hsga-cp-m9.mdx";
+import HsgaCpM9Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-flow/lessons/hsga-cp-m9.vi.mdx";
+import HsgaM10Agg from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-digitdp/lessons/hsga-m10-agg.mdx";
+import HsgaM10AggVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-digitdp/lessons/hsga-m10-agg.vi.mdx";
+import HsgaM10Free from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-digitdp/lessons/hsga-m10-free.mdx";
+import HsgaM10FreeVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-digitdp/lessons/hsga-m10-free.vi.mdx";
+import HsgaM10Tight from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-digitdp/lessons/hsga-m10-tight.mdx";
+import HsgaM10TightVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-digitdp/lessons/hsga-m10-tight.vi.mdx";
+import HsgaM11Cost from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-intervaldp/lessons/hsga-m11-cost.mdx";
+import HsgaM11CostVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-intervaldp/lessons/hsga-m11-cost.vi.mdx";
+import HsgaM11Palindrome from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-intervaldp/lessons/hsga-m11-palindrome.mdx";
+import HsgaM11PalindromeVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-intervaldp/lessons/hsga-m11-palindrome.vi.mdx";
+import HsgaM11Split from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-intervaldp/lessons/hsga-m11-split.mdx";
+import HsgaM11SplitVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-intervaldp/lessons/hsga-m11-split.vi.mdx";
+import HsgaM12Hash from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-suffix/lessons/hsga-m12-hash.mdx";
+import HsgaM12HashVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-suffix/lessons/hsga-m12-hash.vi.mdx";
+import HsgaM12Sa from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-suffix/lessons/hsga-m12-sa.mdx";
+import HsgaM12SaVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-suffix/lessons/hsga-m12-sa.vi.mdx";
+import HsgaM12Zfun from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-suffix/lessons/hsga-m12-zfun.mdx";
+import HsgaM12ZfunVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-suffix/lessons/hsga-m12-zfun.vi.mdx";
+import HsgaM13Binom from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-numth2/lessons/hsga-m13-binom.mdx";
+import HsgaM13BinomVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-numth2/lessons/hsga-m13-binom.vi.mdx";
+import HsgaM13Crt from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-numth2/lessons/hsga-m13-crt.mdx";
+import HsgaM13CrtVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-numth2/lessons/hsga-m13-crt.vi.mdx";
+import HsgaM13Inverse from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-numth2/lessons/hsga-m13-inverse.mdx";
+import HsgaM13InverseVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-numth2/lessons/hsga-m13-inverse.vi.mdx";
+import HsgaM14Catalan from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-combi/lessons/hsga-m14-catalan.mdx";
+import HsgaM14CatalanVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-combi/lessons/hsga-m14-catalan.vi.mdx";
+import HsgaM14Ie from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-combi/lessons/hsga-m14-ie.mdx";
+import HsgaM14IeVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-combi/lessons/hsga-m14-ie.vi.mdx";
+import HsgaM14Paths from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-combi/lessons/hsga-m14-paths.mdx";
+import HsgaM14PathsVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-combi/lessons/hsga-m14-paths.vi.mdx";
+import HsgaM15Closest from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-geom/lessons/hsga-m15-closest.mdx";
+import HsgaM15ClosestVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-geom/lessons/hsga-m15-closest.vi.mdx";
+import HsgaM15Hull from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-geom/lessons/hsga-m15-hull.mdx";
+import HsgaM15HullVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-geom/lessons/hsga-m15-hull.vi.mdx";
+import HsgaM15Pip from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-geom/lessons/hsga-m15-pip.mdx";
+import HsgaM15PipVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-geom/lessons/hsga-m15-pip.vi.mdx";
+import HsgaM16Answer from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-synth/lessons/hsga-m16-answer.mdx";
+import HsgaM16AnswerVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-synth/lessons/hsga-m16-answer.vi.mdx";
+import HsgaM16Combo from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-synth/lessons/hsga-m16-combo.mdx";
+import HsgaM16ComboVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-synth/lessons/hsga-m16-combo.vi.mdx";
+import HsgaM16Offline from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-synth/lessons/hsga-m16-offline.mdx";
+import HsgaM16OfflineVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-synth/lessons/hsga-m16-offline.vi.mdx";
+import HsgaM17Offbyone from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-debug/lessons/hsga-m17-offbyone.mdx";
+import HsgaM17OffbyoneVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-debug/lessons/hsga-m17-offbyone.vi.mdx";
+import HsgaM17Overflow from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-debug/lessons/hsga-m17-overflow.mdx";
+import HsgaM17OverflowVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-debug/lessons/hsga-m17-overflow.vi.mdx";
+import HsgaM17Stack from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-debug/lessons/hsga-m17-stack.mdx";
+import HsgaM17StackVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-debug/lessons/hsga-m17-stack.vi.mdx";
+import HsgaM18Bank from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests/lessons/hsga-m18-bank.mdx";
+import HsgaM18BankVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests/lessons/hsga-m18-bank.vi.mdx";
+import HsgaM18Scan from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests/lessons/hsga-m18-scan.mdx";
+import HsgaM18ScanVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests/lessons/hsga-m18-scan.vi.mdx";
+import HsgaM19Bank2 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests2/lessons/hsga-m19-bank2.mdx";
+import HsgaM19Bank2Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests2/lessons/hsga-m19-bank2.vi.mdx";
+import HsgaM19Scan2 from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests2/lessons/hsga-m19-scan2.mdx";
+import HsgaM19Scan2Vi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests2/lessons/hsga-m19-scan2.vi.mdx";
+import HsgaM1Invariants from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-attack/lessons/hsga-m1-invariants.mdx";
+import HsgaM1InvariantsVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-attack/lessons/hsga-m1-invariants.vi.mdx";
+import HsgaM1Mitm from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-attack/lessons/hsga-m1-mitm.mdx";
+import HsgaM1MitmVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-attack/lessons/hsga-m1-mitm.vi.mdx";
+import HsgaM20Ladder from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests3/lessons/hsga-m20-ladder.mdx";
+import HsgaM20LadderVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests3/lessons/hsga-m20-ladder.vi.mdx";
+import HsgaM20Pace from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests3/lessons/hsga-m20-pace.mdx";
+import HsgaM20PaceVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-contests3/lessons/hsga-m20-pace.vi.mdx";
+import HsgaM2Lazytags from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-lazy/lessons/hsga-m2-lazytags.mdx";
+import HsgaM2LazytagsVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-lazy/lessons/hsga-m2-lazytags.vi.mdx";
+import HsgaM2Maxsub from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-lazy/lessons/hsga-m2-maxsub.mdx";
+import HsgaM2MaxsubVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-lazy/lessons/hsga-m2-maxsub.vi.mdx";
+import HsgaM3Diffbit from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-fenwick2/lessons/hsga-m3-diffbit.mdx";
+import HsgaM3DiffbitVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-fenwick2/lessons/hsga-m3-diffbit.vi.mdx";
+import HsgaM3Inversions from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-fenwick2/lessons/hsga-m3-inversions.mdx";
+import HsgaM3InversionsVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-fenwick2/lessons/hsga-m3-inversions.vi.mdx";
+import HsgaM3Kth from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-fenwick2/lessons/hsga-m3-kth.mdx";
+import HsgaM3KthVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-fenwick2/lessons/hsga-m3-kth.vi.mdx";
+import HsgaM3Offline from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-fenwick2/lessons/hsga-m3-offline.mdx";
+import HsgaM3OfflineVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-fenwick2/lessons/hsga-m3-offline.vi.mdx";
+import HsgaM4Euler from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-lift/lessons/hsga-m4-euler.mdx";
+import HsgaM4EulerVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-lift/lessons/hsga-m4-euler.vi.mdx";
+import HsgaM4Lca from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-lift/lessons/hsga-m4-lca.mdx";
+import HsgaM4LcaVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-lift/lessons/hsga-m4-lca.vi.mdx";
+import HsgaM4Lifting from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-lift/lessons/hsga-m4-lifting.mdx";
+import HsgaM4LiftingVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-lift/lessons/hsga-m4-lifting.vi.mdx";
+import HsgaM5Flatten from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-euler/lessons/hsga-m5-flatten.mdx";
+import HsgaM5FlattenVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-euler/lessons/hsga-m5-flatten.vi.mdx";
+import HsgaM5Paths from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-euler/lessons/hsga-m5-paths.mdx";
+import HsgaM5PathsVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-euler/lessons/hsga-m5-paths.vi.mdx";
+import HsgaM6Cross from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-treedp/lessons/hsga-m6-cross.mdx";
+import HsgaM6CrossVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-treedp/lessons/hsga-m6-cross.vi.mdx";
+import HsgaM6Inout from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-treedp/lessons/hsga-m6-inout.mdx";
+import HsgaM6InoutVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-treedp/lessons/hsga-m6-inout.vi.mdx";
+import HsgaM7Decompose from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-hld/lessons/hsga-m7-decompose.mdx";
+import HsgaM7DecomposeVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-hld/lessons/hsga-m7-decompose.vi.mdx";
+import HsgaM7Size from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-hld/lessons/hsga-m7-size.mdx";
+import HsgaM7SizeVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-hld/lessons/hsga-m7-size.vi.mdx";
+import HsgaM7Vs from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-hld/lessons/hsga-m7-vs.mdx";
+import HsgaM7VsVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-hld/lessons/hsga-m7-vs.vi.mdx";
+import HsgaM8Condensation from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-scc/lessons/hsga-m8-condensation.mdx";
+import HsgaM8CondensationVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-scc/lessons/hsga-m8-condensation.vi.mdx";
+import HsgaM8Kosaraju from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-scc/lessons/hsga-m8-kosaraju.mdx";
+import HsgaM8KosarajuVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-scc/lessons/hsga-m8-kosaraju.vi.mdx";
+import HsgaM8Recognize from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-scc/lessons/hsga-m8-recognize.mdx";
+import HsgaM8RecognizeVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-scc/lessons/hsga-m8-recognize.vi.mdx";
+import HsgaM9Augment from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-flow/lessons/hsga-m9-augment.mdx";
+import HsgaM9AugmentVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-flow/lessons/hsga-m9-augment.vi.mdx";
+import HsgaM9Modeling from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-flow/lessons/hsga-m9-modeling.mdx";
+import HsgaM9ModelingVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-flow/lessons/hsga-m9-modeling.vi.mdx";
+import HsgaM9Network from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-flow/lessons/hsga-m9-network.mdx";
+import HsgaM9NetworkVi from "@/content/tracks/hsg/courses/hsg-advanced/modules/hsga-flow/lessons/hsga-m9-network.vi.mdx";
 import HsgiCpM1 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-analysis/lessons/hsgi-cp-m1.mdx";
 import HsgiCpM10 from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-trees/lessons/hsgi-cp-m10.mdx";
 import HsgiCpM10Vi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-trees/lessons/hsgi-cp-m10.vi.mdx";
@@ -4018,6 +4184,172 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["csi-testing/csi-test-doubles.vi.mdx"]: CsiTestDoublesVi,
   ["csi-testing/csi-checkpoint-m16.mdx"]: CsiCheckpointM16,
   ["csi-testing/csi-checkpoint-m16.vi.mdx"]: CsiCheckpointM16Vi,
+  ["hsga-attack/hsga-m1-mitm.mdx"]: HsgaM1Mitm,
+  ["hsga-attack/hsga-m1-mitm.vi.mdx"]: HsgaM1MitmVi,
+  ["hsga-attack/hsga-m1-invariants.mdx"]: HsgaM1Invariants,
+  ["hsga-attack/hsga-m1-invariants.vi.mdx"]: HsgaM1InvariantsVi,
+  ["hsga-attack/hsga-cp-m1.mdx"]: HsgaCpM1,
+  ["hsga-attack/hsga-cp-m1.vi.mdx"]: HsgaCpM1Vi,
+  ["hsga-combi/hsga-m14-catalan.mdx"]: HsgaM14Catalan,
+  ["hsga-combi/hsga-m14-catalan.vi.mdx"]: HsgaM14CatalanVi,
+  ["hsga-combi/hsga-m14-ie.mdx"]: HsgaM14Ie,
+  ["hsga-combi/hsga-m14-ie.vi.mdx"]: HsgaM14IeVi,
+  ["hsga-combi/hsga-m14-paths.mdx"]: HsgaM14Paths,
+  ["hsga-combi/hsga-m14-paths.vi.mdx"]: HsgaM14PathsVi,
+  ["hsga-combi/hsga-cp-m14.mdx"]: HsgaCpM14,
+  ["hsga-combi/hsga-cp-m14.vi.mdx"]: HsgaCpM14Vi,
+  ["hsga-contests/hsga-m18-scan.mdx"]: HsgaM18Scan,
+  ["hsga-contests/hsga-m18-scan.vi.mdx"]: HsgaM18ScanVi,
+  ["hsga-contests/hsga-m18-bank.mdx"]: HsgaM18Bank,
+  ["hsga-contests/hsga-m18-bank.vi.mdx"]: HsgaM18BankVi,
+  ["hsga-contests/hsga-cp-m18a.mdx"]: HsgaCpM18a,
+  ["hsga-contests/hsga-cp-m18a.vi.mdx"]: HsgaCpM18aVi,
+  ["hsga-contests/hsga-cp-m18b.mdx"]: HsgaCpM18b,
+  ["hsga-contests/hsga-cp-m18b.vi.mdx"]: HsgaCpM18bVi,
+  ["hsga-contests/hsga-cp-m18c.mdx"]: HsgaCpM18c,
+  ["hsga-contests/hsga-cp-m18c.vi.mdx"]: HsgaCpM18cVi,
+  ["hsga-contests/hsga-cp-m18d.mdx"]: HsgaCpM18d,
+  ["hsga-contests/hsga-cp-m18d.vi.mdx"]: HsgaCpM18dVi,
+  ["hsga-contests2/hsga-m19-scan2.mdx"]: HsgaM19Scan2,
+  ["hsga-contests2/hsga-m19-scan2.vi.mdx"]: HsgaM19Scan2Vi,
+  ["hsga-contests2/hsga-m19-bank2.mdx"]: HsgaM19Bank2,
+  ["hsga-contests2/hsga-m19-bank2.vi.mdx"]: HsgaM19Bank2Vi,
+  ["hsga-contests2/hsga-cp-m19a.mdx"]: HsgaCpM19a,
+  ["hsga-contests2/hsga-cp-m19a.vi.mdx"]: HsgaCpM19aVi,
+  ["hsga-contests2/hsga-cp-m19b.mdx"]: HsgaCpM19b,
+  ["hsga-contests2/hsga-cp-m19b.vi.mdx"]: HsgaCpM19bVi,
+  ["hsga-contests2/hsga-cp-m19c.mdx"]: HsgaCpM19c,
+  ["hsga-contests2/hsga-cp-m19c.vi.mdx"]: HsgaCpM19cVi,
+  ["hsga-contests2/hsga-cp-m19d.mdx"]: HsgaCpM19d,
+  ["hsga-contests2/hsga-cp-m19d.vi.mdx"]: HsgaCpM19dVi,
+  ["hsga-contests3/hsga-m20-pace.mdx"]: HsgaM20Pace,
+  ["hsga-contests3/hsga-m20-pace.vi.mdx"]: HsgaM20PaceVi,
+  ["hsga-contests3/hsga-m20-ladder.mdx"]: HsgaM20Ladder,
+  ["hsga-contests3/hsga-m20-ladder.vi.mdx"]: HsgaM20LadderVi,
+  ["hsga-contests3/hsga-cp-m20a.mdx"]: HsgaCpM20a,
+  ["hsga-contests3/hsga-cp-m20a.vi.mdx"]: HsgaCpM20aVi,
+  ["hsga-contests3/hsga-cp-m20b.mdx"]: HsgaCpM20b,
+  ["hsga-contests3/hsga-cp-m20b.vi.mdx"]: HsgaCpM20bVi,
+  ["hsga-contests3/hsga-cp-m20c.mdx"]: HsgaCpM20c,
+  ["hsga-contests3/hsga-cp-m20c.vi.mdx"]: HsgaCpM20cVi,
+  ["hsga-contests3/hsga-cp-m20d.mdx"]: HsgaCpM20d,
+  ["hsga-contests3/hsga-cp-m20d.vi.mdx"]: HsgaCpM20dVi,
+  ["hsga-debug/hsga-m17-overflow.mdx"]: HsgaM17Overflow,
+  ["hsga-debug/hsga-m17-overflow.vi.mdx"]: HsgaM17OverflowVi,
+  ["hsga-debug/hsga-m17-stack.mdx"]: HsgaM17Stack,
+  ["hsga-debug/hsga-m17-stack.vi.mdx"]: HsgaM17StackVi,
+  ["hsga-debug/hsga-m17-offbyone.mdx"]: HsgaM17Offbyone,
+  ["hsga-debug/hsga-m17-offbyone.vi.mdx"]: HsgaM17OffbyoneVi,
+  ["hsga-debug/hsga-cp-m17.mdx"]: HsgaCpM17,
+  ["hsga-debug/hsga-cp-m17.vi.mdx"]: HsgaCpM17Vi,
+  ["hsga-digitdp/hsga-m10-tight.mdx"]: HsgaM10Tight,
+  ["hsga-digitdp/hsga-m10-tight.vi.mdx"]: HsgaM10TightVi,
+  ["hsga-digitdp/hsga-m10-free.mdx"]: HsgaM10Free,
+  ["hsga-digitdp/hsga-m10-free.vi.mdx"]: HsgaM10FreeVi,
+  ["hsga-digitdp/hsga-m10-agg.mdx"]: HsgaM10Agg,
+  ["hsga-digitdp/hsga-m10-agg.vi.mdx"]: HsgaM10AggVi,
+  ["hsga-digitdp/hsga-cp-m10.mdx"]: HsgaCpM10,
+  ["hsga-digitdp/hsga-cp-m10.vi.mdx"]: HsgaCpM10Vi,
+  ["hsga-euler/hsga-m5-flatten.mdx"]: HsgaM5Flatten,
+  ["hsga-euler/hsga-m5-flatten.vi.mdx"]: HsgaM5FlattenVi,
+  ["hsga-euler/hsga-m5-paths.mdx"]: HsgaM5Paths,
+  ["hsga-euler/hsga-m5-paths.vi.mdx"]: HsgaM5PathsVi,
+  ["hsga-euler/hsga-cp-m5.mdx"]: HsgaCpM5,
+  ["hsga-euler/hsga-cp-m5.vi.mdx"]: HsgaCpM5Vi,
+  ["hsga-fenwick2/hsga-m3-kth.mdx"]: HsgaM3Kth,
+  ["hsga-fenwick2/hsga-m3-kth.vi.mdx"]: HsgaM3KthVi,
+  ["hsga-fenwick2/hsga-m3-offline.mdx"]: HsgaM3Offline,
+  ["hsga-fenwick2/hsga-m3-offline.vi.mdx"]: HsgaM3OfflineVi,
+  ["hsga-fenwick2/hsga-m3-diffbit.mdx"]: HsgaM3Diffbit,
+  ["hsga-fenwick2/hsga-m3-diffbit.vi.mdx"]: HsgaM3DiffbitVi,
+  ["hsga-fenwick2/hsga-m3-inversions.mdx"]: HsgaM3Inversions,
+  ["hsga-fenwick2/hsga-m3-inversions.vi.mdx"]: HsgaM3InversionsVi,
+  ["hsga-fenwick2/hsga-cp-m3.mdx"]: HsgaCpM3,
+  ["hsga-fenwick2/hsga-cp-m3.vi.mdx"]: HsgaCpM3Vi,
+  ["hsga-flow/hsga-m9-network.mdx"]: HsgaM9Network,
+  ["hsga-flow/hsga-m9-network.vi.mdx"]: HsgaM9NetworkVi,
+  ["hsga-flow/hsga-m9-augment.mdx"]: HsgaM9Augment,
+  ["hsga-flow/hsga-m9-augment.vi.mdx"]: HsgaM9AugmentVi,
+  ["hsga-flow/hsga-m9-modeling.mdx"]: HsgaM9Modeling,
+  ["hsga-flow/hsga-m9-modeling.vi.mdx"]: HsgaM9ModelingVi,
+  ["hsga-flow/hsga-cp-m9.mdx"]: HsgaCpM9,
+  ["hsga-flow/hsga-cp-m9.vi.mdx"]: HsgaCpM9Vi,
+  ["hsga-geom/hsga-m15-hull.mdx"]: HsgaM15Hull,
+  ["hsga-geom/hsga-m15-hull.vi.mdx"]: HsgaM15HullVi,
+  ["hsga-geom/hsga-m15-pip.mdx"]: HsgaM15Pip,
+  ["hsga-geom/hsga-m15-pip.vi.mdx"]: HsgaM15PipVi,
+  ["hsga-geom/hsga-m15-closest.mdx"]: HsgaM15Closest,
+  ["hsga-geom/hsga-m15-closest.vi.mdx"]: HsgaM15ClosestVi,
+  ["hsga-geom/hsga-cp-m15.mdx"]: HsgaCpM15,
+  ["hsga-geom/hsga-cp-m15.vi.mdx"]: HsgaCpM15Vi,
+  ["hsga-hld/hsga-m7-size.mdx"]: HsgaM7Size,
+  ["hsga-hld/hsga-m7-size.vi.mdx"]: HsgaM7SizeVi,
+  ["hsga-hld/hsga-m7-decompose.mdx"]: HsgaM7Decompose,
+  ["hsga-hld/hsga-m7-decompose.vi.mdx"]: HsgaM7DecomposeVi,
+  ["hsga-hld/hsga-m7-vs.mdx"]: HsgaM7Vs,
+  ["hsga-hld/hsga-m7-vs.vi.mdx"]: HsgaM7VsVi,
+  ["hsga-hld/hsga-cp-m7.mdx"]: HsgaCpM7,
+  ["hsga-hld/hsga-cp-m7.vi.mdx"]: HsgaCpM7Vi,
+  ["hsga-intervaldp/hsga-m11-split.mdx"]: HsgaM11Split,
+  ["hsga-intervaldp/hsga-m11-split.vi.mdx"]: HsgaM11SplitVi,
+  ["hsga-intervaldp/hsga-m11-cost.mdx"]: HsgaM11Cost,
+  ["hsga-intervaldp/hsga-m11-cost.vi.mdx"]: HsgaM11CostVi,
+  ["hsga-intervaldp/hsga-m11-palindrome.mdx"]: HsgaM11Palindrome,
+  ["hsga-intervaldp/hsga-m11-palindrome.vi.mdx"]: HsgaM11PalindromeVi,
+  ["hsga-intervaldp/hsga-cp-m11.mdx"]: HsgaCpM11,
+  ["hsga-intervaldp/hsga-cp-m11.vi.mdx"]: HsgaCpM11Vi,
+  ["hsga-lazy/hsga-m2-lazytags.mdx"]: HsgaM2Lazytags,
+  ["hsga-lazy/hsga-m2-lazytags.vi.mdx"]: HsgaM2LazytagsVi,
+  ["hsga-lazy/hsga-m2-maxsub.mdx"]: HsgaM2Maxsub,
+  ["hsga-lazy/hsga-m2-maxsub.vi.mdx"]: HsgaM2MaxsubVi,
+  ["hsga-lazy/hsga-cp-m2.mdx"]: HsgaCpM2,
+  ["hsga-lazy/hsga-cp-m2.vi.mdx"]: HsgaCpM2Vi,
+  ["hsga-lift/hsga-m4-lifting.mdx"]: HsgaM4Lifting,
+  ["hsga-lift/hsga-m4-lifting.vi.mdx"]: HsgaM4LiftingVi,
+  ["hsga-lift/hsga-m4-lca.mdx"]: HsgaM4Lca,
+  ["hsga-lift/hsga-m4-lca.vi.mdx"]: HsgaM4LcaVi,
+  ["hsga-lift/hsga-m4-euler.mdx"]: HsgaM4Euler,
+  ["hsga-lift/hsga-m4-euler.vi.mdx"]: HsgaM4EulerVi,
+  ["hsga-lift/hsga-cp-m4.mdx"]: HsgaCpM4,
+  ["hsga-lift/hsga-cp-m4.vi.mdx"]: HsgaCpM4Vi,
+  ["hsga-numth2/hsga-m13-inverse.mdx"]: HsgaM13Inverse,
+  ["hsga-numth2/hsga-m13-inverse.vi.mdx"]: HsgaM13InverseVi,
+  ["hsga-numth2/hsga-m13-binom.mdx"]: HsgaM13Binom,
+  ["hsga-numth2/hsga-m13-binom.vi.mdx"]: HsgaM13BinomVi,
+  ["hsga-numth2/hsga-m13-crt.mdx"]: HsgaM13Crt,
+  ["hsga-numth2/hsga-m13-crt.vi.mdx"]: HsgaM13CrtVi,
+  ["hsga-numth2/hsga-cp-m13.mdx"]: HsgaCpM13,
+  ["hsga-numth2/hsga-cp-m13.vi.mdx"]: HsgaCpM13Vi,
+  ["hsga-scc/hsga-m8-kosaraju.mdx"]: HsgaM8Kosaraju,
+  ["hsga-scc/hsga-m8-kosaraju.vi.mdx"]: HsgaM8KosarajuVi,
+  ["hsga-scc/hsga-m8-condensation.mdx"]: HsgaM8Condensation,
+  ["hsga-scc/hsga-m8-condensation.vi.mdx"]: HsgaM8CondensationVi,
+  ["hsga-scc/hsga-m8-recognize.mdx"]: HsgaM8Recognize,
+  ["hsga-scc/hsga-m8-recognize.vi.mdx"]: HsgaM8RecognizeVi,
+  ["hsga-scc/hsga-cp-m8.mdx"]: HsgaCpM8,
+  ["hsga-scc/hsga-cp-m8.vi.mdx"]: HsgaCpM8Vi,
+  ["hsga-suffix/hsga-m12-hash.mdx"]: HsgaM12Hash,
+  ["hsga-suffix/hsga-m12-hash.vi.mdx"]: HsgaM12HashVi,
+  ["hsga-suffix/hsga-m12-zfun.mdx"]: HsgaM12Zfun,
+  ["hsga-suffix/hsga-m12-zfun.vi.mdx"]: HsgaM12ZfunVi,
+  ["hsga-suffix/hsga-m12-sa.mdx"]: HsgaM12Sa,
+  ["hsga-suffix/hsga-m12-sa.vi.mdx"]: HsgaM12SaVi,
+  ["hsga-suffix/hsga-cp-m12.mdx"]: HsgaCpM12,
+  ["hsga-suffix/hsga-cp-m12.vi.mdx"]: HsgaCpM12Vi,
+  ["hsga-synth/hsga-m16-combo.mdx"]: HsgaM16Combo,
+  ["hsga-synth/hsga-m16-combo.vi.mdx"]: HsgaM16ComboVi,
+  ["hsga-synth/hsga-m16-offline.mdx"]: HsgaM16Offline,
+  ["hsga-synth/hsga-m16-offline.vi.mdx"]: HsgaM16OfflineVi,
+  ["hsga-synth/hsga-m16-answer.mdx"]: HsgaM16Answer,
+  ["hsga-synth/hsga-m16-answer.vi.mdx"]: HsgaM16AnswerVi,
+  ["hsga-synth/hsga-cp-m16.mdx"]: HsgaCpM16,
+  ["hsga-synth/hsga-cp-m16.vi.mdx"]: HsgaCpM16Vi,
+  ["hsga-treedp/hsga-m6-inout.mdx"]: HsgaM6Inout,
+  ["hsga-treedp/hsga-m6-inout.vi.mdx"]: HsgaM6InoutVi,
+  ["hsga-treedp/hsga-m6-cross.mdx"]: HsgaM6Cross,
+  ["hsga-treedp/hsga-m6-cross.vi.mdx"]: HsgaM6CrossVi,
+  ["hsga-treedp/hsga-cp-m6.mdx"]: HsgaCpM6,
+  ["hsga-treedp/hsga-cp-m6.vi.mdx"]: HsgaCpM6Vi,
   ["hsg-arrays/hsg-m3-basics.mdx"]: HsgM3Basics,
   ["hsg-arrays/hsg-m3-basics.vi.mdx"]: HsgM3BasicsVi,
   ["hsg-arrays/hsg-m3-classic.mdx"]: HsgM3Classic,

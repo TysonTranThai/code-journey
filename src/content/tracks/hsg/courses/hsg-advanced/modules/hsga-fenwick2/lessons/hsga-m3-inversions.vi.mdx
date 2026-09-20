@@ -1,0 +1,13 @@
+# Đếm nghịch thế bằng BIT
+
+Nghịch thế là cặp `i \< j` với `a[i] > a[j]`. Nén giá trị thành hạng, quét
+trái → phải, BIT lưu các hạng đã gặp; với phần tử mới, số phần tử đã gặp
+lớn hơn là `i − prefix(rank)` (prefix đếm các phần tử ≤ a[i], chèn sau
+khi đếm). Tổng O(n log n), bộ nhớ O(n) nhờ nén.
+
+Phần tử bằng nhau KHÔNG là nghịch thế — so sánh ≥ sẽ đếm thừa, lỗi kinh
+diển trên mảng có trùng giá trị.
+
+Cùng mẫu này đếm nghịch thế chéo trong chia để trị: khi trộn hai nửa đã
+sắp, đếm cặp (trái, phải) với trái > phải — chính là đếm nghịch thế của
+merge sort, cầu nối sang CDQ chia để trị cho bài trội 3 chiều.

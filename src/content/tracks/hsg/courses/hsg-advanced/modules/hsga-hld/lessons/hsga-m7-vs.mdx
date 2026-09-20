@@ -1,0 +1,15 @@
+# Paying for HLD only when needed
+
+Decision ladder, cheapest first:
+
+1. **Subtree** add/count → Euler tour + BIT (M5). No chains.
+2. **Path u..v, point updates, distance-sum style** → binary lifting +
+   rerooting bookkeeping (M4/M6).
+3. **Path u..v aggregates (max/sum) WITH path or range updates** → HLD +
+   lazy segment tree (M2). The only structure in the course that answers
+   path-max under path-add for n, q ≤ 2·10^5.
+
+HLD costs ~150 lines and buys O((n+q)·log² n). Each op touches at most
+2·log2(n) chain segments, each a tree op — comfortable inside the
+sandbox's 20 s job budget. The danger is the naive per-op path climb,
+O(depth) per query: it dies exactly like A3's wrong solution below.

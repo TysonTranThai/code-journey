@@ -1,0 +1,14 @@
+# LCA: hai pha
+
+Pha 1 — cân bằng độ sâu: nâng đỉnh sâu hơn lên bằng phần hiệu độ sâu
+(phân tích nhị phân). Nếu trùng nhau, đó là LCA.
+
+Pha 2 — đi xuống đồng bộ: với k từ cao xuống thấp, nếu
+`up[k][u] != up[k][v]` thì nhảy cả hai. Sau đó đáp án là `cha[u]`.
+
+An toàn vì mọi bước nhảy giữ u ≠ v đều không vượt qua LCA (cả hai phải
+đi qua nó cùng nhau). Khi không tầng nào tách được chúng nữa, hai đỉnh
+nằm ngay dưới LCA — là anh em cha mẹ.
+
+Lỗi kinh điển: quên early-exit "u == v" sau cân bằng (một đỉnh là tổ tiên
+của chính nó), hoặc đi từ thấp lên cao.

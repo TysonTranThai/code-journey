@@ -1,0 +1,21 @@
+{
+  "id": "hsga-cp-m14-catalan",
+  "title": "Bracket Counts",
+  "prompt": "**Problem.** Line 1: q. Each line: n. Print the number of balanced\nsequences of n bracket pairs mod 1e9+7.\n\n**Constraints:** 1 ≤ q ≤ 100; 1 ≤ n ≤ 500000.\n\nThe W reports C(2n, n) — plausible, wrong for every n > 1.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "brackets n=3",
+      "code": "std::istringstream in(\"3\\n3\\n1\\n19\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n1\\n767263183\\n\"));",
+      "hint": "Balanced sequences of n pairs = Catalan C_n; C_19 = 1767263190 -> 767263183 mod p."
+    },
+    {
+      "name": "load: two n near 5e5",
+      "code": "std::istringstream in(\"2\\n500000\\n499999\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"213941567\\n478305480\\n\"));",
+      "hint": "C(1e6, 5e5) - C(1e6, 5e5+1): one table, two lookups. The central-binomial W reports the wrong sequence."
+    }
+  ],
+  "level": "combination"
+}

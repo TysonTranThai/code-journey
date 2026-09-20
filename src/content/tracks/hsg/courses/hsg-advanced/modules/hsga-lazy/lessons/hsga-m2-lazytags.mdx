@@ -1,0 +1,20 @@
+# Lazy Propagation — the discipline
+
+A node stores (aggregate, lazy). The aggregate is up to date for the node's
+own range; the lazy tag records work still owed to children. Three invariants
+make lazy trees safe:
+
+1. `apply(node, tag)` updates aggregate AND lazy in O(1). For ADD with a
+   subtree of length len: sum += tag·len; min += tag; lazy_add += tag.
+2. `push(node)` hands the tag to children before descending. Never touch
+   children's aggregates directly in an update — always push first.
+3. Compose order: when a new tag arrives, it applies AFTER whatever is
+   pending. For value x under pending (add a, then mul m):
+   (a + x·m) — so MUL arriving later must compose as
+   `mul = old_mul * new; add = old_add * new` when the pending add happened
+   first. Getting this backwards passes every small test and fails the mixed
+   large one — the classic advanced bug.
+
+ASSIGN clears all other tags (a pending add is overwritten); MUL and ADD
+compose as above. Range ASSIGN + range SUM is the cleanest first
+implementation: `apply(assign v)` sets sum = v·len and kill lazies.

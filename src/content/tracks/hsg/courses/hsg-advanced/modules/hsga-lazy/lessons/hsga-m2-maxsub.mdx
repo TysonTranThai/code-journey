@@ -1,0 +1,24 @@
+# The max-subarray node
+
+For a node covering a range store four values:
+
+- total — sum of the whole range
+- pre — best sum of a prefix
+- suf — best sum of a suffix
+- best — best sum of any subarray inside the range
+
+pull (merge children L, R):
+
+```
+n.total = L.total + R.total
+n.pre   = max(L.pre, L.total + R.pre)
+n.suf   = max(R.suf, R.total + L.suf)
+n.best  = max(L.best, R.best, L.suf + R.pre)
+```
+
+`L.suf + R.pre` is the cross term — forgetting it degenerates to two
+independent Kadanes and fails on diamonds like [5, -10, 6]. With lazy
+ASSIGN, apply() sets all four from v and the length: total = v·len,
+pre = suf = best = max(v, v·len) — careful with v > 0 (take the whole
+range) vs v \<= 0 (take one element... unless empty subarrays are allowed;
+this course counts non-empty subarrays).

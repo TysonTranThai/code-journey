@@ -1,0 +1,45 @@
+# Diameters bend
+
+Keep `height[u]` = the longest downward path from u (child heights plus
+edge weights). At each node the best path that **bends** at u is
+`h1 + h2` — the two largest child-heights. The tree diameter is the
+maximum of h1 + h2 over ALL nodes, updated during the same post-order
+pass:
+
+```
+h1 = h2 = 0;
+for (c : ch[u]) {
+    long long hh = height[c] + w[c];
+    if (hh > h1) { h2 = h1; h1 = hh; } else if (hh > h2) h2 = hh;
+}
+best = max(best, h1 + h2);
+height[u] = h1;
+```
+
+The bug that survives toy tests: updating `best` only at the ROOT. On a
+broom (chain 1→2→3 with two leaves at 3) the root-only answer is the
+depth 3, but the true diameter is 2 — the path bends at node 3, never
+touching the root.
+
+# Rerooting
+
+Compute for every node v the sum of distances to all other nodes. Brute
+force is O(n²). Two passes give O(n):
+
+1. **Bottom-up**: `cnt[u]` = subtree size, `sd[u]` = sum of distances from
+   u to every node inside its subtree: `sd[u] = Σ (sd[c] + cnt[c])`.
+2. **Top-down**: `ans[root] = sd[root]`; walking parent → child,
+   `ans[c] = ans[u] + (n − cnt[c]) − cnt[c]` — every node outside c's
+   subtree gets 1 farther (n − cnt[c] of them), every node inside gets
+   1 closer (cnt[c] of them).
+
+The rerooting identity is worth memorizing: moving the root across an
+edge changes the answer by `+ (n − cnt[c]) − cnt[c]`.
+
+**Bài học (VI).** `height[u]` = đường đi xuống dài nhất từ u. Đường đi tốt
+nhất bẻ gãy tại u là `h1 + h2` — hai chiều cao con lớn nhất. Đường đi dài
+nhất của cây = max của h1 + h2 trên MỌI nút. Lỗi sống sót qua test nhỏ:
+chỉ cập nhật ở gốc — trên cây chổi (1→2→3, hai lá tại 3) root-only ra 3,
+đáp án thật là 2. Đổi gốc: lượt lên tính `cnt`, `sd`; lượt xuống
+`ans[c] = ans[cha] + (n − cnt[c]) − cnt[c]` — đi qua một cạnh: n − cnt[c]
+nút xa thêm 1, cnt[c] nút gần bớt 1.

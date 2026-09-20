@@ -1,0 +1,26 @@
+{
+  "id": "hsga-p1-mitm",
+  "title": "Many Subset-Sum Queries",
+  "prompt": "**Bài toán.** Given n ≤ 24 items and q ≤ 2000 target sums S_j, for each\nquery print the number of subsets summing exactly to S_j.\n\n**Constraints:** 1 ≤ n ≤ 24; 1 ≤ q ≤ 2000; |a[i]| ≤ 10^9; |S_j| ≤ 10^12.\n\nPrecompute both halves ONCE; answer each query with a join.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "small",
+      "code": "std::istringstream in(\"3 2\\n1 2 3\\n3\\n4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n1\\n\"));",
+      "hint": "sums 0,1,2,3,3,4,5,6 → count(3)=2, count(4)=1."
+    },
+    {
+      "name": "extremes",
+      "code": "std::istringstream in(\"3 3\\n5 10 15\\n0\\n30\\n999\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n1\\n0\\n\"));",
+      "hint": "Empty subset sums 0; all items sum 30; 999 unreachable."
+    },
+    {
+      "name": "n=24 q=200 kill",
+      "code": "std::istringstream in(\"24 200\\n38\\n75\\n23\\n60\\n8\\n45\\n82\\n30\\n67\\n15\\n52\\n89\\n37\\n74\\n22\\n59\\n7\\n44\\n81\\n29\\n66\\n14\\n51\\n88\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n696\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n65464\\n\"));",
+      "hint": "200 identical queries over n=24: per-query 2^n recount is 200 × 4M ops — exceeds the sandbox budget; MITM answers from prebuilt halves. Ground truth 65464 via independent subset-DP in Python."
+    }
+  ],
+  "level": "combination"
+}

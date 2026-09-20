@@ -1,0 +1,19 @@
+# Lowest common ancestor
+
+Phase 1 — equalize depths: lift the deeper node by the depth difference
+(binary decomposition, same loop as k-th ancestor). If the nodes coincide,
+that is the LCA.
+
+Phase 2 — synchronized descent: for k from high to low, if
+`up[k][u] != up[k][v]`, jump both. Afterwards the nodes sit just below
+their LCA, so the answer is `parent[u]`.
+
+Why phase 2 is safe: any jump that keeps u and v different cannot overshoot
+the LCA (both would have to pass through it together). When no level can
+separate them anymore, they are as close as possible — siblings under the
+LCA.
+
+The classic bug: testing `up[k][u] != up[k][v]` in phase 1, or forgetting
+the "if u == v return u" early exit after equalization (a node is its own
+ancestor). Another: descending from high to low incorrectly — the loop
+must go from LOG-1 down to 0.

@@ -1,0 +1,11 @@
+# The condensation is a DAG
+
+If the condensation had a cycle, its SCCs would merge into one — so it
+is acyclic by construction. Consequences:
+
+- Distinct condensation edges need a SET of (comp[u], comp[v]) pairs.
+- "Can u reach v" now runs on a DAG: longest path, reachability bitsets,
+  path counting — all inherit.
+- Two-step shape: SCC for cycles, then DAG DP for order.
+
+Classic bug: self-loops and duplicate edges vanish in the condensation.

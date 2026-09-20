@@ -1,0 +1,9 @@
+# The residual trick
+
+Every edge (u, v, c) becomes TWO arcs: forward with capacity c, backward
+with capacity 0. Pushing f units along u→v: cap(u→v) -= f, cap(v→u) +=
+f. The backward arc is the UNDO button — later paths may cancel earlier
+flow, which is exactly why greedy pushing without back-edges is wrong.
+
+Termination: Edmonds–Karp (BFS shortest augmenting path) guarantees
+O(V·E) augmentations — the bound that makes flow polynomial.

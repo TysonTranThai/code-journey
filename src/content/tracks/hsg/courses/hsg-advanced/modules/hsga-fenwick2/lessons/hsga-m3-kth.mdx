@@ -1,0 +1,33 @@
+# Finding the k-th one
+
+A Fenwick tree stores prefix sums. Given a target k, we want the smallest
+index `pos` with `prefix(pos) >= k` — the position of the k-th one in a
+0/1 array. Scanning is O(n); the classic trick is a single top-down walk:
+
+```
+int pos = 0; long long rem = k;
+for (int pw = LOG; pw >= 0; --pw) {
+    int np = pos + (1 << pw);
+    if (np <= n && fen[np] < rem) { pos = np; rem -= fen[np]; }
+}
+return pos + 1;   // 1-based answer
+```
+
+Why it works: `fen[np]` covers exactly the block `(pos, np]`. If that
+block's count fits inside `rem`, jump over it in one step; otherwise do
+not. After the loop, `pos` is the largest index whose prefix is still
+`\< k`, so the answer is `pos + 1`. Each level is inspected once — O(log n)
+total. Binary-searching over `prefix(i)` instead would be O(log^2 n).
+
+Guard rails:
+
+- `k` must satisfy `1 \<= k \<= prefix(n)`; check at the call site.
+- The same descent finds the k-th **empty** slot: walk on the occupied
+  BIT and compare `len - occupied` (empties in the block) against `rem`.
+- Multiset rank queries: insert v as `upd(v, 1)`; the k-th smallest is the
+  descent with k.
+
+## Common bug
+
+Forgetting `rem -= fen[np]` after a jump. The walk then overshoots and can
+even return `n + 1` — always test with k = 1 on an empty tree.

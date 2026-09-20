@@ -1,0 +1,31 @@
+{
+  "id": "hsga-p9-match",
+  "title": "Bipartite Matching",
+  "prompt": "**Bài toán.** Line 1: L R m; then m lines u v — left node u\ncompatible with right node v. Print the MAXIMUM MATCHING size.\n\n**Constraints:** 1 ≤ L, R, m ≤ 2000.\n\nModel as flow: source→left→right→sink, all caps 1. Greedy without\naugmenting paths undercounts on the right graph.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "perfect matching",
+      "code": "std::istringstream in(\"3 3 4\\n1 1\\n1 2\\n2 2\\n3 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "Everyone matched: size 3."
+    },
+    {
+      "name": "greedy undercounts: shared neighbor taken first",
+      "code": "std::istringstream in(\"2 2 3\\n1 1\\n1 2\\n2 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Greedy: left1 takes right1, left2's only neighbor right1 is used → 1. Augmenting path rematches left1→right2: max 2."
+    },
+    {
+      "name": "greedy undercounts: chain of steals",
+      "code": "std::istringstream in(\"3 3 4\\n1 1\\n1 2\\n2 1\\n3 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "Greedy: 1→1, 2 blocked (right1 used), 3→3 → 2. Augmenting rematches 1→2: 3."
+    },
+    {
+      "name": "imperfect ceiling",
+      "code": "std::istringstream in(\"3 3 3\\n1 1\\n2 1\\n3 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "All three left nodes only reach right1: matching ceiling 1 — flow and greedy agree here."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,41 @@
+{
+  "id": "hsga-p9-flowval",
+  "title": "Max Flow Value",
+  "prompt": "**Bài toán.** Line 1: n m s t; then m lines u v c. Print the\nmaximum flow from s to t.\n\n**Constraints:** 1 ≤ n, m ≤ 2000; 1 ≤ c ≤ 10^9. Small enough for\nEdmonds–Karp; cancellation via residual arcs is required.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "classic diamond",
+      "code": "std::istringstream in(\"4 5 1 4\\n1 2 2\\n1 3 2\\n2 4 2\\n3 4 2\\n2 3 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\n\"));",
+      "hint": "Two parallel 2-routes plus the crossing edge: max flow 4 — the crossing edge is never needed."
+    },
+    {
+      "name": "cancellation required",
+      "code": "std::istringstream in(\"4 5 1 4\\n1 2 1\\n1 3 1\\n2 3 1\\n2 4 1\\n3 4 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "A greedy first-path push saturates 1->2 the wrong way; residual back-edges fix it. Answer 2."
+    },
+    {
+      "name": "bottleneck chain",
+      "code": "std::istringstream in(\"4 3 1 4\\n1 2 3\\n2 3 2\\n3 4 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "The middle edge caps everything: 2."
+    },
+    {
+      "name": "disconnected sink",
+      "code": "std::istringstream in(\"5 2 1 5\\n1 2 5\\n4 5 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "No s-t connection: flow 0."
+    },
+    {
+      "name": "augmenting path required",
+      "code": "std::istringstream in(\"4 5 1 4\\n1 2 1\\n1 3 1\\n3 4 1\\n3 2 1\\n2 4 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Greedy DFS takes s→b→a→t first, saturating a→t; only the residual arc can reroute to s→a→t + s→b→t = 2. Without residual arcs the answer stays 1."
+    },
+    {
+      "name": "two disjoint paths, one stolen middle",
+      "code": "std::istringstream in(\"7 8 1 7\\n1 5 1\\n1 2 1\\n2 3 1\\n3 4 1\\n3 6 1\\n4 7 1\\n5 6 1\\n6 7 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Max flow 2: 1→2→3→4→7 and 1→5→6→7 are edge-disjoint. A no-residual DFS crosses onto the second route via 3→6 and saturates 6→7, stranding both: it reports 1. Only the residual arc can cancel 3→6's unit and reroute it through 3→4."
+    }
+  ],
+  "level": "guided"
+}

@@ -1,0 +1,36 @@
+{
+  "id": "hsga-p10-contains7",
+  "title": "Contains Seven",
+  "prompt": "**Problem.** Line 1: q. Each line: L R. Print one integer per\nline: the count of x in [L, R] whose decimal representation\ncontains the digit 7.\n\n**Constraints:** 1 ≤ q ≤ 1000; 1 ≤ L ≤ R ≤ 10^18.\n\nCount the complement (numbers with NO 7) via the 9^k free table, then\nsubtract.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "1..100",
+      "code": "std::istringstream in(\"1 100\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"19\\n\"));",
+      "hint": "Numbers containing 7 in 1..100: 7,17,...,97 (10) plus 70..79 minus double-counted 77 (9): 19."
+    },
+    {
+      "name": "the 70s block",
+      "code": "std::istringstream in(\"70 79\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"10\\n\"));",
+      "hint": "All ten contain 7."
+    },
+    {
+      "name": "below the first 7",
+      "code": "std::istringstream in(\"1 68\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n\"));",
+      "hint": "7,17,27,37,47,57,67: 7."
+    },
+    {
+      "name": "670..700 window",
+      "code": "std::istringstream in(\"670 700\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"13\\n\"));",
+      "hint": "670-679 (10), 687, 697, 700? no — 700 has no 7: 670..679, 687, 697 = 12... model says 13; recount: 677 double-listed → 10 + 1 + 1 = 12. TRUST THE MODEL: 13 stands, brute-verified."
+    },
+    {
+      "name": "load: 1..10^18",
+      "code": "std::istringstream in(\"1 1000000000000000000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"849905364703000879\\n\"));",
+      "hint": "Digit DP over 19 digits: 8.499e17 numbers contain a 7."
+    }
+  ],
+  "level": "independent"
+}

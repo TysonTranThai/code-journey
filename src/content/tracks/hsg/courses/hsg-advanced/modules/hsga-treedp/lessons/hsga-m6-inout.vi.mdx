@@ -1,0 +1,34 @@
+# dp_in và dp_out
+
+Gốc cây. Với mỗi nút u định nghĩa:
+
+- `dp_in[u]` — giá trị tốt nhất **trong cây con của u nếu lấy u**;
+- `dp_out[u]` — giá trị tốt nhất **nếu bỏ u**.
+
+Cả hai tính từ con trong một lượt hậu thứ tự:
+
+```
+dp_in[u]  = val[u] + Σ dp_out[c]                  // cấm con
+dp_out[u] = Σ max(dp_in[c], dp_out[c])            // con tự do
+đáp án    = max(dp_in[gốc], dp_out[gốc])
+```
+
+Cùng một khung:
+
+- **Tập độc lập trọng số lớn nhất**: đúng công thức trên.
+- **Đỉnh phủ nhỏ nhất** (phủ mọi cạnh): `dp_in[u] = 1 +
+  Σ min(dp_in[c], dp_out[c])`, `dp_out[u] = Σ dp_in[c]` — bỏ u BUỘC
+  mọi con phải lấy, vì cạnh (u, c) phải được phủ.
+
+Ba lỗi kinh điển gặp trong contest:
+
+1. `dp_in[u] = val[u] + max(dp_in[c], dp_out[c])` — cho u và c cùng lấy;
+   không còn độc lập (đánh giá quá cao khi có xung đột kề).
+2. `dp_out[u] = Σ min(...)` cho đỉnh phủ — cho phép cạnh chưa phủ
+   (đánh giá thấp: trả về 0 trên mọi cây có lá).
+3. DFS đệ quy trên cây dạng đường — tràn stack khi n ≈ 10^5 với stack
+   8 MB của sandbox. Bắt buộc hậu thứ tự với stack tường minh hoặc mẹo
+   pop-order (đẩy u vào `order` khi pop cờ done).
+
+Giá trị có thể âm: chọn tập rỗng hợp lệ nên đáp án ít nhất 0 — dp_in âm
+là bình thường.

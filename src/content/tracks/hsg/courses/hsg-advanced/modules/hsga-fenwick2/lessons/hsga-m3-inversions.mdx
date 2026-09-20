@@ -1,0 +1,17 @@
+# Inversions in one sweep
+
+An inversion is a pair `i \< j` with `a[i] > a[j]`. Compress values to
+ranks, scan left to right, keep a BIT of seen ranks; for each new element
+the number of already-seen strictly-greater elements is
+`i - prefix(rank)` (prefix(rank) counts seen elements \<= a[i], inserted
+after counting). Summing gives the total in O(n log n) with O(n) memory —
+compression is what makes `a[i] \<= 10^9` harmless.
+
+Equal elements are NOT inversions: `prefix(rank)` with the element's own
+rank correctly excludes them. A `>=` comparison double-counts them — a
+classic wrong answer on arrays with duplicates.
+
+The same pattern counts **cross-inversions** in divide and conquer: while
+merging two sorted halves, count pairs (left, right) with left > right.
+That is exactly merge sort's inversion count — the bridge to CDQ divide
+and conquer for 3D dominance problems.

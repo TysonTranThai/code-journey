@@ -1,0 +1,23 @@
+# Range updates through differences
+
+**Range add, point query.** Adding v to [l, r] is `upd(l, v)` and
+`upd(r+1, -v)` on a plain Fenwick of the difference array; the value at
+position i is `prefix(i)`. O(log n) per operation, ten lines total.
+
+**Range add, range sum.** The prefix sum of a range-updated array needs
+two BITs holding the coefficients of an expanded formula. After adding v
+to [l, r]:
+
+```
+sum(1..i) = i * B1(i) - B2(i)
+B1: upd(l, v), upd(r+1, -v)
+B2: upd(l, v*(l-1)), upd(r+1, -v*r)
+```
+
+Derivation: write the array as a sum of ramps (the difference array
+integrated once). If a problem mixes range-add with range-sum but has no
+min/max or assign, this is lighter than a lazy segment tree — fewer
+invariants, smaller constants, fewer bugs.
+
+When NOT to bother: any operation pair involving min/max or assignment
+breaks differences — go straight to lazy propagation (Module 2).

@@ -1,0 +1,18 @@
+# Subtrees are ranges
+
+Record `tin[v]` (DFS entry index) and `tout[v]` (last index inside v's
+subtree). The subtree of v is then exactly the interval `[tin[v], tout[v]]`
+of positions. Every subtree question becomes a range question:
+
+- **Subtree add, point get**: range-add on `[tin[v], tout[v]]` = two BIT
+  point updates (difference trick); value(w) = `prefix(tin[w])`.
+- **Marked nodes in a subtree**: BIT of 0/1 marks at `tin` positions;
+  count = `prefix(tout[v]) - prefix(tin[v]-1)`.
+- **Subtree sum of values**: point updates carry the values themselves.
+
+Recursion depth is the classic implementation trap on the sandbox: a path
+graph of 2·10^5 nodes overflows an 8 MB stack with naive recursive DFS.
+Write the DFS iteratively with an explicit stack (push (v, done-flag)).
+
+Everything here is the payload of Module 4's Euler lesson, now exercised
+under full load.

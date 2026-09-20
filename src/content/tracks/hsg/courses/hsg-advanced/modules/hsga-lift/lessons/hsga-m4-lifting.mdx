@@ -1,0 +1,21 @@
+# Binary lifting
+
+Store `up[k][v]` — the 2^k-th ancestor of node v (0 for "above the root").
+Building is one line per level: `up[k][v] = up[k-1][up[k-1][v]]`. Memory:
+O(n log n) — for n = 2·10^5 and LOG = 18 that is 3.6·10^6 entries, fine.
+
+Answering "the k-th ancestor of v" decomposes k in binary:
+
+```
+for (int bit = 0; bit < LOG; ++bit)
+    if (k >> bit & 1) v = up[bit][v];
+```
+
+Any per-node payload can ride along in the same table: edge weight sums
+become distance queries, max edge weight becomes max-edge-on-path, and
+combining two node states later gives path aggregates (the LCA splits the
+path into two upward walks).
+
+Recognition cues: "k-th ancestor", "distance between two nodes", "path
+query on a tree", repeated upward walks that a plain parent loop cannot
+afford (a path graph forces O(n) per query — lifting makes it O(log n)).

@@ -1,0 +1,14 @@
+# Euler tour: trải phẳng cây
+
+DFS ghi `tin[v]` khi vào và `tout[v]` khi ra. Hai sự kiện làm việc lớn:
+
+- u là tổ tiên của v ⟺ `tin[u] ≤ tin[v] ≤ tout[u]` (đoạn của u chứa
+  đoạn của v).
+- Cây con của v đúng là đoạn `[tin[v], tout[v]]` — mọi cấu trúc đoạn
+  (Fenwick, segment tree) giờ trả lời tổng cây con, cộng cây con, đếm
+  nút đã đánh dấu trong cây con.
+
+Kết hợp LCA: đường (u, v) tách tại l = LCA(u, v) thành `gốc..u + gốc..v −
+gốc..l`. "Cộng trên đường đi" = cộng trên hai đường từ gốc với mẹo sai
+phân tại l. Đây là nền tảng của Module 7 (HLD): chuỗi nặng thành đoạn
+mảng liền kề chính nhờ tour.

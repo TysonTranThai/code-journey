@@ -1,0 +1,17 @@
+# Lan truyền lười — kỷ luật cài đặt
+
+Một nút lưu (tổng hợp, thẻ). Tổng hợp cập nhật cho đúng đoạn của nút; thẻ
+ghi phần việc còn nợ các con. Ba bất biến làm cây lười an toàn:
+
+1. `apply(nút, thẻ)` cập nhật tổng hợp VÀ thẻ trong O(1). Với ADD trên cây
+   con dài len: sum += thẻ·len; min += thẻ; lazy_add += thẻ.
+2. `push(nút)` chuyển thẻ xuống con trước khi đi xuống. Không bao giờ sửa
+   tổng hợp của con trực tiếp trong cập nhật — luôn push trước.
+3. Thứ tự hợp: thẻ mới áp dụng SAU phần đang treo. Với giá trị x dưới thẻ
+   treo (cộng a, rồi nhân m): (a + x·m) — tức MUL đến sau phải hợp
+   `mul = mul_cũ * mới; add = add_cũ * mới` khi phép cộng treo trước. Làm
+   ngược chiều qua mọi test nhỏ và gãy ở test hỗn hợp lớn — lỗi kinh điển.
+
+ASSIGN xóa mọi thẻ khác (phép cộng treo bị ghi đè); MUL và ADD hợp như trên.
+Range ASSIGN + range SUM là cài đặt đầu tiên sạch nhất: `apply(assign v)`
+đặt sum = v·len và xóa thẻ cũ.

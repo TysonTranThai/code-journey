@@ -1,0 +1,28 @@
+# The decomposition walk
+
+Second DFS, preorder, heavy child first:
+
+```
+pos[u]  = cnt++;                          // entry order
+head[u] = (hv[par[u]] == u) ? head[par[u]] : u;
+```
+
+Heavy-first entry order makes every chain a contiguous range of
+positions — a chain [1,2,4] gets pos 0,1,2 on the hand tree. The segment
+tree is built over POSITIONS: `a[pos[v]] = val[v]`.
+
+The path query loop:
+
+```
+while (head[u] != head[v]) {                if (dep[head[u]] < dep[head[v]]) swap(u, v);
+    apply(pos[head[u]], pos[u]);          // whole chain head..u
+    u = par[head[u]];                     // jump above the chain
+}
+if (pos[u] > pos[v]) swap(u, v);
+apply(pos[u], pos[v]);                    // final same-chain segment
+```
+
+Lift the DEEPER HEAD (not the deeper node). Two classic real bugs:
+forgetting the final same-chain segment (entirely, or its swap), and
+indexing the tree by vertex id instead of `pos`. Both pass the tiny
+sample, both die on any real test.

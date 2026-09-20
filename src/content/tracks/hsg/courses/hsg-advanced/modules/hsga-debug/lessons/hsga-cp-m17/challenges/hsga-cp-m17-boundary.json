@@ -1,0 +1,21 @@
+{
+  "id": "hsga-cp-m17-boundary",
+  "title": "Boundary Values",
+  "prompt": "**Problem.** Line 1: n q. Then q lines: l r v (add v on [l, r]).\nPrint the final array, one value per line.\n\n**Constraints:** 1 ≤ n, q ≤ 200000; |v| ≤ 10.\n\nThe W reads r before l — fatal on asymmetric ops.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "asymmetric",
+      "code": "std::istringstream in(\"4 2\\n1 2 5\\n2 4 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n8\\n3\\n3\\n\"));",
+      "hint": "Op (1,2,+5) then (2,4,+3): [5,8,3,3]. The reversed-l/r W misorders the second op."
+    },
+    {
+      "name": "single asymmetric op",
+      "code": "std::istringstream in(\"3 1\\n1 3 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n7\\n7\\n\"));",
+      "hint": "One full-range op; the reversed W reads l=3, r=1 and produces [0,0,7]."
+    }
+  ],
+  "level": "debugging"
+}

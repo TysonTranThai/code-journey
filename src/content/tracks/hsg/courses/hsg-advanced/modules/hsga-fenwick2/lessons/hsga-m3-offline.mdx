@@ -1,0 +1,22 @@
+# Distinct values in a range, offline
+
+Count distinct values among `a[l..r]` for many queries. Online, this needs
+a persistent structure or a merge-sort tree. Offline there is a beautiful
+sweep: sort queries by `r`, scan `r` from 1 to n, and keep in the Fenwick
+a 1 at each position that is the **last occurrence so far** of its value:
+
+- when `r` visits value x with previous occurrence p: `upd(p, -1)`, then
+  `upd(r, +1)`, and `last[x] = r`;
+- a query `(l, r)` answered at sweep time r is
+  `prefix(r) - prefix(l-1)`: the number of last-occurrences inside
+  `[l, r]`, which equals the number of distinct values there.
+
+Invariant: at any moment, every value seen so far contributes exactly one
+1 — at its most recent position. Any subarray `[l, r]` therefore contains
+the 1s of precisely the values occurring in it.
+
+The general pattern: **if query order does not matter, sort by one
+endpoint and sweep.** The same skeleton handles offline 2D dominance
+counts and "how many distinct colors on a path" (after an Euler tour).
+Mo's algorithm is the heavier sibling when updates force online order —
+not needed here.

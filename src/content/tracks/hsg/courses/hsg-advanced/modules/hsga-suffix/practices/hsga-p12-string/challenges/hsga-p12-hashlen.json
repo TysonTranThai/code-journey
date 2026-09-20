@@ -1,0 +1,26 @@
+{
+  "id": "hsga-p12-hashlen",
+  "title": "Distinct by Length",
+  "prompt": "**Problem.** Line 1: string s. Line 2: q. Each next line: L.\nPrint, per query, the number of distinct substrings of s with length\nexactly L.\n\n**Constraints:** 1 ≤ |s| ≤ 1000; 1 ≤ q ≤ 100; 1 ≤ L ≤ |s|.\n\nRolling hash + sort/unique per length.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "tiny",
+      "code": "std::istringstream in(\"abab\\n2\\n1\\n2\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n2\\n\"));",
+      "hint": "L=1: {a, b} = 2; L=2: {ab, ba} = 3."
+    },
+    {
+      "name": "single char repeats",
+      "code": "std::istringstream in(\"aaaa\\n2\\n1\\n4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n1\\n\"));",
+      "hint": "Every window is the same char run: 1 distinct per length."
+    },
+    {
+      "name": "load: 1000-char string, 5 lengths",
+      "code": "std::istringstream in(\"ababaaaaaaaaaaabbaaaabbaabbbaaabaaabaaabaabaabbabababbbbbbbaababaaaababbbaababbbaabaaaabaababbbbaabababbbbaaabbbaaaaaaababbaabbbbabababbaaabaaabbabbabaabbbabbababbaaabbbbaaaabbbbabaababbaabbbbbabbaaabaaabbbbbbbbaabaaaabbbaababbaabbababaaabbbbbbabaaabbabbbabaababbbabbababaabaabbabbbbbbbbbaaabaaabbbbaaabbbbabbaabbbbabaaababbbbbaaaababbaababbbabbabbaabbaaabbbaabaaaaabaaabbbbabbaaababaabaabbabaabbbbabaaaaaabababbabbbabbbbbbabbaabbbbabbaaaabbbbabaabababaabbabbaabbabababbbaabbabbbaaabaaababbabaabaaaaababaaaaabbbbabaabbabaaabaaaabaabbabbbbbbabaabaaaabaabababbbbbbabaabbbaabaabbbbbbbaabbabbbbabaaababbbbbaaaaaababbbaaabbbabbaababbababababababababbbabbaabaabaabbabbbabaaaabbabbbbabbbabbaabbbbbabbaaaabbabaaaabbabbabbbbbbaabaaababbbababbabbbbaabbabababaaabababaaaabaaabbababbabbaababbbbbaaabaabbaaabaaabababaabababaababbbaaabbbbababaabbaabbbbabbbababbbbbaaaaaabbabbaabbbbbabaaabbbabababbabaaaaaabbbaaababbaaaabaaaabaabbbbbabbbabbaaabbbbaabaabbaababbbbbbaaaaabaaabbaaabbabbaabbababaaaaaababaaabbaaabbaaaba\\n5\\n5\\n10\\n25\\n100\\n500\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"32\\n646\\n976\\n901\\n501\\n\"));",
+      "hint": "Rolling hash per length; the naive set-of-substrings approach is O(n^2) memory/time and dies on L=500."
+    }
+  ],
+  "level": "guided"
+}

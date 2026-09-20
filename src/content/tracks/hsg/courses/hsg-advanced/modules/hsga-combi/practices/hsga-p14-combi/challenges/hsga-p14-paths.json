@@ -1,0 +1,21 @@
+{
+  "id": "hsga-p14-paths",
+  "title": "Grid Paths Around the Wall",
+  "prompt": "**Problem.** Line 1: q. Each line: n m then bx by (the forbidden\ncell). Print paths from (0,0) to (n,m) moving only +x/+y, avoiding the\nforbidden cell, mod 1e9+7.\n\n**Constraints:** 1 ≤ q ≤ 200000; 0 ≤ n, m ≤ 10^6; cell may lie outside.\n\nTwo binomials per query; the unreduced-subtraction W overflows.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "3x3 with hole",
+      "code": "std::istringstream in(\"1\\n3 3\\n1 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"8\\n\"));",
+      "hint": "C(6,3)=20 total; 12 paths pass through (1,1); 20-12=8."
+    },
+    {
+      "name": "mixed",
+      "code": "std::istringstream in(\"4\\n2 2\\n9 9\\n1000 1000\\n500 333\\n500000 500000\\n1 1\\n1000000 1000000\\n500000 500000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"6\\n137281016\\n520040912\\n421955266\\n\"));",
+      "hint": "Bad cell inside or outside the grid; n+m up to 2e6 needs the bigger factorial table."
+    }
+  ],
+  "level": "combination"
+}

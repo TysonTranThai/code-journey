@@ -1,0 +1,26 @@
+{
+  "id": "hsga-p13-binom",
+  "title": "Binomials",
+  "prompt": "**Problem.** Line 1: q. Each line: n r. Print C(n, r) mod\n1e9+7.\n\n**Constraints:** 1 ≤ q ≤ 200000; 0 ≤ r ≤ n ≤ 10^6.\n\nFactorial + inverse-array precompute; per-query Pascal is the trap.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "small",
+      "code": "std::istringstream in(\"2\\n5 2\\n10 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"10\\n120\\n\"));",
+      "hint": "C(5,2)=10; C(10,3)=120."
+    },
+    {
+      "name": "half of 50",
+      "code": "std::istringstream in(\"1\\n50 25\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"605552882\\n\"));",
+      "hint": "C(50,25) mod 1e9+7."
+    },
+    {
+      "name": "load: 7 binomials at n = 1e6",
+      "code": "std::istringstream in(\"7\\n1000000 500000\\n999999 500000\\n1000000 1\\n339564 339564\\n158177 158177\\n682555 50631\\n123456 789\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"996692777\\n998346392\\n1000000\\n1\\n1\\n13337018\\n28073395\\n\"));",
+      "hint": "Factorial precompute is O(N) ONCE; each query is three multiplications. The per-query Pascal W is O(n*r) — 200000x blowup."
+    }
+  ],
+  "level": "independent"
+}

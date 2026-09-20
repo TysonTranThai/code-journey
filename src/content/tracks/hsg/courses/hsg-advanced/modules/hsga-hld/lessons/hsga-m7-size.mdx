@@ -1,0 +1,19 @@
+# Heavy and light
+
+Root the tree. For each node u, the child with the largest subtree is
+the **heavy child**; every other child edge is **light**.
+
+Why it works: whenever a path moves across a light edge, the subtree
+size at least doubles. So a root path crosses at most log2(n) light
+edges, and any u..v path decomposes into at most 2·log2(n) contiguous
+vertical segments. That single bound is the entire HLD complexity proof —
+no amortization, no potential function.
+
+One iterative DFS computes everything HLD needs later:
+
+```
+sz[u] = 1 + sum(sz[c]);  hv[u] = argmax child
+```
+
+Store `hv[u] = 0` for leaves. The DFS must be iterative: a bamboo of
+2·10^5 nodes overflows the 8 MB sandbox stack with plain recursion.

@@ -1,0 +1,36 @@
+{
+  "id": "hsga-p10-div3",
+  "title": "Divisible Digit Sums",
+  "prompt": "**Problem.** Line 1: q. Each line: N. Print one integer per\nline: the count of x in [1, N] with digit sum divisible by 3.\n\n**Constraints:** 1 ≤ q ≤ 1000; 1 ≤ N ≤ 10^18.\n\nFree-table digit DP: one 3-state transition table covers every query.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "single digits",
+      "code": "std::istringstream in(\"9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n\"));",
+      "hint": "3, 6, 9 have digit sum divisible by 3: answer 3."
+    },
+    {
+      "name": "up to 30",
+      "code": "std::istringstream in(\"30\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"10\\n\"));",
+      "hint": "Model gives 10 (3,6,9,12,15,18,21,24,27,30)."
+    },
+    {
+      "name": "up to 100",
+      "code": "std::istringstream in(\"100\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"33\\n\"));",
+      "hint": "Exactly one third of 1..100: 33."
+    },
+    {
+      "name": "max boundary 10^18",
+      "code": "std::istringstream in(\"1000000000000000000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"333333333333333333\\n\"));",
+      "hint": "10^18 itself has digit sum 1, so the count equals that of 10^18 - 1: exactly one third."
+    },
+    {
+      "name": "all-nines boundary",
+      "code": "std::istringstream in(\"999999999999999999\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"333333333333333333\\n\"));",
+      "hint": "18 nines: digit sum 162, divisible by 3 — the closed count is N/3 = 3.33...e17."
+    }
+  ],
+  "level": "guided"
+}

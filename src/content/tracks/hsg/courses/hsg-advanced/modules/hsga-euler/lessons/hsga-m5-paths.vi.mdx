@@ -1,0 +1,21 @@
+# Cộng đường, truy vấn điểm
+
+Lưu cập nhật điểm tại vị trí tin. Giá trị của w là **tổng cây con của w**:
+`val(w) = prefix(tout[w]) − prefix(tin[w]−1)`.
+
+Cập nhật — cộng x trên đường u..v với l = LCA:
+
+```
+upd(tin[u], x); upd(tin[v], x);
+upd(tin[l], -x);
+if (cha(l)) upd(tin[cha(l)], -x);
+```
+
+Chứng minh: val(w) đếm điểm lưu trong subtree(w), tức mọi z mà w là tổ
+ tiên (kể cả z = w). Kiểm bốn trường hợp: w trên đường (≠ l) được đúng
+một dấu +; w = l được hai + một −; w trên l được 2+ 2− = 0; w ngoài
+đường = 0.
+
+Lỗi chết người: dùng `prefix(tin[w])` (một phía) thay vì đọc hai phía —
+đó là tổng phần tổ tiên phía gốc, sai trên mọi cây không phải đường
+thẳng.

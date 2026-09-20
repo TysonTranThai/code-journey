@@ -1,0 +1,34 @@
+# Đường đi dài nhất bẻ gãy
+
+Giữ `height[u]` = đường đi xuống dài nhất từ u (chiều cao con cộng trọng
+số cạnh). Tại mỗi nút, đường đi tốt nhất **bẻ gãy** tại u là `h1 + h2` —
+hai chiều cao con lớn nhất. Đường đi dài nhất của cây là max của h1 + h2
+trên MỌI nút, cập nhật trong cùng lượt hậu thứ tự:
+
+```
+h1 = h2 = 0;
+for (c : ch[u]) {
+    long long hh = height[c] + w[c];
+    if (hh > h1) { h2 = h1; h1 = hh; } else if (hh > h2) h2 = hh;
+}
+best = max(best, h1 + h2);
+height[u] = h1;
+```
+
+Lỗi sống sót qua test nhỏ: chỉ cập nhật `best` ở GỐC. Trên cây chổi
+(1→2→3 với hai lá tại 3), đáp án root-only là chiều sâu 3, nhưng đường
+di dài nhất thật là 2 — nó bẻ gãy ở nút 3, không chạm gốc.
+
+# Đổi gốc
+
+Tính cho mọi đỉnh v tổng khoảng cách đến mọi đỉnh khác. Vét cạn là O(n²).
+Hai lượt cho O(n):
+
+1. **Lượt lên**: `cnt[u]` = kích thước cây con, `sd[u]` = tổng khoảng cách
+   từ u đến mọi nút trong cây con: `sd[u] = Σ (sd[c] + cnt[c])`.
+2. **Lượt xuống**: `ans[gốc] = sd[gốc]`; đi từ cha → con,
+   `ans[c] = ans[u] + (n − cnt[c]) − cnt[c]` — mọi nút ngoài cây con của c
+   xa thêm 1 (n − cnt[c] nút), mọi nút trong cây con gần bớt 1 (cnt[c] nút).
+
+Công thức đổi gốc đáng nhớ: dịch gốc qua một cạnh thay đổi đáp án
+`+ (n − cnt[c]) − cnt[c]`.

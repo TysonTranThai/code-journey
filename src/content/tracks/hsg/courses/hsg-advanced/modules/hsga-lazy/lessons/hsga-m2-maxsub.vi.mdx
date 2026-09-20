@@ -1,0 +1,23 @@
+# Nút đoạn-con lớn nhất
+
+Với nút phủ một đoạn, lưu bốn giá trị:
+
+- total — tổng cả đoạn
+- pre — tổng tiền tố tốt nhất
+- suf — tổng hậu tố tốt nhất
+- best — tổng đoạn con bất kỳ tốt nhất trong đoạn
+
+pull (hợp hai con L, R):
+
+```
+n.total = L.total + R.total
+n.pre   = max(L.pre, L.total + R.pre)
+n.suf   = max(R.suf, R.total + L.suf)
+n.best  = max(L.best, R.best, L.suf + R.pre)
+```
+
+`L.suf + R.pre` là thành phần qua biên — bỏ quên nó biến thành hai Kadane
+độc lập và gãy trên hình kim cương như [5, -10, 6]. Với lazy ASSIGN, apply()
+đặt cả bốn giá trị từ v và độ dài: total = v·len, pre = suf = best =
+max(v, v·len) — cẩn thận v > 0 (lấy cả đoạn) và v \<= 0 (lấy một phần tử;
+khóa học này đếm đoạn con KHÔNG rỗng).

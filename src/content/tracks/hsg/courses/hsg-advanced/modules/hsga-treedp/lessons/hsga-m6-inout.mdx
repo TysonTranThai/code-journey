@@ -1,0 +1,47 @@
+# dp_in and dp_out
+
+Root the tree. For every node u define:
+
+- `dp_in[u]` — the best value achievable **inside u's subtree if u is
+  taken**;
+- `dp_out[u]` — the best value **if u is not taken**.
+
+Both are computed from children in one post-order pass:
+
+```
+dp_in[u]  = val[u] + sum(dp_out[c])                  // children forbidden
+dp_out[u] = sum(max(dp_in[c], dp_out[c]))            // children free
+answer   = max(dp_in[root], dp_out[root])
+```
+
+Instantiating the same skeleton:
+
+- **Maximum weight independent set**: exactly the formula above.
+- **Minimum vertex cover** (cover every edge): `dp_in[u] = 1 +
+  sum(min(dp_in[c], dp_out[c]))`, `dp_out[u] = sum(dp_in[c])` — skipping u
+  FORCES every child to be taken, because edge (u, c) must be covered.
+
+The classic bugs, all three seen in real contests:
+
+1. `dp_in[u] = val[u] + max(dp_in[c], dp_out[c])` — allows u and c both
+   taken; not an independent set (overestimates whenever adjacency
+   conflicts).
+2. `dp_out[u] = sum(min(...))` for vertex cover — allows an uncovered edge
+   (underestimates: returns 0 on any tree with leaves).
+3. Recursive DFS on a path-shaped tree — stack overflow at n ≈ 10^5 on the
+   8 MB sandbox stack. Iterative post-order with an explicit stack, or the
+   pop-order trick (append u to `order` when the done-flag pops), is
+   mandatory.
+
+Values may be negative: the empty selection is legal, so the answer is at
+least 0 — `dp_in` may be negative, and that is fine.
+
+**Bài học (VI).** Gốc cây. Hai trạng thái: `dp_in[u]` — tốt nhất trong cây
+con nếu lấy u; `dp_out[u]` — nếu bỏ u. Một lượt hậu thứ tự:
+`dp_in[u] = val[u] + Σ dp_out[c]`, `dp_out[u] = Σ max(dp_in[c], dp_out[c])`.
+Đỉnh phủ nhỏ nhất: `dp_in[u] = 1 + Σ min(dp_in[c], dp_out[c])`,
+`dp_out[u] = Σ dp_in[c]` — bỏ u BUỘC mọi con phải lấy vì cạnh (u, c) phải
+được phủ. Ba lỗi kinh điển: lấy cả u và c (không còn độc lập), dùng min
+cho đỉnh phủ (cho phép cạnh chưa phủ — trả về 0), và DFS đệ quy trên cây
+dạng đường (tràn stack ~10^5 đỉnh). Giá trị âm hợp lệ — chọn tập rỗng
+nghĩa là đáp án ≥ 0.

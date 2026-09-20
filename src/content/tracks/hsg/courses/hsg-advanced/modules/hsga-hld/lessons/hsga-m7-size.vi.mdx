@@ -1,0 +1,19 @@
+# Nặng và nhẹ
+
+Gốc cây. Với mỗi nút u, con có cây con lớn nhất là **con nặng**; mọi
+cạnh con khác là **nhẹ**.
+
+Vì sao đúng: mỗi lần đường đi bước qua một cạnh nhẹ, kích thước cây con
+ít nhất gấp đôi. Vậy đường đi lên gốc vượt tối đa log2(n) cạnh nhẹ, và
+mỗi đường u..v phân rã thành tối đa 2·log2(n) đoạn dọc liền kề. Chặn đó
+là toàn bộ chứng minh độ phức tạp của HLD — không amortize, không hàm
+tiềm năng.
+
+Một DFS lặp tính mọi thứ HLD cần về sau:
+
+```
+sz[u] = 1 + sum(sz[c]);  hv[u] = argmax child
+```
+
+Lá có `hv[u] = 0`. DFS phải lặp: cây dạng đường 2·10^5 đỉnh làm tràn
+stack 8 MB của sandbox nếu đệ quy thuần.

@@ -1,0 +1,29 @@
+# Path add, point get
+
+Store point updates in a BIT at `tin` positions. Define the value of w as
+the **subtree sum of w** over the BIT:
+`val(w) = prefix(tout[w]) - prefix(tin[w] - 1)`.
+
+Why this reading works: the subtree of w contains exactly the `tin`
+positions of nodes below w, so the reading sums every stored point inside
+w's subtree.
+
+The update — add x on path u..v, l = LCA(u, v):
+
+```
+upd(tin[u], x); upd(tin[v], x);
+upd(tin[l], -x);
+if (parent(l)) upd(tin[parent(l)], -x);
+```
+
+Proof sketch: val(w) counts stored points in subtree(w). A node z's stored
+point is seen by w iff z is inside subtree(w) iff w is an **ancestor** of z
+(inclusive). So val(w) = x·[w anc of u] + x·[w anc of v] − x·[w anc of l]
+− x·[w anc of parent(l)]. For w on the path (w ≠ l): exactly one of u, v
+lies in subtree(w), l and parent(l) do not → x. For w = l: both u and v
+count, l cancels one → x. For w above l: two pluses and two minuses → 0.
+For w outside: 0.
+
+The off-by-one that kills implementations: using `prefix(tin[w])` instead
+of the two-sided subtree read — that sums ROOT-side ancestors instead of
+the subtree, and fails on any non-chain tree.
