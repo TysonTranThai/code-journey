@@ -1,0 +1,16 @@
+{
+  "id": "apc-m12-song-spec",
+  "title": "Implement from a spec (FRQ 2 style)",
+  "prompt": "Read the comment spec in the boilerplate and implement `Song` exactly: constructor stores both fields; `duration()` formats M:SS; `isLongerThan` compares stored seconds (strictly greater). Do not add public members.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Song {\n        // Spec: constructor stores (title, seconds). duration() returns the\n        // length formatted as M:SS with two digits for seconds. Longer songs\n        // (more seconds) return true from isLongerThan(Song other).\n        public Song(String title, int seconds) {\n        }\n\n        public String duration() {\n            return \"\";\n        }\n\n        public boolean isLongerThan(Song other) {\n            return false;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "spec fidelity",
+      "code": "\nSolution.Song a = new Solution.Song(\"River\", 63);\nSolution.Song b = new Solution.Song(\"Echo\", 59);\nSolution.Song c = new Solution.Song(\"Dune\", 61);\nCjTestBase.checkEq(a.duration(), \"1:03\", \"zero-padded\");\nCjTestBase.checkEq(b.duration(), \"0:59\", \"no padding needed\");\nCjTestBase.checkEq(a.isLongerThan(b), true, \"63 > 59\");\nCjTestBase.checkEq(b.isLongerThan(c), false, \"59 < 61\");\n",
+      "hint": "String.format(\"%02d\", seconds) — and compare the stored field, not the string."
+    }
+  ],
+  "level": "independent"
+}

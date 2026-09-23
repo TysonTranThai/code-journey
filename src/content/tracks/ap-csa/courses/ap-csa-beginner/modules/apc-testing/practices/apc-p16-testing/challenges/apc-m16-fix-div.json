@@ -1,0 +1,16 @@
+{
+  "id": "apc-m16-fix-div",
+  "title": "Debug: crash on empty input",
+  "prompt": "`average(int[] scores)` throws ArithmeticException on an empty array. Fix it to return 0 for an empty array and the correct int average otherwise (keep integer division). Signature stays the same.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int average(int[] scores) {\n        // BUG: original flaw kept — crashes with\n        // ArithmeticException on an empty array\n        int total = 0;\n        for (int s : scores) {\n            total += s;\n        }\n        return total / scores.length;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "empty guarded",
+      "code": "\nCjTestBase.checkEq(Solution.average(new int[] {}), 0, \"empty array, no crash\");\nCjTestBase.checkEq(Solution.average(new int[] {80, 90}), 85, \"normal average\");\nCjTestBase.checkEq(Solution.average(new int[] {1, 2}), 1, \"integer division truncates\");\n",
+      "hint": "guard scores.length == 0 before dividing."
+    }
+  ],
+  "level": "debugging"
+}

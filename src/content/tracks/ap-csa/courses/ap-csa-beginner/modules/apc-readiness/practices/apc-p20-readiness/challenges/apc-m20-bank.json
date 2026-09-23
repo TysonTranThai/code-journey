@@ -1,0 +1,16 @@
+{
+  "id": "apc-m20-bank",
+  "title": "Capstone: the account",
+  "prompt": "Implement both mutators to spec: `deposit` adds only positive amounts and returns the new balance; `withdraw` succeeds only if the balance covers it, returning true/false and leaving state unchanged on failure.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Account {\n        private int balance;\n\n        public Account(int opening) {\n            balance = opening;\n        }\n\n        public int getBalance() {\n            return balance;\n        }\n\n        // Postcondition: adds amount if positive; returns new balance\n        public int deposit(int amount) {\n            // complete\n            return balance;\n        }\n\n        // Postcondition: subtracts amount if the balance covers it;\n        // returns true and updates state, otherwise returns false and\n        // leaves state unchanged\n        public boolean withdraw(int amount) {\n            // complete\n            return false;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "both contracts",
+      "code": "\nSolution.Account a = new Solution.Account(100);\nCjTestBase.checkEq(a.deposit(50), 150, \"deposit returns new balance\");\nCjTestBase.checkEq(a.deposit(-5), 150, \"negative deposit ignored\");\nCjTestBase.checkEq(a.withdraw(200), false, \"overdraw refused\");\nCjTestBase.checkEq(a.getBalance(), 150, \"state unchanged\");\nCjTestBase.checkEq(a.withdraw(150), true, \"exact withdrawal\");\nCjTestBase.checkEq(a.getBalance(), 0, \"drained\");\n",
+      "hint": "two guards: amount > 0 for deposit, amount <= balance for withdraw."
+    }
+  ],
+  "level": "independent"
+}

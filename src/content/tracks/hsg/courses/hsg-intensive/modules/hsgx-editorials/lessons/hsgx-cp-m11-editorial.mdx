@@ -1,0 +1,37 @@
+**Điểm kiểm tra — Lời giải mẫu.** Before reading further: both practice
+problems above should already be attempted (stalled or solved). This page
+holds the full editorial for **Problem 1 (The Stalls)** in the canonical
+structure — use it to calibrate how you write and read editorials.
+
+## Editorial: The Stalls (non-adjacent max revenue)
+
+**Observation.** For each stall the decision "operate or not" depends only
+on the neighbor decision — a single pass of two states suffices.
+
+**Brute force.** All 2^n subsets with an adjacency filter: correct, 2^20
+minimum, dead on arrival at n = 200000.
+
+**Why it fails.** Overlapping subproblems: every suffix decision repeats
+across exponentially many prefixes.
+
+**Key insight.** Keep two numbers: best revenue *operating* the current
+stall (`take`) and *not operating* it (`skip`). Recurrence:
+`take = skip + a[i]`, `skip = max(take_prev, skip_prev)`.
+
+**Optimization.** None needed beyond O(n) time, O(1) memory.
+
+**Complexity.** O(n) time, O(1) extra space.
+
+**Common wrong approaches.**
+- *Greedy by value* (take the biggest, ban neighbors): fails [2,3,2] →
+  greedy 3, optimal 4. The practice test catches it.
+- *Parity assumptions*: "take every other stall" fails whenever values vary.
+
+## The variation
+
+The Round Table (circular) removes a single assumption — that the row has
+two ends. The fix is a case split, not a new algorithm: the optimal ring
+answer never uses both endpoints, so run the linear solver twice, excluding
+each endpoint in turn. If your first ring attempt patched the recurrence
+itself, note what that felt like — patching a working tool is usually the
+wrong move; questioning the tool's *assumption* is the right one.

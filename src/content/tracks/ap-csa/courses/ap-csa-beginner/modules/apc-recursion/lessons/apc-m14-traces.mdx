@@ -1,0 +1,27 @@
+The "what does this print" genre, decoded:
+
+```java
+public static void puzzle(int n) {
+    if (n <= 0) {
+        return;
+    }
+    System.out.print(n + " ");
+    puzzle(n - 2);
+    System.out.print(n + " ");
+}
+```
+
+`puzzle(5)` prints `5 3 1 3 5` — before the call for the descent, after it
+for the unwind. Number of prints: 2 per call that survives the base check
+(3 calls → 6 prints).
+
+Mental rules:
+
+- **Code before the recursive call** runs top-down (descent order).
+- **Code after the recursive call** runs bottom-up (unwind order).
+- **Total calls** = every invocation including base-case hits.
+- **Missing base case** or a branch that can't reach it → StackOverflowError,
+  never "runs forever" visibly.
+
+Also know: recursion can always be replaced by a loop, but the exam wants
+you to read *their* recursion, not rewrite it.

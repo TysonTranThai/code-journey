@@ -1,0 +1,38 @@
+Bài FRQ 2 thật (Class Design) đưa cho bạn một lớp kèm *đặc tả dạng chú
+thích* và yêu cầu "hoàn thiện hàm dựng/phương thức". Hai ý tưởng thiết kế
+gánh phần lớn việc đó:
+
+**Composition** — một đối tượng chứa các đối tượng khác. Một `Club` có
+`roster` gồm `String`:
+
+```java
+public class Club {
+    private String name;
+    private String[] roster;   // đối tượng này sở hữu mảng
+    private int size;          // bao nhiêu ô đang dùng
+
+    public Club(String clubName, int capacity) {
+        name = clubName;
+        roster = new String[capacity];
+        size = 0;
+    }
+
+    public boolean add(String member) {
+        if (size >= roster.length) {
+            return false;              // đầy — từ chối khéo léo
+        }
+        roster[size] = member;
+        size++;
+        return true;
+    }
+}
+```
+
+Chú ý sự phân công: mảng là `private`, bên ngoài chỉ gọi
+`add`/`size()`/`isFull()`. Đó là **encapsulation ở tầm thiết kế** — các bất
+biến ("size không vượt quá capacity") được thi hành tại đúng một chỗ, trong
+lớp.
+
+**Tham số đối tượng**: phương thức nhận tham chiếu đối tượng.
+`public boolean contains(String member)` duyệt `roster[0..size-1]` so bằng
+`equals` — nhớ rằng chỉ các ô *đang dùng* mới có nghĩa, không phải capacity.

@@ -1,0 +1,31 @@
+{
+  "id": "hsgx-p9-b2-brackets2",
+  "title": "Mixed B2 (even lengths)",
+  "prompt": "**Bài toán.** Given a bracket sequence with some characters replaced by\n'?', compute the minimum number of single-character replacements making the\nsequence balanced ('?' may become either bracket; any character other than\n'(' counts as ')' and vice versa — replacements may change existing brackets\ntoo).\n\n**Constraints:** 2 ≤ |s| ≤ 200000; |s| is even; s contains only '(' ')' '?'.\n\n**Input:** one line: s.\n**Output:** one integer — the minimum replacements.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"(?\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "'?' → ')' gives ()."
+    },
+    {
+      "name": "flip one",
+      "code": "std::istringstream in(\")(\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "A replacement moves total balance by ±2: one change gives (( or )) — both unbalanced. Flip both → () → 2. (The tempting answer 1 is a SWAP, not a replacement.)"
+    },
+    {
+      "name": "borrow chain",
+      "code": "std::istringstream in(\"))((\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Flip both leading ')' → '((' then need )) → total 2? Verify: ))(( → ()() with 2 changes; or (() with 1? (() unbalanced. Minimum is 2."
+    },
+    {
+      "name": "already",
+      "code": "std::istringstream in(\"(())\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Balanced."
+    }
+  ],
+  "level": "combination"
+}

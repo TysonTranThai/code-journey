@@ -1,0 +1,30 @@
+**Tìm kiếm trên lưới** — tìm một giá trị và báo nó ở đâu:
+
+```java
+// trả {row, col} hoặc null nếu không có
+public static int[] find(int[][] g, int target) {
+    for (int r = 0; r < g.length; r++) {
+        for (int c = 0; c < g[0].length; c++) {
+            if (g[r][c] == target) {
+                return new int[] {r, c};
+            }
+        }
+    }
+    return null;
+}
+```
+
+Ba thói quen từ đoạn mã này lặp lại trên FRQ 4:
+
+- **Early return** ngay khi thấy mục tiêu — không cần cờ.
+- **Trả null** (hoặc giá trị đặc biệt như -1) khi không thấy; hợp đồng
+  phải nói rõ chọn cái nào. `null` nghĩa là "không có đối tượng ở đây"
+  — gọi phương thức trên nó sẽ ném `NullPointerException`.
+- Cố tình kiểm tra đường **không-thấy**. Hợp đồng không được kiểm thử
+  sẽ mục ruỗng.
+
+Quy ước kích thước: nhiều lưới trong đề là **vuông** hoặc cố ý có số
+hàng/cột khác nhau — `{{1,2,3},{4,5}}` là hợp lệ (dạng "răng lược",
+dù lưới trong đề thường là hình chữ nhật). Đừng bao giờ giả định hàng
+và cột hoán đổi được cho nhau: `g[r][c]` và `g[c][r]` là hai ô khác
+nhau, và một trong hai có thể không tồn tại.

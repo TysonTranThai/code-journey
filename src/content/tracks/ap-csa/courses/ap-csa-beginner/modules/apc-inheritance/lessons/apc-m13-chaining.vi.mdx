@@ -1,0 +1,24 @@
+Truy vết chuỗi hàm dựng — món khoái khẩu của đề thi:
+
+```java
+public class A {
+    public A() { System.out.print("A"); }
+}
+
+public class B extends A {
+    public B() { System.out.print("B"); }   // super() ngầm chạy trước
+}
+```
+
+`new B()` in `AB`: phần lớp cha luôn được dựng trước. Với `super(args)`
+tường minh và các trường, thứ tự là: hàm dựng lớp cha → bộ khởi tạo trường
+của lớp con → thân hàm dựng lớp con.
+
+Lớp con **không** kế thừa: trường private (tồn tại nhưng bị che), hàm dựng
+(được gọi, không được kế thừa), phương thức static bị che chứ không bị ghi
+đè (ngoài phạm vi ở đây).
+
+**Bẫy truy vết phổ biến**: gọi một phương thức bị ghi đè *từ bên trong hàm
+dựng lớp cha* sẽ chạy phiên bản lớp con trước khi các trường lớp con được
+khởi tạo — câu đố "tại sao trường của tôi null" kinh điển. Đề thi chỉ dùng
+điều này ở các câu truy vết khó nhất; hiểu cơ chế, đừng học thuộc thêm gì.

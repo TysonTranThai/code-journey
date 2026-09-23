@@ -1,0 +1,31 @@
+# The Exchange Argument
+
+A greedy claim is not proven by examples. The standard tool: take ANY
+optimal solution and **exchange** its choices toward the greedy's choices,
+showing the objective never gets worse. If every exchange is safe, the
+greedy solution is optimal.
+
+## Canonical example — interval scheduling
+
+Claim: repeatedly taking the interval with the **earliest right endpoint**
+maximizes the count of non-overlapping intervals.
+
+Exchange: let G = greedy's first pick (earliest right end), O = some
+optimal's first pick. If G ≠ O, swap O for G: G ends no later, so it
+conflicts with no interval that O didn't. The rest of O stays valid.
+Induct on remaining intervals. Proof complete.
+
+## When sorting keys lie
+
+Two jobs, each (time, deadline). "Sort by shortest job" fails when the
+objective is lateness; the correct key is earliest-deadline (a classic
+exchange shows swapping adjacent inversions never increases max
+lateness). The lesson: **the key is the theorem**. Sorting by the wrong
+quantity is not a heuristic stumble — it is a wrong theorem, and
+adversarial tests exist precisely for it.
+
+## The proof burden
+
+For every greedy you write in this course, one sentence of exchange
+reasoning should be available: *why is taking this now never worse than
+anything else?* If you cannot even sketch it, you are gambling.

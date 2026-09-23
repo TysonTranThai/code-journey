@@ -1,0 +1,34 @@
+## The Mistake Tax
+
+Every submission costs. A wrong-answer verdict costs a re-read, a re-compile,
+a re-test — 5 to 15 minutes of contest time. Speed training is therefore
+mostly **tax avoidance**: habits that keep the first submission the right one.
+
+### The four most expensive habits
+
+1. **Slow I/O.** Every language has the trap. In C++: no
+   `ios::sync_with_stdio(false)` with heavy `cin`, or `endl` (which flushes)
+   in a 200000-line loop. Fast input is not an optimization; at 2·10⁵ lines
+   it is the difference between 0.1s and TLE.
+2. **Re-computing inside loops.** Anything invariant across iterations
+   (prefix sums, sorted copies, hash maps of counts) belongs *before* the
+   loop. `O(n²)` pretending to be `O(n)`.
+3. **Reading input twice.** Stream positions do not rewind for free. Read
+   once, store, process.
+4. **Submitting the plan, not the code.** The plan handles n = 1; the code
+   crashes on it. Dry-run the code against every sample *by hand* before
+   submitting: trace two variables, not the whole program.
+
+### The before-submit checklist
+
+- Samples traced by hand — both the given ones and one of yours
+- Overflow: the largest two multiplicands multiplied, checked against 64-bit
+- Boundaries: empty, single element, all-equal, maximum values
+- Complexity written in a comment; it matches the constraints
+- I/O format matches *exactly* — one trailing space has cost medals
+
+### What the tax buys
+
+A verified wrong solution in this module's practice set fails exactly the
+way a rushed submission fails. Read its verdict, name the habit that would
+have produced it, and the tax becomes tuition instead of loss.

@@ -1,0 +1,44 @@
+# Hòa hai công cụ
+
+Bài khó cấp tỉnh hiếm khi là "chạy Dijkstra". Nó là "chạy Dijkstra *trên một
+đồ thị bạn phải dựng trước*". Kỹ năng là nhìn thấy hai nửa và giao diện giữa
+chúng.
+
+## Mẫu hòa trộn
+
+Hầu hết mọi kết hợp có dạng này:
+
+```
+đọc dữ liệu → [biến đổi A] → [thuật toán lõi B] → đáp án
+```
+
+Các biến đổi chính là nơi kết hợp sống: sắp xếp để greedy hoạt động, nén để
+thu nhỏ miền giá trị, dựng đồ thị phụ (trạng thái, tầng thời gian, mạng còn
+dư), tiền tính cấu trúc (bảng LCA, sparse table, rừng DSU tiền tố).
+
+## Giao diện chính là thiết kế
+
+Khi hòa tìm kiếm nhị phân với greedy, *giao diện* là một vị từ khả thi
+đúng/sai. Khi hòa SCC với DP trên DAG, giao diện là đồ thị cô đặc. Khi hòa
+Dijkstra với đồ thị trạng thái, giao diện là định nghĩa trạng thái — định
+sai (quá lớn → chết bộ nhớ; quá nhỏ → sai đáp án) thì cả hai nửa gãy.
+
+## Kế toán chi phí cho tổ hợp
+
+Tổng chi phí không phải A + B; thường là A · B hoặc A + B tùy cách lồng:
+tìm kiếm nhị phân (log C) × kiểm tra greedy O(n) = O(n log C). Nén
+O(n log n) + truy vấn Fenwick O((n+q) log n). Tính ngân sách cho *phép hợp
+thành*, không phải từng mảnh.
+
+## Nhận diện: cái gì xứng đáng một cặp kết hợp
+
+- "Tối thiểu hóa giá trị lớn nhất / tối đa hóa giá trị nhỏ nhất" + một cách
+  xếp đặt có thể kiểm tra → tìm kiếm nhị phân + greedy (hoặc + ghép đôi).
+- Giá trị tới 10^9 nhưng chỉ có n ≤ 2·10^5 giá trị → nén tọa độ, rồi bất cứ
+  thứ gì cần miền giá trị (Fenwick trên giá trị, DP trên giá trị).
+- Sự kiện theo thứ tự thời gian + câu hỏi liên thông → DSU theo thời gian
+  (thêm cạnh theo thứ tự), hoặc cấu trúc persistent/LCT nếu có xóa.
+- "Trạng thái" nhiều hơn một vị trí (xăng còn lại, chìa khóa đang giữ, tính
+  chẵn lẻ, số xu) → BFS/Dijkstra trên đồ thị tích đề-các. Coi chừng kích
+  thước!
+- "Nếu có chu trình thì vô nghiệm" → SCC trước, rồi DP trên đồ thị cô đặc.

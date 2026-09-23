@@ -1,0 +1,33 @@
+The most exam-famous String trap:
+
+```java
+String a = "cat";
+String b = new String("cat");
+System.out.println(a == b);        // false! == compares references
+System.out.println(a.equals(b));   // true  — content comparison
+```
+
+`==` asks "same object?"; `.equals` asks "same characters?". **Always use
+`.equals` for String content.** (`compareTo` returns 0 exactly when equals
+is true — it also tells you *ordering*, which `==`/`equals` cannot.)
+
+**Traversal patterns** — memorize all three, the exam cycles through them:
+
+```java
+// 1. by index (when you need the position)
+for (int i = 0; i < s.length(); i++) {
+    char c = s.charAt(i);
+}
+
+// 2. substring walk (when you need neighboring pieces)
+for (int i = 0; i + 1 < s.length(); i++) {
+    String pair = s.substring(i, i + 2);
+}
+
+// 3. first-to-last scan with early exit
+int pos = s.indexOf('x');
+if (pos != -1) { /* found */ }
+```
+
+Concatenation builds new strings: `"ab" + "cd"`, `s + 42`, `42 + s` all work
+— numbers convert automatically.

@@ -92,6 +92,166 @@ import AnatomyOfAProgram from "@/content/tracks/c/courses/c-beginner/modules/cb-
 import AnatomyOfAProgramVi from "@/content/tracks/c/courses/c-beginner/modules/cb-first-programs/lessons/anatomy-of-a-program.vi.mdx";
 import AnatomyOfAWebsite from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/anatomy-of-a-website.mdx";
 import AnatomyOfAWebsiteVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/anatomy-of-a-website.vi.mdx";
+import ApcCpM1 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-hello/lessons/apc-cp-m1.mdx";
+import ApcCpM10 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arraylist/lessons/apc-cp-m10.mdx";
+import ApcCpM10Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arraylist/lessons/apc-cp-m10.vi.mdx";
+import ApcCpM11 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-searchsort/lessons/apc-cp-m11.mdx";
+import ApcCpM11Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-searchsort/lessons/apc-cp-m11.vi.mdx";
+import ApcCpM12 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-oop-design/lessons/apc-cp-m12.mdx";
+import ApcCpM12Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-oop-design/lessons/apc-cp-m12.vi.mdx";
+import ApcCpM13 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-inheritance/lessons/apc-cp-m13.mdx";
+import ApcCpM13Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-inheritance/lessons/apc-cp-m13.vi.mdx";
+import ApcCpM14 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-recursion/lessons/apc-cp-m14.mdx";
+import ApcCpM14Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-recursion/lessons/apc-cp-m14.vi.mdx";
+import ApcCpM15 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-2d/lessons/apc-cp-m15.mdx";
+import ApcCpM15Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-2d/lessons/apc-cp-m15.vi.mdx";
+import ApcCpM16 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-testing/lessons/apc-cp-m16.mdx";
+import ApcCpM16Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-testing/lessons/apc-cp-m16.vi.mdx";
+import ApcCpM17 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-reasoning/lessons/apc-cp-m17.mdx";
+import ApcCpM17Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-reasoning/lessons/apc-cp-m17.vi.mdx";
+import ApcCpM18 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-frq/lessons/apc-cp-m18.mdx";
+import ApcCpM18Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-frq/lessons/apc-cp-m18.vi.mdx";
+import ApcCpM19 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-integration/lessons/apc-cp-m19.mdx";
+import ApcCpM19Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-integration/lessons/apc-cp-m19.vi.mdx";
+import ApcCpM1Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-hello/lessons/apc-cp-m1.vi.mdx";
+import ApcCpM2 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-variables/lessons/apc-cp-m2.mdx";
+import ApcCpM20 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-readiness/lessons/apc-cp-m20.mdx";
+import ApcCpM20Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-readiness/lessons/apc-cp-m20.vi.mdx";
+import ApcCpM2Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-variables/lessons/apc-cp-m2.vi.mdx";
+import ApcCpM3 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-expressions/lessons/apc-cp-m3.mdx";
+import ApcCpM3Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-expressions/lessons/apc-cp-m3.vi.mdx";
+import ApcCpM4 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-conditionals/lessons/apc-cp-m4.mdx";
+import ApcCpM4Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-conditionals/lessons/apc-cp-m4.vi.mdx";
+import ApcCpM5 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-loops/lessons/apc-cp-m5.mdx";
+import ApcCpM5Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-loops/lessons/apc-cp-m5.vi.mdx";
+import ApcCpM6 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-methods/lessons/apc-cp-m6.mdx";
+import ApcCpM6Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-methods/lessons/apc-cp-m6.vi.mdx";
+import ApcCpM7 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-strings/lessons/apc-cp-m7.mdx";
+import ApcCpM7Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-strings/lessons/apc-cp-m7.vi.mdx";
+import ApcCpM8 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-classes/lessons/apc-cp-m8.mdx";
+import ApcCpM8Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-classes/lessons/apc-cp-m8.vi.mdx";
+import ApcCpM9 from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arrays/lessons/apc-cp-m9.mdx";
+import ApcCpM9Vi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arrays/lessons/apc-cp-m9.vi.mdx";
+import ApcM10Api from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arraylist/lessons/apc-m10-api.mdx";
+import ApcM10ApiVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arraylist/lessons/apc-m10-api.vi.mdx";
+import ApcM10Frq from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arraylist/lessons/apc-m10-frq.mdx";
+import ApcM10FrqVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arraylist/lessons/apc-m10-frq.vi.mdx";
+import ApcM10Remove from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arraylist/lessons/apc-m10-remove.mdx";
+import ApcM10RemoveVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arraylist/lessons/apc-m10-remove.vi.mdx";
+import ApcM11Search from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-searchsort/lessons/apc-m11-search.mdx";
+import ApcM11SearchVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-searchsort/lessons/apc-m11-search.vi.mdx";
+import ApcM11Sort from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-searchsort/lessons/apc-m11-sort.mdx";
+import ApcM11SortVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-searchsort/lessons/apc-m11-sort.vi.mdx";
+import ApcM11Trace from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-searchsort/lessons/apc-m11-trace.mdx";
+import ApcM11TraceVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-searchsort/lessons/apc-m11-trace.vi.mdx";
+import ApcM12Composition from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-oop-design/lessons/apc-m12-composition.mdx";
+import ApcM12CompositionVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-oop-design/lessons/apc-m12-composition.vi.mdx";
+import ApcM12Objects from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-oop-design/lessons/apc-m12-objects.mdx";
+import ApcM12ObjectsVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-oop-design/lessons/apc-m12-objects.vi.mdx";
+import ApcM12Specs from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-oop-design/lessons/apc-m12-specs.mdx";
+import ApcM12SpecsVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-oop-design/lessons/apc-m12-specs.vi.mdx";
+import ApcM13Chaining from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-inheritance/lessons/apc-m13-chaining.mdx";
+import ApcM13ChainingVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-inheritance/lessons/apc-m13-chaining.vi.mdx";
+import ApcM13Extends from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-inheritance/lessons/apc-m13-extends.mdx";
+import ApcM13ExtendsVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-inheritance/lessons/apc-m13-extends.vi.mdx";
+import ApcM13Overriding from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-inheritance/lessons/apc-m13-overriding.mdx";
+import ApcM13OverridingVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-inheritance/lessons/apc-m13-overriding.vi.mdx";
+import ApcM14Basics from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-recursion/lessons/apc-m14-basics.mdx";
+import ApcM14BasicsVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-recursion/lessons/apc-m14-basics.vi.mdx";
+import ApcM14Shapes from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-recursion/lessons/apc-m14-shapes.mdx";
+import ApcM14ShapesVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-recursion/lessons/apc-m14-shapes.vi.mdx";
+import ApcM14Traces from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-recursion/lessons/apc-m14-traces.mdx";
+import ApcM14TracesVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-recursion/lessons/apc-m14-traces.vi.mdx";
+import ApcM15Agg from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-2d/lessons/apc-m15-agg.mdx";
+import ApcM15AggVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-2d/lessons/apc-m15-agg.vi.mdx";
+import ApcM15Find from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-2d/lessons/apc-m15-find.mdx";
+import ApcM15FindVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-2d/lessons/apc-m15-find.vi.mdx";
+import ApcM15Grid from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-2d/lessons/apc-m15-grid.mdx";
+import ApcM15GridVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-2d/lessons/apc-m15-grid.vi.mdx";
+import ApcM16Cases from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-testing/lessons/apc-m16-cases.mdx";
+import ApcM16CasesVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-testing/lessons/apc-m16-cases.vi.mdx";
+import ApcM16Errors from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-testing/lessons/apc-m16-errors.mdx";
+import ApcM16ErrorsVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-testing/lessons/apc-m16-errors.vi.mdx";
+import ApcM16Trace from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-testing/lessons/apc-m16-trace.mdx";
+import ApcM16TraceVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-testing/lessons/apc-m16-trace.vi.mdx";
+import ApcM17Choosing from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-reasoning/lessons/apc-m17-choosing.mdx";
+import ApcM17ChoosingVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-reasoning/lessons/apc-m17-choosing.vi.mdx";
+import ApcM17Classes from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-reasoning/lessons/apc-m17-classes.mdx";
+import ApcM17ClassesVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-reasoning/lessons/apc-m17-classes.vi.mdx";
+import ApcM17Counting from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-reasoning/lessons/apc-m17-counting.mdx";
+import ApcM17CountingVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-reasoning/lessons/apc-m17-counting.vi.mdx";
+import ApcM18Modify from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-frq/lessons/apc-m18-modify.mdx";
+import ApcM18ModifyVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-frq/lessons/apc-m18-modify.vi.mdx";
+import ApcM18Prose from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-frq/lessons/apc-m18-prose.mdx";
+import ApcM18ProseVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-frq/lessons/apc-m18-prose.vi.mdx";
+import ApcM18Specs from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-frq/lessons/apc-m18-specs.mdx";
+import ApcM18SpecsVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-frq/lessons/apc-m18-specs.vi.mdx";
+import ApcM19Mixed from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-integration/lessons/apc-m19-mixed.mdx";
+import ApcM19MixedVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-integration/lessons/apc-m19-mixed.vi.mdx";
+import ApcM19Pipeline from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-integration/lessons/apc-m19-pipeline.mdx";
+import ApcM19PipelineVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-integration/lessons/apc-m19-pipeline.vi.mdx";
+import ApcM19Statemachine from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-integration/lessons/apc-m19-statemachine.mdx";
+import ApcM19StatemachineVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-integration/lessons/apc-m19-statemachine.vi.mdx";
+import ApcM1Anatomy from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-hello/lessons/apc-m1-anatomy.mdx";
+import ApcM1AnatomyVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-hello/lessons/apc-m1-anatomy.vi.mdx";
+import ApcM1Style from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-hello/lessons/apc-m1-style.mdx";
+import ApcM1StyleVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-hello/lessons/apc-m1-style.vi.mdx";
+import ApcM1Trace from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-hello/lessons/apc-m1-trace.mdx";
+import ApcM1TraceVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-hello/lessons/apc-m1-trace.vi.mdx";
+import ApcM20Gap from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-readiness/lessons/apc-m20-gap.mdx";
+import ApcM20GapVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-readiness/lessons/apc-m20-gap.vi.mdx";
+import ApcM20Reading from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-readiness/lessons/apc-m20-reading.mdx";
+import ApcM20ReadingVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-readiness/lessons/apc-m20-reading.vi.mdx";
+import ApcM20Ready from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-readiness/lessons/apc-m20-ready.mdx";
+import ApcM20ReadyVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-readiness/lessons/apc-m20-ready.vi.mdx";
+import ApcM2Casts from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-variables/lessons/apc-m2-casts.mdx";
+import ApcM2CastsVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-variables/lessons/apc-m2-casts.vi.mdx";
+import ApcM2Overflow from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-variables/lessons/apc-m2-overflow.mdx";
+import ApcM2OverflowVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-variables/lessons/apc-m2-overflow.vi.mdx";
+import ApcM2Prims from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-variables/lessons/apc-m2-prims.mdx";
+import ApcM2PrimsVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-variables/lessons/apc-m2-prims.vi.mdx";
+import ApcM3Arith from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-expressions/lessons/apc-m3-arith.mdx";
+import ApcM3ArithVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-expressions/lessons/apc-m3-arith.vi.mdx";
+import ApcM3Logic from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-expressions/lessons/apc-m3-logic.mdx";
+import ApcM3LogicVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-expressions/lessons/apc-m3-logic.vi.mdx";
+import ApcM3Precedence from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-expressions/lessons/apc-m3-precedence.mdx";
+import ApcM3PrecedenceVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-expressions/lessons/apc-m3-precedence.vi.mdx";
+import ApcM4Ifelse from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-conditionals/lessons/apc-m4-ifelse.mdx";
+import ApcM4IfelseVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-conditionals/lessons/apc-m4-ifelse.vi.mdx";
+import ApcM4Nesting from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-conditionals/lessons/apc-m4-nesting.mdx";
+import ApcM4NestingVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-conditionals/lessons/apc-m4-nesting.vi.mdx";
+import ApcM4Patterns from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-conditionals/lessons/apc-m4-patterns.mdx";
+import ApcM4PatternsVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-conditionals/lessons/apc-m4-patterns.vi.mdx";
+import ApcM5For from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-loops/lessons/apc-m5-for.mdx";
+import ApcM5ForVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-loops/lessons/apc-m5-for.vi.mdx";
+import ApcM5Nested from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-loops/lessons/apc-m5-nested.mdx";
+import ApcM5NestedVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-loops/lessons/apc-m5-nested.vi.mdx";
+import ApcM5While from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-loops/lessons/apc-m5-while.mdx";
+import ApcM5WhileVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-loops/lessons/apc-m5-while.vi.mdx";
+import ApcM6Basics from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-methods/lessons/apc-m6-basics.mdx";
+import ApcM6BasicsVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-methods/lessons/apc-m6-basics.vi.mdx";
+import ApcM6Decompose from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-methods/lessons/apc-m6-decompose.mdx";
+import ApcM6DecomposeVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-methods/lessons/apc-m6-decompose.vi.mdx";
+import ApcM6Scope from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-methods/lessons/apc-m6-scope.mdx";
+import ApcM6ScopeVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-methods/lessons/apc-m6-scope.vi.mdx";
+import ApcM7Api from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-strings/lessons/apc-m7-api.mdx";
+import ApcM7ApiVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-strings/lessons/apc-m7-api.vi.mdx";
+import ApcM7Equals from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-strings/lessons/apc-m7-equals.mdx";
+import ApcM7EqualsVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-strings/lessons/apc-m7-equals.vi.mdx";
+import ApcM7Frq from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-strings/lessons/apc-m7-frq.mdx";
+import ApcM7FrqVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-strings/lessons/apc-m7-frq.vi.mdx";
+import ApcM8Blueprint from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-classes/lessons/apc-m8-blueprint.mdx";
+import ApcM8BlueprintVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-classes/lessons/apc-m8-blueprint.vi.mdx";
+import ApcM8Ctors from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-classes/lessons/apc-m8-ctors.mdx";
+import ApcM8CtorsVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-classes/lessons/apc-m8-ctors.vi.mdx";
+import ApcM8Frq from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-classes/lessons/apc-m8-frq.mdx";
+import ApcM8FrqVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-classes/lessons/apc-m8-frq.vi.mdx";
+import ApcM9Accumulate from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arrays/lessons/apc-m9-accumulate.mdx";
+import ApcM9AccumulateVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arrays/lessons/apc-m9-accumulate.vi.mdx";
+import ApcM9Basics from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arrays/lessons/apc-m9-basics.mdx";
+import ApcM9BasicsVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arrays/lessons/apc-m9-basics.vi.mdx";
+import ApcM9Shift from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arrays/lessons/apc-m9-shift.mdx";
+import ApcM9ShiftVi from "@/content/tracks/ap-csa/courses/ap-csa-beginner/modules/apc-arrays/lessons/apc-m9-shift.vi.mdx";
 import ApiAppCheckpoint from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/api-app-checkpoint.mdx";
 import ApiAppCheckpointVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/asynchronous-javascript-apis/lessons/api-app-checkpoint.vi.mdx";
 import ApiBoundaries from "@/content/tracks/c/courses/c-beginner/modules/multi-file/lessons/api-boundaries.mdx";
@@ -1950,6 +2110,156 @@ import HsgiM9Kahn from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hs
 import HsgiM9KahnVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-topo/lessons/hsgi-m9-kahn.vi.mdx";
 import HsgiM9Longest from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-topo/lessons/hsgi-m9-longest.mdx";
 import HsgiM9LongestVi from "@/content/tracks/hsg/courses/hsg-intermediate/modules/hsgi-topo/lessons/hsgi-m9-longest.vi.mdx";
+import HsgmCpM1 from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-process/lessons/hsgm-cp-m1.mdx";
+import HsgmCpM10 from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-partial/lessons/hsgm-cp-m10.mdx";
+import HsgmCpM10Vi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-partial/lessons/hsgm-cp-m10.vi.mdx";
+import HsgmCpM11 from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-clinic/lessons/hsgm-cp-m11.mdx";
+import HsgmCpM11Vi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-clinic/lessons/hsgm-cp-m11.vi.mdx";
+import HsgmCpM12 from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-adversary/lessons/hsgm-cp-m12.mdx";
+import HsgmCpM12Vi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-adversary/lessons/hsgm-cp-m12.vi.mdx";
+import HsgmCpM13 from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-stress/lessons/hsgm-cp-m13.mdx";
+import HsgmCpM13Vi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-stress/lessons/hsgm-cp-m13.vi.mdx";
+import HsgmCpM14 from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-final/lessons/hsgm-cp-m14.mdx";
+import HsgmCpM14Vi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-final/lessons/hsgm-cp-m14.vi.mdx";
+import HsgmCpM14b from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-final/lessons/hsgm-cp-m14b.mdx";
+import HsgmCpM14bVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-final/lessons/hsgm-cp-m14b.vi.mdx";
+import HsgmCpM1Vi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-process/lessons/hsgm-cp-m1.vi.mdx";
+import HsgmCpM2 from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-budget/lessons/hsgm-cp-m2.mdx";
+import HsgmCpM2Vi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-budget/lessons/hsgm-cp-m2.vi.mdx";
+import HsgmCpM3 from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-decompose/lessons/hsgm-cp-m3.mdx";
+import HsgmCpM3Vi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-decompose/lessons/hsgm-cp-m3.vi.mdx";
+import HsgmCpM4 from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-observe/lessons/hsgm-cp-m4.mdx";
+import HsgmCpM4Vi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-observe/lessons/hsgm-cp-m4.vi.mdx";
+import HsgmCpM5 from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-greedy/lessons/hsgm-cp-m5.mdx";
+import HsgmCpM5Vi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-greedy/lessons/hsgm-cp-m5.vi.mdx";
+import HsgmCpM6 from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-dpsynth/lessons/hsgm-cp-m6.mdx";
+import HsgmCpM6Vi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-dpsynth/lessons/hsgm-cp-m6.vi.mdx";
+import HsgmCpM7 from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-graphsyn/lessons/hsgm-cp-m7.mdx";
+import HsgmCpM7Vi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-graphsyn/lessons/hsgm-cp-m7.vi.mdx";
+import HsgmCpM8 from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-offline/lessons/hsgm-cp-m8.mdx";
+import HsgmCpM8Vi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-offline/lessons/hsgm-cp-m8.vi.mdx";
+import HsgmCpM9 from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-optlab/lessons/hsgm-cp-m9.mdx";
+import HsgmCpM9Vi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-optlab/lessons/hsgm-cp-m9.vi.mdx";
+import HsgmM10Bands from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-partial/lessons/hsgm-m10-bands.mdx";
+import HsgmM10BandsVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-partial/lessons/hsgm-m10-bands.vi.mdx";
+import HsgmM10Harvest from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-partial/lessons/hsgm-m10-harvest.mdx";
+import HsgmM10HarvestVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-partial/lessons/hsgm-m10-harvest.vi.mdx";
+import HsgmM11Catalog from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-clinic/lessons/hsgm-m11-catalog.mdx";
+import HsgmM11CatalogVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-clinic/lessons/hsgm-m11-catalog.vi.mdx";
+import HsgmM11Localize from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-clinic/lessons/hsgm-m11-localize.mdx";
+import HsgmM11LocalizeVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-clinic/lessons/hsgm-m11-localize.vi.mdx";
+import HsgmM12Checklist from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-adversary/lessons/hsgm-m12-checklist.mdx";
+import HsgmM12ChecklistVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-adversary/lessons/hsgm-m12-checklist.vi.mdx";
+import HsgmM12Minimal from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-adversary/lessons/hsgm-m12-minimal.mdx";
+import HsgmM12MinimalVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-adversary/lessons/hsgm-m12-minimal.vi.mdx";
+import HsgmM13Decide from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-stress/lessons/hsgm-m13-decide.mdx";
+import HsgmM13DecideVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-stress/lessons/hsgm-m13-decide.vi.mdx";
+import HsgmM13Harness from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-stress/lessons/hsgm-m13-harness.mdx";
+import HsgmM13HarnessVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-stress/lessons/hsgm-m13-harness.vi.mdx";
+import HsgmM14Pipeline from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-final/lessons/hsgm-m14-pipeline.mdx";
+import HsgmM14PipelineVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-final/lessons/hsgm-m14-pipeline.vi.mdx";
+import HsgmM14Simulate from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-final/lessons/hsgm-m14-simulate.mdx";
+import HsgmM14SimulateVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-final/lessons/hsgm-m14-simulate.vi.mdx";
+import HsgmM1Pipeline from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-process/lessons/hsgm-m1-pipeline.mdx";
+import HsgmM1PipelineVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-process/lessons/hsgm-m1-pipeline.vi.mdx";
+import HsgmM1Verify from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-process/lessons/hsgm-m1-verify.mdx";
+import HsgmM1VerifyVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-process/lessons/hsgm-m1-verify.vi.mdx";
+import HsgmM2Law from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-budget/lessons/hsgm-m2-law.mdx";
+import HsgmM2LawVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-budget/lessons/hsgm-m2-law.vi.mdx";
+import HsgmM2Valuemedium from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-budget/lessons/hsgm-m2-valuemedium.mdx";
+import HsgmM2ValuemediumVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-budget/lessons/hsgm-m2-valuemedium.vi.mdx";
+import HsgmM3Model from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-decompose/lessons/hsgm-m3-model.mdx";
+import HsgmM3ModelVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-decompose/lessons/hsgm-m3-model.vi.mdx";
+import HsgmM3Restate from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-decompose/lessons/hsgm-m3-restate.mdx";
+import HsgmM3RestateVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-decompose/lessons/hsgm-m3-restate.vi.mdx";
+import HsgmM4Experiment from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-observe/lessons/hsgm-m4-experiment.mdx";
+import HsgmM4ExperimentVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-observe/lessons/hsgm-m4-experiment.vi.mdx";
+import HsgmM4Families from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-observe/lessons/hsgm-m4-families.mdx";
+import HsgmM4FamiliesVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-observe/lessons/hsgm-m4-families.vi.mdx";
+import HsgmM5Break from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-greedy/lessons/hsgm-m5-break.mdx";
+import HsgmM5BreakVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-greedy/lessons/hsgm-m5-break.vi.mdx";
+import HsgmM5Exchange from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-greedy/lessons/hsgm-m5-exchange.mdx";
+import HsgmM5ExchangeVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-greedy/lessons/hsgm-m5-exchange.vi.mdx";
+import HsgmM6Fusion from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-dpsynth/lessons/hsgm-m6-fusion.mdx";
+import HsgmM6FusionVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-dpsynth/lessons/hsgm-m6-fusion.vi.mdx";
+import HsgmM6State from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-dpsynth/lessons/hsgm-m6-state.mdx";
+import HsgmM6StateVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-dpsynth/lessons/hsgm-m6-state.vi.mdx";
+import HsgmM7Reroot from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-graphsyn/lessons/hsgm-m7-reroot.mdx";
+import HsgmM7RerootVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-graphsyn/lessons/hsgm-m7-reroot.vi.mdx";
+import HsgmM7Schedule from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-graphsyn/lessons/hsgm-m7-schedule.mdx";
+import HsgmM7ScheduleVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-graphsyn/lessons/hsgm-m7-schedule.vi.mdx";
+import HsgmM8Contribute from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-offline/lessons/hsgm-m8-contribute.mdx";
+import HsgmM8ContributeVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-offline/lessons/hsgm-m8-contribute.vi.mdx";
+import HsgmM8Sweep from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-offline/lessons/hsgm-m8-sweep.mdx";
+import HsgmM8SweepVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-offline/lessons/hsgm-m8-sweep.vi.mdx";
+import HsgmM9Accelerate from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-optlab/lessons/hsgm-m9-accelerate.mdx";
+import HsgmM9AccelerateVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-optlab/lessons/hsgm-m9-accelerate.vi.mdx";
+import HsgmM9Bottleneck from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-optlab/lessons/hsgm-m9-bottleneck.mdx";
+import HsgmM9BottleneckVi from "@/content/tracks/hsg/courses/hsg-mastery/modules/hsgm-optlab/lessons/hsgm-m9-bottleneck.vi.mdx";
+import HsgxCpM1 from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-recognition/lessons/hsgx-cp-m1.mdx";
+import HsgxCpM10Contest from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-contests/lessons/hsgx-cp-m10-contest.mdx";
+import HsgxCpM10ContestVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-contests/lessons/hsgx-cp-m10-contest.vi.mdx";
+import HsgxCpM11Editorial from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-editorials/lessons/hsgx-cp-m11-editorial.mdx";
+import HsgxCpM11EditorialVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-editorials/lessons/hsgx-cp-m11-editorial.vi.mdx";
+import HsgxCpM12Capstone from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-final/lessons/hsgx-cp-m12-capstone.mdx";
+import HsgxCpM12CapstoneVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-final/lessons/hsgx-cp-m12-capstone.vi.mdx";
+import HsgxCpM1Vi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-recognition/lessons/hsgx-cp-m1.vi.mdx";
+import HsgxCpM2 from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-budget/lessons/hsgx-cp-m2.mdx";
+import HsgxCpM2Vi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-budget/lessons/hsgx-cp-m2.vi.mdx";
+import HsgxCpM3 from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-observation/lessons/hsgx-cp-m3.mdx";
+import HsgxCpM3Vi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-observation/lessons/hsgx-cp-m3.vi.mdx";
+import HsgxCpM4 from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-combinations/lessons/hsgx-cp-m4.mdx";
+import HsgxCpM4Vi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-combinations/lessons/hsgx-cp-m4.vi.mdx";
+import HsgxCpM5 from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-wrong/lessons/hsgx-cp-m5.mdx";
+import HsgxCpM5Vi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-wrong/lessons/hsgx-cp-m5.vi.mdx";
+import HsgxCpM6 from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-stress/lessons/hsgx-cp-m6.mdx";
+import HsgxCpM6Vi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-stress/lessons/hsgx-cp-m6.vi.mdx";
+import HsgxCpM7 from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-subtask/lessons/hsgx-cp-m7.mdx";
+import HsgxCpM7Vi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-subtask/lessons/hsgx-cp-m7.vi.mdx";
+import HsgxCpM8 from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-speed/lessons/hsgx-cp-m8.mdx";
+import HsgxCpM8Vi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-speed/lessons/hsgx-cp-m8.vi.mdx";
+import HsgxM10Format from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-contests/lessons/hsgx-m10-format.mdx";
+import HsgxM10FormatVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-contests/lessons/hsgx-m10-format.vi.mdx";
+import HsgxM11EditorialProtocol from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-editorials/lessons/hsgx-m11-editorial-protocol.mdx";
+import HsgxM11EditorialProtocolVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-editorials/lessons/hsgx-m11-editorial-protocol.vi.mdx";
+import HsgxM12ReferencePack from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-final/lessons/hsgx-m12-reference-pack.mdx";
+import HsgxM12ReferencePackVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-final/lessons/hsgx-m12-reference-pack.vi.mdx";
+import HsgxM1Reading from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-recognition/lessons/hsgx-m1-reading.mdx";
+import HsgxM1ReadingVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-recognition/lessons/hsgx-m1-reading.vi.mdx";
+import HsgxM1Signals from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-recognition/lessons/hsgx-m1-signals.mdx";
+import HsgxM1SignalsVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-recognition/lessons/hsgx-m1-signals.vi.mdx";
+import HsgxM2Arithmetic from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-budget/lessons/hsgx-m2-arithmetic.mdx";
+import HsgxM2ArithmeticVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-budget/lessons/hsgx-m2-arithmetic.vi.mdx";
+import HsgxM2Mapping from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-budget/lessons/hsgx-m2-mapping.mdx";
+import HsgxM2MappingVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-budget/lessons/hsgx-m2-mapping.vi.mdx";
+import HsgxM3Gallery from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-observation/lessons/hsgx-m3-gallery.mdx";
+import HsgxM3GalleryVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-observation/lessons/hsgx-m3-gallery.vi.mdx";
+import HsgxM3Loop from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-observation/lessons/hsgx-m3-loop.mdx";
+import HsgxM3LoopVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-observation/lessons/hsgx-m3-loop.vi.mdx";
+import HsgxM4Fusing from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-combinations/lessons/hsgx-m4-fusing.mdx";
+import HsgxM4FusingVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-combinations/lessons/hsgx-m4-fusing.vi.mdx";
+import HsgxM4Pairings from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-combinations/lessons/hsgx-m4-pairings.mdx";
+import HsgxM4PairingsVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-combinations/lessons/hsgx-m4-pairings.vi.mdx";
+import HsgxM5Counterexamples from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-wrong/lessons/hsgx-m5-counterexamples.mdx";
+import HsgxM5CounterexamplesVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-wrong/lessons/hsgx-m5-counterexamples.vi.mdx";
+import HsgxM5Taxonomy from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-wrong/lessons/hsgx-m5-taxonomy.mdx";
+import HsgxM5TaxonomyVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-wrong/lessons/hsgx-m5-taxonomy.vi.mdx";
+import HsgxM6Generators from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-stress/lessons/hsgx-m6-generators.mdx";
+import HsgxM6GeneratorsVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-stress/lessons/hsgx-m6-generators.vi.mdx";
+import HsgxM6Harness from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-stress/lessons/hsgx-m6-harness.mdx";
+import HsgxM6HarnessVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-stress/lessons/hsgx-m6-harness.vi.mdx";
+import HsgxM7Climb from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-subtask/lessons/hsgx-m7-climb.mdx";
+import HsgxM7ClimbVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-subtask/lessons/hsgx-m7-climb.vi.mdx";
+import HsgxM7Scoring from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-subtask/lessons/hsgx-m7-scoring.mdx";
+import HsgxM7ScoringVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-subtask/lessons/hsgx-m7-scoring.vi.mdx";
+import HsgxM8Clock from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-speed/lessons/hsgx-m8-clock.mdx";
+import HsgxM8ClockVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-speed/lessons/hsgx-m8-clock.vi.mdx";
+import HsgxM8MistakeTax from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-speed/lessons/hsgx-m8-mistake-tax.mdx";
+import HsgxM8MistakeTaxVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-speed/lessons/hsgx-m8-mistake-tax.vi.mdx";
+import HsgxM9CpMixed from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-mixed/lessons/hsgx-m9-cp-mixed.mdx";
+import HsgxM9CpMixedVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-mixed/lessons/hsgx-m9-cp-mixed.vi.mdx";
+import HsgxM9Hidden from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-mixed/lessons/hsgx-m9-hidden.mdx";
+import HsgxM9HiddenVi from "@/content/tracks/hsg/courses/hsg-intensive/modules/hsgx-mixed/lessons/hsgx-m9-hidden.vi.mdx";
 import HtmlArchitecture from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/html-architecture.mdx";
 import HtmlArchitectureVi from "@/content/tracks/web-development/courses/web-development-advanced/modules/advanced-html/lessons/html-architecture.vi.mdx";
 import HtmlAttributes from "@/content/tracks/web-development/courses/web-development-beginner/modules/html-foundations/lessons/html-attributes.mdx";
@@ -2796,6 +3106,166 @@ import YourFirstHtmlPage from "@/content/tracks/web-development/courses/web-deve
 import YourFirstHtmlPageVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/your-first-html-page.vi.mdx";
 
 export const mdxMap: Record<string, MdxComponent> = {
+  ["apc-2d/apc-m15-grid.mdx"]: ApcM15Grid,
+  ["apc-2d/apc-m15-grid.vi.mdx"]: ApcM15GridVi,
+  ["apc-2d/apc-m15-agg.mdx"]: ApcM15Agg,
+  ["apc-2d/apc-m15-agg.vi.mdx"]: ApcM15AggVi,
+  ["apc-2d/apc-m15-find.mdx"]: ApcM15Find,
+  ["apc-2d/apc-m15-find.vi.mdx"]: ApcM15FindVi,
+  ["apc-2d/apc-cp-m15.mdx"]: ApcCpM15,
+  ["apc-2d/apc-cp-m15.vi.mdx"]: ApcCpM15Vi,
+  ["apc-arraylist/apc-m10-api.mdx"]: ApcM10Api,
+  ["apc-arraylist/apc-m10-api.vi.mdx"]: ApcM10ApiVi,
+  ["apc-arraylist/apc-m10-remove.mdx"]: ApcM10Remove,
+  ["apc-arraylist/apc-m10-remove.vi.mdx"]: ApcM10RemoveVi,
+  ["apc-arraylist/apc-m10-frq.mdx"]: ApcM10Frq,
+  ["apc-arraylist/apc-m10-frq.vi.mdx"]: ApcM10FrqVi,
+  ["apc-arraylist/apc-cp-m10.mdx"]: ApcCpM10,
+  ["apc-arraylist/apc-cp-m10.vi.mdx"]: ApcCpM10Vi,
+  ["apc-arrays/apc-m9-basics.mdx"]: ApcM9Basics,
+  ["apc-arrays/apc-m9-basics.vi.mdx"]: ApcM9BasicsVi,
+  ["apc-arrays/apc-m9-accumulate.mdx"]: ApcM9Accumulate,
+  ["apc-arrays/apc-m9-accumulate.vi.mdx"]: ApcM9AccumulateVi,
+  ["apc-arrays/apc-m9-shift.mdx"]: ApcM9Shift,
+  ["apc-arrays/apc-m9-shift.vi.mdx"]: ApcM9ShiftVi,
+  ["apc-arrays/apc-cp-m9.mdx"]: ApcCpM9,
+  ["apc-arrays/apc-cp-m9.vi.mdx"]: ApcCpM9Vi,
+  ["apc-classes/apc-m8-blueprint.mdx"]: ApcM8Blueprint,
+  ["apc-classes/apc-m8-blueprint.vi.mdx"]: ApcM8BlueprintVi,
+  ["apc-classes/apc-m8-ctors.mdx"]: ApcM8Ctors,
+  ["apc-classes/apc-m8-ctors.vi.mdx"]: ApcM8CtorsVi,
+  ["apc-classes/apc-m8-frq.mdx"]: ApcM8Frq,
+  ["apc-classes/apc-m8-frq.vi.mdx"]: ApcM8FrqVi,
+  ["apc-classes/apc-cp-m8.mdx"]: ApcCpM8,
+  ["apc-classes/apc-cp-m8.vi.mdx"]: ApcCpM8Vi,
+  ["apc-conditionals/apc-m4-ifelse.mdx"]: ApcM4Ifelse,
+  ["apc-conditionals/apc-m4-ifelse.vi.mdx"]: ApcM4IfelseVi,
+  ["apc-conditionals/apc-m4-nesting.mdx"]: ApcM4Nesting,
+  ["apc-conditionals/apc-m4-nesting.vi.mdx"]: ApcM4NestingVi,
+  ["apc-conditionals/apc-m4-patterns.mdx"]: ApcM4Patterns,
+  ["apc-conditionals/apc-m4-patterns.vi.mdx"]: ApcM4PatternsVi,
+  ["apc-conditionals/apc-cp-m4.mdx"]: ApcCpM4,
+  ["apc-conditionals/apc-cp-m4.vi.mdx"]: ApcCpM4Vi,
+  ["apc-expressions/apc-m3-arith.mdx"]: ApcM3Arith,
+  ["apc-expressions/apc-m3-arith.vi.mdx"]: ApcM3ArithVi,
+  ["apc-expressions/apc-m3-logic.mdx"]: ApcM3Logic,
+  ["apc-expressions/apc-m3-logic.vi.mdx"]: ApcM3LogicVi,
+  ["apc-expressions/apc-m3-precedence.mdx"]: ApcM3Precedence,
+  ["apc-expressions/apc-m3-precedence.vi.mdx"]: ApcM3PrecedenceVi,
+  ["apc-expressions/apc-cp-m3.mdx"]: ApcCpM3,
+  ["apc-expressions/apc-cp-m3.vi.mdx"]: ApcCpM3Vi,
+  ["apc-frq/apc-m18-specs.mdx"]: ApcM18Specs,
+  ["apc-frq/apc-m18-specs.vi.mdx"]: ApcM18SpecsVi,
+  ["apc-frq/apc-m18-prose.mdx"]: ApcM18Prose,
+  ["apc-frq/apc-m18-prose.vi.mdx"]: ApcM18ProseVi,
+  ["apc-frq/apc-m18-modify.mdx"]: ApcM18Modify,
+  ["apc-frq/apc-m18-modify.vi.mdx"]: ApcM18ModifyVi,
+  ["apc-frq/apc-cp-m18.mdx"]: ApcCpM18,
+  ["apc-frq/apc-cp-m18.vi.mdx"]: ApcCpM18Vi,
+  ["apc-hello/apc-m1-anatomy.mdx"]: ApcM1Anatomy,
+  ["apc-hello/apc-m1-anatomy.vi.mdx"]: ApcM1AnatomyVi,
+  ["apc-hello/apc-m1-trace.mdx"]: ApcM1Trace,
+  ["apc-hello/apc-m1-trace.vi.mdx"]: ApcM1TraceVi,
+  ["apc-hello/apc-m1-style.mdx"]: ApcM1Style,
+  ["apc-hello/apc-m1-style.vi.mdx"]: ApcM1StyleVi,
+  ["apc-hello/apc-cp-m1.mdx"]: ApcCpM1,
+  ["apc-hello/apc-cp-m1.vi.mdx"]: ApcCpM1Vi,
+  ["apc-inheritance/apc-m13-extends.mdx"]: ApcM13Extends,
+  ["apc-inheritance/apc-m13-extends.vi.mdx"]: ApcM13ExtendsVi,
+  ["apc-inheritance/apc-m13-overriding.mdx"]: ApcM13Overriding,
+  ["apc-inheritance/apc-m13-overriding.vi.mdx"]: ApcM13OverridingVi,
+  ["apc-inheritance/apc-m13-chaining.mdx"]: ApcM13Chaining,
+  ["apc-inheritance/apc-m13-chaining.vi.mdx"]: ApcM13ChainingVi,
+  ["apc-inheritance/apc-cp-m13.mdx"]: ApcCpM13,
+  ["apc-inheritance/apc-cp-m13.vi.mdx"]: ApcCpM13Vi,
+  ["apc-integration/apc-m19-pipeline.mdx"]: ApcM19Pipeline,
+  ["apc-integration/apc-m19-pipeline.vi.mdx"]: ApcM19PipelineVi,
+  ["apc-integration/apc-m19-statemachine.mdx"]: ApcM19Statemachine,
+  ["apc-integration/apc-m19-statemachine.vi.mdx"]: ApcM19StatemachineVi,
+  ["apc-integration/apc-m19-mixed.mdx"]: ApcM19Mixed,
+  ["apc-integration/apc-m19-mixed.vi.mdx"]: ApcM19MixedVi,
+  ["apc-integration/apc-cp-m19.mdx"]: ApcCpM19,
+  ["apc-integration/apc-cp-m19.vi.mdx"]: ApcCpM19Vi,
+  ["apc-loops/apc-m5-while.mdx"]: ApcM5While,
+  ["apc-loops/apc-m5-while.vi.mdx"]: ApcM5WhileVi,
+  ["apc-loops/apc-m5-for.mdx"]: ApcM5For,
+  ["apc-loops/apc-m5-for.vi.mdx"]: ApcM5ForVi,
+  ["apc-loops/apc-m5-nested.mdx"]: ApcM5Nested,
+  ["apc-loops/apc-m5-nested.vi.mdx"]: ApcM5NestedVi,
+  ["apc-loops/apc-cp-m5.mdx"]: ApcCpM5,
+  ["apc-loops/apc-cp-m5.vi.mdx"]: ApcCpM5Vi,
+  ["apc-methods/apc-m6-basics.mdx"]: ApcM6Basics,
+  ["apc-methods/apc-m6-basics.vi.mdx"]: ApcM6BasicsVi,
+  ["apc-methods/apc-m6-scope.mdx"]: ApcM6Scope,
+  ["apc-methods/apc-m6-scope.vi.mdx"]: ApcM6ScopeVi,
+  ["apc-methods/apc-m6-decompose.mdx"]: ApcM6Decompose,
+  ["apc-methods/apc-m6-decompose.vi.mdx"]: ApcM6DecomposeVi,
+  ["apc-methods/apc-cp-m6.mdx"]: ApcCpM6,
+  ["apc-methods/apc-cp-m6.vi.mdx"]: ApcCpM6Vi,
+  ["apc-oop-design/apc-m12-composition.mdx"]: ApcM12Composition,
+  ["apc-oop-design/apc-m12-composition.vi.mdx"]: ApcM12CompositionVi,
+  ["apc-oop-design/apc-m12-objects.mdx"]: ApcM12Objects,
+  ["apc-oop-design/apc-m12-objects.vi.mdx"]: ApcM12ObjectsVi,
+  ["apc-oop-design/apc-m12-specs.mdx"]: ApcM12Specs,
+  ["apc-oop-design/apc-m12-specs.vi.mdx"]: ApcM12SpecsVi,
+  ["apc-oop-design/apc-cp-m12.mdx"]: ApcCpM12,
+  ["apc-oop-design/apc-cp-m12.vi.mdx"]: ApcCpM12Vi,
+  ["apc-readiness/apc-m20-ready.mdx"]: ApcM20Ready,
+  ["apc-readiness/apc-m20-ready.vi.mdx"]: ApcM20ReadyVi,
+  ["apc-readiness/apc-m20-reading.mdx"]: ApcM20Reading,
+  ["apc-readiness/apc-m20-reading.vi.mdx"]: ApcM20ReadingVi,
+  ["apc-readiness/apc-m20-gap.mdx"]: ApcM20Gap,
+  ["apc-readiness/apc-m20-gap.vi.mdx"]: ApcM20GapVi,
+  ["apc-readiness/apc-cp-m20.mdx"]: ApcCpM20,
+  ["apc-readiness/apc-cp-m20.vi.mdx"]: ApcCpM20Vi,
+  ["apc-reasoning/apc-m17-classes.mdx"]: ApcM17Classes,
+  ["apc-reasoning/apc-m17-classes.vi.mdx"]: ApcM17ClassesVi,
+  ["apc-reasoning/apc-m17-counting.mdx"]: ApcM17Counting,
+  ["apc-reasoning/apc-m17-counting.vi.mdx"]: ApcM17CountingVi,
+  ["apc-reasoning/apc-m17-choosing.mdx"]: ApcM17Choosing,
+  ["apc-reasoning/apc-m17-choosing.vi.mdx"]: ApcM17ChoosingVi,
+  ["apc-reasoning/apc-cp-m17.mdx"]: ApcCpM17,
+  ["apc-reasoning/apc-cp-m17.vi.mdx"]: ApcCpM17Vi,
+  ["apc-recursion/apc-m14-basics.mdx"]: ApcM14Basics,
+  ["apc-recursion/apc-m14-basics.vi.mdx"]: ApcM14BasicsVi,
+  ["apc-recursion/apc-m14-shapes.mdx"]: ApcM14Shapes,
+  ["apc-recursion/apc-m14-shapes.vi.mdx"]: ApcM14ShapesVi,
+  ["apc-recursion/apc-m14-traces.mdx"]: ApcM14Traces,
+  ["apc-recursion/apc-m14-traces.vi.mdx"]: ApcM14TracesVi,
+  ["apc-recursion/apc-cp-m14.mdx"]: ApcCpM14,
+  ["apc-recursion/apc-cp-m14.vi.mdx"]: ApcCpM14Vi,
+  ["apc-searchsort/apc-m11-search.mdx"]: ApcM11Search,
+  ["apc-searchsort/apc-m11-search.vi.mdx"]: ApcM11SearchVi,
+  ["apc-searchsort/apc-m11-sort.mdx"]: ApcM11Sort,
+  ["apc-searchsort/apc-m11-sort.vi.mdx"]: ApcM11SortVi,
+  ["apc-searchsort/apc-m11-trace.mdx"]: ApcM11Trace,
+  ["apc-searchsort/apc-m11-trace.vi.mdx"]: ApcM11TraceVi,
+  ["apc-searchsort/apc-cp-m11.mdx"]: ApcCpM11,
+  ["apc-searchsort/apc-cp-m11.vi.mdx"]: ApcCpM11Vi,
+  ["apc-strings/apc-m7-api.mdx"]: ApcM7Api,
+  ["apc-strings/apc-m7-api.vi.mdx"]: ApcM7ApiVi,
+  ["apc-strings/apc-m7-equals.mdx"]: ApcM7Equals,
+  ["apc-strings/apc-m7-equals.vi.mdx"]: ApcM7EqualsVi,
+  ["apc-strings/apc-m7-frq.mdx"]: ApcM7Frq,
+  ["apc-strings/apc-m7-frq.vi.mdx"]: ApcM7FrqVi,
+  ["apc-strings/apc-cp-m7.mdx"]: ApcCpM7,
+  ["apc-strings/apc-cp-m7.vi.mdx"]: ApcCpM7Vi,
+  ["apc-testing/apc-m16-errors.mdx"]: ApcM16Errors,
+  ["apc-testing/apc-m16-errors.vi.mdx"]: ApcM16ErrorsVi,
+  ["apc-testing/apc-m16-cases.mdx"]: ApcM16Cases,
+  ["apc-testing/apc-m16-cases.vi.mdx"]: ApcM16CasesVi,
+  ["apc-testing/apc-m16-trace.mdx"]: ApcM16Trace,
+  ["apc-testing/apc-m16-trace.vi.mdx"]: ApcM16TraceVi,
+  ["apc-testing/apc-cp-m16.mdx"]: ApcCpM16,
+  ["apc-testing/apc-cp-m16.vi.mdx"]: ApcCpM16Vi,
+  ["apc-variables/apc-m2-prims.mdx"]: ApcM2Prims,
+  ["apc-variables/apc-m2-prims.vi.mdx"]: ApcM2PrimsVi,
+  ["apc-variables/apc-m2-casts.mdx"]: ApcM2Casts,
+  ["apc-variables/apc-m2-casts.vi.mdx"]: ApcM2CastsVi,
+  ["apc-variables/apc-m2-overflow.mdx"]: ApcM2Overflow,
+  ["apc-variables/apc-m2-overflow.vi.mdx"]: ApcM2OverflowVi,
+  ["apc-variables/apc-cp-m2.mdx"]: ApcCpM2,
+  ["apc-variables/apc-cp-m2.vi.mdx"]: ApcCpM2Vi,
   ["ca-abi-layout/ca-calling-conventions.mdx"]: CaCallingConventions,
   ["ca-abi-layout/ca-calling-conventions.vi.mdx"]: CaCallingConventionsVi,
   ["ca-abi-layout/ca-struct-layout-abi.mdx"]: CaStructLayoutAbi,
@@ -4480,6 +4950,70 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["hsg-vao-mon/hsg-m1-bridge.vi.mdx"]: HsgM1BridgeVi,
   ["hsg-vao-mon/hsg-cp-m1.mdx"]: HsgCpM1,
   ["hsg-vao-mon/hsg-cp-m1.vi.mdx"]: HsgCpM1Vi,
+  ["hsgx-budget/hsgx-m2-arithmetic.mdx"]: HsgxM2Arithmetic,
+  ["hsgx-budget/hsgx-m2-arithmetic.vi.mdx"]: HsgxM2ArithmeticVi,
+  ["hsgx-budget/hsgx-m2-mapping.mdx"]: HsgxM2Mapping,
+  ["hsgx-budget/hsgx-m2-mapping.vi.mdx"]: HsgxM2MappingVi,
+  ["hsgx-budget/hsgx-cp-m2.mdx"]: HsgxCpM2,
+  ["hsgx-budget/hsgx-cp-m2.vi.mdx"]: HsgxCpM2Vi,
+  ["hsgx-combinations/hsgx-m4-fusing.mdx"]: HsgxM4Fusing,
+  ["hsgx-combinations/hsgx-m4-fusing.vi.mdx"]: HsgxM4FusingVi,
+  ["hsgx-combinations/hsgx-m4-pairings.mdx"]: HsgxM4Pairings,
+  ["hsgx-combinations/hsgx-m4-pairings.vi.mdx"]: HsgxM4PairingsVi,
+  ["hsgx-combinations/hsgx-cp-m4.mdx"]: HsgxCpM4,
+  ["hsgx-combinations/hsgx-cp-m4.vi.mdx"]: HsgxCpM4Vi,
+  ["hsgx-contests/hsgx-m10-format.mdx"]: HsgxM10Format,
+  ["hsgx-contests/hsgx-m10-format.vi.mdx"]: HsgxM10FormatVi,
+  ["hsgx-contests/hsgx-cp-m10-contest.mdx"]: HsgxCpM10Contest,
+  ["hsgx-contests/hsgx-cp-m10-contest.vi.mdx"]: HsgxCpM10ContestVi,
+  ["hsgx-editorials/hsgx-m11-editorial-protocol.mdx"]: HsgxM11EditorialProtocol,
+  ["hsgx-editorials/hsgx-m11-editorial-protocol.vi.mdx"]: HsgxM11EditorialProtocolVi,
+  ["hsgx-editorials/hsgx-cp-m11-editorial.mdx"]: HsgxCpM11Editorial,
+  ["hsgx-editorials/hsgx-cp-m11-editorial.vi.mdx"]: HsgxCpM11EditorialVi,
+  ["hsgx-final/hsgx-m12-reference-pack.mdx"]: HsgxM12ReferencePack,
+  ["hsgx-final/hsgx-m12-reference-pack.vi.mdx"]: HsgxM12ReferencePackVi,
+  ["hsgx-final/hsgx-cp-m12-capstone.mdx"]: HsgxCpM12Capstone,
+  ["hsgx-final/hsgx-cp-m12-capstone.vi.mdx"]: HsgxCpM12CapstoneVi,
+  ["hsgx-mixed/hsgx-m9-hidden.mdx"]: HsgxM9Hidden,
+  ["hsgx-mixed/hsgx-m9-hidden.vi.mdx"]: HsgxM9HiddenVi,
+  ["hsgx-mixed/hsgx-m9-cp-mixed.mdx"]: HsgxM9CpMixed,
+  ["hsgx-mixed/hsgx-m9-cp-mixed.vi.mdx"]: HsgxM9CpMixedVi,
+  ["hsgx-observation/hsgx-m3-loop.mdx"]: HsgxM3Loop,
+  ["hsgx-observation/hsgx-m3-loop.vi.mdx"]: HsgxM3LoopVi,
+  ["hsgx-observation/hsgx-m3-gallery.mdx"]: HsgxM3Gallery,
+  ["hsgx-observation/hsgx-m3-gallery.vi.mdx"]: HsgxM3GalleryVi,
+  ["hsgx-observation/hsgx-cp-m3.mdx"]: HsgxCpM3,
+  ["hsgx-observation/hsgx-cp-m3.vi.mdx"]: HsgxCpM3Vi,
+  ["hsgx-recognition/hsgx-m1-reading.mdx"]: HsgxM1Reading,
+  ["hsgx-recognition/hsgx-m1-reading.vi.mdx"]: HsgxM1ReadingVi,
+  ["hsgx-recognition/hsgx-m1-signals.mdx"]: HsgxM1Signals,
+  ["hsgx-recognition/hsgx-m1-signals.vi.mdx"]: HsgxM1SignalsVi,
+  ["hsgx-recognition/hsgx-cp-m1.mdx"]: HsgxCpM1,
+  ["hsgx-recognition/hsgx-cp-m1.vi.mdx"]: HsgxCpM1Vi,
+  ["hsgx-speed/hsgx-m8-clock.mdx"]: HsgxM8Clock,
+  ["hsgx-speed/hsgx-m8-clock.vi.mdx"]: HsgxM8ClockVi,
+  ["hsgx-speed/hsgx-m8-mistake-tax.mdx"]: HsgxM8MistakeTax,
+  ["hsgx-speed/hsgx-m8-mistake-tax.vi.mdx"]: HsgxM8MistakeTaxVi,
+  ["hsgx-speed/hsgx-cp-m8.mdx"]: HsgxCpM8,
+  ["hsgx-speed/hsgx-cp-m8.vi.mdx"]: HsgxCpM8Vi,
+  ["hsgx-stress/hsgx-m6-harness.mdx"]: HsgxM6Harness,
+  ["hsgx-stress/hsgx-m6-harness.vi.mdx"]: HsgxM6HarnessVi,
+  ["hsgx-stress/hsgx-m6-generators.mdx"]: HsgxM6Generators,
+  ["hsgx-stress/hsgx-m6-generators.vi.mdx"]: HsgxM6GeneratorsVi,
+  ["hsgx-stress/hsgx-cp-m6.mdx"]: HsgxCpM6,
+  ["hsgx-stress/hsgx-cp-m6.vi.mdx"]: HsgxCpM6Vi,
+  ["hsgx-subtask/hsgx-m7-scoring.mdx"]: HsgxM7Scoring,
+  ["hsgx-subtask/hsgx-m7-scoring.vi.mdx"]: HsgxM7ScoringVi,
+  ["hsgx-subtask/hsgx-m7-climb.mdx"]: HsgxM7Climb,
+  ["hsgx-subtask/hsgx-m7-climb.vi.mdx"]: HsgxM7ClimbVi,
+  ["hsgx-subtask/hsgx-cp-m7.mdx"]: HsgxCpM7,
+  ["hsgx-subtask/hsgx-cp-m7.vi.mdx"]: HsgxCpM7Vi,
+  ["hsgx-wrong/hsgx-m5-taxonomy.mdx"]: HsgxM5Taxonomy,
+  ["hsgx-wrong/hsgx-m5-taxonomy.vi.mdx"]: HsgxM5TaxonomyVi,
+  ["hsgx-wrong/hsgx-m5-counterexamples.mdx"]: HsgxM5Counterexamples,
+  ["hsgx-wrong/hsgx-m5-counterexamples.vi.mdx"]: HsgxM5CounterexamplesVi,
+  ["hsgx-wrong/hsgx-cp-m5.mdx"]: HsgxCpM5,
+  ["hsgx-wrong/hsgx-cp-m5.vi.mdx"]: HsgxCpM5Vi,
   ["hsgi-analysis/hsgi-m1-budget.mdx"]: HsgiM1Budget,
   ["hsgi-analysis/hsgi-m1-budget.vi.mdx"]: HsgiM1BudgetVi,
   ["hsgi-analysis/hsgi-m1-mitm.mdx"]: HsgiM1Mitm,
@@ -4596,6 +5130,92 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["hsgi-trees/hsgi-m10-diameter.vi.mdx"]: HsgiM10DiameterVi,
   ["hsgi-trees/hsgi-cp-m10.mdx"]: HsgiCpM10,
   ["hsgi-trees/hsgi-cp-m10.vi.mdx"]: HsgiCpM10Vi,
+  ["hsgm-adversary/hsgm-m12-checklist.mdx"]: HsgmM12Checklist,
+  ["hsgm-adversary/hsgm-m12-checklist.vi.mdx"]: HsgmM12ChecklistVi,
+  ["hsgm-adversary/hsgm-m12-minimal.mdx"]: HsgmM12Minimal,
+  ["hsgm-adversary/hsgm-m12-minimal.vi.mdx"]: HsgmM12MinimalVi,
+  ["hsgm-adversary/hsgm-cp-m12.mdx"]: HsgmCpM12,
+  ["hsgm-adversary/hsgm-cp-m12.vi.mdx"]: HsgmCpM12Vi,
+  ["hsgm-budget/hsgm-m2-law.mdx"]: HsgmM2Law,
+  ["hsgm-budget/hsgm-m2-law.vi.mdx"]: HsgmM2LawVi,
+  ["hsgm-budget/hsgm-m2-valuemedium.mdx"]: HsgmM2Valuemedium,
+  ["hsgm-budget/hsgm-m2-valuemedium.vi.mdx"]: HsgmM2ValuemediumVi,
+  ["hsgm-budget/hsgm-cp-m2.mdx"]: HsgmCpM2,
+  ["hsgm-budget/hsgm-cp-m2.vi.mdx"]: HsgmCpM2Vi,
+  ["hsgm-clinic/hsgm-m11-localize.mdx"]: HsgmM11Localize,
+  ["hsgm-clinic/hsgm-m11-localize.vi.mdx"]: HsgmM11LocalizeVi,
+  ["hsgm-clinic/hsgm-m11-catalog.mdx"]: HsgmM11Catalog,
+  ["hsgm-clinic/hsgm-m11-catalog.vi.mdx"]: HsgmM11CatalogVi,
+  ["hsgm-clinic/hsgm-cp-m11.mdx"]: HsgmCpM11,
+  ["hsgm-clinic/hsgm-cp-m11.vi.mdx"]: HsgmCpM11Vi,
+  ["hsgm-decompose/hsgm-m3-model.mdx"]: HsgmM3Model,
+  ["hsgm-decompose/hsgm-m3-model.vi.mdx"]: HsgmM3ModelVi,
+  ["hsgm-decompose/hsgm-m3-restate.mdx"]: HsgmM3Restate,
+  ["hsgm-decompose/hsgm-m3-restate.vi.mdx"]: HsgmM3RestateVi,
+  ["hsgm-decompose/hsgm-cp-m3.mdx"]: HsgmCpM3,
+  ["hsgm-decompose/hsgm-cp-m3.vi.mdx"]: HsgmCpM3Vi,
+  ["hsgm-dpsynth/hsgm-m6-state.mdx"]: HsgmM6State,
+  ["hsgm-dpsynth/hsgm-m6-state.vi.mdx"]: HsgmM6StateVi,
+  ["hsgm-dpsynth/hsgm-m6-fusion.mdx"]: HsgmM6Fusion,
+  ["hsgm-dpsynth/hsgm-m6-fusion.vi.mdx"]: HsgmM6FusionVi,
+  ["hsgm-dpsynth/hsgm-cp-m6.mdx"]: HsgmCpM6,
+  ["hsgm-dpsynth/hsgm-cp-m6.vi.mdx"]: HsgmCpM6Vi,
+  ["hsgm-final/hsgm-m14-pipeline.mdx"]: HsgmM14Pipeline,
+  ["hsgm-final/hsgm-m14-pipeline.vi.mdx"]: HsgmM14PipelineVi,
+  ["hsgm-final/hsgm-m14-simulate.mdx"]: HsgmM14Simulate,
+  ["hsgm-final/hsgm-m14-simulate.vi.mdx"]: HsgmM14SimulateVi,
+  ["hsgm-final/hsgm-cp-m14.mdx"]: HsgmCpM14,
+  ["hsgm-final/hsgm-cp-m14.vi.mdx"]: HsgmCpM14Vi,
+  ["hsgm-final/hsgm-cp-m14b.mdx"]: HsgmCpM14b,
+  ["hsgm-final/hsgm-cp-m14b.vi.mdx"]: HsgmCpM14bVi,
+  ["hsgm-graphsyn/hsgm-m7-schedule.mdx"]: HsgmM7Schedule,
+  ["hsgm-graphsyn/hsgm-m7-schedule.vi.mdx"]: HsgmM7ScheduleVi,
+  ["hsgm-graphsyn/hsgm-m7-reroot.mdx"]: HsgmM7Reroot,
+  ["hsgm-graphsyn/hsgm-m7-reroot.vi.mdx"]: HsgmM7RerootVi,
+  ["hsgm-graphsyn/hsgm-cp-m7.mdx"]: HsgmCpM7,
+  ["hsgm-graphsyn/hsgm-cp-m7.vi.mdx"]: HsgmCpM7Vi,
+  ["hsgm-greedy/hsgm-m5-exchange.mdx"]: HsgmM5Exchange,
+  ["hsgm-greedy/hsgm-m5-exchange.vi.mdx"]: HsgmM5ExchangeVi,
+  ["hsgm-greedy/hsgm-m5-break.mdx"]: HsgmM5Break,
+  ["hsgm-greedy/hsgm-m5-break.vi.mdx"]: HsgmM5BreakVi,
+  ["hsgm-greedy/hsgm-cp-m5.mdx"]: HsgmCpM5,
+  ["hsgm-greedy/hsgm-cp-m5.vi.mdx"]: HsgmCpM5Vi,
+  ["hsgm-observe/hsgm-m4-experiment.mdx"]: HsgmM4Experiment,
+  ["hsgm-observe/hsgm-m4-experiment.vi.mdx"]: HsgmM4ExperimentVi,
+  ["hsgm-observe/hsgm-m4-families.mdx"]: HsgmM4Families,
+  ["hsgm-observe/hsgm-m4-families.vi.mdx"]: HsgmM4FamiliesVi,
+  ["hsgm-observe/hsgm-cp-m4.mdx"]: HsgmCpM4,
+  ["hsgm-observe/hsgm-cp-m4.vi.mdx"]: HsgmCpM4Vi,
+  ["hsgm-offline/hsgm-m8-sweep.mdx"]: HsgmM8Sweep,
+  ["hsgm-offline/hsgm-m8-sweep.vi.mdx"]: HsgmM8SweepVi,
+  ["hsgm-offline/hsgm-m8-contribute.mdx"]: HsgmM8Contribute,
+  ["hsgm-offline/hsgm-m8-contribute.vi.mdx"]: HsgmM8ContributeVi,
+  ["hsgm-offline/hsgm-cp-m8.mdx"]: HsgmCpM8,
+  ["hsgm-offline/hsgm-cp-m8.vi.mdx"]: HsgmCpM8Vi,
+  ["hsgm-optlab/hsgm-m9-bottleneck.mdx"]: HsgmM9Bottleneck,
+  ["hsgm-optlab/hsgm-m9-bottleneck.vi.mdx"]: HsgmM9BottleneckVi,
+  ["hsgm-optlab/hsgm-m9-accelerate.mdx"]: HsgmM9Accelerate,
+  ["hsgm-optlab/hsgm-m9-accelerate.vi.mdx"]: HsgmM9AccelerateVi,
+  ["hsgm-optlab/hsgm-cp-m9.mdx"]: HsgmCpM9,
+  ["hsgm-optlab/hsgm-cp-m9.vi.mdx"]: HsgmCpM9Vi,
+  ["hsgm-partial/hsgm-m10-bands.mdx"]: HsgmM10Bands,
+  ["hsgm-partial/hsgm-m10-bands.vi.mdx"]: HsgmM10BandsVi,
+  ["hsgm-partial/hsgm-m10-harvest.mdx"]: HsgmM10Harvest,
+  ["hsgm-partial/hsgm-m10-harvest.vi.mdx"]: HsgmM10HarvestVi,
+  ["hsgm-partial/hsgm-cp-m10.mdx"]: HsgmCpM10,
+  ["hsgm-partial/hsgm-cp-m10.vi.mdx"]: HsgmCpM10Vi,
+  ["hsgm-process/hsgm-m1-pipeline.mdx"]: HsgmM1Pipeline,
+  ["hsgm-process/hsgm-m1-pipeline.vi.mdx"]: HsgmM1PipelineVi,
+  ["hsgm-process/hsgm-m1-verify.mdx"]: HsgmM1Verify,
+  ["hsgm-process/hsgm-m1-verify.vi.mdx"]: HsgmM1VerifyVi,
+  ["hsgm-process/hsgm-cp-m1.mdx"]: HsgmCpM1,
+  ["hsgm-process/hsgm-cp-m1.vi.mdx"]: HsgmCpM1Vi,
+  ["hsgm-stress/hsgm-m13-harness.mdx"]: HsgmM13Harness,
+  ["hsgm-stress/hsgm-m13-harness.vi.mdx"]: HsgmM13HarnessVi,
+  ["hsgm-stress/hsgm-m13-decide.mdx"]: HsgmM13Decide,
+  ["hsgm-stress/hsgm-m13-decide.vi.mdx"]: HsgmM13DecideVi,
+  ["hsgm-stress/hsgm-cp-m13.mdx"]: HsgmCpM13,
+  ["hsgm-stress/hsgm-cp-m13.vi.mdx"]: HsgmCpM13Vi,
   ["java-executors-vt/javaa-executor-lifecycle.mdx"]: JavaaExecutorLifecycle,
   ["java-executors-vt/javaa-executor-lifecycle.vi.mdx"]: JavaaExecutorLifecycleVi,
   ["java-executors-vt/javaa-cf-composition.mdx"]: JavaaCfComposition,

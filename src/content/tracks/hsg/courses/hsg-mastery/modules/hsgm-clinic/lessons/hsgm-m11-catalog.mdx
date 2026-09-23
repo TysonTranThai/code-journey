@@ -1,0 +1,27 @@
+# The Bug Catalog
+
+Almost every plausible-but-wrong solution falls into one of seven
+categories. Learn the signatures; recognition beats re-derivation.
+
+1. **Boundary off-by-one.** Exclusive/inclusive endpoints, `hi = n` vs
+   `hi = n−1`, empty-range handling. Signature: fails on tests whose
+   answer sits AT a boundary.
+2. **Tie-breaking.** Comparison uses `>` where `>=` is required (or vice
+   versa) — or the sort key ignores a secondary criterion. Signature:
+   fails when equal keys exist; passes on all-distinct data.
+3. **Signed/type overflow.** int32 accumulation over 2·10^9. Signature:
+   fails only at scale, and the wrapped value is often negative.
+4. **Ordered/unordered counting.** x·(x−1) vs x·(x−1)/2. Signature:
+   exactly double (or half) on inputs with ≥ 2 relevant items.
+5. **Greedy exchange violation.** A sort key missing the term the exchange
+   proof needs. Signature: fails on an adversarial small case with two
+   "competing" items.
+6. **State staleness.** A visited-set or memo reused across queries, or
+   updated too early/late. Signature: the *second* query in a batch is
+   wrong while the first is right.
+7. **Direction confusion.** Undirected edges added one-way; rows/columns
+   transposed; parent/child flipped. Signature: asymmetric inputs break,
+   symmetric ones pass.
+
+The discipline: when you locate a bug, name its category AND write its
+smallest counterexample. Both together are the vaccine.

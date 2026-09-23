@@ -1,0 +1,16 @@
+{
+  "id": "apc-m5-fix-range",
+  "title": "Debug the range sum",
+  "prompt": "`sumRange(lo, hi)` should return lo + (lo+1) + ... + hi, both ends inclusive. It fails for every call. Trace the loop with lo=2, hi=4 (expected 9) to find the flaw, then fix it minimally.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int sumRange(int lo, int hi) {\n        int total = 0;\n        for (int i = lo; i < hi; i++) {\n            total += i;\n        }\n        return total;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "inclusive both ends",
+      "code": "\nCjTestBase.checkEq(Solution.sumRange(2, 4), 9, \"2+3+4\");\nCjTestBase.checkEq(Solution.sumRange(5, 5), 5, \"single-element range\");\nCjTestBase.checkEq(Solution.sumRange(1, 10), 55, \"1..10\");\n",
+      "hint": "The test i < hi skips the last value; i <= hi fixes it."
+    }
+  ],
+  "level": "debugging"
+}

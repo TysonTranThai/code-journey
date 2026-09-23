@@ -1,0 +1,33 @@
+An **array** holds a fixed number of values of one type, numbered from 0:
+
+```java
+int[] scores = new int[4];          // {0, 0, 0, 0} — zero-filled
+int[] primes = {2, 3, 5, 7};        // literal form
+primes[0] = 2;                       // index (read/write)
+int n = primes.length;               // LENGTH IS A FIELD — no parentheses!
+```
+
+`length` without `()` is the array idiosyncrasy (Strings use `length()`,
+ArrayLists use `size()` — the exam mixes all three on purpose).
+
+**Bounds**: valid indices are 0 .. length − 1. Index 4 on a length-4 array
+compiles fine and throws `ArrayIndexOutOfBoundsException` at **runtime** —
+the most common crash in student code.
+
+**Default values**: `new int[4]` is all zeros; `new boolean[4]` all false;
+`new String[4]` all **null** (an array of references, not objects).
+
+The two traversal loops:
+
+```java
+for (int i = 0; i < arr.length; i++) {   // when you need the index
+    System.out.println(arr[i]);
+}
+
+for (int x : arr) {                      // enhanced for: values only
+    System.out.println(x);
+}
+```
+
+The enhanced for cannot *modify* the array (its variable is a copy) and
+gives no position — use it for read-only visits.

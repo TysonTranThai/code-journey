@@ -1,0 +1,55 @@
+# Three-Pass Reading
+
+Fast solvers do not read a problem once. They read it **three times**, asking
+a different question each pass.
+
+## Pass 1 — What is the shape?
+
+Skip the story. Find: what is given (n, m, arrays, graph), what is asked
+(count? construct? maximize? minimum possible x?), and the constraint table.
+Write down the *shape* in one line: `n ≤ 2·10^5, q ≤ 2·10^5, range add,
+range sum` is a shape; "orcs attack villages" is not.
+
+## Pass 2 — What do the examples say?
+
+Recompute every sample **by hand**. Two reasons: it verifies you understood
+the operation, and samples hide edge cases (a sample where the answer is 0 is
+telling you 0 is possible). If your mental model cannot reproduce the
+samples, you are not ready to think about algorithms.
+
+## Pass 3 — What fits the budget?
+
+Convert constraints to a complexity budget (next lesson covers the table).
+Then ask: which family has that complexity *and* matches the shape? If
+n ≤ 20, almost anything works — the setter is testing correct brute force.
+If n ≤ 2·10^5 with queries interleaved, only O((n+q) log n)-ish survives.
+
+## The Algorithm Selection Guide (keep this)
+
+| If you see | Consider (in order) |
+|---|---|
+| n ≤ 20 | brute force / bitmask enumeration |
+| n ≤ 500, pairs | O(n^2) DP or Floyd-Warshall |
+| n ≤ 5000, sequences | O(n^2) DP, divide and conquer |
+| n ≤ 2·10^5, offline | sorting + two pointers, sweep line |
+| range add / range sum | Fenwick (BIT) or lazy segment tree |
+| static range min | sparse table |
+| connectivity, edges only added | DSU |
+| shortest path, non-negative weights | Dijkstra |
+| shortest path, unit weights | BFS |
+| unweighted, 0/1 weights | 0-1 BFS |
+| all-pairs small n | Floyd-Warshall |
+| spanning tree weight | Kruskal / Prim |
+| strongly connected components | Kosaraju / Tarjan |
+| k-th element online | balanced BST / Fenwick descent / merge sort tree |
+| count pairs `i<j` with condition | sort + Fenwick (inversion-style) |
+| pattern occurrences in text | KMP / Z-function |
+| count numbers ≤ N with digit property | digit DP |
+| assignment / pairing | bipartite matching, flow |
+| game, piles, last move wins | Nim / Grundy (XOR) |
+| geometry, minimize distance | sweep + closest pair, binary search |
+| answer is monotone in x | binary search on answer |
+
+The table is a *shortlist generator*, not an answer key. Drills in this
+module train the reflex; later modules train the verification (does the
+family actually fit the operation semantics?).

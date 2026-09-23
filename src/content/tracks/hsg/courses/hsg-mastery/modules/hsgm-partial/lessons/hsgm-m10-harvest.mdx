@@ -1,0 +1,31 @@
+# Harvesting Without Breaking
+
+The professional partial-score submission is **one program with tiers**:
+
+```text
+read n, the values
+if (n <= 20)      → run brute force, output, exit
+if (n <= 2000)    → run O(n²), output, exit
+run full solution
+```
+
+Each tier is independently testable; a bug in the full solution cannot
+destroy the n ≤ 20 points if the tier exits before the heavy path runs.
+
+## Tier discipline
+
+- **Tier order = band order.** Ship and verify the easiest tier first.
+- **Shared input parsing.** Parse everything once, correctly; most tier
+  bugs are actually parsing bugs (the tier never sees the real input).
+- **The upgrade rule.** When adding tier k+1, re-run tier k's tests. The
+  most expensive contest mistake is a refactor that silently breaks the
+  guaranteed points.
+- **Fallback ladder.** If the full solution TLEs on the real test, the
+  tiers above it still answered — partial scoring rewards programs that
+  degrade gracefully.
+
+## Honesty
+
+Never special-case the *sample tests* themselves. Hard-coding sample
+outputs is detectable, worth zero learning, and trains exactly the wrong
+instinct. Specialize on *constraint shapes*, not on the sample files.

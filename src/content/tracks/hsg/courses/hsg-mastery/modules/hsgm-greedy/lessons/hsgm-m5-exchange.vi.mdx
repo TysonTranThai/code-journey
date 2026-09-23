@@ -1,0 +1,31 @@
+# Luận điểm hoán đổi
+
+Một tuyên bố greedy không được chứng minh bằng ví dụ. Công cụ chuẩn: lấy
+BẤT KỲ lời giải tối ưu và **hoán đổi** các lựa chọn của nó về phía greedy,
+chứng minh mục tiêu không bao giờ xấu đi. Nếu mọi phép hoán đổi đều an
+toàn, lời giải greedy là tối ưu.
+
+## Ví dụ kinh điển — lập lịch đoạn
+
+Tuyên bố: liên tục lấy đoạn có **đầu phải sớm nhất** tối đa hóa số đoạn
+không chồng lấn.
+
+Hoán đổi: gọi G = lựa chọn đầu của greedy (đầu phải sớm nhất), O = lựa
+chọn đầu của một lời giải tối ưu nào đó. Nếu G ≠ O, thay O bằng G: G kết
+thúc không muộn hơn nên không xung đột với đoạn nào mà O chưa xung đột.
+Phần còn lại của O vẫn hợp lệ. Quy nạp trên các đoạn còn lại. Xong.
+
+## Khi khóa sort nói dối
+
+Hai công việc, mỗi việc (thời gian, deadline). "Sort theo việc ngắn nhất"
+thất bại khi mục tiêu là độ trễ; khóa đúng là deadline-sớm-nhất (một phép
+hoán đổi kề nhau kinh điển chỉ ra đảo hai phần tử nghịch đảo không bao giờ
+tăng max lateness). Bài học: **khóa sort chính là định lý**. Sort theo đại
+lượng sai không phải là một cú vấp heuristic — đó là một định lý sai, và
+các test phản đốidraulic tồn tại chính vì điều đó.
+
+## Gánh nặng chứng minh
+
+Với mọi greedy bạn viết trong khóa này, phải có sẵn một câu suy luận
+hoán đổi: *vì sao lấy cái này bây giờ không bao giờ tệ hơn bất kỳ cái gì
+khác?* Nếu không phác được, bạn đang cá cược.

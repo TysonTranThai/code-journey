@@ -1,0 +1,37 @@
+**Local variables** live inside the method that declares them — parameters
+included. Nothing outside can see them; nothing inside escapes:
+
+```java
+public static int twice(int x) {
+    int doubled = x * 2;    // local: dies when the method returns
+    return doubled;
+}
+```
+
+**Scope** is where a name is visible. A method can read its own parameters
+and locals; it cannot read another method's. Two methods may each have a
+local named `x` — different boxes.
+
+**static context**: our `Solution` methods are `static`, which means they
+belong to the class, not to an object. A `static` method can call other
+`static` methods of the same class directly by name — that is how helpers
+compose:
+
+```java
+public static int hypotenuseRounded(int a, int b) {
+    double c = Math.sqrt(a * a + b * b);
+    return (int) (c + 0.5);
+}
+```
+
+`Math.sqrt` is itself just a static method of the `Math` class — call it as
+`Math.sqrt(x)`, never `new Math()` (it has no public constructor).
+
+**Pass-by-value**: Java copies arguments. Reassigning a parameter inside the
+method changes only the copy:
+
+```java
+public static void bump(int x) {
+    x++;              // the caller's variable is untouched
+}
+```

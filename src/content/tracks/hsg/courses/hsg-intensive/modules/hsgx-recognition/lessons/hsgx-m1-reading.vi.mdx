@@ -1,0 +1,54 @@
+# Đọc đề ba lượt
+
+Solver nhanh không đọc đề một lần. Họ đọc **ba lượt**, mỗi lượt một câu hỏi.
+
+## Lượt 1 — Bài có dạng gì?
+
+Bỏ qua cốt truyện. Tìm: dữ liệu cho trước (n, m, mảng, đồ thị), cái được hỏi
+(đếm? dựng? tối đa? giá trị x nhỏ nhất?), và bảng giới hạn. Viết *dạng* bài
+trong một dòng: `n ≤ 2·10^5, q ≤ 2·10^5, cập nhật đoạn, tổng đoạn` là một
+dạng; "orcs tấn công làng" thì không.
+
+## Lượt 2 — Ví dụ nói gì?
+
+Tính lại **từng ví dụ bằng tay**. Hai lý do: xác nhận bạn hiểu đúng phép
+toán, và ví dụ giấu test biên (một ví dụ có đáp án 0 đang nói với bạn rằng 0
+là khả thi). Nếu mô hình trong đầu không tái tạo được ví dụ, bạn chưa sẵn
+sàng nghĩ về thuật toán.
+
+## Lượt 3 — Cái gì vừa với ngân sách?
+
+Chuyển giới hạn thành ngân sách độ phức tạp (bảng ở bài sau). Sau đó hỏi:
+họ thuật toán nào vừa ngân sách *và* khớp dạng bài? Nếu n ≤ 20, gần như
+thuật nào cũng chạy — người ra đề đang kiểm tra brute force đúng. Nếu
+n ≤ 2·10^5 với truy vấn xen kẽ, chỉ O((n+q) log n)-ish là sống sót.
+
+## Bảng chọn thuật toán (hãy giữ lại)
+
+| Nếu bạn thấy | Cân nhắc (theo thứ tự) |
+|---|---|
+| n ≤ 20 | brute force / liệt kê bitmask |
+| n ≤ 500, xét từng cặp | DP O(n^2) hoặc Floyd-Warshall |
+| n ≤ 5000, dãy | DP O(n^2), chia để trị |
+| n ≤ 2·10^5, offline | sắp xếp + two pointers, quét đường thẳng |
+| cập nhật đoạn / tổng đoạn | Fenwick (BIT) hoặc segment tree lazy |
+| min đoạn tĩnh | sparse table |
+| liên thông, chỉ thêm cạnh | DSU |
+| đường đi ngắn nhất, trọng số không âm | Dijkstra |
+| đường đi ngắn nhất, trọng số 1 | BFS |
+| trọng số 0/1 | 0-1 BFS |
+| mọi cặp đỉnh, n nhỏ | Floyd-Warshall |
+| cây khung nhỏ nhất | Kruskal / Prim |
+| thành phần liên thông mạnh | Kosaraju / Tarjan |
+| phần tử thứ k trực tuyến | BST cân bằng / Fenwick descent / merge sort tree |
+| đếm cặp `i<j` theo điều kiện | sort + Fenwick (kiểu nghịch thế) |
+| số lần xuất hiện của mẫu trong xâu | KMP / Z-function |
+| đếm số ≤ N theo tính chất chữ số | digit DP |
+| ghép cặp / phân công | ghép đôi hai phía, flow |
+| trò chơi, đống đá, người cuối thắng | Nim / Grundy (XOR) |
+| hình học, khoảng cách nhỏ nhất | quét + cặp điểm gần nhất, tìm kiếm nhị phân |
+| đáp án đơn điệu theo x | tìm kiếm nhị phân trên đáp án |
+
+Bảng chỉ là *bộ sinh ứng cử viên*, không phải đáp án. Drill trong module này
+luyện phản xạ; các module sau luyện kiểm chứng (họ thuật toán có thật sự vừa
+với ngữ nghĩa phép toán không?).

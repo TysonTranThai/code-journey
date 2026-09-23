@@ -1,0 +1,16 @@
+{
+  "id": "hsgm-p13-d3",
+  "title": "The Ghost Mismatch",
+  "prompt": "**Scenario.** Your stress harness found one mismatch, but the input was regenerated with a new random seed and now nothing fails. First move?\n\n**Which approach is the best fit? The program only needs to print the letter.**\n\n**A)** Move on — it was a fluke\n\n**B)** Fix the seed: reproduce first, shrink second. An unreproducible failure is unfixable; re-seed with a fixed value and re-run the exact sequence\n\n**C)** Increase the input size in the generator\n\n**D)** Delete the brute force to speed up the loop",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "answer",
+      "code": "std::istringstream in(\"\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"B\"));",
+      "hint": "Reproducibility is the harness's core contract: seed everything, log the seed with every mismatch. Only a reproducible failure can be shrunk into a counterexample."
+    }
+  ],
+  "level": "independent"
+}

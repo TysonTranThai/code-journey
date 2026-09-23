@@ -1,0 +1,31 @@
+# Value Ranges Are Constraints Too
+
+n is not the only number that chooses the algorithm. The **value range**
+confesses just as loudly.
+
+## Big values, small positions
+
+Values up to 10^9 or 10^18 with n ≤ 2·10^5 means the *values* cannot be
+array indices. Your options: coordinate compression (if only relative order
+matters), hashing (if only equality matters), or binary search on the value
+domain (if feasibility is monotone in the answer).
+
+## 10^18 means log
+
+Any state that walks the value 10^18 itself (1-indexed loops over it,
+arrays of its size) is dead on arrival. If a problem says "count numbers
+≤ 10^18 with property P", the count must live on the **19 digits** — digit
+DP — or on a monotone predicate over the value — binary search.
+
+## The answer's own bound
+
+"Print the answer modulo 10^9 + 7" warns you the answer is astronomically
+large — count with DP/combinatorics, never enumerate. An explicit small
+bound ("the answer fits in 32 bits") is the setter's gift — it often means
+a direct constructive or greedy exists.
+
+## Sum bounds
+
+"Σn ≤ 2·10^5 over all test cases" is a gift: per-test-case complexity can
+be near-linear *summed*, so expensive precomputation per case is fine when
+cases are few, and vice versa. Misreading this is a classic TLE.

@@ -1,0 +1,16 @@
+{
+  "id": "apc-m19-register",
+  "title": "State machine: the register",
+  "prompt": "Implement `Register.spend(int c)` to spec: if c fits in the balance, subtract it and return true; otherwise change nothing and return false.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "import java.util.*;\n\npublic class Solution {\n    public static class Register {\n        private int cents;\n\n        public Register() {\n            cents = 0;\n        }\n\n        public void add(int c) {\n            cents += c;\n        }\n\n        // Postcondition: subtracts c if affordable and returns true;\n        // otherwise leaves state unchanged and returns false\n        public boolean spend(int c) {\n            // complete\n            return false;\n        }\n\n        public int balance() {\n            return cents;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "sequence trace",
+      "code": "\nSolution.Register r = new Solution.Register();\nCjTestBase.checkEq(r.spend(100), false, \"empty register refuses\");\nr.add(250);\nCjTestBase.checkEq(r.spend(100), true, \"affordable now\");\nCjTestBase.checkEq(r.balance(), 150, \"balance updated\");\nCjTestBase.checkEq(r.spend(200), false, \"overdraw refused\");\nCjTestBase.checkEq(r.balance(), 150, \"state unchanged on refusal\");\n",
+      "hint": "guard first: if (c > cents) return false; then subtract."
+    }
+  ],
+  "level": "independent"
+}

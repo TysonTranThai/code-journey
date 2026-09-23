@@ -1,0 +1,34 @@
+# The Minimal Counterexample
+
+Given any failing input, shrink it. Every step of shrinking either keeps
+the failure (good — smaller) or breaks it (better — you have localized a
+necessary component of the bug).
+
+## The shrink loop
+
+1. Delete an element. Still fails? Keep it deleted.
+2. Halve the values (preserve order/parity relationships that matter).
+3. Merge adjacent equal elements.
+4. Replace large values with {1, 2, 3}-style stand-ins, preserving only
+   the comparisons the solution makes.
+
+Stop when the case is irreducible — typically n ≤ 5. The irreducible
+case states the bug as a theorem: *for this input shape, this code
+outputs X, correct is Y.*
+
+## Why minimal matters
+
+- **Diagnosis:** the minimal case usually fits on one screen; the
+  offending line is visible.
+- **The fix spec:** the minimal case says exactly which structure the
+  code mishandles — the fix must handle that shape, and the case becomes
+  the regression test.
+- **Communication:** "this fails on [3, 1, 2]" is a complete bug report;
+  "it fails on my 200-line random test" is not.
+
+## When nothing small fails
+
+If n ≤ 5 never fails but n = 40 does, the bug is either scale-dependent
+(overflow, O(n²) death) or structural (needs ≥ k items to interact). Then
+build the *structured* minimal case: k = the smallest interacting count,
+with a repeating pattern — not random bulk.

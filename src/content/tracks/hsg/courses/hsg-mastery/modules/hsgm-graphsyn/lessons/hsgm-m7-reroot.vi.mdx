@@ -1,0 +1,27 @@
+# Đổi gốc
+
+Dạng bài: "với mọi đỉnh v, tính đáp án khi v là gốc/đích/xuất phát."
+Chạy lại DP O(n) từ mỗi đỉnh là O(n²) — chết ở n = 200000.
+
+## Mẫu reroot
+
+1. **Lượt lên (post-order):** tính cho mỗi cây con phần đóng góp nó sẽ
+   trao cho cha (kích thước cây con, đường đi xuống tốt nhất, tổng độ sâu
+   trong cây con).
+2. **Lượt xuống (pre-order):** mang đáp án của gốc đi khắp cây; khi dời
+   gốc từ u sang con v, cập nhật bằng **công thức hoán đổi**: trừ đóng góp
+   của v khỏi tổng của u, cộng đóng góp của u vào v. O(1) mỗi cạnh.
+
+## Tại sao quan trọng ngoài cây
+
+Mẫu "tính một DP toàn cục rồi đi lan nó" xuất hiện trong reroot trên DAG,
+trong truy vấn offline đã sort, và trong đếm đóng góp ("đóng góp của mỗi
+phần tử vào mọi đáp án"). Kỹ năng tổng quát: **đếm đóng góp, không đếm cấu
+hình** — với mỗi phần tử, hỏi nó tham gia ở đâu, thay vì liệt kê mọi đáp
+án cuối.
+
+## Kiểm tra tính đúng
+
+Bug reroot sống trong công thức hoán đổi. Thử tay trên đường 3 đỉnh và
+ngôi sao 4 đỉnh trước bất cứ điều gì khác; hai hình đó luyện mọi số hạng
+của công thức (lá, giữa, tâm, nhiều con).

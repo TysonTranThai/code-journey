@@ -1,0 +1,45 @@
+# Verification Before Submission
+
+A submission is an experiment; run the experiment yourself first. The
+checklist below catches the majority of wrong answers in practice:
+
+## The tiny-n pass
+
+Trace your algorithm by hand on n = 1, n = 2, n = 3. Most loop-bound and
+off-by-one bugs live here, and hand-tracing takes seconds. If the code
+branches on n, test both branches.
+
+## The degenerate pass
+
+- all values **equal** (hits tie-handling, duplicate logic);
+- all values **distinct already** (hits "already satisfied" paths);
+- **sorted ascending** and **sorted descending** (hits monotonicity
+  assumptions and two-pointer directions);
+- **extremes**: minimum and maximum allowed values, including negatives.
+
+## The direction pass
+
+For graph problems: does the edge direction match the statement? For
+string problems: prefix vs suffix confusion? For ranges: inclusive vs
+exclusive ends? These three are the most common silent misreads.
+
+## The overflow pass
+
+Count the bits. Sum of n values ≤ 10^9 each overflows int32 at n ≈ 2 —
+long long from the start is cheaper than one WA. Products: n(n−1)/2 with
+n = 10^5 is ~5·10^9, long long territory. A comparator that subtracts
+integers can overflow — compare, don't subtract, unless you know the
+range.
+
+## The complexity pass
+
+Multiply out the loops at max constraints. n·q with both 2·10^5 is 4·10^10
+— dead. n log n with log = 18 is 3.6·10^6 per op-set — comfortable. If the
+estimate is near the ceiling (~10^8–3·10^8), reduce constants before
+coding: faster I/O, fewer modulo operations, flattened loops.
+
+## The read-back pass
+
+Re-read the statement *after* coding. Output format (trailing newline?
+spaces?), multiple test cases per file, "if impossible print −1" clauses —
+the requirements your code can satisfy while failing the check anyway.

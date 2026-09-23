@@ -1,0 +1,43 @@
+The three accumulation patterns (declare **outside**, update **inside**):
+
+```java
+// total
+int sum = 0;
+for (int x : arr) { sum += x; }
+
+// count matching a rule
+int evens = 0;
+for (int x : arr) { if (x % 2 == 0) evens++; }
+
+// extremum — seed with the first element, not 0
+int max = arr[0];
+for (int i = 1; i < arr.length; i++) {
+    if (arr[i] > max) {
+        max = arr[i];
+    }
+}
+```
+
+Why seed with `arr[0]`? Seeding `max = 0` is wrong for all-negative arrays
+(the answer would be 0, an element that isn't even there) and `max =
+Integer.MIN_VALUE` works but obscures intent. Seeding with the first element
+is the exam's preferred style.
+
+**Average** = sum / count — cast the sum first:
+`double avg = (double) sum / arr.length;`
+
+**Searching for a position** (linear search):
+
+```java
+public static int indexOf(int[] arr, int target) {
+    for (int i = 0; i < arr.length; i++) {
+        if (arr[i] == target) {
+            return i;          // found: position
+        }
+    }
+    return -1;                 // not found convention
+}
+```
+
+`-1` as "absent" is a universal Java convention — it can never be confused
+with a real index.

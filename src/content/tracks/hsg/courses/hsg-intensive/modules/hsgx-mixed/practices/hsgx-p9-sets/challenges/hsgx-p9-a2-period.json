@@ -1,0 +1,31 @@
+{
+  "id": "hsgx-p9-a2-period",
+  "title": "Mixed A2",
+  "prompt": "**Bài toán.** Given a string s of lowercase letters, print the length of\nthe shortest string t such that s is a concatenation of one or more copies\nof t. If s is not periodic, the answer is |s| itself (one copy).\n\n**Constraints:** 1 ≤ |s| ≤ 10^6.\n\n**Input:** one line: s.\n**Output:** one integer — the shortest period length.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"abab\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "abab = ab + ab → 2."
+    },
+    {
+      "name": "prime",
+      "code": "std::istringstream in(\"abcab\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n\"));",
+      "hint": "No period divides 5 except 5 itself."
+    },
+    {
+      "name": "aaa",
+      "code": "std::istringstream in(\"aaaa\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "aaaa = a·4 → 1."
+    },
+    {
+      "name": "border trap",
+      "code": "std::istringstream in(\"ababa\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n\"));",
+      "hint": "Border is aba (length 3), but 5 − 3 = 2 does not divide 5 → not periodic → 5."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,48 @@
+# Bộ harness vi phân
+
+"Viết trình chấm" của VNOI và kho vũ khí của mọi lập trình viên thi đấu nghiêm
+túc đều chung một hình dạng: ba chương trình và một vòng lặp.
+
+```
+lặp mãi mãi:
+    input  = generator(seed++)
+    a      = candidate(input)   # lời giải bạn tin? chứng minh đi
+    b      = oracle(input)      # chậm nhưng chắc chắn đúng
+    if a != b:
+        lưu input; dừng         # bạn tìm ra lỗi rồi
+```
+
+## Vì sao nó hiệu quả
+
+Test do người viết thì thiên về điều bạn *nghĩ* code làm. Bộ sinh ngẫu nhiên
+không thiên vị: cuối cùng nó chạm đúng hình dạng lỗi của bạn cần — trường hợp
+hòa bạn xử sai, khoảng rỗng bạn chưa từng nghĩ tới, thứ tự phá vỡ greedy của
+bạn. Với đầu vào nhỏ, oracle đủ nhanh để kiểm tra hàng nghìn trường hợp mỗi giây.
+
+## Oracle mới là phần khó
+
+Nó phải **đơn giản đến mức không thể sai**: liệt kê đầy đủ, O(n!) với n ≤ 8,
+hoặc một thuật toán hoàn toàn khác ứng cử viên. Không bao giờ tái sử dụng code
+của ứng cử viên bên trong oracle — lỗi dùng chung sống sót qua stress test
+(đó là điểm mù duy nhất của nó).
+
+## Seed và khả năng tái lập
+
+Không bao giờ dùng ngẫu nhiên không seed: lỗi không tái lập được là lỗi không
+thể sửa. Dẫn xuất bộ sinh từ một bộ đếm tường minh (`mt19937 rng(seed++)`),
+và in seed cùng trường hợp gãy. Đầu vào đã lưu là hợp đồng tối thiểu: nó phải
+tái lập chính xác sự bất đồng.
+
+## Điểm dừng và phân bổ thời gian
+
+Trong kỳ thi thật bạn có cỡ 10–20 phút stress test. Quyết định ngân sách trước
+(ví dụ 5000 case), và nếu không tìm thấy bất đồng, độ tin cậy tăng lên — nhưng
+một lượt qua không bao giờ là chứng minh, chỉ là một biên. Khi oracle quá chậm,
+giảm n cho tới khi nhanh (n ≤ 8 kiểm hàng nghìn case; n ≤ 100 kiểm hàng trăm —
+vẫn là tưới lưới mạnh).
+
+## Trong khóa này harness chạy thật
+
+Mỗi thử thách dưới đây nhúng vòng lặp vào trong `solve()`: sinh, so ứng cử viên
+với oracle, in `OK trials` nếu mọi thứ khớp, in `MISMATCH` kèm case nếu từng
+bất đồng. Các test chấm đúng điều đó.

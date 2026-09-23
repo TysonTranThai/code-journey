@@ -1,0 +1,16 @@
+{
+  "id": "hsgm-p8-d3",
+  "title": "The Entangled Condition",
+  "prompt": "**Scenario.** Count subsets S with (sum of S) divisible by 3 AND |S| even. Why does a per-element contribution flip fail here?\n\n**Which approach is the best fit? The program only needs to print the letter.**\n\n**A)** It doesn't fail — sums and parities are always separable\n\n**B)** The two conditions interact through the same elements: an element's effect on parity and on sum-mod-3 cannot be counted independently of the set's other members, so the joint condition resists a single per-element split\n\n**C)** Because 3 is prime\n\n**D)** Because subsets can be empty",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "answer",
+      "code": "std::istringstream in(\"\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"B\"));",
+      "hint": "Joint conditions on overlapping statistics (sum mod 3 × count mod 2) need a joint state DP (position × sum%3 × parity), not a separable contribution flip. Knowing when NOT to flip is the skill."
+    }
+  ],
+  "level": "independent"
+}

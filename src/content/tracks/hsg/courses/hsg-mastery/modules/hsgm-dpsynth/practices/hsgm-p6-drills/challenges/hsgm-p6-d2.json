@@ -1,0 +1,16 @@
+{
+  "id": "hsgm-p6-d2",
+  "title": "The Fat Transition",
+  "prompt": "**Scenario.** dp[i] = min over j < i of dp[j] + (a[i] + b[j])² — note the square spans both i and j. n = 200000. What is the true situation?\n\n**Which approach is the best fit? The program only needs to print the letter.**\n\n**A)** Prefix-min fusion works: keep min of dp[j] + b[j]\n\n**B)** The square entangles i and j (expands to a[i]² + 2·a[i]·b[j] + b[j]²); the cross term 2·a[i]·b[j] makes the best j depend on a[i] — a Li Chao/convex-hull structure, not a plain prefix min\n\n**C)** DP is impossible here; use Dijkstra\n\n**D)** Sort by a[i] + b[j] and take the first",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "answer",
+      "code": "std::istringstream in(\"\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"B\"));",
+      "hint": "Expanding the square exposes the entangled cross term: the optimal j depends on −2·a[i], which is exactly the line-query pattern (Li Chao tree / CHT). Plain prefix-min fusion would silently answer the wrong question."
+    }
+  ],
+  "level": "independent"
+}

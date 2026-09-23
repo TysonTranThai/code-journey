@@ -1,0 +1,37 @@
+# Quy trình bảy bước
+
+Solver mạnh chạy cùng một vòng lặp trên mọi bài lạ:
+
+1. **Dựng mô hình** — diễn lại bài bằng đối tượng và phép toán, bỏ cốt
+   truyện. "n cái đèn, đảo đoạn tiền tố" là mô hình; "pháp sư niệm chú"
+   thì không.
+2. **Tính ngân sách** — giới hạn → trần số phép toán → các họ ứng cử viên.
+   Nếu trần ~3·10^8, một thuật O(n log^2 n) với n = 3·10^5 đã thuộc vùng
+   "code ngay"; mải mốt tìm O(n) có thể *mất* điểm vì rủi ro cài đặt.
+3. **Ứng cử viên** — liệt kê hai ba họ vừa ngân sách. Với mỗi họ, viết một
+   câu khẳng định điều kiện cần đúng để họ đó dùng được.
+4. **Đúng trước, nhanh sau** — trong các ứng cử viên, ý tưởng *đúng* rẻ
+   nhất thắng. Thuật đơn giản mà pass hơn thuật thông minh bị TLE hoặc cài
+   sai. Ưu tiên tính đúng đắn, rồi mới tốc độ.
+5. **Kiểm chứng trước khi code** — tự tấn công ý tưởng của mình: n = 1, 2,
+   mọi giá trị bằng nhau, input đã sắp / đảo ngược, trùng giá trị, giá trị
+   cực trị. Sống sót thì code. Tự tìm ra điểm gãy là vừa tiết kiệm một lần
+   nộp.
+6. **Cài phòng thủ** — chỗ bạn tự tin nhất chính là chỗ sinh lỗi. Check
+   sample bằng cách *truy vết chính code của mình*, không phải bằng niềm
+   tin.
+7. **Bảo vệ** — biết lời giải vì sao đúng (một đoạn văn) và nó chạy thế
+   nào trên input xấu nhất. Không nói được cả hai nghĩa là chưa xong.
+
+## Thời gian thực sự mất ở đâu
+
+Hậu kiểm các kỳ thi cho thấy cùng mấy cái hố:
+
+- code trước khi kiểm chứng ý tưởng (bỏ bước 5) — việc gỡ lỗi tốn gấp ba
+  lần thời gian kiểm chứng;
+- tối ưu trước khi có baseline *đúng* (đảo bước 4);
+- đọc lại đề giữa chừng lúc đang code vì chưa bao giờ viết mô hình ra giấy
+  (bỏ bước 1).
+
+Quy trình không phải thủ tục hành chính — nó là thứ tự tối thiểu hóa tổng
+thời gian, tính cả thời gian của sai lầm.

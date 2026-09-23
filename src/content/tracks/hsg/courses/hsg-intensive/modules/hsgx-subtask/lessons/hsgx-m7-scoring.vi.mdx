@@ -1,0 +1,42 @@
+# Cách chấm điểm một phần vận hành thực sự
+
+Một bài HSG hiếm khi là đúng/sai tuyệt đối. Đề bài giấu một chiếc thang:
+
+- **Subtask 1 (n nhỏ):** ràng buộc yếu đến mức mọi cách đúng đều chạy được.
+- **Subtask 2 (n vừa):** cần cải tiến đa thức.
+- **Subtask 3 (n đầy đủ):** độ phức tạp theo ý đồ, thường n log n hoặc tốt hơn.
+
+Chiếc thang là *món quà*: nó nói cho bạn biết, trước cả khi nghĩ, độ phức tạp
+cần cho lời giải đầy đủ. n ≤ 20 thì thầm bitmask hoặc vét cạn có cắt tỉa;
+n ≤ 2000 cho phép O(n²); n ≤ 2·10⁵ đòi hỏi O(n log n). **Ràng buộc chính là
+gợi ý của đề bài về lời giải của nó.**
+
+## Chiến lược gom điểm
+
+Nước đi mở đầu tối ưu trong thi là như nhau ở mọi tay thi đấu mạnh: **đọc hết
+các bài, gom subtask chắc chắn, rồi leo tiếp.**
+
+1. Giải subtask 1 của mọi bài bằng vét cạn chậm nhưng hiển nhiên đúng. Đây là
+   *bảo hiểm sàn*: dù mọi ý tưởng thông minh đều gãy, sàn đã được gom.
+2. Chỉ khi đó mới tấn công lời giải đầy đủ của bài bạn hiểu rõ nhất.
+3. Gần cuối giờ, đổi thời gian còn lại thành (a) độ phức tạp tốt hơn ở bài
+   mạnh nhất, hoặc (b) thêm một subtask ở bài khác.
+
+Vì sao thứ tự này thắng: điểm một phần là *lõm*. 40 điểm đầu của một bài tốn
+15 phút; 20 điểm cuối thường tốn một giờ trực giác tinh tế. Gom sàn mọi bài
+trước tối đa hóa tổng điểm trên mỗi phút.
+
+## Đọc chiếc thang
+
+Thấy subtask, rút ngay ba sự kiện:
+
+- **Ràng buộc của subtask brute-force** — viết brute đó *trước*, nó gần như
+  miễn phí và về sau chính là oracle cho stress test.
+- **Ràng buộc đầy đủ** — tính ngân sách độ phức tạp: với n = 2·10⁵ bạn có
+  cỡ 10⁸ phép tính đơn; bất kỳ thứ gì tiệm cận tệ hơn phải bỏ.
+- **Khoảng cách giữa các subtask** — nhảy từ n ≤ 5000 lên n ≤ 2·10⁵ hét lên
+  rằng "O(n²) là *bẫy theo ý đồ*; tìm cái n log n."
+
+Trong module này bạn sẽ làm đúng như vậy: qua subtask 1 bằng brute (được kiểm
+thật), rồi lời giải đầy đủ (cũng được kiểm), và chứng kiến cái tắt bỏ qua
+brute gãy ở test lớn.

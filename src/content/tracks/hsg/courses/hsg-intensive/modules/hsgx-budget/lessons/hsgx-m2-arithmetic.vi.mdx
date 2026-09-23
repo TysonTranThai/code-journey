@@ -1,0 +1,38 @@
+# Phép toán của ngân sách
+
+Giới hạn thời gian thi được hiệu chỉnh để độ phức tạp chủ đích qua đích với
+dư dả. Việc của bạn trong mười phút đầu là tính ngân sách.
+
+## Những con số làm việc
+
+Judge hiện đại (và sandbox C++20 của nền tảng này) chạy khoảng:
+
+- **~10^9** phép tầm thường (cộng số nguyên, so sánh, đọc mảng) mỗi giây,
+- **~10^8** phép "bình thường" (insert vào map, modulo, chuỗi gọi hàm),
+- **~10^7** phép nặng (sort vector nhỏ, dựng xâu).
+
+Vậy: `n·q` với n = q = 2·10^5 là 4·10^10 — **vượt ngân sách 100×** dù là
+phép tầm thường. `n log n` với n = 2·10^5 là ~3.4·10^6 (nhân hệ số log) —
+**sâu trong ngân sách**. Vì vậy độ phức tạp chủ đích, không phải thủ thuật
+hằng số, mới là điều bảng giới hạn đang nói với bạn.
+
+## Bộ nhớ là ràng buộc im lặng
+
+`int a[1000][1000]` là 4 MB — ổn. `long long a[10^5][10^5]` là 80 GB —
+không phải chương trình, là ảo giác. Sandbox cấp 512 MB: `vector<long long>`
+10^6 phần tử là 8 MB (ổn); 10^8 phần tử là 800 MB (chết). Khi trạng thái DP
+là (vị trí × mask) với n = 24: 2^24 × 8 B = 134 MB — khả thi nhưng sát nút;
+nghĩ trước khi cấp phát.
+
+## Dải giá trị mã hóa không gian trạng thái
+
+- tổng tới 10^5 × 10^9 → 10^14 → **long long bắt buộc**, int tràn âm thầm.
+- đáp án modulo 10^9+7 → số thật khổng lồ; mọi thứ lưu nó thô (kể cả tích
+  trung gian) phải được rút gọn.
+- N ≤ 10^18 → trạng thái là *chữ số* hoặc *log*, không bao giờ là N.
+
+## Ước lượng hai giây (làm trước khi đọc đề lần hai)
+
+Nhìn bảng giới hạn, tính: `n · (chi phí mỗi phần tử)`, `n log n`, `n^2`,
+`2^n`, xem cái nào vượt vạch. Họ thuật toán sống sót phép toán *và* khớp ngữ
+nghĩa là ứng cử viên. Mọi thứ sau module này là về việc xác nhận phần ngữ nghĩa.

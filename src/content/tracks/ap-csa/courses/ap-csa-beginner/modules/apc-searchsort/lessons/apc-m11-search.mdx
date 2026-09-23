@@ -1,0 +1,39 @@
+**Linear search** checks every element until it finds the target — O(n):
+
+```java
+public static int search(int[] arr, int target) {
+    for (int i = 0; i < arr.length; i++) {
+        if (arr[i] == target) {
+            return i;
+        }
+    }
+    return -1;
+}
+```
+
+**Binary search** halves the range each step — but requires a **sorted**
+array. O(log n):
+
+```java
+public static int binarySearch(int[] arr, int target) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo <= hi) {
+        int mid = (lo + hi) / 2;
+        if (arr[mid] == target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            lo = mid + 1;       // target is in the right half
+        } else {
+            hi = mid - 1;       // target is in the left half
+        }
+    }
+    return -1;
+}
+```
+
+Trace `binarySearch({2, 5, 8, 12, 16}, 12)`: lo=0 hi=4 mid=2 (8 < 12, go
+right) → lo=3 hi=4 mid=3 → found at 3. Two steps instead of four scans.
+
+The **invariant** to recite: at every loop entry, if target is present, it
+lies in arr[lo..hi]. The loop ends when lo > hi — the range is empty — so
+absence is proven, not guessed.

@@ -1,0 +1,28 @@
+# Trạng thái = bậc tự do
+
+Trạng thái của DP trả lời đúng một câu: *đứng đây, tôi cần biết gì để kết
+thúc tối ưu?* Quy trình thiết kế:
+
+1. **Nhìn về trước.** Tại điểm quyết định, liệt kê mọi thứ chi phí tương
+   lai phụ thuộc: vị trí hiện tại, tài nguyên đã tiêu, lựa chọn cuối,
+   parity của gì đó, cờ đã bật chưa.
+2. **Mỗi đại lượng độc lập = một chiều.** vị trí × tài nguyên × cờ là ba
+   chỉ số, không phải một mẹo thông minh.
+3. **Chặn biên mọi chiều.** Nếu một chiều vô biên, hoặc nén nó (chỉ O(n)
+   giá trị khác nhau xuất hiện), hoặc bạn đã chọn sai trạng thái.
+4. **Chuyển tiếp đến sau cùng.** Trạng thái đúng rồi thì chuyển tiếp chỉ
+   là "thử mọi nước cuối hợp lệ" — thường máy móc.
+
+## Định cỡ điển hình
+
+n ≤ 300 với hai đại lượng tự do có mùi O(n³) (vị trí × vị trí × cái gì
+đó). n ≤ 100000 với một đại lượng tự do có mùi O(n log n) — nghĩa là
+chuyển tiếp phải được trả lời bởi cấu trúc dữ liệu, không phải vòng lặp.
+**Bảng giới hạn định cỡ trạng thái trước khi bạn viết dòng code nào.**
+
+## Khi trạng thái sai
+
+Triệu chứng: liên tục phải thêm "thêm một cờ nữa" (nổ trạng thái — bạn
+đang mô hình toàn cục cái đáng cục bộ), hoặc chuyển tiếp cần cả lịch sử
+(một chiều tóm tắt thật sự còn thiếu). Sửa trạng thái, không sửa triệu
+chứng.

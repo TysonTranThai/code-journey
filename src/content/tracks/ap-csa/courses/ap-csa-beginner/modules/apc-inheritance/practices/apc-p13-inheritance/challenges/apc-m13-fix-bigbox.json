@@ -1,0 +1,16 @@
+{
+  "id": "apc-m13-fix-bigbox",
+  "title": "Debug the constructor chain",
+  "prompt": "`BigBox` does not compile: its constructor omits `super(...)` while `Box` has no no-arg constructor, and `factor` is never stored. Fix the constructor chain (signatures stay the same).",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Box {\n        private String tag;\n\n        public Box(String tag) {\n            this.tag = tag;\n        }\n\n        public String getTag() {\n            return tag;\n        }\n\n        public int size() {\n            return 1;\n        }\n    }\n\n    public static class BigBox extends Box {\n        private int factor;\n\n        public BigBox(String tag, int factor) {\n            // BUG: implicit super() — but Box has no no-arg constructor,\n            // so this class does not compile; also factor never stored\n        }\n\n        public int size() {\n            return factor;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "chain repaired",
+      "code": "\nSolution.BigBox b = new Solution.BigBox(\"crate\", 4);\nCjTestBase.checkEq(b.getTag(), \"crate\", \"super part built\");\nCjTestBase.checkEq(b.size(), 4, \"factor stored\");\n",
+      "hint": "super(tag); must be the first statement; then this.factor = factor."
+    }
+  ],
+  "level": "debugging"
+}

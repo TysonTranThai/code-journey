@@ -1,0 +1,16 @@
+{
+  "id": "hsgm-p1-d2",
+  "title": "Overflow Smell",
+  "prompt": "**Scenario.** You must count pairs i < j in an array of n = 100000 elements; the count can reach ~5·10^9. Your comparator uses `a - b < 0` on values up to 10^9. What is the primary risk?\n\n**Which approach is the best fit? The program only needs to print the letter.**\n\n**A)** Neither — int handles 5·10^9 fine on 64-bit judges\n\n**B)** The count needs int64 (long long), and the subtracting comparator can overflow int\n\n**C)** Only the comparator is wrong; the count fits int\n\n**D)** Both are fine; overflow is only a Java problem",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "answer",
+      "code": "std::istringstream in(\"\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"B\"));",
+      "hint": "5·10^9 exceeds 32-bit range (≈ 2.1·10^9): count in long long. And subtracting two ints up to 10^9 can overflow int in the comparator — compare directly."
+    }
+  ],
+  "level": "independent"
+}

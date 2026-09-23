@@ -1,0 +1,43 @@
+Ba mẫu tích lũy (khai báo **ngoài**, cập nhật **trong**):
+
+```java
+// tổng
+int sum = 0;
+for (int x : arr) { sum += x; }
+
+// đếm theo quy tắc
+int evens = 0;
+for (int x : arr) { if (x % 2 == 0) evens++; }
+
+// cực trị — khởi tạo bằng phần tử đầu, không phải 0
+int max = arr[0];
+for (int i = 1; i < arr.length; i++) {
+    if (arr[i] > max) {
+        max = arr[i];
+    }
+}
+```
+
+Vì sao khởi tạo bằng `arr[0]`? Khởi tạo `max = 0` là sai với mảng toàn số âm
+(đáp án sẽ là 0 — một phần tử không hề có mặt) và `max = Integer.MIN_VALUE`
+được nhưng che mất ý định. Khởi tạo bằng phần tử đầu là phong cách đề thi
+ưa chuộng.
+
+**Trung bình** = tổng / số phần tử — ép kiểu tổng trước:
+`double avg = (double) sum / arr.length;`
+
+**Tìm vị trí** (tìm kiếm tuyến tính):
+
+```java
+public static int indexOf(int[] arr, int target) {
+    for (int i = 0; i < arr.length; i++) {
+        if (arr[i] == target) {
+            return i;          // thấy: vị trí
+        }
+    }
+    return -1;                 // quy ước không tìm thấy
+}
+```
+
+`-1` như "vắng mặt" là quy ước phổ quát của Java — không bao giờ lẫn với chỉ
+số thật.

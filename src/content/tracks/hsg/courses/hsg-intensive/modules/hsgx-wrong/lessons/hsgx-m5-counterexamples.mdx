@@ -1,0 +1,36 @@
+# Manufacturing Counterexamples
+
+A bug is not understood until you can produce its **smallest** failing
+input. Small inputs make the failure visible; adversarial inputs make it
+deterministic.
+
+## The four hunting patterns
+
+1. **Small-first**: n = 1, 2, 3, then 4. Most boundary and overflow bugs die
+   here. If the code passes all small cases, the bug needs mass.
+2. **Extremes**: everything equal, everything max, everything min, single
+   element at a boundary. Overflow and ">= vs >" bugs live at extremes.
+3. **Symmetry breaking**: two items that tie under the buggy tie-breaking;
+   a palindrome; a sorted input for unstable sort assumptions.
+4. **Adversarial structure**: the input shape that maximizes the buggy
+   path's cost or triggers its wrong branch — a star graph for DFS-depth
+   bugs, a reverse-sorted array for naive quicksort, alternating parity for
+   parity-state bugs.
+
+## From counterexample to fix
+
+Once you have the smallest failing input, hand-run the code on it and
+annotate each line with what you *expected* vs what happens. The first
+divergence is the bug. Then write the fix and verify **both** directions:
+the old counterexample now passes, and a small brute-force cross-check
+agrees on a handful of random small inputs (that manual stress test is the
+subject of Module 7).
+
+## Case study: the greedy that "obviously" works
+
+Statement: maximize the number of non-overlapping intervals.
+Buggy fix: sort by start, take greedily. Counterexample: [1,10], [2,3],
+[4,5] — taking [1,10] blocks two intervals. The fix (sort by *end*) needs
+the exchange argument: swapping the earlier-ending interval into any
+solution never reduces the count. Every greedy needs exactly this proof;
+the clinic drills make you produce the counterexample first.

@@ -1,0 +1,36 @@
+# The Climb: Brute → Better → Best
+
+Consider a problem where the ladder is explicit. The professional workflow is
+not "think about the full solution." It is a *climb*:
+
+**Rung 1 — the brute (minutes 0–15).** Implement the most obviously correct
+thing the subtask-1 constraints allow. Test it on the samples by hand. This
+is not wasted time: it is your oracle for the rest of the problem. When your
+clever solution disagrees with it on a random case, you have found a bug
+before the judge did.
+
+**Rung 2 — the improvement (as time allows).** Find the bottleneck of the
+brute — usually a repeated scan — and kill it with the cheapest tool that
+works: prefix sums, sorting, a set, a sweep. Do not reach for the heavy
+machinery (segment trees, HLD) while a light tool suffices; every extra
+moving part is a bug surface.
+
+**Rung 3 — the full solution.** Only now the intended complexity. And the
+climb has a safety property: if rung 3 never compiles, rung 1 already banked
+points.
+
+## The failure mode of skipping rungs
+
+The classic HSG disaster: attack the full solution first, get it 90% right,
+have a subtle bug, and score zero — while a classmate with a 15-minute brute
+scored the same subtask. The judge does not award style points. The ladder
+exists precisely so that partial effort converts to partial score.
+
+## What the judge sees
+
+Each subtask is typically all-or-nothing per test group: one test in the
+group fails, the whole group scores zero. That is why this module's
+verification is brutal on purpose: your brute must pass every small test,
+your full solution every test, and the greedy shortcut that "seems right"
+must demonstrably fail its big test — so you learn what all-or-nothing
+feels like before the contest, not during it.

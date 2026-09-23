@@ -1,0 +1,44 @@
+# A Taxonomy of Wrong Answers
+
+When a submission fails, the verdict narrows the search space. Map verdict →
+likely class → cheapest probe:
+
+## WA (wrong answer) families
+
+1. **Integer overflow** — `int` used where sums/products reach 2^31. Probe:
+   the largest single test. Fix: `long long` (and remember `1LL *` in mixed
+   expressions).
+2. **Greedy missing an exchange argument** — passes sorted-ish samples, dies
+   on adversarial orderings. Probe: n = 2 or 3 with equal values. Fix: prove
+   the swap, or switch to DP.
+3. **Wrong DP transition/order** — loop order violates dependency. Probe:
+   hand-run the smallest input where a later state feeds an earlier one.
+4. **Boundary bug** — `l..r` vs `l..r-1`, `<` vs `<=`, 0-index vs 1-index.
+   Probe: n = 1, and the first/last element alone.
+5. **Wrong graph assumption** — assuming a tree/DAG/connected when the
+   statement doesn't. Probe: a 2-cycle, a disconnected pair.
+6. **Uninitialized / stale state** — reused buffer, forgot to reset between
+   test groups. Probe: run the "same test" twice in a row mentally.
+
+## TLE families
+
+7. **Wrong complexity** — O(n²) where O(n log n) is required. Probe: the
+   max-n test. Fix: the structures of earlier courses.
+8. **Hidden constant** — cin/cout without sync off, clearing a vector per
+   query, string concatenation in a loop.
+9. **Worst-case structure** — quicksort-style recursion on sorted input,
+   hash maps attacked by adversarial keys.
+
+## RE / MLE families
+
+10. **Recursion depth** — DFS on a 2·10^5-chain blows the stack. Fix:
+    iterative DFS or explicit stack (the harness has run binary-searched
+    recursion limits — assume ~10^5 is unsafe).
+11. **Array too small / index out of bounds** — off-by-one in allocation.
+    Probe: exactly the boundary index.
+12. **Precision** — doubles compared with `==`, accumulating error over
+    10^6 additions. Fix: integers where possible; else epsilon with care.
+
+The clinic exercises below each hide exactly one of these. Your job in
+every one: (1) find the counterexample input, (2) name the class, (3) fix
+the code, (4) verify the fix against the counterexample.

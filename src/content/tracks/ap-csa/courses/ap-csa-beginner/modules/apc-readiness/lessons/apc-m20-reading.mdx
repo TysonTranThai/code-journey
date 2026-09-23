@@ -1,0 +1,37 @@
+**Reading unfamiliar code** — the exam's Unit-weighted core skill.
+The methodical pass:
+
+1. Inventory the members: fields, constructors, methods. Private?
+   Static? One line each.
+2. For each method: precondition → postcondition in your own words.
+3. Trace the call sequence the question names, one row per call,
+   every field updated per row.
+4. Answer from the table, never from vibes.
+
+```java
+public static class Meter {
+    private int units;
+    private int cap;
+
+    public Meter(int cap) { this.cap = cap; this.units = 0; }
+
+    public void tick() {
+        if (units < cap) { units++; }
+    }
+
+    public boolean overflowed() { return units == cap; }
+}
+```
+
+What does this print?
+
+```java
+Meter m = new Meter(2);
+m.tick(); m.tick(); m.tick();
+System.out.println(m.overflowed());
+```
+
+Trace: tick→1, tick→2, tick→no-op (cap). `overflowed()` → true. If
+you got that by tracing instead of pattern-matching "ticks past cap",
+the course did its job — the cap is a boundary, and boundaries are
+where the exam lives.

@@ -1,0 +1,37 @@
+**Biến cục bộ** sống bên trong phương thức khai báo nó — tham số cũng vậy.
+Không gì bên ngoài nhìn thấy chúng; không gì bên trong thoát ra được:
+
+```java
+public static int twice(int x) {
+    int doubled = x * 2;    // cục bộ: chết khi phương thức trả về
+    return doubled;
+}
+```
+
+**Phạm vi** là nơi một tên được nhìn thấy. Phương thức đọc được tham số và
+biến cục bộ của chính nó; không đọc được của phương thức khác. Hai phương
+thức có thể cùng có biến cục bộ tên `x` — hai hộp khác nhau.
+
+**Ngữ cảnh static**: các phương thức `Solution` của ta là `static`, nghĩa là
+chúng thuộc về lớp, không thuộc về đối tượng. Phương thức `static` gọi trực
+tiếp các phương thức `static` khác cùng lớp bằng tên — đó là cách các helper
+kết hợp:
+
+```java
+public static int hypotenuseRounded(int a, int b) {
+    double c = Math.sqrt(a * a + b * b);
+    return (int) (c + 0.5);
+}
+```
+
+`Math.sqrt` bản thân nó chỉ là phương thức static của lớp `Math` — gọi bằng
+`Math.sqrt(x)`, không bao giờ `new Math()` (nó không có constructor public).
+
+**Truyền theo giá trị**: Java sao chép đối số. Gán lại tham số bên trong chỉ
+đổi bản sao:
+
+```java
+public static void bump(int x) {
+    x++;              // biến của người gọi không bị ảnh hưởng
+}
+```

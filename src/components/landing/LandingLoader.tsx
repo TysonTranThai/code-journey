@@ -13,6 +13,7 @@ interface LandingLoaderProps {
     statusDone: string;
     memory: string;
     sandbox: string;
+    progressLabel: string;
     ping: string;
     ready: string;
     ariaLabel: string;
@@ -230,6 +231,7 @@ export function LandingLoader({ dict }: LandingLoaderProps) {
           <div
             className="flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-black/60 p-1.5"
             role="progressbar"
+            aria-label={dict.progressLabel}
             aria-valuenow={percent}
             aria-valuemin={0}
             aria-valuemax={100}

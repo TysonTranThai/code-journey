@@ -1,0 +1,30 @@
+**Decomposition** — the design skill the exam's FRQs reward:
+
+1. Read the spec; identify the *inputs*, the *output*, and the steps.
+2. If the steps are complex, name each one as a helper method.
+3. Write the top-level method as a sequence of helper calls.
+
+Small worked example — "how many years until doubling a population?":
+
+```java
+public static int yearsToDouble(double start) {
+    double pop = start;
+    int years = 0;
+    while (pop < start * 2) {
+        pop *= 1.05;      // 5% growth
+        years++;
+    }
+    return years;
+}
+```
+
+**Preconditions and postconditions** are the contract style the exam uses:
+
+- *Precondition*: what must be true when the method is called
+  (`n >= 0`).
+- *Postcondition*: what the method guarantees when it returns
+  (returns the sum of digits of n).
+
+A method may *assume* its precondition; it must *deliver* its
+postcondition. Reading the precondition first tells you which edge cases you
+may skip and which you must handle.

@@ -1,0 +1,16 @@
+{
+  "id": "apc-cp-m8-sensor",
+  "title": "Checkpoint: build the Sensor class",
+  "prompt": "Rewrite the whole `Sensor` class from its spec table: `new Sensor(start)` stores the starting value; `read()` returns it; `tick()` adds 1 and returns nothing. State must persist across calls — three ticks after starting at 10 must read 13.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Sensor {\n        private int value;\n\n        public Sensor(int start) {\n            value = start;\n        }\n\n        public int read() {\n            return value;\n        }\n\n        public void tick() {\n            value++;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "sensor state",
+      "code": "\nSolution.Sensor s = new Solution.Sensor(10);\nCjTestBase.checkEq(s.read(), 10, \"initial state\");\ns.tick();\ns.tick();\ns.tick();\nCjTestBase.checkEq(s.read(), 13, \"after three ticks\");\nnew Solution.Sensor(0).tick();\nSolution.Sensor fresh = new Solution.Sensor(-2);\nfresh.tick();\nCjTestBase.checkEq(fresh.read(), -1, \"independent objects\");\n",
+      "hint": "Field + constructor + two methods; mutation happens on the field."
+    }
+  ],
+  "level": "independent"
+}

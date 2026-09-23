@@ -1,0 +1,34 @@
+A **while** loop repeats as long as its condition is true — checked *before*
+each pass:
+
+```java
+int count = 1;
+while (count <= 3) {
+    System.out.println(count);
+    count++;              // the update MUST move toward the exit
+}
+// prints 1 2 3
+```
+
+Trace the four contact points: initialize → test → body → update → test...
+
+Two classic failures:
+
+- **Infinite loop**: the update is missing or moves the wrong way
+  (`count--` with a `count <= 3` test never exits).
+- **Off-by-one**: `<` vs `<=` decides whether the last value is processed.
+
+A **sentinel loop** reads until a special value appears — the pattern behind
+"read numbers until the user types -1". On the exam it appears as "process
+elements of an array until a negative price" style tasks:
+
+```java
+int i = 0;
+while (i < data.length && data[i] >= 0) {
+    total += data[i];
+    i++;
+}
+```
+
+The `&&` ordering matters: test the index bound **before** indexing, or the
+last check reads past the end.

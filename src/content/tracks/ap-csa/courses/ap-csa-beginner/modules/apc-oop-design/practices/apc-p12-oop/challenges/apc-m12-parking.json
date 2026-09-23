@@ -1,0 +1,16 @@
+{
+  "id": "apc-m12-parking",
+  "title": "Parking lot state machine",
+  "prompt": "Implement the `Parking` nested class: constructor stores capacity and creates state; `arrive(plate)` adds the plate if not already present and not full (true/false); `depart(plate)` removes it if present; `count()` returns occupied spots.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Parking {\n        public Parking(int capacity) {\n        }\n\n        public boolean arrive(String plate) {\n            return false;\n        }\n\n        public boolean depart(String plate) {\n            return false;\n        }\n\n        public int count() {\n            return 0;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "state machine",
+      "code": "\nSolution.Parking p = new Solution.Parking(2);\nCjTestBase.checkEq(p.count(), 0, \"empty\");\nCjTestBase.checkEq(p.arrive(\"29A\"), true, \"first car\");\nCjTestBase.checkEq(p.arrive(\"29A\"), false, \"duplicate refused\");\nCjTestBase.checkEq(p.arrive(\"51B\"), true, \"second car\");\nCjTestBase.checkEq(p.arrive(\"77C\"), false, \"full\");\nCjTestBase.checkEq(p.depart(\"29A\"), true, \"leave\");\nCjTestBase.checkEq(p.depart(\"00X\"), false, \"never parked\");\nCjTestBase.checkEq(p.count(), 1, \"one remains\");\nCjTestBase.checkEq(p.arrive(\"77C\"), true, \"spot freed\");\n",
+      "hint": "Track a used-size, scan only 0..size-1, compact on depart."
+    }
+  ],
+  "level": "guided"
+}

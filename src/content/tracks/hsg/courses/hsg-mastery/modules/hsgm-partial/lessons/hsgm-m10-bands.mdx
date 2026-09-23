@@ -1,0 +1,28 @@
+# The Bands Are a Ladder
+
+A partial-scoring problem is really a stack of problems with a shared
+statement. The scoring bands are not consolation prizes — they are a
+**design document**:
+
+- "n ≤ 20" → the full 2^n enumeration is *intended* for that band.
+- "n ≤ 2000" → O(n²) is invited.
+- "n ≤ 200000, no updates" → static prefix structures.
+- "values ≤ 10^9" → coordinate compression or 64-bit.
+- "all a_i equal" / "a_i ≤ 2" → degenerate-case specialization.
+
+## Reading order
+
+1. Read the full statement once.
+2. Read the bands **top-down from the easiest**: what algorithm does each
+   band's constraint permit? Name it. That is the band's intended solution.
+3. Estimate implementation time per band, in order. Implement band 1
+   completely before thinking about band 2.
+4. The bands often *teach* the full solution: the n² band's DP frequently
+   becomes the full solution's recurrence with a data structure grafted on.
+
+## The scoring arithmetic
+
+If band 1 is worth 20 and costs 10 minutes, and the full solution is
+uncertain and costs 90, the expected-value arithmetic is not close. Bank
+the certain band first; you can always upgrade later — you cannot submit
+an empty file at the end.

@@ -1,0 +1,16 @@
+{
+  "id": "apc-m8-temperature",
+  "title": "Add behavior to a class",
+  "prompt": "The `Temp` class stores celsius. Add `double toFahrenheit()` returning c × 9/5 + 32, and `boolean isFreezing()` returning true at or below 0. Use the stored field — do not add parameters.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Temp {\n        private double celsius;\n\n        public Temp(double c) {\n            celsius = c;\n        }\n\n        public double getCelsius() {\n            return celsius;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "temp behavior",
+      "code": "\nSolution.Temp t = new Solution.Temp(100.0);\nCjTestBase.checkNear(t.toFahrenheit(), 212.0, 1e-9, \"boiling\");\nCjTestBase.checkTrue(!t.isFreezing(), \"boiling not freezing\");\nSolution.Temp cold = new Solution.Temp(-5.0);\nCjTestBase.checkTrue(cold.isFreezing(), \"below zero freezes\");\nCjTestBase.checkTrue(new Solution.Temp(0.0).isFreezing(), \"zero is freezing\");\n",
+      "hint": "Instance methods read fields directly: celsius * 9 / 5 + 32 (watch int division)."
+    }
+  ],
+  "level": "guided"
+}

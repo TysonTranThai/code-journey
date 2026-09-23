@@ -1,0 +1,26 @@
+**Choosing an algorithm** — matching the tool to the constraint:
+
+- Need the max/min/sum of an array? One pass — O(n). Nothing better
+  exists (you must look at every element at least once).
+- Need to know whether a value is present in an **unsorted** array?
+  Linear scan, O(n).
+- Same question, **sorted** array? Binary search, O(log n) — but only
+  because sortedness lets you discard half each step.
+- Need all pairs? That's n² by nature; the trick is usually to *avoid*
+  needing all pairs.
+
+```java
+// sorted: discards half each step — unsorted: cannot
+while (lo <= hi) {
+    int mid = (lo + hi) / 2;
+    if (a[mid] == target) return mid;
+    if (a[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+}
+return -1;
+```
+
+The exam phrases this as "which algorithm is most appropriate" —
+answer by naming what the data guarantees (sorted or not) and what
+the question needs (one value? all pairs? a position?). Guarantees
+are what you buy complexity savings with.

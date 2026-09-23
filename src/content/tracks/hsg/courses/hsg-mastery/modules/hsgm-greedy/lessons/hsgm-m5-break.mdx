@@ -1,0 +1,26 @@
+# Breaking a Greedy
+
+Before trusting a greedy, attack it. The checklist that finds almost all
+counterexamples:
+
+1. **Equal keys.** If two items tie on your sort key, does the order
+   between them matter? Tie-break wrongly and the greedy may fail.
+2. **Long vs many.** Greedies that take the "best single item" can be
+   drowned by many mediocre items that together beat it.
+3. **Dependencies.** Taking a cheap item now may forbid a better
+   combination later. Force the greedy into a corner.
+4. **Boundaries.** Zero, one item; all identical; maximum values. Bugs
+   and wrong keys both live at edges.
+
+## Smallest breaking case
+
+A counterexample is strongest when minimal. Hunt in order: n = 2, n = 3,
+then a structured n = 4 (pairs, mirrored values). If nothing breaks at
+small n, scale the *pattern* that came closest, not random big inputs.
+
+## From counterexample to repair
+
+When a greedy breaks, the counterexample usually reveals the missing
+quantity — the thing your key ignored. That insight often leads to the
+correct key, or shows the problem needs DP/flows instead. A broken greedy
+is information, not a dead end.

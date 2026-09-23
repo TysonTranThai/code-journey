@@ -1,0 +1,42 @@
+# Vòng lặp nhận xét
+
+## Bước 1 — Viết brute force (trong đầu hoặc thật)
+
+Dù biết nó không thể qua, brute force xác định bài toán một cách chính xác
+và lộ ra *hình dạng* phép tính: cái gì bị tính lại, cái gì phụ thuộc cái gì.
+n ≤ 200000 với ý tưởng O(n²) nghĩa là việc tính lại phải bị loại bỏ — đó
+chính là mục tiêu.
+
+## Bước 2 — Soi ví dụ với sự hoài nghi
+
+Tính từng ví dụ bằng tay *thông qua brute force của bạn*, theo dõi các giá
+trị trung gian. Mô hình xuất hiện dưới dạng cấu trúc lặp lại: cùng một cực
+tiểu bộ phận tái diễn; khoảng cách luôn cùng tính chẵn lẻ; thứ tự đã sắp
+"hầu như" là đáp án. Ghi mô hình lại cho ba đầu vào khác nhau — một lần là
+nhiễu, ba lần là cấu trúc.
+
+## Bước 3 — Gọi tên bất biến
+
+Mô hình hầu như luôn thuộc danh sách ngắn này:
+
+- **đơn điệu**: khi một đại lượng vượt ngưỡng, nó không quay lại (mở khóa
+  tìm kiếm nhị phân);
+- **lập luận đổi chỗ**: hai lựa chọn kề nhau có thể hoán đổi với hiệu ứng
+  tính được (mở khóa greedy + thứ tự sort);
+- **độc lập**: các bài con không tương tác khi biên đã cố định (mở khóa DP);
+- **tiềm năng khấu hao**: mỗi phần tử chỉ được chạm O(1) lần dù vòng lặp
+  lồng nhau (mở khóa two pointers, stack đơn điệu);
+- **bất biến chẵn lẻ / XOR**: chỉ một lớp dư của trạng thái có ý nghĩa
+  (mở khóa thu nhỏ không gian trạng thái).
+
+## Bước 4 — Chuyển thành thuật toán, rồi chứng minh
+
+Nêu thuật toán trong một câu ("sort theo r, quét, giữ một con trỏ"), rồi
+chứng minh khẳng định bất biến trong hai–ba dòng. Nếu không nêu được chứng
+minh, đó là giả thuyết chứ không phải lời giải — kiểm tra nó với brute force
+(kỹ năng stress test của Module 9).
+
+## Bước 5 — Cài đặt và kiểm lại ví dụ
+
+Kỷ luật thi đấu: bản cài đặt phải tái tạo các ví dụ *trước khi* nộp. Ví dụ
+gãy là thông tin, không phải vận xui.

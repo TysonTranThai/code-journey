@@ -1,0 +1,38 @@
+**Đọc mã chưa từng thấy** — kỹ năng lõi được tính điểm theo chủ đề
+của đề. Lượt đi có phương pháp:
+
+1. Kiểm kê thành viên: trường, hàm dựng, phương thức. Private?
+   Static? Mỗi thứ một dòng.
+2. Với mỗi phương thức: điều kiện tiền → điều kiện hậu bằng lời của
+   bạn.
+3. Truy vết chuỗi lời gọi mà câu hỏi nêu, mỗi lời gọi một hàng, cập
+   nhật mọi trường mỗi hàng.
+4. Trả lời từ bảng, không bao giờ dựa vào cảm tính.
+
+```java
+public static class Meter {
+    private int units;
+    private int cap;
+
+    public Meter(int cap) { this.cap = cap; this.units = 0; }
+
+    public void tick() {
+        if (units < cap) { units++; }
+    }
+
+    public boolean overflowed() { return units == cap; }
+}
+```
+
+Đoạn này in gì?
+
+```java
+Meter m = new Meter(2);
+m.tick(); m.tick(); m.tick();
+System.out.println(m.overflowed());
+```
+
+Truy vết: tick→1, tick→2, tick→không-làm-gì (chạm cap).
+`overflowed()` → true. Nếu bạn có đáp án bằng truy vết thay vì bắt
+mẫu hình "tick quá cap", khóa học đã xong việc của nó — cap là một
+biên, và biên là nơi đề thi sống.

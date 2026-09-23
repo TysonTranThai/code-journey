@@ -1,0 +1,28 @@
+**Bộ sưu tập và mảng trộn lẫn** — đề rất thích yêu cầu cả hai trong
+một phương thức:
+
+```java
+// mảng vào, danh sách ra
+public static ArrayList<Integer> positives(int[] a) {
+    ArrayList<Integer> out = new ArrayList<Integer>();
+    for (int x : a) {
+        if (x > 0) {
+            out.add(x);
+        }
+    }
+    return out;
+}
+```
+
+Bốn sự thật chuyển đổi quyết định tính đúng:
+
+- `int[]` và `ArrayList<Integer>` là hai kiểu khác nhau; không kiểu
+  nào tự chuyển thành kiểu kia. Box thủ công (`out.add(x)` box int).
+- `list.remove(Integer.valueOf(5))` xóa GIÁ TRỊ 5;
+  `list.remove(5)` xóa CHỈ SỐ 5. Đề kiểm tra đúng sự phân biệt này.
+- Xóa trong khi duyệt tới sẽ **bỏ sót** phần tử ngay sau phần tử bị
+  xóa — duyệt ngược hoặc dùng vòng có chỉnh chỉ số.
+- `a.length` so với `list.size()` — một cái là trường, một cái là
+  phương thức.
+
+Khi đặc tả nói "trả về danh sách mới", đừng bao giờ biến đổi đầu vào.

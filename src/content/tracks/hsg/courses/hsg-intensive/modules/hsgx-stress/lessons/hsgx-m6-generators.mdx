@@ -1,0 +1,38 @@
+# Writing Generators That Find Bugs
+
+A generator is a hypothesis about where your bug lives, written as code.
+
+## Uniform is the floor, not the ceiling
+
+`uniform_int(1, n)` finds common bugs. But most surviving bugs need
+*structure*: equal values (ties), sorted or reverse-sorted input (order
+assumptions), tiny values (overflow-free-but-wrong logic), duplicates
+(dedup bugs), a single extreme outlier (branch bugs). Aim deliberately:
+
+- **Bug suspect: tie-breaking** → generate from {1, 2, 3} only.
+- **Bug suspect: boundaries** → n tiny (0, 1, 2), values at extremes.
+- **Bug suspect: order** → generate sorted, then occasionally shuffled.
+- **Bug suspect: overflow** → values near INT_MAX/2 so sums exceed 2^31.
+
+## The parameter sweep
+
+Generate over the whole shape space: for t trials, pick n randomly from
+`{0..10}`, then values from a randomly chosen distribution among uniform /
+constant / two-valued / sorted / reversed. This mixed generator beats any
+single fixed distribution — it is what found most real bugs in judges'
+history and in your own future contests.
+
+## Reading a mismatch
+
+When candidate ≠ oracle, don't patch the code immediately. First *shrink*
+the failing case: remove elements while the disagreement persists (simple
+delta debugging). The minimal case usually reveals the bug in one glance —
+and doubles as the regression test you add permanently.
+
+## From stress loop to submission
+
+Contest workflow: keep the harness in a separate file. Once 5000+ cases
+pass, delete nothing — just stop including it. The discipline is: no
+"seems right" submissions on problems where a brute-force oracle is
+writable in five minutes. Five minutes of harness beats an hour of
+debugging by print statements.

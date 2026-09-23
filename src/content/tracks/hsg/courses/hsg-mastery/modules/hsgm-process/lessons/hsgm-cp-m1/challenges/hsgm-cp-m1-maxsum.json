@@ -1,0 +1,26 @@
+{
+  "id": "hsgm-cp-m1-maxsum",
+  "title": "Checkpoint: Max Subarray, Defended",
+  "prompt": "**Task.** Given n integers (possibly all negative), find the maximum sum\nof a non-empty contiguous subarray.\n\n**Constraints:** 1 ≤ n ≤ 200000; |a[i]| ≤ 10^9.\n\n**Process requirements (this is the mastery point):**\n- Verify on the all-negative case BEFORE trusting Kadane's dp[0] = 0 habit.\n- The answer for n = 3 equal 10^9 values is 3·10^9 — outside int range.\n- A single O(n) pass suffices; anything slower is wasted effort.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "all negative",
+      "code": "std::istringstream in(\"6\\n-3 -1 -4 -1 -5 -9\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-1\\n\"));",
+      "hint": "Whole array is one subarray; the max single element is -1. dp[0] = a[0], not 0."
+    },
+    {
+      "name": "ties and negatives",
+      "code": "std::istringstream in(\"8\\n10 9 8 8 8 -100 8 8\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"43\\n\"));",
+      "hint": "10+9+8+8+8 = 43; the -100 splits the array, and the trailing 8 8 cannot beat 43."
+    },
+    {
+      "name": "overflow check",
+      "code": "std::istringstream in(\"3\\n1000000000 1000000000 1000000000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3000000000\\n\"));",
+      "hint": "3·10^9 overflows int32 — the running sum must be long long."
+    }
+  ],
+  "level": "independent"
+}

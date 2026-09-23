@@ -1,0 +1,24 @@
+Systematic debugging — a loop, not a hunt:
+
+1. **Reproduce** on the smallest failing input. A bug you can't shrink,
+   you can't fix.
+2. **Classify**: compile / runtime / logical (Module 16.1).
+3. **Trace state**: walk the code by hand writing every variable's
+   value on every line — a **trace table**. The row where reality
+   diverges from intention is the bug.
+4. **Assert mid-way**: print or check intermediate values ("at this
+   point, `sum` should be 6").
+5. **Fix the cause, not the symptom**: if a loop is off-by-one, change
+   the bound — don't add a special case downstream.
+
+Trace-table example — the divergence is line 4:
+
+| line        | i | sum | want   |
+| ----------- | - | --- | ------ |
+| sum = 0     | – | 0   | 0      |
+| sum += i    | 1 | 1   | 1      |
+| sum += i    | 2 | 3   | 3      |
+| sum += i    | 3 | **6** | **9**? (goal: sum of 1..3 = 6) |
+
+When your hand-trace of the *intended* algorithm disagrees with what
+the code computes, you've found the exact line to change.

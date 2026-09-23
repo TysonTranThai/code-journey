@@ -1,0 +1,23 @@
+Đếm số vòng lặp chính xác — kỹ năng truy vết áp dụng cho vòng lặp:
+
+```java
+int total = 0;
+for (int i = 0; i < n; i++) {
+    for (int j = i + 1; j < n; j++) {
+        total++;            // chạy bao nhiêu lần?
+    }
+}
+```
+
+Vòng trong phụ thuộc vòng ngoài: với `i = 0` nó chạy `n-1` lần,
+`i = 1` → `n-2`, ..., tổng `n(n-1)/2` — vẫn O(n²), nhưng chỉ **một
+nửa** công việc. Hai vòng trên cùng n đặt TUẦN TỰ là `n + n = 2n` —
+tuyến tính. Hai vòng **lồng nhau** là `n * n`. Hình dạng của sự lồng
+quyết định lớp, không phải số vòng lặp.
+
+Các bẫy đếm còn lại:
+
+- `j < n` so với `j <= n` — khác một vòng lặp, khác một test.
+- Cận trong `j < i` so với `j < n` — tam giác so với vuông.
+- Biến vòng lặp bị thay đổi **bên trong thân** — số vòng thay đổi;
+  truy vết, đừng bắt mẫu hình.

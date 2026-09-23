@@ -1,0 +1,16 @@
+{
+  "id": "apc-m9-fix-bounds",
+  "title": "Debug the boundary",
+  "prompt": "`total` crashes with ArrayIndexOutOfBoundsException on every call. Fix the loop bound — the smallest possible repair.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int total(int[] arr) {\n        int sum = 0;\n        for (int i = 0; i <= arr.length; i++) {\n            sum += arr[i];\n        }\n        return sum;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "no crash",
+      "code": "\nCjTestBase.checkEq(Solution.total(new int[]{1, 2, 3}), 6, \"sums without crash\");\nCjTestBase.checkEq(Solution.total(new int[]{}), 0, \"empty safe\");\n",
+      "hint": "i <= arr.length runs one index too far; use i < arr.length."
+    }
+  ],
+  "level": "debugging"
+}

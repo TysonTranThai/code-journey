@@ -1,0 +1,30 @@
+**Writing code from prose** — the specification is a paragraph, the
+answer is a method. The workflow:
+
+1. Restate the postcondition as a formula or loop invariant.
+2. Choose the traversal (array? string? list? which direction?).
+3. Write the accumulator skeleton FIRST, fill the body SECOND.
+4. Check the preconditions for shortcuts you may take.
+
+Example spec: *"Return the number of times the character ch appears
+in the string s, ignoring case."* Restated: loop over every index of
+s, compare case-folded characters to ch, count matches.
+
+```java
+public static int countIgnoreCase(String s, char ch) {
+    int count = 0;
+    for (int i = 0; i < s.length(); i++) {
+        if (Character.toLowerCase(s.charAt(i)) == Character.toLowerCase(ch)) {
+            count++;
+        }
+    }
+    return count;
+}
+```
+
+Common spec-reading failures, in order of frequency:
+
+- missing the "ignoring case" / "ignoring order" / "at most" qualifier;
+- returning the wrong *shape* (index vs value, count vs list);
+- handling the empty input wrong (or crashing on it);
+- shadowing the parameter (`String s` then `int s = 0`).

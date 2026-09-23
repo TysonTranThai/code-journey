@@ -1,0 +1,49 @@
+# The Differential Harness
+
+VNOI's "viết trình chấm" and every serious competitive programmer's arsenal
+share one shape: three programs and a loop.
+
+```
+repeat forever:
+    input  = generator(seed++)
+    a      = candidate(input)   # the solution you trust? prove it
+    b      = oracle(input)      # slow but certainly correct
+    if a != b:
+        save input; stop        # you found the bug
+```
+
+## Why it works
+
+Human-written tests are biased toward what you *think* the code does. A
+random generator is unbiased: it eventually hits the exact shape your bug
+needs — the tie you mishandled, the empty range you never considered, the
+order that breaks your greedy. On tiny inputs the oracle is fast enough to
+check thousands of cases per second.
+
+## The oracle is the hard part
+
+It must be **too simple to be wrong**: full enumeration, O(n!) with n ≤ 8,
+or a completely different algorithm than the candidate. Never reuse the
+candidate's code inside the oracle — shared bugs survive differential
+testing (that is its one blind spot).
+
+## Seeds and reproducibility
+
+Never use unseeded randomness: a bug you cannot reproduce is a bug you
+cannot fix. Derive the generator from an explicit counter (`mt19937 rng(seed++)
+`), and print the seed with the failing case. The saved input is the
+minimal contract: it must reproduce the disagreement exactly.
+
+## Stopping and time budgeting
+
+In a real contest you have maybe 10–20 minutes of stress testing. Decide
+the budget up front (e.g. 5000 cases), and if no disagreement is found,
+your confidence grows — but a pass is never a proof, only a bound. When
+the oracle is too slow, shrink n until it isn't (n ≤ 8 checks thousands of
+cases; n ≤ 100 checks hundreds — still a strong net).
+
+## In this course the harness runs for real
+
+Every challenge below embeds the loop inside `solve()`: generate, compare
+candidate vs oracle, print `OK trials` if all agree, print `MISMATCH` plus
+the case if they ever disagree. The tests grade exactly that.

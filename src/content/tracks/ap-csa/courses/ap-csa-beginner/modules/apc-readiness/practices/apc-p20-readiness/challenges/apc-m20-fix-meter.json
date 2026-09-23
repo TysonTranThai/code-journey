@@ -1,0 +1,16 @@
+{
+  "id": "apc-m20-fix-meter",
+  "title": "Capstone: debug the meter",
+  "prompt": "`Meter.tick()` increments unconditionally, so `overflowed()` (units == cap) never becomes true. Fix tick() to respect the cap. All signatures stay.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Meter {\n        private int units;\n        private int cap;\n\n        public Meter(int cap) {\n            this.cap = cap;\n            this.units = 0;\n        }\n\n        public void tick() {\n            // BUG: original flaw kept — ticks past the cap, so\n            // overflowed() (units == cap) can never become true\n            units++;\n        }\n\n        public boolean overflowed() {\n            return units == cap;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "cap respected",
+      "code": "\nSolution.Meter m = new Solution.Meter(2);\nm.tick(); m.tick(); m.tick();\nCjTestBase.checkTrue(m.overflowed(), \"capped at 2\");\nSolution.Meter n = new Solution.Meter(1);\nn.tick();\nCjTestBase.checkTrue(n.overflowed(), \"capped at 1\");\n",
+      "hint": "if (units < cap) { units++; }"
+    }
+  ],
+  "level": "debugging"
+}

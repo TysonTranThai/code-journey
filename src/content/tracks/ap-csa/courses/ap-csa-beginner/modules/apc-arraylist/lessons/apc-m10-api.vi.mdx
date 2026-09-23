@@ -1,0 +1,39 @@
+`ArrayList` là danh sách **co giãn được** các đối tượng. Khác mảng, nó lớn
+lên và nhỏ lại:
+
+```java
+import java.util.ArrayList;
+
+ArrayList<String> names = new ArrayList<String>();
+names.add("An");
+names.add("Binh");
+names.add("Chi");
+```
+
+`<String>` trong ngoặc nhọn là **kiểu generic**: nó khai báo danh sách chứa
+gì, và trình biên dịch sẽ kiểm soát — `names.add(42)` là lỗi biên dịch.
+(Dạng tắt `new ArrayList<>()` là Java hợp lệ nhưng tài liệu AP dùng dạng
+viết tường minh; biết cả hai.)
+
+**Bộ phương thức của đề thi:**
+
+```java
+names.size()               // 3  — là phương thức, không phải trường!
+names.get(0)               // "An"
+names.set(1, "Bao")        // thay chỉ số 1; trả về giá trị cũ
+names.add("Duong")         // thêm vào cuối
+names.add(1, "Binh")       // CHÈN vào 1, dịch phần còn lại sang phải
+names.remove(0)            // xóa chỉ số 0, dịch sang trái; trả về nó
+names.contains("Chi")      // true
+names.indexOf("Chi")       // 1
+```
+
+**Autoboxing**: danh sách số là `ArrayList<Integer>` (lớp bao bọc) — không
+bao giờ `ArrayList<int>`. Java chuyển `int ↔ Integer` tự động khi thêm hoặc
+lấy:
+
+```java
+ArrayList<Integer> nums = new ArrayList<Integer>();
+nums.add(5);                    // int được box thành Integer
+int first = nums.get(0);        // unbox về int
+```

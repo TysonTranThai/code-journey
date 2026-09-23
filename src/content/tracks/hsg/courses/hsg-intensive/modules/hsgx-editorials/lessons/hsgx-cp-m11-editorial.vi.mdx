@@ -1,0 +1,37 @@
+**Điểm kiểm tra — Lời giải mẫu.** Trước khi đọc tiếp: hai bài luyện phía trên
+phải đã được thử (bí hoặc giải xong). Trang này chứa lời giải đầy đủ cho
+**Bài 1 (Các Sạp Hàng)** theo cấu trúc chuẩn — dùng nó để hiệu chỉnh cách
+bạn viết và đọc lời giải.
+
+## Lời giải: Các Sạp Hàng (doanh thu không kề lớn nhất)
+
+**Nhận xét.** Với mỗi sạp, quyết định "mở hay không" chỉ phụ thuộc quyết định
+của sạp kề — một lượt duy nhất với hai trạng thái là đủ.
+
+**Brute force.** Toàn bộ 2^n tập con kèm bộ lọc kề: đúng, nhưng tối thiểu
+2^20 — chết ngay khi n = 200000.
+
+**Vì sao gãy.** Bài toán con chồng lấn: quyết định của mỗi đoạn đuôi lặp lại
+qua vô số đoạn đầu theo cấp số nhân.
+
+**Ý chính.** Giữ hai số: doanh thu tốt nhất khi *mở* sạp hiện tại (`take`) và
+*khi không mở* (`skip`). Công thức: `take = skip + a[i]`,
+`skip = max(take_prev, skip_prev)`.
+
+**Tối ưu.** Không cần gì ngoài O(n) thời gian, O(1) bộ nhớ.
+
+**Độ phức tạp.** O(n) thời gian, O(1) bộ nhớ phụ.
+
+**Các hướng sai thường gặp.**
+- *Tham theo giá trị* (lấy to nhất, cấm hàng xóm): gãy ở [2,3,2] → tham 3,
+  tối ưu 4. Bài luyện bắt được nó.
+- *Giả định tính chẵn lẻ*: "lấy sạp cách nhau một" gãy ngay khi giá trị dao động.
+
+## Bài biến thể
+
+Bàn Tròn (vòng tròn) chỉ bỏ một giả định — rằng dãy có hai đầu. Cách sửa là
+chia trường hợp, không phải thuật toán mới: đáp án vòng tròn tối ưu không
+bao giờ dùng cả hai đầu, nên chạy bộ giải tuyến tính hai lần, mỗi lần loại
+một đầu. Nếu lần đầu bạn vá chính công thức truy hồi, hãy nhớ cảm giác đó —
+vá một công cụ đang chạy thường là nước sai; hỏi lại *giả định* của công cụ
+mới là nước đúng.

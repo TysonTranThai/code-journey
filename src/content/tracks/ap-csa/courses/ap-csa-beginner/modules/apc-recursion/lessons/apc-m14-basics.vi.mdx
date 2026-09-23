@@ -1,0 +1,30 @@
+Một phương thức **đệ quy** tự gọi nó trên đầu vào nhỏ hơn. Hai thành phần là
+bắt buộc:
+
+1. **Trường hợp cơ sở** — đầu vào được trả lời trực tiếp, không gọi.
+2. **Trường hợp đệ quy** — lời gọi tiến *về phía* trường hợp cơ sở (tiến
+   triển).
+
+```java
+public static int factorial(int n) {
+    if (n <= 1) {            // trường hợp cơ sở
+        return 1;
+    }
+    return n * factorial(n - 1);   // tiến triển: n giảm 1
+}
+```
+
+**Stos gọi** giúp truy vết thành cơ học. Với `factorial(4)`:
+
+```text
+factorial(4) = 4 * factorial(3)
+                 factorial(3) = 3 * factorial(2)
+                                 factorial(2) = 2 * factorial(1)
+                                                 factorial(1) = 1
+```
+
+Đảo ngược: 1 → 2 → 6 → 24. Viết phần đi xuống, chạm cơ sở, nhân ngược lên.
+
+**Quy ước truy vết của đề thi**: đếm *số lần gọi* (factorial(4) tạo tổng
+cộng 4 lần gọi), và nhớ StackOverflowError là chữ ký thời gian chạy của việc
+thiếu tiến triển — bản sinh đôi đệ quy của vòng lặp vô hạn.

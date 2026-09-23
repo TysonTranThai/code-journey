@@ -1,0 +1,16 @@
+{
+  "id": "apc-m4-fix-shipping",
+  "title": "Debug the shipping tiers",
+  "prompt": "This classifier has a logic bug: some orders get the wrong tier. Trace each price point, find the flawed branch, and fix the minimum amount of code. Rules: 100+ → \"free\", 50–99.99 → \"5.00\", below 50 → \"8.00\".",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String shipping(double total) {\n        String cost = \"unknown\";\n        if (total >= 100.0) {\n            cost = \"free\";\n        }\n        if (total >= 50.0) {\n            cost = \"5.00\";\n        }\n        if (total < 50.0) {\n            cost = \"8.00\";\n        }\n        return cost;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "all tiers correct",
+      "code": "\nCjTestBase.checkEq(Solution.shipping(120.0), \"free\", \"over 100\");\nCjTestBase.checkEq(Solution.shipping(100.0), \"free\", \"at 100\");\nCjTestBase.checkEq(Solution.shipping(99.99), \"5.00\", \"top of 50 band\");\nCjTestBase.checkEq(Solution.shipping(50.0), \"5.00\", \"at 50\");\nCjTestBase.checkEq(Solution.shipping(49.99), \"8.00\", \"just below 50\");\n",
+      "hint": "The second if must be else-if, or 100+ orders fall through to it."
+    }
+  ],
+  "level": "debugging"
+}

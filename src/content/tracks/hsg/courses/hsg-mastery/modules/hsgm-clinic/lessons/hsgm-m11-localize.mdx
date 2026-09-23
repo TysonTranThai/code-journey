@@ -1,0 +1,28 @@
+# Localize by Bisection
+
+When your code passes the sample and dies on the hidden test, rereading
+is the slowest tool. Instead, **bisect the space of suspects**:
+
+1. **Bisect the input.** Take the smallest failing family you can imagine
+   (n = 1? 2? 3?). If nothing fails small, double until it does — the
+   first failing n brackets the bug's scale.
+2. **Bisect the code path.** Comment out a half (or force an early return
+   with a known-good answer). Does the failure move? The bug lives in the
+   half that flipped the outcome.
+3. **Bisect the state.** Print invariants at the midpoint (sortedness,
+   sum, monotonicity). The first checkpoint whose invariant is false is
+   upstream of the bug.
+
+## The catalog habit
+
+Every located bug gets a **category name** (see the next lesson). Naming
+converts a one-off fix into a reusable detection: "this is an
+off-by-one-at-boundary; check both endpoints" is a *class* of future bugs
+caught before they cost a submission.
+
+## The counterexample bonus
+
+The minimal failing input is not just diagnostic — it is the test that
+pins the fix. Add it to your personal stress harness (Module 13 makes
+that harness systematic) before repairing, so the repair can be verified
+against the exact evidence.

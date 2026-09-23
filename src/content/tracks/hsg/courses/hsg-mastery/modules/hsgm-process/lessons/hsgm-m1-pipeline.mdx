@@ -1,0 +1,38 @@
+# The Solve Pipeline
+
+Strong solvers run the same loop on every unfamiliar problem:
+
+1. **Model** — restate the problem in objects and operations, no story. "n
+   lamps, flip prefixes" is a model; "the wizard chants" is not.
+2. **Budget** — constraints → op-count ceiling → candidate families. If the
+   ceiling is ~3·10^8, an O(n log^2 n) solution at n = 3·10^5 is already
+   code-it-now territory; grinding for O(n) can *lose* points to
+   implementation risk.
+3. **Candidates** — list two or three families that fit the budget. Write
+   down, for each, the one sentence that would have to be true.
+4. **Simplest correct** — among the candidates, the cheapest *correct*
+   idea wins. A simpler algorithm that passes beats a cleverer one that
+   TLEs or buggy-implements. Correctness first, then speed.
+5. **Verify before coding** — attack your own idea: smallest cases (n = 1,
+   2), all-equal values, sorted vs reversed input, duplicates, extreme
+   values. If it survives, code it. If you find the break yourself, you
+   just saved a submission.
+6. **Implement defensively** — the operations you are most sure about are
+   where the bugs live. Check the sample *by hand-tracing your own code*,
+   not by faith.
+7. **Defend** — know why your solution is correct (one paragraph) and what
+   it does on the worst input. If you cannot state either, you are not
+   done.
+
+## Where time is actually lost
+
+Post-mortems of contest rounds consistently show the same sinkholes:
+
+- coding before verifying the idea (step 5 skipped) — the debugging costs
+  3× the verification would have;
+- optimizing before having a *correct* baseline (step 4 inverted);
+- re-reading the statement in the middle of coding because the model was
+  never written down (step 1 skipped).
+
+The pipeline is not bureaucracy — it is the order that minimizes total
+time, including the time of mistakes.

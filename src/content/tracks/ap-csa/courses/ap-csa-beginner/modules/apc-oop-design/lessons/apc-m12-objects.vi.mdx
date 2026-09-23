@@ -1,0 +1,48 @@
+Một lớp có thể chứa *đối tượng của lớp bạn tự viết*. Một `Stopwatch` nhỏ:
+
+```java
+public class Stopwatch {
+    private int minutes;
+    private int seconds;
+
+    public Stopwatch() {
+        minutes = 0;
+        seconds = 0;
+    }
+
+    public void tick() {              // một giây trôi qua
+        seconds++;
+        if (seconds >= 60) {
+            seconds = 0;
+            minutes++;
+        }
+    }
+
+    public String toString() {        // định dạng kiểu đề thi: M:SS
+        return minutes + ":" + String.format("%02d", seconds);
+    }
+}
+```
+
+Hai quy ước đề thị dựa vào:
+
+- **`toString()`** — mọi lớp đều có thể định nghĩa; nối chuỗi
+  (`"" + stopwatch`) tự gọi nó. Đáp án FRQ thường kết thúc bằng việc dựng
+  một `String` rồi trả về.
+- **Hàm dựng gọi hàm dựng** — `this(...)` làm câu lệnh đầu tiên là ủy quyền;
+  các overload không lặp mã:
+
+```java
+public Point(int x, int y) {
+    this.x = x;
+    this.y = y;
+}
+
+public Point() {
+    this(0, 0);       // tái dùng hàm dựng chính
+}
+```
+
+**Chuyển đổi trạng thái** là trái tim của câu truy vết: sau
+`t.tick(); t.tick(); t.tick();` từ 0:59, trạng thái là 1:02 — phép nhớ
+(`seconds >= 60`) chính là chỗ thí sinh mất điểm vì chỉ tích một trường.

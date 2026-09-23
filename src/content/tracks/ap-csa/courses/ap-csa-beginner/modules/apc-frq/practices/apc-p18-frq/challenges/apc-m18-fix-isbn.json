@@ -1,0 +1,16 @@
+{
+  "id": "apc-m18-fix-isbn",
+  "title": "Debug: char codes vs digit values",
+  "prompt": "`validChecksum` compiles and runs but returns wrong answers: it sums CHAR CODES ('9' contributes 57, not 9). Fix it to sum digit values (signature and comments stay).",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // Precondition: code consists only of digit characters, length >= 1\n    // Postcondition: returns true exactly when the digit sum is\n    // divisible by 10\n    public static boolean validChecksum(String code) {\n        // BUG: original flaw kept — sums the CHAR CODES, not the\n        // digit values, so '9' contributes 57 instead of 9\n        int sum = 0;\n        for (int i = 0; i < code.length(); i++) {\n            sum += code.charAt(i);\n        }\n        return sum % 10 == 0;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "digits repaired",
+      "code": "\nCjTestBase.checkEq(Solution.validChecksum(\"19\"), true, \"1+9 = 10\");\nCjTestBase.checkEq(Solution.validChecksum(\"123\"), false, \"1+2+3 = 6\");\nCjTestBase.checkEq(Solution.validChecksum(\"992\"), true, \"9+9+2 = 20\");\n",
+      "hint": "sum += code.charAt(i) - '0';"
+    }
+  ],
+  "level": "debugging"
+}

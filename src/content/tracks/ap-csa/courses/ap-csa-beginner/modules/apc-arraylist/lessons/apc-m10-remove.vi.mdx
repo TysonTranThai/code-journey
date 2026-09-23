@@ -1,0 +1,37 @@
+Bụt ngữ ba-way đề thi thích kiểm tra:
+
+| | mảng | String | ArrayList |
+| --- | --- | --- | --- |
+| kích thước | `arr.length` | `s.length()` | `list.size()` |
+| đọc | `arr[i]` | `s.charAt(i)` | `list.get(i)` |
+| ghi | `arr[i] = v` | (bất biến) | `list.set(i, v)` |
+
+**Duyệt** ArrayList — hai dạng an toàn:
+
+```java
+for (int i = 0; i < list.size(); i++) {
+    System.out.println(list.get(i));
+}
+
+for (String s : list) {          // enhanced for: chỉ đọc
+    System.out.println(s);
+}
+```
+
+**Cái bẫy**: `remove` *dịch* mọi phần tử sau chỉ số bị xóa sang trái. Xóa
+trong khi đi tới và bạn bỏ sót phần tử ngay sau mỗi lần xóa:
+
+```java
+// xóa hết "x" khỏi ["x", "x", "a"] — SAI
+for (int i = 0; i < list.size(); i++) {
+    if (list.get(i).equals("x")) {
+        list.remove(i);      // i++ giờ bỏ qua phần tử vừa dịch vào
+    }
+}
+// kết quả: ["x", "a"] — còn sót một x!
+```
+
+Ba cách sửa đúng: đi **ngược** (`for (int i = list.size() - 1; i >= 0;
+i--)`), kiểm tra lại cùng chỉ số sau khi xóa (`i--`), hoặc dùng enhanced for
+chỉ khi bạn không xóa gì. Các bài "xóa phần tử trùng liền kề" được xây đúng
+trên cái bẫy này.

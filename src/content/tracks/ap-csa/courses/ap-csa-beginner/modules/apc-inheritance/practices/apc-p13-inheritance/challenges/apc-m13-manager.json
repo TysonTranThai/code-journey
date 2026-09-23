@@ -1,0 +1,16 @@
+{
+  "id": "apc-m13-manager",
+  "title": "Manager pay",
+  "prompt": "Complete `Manager extends Employee`: constructor chains up with super(name, base) and stores bonus; `pay()` overrides to base + bonus, reading the base through the inherited accessor `getBase()`.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Employee {\n        private String name;\n        private int base;\n\n        public Employee(String name, int base) {\n            this.name = name;\n            this.base = base;\n        }\n\n        public String getName() {\n            return name;\n        }\n\n        public int getBase() {\n            return base;\n        }\n\n        public int pay() {\n            return base;\n        }\n    }\n\n    public static class Manager extends Employee {\n        private int bonus;\n\n        public Manager(String name, int base, int bonus) {\n            // complete\n        }\n\n        public int getBonus() {\n            return bonus;\n        }\n\n        public int pay() {\n            // complete: base pay + bonus (use inherited accessor)\n            return 0;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "payroll chain",
+      "code": "\nSolution.Manager m = new Solution.Manager(\"Lan\", 1000, 250);\nCjTestBase.checkEq(m.getName(), \"Lan\", \"inherited accessor\");\nCjTestBase.checkEq(m.getBonus(), 250, \"own field\");\nCjTestBase.checkEq(m.pay(), 1250, \"overridden pay\");\n",
+      "hint": "getBase() works inside Manager — private base is reachable through the public accessor."
+    }
+  ],
+  "level": "guided"
+}

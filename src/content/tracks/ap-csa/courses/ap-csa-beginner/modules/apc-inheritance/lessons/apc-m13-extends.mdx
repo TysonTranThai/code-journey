@@ -1,0 +1,47 @@
+**Inheritance** models is-a relationships. A `Dog` is-a `Pet`: it gets every
+non-private member of `Pet` for free and adds its own.
+
+```java
+public class Pet {
+    private String name;
+
+    public Pet(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String speak() {
+        return "...";
+    }
+}
+
+public class Dog extends Pet {
+    private boolean fetchTrained;
+
+    public Dog(String name, boolean fetchTrained) {
+        super(name);               // MUST be first: build the Pet part
+        this.fetchTrained = fetchTrained;
+    }
+
+    public boolean isFetchTrained() {
+        return fetchTrained;
+    }
+}
+```
+
+Reading rules:
+
+- `private` fields exist inside `Dog` objects but are **not directly
+  accessible** from `Dog` code — go through the superclass's public
+  accessors (`getName()`).
+- `super(name)` calls the superclass constructor. If you omit it, Java
+  inserts an implicit `super()` — which only compiles if the superclass
+  *has* a no-arg constructor. This is the #1 inheritance compile error.
+
+Revised-framework note: inheritance appears in Unit 3 (10–18% of the exam)
+with modest depth — extends, super, one level of overriding. Hierarchy
+depth beyond one level, `protected`, abstract classes, and interfaces are
+*not* in this course.

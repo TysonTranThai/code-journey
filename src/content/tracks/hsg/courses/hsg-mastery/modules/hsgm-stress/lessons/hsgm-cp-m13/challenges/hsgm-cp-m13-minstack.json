@@ -1,0 +1,31 @@
+{
+  "id": "hsgm-cp-m13-minstack",
+  "title": "Checkpoint: The Amnesiac Stack",
+  "prompt": "**Task.** Process a stack protocol: `1 x` pushes x; `2` pops the top\n(popping an empty stack does nothing); `3` prints the current minimum of\nthe stack, or −1 if empty.\n\n**Constraints:** 1 ≤ number of operations ≤ 200000; 0 ≤ x < 10^9. Every\n`3` prints on its own line.\n\n**Think:** this is the stress-harness module — mentally simulate the\npop-heavy test below twice before submitting.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "push push ask",
+      "code": "std::istringstream in(\"3\\n1 4\\n1 2\\n3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "Stack {4, 2}: min 2."
+    },
+    {
+      "name": "pop empty guard",
+      "code": "std::istringstream in(\"2\\n2\\n3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"-1\\n\"));",
+      "hint": "Pop on empty does nothing; ask on empty → −1."
+    },
+    {
+      "name": "pop restores min",
+      "code": "std::istringstream in(\"6\\n1 5\\n1 3\\n1 2\\n2\\n3\\n3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"3\\n3\\n\"));",
+      "hint": "Push 5,3,2 → min 2; pop → stack {5,3}: min 3; ask again: 3. Two asks, both 3."
+    },
+    {
+      "name": "amnesia storm",
+      "code": "std::istringstream in(\"19\\n1 5\\n3\\n1 3\\n3\\n1 7\\n1 2\\n3\\n2\\n3\\n2\\n2\\n3\\n1 1\\n3\\n2\\n3\\n2\\n2\\n3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n3\\n2\\n3\\n5\\n1\\n5\\n-1\\n\"));",
+      "hint": "Pop-heavy sequence with pushes interleaved: every pop must restore the previous min. Ground truth simulated in Python."
+    }
+  ],
+  "level": "debugging"
+}

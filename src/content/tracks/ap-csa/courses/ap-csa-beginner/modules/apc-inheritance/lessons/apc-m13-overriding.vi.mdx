@@ -1,0 +1,40 @@
+**Ghi đè** — lớp con định nghĩa lại phương thức kế thừa với cùng chữ ký:
+
+```java
+public class Cat extends Pet {
+    public Cat(String name) {
+        super(name);
+    }
+
+    public String speak() {           // ghi đè Pet.speak
+        return "meow";
+    }
+}
+```
+
+Phương thức nào chạy phụ thuộc lớp của **đối tượng**, không phải kiểu biến:
+
+```java
+Pet p = new Cat("Mimi");
+p.speak();          // "meow" — phương thức của Cat chạy
+p.getName();        // chạy được: kế thừa từ Pet
+```
+
+Kiểu biến quyết định bạn được *gọi* gì; kiểu đối tượng quyết định *phiên
+bản nào* thực thi. Câu đó trả lời một nửa câu hỏi kế thừa của đề thi.
+
+**super.method()** mở rộng thay vì thay thế:
+
+```java
+public String speak() {
+    return super.speak() + " purr";
+}
+```
+
+**@Override** là tùy chọn nhưng nên dùng — trình biên dịch sau đó bắt được
+chữ ký bị gõ nhầm (một overload trá hình).
+
+Nhắc lại `equals`: các lớp kiểu đề thi override `equals(Object other)`,
+ép kiểu bên trong, và so các trường — hoặc cung cấp phương thức riêng kiểu
+`equalsName` khi đề muốn mã đơn giản hơn. Ở đây ta theo phong cách
+phương thức-riêng của đề.

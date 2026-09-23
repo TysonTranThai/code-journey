@@ -1,0 +1,35 @@
+A **constructor** initializes a new object. Rules the exam tests:
+
+- Same name as the class, **no return type** (not even void).
+- If you write **no** constructor, Java silently provides a no-argument
+  default (all fields zero/false/null) — but only then. Write any
+  constructor and the default disappears.
+
+```java
+public class Counter {
+    private int count;
+
+    public Counter() {           // no-arg: start at 0
+        count = 0;
+    }
+
+    public Counter(int start) {  // overloaded: start elsewhere
+        count = start;
+    }
+}
+```
+
+Two constructors with different parameter lists = **overloading**. The call
+`new Counter(5)` picks the matching one.
+
+**Multiple references, one object** — aliasing:
+
+```java
+Counter a = new Counter();
+Counter b = a;          // b refers to the SAME object; no copy
+```
+
+Now `a` and `b` are two names for one counter. Compare with primitives,
+where `int b = a` really copies. And the null reference: an object variable
+can hold `null` ("no object") — calling a method on it crashes with a
+`NullPointerException`.

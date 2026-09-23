@@ -1,0 +1,31 @@
+# Bộ ba chương trình
+
+Kiểm thử sức bền là ba chương trình trong một vòng lặp:
+
+1. **Nhà tiên tri** — lời giải brute force, quá chậm cho giới hạn thật
+   nhưng rõ ràng đúng ở n nhỏ.
+2. **Ứng viên** — lời giải nhanh của bạn, thứ đang bị kiểm thử.
+3. **Bộ sinh** — bộ sinh input nhỏ có seed ngẫu nhiên.
+
+Vòng lặp: sinh → chạy cả hai trên input → so byte-chính-xác. Tại phân kỳ
+đầu tiên, bạn cầm trong tay một *input gãy*, được đảm bảo. Rồi thu nhỏ nó
+thành phản ví dụ tối giản (Module 12) và chẩn đoán.
+
+## Làm cho harness cắn
+
+- **Seed mọi thứ.** Một lỗi tái hiện được là lỗi sửa được; một phân kỳ
+  không tái hiện được là con ma.
+- **Đổi *hình dạng* của bộ sinh, không chỉ kích thước.** Xen kẽ các hồ
+  sơ đã-sort, đảo-ngược, nhiều-hòa, bảng-chữ-nhỏ, giá-trị-cực-trị — mỗi
+  hình dạng là một bề mặt tấn công khác nhau (danh mục Module 12, tự
+  động hóa).
+- **So sánh output byte-chính-xác.** Khác biệt khoảng trắng cuối dòng là
+  phán quyết thật trên trình chấm; để harness dạy bạn điều đó sớm.
+
+## Stress tìm được gì và bỏ lỡ gì
+
+Kiểm thử sức bền tìm *phân kỳ hành vi* mà các hình dạng của bộ sinh với
+tới. Nó không thể tìm tràn số ở n = 200000 (nhà tiên tri không chạy nổi
+ở đó) hoặc cái chết vì sai độ phức tạp. Với những cái đó, phân tích tĩnh
+của code và phép tính ngân sách vẫn là công cụ — stress bổ sung, không
+bao giờ thay thế, danh mục.

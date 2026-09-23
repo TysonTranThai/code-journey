@@ -1,0 +1,35 @@
+**Shifting and inserting** — the exam's hardest array operations. To remove
+the element at index `k` (keeping order), shift everything after it left:
+
+```java
+// {a, b, c, d} remove index 1 → {a, c, d, ?}
+for (int i = k; i < arr.length - 1; i++) {
+    arr[i] = arr[i + 1];
+}
+```
+
+The loop bound `length - 1` is the crux: on the last pass, `arr[i + 1]` is
+the final element — one past that would be out of bounds. The last slot now
+holds a duplicate; track a logical size separately when needed.
+
+**Copying**: `copy = original;` copies the *reference*, not the values —
+both names then mutate one array. The value copy needs a loop (or
+`Arrays.copyOf`):
+
+```java
+int[] copy = new int[arr.length];
+for (int i = 0; i < arr.length; i++) {
+    copy[i] = arr[i];
+}
+```
+
+**Swapping** two elements needs the three-line temp dance:
+
+```java
+int temp = arr[i];
+arr[i] = arr[j];
+arr[j] = temp;
+```
+
+Forgetting the temp silently destroys one value — the classic bug the wrong
+solutions below commit.

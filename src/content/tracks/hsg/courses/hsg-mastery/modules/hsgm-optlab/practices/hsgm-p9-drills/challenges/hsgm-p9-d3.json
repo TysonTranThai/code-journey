@@ -1,0 +1,16 @@
+{
+  "id": "hsgm-p9-d3",
+  "title": "The Wrong Acceleration",
+  "prompt": "**Scenario.** Array with interleaved point-updates and prefix-sum queries (n = q = 200000). Someone 'optimizes' with precomputed prefix sums rebuilt after every update. What went wrong?\n\n**Which approach is the best fit? The program only needs to print the letter.**\n\n**A)** Nothing — that is the correct structure\n\n**B)** Rebuilding prefixes after each update is O(n) per update: the array is dynamic, so the named bottleneck needs an incremental structure (Fenwick), not a static one\n\n**C)** They should have used a segment tree with lazy propagation\n\n**D)** They should have sorted the queries",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "answer",
+      "code": "std::istringstream in(\"\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"B\"));",
+      "hint": "Static acceleration on a dynamic array re-introduces the bottleneck at update time. The trigger pattern for Fenwick is precisely 'prefix aggregates that change.'"
+    }
+  ],
+  "level": "independent"
+}

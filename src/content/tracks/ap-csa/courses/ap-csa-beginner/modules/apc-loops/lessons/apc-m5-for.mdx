@@ -1,0 +1,36 @@
+The **for** loop packs init / test / update into one header — the workhorse:
+
+```java
+for (int i = 0; i < 5; i++) {
+    System.out.print(i);
+}
+// prints 01234
+```
+
+Execution order: init once → test → body → update → test → ... Exactly
+equivalent to the while version, but the three loop-control pieces are
+visible in one line, so nothing can be forgotten.
+
+**Counting problems** (how many times does the loop run?) are pure exam
+material:
+
+- `for (int i = 0; i < n; i++)` runs exactly `n` times.
+- `for (int i = 1; i <= n; i++)` runs exactly `n` times.
+- `for (int i = 0; i <= n; i++)` runs `n + 1` times — the off-by-one.
+- `for (int i = 0; i < n; i += 2)` runs `ceil(n / 2.0)` times.
+
+**Accumulator and counter** inside loops:
+
+```java
+int total = 0, count = 0;
+for (int i = 1; i <= 10; i++) {
+    if (i % 2 == 0) {
+        total += i;
+        count++;
+    }
+}
+// total 30, count 5
+```
+
+The accumulator is declared **outside** the loop; resetting it inside is a
+favorite exam bug.

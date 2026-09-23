@@ -1,0 +1,26 @@
+{
+  "id": "hsgm-cp-m3-intervals",
+  "title": "Checkpoint: Keep the Most",
+  "prompt": "**Task.** Each test case gives n intervals [l, r] (integer endpoints,\n1 ≤ l < r ≤ 10^9). Remove the minimum number of intervals so that no two\nremaining intervals share any point (touching at an endpoint counts as\nsharing: [1,3] and [3,5] overlap at 3). For each test case print one\ninteger: the minimum removals.\n\n**Input:** first line T — the number of test cases (1 ≤ T ≤ 8). Each test\ncase: a line with n (1 ≤ n ≤ 200000), then a line with the n pairs l r.\nTotal n over all cases ≤ 200000.\n\n**Budget check:** n ≤ 200000 admits O(n log n) — one sort plus one sweep.\nAny per-pair reasoning beyond the sweep is a wrong family.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "warmup",
+      "code": "std::istringstream in(\"1\\n3\\n1 3 2 5 4 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "Keep [1,3] and [4,7]; remove [2,5]."
+    },
+    {
+      "name": "chain",
+      "code": "std::istringstream in(\"1\\n4\\n1 2 2 3 3 4 4 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Touching-at-endpoint chains: sorted by right end, (1,2),(2,3),(3,4),(4,5) — (2,3) starts at 2, not before last end 2 → kept; all four survive → 0 removals."
+    },
+    {
+      "name": "mixed",
+      "code": "std::istringstream in(\"8\\n8 1 3 2 5 4 7 1 8 5 9 8 10 2 6 6 8\\n5 1 10 2 3 4 5 6 7 8 9\\n10 5 7 1 2 3 4 1 9 2 8 6 10 1 3 4 6 7 9 2 5\\n4 1 2 2 3 3 4 4 5\\n1 1 100\\n4 1 5 1 5 1 5 2 6\\n10 10 20 1 30 5 25 12 22 1 15 2 18 3 28 7 21 8 40 9 35\\n12 1 4 3 6 5 8 7 10 9 12 2 11 4 9 6 13 1 7 8 14 10 15 3 12\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n1\\n6\\n0\\n0\\n3\\n9\\n9\\n\"));",
+      "hint": "Ground truth computed independently in Python: sort by right endpoint, sweep once, count overlaps."
+    }
+  ],
+  "level": "combination"
+}

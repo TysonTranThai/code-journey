@@ -1,0 +1,27 @@
+**Mixed collections and arrays** — the exam loves asking for both in
+one method:
+
+```java
+// array in, list out
+public static ArrayList<Integer> positives(int[] a) {
+    ArrayList<Integer> out = new ArrayList<Integer>();
+    for (int x : a) {
+        if (x > 0) {
+            out.add(x);
+        }
+    }
+    return out;
+}
+```
+
+Four conversion facts that decide correctness:
+
+- `int[]` and `ArrayList<Integer>` are different types; neither
+  auto-converts. Box manually (`out.add(x)` boxes the int).
+- `list.remove(Integer.valueOf(5))` removes the VALUE 5;
+  `list.remove(5)` removes INDEX 5. The exam tests this distinction.
+- Removing while iterating forward **skips** the element after the
+  removed one — iterate backwards or use an index-corrected loop.
+- `a.length` vs `list.size()` — one is a field, one is a method.
+
+When a spec says "return a new list", never mutate the input.

@@ -1,0 +1,42 @@
+`if` chỉ chạy khối lệnh khi boolean của nó đúng; `else` là con đường còn
+lại.
+
+```java
+if (score >= 60) {
+    System.out.println("pass");
+} else {
+    System.out.println("fail");
+}
+```
+
+**Chuỗi else-if** kiểm tra theo thứ tự và dừng ở nhánh đúng đầu tiên:
+
+```java
+if (score >= 90) {
+    grade = 'A';
+} else if (score >= 80) {
+    grade = 'B';
+} else if (score >= 70) {
+    grade = 'C';
+} else {
+    grade = 'F';
+}
+```
+
+Thứ tự là tất cả: với `score = 95`, nhánh đầu chạy và phần còn lại bị bỏ qua.
+Nếu kiểm tra `score >= 70` trước, mọi điểm 70+ sẽ nhận 'C' — lỗi thứ tự kinh
+điển.
+
+**Biên.** `>=` với `>` quyết định ai sở hữu mép. Quyết định có chủ đích: điểm
+90 được A không? Vậy là `score >= 90`, không phải `> 90`. Khi chuỗi kết thúc
+bằng `else`, luôn có một nhánh chạy; thiếu nó, có thể không nhánh nào chạy.
+
+Ngoặc nhọn là tùy chọn cho một câu lệnh — nhưng đề thi AP rất thích hỏi điều
+gì xảy ra khi `if` không ngoặc gặp `else` lơ lửng. Truy vết trường hợp *thụt
+lề dối lòng*:
+
+```java
+if (x > 10)
+    System.out.println("big");
+    System.out.println("done");   // KHÔNG nằm trong if — luôn chạy!
+```

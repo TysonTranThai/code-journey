@@ -1,0 +1,34 @@
+# The Acceleration Catalog
+
+Four accelerations rescue the overwhelming majority of TLEs:
+
+## 1. Prefix (static aggregates)
+
+Re-adding ranges → precompute prefix sums/mins/maxes once: O(n) build,
+O(1) per query. Works when the array is **static** between queries.
+
+## 2. Monotonic deque (window extrema)
+
+O(k) re-scan per step → deque holds candidate indices with values in
+monotone order: amortized O(1) per step, O(n) total. Works for sliding
+window min/max, and powers the windowed-DP fusion of the DP module.
+
+## 3. Fenwick / segment tree (dynamic aggregates)
+
+Ranges that **change** between queries → point-update prefix-aggregate in
+O(log n), or full range aggregates with a segment tree. The cost of
+dynamism is the log.
+
+## 4. Binary search on answer (monotone feasibility)
+
+"Minimum x such that feasible(x)" → if feasible is monotone in x, binary
+search x and check greedily: O(log range × check). The trick is proving
+monotonicity — which is exactly the observation-discovery skill.
+
+## Matching discipline
+
+Each acceleration has a trigger pattern: re-added sums (prefix),
+windowed extrema (deque), changed ranges (Fenwick/ST), monotone feasibility
+(binary search). Mis-matching — e.g., a segment tree where a prefix array
+suffices — is not wrong, but it is heavier code with more bug surface.
+Pick the weakest sufficient structure, again.

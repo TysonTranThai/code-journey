@@ -1,0 +1,47 @@
+**Kế thừa** mô hình hóa quan hệ is-a. Một `Dog` là một `Pet`: nó nhận mọi
+thành viên không phải private của `Pet` miễn phí và thêm phần của riêng mình.
+
+```java
+public class Pet {
+    private String name;
+
+    public Pet(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String speak() {
+        return "...";
+    }
+}
+
+public class Dog extends Pet {
+    private boolean fetchTrained;
+
+    public Dog(String name, boolean fetchTrained) {
+        super(name);               // PHẢI là đầu tiên: dựng phần Pet
+        this.fetchTrained = fetchTrained;
+    }
+
+    public boolean isFetchTrained() {
+        return fetchTrained;
+    }
+}
+```
+
+Luật đọc:
+
+- Trường `private` tồn tại bên trong đối tượng `Dog` nhưng **không truy cập
+  trực tiếp được** từ mã `Dog` — phải đi qua accessor công khai của lớp cha
+  (`getName()`).
+- `super(name)` gọi hàm dựng của lớp cha. Bỏ qua nó, Java chèn ngầm
+  `super()` — chỉ biên dịch được nếu lớp cha *có* hàm dựng không tham số.
+  Đây là lỗi biên dịch kế thừa phổ biến nhất.
+
+Ghi chú khung chương trình sửa đổi: kế thừa xuất hiện trong Unit 3 (10–18%
+đề thi) ở độ sâu khiêm tốn — extends, super, một mức ghi đè. Hệ thống phân
+cấp sâu hơn một mức, `protected`, lớp trừu tượng, interface *không* nằm
+trong khóa học này.

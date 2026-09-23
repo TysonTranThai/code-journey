@@ -1,0 +1,32 @@
+Java primitives: `int` (whole numbers), `double` (decimals), `boolean`
+(true/false), `char` (one character). Anything else on the exam is built from
+these plus objects.
+
+**Constants** — the `final` keyword freezes a variable:
+
+```java
+final int MAX_SCORE = 100;
+MAX_SCORE = 105;    // compile error — constants never change
+```
+
+**Integer division is the trap.** When both operands are `int`, the result
+is an `int` — the fractional part is **truncated** (dropped, not rounded):
+
+```java
+System.out.println(7 / 2);     // 3   (not 3.5)
+System.out.println(7 % 2);     // 1   (remainder)
+System.out.println(7.0 / 2);   // 3.5 (one double operand → double math)
+System.out.println(-7 / 2);    // -3  (truncation toward zero)
+```
+
+**Casting** converts explicitly:
+
+```java
+double d = 9.7;
+int truncated = (int) d;          // 9   — decimal part dropped
+int rounded = (int) (d + 0.5);    // 10  — the manual rounding trick
+double back = truncated;          // widening: no cast needed
+```
+
+Widening (`int` → `double`) is automatic; narrowing (`double` → `int`)
+needs the cast and loses information.

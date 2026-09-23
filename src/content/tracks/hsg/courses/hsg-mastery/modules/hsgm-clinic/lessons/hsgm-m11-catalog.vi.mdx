@@ -1,0 +1,25 @@
+# Danh mục bug
+
+Hầu hết mọi lời giải sai-nhưng-hợp-lý rơi vào một trong bảy loại. Học
+chữ ký; nhận diện thắng suy luận lại.
+
+1. **Off-by-one tại biên.** Đầu mút đóng/mở, `hi = n` với `hi = n−1`,
+   xử lý miền rỗng. Chữ ký: gãy ở test có đáp án nằm ĐÚNG tại biên.
+2. **Phá hòa.** So sánh dùng `>` nơi cần `>=` (hoặc ngược) — hoặc khóa
+   sort bỏ sót tiêu chí phụ. Chữ ký: gãy khi có khóa bằng nhau; qua trên
+   dữ liệu đôi-một-khác.
+3. **Tràn dấu/kiểu.** Tích lũy int32 vượt 2·10^9. Chữ ký: chỉ gãy ở thang
+   lớn, và giá trị bị wrap thường thành âm.
+4. **Đếm có-thứ-tự/không-thứ-tự.** x·(x−1) với x·(x−1)/2. Chữ ký: đúng
+   gấp đôi (hoặc một nửa) trên input có ≥ 2 phần tử liên quan.
+5. **Vi phạm hoán đổi greedy.** Khóa sort thiếu số hạng mà luận điểm hoán
+   đổi cần. Chữ ký: gãy ở một case phản đốidraulic nhỏ với hai phần tử
+   "cạnh tranh".
+6. **Trạng thái cũ.** Tập visited hoặc memo dùng lại giữa các truy vấn,
+   hoặc cập nhật quá sớm/muộn. Chữ ký: truy vấn *thứ hai* trong lô sai
+   trong khi thứ nhất đúng.
+7. **Nhầm hướng.** Cạnh vô hướng chỉ thêm một chiều; hàng/cột bị hoán vị;
+   cha/con bị lật. Chữ ký: input bất đối xứng gãy, đối xứng thì qua.
+
+Kỷ luật: khi khoanh vùng được một bug, gọi tên loại VÀ viết phản ví dụ
+nhỏ nhất của nó. Cả hai cùng nhau là vắc-xin.

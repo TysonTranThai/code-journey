@@ -1,0 +1,29 @@
+# State = Degrees of Freedom
+
+The state of a DP answers one question: *standing here, what do I need to
+know to finish optimally?* Design procedure:
+
+1. **Scan forward.** At a decision point, list everything the future cost
+   depends on: current position, resources consumed, last choice, parity
+   of something, whether a flag fired.
+2. **Each independent quantity = one dimension.** position × resource ×
+   flag is three indices, not one clever hack.
+3. **Bound every dimension.** If a dimension is unbounded, either compress
+   it (only O(n) distinct values appear), or you have the wrong state.
+4. **The transition comes last.** Once the state is right, the transition
+   is "try every legal last move" — usually mechanical.
+
+## The typical sizing
+
+n ≤ 300 with two free quantities smells like O(n³) (position × position
+× something) or O(n²·something). n ≤ 100000 with one free quantity smells
+like O(n log n) — which means the transition must be answered by a data
+structure, not a loop. **The constraint table sizes the state before you
+write a line of code.**
+
+## When the state is wrong
+
+Symptoms: you keep adding "just one more flag" (state explosion — you are
+modeling globally what should be local), or the transition needs the whole
+history (a true summary dimension is missing). Fix the state, not the
+symptom.

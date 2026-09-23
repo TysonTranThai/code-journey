@@ -1,0 +1,51 @@
+# Bảng chuyển giới hạn → họ thuật toán
+
+Bảng chọn từ Module 1, nay kèm các bẫy khiến drill khó.
+
+## Bẫy 1 — Giá trị lớn, n nhỏ
+
+`n ≤ 24, a[i] ≤ 10^12`: không gian trạng thái là **2^24 tập con**, không
+phải các giá trị. Meet in the middle hoặc DP bitmask. Giá trị khổng lồ là
+gợi ý rằng đáp án được so sánh, không được đếm — sort các tổng tập con,
+không phải tổng tiền tố.
+
+## Bẫy 2 — q ≫ n hoặc n ≫ q
+
+`n ≤ 100, q ≤ 10^5` → **tiền tính toán tất cả**: O(n^2) thậm chí O(n^3) vừa
+đỡ lúc dựng; mỗi truy vấn phải O(1) hoặc O(log n). Ngược lại
+(`n ≤ 10^5, q ≤ 100`) → mỗi truy vấn O(n) hoặc O(n log n) là đủ; tiền tính
+toán cho 100 truy vấn là lãng phí, và đừng dựng segment tree theo thói quen
+khi 100 lần quét tuyến tính rẻ và an toàn hơn.
+
+## Bẫy 3 — Mảng đã sắp / gần sắp (đọc điều kiện đảm bảo)
+
+"Đã sắp" trong điều kiện đảm bảo là món quà: two pointers, tìm kiếm nhị
+phân, trộn không cần sort. Bỏ qua điều kiện đảm bảo được nêu đốt luôn lời
+giải chủ đích.
+
+## Bẫy 4 — Độ dài xâu vs bảng chữ cái
+
+|s| ≤ 2·10^5 chữ thường: mảng đếm 26 chữ, bitmask các chữ đã gặp (26 bit
+vừa một int), counting sort. |s| ≤ 20: liệt kê xâu con 2^20 là đủ.
+
+## Bẫy 5 — Điều kiện đảm bảo "cây"
+
+"Cây n đỉnh, q truy vấn đường đi" có dạng LCA; "n−1 cạnh" nói một lần giữa
+đoạn văn là cùng một bài. Gạch chân chữ *cây*. Cây là đồ thị có đúng một
+đường đi giữa mỗi cặp đỉnh — toàn bộ hộp công cụ DP-on-trees chỉ mở nếu bạn
+để ý điều đó.
+
+## Định luật n nhỏ (n ≤ 20)
+
+Khi n ≤ 20, người ra đề đang kiểm tra bạn có **chống lại việc overengineering**
+hay không. 2^20 = 10^6 — brute force *chính là* lời giải chủ đích. Cái gãy
+kinh điển trong phòng thi: chế ra greedy cho bài 20 phần tử, sót một trường
+hợp, mất trắng subtask mà brute force sẽ quét sạch. Nếu phép toán cho ra
+10^6, hãy lấy và dành thời gian đó cho chỗ khác.
+
+## Luyện ước lượng thành lời
+
+"n = 2·10^5, q = 2·10^5, cập nhật đoạn lấy min đoạn → segment tree lazy,
+O((n+q) log n) ≈ 7·10^6 — vừa với dư 100×. Phương án hai: phân rã căn,
+O((n+q)·sqrt n) ≈ 1.8·10^8 — chắc vừa nhưng không còn dư; segment tree
+thắng." Câu đó, nói ra trong mười giây, chính là kỹ năng.

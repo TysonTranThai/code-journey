@@ -1,0 +1,35 @@
+Two shapes cover nearly all AP recursion:
+
+**String recursion** — index-based, often from both ends:
+
+```java
+public static boolean isPalindrome(String s, int lo, int hi) {
+    if (lo >= hi) {
+        return true;              // met in the middle (or empty)
+    }
+    if (s.charAt(lo) != s.charAt(hi)) {
+        return false;
+    }
+    return isPalindrome(s, lo + 1, hi - 1);
+}
+```
+
+**Array recursion** — recurse on the index, treat the rest of the array as
+"the smaller input":
+
+```java
+public static int sum(int[] arr, int i) {
+    if (i == arr.length) {
+        return 0;                 // base: past the end adds nothing
+    }
+    return arr[i] + sum(arr, i + 1);
+}
+```
+
+`sum(arr, 0)` walks 0, 1, 2, ... — progress is `i + 1`. The base case is
+`i == arr.length`, *not* `length - 1`: the empty contribution is real, and
+getting it wrong by one is the classic off-by-one.
+
+Decomposability mindset: a problem is recursive when a piece of the answer
+plus *the same problem, smaller* gives the whole — first character of the
+string + the palindrome-ness of the rest.

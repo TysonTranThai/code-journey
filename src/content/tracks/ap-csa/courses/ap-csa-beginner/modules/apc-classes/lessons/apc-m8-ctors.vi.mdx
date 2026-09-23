@@ -1,0 +1,35 @@
+**Constructor** khởi tạo đối tượng mới. Các luật đề thi kiểm tra:
+
+- Trùng tên lớp, **không có kiểu trả về** (kể cả void).
+- Nếu bạn viết **không** constructor nào, Java âm thầm cấp một mặc định
+  không-đối-số (mọi trường về 0/false/null) — nhưng chỉ khi đó. Viết một
+  constructor bất kỳ và mặc định biến mất.
+
+```java
+public class Counter {
+    private int count;
+
+    public Counter() {           // không đối số: bắt đầu 0
+        count = 0;
+    }
+
+    public Counter(int start) {  // nạp chồng: bắt đầu khác
+        count = start;
+    }
+}
+```
+
+Hai constructor với danh sách tham số khác nhau = **nạp chồng (overload)**.
+Lời gọi `new Counter(5)` chọn cái khớp.
+
+**Nhiều tham chiếu, một đối tượng** — tham chiếu chung (aliasing):
+
+```java
+Counter a = new Counter();
+Counter b = a;          // b trỏ tới CÙNG đối tượng; không sao chép
+```
+
+Giờ `a` và `b` là hai tên cho một bộ đếm. So với kiểu nguyên thủy, nơi
+`int b = a` thực sự sao chép. Và tham chiếu null: biến đối tượng có thể giữ
+`null` ("không có đối tượng") — gọi phương thức trên nó sẽ sập với
+`NullPointerException`.

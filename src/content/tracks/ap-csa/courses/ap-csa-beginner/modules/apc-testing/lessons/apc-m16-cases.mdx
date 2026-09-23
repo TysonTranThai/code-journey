@@ -1,0 +1,22 @@
+A **test case** is an input, an expected output, and a reason it might
+break the code. Good test design targets boundaries:
+
+- **Boundary values**: for `score >= 60` test 59, 60, and 61. The bug
+  almost always lives exactly at the comparison.
+- **Empty / zero / one**: empty arrays, length 0, single elements.
+  Loops that "obviously work" break on their first iteration.
+- **Negatives and overflow-aware big values**: `int` flips sign past
+  2,147,483,647 — sums of many positives can overflow silently.
+- **Duplicates and ties**: does "first" or "last" win?
+- **The not-found path**: search returns what when absent?
+
+```java
+// code under test: isPassing(score)
+checkEq(isPassing(59), false, "just below");
+checkEq(isPassing(60), true,  "exact boundary");
+checkEq(isPassing(61), true,  "just above");
+```
+
+Notice what each assertion *says*, not just what it checks — a test
+that fails should name the behavior that broke. That habit is what
+"defensive testing" means on the exam and in real code.

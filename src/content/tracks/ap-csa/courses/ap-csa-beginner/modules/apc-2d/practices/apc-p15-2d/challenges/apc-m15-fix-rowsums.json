@@ -1,0 +1,16 @@
+{
+  "id": "apc-m15-fix-rowsums",
+  "title": "Debug: running totals instead of row sums",
+  "prompt": "`rowSums` compiles and returns the right *shape*, but each entry is a running total of the grid so far instead of that row's sum. Fix the accumulator placement (signature stays the same).",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int[] rowSums(int[][] g) {\n        // BUG: original flaw kept — the accumulator is declared OUTSIDE\n        // the row loop, so each row's \"sum\" is a running total of the\n        // whole grid so far\n        int s = 0;\n        int[] sums = new int[g.length];\n        for (int r = 0; r < g.length; r++) {\n            for (int c = 0; c < g[0].length; c++) {\n                s += g[r][c];\n            }\n            sums[r] = s;\n        }\n        return sums;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "row sums repaired",
+      "code": "\nCjTestBase.checkEq(Solution.rowSums(new int[][] { {1, 2}, {10, 20} }), new int[] {3, 30}, \"per-row, not cumulative\");\nCjTestBase.checkEq(Solution.rowSums(new int[][] { {5}, {5}, {5} }), new int[] {5, 5, 5}, \"three equal rows\");\n",
+      "hint": "move the accumulator declaration INSIDE the outer loop so each row starts from 0."
+    }
+  ],
+  "level": "debugging"
+}

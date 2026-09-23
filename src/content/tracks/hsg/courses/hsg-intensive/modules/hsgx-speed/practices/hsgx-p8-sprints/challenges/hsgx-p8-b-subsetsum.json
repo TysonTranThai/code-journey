@@ -1,0 +1,36 @@
+{
+  "id": "hsgx-p8-b-subsetsum",
+  "title": "Sprint B — Closest Subset Sum (SELF-TIMED 20)",
+  "prompt": "**SELF-TIMED: 20 minutes.** The constraint column decides the algorithm\nin the first minute; the rest is careful delivery.\n\n**Bài toán.** Given n items with values a[i] and a target S, choose any\nsubset (possibly empty) minimizing |sum − S|. On ties, output the **smaller**\nsum. Print the chosen sum.\n\n**Constraints:** 1 ≤ n ≤ 15; 1 ≤ a[i] ≤ 10^9; 1 ≤ S ≤ 10^9.\n\n**Input:** line 1: n and S; line 2: n values.\n**Output:** one integer — the chosen subset sum.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "main",
+      "code": "std::istringstream in(\"15 145499239\\n426800430 203486504 357349935 968986847 198621654 671665634 15474663 565509623 825106914 748104606 8390343 915344741 366553454 736617129 498194178\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"198621654\\n\"));",
+      "hint": "2^15 enumeration; greedy descending locks in early picks (23865006) and misses the true closest 198621654."
+    },
+    {
+      "name": "single closer to item",
+      "code": "std::istringstream in(\"1 3\\n5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n\"));",
+      "hint": "Sums {0,5}: |5-3|=2 beats |0-3|=3 → 5."
+    },
+    {
+      "name": "single closer to zero",
+      "code": "std::istringstream in(\"1 2\\n5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Sums {0,5}: |0-2|=2 beats |5-2|=3 → 0 (empty subset allowed)."
+    },
+    {
+      "name": "exact",
+      "code": "std::istringstream in(\"2 4\\n3 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\n\"));",
+      "hint": "3+1=4 exactly."
+    },
+    {
+      "name": "above",
+      "code": "std::istringstream in(\"1 10\\n7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n\"));",
+      "hint": "Sums {0,7}: |7-10|=3 beats |0-10|=10 → 7."
+    }
+  ],
+  "level": "combination"
+}

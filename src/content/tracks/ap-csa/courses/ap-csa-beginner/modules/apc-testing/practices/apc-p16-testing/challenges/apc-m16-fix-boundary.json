@@ -1,0 +1,16 @@
+{
+  "id": "apc-m16-fix-boundary",
+  "title": "Debug: boundary off by one",
+  "prompt": "`isPassing(60)` must be true (60 is a pass) but the code rejects it. Fix the comparison so the boundary is inclusive.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static boolean isPassing(int score) {\n        // BUG: original flaw kept — boundary off by one; 60 must pass\n        return score > 60;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "boundary repaired",
+      "code": "\nCjTestBase.checkEq(Solution.isPassing(59), false, \"below stays below\");\nCjTestBase.checkEq(Solution.isPassing(60), true, \"boundary included\");\nCjTestBase.checkEq(Solution.isPassing(61), true, \"above stays above\");\n",
+      "hint": "> becomes >=."
+    }
+  ],
+  "level": "debugging"
+}

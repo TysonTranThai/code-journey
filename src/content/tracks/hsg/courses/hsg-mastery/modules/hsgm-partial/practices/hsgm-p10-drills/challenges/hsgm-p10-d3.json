@@ -1,0 +1,16 @@
+{
+  "id": "hsgm-p10-d3",
+  "title": "The Upgrade Accident",
+  "prompt": "**Scenario.** Your tiered submission passes subtask 1 and 2. You add the full-solution tier and now subtask 1 FAILS. Most likely cause?\n\n**Which approach is the best fit? The program only needs to print the letter.**\n\n**A)** The judge changed\n\n**B)** Shared code changed underneath the lower tier — a refactor of parsing or a helper modified behavior the brute-force tier depends on; the upgrade rule (re-run lower-tier tests) was skipped\n\n**C)** Brute force cannot fail\n\n**D)** The full solution is too slow",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "answer",
+      "code": "std::istringstream in(\"\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"B\"));",
+      "hint": "The upgrade rule exists precisely for this: tiers share parsing/helpers, and edits ripple. Always re-run every lower tier after touching shared code."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,73 @@
+## Bộ Tài Liệu Tham Khảo
+
+Mọi thứ bên dưới cố tình súc tích. Đây là phần nên đọc lại đêm trước vòng thi.
+
+### Cẩm nang chọn thuật toán
+
+| Bạn thấy | Chọn |
+| --- | --- |
+| n ≤ 20 | duyệt bitmask, meet-in-the-middle |
+| n ≤ 500 | interval/DP O(n³) |
+| n ≤ 5000, q ≤ 5000 | O(nq) hoặc O((n+q)√n) |
+| n ≤ 2·10⁵ | O(n log n): sort, heap, cấu trúc cây |
+| truy vấn offline | sắp theo một tọa độ, quét |
+| cập nhật đoạn + hỏi đoạn | segment tree lười |
+| prefix sum có cập nhật | Fenwick |
+| liên thông theo thời gian | DSU (offline) hoặc link-cut |
+| "tối thiểu giá trị lớn nhất" / "tối đa giá trị nhỏ nhất" | chảy nhị phân đáp án |
+| đếm có cấu trúc chữ số | digit DP |
+| tổng mảng con có số âm | map prefix |
+| tổng mảng con, chỉ dương | two pointers |
+| xâu, mẫu lặp lại | KMP / băm / trie |
+| đóng khẩu độ với tới | SCC rút gọn + DP DAG |
+
+### Bảng phức tạp (ngân sách an toàn, ~10⁹ phép đơn giản)
+
+O(n) 10⁸ — O(n log n) 2·10⁵ — O(n√n) 5·10⁴ — O(n²) 3·10³ — O(2^n) 24 —
+O(n·2^(n/2)) 40 (meet in the middle) — O(n³) 300.
+
+### Danh mục gỡ lỗi (theo thứ tự)
+
+1. Đọc lại đề — định dạng output, thứ tự, lệch một trong ràng buộc.
+2. Dò ví dụ bằng tay, lần theo biến, đừng nhìn chằm chằm.
+3. Kiểm tra biên: n = 1, toàn bằng, toàn âm, giá trị cực đại.
+4. Tràn số: chỗ nào hai giá trị 10⁹ nhân hoặc cộng nhau?
+5. Test nhỏ ngẫu nhiên đối chiếu brute đáng tin (bộ harness Module 6).
+6. Rồi mới đến: print-debug ca nhỏ nhất gây lỗi.
+
+### Danh mục trước khi nộp
+
+- [ ] Ví dụ pass **đúng từng byte** (kể cả xuống dòng).
+- [ ] Cỡ mảng: mọi mảng đủ cho cực đại thật, đánh chỉ số 1 nhất quán.
+- [ ] `long long` nơi hai giá trị cực đại có thể gặp nhau.
+- [ ] Thứ tự đọc khớp đề (r trước c!).
+- [ ] Các ca đặc biệt ở dòng ràng buộc thực sự xuất hiện trong test của bạn.
+
+### Lỗi thường gặp HSG
+
+Tràn int âm thầm; đọc đầu vào sai đơn vị (0-index vs 1-index); giả định giá
+trị đôi một khác nhau; giả định đầu vào có sắp sẵn; tham lam không có lập
+luận đổi chỗ; quên modulo trên giá trị trung gian âm; in thừa một dấu cách.
+
+### Khuôn C++ thi đấu
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+void solve(istream& in, ostream& out) {
+    // đọc, tính, in — harness sandbox gọi hàm này
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve(cin, cout);
+    return 0;
+}
+```
+
+I/O nhanh, một hàm solve, 64-bit mặc định cho mọi thứ có thể lớn. Boilerplate
+của mọi thử thách trong khóa học chính là khuôn này với phần thân solve bị
+gỡ — bạn đã lấp nó suốt khóa học.

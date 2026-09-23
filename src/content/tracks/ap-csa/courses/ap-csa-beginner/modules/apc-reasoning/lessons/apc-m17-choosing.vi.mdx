@@ -1,0 +1,25 @@
+**Chọn thuật toán** — ghép công cụ với ràng buộc:
+
+- Cần max/min/tổng của mảng? Một lượt — O(n). Không gì nhanh hơn được
+  (bắt buộc phải nhìn mỗi phần tử ít nhất một lần).
+- Cần biết một giá trị có mặt trong mảng **chưa sắp**? Quét tuyến
+  tính, O(n).
+- Cùng câu hỏi, mảng **đã sắp**? Tìm kiếm nhị phân, O(log n) — nhưng
+  chỉ vì tính có thứ tự cho phép bỏ nửa phạm vi mỗi bước.
+- Cần mọi cặp? Bản chất là n²; mẹo thường là *tránh* cần mọi cặp.
+
+```java
+// đã sắp: bỏ nửa mỗi bước — chưa sắp: không thể
+while (lo <= hi) {
+    int mid = (lo + hi) / 2;
+    if (a[mid] == target) return mid;
+    if (a[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+}
+return -1;
+```
+
+Đề diễn đạt điều này thành "thuật toán nào phù hợp nhất" — trả lời
+bằng cách gọi tên những gì dữ liệu bảo đảm (đã sắp hay chưa) và câu
+hỏi cần gì (một giá trị? mọi cặp? một vị trí?). Tính chất bảo đảm là
+thứ bạn dùng để đổi lấy tiết kiệm độ phức tạp.

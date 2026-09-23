@@ -1,0 +1,43 @@
+# Phân loại đáp án sai
+
+Khi một bài nộp gãy, verdict thu hẹp không gian tìm kiếm. Ánh xạ verdict →
+lớp khả dĩ → phép thử rẻ nhất:
+
+## Họ WA (sai đáp án)
+
+1. **Tràn số nguyên** — dùng `int` nơi tổng/tích chạm 2^31. Phép thử: test
+   lớn nhất. Sửa: `long long` (và nhớ `1LL *` trong biểu thức trộn kiểu).
+2. **Greedy thiếu lập luận đổi chỗ** — qua các ví dụ gần-sorted, gãy trên
+   thứ tự cố tình. Phép thử: n = 2 hoặc 3 với giá trị bằng nhau. Sửa: chứng
+   minh phép đổi chỗ, hoặc chuyển sang DP.
+3. **Chuyển tiếp/thứ tự DP sai** — thứ tự vòng lặp phá phụ thuộc. Phép thử:
+   chạy tay đầu vào nhỏ nhất nơi trạng thái muộn nuôi trạng thái sớm.
+4. **Lỗi biên** — `l..r` với `l..r-1`, `<` với `<=`, 0-index với 1-index.
+   Phép thử: n = 1, và riêng phần tử đầu/cuối.
+5. **Giả định đồ thị sai** — giả định cây/DAG/liên thông khi đề không nói.
+   Phép thử: một chu trình 2 đỉnh, một cặp rời rạc.
+6. **Trạng thái chưa khởi tạo / cũ** — buffer tái sử dụng, quên reset giữa
+   các nhóm test. Phép thử: chạy "cùng test" hai lần liền trong đầu.
+
+## Họ TLE (quá thời gian)
+
+7. **Độ phức tạp sai** — O(n²) nơi đòi O(n log n). Phép thử: test max-n.
+   Sửa: các cấu trúc từ các khóa trước.
+8. **Hằng số ẩn** — cin/cout không tắt sync, xóa vector mỗi truy vấn, nối
+   xâu trong vòng lặp.
+9. **Cấu trúc xấu nhất** — đệ quy kiểu quicksort trên đầu vào đã sắp, hash
+   map bị tấn công bằng khóa đối kháng.
+
+## Họ RE / MLE
+
+10. **Độ sâu đệ quy** — DFS trên chuỗi 2·10^5 đỉnh nổ stack. Sửa: DFS lặp
+    hoặc stack tường minh (môi trường này đã đo giới hạn đệ quy — coi ~10^5
+    là không an toàn).
+11. **Mảng quá nhỏ / chỉ số vượt biên** — lệch một lúc cấp phát. Phép thử:
+    đúng chỉ số biên.
+12. **Độ chính xác** — so sánh double bằng `==`, tích lũy sai số qua 10^6
+    phép cộng. Sửa: dùng số nguyên khi có thể; nếu không, epsilon cẩn trọng.
+
+Phòng khám dưới đây mỗi bài giấu đúng một lớp lỗi này. Việc của bạn trong
+mỗi bài: (1) tìm đầu vào phản ví dụ, (2) gọi tên lớp lỗi, (3) sửa code,
+(4) kiểm chứng bản sửa với phản ví dụ.

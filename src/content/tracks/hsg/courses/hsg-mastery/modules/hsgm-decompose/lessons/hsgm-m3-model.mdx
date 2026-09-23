@@ -1,0 +1,43 @@
+# From Words to Model
+
+The first skill of mastery is **not** coding — it is extracting the model
+from the statement. Before you think about any algorithm, write down:
+
+1. **Objects** — what are the things? (people, cells, intervals, words)
+2. **Quantities** — what numbers describe them? (positions, costs, counts)
+3. **Actions / relations** — what changes or connects? (moves, edges, orderings)
+4. **Objective** — maximize / minimize / count / decide what exactly?
+5. **Constraints** — what makes an object/action forbidden or limited?
+
+## Worked example — decompose, don't code
+
+*"A grid of R×C cells, each cell blocked or free. A robot starts at the
+top-left, moves right or down, and must reach the bottom-right. Some free
+cells contain coins. Maximize coins collected."*
+
+Model extraction:
+
+- Objects: cells, indexed (i, j); each is free/blocked; each free cell has
+  a coin value (possibly 0).
+- Actions: move right (i, j+1) or down (i+1, j).
+- Objective: maximize sum of coins over visited cells.
+- Constraint: never step on a blocked cell; stay in the grid.
+
+Notice what the model immediately gives away: every monotone right/down
+path to (i, j) only comes from (i−1, j) or (i, j−1) — the objective
+decomposes over cells, and each cell's best depends only on its two
+predecessors. You did not need the word "DP" to get there. The model
+*forced* the recursion:
+
+```
+best[i][j] = coins[i][j] + max(best[i-1][j], best[i][j-1])
+```
+
+## The discipline
+
+- Restate the problem in your own notation **on paper** before coding.
+- If you cannot name the objects/actions/objective, you are not ready to
+  choose an algorithm — any choice now is a guess.
+- Independent parts of the statement usually become independent
+  subproblems; coupled parts ("no two chosen things conflict") must live
+  in the state of whichever technique you pick.

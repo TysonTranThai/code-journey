@@ -1,0 +1,38 @@
+**Selection sort** — find the smallest remaining, swap it into place:
+
+```java
+for (int i = 0; i < arr.length - 1; i++) {
+    int min = i;
+    for (int j = i + 1; j < arr.length; j++) {
+        if (arr[j] < arr[min]) {
+            min = j;
+        }
+    }
+    int temp = arr[i];
+    arr[i] = arr[min];
+    arr[min] = temp;
+}
+```
+
+Trace {5, 2, 8, 1}: pass 1 finds 1 (index 3), swaps → {1, 2, 8, 5}; pass 2
+finds 2, already in place → {1, 2, 8, 5}; pass 3 finds 5 → {1, 2, 5, 8}.
+After pass k, the first k elements are final.
+
+**Insertion sort** — grow a sorted prefix; each new element walks left to
+its slot (like sorting playing cards in your hand):
+
+```java
+for (int i = 1; i < arr.length; i++) {
+    int key = arr[i];
+    int j = i - 1;
+    while (j >= 0 && arr[j] > key) {
+        arr[j + 1] = arr[j];    // shift right
+        j--;
+    }
+    arr[j + 1] = key;           // drop into the gap
+}
+```
+
+Both are O(n²). The exam asks you to *trace* a couple of passes and count
+comparisons/swaps — selection sort always does the full inner scan; insertion
+sort stops early on nearly-sorted data.

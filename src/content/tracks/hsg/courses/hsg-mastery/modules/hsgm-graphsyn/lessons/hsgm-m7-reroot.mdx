@@ -1,0 +1,30 @@
+# Changing the Root
+
+Task shape: "for every vertex v, compute the answer where v is the
+root/endpoint/start." Rerunning an O(n) DP from each vertex is O(n²) —
+dead at n = 200000.
+
+## The reroot pattern
+
+1. **Up-pass (post-order):** compute for each subtree the contribution it
+   would give its parent (e.g., subtree size, best downward path, sum of
+   depths within the subtree).
+2. **Down-pass (pre-order):** carry the answer for the root down the
+   tree; when moving the root from u to child v, update with an
+   **exchange formula**: subtract v's contribution from u's aggregate,
+   add u's own contribution to v's. O(1) per edge.
+
+## Why it matters beyond trees
+
+The same "compute one global DP, then walk it outward" pattern appears
+in DAG rerooting, in offline queries sorted by something, and in
+contribution counting ("each element's contribution to every answer").
+The general skill: **count contributions, not configurations** — for each
+element, ask where it participates, instead of enumerating every final
+answer.
+
+## The correctness check
+
+Reroot bugs live in the exchange formula. Test on a path of 3 nodes and a
+star of 4 by hand before anything else; the two shapes exercise every
+term of the formula (leaf, middle, center, multiple children).

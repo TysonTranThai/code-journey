@@ -1,0 +1,75 @@
+## The Reference Pack
+
+Everything below is deliberately terse. It is the material to reread the
+night before a contest.
+
+### Algorithm selection guide
+
+| You see | Reach for |
+| --- | --- |
+| n ≤ 20 | bitmask enumeration, meet-in-the-middle |
+| n ≤ 500 | O(n³) interval/DP |
+| n ≤ 5000, q ≤ 5000 | O(nq) or O((n+q)√n) |
+| n ≤ 2·10⁵ | O(n log n): sort, heap, tree structure |
+| offline queries | sort by one coordinate, sweep |
+| range update + range query | lazy segment tree |
+| prefix sums with updates | Fenwick |
+| connectivity over time | DSU (offline) or link-cut |
+| "minimum maximum" / "maximum minimum" | binary search the answer |
+| counting with digit structure | digit DP |
+| subarray sums with negatives | prefix map |
+| subarray sums, positives only | two pointers |
+| strings, repeated patterns | KMP / hashing / trie |
+| reachability closure | SCC condensation + DAG DP |
+
+### Complexity cheat sheet (safe limits, ~10⁹ simple ops budget)
+
+O(n) 10⁸ — O(n log n) 2·10⁵ — O(n√n) 5·10⁴ — O(n²) 3·10³ — O(2^n) 24 —
+O(n·2^(n/2)) 40 (meet in the middle) — O(n³) 300.
+
+### Debugging checklist (in order)
+
+1. Reread the statement — output format, order, off-by-one in constraints.
+2. Test the sample by hand, tracing variables, not staring.
+3. Check the boundary: n = 1, all equal, all negative, maximum values.
+4. Overflow: where do two 10⁹ values multiply or add?
+5. Random small tests against a brute you trust (Module 6 harness).
+6. Only then: print-debug the smallest failing case.
+
+### Before-submit checklist
+
+- [ ] Sample passes **byte-exact** (trailing newlines count).
+- [ ] Bounds: every array sized for the true maximum, 1-indexing consistent.
+- [ ] `long long` where two maximums can meet.
+- [ ] Reading order matches the statement (r before c!).
+- [ ] Special cases from the constraints line actually appear in your tests.
+
+### Common HSG mistakes
+
+Silent int overflow; reading the input in the wrong units (0-index vs
+1-index); assuming distinct values; assuming sorted input; greedy without
+an exchange argument; forgetting modulo on negative intermediates; printing
+an extra space.
+
+### C++ contest template
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+void solve(istream& in, ostream& out) {
+    // read, compute, print — the sandbox harness calls this
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve(cin, cout);
+    return 0;
+}
+```
+
+Fast I/O, one solve function, 64-bit by default for anything that can grow.
+The boilerplate of every challenge in this course is this template with the
+solve body stripped — you have been filling it in all along.

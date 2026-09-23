@@ -1,0 +1,35 @@
+Vòng **while** lặp miễn là điều kiện còn đúng — được kiểm tra *trước* mỗi
+lượt:
+
+```java
+int count = 1;
+while (count <= 3) {
+    System.out.println(count);
+    count++;              // bước cập nhật PHẢI đưa đến chỗ thoát
+}
+// in 1 2 3
+```
+
+Truy vết bốn điểm chạm: khởi tạo → kiểm tra → thân → cập nhật → kiểm tra...
+
+Hai lỗi kinh điển:
+
+- **Vòng lặp vô hạn**: thiếu bước cập nhật hoặc cập nhật đi sai hướng
+  (`count--` với điều kiện `count <= 3` không bao giờ thoát).
+- **Lệch một đơn vị**: `<` với `<=` quyết định giá trị cuối có được xử lý
+  không.
+
+**Vòng lặp theo giá trị dừng** đọc cho đến khi gặp giá trị đặc biệt — mẫu
+"đọc số đến khi người dùng nhập -1". Trong đề thi nó xuất hiện dạng "xử lý
+các phần tử của mảng cho đến khi gặp giá trị âm":
+
+```java
+int i = 0;
+while (i < data.length && data[i] >= 0) {
+    total += data[i];
+    i++;
+}
+```
+
+Thứ tự `&&` rất quan trọng: kiểm tra biên chỉ số **trước khi** truy cập mảng,
+nếu không lần kiểm tra cuối sẽ đọc vượt qua cuối mảng.

@@ -1,0 +1,28 @@
+# Count Contributions, Not Configurations
+
+"Sum over all pairs/subsets/positions of f(chosen set)" screams
+enumeration — but usually decomposes into **per-element contributions**:
+
+    Σ_sets f(S) = Σ_element e (contribution of e to every set containing it)
+
+## The canonical pair-sum flip
+
+Sum of min(a_i, a_j) over all pairs i < j, n = 200000. Enumerating pairs
+is 2·10^10 — dead. Flip: sort; element at sorted index k (0-based) is the
+min for exactly k pairs (with each smaller element): its contribution is
+a[k]·k. One sort, one loop: O(n log n).
+
+## The same flip everywhere
+
+- Counting pairs with difference ≥ d: sort, two pointers, count per element.
+- Sum over all subarrays of the max: monotonic stack finds the span where
+  each element is the max — contribution = value × span.
+- Expected value over random subsets: linearity of expectation is the
+  probabilistic version of the same idea.
+
+## When the flip is illegal
+
+Contributions must be **independent**: if f(S) is not additive/separable
+over elements (e.g., f = "1 if S has even size" interacts with the count,
+not the values), a naive contribution split double-counts or misses. Check
+separability before flipping — that check *is* the problem's difficulty.

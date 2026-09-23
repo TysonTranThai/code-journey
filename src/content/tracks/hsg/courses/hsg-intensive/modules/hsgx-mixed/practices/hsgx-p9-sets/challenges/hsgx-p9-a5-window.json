@@ -1,0 +1,31 @@
+{
+  "id": "hsgx-p9-a5-window",
+  "title": "Mixed A5",
+  "prompt": "**Bài toán.** Given n **positive** integers and a target S, print the\nminimum length of a contiguous window whose sum is at least S. If no such\nwindow exists, print 0.\n\n**Constraints:** 1 ≤ n ≤ 200000; 1 ≤ a[i] ≤ 999; 1 ≤ S ≤ 10^9.\n\n**Input:** line 1: n and S; line 2: n values.\n**Output:** one integer.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"5 10\\n2 3 1 4 7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n\"));",
+      "hint": "4+7=11 ≥ 10 in length 2; no shorter window reaches 10."
+    },
+    {
+      "name": "single big",
+      "code": "std::istringstream in(\"3 9\\n1 9 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n\"));",
+      "hint": "The 9 alone."
+    },
+    {
+      "name": "impossible",
+      "code": "std::istringstream in(\"3 100\\n1 2 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"0\\n\"));",
+      "hint": "Total 6 < 100 → 0."
+    },
+    {
+      "name": "whole array",
+      "code": "std::istringstream in(\"4 10\\n2 3 2 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"4\\n\"));",
+      "hint": "Total 11 ≥ 10; every shorter window is smaller."
+    }
+  ],
+  "level": "combination"
+}

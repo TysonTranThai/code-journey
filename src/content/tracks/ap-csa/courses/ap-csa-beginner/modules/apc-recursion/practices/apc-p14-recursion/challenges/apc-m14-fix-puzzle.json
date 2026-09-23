@@ -1,0 +1,16 @@
+{
+  "id": "apc-m14-fix-puzzle",
+  "title": "Debug the recursive echo",
+  "prompt": "`puzzle(n)` should build `\"5 3 1 1 3 5\"`-style strings: descend printing n, n−2, ..., then unwind printing them all again. The current version only descends — the after-the-call half is missing. Fix it (must stay recursive with code on both sides of the call).",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String puzzle(int n) {\n        // Should print n n-2 n-4 ... down to >= 1 and back up, space\n        // separated, using recursion with code before AND after the call.\n        // Current version only descends — the unwind half is missing.\n        if (n <= 0) {\n            return \"\";\n        }\n        return n + \" \" + puzzle(n - 2);\n    }\n}\n",
+  "tests": [
+    {
+      "name": "echo repaired",
+      "code": "\nCjTestBase.checkEq(Solution.puzzle(5), \"5 3 1 1 3 5\", \"odd descent\");\nCjTestBase.checkEq(Solution.puzzle(4), \"4 2 2 4\", \"even descent\");\nCjTestBase.checkEq(Solution.puzzle(0), \"\", \"base case\");\n",
+      "hint": "Capture the descent result, then append n again after the call."
+    }
+  ],
+  "level": "debugging"
+}

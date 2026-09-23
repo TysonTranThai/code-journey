@@ -1,0 +1,25 @@
+# Sort sự kiện, quét một lần
+
+Nếu mọi truy vấn đều biết trước (offline!), bạn được quyền **sắp lại thế
+giới**. Mẫu hình:
+
+1. **Chuyển thành sự kiện.** Mỗi đoạn thành (vị trí, ±delta); mỗi truy vấn
+   thành một vị trí có đánh dấu; mỗi cập nhật thành sự kiện có dấu thời gian.
+2. **Sort sự kiện theo trục chi phối quan hệ nhân quả** — thời gian, tọa
+   độ, hoặc ngưỡng.
+3. **Quét một lần**, giữ một cấu trúc chạy (bộ đếm, multiset, Fenwick).
+   Trả lời mỗi truy vấn khi lượt quét chạm dấu của nó.
+
+## Phép chuyển kinh điển
+
+"Máy đoạn [l, r] chứa điểm p?" với nhiều p: sự kiện (l, +1), (r+1, −1)
+sort theo vị trí; tổng chạy tại p là đáp án của p đó. Mỗi đoạn tốn O(1)
+để đăng ký, mỗi truy vấn O(1) để đọc: O((n + q) log(n + q)) cho phép sort,
+và cái log thường bất khả kháng chỉ vì có sort.
+
+## Online vs offline
+
+Online = phải trả lời trước khi thấy truy vấn kế (ép dùng cấu trúc nặng).
+Offline = được gộp và sắp lại (cấu trúc nhẹ thắng). Khi đề không đòi hỏi
+online, chọn cấu trúc online là tự gây độ phức tạp cho chính mình. Hỏi
+sớm: **các đáp án có tương tác không, hay tôi sắp lại được?**

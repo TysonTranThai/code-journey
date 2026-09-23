@@ -1,0 +1,35 @@
+Điều kiện có thể lồng nhau: một `if` bên trong một `if`.
+
+```java
+if (age >= 13) {
+    if (hasPermission) {
+        System.out.println("admit");
+    } else {
+        System.out.println("permission needed");
+    }
+}
+```
+
+Lồng nhau tương đương với `&&` khi phép kiểm tra trong không có else:
+`if (a) { if (b) { X } }` chạy X chính xác khi cả hai đúng. Ưu tiên `&&`
+phẳng khi có thể — nhưng phải *đọc* code lồng nhau trôi chảy, đề thi đưa ra
+liên tục.
+
+**Else kẹt** — một `else` gắn với `if` chưa khớp **gần nhất**, không phải
+cái mà thụt lề gợi ý:
+
+```java
+if (a < 5)
+    if (a > 2)
+        System.out.println("3-4");
+else
+    System.out.println("else");   // thuộc if bên trong!
+```
+
+Với `a = 10`: outer đúng → vào trong; inner `10 > 2` sai → else chạy, in
+"else". Với `a = 0`: outer sai → không in gì cả. Đặt ngoặc theo ý định và
+truy vết trung thực.
+
+**Lỗi logic thường gặp**: so sánh bị lật (`<` thay `<=`), khoảng chồng lên
+nhau, viết `x == 5 || 6` (luôn sai cấu trúc — phải là `x == 5 || x == 6`),
+và chốt điều kiện bị đảo.

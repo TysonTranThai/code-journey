@@ -1,0 +1,30 @@
+**Viết mã từ văn bản** — đặc tả là một đoạn văn, đáp án là một phương
+thức. Quy trình:
+
+1. Diễn giải điều kiện hậu thành công thức hoặc bất biến vòng lặp.
+2. Chọn kiểu duyệt (mảng? chuỗi? danh sách? chiều nào?).
+3. Viết khung bộ tích lũy TRƯỚC, điền thân sau.
+4. Rà điều kiện tiền để lấy các phím tắt được phép.
+
+Ví dụ đặc tả: *"Trả về số lần ký tự ch xuất hiện trong chuỗi s, bỏ qua
+chữ hoa/thường."* Diễn giải: duyệt mọi chỉ số của s, so ký tự đã hạ
+thấp với ch, đếm khớp.
+
+```java
+public static int countIgnoreCase(String s, char ch) {
+    int count = 0;
+    for (int i = 0; i < s.length(); i++) {
+        if (Character.toLowerCase(s.charAt(i)) == Character.toLowerCase(ch)) {
+            count++;
+        }
+    }
+    return count;
+}
+```
+
+Các lỗi đọc đề hay gặp, xếp theo tần suất:
+
+- bỏ sót định lượng "bỏ qua hoa/thường" / "bỏ qua thứ tự" / "tối đa";
+- trả sai *hình dạng* (chỉ số so với giá trị, số đếm so với danh sách);
+- xử lý đầu vào rỗng sai (hoặc crash trên nó);
+- che khuất tham số (`String s` rồi `int s = 0`).

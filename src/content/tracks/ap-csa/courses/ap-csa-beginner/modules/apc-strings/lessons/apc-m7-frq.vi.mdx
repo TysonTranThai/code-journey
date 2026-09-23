@@ -1,0 +1,53 @@
+FRQ Câu 1 Phần B nói: "phương thức phải gọi các phương thức String." Các
+dạng lặp lại:
+
+**Đếm ký tự khớp quy tắc:**
+
+```java
+public static int countChar(String s, char target) {
+    int count = 0;
+    for (int i = 0; i < s.length(); i++) {
+        if (s.charAt(i) == target) {
+            count++;
+        }
+    }
+    return count;
+}
+```
+
+**Trích xuất hoặc biến đổi mảnh:**
+
+```java
+public static String firstHalf(String s) {
+    return s.substring(0, s.length() / 2);
+}
+```
+
+**Đảo ngược bằng cách dựng ngược:**
+
+```java
+public static String reverse(String s) {
+    String out = "";
+    for (int i = s.length() - 1; i >= 0; i--) {
+        out += s.charAt(i);
+    }
+    return out;
+}
+```
+
+**Kiểm tra thuộc tính của mọi ký tự** (toàn chữ số? có chữ hoa?) — mẫu thoát
+sớm:
+
+```java
+public static boolean allDigits(String s) {
+    for (int i = 0; i < s.length(); i++) {
+        if (!Character.isDigit(s.charAt(i))) {
+            return false;
+        }
+    }
+    return true;    // chỉ tới đây khi không gì thất bại
+}
+```
+
+Chú ý `return true` nằm *sau* vòng lặp: đó là trường hợp "sống sót qua mọi
+phép kiểm", không phải một dữ liệu đặc biệt.

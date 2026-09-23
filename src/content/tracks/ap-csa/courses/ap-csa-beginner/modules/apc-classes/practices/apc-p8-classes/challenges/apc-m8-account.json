@@ -1,0 +1,16 @@
+{
+  "id": "apc-m8-account",
+  "title": "State mutation",
+  "prompt": "Add two mutators to `Account`: `void deposit(int amount)` (increase balance) and `void withdraw(int amount)` (decrease it, but never below 0 — a withdraw attempt that overdraws leaves the balance unchanged). Both return nothing.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Account {\n        private String owner;\n        private int balance;\n\n        public Account(String name, int start) {\n            owner = name;\n            balance = start;\n        }\n\n        public String getOwner() {\n            return owner;\n        }\n\n        public int getBalance() {\n            return balance;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "account state",
+      "code": "\nSolution.Account a = new Solution.Account(\"An\", 100);\na.deposit(50);\nCjTestBase.checkEq(a.getBalance(), 150, \"after deposit\");\na.withdraw(30);\nCjTestBase.checkEq(a.getBalance(), 120, \"after withdraw\");\na.withdraw(500);\nCjTestBase.checkEq(a.getBalance(), 120, \"overdraw blocked\");\n",
+      "hint": "withdraw: if (amount <= balance) { balance -= amount; }"
+    }
+  ],
+  "level": "combination"
+}

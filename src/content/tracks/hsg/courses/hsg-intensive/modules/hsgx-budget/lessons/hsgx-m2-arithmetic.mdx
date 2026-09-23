@@ -1,0 +1,40 @@
+# The Arithmetic of Budgets
+
+Contest time limits are calibrated so the intended complexity passes with
+margin. Your job in the first ten minutes is to compute the budget.
+
+## The working numbers
+
+Modern judges (and this platform's C++20 sandbox) execute roughly:
+
+- **~10^9** trivial operations (integer add, compare, array read) per second,
+- **~10^8** "normal" operations (map insert, modulo, function call chains),
+- **~10^7** heavy operations (sort of small vectors, string builds).
+
+So: `n·q` with n = q = 2·10^5 is 4·10^10 — **100× over budget** even for
+trivial ops. `n log n` with n = 2·10^5 is ~3.4·10^6·(log factor) — **deep
+inside budget**. This is why the intended complexity, not clever constants,
+is what the constraint table is telling you.
+
+## Memory is the silent constraint
+
+`int a[1000][1000]` is 4 MB — fine. `long long a[10^5][10^5]` is 80 GB —
+not a program, a hallucination. The sandbox grants 512 MB: a
+`vector<long long>` of 10^6 elements is 8 MB (fine); of 10^8 is 800 MB
+(dead). When a DP state is (position × mask) with n = 24, 2^24 × 8 B = 134
+MB — possible but tight; think before allocating.
+
+## Value ranges encode the state space
+
+- sums up to 10^5 × 10^9 → 10^14 → **long long mandatory**, int overflows
+  silently.
+- answers modulo 10^9+7 → the true number is astronomically large; anything
+  that stores it raw (including intermediate products) must be reduced.
+- N ≤ 10^18 → the state is the *digits* or the *log*, never N itself.
+
+## The two-second estimate (do it before reading the statement twice)
+
+Given the constraint table, compute: `n · (per-item cost)`, `n log n`,
+`n^2`, `2^n`, and see which crosses the line. The family that survives the
+arithmetic *and* matches the semantics is your candidate. Everything after
+this module is about confirming the semantics part.

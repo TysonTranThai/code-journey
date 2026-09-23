@@ -1,0 +1,23 @@
+Every Java failure belongs to one of three classes, and each has a
+different repair strategy:
+
+- **Compile-time error** — the compiler rejects the source: missing
+  semicolon, wrong type, unknown name. Nothing runs. Read the message:
+  it names the file, line, and what it expected.
+- **Runtime error (exception)** — compiles, then dies mid-run:
+  `ArithmeticException` (integer divide by zero),
+  `ArrayIndexOutOfBoundsException`, `NullPointerException`. The stack
+  trace names the line that threw.
+- **Logical error** — compiles, runs, produces a wrong answer. No
+  message ever appears. Only **testing** finds these, which is why
+  they're the most dangerous.
+
+```java
+int avg = total / n;      // compiles; throws at runtime if n == 0;
+                          // silently wrong if total or n is wrong
+```
+
+The exam's "code does not compile" questions are all compile-class;
+its "what is output" questions are trace questions guarding against
+your logical errors. Classify first, then debug — the class tells you
+where to look.

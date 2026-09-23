@@ -1,0 +1,26 @@
+{
+  "id": "hsgx-p5-c4-prefix",
+  "title": "Clinic: The Missing First Element",
+  "prompt": "**Bài toán.** Static range sums: n ≤ 200000, q ≤ 200000, print sum a[l..r]\nper query.\n\n**The submission below answers a[r] − a[l] — Wrong Answer on every query\nthat includes index l.** Fix it.\n\n```cpp\nout << a[r] - a[l];   // prefix built as a[i] = a[i-1] + x, 1-indexed\n```\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "full range",
+      "code": "std::istringstream in(\"3 1\\n1 2 3\\n1 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"6\\n\"));",
+      "hint": "a[3]-a[1]=5 vs correct 6: the bug shows."
+    },
+    {
+      "name": "single element",
+      "code": "std::istringstream in(\"4 2\\n9 1 4 1\\n2 2\\n3 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n4\\n\"));",
+      "hint": "l==r: a[r]-a[l]=0, wrong."
+    },
+    {
+      "name": "q=1 boundary",
+      "code": "std::istringstream in(\"5 2\\n1 2 3 4 5\\n1 1\\n1 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n15\\n\"));",
+      "hint": "l=1: a[1]-a[1]=0."
+    }
+  ],
+  "level": "debugging"
+}

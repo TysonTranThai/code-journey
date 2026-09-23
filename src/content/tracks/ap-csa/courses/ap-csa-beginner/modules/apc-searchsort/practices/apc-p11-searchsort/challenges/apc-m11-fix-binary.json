@@ -1,0 +1,16 @@
+{
+  "id": "apc-m11-fix-binary",
+  "title": "Debug the binary search",
+  "prompt": "This binary search returns wrong (or misses) answers on a sorted array. The algorithm's branch logic is inverted somewhere — trace `find({1, 3, 5, 7, 9}, 9)` by hand, find the flaw, and fix the branches (structure must stay a binary search).",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int find(int[] arr, int target) {\n        int lo = 0;\n        int hi = arr.length - 1;\n        while (lo <= hi) {\n            int mid = (lo + hi) / 2;\n            if (arr[mid] == target) {\n                return mid;\n            } else if (arr[mid] < target) {\n                hi = mid - 1;\n            } else {\n                lo = mid + 1;\n            }\n        }\n        return -1;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "binary repaired",
+      "code": "\nint[] a = {1, 3, 5, 7, 9};\nCjTestBase.checkEq(Solution.find(a, 9), 4, \"last element\");\nCjTestBase.checkEq(Solution.find(a, 1), 0, \"first element\");\nCjTestBase.checkEq(Solution.find(a, 5), 2, \"middle\");\nCjTestBase.checkEq(Solution.find(a, 4), -1, \"absent\");\n",
+      "hint": "arr[mid] < target means the target is RIGHT — lo = mid + 1."
+    }
+  ],
+  "level": "debugging"
+}

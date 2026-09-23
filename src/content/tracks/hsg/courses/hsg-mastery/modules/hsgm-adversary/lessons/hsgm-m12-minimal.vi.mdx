@@ -1,0 +1,33 @@
+# Phản ví dụ tối giản
+
+Có sẵn một input gãy, hãy thu nhỏ nó. Mỗi bước thu nhỏ hoặc giữ được sự
+gãy (tốt — nhỏ hơn) hoặc phá nó (tốt hơn — bạn đã khoanh vùng một thành
+phần bắt buộc của bug).
+
+## Vòng thu nhỏ
+
+1. Xóa một phần tử. Vẫn gãy? Giữ nguyên trạng thái xóa.
+2. Chia đôi các giá trị (giữ những quan hệ thứ tự/parity quan trọng).
+3. Gộp các phần tử bằng nhau liền kề.
+4. Thay giá trị lớn bằng các đại diện kiểu {1, 2, 3}, chỉ giữ lại các
+   phép so sánh mà lời giải thực hiện.
+
+Dừng khi case không thể thu nhỏ thêm — thường n ≤ 5. Case không-thu-nhỏ
+phát biểu bug như một định lý: *với hình dạng input này, code này in X,
+đúng phải là Y.*
+
+## Vì sao tối giản quan trọng
+
+- **Chẩn đoán:** case tối giản thường vừa một màn hình; dòng gây lỗi
+   hiện ra.
+- **Đặc tả phép vá:** case tối giản nói đúng cấu trúc mà code xử sai —
+   phép vá phải xử lý được hình dạng đó, và case trở thành test hồi quy.
+- **Giao tiếp:** "cái này gãy với [3, 1, 2]" là một báo cáo bug trọn vẹn;
+   "nó gãy với test ngẫu nhiên 200 dòng của tôi" thì không.
+
+## Khi không case nhỏ nào gãy
+
+Nếu n ≤ 5 không bao giờ gãy nhưng n = 40 gãy, bug hoặc phụ thuộc thang
+(tràn số, cái chết O(n²)) hoặc cấu trúc (cần ≥ k phần tử để tương tác).
+Khi đó dựng case tối giản *có cấu trúc*: k = số tương tác nhỏ nhất, với
+một mẫu hình lặp lại — không phải đống ngẫu nhiên.

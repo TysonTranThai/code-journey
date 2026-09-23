@@ -1,0 +1,30 @@
+# The Three-Program Harness
+
+Stress testing is three programs in a loop:
+
+1. **The oracle** — a brute-force solution, too slow for real constraints
+   but obviously correct at small n.
+2. **The candidate** — your fast solution, the thing under test.
+3. **The generator** — a small seeded-random input producer.
+
+The loop: generate → run both on the input → compare byte-exactly. On
+the first mismatch, you hold in your hands a *failing input*, guaranteed.
+Then shrink it to the minimal counterexample (Module 12) and diagnose.
+
+## Making the harness bite
+
+- **Seed everything.** A reproducible failure is fixable; a one-time
+  mismatch you cannot regenerate is a ghost.
+- **Vary the generator's *shape*, not just size.** Alternate sorted,
+  reversed, tie-heavy, tiny-alphabet, extreme-values profiles — each
+  shape is a different attack surface (Module 12's checklist, automated).
+- **Compare outputs byte-exactly.** Trailing whitespace differences are
+  real verdicts on judges; let the harness teach you that early.
+
+## What stress finds and what it misses
+
+Stress testing finds *behavioral* divergence reachable by your generator's
+shapes. It cannot find overflow at n = 200000 (the oracle cannot run
+there) or wrong-complexity death. For those, static analysis of the code
+and the budget arithmetic remain the tools — stress complements, never
+replaces, the checklist.

@@ -1,0 +1,16 @@
+{
+  "id": "apc-m12-fix-register",
+  "title": "Debug the Register class",
+  "prompt": "This cash-register class corrupts its state: scan() forgets to count items, and undo() drives the total negative when the register is empty. Trace two scans and one undo, fix both defects (signatures stay the same).",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Register {\n        private int items;\n        private int total;\n\n        public Register() {\n            items = 0;\n            total = 0;\n        }\n\n        public void scan(int price) {\n            // BUG: price is added, but items is never incremented\n            total = total + price;\n        }\n\n        public void undo(int price) {\n            // BUG: removes the price even when the register is empty,\n            // letting total go negative\n            total = total - price;\n            items--;\n        }\n\n        public int total() {\n            return total;\n        }\n\n        public int items() {\n            return items;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "state repaired",
+      "code": "\nSolution.Register r = new Solution.Register();\nr.scan(200); r.scan(75);\nCjTestBase.checkEq(r.total(), 275, \"sum\");\nCjTestBase.checkEq(r.items(), 2, \"counted\");\nr.undo(75);\nCjTestBase.checkEq(r.total(), 200, \"undone\");\nCjTestBase.checkEq(r.items(), 1, \"count decremented\");\nr.undo(200);\nr.undo(10);\nCjTestBase.checkEq(r.total(), 0, \"never negative on empty\");\nCjTestBase.checkEq(r.items(), 0, \"never negative on empty\");\n",
+      "hint": "undo must guard first: if items == 0, do nothing."
+    }
+  ],
+  "level": "debugging"
+}

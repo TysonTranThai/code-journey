@@ -1,0 +1,41 @@
+# Observation Gallery
+
+## 1. Max subarray sum → Kadane (independence + amortization)
+
+Brute force O(n²) tries all (l, r). Observation: the best subarray ending at
+i either extends the best one ending at i−1 or starts fresh. Proof: if the
+prefix best was negative, dropping it strictly helps. O(n). The general
+lesson: "best **ending here**" is the DP state hidden inside many problems.
+
+## 2. Next greater element → monotonic stack (amortized potential)
+
+For each i find the nearest j > i with a[j] > a[i]. Brute force O(n²).
+Observation: while scanning left to right, a stack of indices with
+decreasing values holds every "waiting" element; each index is pushed once
+and popped once. O(n). Lesson: nested loops where the inner pointer only
+moves forward are usually amortized linear.
+
+## 3. Count subarrays with sum = k, positives → two pointers (monotonicity)
+
+With a[i] ≥ 1, the window sum grows with r and shrinks with l: monotone.
+Slide two pointers; each pointer crosses the array once. O(n). With zeros or
+negatives the monotonicity dies — the same problem then needs prefix sums +
+a hash map. Lesson: an observation is *conditional*; know when it expires.
+
+## 4. Minimize max load when assigning jobs → binary search the answer
+
+"Minimize the maximum" with an enumerable answer: binary search on the
+answer x, write the feasibility check (greedy fill), prove monotonicity
+(if load x is feasible, x+1 is too). O(n log(max)). Lesson: the answer's
+monotonicity converts an optimization into a decision.
+
+## 5. Longest substring without repeats → sliding window + last-seen
+
+Brute force O(n²·alphabet). Observation: for each r, the smallest l that
+keeps the window valid only moves right. Track last occurrence per char.
+O(n). Lesson: validity windows with "only shrinks/grows" boundaries are two
+pointers in disguise.
+
+Each gallery entry follows the full loop: brute force → bottleneck → sample
+pattern → invariant → O(n log n)-or-better algorithm → two-line proof. The
+practice set below applies the same loop to unfamiliar shapes.

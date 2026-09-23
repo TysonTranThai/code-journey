@@ -1,0 +1,22 @@
+Một **ca kiểm thử** gồm đầu vào, đầu ra mong đợi, và lý do nó có thể
+làm hỏng mã. Thiết kế test tốt nhắm vào biên:
+
+- **Giá trị biên**: với `score >= 60` hãy thử 59, 60, và 61. Lỗi hầu
+  như luôn nằm ngay phép so sánh.
+- **Rỗng / không / một**: mảng rỗng, độ dài 0, phần tử đơn. Vòng lặp
+  "hiển nhiên đúng" thường gãy ngay vòng đầu tiên.
+- **Số âm và giá trị lớn**: `int` đổi dấu vượt quá 2.147.483.647 —
+  tổng nhiều số dương có thể tràn lặng lẽ.
+- **Trùng lặp và hòa**: "đầu" hay "cuối" thắng?
+- **Đường không-thấy**: tìm kiếm trả về gì khi vắng mặt?
+
+```java
+// mã cần kiểm: isPassing(score)
+checkEq(isPassing(59), false, "dưới biên một chút");
+checkEq(isPassing(60), true,  "đúng biên");
+checkEq(isPassing(61), true,  "trên biên một chút");
+```
+
+Chú ý mỗi assertion *nói* gì, không chỉ nó kiểm gì — test thất bại
+phải gọi tên hành vi đã hỏng. Thói quen đó chính là "kiểm thử phòng
+ngự" trên đề và trong mã thật.

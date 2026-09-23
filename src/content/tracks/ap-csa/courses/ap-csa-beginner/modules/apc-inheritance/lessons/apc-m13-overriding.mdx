@@ -1,0 +1,42 @@
+**Overriding** — a subclass redefines an inherited method with the same
+signature:
+
+```java
+public class Cat extends Pet {
+    public Cat(String name) {
+        super(name);
+    }
+
+    public String speak() {           // overrides Pet.speak
+        return "meow";
+    }
+}
+```
+
+Which method runs depends on the **object's** class, not the variable's:
+
+```java
+Pet p = new Cat("Mimi");
+p.speak();          // "meow" — the Cat method runs
+p.getName();        // works: inherited from Pet
+```
+
+The variable type decides what you may *call*; the object type decides
+*which version* executes. That sentence answers half the exam's
+inheritance questions.
+
+**super.method()** extends rather than replaces:
+
+```java
+public String speak() {
+    return super.speak() + " purr";
+}
+```
+
+**@Override** is optional but recommended — the compiler then catches
+misspelled signatures (an overload in disguise).
+
+`equals` reminder: AP classes override `equals(Object other)`, cast
+inside, and compare fields — or provide a custom `equalsName`-style method
+when the exam wants simpler code. We follow the exam's custom-method style
+here.

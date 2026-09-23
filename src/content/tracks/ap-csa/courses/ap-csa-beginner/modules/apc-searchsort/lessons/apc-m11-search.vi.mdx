@@ -1,0 +1,39 @@
+**Tìm tuyến tính** kiểm tra từng phần tử cho tới khi gặp mục tiêu — O(n):
+
+```java
+public static int search(int[] arr, int target) {
+    for (int i = 0; i < arr.length; i++) {
+        if (arr[i] == target) {
+            return i;
+        }
+    }
+    return -1;
+}
+```
+
+**Tìm nhị phân** chia đôi khoảng mỗi bước — nhưng đòi hỏi mảng **đã sắp**.
+O(log n):
+
+```java
+public static int binarySearch(int[] arr, int target) {
+    int lo = 0, hi = arr.length - 1;
+    while (lo <= hi) {
+        int mid = (lo + hi) / 2;
+        if (arr[mid] == target) {
+            return mid;
+        } else if (arr[mid] < target) {
+            lo = mid + 1;       // mục tiêu ở nửa phải
+        } else {
+            hi = mid - 1;       // mục tiêu ở nửa trái
+        }
+    }
+    return -1;
+}
+```
+
+Truy vết `binarySearch({2, 5, 8, 12, 16}, 12)`: lo=0 hi=4 mid=2 (8 < 12, sang
+phải) → lo=3 hi=4 mid=3 → thấy tại 3. Hai bước thay vì bốn lần quét.
+
+**Bất biến** cần thuộc: ở mỗi lần vào vòng lặp, nếu mục tiêu có mặt thì nó
+nằm trong arr[lo..hi]. Vòng lặp kết thúc khi lo > hi — khoảng rỗng — nên sự
+vắng mặt được chứng minh, không phải đoán.

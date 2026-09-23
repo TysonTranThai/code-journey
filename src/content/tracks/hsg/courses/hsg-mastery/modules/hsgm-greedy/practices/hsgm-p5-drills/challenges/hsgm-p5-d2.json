@@ -1,0 +1,16 @@
+{
+  "id": "hsgm-p5-d2",
+  "title": "The Broken Stacking",
+  "prompt": "**Scenario.** Boxes have (weight w, limit L): stack boxes, each box's total load above it must not exceed its L. A greedy sorts by L descending and stacks heaviest-first inside ties. What breaks it?\n\n**Which approach is the best fit? The program only needs to print the letter.**\n\n**A)** Nothing — sorting by limit descending is provably optimal\n\n**B)** A tall stack of small-limit boxes can support more total weight than a heavy-bottom greedy wastes; treating 'heaviest first' inside a limit-class can strand a load-bearing box on top\n\n**C)** The order of equal-weight boxes\n\n**D)** Floating-point rounding of limits",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "answer",
+      "code": "std::istringstream in(\"\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"B\"));",
+      "hint": "The plausibly-right key ignores that load capacity is multiplicative down the stack: a greedy that burns big limits early can strand the only load-bearing box where it carries nothing. Adversarial (w, L) pairs expose it."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,39 @@
+An `ArrayList` is a **resizable** list of objects. Unlike arrays, it grows
+and shrinks:
+
+```java
+import java.util.ArrayList;
+
+ArrayList<String> names = new ArrayList<String>();
+names.add("An");
+names.add("Binh");
+names.add("Chi");
+```
+
+The `<String>` in angle brackets is the **generic type**: it declares what
+the list holds, and the compiler then enforces it — `names.add(42)` is a
+compile error. (The shorthand `new ArrayList<>()` is legal Java but the AP
+reference uses the explicit form; know both.)
+
+**The exam's method set:**
+
+```java
+names.size()               // 3  — method, not a field!
+names.get(0)               // "An"
+names.set(1, "Bao")        // replaces index 1; returns the old value
+names.add("Duong")         // appends at the end
+names.add(1, "Binh")       // INSERTS at 1, shifting the rest right
+names.remove(0)            // removes index 0, shifting left; returns it
+names.contains("Chi")      // true
+names.indexOf("Chi")       // 1
+```
+
+**Autoboxing**: a list of numbers is `ArrayList<Integer>` (the wrapper
+class) — never `ArrayList<int>`. Java converts `int ↔ Integer`
+automatically when you add or get:
+
+```java
+ArrayList<Integer> nums = new ArrayList<Integer>();
+nums.add(5);                    // int boxed to Integer
+int first = nums.get(0);        // unboxed back to int
+```

@@ -1,0 +1,30 @@
+**Máy trạng thái trên đối tượng** — mẫu hình tích hợp thứ hai: các
+phương thức của đối tượng thay đổi trạng thái, và các lời gọi sau
+*đọc* trạng thái đó.
+
+```java
+public static class Register {
+    private int cents;
+
+    public Register() { cents = 0; }
+
+    public void add(int c) { cents += c; }
+
+    public boolean spend(int c) {
+        if (c > cents) { return false; }
+        cents -= c;
+        return true;
+    }
+
+    public int balance() { return cents; }
+}
+```
+
+Câu truy vết hỏi: sau CHUỖI lời gọi này, trạng thái là gì? Kỷ luật
+là nghĩa chữ — bảng truy vết hai cột, mỗi lời gọi một hàng, cập nhật
+mọi trường. Thứ tự có ý nghĩa: `spend(500)` trước bất kỳ `add` nào
+sẽ thất bại; sau đủ lần add thì thành công. Thứ tự phương thức là
+nội dung.
+
+Các câu truy vết đối tượng của đề ("Giá trị của... là gì") đều là
+mẫu hình này với danh từ khác nhau. Truy vết, đừng đoán.

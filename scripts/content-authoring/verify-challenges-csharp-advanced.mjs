@@ -152,7 +152,7 @@ for (const line of (r.stdout || "").split("\n")) {
   if (status === "0") perIdWFail.set(id, (perIdWFail.get(id) ?? 0));
   else perIdWFail.set(id, (perIdWFail.get(id) ?? 0) + 1);
 }
-for (const [id, { d }] of selected) {
+for (const id of selected.keys()) {
   if (!W[id]) continue;
   if (!(perIdWFail.get(id) > 0)) wrongAllPass.push(id);
 }

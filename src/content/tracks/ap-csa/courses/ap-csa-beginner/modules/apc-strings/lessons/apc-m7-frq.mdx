@@ -1,0 +1,53 @@
+FRQ Question 1 Part B says: "the method requires calling String methods."
+The recurring shapes:
+
+**Count characters matching a rule:**
+
+```java
+public static int countChar(String s, char target) {
+    int count = 0;
+    for (int i = 0; i < s.length(); i++) {
+        if (s.charAt(i) == target) {
+            count++;
+        }
+    }
+    return count;
+}
+```
+
+**Extract or transform pieces:**
+
+```java
+public static String firstHalf(String s) {
+    return s.substring(0, s.length() / 2);
+}
+```
+
+**Reverse by building backwards:**
+
+```java
+public static String reverse(String s) {
+    String out = "";
+    for (int i = s.length() - 1; i >= 0; i--) {
+        out += s.charAt(i);
+    }
+    return out;
+}
+```
+
+**Check a property of every character** (all digits? any uppercase?) — the
+early-exit pattern:
+
+```java
+public static boolean allDigits(String s) {
+    for (int i = 0; i < s.length(); i++) {
+        if (!Character.isDigit(s.charAt(i))) {
+            return false;
+        }
+    }
+    return true;    // only reached when nothing failed
+}
+```
+
+Notice `return true` lives *after* the loop: it is the "survived every test"
+case, not a special input.

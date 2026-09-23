@@ -1,0 +1,16 @@
+{
+  "id": "apc-cp-m13-bonusaccount",
+  "title": "Checkpoint: BonusAccount",
+  "prompt": "Complete `BonusAccount extends Account`: chain the constructor up, keep a private deposit counter starting at 0, and override `deposit(amount)` to count the deposit and then perform the normal deposit (reusing the superclass method).",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Account {\n        private String owner;\n        private int balance;\n\n        public Account(String owner, int balance) {\n            this.owner = owner;\n            this.balance = balance;\n        }\n\n        public String getOwner() {\n            return owner;\n        }\n\n        public int getBalance() {\n            return balance;\n        }\n\n        public void deposit(int amount) {\n            balance = balance + amount;\n        }\n    }\n\n    public static class BonusAccount extends Account {\n        private int deposits;\n\n        public BonusAccount(String owner, int balance) {\n            // complete: chain up; deposits start at 0\n        }\n\n        public void deposit(int amount) {\n            // complete: count the deposit, then the normal deposit\n        }\n\n        public int getDeposits() {\n            return deposits;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "counting override",
+      "code": "\nSolution.BonusAccount a = new Solution.BonusAccount(\"Minh\", 500);\nCjTestBase.checkEq(a.getBalance(), 500, \"chained initial balance\");\nCjTestBase.checkEq(a.getDeposits(), 0, \"fresh counter\");\na.deposit(200);\na.deposit(50);\nCjTestBase.checkEq(a.getBalance(), 750, \"deposits applied\");\nCjTestBase.checkEq(a.getDeposits(), 2, \"counted twice\");\n",
+      "hint": "super.deposit(amount); does the balance work — override only adds counting."
+    }
+  ],
+  "level": "independent"
+}

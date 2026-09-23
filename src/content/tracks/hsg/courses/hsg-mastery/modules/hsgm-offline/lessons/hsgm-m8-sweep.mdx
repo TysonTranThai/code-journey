@@ -1,0 +1,28 @@
+# Sort the Events, Sweep Once
+
+If all queries are known in advance (offline!), you are free to **reorder
+the world**. The pattern:
+
+1. **Convert to events.** Every interval becomes (position, ±delta); every
+   query becomes a marked position; every update becomes a timestamped
+   event.
+2. **Sort events by the axis that governs causality** — time, coordinate,
+   or threshold.
+3. **Sweep once**, maintaining a running structure (counter, multiset,
+   Fenwick). Answer each query when the sweep reaches its mark.
+
+## The classic conversion
+
+"How many intervals [l, r] contain point p?" for many p: events (l, +1),
+(r+1, −1) sorted by position; the running sum at p is the answer for that
+p. Each interval costs O(1) to register, each query O(1) to read:
+O((n + q) log(n + q)) for the sort, and the log is usually unavoidable
+only because of sorting.
+
+## Online vs offline
+
+Online = must answer before seeing the next query (forces heavier
+structures). Offline = may batch and reorder (lighter structures win).
+When a problem does not demand online behavior, choosing an online
+structure is self-inflicted complexity. Ask early: **do the answers
+interact, or can I reorder?**

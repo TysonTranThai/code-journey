@@ -1,0 +1,26 @@
+{
+  "id": "hsgx-p9-a3-grow",
+  "title": "Mixed A3",
+  "prompt": "**Bài toán.** There are n isolated vertices. Edges are added one by one.\nAfter each edge, print the size of the connected component containing\nvertex 1.\n\n**Constraints:** 2 ≤ n ≤ 200000; edges connect distinct vertices; vertex 1\nalways exists.\n\n**Input:** line 1: n and m; then m lines u v (each edge added in order).\n**Output:** m lines — the size of 1's component after each addition.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "sample",
+      "code": "std::istringstream in(\"6 4\\n1 2\\n3 4\\n2 3\\n5 6\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n2\\n4\\n4\\n\"));",
+      "hint": "After (1,2): {1,2}. Edge (3,4) does not touch 1. (2,3) merges {1,2} with {3,4} → 4. (5,6) does not touch."
+    },
+    {
+      "name": "star last",
+      "code": "std::istringstream in(\"5 3\\n2 3\\n3 4\\n4 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1\\n1\\n4\\n\"));",
+      "hint": "1's component stays 1 until (4,1) joins {2,3,4} → 4."
+    },
+    {
+      "name": "self loop-ish",
+      "code": "std::istringstream in(\"3 2\\n1 2\\n1 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"2\\n3\\n\"));",
+      "hint": "Both edges grow the component."
+    }
+  ],
+  "level": "combination"
+}

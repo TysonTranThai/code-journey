@@ -1,0 +1,29 @@
+# Name the Bottleneck
+
+The optimization discipline has four steps, and skipping the first two is
+how people "optimize" randomly:
+
+1. **Locate.** Which loop dominates the op count? (Usually the nested one.)
+2. **Name it.** "The inner loop recomputes the window minimum from
+   scratch — O(k) per step, O(nk) total." A named bottleneck states its
+   own complexity.
+3. **Accelerate.** Choose the structure whose *job* is exactly the named
+   waste: prefix sums for re-added sums, deque for window extrema,
+   Fenwick for prefix aggregates under updates, binary search on answer
+   for monotone feasibility.
+4. **Prove the new bound.** The new complexity must follow from the
+   structure's known cost — not from hope.
+
+## The budget lens
+
+The course's op budget (~10^8 simple ops per second in contest
+conditions, less with heavy per-op work) turns "O(n²) with n = 200000"
+into a *measured* death sentence: 4·10^10 ops ≈ 400 seconds. Writing the
+number down converts anxiety into arithmetic.
+
+## Optimization ≠ cleverness
+
+The best optimization is usually a **deletion**: the re-derived quantity
+was already computed once. Prefix sums delete an O(n) re-sum; a deque
+deletes an O(k) re-scan. Ask "what am I recomputing?" before "what can I
+precompute?" — the answer is usually the same thing.

@@ -1,0 +1,26 @@
+# Thứ tự chính là thuật toán
+
+Khi bạn thấy `best[v] = f(best của các tiền nhiệm của v)`, bài đồ thị trở
+thành bài DP — nhưng chỉ khi bạn xử lý các đỉnh theo thứ tự mà mọi tiền
+nhiệm đến trước. Thứ tự đó **chính là** thuật toán:
+
+- **DAG** → sort topo, rồi một lần quét tuyến tính. O(V + E).
+- **Đồ thị tổng quát, khả năng tới/đếm** → DSU gộp thành phần offline,
+  hoặc co SCC, rồi DP trên đồ thị co lại.
+- **Cây** → thứ tự duyệt (post-order cho DP đi lên, pre-order cho đi
+  xuống) đóng vai topo.
+
+## Cú đọc nhầm đắt giá
+
+Cú vấp kinh điển: coi đồ thị tùy ý là DAG. Nếu có chu trình, "đường đi
+dài nhất" không chỉ khó — nó không xác định (vô cực) với phiên bản khả
+năng tới, và NP-khó với phiên bản đường đơn. Trước khi chạy topo DP, hãy
+hỏi: **tính không có chu trình được cho, hay được suy ra?** Sự suy ra đó
+(ví dụ sự kiện có thứ tự thời gian, trạng thái giảm theo một đại lượng)
+chính là nhận xét then chốt của nhiều bài.
+
+## Two-pointer trên đồ thị?
+
+Khi trọng số chỉ 0/1, 0-1 BFS thay thế Dijkstra; khi mọi trọng số bằng
+nhau, BFS thuần là tối ưu. Nhận diện *công cụ yếu nhất* vẫn còn đủ dùng
+là kỹ năng của bậc thầy — công cụ hạng nặng mời gọi bug hạng nặng.

@@ -1,0 +1,43 @@
+# The Observation Loop
+
+## Step 1 — Write the brute force (mentally or really)
+
+Even when you know it cannot pass, the brute force defines the problem
+precisely and reveals the computation's *shape*: what gets recomputed, what
+depends on what. n ≤ 200000 with an O(n²) idea means the recomputation must
+be eliminated — that is the exact target.
+
+## Step 2 — Inspect the samples with suspicion
+
+Compute the samples by hand *through your brute force*, watching intermediate
+values. Patterns appear as repeated structure: the same partial optimum
+recurs; distances always come in two parities; the sorted order is already
+"almost" the answer. Write the pattern down for three different inputs —
+one occurrence is noise, three is structure.
+
+## Step 3 — Name the invariant
+
+The pattern is almost always one of a short list:
+
+- **monotonicity**: once a quantity passes a threshold, it never comes back
+  (unlocks binary search);
+- **exchange argument**: two adjacent choices can be swapped with a
+  computable effect (unlocks greedy + sort order);
+- **independence**: subproblems don't interact once a boundary is fixed
+  (unlocks DP);
+- **amortized potential**: each element is touched O(1) times despite nested
+  loops (unlocks two pointers, monotonic stack);
+- **parity / XOR invariant**: only a residue class of states matters
+  (unlocks crushing the state space).
+
+## Step 4 — Convert to an algorithm, then prove it
+
+State the algorithm in one sentence ("sort by r, sweep, keep a pointer"),
+then prove the invariant claim in two or three lines. If you cannot state
+the proof, you have a hypothesis, not a solution — check it against brute
+force (the stress-testing skill of Module 9).
+
+## Step 5 — Implement and re-check samples
+
+Contest discipline: the implementation must reproduce the samples *before*
+you submit. A failing sample is information, not bad luck.

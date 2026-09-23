@@ -1,0 +1,28 @@
+Integrated problems combine units the way the exam does. A single
+question may demand: an ArrayList of objects, a traversal, a String
+method, and a boolean contract. The strategy:
+
+1. **Inventory** — list the types in play (`ArrayList<Song>`, `int`,
+   `boolean`). Each type names a toolbox from an earlier module.
+2. **Decompose** — one method per sub-task. "Find the best" and "print
+   the report" are two methods, not one tangled loop.
+3. **Contract per method** — one sentence: what goes in, what comes
+   out, what's guaranteed.
+4. **Assemble** — the driver method calls the pieces in order.
+
+```java
+// Pieces: findBest(list), countBelow(list, cut)
+public static ArrayList<String> topNames(ArrayList<Song> list, int cut) {
+    ArrayList<String> names = new ArrayList<String>();
+    for (Song s : list) {
+        if (s.getPlays() >= cut) {
+            names.add(s.getTitle());
+        }
+    }
+    return names;
+}
+```
+
+Notice the pattern: **select** (filter by plays) + **transform**
+(extract title). Most integrated FRQs are two or three patterns
+glued together — recognizing the glue is the skill.

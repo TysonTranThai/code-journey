@@ -1,0 +1,35 @@
+Conditions nest: an `if` inside an `if`.
+
+```java
+if (age >= 13) {
+    if (hasPermission) {
+        System.out.println("admit");
+    } else {
+        System.out.println("permission needed");
+    }
+}
+```
+
+Nesting is equivalent to `&&` when there is no else on the inner test:
+`if (a) { if (b) { X } }` runs X exactly when both hold. Prefer flat `&&`
+when you can — but *read* nested code fluently, the exam presents it
+constantly.
+
+**Dangling else** — an `else` binds to the **nearest** unmatched `if`, not
+the one indentation suggests:
+
+```java
+if (a < 5)
+    if (a > 2)
+        System.out.println("3-4");
+else
+    System.out.println("else");   // belongs to inner if!
+```
+
+With `a = 10`: outer true → enter; inner `10 > 2` false → else fires, prints
+"else". With `a = 0`: outer false → nothing prints at all. Brace your
+intentions and trace honestly.
+
+**Common logical errors**: flipped comparisons (`<` for `<=`), overlapping
+ranges, testing `x == 5 || 6` (always true — 6 is truthy-wrong here: it must
+be `x == 5 || x == 6`), and inverted guards.

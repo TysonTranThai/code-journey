@@ -1,0 +1,41 @@
+FRQ **Question 2 (Class Design)** hands you a table like:
+
+| Expression | Result |
+| --- | --- |
+| `new Sensor(20)` | a sensor starting at 20 |
+| `s.read()` | current value |
+| `s.tick()` | value grows by 1, nothing returned |
+
+...and asks you to write the whole class. The checklist every answer needs:
+
+1. `public class Name {` header.
+2. `private` instance variables — every one the table implies.
+3. A constructor matching the table's construction row.
+4. The required methods, with exact names/signatures.
+
+Worked answer for the table above:
+
+```java
+public class Sensor {
+    private int value;
+
+    public Sensor(int start) {
+        value = start;
+    }
+
+    public int read() {
+        return value;
+    }
+
+    public void tick() {
+        value++;
+    }
+}
+```
+
+Scoring rubric details: exact method names and parameter types are worth
+points; state changes must actually happen (`value++` inside tick), and
+methods the table shows returning nothing are declared `void`.
+
+**Decomposition inside classes**: a method may call another method of the
+same object directly — `isLong()` could call `getPages()` without a dot.

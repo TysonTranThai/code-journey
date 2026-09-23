@@ -1,0 +1,38 @@
+**Sắp xếp chọn** — tìm phần tử nhỏ nhất còn lại, hoán đổi vào chỗ:
+
+```java
+for (int i = 0; i < arr.length - 1; i++) {
+    int min = i;
+    for (int j = i + 1; j < arr.length; j++) {
+        if (arr[j] < arr[min]) {
+            min = j;
+        }
+    }
+    int temp = arr[i];
+    arr[i] = arr[min];
+    arr[min] = temp;
+}
+```
+
+Truy vết {5, 2, 8, 1}: lượt 1 tìm 1 (chỉ số 3), hoán đổi → {1, 2, 8, 5};
+lượt 2 tìm 2, đã đúng chỗ → {1, 2, 8, 5}; lượt 3 tìm 5 → {1, 2, 5, 8}. Sau
+lượt k, k phần tử đầu đã cố định.
+
+**Sắp xếp chèn** — nuôi một tiền tố đã sắp; mỗi phần tử mới đi sang trái tới
+chỗ của nó (như xếp bài trên tay):
+
+```java
+for (int i = 1; i < arr.length; i++) {
+    int key = arr[i];
+    int j = i - 1;
+    while (j >= 0 && arr[j] > key) {
+        arr[j + 1] = arr[j];    // dịch phải
+        j--;
+    }
+    arr[j + 1] = key;           // thả vào khoảng trống
+}
+```
+
+Cả hai là O(n²). Đề thi yêu cầu *truy vết* vài lượt và đếm phép so
+sánh/hoán đổi — sắp xếp chọn luôn quét hết vòng trong; sắp xếp chèn dừng
+sớm trên dữ liệu gần như đã sắp.

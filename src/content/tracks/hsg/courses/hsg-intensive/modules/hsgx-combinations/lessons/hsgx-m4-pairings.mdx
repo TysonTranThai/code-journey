@@ -1,0 +1,43 @@
+# The Five Classic Pairings
+
+## 1. Binary search + greedy (the answer-is-monotone family)
+
+Interface: `feasible(x)` — a greedy that checks whether target x is
+achievable. Cost: O(check · log(range)). Trap: an infeasible-check greedy
+must be *provably* optimal for fixed x — "first-fit" is only valid when
+items are processed in a fixed order and greed is exchange-argued.
+
+## 2. Coordinate compression + Fenwick (domain shrinking)
+
+Interface: the compressed rank array. Cost: O(n log n) once, then O(log n)
+per operation. Appears as: counting inversions, counting pairs with value
+conditions, "how many previous elements are ≤ x" online. Trap: compress
+*queries too* if they arrive offline and reference values not in the array.
+
+## 3. DSU over time (connectivity with a clock)
+
+Interface: events sorted by time; DSU unions are irreversible, so process
+time forward and answer queries that also move forward (or reverse time for
+deletions). Cost: near-linear. Appears as: "after each new road, how many
+provinces", "earliest moment the graph connects". Trap: queries interleaved
+with unions must be answered in the same pass — sorting queries by time and
+two-pointering the union list.
+
+## 4. Dijkstra / BFS on a state graph (search with richer nodes)
+
+Interface: state = (position, extra dimension). Cost: O(states · log
+states) — you must compute the state count explicitly: grid 1000×1000 × 2
+parities = 2·10^6 states, fine; × 10^6 fuel values = dead. Appears as:
+shortest path with parity constraint, keys-and-doors, restricted fuel.
+
+## 5. SCC + DAG DP (cycles first, then order)
+
+Interface: the condensation — each SCC collapses to one node with aggregated
+weights. Cost: Tarjan/Kosaraju O(n + m), then DP O(n' + m'). Appears as:
+"maximum coins collectible with one-way passages, cycles allowed but
+pointless inside a component except to bank its total". Trap: the DP must
+follow topological order of the *condensation*, not the original graph.
+
+Each pairing has a two-line recognition sentence. If a problem's story maps
+to one, write the interface (the predicate, the rank array, the state
+definition, the condensation) *before* coding either half.

@@ -1,0 +1,35 @@
+Hai dạng phủ gần hết đệ quy trong đề thi:
+
+**Đệ quy chuỗi** — theo chỉ số, thường từ hai đầu:
+
+```java
+public static boolean isPalindrome(String s, int lo, int hi) {
+    if (lo >= hi) {
+        return true;              // chạm nhau ở giữa (hoặc rỗng)
+    }
+    if (s.charAt(lo) != s.charAt(hi)) {
+        return false;
+    }
+    return isPalindrome(s, lo + 1, hi - 1);
+}
+```
+
+**Đệ quy mảng** — đệ quy theo chỉ số, coi phần còn lại của mảng là "đầu vào
+nhỏ hơn":
+
+```java
+public static int sum(int[] arr, int i) {
+    if (i == arr.length) {
+        return 0;                 // cơ sở: quá cuối cộng thêm không gì
+    }
+    return arr[i] + sum(arr, i + 1);
+}
+```
+
+`sum(arr, 0)` đi qua 0, 1, 2, ... — tiến triển là `i + 1`. Trường hợp cơ sở
+là `i == arr.length`, *không phải* `length - 1`: đóng góp rỗng là có thật,
+và lệch một ở đây là lỗi off-by-one kinh điển.
+
+Tư duy phân rã: một bài toán là đệ quy khi một mẩu của đáp án cộng với
+*cùng bài toán, nhỏ hơn* cho ra toàn bộ — ký tự đầu của chuỗi cộng với tính
+palindrome của phần còn lại.

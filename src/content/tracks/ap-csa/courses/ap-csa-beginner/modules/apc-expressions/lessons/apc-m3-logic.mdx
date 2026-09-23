@@ -1,0 +1,29 @@
+**Logical operators** combine booleans:
+
+- `!a` — not: flips it
+- `a && b` — and: true only when **both** are true
+- `a || b` — or: true when **at least one** is true
+
+Precedence: `!` before `&&` before `||`.
+
+```java
+boolean hasTicket = true, isStudent = false;
+System.out.println(hasTicket && !isStudent);   // true
+System.out.println(!hasTicket || isStudent);   // false
+```
+
+**Short-circuit evaluation** — `&&` and `||` stop as soon as the answer is
+known, and the right side may never run:
+
+```java
+int d = 0;
+if (d != 0 && 10 / d > 2) { ... }   // safe: right side skipped when d == 0
+```
+
+This is not just an optimization — it is the standard **guard pattern**:
+check the risky condition *after* `&&` and the cheap range-check *before*.
+`||` short-circuits too: if the left side is `true`, the right side never
+runs.
+
+Truth-table tracing is an exam staple: for each combination, write the
+value of each sub-expression, then combine.

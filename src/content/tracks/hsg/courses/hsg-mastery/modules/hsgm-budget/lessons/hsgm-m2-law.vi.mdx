@@ -1,0 +1,42 @@
+# Định luật ngân sách
+
+Dòng giới hạn không phải chuyện phiền — đó là người ra đề nói cho bạn biết
+những lời giải nào được phép tồn tại. Kỷ luật: **nhân ra số phép toán
+trước khi viết bất kỳ dòng code nào.**
+
+## Thang chuẩn (trần ≈ 10^8 phép/giây; ~3·10^8 là mép "code ngay" theo kinh
+nghiệm phòng thi)
+
+| Giới hạn | Ngân sách | Các họ vừa |
+|---|---|---|
+| n ≤ 20 (hoặc n ≤ 24) | 2^n–2^n·n | brute force, DP bitmask, meet-in-the-middle cho lớn hơn |
+| n ≤ 500 | n^3 | Floyd–Warshall, DP phân công, quét đồ thị dày |
+| n ≤ 5000 | n^2 | DP theo cặp, quét O(n^2), LIS bottom-up |
+| n ≤ 10^5 – 2·10^5 | n log n (hoặc n·√n) | sắp xếp, heap, segment tree, DSU, Dijkstra |
+| n ≤ 5·10^6+ | n (hằng số nhỏ) | two pointers, sàng, tổng tiền tố, KMP |
+| giá trị ≤ 10^18 | log(giá trị) | tìm kiếm nhị phân đáp án, digit DP, lũy thừa ma trận |
+| n ≤ 40, tổng tập con | n/2 · 2^(n/2) | meet in the middle |
+| q ≤ 10^5, giá trị ≤ 10^5 | (n + q) log | sắp xếp offline + quét Fenwick |
+
+## Nhân trung thực
+
+O(n·q) với n = q = 2·10^5 là **4·10^10** — gấp trăm lần trần, không phải
+"chậm một chút". O(n√n) với n = 10^5 là 3·10^7 — thoải mái. O(2^n) với
+n = 24 là 1.7·10^7 — ổn; với n = 30 là 10^9 — chết. Viết số ra giấy; đừng
+ước lượng bằng mắt.
+
+## Hai chiều sai
+
+- **Ngân sách thấp hơn thật** (chọn n^2 cho n = 2·10^5) = TLE chắc chắn
+  trên test lớn.
+- **Ngân sách cao hơn cần** (nghĩ ra O(n log n) cho n ≤ 500) = phí giờ và
+  mở diện tích lỗi. Khi n ≤ 20, brute force CHÍNH LÀ lời giải chủ đích —
+  code tự tin.
+
+## Phản xạ mẫu
+
+`n ≤ 10^5, q ≤ 10^5, "với mỗi truy vấn, j gần nhất > i với a[j] > a[i]"`:
+ngân sách n log n; dạng = gần-phải-lớn-hơn theo từng chỉ số; các họ = quét
+có sắp xếp với stack đơn điệu các giá trị đã thấy (xử lý phải sang trái với
+stack, hoặc Fenwick nén tọa độ quét từ phải). Hai ứng cử viên, cùng vừa —
+chọn cái ít code hơn. Toàn bộ quyết định là vậy.

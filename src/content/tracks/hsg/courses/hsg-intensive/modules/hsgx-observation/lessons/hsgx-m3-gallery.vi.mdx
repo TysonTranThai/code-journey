@@ -1,0 +1,39 @@
+# Phòng trưng bày nhận xét
+
+## 1. Tổng đoạn con lớn nhất → Kadane (độc lập + khấu hao)
+
+Brute force O(n²) thử mọi (l, r). Nhận xét: đoạn con tốt nhất **kết thúc tại
+i** hoặc kéo dài cái tốt nhất kết thúc tại i−1 hoặc bắt đầu mới. Chứng minh:
+nếu tiền tố tốt nhất âm, bỏ nó giúp ích tuyệt đối. O(n). Bài học tổng quát:
+"tốt nhất **kết thúc tại đây**" là trạng thái DP ẩn trong rất nhiều bài.
+
+## 2. Phần tử lớn hơn kế tiếp → stack đơn điệu (tiềm năng khấu hao)
+
+Với mỗi i tìm j > i gần nhất với a[j] > a[i]. Brute force O(n²). Nhận xét:
+quét trái sang phải, một stack chỉ số có giá trị giảm giữ mọi phần tử "đang
+chờ"; mỗi chỉ số được push đúng một lần và pop đúng một lần. O(n). Bài học:
+vòng lặp lồng với con trỏ trong chỉ tiến tới về cơ bản được khấu hao tuyến tính.
+
+## 3. Đếm đoạn con có tổng = k, số dương → two pointers (đơn điệu)
+
+Với a[i] ≥ 1, tổng cửa sổ tăng theo r và giảm theo l: đơn điệu. Trượt hai
+con trỏ; mỗi con trỏ đi qua mảng một lần. O(n). Với số 0 hoặc âm, đơn điệu
+chết — cùng bài đó lúc này cần tổng tiền tố + hash map. Bài học: nhận xét có
+*điều kiện*; biết khi nào nó hết hạn.
+
+## 4. Giảm thiểu tải lớn nhất khi phân công → tìm kiếm nhị phân đáp án
+
+"Tối thiểu hóa giá trị lớn nhất" với đáp án đếm được: tìm kiếm nhị phân
+trên đáp án x, viết kiểm tra khả thi (greedy lấp đầy), chứng minh đơn điệu
+(nếu tải x khả thi thì x+1 cũng vậy). O(n log(max)). Bài học: tính đơn điệu
+của đáp án biến bài tối ưu thành bài quyết định.
+
+## 5. Xâu con dài nhất không lặp → cửa sổ trượt + lần thấy cuối
+
+Brute force O(n²·bảng chữ). Nhận xét: với mỗi r, l nhỏ nhất giữ cửa sổ hợp
+lệ chỉ tiến tới. Theo dõi lần xuất hiện cuối của từng ký tự. O(n). Bài học:
+cửa sổ hợp lệ với biên "chỉ thu nhỏ/mở rộng" là two pointers trá hình.
+
+Mỗi mục trong phòng trưng bày đi trọn vòng lặp: brute force → điểm nghẽn →
+mô hình trong ví dụ → bất biến → thuật toán O(n log n) hoặc tốt hơn → chứng
+minh hai dòng. Bộ thực hành dưới đây áp dụng cùng vòng lặp vào các dạng lạ.

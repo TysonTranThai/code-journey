@@ -1,0 +1,35 @@
+Tổng hợp trên lưới chính là mẫu bộ tích lũy từ mảng 1D, áp dụng theo
+hàng, theo cột, hoặc trên toàn bộ:
+
+```java
+// tổng từng hàng: một kết quả mỗi hàng
+public static int[] rowSums(int[][] g) {
+    int[] sums = new int[g.length];
+    for (int r = 0; r < g.length; r++) {
+        int s = 0;                       // reset CHO TỪNG HÀNG — trong vòng 1
+        for (int c = 0; c < g[0].length; c++) {
+            s += g[r][c];
+        }
+        sums[r] = s;
+    }
+    return sums;
+}
+```
+
+Hai lỗi đặt chỗ gây ra một nửa đáp án sai:
+
+- Bộ tích lũy khai báo **ngoài** vòng hàng: tổng cộng dồn xuống cả lưới
+  (tổng chạy thay vì tổng từng hàng).
+- Lệnh reset đặt trong vòng **cột**: bộ tích lũy chết sau một cột.
+
+Duyệt theo cột chỉ là đổi vòng nào ở ngoài:
+
+```java
+for (int c = 0; c < g[0].length; c++) {      // cột ở ngoài
+    for (int r = 0; r < g.length; r++) {
+        // g[r][c] đi XUỐNG cột c
+    }
+}
+```
+
+Cả hai vòng vẫn còn; chỉ đổi cận và thứ tự chỉ số.

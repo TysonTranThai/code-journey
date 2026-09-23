@@ -1,0 +1,38 @@
+The three-way mnemonic the exam loves to test:
+
+| | arrays | String | ArrayList |
+| --- | --- | --- | --- |
+| size | `arr.length` | `s.length()` | `list.size()` |
+| read | `arr[i]` | `s.charAt(i)` | `list.get(i)` |
+| write | `arr[i] = v` | (immutable) | `list.set(i, v)` |
+
+**Traversing** an ArrayList — two safe forms:
+
+```java
+for (int i = 0; i < list.size(); i++) {
+    System.out.println(list.get(i));
+}
+
+for (String s : list) {          // enhanced for: read-only visits
+    System.out.println(s);
+}
+```
+
+**The trap**: `remove` *shifts* everything after the removed index left.
+Remove while walking forward and you skip the element right after each
+removal:
+
+```java
+// remove all "x" from ["x", "x", "a"] — WRONG
+for (int i = 0; i < list.size(); i++) {
+    if (list.get(i).equals("x")) {
+        list.remove(i);      // i++ now skips the shifted-in element
+    }
+}
+// result: ["x", "a"] — an x survives!
+```
+
+Three correct fixes: walk **backwards** (`for (int i = list.size() - 1; i
+>= 0; i--)`), re-check the same index after removing (`i--`), or use the
+enhanced for only when you remove nothing. Consecutive-duplicate questions
+are built exactly on this trap.

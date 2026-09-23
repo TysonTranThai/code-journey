@@ -1,0 +1,46 @@
+# Fusing Two Tools
+
+A provincial HSG hard problem is rarely "run Dijkstra". It is "run Dijkstra
+*on a graph you must first build*". The skill is seeing the two halves and
+the interface between them.
+
+## The fuse pattern
+
+Almost every combination has this shape:
+
+```
+read input → [transform A] → [core algorithm B] → answer
+```
+
+The transformations are where combinations live: sorting to enable greedy,
+compression to shrink a domain, building an auxiliary graph (states, time
+layers, residual networks), precomputing structure (LCA tables, sparse
+tables, prefix DSU forests).
+
+## The interface is the design
+
+When you combine binary search with greedy, the *interface* is a yes/no
+feasibility predicate. When you combine SCC with DAG DP, the interface is
+the condensation graph. When you fuse Dijkstra with state graphs, the
+interface is the state definition — get it wrong (too big → memory death;
+too small → wrong answers) and both halves fail.
+
+## Cost accounting for combinations
+
+The total is not A + B; it is usually A · B or A + B depending on how they
+nest: binary search (log C) × greedy check O(n) = O(n log C). Compression
+O(n log n) + Fenwick queries O((n+q) log n). Budget the *composition*,
+not the pieces.
+
+## Recognition: what earns a combination
+
+- "Minimize the maximum / maximize the minimum" + a checkable arrangement →
+  binary search + greedy (or + matching).
+- Values up to 10^9 but only n ≤ 2·10^5 of them → coordinate compression,
+  then anything domain-shaped (Fenwick over values, DP over values).
+- Events in time order + connectivity questions → DSU over time (add edges
+  in chronological order), or a persistent/LCT structure if removals exist.
+- "State" is more than a position (fuel left, keys held, parity, coins) →
+  BFS/Dijkstra over the product state graph. Watch the size!
+- "If a cycle exists, the answer is impossible" → SCC first, then DP on the
+  condensation.

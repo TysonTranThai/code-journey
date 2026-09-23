@@ -1,0 +1,28 @@
+**Toán tử logic** kết hợp các giá trị boolean:
+
+- `!a` — phủ định: lật lại
+- `a && b` — và: chỉ đúng khi **cả hai** đúng
+- `a || b` — hoặc: đúng khi **ít nhất một** đúng
+
+Độ ưu tiên: `!` trước `&&` trước `||`.
+
+```java
+boolean hasTicket = true, isStudent = false;
+System.out.println(hasTicket && !isStudent);   // true
+System.out.println(!hasTicket || isStudent);   // false
+```
+
+**Đánh giá ngắn mạch** — `&&` và `||` dừng ngay khi biết kết quả, và vế phải
+có thể không bao giờ chạy:
+
+```java
+int d = 0;
+if (d != 0 && 10 / d > 2) { ... }   // an toàn: vế phải bị bỏ qua khi d == 0
+```
+
+Đây không chỉ là tối ưu — đó là **mẫu chốt điều kiện** chuẩn: kiểm tra điều
+kiện nguy hiểm *sau* `&&` và kiểm tra khoảng giá trị rẻ tiền *trước*. `||`
+cũng ngắn mạch: nếu vế trái `true`, vế phải không bao giờ chạy.
+
+Truy vết bảng chân trị là món đặc sản của đề thi: với từng kết hợp, viết giá
+trị của từng biểu thức con, rồi kết hợp lại.

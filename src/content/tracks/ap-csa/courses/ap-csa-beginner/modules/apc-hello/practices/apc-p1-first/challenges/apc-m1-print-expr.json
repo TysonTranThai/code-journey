@@ -1,0 +1,16 @@
+{
+  "id": "apc-m1-print-expr",
+  "title": "Print the sum, not the text",
+  "prompt": "Print the **value** of 17 + 25 on one line (just `42`), then the text `17 + 25` on the next line. One println each — think about which one needs quotes.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static void main(String[] args) {\n        // your code here\n    }\n}\n",
+  "tests": [
+    {
+      "name": "value then text",
+      "code": "\nString out = CjTestBase.capture(() -> Solution.main(new String[0]));\nList<String> lines = out.lines().map(String::trim).toList();\nCjTestBase.checkEq(lines, List.of(\"42\", \"17 + 25\"), \"value first, then text\");\n",
+      "hint": "Without quotes Java evaluates; with quotes it prints literally."
+    }
+  ],
+  "level": "combination"
+}

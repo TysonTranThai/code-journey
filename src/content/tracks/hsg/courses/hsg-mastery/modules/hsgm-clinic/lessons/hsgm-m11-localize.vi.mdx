@@ -1,0 +1,27 @@
+# Khoanh vùng bằng chặt nhị phân
+
+Khi code của bạn qua test mẫu nhưng chết ở test ẩn, đọc lại là công cụ
+chậm nhất. Thay vào đó, **chia đôi không gian nghi phạm**:
+
+1. **Chia đôi input.** Lấy họ input gãy nhỏ nhất bạn tưởng tượng được
+   (n = 1? 2? 3?). Không gãy ở n nhỏ thì nhân đôi tới khi gãy — n gãy đầu
+   tiên giới hạn thang của bug.
+2. **Chia đôi đường đi code.** Vô hiệu hóa một nửa (hoặc ép return sớm với
+   đáp án biết-trước là đúng). Lỗi có dịch chuyển không? Bug nằm ở nửa đã
+   lật kết quả.
+3. **Chia đôi trạng thái.** In các bất biến tại điểm giữa (tính có thứ tự,
+   tổng, tính đơn điệu). Checkpoint đầu tiên có bất invariant sai nằm
+   phía thượng nguồn của bug.
+
+## Thói quen danh mục
+
+Mọi bug được khoanh vùng đều được **gọi tên loại** (bài sau). Việc gọi
+tên biến một lần vá lẻ thành một phép phát hiện tái sử dụng: "đây là
+off-by-one-tại-biên; kiểm tra cả hai đầu mút" là một *lớp* bug tương lai
+được bắt trước khi nó lấy mất một lần nộp.
+
+## Phần thưởng phản ví dụ
+
+Input gãy tối giản không chỉ để chẩn đoán — nó là test neo vá lỗi. Thêm
+nó vào stress harness cá nhân (Module 13 hệ thống hóa harness đó) trước
+khi vá, để phép vá được xác minh chống lại đúng bằng chứng.

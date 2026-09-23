@@ -1,0 +1,50 @@
+# Constraint → Family Mapping
+
+The selection guide from Module 1, now with the traps that make drills hard.
+
+## Trap 1 — Values big, n small
+
+`n ≤ 24, a[i] ≤ 10^12`: the state space is **2^24 subsets**, not values.
+Meet in the middle or bitmask DP. Values being huge is a hint that answers
+are compared, not counted — sort of subset sums, not prefix sums.
+
+## Trap 2 — q ≫ n or n ≫ q
+
+`n ≤ 100, q ≤ 10^5` → **precompute everything**: O(n^2) or even O(n^3) is
+affordable at build time; each query must be O(1) or O(log n). Reverse
+(`n ≤ 10^5, q ≤ 100`) → per-query O(n) or O(n log n) is fine; precomputation
+wasted on 100 queries is fine too, but don't build a segment tree out of
+habit when 100 linear scans are cheaper and safer.
+
+## Trap 3 — The array is sorted / nearly sorted (read the guarantee)
+
+"Sorted" in the guarantee is a gift: two pointers, binary search, merge
+without sort. Ignoring a stated guarantee burns the intended solution.
+
+## Trap 4 — String length vs alphabet
+
+|s| ≤ 2·10^5 over lowercase: 26-letter count arrays, bitmask of seen letters
+(26 bits fits in an int), counting sort. |s| ≤ 20: substring enumeration
+2^20 is fine.
+
+## Trap 5 — Tree guarantees
+
+"A tree with n vertices, q path queries" is LCA-shaped; "n−1 edges" stated
+once in the middle of the paragraph is the same problem. Underline the word
+*tree*. A tree is a DAG with exactly one path per pair — the entire DP-on-
+trees toolbox opens only if you noticed.
+
+## The small-n law (n ≤ 20)
+
+When n ≤ 20, the setter is testing whether you **resist overengineering**.
+2^20 = 10^6 — brute force *is* the intended solution. The classic exam
+failure: inventing a greedy for a 20-item problem, missing a case, scoring
+0 on the subtask the brute force would have swept. If the arithmetic gives
+you 10^6, take it and spend the saved time elsewhere.
+
+## Practice the estimate out loud
+
+"n = 2·10^5, q = 2·10^5, range add range min → segment tree lazy, O((n+q)
+log n) ≈ 7·10^6 — fits with 100× margin. Alternative: sqrt decomposition,
+O((n+q)·sqrt n) ≈ 1.8·10^8 — probably fits but no margin; segment tree wins."
+That sentence, spoken in ten seconds, is the skill.

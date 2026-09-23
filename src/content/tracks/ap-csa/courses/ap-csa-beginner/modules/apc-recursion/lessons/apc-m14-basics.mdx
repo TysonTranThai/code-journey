@@ -1,0 +1,29 @@
+A **recursive** method calls itself on a smaller input. Two ingredients are
+mandatory:
+
+1. **Base case** — an input answered directly, no call.
+2. **Recursive case** — the call moves *toward* the base case (progress).
+
+```java
+public static int factorial(int n) {
+    if (n <= 1) {            // base case
+        return 1;
+    }
+    return n * factorial(n - 1);   // progress: n shrinks by 1
+}
+```
+
+The **call stack** makes traces mechanical. For `factorial(4)`:
+
+```text
+factorial(4) = 4 * factorial(3)
+                 factorial(3) = 3 * factorial(2)
+                                 factorial(2) = 2 * factorial(1)
+                                                 factorial(1) = 1
+```
+
+Unwind: 1 → 2 → 6 → 24. Write the descent, hit the base, multiply back up.
+
+**Exam trace conventions**: count *calls* (factorial(4) makes 4 total), and
+remember StackOverflowError is the runtime signature of missing progress —
+an infinite loop's recursive twin.

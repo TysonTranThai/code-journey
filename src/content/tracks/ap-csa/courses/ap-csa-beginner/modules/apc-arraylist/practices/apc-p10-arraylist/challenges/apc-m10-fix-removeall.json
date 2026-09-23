@@ -1,0 +1,16 @@
+{
+  "id": "apc-m10-fix-removeall",
+  "title": "Debug the removal",
+  "prompt": "`removeAll` should delete every occurrence of target, but some targets survive. Explain-why-then-fix: the forward loop skips shifted elements. Rewrite with a correct pattern.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static void removeAll(java.util.ArrayList<String> list, String target) {\n        for (int i = 0; i < list.size(); i++) {\n            if (list.get(i).equals(target)) {\n                list.remove(i);\n            }\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "all gone",
+      "code": "\njava.util.ArrayList<String> l = new java.util.ArrayList<String>();\njava.util.Collections.addAll(l, \"x\", \"x\", \"a\", \"x\");\nSolution.removeAll(l, \"x\");\nCjTestBase.checkEq(l.size(), 1, \"one survivor\");\nCjTestBase.checkEq(l.get(0), \"a\", \"it is a\");\n",
+      "hint": "Backwards loop, or i-- after each remove."
+    }
+  ],
+  "level": "debugging"
+}

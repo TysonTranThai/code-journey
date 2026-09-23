@@ -1,0 +1,32 @@
+Các kiểu nguyên thủy: `int` (số nguyên), `double` (thập phân), `boolean`
+(đúng/sai), `char` (một ký tự). Mọi thứ khác trong đề thi được dựng từ chúng
+cộng với đối tượng.
+
+**Hằng số** — từ khóa `final` đóng băng biến:
+
+```java
+final int MAX_SCORE = 100;
+MAX_SCORE = 105;    // lỗi biên dịch — hằng số không bao giờ đổi
+```
+
+**Chia số nguyên là cái bẫy.** Khi cả hai toán hạng là `int`, kết quả là
+`int` — phần thập phân bị **cắt bỏ** (không phải làm tròn):
+
+```java
+System.out.println(7 / 2);     // 3   (không phải 3.5)
+System.out.println(7 % 2);     // 1   (số dư)
+System.out.println(7.0 / 2);   // 3.5 (một toán hạng double → tính double)
+System.out.println(-7 / 2);    // -3  (cắt về phía 0)
+```
+
+**Ép kiểu** chuyển đổi tường minh:
+
+```java
+double d = 9.7;
+int truncated = (int) d;          // 9   — phần thập phân bị bỏ
+int rounded = (int) (d + 0.5);    // 10  — mẹo làm tròn thủ công
+double back = truncated;          // mở rộng: không cần ép
+```
+
+Mở rộng (`int` → `double`) là tự động; thu hẹp (`double` → `int`) cần ép kiểu
+và mất thông tin.

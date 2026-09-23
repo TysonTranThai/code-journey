@@ -1,0 +1,35 @@
+# Viết bộ sinh test tìm ra lỗi
+
+Một bộ sinh là một giả thuyết về nơi lỗi của bạn sống, được viết thành code.
+
+## Đều là sàn, không phải trần
+
+`uniform_int(1, n)` tìm ra các lỗi phổ thông. Nhưng phần lớn lỗi sống sót cần
+*cấu trúc*: giá trị bằng nhau (trường hợp hòa), đầu vào đã sắp hoặc đảo ngược
+(giả định thứ tự), giá trị tí hon (logic sai nhưng không tràn), trùng lặp (lỗi
+khử trùng), một ngoại lệ cực đoan duy nhất (lỗi nhánh). Nhắm có chủ đích:
+
+- **Nghi ngờ: xử lý hòa** → sinh từ {1, 2, 3} thôi.
+- **Nghi ngờ: biên** → n tí hon (0, 1, 2), giá trị ở cực trị.
+- **Nghi ngờ: thứ tự** → sinh đã sắp, thi thoảng xáo trộn.
+- **Nghi ngờ: tràn số** → giá trị gần INT_MAX/2 để tổng vượt 2^31.
+
+## Quét tham số
+
+Sinh trên toàn bộ không gian hình dạng: mỗi vòng, chọn n ngẫu nhiên từ
+`{0..10}`, rồi giá trị từ một phân phối ngẫu nhiên trong đều / hằng / hai-giá-trị /
+đã-sắp / đảo-ngược. Bộ sinh hỗn hợp này đánh bại mọi phân phối cố định đơn lẻ —
+chính nó tìm ra phần lớn lỗi thật trong lịch sử các hệ chấm.
+
+## Đọc một mismatch
+
+Khi ứng cử viên ≠ oracle, đừng vá code ngay. Trước tiên *thu nhỏ* case gãy:
+bỏ phần tử trong khi sự bất đồng còn (delta debugging đơn giản). Case tối
+tiểu thường lộ lỗi trong một cái nhìn — và là test hồi quy bạn thêm vĩnh viễn.
+
+## Từ vòng stress tới bài nộp
+
+Quy trình thi đấu: giữ harness ở tệp riêng. Khi 5000+ case qua, không xóa gì
+hết — chỉ ngừng nhúng nó. Kỷ luật là: không nộp "có vẻ đúng" với bài mà
+oracle brute-force viết được trong năm phút. Năm phút harness đáng hơn một
+giờ debug bằng lệnh in.

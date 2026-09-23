@@ -1,0 +1,25 @@
+Tracing a constructor chain — the exam's favorite:
+
+```java
+public class A {
+    public A() { System.out.print("A"); }
+}
+
+public class B extends A {
+    public B() { System.out.print("B"); }   // implicit super() first
+}
+```
+
+`new B()` prints `AB`: the superclass part is always built first. With
+explicit `super(args)` and fields, the order is: super constructor →
+subclass field initializers → subclass constructor body.
+
+What subclasses **don't** inherit: private fields (exist but hidden),
+constructors (called, not inherited), static methods are hidden not
+overridden (out of scope here).
+
+**Common trace traps**: calling an overridden method *from inside the
+superclass constructor* runs the subclass version before subclass fields
+are initialized — a classic "why is my field null" puzzle. The exam uses
+this only in the hardest trace items; know the mechanism, don't memorize
+beyond it.

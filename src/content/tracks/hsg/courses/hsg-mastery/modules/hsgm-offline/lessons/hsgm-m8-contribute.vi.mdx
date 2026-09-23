@@ -1,0 +1,28 @@
+# Đếm đóng góp, không đếm cấu hình
+
+"Tổng trên mọi cặp/tập con/vị trí của f(bộ đã chọn)" gào lên sự liệt kê —
+nhưng thường phân rã thành **đóng góp theo từng phần tử**:
+
+    Σ_tập f(S) = Σ_phần tử e (đóng góp của e vào mọi tập chứa nó)
+
+## Phép lật tổng-cặp kinh điển
+
+Tổng min(a_i, a_j) trên mọi cặp i < j, n = 200000. Liệt kê cặp là
+2·10^10 — chết. Lật: sort; phần tử ở chỉ số k (0-based) là min cho đúng k
+cặp (với mỗi phần tử nhỏ hơn): đóng góp của nó là a[k]·k. Một sort, một
+vòng lặp: O(n log n).
+
+## Cùng một phép lật ở khắp nơi
+
+- Đếm cặp chênh lệch ≥ d: sort, two pointers, đếm theo từng phần tử.
+- Tổng trên mọi mảng con của max: stack đơn điệu tìm vùng mà mỗi phần tử
+  là max — đóng góp = giá trị × độ dài vùng.
+- Kỳ vọng trên tập con ngẫu nhiên: tính tuyến tính của kỳ vọng chính là
+  phiên bản xác suất của cùng ý tưởng.
+
+## Khi phép lật bất hợp lệ
+
+Các đóng góp phải **độc lập**: nếu f(S) không cộng tính/tách được theo
+phần tử (ví dụ f = "1 nếu |S| chẵn" tương tác với số lượng, không phải
+giá trị), phép tách đóng góp naive sẽ đếm đôi hoặc bỏ sót. Kiểm tra tính
+tách trước khi lật — chính phép kiểm tra đó là độ khó của bài.

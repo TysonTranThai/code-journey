@@ -1,0 +1,16 @@
+{
+  "id": "hsgm-p4-d1",
+  "title": "The Flipping Row",
+  "prompt": "**Scenario.** n lamps in a row, each on or off. One move: choose a lamp and flip it AND its immediate neighbors. Which invariant decides reachability of the all-off state?\n\n**Which approach is the best fit? The program only needs to print the letter.**\n\n**A)** The number of on-lamps mod 3\n\n**B)** The total number of moves used must be even\n\n**C)** No simple invariant exists — must search all 2^n states\n\n**D)** A weighted XOR pattern (each lamp has a fixed coefficient from the move structure) decides it",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "answer",
+      "code": "std::istringstream in(\"\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"D\"));",
+      "hint": "Each lamp's final state is the XOR of contributions from moves with fixed coefficients (a linear system mod 2); reachability is decided by that structure, not by a simple count."
+    }
+  ],
+  "level": "independent"
+}

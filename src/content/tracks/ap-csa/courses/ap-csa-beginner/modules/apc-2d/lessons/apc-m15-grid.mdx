@@ -1,0 +1,26 @@
+A **2D array** is an array of arrays — rows first, then columns:
+
+```java
+int[][] grid = new int[3][4];      // 3 rows, 4 columns, all zeros
+int[][] g2 = { {1, 2, 3}, {4, 5, 6} };   // 2 rows, 3 columns
+```
+
+Indexing is `grid[row][col]`, both zero-based. `grid[0]` is the whole
+first **row** (it is itself an `int[]`), `grid[0][2]` is one element.
+
+The lengths trick: `grid.length` is the number of rows,
+`grid[0].length` is the number of columns. They are NOT the same
+variable, and mixing them up is the classic bounds bug:
+
+```java
+for (int r = 0; r < grid.length; r++) {          // rows
+    for (int c = 0; c < grid[0].length; c++) {   // columns of that row
+        System.out.print(grid[r][c] + " ");
+    }
+    System.out.println();
+}
+```
+
+**Row-major order** — this outer-rows / inner-columns pattern — is how
+almost every AP 2D problem starts. Say the loop bounds out loud: "r goes
+over rows, c goes over the columns of row r."

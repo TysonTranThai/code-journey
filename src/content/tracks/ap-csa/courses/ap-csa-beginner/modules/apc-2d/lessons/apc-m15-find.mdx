@@ -1,0 +1,29 @@
+**Searching a grid** — find a value and report where it lives:
+
+```java
+// returns {row, col} or null if absent
+public static int[] find(int[][] g, int target) {
+    for (int r = 0; r < g.length; r++) {
+        for (int c = 0; c < g[0].length; c++) {
+            if (g[r][c] == target) {
+                return new int[] {r, c};
+            }
+        }
+    }
+    return null;
+}
+```
+
+Three habits from this snippet that recur on FRQ 4:
+
+- **Early return** the moment the target is found — no flag needed.
+- **Return null** (or a sentinel like -1) when not found; the contract
+  must say which. `null` means "no object here" — calling a method on
+  it throws `NullPointerException`.
+- Test the **not-found** path on purpose. Un-tested contracts rot.
+
+Grid size conventions: many AP grids are **square-ish** or have
+different row/column counts on purpose — `{{1,2,3},{4,5}}` is legal
+(a "ragged" shape, though the exam's grids are usually rectangular).
+Never assume rows and columns are interchangeable: `g[r][c]` and
+`g[c][r]` are different cells, and one of them may not exist.

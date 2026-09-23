@@ -1,0 +1,33 @@
+Cái bẫy String nổi tiếng nhất đề thi:
+
+```java
+String a = "cat";
+String b = new String("cat");
+System.out.println(a == b);        // false! == so sánh tham chiếu
+System.out.println(a.equals(b));   // true  — so sánh nội dung
+```
+
+`==` hỏi "cùng một đối tượng?"; `.equals` hỏi "cùng các ký tự?". **Luôn dùng
+`.equals` cho nội dung String.** (`compareTo` trả về 0 chính xác khi equals
+đúng — nó còn cho biết *thứ tự*, điều `==`/`equals` không làm được.)
+
+**Ba mẫu duyệt** — thuộc cả ba, đề thi xoay vòng qua chúng:
+
+```java
+// 1. theo chỉ số (khi cần vị trí)
+for (int i = 0; i < s.length(); i++) {
+    char c = s.charAt(i);
+}
+
+// 2. bước theo substring (khi cần các mảnh liền kề)
+for (int i = 0; i + 1 < s.length(); i++) {
+    String pair = s.substring(i, i + 2);
+}
+
+// 3. quét đầu-cuối với thoát sớm
+int pos = s.indexOf('x');
+if (pos != -1) { /* tìm thấy */ }
+```
+
+Nối chuỗi tạo chuỗi mới: `"ab" + "cd"`, `s + 42`, `42 + s` đều được — số tự
+động chuyển thành văn bản.

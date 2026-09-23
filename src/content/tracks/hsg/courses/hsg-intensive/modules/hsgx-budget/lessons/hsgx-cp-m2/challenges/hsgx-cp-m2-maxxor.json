@@ -1,0 +1,31 @@
+{
+  "id": "hsgx-cp-m2-maxxor",
+  "title": "Maximum Subset XOR",
+  "prompt": "**Bài toán.** Given n non-negative integers, print the maximum XOR over\nall non-empty subsets.\n\n**Constraints:** 1 ≤ n ≤ 20; 0 ≤ a[i] ≤ 10^9.\n\n**Hint:** compute the budget first. 2^20 = 1 048 576 — the brute force fits\nwith three orders of magnitude of margin.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "single",
+      "code": "std::istringstream in(\"1\\n7\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"7\\n\"));",
+      "hint": "One element: the subset {7}."
+    },
+    {
+      "name": "pair",
+      "code": "std::istringstream in(\"2\\n4 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"5\\n\"));",
+      "hint": "4^5=1, so best is max(4,5,1)=5."
+    },
+    {
+      "name": "greedy trap",
+      "code": "std::istringstream in(\"3\\n8 13 6\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"14\\n\"));",
+      "hint": "Greedy: keeps 13, then rejects 8 (13^8=5), then takes 6 (13^6=11) → 11. Brute force finds 8^6=14. Verified discriminator."
+    },
+    {
+      "name": "n=20 full",
+      "code": "std::istringstream in(\"20\\n654435761\\n308871522\\n963307283\\n617743044\\n272178805\\n926614566\\n581050327\\n235486088\\n889921849\\n544357610\\n198793371\\n853229132\\n507664893\\n162100654\\n816536415\\n470972176\\n125407937\\n779843698\\n434279459\\n88715220\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"1073479093\\n\"));",
+      "hint": "n=20: greedy returns 1041462738 (fails); brute force returns 1073479093 — verified by exhaustive 2^20 enumeration in Python."
+    }
+  ],
+  "level": "combination"
+}

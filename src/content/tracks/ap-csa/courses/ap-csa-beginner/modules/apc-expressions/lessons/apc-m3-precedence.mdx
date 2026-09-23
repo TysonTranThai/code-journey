@@ -1,0 +1,25 @@
+**Compound assignment**: `x += 5` means `x = x + 5`. Same for `-=`, `*=`,
+`/=` and `%=`. One subtlety: `x += 2.5` compiles even when `x` is an `int`
+(the compound form contains a hidden cast) — but plain `x = x + 2.5` does
+not. Prefer the explicit cast for clarity; know the rule for tracing.
+
+**Operator precedence ladder** (high to low):
+
+1. `++ -- !` (unary)
+2. `* / %`
+3. `+ -`
+4. relational `< > <= >=`
+5. equality `== !=`
+6. `&&`
+7. `||`
+8. assignment `= += -= ...`
+
+Two classics:
+
+```java
+System.out.println(3 < 5 == true);    // true — relational before equality
+boolean ok = 5 > 3 && 2 > 1 || 1 > 2; // (true && true) || false → true
+```
+
+When in doubt (in reading *or* writing), use parentheses. The exam expects
+you to evaluate by the ladder, but human readers thank you for clarity.

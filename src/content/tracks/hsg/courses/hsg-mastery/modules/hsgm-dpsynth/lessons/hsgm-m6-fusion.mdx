@@ -1,0 +1,29 @@
+# DP + Structure Fusion
+
+Naive transition: `dp[i] = min over j < i of (dp[j] + cost(i, j))` — O(n²).
+When n = 200000, that is dead. The fusion question: **can cost(i, j) be
+split so the best j is answerable by a structure?**
+
+## The three classic splits
+
+- **Additive:** cost = dp[j] + f(i) + g(j) → maintain prefix min of
+  (dp[j] + g(j)). O(1) per transition.
+- **Windowed:** only j in [i−k, i] matter → sliding-window minimum
+  (monotonic deque). O(n) total.
+- **Thresholded:** j must satisfy value(j) ≤ x(i) → Fenwick/segment tree
+  over value-space holding min dp[j], query prefix. O(log n) per
+  transition.
+
+## Recognizing fusable transitions
+
+Write the naive transition. Underline the parts that depend only on i,
+only on j, and on both. If the "both" part is separable (additive,
+min-idempotent, or orderable), a structure exists. If it is genuinely
+entangled (j interacts with i non-additively), fusion is impossible — the
+state is wrong or the problem needs something else.
+
+## The discipline
+
+Fusion does not change the DP's *meaning* — only who computes the min.
+Prove the transition first on paper with the loop, then fuse. Fusing an
+unproven transition optimizes the wrong recurrence.

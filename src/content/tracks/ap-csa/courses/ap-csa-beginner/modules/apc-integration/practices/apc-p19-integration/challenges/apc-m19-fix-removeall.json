@@ -1,0 +1,16 @@
+{
+  "id": "apc-m19-fix-removeall",
+  "title": "Debug: the skipping remover",
+  "prompt": "`removeAll(list, value)` should remove EVERY occurrence of value, but the forward loop skips the element right after each removal (\"aab\" removing 'a' leaves one 'a'). Fix it — the signature stays.",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "import java.util.*;\n\npublic class Solution {\n    // Postcondition: removes every occurrence of value from list\n    public static void removeAll(ArrayList<Integer> list, int value) {\n        // BUG: original flaw kept — forward removal skips the element\n        // after each removed one\n        for (int i = 0; i < list.size(); i++) {\n            if (list.get(i).intValue() == value) {\n                list.remove(i);\n            }\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "no skips",
+      "code": "\njava.util.ArrayList<Integer> list = new java.util.ArrayList<Integer>();\nlist.add(3); list.add(3); list.add(7); list.add(3); list.add(3);\nSolution.removeAll(list, 3);\nCjTestBase.checkEq(list, java.util.List.of(7), \"all 3s gone, 7 stays\");\njava.util.ArrayList<Integer> none = new java.util.ArrayList<Integer>();\nnone.add(1);\nSolution.removeAll(none, 9);\nCjTestBase.checkEq(none, java.util.List.of(1), \"no-op keeps list\");\n",
+      "hint": "iterate BACKWARDS (from size()-1 down to 0), or don't advance i after a removal."
+    }
+  ],
+  "level": "debugging"
+}

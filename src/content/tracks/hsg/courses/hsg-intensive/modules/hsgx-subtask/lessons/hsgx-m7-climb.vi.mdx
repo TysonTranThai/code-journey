@@ -1,0 +1,34 @@
+# Chiến trình leo: Brute → Tốt hơn → Tốt nhất
+
+Với một bài có thang điểm tường minh, quy trình chuyên nghiệp không phải
+"nghĩ về lời giải đầy đủ". Nó là một *chiến trình leo*:
+
+**Bậc 1 — brute (phút 0–15).** Cài thứ hiển nhiên đúng nhất mà ràng buộc
+subtask-1 cho phép. Test tay trên các ví dụ. Đây không phải thời gian lãng
+phí: nó là oracle cho phần còn lại của bài. Khi lời giải thông minh của bạn
+mâu thuẫn với nó trên một case ngẫu nhiên, bạn vừa tìm ra bug trước Judge.
+
+**Bậc 2 — cải tiến (khi còn thời gian).** Tìm nút thắt của brute — thường là
+một lần quét lặp lại — và diệt nó bằng công cụ nhẹ nhất đủ dùng: prefix sum,
+sắp xếp, một cái set, một lần quét. Đừng with máy móc hạng nặng (segment
+tree, HLD) khi công cụ nhẹ đủ dùng; mỗi bộ phận chuyển động thêm là một bề
+mặt bug.
+
+**Bậc 3 — lời giải đầy đủ.** Bây giờ mới là độ phức tạp theo ý đồ. Và chiến
+trình leo có tính an toàn: nếu bậc 3 không bao giờ chạy được, bậc 1 đã gom
+điểm sẵn.
+
+## Kiểu gãy của việc bỏ bậc thang
+
+Thảm họa HSS kinh điển: tấn công lời giải đầy đủ trước, đúng được 90%, còn
+một bug tinh tế, về không — trong khi bạn cùng lớp với brute 15 phút ăn đúng
+subtask đó. Judge không chấm điểm phong cách. Chiếc thang tồn tại chính để
+nỗ lực một phần đổi được điểm một phần.
+
+## Judge nhìn thấy gì
+
+Mỗi subtask thường là tất-cả-hoặc-không-gì theo nhóm test: một test trong
+nhóm gãy, cả nhóm về 0. Vì thế phần kiểm của module này cố tình khắt khe:
+brute của bạn phải qua mọi test nhỏ, lời giải đầy đủ qua mọi test, và cái
+tắt tham lam "có vẻ đúng" phải gãy một cách minh chứng ở test lớn — để bạn
+học cảm giác tất-cả-hoặc-không-gì trước kỳ thi, không phải trong lúc thi.

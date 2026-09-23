@@ -1,0 +1,53 @@
+# Recognition Signals
+
+Setters hide the topic, but fingerprints survive the disguise.
+
+## Signal 1 — The constraint range
+
+- **n ≤ 20**: exponential intended. 2^n with small constant is fine.
+- **n ≤ 500**: O(n^3) intended (Floyd, assignment DP).
+- **n ≤ 5000**: O(n^2) intended.
+- **n ≤ 10^5 – 2·10^5**: O(n log n) intended — data structures, sorting,
+  Dijkstra with heap.
+- **n ≤ 10^6+**: linear — two pointers, sieve, KMP, prefix sums.
+- **value ≤ 10^9 but n small**: the *values* are not the state; maybe the
+  answer is binary-searchable, or compress coordinates.
+- **N ≤ 10^18**: log-scale — digit DP, binary search, matrix power.
+
+## Signal 2 — The update/query pattern
+
+- **interleaved updates + range queries**: segment tree family.
+- **only prefix queries after building**: prefix sums, no tree needed.
+- **edge additions, connectivity queries, no deletions**: DSU. (Deletions?
+  DSU breaks — think offline reverse-time or link-cut trees.)
+- **(l, r, k) style queries**: offline + Fenwick over values, or merge sort
+  tree / wavelet tree if forced online.
+- **min over all pairs / nearest**: sort + sweep, or binary search on answer.
+
+## Signal 3 — Structure words and their translations
+
+- "minimum time so that all ..." → binary search on the answer, then a
+  feasibility check (greedy or graph search).
+- "count the number of ways" → DP almost surely; find the *order* that makes
+  subproblems independent.
+- "choose a subset such that ..." with n ≤ 30 → meet in the middle.
+- "for each i, the nearest j > i with ..." → monotonic stack or set descent.
+- "game, two players, optimal play" → game theory: symmetric positions, XOR
+  of Grundy numbers.
+- "guaranteed the graph is a DAG" → topological DP.
+- "tree, queries on paths" → LCA; path *updates* → HLD.
+
+## How distractors work (and why drills use them)
+
+Multiple-choice drills here are not a quiz format — they train *elimination*.
+The tempting wrong option is always the one that matches the story but not
+the constraint: prefix sums when updates are interleaved; BFS when weights
+exist; greedy when the exchange argument fails. In the exam the distractors
+are your own first ideas — eliminating them fast is the skill.
+
+## Exercise before the drill set
+
+Take any problem you solved last month. Write its shape in one line, the
+constraint budget, and the family you used. Then write the *second* family
+you considered and why it lost. Recognition is exactly this comparison,
+executed in seconds.

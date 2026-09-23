@@ -1,0 +1,43 @@
+# Năm cặp kinh điển
+
+## 1. Tìm kiếm nhị phân + greedy (họ đáp-án-đơn-điệu)
+
+Giao diện: `feasible(x)` — một greedy kiểm tra mục tiêu x có đạt được không.
+Chi phí: O(check · log(range)). Bẫy: greedy kiểm tra phải được chứng minh
+*tối ưu* với x cố định — "lấy-first-fit" chỉ hợp lệ khi phần tử xử lý theo
+thứ tự cố định và greedy được lập luận đổi chỗ.
+
+## 2. Nén tọa độ + Fenwick (thu nhỏ miền)
+
+Giao diện: mảng hạng đã nén. Chi phí: O(n log n) một lần, rồi O(log n) mỗi
+thao tác. Xuất hiện dưới dạng: đếm nghịch thế, đếm cặp theo điều kiện giá
+trị, "có bao nhiêu phần tử trước đó ≤ x" trực tuyến. Bẫy: nén cả *truy vấn*
+nếu chúng đến offline và tham chiếu giá trị không có trong mảng.
+
+## 3. DSU theo thời gian (liên thông có đồng hồ)
+
+Giao diện: sự kiện đã sắp theo thời gian; các union của DSU không thể đảo
+ngược, nên xử lý thời gian xuôi và trả lời các truy vấn cũng đi xuôi (hoặc
+đảo thời gian cho phép xóa). Chi phí: gần tuyến tính. Xuất hiện: "sau mỗi
+con đường mới, có bao nhiêu tỉnh", "thời điểm sớm nhất đồ thị liên thông".
+Bẫy: truy vấn xen kẽ với union phải được trả lời trong cùng một lượt — sort
+truy vấn theo thời gian và two-pointer danh sách union.
+
+## 4. Dijkstra / BFS trên đồ thị trạng thái (tìm kiếm với đỉnh giàu hơn)
+
+Giao diện: trạng thái = (vị trí, chiều phụ). Chi phí: O(số trạng thái · log)
+— bạn phải tính rõ số trạng thái: lưới 1000×1000 × 2 tính chẵn lẻ = 2·10^6
+trạng thái, ổn; × 10^6 mức xăng = chết. Xuất hiện: đường đi ngắn nhất với
+ràng buộc chẵn lẻ, chìa khóa và cửa, xăng giới hạn.
+
+## 5. SCC + DP trên DAG (chu trình trước, thứ tự sau)
+
+Giao diện: đồ thị cô đặc — mỗi SCC thu thành một đỉnh với trọng số gộp.
+Chi phí: Tarjan/Kosaraju O(n + m), rồi DP O(n' + m'). Xuất hiện: "tối đa số
+xu thu được với đường một chiều, có chu trình nhưng vô nghĩa bên trong một
+thành phần ngoài việc gộp tổng của nó". Bẫy: DP phải theo thứ tự tô-pô của
+*đồ thị cô đặc*, không phải đồ thị gốc.
+
+Mỗi cặp có một câu nhận diện hai dòng. Nếu cốt truyện khớp một câu, hãy viết
+giao diện (vị từ, mảng hạng, định nghĩa trạng thái, đồ thị cô đặc) *trước*
+khi cài bất kỳ nửa nào.

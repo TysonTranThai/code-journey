@@ -1,0 +1,28 @@
+**State machines over objects** — the second integrated pattern: an
+object's methods change its state, and later calls *read* that state.
+
+```java
+public static class Register {
+    private int cents;
+
+    public Register() { cents = 0; }
+
+    public void add(int c) { cents += c; }
+
+    public boolean spend(int c) {
+        if (c > cents) { return false; }
+        cents -= c;
+        return true;
+    }
+
+    public int balance() { return cents; }
+}
+```
+
+Trace questions ask: after this SEQUENCE of calls, what is the state?
+The discipline is literal — a two-column trace table, one row per
+call, updating every field. Sequence matters: `spend(500)` before any
+`add` fails; after enough adds it succeeds. Method order is content.
+
+The exam's object-tracing items ("What is the value of...") are all
+this pattern with different nouns. Trace, don't guess.

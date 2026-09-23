@@ -1,0 +1,36 @@
+Aggregation over a grid is the same accumulator pattern from 1D arrays,
+applied per-row, per-column, or over everything:
+
+```java
+// row sums: one answer per row
+public static int[] rowSums(int[][] g) {
+    int[] sums = new int[g.length];
+    for (int r = 0; r < g.length; r++) {
+        int s = 0;                       // reset PER ROW — inside loop 1
+        for (int c = 0; c < g[0].length; c++) {
+            s += g[r][c];
+        }
+        sums[r] = s;
+    }
+    return sums;
+}
+```
+
+Two placement bugs that cause half the wrong answers:
+
+- Accumulator declared **outside** the row loop: sums accumulate down
+  the whole grid (running total instead of per-row totals).
+- Reset placed inside the **column** loop: every accumulator dies after
+  one column.
+
+Column traversal just swaps which loop is outside:
+
+```java
+for (int c = 0; c < g[0].length; c++) {      // columns outside
+    for (int r = 0; r < g.length; r++) {
+        // g[r][c] walks DOWN column c
+    }
+}
+```
+
+Both loops stay; only their bounds and index order swap.

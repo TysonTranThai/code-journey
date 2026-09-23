@@ -1,0 +1,39 @@
+A **class** is a blueprint; an **object** is a thing built from it. The
+blueprint declares **fields** (what it knows) and **methods** (what it does):
+
+```java
+public class Book {
+    private String title;
+    private int pages;
+
+    public Book(String t, int p) {     // constructor
+        title = t;
+        pages = p;
+    }
+
+    public String getTitle() {         // accessor (getter)
+        return title;
+    }
+
+    public boolean isLong() {          // behavior
+        return pages > 300;
+    }
+}
+```
+
+`new Book("Dune", 412)` builds one object: allocates it, runs the
+constructor, returns a **reference** to it. Store the reference in a
+variable:
+
+```java
+Book b = new Book("Dune", 412);
+b.getTitle()      // "Dune"
+b.isLong()        // true
+```
+
+The dot reaches *into* the object: `b.title` would work in the same class,
+but from outside, `title` is `private` — unreachable. That is
+**encapsulation**: state is private, access goes through methods.
+
+`this` names the current object. When a parameter shadows a field, `this.`
+disambiguates: `this.title = title;`

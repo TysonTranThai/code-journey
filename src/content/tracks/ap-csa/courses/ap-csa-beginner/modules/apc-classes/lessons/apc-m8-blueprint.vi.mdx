@@ -1,0 +1,39 @@
+**Lớp** là bản thiết kế; **đối tượng** là vật được dựng từ nó. Bản thiết kế
+khai báo **trường dữ liệu** (nó biết gì) và **phương thức** (nó làm gì):
+
+```java
+public class Book {
+    private String title;
+    private int pages;
+
+    public Book(String t, int p) {     // constructor
+        title = t;
+        pages = p;
+    }
+
+    public String getTitle() {         // accessor (getter)
+        return title;
+    }
+
+    public boolean isLong() {          // hành vi
+        return pages > 300;
+    }
+}
+```
+
+`new Book("Dune", 412)` dựng một đối tượng: cấp phát, chạy constructor, trả
+về một **tham chiếu** tới nó. Lưu tham chiếu vào biến:
+
+```java
+Book b = new Book("Dune", 412);
+b.getTitle()      // "Dune"
+b.isLong()        // true
+```
+
+Dấu chấm với tới *bên trong* đối tượng: `b.title` được phép trong cùng lớp,
+nhưng từ bên ngoài `title` là `private` — không với tới được. Đó là
+**đóng gói (encapsulation)**: trạng thái riêng tư, truy cập đi qua phương
+thức.
+
+`this` gọi tên đối tượng hiện tại. Khi tham số che khuất trường, `this.`
+gỡ nhầm lẫn: `this.title = title;`

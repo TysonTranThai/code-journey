@@ -1,0 +1,22 @@
+Mọi lỗi Java thuộc một trong ba lớp, và mỗi lớp có chiến lược sửa khác
+nhau:
+
+- **Lỗi biên dịch** — trình biên dịch từ chối mã nguồn: thiếu chấm
+  phẩy, sai kiểu, tên không tồn tại. Chẳng gì chạy được. Đọc thông
+  báo: nó nêu tên tệp, dòng, và những gì nó mong đợi.
+- **Lỗi runtime (ngoại lệ)** — biên dịch xong, chết giữa đường:
+  `ArithmeticException` (chia nguyên cho 0),
+  `ArrayIndexOutOfBoundsException`, `NullPointerException`. Stack trace
+  nêu dòng gây ném.
+- **Lỗi logic** — biên dịch được, chạy được, ra đáp án sai. Không bao
+  giờ có thông báo. Chỉ **kiểm thử** tìm ra được, nên đây là lớp nguy
+  hiểm nhất.
+
+```java
+int avg = total / n;      // biên dịch được; ném ngoại lệ nếu n == 0;
+                          // sai lặng lẽ nếu total hoặc n sai
+```
+
+Các câu "mã không biên dịch được" của đề thuộc lớp biên dịch; các câu
+"kết quả in là gì" là câu truy vết giữ bạn khỏi lỗi logic của chính
+bạn. Phân loại trước, gỡ sau — lớp lỗi chỉ cho bạn chỗ cần nhìn.

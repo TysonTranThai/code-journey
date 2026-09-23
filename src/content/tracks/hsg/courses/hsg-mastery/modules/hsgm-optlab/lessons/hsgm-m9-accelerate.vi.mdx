@@ -1,0 +1,34 @@
+# Danh mục tăng tốc
+
+Bốn phép tăng tốc cứu phần áp đảo các TLE:
+
+## 1. Tiền tố (tổng hợp tĩnh)
+
+Cộng lại các đoạn → tính sẵn tổng/min/max tiền tố một lần: dựng O(n),
+mỗi truy vấn O(1). Dùng được khi mảng **tĩnh** giữa các truy vấn.
+
+## 2. Deque đơn điệu (cực trị cửa sổ)
+
+Quét lại O(k) mỗi bước → deque giữ các chỉ số ứng viên với giá trị đơn điệu:
+khấu trừ O(1) mỗi bước, tổng O(n). Dùng cho min/max cửa sổ trượt, và nuôi
+phép ghép DP-cửa-sổ của module DP.
+
+## 3. Fenwick / segment tree (tổng hợp động)
+
+Các đoạn **thay đổi** giữa các truy vấn → cập nhật điểm, tổng hợp tiền tố
+trong O(log n), hoặc tổng hợp đoạn đầy đủ với segment tree. Chi phí của
+tính động là cái log.
+
+## 4. Chặt nhị phân đáp án (khả thi đơn điệu)
+
+"x nhỏ nhất sao cho feasible(x)" → nếu feasible đơn điệu theo x, chặt
+nhị phân x và kiểm tra greedy: O(log miền × kiểm tra). Mẹo nằm ở chứng
+minh tính đơn điệu — đúng kỹ năng khám phá nhận xét của module trước.
+
+## Kỷ luật khớp
+
+Mỗi tăng tốc có mẫu kích hoạt riêng: tổng cộng lại (tiền tố), cực trị cửa
+sổ (deque), đoạn đổi (Fenwick/ST), khả thi đơn điệu (chặt nhị phân).
+Khớp sai — ví dụ segment tree nơi một mảng tiền tố đủ dùng — không sai,
+nhưng là code nặng hơn với nhiều bề mặt bug hơn. Chọn cấu trúc yếu nhất
+vừa đủ, lần nữa.

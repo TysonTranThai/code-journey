@@ -1,0 +1,16 @@
+{
+  "id": "hsgx-p6-s2-removeone",
+  "title": "Stress: Delete-One Checker",
+  "prompt": "**Bài toán.** Implement (and stress-test) the predicate: can at most one\nelement be deleted from the array so it becomes non-decreasing? Candidate:\na linear scan; oracle: try deleting every index. 4000 trials, seed 777,\nheavy ties (values 0–4).\n\n**A plausible candidate is provided — it counts violations and assumes ≤ 1\nviolation is fixable. Your differential loop must catch it.** Fix the\ncandidate (delete the correct side; re-check).\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "harness run",
+      "code": "std::istringstream in(\"1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"OK 4000\\n\"));",
+      "hint": "The fixed candidate passes; the violation-counter fails on cases like [3,3,2,2] (one violation, not fixable by one delete... actually fixable? verify via oracle) or [2,3,1,1]."
+    }
+  ],
+  "level": "debugging"
+}

@@ -1,0 +1,43 @@
+# How Partial Scoring Actually Works
+
+An HSG problem is rarely pass/fail. The statement hides a ladder:
+
+- **Subtask 1 (small n):** the constraints are so weak that anything correct works.
+- **Subtask 2 (medium n):** a polynomial improvement is required.
+- **Subtask 3 (full n):** the intended complexity, often n log n or better.
+
+The ladder is a *gift*: it tells you, before you think at all, what complexity
+the full solution needs. n ≤ 20 whispers bitmask or exponential-with-pruning;
+n ≤ 2000 allows O(n²); n ≤ 2·10⁵ demands O(n log n). **Constraints are the
+problem statement's own hints about its solution.**
+
+## The banking strategy
+
+The contest-optimal opening move is the same in every strong competitor's
+playbook: **read all problems, bank the guaranteed subtask, then climb.**
+
+1. Solve subtask 1 of every problem with a slow-but-obviously-correct brute
+   force. This is *floor insurance*: even if your clever ideas all fail, the
+   floor is banked.
+2. Only then attack the full solution of the problem you understand best.
+3. Near the end, convert remaining time into either (a) a better complexity
+   on your strongest problem, or (b) one more subtask somewhere.
+
+Why this ordering wins: partial points are *concave*. The first 40 points of
+a problem cost 15 minutes; the last 20 often cost an hour of subtle insight.
+Banking floors everywhere first maximizes total score per minute spent.
+
+## Reading the ladder
+
+When you see subtasks, extract three facts immediately:
+
+- **The brute-force subtask's bound** — write that brute force *first*, it is
+  nearly free points and doubles as your stress-test oracle later.
+- **The full bound** — compute the complexity budget: for n = 2·10⁵ you have
+  roughly 10⁸ simple operations; anything asymptotically worse must go.
+- **The gap between subtasks** — a jump from n ≤ 5000 to n ≤ 2·10⁵ screams
+  "the O(n²) is the *intended trap*; find the n log n."
+
+In this module's problems you will do exactly this: pass subtask 1 with the
+brute force (verified for real), then the full solution (also verified), and
+watch the shortcut that skips the brute force fail its big test.

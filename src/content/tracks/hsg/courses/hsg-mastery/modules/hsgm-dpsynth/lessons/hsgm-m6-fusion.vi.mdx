@@ -1,0 +1,28 @@
+# Ghép DP + cấu trúc
+
+Chuyển tiếp naive: `dp[i] = min qua j < i của (dp[j] + cost(i, j))` — O(n²).
+Khi n = 200000, điều đó là chết. Câu hỏi ghép: **cost(i, j) tách được để
+j tốt nhất trả lời được bởi một cấu trúc không?**
+
+## Ba phép tách kinh điển
+
+- **Cộng tính:** cost = dp[j] + f(i) + g(j) → giữ tiền tố min của
+  (dp[j] + g(j)). O(1) mỗi chuyển tiếp.
+- **Cửa sổ:** chỉ j trong [i−k, i] quan trọng → min cửa sổ trượt
+  (deque đơn điệu). O(n) tổng.
+- **Ngưỡng:** j phải thỏa value(j) ≤ x(i) → Fenwick/segment tree trên
+  không gian giá trị giữ min dp[j], hỏi tiền tố. O(log n) mỗi chuyển tiếp.
+
+## Nhận diện chuyển tiếp ghép được
+
+Viết chuyển tiếp naive. Gạch chân phần chỉ phụ thuộc i, phần chỉ phụ thuộc
+j, và phần phụ thuộc cả hai. Nếu phần "cả hai" tách được (cộng tính,
+min-idempotent, hoặc sắp được thứ tự), một cấu trúc tồn tại. Nếu nó thực
+sự rối (j tương tác với i phi cộng tính), ghép là bất khả — trạng thái sai
+hoặc bài cần thứ khác.
+
+## Kỷ luật
+
+Ghép không đổi *ý nghĩa* của DP — chỉ đổi ai tính phép min. Chứng minh
+chuyển tiếp trên giấy với vòng lặp trước, rồi ghép. Ghép một chuyển tiếp
+chưa chứng minh là tối ưu hóa một truy hồi sai.

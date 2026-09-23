@@ -1,0 +1,41 @@
+`if` runs a block only when its boolean is true; `else` is the other road.
+
+```java
+if (score >= 60) {
+    System.out.println("pass");
+} else {
+    System.out.println("fail");
+}
+```
+
+**else-if chains** test in order and stop at the first true branch:
+
+```java
+if (score >= 90) {
+    grade = 'A';
+} else if (score >= 80) {
+    grade = 'B';
+} else if (score >= 70) {
+    grade = 'C';
+} else {
+    grade = 'F';
+}
+```
+
+Order is everything: with `score = 95`, the first branch fires and the rest
+are skipped. If you tested `score >= 70` first, every score 70+ would get
+'C' — a classic ordering bug.
+
+**Boundaries.** `>=` vs `>` decides who owns the edge. Decide deliberately:
+does 90 earn an A? Then `score >= 90`, not `> 90`. When the chain ends with
+`else`, one branch always runs; without it, maybe none do.
+
+Braces are optional for a single statement — but the AP exam loves to ask
+what happens when a brace-less `if` meets a dangling `else`. Trace the
+*indentation is a lie* case:
+
+```java
+if (x > 10)
+    System.out.println("big");
+    System.out.println("done");   // NOT inside the if — always runs!
+```

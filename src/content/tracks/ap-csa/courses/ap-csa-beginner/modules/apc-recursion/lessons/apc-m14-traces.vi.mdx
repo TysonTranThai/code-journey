@@ -1,0 +1,27 @@
+Thể loại "cái này in ra gì", giải mã:
+
+```java
+public static void puzzle(int n) {
+    if (n <= 0) {
+        return;
+    }
+    System.out.print(n + " ");
+    puzzle(n - 2);
+    System.out.print(n + " ");
+}
+```
+
+`puzzle(5)` in `5 3 1 3 5` — trước lời gọi là phần đi xuống, sau lời gọi là
+phần đi lên. Số lượt in: 2 cho mỗi lần gọi sống sót qua phép kiểm tra cơ sở
+(3 lần gọi → 6 lượt in).
+
+Các luật tư duy:
+
+- **Mã trước lời gọi đệ quy** chạy từ trên xuống (thứ tự đi xuống).
+- **Mã sau lời gọi đệ quy** chạy từ dưới lên (thứ tự đi lên).
+- **Tổng số lần gọi** = mọi lần gọi, kể cả khi chạm trường hợp cơ sở.
+- **Thiếu trường hợp cơ sở** hoặc nhánh không thể chạm tới nó →
+  StackOverflowError, không bao giờ "chạy mãi" nhìn thấy được.
+
+Cũng cần biết: đệ quy luôn thay được bằng vòng lặp, nhưng đề thi muốn bạn
+*đọc* đệ quy của họ, không phải viết lại.

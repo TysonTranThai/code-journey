@@ -1,0 +1,27 @@
+# The Order Is the Algorithm
+
+Once you see `best[v] = f(best of v's predecessors)`, the graph problem
+becomes a DP problem — but only if you can process nodes in an order where
+every predecessor comes first. That order **is** the algorithm:
+
+- **DAG** → topological sort, then one linear sweep. O(V + E).
+- **General graph, reachability/counting** → DSU merges components offline,
+  or SCC contraction, then DP on the condensed graph.
+- **Tree** → the traversal order (post-order for upward DP, pre-order for
+  downward) plays the topo role.
+
+## The misread that costs a medal
+
+The classic stumble: treating an arbitrary graph as a DAG. If cycles
+exist, "longest path" is not just hard — it is undefined (infinite) for
+the reachability version, and NP-hard for the simple-path version.
+Before running topo DP, ask: **is acyclicity actually given, or derived?**
+Deriving it (e.g., events ordered by time, states decreasing by a measure)
+is itself the key observation of many problems.
+
+## Two-pointer on graphs?
+
+When edge weights are 0/1, 0-1 BFS replaces Dijkstra; when all weights
+are equal, plain BFS is optimal. Recognizing the *weakest* tool that
+still works is the mastery skill — heavyweight tools invite heavyweight
+bugs.

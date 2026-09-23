@@ -1,0 +1,52 @@
+# Tín hiệu nhận diện
+
+Người ra đề giấu chủ đề, nhưng dấu vân tay vẫn còn.
+
+## Tín hiệu 1 — Dải giới hạn
+
+- **n ≤ 20**: chủ đích là mũ. 2^n với hằng số nhỏ là đủ.
+- **n ≤ 500**: chủ đích O(n^3) (Floyd, DP phân công).
+- **n ≤ 5000**: chủ đích O(n^2).
+- **n ≤ 10^5 – 2·10^5**: chủ đích O(n log n) — cấu trúc dữ liệu, sắp xếp,
+  Dijkstra với heap.
+- **n ≤ 10^6+**: tuyến tính — two pointers, sàng, KMP, tổng tiền tố.
+- **giá trị ≤ 10^9 nhưng n nhỏ**: *giá trị* không phải trạng thái; có thể
+  đáp án đơn điệu để tìm kiếm nhị phân, hoặc nén tọa độ.
+- **N ≤ 10^18**: thang log — digit DP, tìm kiếm nhị phân, lũy thừa ma trận.
+
+## Tín hiệu 2 — Mẫu cập nhật/truy vấn
+
+- **cập nhật + truy vấn đoạn xen kẽ**: họ segment tree.
+- **chỉ truy vấn tiền tố sau khi dựng**: tổng tiền tố, không cần cây.
+- **thêm cạnh + truy vấn liên thông, không xóa**: DSU. (Có xóa? DSU gãy —
+  nghĩ offline đảo thời gian hoặc link-cut tree.)
+- **truy vấn dạng (l, r, k)**: offline + Fenwick trên giá trị, hoặc merge
+  sort tree / wavelet tree nếu bắt buộc trực tuyến.
+- **min trên mọi cặp / gần nhất**: sort + quét, hoặc tìm kiếm nhị phân đáp án.
+
+## Tín hiệu 3 — Từ khóa cấu trúc và bản dịch
+
+- "thời gian nhỏ nhất để tất cả ..." → tìm kiếm nhị phân đáp án, rồi kiểm tra
+  khả thi (greedy hoặc duyệt đồ thị).
+- "đếm số cách" → gần như chắc chắn DP; tìm *thứ tự* khiến bài con độc lập.
+- "chọn tập con sao cho ..." với n ≤ 30 → meet in the middle.
+- "với mỗi i, j gần nhất > i sao cho ..." → stack đơn điệu hoặc set descent.
+- "trò chơi, hai người, chơi tối ưu" → lý thuyết trò chơi: vị trí đối xứng,
+  XOR các số Grundy.
+- "đảm bảo đồ thị là DAG" → DP trên thứ tự tô-pô.
+- "cây, truy vấn trên đường đi" → LCA; *cập nhật* đường đi → HLD.
+
+## Phương án gây nhiễu hoạt động thế nào (vì sao drill dùng nó)
+
+Drill trắc nghiệm ở đây không phải dạng kiểm tra — nó luyện *loại trừ*.
+Phương án sai gây nhiễu luôn là cái khớp cốt truyện nhưng không khớp giới
+hạn: tổng tiền tố khi cập nhật xen kẽ; BFS khi có trọng số; greedy khi lập
+luận đổi chỗ thất bại. Trong phòng thi, phương án nhiễu chính là ý đầu tiên
+của bạn — loại nhanh chúng là kỹ năng cần luyện.
+
+## Bài tập trước bộ drill
+
+Lấy một bài bạn đã giải tháng trước. Viết dạng bài trong một dòng, ngân sách
+giới hạn, và họ thuật toán bạn dùng. Sau đó viết *họ thứ hai* bạn từng cân
+nhắc và vì sao nó thua. Nhận diện chính là phép so sánh này, thực hiện trong
+vài giây.

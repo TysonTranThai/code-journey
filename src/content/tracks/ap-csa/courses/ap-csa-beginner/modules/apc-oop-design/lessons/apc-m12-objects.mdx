@@ -1,0 +1,49 @@
+A class can own *objects of classes you wrote*. A tiny `Timer` inside a
+`Stopwatch`:
+
+```java
+public class Stopwatch {
+    private int minutes;
+    private int seconds;
+
+    public Stopwatch() {
+        minutes = 0;
+        seconds = 0;
+    }
+
+    public void tick() {              // one second passes
+        seconds++;
+        if (seconds >= 60) {
+            seconds = 0;
+            minutes++;
+        }
+    }
+
+    public String toString() {        // AP-style format: M:SS
+        return minutes + ":" + String.format("%02d", seconds);
+    }
+}
+```
+
+Two conventions the exam relies on:
+
+- **`toString()`** — every class can define it; concatenation
+  (`"" + stopwatch`) calls it automatically. AP FRQ answers frequently end
+  with building a `String` and returning it.
+- **Constructors calling constructors** — `this(...)` as the first
+  statement delegates; overloads stay DRY:
+
+```java
+public Point(int x, int y) {
+    this.x = x;
+    this.y = y;
+}
+
+public Point() {
+    this(0, 0);       // reuse the main constructor
+}
+```
+
+**State transitions** are the heart of trace questions: after
+`t.tick(); t.tick(); t.tick();` from 0:59, the state is 1:02 — the carry
+(`seconds >= 60`) is where students lose points by ticking only one field.

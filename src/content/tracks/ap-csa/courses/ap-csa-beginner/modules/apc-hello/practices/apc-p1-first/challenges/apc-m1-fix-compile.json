@@ -1,0 +1,16 @@
+{
+  "id": "apc-m1-fix-compile",
+  "title": "Repair the broken program",
+  "prompt": "The program has TWO compile-time errors: a missing semicolon and a misspelled `System` (Java is case-sensitive). Fix it so it prints:\n\n```\nReady\nset\n```",
+  "difficulty": "beginner",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"Ready\")\n        system.out.println(\"set\");\n    }\n}\n",
+  "tests": [
+    {
+      "name": "prints after repair",
+      "code": "\nString out = CjTestBase.capture(() -> Solution.main(new String[0]));\nList<String> lines = out.lines().map(String::trim).toList();\nCjTestBase.checkEq(lines, List.of(\"Ready\", \"set\"), \"exact two lines\");\n",
+      "hint": "Every statement needs ; and System is capitalized."
+    }
+  ],
+  "level": "debugging"
+}

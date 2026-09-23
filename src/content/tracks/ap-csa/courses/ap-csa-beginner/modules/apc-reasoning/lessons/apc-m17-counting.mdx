@@ -1,0 +1,23 @@
+Counting iterations exactly — the trace skill applied to loops:
+
+```java
+int total = 0;
+for (int i = 0; i < n; i++) {
+    for (int j = i + 1; j < n; j++) {
+        total++;            // how many times?
+    }
+}
+```
+
+The inner loop depends on the outer one: for `i = 0` it runs `n-1`
+times, `i = 1` → `n-2`, ..., total `n(n-1)/2` — still O(n²), but
+**half** the work. Two loops over the same n in sequence is `n + n =
+2n` — linear. Two loops **nested** is `n * n`. The shape of the
+nesting decides the class, not the number of loops.
+
+The other counting traps:
+
+- `j < n` vs `j <= n` — one iteration difference, one test difference.
+- Inner bound `j < i` vs `j < n` — triangle vs square.
+- Loop variables mutated **inside** the body — the iteration count
+  changes; trace it, don't pattern-match.

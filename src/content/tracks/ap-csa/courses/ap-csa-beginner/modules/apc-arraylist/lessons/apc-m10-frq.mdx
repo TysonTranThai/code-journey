@@ -1,0 +1,45 @@
+FRQ **Question 3 (Data Analysis with ArrayList)** provides a class and asks
+you to write one method. The recurring algorithm shapes:
+
+**Filter into a new list** (no mutation of the source):
+
+```java
+public static ArrayList<String> longWords(ArrayList<String> words) {
+    ArrayList<String> out = new ArrayList<String>();
+    for (String w : words) {
+        if (w.length() >= 5) {
+            out.add(w);
+        }
+    }
+    return out;
+}
+```
+
+**Aggregate:**
+
+```java
+public static int totalLetters(ArrayList<String> words) {
+    int total = 0;
+    for (String w : words) {
+        total += w.length();
+    }
+    return total;
+}
+```
+
+**Conditional removal** — the backwards walk:
+
+```java
+public static void removeShort(ArrayList<String> words) {
+    for (int i = words.size() - 1; i >= 0; i--) {
+        if (words.get(i).length() < 3) {
+            words.remove(i);
+        }
+    }
+}
+```
+
+**Find max/count by property** mixes M9's patterns with `.get(i)` syntax.
+One more spec-reading note: FRQ specs say things like "the list contains at
+least one element" — that is your license to seed `best = list.get(0)`
+without an empty-list branch.

@@ -1,0 +1,30 @@
+# Thu hoạch mà không phá
+
+Lời giải điểm-một-phần chuyên nghiệp là **một chương trình nhiều tầng**:
+
+```text
+đọc n, các giá trị
+if (n <= 20)      → chạy brute force, in, thoát
+if (n <= 2000)    → chạy O(n²), in, thoát
+chạy lời giải đầy đủ
+```
+
+Mỗi tầng kiểm thử độc lập; bug ở lời giải đầy đủ không thể phá điểm n ≤ 20
+nếu tầng đó thoát trước khi nhánh nặng chạy.
+
+## Kỷ luật tầng
+
+- **Thứ tự tầng = thứ tự dải.** Gửi và xác minh tầng dễ nhất trước.
+- **Phân tích input dùng chung.** Đọc hết một lần, đúng; đa số bug tầng
+  thực ra là bug đọc input (tầng chưa bao giờ thấy input thật).
+- **Luật nâng cấp.** Khi thêm tầng k+1, chạy lại test của tầng k. Lỗi thi
+  đắt giá nhất là một lần refactor âm thầm phá điểm chắc chắn.
+- **Thang dự phòng.** Nếu lời giải đầy đủ TLE ở test thật, các tầng phía
+  trên vẫn đã trả lời — điểm một phần thưởng cho chương trình suy giảm
+  một cách đàng hoàng.
+
+## Trung thực
+
+Đừng bao giờ special-case chính *các test mẫu*. Cứng-hóa đáp án mẫu là
+điều phát hiện được, không dạy được gì, và rèn đúng bản năng sai. Chuyên
+biệt hóa trên *hình dạng giới hạn*, không phải trên tệp mẫu.

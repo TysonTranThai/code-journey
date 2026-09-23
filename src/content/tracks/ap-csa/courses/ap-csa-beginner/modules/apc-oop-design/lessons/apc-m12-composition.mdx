@@ -1,0 +1,37 @@
+Real AP FRQ 2 (Class Design) gives you a class with a *comment spec* and a
+"complete the constructor/methods" task. Two design ideas carry most of it:
+
+**Composition** — an object holding other objects. A `Club` has a `roster`
+of `String`s (or, later, `Member`s):
+
+```java
+public class Club {
+    private String name;
+    private String[] roster;   // an object owns this array
+    private int size;          // how many slots are used
+
+    public Club(String clubName, int capacity) {
+        name = clubName;
+        roster = new String[capacity];
+        size = 0;
+    }
+
+    public boolean add(String member) {
+        if (size >= roster.length) {
+            return false;              // full — refuse politely
+        }
+        roster[size] = member;
+        size++;
+        return true;
+    }
+}
+```
+
+Note the division of labor: the array is `private`, the outside world only
+calls `add`/`size()`/`isFull()`. That is **encapsulation working at design
+scale** — invariants ("size never exceeds capacity") are enforced in one
+place, the class.
+
+**Object parameters**: methods take object references. `public boolean
+contains(String member)` walks `roster[0..size-1]` comparing with
+`equals` — remember, only the *used* slots matter, not capacity.

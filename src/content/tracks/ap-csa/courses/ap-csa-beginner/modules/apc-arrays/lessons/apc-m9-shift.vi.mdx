@@ -1,0 +1,35 @@
+**Dịch và chèn** — những phép toán mảng khó nhất của đề thi. Để xóa phần tử
+tại chỉ số `k` (giữ thứ tự), dịch mọi phần tử sau nó sang trái:
+
+```java
+// {a, b, c, d} xóa chỉ số 1 → {a, c, d, ?}
+for (int i = k; i < arr.length - 1; i++) {
+    arr[i] = arr[i + 1];
+}
+```
+
+Chặn vòng lặp `length - 1` là mấu chốt: lượt cuối, `arr[i + 1]` là phần tử
+cuối — vượt qua một bước nữa là ra ngoài biên. Ô cuối giờ giữ một bản sao
+lặp; khi cần, theo dõi riêng một "kích thước logic".
+
+**Sao chép**: `copy = original;` sao chép *tham chiếu*, không phải giá trị —
+hai tên sẽ cùng sửa một mảng. Bản sao giá trị cần vòng lặp (hoặc
+`Arrays.copyOf`):
+
+```java
+int[] copy = new int[arr.length];
+for (int i = 0; i < arr.length; i++) {
+    copy[i] = arr[i];
+}
+```
+
+**Hoán đổi** hai phần tử cần ba dòng biến tạm:
+
+```java
+int temp = arr[i];
+arr[i] = arr[j];
+arr[j] = temp;
+```
+
+Quên biến tạm âm thầm phá hủy một giá trị — lỗi kinh điển mà các lời giải
+sai dưới đây phạm phải.

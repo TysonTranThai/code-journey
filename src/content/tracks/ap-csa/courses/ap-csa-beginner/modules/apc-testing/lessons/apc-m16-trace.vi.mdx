@@ -1,0 +1,24 @@
+Gỡ lỗi có hệ thống — một vòng lặp, không phải cuộc săn mò:
+
+1. **Tái hiện** trên đầu vào thất bại nhỏ nhất. Lỗi không thu nhỏ được
+   thì không sửa được.
+2. **Phân loại**: biên dịch / runtime / logic (bài 16.1).
+3. **Truy vết trạng thái**: đi bộ qua mã bằng tay, ghi giá trị của
+   mọi biến ở mọi dòng — một **bảng truy vết**. Hàng nơi thực tế tách
+   khỏi ý định chính là lỗi.
+4. **Khẳng định giữa đường**: in hoặc kiểm giá trị trung gian ("đến
+   đây thì `sum` phải là 6").
+5. **Sửa gốc rễ, không sửa triệu chứng**: vòng lặp lệch-một thì đổi
+   cận — đừng thêm trường hợp đặc biệt ở phía sau.
+
+Ví dụ bảng truy vết — điểm rẽ là dòng 4:
+
+| dòng        | i | sum | muốn   |
+| ----------- | - | --- | ------ |
+| sum = 0     | – | 0   | 0      |
+| sum += i    | 1 | 1   | 1      |
+| sum += i    | 2 | 3   | 3      |
+| sum += i    | 3 | **6** | **9**? (mục tiêu: tổng 1..3 = 6) |
+
+Khi truy vết tay của thuật toán *đúng* mâu thuẫn với thứ mã tính ra,
+bạn đã tìm ra đúng dòng cần thay đổi.

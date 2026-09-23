@@ -1,0 +1,31 @@
+{
+  "id": "hsgx-p5-c8-triangle",
+  "title": "Clinic: The Half-Checked Triangle",
+  "prompt": "**Bài toán.** Three side lengths (up to 10^12); print YES if they can\nform a triangle, NO otherwise (degenerate a+b==c is NO).\n\n**The submission below checks only a+b>c — Wrong Answer.** Give two\ncounterexamples (one false-YES, one false-NO) and fix it.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "normal",
+      "code": "std::istringstream in(\"3 4 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"YES\\n\"));",
+      "hint": "Classic right triangle."
+    },
+    {
+      "name": "half-check trap",
+      "code": "std::istringstream in(\"5 3 2\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NO\\n\"));",
+      "hint": "a+b=8>2 passes the single check (buggy YES), but 3+2=5 is NOT > 5 → NO. Discriminates."
+    },
+    {
+      "name": "degenerate",
+      "code": "std::istringstream in(\"2 3 5\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"NO\\n\"));",
+      "hint": "2+3=5: degenerate is NO."
+    },
+    {
+      "name": "max values",
+      "code": "std::istringstream in(\"1000000000000 1000000000000 1000000000000\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"YES\\n\"));",
+      "hint": "Huge equal sides: equilateral, and long long must hold 2·10^12."
+    }
+  ],
+  "level": "debugging"
+}

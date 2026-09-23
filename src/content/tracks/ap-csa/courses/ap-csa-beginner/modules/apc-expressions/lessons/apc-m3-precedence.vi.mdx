@@ -1,0 +1,26 @@
+**Gán hợp nhất**: `x += 5` nghĩa là `x = x + 5`. Tương tự `-=`, `*=`, `/=`,
+`%=`. Một chi tiết tinh tế: `x += 2.5` biên dịch được cả khi `x` là `int`
+(dạng hợp nhất chứa một phép ép kiểu ngầm) — nhưng `x = x + 2.5` thì không.
+Nên dùng ép kiểu tường minh cho rõ ràng; vẫn phải biết luật này khi truy
+vết.
+
+**Thang độ ưu tiên** (cao xuống thấp):
+
+1. `++ -- !` (một ngôi)
+2. `* / %`
+3. `+ -`
+4. quan hệ `< > <= >=`
+5. so sánh bằng `== !=`
+6. `&&`
+7. `||`
+8. gán `= += -= ...`
+
+Hai ví dụ kinh điển:
+
+```java
+System.out.println(3 < 5 == true);    // true — quan hệ trước so sánh bằng
+boolean ok = 5 > 3 && 2 > 1 || 1 > 2; // (true && true) || false → true
+```
+
+Khi nghi ngờ (khi đọc *hay* khi viết), dùng ngoặc. Đề thi bắt bạn đánh giá
+theo thang độ ưu tiên, nhưng người đọc sẽ cảm ơn bạn vì sự rõ ràng.

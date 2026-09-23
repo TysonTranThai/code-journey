@@ -1,0 +1,31 @@
+{
+  "id": "hsgx-p5-coins",
+  "title": "Coin Corridors",
+  "prompt": "**Bài toán.** One-way corridors between n rooms; room i holds coin[i].\nWalking a corridor is free. Starting anywhere, collect coins of every room\nyou enter (each room counts once per visit-route). Maximize coins collected\nalong one route.\n\n**Constraints:** 1 ≤ n ≤ 100000; 1 ≤ m ≤ 200000; 0 ≤ coin ≤ 10^9. Cycles\nmay exist.\n\n**Output:** one integer.\n",
+  "difficulty": "advanced",
+  "language": "cpp",
+  "boilerplate": "#include <bits/stdc++.h>\nusing namespace std;\n\nvoid solve(istream& in, ostream& out) {\n    // Đọc dữ liệu từ `in` (dùng như cin), in kết quả ra `out` (dùng như cout).\n    // (Ghép bài thực tế: chương trình thi đọc từ bàn phím / tệp — ở đây\n    //  để chấm tự động, dữ liệu vào/ra đi qua hai luồng này.)\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(nullptr);\n    solve(cin, cout);\n    return 0;\n}\n",
+  "tests": [
+    {
+      "name": "chain",
+      "code": "std::istringstream in(\"3 2\\n1 2 3\\n1 2\\n2 3\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"6\\n\"));",
+      "hint": "1→2→3 collects all."
+    },
+    {
+      "name": "cycle",
+      "code": "std::istringstream in(\"3 3\\n1 2 3\\n1 2\\n2 3\\n3 1\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"6\\n\"));",
+      "hint": "Cycle banks the whole component once."
+    },
+    {
+      "name": "two components",
+      "code": "std::istringstream in(\"4 2\\n5 6 7 8\\n1 2\\n3 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"15\\n\"));",
+      "hint": "Best single route is 7+8."
+    },
+    {
+      "name": "cycle plus tail",
+      "code": "std::istringstream in(\"4 4\\n1 2 3 100\\n1 2\\n2 1\\n2 3\\n3 4\\n\");\nstd::ostringstream out;\nstd::streambuf* cout_old = std::cout.rdbuf(out.rdbuf());\nsolve(in, out);\nstd::cout.rdbuf(cout_old);\nCHECK_EQ(out.str(), std::string(\"106\\n\"));",
+      "hint": "Bank cycle {1,2} = 3, then 3, then 4: 1+2+3+100 = 106."
+    }
+  ],
+  "level": "combination"
+}
