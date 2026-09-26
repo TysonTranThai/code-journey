@@ -1,0 +1,16 @@
+{
+  "id": "apx-m2-passvalue",
+  "title": "Reference semantics under misdirection (E4)",
+  "prompt": "Trace this program **on paper**:\n\n```java\npublic static void adjust(int[] a, int[] b, int k) {\n    a[0] += k;          // mutation of the shared array\n    b = new int[3];     // local rebinding\n    b[0] += k;          // lost\n    k = 99;             // lost\n}\n\nint[] x = {1, 2};\nint[] y = {3, 4};\nint k = 5;\nadjust(x, y, k);\nSystem.out.print(x[0] + \",\" + y[0] + \",\" + k);\n```\n\nReturn the printed text exactly.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String result() {\n        return \"\"; // replace: the exact output of the code in the prompt\n    }\n}\n",
+  "tests": [
+    {
+      "name": "output after call",
+      "code": "\nCjTestBase.checkEq(Solution.result(), \"6,3,5\", \"array mutation visible; rebinding and int are not\");\n",
+      "hint": "x[0] mutated via reference (1+5); y rebound locally only; k is a copy."
+    }
+  ],
+  "level": "combination"
+}

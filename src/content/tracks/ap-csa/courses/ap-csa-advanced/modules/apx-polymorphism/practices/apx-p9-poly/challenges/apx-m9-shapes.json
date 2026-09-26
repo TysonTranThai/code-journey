@@ -1,0 +1,16 @@
+{
+  "id": "apx-m9-shapes",
+  "title": "Abstract shapes with conditional overrides",
+  "prompt": "Implement `Shape` (abstract): `public abstract int area();` plus a concrete `describe()` returning `\"shape:\" + area()`. Subclass `Square` (side; area = side*side) and `Rect` (w, h; area = w*h). Then implement `totalArea(ArrayList<Shape>)`.\n\nThe list may contain both; use the abstract reference type.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static abstract class Shape {\n        public abstract int area();\n\n        public String describe() {\n            return \"shape:\" + area();\n        }\n    }\n\n    public static class Square extends Shape {\n        public Square(int side) {\n        }\n\n        public int area() {\n            return 0;\n        }\n    }\n\n    public static class Rect extends Shape {\n        public Rect(int w, int h) {\n        }\n\n        public int area() {\n            return 0;\n        }\n    }\n\n    public static int totalArea(java.util.ArrayList<Shape> shapes) {\n        return 0; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "abstract dispatch",
+      "code": "\njava.util.ArrayList<Solution.Shape> shapes = new java.util.ArrayList<>();\nshapes.add(new Solution.Square(3));\nshapes.add(new Solution.Rect(2, 5));\nCjTestBase.checkEq(Solution.totalArea(shapes), 19, \"9 + 10\");\nCjTestBase.checkEq(new Solution.Square(4).describe(), \"shape:16\", \"describe uses the override\");\n",
+      "hint": "Each subclass implements area(); totalArea sums area() over the abstract references."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,43 @@
+Two names, one object — aliasing bites hardest in class code:
+
+```java
+Scorecard s = new Scorecard();
+Scorecard t = s;          // SAME object
+t.add(10);
+System.out.println(s.getTotal());   // 10 — not 0!
+```
+
+The companion trap: **no return means no effect** for immutable-style
+results:
+
+```java
+String name = "ann";
+name.toUpperCase();               // result discarded!
+System.out.println(name);         // "ann"
+```
+
+Strings are immutable — methods return NEW strings; you must capture
+the result. Objects like Scorecard are mutable — methods change the
+object itself, and the change is visible through every alias.
+
+The third aliasing trap: returning a private mutable field:
+
+```java
+private int[] data;
+public int[] getData() { return data; }   // hands out the real thing!
+```
+
+Callers can now mutate your state through the returned reference. The
+exam mostly teaches this as "encapsulation" — the defensible answer is
+`return new int[...]` copy when asked "how do you protect the state?"
+
+**Multiple interacting objects:**
+
+```java
+Account a = new Account(100);
+Account b = new Account(30);
+a.transferTo(b, 40);   // a: 60, b: 70 — one method mutates TWO objects
+```
+
+Trace them as two rows in the state table (Module 2's object rows),
+now with a method that updates both rows in one call.

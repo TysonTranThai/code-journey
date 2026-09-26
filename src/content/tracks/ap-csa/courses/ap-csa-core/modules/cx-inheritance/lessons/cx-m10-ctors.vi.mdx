@@ -1,0 +1,33 @@
+Constructor là ngoại lệ của điều-phối-theo-đối-tượng: **chúng chạy từ
+trên xuống** — thân superclass trước, rồi xuống dọc chuỗi:
+
+```java
+public class Pet {
+    protected String name;
+    public Pet(String name) { this.name = name; }
+}
+
+public class Cat extends Pet {
+    private int lives;
+    public Cat(String name, int lives) {
+        super(name);            // PHẢI là câu lệnh đầu tiên
+        this.lives = lives;
+    }
+}
+```
+
+Các luật đề thi kiểm tra:
+
+1. Nếu constructor lớp con gọi `super(...)`, nó phải là **câu lệnh đầu
+   tiên**.
+2. Nếu không gọi super nào cả, Java chèn sẵn `super()` — constructor
+   KHÔNG-ĐỐI-SỐ của cha. Khi cha chỉ có constructor nhận String, phép
+   chèn đó là **lỗi biên dịch**: "constructor Pet in class Pet cannot
+   be applied to given types".
+3. Trường `protected` được các lớp con nhìn thấy (và cùng package) —
+   `private` thì không, vì sao Cat phải đi qua `super(name)` thay vì
+   chạm thẳng vào `name`.
+
+Thứ tự chuỗi giải thích các câu truy vết: `new Cat("M", 9)` chạy thân
+Pet (name = "M"), rồi thân Cat (lives = 9). Trạng thái được dựng từ đỉnh
+cây phân cấp đi xuống.

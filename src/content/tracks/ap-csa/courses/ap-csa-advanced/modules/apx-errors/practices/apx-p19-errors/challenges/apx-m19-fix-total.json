@@ -1,0 +1,16 @@
+{
+  "id": "apx-m19-fix-total",
+  "title": "Diagnose 2: the backwards accumulator",
+  "prompt": "Classify the error, then repair `total` so it returns the sum of the array (empty → 0).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SYMPTOM: returns 0 or negative numbers where a sum is expected\n    public static int total(int[] arr) {\n        int sum = 0;\n        for (int i = 0; i < arr.length; i++) {\n            sum -= arr[i];\n        }\n        return sum;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "repaired accumulator",
+      "code": "\nCjTestBase.checkEq(Solution.total(new int[]{4, 5, 6}), 15, \"plain sum\");\nCjTestBase.checkEq(Solution.total(new int[]{-3, 3}), 0, \"negatives included\");\nCjTestBase.checkEq(Solution.total(new int[]{}), 0, \"empty\");\n",
+      "hint": "Class 4 (wrong accumulator op): -= must become +=."
+    }
+  ],
+  "level": "debugging"
+}

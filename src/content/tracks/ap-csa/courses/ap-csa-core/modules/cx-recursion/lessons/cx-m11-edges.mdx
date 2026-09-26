@@ -1,0 +1,22 @@
+Foundations taught recursion's shape; the exam grades its **edge
+discipline**. Every recursive method is two contracts:
+
+1. **Base case** — the smallest input, answered directly, with NO
+   recursive call. For arrays/strings it is usually the *empty* or
+   *single-element* input.
+2. **Recursive case** — reduce toward the base case, combine, return.
+   The reduction must be *provably smaller*: `n - 1`, `i + 1`,
+   `substring(1)`.
+
+The two failure signatures (both exam favorites):
+
+- **Wrong base value**: `fact(0) = 1` by definition; returning 0 there
+  multiplies everything to 0. One wrong seed poisons the whole tree —
+  the code looks right and every non-trivial test fails.
+- **Missing base case** (or an unreachable one): infinite recursion →
+  `StackOverflowError`. On a trace question, count frames: if n never
+  reaches the base value, the method never returns.
+
+The decision rule: when the base case runs, the answer must be
+constructible with **zero** additional information. If your base case
+still needs to call something, it is not a base case.

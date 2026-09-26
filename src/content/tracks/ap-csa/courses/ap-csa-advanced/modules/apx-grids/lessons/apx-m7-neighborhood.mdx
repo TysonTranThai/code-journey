@@ -1,0 +1,26 @@
+**Neighborhood processing** needs an offset table and a bounds
+guard — the pattern behind Game-of-Life, image blurs, and hotspot
+problems:
+
+```java
+int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
+int[] dc = {-1,  0,  1, -1, 1, -1, 0, 1};
+for (int d = 0; d < 8; d++) {
+    int nr = r + dr[d], nc = c + dc[d];
+    if (nr >= 0 && nr < g.length && nc >= 0 && nc < g[0].length) {
+        sum += g[nr][nc];
+        count++;
+    }
+}
+```
+
+Two decisions hide the difficulty: **does a cell count itself?**
+(usually no — read the spec twice), and **do you average over 8 or
+over the actual in-bounds neighbor count?** Corners have 3 neighbors;
+dividing by 8 everywhere is the subtle wrong answer the hidden tests
+catch.
+
+**Aggregation with signs**: when a ledger holds debits and credits,
+summing columns then taking absolute values is NOT the same as
+summing absolute values. The spec's phrase "per-column balance"
+tells you which.

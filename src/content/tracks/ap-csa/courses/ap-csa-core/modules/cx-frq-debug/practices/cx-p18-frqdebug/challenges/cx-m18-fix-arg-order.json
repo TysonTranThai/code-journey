@@ -1,0 +1,16 @@
+{
+  "id": "cx-m18-fix-arg-order",
+  "title": "Fix the swapped call",
+  "prompt": "`bar` is correct; `render`'s call passes the arguments in the wrong order. The divergence shows up as a compile error — fix the call site only.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // CONTRACT: draw a bar of `n` copies of ch followed by a newline:\n    // draw(3, '*') prints \"***\\n\". The arguments are swapped at the\n    // call site inside render(). Fix ONLY the call.\n    public static String bar(int n, char ch) {\n        String out = \"\";\n        for (int i = 0; i < n; i++) {\n            out += ch;\n        }\n        return out + \"\\n\";\n    }\n\n    public static String render(int n, char ch) {\n        String page = bar(ch, n);\n        return page;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "call repaired",
+      "code": "\nCjTestBase.checkEq(Solution.render(3, '*'), \"***\\n\", \"three stars, newline\");\nCjTestBase.checkEq(Solution.render(1, '-'), \"-\\n\", \"one dash\");\n",
+      "hint": "bar(ch, n) must be bar(n, ch)."
+    }
+  ],
+  "level": "debugging"
+}

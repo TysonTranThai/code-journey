@@ -1,0 +1,41 @@
+Q4: một phương thức, một lưới, chín điểm. Các hình tái diễn:
+
+**Tìm-và-báo-cáo-vị-trí** — "trả về \{hàng, cột\} của giá trị lớn nhất"
+dưới dạng int[]:
+
+```java
+public int[] findMax(int[][] grid) {
+    int[] at = new int[2];
+    for (int r = 0; r < grid.length; r++) {
+        for (int c = 0; c < grid[r].length; c++) {
+            if (grid[r][c] > grid[at[0]][at[1]]) {
+                at[0] = r;
+                at[1] = c;
+            }
+        }
+    }
+    return at;
+}
+```
+
+Seed từ (0,0) — điều kiện tiên quyết `grid.length >= 1` hợp pháp hóa
+điều đó — và giữ dấu `>` nghiêm ngặt cho đồng giá sớm nhất.
+
+**Biến đổi có điều kiện** — biến đổi các ô khớp luật:
+
+```java
+for (int r = 0; r < grid.length; r++) {
+    for (int c = 0; c < grid[r].length; c++) {
+        if (grid[r][c] < 0) {
+            grid[r][c] = 0;
+        }
+    }
+}
+```
+
+**Đếm theo hàng xóm** — mẫu hàng-xóm-có-chặn (Module 8) bên trong một
+vòng lặp toàn-lưới.
+
+Kỷ luật riêng của Q4: khi đáp án là một VỊ TRÍ, quyết định ngay cách
+mã hóa (int[2]? một mã int kiểu 10*r+c? chỉ-hàng?) — kiểu trả về của
+đề ép một lựa chọn; đọc sai nó là lỗi-số-không kinh điển.

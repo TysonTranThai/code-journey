@@ -1,0 +1,16 @@
+{
+  "id": "cx-cp-m9-cart",
+  "title": "Checkpoint: ShoppingCart from a spec table",
+  "prompt": "Build the full `ShoppingCart` class from its spec table: addItem tracks total, count, AND the last price; refundLast undoes the most recent item (empty cart → false, nothing changes); readers given. The last-price memory is one extra field — the spec permits it.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SPEC TABLE — build the whole class:\n    // fields: int total; int itemCount;\n    // constructor: everything starts at 0\n    // addItem(int price): total += price; itemCount++\n    //   (prices may be any int; no validation)\n    // refundLast(): when itemCount > 0, subtract ONE stored price\n    //   (the most recent) and decrement itemCount; return true.\n    //   When the cart is empty: change nothing, return false.\n    // getTotal() / getCount(): readers\n    // You MAY add one extra field to remember the last price.\n    public static class ShoppingCart {\n        // replace with your class: fields, constructor, methods\n    }\n}\n",
+  "tests": [
+    {
+      "name": "cart behaviors",
+      "code": "\nSolution.ShoppingCart c = new Solution.ShoppingCart();\nCjTestBase.checkEq(c.getTotal(), 0, \"empty total\");\nCjTestBase.checkEq(c.getCount(), 0, \"empty count\");\nCjTestBase.checkEq(c.refundLast(), false, \"nothing to refund\");\nc.addItem(10);\nc.addItem(25);\nCjTestBase.checkEq(c.getTotal(), 35, \"10 + 25\");\nCjTestBase.checkEq(c.getCount(), 2, \"two items\");\nCjTestBase.checkEq(c.refundLast(), true, \"refund 25\");\nCjTestBase.checkEq(c.getTotal(), 10, \"back to 10\");\nCjTestBase.checkEq(c.getCount(), 1, \"one item left\");\nCjTestBase.checkEq(c.refundLast(), true, \"refund 10\");\nCjTestBase.checkEq(c.getCount(), 0, \"cart now empty\");\nCjTestBase.checkEq(c.refundLast(), false, \"nothing left to refund\");\n",
+      "hint": "Fields: total, itemCount, lastPrice. addItem sets all three; refundLast guards itemCount > 0."
+    }
+  ],
+  "level": "real-world"
+}

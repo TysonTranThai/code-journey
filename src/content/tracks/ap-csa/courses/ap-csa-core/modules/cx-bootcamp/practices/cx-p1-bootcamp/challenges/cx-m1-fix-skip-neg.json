@@ -1,0 +1,16 @@
+{
+  "id": "cx-m1-fix-skip-neg",
+  "title": "Second diagnosis",
+  "prompt": "`sumSkipNeg` must return the sum of the **non-negative** elements only. Trace `{3, -1, 4}` against the contract, find the drift, and repair it.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int sumSkipNeg(int[] arr) {\n        // CONTRACT: sum of the NON-NEGATIVE elements only.\n        int total = 0;\n        for (int i = 0; i < arr.length; i++) {\n            if (arr[i] < 0) {\n                total += arr[i];\n            }\n        }\n        return total;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "skips negatives",
+      "code": "\nCjTestBase.checkEq(Solution.sumSkipNeg(new int[]{3, -1, 4}), 7, \"3 + 4 only\");\nCjTestBase.checkEq(Solution.sumSkipNeg(new int[]{-1, -2}), 0, \"all negative contributes nothing\");\nCjTestBase.checkEq(Solution.sumSkipNeg(new int[]{}), 0, \"empty sum is 0\");\nCjTestBase.checkEq(Solution.sumSkipNeg(new int[]{0, 5}), 5, \"zero counts as non-negative\");\n",
+      "hint": "The if adds the negatives instead of skipping them; invert the condition."
+    }
+  ],
+  "level": "debugging"
+}

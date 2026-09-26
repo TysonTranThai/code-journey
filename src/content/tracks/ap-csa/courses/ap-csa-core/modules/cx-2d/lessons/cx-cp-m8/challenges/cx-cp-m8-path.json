@@ -1,0 +1,16 @@
+{
+  "id": "cx-cp-m8-path",
+  "title": "Checkpoint: follow the path",
+  "prompt": "Implement `int firstRepeat(int[][] grid, int row, int col)`: each cell holds `10*row + col`. Starting at (row, col), jump to the cell it names; return the code of the first cell visited twice, or -1 if a jump leaves the grid. Cap steps at 2 × cell count. This is a traced walk: maintain the visited knowledge, one jump per iteration.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // CONTRACT: a path walk: starting at (row, col), repeatedly move to\n    // the position recorded in the current cell. Cells hold 2-digit\n    // codes: 10*row + col. Return the code of the FIRST cell visited\n    // TWICE (including the start), or -1 if the walk leaves the grid.\n    // Step limit: grid cells count * 2 steps.\n    public static int firstRepeat(int[][] grid, int row, int col) {\n        return -1; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "first repeated cell",
+      "code": "\nint[][] g = { {0, 11}, {10, 3} };\nCjTestBase.checkEq(Solution.firstRepeat(g, 0, 0), 0, \"0 -> (0,0): immediate self-repeat\");\nCjTestBase.checkEq(Solution.firstRepeat(g, 0, 1), -1, \"11 -> (1,1) holds 3 -> leaves grid\");\nint[][] h = { {0, 0}, {10, 0} };\nCjTestBase.checkEq(Solution.firstRepeat(h, 1, 0), 10, \"(1,0) points at itself: repeat code 10\");\n",
+      "hint": "Track a visited boolean grid; jump repeatedly; first revisit wins; out-of-bounds -> -1."
+    }
+  ],
+  "level": "real-world"
+}

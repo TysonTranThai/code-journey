@@ -1,0 +1,16 @@
+{
+  "id": "cx-m12-probe-tests",
+  "title": "Write the probes",
+  "prompt": "`minIndex` is correct. Your job: the tests must PROVE the contract — including the all-equal tie probe and the single-element probe. The provided test is the happy path; add the missing probe tests (the checker verifies that your test set still passes with the reference and that you did not delete tests).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // CONTRACT: index of the SMALLEST value, earliest on ties.\n    // The implementation is fixed and correct; make the tests express\n    // the contract (this grades your probes).\n    public static int minIndex(int[] arr) {\n        int best = 0;\n        for (int i = 1; i < arr.length; i++) {\n            if (arr[i] < arr[best]) {\n                best = i;\n            }\n        }\n        return best;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "happy path",
+      "code": "\nCjTestBase.checkEq(Solution.minIndex(new int[]{5, 2, 8}), 1, \"unique minimum\");\n",
+      "hint": "Add: all-equal {7,7,7} -> 0 (earliest tie); single {4} -> 0; negative {-3,-9} -> 1."
+    }
+  ],
+  "level": "independent"
+}

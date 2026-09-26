@@ -1,0 +1,16 @@
+{
+  "id": "apx-m8-register",
+  "title": "The register with a running balance",
+  "prompt": "Implement the `Register` class (a checkout register). `scan(price)` adds to the amount owed. `pay(cash)` records cash received — the register accepts payment **larger than owed** (change is owed back). `changeDue()` returns how much change the customer must receive (cash received minus amount owed, never negative; 0 while still owing). The register starts empty.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Register {\n        public Register() {\n        }\n\n        public void scan(int price) {\n        }\n\n        public void pay(int cash) {\n        }\n\n        public int changeDue() {\n            return 0;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "balance transitions",
+      "code": "\nSolution.Register r = new Solution.Register();\nr.scan(300);\nr.scan(120);\nCjTestBase.checkEq(r.changeDue(), 0, \"still owing\");\nr.pay(250);\nCjTestBase.checkEq(r.changeDue(), 0, \"partially paid\");\nr.pay(400);\nCjTestBase.checkEq(r.changeDue(), 230, \"overpaid: change due\");\nr.pay(50);\nCjTestBase.checkEq(r.changeDue(), 280, \"extra payment adds to change\");\n",
+      "hint": "Track owed and paid separately; changeDue = max(0, paid - owed)."
+    }
+  ],
+  "level": "combination"
+}

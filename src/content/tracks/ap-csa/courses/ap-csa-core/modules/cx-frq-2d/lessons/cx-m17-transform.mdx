@@ -1,0 +1,32 @@
+**Positional transforms** — Q4's most intricate family: cells whose
+new value depends on a NEIGHBORHOOD, not just themselves.
+
+*"Replace each cell with the count of orthogonal neighbors holding
+the same value"* — the read/write hazard: writes must not poison
+reads. Compute the counts into a NEW grid, then (if required in
+place) copy back:
+
+```java
+int[][] counts = new int[grid.length][grid[0].length];
+for (int r = 0; r < grid.length; r++) {
+    for (int c = 0; c < grid[r].length; c++) {
+        int same = 0;
+        if (r > 0 && grid[r - 1][c] == grid[r][c]) { same++; }
+        if (r < grid.length - 1 && grid[r + 1][c] == grid[r][c]) { same++; }
+        if (c > 0 && grid[r][c - 1] == grid[r][c]) { same++; }
+        if (c < grid[r].length - 1 && grid[r][c + 1] == grid[r][c]) { same++; }
+        counts[r][c] = same;
+    }
+}
+// counts is the answer (or copy into grid if the spec says in place)
+```
+
+The two-grid pattern costs one allocation and saves the entire class
+of read-after-write bugs. When the spec says "in place", the safe
+compromise is compute-then-copy — still no aliasing bugs.
+
+**The transposed-index trap:** `grid[c][r]` compiles fine whenever
+`c` happens to be within row bounds... and reads the wrong cell. The
+only defense is the orientation ritual: name the loop variables
+`r` and `c`, index `grid[r][c]`, and never "save typing" by reusing
+one variable for both.

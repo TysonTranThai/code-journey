@@ -125,3 +125,63 @@ Java fluency every later stage assumes.
 
 AP CSA uses only a Java subset; everything in the course compiles under
 `--release 21` with no external libraries.
+
+---
+
+# Core & Exam Preparation — research addendum (2026-09-25)
+
+> Written when Phase 33 designed `ap-csa-core` (course 2 of the track).
+> Re-verified against AP Central on 2026-09-25: the exam format below still
+> matches (42 MCQ / 90 min / 55%; 4 FRQ / 90 min / 45%, all typed in
+> Bluebook; four FRQ types unchanged). No College Board questions are
+> reproduced anywhere in the course; all exercises are original.
+
+## What the exam measures that Foundations does NOT drill
+
+The MCQ section is a **reading-and-analysis instrument** ("Analyze Code" is
+the largest practice weighting), and the FRQ section rewards **fast, minimal,
+spec-faithful implementations**. Foundations builds the underlying Java
+knowledge; Core turns that knowledge into exam performance:
+
+| Exam behavior | Foundations treatment | Core treatment (this course) |
+| --- | --- | --- |
+| Trace unfamiliar code under time pressure | tracing taught per-concept, guided | cumulative trace drills, state tables, mixed-concept programs |
+| "Which implementation satisfies the spec?" | single-concept method writing | spec-first method design, edge-case reasoning, plausible near-misses to eliminate |
+| "What is printed / what state results?" | guided output prediction | independent output prediction incl. objects, inheritance, recursion |
+| FRQ Q1 Methods & Control Structures | FRQ-flavored lessons woven into modules | dedicated FRQ methodology + per-type practice at exam difficulty |
+| FRQ Q2 Class Design | one class-design module | full class-writing tasks with helper methods and object interaction |
+| FRQ Q3 ArrayList analysis | ArrayList basics + remove trap | realistic multi-part analysis methods (count/match/process patterns) |
+| FRQ Q4 2D Array | 2D traversal + aggregation module | exam-difficulty grid problems: neighbors, transformations, position logic |
+| Exam management | none | pacing, partial credit, skip-and-return, error clinics, full simulation |
+
+## Difficulty scale used by Core (A1–A5)
+
+Internal design scale for authoring (mapped to the platform's
+beginner/intermediate/advanced labels and imitation→mini-build levels):
+
+- **A1 Guided** — single concept, high scaffolding, near-trivial trace.
+- **A2 Standard** — one concept, exam-style phrasing, 2–4 min.
+- **A3 AP-level** — the median difficulty of a real exam item; 1–2 concepts.
+- **A4 Hard AP** — top-quartile exam item; multi-step, multi-concept, or a
+  classic trap in disguise.
+- **A5 Exam challenge** — beyond median FRQ rigor; synthesis of 3+ concepts.
+
+## Course design (summary)
+
+20 modules in four arcs:
+
+1. **Problem-solving arc (1–3):** exam-question anatomy, tracing mastery,
+   control-flow reasoning — all practice-first, ~30% instruction.
+2. **Topic mastery arc (4–10):** methods-from-specs, strings, arrays,
+   ArrayList, 2D arrays, classes/objects, inheritance/polymorphism — each
+   module opens with a compressed review, then 65–75% problems.
+3. **Integration arc (11–13):** recursion, unlabeled mixed problems,
+   MCQ strategy + error clinic.
+4. **Exam-performance arc (14–20):** FRQ fundamentals → per-type FRQ labs
+   (Q1, Q2, Q3, Q4) → FRQ debugging & partial credit → timed mixed sets →
+   cumulative review → full simulation.
+
+Each module: 2–3 short lessons + 1 practice set + checkpoint challenge.
+Two-sided verification for every executable challenge (reference solution
+passes; a plausible wrong solution fails at least one test), matching the
+Foundations methodology.

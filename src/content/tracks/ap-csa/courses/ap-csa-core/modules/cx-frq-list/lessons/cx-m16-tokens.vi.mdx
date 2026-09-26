@@ -1,0 +1,30 @@
+**Token chuỗi bên trong Q3** — đề thi mê danh sách các từ:
+
+*"Đếm từ bắt đầu và kết thúc bằng cùng một chữ cái"*
+
+```java
+public int sameEnds(ArrayList<String> words) {
+    int count = 0;
+    for (String w : words) {
+        if (w.length() > 0 && w.charAt(0) == w.charAt(w.length() - 1)) {
+            count++;
+        }
+    }
+    return count;
+}
+```
+
+Hai nghĩa vụ nấp trong một dòng: lớp chặn `w.length() > 0` (chuỗi rỗng
+là phần tử hợp lệ!) và phép so sánh đầu/cuối. Đổi thứ tự charAt chẳng
+đổi gì; quên lớp chặn và một phần tử chuỗi-rỗng-duy-nhất sẽ ném ngoại
+lệ — chính là bài kiểm tra phân cách 8 điểm và 9 điểm.
+
+**Autoboxing trong lời giải Q3:** tổng trên `ArrayList<Integer>` không
+cần xử lý gì đặc biệt (`int sum += list.get(i)` tự mở hộp), nhưng
+`.equals` vẫn thắng `==` khi đặc tả nói "the Integer bằng với" — với
+giá trị nhỏ chúng đồng ý; với giá trị trong đề, hãy viết `.equals` hoặc
+mở hộp tường minh.
+
+**Q3 biến đổi** — khi câu hỏi nói "xóa", đáp án là vòng ngược (Module 7)
+khoác lớp wrapper Q3. Lớp cho sẵn không bao giờ đổi luật của phép biến
+đổi.

@@ -1,0 +1,16 @@
+{
+  "id": "apx-m14-song",
+  "title": "The five-play like rule",
+  "prompt": "Implement `Song`: constructor takes the title (plays 0, not liked). `play()` increments the play count; on the **fifth** play the song becomes liked (plays 6, 7, … do nothing further). `unlike()` clears the liked flag (plays are NOT reset — and reaching five again after unlike does nothing). `isLiked()` reports the flag.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Song {\n        public Song(String title) {\n        }\n\n        public void play() {\n        }\n\n        public void unlike() {\n        }\n\n        public boolean isLiked() {\n            return false;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "like lifecycle",
+      "code": "\nSolution.Song s = new Solution.Song(\"Hi\");\ns.play();\ns.play();\ns.play();\ns.play();\nCjTestBase.checkTrue(!s.isLiked(), \"four plays not enough\");\ns.play();\nCjTestBase.checkTrue(s.isLiked(), \"fifth play likes\");\ns.unlike();\ns.play();\ns.play();\nCjTestBase.checkTrue(!s.isLiked(), \"re-crossing five does nothing\");\n",
+      "hint": "A plays counter and a separate liked flag; the like happens only when plays becomes exactly 5 AND the flag is still false... actually simplest: exactly-on-5."
+    }
+  ],
+  "level": "combination"
+}

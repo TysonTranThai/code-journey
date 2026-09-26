@@ -1,0 +1,30 @@
+**String tokens inside Q3** — the exam loves lists of words:
+
+*"Count words that start and end with the same letter"*
+
+```java
+public int sameEnds(ArrayList<String> words) {
+    int count = 0;
+    for (String w : words) {
+        if (w.length() > 0 && w.charAt(0) == w.charAt(w.length() - 1)) {
+            count++;
+        }
+    }
+    return count;
+}
+```
+
+Two obligations hide in one line: the guard `w.length() > 0` (empty
+strings are legal elements!) and the first/last comparison. Swap
+charAt order and nothing changes; forget the guard and a single
+empty-string element throws — the test that separates 8 from 9.
+
+**Autoboxing in Q3 answers:** `ArrayList<Integer>` totals need no
+special handling (`int sum += list.get(i)` unboxes), but `equals`
+still beats `==` when the spec says "the Integer equal to" — for
+small values they agree; for exam values, write `.equals` or unbox
+explicitly.
+
+**Mutating Q3** — when the question says "remove", the answer is the
+backward loop (Module 7) wearing a Q3 wrapper class. The provided
+class never changes the rules of mutation.

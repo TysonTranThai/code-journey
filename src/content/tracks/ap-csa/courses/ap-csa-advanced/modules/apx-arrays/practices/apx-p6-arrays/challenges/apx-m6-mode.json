@@ -1,0 +1,16 @@
+{
+  "id": "apx-m6-mode",
+  "title": "Mode with a defined tie-break",
+  "prompt": "Return the **mode** (most frequent value). On ties, return the **smallest** value among the tied ones. The list is non-empty. Implement `process(java.util.ArrayList<Integer> list)`.\n\nExample: `[2,3,2,3,5]` → `2` (2 and 3 tie; 2 is smaller).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int process(java.util.ArrayList<Integer> list) {\n        return 0; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "mode with tie-break",
+      "code": "\njava.util.ArrayList<Integer> l = new java.util.ArrayList<>(java.util.List.of(2, 3, 2, 3, 5));\nCjTestBase.checkEq(Solution.process(l), 2, \"tie broken to smallest\");\njava.util.ArrayList<Integer> rev = new java.util.ArrayList<>(java.util.List.of(5, 3, 3, 5));\nCjTestBase.checkEq(Solution.process(rev), 3, \"tie broken to smallest even when seen later\");\njava.util.ArrayList<Integer> s = new java.util.ArrayList<>(java.util.List.of(9));\nCjTestBase.checkEq(Solution.process(s), 9, \"single element\");\njava.util.ArrayList<Integer> t = new java.util.ArrayList<>(java.util.List.of(-1, -1, 4));\nCjTestBase.checkEq(Solution.process(t), -1, \"negative mode\");\n",
+      "hint": "Count each value's occurrences; strictly-greater count replaces, equal count keeps the smaller value."
+    }
+  ],
+  "level": "combination"
+}

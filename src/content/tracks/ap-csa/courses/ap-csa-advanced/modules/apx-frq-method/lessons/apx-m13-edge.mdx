@@ -1,0 +1,17 @@
+**Edge cases by type.** Each data type owns a canonical edge set:
+
+- **String**: empty, single char, all-same, alternating. Adjacent
+  scans start at i = 1 and compare `charAt(i)` to `charAt(i - 1)`.
+- **Array**: empty, one element, all-equal (tie-break territory),
+  negatives (initialization must survive: use `arr[0]` or
+  MIN_VALUE, never 0).
+- **ArrayList**: empty, removals while scanning (iterate backward
+  or build anew), `.equals` for objects — `==` on Integer beyond
+  the small cache is a latent bug.
+- **Recursion**: zero, one digit/element, and the shape of the
+  smallest input that still recurses once.
+
+The habit that earns the edge-case rubric line: after coding, RUN
+your plan against the empty input and the single element *before*
+the example in the prompt. The example is seductive; edges are
+where the hidden tests live.

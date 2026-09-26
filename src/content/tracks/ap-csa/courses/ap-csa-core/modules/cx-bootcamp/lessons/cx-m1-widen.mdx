@@ -1,0 +1,37 @@
+The AP style guide for humans: **solve the smallest version of the problem
+first, then widen it.**
+
+Take: *"Return true if every element of `words` has length at least `k`."*
+
+- Smallest case: an empty array. "Every element" of nothing is vacuously
+  true — return `true`.
+- One element: check `words[0].length() >= k`.
+- All elements: loop, and the moment one fails, return `false`. Only after
+  the loop finishes may you return `true`.
+
+```java
+public static boolean allLong(String[] words, int k) {
+    for (String w : words) {
+        if (w.length() < k) {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+Two habits this procedure builds:
+
+1. **The early-exit pattern.** "Every / no / none" questions want you to
+   return the moment the answer is decided, then give the default *after*
+   the loop. Students who instead try to track a flag often initialize it
+   wrong (`true` vs `false`) — decide the default from the vacuous case.
+2. **The negation test.** "Every element has length ≥ k" fails exactly
+   when *some* element has `length < k` — so the `if` tests the failure,
+   not the success. Translating negations correctly is worth points on
+   nearly every exam.
+
+The same widening works for accumulation (sum → sum with condition →
+count of condition) and for searching (does it exist → where → first
+occurrence). Start where the problem is already solved; add complexity
+one obligation at a time.

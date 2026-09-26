@@ -1,0 +1,16 @@
+{
+  "id": "cx-cp-m2-recursion-trace",
+  "title": "Checkpoint: trace a recursive call",
+  "prompt": "Trace `f(5)` frame by frame: f(5) → f(3) → f(1) → f(-1). Predict the return value by hand, then implement `f` yourself from the trace (same shape, your own lines).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int f(int n) {\n        if (n <= 0) { return 1; }\n        return n + f(n - 2);\n    }\n}\n",
+  "tests": [
+    {
+      "name": "recursive trace",
+      "code": "\nCjTestBase.checkEq(Solution.f(5), 10, \"5 + 3 + 1 + base 1\");\nCjTestBase.checkEq(Solution.f(4), 7, \"4 + 2 + base\");\nCjTestBase.checkEq(Solution.f(1), 2, \"1 + f(-1) = 1 + 1\");\nCjTestBase.checkEq(Solution.f(0), 1, \"immediate base case\");\n",
+      "hint": "f(5)=5+f(3)=5+3+f(1)=5+3+1+f(-1)=5+3+1+1=10 — check your arithmetic, then encode f(n<=0)->1, f(n)=n+f(n-2)."
+    }
+  ],
+  "level": "independent"
+}

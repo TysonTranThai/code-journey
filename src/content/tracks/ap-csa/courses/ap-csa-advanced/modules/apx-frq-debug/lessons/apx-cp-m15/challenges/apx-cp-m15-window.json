@@ -1,0 +1,16 @@
+{
+  "id": "apx-cp-m15-window",
+  "title": "Checkpoint: fix the window sum",
+  "prompt": "The method should return the **largest sum of any k consecutive elements** (k >= 1, array longer than k). It returns wrong values whenever the best window touches the array's end. Find and fix the bug.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SPEC: largest sum of any k consecutive elements\n    public static int maxWindowSum(int[] arr, int k) {\n        int best = Integer.MIN_VALUE;\n        for (int i = 0; i + k < arr.length; i++) {\n            int sum = 0;\n            for (int j = i; j < i + k; j++) {\n                sum += arr[j];\n            }\n            if (sum > best) {\n                best = sum;\n            }\n        }\n        return best;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "corrected window",
+      "code": "\nCjTestBase.checkEq(Solution.maxWindowSum(new int[]{2, 1, 5, 1, 3, 2}, 3), 9, \"1+5+3\");\nCjTestBase.checkEq(Solution.maxWindowSum(new int[]{1, 2}, 2), 3, \"window == length\");\nCjTestBase.checkEq(Solution.maxWindowSum(new int[]{-5, -1, -8}, 2), -6, \"negatives\");\n",
+      "hint": "The loop condition drops the final window: i + k <= arr.length is required."
+    }
+  ],
+  "level": "debugging"
+}

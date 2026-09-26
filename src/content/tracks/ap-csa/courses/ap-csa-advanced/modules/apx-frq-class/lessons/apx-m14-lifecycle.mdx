@@ -1,0 +1,16 @@
+Class FRQs are won in the **lifecycle rules** — the sentences that
+say when state may change:
+
+- "coins reset to zero when the machine is emptied" → a getter with
+  a side effect (`emptyCoins`).
+- "a song becomes liked on its FIFTH play" → `== 5`, not `>= 5`
+  (the sixth play must do nothing).
+- "a player at 0 HP cannot be damaged or healed" → BOTH mutators
+  guard on the same condition.
+- "restock happens even when empty" → a transition with no guard.
+
+Underline every rule sentence; each one is one `if` (or one
+deliberate absence of an `if`). Then implement the class in spec
+order — constructor first, transitions next, accessors last — and
+re-read the rules against your ifs. A missing guard is invisible in
+the happy path; that is why the graders wrote hidden tests for it.

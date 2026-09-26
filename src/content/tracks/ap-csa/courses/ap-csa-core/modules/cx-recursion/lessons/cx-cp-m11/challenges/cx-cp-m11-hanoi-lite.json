@@ -1,0 +1,16 @@
+{
+  "id": "cx-cp-m11-hanoi-lite",
+  "title": "Checkpoint: tower moves",
+  "prompt": "Implement `int moves(int n)`: the number of single-disk moves to shift an n-disk tower (the classic recurrence: move n−1 aside, move 1, move n−1 back → moves(n) = 2·moves(n−1) + 1, base moves(0) = 0). Then implement `void plan(int n)` printing one line per move: \"disk k: A->B\" style lines for the 3-disk solution is overkill — instead print just the COUNT pattern: plan(n) prints n lines \"step i\" for i = 1..n. (Both are graded; moves is the recursion, plan is the print-order discipline.)",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int moves(int n) {\n        return 0; // replace\n    }\n\n    public static void plan(int n) {\n        // replace: print \"step 1\" .. \"step n\", one per line, recursively\n    }\n}\n",
+  "tests": [
+    {
+      "name": "recurrence and print order",
+      "code": "\nCjTestBase.checkEq(Solution.moves(0), 0, \"no disks, no moves\");\nCjTestBase.checkEq(Solution.moves(1), 1, \"one move\");\nCjTestBase.checkEq(Solution.moves(3), 7, \"the classic 7-move solution\");\nCjTestBase.checkEq(Solution.moves(10), 1023, \"2^10 - 1\");\nString out = CjTestBase.capture(() -> Solution.plan(3));\nList<String> lines = out.lines().map(String::trim).toList();\nCjTestBase.checkEq(lines, List.of(\"step 1\", \"step 2\", \"step 3\"), \"ascending print order\");\n",
+      "hint": "moves: n <= 0 -> 0; else 2 * moves(n - 1) + 1. plan: if (n <= 0) return; plan(n - 1); println(\"step \" + n) would print DESCENDING — put the print BEFORE the call to get ascending."
+    }
+  ],
+  "level": "real-world"
+}

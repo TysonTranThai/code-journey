@@ -1,0 +1,27 @@
+**Truy vết đệ quy là việc ghi sổ, không phải phép màu.** Với chuỗi
+lời gọi một nhánh (`f(n) = f(n-1) + n`), trải xuống đáy, rồi cuộn
+ngược lên, mỗi tầng một giá trị:
+
+```java
+public static int f(int n) {
+    if (n <= 0) { return 1; }
+    return f(n - 1) + n;
+}
+// f(4): f(3)+4 ... f(0)=1 → 1+1=2 → 2+2=4 → 4+3=7 → 7+4=11
+```
+
+Hai lỗi học sinh hay mắc: dừng việc cuộn sớm một tầng (lệch một từ
+trường hợp cơ sở đến phép cộng đầu), và đọc sai giá trị của trường hợp
+cơ sở (1 với 0 đổi thay mọi thứ — truy vết, đừng giả định).
+
+**Với đệ quy hai nhánh** (`mystery(n-1) + 2` so với `mystery(n-1) *
+2` chọn theo tính chẵn lẻ), chuỗi vẫn tuyến tính ở đây — mỗi lời gọi
+chỉ chạy MỘT nhánh — nhưng nhánh *đổi* khi n đổi. Vẽ chuỗi kèm quyết
+định nhánh ở từng tầng:
+
+```java
+// mystery(5): lẻ → mystery(4)*2; mystery(4): chẵn → mystery(3)+2;
+// mystery(3): lẻ → mystery(2)*2; mystery(2): chẵn → mystery(1)+2;
+// mystery(1): lẻ → mystery(0)*2; mystery(0) = 0
+// cuộn lên: 0*2=0 → 0+2=2 → 2*2=4 → 4+2=6 → 6*2=12
+```

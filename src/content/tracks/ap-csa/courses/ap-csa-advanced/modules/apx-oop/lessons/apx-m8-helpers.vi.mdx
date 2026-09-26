@@ -1,0 +1,23 @@
+**Phương thức trợ giúp là mục ưa thích của bảng điểm.** Một helper
+private chuẩn hóa, kiểm tra, hoặc phân loại biến một phương thức dài
+thành ba lời gọi sạch — và bảng điểm FRQ *nêu tên* việc dùng helper
+là một điểm. Luật thiết kế: nếu một đoạn logic sẽ lặp lại trong hai
+phương thức, nó trở thành helper.
+
+```java
+private boolean isValid(String code) {
+    return code.length() == 4 && code.charAt(0) == 'X';
+}
+```
+
+Chú ý các **bẫy constructor**: bóng che (`price = price`), một trường
+được khởi tạo hai lần, hoặc constructor quên một trường — để nó ở giá
+trị mặc định âm thầm đầu độc mọi lời gọi sau. Hãy truy vết constructor
+như bất kỳ mã nào khác: liệt kê từng trường và giá trị của nó sau khi
+constructor trả về.
+
+**Tương tác đối tượng**: khi một đối tượng giữ đối tượng khác (một
+Register giữ một Drawer), phương thức của đối tượng ngoài gọi đối
+tượng trong — và null luôn là một trạng thái. "Chưa đăng ký gì" thường
+nghĩa là "đối tượng trong là null", và bước chuyển đầu tiên phải chặn
+nó.

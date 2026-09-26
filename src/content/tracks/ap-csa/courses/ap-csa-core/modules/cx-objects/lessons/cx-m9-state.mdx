@@ -1,0 +1,38 @@
+Foundation's class module built single classes. The exam's Class Design
+FRQ hands you a **spec table** — fields, constructor contract, method
+behaviors — and grades exactness. The Core upgrade: treat state as the
+star.
+
+**Every method is state + promise.** For a `VendingMachine`:
+
+```java
+public class VendingMachine {
+    private int cans;          // state
+    private int tokens;        // state
+
+    public VendingMachine(int cans) {   // initial state
+        this.cans = cans;
+        tokens = 0;
+    }
+
+    public boolean insertToken() {      // promise: 1 can per token
+        if (cans == 0) {
+            return false;               // state unchanged
+        }
+        cans--;
+        tokens++;
+        return true;
+    }
+    public int getCans() { return cans; }
+    public int getTokens() { return tokens; }
+}
+```
+
+Reading the spec as state transitions ("insertToken: cans−1, tokens+1,
+but only when cans > 0") beats memorizing syntax. The failed-operation
+branch that leaves state UNCHANGED is the part students forget — and
+the part the FRQ rubric explicitly rewards.
+
+**Design questions before code:** Which values live in fields (they
+must survive between calls)? What is the initial state? Which methods
+mutate (void or report)? Which only read?

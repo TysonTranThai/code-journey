@@ -1,0 +1,16 @@
+{
+  "id": "apx-cp-m9-discount",
+  "title": "Checkpoint: the discount chain",
+  "prompt": "Implement the chain: `Customer.pay(int amount)` returns the amount. `Member extends Customer`: pay returns `super.pay()` minus 5%. `Gold extends Member`: pay returns `super.pay()` minus another 5% (so 90% of the original). Use integer arithmetic exactly as written: Member pays `amount - amount / 20`; Gold pays `amount - amount / 10`.\n\nImplement all three classes and the given `pay` signatures.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Customer {\n        public int pay(int amount) {\n            return 0; // replace: full amount\n        }\n    }\n\n    public static class Member extends Customer {\n        public int pay(int amount) {\n            return 0; // replace: 5% off via amount - amount / 20\n        }\n    }\n\n    public static class Gold extends Member {\n        public int pay(int amount) {\n            return 0; // replace: 10% off via amount - amount / 10\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "discount chain",
+      "code": "\nCjTestBase.checkEq(new Solution.Customer().pay(100), 100, \"no discount\");\nCjTestBase.checkEq(new Solution.Member().pay(100), 95, \"5 percent off\");\nCjTestBase.checkEq(new Solution.Gold().pay(100), 90, \"10 percent off\");\nCjTestBase.checkEq(new Solution.Gold().pay(99), 90, \"integer division: 99/10 = 9, so 99-9\");\n",
+      "hint": "Each level computes its own discount on the ORIGINAL amount (no super needed here) — or chains via super; both must yield 95/90."
+    }
+  ],
+  "level": "independent"
+}

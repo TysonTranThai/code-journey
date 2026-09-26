@@ -1,0 +1,16 @@
+{
+  "id": "apx-m5-rle",
+  "title": "Run-length encode (flush the last run)",
+  "prompt": "Encode runs as `<char><count>`: \"aaabbbcc\" → \"a3b3c2\". Runs of length 1 still get the count. Implement `process(String s)` (empty string encodes to the empty string).\n\nThis is the flush trap: the final run ends at the loop's last index, not inside it.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String process(String s) {\n        return \"\"; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "run-length encoding",
+      "code": "\nCjTestBase.checkEq(Solution.process(\"aaabbbcc\"), \"a3b3c2\", \"basic encoding\");\nCjTestBase.checkEq(Solution.process(\"\"), \"\", \"empty\");\nCjTestBase.checkEq(Solution.process(\"x\"), \"x1\", \"single char gets count\");\nCjTestBase.checkEq(Solution.process(\"ab\"), \"a1b1\", \"alternating\");\n",
+      "hint": "Count runs; when the char changes (or the loop ends), append charAt(i-1) and the count."
+    }
+  ],
+  "level": "real-world"
+}

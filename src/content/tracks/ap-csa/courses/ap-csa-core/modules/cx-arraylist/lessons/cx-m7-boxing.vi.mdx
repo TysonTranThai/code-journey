@@ -1,0 +1,35 @@
+ArrayList chứa đối tượng, nên `ArrayList<Integer>` cất các hộp Integer —
+và phép toán số học lặng lẽ mở hộp:
+
+```java
+ArrayList<Integer> nums = new ArrayList<Integer>();
+nums.add(7);
+int x = nums.get(0) + 1;          // mở hộp thành int, x = 8
+Integer boxed = nums.get(0);
+if (boxed == 7) { ... }           // true: so sánh sau khi mở hộp
+if (nums.get(0) == new Integer(7)) { ... }  // so sánh int, true
+```
+
+Nhưng giữa hai Integer với nhau, `==` so tham chiếu:
+
+```java
+Integer a = 200, b = 200;
+if (a == b) { }          // false ngoài vùng đệm giá trị nhỏ!
+if (a.equals(b)) { }     // true — luôn so đối tượng bằng equals
+```
+
+(Vùng đệm giá trị nhỏ khiến `-128..127` đôi khi so bằng được với `==` —
+một cái bẫy chỉ *trông* đáng tin trong bài kiểm tra.)
+
+FRQ ArrayList của đề thi luôn bọc một lớp thật:
+
+```java
+ArrayList<Member> roster = new ArrayList<Member>();
+for (Member m : roster) {
+    if (m.getPoints() >= threshold) { count++; }
+}
+```
+
+For-each hoàn hảo để đọc; khoảnh khắc bạn phải **xóa**, hãy chuyển sang
+vòng lặp có chỉ số. Và kỷ luật length-vs-size: mảng dùng `.length`
+(không ngoặc), String dùng `.length()`, ArrayList dùng `.size()`.

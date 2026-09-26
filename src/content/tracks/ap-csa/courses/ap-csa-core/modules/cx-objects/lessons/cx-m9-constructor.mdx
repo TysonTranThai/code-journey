@@ -1,0 +1,30 @@
+Constructor bugs are the exam's favorite class questions, because they
+look like working code:
+
+**Shadowing** — the parameter hides the field:
+```java
+private String name;
+public Player(String name) {
+    name = name;      // assigns the parameter to itself!
+}
+```
+Fix: `this.name = name;`. Symptom: getters return null/0 forever.
+
+**Silent drop** — the parameter never mentioned:
+```java
+public Player(String n) { }   // fields stay at defaults
+```
+
+**Wrong default thinking.** Fields get Java defaults (0, null, false)
+BEFORE the constructor runs. A constructor that only sets half the
+fields silently chooses defaults for the rest — sometimes correct by
+luck, usually wrong.
+
+**Order of initialization:** field initializers run in declaration
+order, then the constructor body. `private int count = 3;` plus a
+constructor assigning `count = 0` ends at 0 — later assignment wins.
+
+**Static vs instance (rarely the answer, know the shape):** a static
+field is shared by all objects (one row); instance fields are one row
+per object. `private static int created;` counts every constructor call
+— an exam favorite for "how many objects were made?" questions.

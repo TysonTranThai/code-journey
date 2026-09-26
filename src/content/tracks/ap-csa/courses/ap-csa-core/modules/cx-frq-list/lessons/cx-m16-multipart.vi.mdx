@@ -1,0 +1,32 @@
+Q3 đa phần: phần (a) tính, phần (b) tiêu thụ phần (a).
+
+*"Bạn được viết một hàm trợ giúp private."*
+
+```java
+// (a) private int maxGap(ArrayList<Integer> temps):
+//     hiệu lớn nhất giữa hai phần tử LIỀN KỀ; 0 cho size < 2.
+private int maxGap(ArrayList<Integer> temps) {
+    if (temps.size() < 2) { return 0; }
+    int best = 0;
+    for (int i = 1; i < temps.size(); i++) {
+        int gap = Math.abs(temps.get(i) - temps.get(i - 1));
+        if (gap > best) { best = gap; }
+    }
+    return best;
+}
+
+// (b) public boolean unstable(ArrayList<Integer> temps):
+//     true khi maxGap từ 10 trở lên.
+public boolean unstable(ArrayList<Integer> temps) {
+    return maxGap(temps) >= 10;
+}
+```
+
+Phần (a) là quét-liền-kề + bộ cộng dồn; phần (b) là một phép so sánh.
+Phần (b) của đề thi thường đảo một góc nhìn: "có bao nhiêu vị trí có
+khoảng cách ≥ 10?" — khi đó (b) đếm các khoảng-cách-đạt-chuẩn thay vì
+trả về boolean, tái dùng cùng hàm trợ giúp.
+
+Trực giác săn-điểm: nếu (b) bí, nộp một (a) đúng với hàm trợ giúp đúng
+vẫn mang về đa số điểm của câu. Đừng bao giờ hy sinh tính đúng của (a)
+để đánh bạc với (b).

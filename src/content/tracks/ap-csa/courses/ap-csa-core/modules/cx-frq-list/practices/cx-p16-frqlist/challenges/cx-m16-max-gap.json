@@ -1,0 +1,16 @@
+{
+  "id": "cx-m16-max-gap",
+  "title": "Q3: helper + consumer",
+  "prompt": "Implement both parts: `maxGap` (adjacency accumulator with the size<2 guard) and `unstable` (one comparison reusing it). Part (b) consuming part (a) is the graded shape.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "import java.util.ArrayList;\n\npublic class Solution {\n    // (a) CONTRACT: largest absolute difference between ADJACENT\n    //     entries; 0 when size < 2.\n    // (b) CONTRACT: true when the largest gap is 10 or more.\n    public static int maxGap(ArrayList<Integer> temps) {\n        return 0; // replace\n    }\n\n    public static boolean unstable(ArrayList<Integer> temps) {\n        return false; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "gap and verdict",
+      "code": "\nArrayList<Integer> a = new ArrayList<Integer>();\na.add(3); a.add(5); a.add(18); a.add(20);\nCjTestBase.checkEq(Solution.maxGap(a), 13, \"5 -> 18\");\nCjTestBase.checkEq(Solution.unstable(a), true, \"13 >= 10\");\nArrayList<Integer> b = new ArrayList<Integer>();\nb.add(1); b.add(4);\nCjTestBase.checkEq(Solution.maxGap(b), 3, \"small gap\");\nCjTestBase.checkEq(Solution.unstable(b), false, \"3 < 10\");\nArrayList<Integer> c = new ArrayList<Integer>();\nc.add(0); c.add(10);\nCjTestBase.checkEq(Solution.unstable(c), true, \"gap exactly 10 counts\");\nCjTestBase.checkEq(Solution.maxGap(new ArrayList<Integer>()), 0, \"empty guard\");\nCjTestBase.checkEq(Solution.unstable(new ArrayList<Integer>()), false, \"empty is stable\");\n",
+      "hint": "maxGap guards size < 2, then adjacency-scan with Math.abs; unstable is maxGap >= 10."
+    }
+  ],
+  "level": "real-world"
+}

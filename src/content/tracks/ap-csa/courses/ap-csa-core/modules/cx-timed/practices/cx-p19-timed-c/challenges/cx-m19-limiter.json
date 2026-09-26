@@ -1,0 +1,16 @@
+{
+  "id": "cx-m19-limiter",
+  "title": "Timed set C-2",
+  "prompt": "No topic label, exam tempo. A spec-table class with an internal state transition (stuck at 3). Order matters: increment, THEN test the threshold.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // UNLABELED. Complete the class per its table:\n    // private int count (starts 0); private boolean stuck (starts false)\n    // void bump() — when NOT stuck: count++; when count reaches 3,\n    //   set stuck = true\n    // void unstick() — stuck = false (count unchanged)\n    // int getCount() / boolean isStuck()\n    public static class Limiter {\n        // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "limiter sticks",
+      "code": "\nSolution.Limiter l = new Solution.Limiter();\nCjTestBase.checkEq(l.getCount(), 0, \"starts 0\");\nl.bump(); l.bump();\nCjTestBase.checkEq(l.isStuck(), false, \"not yet\");\nl.bump();\nCjTestBase.checkEq(l.getCount(), 3, \"three bumps\");\nCjTestBase.checkEq(l.isStuck(), true, \"stuck at 3\");\nl.bump();\nCjTestBase.checkEq(l.getCount(), 3, \"stuck: no more growth\");\nl.unstick();\nCjTestBase.checkEq(l.isStuck(), false, \"free again\");\nl.bump();\nCjTestBase.checkEq(l.getCount(), 4, \"grows after unstick\");\n",
+      "hint": "bump(): if (!stuck) { count++; if (count >= 3) stuck = true; }"
+    }
+  ],
+  "level": "real-world"
+}

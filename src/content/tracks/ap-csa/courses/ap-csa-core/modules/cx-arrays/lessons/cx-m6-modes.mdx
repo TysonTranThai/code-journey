@@ -1,0 +1,31 @@
+Arrays are the exam's heaviest topic (Data Collections is 30–40% of the
+MCQ section). Every array question is a traversal in one of four modes —
+name the mode before writing code:
+
+**Forward index scan** — the default; use when you need indexes:
+```java
+for (int i = 0; i < arr.length; i++) { ... arr[i] ... }
+```
+**For-each** — when you only read values, never indexes:
+```java
+for (int v : arr) { ... }
+```
+**Reverse scan** — when removals or right-to-left order matter:
+```java
+for (int i = arr.length - 1; i >= 0; i--) { ... }
+```
+**Pairwise (adjacent) scan** — neighbor logic; loop to `length - 1`
+(and read `arr[i + 1]`), or start at 1 and read `arr[i - 1]`:
+```java
+for (int i = 0; i < arr.length - 1; i++) { compare arr[i] and arr[i + 1]; }
+```
+
+Choosing the wrong mode is the #1 structural mistake: modifying while
+forward-iterating, or needing the index inside a for-each (impossible —
+the loop variable is a *copy* of the element, so `v = 5` changes
+nothing).
+
+**Boundary drill:** for `{10, 20, 30}` — `arr.length` is 3, valid
+indexes are 0..2, `arr[arr.length - 1]` is the last element, and
+`arr[arr.length]` throws `ArrayIndexOutOfBoundsException`. Every MCQ
+that "throws an exception" is testing exactly this.

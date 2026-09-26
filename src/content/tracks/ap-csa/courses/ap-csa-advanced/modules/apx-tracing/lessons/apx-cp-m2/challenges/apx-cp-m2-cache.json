@@ -1,0 +1,16 @@
+{
+  "id": "apx-cp-m2-cache",
+  "title": "Checkpoint: the two-branch machine",
+  "prompt": "Trace this class and sequence, then return the **final** value of `probe()`:\n\n```java\npublic class Gate {\n    private static int visits = 0;\n    private int passes;\n    private int blocked;\n    public Gate() { passes = 0; blocked = 0; }\n    public void enter(boolean ok) {\n        visits++;\n        if (ok) { passes++; }\n        else {\n            blocked++;\n            if (blocked > 2) { passes = 0; }\n        }\n    }\n    public int probe() { return passes * 10 + blocked; }\n}\n```\n\nCalls: `new Gate()`, then `enter(true); enter(false); enter(false); enter(false); enter(true);`.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int result() {\n        return 0; // replace: the final value asked for in the prompt\n    }\n}\n",
+  "tests": [
+    {
+      "name": "probe after sequence",
+      "code": "\nCjTestBase.checkEq(Solution.result(), 13, \"passes 1 * 10 + blocked 3\");\n",
+      "hint": "blocked reaches 3 on the third false → passes reset to 0; the final true makes passes 1. probe = 1*10 + 3."
+    }
+  ],
+  "level": "combination"
+}

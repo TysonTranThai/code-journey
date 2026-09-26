@@ -1,0 +1,16 @@
+{
+  "id": "apx-m1-nesting",
+  "title": "Nesting depth from a spec",
+  "prompt": "A log line encodes nested calls with `<` for *call* and `>` for *return*. Compute the **maximum nesting depth** reached. If at any point a `>` occurs when nothing is open (or the log ends with calls still open), the log is malformed: return **-1**. An empty log is well-formed with depth 0. Implement `depth(String log)`.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int depth(String log) {\n        return 0; // replace: max nesting depth; malformed log -> -1\n    }\n}\n",
+  "tests": [
+    {
+      "name": "depth incl. malformed",
+      "code": "\nCjTestBase.checkEq(Solution.depth(\"\"), 0, \"empty ok\");\nCjTestBase.checkEq(Solution.depth(\"<<><>>\"), 2, \"two levels\");\nCjTestBase.checkEq(Solution.depth(\"<><<>>\"), 2, \"reopen after close\");\nCjTestBase.checkEq(Solution.depth(\">\"), -1, \"close with nothing open\");\nCjTestBase.checkEq(Solution.depth(\"<<>\"), -1, \"left open at end\");\n",
+      "hint": "One pass: increment on '<', decrement on '>', track max, fail if count ever negative or final count not zero."
+    }
+  ],
+  "level": "real-world"
+}

@@ -1,0 +1,45 @@
+Index algebra is a skill you practice on paper. Three workhorses:
+
+**Min/max with the index.** Track the position, not the value, when the
+answer needs a location:
+
+```java
+int best = 0;
+for (int i = 1; i < arr.length; i++) {
+    if (arr[i] > arr[best]) { best = i; }
+}
+return best;   // index of max (first on ties)
+```
+
+**Left/right neighbors.** "Every element bigger than both neighbors":
+
+```java
+for (int i = 1; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i - 1] && arr[i] > arr[i + 1]) { count++; }
+}
+```
+
+The bounds exclude index 0 and the last index — they have only one
+neighbor. Off-by-one here changes the answer silently.
+
+**Rotation.** Shift everything right by 1, last wraps to front:
+
+```java
+int[] out = new int[arr.length];
+for (int i = 0; i < arr.length; i++) {
+    out[(i + 1) % arr.length] = arr[i];
+}
+```
+
+Or the in-place copy form most students find clearer:
+
+```java
+for (int i = 0; i < arr.length - 1; i++) {
+    out[i + 1] = arr[i];
+}
+out[0] = arr[arr.length - 1];
+```
+
+Single-element and empty arrays are the two inputs that break careless
+rotations — run them in your head first. Note `arr.length - 1` in the
+loop bound: with `arr.length`, `out[i + 1]` walks off the end.

@@ -1,0 +1,22 @@
+Nền tảng đã dạy hình dạng của đệ quy; đề thi chấm **kỷ luật biên**. Mỗi
+phương thức đệ quy là hai hợp đồng:
+
+1. **Trường hợp cơ sở** — đầu vào nhỏ nhất, trả lời trực tiếp, KHÔNG có
+   lời gọi đệ quy. Với mảng/chuỗi, thường là đầu vào *rỗng* hoặc
+   *một-phần-tử*.
+2. **Trường hợp đệ quy** — thu nhỏ về phía cơ sở, kết hợp, trả về. Phép
+   thu nhỏ phải *chứng minh được là nhỏ hơn*: `n - 1`, `i + 1`,
+   `substring(1)`.
+
+Hai chữ ký thất bại (đều là mục yêu thích của đề thi):
+
+- **Sai giá trị cơ sở**: `fact(0) = 1` theo định nghĩa; trả về 0 ở đó
+  sẽ nhân mọi thứ thành 0. Một hạt giống sai đầu độc cả cây — mã trông
+  đúng và mọi bài kiểm tra không-tầm-thường đều trượt.
+- **Thiếu trường hợp cơ sở** (hoặc không thể chạm tới): đệ quy vô hạn →
+  `StackOverflowError`. Với câu truy vết, hãy đếm khung: nếu n không bao
+  giờ chạm giá trị cơ sở, phương thức không bao giờ trả về.
+
+Luật quyết định: khi trường hợp cơ sở chạy, đáp án phải dựng được với
+**không** thông tin bổ sung. Nếu trường hợp cơ sở của bạn vẫn cần gọi
+thứ gì đó, nó không phải trường hợp cơ sở.

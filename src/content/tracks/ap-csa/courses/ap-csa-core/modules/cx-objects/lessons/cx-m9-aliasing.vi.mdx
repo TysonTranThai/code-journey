@@ -1,0 +1,45 @@
+Hai tên, một đối tượng — bí danh cắn dữ nhất trong mã lớp:
+
+```java
+Scorecard s = new Scorecard();
+Scorecard t = s;          // CÙNG đối tượng
+t.add(10);
+System.out.println(s.getTotal());   // 10 — không phải 0!
+```
+
+Cái bẫy anh em: **không nhận kết quả tức không có tác dụng** với kết-quả
+kiểu bất biến:
+
+```java
+String name = "ann";
+name.toUpperCase();               // kết quả bị vứt!
+System.out.println(name);         // "ann"
+```
+
+String là bất biến — phương thức trả về chuỗi MỚI; bạn phải bắt lấy kết
+quả. Đối tượng như Scorecard là khả biến — phương thức đổi chính đối
+tượng, và sự thay đổi nhìn thấy qua mọi bí danh.
+
+Cái bẫy bí danh thứ ba: trả về một trường riêng tư khả biến:
+
+```java
+private int[] data;
+public int[] getData() { return data; }   // giao nộp bản thật!
+```
+
+Người gọi giờ có thể biến đổi trạng thái của bạn qua tham chiếu được
+trả. Đề thi chủ yếu dạy điều này như "đóng gói" — câu trả lời vững là
+`return new int[...]` (bản sao) khi được hỏi "làm sao bảo vệ trạng
+thái?"
+
+**Nhiều đối tượng tương tác:**
+
+```java
+Account a = new Account(100);
+Account b = new Account(30);
+a.transferTo(b, 40);   // a: 60, b: 70 — một phương thức biến đổi HAI đối tượng
+```
+
+Truy vết chúng như hai hàng trong bảng trạng thái (hàng đối tượng của
+Module 2), nay với một phương thức cập nhật cả hai hàng trong một lời
+gọi.

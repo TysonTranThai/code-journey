@@ -1,0 +1,16 @@
+{
+  "id": "apx-m15-fix-last",
+  "title": "Fix: last-index search",
+  "prompt": "The method should return the **last** index where target appears, or -1. It sometimes returns -1 even when the target is present late in the array. Find and fix the bug.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SPEC: return the LAST index where target appears, or -1\n    public static int lastIndex(int[] arr, int target) {\n        for (int i = arr.length - 1; i >= 0; i--) {\n            if (arr[i] == target) {\n                return i;\n            }\n        }\n        return -1;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "corrected search",
+      "code": "\nCjTestBase.checkEq(Solution.lastIndex(new int[]{4, 2, 4, 2, 9}, 4), 2, \"last 4\");\nCjTestBase.checkEq(Solution.lastIndex(new int[]{4, 2, 9}, 4), 0, \"only at index 0\");\nCjTestBase.checkEq(Solution.lastIndex(new int[]{4, 2, 4, 2, 9}, 2), 3, \"last 2\");\nCjTestBase.checkEq(Solution.lastIndex(new int[]{1, 2}, 3), -1, \"absent\");\nCjTestBase.checkEq(Solution.lastIndex(new int[]{}, 5), -1, \"empty\");\n",
+      "hint": "The backward loop bound is wrong — i must be able to reach index 0 (use i >= 0, or fix the start)."
+    }
+  ],
+  "level": "debugging"
+}

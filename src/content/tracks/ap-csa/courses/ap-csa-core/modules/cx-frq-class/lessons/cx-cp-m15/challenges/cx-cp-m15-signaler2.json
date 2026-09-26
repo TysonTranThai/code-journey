@@ -1,0 +1,16 @@
+{
+  "id": "cx-cp-m15-signaler2",
+  "title": "Checkpoint: extended spec table",
+  "prompt": "Complete `Signaler2`: three fields, ordered mutator, and the subtle rule that reset() clears level/streak but NOT boosts. The table's parenthetical ('boosts KEEPS counting') is an obligation, not a remark.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // FULL Q2 SPEC — Signaler, extended:\n    // fields: int level (starts 1); int streak (starts 0); int boosts (starts 0)\n    // void boost()    — level += streak; THEN streak++; THEN boosts++\n    // void reset()    — level = 1; streak = 0  (boosts KEEPS counting)\n    // int getLevel() / int getStreak() / int getBoosts()\n    public static class Signaler2 {\n        // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "extended spec honored",
+      "code": "\nSolution.Signaler2 s = new Solution.Signaler2();\ns.boost(); s.boost(); s.boost();\nCjTestBase.checkEq(s.getLevel(), 4, \"1+0, 1+1, 2+2\");\nCjTestBase.checkEq(s.getBoosts(), 3, \"three boosts\");\ns.reset();\nCjTestBase.checkEq(s.getLevel(), 1, \"reset level\");\nCjTestBase.checkEq(s.getStreak(), 0, \"reset streak\");\nCjTestBase.checkEq(s.getBoosts(), 3, \"boosts SURVIVE reset\");\ns.boost();\nCjTestBase.checkEq(s.getBoosts(), 4, \"keeps counting after reset\");\n",
+      "hint": "reset(): level = 1; streak = 0; — do NOT touch boosts."
+    }
+  ],
+  "level": "real-world"
+}

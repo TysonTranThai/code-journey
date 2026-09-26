@@ -1,0 +1,27 @@
+Exam questions present **plausible near-misses**. The skill is
+elimination by contract, not by vibes. The four elimination probes:
+
+1. **The empty probe.** What happens with length 0 / "" / empty list?
+   A solution that reads element 0 unguarded dies here.
+2. **The single probe.** One element: does a seeded-max or adjacency
+   scan handle it? Adjacency loops from 1 or to length − 1 do nothing —
+   correct or not, depending on the contract.
+3. **The all-equal probe.** Every value identical: tie-breaking (strict
+   vs non-strict) decides.
+4. **The order probe.** Run the trace on a *sorted* and a *reverse*
+   input: order-dependent bugs (first vs last, min vs max) expose
+   themselves in one of the two.
+
+Apply to this candidate solution for *"index of the smallest value,
+earliest on ties"*:
+
+```java
+int best = 0;
+for (int i = 1; i < arr.length; i++) {
+    if (arr[i] <= arr[best]) { best = i; }   // probe 3: fails
+}
+```
+
+The all-equal probe `{7, 7}`: i=1, `7 <= 7` true, best becomes 1 — the
+LAST tie. Contract says earliest. The `<=` must be `<`. One probe, one
+character, one eliminated answer.

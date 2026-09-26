@@ -1,0 +1,36 @@
+The exam's inheritance questions all resolve to one question: **which
+method body actually runs?** The answer is the *object's* class, never
+the reference's type — except constructors.
+
+```java
+public class Animal {
+    public String speak() { return "..."; }
+    public String name() { return "animal"; }
+}
+
+public class Dog extends Animal {
+    public String speak() { return "Woof"; }   // OVERRIDES
+}
+
+Animal a = new Dog();
+System.out.println(a.speak());   // "Woof" — the DOG's method
+System.out.println(a.name());    // "animal" — inherited, not overridden
+```
+
+`a` is declared as Animal but holds a Dog: every non-constructor call
+dispatches on the real object. Write the **dispatch table** — one row
+per method, naming the class whose body executes:
+
+| call         | body that runs |
+| ------------ | -------------- |
+| `a.speak()`  | Dog.speak      |
+| `a.name()`   | Animal.name    |
+
+**What an override can change:** only the body (and it may not weaken
+visibility). **What it cannot change:** the signature — change a
+parameter type and you have *overloaded* instead, and the superclass
+version still runs for old calls. This silent-overload trap is the #1
+inheritance MCQ.
+
+`super.method(args)` calls the parent's version explicitly — used when
+the override extends rather than replaces the parent behavior.

@@ -1,0 +1,16 @@
+{
+  "id": "cx-m12-best-price",
+  "title": "Object list + sentinel + min",
+  "prompt": "Implement `double bestPrice(ArrayList<Sale> sales, String item)`: smallest cents among that item's sales as a double, −1.0 when absent. Three machines: object for-each with a filter, a seeded min, and a sentinel for absence.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "import java.util.ArrayList;\n\npublic class Solution {\n    public static class Sale {\n        private String item;\n        private int cents;\n        public Sale(String item, int cents) { this.item = item; this.cents = cents; }\n        public String getItem() { return item; }\n        public int getCents() { return cents; }\n    }\n\n    // CONTRACT: among sales of item, return the SMALLEST cents as a\n    // double; -1.0 when the item never appears.\n    public static double bestPrice(ArrayList<Sale> sales, String item) {\n        return 0; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "best price found",
+      "code": "\nArrayList<Solution.Sale> sales = new ArrayList<Solution.Sale>();\nsales.add(new Solution.Sale(\"pen\", 300));\nsales.add(new Solution.Sale(\"ink\", 1200));\nsales.add(new Solution.Sale(\"pen\", 250));\nCjTestBase.checkNear(Solution.bestPrice(sales, \"pen\"), 250.0, 1e-9, \"min of pen\");\nCjTestBase.checkNear(Solution.bestPrice(sales, \"ink\"), 1200.0, 1e-9, \"single match\");\nCjTestBase.checkNear(Solution.bestPrice(sales, \"glue\"), -1.0, 1e-9, \"absent sentinel\");\n",
+      "hint": "Seed best = -1; when found, seed from the first match, keep strict <."
+    }
+  ],
+  "level": "real-world"
+}

@@ -1,0 +1,25 @@
+**Nested loops and invariants.** When the loop nest is too deep to
+simulate fully, find the *pattern of the inner loop's total*:
+
+```java
+for (int i = 0; i < n; i++) {
+    for (int j = i; j < n; j++) {
+        count++;
+    }
+}
+```
+
+`count` gains `n + (n-1) + ... + 1` — n(n+1)/2. Recognizing the
+arithmetic series beats simulating 6 rows, and the exam counts on you
+seeing it. The general kit:
+
+- **Sum shapes**: constant per pass → multiply; growing per pass →
+  series; halving per pass → logarithmic.
+- **Order of updates**: does the inner loop restart the accumulator?
+  Does the outer loop read what the inner wrote?
+- **Break/continue position**: a `break` inside the inner loop changes
+  the *shape* of the series, not just the count.
+
+When in doubt on the real exam, simulate a *small* n (2 or 3) and
+generalize — small-case simulation plus pattern is faster and safer
+than full tracing.

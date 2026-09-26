@@ -1,0 +1,39 @@
+**Navigation Q4s** — the hardest variant: walk from a cell according
+to a rule.
+
+*"From (row, col), repeatedly move to the adjacent cell with the
+smallest value (ties: up, left, right, down); stop when no neighbor is
+smaller; return the number of moves."*
+
+```java
+public int descent(int[][] grid, int row, int col) {
+    int moves = 0;
+    int[][] dirs = { {-1, 0}, {0, -1}, {0, 1}, {1, 0} };
+    while (true) {
+        int best = grid[row][col];
+        int br = -1, bc = -1;
+        for (int[] d : dirs) {
+            int nr = row + d[0], nc = col + d[1];
+            if (nr >= 0 && nr < grid.length && nc >= 0 && nc < grid[0].length) {
+                if (grid[nr][nc] < best) {
+                    best = grid[nr][nc];
+                    br = nr;
+                    bc = nc;
+                }
+            }
+        }
+        if (br == -1) { return moves; }
+        row = br; col = bc; moves++;
+    }
+}
+```
+
+Reading it: candidate-collection (four guarded reads), a seeded min,
+and a sentinel stop. Note the tie rule encoded by the DIRECTION
+ORDER: scanning up→left→right→down with strict `<` keeps the FIRST
+preferred direction on ties — the ordering is part of the
+specification.
+
+Grid walks also test termination: a move rule that can revisit cells
+needs a visited guard or a step cap (the CP8 path pattern) — check the
+prompt for which it wants.

@@ -1,0 +1,16 @@
+{
+  "id": "apx-cp-m8-locker",
+  "title": "Checkpoint: the locker room",
+  "prompt": "Implement the `Locker` class: constructor takes the number of lockers. `claim(name)` assigns the **lowest-numbered free locker** to name and returns the locker number (1-based), or -1 when full. `release(num)` frees that locker (silently ignoring invalid or already-free numbers). `owner(num)` returns the current owner's name or null. Use an array of String.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Locker {\n        public Locker(int size) {\n        }\n\n        public int claim(String name) {\n            return -1;\n        }\n\n        public void release(int num) {\n        }\n\n        public String owner(int num) {\n            return null;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "locker lifecycle",
+      "code": "\nSolution.Locker l = new Solution.Locker(3);\nCjTestBase.checkEq(l.claim(\"Ann\"), 1, \"first claim gets 1\");\nCjTestBase.checkEq(l.claim(\"Bob\"), 2, \"second claim gets 2\");\nl.release(1);\nCjTestBase.checkEq(l.claim(\"Cat\"), 1, \"lowest free is reused\");\nCjTestBase.checkTrue(l.owner(3) == null, \"locker 3 still free\");\nCjTestBase.checkEq(l.owner(2), \"Bob\", \"Bob still holds 2\");\n",
+      "hint": "Scan 0..size-1 for the first free slot; null marks free; validate num bounds in release/owner."
+    }
+  ],
+  "level": "real-world"
+}

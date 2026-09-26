@@ -1,0 +1,40 @@
+Traps are just patterns wearing a disguise. Each of these fails a
+plausible-looking test:
+
+**Trap 1 — the runaway initializer.**
+
+```java
+int max = 0;                    // wrong when all values are negative
+for (int v : arr) { if (v > max) { max = v; } }
+```
+
+Fix: seed with `arr[0]` (requires `arr.length >= 1`, which the spec will
+state as a precondition).
+
+**Trap 2 — the fencepost loop.** Print `1 2 3` with dashes *between*:
+`-` must be printed before every element except the first.
+
+```java
+for (int i = 0; i < arr.length; i++) {
+    if (i > 0) { System.out.print("-"); }
+    System.out.print(arr[i]);
+}
+```
+
+The general rule: N items need N−1 separators. Count the posts, count the
+fences.
+
+**Trap 3 — the off-by-one range.** "Elements at odd *positions*"
+(positions 1, 3, 5...) means indexes 0, 2, 4 in 0-based Java. "Every
+second element starting at the first" is indexes 0, 2, 4 too. Draw
+index numbers over the elements before writing the loop bounds.
+
+**Trap 4 — the boundary comparison.** `<=` vs `<` in `i < arr.length`
+decides whether the last element participates. When a loop *should*
+touch every element, `<` with `arr.length` is right; adding `<=` walks
+off the end with `ArrayIndexOutOfBoundsException`.
+
+**Trap 5 — early exit forgotten.** Scanning for one match without
+`break`/`return` overwrites the result (Module 1's `findFirst`). Ask of
+every search loop: "can the answer change after it is already decided?"
+If yes, you needed an exit.

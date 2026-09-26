@@ -1,0 +1,36 @@
+ArrayLists hold objects, so `ArrayList<Integer>` stores Integer boxes —
+and arithmetic quietly unboxes them:
+
+```java
+ArrayList<Integer> nums = new ArrayList<Integer>();
+nums.add(7);
+int x = nums.get(0) + 1;          // unboxes to int, x = 8
+Integer boxed = nums.get(0);
+if (boxed == 7) { ... }           // true: unboxing comparison
+if (nums.get(0) == new Integer(7)) { ... }  // int comparison, true
+```
+
+But between two Integers, `==` compares references:
+
+```java
+Integer a = 200, b = 200;
+if (a == b) { }          // false outside the small-value cache!
+if (a.equals(b)) { }     // true — always compare objects with equals
+```
+
+(The small-value cache makes `-128..127` sometimes compare equal with
+`==` — a trap that only *looks* reliable in tests.)
+
+The exam's ArrayList FRQ always wraps a real class:
+
+```java
+ArrayList<Member> roster = new ArrayList<Member>();
+for (Member m : roster) {
+    if (m.getPoints() >= threshold) { count++; }
+}
+```
+
+For-each is perfect for reading; the moment you must **remove**,
+switch to an indexed loop. And the length-vs-size discipline:
+arrays use `.length` (no parens), Strings use `.length()`,
+ArrayLists use `.size()`.

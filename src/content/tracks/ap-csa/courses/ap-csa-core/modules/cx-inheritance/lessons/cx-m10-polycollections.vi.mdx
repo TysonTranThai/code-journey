@@ -1,0 +1,32 @@
+Bộ sưu tập đa hình — hình tổng hợp của đề thi:
+
+```java
+ArrayList<Animal> zoo = new ArrayList<Animal>();
+zoo.add(new Dog());          // Dog is-an Animal
+zoo.add(new Animal());
+zoo.add(new Dog());
+for (Animal a : zoo) {
+    System.out.println(a.speak());   // Woof, ..., Woof
+}
+```
+
+Một vòng lặp, ba đối tượng, hai hành vi — kiểu tham chiếu là Animal,
+điều phối theo từng đối tượng. Xóa-theo-nội-dung hay đếm-theo-hành-vi
+trên danh sách dạng này chính là biến thể FRQ: "bao nhiêu con vật kêu
+Woof?" là một for-each cộng một phép truy vết điều phối.
+
+**Câu hỏi ép kiểu.** `Animal a = new Dog(); Dog d = a;` KHÔNG biên dịch
+— Animal không được biết là Dog. `Dog d = (Dog) a;` biên dịch và chạy
+được (a thật sự giữ một Dog). `(Cat) a` biên dịch được nhưng ném
+ClassCastException lúc chạy. Đề thi hỏi dòng nào trong ba dòng trên
+biên dịch/chạy — luật: **ép-lên miễn phí, ép-xuống cần ép kiểu tường
+minh, ép-xuống sai nổ tung lúc chạy.**
+
+**Cái bẫy Object.** `equals` nhận Object:
+
+```java
+public boolean equals(Dog other) { ... }   // OVERLOAD, không phải override!
+```
+
+Kiểu tham số phải là Object mới thật sự override. Trong phạm vi AP bạn
+chỉ cần nhận ra hình dạng: cùng chữ ký = override; đổi chữ ký = overload.

@@ -1,0 +1,30 @@
+Mảng là chủ đề nặng nhất của đề thi (Data Collections chiếm 30–40% phần
+MCQ). Mỗi câu mảng là một lượt duyệt theo một trong bốn chế độ — gọi tên
+chế độ trước khi viết mã:
+
+**Quét chỉ số xuôi** — mặc định; dùng khi cần chỉ số:
+```java
+for (int i = 0; i < arr.length; i++) { ... arr[i] ... }
+```
+**For-each** — khi chỉ đọc giá trị, không cần chỉ số:
+```java
+for (int v : arr) { ... }
+```
+**Quét ngược** — khi việc xóa hoặc thứ tự phải-sang-trái quan trọng:
+```java
+for (int i = arr.length - 1; i >= 0; i--) { ... }
+```
+**Quét từng cặp (liền kề)** — logic hàng xóm; lặp đến `length - 1`
+(và đọc `arr[i + 1]`), hoặc bắt đầu từ 1 và đọc `arr[i - 1]`:
+```java
+for (int i = 0; i < arr.length - 1; i++) { so sánh arr[i] và arr[i + 1]; }
+```
+
+Chọn sai chế độ là lỗi cấu trúc số một: vừa duyệt xuôi vừa sửa mảng, hoặc
+cần chỉ số bên trong for-each (bất khả — biến lặp là một *bản sao* của
+phần tử, nên `v = 5` không đổi gì cả).
+
+**Bài tập biên:** với `{10, 20, 30}` — `arr.length` là 3, chỉ số hợp lệ
+0..2, `arr[arr.length - 1]` là phần tử cuối, và `arr[arr.length]` ném
+`ArrayIndexOutOfBoundsException`. Mọi câu MCQ "ném ngoại lệ" đều đang test
+đúng chỗ này.

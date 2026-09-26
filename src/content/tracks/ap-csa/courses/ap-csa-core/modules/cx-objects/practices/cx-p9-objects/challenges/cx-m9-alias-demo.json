@@ -1,0 +1,16 @@
+{
+  "id": "cx-m9-alias-demo",
+  "title": "Predict the alias",
+  "prompt": "`demo` looks like it makes two boxes — it makes ONE, with two names. Trace the three statements, predict the return value, and confirm the code already encodes it (no changes needed): this challenge grades your trace.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Box {\n        private int v;\n        public Box(int v) { this.v = v; }\n        public void set(int v) { this.v = v; }\n        public int get() { return v; }\n    }\n\n    // CONTRACT: demonstrates aliasing. After the three statements below,\n    // return a.get() * 100 + b.get() using the SHARED-object semantics\n    // (b = a aliases the same Box; the last set() wins for both).\n    public static int demo() {\n        Box a = new Box(1);\n        Box b = a;\n        b.set(9);\n        return a.get() * 100 + b.get(); // keep this line; fix nothing\n    }\n}\n",
+  "tests": [
+    {
+      "name": "aliased state",
+      "code": "\nCjTestBase.checkEq(Solution.demo(), 909, \"one Box: both names read 9\");\n",
+      "hint": "b IS a; set(9) changes the only object; 9*100 + 9 = 909."
+    }
+  ],
+  "level": "independent"
+}

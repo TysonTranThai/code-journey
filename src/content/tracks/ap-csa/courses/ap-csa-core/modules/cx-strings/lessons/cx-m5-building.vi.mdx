@@ -1,0 +1,51 @@
+Dựng chuỗi theo đúng cỗ máy cộng dồn, với hai phương ngữ:
+
+**Lọc — giữ các ký tự khớp.**
+
+```java
+String out = "";
+for (int i = 0; i < s.length(); i++) {
+    char c = s.charAt(i);
+    if (Character.isLetter(c)) {
+        out += c;
+    }
+}
+```
+
+**Biến đổi — đổi mỗi ký tự** (ví dụ mọi chữ thường thành chữ hoa bằng
+tay, không dùng `toUpperCase`):
+
+```java
+String out = "";
+for (int i = 0; i < s.length(); i++) {
+    char c = s.charAt(i);
+    if (c >= 'a' && c <= 'z') {
+        out += (char) (c - 'a' + 'A');
+    } else {
+        out += c;
+    }
+}
+```
+
+Phép ép `(char)` rất quan trọng: `c - 'a'` là một khoảng cách số học
+`int` (0–25); cộng `'A'` biến khoảng cách về lại mã ký tự. Truy vết
+`'c'`: `'c' - 'a'` = 2, `'A' + 2` = `'C'`.
+
+**Tách-theo-chỉ-số — substring trong vòng lặp.**
+
+```java
+// phần trước nguyên âm đầu tiên, hoặc cả từ nếu không có
+int at = -1;
+for (int i = 0; i < s.length(); i++) {
+    char c = s.charAt(i);
+    if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+        at = i;
+        break;
+    }
+}
+String head = (at == -1) ? s : s.substring(0, at);
+```
+
+Bẫy thường gặp: `charAt(i)` sau khi vòng lặp kết thúc — chỉ số đã chết ở
+đó. Hãy lưu đáp án bên trong vòng lặp (như `at`), đừng bao giờ truy cập
+vượt quá cuối chuỗi.

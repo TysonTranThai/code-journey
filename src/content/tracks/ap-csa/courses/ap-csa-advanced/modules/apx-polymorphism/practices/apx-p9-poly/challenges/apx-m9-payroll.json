@@ -1,0 +1,16 @@
+{
+  "id": "apx-m9-payroll",
+  "title": "Payroll over a mixed list",
+  "prompt": "Complete `Employee` (fields name, base; `pay()` returns base) and `Manager extends Employee` (extra field bonus; `pay()` returns base **plus** bonus, using `super.pay()`). Then implement `payroll(ArrayList<Employee>)` summing every employee's `pay()`.\n\nThe list mixes both types; dispatch must do the work.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Employee {\n        public Employee(String name, int base) {\n        }\n\n        public int pay() {\n            return 0;\n        }\n    }\n\n    public static class Manager extends Employee {\n        public Manager(String name, int base, int bonus) {\n            super(name, base);\n        }\n\n        public int pay() {\n            return 0;\n        }\n    }\n\n    public static int payroll(java.util.ArrayList<Employee> staff) {\n        return 0; // replace: total pay across the mixed list\n    }\n}\n",
+  "tests": [
+    {
+      "name": "mixed payroll",
+      "code": "\njava.util.ArrayList<Solution.Employee> staff = new java.util.ArrayList<>();\nstaff.add(new Solution.Employee(\"Ann\", 100));\nstaff.add(new Solution.Manager(\"Bob\", 100, 50));\nCjTestBase.checkEq(Solution.payroll(staff), 250, \"100 + (100+50)\");\njava.util.ArrayList<Solution.Employee> only = new java.util.ArrayList<>();\nonly.add(new Solution.Employee(\"Zoe\", 90));\nCjTestBase.checkEq(Solution.payroll(only), 90, \"plain employee only\");\n",
+      "hint": "Manager.pay() = super.pay() + bonus; payroll loops once and lets dispatch choose."
+    }
+  ],
+  "level": "independent"
+}

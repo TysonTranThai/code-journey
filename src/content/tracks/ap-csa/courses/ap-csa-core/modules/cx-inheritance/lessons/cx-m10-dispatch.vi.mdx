@@ -1,0 +1,35 @@
+Mọi câu hỏi kế thừa của đề thi đều quy về một câu: **thân phương thức
+nào thật sự chạy?** Đáp án là lớp của *đối tượng*, không bao giờ là kiểu
+của tham chiếu — trừ constructor.
+
+```java
+public class Animal {
+    public String speak() { return "..."; }
+    public String name() { return "animal"; }
+}
+
+public class Dog extends Animal {
+    public String speak() { return "Woof"; }   // OVERRIDE
+}
+
+Animal a = new Dog();
+System.out.println(a.speak());   // "Woof" — phương thức của DOG
+System.out.println(a.name());    // "animal" — kế thừa, không bị override
+```
+
+`a` được khai báo là Animal nhưng giữ một Dog: mọi lời gọi không-phải-
+constructor điều phối theo đối tượng thật. Hãy viết **bảng điều phối** —
+mỗi phương thức một hàng, gọi tên lớp whose thân chạy:
+
+| lời gọi      | thân chạy      |
+| ------------ | -------------- |
+| `a.speak()`  | Dog.speak      |
+| `a.name()`   | Animal.name    |
+
+**Override được phép đổi:** chỉ phần thân (và không được hạ thấp quyền
+truy cập). **Không được phép đổi:** chữ ký — đổi kiểu tham số là bạn đã
+*overload* thay vì override, và phiên bản superclass vẫn chạy cho các
+lời gọi cũ. Cái bẫy overload-im-lặng này là câu MCQ kế thừa số một.
+
+`super.method(args)` gọi tường minh phiên bản của cha — dùng khi override
+mở rộng thay vì thay thế hành vi của cha.

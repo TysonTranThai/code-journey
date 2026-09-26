@@ -1,0 +1,42 @@
+**Tổng hợp theo cột** — nhiệm vụ kinh điển "tính tổng từng cột":
+
+```java
+public static int[] colSums(int[][] g) {
+    int[] sums = new int[g[0].length];
+    for (int c = 0; c < g[0].length; c++) {
+        for (int r = 0; r < g.length; r++) {
+            sums[c] += g[r][c];
+        }
+    }
+    return sums;
+}
+```
+
+Mảng đầu ra có kích thước theo CỘT; các vòng lặp đọc theo cột. Hai hướng
+trong một phương thức — vẽ ra vòng nào đi hướng nào cho đến khi thành
+phản xạ.
+
+**Biến đổi** đọc và ghi cùng một mảng thì cần cẩn trọng: hoán đổi hàng
+dùng một mảng tạm một-hàng:
+
+```java
+int[] tmp = g[a];
+g[a] = g[b];
+g[b] = tmp;
+```
+
+Đó là O(1) — các tham chiếu hàng hoán đổi cho nhau, không sao chép phần
+tử. So với chuyển vị (hàng thành cột), cần sao chép từng phần tử vào
+mảng MỚI với kích thước hoán đổi:
+
+```java
+int[][] t = new int[g[0].length][g.length];
+for (int r = 0; r < g.length; r++) {
+    for (int c = 0; c < g[r].length; c++) {
+        t[c][r] = g[r][c];
+    }
+}
+```
+
+Cả hai hướng đều xuất hiện trong đề thi; hoán đổi không sao chép gì,
+chuyển vị sao chép tất cả. Hãy biết mình đang trả lời câu nào.

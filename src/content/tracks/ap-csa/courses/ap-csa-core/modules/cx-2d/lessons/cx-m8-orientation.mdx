@@ -1,0 +1,30 @@
+A 2D array is an array of rows. `int[][] g = new int[3][4]` is 3 rows of
+4 columns; `g.length` is 3 (rows), `g[0].length` is 4 (columns). The
+single most reliable exam fact: **`g[r][c]` — row first, always.**
+
+**Row-major traversal** (the natural order):
+```java
+for (int r = 0; r < g.length; r++) {
+    for (int c = 0; c < g[r].length; c++) {
+        // g[r][c]
+    }
+}
+```
+Inner bound `g[r].length` (not `g[0].length`) is the exam-safe form —
+it works even if rows had different lengths, and it is what the
+reference solutions accept.
+
+**Column traversal** — outer loop over columns, inner over rows:
+```java
+for (int c = 0; c < g[0].length; c++) {
+    for (int r = 0; r < g.length; r++) {
+        // g[r][c] — walks DOWN one column
+    }
+}
+```
+
+Position vocabulary for \{1,2,3\},\{4,5,6\}: g[0] is the FIRST row
+(1,2,3); g[2][0] is row index 2, column 0 → value 6... no — check:
+`{ {1,2,3}, {4,5,6} }` has 2 rows; `g[1][0]` is 4. Draw the grid with
+indexes labeled before answering anything. Every wrong "which element"
+MCQ comes from row/column transposition.

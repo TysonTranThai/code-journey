@@ -1,0 +1,30 @@
+Truy vết đệ quy là kỷ luật khung. Với:
+
+```java
+public static int f(int n) {
+    if (n <= 0) { return 1; }
+    return n + f(n - 2);
+}
+```
+
+| khung | lời gọi | tính            | trả về  |
+| ----- | ------- | --------------- | ------- |
+| 1     | f(5)    | 5 + f(3)        | 5 + 5   |
+| 2     | f(3)    | 3 + f(1)        | 3 + 2   |
+| 3     | f(1)    | 1 + f(-1)       | 1 + 1   |
+| 4     | f(-1)   | cơ sở           | 1       |
+
+Độ cao hồiquy: f(1)=2, f(3)=5, f(5)=10. **Đây chính là lý do phải viết
+bảng** — phép tính trong đầu hay nói dối; bảng thì không.
+
+Hai phép đếm chuẩn của đề thi:
+
+- **Số lần gọi**: f được triệu hồi bao nhiêu lần? Mỗi khung một lần: 4
+  khung trên → 4 lần gọi (kể cả khung trường-hợp-cơ-sở).
+- **Thứ tự in**: câu lệnh TRƯỚC lời gọi đệ quy chạy trên đường đi xuống;
+  câu lệnh SAU chạy trên đường đi lên. `print(n); f(n-2); print(n);`
+  in 5 3 1 1 3 5 — dãy đi xuống rồi dãy đối xứng đi lên.
+
+Tính bất đối xứng lên/xuống là toàn bộ cái mánh: mã sau lời gọi thực
+thi theo thứ tự NGƯỢC của các lời gọi, vì các khung dỡ xuống theo thứ tự
+ngăn xếp.

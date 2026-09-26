@@ -1,0 +1,16 @@
+{
+  "id": "cx-m16-remove-cold",
+  "title": "Q3: object removal",
+  "prompt": "Implement `removeCold`: drop every Reading below `limit`, in place — the backward removal loop behind a wrapper class.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "import java.util.ArrayList;\n\npublic class Solution {\n    public static class Reading {\n        private int celsius;\n        public Reading(int celsius) { this.celsius = celsius; }\n        public int getCelsius() { return celsius; }\n    }\n\n    // CONTRACT: remove every reading with celsius below `limit`,\n    // in place. Backward loop expected.\n    public static void removeCold(ArrayList<Reading> readings, int limit) {\n        // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "cold readings removed",
+      "code": "\nArrayList<Solution.Reading> rs = new ArrayList<Solution.Reading>();\nrs.add(new Solution.Reading(5));\nrs.add(new Solution.Reading(3));\nrs.add(new Solution.Reading(12));\nrs.add(new Solution.Reading(11));\nSolution.removeCold(rs, 10);\nCjTestBase.checkEq(rs.size(), 2, \"12 and 11 survive\");\nCjTestBase.checkEq(rs.get(0).getCelsius(), 12, \"order preserved\");\n",
+      "hint": "for (int i = rs.size() - 1; i >= 0; i--) if (rs.get(i).getCelsius() < limit) rs.remove(i);"
+    }
+  ],
+  "level": "combination"
+}

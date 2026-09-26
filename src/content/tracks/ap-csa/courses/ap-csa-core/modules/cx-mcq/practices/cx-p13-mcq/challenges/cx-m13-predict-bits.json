@@ -1,0 +1,16 @@
+{
+  "id": "cx-m13-predict-bits",
+  "title": "Predict: bit echo",
+  "prompt": "Trace g(5) with a state table (n, out). The while strips bits from the bottom and appends them to `out` — predict the return, then confirm by keeping the code and passing the tests.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // Predict WITHOUT running: what does g(5) print? (return it here)\n    public static int g(int n) {\n        int out = 0;\n        while (n > 0) {\n            out = out * 10 + n % 2;\n            n /= 2;\n        }\n        return out;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "bits echoed",
+      "code": "\nCjTestBase.checkEq(Solution.g(5), 101, \"5 = 101b -> out 101\");\nCjTestBase.checkEq(Solution.g(6), 11, \"6 = 110b -> out 011 = 11\");\nCjTestBase.checkEq(Solution.g(0), 0, \"never enters loop\");\n",
+      "hint": "g(5): n=5 out=1; n=2 out=3; n=1 out=6... hand-trace carefully; the TESTS are ground truth."
+    }
+  ],
+  "level": "independent"
+}

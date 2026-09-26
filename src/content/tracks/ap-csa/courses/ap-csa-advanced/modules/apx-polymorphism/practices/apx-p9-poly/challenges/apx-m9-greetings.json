@@ -1,0 +1,16 @@
+{
+  "id": "apx-m9-greetings",
+  "title": "Trace the greeting chain",
+  "prompt": "Trace this hierarchy and call sequence **on paper**, then return the exact printed text (lines joined with `|`):\n\n```java\npublic class Greeter {\n    public String greet() {\n        return \"Hello\";\n    }\n    public String greetAll() {\n        return greet() + \"!\";\n    }\n}\npublic class Loud extends Greeter {\n    public String greet() {\n        return \"HELLO\";\n    }\n}\n```\n\nCalls: `new Greeter().greetAll()`, then `new Loud().greetAll()`.\n`greetAll` is NOT overridden — but it still dispatches.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String result() {\n        return \"\"; // replace: \"Hello!|HELLO!\"\n    }\n}\n",
+  "tests": [
+    {
+      "name": "dispatch through inherited method",
+      "code": "\nCjTestBase.checkEq(Solution.result(), \"Hello!|HELLO!\", \"inherited greetAll calls the override\");\n",
+      "hint": "greetAll is inherited by Loud but executes with Loud's dispatch: this.greet() finds the override."
+    }
+  ],
+  "level": "combination"
+}

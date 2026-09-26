@@ -1,0 +1,19 @@
+**Cascading errors are self-inflicted.** They happen when one
+part's code is *reused wrongly* by another — part (c) calls your
+broken part (a) and inherits the failure. The isolation techniques:
+
+- **Prefer self-contained implementations.** When a part can be
+  written with its own loop in six lines, do that instead of
+  composing a ten-line dependency chain — cross-part reuse saves
+  writing time but spreads damage.
+- **If the spec REQUIRES calling an earlier method** (some FRQs
+  say "you may call methodFromPartA"), call it as specified — but
+  test it with a mentally-hand-computed example, since the rubric
+  gives the earlier method's correct behavior on demand.
+- **Compartment failures**: a null-check missing in part (a)
+  should not reach part (c). Guard boundaries between parts as
+  if they were teams that cannot see each other's bugs.
+
+The graded exercises here make the isolation concrete: each part
+is tested independently, so a bug in one cannot poison another's
+score.

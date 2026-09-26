@@ -1,0 +1,16 @@
+{
+  "id": "apx-m17-t2",
+  "title": "Mixed 4: predict the state",
+  "prompt": "No topic given. Predict and return the exact printed text:\n\n```java\nStringBuilder b = new StringBuilder(\"ab\");\nStringBuilder c = b;\nc.append(\"cd\");\nb = new StringBuilder(\"z\");\nSystem.out.print(b + \"/\" + c);\n```",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String result() {\n        return \"\"; // replace: the exact output asked for\n    }\n}\n",
+  "tests": [
+    {
+      "name": "predicted state",
+      "code": "\nCjTestBase.checkEq(Solution.result(), \"z/abcd\", \"alias mutated, rebind local\");\n",
+      "hint": "c aliases b when append happens; then b rebinds to \"z\" while c keeps \"abcd\"."
+    }
+  ],
+  "level": "combination"
+}

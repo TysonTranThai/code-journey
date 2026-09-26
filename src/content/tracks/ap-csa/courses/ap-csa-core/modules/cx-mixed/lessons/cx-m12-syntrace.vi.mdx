@@ -1,0 +1,37 @@
+Đọc tổng hợp — truy vết một chương trình đa-cỗ-máy mà không chạy:
+
+```java
+public static int process(int[] nums) {
+    int marked = 0;
+    for (int i = 0; i < nums.length; i++) {
+        if (nums[i] % 2 == 0) {
+            nums[i] = nums[i] / 2;
+            marked++;
+        } else {
+            nums[i] = nums[i] * 2 + 1;
+        }
+    }
+    int total = 0;
+    for (int v : nums) {
+        total += v;
+    }
+    return total - marked;
+}
+
+// lời gọi: process({3, 4, 5})
+```
+
+Bảng truy vết (hai lượt, một bảng):
+
+| i | in | chẵn? | out | marked |
+| - | -- | ----- | --- | ------ |
+| 0 | 3  | không | 7   | 0      |
+| 1 | 4  | có    | 2   | 1      |
+| 2 | 5  | không | 11  | 0      |
+
+Lượt hai: total = 7 + 2 + 11 = 20. Trả về 20 − 1 = **19**.
+
+Hai thói quen cần giữ: (1) lượt biến đổi LÀM ĐỔI mảng — lượt thứ hai
+đọc các giá trị đã đổi, không phải gốc; (2) for-each ở lượt hai là ổn
+(chỉ đọc). Các chương trình dạng này là 3–4 câu MCQ trong mọi đề thi,
+và bảng xử lý hết tất cả.

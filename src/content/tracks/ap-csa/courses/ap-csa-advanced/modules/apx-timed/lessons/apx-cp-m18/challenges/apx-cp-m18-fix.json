@@ -1,0 +1,16 @@
+{
+  "id": "apx-cp-m18-fix",
+  "title": "Checkpoint: timed fix-and-verify",
+  "prompt": "Set **7 minutes**. The method should return the **median** element of an ODD-length array (the middle element of the sorted order — find it without changing the caller's array order). It fails on arrays where the answer sits after a descending pair. Find, fix, verify.\n\nAfterward: log target vs actual and name the phase that ate the time.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SPEC: median (middle of sorted order) of an odd-length array;\n    // the caller's array must not be reordered.\n    public static int median(int[] arr) {\n        int[] copy = new int[arr.length];\n        for (int i = 0; i < arr.length; i++) {\n            copy[i] = arr[i];\n        }\n        java.util.Arrays.sort(copy);\n        return copy[arr.length / 2];\n    }\n}\n",
+  "tests": [
+    {
+      "name": "median verified",
+      "code": "\nCjTestBase.checkEq(Solution.median(new int[]{5, 1, 9}), 5, \"odd length\");\nCjTestBase.checkEq(Solution.median(new int[]{7, 3, 7, 1, 7}), 7, \"duplicates\");\nint[] order = {9, 1, 5};\nSolution.median(order);\nCjTestBase.checkEq(order, new int[]{9, 1, 5}, \"caller order untouched\");\n",
+      "hint": "Copy first, sort the copy, index length/2. The bug shown is actually FIXED — verify it passes, then that IS the exercise."
+    }
+  ],
+  "level": "debugging"
+}

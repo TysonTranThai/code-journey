@@ -1,0 +1,18 @@
+**Two passes beat one clever pass.** A surprising number of "hard"
+array tasks decompose into: pass 1 computes a summary (max, sum,
+count), pass 2 applies it. The exam's favorite: *second distinct
+maximum*. One pass is possible but error-prone (three branches: bigger
+than max, between max and second, equal to max must be ignored);
+two passes — find max, then find max excluding it — is nearly
+mechanical. Under time pressure, mechanical wins.
+
+**Equality vs identity for objects**: `==` on Strings/Integers
+compares references. Use `.equals(...)` unless both sides are `int`.
+The mode problem below is exactly where this bites: comparing
+`list.get(j) == v` on Integer objects can pass small-cache tests and
+fail larger ones — always `.equals`.
+
+**Boundary table** for any array scan: empty → spec-defined value
+(often -1 or a boolean), one element → is it its own answer?, all
+equal → tie behavior defined by the spec, negatives present → does
+your initialization survive?

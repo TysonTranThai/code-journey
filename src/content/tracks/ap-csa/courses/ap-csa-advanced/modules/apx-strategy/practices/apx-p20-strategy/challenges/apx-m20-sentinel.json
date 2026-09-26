@@ -1,0 +1,16 @@
+{
+  "id": "apx-m20-sentinel",
+  "title": "The last-ten-minutes audit",
+  "prompt": "You have 4 minutes left and an FRQ method still unguarded. Which two point-savers does the protocol demand? The method below should return the FIRST reading below 0.0 or 999.0 when none. Add BOTH: the empty-input guard and the sentinel return.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static double firstBelow(double[] readings) {\n        for (double v : readings) {\n            if (v < 0.0) {\n                return v;\n            }\n        }\n        return 0; // replace with the spec's sentinel\n    }\n}\n",
+  "tests": [
+    {
+      "name": "audited method",
+      "code": "\nCjTestBase.checkNear(Solution.firstBelow(new double[]{4.0, -2.0}), -2.0, 0.001, \"first below\");\nCjTestBase.checkNear(Solution.firstBelow(new double[]{}), 999.0, 0.001, \"empty guard\");\nCjTestBase.checkNear(Solution.firstBelow(new double[]{4.0}), 999.0, 0.001, \"sentinel when none\");\n",
+      "hint": "Empty input falls through the loop; the sentinel (999.0) replaces the placeholder 0."
+    }
+  ],
+  "level": "debugging"
+}

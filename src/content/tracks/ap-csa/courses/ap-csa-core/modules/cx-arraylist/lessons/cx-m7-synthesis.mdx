@@ -1,0 +1,30 @@
+The merge pattern — ArrayList's most exam-typical synthesis task:
+
+*"Merge two sorted lists into one sorted result (duplicates allowed)."*
+
+```java
+public static ArrayList<Integer> merge(ArrayList<Integer> a, ArrayList<Integer> b) {
+    ArrayList<Integer> out = new ArrayList<Integer>();
+    int i = 0, j = 0;
+    while (i < a.size() && j < b.size()) {
+        if (a.get(i) <= b.get(j)) { out.add(a.get(i)); i++; }
+        else { out.add(b.get(j)); j++; }
+    }
+    while (i < a.size()) { out.add(a.get(i)); i++; }
+    while (j < b.size()) { out.add(b.get(j)); j++; }
+    return out;
+}
+```
+
+Reading it as machines: a two-pointer comparison while both lists have
+material, then two "drain the remainder" sentinel loops. The `<=`
+matters for stability — with `<=`, ties take from `a` first; a student
+writing `<` is still correct here, but in exam variants asking for
+stable merge of records, that one character is the difference.
+
+Second synthesis: **positional operations**. *"Swap the halves of list
+in place"* or *"insert value after every even element"* (backward insert
+loop! insertion shifts right just like removal shifts left). Whenever
+an ArrayList problem mutates, ask: forward or backward? Removal from
+the front region, insertion, and anything touching consecutive
+elements → backward. Pure reading or end-appending → forward is fine.

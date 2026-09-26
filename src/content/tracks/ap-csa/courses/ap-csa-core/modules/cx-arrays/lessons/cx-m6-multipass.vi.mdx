@@ -1,0 +1,37 @@
+Hai hình đa-lượt hoàn thiện bộ công cụ:
+
+**Đếm-rồi-làm.** *"Dồn mọi số 0 về cuối, giữ nguyên thứ tự phần còn
+lại."* Lượt 1 đếm số 0 (thực ra không cần đếm); lượt 2 ghi các phần tử
+khác 0 về trước rồi lấp đuôi bằng số 0:
+
+```java
+int next = 0;
+for (int i = 0; i < arr.length; i++) {
+    if (arr[i] != 0) { arr[next] = arr[i]; next++; }
+}
+for (int i = next; i < arr.length; i++) { arr[i] = 0; }
+```
+
+Truy vết `{0, 3, 0, 1}`: next đi 0, 1, 1, 2 — sau lượt một,
+`{3, 1, 0, 1}` (phần đuôi là rác); lượt hai dọn nó: `{3, 1, 0, 0}`. Thứ
+tự được giữ, không cần mảng phụ.
+
+**Khử trùng lặp theo điều kiện** — "đếm phần tử CHƯA từng thấy". Khi
+không được dùng cấu trúc phụ, so sánh từng phần tử với mọi phần tử *trước
+nó* (O(n²), chấp nhận được trong phòng thi):
+
+```java
+int distinct = 0;
+for (int i = 0; i < arr.length; i++) {
+    boolean seen = false;
+    for (int j = 0; j < i; j++) {
+        if (arr[j] == arr[i]) { seen = true; break; }
+    }
+    if (!seen) { distinct++; }
+}
+```
+
+`{5, 3, 5, 1}` → distinct = 3. Vòng trong chỉ nhìn *về sau* (`j < i`),
+nên lần xuất hiện đầu tiên là người đoạt giá trị. Trong phòng thi, dạng
+từng cặp này là chấp nhận được — rõ ràng thắng khéo léo, và mảng trong đề
+đều ngắn.

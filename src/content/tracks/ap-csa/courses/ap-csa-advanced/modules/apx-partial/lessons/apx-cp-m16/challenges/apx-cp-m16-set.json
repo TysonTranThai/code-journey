@@ -1,0 +1,16 @@
+{
+  "id": "apx-cp-m16-set",
+  "title": "Checkpoint: bank the easy parts first",
+  "prompt": "The full three-behavior class `ReadingSet` (constructor stores the array): `countCold()` counts readings < 0.0; `anyWarm()` is true when any reading > 25.0; `firstCold()` returns the first reading < 0.0 or 999.0. **Strategy exercise**: implement them in banking order — count, exists, first-match — as if the clock were running.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class ReadingSet {\n        public ReadingSet(double[] readings) {\n        }\n\n        public int countCold() {\n            return 0;\n        }\n\n        public boolean anyWarm() {\n            return false;\n        }\n\n        public double firstCold() {\n            return 999.0;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "banked in order",
+      "code": "\nSolution.ReadingSet s = new Solution.ReadingSet(new double[]{-2.0, 30.0, -5.0});\nCjTestBase.checkEq(s.countCold(), 2, \"bank 1\");\nCjTestBase.checkTrue(s.anyWarm(), \"bank 2\");\nCjTestBase.checkNear(s.firstCold(), -2.0, 0.001, \"bank 3\");\nSolution.ReadingSet cold = new Solution.ReadingSet(new double[]{-1.0, -4.0});\nCjTestBase.checkTrue(!cold.anyWarm(), \"no warm readings\");\n",
+      "hint": "Each behavior is one known pattern; the exercise is doing them in point-maximizing order without gold-plating."
+    }
+  ],
+  "level": "mini-build"
+}

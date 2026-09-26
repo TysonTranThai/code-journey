@@ -1,0 +1,16 @@
+{
+  "id": "apx-cp-m12-fullfrq",
+  "title": "Checkpoint: full FRQ, timed",
+  "prompt": "The complete weather FRQ in one class: `WarmWeek` with\n\n- field `private double[] readings;`\n- constructor storing the array\n- `public int coldHours()` — count of readings < 0.0\n- `public boolean hasWarmDay()` — true if any reading > 25.0\n- `public double firstBelow()` — the FIRST reading below 0.0, or 999.0 if none\n\nImplement the full class.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class WarmWeek {\n        public WarmWeek(double[] readings) {\n        }\n\n        public int coldHours() {\n            return 0;\n        }\n\n        public boolean hasWarmDay() {\n            return false;\n        }\n\n        public double firstBelow() {\n            return 999.0;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "full frq class",
+      "code": "\nSolution.WarmWeek w = new Solution.WarmWeek(new double[]{-2.0, 30.0, -5.0, 10.0});\nCjTestBase.checkEq(w.coldHours(), 2, \"two cold readings\");\nCjTestBase.checkTrue(w.hasWarmDay(), \"30 is warm\");\nCjTestBase.checkNear(w.firstBelow(), -2.0, 0.001, \"first cold is -2\");\nSolution.WarmWeek m = new Solution.WarmWeek(new double[]{5.0});\nCjTestBase.checkTrue(!m.hasWarmDay(), \"no warm day\");\nCjTestBase.checkNear(m.firstBelow(), 999.0, 0.001, \"sentinel when none\");\n",
+      "hint": "Three independent behaviors over one stored array; firstBelow returns early on the first match."
+    }
+  ],
+  "level": "mini-build"
+}

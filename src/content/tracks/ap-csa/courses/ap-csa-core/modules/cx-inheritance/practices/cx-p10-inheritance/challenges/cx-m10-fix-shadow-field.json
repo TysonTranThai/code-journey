@@ -1,0 +1,16 @@
+{
+  "id": "cx-m10-fix-shadow-field",
+  "title": "Field shadowing across the hierarchy",
+  "prompt": "`Derived` declares its own v, shadowing Base's. Complete `baseV()` so it returns BASE's v using the lesson's mechanism.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Base {\n        protected int v = 1;\n        public int getV() { return v; }\n    }\n    public static class Derived extends Base {\n        protected int v = 2;   // shadows Base's v\n\n        // CONTRACT: return Base's v (the inherited, shadowed one) —\n        // achievable with what the lesson shows.\n        public int baseV() {\n            return v; // BUG: returns Derived's v\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "base value recovered",
+      "code": "\nSolution.Derived d = new Solution.Derived();\nCjTestBase.checkEq(d.baseV(), 1, \"Base's v, not Derived's\");\n",
+      "hint": "super.getV() — route through the superclass accessor."
+    }
+  ],
+  "level": "debugging"
+}

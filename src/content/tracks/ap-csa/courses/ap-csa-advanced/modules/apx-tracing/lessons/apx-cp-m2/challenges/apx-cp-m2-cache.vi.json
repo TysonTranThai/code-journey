@@ -1,0 +1,10 @@
+{
+  "title": "Điểm kiểm tra: máy hai nhánh",
+  "prompt": "Truy vết lớp và chuỗi lời gọi này rồi trả về giá trị **cuối** của `probe()`:\n\n```java\npublic class Gate {\n    private static int visits = 0;\n    private int passes;\n    private int blocked;\n    public Gate() { passes = 0; blocked = 0; }\n    public void enter(boolean ok) {\n        visits++;\n        if (ok) { passes++; }\n        else {\n            blocked++;\n            if (blocked > 2) { passes = 0; }\n        }\n    }\n    public int probe() { return passes * 10 + blocked; }\n}\n```\n\nLời gọi: `new Gate()`, rồi `enter(true); enter(false); enter(false); enter(false); enter(true);`.",
+  "tests": [
+    {
+      "name": "probe after sequence",
+      "hint": "blocked chạm 3 ở lần false thứ ba → passes bị reset 0; true cuối làm passes thành 1. probe = 1*10 + 3."
+    }
+  ]
+}

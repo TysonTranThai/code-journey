@@ -1,0 +1,42 @@
+Lời gọi phương thức thêm một luật vào bảng: **mỗi lời gọi có khung riêng** —
+khối hàng riêng cho tham số và biến cục bộ — và trả về đúng một giá trị
+tại đúng chỗ nó được gọi.
+
+```java
+public static int twist(int n) {
+    n = n + 3;
+    return n * 2;
+}
+```
+
+Truy vết `x = 5;` rồi `x = twist(x);`:
+
+1. Gọi `twist(5)`: khung mới, `n = 5`.
+2. `n = n + 3` → 8. Trả về `8 * 2 = 16`.
+3. Khung biến mất. Phép gán: `x = 16`.
+
+Điều **không** xảy ra: phương thức không thể nhìn thấy hay đổi `x` của
+người gọi. Kiểu nguyên thủy được sao chép. Câu hỏi thi kinh điển:
+
+```java
+public static void bump(int n) { n = n + 1; }
+// ...
+int x = 7;
+bump(x);
+System.out.println(x);   // 7 — bản sao bị đổi, không phải x
+```
+
+Tham chiếu thì khác: *tham chiếu* được sao chép, nhưng cả hai bản sao đều
+chỉ vào cùng một đối tượng.
+
+```java
+public static void grow(int[] arr) { arr[0] = arr[0] + 10; }
+// ...
+int[] data = {1, 2};
+grow(data);
+System.out.println(data[0]);   // 11 — đối tượng dùng chung đã đổi
+```
+
+Vậy luật của bảng là: tham số = bản sao của giá trị. Với kiểu nguyên thủy,
+giá trị là con số; với đối tượng, giá trị là mũi tên chỉ vào đối tượng.
+Khi phân vân, hãy vẽ mũi tên.

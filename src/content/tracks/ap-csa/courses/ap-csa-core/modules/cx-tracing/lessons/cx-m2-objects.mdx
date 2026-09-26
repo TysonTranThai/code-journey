@@ -1,0 +1,40 @@
+Objects extend the table with one row per **object**, referenced by name:
+
+```java
+Counter c = new Counter();
+Counter d = c;          // two names, ONE object
+c.up(); c.up(); d.up();
+System.out.println(c.get());   // 3
+System.out.println(d.get());   // 3 — same object
+```
+
+| object | count |
+| ------ | ----- |
+| the one `c` and `d` share | 3 |
+
+The three exam-favorite object questions, and how the table answers them:
+
+1. **Alias or copy?** `d = c` copies the arrow, not the object. Both
+   names mutate one row.
+2. **Order of calls.** `c.up()` twice then `d.up()` once is 3; if the
+   calls were interleaved differently the single shared row would show
+   it. Objects do not remember who touched them.
+3. **State at print time.** A getter returns the row's *current* value —
+   so trace every mutation before any read, in order.
+
+Worked FRQ-style trace:
+
+```java
+public class Accum {
+    private int total;
+    public void add(int v) { if (v > 0) total += v; }
+    public int get() { return total; }
+}
+Accum a = new Accum();
+a.add(5); a.add(-2); a.add(3);
+```
+
+The object's row: `total` goes 0 → 5 → 5 → 8 (the negative add is
+filtered). Any question about `a.get()` is answered by reading that row
+at the right moment — including "what does a *second* Accum see?"
+(nothing: each object has its own row).

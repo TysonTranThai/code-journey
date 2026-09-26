@@ -1,0 +1,16 @@
+{
+  "id": "apx-m1-inner",
+  "title": "Spec under camouflage",
+  "prompt": "A 'text conditioner' applies two rules in order: (1) if the text is shorter than 3 characters (or null), return it unchanged; (2) otherwise return only its **middle two** characters (for even length, the two straddling the center; for odd length, the center character plus the one after it). Implement `process(String s)`.\n\nExamples: `\"code\"` → `\"od\"`, `\"abc\"` → `\"bc\"`, `\"ab\"` → `\"ab\"`, `\"x\"` → `\"x\"`.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String process(String s) {\n        return \"\"; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "middle extraction",
+      "code": "\nCjTestBase.checkEq(Solution.process(\"code\"), \"od\", \"even length\");\nCjTestBase.checkEq(Solution.process(\"abc\"), \"bc\", \"odd length\");\nCjTestBase.checkEq(Solution.process(\"ab\"), \"ab\", \"length 2 unchanged\");\nCjTestBase.checkEq(Solution.process(\"x\"), \"x\", \"length 1 unchanged\");\nCjTestBase.checkEq(Solution.process(null), null, \"null passes through\");\n",
+      "hint": "Guard the short/null case first; the left index of the pair is (s.length()-1)/2 for both parities."
+    }
+  ],
+  "level": "independent"
+}

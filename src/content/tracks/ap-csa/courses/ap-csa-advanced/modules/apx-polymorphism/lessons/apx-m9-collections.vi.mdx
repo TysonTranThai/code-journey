@@ -1,0 +1,21 @@
+**Bộ sưu tập đa hình.** `ArrayList<Employee>` chứa hỗn hợp mọi
+Employee và Manager; vòng for-each gọi bản ghi đè tương ứng với kiểu
+thực của từng phần tử:
+
+```java
+int total = 0;
+for (Employee e : staff) {
+    total += e.pay();   // Manager? +bonus. Employee? lương gốc.
+}
+```
+
+Kỷ luật truy vết: mỗi phần tử một dòng, các cột "kiểu tham chiếu /
+kiểu đối tượng / bản pay nào chạy / đóng góp". Bản khó thêm một
+**ghi đè có điều kiện** — Manager chỉ tính thưởng khi một cờ bật —
+nên cột đóng góp phụ thuộc vào trạng thái bạn cũng phải truy vết.
+
+Và bẫy ép kiểu: `((Manager) e).bonus` biên dịch được nhưng ném
+ClassCastException khi e giữ một Employee thường. Trong đề thi,
+"lỗi lúc chạy" là *một đáp án có thể đúng*, không phải nhiễu — kiểm
+tra xem mọi phần tử có thực sự thuộc kiểu bị ép không trước khi tin
+bất kỳ phương án nào có ép kiểu.

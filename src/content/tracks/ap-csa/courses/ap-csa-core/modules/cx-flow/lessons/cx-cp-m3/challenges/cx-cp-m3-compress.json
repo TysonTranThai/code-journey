@@ -1,0 +1,16 @@
+{
+  "id": "cx-cp-m3-compress",
+  "title": "Checkpoint: runs count once",
+  "prompt": "Upgrade the broken `compress`: sum elements, but each RUN of equal adjacent elements counts once ({2,2,5,5,5,1} → 8). The broken version sums every element (15). Compare each element with its predecessor — one extra condition in the loop body is enough.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int compress(int[] arr) {\n        // CONTRACT: sum of elements, but each run of equal adjacent\n        // elements counts ONCE. {2,2,5,5,5,1} -> 2 + 5 + 1 = 8.\n        int total = 0;\n        for (int i = 0; i < arr.length; i++) {\n            total += arr[i];\n        }\n        return total;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "runs counted once",
+      "code": "\nCjTestBase.checkEq(Solution.compress(new int[]{2, 2, 5, 5, 5, 1}), 8, \"2 + 5 + 1\");\nCjTestBase.checkEq(Solution.compress(new int[]{}), 0, \"empty\");\nCjTestBase.checkEq(Solution.compress(new int[]{4}), 4, \"single element run\");\nCjTestBase.checkEq(Solution.compress(new int[]{7, 7, 7}), 7, \"one run\");\nCjTestBase.checkEq(Solution.compress(new int[]{1, 2, 3}), 6, \"no repeats, plain sum\");\n",
+      "hint": "Add arr[i] only when i == 0 or arr[i] != arr[i-1] — the run's first element represents it."
+    }
+  ],
+  "level": "independent"
+}

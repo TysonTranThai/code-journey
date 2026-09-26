@@ -1,0 +1,46 @@
+Combining machines is where exam questions live. The recipe: **decompose
+the prompt into named machines, then wire them in one pass.**
+
+*"Return the longest String in `words`; if several tie for longest,
+return the earliest. Empty array returns null."*
+
+```java
+public static String longest(String[] words) {
+    if (words.length == 0) { return null; }
+    String best = words[0];
+    for (int i = 1; i < words.length; i++) {
+        if (words[i].length() > best.length()) {
+            best = words[i];
+        }
+    }
+    return best;
+}
+```
+
+Decomposition: guard the vacuous case → seed from element 0 → scan with
+**strict** `>` so ties keep the earlier winner (Trap 1 + tie-breaking in
+one). Compare with `>=` and the answer silently becomes the *last* tie —
+a one-character difference the exam adores.
+
+Second combination — *"count how many elements are strictly between the
+first and last occurrence of `key`"*:
+
+```java
+public static int between(int[] arr, int key) {
+    int first = -1, last = -1;
+    for (int i = 0; i < arr.length; i++) {
+        if (arr[i] == key) {
+            if (first == -1) { first = i; }
+            last = i;
+        }
+    }
+    if (first == -1) { return 0; }
+    return last - first - 1;
+}
+```
+
+Two sentinel scans in one loop (first stays, last overwrites), then a
+guard that also rejects a single occurrence (`last == first` means
+"nothing in between"), then index algebra. No nested loops, no second
+pass. When you can
+name the machines, "hard" problems assemble from parts you already own.

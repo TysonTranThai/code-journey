@@ -1,0 +1,60 @@
+Almost every AP loop is one of four machines. Name the machine, and the
+code writes itself.
+
+**Accumulator — collapse a collection to one number.**
+
+```java
+int total = 0;
+for (int i = 0; i < arr.length; i++) {
+    total += arr[i];
+}
+```
+
+Initialize to the identity of the operation: 0 for sums, 1 for products,
+`arr[0]` for max/min, `""` for building a String.
+
+**Counter — count events, return the count.**
+
+```java
+int hits = 0;
+for (int v : arr) {
+    if (meets(v)) {
+        hits++;
+    }
+}
+```
+
+A counter *is* an accumulator whose addition is `+ 1`. Same identity rule
+(0), same shape.
+
+**Flag — did anything ever fire?**
+
+```java
+boolean found = false;
+for (int v : arr) {
+    if (v == target) {
+        found = true;
+    }
+}
+return found;
+```
+
+The default comes from the vacuous case (nothing fired → false). The
+early-exit form — `return true;` inside, `return false;` after — is the
+same machine with the exit moved.
+
+**Sentinel scan — find *where*, not *whether*.**
+
+```java
+int at = -1;
+for (int i = 0; i < arr.length && at == -1; i++) {
+    if (arr[i] == target) {
+        at = i;
+    }
+}
+return at;
+```
+
+-1 means "absent" by exam convention. The `&& at == -1` stops scanning at
+the first hit — without it you return the *last* occurrence (Module 1's
+bug, promoted to a pattern).

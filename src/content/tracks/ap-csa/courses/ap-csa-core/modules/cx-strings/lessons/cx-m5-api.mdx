@@ -1,0 +1,23 @@
+Everything on the exam uses the Java Quick Reference String subset:
+`length`, `substring` (1- and 2-arg), `charAt`, `indexOf`, `equals`,
+`compareTo`. Mastery means knowing their **edge behavior**, not their
+definitions.
+
+**substring's end is exclusive.** `"abcdef".substring(2, 5)` is `"cde"` —
+indexes 2, 3, 4. The length of `substring(a, b)` is exactly `b - a`.
+That single fact answers a whole family of exam questions.
+
+**The empty case.** `"".substring(0)` is `""`; `s.substring(s.length())`
+is `""` (legal!); but `s.substring(s.length() + 1)` throws
+`StringIndexOutOfBoundsException`. The legal-but-surprising
+`s.substring(s.length())` returning `""` is a favorite MCQ answer.
+
+**indexOf returns -1 when absent, 0 when prefix.** `"abc".indexOf("bc")`
+is 1; `"abc".indexOf("d")` is -1; `"abc".indexOf("")` is 0. And
+`s.indexOf(x)` searching again after a hit needs a start index — the
+1-arg form always returns the *first*.
+
+**compareTo decides order.** Negative → `s` comes first; 0 → equal
+content; positive → `s` comes second. Used for alphabetical ordering
+("which string is earlier?") — never for equality (`==` compares
+references and is wrong even when it sometimes looks right).

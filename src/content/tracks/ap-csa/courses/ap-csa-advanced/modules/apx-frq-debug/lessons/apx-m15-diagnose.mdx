@@ -1,0 +1,20 @@
+**Debugging is a diff against intention.** The broken method was
+written by someone competent; the bug is ONE decision, and the
+symptom usually appears far from the cause. The exam-style
+procedure:
+
+1. **Read the spec first, the code second.** The bug is always
+   "code does X, spec says Y" — you cannot see the diff without
+   both sides.
+2. **Pick the cheapest failing case** from the examples. Trace it
+   by hand through the code — not the spec, the CODE.
+3. **Locate the first line where trace and spec disagree.** That
+   line is the bug; everything after it is consequence.
+4. **Name the bug class** before fixing: boundary, wrong
+   accumulator, inverted condition, missing reset, wrong tie-break.
+   Naming prevents the "fixed it by accident" failure.
+
+The classic subtle bugs, ranked by exam frequency: off-by-one loop
+bounds, `<` where the spec said `<=`, forgetting to reset a
+run-counter, `>=` where a tie-break demanded `>`, and mutating
+while iterating forward.

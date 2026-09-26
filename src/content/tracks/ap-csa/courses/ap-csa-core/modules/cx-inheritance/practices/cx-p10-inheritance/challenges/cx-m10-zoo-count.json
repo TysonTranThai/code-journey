@@ -1,0 +1,16 @@
+{
+  "id": "cx-m10-zoo-count",
+  "title": "Dispatch in a collection",
+  "prompt": "Implement `int countSpeakers(Animal[] zoo, String sound)`: count the animals whose speak() equals sound. Bird overrides legs too — trace which body runs for each call.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Animal {\n        public String speak() { return \"...\"; }\n        public int legs() { return 4; }\n    }\n    public static class Dog extends Animal {\n        public String speak() { return \"Woof\"; }\n    }\n    public static class Bird extends Animal {\n        public String speak() { return \"Chirp\"; }\n        public int legs() { return 2; }\n    }\n\n    // CONTRACT: count the animals in the zoo whose speak() equals sound.\n    public static int countSpeakers(Animal[] zoo, String sound) {\n        return 0; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "speakers counted",
+      "code": "\nSolution.Animal[] zoo = { new Solution.Dog(), new Solution.Bird(), new Solution.Animal(), new Solution.Dog() };\nCjTestBase.checkEq(Solution.countSpeakers(zoo, \"Woof\"), 2, \"two dogs\");\nCjTestBase.checkEq(Solution.countSpeakers(zoo, \"Chirp\"), 1, \"one bird\");\nCjTestBase.checkEq(Solution.countSpeakers(zoo, \"...\"), 1, \"plain animal\");\nCjTestBase.checkEq(Solution.countSpeakers(new Solution.Animal[]{}, \"Woof\"), 0, \"empty zoo\");\n",
+      "hint": "For-each + a.speak().equals(sound) — dispatch does the work."
+    }
+  ],
+  "level": "guided"
+}

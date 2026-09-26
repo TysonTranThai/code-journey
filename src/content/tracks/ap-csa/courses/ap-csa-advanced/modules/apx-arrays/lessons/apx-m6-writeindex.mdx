@@ -1,0 +1,20 @@
+**The write-index pattern** (in-place compaction):
+
+```java
+int w = 0;                       // next slot to write
+for (int i = 0; i < a.length; i++) {
+    if (keep(a[i])) { a[w] = a[i]; w++; }
+}
+// w = new logical length; cells a[w..] are garbage-but-safe
+```
+
+This solves dedup-on-sorted, remove-matches, move-zeros — every
+"compact an array" FRQ the exam has ever written. The pattern's
+discipline: `w` never looks back, `i` never skips. W solutions in
+this module fail exactly one boundary (the last element or the first)
+so you can *see* which boundary your own code forgot.
+
+**Rotation** by k: copy to temp with `tmp[(i + k) % n] = a[i]`, then
+copy back. Off-by-one candidates: starting the modulo at 1, or
+rotating the wrong direction. Check with n=1 (no change) and k=n
+(no change) — both must be no-ops.

@@ -1,0 +1,16 @@
+{
+  "id": "cx-m10-fix-super",
+  "title": "Fix the missing super",
+  "prompt": "`Discounted` does not compile: the implicit super() needs a no-arg Item constructor, which does not exist. Apply rule 2's fix with the exact one line.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Item {\n        private String name;\n        public Item(String name) { this.name = name; }\n        public String getName() { return name; }\n    }\n    public static class Discounted extends Item {\n        private int percent;\n        public Discounted(String name, int percent) {\n            // BUG: does not call super, and Item has no no-arg constructor\n            this.percent = percent;\n        }\n        public int getPercent() { return percent; }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "chain repaired",
+      "code": "\nSolution.Discounted d = new Solution.Discounted(\"book\", 10);\nCjTestBase.checkEq(d.getName(), \"book\", \"name flows through super\");\nCjTestBase.checkEq(d.getPercent(), 10, \"percent stored\");\n",
+      "hint": "super(name); must be the FIRST statement in the constructor."
+    }
+  ],
+  "level": "debugging"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "cx-cp-m10-zoo-area",
+  "title": "Checkpoint: shape dispatch",
+  "prompt": "Complete `int totalArea(Shape[] shapes)`: sum every shape's area() via dispatch and round DOWN to an int. Square chains through Rect. One loop, one accumulator, zero instanceof — dispatch does the branching.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Shape {\n        public String name() { return \"shape\"; }\n        public double area() { return 0; }\n    }\n    public static class Rect extends Shape {\n        private double w, h;\n        public Rect(double w, double h) { this.w = w; this.h = h; }\n        public String name() { return \"rect\"; }\n        public double area() { return w * h; }\n    }\n    public static class Square extends Rect {\n        public Square(double side) { super(side, side); }\n        public String name() { return \"square\"; }\n    }\n\n    // CONTRACT: total area of all shapes, rounded down to an int.\n    public static int totalArea(Shape[] shapes) {\n        return 0; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "total via dispatch",
+      "code": "\nSolution.Shape[] shapes = { new Solution.Rect(2, 3), new Solution.Square(4), new Solution.Shape() };\nCjTestBase.checkEq(Solution.totalArea(shapes), 22, \"6 + 16 + 0\");\nCjTestBase.checkEq(Solution.totalArea(new Solution.Shape[]{}), 0, \"empty\");\nSolution.Shape[] one = { new Solution.Square(3) };\nCjTestBase.checkEq(Solution.totalArea(one), 9, \"square chains super(side, side)\");\n",
+      "hint": "int total = 0; for each: total += s.area(); return total; — 16.5 would truncate, but our values are whole."
+    }
+  ],
+  "level": "real-world"
+}

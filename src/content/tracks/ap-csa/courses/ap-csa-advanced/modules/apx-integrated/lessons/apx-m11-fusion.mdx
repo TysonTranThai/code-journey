@@ -1,0 +1,16 @@
+**Fusion problems** stack two mechanisms where each alone is easy:
+
+- **String scan + char arithmetic**: shift vowels only — classify
+  (`"aeiou".indexOf(ch) >= 0`) then transform (`ch + 1`). Both halves
+  are intro-level; the fusion is where care lives.
+- **List of arrays + per-row analysis**: `ArrayList<int[]>` where
+  each row needs its own max/sum scan — nested loops with a *reset*
+  between rows. Forgetting the reset is the classic bug.
+- **Log processing + running state**: walk characters, maintain an
+  altitude/count, answer from the final state. The state variable
+  must survive the whole loop — declaring it inside is the classic
+  bug.
+
+When two mechanisms fuse, write each as a helper if the spec allows,
+or as clearly separated passes if it doesn't. Fusion is a reading
+skill; the code stays ordinary.

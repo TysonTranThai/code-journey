@@ -1,0 +1,50 @@
+String building follows the accumulator machine with two dialects:
+
+**Filter — keep matching characters.**
+
+```java
+String out = "";
+for (int i = 0; i < s.length(); i++) {
+    char c = s.charAt(i);
+    if (Character.isLetter(c)) {
+        out += c;
+    }
+}
+```
+
+**Map — transform every character** (e.g. every letter to uppercase by
+hand, without `toUpperCase`):
+
+```java
+String out = "";
+for (int i = 0; i < s.length(); i++) {
+    char c = s.charAt(i);
+    if (c >= 'a' && c <= 'z') {
+        out += (char) (c - 'a' + 'A');
+    } else {
+        out += c;
+    }
+}
+```
+
+The `(char)` cast matters: `c - 'a'` is an `int` arithmetic distance
+(0–25); adding `'A'` converts the distance back to a code. Trace
+`'c'`: `'c' - 'a'` = 2, `'A' + 2` = `'C'`.
+
+**Split-by-index — substring inside a loop.**
+
+```java
+// first vowel run, or the whole word if none
+int at = -1;
+for (int i = 0; i < s.length(); i++) {
+    char c = s.charAt(i);
+    if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+        at = i;
+        break;
+    }
+}
+String head = (at == -1) ? s : s.substring(0, at);
+```
+
+Common trap: `charAt(i)` after the loop ends — the index is dead there.
+Store the answer inside the loop (like `at`), never index past the end.

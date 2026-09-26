@@ -1,0 +1,16 @@
+{
+  "id": "cx-m2-fix-accumulate",
+  "title": "Diagnose a trace bug",
+  "prompt": "This method should return `1 + 2 + ... + n` for n >= 1 (and 0 for n <= 0), but its loop never terminates correctly for some inputs. Trace `sumTo(3)` and `sumTo(-1)` with a state table, find the drift, and fix it.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int sumTo(int n) {\n        int total = 0;\n        int i = 1;\n        while (i != n) {\n            total += i;\n            i++;\n        }\n        return total;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "sums correctly",
+      "code": "\nCjTestBase.checkEq(Solution.sumTo(3), 6, \"1+2+3\");\nCjTestBase.checkEq(Solution.sumTo(1), 1, \"single term\");\nCjTestBase.checkEq(Solution.sumTo(0), 0, \"empty sum\");\nCjTestBase.checkEq(Solution.sumTo(-1), 0, \"negative input, empty sum\");\n",
+      "hint": "i != n never stops when n < 1: the counter starts ABOVE n and runs away."
+    }
+  ],
+  "level": "debugging"
+}

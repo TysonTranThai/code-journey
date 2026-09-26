@@ -1,0 +1,37 @@
+Module nền đã dựng các lớp đơn lẻ. FRQ Thiết kế lớp của đề thi đưa cho
+bạn một **bảng đặc tả** — trường, hợp đồng constructor, hành vi phương
+thức — và chấm độ chính xác. Nâng cấp Core: coi trạng thái là ngôi sao.
+
+**Mỗi phương thức là trạng thái + lời hứa.** Với một `VendingMachine`:
+
+```java
+public class VendingMachine {
+    private int cans;          // trạng thái
+    private int tokens;        // trạng thái
+
+    public VendingMachine(int cans) {   // trạng thái ban đầu
+        this.cans = cans;
+        tokens = 0;
+    }
+
+    public boolean insertToken() {      // hứa: 1 lon mỗi token
+        if (cans == 0) {
+            return false;               // trạng thái không đổi
+        }
+        cans--;
+        tokens++;
+        return true;
+    }
+    public int getCans() { return cans; }
+    public int getTokens() { return tokens; }
+}
+```
+
+Đọc đặc tả như các chuyển đổi trạng thái ("insertToken: cans−1,
+tokens+1, nhưng chỉ khi cans > 0") thắng việc học thuộc cú pháp. Nhánh
+thao-tác-thất-bại-giữ-nguyên-trạng-thái là phần học sinh quên — và là
+phần bảng chấm FRQ thưởng explicitly.
+
+**Câu hỏi thiết kế trước mã:** Giá trị nào sống trong trường (chúng phải
+sống sót giữa các lời gọi)? Trạng thái ban đầu là gì? Phương thức nào
+biến đổi (void hay báo cáo)? Phương thức nào chỉ đọc?

@@ -1,0 +1,16 @@
+{
+  "id": "cx-m20-sim-q3",
+  "title": "Simulation Q3: fleet",
+  "prompt": "22-minute question: (a) aggregate by color; (b) remove-by-color with a count. (b) needs the backward loop AND a counter — two machines in one method.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "import java.util.ArrayList;\n\npublic class Solution {\n    public static class Car {\n        private String color;\n        private int miles;\n        public Car(String color, int miles) {\n            this.color = color;\n            this.miles = miles;\n        }\n        public String getColor() { return color; }\n        public int getMiles() { return miles; }\n    }\n\n    // SIMULATED Q3 — ArrayList analysis (22 minutes).\n    // Part (a): int fleetMiles(ArrayList<Car> cars, String color) —\n    //   total miles of cars of that color (0 when none).\n    // Part (b): int removeColor(ArrayList<Car> cars, String color) —\n    //   remove ALL cars of that color in place and return how many\n    //   were removed.\n    public static int fleetMiles(ArrayList<Car> cars, String color) {\n        return 0; // replace-a\n    }\n\n    public static int removeColor(ArrayList<Car> cars, String color) {\n        return 0; // replace-b\n    }\n}\n",
+  "tests": [
+    {
+      "name": "q3 behaviors",
+      "code": "\nArrayList<Solution.Car> cars = new ArrayList<Solution.Car>();\ncars.add(new Solution.Car(\"red\", 100));\ncars.add(new Solution.Car(\"blue\", 250));\ncars.add(new Solution.Car(\"red\", 50));\nCjTestBase.checkEq(Solution.fleetMiles(cars, \"red\"), 150, \"100 + 50\");\nCjTestBase.checkEq(Solution.fleetMiles(cars, \"green\"), 0, \"absent color\");\nCjTestBase.checkEq(Solution.removeColor(cars, \"red\"), 2, \"two removed\");\nCjTestBase.checkEq(cars.size(), 1, \"only blue left\");\nCjTestBase.checkEq(Solution.removeColor(cars, \"red\"), 0, \"nothing left to remove\");\nArrayList<Solution.Car> dup = new ArrayList<Solution.Car>();\ndup.add(new Solution.Car(\"red\", 10));\ndup.add(new Solution.Car(\"red\", 20));\ndup.add(new Solution.Car(\"red\", 30));\nCjTestBase.checkEq(Solution.removeColor(dup, \"red\"), 3, \"consecutive removals all counted\");\nCjTestBase.checkEq(dup.size(), 0, \"consecutive reds all gone\");\n",
+      "hint": "(a) for-each + filter + accumulator; (b) backward loop, count removals, return count."
+    }
+  ],
+  "level": "real-world"
+}

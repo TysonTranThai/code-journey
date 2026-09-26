@@ -1,0 +1,16 @@
+{
+  "id": "cx-m11-subset-sum",
+  "title": "Two-branch subset sum",
+  "prompt": "Implement `boolean subset(int[] arr, int i, int target)`: can some subset of arr[i..] sum to target? Two branches at each element (take it / skip it); base cases: target == 0 → true, i exhausted → target == 0. Trace {2, 5, 3}, target 8 by hand.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // CONTRACT: can some subset of arr[i..] sum exactly to target?\n    // Empty subset sums to 0, so target 0 is always true.\n    public static boolean subset(int[] arr, int i, int target) {\n        return false; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "subset exists",
+      "code": "\nCjTestBase.checkEq(Solution.subset(new int[]{2, 5, 3}, 0, 8), true, \"5 + 3\");\nCjTestBase.checkEq(Solution.subset(new int[]{2, 5, 3}, 0, 4), false, \"no subset makes 4\");\nCjTestBase.checkEq(Solution.subset(new int[]{}, 0, 0), true, \"empty subset, target 0\");\nCjTestBase.checkEq(Solution.subset(new int[]{1, 2}, 0, 3), true, \"1 + 2\");\n",
+      "hint": "if (target == 0) return true; if (i >= arr.length) return false; return subset(arr, i+1, target - arr[i]) || subset(arr, i+1, target);"
+    }
+  ],
+  "level": "real-world"
+}

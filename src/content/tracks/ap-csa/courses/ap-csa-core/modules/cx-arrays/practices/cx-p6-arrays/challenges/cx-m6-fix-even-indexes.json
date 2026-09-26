@@ -1,0 +1,16 @@
+{
+  "id": "cx-m6-fix-even-indexes",
+  "title": "Fix the walked-off end",
+  "prompt": "`sumEvenIndexes` should add arr[0] + arr[2] + ... but throws on any input. Diagnose the loop bound, then repair it — one character class of mistake.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // CONTRACT: sum of the elements at EVEN indexes (0, 2, 4, ...).\n    public static int sumEvenIndexes(int[] arr) {\n        int total = 0;\n        for (int i = 0; i <= arr.length; i++) {\n            if (i % 2 == 0) {\n                total += arr[i];\n            }\n        }\n        return total;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "even indexes summed",
+      "code": "\nCjTestBase.checkEq(Solution.sumEvenIndexes(new int[]{10, 20, 30, 40}), 40, \"10 + 30\");\nCjTestBase.checkEq(Solution.sumEvenIndexes(new int[]{}), 0, \"empty\");\nCjTestBase.checkEq(Solution.sumEvenIndexes(new int[]{7}), 7, \"index 0 counts\");\n",
+      "hint": "Use i < arr.length; <= reads arr[arr.length]."
+    }
+  ],
+  "level": "debugging"
+}

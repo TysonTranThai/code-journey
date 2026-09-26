@@ -1,0 +1,16 @@
+{
+  "id": "cx-cp-m18-second-max",
+  "title": "Checkpoint: two bugs",
+  "prompt": "`secondMax` needs two repairs: the tracking logic (the else branch is wrong) and the distinctness report. Trace {5, 3, 5} and {7} and {2, 2} by hand, locate the first divergences, and repair both.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // TWO BUGS, ONE METHOD. CONTRACT: returns the second-largest\n    // DISTINCT value; -1 when fewer than 2 distinct values.\n    // Trace {5, 3, 5} (answer 3) and {7} (answer -1) by hand first.\n    public static int secondMax(int[] arr) {\n        int max = 0;\n        int second = 0;\n        for (int i = 0; i < arr.length; i++) {\n            if (arr[i] > max) {\n                max = arr[i];\n            } else {\n                second = arr[i];\n            }\n        }\n        if (max == second) {\n            return -1;\n        }\n        return second;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "second max repaired",
+      "code": "\nCjTestBase.checkEq(Solution.secondMax(new int[]{5, 3, 5}), 3, \"distinct second\");\nCjTestBase.checkEq(Solution.secondMax(new int[]{7}), -1, \"fewer than 2\");\nCjTestBase.checkEq(Solution.secondMax(new int[]{2, 2}), -1, \"only one distinct value\");\nCjTestBase.checkEq(Solution.secondMax(new int[]{1, 9, 4}), 4, \"9 then 4\");\n",
+      "hint": "Track max and second properly: if (v > max) { second = max; max = v; } else if (v < max && v > second) { second = v; }; report -1 when second was never set (sentinel 0 fails for arrays of negatives — use a boolean or Integer)."
+    }
+  ],
+  "level": "debugging"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "apx-m2-altrace",
+  "title": "Trace removal while iterating (E3)",
+  "prompt": "Trace this loop **on paper**:\n\n```java\nArrayList<String> list = new ArrayList<String>();\nlist.add(\"a\"); list.add(\"b\"); list.add(\"c\");\nlist.add(\"d\"); list.add(\"e\");\nfor (int i = 0; i < list.size(); i++) {\n    if (i % 2 == 0) { list.remove(i); }\n}\nSystem.out.print(list);\n```\n\nReturn the printed contents exactly (bracketed, comma-space separated, as ArrayList prints — e.g. `[b, d]`).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String result() {\n        return \"\"; // replace: the exact output of the code in the prompt\n    }\n}\n",
+  "tests": [
+    {
+      "name": "list after shifting removals",
+      "code": "\nCjTestBase.checkEq(Solution.result(), \"[b, c, e]\", \"remove at 0 and 2 of a shrinking list\");\n",
+      "hint": "i=0 removes a → [b,c,d,e]; i=1 is odd, skipped; i=2 removes d (c slid left) → [b,c,e]; i=3 is not < size 3, loop ends."
+    }
+  ],
+  "level": "combination"
+}

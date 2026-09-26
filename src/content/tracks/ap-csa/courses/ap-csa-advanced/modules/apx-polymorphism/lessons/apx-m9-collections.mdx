@@ -1,0 +1,22 @@
+**Polymorphic collections.** `ArrayList<Employee>` holds any mix of
+Employees and Managers; the enhanced for-loop calls the override for
+whatever each element really is:
+
+```java
+int total = 0;
+for (Employee e : staff) {
+    total += e.pay();   // Manager? +bonus. Employee? base.
+}
+```
+
+The tracing discipline for these: one row per element, columns for
+"reference type / object type / which pay runs / contribution." The
+hard version adds a **conditional override** — a Manager only
+counts the bonus when a flag holds — so the contribution column
+depends on state you must also trace.
+
+And the cast trap: `((Manager) e).bonus` compiles but throws
+ClassCastException when e holds a plain Employee. On the exam,
+"runtime error" is a *possible answer*, not a distraction — check
+whether every element really is the cast type before trusting any
+option that casts.

@@ -1,0 +1,41 @@
+Đối tượng mở rộng bảng: mỗi **đối tượng** một hàng, được gọi tên qua biến:
+
+```java
+Counter c = new Counter();
+Counter d = c;          // hai tên, MỘT đối tượng
+c.up(); c.up(); d.up();
+System.out.println(c.get());   // 3
+System.out.println(d.get());   // 3 — cùng một đối tượng
+```
+
+| đối tượng | count |
+| --------- | ----- |
+| đối tượng duy nhất mà `c` và `d` cùng chỉ | 3 |
+
+Ba câu hỏi đối tượng ưa thích của đề thi, và bảng trả lời thế nào:
+
+1. **Bí danh hay bản sao?** `d = c` sao chép mũi tên, không phải đối
+   tượng. Cả hai tên cùng đập vào một hàng.
+2. **Thứ tự gọi.** `c.up()` hai lần rồi `d.up()` một lần cho 3; nếu các
+   lời gọi xen kẽ khác đi, hàng dùng chung duy nhất đó sẽ lộ ra. Đối
+   tượng không nhớ ai đã chạm vào nó.
+3. **Trạng thái tại thời điểm in.** Getter trả về giá trị *hiện tại* của
+   hàng — nên hãy truy vết mọi phép biến đổi trước mọi phép đọc, theo
+   thứ tự.
+
+Truy vết kiểu FRQ:
+
+```java
+public class Accum {
+    private int total;
+    public void add(int v) { if (v > 0) total += v; }
+    public int get() { return total; }
+}
+Accum a = new Accum();
+a.add(5); a.add(-2); a.add(3);
+```
+
+Hàng của đối tượng: `total` đi 0 → 5 → 5 → 8 (lượt cộng âm bị lọc). Mọi
+câu hỏi về `a.get()` đều trả được bằng cách đọc hàng đó đúng thời điểm —
+kể cả "một Accum *thứ hai* thấy gì?" (không gì cả: mỗi đối tượng có hàng
+riêng).

@@ -1,0 +1,33 @@
+The trap taxonomy — every wrong answer on the exam belongs to a family.
+Learn the families, recognize the bait:
+
+**The `<` vs `<=` family.** Loop bounds and tie-breaking. A choice that
+differs only by one included/excluded element is testing this.
+
+**The `-1` vs `0` family.** indexOf absence, sentinel defaults, "no
+match" conventions. What IS the contract's absence value?
+
+**The `==` vs `.equals` family.** References vs content. Strings and
+Integers; the answer that "works" in some tests but is wrong by
+contract.
+
+**The copy vs alias family.** `x = y` for objects copies the arrow.
+A choice assuming independent objects is bait.
+
+**The unbox family.** Integer arithmetic auto-unboxes (true), Integer
+`==` Integer compares references (false for 200, true for small cached
+values). A choice that says "compilation error" for `list.get(0) + 1`
+is bait.
+
+**The mutation-order family.** remove/insert during forward iteration;
+second pass reading first pass's mutations. The choice "prints the
+original values" is bait.
+
+**The base-case family.** Off-by-one recursion bases (0 vs 1), missing
+bases (StackOverflow), wrong seeds (fact(0) = 0).
+
+**The division family.** Integer division truncation, `9/2 = 4`, and
+the `(double)` cast that fixes it. Modulo sign on negatives (rarely
+tested in AP scope but the division family is everywhere).
+
+Practicing with families converts "tricky" into "recognized".

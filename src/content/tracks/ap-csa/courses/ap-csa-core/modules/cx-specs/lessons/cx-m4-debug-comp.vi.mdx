@@ -1,0 +1,30 @@
+Gỡ lỗi một tổ hợp nghĩa là cô lập phần đang nói dối. Chiến lược: kiểm
+tra từng hàm trợ giúp với hợp đồng **một cách độc lập**, vì một hàm sai
+sẽ đầu độc mọi thứ phía sau.
+
+```java
+// HỢP ĐỒNG: số từ dài hơn độ dài trung bình
+public static int longWords(String[] words) {
+    int sum = 0;
+    for (String w : words) { sum += w.length(); }
+    double avg = (double) sum / words.length;
+    int count = 0;
+    for (String w : words) {
+        if (w.length() > avg) { count++; }
+    }
+    return count;
+}
+```
+
+Truy vết `{"ab", "cd", "abcde"}`: sum = 2 + 2 + 5 = 9, avg = 3.0. Các từ
+dài hơn 3.0: chỉ `{"abcde"}` → 1. Cả hai nửa đều đúng — lỗi (nếu có)
+thường chỉ là một trong: chia nguyên trong `avg` (thiếu ép kiểu
+`(double)` → cắt cụt thành 3), chia cho 0 khi mảng rỗng (vi phạm điều
+kiện tiên quyết — đặc tả sẽ hứa mảng không rỗng), hoặc so sánh sai ở
+bước cuối.
+
+Thói quen cô lập: để kiểm thử riêng phần trung bình, hãy trả về `avg`
+thay vì `count` một lần, chạy thử, rồi trả lại. Trong phòng thi (không
+có trình biên dịch), tương đương là truy vết từng hàm trợ giúp một lần
+với một trường hợp tay mà giá trị đúng đã biết — truy vết 3 phần tử phơi
+ra phần lớn lỗi tổ hợp trong chưa tới một phút.

@@ -1,0 +1,31 @@
+Mẫu merge — nhiệm vụ tổng hợp điển hình nhất của ArrayList:
+
+*"Gộp hai danh sách đã sắp xếp thành một kết quả đã sắp xếp (cho phép
+trùng)."*
+
+```java
+public static ArrayList<Integer> merge(ArrayList<Integer> a, ArrayList<Integer> b) {
+    ArrayList<Integer> out = new ArrayList<Integer>();
+    int i = 0, j = 0;
+    while (i < a.size() && j < b.size()) {
+        if (a.get(i) <= b.get(j)) { out.add(a.get(i)); i++; }
+        else { out.add(b.get(j)); j++; }
+    }
+    while (i < a.size()) { out.add(a.get(i)); i++; }
+    while (j < b.size()) { out.add(b.get(j)); j++; }
+    return out;
+}
+```
+
+Đọc theo cỗ máy: so sánh hai con trỏ khi cả hai danh sách còn nguyên liệu,
+rồi hai vòng lính canh \"rút phần còn lại\". Dấu `<=` quan trọng cho tính
+ổn định — với `<=`, đồng giá lấy từ `a` trước; người viết `<` vẫn đúng ở
+đây, nhưng trong biến thể đề thi yêu cầu merge ổn định cho bản ghi, một
+ký tự đó là ranh giới.
+
+Tổng hợp thứ hai: **thao tác theo vị trí**. *\"Đổi chỗ hai nửa của danh
+sách tại chỗ\"* hoặc *\"chèn giá trị sau mỗi phần tử chẵn\"* (vòng chèn
+ngược!). Chèn dịch phải y như xóa dịch trái. Mỗi khi bài ArrayList biến
+đổi danh sách, hãy hỏi: xuôi hay ngược? Xóa vùng đầu, chèn, và bất cứ
+thứ gì chạm vào phần tử liền kề → ngược. Thuần đọc hoặc nối vào đuôi →
+xuôi là đủ.

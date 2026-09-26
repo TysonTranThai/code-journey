@@ -1,0 +1,16 @@
+{
+  "id": "apx-m3-q-immutability",
+  "title": "MCQ: What does this print?",
+  "prompt": "What does this print?\n\n```java\npublic static void addBang(String s) { s = s + \"!\"; }\n// in main:\nString t = \"ready\";\naddBang(t);\nSystem.out.print(t);\n```\n\nA. `ready!`\nB. `!`\nC. compile error\nD. `ready`\n\nPrint your answer as: the option letter, then your explanation of why it is correct and why each other option is wrong. First line must start with the letter.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static void program() {\n        // Print your answer: the option letter, then a full explanation of\n        // WHY it is correct and why EACH other option is wrong.\n        // Example first line: B. <why B>\n    }\n}\n",
+  "tests": [
+    {
+      "name": "D D",
+      "code": "\nString out = CjTestBase.capture(() -> Solution.program());\nCjTestBase.checkTrue(out.startsWith(\"D\"), \"the chosen option's explanation (starts with the letter)\");\n",
+      "hint": "D. Strings are immutable and the parameter is a copy of the reference: addBang rebinds its LOCAL s to a new object; the caller's t still points at \"ready\". A student picking A believed mutation escapes the method; B confuses the parameter with the result; it compiles fine."
+    }
+  ],
+  "level": "independent"
+}

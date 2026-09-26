@@ -1,0 +1,16 @@
+{
+  "id": "apx-m2-objtrace",
+  "title": "Trace object state across calls (E3)",
+  "prompt": "Trace this class and call sequence **on paper**:\n\n```java\npublic class Meter {\n    private int units;\n    private int cap;\n    public Meter(int c) { cap = c; units = 0; }\n    public void tick() {\n        if (units < cap) { units++; }\n        else { units = units / 2; }\n    }\n    public int get() { return units; }\n}\n```\n\nCalls: `new Meter(3)`, then `tick(); tick(); tick(); tick(); tick();`.\nReturn the **final** value of `get()`.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int result() {\n        return 0; // replace: the final value asked for in the prompt\n    }\n}\n",
+  "tests": [
+    {
+      "name": "final meter units",
+      "code": "\nCjTestBase.checkEq(Solution.result(), 2, \"five ticks against cap 3\");\n",
+      "hint": "ticks: 1, 2, 3 (at cap), 3/2=1, 1+1=2."
+    }
+  ],
+  "level": "independent"
+}

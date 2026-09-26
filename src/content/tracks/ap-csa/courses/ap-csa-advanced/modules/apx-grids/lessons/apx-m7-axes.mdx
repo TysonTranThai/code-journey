@@ -1,0 +1,16 @@
+**Rows and columns are different axes.** The exam's 2D traps are all
+axis confusions:
+
+- `g[r][c]` — row first, always. `g[0]` is the first ROW, not the
+  first column.
+- `g.length` is the row count; `g[0].length` is the column count.
+  Rectangular grids can have `g.length != g[0].length` — a rotation
+  changes which one is which.
+- **Row-major traversal** (for r, then for c) visits in storage
+  order; **column-major** (for c, then for r) is the one FRQs ask
+  for when they say "process column by column".
+
+The 90° clockwise rotation is the canonical axis exercise:
+`out[c][rows - 1 - r] = g[r][c]`. Derive it once slowly: the old row
+r becomes the new column (rows-1-r) counted from the right; the old
+column c becomes the new row c. Verify on a 2×3 before you trust it.

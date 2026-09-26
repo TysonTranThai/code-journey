@@ -1,0 +1,24 @@
+**Character classification without imports.** The exam gives you
+`Character.isLetter/isDigit/isUpperCase` — and a raw alternative:
+
+```java
+char ch = s.charAt(i);
+boolean letter = (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+boolean digit  = ch >= '0' && ch <= '9';
+```
+
+**char arithmetic** (Caesar shifts, digit sums):
+
+```java
+char shifted = (char) ('a' + (ch - 'a' + k) % 26);   // wrap letters
+int digitVal = ch - '0';                              // '7' -> 7
+```
+
+The two classic boundary questions: does k = 26 (or a multiple) wrap
+back exactly (yes — `% 26` handles it), and does the digit formula
+work for `'0'` (yes — 0). Non-letters pass through unchanged in a
+shift; forgetting the pass-through breaks half the hidden tests.
+
+**Scanning words** in a string with arbitrary spaces: a boolean
+"inside a word" state, flipped at transitions — not a split (the AP
+subset has no `split`).

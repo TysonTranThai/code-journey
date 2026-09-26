@@ -1,0 +1,36 @@
+A bug hunt is a trace with a hypothesis. Given a **plausible but wrong**
+method — the exam's favorite format — run this loop:
+
+1. **Re-read the contract.** What exactly does it promise? Most planted
+   bugs are contract violations, not syntax errors.
+2. **Trace a small input by hand** — 3 elements, not 10. Write every
+   variable's value after each statement (a *state table*).
+3. **Compare the trace to the promise.** At which statement does reality
+   drift from the contract? That statement contains the bug.
+4. **Fix minimally.** Change one thing; re-trace. Do not rewrite a
+   working half.
+
+Worked example — the contract says *return the index of the first
+occurrence of `target`, or -1 if absent*:
+
+```java
+public static int findFirst(int[] arr, int target) {
+    int pos = -1;
+    for (int i = 0; i < arr.length; i++) {
+        if (arr[i] == target) {
+            pos = i;      // keeps overwriting!
+        }
+    }
+    return pos;
+}
+```
+
+Trace `arr = {4, 7, 7}, target = 7`: `i=1` sets `pos=1`, `i=2` sets
+`pos=2` → returns the **last** occurrence. The contract says *first*. The
+minimal fix: `return i;` inside the `if` (early exit), or guard the
+assignment with `pos == -1`. Both preserve the rest of the method.
+
+Notice the bug was *semantic*: the code compiles, runs, and even passes a
+sloppy test with `{7}`. Only a contract-faithful trace with a repeated
+target exposes it. This is why Core traces by hand first and runs code
+second — on the exam there is no compiler to catch it for you.

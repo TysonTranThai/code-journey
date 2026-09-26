@@ -1,0 +1,45 @@
+Two-pointer problems are the exam's String FRQ heart. Model: one index
+from the front, one from the back, meeting in the middle.
+
+*"Is s a palindrome, considering letters only?"* — the filter + two
+pointers combined:
+
+```java
+public static boolean isPal(String s) {
+    int lo = 0, hi = s.length() - 1;
+    while (lo < hi) {
+        if (!Character.isLetter(s.charAt(lo))) { lo++; }
+        else if (!Character.isLetter(s.charAt(hi))) { hi--; }
+        else if (s.charAt(lo) != s.charAt(hi)) { return false; }
+        else { lo++; hi--; }
+    }
+    return true;
+}
+```
+
+Trace `"a, b a"` (a comma, a space, letters a b a): lo=0 'a' vs hi=5 'a'
+match; lo=1 ',' skipped (lo++); lo=2 ' ' skipped; lo=3 'b' vs hi=4 'b'
+match; lo=4, hi=3 → loop ends, true. Notice the loop condition `lo < hi`
+— crossed pointers mean success, and single-character strings are
+trivially palindromes (0 < 0 is false immediately).
+
+The second classic: **run-length counting** — count runs of equal
+adjacent characters:
+
+```java
+public static int runs(String s) {
+    if (s.length() == 0) { return 0; }
+    int count = 1;
+    for (int i = 1; i < s.length(); i++) {
+        if (s.charAt(i) != s.charAt(i - 1)) {
+            count++;
+        }
+    }
+    return count;
+}
+```
+
+`"aabbbca"` → runs a|bb|c|a = 4. Start at 1 (the first character always
+opens a run); increment at every boundary. The precondition `length >= 1`
+is what lets you seed `count = 1` — remove it and the empty string
+breaks you.

@@ -1,0 +1,16 @@
+{
+  "id": "cx-m11-fix-pow2",
+  "title": "Fix the poisoned base",
+  "prompt": "`pow2(4)` returns 0 — every value multiplies down to the broken base case. Trace pow2(1) and pow2(0) by hand, then repair the base value.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // CONTRACT: 2 to the power n, n >= 0.\n    public static int pow2(int n) {\n        if (n == 0) {\n            return 0;\n        }\n        return 2 * pow2(n - 1);\n    }\n}\n",
+  "tests": [
+    {
+      "name": "powers correct",
+      "code": "\nCjTestBase.checkEq(Solution.pow2(0), 1, \"2^0 = 1\");\nCjTestBase.checkEq(Solution.pow2(4), 16, \"2^4\");\nCjTestBase.checkEq(Solution.pow2(10), 1024, \"2^10\");\n",
+      "hint": "The base case n == 0 must return 1 (the multiplicative identity)."
+    }
+  ],
+  "level": "debugging"
+}

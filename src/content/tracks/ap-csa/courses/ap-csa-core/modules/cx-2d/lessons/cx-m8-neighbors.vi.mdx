@@ -1,0 +1,44 @@
+Hai hình quét vượt lên ngoài cơ bản:
+
+**Tìm một vị trí, trả về tọa độ.** Khi đáp án là một địa điểm, trả về
+hàng (hoặc cặp r/c mã hóa) — và quyết định chuyện gì xảy ra khi vắng mặt
+(−1 là quy ước):
+
+```java
+public static int findRow(int[][] g, int target) {
+    for (int r = 0; r < g.length; r++) {
+        for (int c = 0; c < g[r].length; c++) {
+            if (g[r][c] == target) {
+                return r;
+            }
+        }
+    }
+    return -1;
+}
+```
+
+Chú ý **thoát-sớm kép**: return bên trong rời cả hai vòng lặp cùng lúc.
+Một `break` chỉ rời vòng trong — phân biệt MCQ kinh điển.
+
+**Hàng xóm của g[r][c]** — tối đa bốn người bạn trực giao, nhưng mép
+lưới có ít hơn. Chặn từng hướng độc lập:
+
+```java
+if (r > 0) { ... g[r - 1][c] ... }
+if (r < g.length - 1) { ... g[r + 1][c] ... }
+if (c > 0) { ... g[r][c - 1] ... }
+if (c < g[r].length - 1) { ... g[r][c + 1] ... }
+```
+
+Hoặc đếm hàng xóm khớp:
+
+```java
+int count = 0;
+if (r > 0 && g[r - 1][c] == v) { count++; }
+if (r < g.length - 1 && g[r + 1][c] == v) { count++; }
+if (c > 0 && g[r][c - 1] == v) { count++; }
+if (c < g[r].length - 1 && g[r][c + 1] == v) { count++; }
+```
+
+Đừng bao giờ truy cập `g[r-1]` trước khi kiểm tra `r > 0` — chỉ số âm
+ném ngoại lệ trước khi giá trị kịp được đọc.

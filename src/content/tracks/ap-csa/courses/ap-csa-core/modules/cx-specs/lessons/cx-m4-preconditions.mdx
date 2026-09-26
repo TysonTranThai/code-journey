@@ -1,0 +1,27 @@
+**Preconditions** state what the caller promises; **postconditions**
+state what the method guarantees. Reading them correctly is free points;
+writing code that ignores them is the classic time sink.
+
+```text
+Precondition: scores.length >= 1
+Postcondition: returns the highest score
+```
+
+What you may rely on: at least one element — so `best = scores[0]` is
+safe, no empty check needed. What you must NOT add: a graceful empty
+case. Code like `if (scores.length == 0) return 0;` is dead weight the
+exam never asked for, and worse, it invents a contract (`0` for empty)
+the caller never agreed to.
+
+Conversely, when the spec says *"returns -1 if the value does not
+appear"*, the -1 IS the contract. A student who instead throws an
+exception or prints an error has rewritten the spec — automatic zero
+even if the rest is perfect.
+
+The three questions to ask of every spec:
+
+1. What inputs are **promised** (preconditions)? → Skip guarding them.
+2. What outputs are **guaranteed in every case** (postconditions)?
+   Enumerate the cases: normal, boundary, absent.
+3. What is **explicitly out of scope**? If it says "you may assume the
+   array is sorted", do not sort it.

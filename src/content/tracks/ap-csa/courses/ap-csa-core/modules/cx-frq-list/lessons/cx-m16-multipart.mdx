@@ -1,0 +1,32 @@
+Multi-part Q3: part (a) computes, part (b) consumes part (a).
+
+*"You may write a private helper."*
+
+```java
+// (a) private int maxGap(ArrayList<Integer> temps):
+//     largest difference between ADJACENT entries; 0 for size < 2.
+private int maxGap(ArrayList<Integer> temps) {
+    if (temps.size() < 2) { return 0; }
+    int best = 0;
+    for (int i = 1; i < temps.size(); i++) {
+        int gap = Math.abs(temps.get(i) - temps.get(i - 1));
+        if (gap > best) { best = gap; }
+    }
+    return best;
+}
+
+// (b) public boolean unstable(ArrayList<Integer> temps):
+//     true when maxGap is 10 or more.
+public boolean unstable(ArrayList<Integer> temps) {
+    return maxGap(temps) >= 10;
+}
+```
+
+Part (a) is adjacency + accumulator; part (b) is one comparison. The
+exam's part (b) often flips a perspective: "for how many positions is
+the gap ≥ 10?" — then (b) counts gaps qualifying instead of returning
+a boolean, reusing the same helper.
+
+Grade-hunting insight: if (b) is stuck, shipping a correct (a) with a
+correct helper still banks most of the question's points. Never
+sacrifice (a)'s correctness to gamble on (b).

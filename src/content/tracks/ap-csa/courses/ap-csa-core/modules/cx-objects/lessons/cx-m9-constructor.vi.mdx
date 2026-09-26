@@ -1,0 +1,30 @@
+Lỗi constructor là câu hỏi lớp ưa thích của đề thi, vì chúng trông như
+mã đang chạy đúng:
+
+**Che khuất (shadowing)** — tham số che mất trường:
+```java
+private String name;
+public Player(String name) {
+    name = name;      // gán tham số cho chính nó!
+}
+```
+Sửa: `this.name = name;`. Triệu chứng: getter mãi mãi trả về null/0.
+
+**Thả im lặng** — tham số không hề được nhắc tới:
+```java
+public Player(String n) { }   // trường ở lại giá trị mặc định
+```
+
+**Tư duy sai về mặc định.** Các trường nhận giá trị mặc định của Java
+(0, null, false) TRƯỚC khi constructor chạy. Constructor chỉ đặt một nửa
+các trường là lặng lẽ chọn mặc định cho nửa còn lại — đôi khi đúng do
+may mắn, thường thì sai.
+
+**Thứ tự khởi tạo:** các bộ khởi tạo trường chạy theo thứ tự khai báo,
+rồi thân constructor. `private int count = 3;` cộng với constructor gán
+`count = 0` kết thúc ở 0 — phép gán sau thắng.
+
+**Static với instance (hiếm khi là đáp án, biết hình dạng):** trường
+static được chia sẻ bởi mọi đối tượng (một hàng); trường instance là
+một hàng mỗi đối tượng. `private static int created;` đếm mọi lời gọi
+constructor — đề thi ưa dùng cho câu "đã tạo bao nhiêu đối tượng?"

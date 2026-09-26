@@ -1,0 +1,30 @@
+**Lỗi đổ domino** — lý do một dòng-sai-sớm phá hỏng mọi thứ phía sau:
+trạng thái chảy theo hướng đi tới. Truy vết `{2, 3, 4}` cho một dạng
+đặc-tả "maximum-chạy-rồi-trừ-số-đếm" với hạt giống bị cài:
+
+```java
+// HỢP ĐỒNG: trả về (giá trị max) - (số phần tử âm)
+int max = 0;                 // BUG khi mọi giá trị < 0
+int negs = 0;
+for (int i = 0; i < arr.length; i++) {
+    if (arr[i] > max) { max = arr[i]; }
+    if (arr[i] < 0) { negs++; }
+}
+return max - negs;
+```
+
+Với `{5, -2, 8}`: max đi 5→8 đúng, negs = 1, trả về 7. Với `{-5, -2}`:
+max dừng ở 0 (sai — đáng lẽ −2), negs = 2, trả về −2. Phép truy vết cho
+thấy CẢ HAI lỗi nhưng đề hỏi điểm-lệch-ĐẦU-TIÊN trong ví dụ gãy. Với
+`{-5, -2}`, điểm lệch đầu tiên là hạt giống `max = 0` — dòng `negs`
+chạy đúng với hợp đồng riêng của nó.
+
+Hai lỗi cũng có thể *che khuất* nhau: một bộ đếm bị nhân đôi và một
+hạt giống bị chia nửa có thể cho đáp án đúng trên một test và sai trên
+test kế. Vì vậy phòng sửa lỗi luôn truy vết ÍT NHẤT HAI ví dụ trước khi
+tuyên bố bản sửa.
+
+**Đạo đức sửa-tối-thiểu** (và cách chấm): bảng chấm là danh sách hành
+vi; một hành vi đúng chưa-bị-động-to giữ nguyên điểm của nó. Viết lại
+các phần đang chạy có nguy cơ dời lỗi vào những hành vi trước đó đã
+kiếm được điểm.

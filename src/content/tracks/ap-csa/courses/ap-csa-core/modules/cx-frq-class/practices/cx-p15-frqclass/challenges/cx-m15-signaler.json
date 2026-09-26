@@ -1,0 +1,16 @@
+{
+  "id": "cx-m15-signaler",
+  "title": "Build from the table",
+  "prompt": "Complete `Signaler` exactly per the spec table — especially the ORDER inside boost(). Trace three boosts by hand and predict the level sequence before implementing.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SPEC TABLE (complete the class):\n    // private int level  — starts at 1\n    // private int streak — starts at 0\n    // Signaler()         — both at start values\n    // void boost()  — level += streak; THEN streak++\n    // void reset()  — level = 1; streak = 0\n    // int getLevel()\n    // int getStreak()\n    public static class Signaler {\n        // replace: fields, constructor, methods\n    }\n}\n",
+  "tests": [
+    {
+      "name": "spec table honored",
+      "code": "\nSolution.Signaler s = new Solution.Signaler();\nCjTestBase.checkEq(s.getLevel(), 1, \"starts at 1\");\nCjTestBase.checkEq(s.getStreak(), 0, \"streak starts 0\");\ns.boost();\nCjTestBase.checkEq(s.getLevel(), 1, \"1 + 0\");\nCjTestBase.checkEq(s.getStreak(), 1, \"streak now 1\");\ns.boost();\nCjTestBase.checkEq(s.getLevel(), 2, \"1 + 1\");\ns.boost();\nCjTestBase.checkEq(s.getLevel(), 4, \"2 + 2\");\ns.reset();\nCjTestBase.checkEq(s.getLevel(), 1, \"reset level\");\nCjTestBase.checkEq(s.getStreak(), 0, \"reset streak\");\n",
+      "hint": "boost(): level += streak; streak++; — order is the specification."
+    }
+  ],
+  "level": "guided"
+}

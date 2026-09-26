@@ -1,0 +1,23 @@
+**Xử lý vùng lân cận** cần bảng độ dịch và biến chặn biên — mẫu nền
+của Game-of-Life, làm mờ ảnh, và bài điểm nóng:
+
+```java
+int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
+int[] dc = {-1,  0,  1, -1, 1, -1, 0, 1};
+for (int d = 0; d < 8; d++) {
+    int nr = r + dr[d], nc = c + dc[d];
+    if (nr >= 0 && nr < g.length && nc >= 0 && nc < g[0].length) {
+        sum += g[nr][nc];
+        count++;
+    }
+}
+```
+
+Hai quyết định giấu độ khó: **ô đó có tự đếm mình không?** (thường
+không — đọc đặc tả hai lần), và **lấy trung bình chia cho 8 hay chia
+cho số láng giềng thực tế trong biên?** Ô góc có 3 láng giềng; chia
+cho 8 ở mọi nơi là đáp án sai tinh vi mà test ẩn bắt được.
+
+**Tổng hợp có dấu**: khi sổ cái có cả ghi nợ và ghi có, cộng từng
+cột rồi lấy trị tuyệt đối KHÁC với cộng trị tuyệt đối từng ô. Cụm từ
+"số dư từng cột" trong đặc tả cho biết cái nào.

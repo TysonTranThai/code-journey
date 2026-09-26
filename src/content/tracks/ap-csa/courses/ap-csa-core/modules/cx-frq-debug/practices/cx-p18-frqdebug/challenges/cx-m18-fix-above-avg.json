@@ -1,0 +1,16 @@
+{
+  "id": "cx-m18-fix-above-avg",
+  "title": "One planted bug",
+  "prompt": "`aboveAvgPos` has exactly one bug. Trace {1, 3, 4}: avg = 8/3 ≈ 2.67; qualifying = 3 and 4 → 2. The current code returns more. Find the divergent operator and repair it.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // CONTRACT: counts how many values in arr are BOTH positive AND\n    // greater than the average. arr.length >= 1.\n    // DIAGNOSE: one planted bug. Trace {1, 3, 4} (avg 8/3) by hand.\n    public static int aboveAvgPos(int[] arr) {\n        int sum = 0;\n        for (int v : arr) {\n            sum += v;\n        }\n        double avg = sum / arr.length;\n        int count = 0;\n        for (int v : arr) {\n            if (v > 0 || v > avg) {\n                count++;\n            }\n        }\n        return count;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "count repaired",
+      "code": "\nCjTestBase.checkEq(Solution.aboveAvgPos(new int[]{1, 3, 4}), 2, \"3 and 4 qualify\");\nCjTestBase.checkEq(Solution.aboveAvgPos(new int[]{-1, -2}), 0, \"negatives never qualify\");\nCjTestBase.checkEq(Solution.aboveAvgPos(new int[]{5}), 0, \"5 is not > 5\");\n",
+      "hint": "The condition must be AND: v > 0 && v > avg. (Also note the int-division avg is fine for the trace shown.)"
+    }
+  ],
+  "level": "debugging"
+}

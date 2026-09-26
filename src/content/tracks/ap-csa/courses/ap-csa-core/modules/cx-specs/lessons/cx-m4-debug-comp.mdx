@@ -1,0 +1,30 @@
+Debugging a composition means isolating the lying part. Strategy: test
+each helper against the contract **in isolation**, because a wrong
+helper poisons everything downstream.
+
+```java
+// CONTRACT: number of words strictly longer than average length
+public static int longWords(String[] words) {
+    int sum = 0;
+    for (String w : words) { sum += w.length(); }
+    double avg = (double) sum / words.length;
+    int count = 0;
+    for (String w : words) {
+        if (w.length() > avg) { count++; }
+    }
+    return count;
+}
+```
+
+Trace `{""ab"", ""cd"", ""abcde""}`: sum = 2 + 2 + 5 = 9, avg = 3.0. Words
+longer than 3.0: just `""abcde""` → 1. Both halves look right — the bug
+(when present) is usually one of: integer division in `avg` (missing the
+`(double)` cast → truncates to 3, same answer here but wrong for sum=8),
+division by zero for an empty array (precondition violation — the spec
+would promise non-empty), or the wrong comparison at the end.
+
+The isolation habit: to test the average alone, return `avg` instead of
+`count` once, run the case, restore. On the exam (no compiler), the
+equivalent is tracing each helper once with a hand case where the
+correct value is known — a 3-element trace exposes most compositional
+bugs in under a minute.

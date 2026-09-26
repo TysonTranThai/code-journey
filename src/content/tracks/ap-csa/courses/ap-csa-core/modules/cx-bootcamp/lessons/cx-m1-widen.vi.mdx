@@ -1,0 +1,38 @@
+Nguyên tắc giải nhanh: **giải phiên bản nhỏ nhất của bài toán trước, rồi
+mở rộng dần.**
+
+Lấy đề: *"Trả về true nếu mọi phần tử của `words` đều có độ dài ít nhất
+`k`."*
+
+- Trường hợp nhỏ nhất: mảng rỗng. "Mọi phần tử" của tập rỗng là đúng một
+  cách chân không (vacuously true) — trả về `true`.
+- Một phần tử: kiểm tra `words[0].length() >= k`.
+- Mọi phần tử: dùng vòng lặp, vừa thấy cái sai thì lập tức `return
+  false`. Chỉ sau khi vòng lặp chạy hết mới được `return true`.
+
+```java
+public static boolean allLong(String[] words, int k) {
+    for (String w : words) {
+        if (w.length() < k) {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+Hai thói quen mà quy trình này rèn:
+
+1. **Mẫu thoát sớm.** Câu hỏi kiểu "mọi / không có / không phần tử nào"
+   muốn bạn trả lời ngay khi kết quả được quyết định, rồi mới đưa đáp án
+   mặc định *sau* vòng lặp. Học sinh cố dùng cờ (flag) thường khởi tạo
+   sai (`true` hay `false`) — hãy quyết định giá trị mặc định từ trường
+   hợp chân không.
+2. **Phép kiểm tra phủ định.** "Mọi phần tử có độ dài ≥ k" sai đúng khi
+   *tồn tại* một phần tử có `length < k` — nên `if` kiểm tra điều **sai**,
+   không phải điều đúng. Dịch phủ định đúng giúp bạn lấy điểm gần như ở
+   mọi câu thi.
+
+Cách mở rộng tương tự áp dụng cho cộng dồn (tổng → tổng có điều kiện →
+đếm điều kiện) và tìm kiếm (có tồn tại → ở đâu → lần đầu xuất hiện).
+Bắt đầu từ chỗ bài toán đã được giải; thêm phức tạp từng nghĩa vụ một.

@@ -1,0 +1,16 @@
+{
+  "id": "cx-m10-puppy-chain",
+  "title": "Dispatch chain, three deep",
+  "prompt": "`describe(Animal)` is implemented. Predict via the dispatch table: what does it return for a Puppy? A Dog? A plain Animal? Confirm by keeping the code as-is and making the tests pass (the tests encode the correct answers).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Animal {\n        public String describe() { return \"an animal\"; }\n    }\n    public static class Dog extends Animal {\n        public String describe() { return \"a dog\"; }\n    }\n    public static class Puppy extends Dog {\n        public String describe() { return super.describe() + \" (young)\"; }\n    }\n\n    // CONTRACT: already implemented — predict via dispatch table.\n    public static String describe(Animal a) { return a.describe(); }\n}\n",
+  "tests": [
+    {
+      "name": "chained dispatch",
+      "code": "\nCjTestBase.checkEq(Solution.describe(new Solution.Puppy()), \"a dog (young)\", \"super.extend then dispatch\");\nCjTestBase.checkEq(Solution.describe(new Solution.Dog()), \"a dog\", \"Dog's body\");\nCjTestBase.checkEq(Solution.describe(new Solution.Animal()), \"an animal\", \"Animal's body\");\n",
+      "hint": "Puppy.describe calls super.describe() = Dog's body, then appends."
+    }
+  ],
+  "level": "independent"
+}

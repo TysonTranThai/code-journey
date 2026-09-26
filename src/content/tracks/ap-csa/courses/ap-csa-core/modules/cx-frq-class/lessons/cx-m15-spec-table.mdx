@@ -1,0 +1,27 @@
+The Q2 spec table is a fill-in-the-blanks contract. A representative
+table — this module's checkpoint — reads:
+
+```text
+Class: Signaler
+Fields:
+  - private int level        (current signal level, starts at 1)
+  - private int streak       (consecutive strengthens, starts at 0)
+Constructor: Signaler() — both fields at start values.
+Methods:
+  void boost()      — level += streak; then streak++
+  void reset()      — level back to 1; streak back to 0
+  int getLevel()    — reader
+```
+
+The workflow is mechanical: translate each row, in order. Two rows
+deserve special respect:
+
+**"starts at 0/1"** — set it in the CONSTRUCTOR, not lazily. Graders
+check the initial state with a getter call before any mutation.
+
+**Order inside a method matters.** `boost()` adds the CURRENT streak
+to level, THEN increments streak. Swapping the two lines changes every
+subsequent value — trace `boost; boost; boost`: levels 1+0=1, 1+1=2,
+2+2=4 vs (if swapped) 1+1=2, 2+2=4, 4+3=7. Both are "implementations";
+only one matches the table. When the table gives an order, the order
+is the specification.

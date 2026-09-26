@@ -260,6 +260,198 @@ import ApiDesignContracts from "@/content/tracks/python/courses/python-advanced/
 import ApiDesignContractsVi from "@/content/tracks/python/courses/python-advanced/modules/production-apis/lessons/api-design-contracts.vi.mdx";
 import ApiVsAbi from "@/content/tracks/cpp/courses/cpp-advanced/modules/abi-linking/lessons/api-vs-abi.mdx";
 import ApiVsAbiVi from "@/content/tracks/cpp/courses/cpp-advanced/modules/abi-linking/lessons/api-vs-abi.vi.mdx";
+import ApxCpM1 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-problem-solving/lessons/apx-cp-m1.mdx";
+import ApxCpM10 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-recursion/lessons/apx-cp-m10.mdx";
+import ApxCpM10Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-recursion/lessons/apx-cp-m10.vi.mdx";
+import ApxCpM11 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-integrated/lessons/apx-cp-m11.mdx";
+import ApxCpM11Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-integrated/lessons/apx-cp-m11.vi.mdx";
+import ApxCpM12 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-workshop/lessons/apx-cp-m12.mdx";
+import ApxCpM12Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-workshop/lessons/apx-cp-m12.vi.mdx";
+import ApxCpM13 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-method/lessons/apx-cp-m13.mdx";
+import ApxCpM13Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-method/lessons/apx-cp-m13.vi.mdx";
+import ApxCpM14 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-class/lessons/apx-cp-m14.mdx";
+import ApxCpM14Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-class/lessons/apx-cp-m14.vi.mdx";
+import ApxCpM15 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-debug/lessons/apx-cp-m15.mdx";
+import ApxCpM15Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-debug/lessons/apx-cp-m15.vi.mdx";
+import ApxCpM16 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-partial/lessons/apx-cp-m16.mdx";
+import ApxCpM16Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-partial/lessons/apx-cp-m16.vi.mdx";
+import ApxCpM17 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mixed/lessons/apx-cp-m17.mdx";
+import ApxCpM17Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mixed/lessons/apx-cp-m17.vi.mdx";
+import ApxCpM18 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-timed/lessons/apx-cp-m18.mdx";
+import ApxCpM18Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-timed/lessons/apx-cp-m18.vi.mdx";
+import ApxCpM19 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-errors/lessons/apx-cp-m19.mdx";
+import ApxCpM19Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-errors/lessons/apx-cp-m19.vi.mdx";
+import ApxCpM1Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-problem-solving/lessons/apx-cp-m1.vi.mdx";
+import ApxCpM2 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-tracing/lessons/apx-cp-m2.mdx";
+import ApxCpM20 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strategy/lessons/apx-cp-m20.mdx";
+import ApxCpM20Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strategy/lessons/apx-cp-m20.vi.mdx";
+import ApxCpM21 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam1/lessons/apx-cp-m21.mdx";
+import ApxCpM21Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam1/lessons/apx-cp-m21.vi.mdx";
+import ApxCpM22 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam2/lessons/apx-cp-m22.mdx";
+import ApxCpM22Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam2/lessons/apx-cp-m22.vi.mdx";
+import ApxCpM23 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam3/lessons/apx-cp-m23.mdx";
+import ApxCpM23Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam3/lessons/apx-cp-m23.vi.mdx";
+import ApxCpM24 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-master/lessons/apx-cp-m24.mdx";
+import ApxCpM24Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-master/lessons/apx-cp-m24.vi.mdx";
+import ApxCpM2Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-tracing/lessons/apx-cp-m2.vi.mdx";
+import ApxCpM3 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mcq-lab/lessons/apx-cp-m3.mdx";
+import ApxCpM3Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mcq-lab/lessons/apx-cp-m3.vi.mdx";
+import ApxCpM4 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-speed/lessons/apx-cp-m4.mdx";
+import ApxCpM4Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-speed/lessons/apx-cp-m4.vi.mdx";
+import ApxCpM5 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strings/lessons/apx-cp-m5.mdx";
+import ApxCpM5Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strings/lessons/apx-cp-m5.vi.mdx";
+import ApxCpM6 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-arrays/lessons/apx-cp-m6.mdx";
+import ApxCpM6Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-arrays/lessons/apx-cp-m6.vi.mdx";
+import ApxCpM7 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-grids/lessons/apx-cp-m7.mdx";
+import ApxCpM7Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-grids/lessons/apx-cp-m7.vi.mdx";
+import ApxCpM8 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-oop/lessons/apx-cp-m8.mdx";
+import ApxCpM8Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-oop/lessons/apx-cp-m8.vi.mdx";
+import ApxCpM9 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-polymorphism/lessons/apx-cp-m9.mdx";
+import ApxCpM9Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-polymorphism/lessons/apx-cp-m9.vi.mdx";
+import ApxM10Bases from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-recursion/lessons/apx-m10-bases.mdx";
+import ApxM10BasesVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-recursion/lessons/apx-m10-bases.vi.mdx";
+import ApxM10Strings from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-recursion/lessons/apx-m10-strings.mdx";
+import ApxM10StringsVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-recursion/lessons/apx-m10-strings.vi.mdx";
+import ApxM10Tracing from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-recursion/lessons/apx-m10-tracing.mdx";
+import ApxM10TracingVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-recursion/lessons/apx-m10-tracing.vi.mdx";
+import ApxM11Fusion from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-integrated/lessons/apx-m11-fusion.mdx";
+import ApxM11FusionVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-integrated/lessons/apx-m11-fusion.vi.mdx";
+import ApxM11Identify from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-integrated/lessons/apx-m11-identify.mdx";
+import ApxM11IdentifyVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-integrated/lessons/apx-m11-identify.vi.mdx";
+import ApxM11Plan from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-integrated/lessons/apx-m11-plan.mdx";
+import ApxM11PlanVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-integrated/lessons/apx-m11-plan.vi.mdx";
+import ApxM12Anatomy from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-workshop/lessons/apx-m12-anatomy.mdx";
+import ApxM12AnatomyVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-workshop/lessons/apx-m12-anatomy.vi.mdx";
+import ApxM12Independent from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-workshop/lessons/apx-m12-independent.mdx";
+import ApxM12IndependentVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-workshop/lessons/apx-m12-independent.vi.mdx";
+import ApxM12Review from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-workshop/lessons/apx-m12-review.mdx";
+import ApxM12ReviewVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-workshop/lessons/apx-m12-review.vi.mdx";
+import ApxM13Edge from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-method/lessons/apx-m13-edge.mdx";
+import ApxM13EdgeVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-method/lessons/apx-m13-edge.vi.mdx";
+import ApxM13Mixed from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-method/lessons/apx-m13-mixed.mdx";
+import ApxM13MixedVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-method/lessons/apx-m13-mixed.vi.mdx";
+import ApxM13Spec from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-method/lessons/apx-m13-spec.mdx";
+import ApxM13SpecVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-method/lessons/apx-m13-spec.vi.mdx";
+import ApxM14Interaction from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-class/lessons/apx-m14-interaction.mdx";
+import ApxM14InteractionVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-class/lessons/apx-m14-interaction.vi.mdx";
+import ApxM14Lifecycle from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-class/lessons/apx-m14-lifecycle.mdx";
+import ApxM14LifecycleVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-class/lessons/apx-m14-lifecycle.vi.mdx";
+import ApxM14Rubric from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-class/lessons/apx-m14-rubric.mdx";
+import ApxM14RubricVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-class/lessons/apx-m14-rubric.vi.mdx";
+import ApxM15Diagnose from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-debug/lessons/apx-m15-diagnose.mdx";
+import ApxM15DiagnoseVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-debug/lessons/apx-m15-diagnose.vi.mdx";
+import ApxM15Fix from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-debug/lessons/apx-m15-fix.mdx";
+import ApxM15FixVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-debug/lessons/apx-m15-fix.vi.mdx";
+import ApxM15Regress from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-debug/lessons/apx-m15-regress.mdx";
+import ApxM15RegressVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-frq-debug/lessons/apx-m15-regress.vi.mdx";
+import ApxM16Banking from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-partial/lessons/apx-m16-banking.mdx";
+import ApxM16BankingVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-partial/lessons/apx-m16-banking.vi.mdx";
+import ApxM16Cascade from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-partial/lessons/apx-m16-cascade.mdx";
+import ApxM16CascadeVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-partial/lessons/apx-m16-cascade.vi.mdx";
+import ApxM16Parts from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-partial/lessons/apx-m16-parts.mdx";
+import ApxM16PartsVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-partial/lessons/apx-m16-parts.vi.mdx";
+import ApxM17Blend from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mixed/lessons/apx-m17-blend.mdx";
+import ApxM17BlendVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mixed/lessons/apx-m17-blend.vi.mdx";
+import ApxM17Review from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mixed/lessons/apx-m17-review.mdx";
+import ApxM17ReviewVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mixed/lessons/apx-m17-review.vi.mdx";
+import ApxM17Shift from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mixed/lessons/apx-m17-shift.mdx";
+import ApxM17ShiftVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mixed/lessons/apx-m17-shift.vi.mdx";
+import ApxM18Bottleneck from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-timed/lessons/apx-m18-bottleneck.mdx";
+import ApxM18BottleneckVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-timed/lessons/apx-m18-bottleneck.vi.mdx";
+import ApxM18Budget from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-timed/lessons/apx-m18-budget.mdx";
+import ApxM18BudgetVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-timed/lessons/apx-m18-budget.vi.mdx";
+import ApxM18Retry from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-timed/lessons/apx-m18-retry.mdx";
+import ApxM18RetryVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-timed/lessons/apx-m18-retry.vi.mdx";
+import ApxM19Diagnose from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-errors/lessons/apx-m19-diagnose.mdx";
+import ApxM19DiagnoseVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-errors/lessons/apx-m19-diagnose.vi.mdx";
+import ApxM19Family from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-errors/lessons/apx-m19-family.mdx";
+import ApxM19FamilyVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-errors/lessons/apx-m19-family.vi.mdx";
+import ApxM19Taxonomy from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-errors/lessons/apx-m19-taxonomy.mdx";
+import ApxM19TaxonomyVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-errors/lessons/apx-m19-taxonomy.vi.mdx";
+import ApxM1Decompose from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-problem-solving/lessons/apx-m1-decompose.mdx";
+import ApxM1DecomposeVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-problem-solving/lessons/apx-m1-decompose.vi.mdx";
+import ApxM1Method from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-problem-solving/lessons/apx-m1-method.mdx";
+import ApxM1MethodVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-problem-solving/lessons/apx-m1-method.vi.mdx";
+import ApxM1Selective from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-problem-solving/lessons/apx-m1-selective.mdx";
+import ApxM1SelectiveVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-problem-solving/lessons/apx-m1-selective.vi.mdx";
+import ApxM20Final10 from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strategy/lessons/apx-m20-final10.mdx";
+import ApxM20Final10Vi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strategy/lessons/apx-m20-final10.vi.mdx";
+import ApxM20Pacing from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strategy/lessons/apx-m20-pacing.mdx";
+import ApxM20PacingVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strategy/lessons/apx-m20-pacing.vi.mdx";
+import ApxM20Triage from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strategy/lessons/apx-m20-triage.mdx";
+import ApxM20TriageVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strategy/lessons/apx-m20-triage.vi.mdx";
+import ApxM21Analysis from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam1/lessons/apx-m21-analysis.mdx";
+import ApxM21AnalysisVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam1/lessons/apx-m21-analysis.vi.mdx";
+import ApxM21Debrief from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam1/lessons/apx-m21-debrief.mdx";
+import ApxM21DebriefVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam1/lessons/apx-m21-debrief.vi.mdx";
+import ApxM21Rules from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam1/lessons/apx-m21-rules.mdx";
+import ApxM21RulesVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam1/lessons/apx-m21-rules.vi.mdx";
+import ApxM22Analysis from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam2/lessons/apx-m22-analysis.mdx";
+import ApxM22AnalysisVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam2/lessons/apx-m22-analysis.vi.mdx";
+import ApxM22Rules from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam2/lessons/apx-m22-rules.mdx";
+import ApxM22RulesVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam2/lessons/apx-m22-rules.vi.mdx";
+import ApxM22Trapmap from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam2/lessons/apx-m22-trapmap.mdx";
+import ApxM22TrapmapVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam2/lessons/apx-m22-trapmap.vi.mdx";
+import ApxM23Compare from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam3/lessons/apx-m23-compare.mdx";
+import ApxM23CompareVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam3/lessons/apx-m23-compare.vi.mdx";
+import ApxM23Rules from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam3/lessons/apx-m23-rules.mdx";
+import ApxM23RulesVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam3/lessons/apx-m23-rules.vi.mdx";
+import ApxM23Synthesis from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam3/lessons/apx-m23-synthesis.mdx";
+import ApxM23SynthesisVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-exam3/lessons/apx-m23-synthesis.vi.mdx";
+import ApxM24After from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-master/lessons/apx-m24-after.mdx";
+import ApxM24AfterVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-master/lessons/apx-m24-after.vi.mdx";
+import ApxM24Protocol from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-master/lessons/apx-m24-protocol.mdx";
+import ApxM24ProtocolVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-master/lessons/apx-m24-protocol.vi.mdx";
+import ApxM24Verdict from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-master/lessons/apx-m24-verdict.mdx";
+import ApxM24VerdictVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-master/lessons/apx-m24-verdict.vi.mdx";
+import ApxM2Invariants from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-tracing/lessons/apx-m2-invariants.mdx";
+import ApxM2InvariantsVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-tracing/lessons/apx-m2-invariants.vi.mdx";
+import ApxM2Objects from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-tracing/lessons/apx-m2-objects.mdx";
+import ApxM2ObjectsVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-tracing/lessons/apx-m2-objects.vi.mdx";
+import ApxM2Tables from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-tracing/lessons/apx-m2-tables.mdx";
+import ApxM2TablesVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-tracing/lessons/apx-m2-tables.vi.mdx";
+import ApxM3Answers from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mcq-lab/lessons/apx-m3-answers.mdx";
+import ApxM3AnswersVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mcq-lab/lessons/apx-m3-answers.vi.mdx";
+import ApxM3Explanations from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mcq-lab/lessons/apx-m3-explanations.mdx";
+import ApxM3ExplanationsVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mcq-lab/lessons/apx-m3-explanations.vi.mdx";
+import ApxM3Misconceptions from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mcq-lab/lessons/apx-m3-misconceptions.mdx";
+import ApxM3MisconceptionsVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-mcq-lab/lessons/apx-m3-misconceptions.vi.mdx";
+import ApxM4Elimination from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-speed/lessons/apx-m4-elimination.mdx";
+import ApxM4EliminationVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-speed/lessons/apx-m4-elimination.vi.mdx";
+import ApxM4Patterns from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-speed/lessons/apx-m4-patterns.mdx";
+import ApxM4PatternsVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-speed/lessons/apx-m4-patterns.vi.mdx";
+import ApxM4Tempo from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-speed/lessons/apx-m4-tempo.mdx";
+import ApxM4TempoVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-speed/lessons/apx-m4-tempo.vi.mdx";
+import ApxM5Boundaries from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strings/lessons/apx-m5-boundaries.mdx";
+import ApxM5BoundariesVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strings/lessons/apx-m5-boundaries.vi.mdx";
+import ApxM5Toolkit from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strings/lessons/apx-m5-toolkit.mdx";
+import ApxM5ToolkitVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strings/lessons/apx-m5-toolkit.vi.mdx";
+import ApxM5Transform from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strings/lessons/apx-m5-transform.mdx";
+import ApxM5TransformVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-strings/lessons/apx-m5-transform.vi.mdx";
+import ApxM6Almutation from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-arrays/lessons/apx-m6-almutation.mdx";
+import ApxM6AlmutationVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-arrays/lessons/apx-m6-almutation.vi.mdx";
+import ApxM6Twopass from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-arrays/lessons/apx-m6-twopass.mdx";
+import ApxM6TwopassVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-arrays/lessons/apx-m6-twopass.vi.mdx";
+import ApxM6Writeindex from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-arrays/lessons/apx-m6-writeindex.mdx";
+import ApxM6WriteindexVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-arrays/lessons/apx-m6-writeindex.vi.mdx";
+import ApxM7Axes from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-grids/lessons/apx-m7-axes.mdx";
+import ApxM7AxesVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-grids/lessons/apx-m7-axes.vi.mdx";
+import ApxM7Bounds from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-grids/lessons/apx-m7-bounds.mdx";
+import ApxM7BoundsVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-grids/lessons/apx-m7-bounds.vi.mdx";
+import ApxM7Neighborhood from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-grids/lessons/apx-m7-neighborhood.mdx";
+import ApxM7NeighborhoodVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-grids/lessons/apx-m7-neighborhood.vi.mdx";
+import ApxM8Helpers from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-oop/lessons/apx-m8-helpers.mdx";
+import ApxM8HelpersVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-oop/lessons/apx-m8-helpers.vi.mdx";
+import ApxM8Interaction from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-oop/lessons/apx-m8-interaction.mdx";
+import ApxM8InteractionVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-oop/lessons/apx-m8-interaction.vi.mdx";
+import ApxM8State from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-oop/lessons/apx-m8-state.mdx";
+import ApxM8StateVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-oop/lessons/apx-m8-state.vi.mdx";
+import ApxM9Collections from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-polymorphism/lessons/apx-m9-collections.mdx";
+import ApxM9CollectionsVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-polymorphism/lessons/apx-m9-collections.vi.mdx";
+import ApxM9Super from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-polymorphism/lessons/apx-m9-super.mdx";
+import ApxM9SuperVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-polymorphism/lessons/apx-m9-super.vi.mdx";
+import ApxM9TwoTypes from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-polymorphism/lessons/apx-m9-two-types.mdx";
+import ApxM9TwoTypesVi from "@/content/tracks/ap-csa/courses/ap-csa-advanced/modules/apx-polymorphism/lessons/apx-m9-two-types.vi.mdx";
 import ArgparseLite from "@/content/tracks/python/courses/python-beginner/modules/command-line-applications/lessons/argparse-lite.mdx";
 import ArgparseLiteVi from "@/content/tracks/python/courses/python-beginner/modules/command-line-applications/lessons/argparse-lite.vi.mdx";
 import ArithmeticAndDivision from "@/content/tracks/c/courses/c-beginner/modules/operators-expressions/lessons/arithmetic-and-division.mdx";
@@ -1480,6 +1672,166 @@ import CustomHierarchies from "@/content/tracks/java/courses/java-intermediate/m
 import CustomHierarchiesVi from "@/content/tracks/java/courses/java-intermediate/modules/java-exception-architecture/lessons/custom-hierarchies.vi.mdx";
 import CustomPropertiesTheming from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/custom-properties-theming.mdx";
 import CustomPropertiesThemingVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-css-ui-engineering/lessons/custom-properties-theming.vi.mdx";
+import CxCpM1 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-bootcamp/lessons/cx-cp-m1.mdx";
+import CxCpM10 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-inheritance/lessons/cx-cp-m10.mdx";
+import CxCpM10Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-inheritance/lessons/cx-cp-m10.vi.mdx";
+import CxCpM11 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-recursion/lessons/cx-cp-m11.mdx";
+import CxCpM11Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-recursion/lessons/cx-cp-m11.vi.mdx";
+import CxCpM12 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mixed/lessons/cx-cp-m12.mdx";
+import CxCpM12Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mixed/lessons/cx-cp-m12.vi.mdx";
+import CxCpM13 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mcq/lessons/cx-cp-m13.mdx";
+import CxCpM13Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mcq/lessons/cx-cp-m13.vi.mdx";
+import CxCpM14 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-fund/lessons/cx-cp-m14.mdx";
+import CxCpM14Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-fund/lessons/cx-cp-m14.vi.mdx";
+import CxCpM15 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-class/lessons/cx-cp-m15.mdx";
+import CxCpM15Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-class/lessons/cx-cp-m15.vi.mdx";
+import CxCpM16 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-list/lessons/cx-cp-m16.mdx";
+import CxCpM16Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-list/lessons/cx-cp-m16.vi.mdx";
+import CxCpM17 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-2d/lessons/cx-cp-m17.mdx";
+import CxCpM17Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-2d/lessons/cx-cp-m17.vi.mdx";
+import CxCpM18 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-debug/lessons/cx-cp-m18.mdx";
+import CxCpM18Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-debug/lessons/cx-cp-m18.vi.mdx";
+import CxCpM19 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-timed/lessons/cx-cp-m19.mdx";
+import CxCpM19Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-timed/lessons/cx-cp-m19.vi.mdx";
+import CxCpM1Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-bootcamp/lessons/cx-cp-m1.vi.mdx";
+import CxCpM2 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-tracing/lessons/cx-cp-m2.mdx";
+import CxCpM20 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-sim/lessons/cx-cp-m20.mdx";
+import CxCpM20Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-sim/lessons/cx-cp-m20.vi.mdx";
+import CxCpM2Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-tracing/lessons/cx-cp-m2.vi.mdx";
+import CxCpM3 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-flow/lessons/cx-cp-m3.mdx";
+import CxCpM3Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-flow/lessons/cx-cp-m3.vi.mdx";
+import CxCpM4 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-specs/lessons/cx-cp-m4.mdx";
+import CxCpM4Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-specs/lessons/cx-cp-m4.vi.mdx";
+import CxCpM5 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-strings/lessons/cx-cp-m5.mdx";
+import CxCpM5Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-strings/lessons/cx-cp-m5.vi.mdx";
+import CxCpM6 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arrays/lessons/cx-cp-m6.mdx";
+import CxCpM6Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arrays/lessons/cx-cp-m6.vi.mdx";
+import CxCpM7 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arraylist/lessons/cx-cp-m7.mdx";
+import CxCpM7Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arraylist/lessons/cx-cp-m7.vi.mdx";
+import CxCpM8 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-2d/lessons/cx-cp-m8.mdx";
+import CxCpM8Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-2d/lessons/cx-cp-m8.vi.mdx";
+import CxCpM9 from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-objects/lessons/cx-cp-m9.mdx";
+import CxCpM9Vi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-objects/lessons/cx-cp-m9.vi.mdx";
+import CxM10Ctors from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-inheritance/lessons/cx-m10-ctors.mdx";
+import CxM10CtorsVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-inheritance/lessons/cx-m10-ctors.vi.mdx";
+import CxM10Dispatch from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-inheritance/lessons/cx-m10-dispatch.mdx";
+import CxM10DispatchVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-inheritance/lessons/cx-m10-dispatch.vi.mdx";
+import CxM10Polycollections from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-inheritance/lessons/cx-m10-polycollections.mdx";
+import CxM10PolycollectionsVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-inheritance/lessons/cx-m10-polycollections.vi.mdx";
+import CxM11Branching from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-recursion/lessons/cx-m11-branching.mdx";
+import CxM11BranchingVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-recursion/lessons/cx-m11-branching.vi.mdx";
+import CxM11Edges from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-recursion/lessons/cx-m11-edges.mdx";
+import CxM11EdgesVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-recursion/lessons/cx-m11-edges.vi.mdx";
+import CxM11Frames from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-recursion/lessons/cx-m11-frames.mdx";
+import CxM11FramesVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-recursion/lessons/cx-m11-frames.vi.mdx";
+import CxM12Diagnose from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mixed/lessons/cx-m12-diagnose.mdx";
+import CxM12DiagnoseVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mixed/lessons/cx-m12-diagnose.vi.mdx";
+import CxM12Eliminate from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mixed/lessons/cx-m12-eliminate.mdx";
+import CxM12EliminateVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mixed/lessons/cx-m12-eliminate.vi.mdx";
+import CxM12Syntrace from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mixed/lessons/cx-m12-syntrace.mdx";
+import CxM12SyntraceVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mixed/lessons/cx-m12-syntrace.vi.mdx";
+import CxM13Clinic from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mcq/lessons/cx-m13-clinic.mdx";
+import CxM13ClinicVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mcq/lessons/cx-m13-clinic.vi.mdx";
+import CxM13Protocol from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mcq/lessons/cx-m13-protocol.mdx";
+import CxM13ProtocolVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mcq/lessons/cx-m13-protocol.vi.mdx";
+import CxM13Taxonomy from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mcq/lessons/cx-m13-taxonomy.mdx";
+import CxM13TaxonomyVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-mcq/lessons/cx-m13-taxonomy.vi.mdx";
+import CxM14Conventions from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-fund/lessons/cx-m14-conventions.mdx";
+import CxM14ConventionsVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-fund/lessons/cx-m14-conventions.vi.mdx";
+import CxM14ExamShape from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-fund/lessons/cx-m14-exam-shape.mdx";
+import CxM14ExamShapeVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-fund/lessons/cx-m14-exam-shape.vi.mdx";
+import CxM14Workflow from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-fund/lessons/cx-m14-workflow.mdx";
+import CxM14WorkflowVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-fund/lessons/cx-m14-workflow.vi.mdx";
+import CxM15Helpers from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-class/lessons/cx-m15-helpers.mdx";
+import CxM15HelpersVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-class/lessons/cx-m15-helpers.vi.mdx";
+import CxM15Seams from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-class/lessons/cx-m15-seams.mdx";
+import CxM15SeamsVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-class/lessons/cx-m15-seams.vi.mdx";
+import CxM15SpecTable from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-class/lessons/cx-m15-spec-table.mdx";
+import CxM15SpecTableVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-class/lessons/cx-m15-spec-table.vi.mdx";
+import CxM16Multipart from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-list/lessons/cx-m16-multipart.mdx";
+import CxM16MultipartVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-list/lessons/cx-m16-multipart.vi.mdx";
+import CxM16Q3Shape from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-list/lessons/cx-m16-q3-shape.mdx";
+import CxM16Q3ShapeVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-list/lessons/cx-m16-q3-shape.vi.mdx";
+import CxM16Tokens from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-list/lessons/cx-m16-tokens.mdx";
+import CxM16TokensVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-list/lessons/cx-m16-tokens.vi.mdx";
+import CxM17Navigation from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-2d/lessons/cx-m17-navigation.mdx";
+import CxM17NavigationVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-2d/lessons/cx-m17-navigation.vi.mdx";
+import CxM17Q4Shapes from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-2d/lessons/cx-m17-q4-shapes.mdx";
+import CxM17Q4ShapesVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-2d/lessons/cx-m17-q4-shapes.vi.mdx";
+import CxM17Transform from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-2d/lessons/cx-m17-transform.mdx";
+import CxM17TransformVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-2d/lessons/cx-m17-transform.vi.mdx";
+import CxM18Cascade from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-debug/lessons/cx-m18-cascade.mdx";
+import CxM18CascadeVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-debug/lessons/cx-m18-cascade.vi.mdx";
+import CxM18Localize from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-debug/lessons/cx-m18-localize.mdx";
+import CxM18LocalizeVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-debug/lessons/cx-m18-localize.vi.mdx";
+import CxM18Salvage from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-debug/lessons/cx-m18-salvage.mdx";
+import CxM18SalvageVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-frq-debug/lessons/cx-m18-salvage.vi.mdx";
+import CxM19Inventory from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-timed/lessons/cx-m19-inventory.mdx";
+import CxM19InventoryVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-timed/lessons/cx-m19-inventory.vi.mdx";
+import CxM19Pacing from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-timed/lessons/cx-m19-pacing.mdx";
+import CxM19PacingVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-timed/lessons/cx-m19-pacing.vi.mdx";
+import CxM19Protocol from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-timed/lessons/cx-m19-protocol.mdx";
+import CxM19ProtocolVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-timed/lessons/cx-m19-protocol.vi.mdx";
+import CxM1Bughunt from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-bootcamp/lessons/cx-m1-bughunt.mdx";
+import CxM1BughuntVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-bootcamp/lessons/cx-m1-bughunt.vi.mdx";
+import CxM1Contract from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-bootcamp/lessons/cx-m1-contract.mdx";
+import CxM1ContractVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-bootcamp/lessons/cx-m1-contract.vi.mdx";
+import CxM1Widen from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-bootcamp/lessons/cx-m1-widen.mdx";
+import CxM1WidenVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-bootcamp/lessons/cx-m1-widen.vi.mdx";
+import CxM20Ready from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-sim/lessons/cx-m20-ready.mdx";
+import CxM20ReadyVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-sim/lessons/cx-m20-ready.vi.mdx";
+import CxM20Selfscore from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-sim/lessons/cx-m20-selfscore.mdx";
+import CxM20SelfscoreVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-sim/lessons/cx-m20-selfscore.vi.mdx";
+import CxM20Simulate from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-sim/lessons/cx-m20-simulate.mdx";
+import CxM20SimulateVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-sim/lessons/cx-m20-simulate.vi.mdx";
+import CxM2Calls from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-tracing/lessons/cx-m2-calls.mdx";
+import CxM2CallsVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-tracing/lessons/cx-m2-calls.vi.mdx";
+import CxM2Objects from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-tracing/lessons/cx-m2-objects.mdx";
+import CxM2ObjectsVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-tracing/lessons/cx-m2-objects.vi.mdx";
+import CxM2Table from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-tracing/lessons/cx-m2-table.mdx";
+import CxM2TableVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-tracing/lessons/cx-m2-table.vi.mdx";
+import CxM3Compose from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-flow/lessons/cx-m3-compose.mdx";
+import CxM3ComposeVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-flow/lessons/cx-m3-compose.vi.mdx";
+import CxM3Machines from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-flow/lessons/cx-m3-machines.mdx";
+import CxM3MachinesVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-flow/lessons/cx-m3-machines.vi.mdx";
+import CxM3Traps from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-flow/lessons/cx-m3-traps.mdx";
+import CxM3TrapsVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-flow/lessons/cx-m3-traps.vi.mdx";
+import CxM4DebugComp from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-specs/lessons/cx-m4-debug-comp.mdx";
+import CxM4DebugCompVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-specs/lessons/cx-m4-debug-comp.vi.mdx";
+import CxM4Helpers from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-specs/lessons/cx-m4-helpers.mdx";
+import CxM4HelpersVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-specs/lessons/cx-m4-helpers.vi.mdx";
+import CxM4Preconditions from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-specs/lessons/cx-m4-preconditions.mdx";
+import CxM4PreconditionsVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-specs/lessons/cx-m4-preconditions.vi.mdx";
+import CxM5Api from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-strings/lessons/cx-m5-api.mdx";
+import CxM5ApiVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-strings/lessons/cx-m5-api.vi.mdx";
+import CxM5Building from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-strings/lessons/cx-m5-building.mdx";
+import CxM5BuildingVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-strings/lessons/cx-m5-building.vi.mdx";
+import CxM5Twopoint from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-strings/lessons/cx-m5-twopoint.mdx";
+import CxM5TwopointVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-strings/lessons/cx-m5-twopoint.vi.mdx";
+import CxM6IndexAlg from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arrays/lessons/cx-m6-index-alg.mdx";
+import CxM6IndexAlgVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arrays/lessons/cx-m6-index-alg.vi.mdx";
+import CxM6Modes from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arrays/lessons/cx-m6-modes.mdx";
+import CxM6ModesVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arrays/lessons/cx-m6-modes.vi.mdx";
+import CxM6Multipass from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arrays/lessons/cx-m6-multipass.mdx";
+import CxM6MultipassVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arrays/lessons/cx-m6-multipass.vi.mdx";
+import CxM7Boxing from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arraylist/lessons/cx-m7-boxing.mdx";
+import CxM7BoxingVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arraylist/lessons/cx-m7-boxing.vi.mdx";
+import CxM7Removal from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arraylist/lessons/cx-m7-removal.mdx";
+import CxM7RemovalVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arraylist/lessons/cx-m7-removal.vi.mdx";
+import CxM7Synthesis from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arraylist/lessons/cx-m7-synthesis.mdx";
+import CxM7SynthesisVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-arraylist/lessons/cx-m7-synthesis.vi.mdx";
+import CxM8Columns from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-2d/lessons/cx-m8-columns.mdx";
+import CxM8ColumnsVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-2d/lessons/cx-m8-columns.vi.mdx";
+import CxM8Neighbors from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-2d/lessons/cx-m8-neighbors.mdx";
+import CxM8NeighborsVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-2d/lessons/cx-m8-neighbors.vi.mdx";
+import CxM8Orientation from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-2d/lessons/cx-m8-orientation.mdx";
+import CxM8OrientationVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-2d/lessons/cx-m8-orientation.vi.mdx";
+import CxM9Aliasing from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-objects/lessons/cx-m9-aliasing.mdx";
+import CxM9AliasingVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-objects/lessons/cx-m9-aliasing.vi.mdx";
+import CxM9Constructor from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-objects/lessons/cx-m9-constructor.mdx";
+import CxM9ConstructorVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-objects/lessons/cx-m9-constructor.vi.mdx";
+import CxM9State from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-objects/lessons/cx-m9-state.mdx";
+import CxM9StateVi from "@/content/tracks/ap-csa/courses/ap-csa-core/modules/cx-objects/lessons/cx-m9-state.vi.mdx";
 import DashboardCheckpoint from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/dashboard-checkpoint.mdx";
 import DashboardCheckpointVi from "@/content/tracks/web-development/courses/web-development-intermediate/modules/advanced-dom-browser-apis/lessons/dashboard-checkpoint.vi.mdx";
 import DataAccessArchitecture from "@/content/tracks/python/courses/python-advanced/modules/databases-data-access/lessons/data-access-architecture.mdx";
@@ -3106,6 +3458,198 @@ import YourFirstHtmlPage from "@/content/tracks/web-development/courses/web-deve
 import YourFirstHtmlPageVi from "@/content/tracks/web-development/courses/web-development-beginner/modules/the-web-and-your-first-website/lessons/your-first-html-page.vi.mdx";
 
 export const mdxMap: Record<string, MdxComponent> = {
+  ["apx-arrays/apx-m6-twopass.mdx"]: ApxM6Twopass,
+  ["apx-arrays/apx-m6-twopass.vi.mdx"]: ApxM6TwopassVi,
+  ["apx-arrays/apx-m6-writeindex.mdx"]: ApxM6Writeindex,
+  ["apx-arrays/apx-m6-writeindex.vi.mdx"]: ApxM6WriteindexVi,
+  ["apx-arrays/apx-m6-almutation.mdx"]: ApxM6Almutation,
+  ["apx-arrays/apx-m6-almutation.vi.mdx"]: ApxM6AlmutationVi,
+  ["apx-arrays/apx-cp-m6.mdx"]: ApxCpM6,
+  ["apx-arrays/apx-cp-m6.vi.mdx"]: ApxCpM6Vi,
+  ["apx-errors/apx-m19-taxonomy.mdx"]: ApxM19Taxonomy,
+  ["apx-errors/apx-m19-taxonomy.vi.mdx"]: ApxM19TaxonomyVi,
+  ["apx-errors/apx-m19-diagnose.mdx"]: ApxM19Diagnose,
+  ["apx-errors/apx-m19-diagnose.vi.mdx"]: ApxM19DiagnoseVi,
+  ["apx-errors/apx-m19-family.mdx"]: ApxM19Family,
+  ["apx-errors/apx-m19-family.vi.mdx"]: ApxM19FamilyVi,
+  ["apx-errors/apx-cp-m19.mdx"]: ApxCpM19,
+  ["apx-errors/apx-cp-m19.vi.mdx"]: ApxCpM19Vi,
+  ["apx-exam1/apx-m21-rules.mdx"]: ApxM21Rules,
+  ["apx-exam1/apx-m21-rules.vi.mdx"]: ApxM21RulesVi,
+  ["apx-exam1/apx-m21-analysis.mdx"]: ApxM21Analysis,
+  ["apx-exam1/apx-m21-analysis.vi.mdx"]: ApxM21AnalysisVi,
+  ["apx-exam1/apx-m21-debrief.mdx"]: ApxM21Debrief,
+  ["apx-exam1/apx-m21-debrief.vi.mdx"]: ApxM21DebriefVi,
+  ["apx-exam1/apx-cp-m21.mdx"]: ApxCpM21,
+  ["apx-exam1/apx-cp-m21.vi.mdx"]: ApxCpM21Vi,
+  ["apx-exam2/apx-m22-rules.mdx"]: ApxM22Rules,
+  ["apx-exam2/apx-m22-rules.vi.mdx"]: ApxM22RulesVi,
+  ["apx-exam2/apx-m22-analysis.mdx"]: ApxM22Analysis,
+  ["apx-exam2/apx-m22-analysis.vi.mdx"]: ApxM22AnalysisVi,
+  ["apx-exam2/apx-m22-trapmap.mdx"]: ApxM22Trapmap,
+  ["apx-exam2/apx-m22-trapmap.vi.mdx"]: ApxM22TrapmapVi,
+  ["apx-exam2/apx-cp-m22.mdx"]: ApxCpM22,
+  ["apx-exam2/apx-cp-m22.vi.mdx"]: ApxCpM22Vi,
+  ["apx-exam3/apx-m23-rules.mdx"]: ApxM23Rules,
+  ["apx-exam3/apx-m23-rules.vi.mdx"]: ApxM23RulesVi,
+  ["apx-exam3/apx-m23-synthesis.mdx"]: ApxM23Synthesis,
+  ["apx-exam3/apx-m23-synthesis.vi.mdx"]: ApxM23SynthesisVi,
+  ["apx-exam3/apx-m23-compare.mdx"]: ApxM23Compare,
+  ["apx-exam3/apx-m23-compare.vi.mdx"]: ApxM23CompareVi,
+  ["apx-exam3/apx-cp-m23.mdx"]: ApxCpM23,
+  ["apx-exam3/apx-cp-m23.vi.mdx"]: ApxCpM23Vi,
+  ["apx-frq-class/apx-m14-lifecycle.mdx"]: ApxM14Lifecycle,
+  ["apx-frq-class/apx-m14-lifecycle.vi.mdx"]: ApxM14LifecycleVi,
+  ["apx-frq-class/apx-m14-interaction.mdx"]: ApxM14Interaction,
+  ["apx-frq-class/apx-m14-interaction.vi.mdx"]: ApxM14InteractionVi,
+  ["apx-frq-class/apx-m14-rubric.mdx"]: ApxM14Rubric,
+  ["apx-frq-class/apx-m14-rubric.vi.mdx"]: ApxM14RubricVi,
+  ["apx-frq-class/apx-cp-m14.mdx"]: ApxCpM14,
+  ["apx-frq-class/apx-cp-m14.vi.mdx"]: ApxCpM14Vi,
+  ["apx-frq-debug/apx-m15-diagnose.mdx"]: ApxM15Diagnose,
+  ["apx-frq-debug/apx-m15-diagnose.vi.mdx"]: ApxM15DiagnoseVi,
+  ["apx-frq-debug/apx-m15-fix.mdx"]: ApxM15Fix,
+  ["apx-frq-debug/apx-m15-fix.vi.mdx"]: ApxM15FixVi,
+  ["apx-frq-debug/apx-m15-regress.mdx"]: ApxM15Regress,
+  ["apx-frq-debug/apx-m15-regress.vi.mdx"]: ApxM15RegressVi,
+  ["apx-frq-debug/apx-cp-m15.mdx"]: ApxCpM15,
+  ["apx-frq-debug/apx-cp-m15.vi.mdx"]: ApxCpM15Vi,
+  ["apx-frq-method/apx-m13-spec.mdx"]: ApxM13Spec,
+  ["apx-frq-method/apx-m13-spec.vi.mdx"]: ApxM13SpecVi,
+  ["apx-frq-method/apx-m13-edge.mdx"]: ApxM13Edge,
+  ["apx-frq-method/apx-m13-edge.vi.mdx"]: ApxM13EdgeVi,
+  ["apx-frq-method/apx-m13-mixed.mdx"]: ApxM13Mixed,
+  ["apx-frq-method/apx-m13-mixed.vi.mdx"]: ApxM13MixedVi,
+  ["apx-frq-method/apx-cp-m13.mdx"]: ApxCpM13,
+  ["apx-frq-method/apx-cp-m13.vi.mdx"]: ApxCpM13Vi,
+  ["apx-frq-workshop/apx-m12-anatomy.mdx"]: ApxM12Anatomy,
+  ["apx-frq-workshop/apx-m12-anatomy.vi.mdx"]: ApxM12AnatomyVi,
+  ["apx-frq-workshop/apx-m12-independent.mdx"]: ApxM12Independent,
+  ["apx-frq-workshop/apx-m12-independent.vi.mdx"]: ApxM12IndependentVi,
+  ["apx-frq-workshop/apx-m12-review.mdx"]: ApxM12Review,
+  ["apx-frq-workshop/apx-m12-review.vi.mdx"]: ApxM12ReviewVi,
+  ["apx-frq-workshop/apx-cp-m12.mdx"]: ApxCpM12,
+  ["apx-frq-workshop/apx-cp-m12.vi.mdx"]: ApxCpM12Vi,
+  ["apx-grids/apx-m7-axes.mdx"]: ApxM7Axes,
+  ["apx-grids/apx-m7-axes.vi.mdx"]: ApxM7AxesVi,
+  ["apx-grids/apx-m7-neighborhood.mdx"]: ApxM7Neighborhood,
+  ["apx-grids/apx-m7-neighborhood.vi.mdx"]: ApxM7NeighborhoodVi,
+  ["apx-grids/apx-m7-bounds.mdx"]: ApxM7Bounds,
+  ["apx-grids/apx-m7-bounds.vi.mdx"]: ApxM7BoundsVi,
+  ["apx-grids/apx-cp-m7.mdx"]: ApxCpM7,
+  ["apx-grids/apx-cp-m7.vi.mdx"]: ApxCpM7Vi,
+  ["apx-integrated/apx-m11-identify.mdx"]: ApxM11Identify,
+  ["apx-integrated/apx-m11-identify.vi.mdx"]: ApxM11IdentifyVi,
+  ["apx-integrated/apx-m11-fusion.mdx"]: ApxM11Fusion,
+  ["apx-integrated/apx-m11-fusion.vi.mdx"]: ApxM11FusionVi,
+  ["apx-integrated/apx-m11-plan.mdx"]: ApxM11Plan,
+  ["apx-integrated/apx-m11-plan.vi.mdx"]: ApxM11PlanVi,
+  ["apx-integrated/apx-cp-m11.mdx"]: ApxCpM11,
+  ["apx-integrated/apx-cp-m11.vi.mdx"]: ApxCpM11Vi,
+  ["apx-master/apx-m24-protocol.mdx"]: ApxM24Protocol,
+  ["apx-master/apx-m24-protocol.vi.mdx"]: ApxM24ProtocolVi,
+  ["apx-master/apx-m24-verdict.mdx"]: ApxM24Verdict,
+  ["apx-master/apx-m24-verdict.vi.mdx"]: ApxM24VerdictVi,
+  ["apx-master/apx-m24-after.mdx"]: ApxM24After,
+  ["apx-master/apx-m24-after.vi.mdx"]: ApxM24AfterVi,
+  ["apx-master/apx-cp-m24.mdx"]: ApxCpM24,
+  ["apx-master/apx-cp-m24.vi.mdx"]: ApxCpM24Vi,
+  ["apx-mcq-lab/apx-m3-answers.mdx"]: ApxM3Answers,
+  ["apx-mcq-lab/apx-m3-answers.vi.mdx"]: ApxM3AnswersVi,
+  ["apx-mcq-lab/apx-m3-misconceptions.mdx"]: ApxM3Misconceptions,
+  ["apx-mcq-lab/apx-m3-misconceptions.vi.mdx"]: ApxM3MisconceptionsVi,
+  ["apx-mcq-lab/apx-m3-explanations.mdx"]: ApxM3Explanations,
+  ["apx-mcq-lab/apx-m3-explanations.vi.mdx"]: ApxM3ExplanationsVi,
+  ["apx-mcq-lab/apx-cp-m3.mdx"]: ApxCpM3,
+  ["apx-mcq-lab/apx-cp-m3.vi.mdx"]: ApxCpM3Vi,
+  ["apx-mixed/apx-m17-blend.mdx"]: ApxM17Blend,
+  ["apx-mixed/apx-m17-blend.vi.mdx"]: ApxM17BlendVi,
+  ["apx-mixed/apx-m17-shift.mdx"]: ApxM17Shift,
+  ["apx-mixed/apx-m17-shift.vi.mdx"]: ApxM17ShiftVi,
+  ["apx-mixed/apx-m17-review.mdx"]: ApxM17Review,
+  ["apx-mixed/apx-m17-review.vi.mdx"]: ApxM17ReviewVi,
+  ["apx-mixed/apx-cp-m17.mdx"]: ApxCpM17,
+  ["apx-mixed/apx-cp-m17.vi.mdx"]: ApxCpM17Vi,
+  ["apx-oop/apx-m8-state.mdx"]: ApxM8State,
+  ["apx-oop/apx-m8-state.vi.mdx"]: ApxM8StateVi,
+  ["apx-oop/apx-m8-helpers.mdx"]: ApxM8Helpers,
+  ["apx-oop/apx-m8-helpers.vi.mdx"]: ApxM8HelpersVi,
+  ["apx-oop/apx-m8-interaction.mdx"]: ApxM8Interaction,
+  ["apx-oop/apx-m8-interaction.vi.mdx"]: ApxM8InteractionVi,
+  ["apx-oop/apx-cp-m8.mdx"]: ApxCpM8,
+  ["apx-oop/apx-cp-m8.vi.mdx"]: ApxCpM8Vi,
+  ["apx-partial/apx-m16-parts.mdx"]: ApxM16Parts,
+  ["apx-partial/apx-m16-parts.vi.mdx"]: ApxM16PartsVi,
+  ["apx-partial/apx-m16-cascade.mdx"]: ApxM16Cascade,
+  ["apx-partial/apx-m16-cascade.vi.mdx"]: ApxM16CascadeVi,
+  ["apx-partial/apx-m16-banking.mdx"]: ApxM16Banking,
+  ["apx-partial/apx-m16-banking.vi.mdx"]: ApxM16BankingVi,
+  ["apx-partial/apx-cp-m16.mdx"]: ApxCpM16,
+  ["apx-partial/apx-cp-m16.vi.mdx"]: ApxCpM16Vi,
+  ["apx-polymorphism/apx-m9-two-types.mdx"]: ApxM9TwoTypes,
+  ["apx-polymorphism/apx-m9-two-types.vi.mdx"]: ApxM9TwoTypesVi,
+  ["apx-polymorphism/apx-m9-super.mdx"]: ApxM9Super,
+  ["apx-polymorphism/apx-m9-super.vi.mdx"]: ApxM9SuperVi,
+  ["apx-polymorphism/apx-m9-collections.mdx"]: ApxM9Collections,
+  ["apx-polymorphism/apx-m9-collections.vi.mdx"]: ApxM9CollectionsVi,
+  ["apx-polymorphism/apx-cp-m9.mdx"]: ApxCpM9,
+  ["apx-polymorphism/apx-cp-m9.vi.mdx"]: ApxCpM9Vi,
+  ["apx-problem-solving/apx-m1-method.mdx"]: ApxM1Method,
+  ["apx-problem-solving/apx-m1-method.vi.mdx"]: ApxM1MethodVi,
+  ["apx-problem-solving/apx-m1-decompose.mdx"]: ApxM1Decompose,
+  ["apx-problem-solving/apx-m1-decompose.vi.mdx"]: ApxM1DecomposeVi,
+  ["apx-problem-solving/apx-m1-selective.mdx"]: ApxM1Selective,
+  ["apx-problem-solving/apx-m1-selective.vi.mdx"]: ApxM1SelectiveVi,
+  ["apx-problem-solving/apx-cp-m1.mdx"]: ApxCpM1,
+  ["apx-problem-solving/apx-cp-m1.vi.mdx"]: ApxCpM1Vi,
+  ["apx-recursion/apx-m10-tracing.mdx"]: ApxM10Tracing,
+  ["apx-recursion/apx-m10-tracing.vi.mdx"]: ApxM10TracingVi,
+  ["apx-recursion/apx-m10-bases.mdx"]: ApxM10Bases,
+  ["apx-recursion/apx-m10-bases.vi.mdx"]: ApxM10BasesVi,
+  ["apx-recursion/apx-m10-strings.mdx"]: ApxM10Strings,
+  ["apx-recursion/apx-m10-strings.vi.mdx"]: ApxM10StringsVi,
+  ["apx-recursion/apx-cp-m10.mdx"]: ApxCpM10,
+  ["apx-recursion/apx-cp-m10.vi.mdx"]: ApxCpM10Vi,
+  ["apx-speed/apx-m4-tempo.mdx"]: ApxM4Tempo,
+  ["apx-speed/apx-m4-tempo.vi.mdx"]: ApxM4TempoVi,
+  ["apx-speed/apx-m4-elimination.mdx"]: ApxM4Elimination,
+  ["apx-speed/apx-m4-elimination.vi.mdx"]: ApxM4EliminationVi,
+  ["apx-speed/apx-m4-patterns.mdx"]: ApxM4Patterns,
+  ["apx-speed/apx-m4-patterns.vi.mdx"]: ApxM4PatternsVi,
+  ["apx-speed/apx-cp-m4.mdx"]: ApxCpM4,
+  ["apx-speed/apx-cp-m4.vi.mdx"]: ApxCpM4Vi,
+  ["apx-strategy/apx-m20-pacing.mdx"]: ApxM20Pacing,
+  ["apx-strategy/apx-m20-pacing.vi.mdx"]: ApxM20PacingVi,
+  ["apx-strategy/apx-m20-triage.mdx"]: ApxM20Triage,
+  ["apx-strategy/apx-m20-triage.vi.mdx"]: ApxM20TriageVi,
+  ["apx-strategy/apx-m20-final10.mdx"]: ApxM20Final10,
+  ["apx-strategy/apx-m20-final10.vi.mdx"]: ApxM20Final10Vi,
+  ["apx-strategy/apx-cp-m20.mdx"]: ApxCpM20,
+  ["apx-strategy/apx-cp-m20.vi.mdx"]: ApxCpM20Vi,
+  ["apx-strings/apx-m5-toolkit.mdx"]: ApxM5Toolkit,
+  ["apx-strings/apx-m5-toolkit.vi.mdx"]: ApxM5ToolkitVi,
+  ["apx-strings/apx-m5-boundaries.mdx"]: ApxM5Boundaries,
+  ["apx-strings/apx-m5-boundaries.vi.mdx"]: ApxM5BoundariesVi,
+  ["apx-strings/apx-m5-transform.mdx"]: ApxM5Transform,
+  ["apx-strings/apx-m5-transform.vi.mdx"]: ApxM5TransformVi,
+  ["apx-strings/apx-cp-m5.mdx"]: ApxCpM5,
+  ["apx-strings/apx-cp-m5.vi.mdx"]: ApxCpM5Vi,
+  ["apx-timed/apx-m18-budget.mdx"]: ApxM18Budget,
+  ["apx-timed/apx-m18-budget.vi.mdx"]: ApxM18BudgetVi,
+  ["apx-timed/apx-m18-bottleneck.mdx"]: ApxM18Bottleneck,
+  ["apx-timed/apx-m18-bottleneck.vi.mdx"]: ApxM18BottleneckVi,
+  ["apx-timed/apx-m18-retry.mdx"]: ApxM18Retry,
+  ["apx-timed/apx-m18-retry.vi.mdx"]: ApxM18RetryVi,
+  ["apx-timed/apx-cp-m18.mdx"]: ApxCpM18,
+  ["apx-timed/apx-cp-m18.vi.mdx"]: ApxCpM18Vi,
+  ["apx-tracing/apx-m2-tables.mdx"]: ApxM2Tables,
+  ["apx-tracing/apx-m2-tables.vi.mdx"]: ApxM2TablesVi,
+  ["apx-tracing/apx-m2-objects.mdx"]: ApxM2Objects,
+  ["apx-tracing/apx-m2-objects.vi.mdx"]: ApxM2ObjectsVi,
+  ["apx-tracing/apx-m2-invariants.mdx"]: ApxM2Invariants,
+  ["apx-tracing/apx-m2-invariants.vi.mdx"]: ApxM2InvariantsVi,
+  ["apx-tracing/apx-cp-m2.mdx"]: ApxCpM2,
+  ["apx-tracing/apx-cp-m2.vi.mdx"]: ApxCpM2Vi,
   ["apc-2d/apc-m15-grid.mdx"]: ApcM15Grid,
   ["apc-2d/apc-m15-grid.vi.mdx"]: ApcM15GridVi,
   ["apc-2d/apc-m15-agg.mdx"]: ApcM15Agg,
@@ -3266,6 +3810,166 @@ export const mdxMap: Record<string, MdxComponent> = {
   ["apc-variables/apc-m2-overflow.vi.mdx"]: ApcM2OverflowVi,
   ["apc-variables/apc-cp-m2.mdx"]: ApcCpM2,
   ["apc-variables/apc-cp-m2.vi.mdx"]: ApcCpM2Vi,
+  ["cx-2d/cx-m8-orientation.mdx"]: CxM8Orientation,
+  ["cx-2d/cx-m8-orientation.vi.mdx"]: CxM8OrientationVi,
+  ["cx-2d/cx-m8-neighbors.mdx"]: CxM8Neighbors,
+  ["cx-2d/cx-m8-neighbors.vi.mdx"]: CxM8NeighborsVi,
+  ["cx-2d/cx-m8-columns.mdx"]: CxM8Columns,
+  ["cx-2d/cx-m8-columns.vi.mdx"]: CxM8ColumnsVi,
+  ["cx-2d/cx-cp-m8.mdx"]: CxCpM8,
+  ["cx-2d/cx-cp-m8.vi.mdx"]: CxCpM8Vi,
+  ["cx-arraylist/cx-m7-removal.mdx"]: CxM7Removal,
+  ["cx-arraylist/cx-m7-removal.vi.mdx"]: CxM7RemovalVi,
+  ["cx-arraylist/cx-m7-boxing.mdx"]: CxM7Boxing,
+  ["cx-arraylist/cx-m7-boxing.vi.mdx"]: CxM7BoxingVi,
+  ["cx-arraylist/cx-m7-synthesis.mdx"]: CxM7Synthesis,
+  ["cx-arraylist/cx-m7-synthesis.vi.mdx"]: CxM7SynthesisVi,
+  ["cx-arraylist/cx-cp-m7.mdx"]: CxCpM7,
+  ["cx-arraylist/cx-cp-m7.vi.mdx"]: CxCpM7Vi,
+  ["cx-arrays/cx-m6-modes.mdx"]: CxM6Modes,
+  ["cx-arrays/cx-m6-modes.vi.mdx"]: CxM6ModesVi,
+  ["cx-arrays/cx-m6-index-alg.mdx"]: CxM6IndexAlg,
+  ["cx-arrays/cx-m6-index-alg.vi.mdx"]: CxM6IndexAlgVi,
+  ["cx-arrays/cx-m6-multipass.mdx"]: CxM6Multipass,
+  ["cx-arrays/cx-m6-multipass.vi.mdx"]: CxM6MultipassVi,
+  ["cx-arrays/cx-cp-m6.mdx"]: CxCpM6,
+  ["cx-arrays/cx-cp-m6.vi.mdx"]: CxCpM6Vi,
+  ["cx-bootcamp/cx-m1-contract.mdx"]: CxM1Contract,
+  ["cx-bootcamp/cx-m1-contract.vi.mdx"]: CxM1ContractVi,
+  ["cx-bootcamp/cx-m1-widen.mdx"]: CxM1Widen,
+  ["cx-bootcamp/cx-m1-widen.vi.mdx"]: CxM1WidenVi,
+  ["cx-bootcamp/cx-m1-bughunt.mdx"]: CxM1Bughunt,
+  ["cx-bootcamp/cx-m1-bughunt.vi.mdx"]: CxM1BughuntVi,
+  ["cx-bootcamp/cx-cp-m1.mdx"]: CxCpM1,
+  ["cx-bootcamp/cx-cp-m1.vi.mdx"]: CxCpM1Vi,
+  ["cx-flow/cx-m3-machines.mdx"]: CxM3Machines,
+  ["cx-flow/cx-m3-machines.vi.mdx"]: CxM3MachinesVi,
+  ["cx-flow/cx-m3-traps.mdx"]: CxM3Traps,
+  ["cx-flow/cx-m3-traps.vi.mdx"]: CxM3TrapsVi,
+  ["cx-flow/cx-m3-compose.mdx"]: CxM3Compose,
+  ["cx-flow/cx-m3-compose.vi.mdx"]: CxM3ComposeVi,
+  ["cx-flow/cx-cp-m3.mdx"]: CxCpM3,
+  ["cx-flow/cx-cp-m3.vi.mdx"]: CxCpM3Vi,
+  ["cx-frq-2d/cx-m17-q4-shapes.mdx"]: CxM17Q4Shapes,
+  ["cx-frq-2d/cx-m17-q4-shapes.vi.mdx"]: CxM17Q4ShapesVi,
+  ["cx-frq-2d/cx-m17-transform.mdx"]: CxM17Transform,
+  ["cx-frq-2d/cx-m17-transform.vi.mdx"]: CxM17TransformVi,
+  ["cx-frq-2d/cx-m17-navigation.mdx"]: CxM17Navigation,
+  ["cx-frq-2d/cx-m17-navigation.vi.mdx"]: CxM17NavigationVi,
+  ["cx-frq-2d/cx-cp-m17.mdx"]: CxCpM17,
+  ["cx-frq-2d/cx-cp-m17.vi.mdx"]: CxCpM17Vi,
+  ["cx-frq-class/cx-m15-spec-table.mdx"]: CxM15SpecTable,
+  ["cx-frq-class/cx-m15-spec-table.vi.mdx"]: CxM15SpecTableVi,
+  ["cx-frq-class/cx-m15-helpers.mdx"]: CxM15Helpers,
+  ["cx-frq-class/cx-m15-helpers.vi.mdx"]: CxM15HelpersVi,
+  ["cx-frq-class/cx-m15-seams.mdx"]: CxM15Seams,
+  ["cx-frq-class/cx-m15-seams.vi.mdx"]: CxM15SeamsVi,
+  ["cx-frq-class/cx-cp-m15.mdx"]: CxCpM15,
+  ["cx-frq-class/cx-cp-m15.vi.mdx"]: CxCpM15Vi,
+  ["cx-frq-debug/cx-m18-localize.mdx"]: CxM18Localize,
+  ["cx-frq-debug/cx-m18-localize.vi.mdx"]: CxM18LocalizeVi,
+  ["cx-frq-debug/cx-m18-cascade.mdx"]: CxM18Cascade,
+  ["cx-frq-debug/cx-m18-cascade.vi.mdx"]: CxM18CascadeVi,
+  ["cx-frq-debug/cx-m18-salvage.mdx"]: CxM18Salvage,
+  ["cx-frq-debug/cx-m18-salvage.vi.mdx"]: CxM18SalvageVi,
+  ["cx-frq-debug/cx-cp-m18.mdx"]: CxCpM18,
+  ["cx-frq-debug/cx-cp-m18.vi.mdx"]: CxCpM18Vi,
+  ["cx-frq-fund/cx-m14-exam-shape.mdx"]: CxM14ExamShape,
+  ["cx-frq-fund/cx-m14-exam-shape.vi.mdx"]: CxM14ExamShapeVi,
+  ["cx-frq-fund/cx-m14-workflow.mdx"]: CxM14Workflow,
+  ["cx-frq-fund/cx-m14-workflow.vi.mdx"]: CxM14WorkflowVi,
+  ["cx-frq-fund/cx-m14-conventions.mdx"]: CxM14Conventions,
+  ["cx-frq-fund/cx-m14-conventions.vi.mdx"]: CxM14ConventionsVi,
+  ["cx-frq-fund/cx-cp-m14.mdx"]: CxCpM14,
+  ["cx-frq-fund/cx-cp-m14.vi.mdx"]: CxCpM14Vi,
+  ["cx-frq-list/cx-m16-q3-shape.mdx"]: CxM16Q3Shape,
+  ["cx-frq-list/cx-m16-q3-shape.vi.mdx"]: CxM16Q3ShapeVi,
+  ["cx-frq-list/cx-m16-tokens.mdx"]: CxM16Tokens,
+  ["cx-frq-list/cx-m16-tokens.vi.mdx"]: CxM16TokensVi,
+  ["cx-frq-list/cx-m16-multipart.mdx"]: CxM16Multipart,
+  ["cx-frq-list/cx-m16-multipart.vi.mdx"]: CxM16MultipartVi,
+  ["cx-frq-list/cx-cp-m16.mdx"]: CxCpM16,
+  ["cx-frq-list/cx-cp-m16.vi.mdx"]: CxCpM16Vi,
+  ["cx-inheritance/cx-m10-dispatch.mdx"]: CxM10Dispatch,
+  ["cx-inheritance/cx-m10-dispatch.vi.mdx"]: CxM10DispatchVi,
+  ["cx-inheritance/cx-m10-ctors.mdx"]: CxM10Ctors,
+  ["cx-inheritance/cx-m10-ctors.vi.mdx"]: CxM10CtorsVi,
+  ["cx-inheritance/cx-m10-polycollections.mdx"]: CxM10Polycollections,
+  ["cx-inheritance/cx-m10-polycollections.vi.mdx"]: CxM10PolycollectionsVi,
+  ["cx-inheritance/cx-cp-m10.mdx"]: CxCpM10,
+  ["cx-inheritance/cx-cp-m10.vi.mdx"]: CxCpM10Vi,
+  ["cx-mcq/cx-m13-protocol.mdx"]: CxM13Protocol,
+  ["cx-mcq/cx-m13-protocol.vi.mdx"]: CxM13ProtocolVi,
+  ["cx-mcq/cx-m13-taxonomy.mdx"]: CxM13Taxonomy,
+  ["cx-mcq/cx-m13-taxonomy.vi.mdx"]: CxM13TaxonomyVi,
+  ["cx-mcq/cx-m13-clinic.mdx"]: CxM13Clinic,
+  ["cx-mcq/cx-m13-clinic.vi.mdx"]: CxM13ClinicVi,
+  ["cx-mcq/cx-cp-m13.mdx"]: CxCpM13,
+  ["cx-mcq/cx-cp-m13.vi.mdx"]: CxCpM13Vi,
+  ["cx-mixed/cx-m12-diagnose.mdx"]: CxM12Diagnose,
+  ["cx-mixed/cx-m12-diagnose.vi.mdx"]: CxM12DiagnoseVi,
+  ["cx-mixed/cx-m12-eliminate.mdx"]: CxM12Eliminate,
+  ["cx-mixed/cx-m12-eliminate.vi.mdx"]: CxM12EliminateVi,
+  ["cx-mixed/cx-m12-syntrace.mdx"]: CxM12Syntrace,
+  ["cx-mixed/cx-m12-syntrace.vi.mdx"]: CxM12SyntraceVi,
+  ["cx-mixed/cx-cp-m12.mdx"]: CxCpM12,
+  ["cx-mixed/cx-cp-m12.vi.mdx"]: CxCpM12Vi,
+  ["cx-objects/cx-m9-state.mdx"]: CxM9State,
+  ["cx-objects/cx-m9-state.vi.mdx"]: CxM9StateVi,
+  ["cx-objects/cx-m9-aliasing.mdx"]: CxM9Aliasing,
+  ["cx-objects/cx-m9-aliasing.vi.mdx"]: CxM9AliasingVi,
+  ["cx-objects/cx-m9-constructor.mdx"]: CxM9Constructor,
+  ["cx-objects/cx-m9-constructor.vi.mdx"]: CxM9ConstructorVi,
+  ["cx-objects/cx-cp-m9.mdx"]: CxCpM9,
+  ["cx-objects/cx-cp-m9.vi.mdx"]: CxCpM9Vi,
+  ["cx-recursion/cx-m11-edges.mdx"]: CxM11Edges,
+  ["cx-recursion/cx-m11-edges.vi.mdx"]: CxM11EdgesVi,
+  ["cx-recursion/cx-m11-frames.mdx"]: CxM11Frames,
+  ["cx-recursion/cx-m11-frames.vi.mdx"]: CxM11FramesVi,
+  ["cx-recursion/cx-m11-branching.mdx"]: CxM11Branching,
+  ["cx-recursion/cx-m11-branching.vi.mdx"]: CxM11BranchingVi,
+  ["cx-recursion/cx-cp-m11.mdx"]: CxCpM11,
+  ["cx-recursion/cx-cp-m11.vi.mdx"]: CxCpM11Vi,
+  ["cx-sim/cx-m20-simulate.mdx"]: CxM20Simulate,
+  ["cx-sim/cx-m20-simulate.vi.mdx"]: CxM20SimulateVi,
+  ["cx-sim/cx-m20-selfscore.mdx"]: CxM20Selfscore,
+  ["cx-sim/cx-m20-selfscore.vi.mdx"]: CxM20SelfscoreVi,
+  ["cx-sim/cx-m20-ready.mdx"]: CxM20Ready,
+  ["cx-sim/cx-m20-ready.vi.mdx"]: CxM20ReadyVi,
+  ["cx-sim/cx-cp-m20.mdx"]: CxCpM20,
+  ["cx-sim/cx-cp-m20.vi.mdx"]: CxCpM20Vi,
+  ["cx-specs/cx-m4-helpers.mdx"]: CxM4Helpers,
+  ["cx-specs/cx-m4-helpers.vi.mdx"]: CxM4HelpersVi,
+  ["cx-specs/cx-m4-preconditions.mdx"]: CxM4Preconditions,
+  ["cx-specs/cx-m4-preconditions.vi.mdx"]: CxM4PreconditionsVi,
+  ["cx-specs/cx-m4-debug-comp.mdx"]: CxM4DebugComp,
+  ["cx-specs/cx-m4-debug-comp.vi.mdx"]: CxM4DebugCompVi,
+  ["cx-specs/cx-cp-m4.mdx"]: CxCpM4,
+  ["cx-specs/cx-cp-m4.vi.mdx"]: CxCpM4Vi,
+  ["cx-strings/cx-m5-api.mdx"]: CxM5Api,
+  ["cx-strings/cx-m5-api.vi.mdx"]: CxM5ApiVi,
+  ["cx-strings/cx-m5-building.mdx"]: CxM5Building,
+  ["cx-strings/cx-m5-building.vi.mdx"]: CxM5BuildingVi,
+  ["cx-strings/cx-m5-twopoint.mdx"]: CxM5Twopoint,
+  ["cx-strings/cx-m5-twopoint.vi.mdx"]: CxM5TwopointVi,
+  ["cx-strings/cx-cp-m5.mdx"]: CxCpM5,
+  ["cx-strings/cx-cp-m5.vi.mdx"]: CxCpM5Vi,
+  ["cx-timed/cx-m19-protocol.mdx"]: CxM19Protocol,
+  ["cx-timed/cx-m19-protocol.vi.mdx"]: CxM19ProtocolVi,
+  ["cx-timed/cx-m19-pacing.mdx"]: CxM19Pacing,
+  ["cx-timed/cx-m19-pacing.vi.mdx"]: CxM19PacingVi,
+  ["cx-timed/cx-m19-inventory.mdx"]: CxM19Inventory,
+  ["cx-timed/cx-m19-inventory.vi.mdx"]: CxM19InventoryVi,
+  ["cx-timed/cx-cp-m19.mdx"]: CxCpM19,
+  ["cx-timed/cx-cp-m19.vi.mdx"]: CxCpM19Vi,
+  ["cx-tracing/cx-m2-table.mdx"]: CxM2Table,
+  ["cx-tracing/cx-m2-table.vi.mdx"]: CxM2TableVi,
+  ["cx-tracing/cx-m2-calls.mdx"]: CxM2Calls,
+  ["cx-tracing/cx-m2-calls.vi.mdx"]: CxM2CallsVi,
+  ["cx-tracing/cx-m2-objects.mdx"]: CxM2Objects,
+  ["cx-tracing/cx-m2-objects.vi.mdx"]: CxM2ObjectsVi,
+  ["cx-tracing/cx-cp-m2.mdx"]: CxCpM2,
+  ["cx-tracing/cx-cp-m2.vi.mdx"]: CxCpM2Vi,
   ["ca-abi-layout/ca-calling-conventions.mdx"]: CaCallingConventions,
   ["ca-abi-layout/ca-calling-conventions.vi.mdx"]: CaCallingConventionsVi,
   ["ca-abi-layout/ca-struct-layout-abi.mdx"]: CaStructLayoutAbi,

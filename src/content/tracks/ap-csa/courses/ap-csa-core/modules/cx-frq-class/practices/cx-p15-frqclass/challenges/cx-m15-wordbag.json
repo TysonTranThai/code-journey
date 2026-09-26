@@ -1,0 +1,16 @@
+{
+  "id": "cx-m15-wordbag",
+  "title": "Same-class parameter",
+  "prompt": "Complete `WordBag`. `absorb` reads OTHER's state but mutates THIS only — the wrong-this trap from the lesson is what's being graded.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SPEC: a word accumulator.\n    // private String joined — starts \"\"\n    // private int wordCount — starts 0\n    // void absorb(WordBag other) — append other's joined (in order)\n    //   to THIS joined and add other's wordCount to THIS count;\n    //   other is NOT modified.\n    // void add(String w) — append w (space-separated) and count it\n    // String getJoined() / int getCount()\n    public static class WordBag {\n        // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "absorb direction",
+      "code": "\nSolution.WordBag a = new Solution.WordBag();\na.add(\"x\");\na.add(\"y\");\nSolution.WordBag b = new Solution.WordBag();\nb.add(\"z\");\na.absorb(b);\nCjTestBase.checkEq(a.getCount(), 3, \"this grew\");\nCjTestBase.checkEq(a.getJoined(), \"x y z\", \"appended in order\");\nCjTestBase.checkEq(b.getCount(), 1, \"other untouched\");\nCjTestBase.checkEq(b.getJoined(), \"z\", \"other untouched\");\n",
+      "hint": "joined += (wordCount > 0 ? \" \" : \"\") + other.joined; wordCount += other.wordCount;"
+    }
+  ],
+  "level": "combination"
+}

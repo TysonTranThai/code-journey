@@ -1,0 +1,20 @@
+**Elimination is arithmetic on your uncertainty.** Kill options in
+this order:
+
+1. **Type-impossible**: an `int` method returning a `String`; an
+   option with a value the return type cannot hold (e.g. 3.5 for int).
+2. **Bounds-impossible**: a value outside the achievable range (a
+   sum of positives reported as negative; an index ≥ length).
+3. **Trace-impossible**: run two iterations of the loop mentally —
+   any option that disagrees with iteration 2 is dead regardless of
+   the rest.
+
+After elimination, if two options survive, ask *what code would have
+to say* for each to be true. Usually one requires the loop to do
+something the visible code does not (`<=` instead of `<`, remove
+instead of skip). Pick the survivor that requires no invisible code.
+
+**Careless-mistake insurance:** on questions with a "boundary" feel
+(empty, single element, last index), check your answer *against that
+boundary* before committing. Most lost points are not hard reasoning;
+they are `<` answers on `<=` questions.

@@ -1,0 +1,17 @@
+**When to trace, when to reason.** Full tracing is expensive; the
+advanced move is selective execution:
+
+- **State-heavy code** (objects mutated across many calls): trace it —
+  build a table, one row per call.
+- **Loop-plus-accumulator code**: name the invariant instead. What is
+  true after k iterations? If you can state it, you can answer without
+  simulating every index.
+- **Reference-heavy code**: draw the boxes and arrows once. Aliasing
+  questions are cheap *if you draw*, expensive if you re-derive.
+
+And the two cheap wins on every exam:
+
+- **Eliminate impossible answers** before computing: negative lengths,
+  indexes that cannot exist, a `String` result from an `int` method.
+- **Sanity-check extremes**: does your reading still hold when the list
+  is empty or has one element? If not, your reading is wrong.

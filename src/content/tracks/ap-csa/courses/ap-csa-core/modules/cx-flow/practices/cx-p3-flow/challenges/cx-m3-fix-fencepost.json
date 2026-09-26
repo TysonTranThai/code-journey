@@ -1,0 +1,16 @@
+{
+  "id": "cx-m3-fix-fencepost",
+  "title": "Fix the fencepost",
+  "prompt": "`dashed` must join elements with \"-\" ({1,2,3} → \"1-2-3\") but currently prints only dashes. Apply the N elements / N-1 separators rule.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String dashed(int[] arr) {\n        // CONTRACT: elements joined by \"-\", e.g. {1,2,3} -> \"1-2-3\";\n        // empty array -> \"\".\n        String out = \"\";\n        for (int i = 0; i < arr.length; i++) {\n            out += \"-\";\n        }\n        return out;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "joined with dashes",
+      "code": "\nCjTestBase.checkEq(Solution.dashed(new int[]{1, 2, 3}), \"1-2-3\", \"three elements, two dashes\");\nCjTestBase.checkEq(Solution.dashed(new int[]{7}), \"7\", \"no dash for one element\");\nCjTestBase.checkEq(Solution.dashed(new int[]{}), \"\", \"empty in, empty out\");\n",
+      "hint": "Print the separator BEFORE every element except the first."
+    }
+  ],
+  "level": "debugging"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "apx-m6-dedup",
+  "title": "Dedup a sorted array in place",
+  "prompt": "Given an array **sorted ascending**, remove duplicates in place so each value appears once; return the new logical length. Elements beyond the returned length are ignored by the grader. Implement `process(int[] arr)` (return 0 for empty).\n\nExample: `{1,1,2,3,3}` → returns `3`, first three cells `{1,2,3}`.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int process(int[] arr) {\n        return 0; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "compacted length and cells",
+      "code": "\nint[] a = {1, 1, 2, 3, 3};\nint n = Solution.process(a);\nCjTestBase.checkEq(n, 3, \"logical length\");\nCjTestBase.checkEq(java.util.Arrays.copyOf(a, n), new int[]{1, 2, 3}, \"compacted cells\");\nint[] one = {5};\nCjTestBase.checkEq(Solution.process(one), 1, \"single element\");\nint[] triple = {2, 2, 2, 7};\nint m = Solution.process(triple);\nCjTestBase.checkEq(java.util.Arrays.copyOf(triple, m), new int[]{2, 7}, \"triple run collapsed\");\n",
+      "hint": "Write-index: w starts at 1; append arr[i] only when it differs from arr[w-1]."
+    }
+  ],
+  "level": "combination"
+}

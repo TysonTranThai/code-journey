@@ -1,0 +1,29 @@
+The exam does not ask "is this code right?" — it asks "which change
+makes it right?" and grades the diagnosis. The localization loop:
+
+1. **Restate the contract** in one sentence.
+2. **Trace the smallest failing case** — the one the prompt shows
+   failing (its examples ARE the failing tests).
+3. **Find the FIRST statement** where the state table diverges from
+   what the contract needs. Everything before that statement is
+   correct — do not touch it.
+4. **The fix is usually one token**: a comparison operator, an
+   initialization value, a loop bound, a missing `this.`, an argument
+   in the wrong slot. If your fix rewrites half the method, you
+   mislocated the error.
+
+Why "first" matters: a later correct-looking line that misbehaves is
+usually a *victim* of the earlier bug, not the bug. Fixing victims
+adds bugs; fixing the source collapses the cascade.
+
+Worked micro-example — contract: "sum of even elements":
+
+```java
+int total = 0;
+for (int i = 0; i <= arr.length; i++) {   // victim: throws at the end
+    if (arr[i] % 2 == 0) { total += arr[i]; }
+}
+```
+
+The exception at the LAST iteration tempts you to "fix the array".
+The first divergence is the `<=` bound itself. One token: `<`.

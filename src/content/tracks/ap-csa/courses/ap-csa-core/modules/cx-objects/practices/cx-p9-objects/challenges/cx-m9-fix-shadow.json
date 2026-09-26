@@ -1,0 +1,16 @@
+{
+  "id": "cx-m9-fix-shadow",
+  "title": "Fix the shadowed field",
+  "prompt": "`Player` compiles, but `getName()` returns null forever. Trace the constructor's assignment and apply the one-token fix.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Player {\n        private String name;\n        private int hp;\n\n        public Player(String name, int hp) {\n            // BUG: parameter shadows field for name\n            name = name;\n            this.hp = hp;\n        }\n\n        public String getName() { return name; }\n        public int getHp() { return hp; }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "fields stored",
+      "code": "\nSolution.Player p = new Solution.Player(\"Lan\", 5);\nCjTestBase.checkEq(p.getName(), \"Lan\", \"name stored\");\nCjTestBase.checkEq(p.getHp(), 5, \"hp stored\");\n",
+      "hint": "this.name = name; — the this. disambiguates field from parameter."
+    }
+  ],
+  "level": "debugging"
+}

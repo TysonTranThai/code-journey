@@ -1,0 +1,16 @@
+{
+  "id": "cx-m2-nested-loop",
+  "title": "Trace a nested loop",
+  "prompt": "Read `nested(a, b)` (already implemented). Set up the state table for the call `nested(1, 3)`: rows for each (i, j) pair, and predict the return value by hand first. Then make the tests pass by *keeping the code as-is* — this challenge grades your understanding, the code is already correct.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int nested(int a, int b) {\n        int r = 0;\n        for (int i = a; i <= b; i++) {\n            for (int j = i; j <= b; j++) {\n                r += j - i;\n            }\n        }\n        return r;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "nested trace value",
+      "code": "\nCjTestBase.checkEq(Solution.nested(1, 3), 4, \"pairs (1,1)=0 (1,2)=1 (1,3)=2 (2,2)=0 (2,3)=1 (3,3)=0\");\nCjTestBase.checkEq(Solution.nested(2, 2), 0, \"single pair, j - i = 0\");\nCjTestBase.checkEq(Solution.nested(0, 2), 4, \"pairs contribute 0+1+2+0+1+0\");\n",
+      "hint": "For each i, inner j runs i..b; j - i is the offset. Sum them."
+    }
+  ],
+  "level": "guided"
+}

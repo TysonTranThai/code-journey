@@ -1,0 +1,24 @@
+**Phân loại ký tự không cần import.** Đề thi cho bạn
+`Character.isLetter/isDigit/isUpperCase` — và phương án thủ công:
+
+```java
+char ch = s.charAt(i);
+boolean letter = (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+boolean digit  = ch >= '0' && ch <= '9';
+```
+
+**Phép toán trên char** (dịch Caesar, tổng chữ số):
+
+```java
+char shifted = (char) ('a' + (ch - 'a' + k) % 26);   // vòng lại bảng chữ cái
+int digitVal = ch - '0';                              // '7' -> 7
+```
+
+Hai câu hỏi biên kinh điển: k = 26 (hoặc bội) có vòng lại đúng chỗ không
+(có — `% 26` lo được), và công thức chữ số có đúng với `'0'` không
+(có — 0). Ký tự không phải chữ đi qua không đổi trong phép dịch; quên
+điều này làm hỏng một nửa test ẩn.
+
+**Quét từ** trong chuỗi có khoảng trắng tùy ý: một trạng thái boolean
+"đang trong từ", đổi ở các bước chuyển — không dùng split (tập con AP
+không có `split`).

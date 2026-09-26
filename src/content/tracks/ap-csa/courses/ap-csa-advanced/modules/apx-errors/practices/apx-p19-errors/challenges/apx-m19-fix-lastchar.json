@@ -1,0 +1,16 @@
+{
+  "id": "apx-m19-fix-lastchar",
+  "title": "Diagnose 1: the boundary crash",
+  "prompt": "Classify the error (which taxonomy class?), then repair `lastChar` so it returns the LAST character's char code. Empty input is not part of this task's contract (s is non-empty).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SYMPTOM: crashes on the last element for some inputs\n    public static int lastChar(String s) {\n        return s.charAt(s.length());\n    }\n}\n",
+  "tests": [
+    {
+      "name": "repaired boundary",
+      "code": "\nCjTestBase.checkEq((char) Solution.lastChar(\"abc\"), 'c', \"last char code\");\nCjTestBase.checkEq((char) Solution.lastChar(\"z\"), 'z', \"single char\");\n",
+      "hint": "Class 1/6 (index off-by-one): length() is one past the end; use length() - 1."
+    }
+  ],
+  "level": "debugging"
+}

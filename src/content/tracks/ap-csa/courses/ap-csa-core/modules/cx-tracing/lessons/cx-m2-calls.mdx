@@ -1,0 +1,42 @@
+Method calls add one rule to your table: **each call gets its own frame** —
+its own row block for parameters and locals — and returns exactly one
+value to the exact spot it was called from.
+
+```java
+public static int twist(int n) {
+    n = n + 3;
+    return n * 2;
+}
+```
+
+Trace `x = 5;` then `x = twist(x);`:
+
+1. Call `twist(5)`: new frame, `n = 5`.
+2. `n = n + 3` → 8. Return `8 * 2 = 16`.
+3. Frame dies. Assignment: `x = 16`.
+
+What does **not** happen: the method cannot see or change the caller's
+`x`. Primitives are copied. The classic exam probe:
+
+```java
+public static void bump(int n) { n = n + 1; }
+// ...
+int x = 7;
+bump(x);
+System.out.println(x);   // 7 — the copy was changed, not x
+```
+
+References behave differently: the *reference* is copied, but both copies
+point at the same object.
+
+```java
+public static void grow(int[] arr) { arr[0] = arr[0] + 10; }
+// ...
+int[] data = {1, 2};
+grow(data);
+System.out.println(data[0]);   // 11 — the shared object changed
+```
+
+So the table rule is: parameter = a copy of the value. For primitives the
+value is the number; for objects the value is the arrow to the object.
+Draw the arrow when in doubt.

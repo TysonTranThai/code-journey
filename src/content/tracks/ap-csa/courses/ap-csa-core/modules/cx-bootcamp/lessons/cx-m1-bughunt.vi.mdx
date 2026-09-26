@@ -1,0 +1,36 @@
+Đi săn lỗi là một phép truy vết kèm giả thuyết. Với một phương thức
+**hợp lệ nhưng sai** — dạng ưa thích của đề thi — chạy vòng lặp này:
+
+1. **Đọc lại hợp đồng.** Nó hứa chính xác điều gì? Phần lớn lỗi cài cắm
+   là vi phạm hợp đồng, không phải lỗi cú pháp.
+2. **Truy vết một đầu vào nhỏ bằng tay** — 3 phần tử, đừng dùng 10. Ghi
+   giá trị mọi biến sau mỗi câu lệnh (một *bảng trạng thái*).
+3. **Đối chiếu truy vết với lời hứa.** Tại câu lệnh nào thực tế lệch khỏi
+   hợp đồng? Câu lệnh đó chứa lỗi.
+4. **Sửa tối thiểu.** Đổi đúng một thứ; truy vết lại. Đừng viết lại nửa
+   phần đang chạy đúng.
+
+Ví dụ làm mẫu — hợp đồng: *trả về chỉ số của lần xuất hiện **đầu tiên**
+của `target`, hoặc -1 nếu vắng mặt*:
+
+```java
+public static int findFirst(int[] arr, int target) {
+    int pos = -1;
+    for (int i = 0; i < arr.length; i++) {
+        if (arr[i] == target) {
+            pos = i;      // cứ ghi đè mãi!
+        }
+    }
+    return pos;
+}
+```
+
+Truy vết `arr = {4, 7, 7}, target = 7`: `i=1` đặt `pos=1`, `i=2` đặt
+`pos=2` → trả về lần xuất hiện **cuối**. Hợp đồng nói *đầu tiên*. Sửa
+tối thiểu: `return i;` ngay trong `if` (thoát sớm), hoặc chỉ gán khi
+`pos == -1`. Cả hai đều giữ nguyên phần còn lại của phương thức.
+
+Chú ý: lỗi mang tính *ngữ nghĩa* — mã biên dịch được, chạy được, thậm chí
+đạt một bài kiểm tra qua loa với `{7}`. Chỉ một truy vết trung thành với
+hợp đồng, dùng target lặp lại, mới phơi ra lỗi. Vì vậy Core luôn truy vết
+bằng tay trước, chạy mã sau — phòng thi không có trình biên dịch giúp bạn.

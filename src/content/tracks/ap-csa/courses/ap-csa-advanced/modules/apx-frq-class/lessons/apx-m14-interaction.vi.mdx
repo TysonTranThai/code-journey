@@ -1,0 +1,17 @@
+**Tương tác đối tượng** là màn cuối của FRQ2: một lớp GIỮ các đối
+tượng khác và điều khiển chúng. Hai mẫu:
+
+- **Vòng ủy quyền**: `Library.playAll()` gọi `play()` trên mỗi Bài
+  hát đang giữ. Thư viện không lưu số lượt chơi của chính nó — sự
+  thật nằm trong các đối tượng được giữ, và Thư viện chỉ *hỏi*.
+- **Truy vấn tổng hợp**: `likedCount()` hỏi mỗi đối tượng được giữ
+  một boolean và đếm. Một bộ tích lũy trên vòng for-each.
+
+Mùi thiết kế cần tránh: nhân bản trạng thái của đối tượng được giữ
+trong vật chứa (một Thư viện cũng theo dõi lượt chơi sẽ lệch). Khi
+câu chuyện nói vật chứa "biết về" các bài hát, nghĩa là nó giữ tham
+chiếu — không phải sao chép trường của chúng.
+
+Constructor của vật chứa khởi đầu rỗng (`new ArrayList<>()`), và
+không gì khác xảy ra ở đó — một constructor *tự tạo* dữ liệu mà
+caller lẽ ra truyền vào là đang trả lời sai đề.

@@ -1,0 +1,16 @@
+{
+  "id": "cx-m15-register",
+  "title": "Guard the empty case",
+  "prompt": "Complete `Register`. The subtlety: `average()` must return 0 when no items — the spec's guard. Everything else is translation.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SPEC: a cash register.\n    // private int itemCount — starts 0\n    // private int totalCents — starts 0\n    // void ring(int cents) — item count +1, total += cents\n    // void clear() — both to start values\n    // int getItemCount() / int getTotalCents()\n    // int average() — totalCents / itemCount as int division;\n    //   returns 0 when empty. (Precondition-safe: guard the empty case.)\n    public static class Register {\n        // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "register works",
+      "code": "\nSolution.Register r = new Solution.Register();\nCjTestBase.checkEq(r.getItemCount(), 0, \"starts empty\");\nCjTestBase.checkEq(r.average(), 0, \"empty average is 0\");\nr.ring(250);\nr.ring(100);\nCjTestBase.checkEq(r.getItemCount(), 2, \"two items\");\nCjTestBase.checkEq(r.getTotalCents(), 350, \"total\");\nCjTestBase.checkEq(r.average(), 175, \"350 / 2\");\nr.clear();\nCjTestBase.checkEq(r.getTotalCents(), 0, \"cleared\");\n",
+      "hint": "average(): if (itemCount == 0) return 0; return totalCents / itemCount;"
+    }
+  ],
+  "level": "guided"
+}

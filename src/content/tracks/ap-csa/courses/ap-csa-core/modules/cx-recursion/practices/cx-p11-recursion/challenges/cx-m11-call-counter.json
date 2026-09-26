@@ -1,0 +1,16 @@
+{
+  "id": "cx-m11-call-counter",
+  "title": "Count the calls",
+  "prompt": "Implement `int g(int n)`: the total number of calls f(n) makes (including itself), where f halves n each time. A loop counting halvings is fine — the point is the mental model: calls = frames on the stack at the deepest point.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // CONTRACT: f is already implemented. g(n) must return the TOTAL\n    // number of calls f makes when invoked as f(n), INCLUDING the\n    // initial call. f halves n: f(n) = 1 + f(n / 2) for n > 1,\n    // base n <= 1. So f(8) makes 4 calls: f(8), f(4), f(2), f(1).\n    public static int f(int n) {\n        if (n <= 1) { return 1; }\n        return 1 + f(n / 2);\n    }\n\n    public static int g(int n) {\n        return 0; // replace: count of calls f(n) makes (non-recursive loop is fine)\n    }\n}\n",
+  "tests": [
+    {
+      "name": "frames counted",
+      "code": "\nCjTestBase.checkEq(Solution.g(1), 1, \"just the base frame\");\nCjTestBase.checkEq(Solution.g(8), 4, \"8, 4, 2, 1\");\nCjTestBase.checkEq(Solution.g(16), 5, \"16, 8, 4, 2, 1\");\n",
+      "hint": "int calls = 0; while (n > 1) { calls++; n /= 2; } return calls + 1;"
+    }
+  ],
+  "level": "combination"
+}

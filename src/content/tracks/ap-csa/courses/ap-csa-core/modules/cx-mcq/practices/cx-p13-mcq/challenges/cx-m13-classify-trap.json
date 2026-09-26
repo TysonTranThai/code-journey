@@ -1,0 +1,16 @@
+{
+  "id": "cx-m13-classify-trap",
+  "title": "Classify the trap",
+  "prompt": "The code in `classify` computes with TWO planted weaknesses. Decide what a trace shows, then classify the DOMINANT family via the return value using the mapping in the comments. (This is the taxonomy, practiced.)",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // The FIXED implementation encodes a classic trap. Identify which\n    // trap family and answer via the tests.\n    public static int classify(int n) {\n        // 1 = off-by-one bound, 2 = wrong seed/base, 3 = integer division,\n        // 4 = reference vs equals, 5 = mutation order\n        int total = 0;\n        for (int i = 0; i <= n; i++) {\n            total += 100 / 50;\n        }\n        return total;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "family identified",
+      "code": "\nCjTestBase.checkEq(Solution.classify(3), 8, \"loop runs n+1 times: 4 * 2\");\nCjTestBase.checkEq(Solution.classify(0), 2, \"the <= bite at n = 0\");\n",
+      "hint": "100/50 = 2 (integer division), but the loop is off-by-one (<= n)."
+    }
+  ],
+  "level": "guided"
+}

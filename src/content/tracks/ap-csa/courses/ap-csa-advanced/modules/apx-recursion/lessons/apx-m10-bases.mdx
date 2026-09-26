@@ -1,0 +1,17 @@
+**Base cases are the whole grade.** An FRQ recursion task is scored
+almost entirely on: correct base case(s), correct progress toward
+them, and correct combination. The hunting checklist:
+
+1. **What input cannot be broken down further?** Empty string,
+   length ≤ 1, n == 0, i == array length.
+2. **Is there more than one base?** Subset-sum has two: success
+   (target == 0) and exhaustion (i == length with target != 0).
+3. **Does progress always shrink?** `substring(1)` shrinks;
+   `n - 1` shrinks; `n / 2` shrinks for n ≥ 1. A branch that does
+   not shrink is infinite recursion (StackOverflowError).
+4. **Integer division and negatives**: `n / 2` of 1 is 0 — make sure
+   that lands on a base case, not below it.
+
+**Progress discipline on arrays/strings**: pass the index (i+1), or
+pass the remainder (`substring(1)`). Passing whole subarrays each
+call is wasteful but legal; passing nothing new is illegal.

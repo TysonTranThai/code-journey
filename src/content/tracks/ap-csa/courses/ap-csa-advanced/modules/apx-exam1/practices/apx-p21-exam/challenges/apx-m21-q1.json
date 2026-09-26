@@ -1,0 +1,16 @@
+{
+  "id": "apx-m21-q1",
+  "title": "Exam MCQ",
+  "prompt": "What is printed?\n\n```java\nint[] a = {4, 1, 4, 2};\nint best = a[0];\nfor (int v : a) {\n    if (v > best) { best = v; }\n}\nint second = Integer.MIN_VALUE;\nfor (int v : a) {\n    if (v < best && v > second) { second = v; }\n}\nSystem.out.print(second);\n```\n\nA. 1\nB. 2\nC. 4\nD. -2147483648\n\nPrint the letter, then your one-sentence justification.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static void program() {\n        // Print your answer: the option letter, then a one-sentence reason.\n    }\n}\n",
+  "tests": [
+    {
+      "name": "B exam",
+      "code": "String out = CjTestBase.capture(() -> Solution.program());\nCjTestBase.checkTrue(out.startsWith(\"B\"), \"answer must start with the correct letter\");",
+      "hint": "B. Pass one finds max 4 (duplicates collapse); pass two finds the max strictly below 4, which is 2. A forgets the 2; C forgets 'strictly below'; D means no distinct second existed."
+    }
+  ],
+  "level": "independent"
+}

@@ -1,0 +1,19 @@
+**Tracing is a skill with technique.** The exam's hardest tracing items
+share three properties: many small state changes, at least one
+misdirection (a variable that *looks* important but is dead), and a
+boundary case in the middle of the loop, not at the start.
+
+The state-table discipline:
+
+1. One row per *event* (a call, an iteration, an assignment to a
+   reference) — not per line.
+2. One column per piece of state that can change. Include the object
+   graph when references move: `a → obj1` is a row of its own.
+3. Never recompute a column from memory; read the row above and apply
+   exactly the code you see.
+4. The answer is a cell in the table. If it is not, you traced the
+   wrong thing.
+
+Watch for the two classic misdirections: a variable updated but never
+read (dead), and a variable read but never updated after the first
+iteration (frozen).

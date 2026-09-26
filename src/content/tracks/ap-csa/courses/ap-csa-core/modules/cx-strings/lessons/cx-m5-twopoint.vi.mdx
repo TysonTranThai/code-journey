@@ -1,0 +1,45 @@
+Bài toán hai con trỏ là trái tim của phần FRQ về String. Mô hình: một chỉ
+số từ đầu, một từ cuối, gặp nhau ở giữa.
+
+*"s có phải palindrome khi chỉ tính các chữ cái?"* — kết hợp bộ lọc và
+hai con trỏ:
+
+```java
+public static boolean isPal(String s) {
+    int lo = 0, hi = s.length() - 1;
+    while (lo < hi) {
+        if (!Character.isLetter(s.charAt(lo))) { lo++; }
+        else if (!Character.isLetter(s.charAt(hi))) { hi--; }
+        else if (s.charAt(lo) != s.charAt(hi)) { return false; }
+        else { lo++; hi--; }
+    }
+    return true;
+}
+```
+
+Truy vết `"a, b a"` (một dấu phẩy, một dấu cách, các chữ a b a): lo=0 'a'
+đối hi=5 'a' khớp; lo=1 ',' bị bỏ qua (lo++); lo=2 ' ' bị bỏ qua; lo=3
+'b' đối hi=4 'b' khớp; lo=4, hi=3 → vòng lặp kết thúc, true. Chú ý điều
+kiện `lo < hi` — hai con trỏ đi chéo nhau nghĩa là thành công, và chuỗi
+một ký tự là palindrome hiển nhiên (0 < 0 sai ngay).
+
+Kinh điển thứ hai: **đếm đoạn (run-length)** — đếm các đoạn ký tự liền
+kề bằng nhau:
+
+```java
+public static int runs(String s) {
+    if (s.length() == 0) { return 0; }
+    int count = 1;
+    for (int i = 1; i < s.length(); i++) {
+        if (s.charAt(i) != s.charAt(i - 1)) {
+            count++;
+        }
+    }
+    return count;
+}
+```
+
+`"aabbbca"` → các đoạn a|bb|c|a = 4. Bắt đầu từ 1 (ký tự đầu luôn mở một
+đoạn); tăng lên tại mỗi biên. Điều kiện tiên quyết `length >= 1` chính
+là thứ cho phép seed `count = 1` — bỏ nó đi và chuỗi rỗng sẽ đánh sập
+bạn.

@@ -1,0 +1,16 @@
+{
+  "id": "apx-m3-q-removal",
+  "title": "MCQ: While iterating, which list survives? Code:",
+  "prompt": "While iterating, which list survives? Code:\n\n```java\nArrayList<String> list = new ArrayList<String>();\nlist.add(\"x\"); list.add(\"x\"); list.add(\"b\"); list.add(\"x\");\nfor (int i = 0; i < list.size(); i++) {\n    if (list.get(i).equals(\"x\")) { list.remove(i); }\n}\nSystem.out.print(list);\n```\n\nA. `[b]`\nB. `[x, b]`\nC. `[b, x]`\nD. `[x, x, b]`\n\nPrint your answer as: the option letter, then your explanation of why it is correct and why each other option is wrong. First line must start with the letter.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static void program() {\n        // Print your answer: the option letter, then a full explanation of\n        // WHY it is correct and why EACH other option is wrong.\n        // Example first line: B. <why B>\n    }\n}\n",
+  "tests": [
+    {
+      "name": "B B",
+      "code": "\nString out = CjTestBase.capture(() -> Solution.program());\nCjTestBase.checkTrue(out.startsWith(\"B\"), \"the chosen option's explanation (starts with the letter)\");\n",
+      "hint": "B. Removals shift later elements left, so index 1 lands on 'b' (kept) and the final 'x' at index 2 is removed. A student picking A assumed every x was removed; C forgets order; D ignores the loop entirely. Verified by execution."
+    }
+  ],
+  "level": "independent"
+}

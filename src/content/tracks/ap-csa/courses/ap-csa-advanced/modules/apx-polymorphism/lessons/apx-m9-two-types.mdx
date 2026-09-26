@@ -1,0 +1,20 @@
+Every object reference question has **two answers hiding in one
+variable**: what the reference type allows (compile-time) and what
+the object type does (runtime). Write both above any tricky line:
+
+```java
+Employee e = new Manager("Ann", 100, 50);
+// reference type: Employee — compiler allows e.pay(), forbids e.bonus
+// object type: Manager — pay() dispatches to the OVERRIDE
+```
+
+Three laws follow:
+
+1. **Which methods you may call** → reference type.
+2. **Which version runs** (for overridden methods) → object type.
+3. **Fields are not dispatched**: field access is resolved by
+   reference type. Shadowed fields are the exam's favorite trap.
+
+`instanceof` checks the object type (including subclasses); a cast
+changes only what the compiler lets you name — it never changes the
+object.

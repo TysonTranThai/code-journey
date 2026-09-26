@@ -1,0 +1,37 @@
+ArrayList is where the exam harvests points. Two API facts separate
+calm students from panicked ones:
+
+**remove(int) vs remove(Integer).** `list.remove(2)` removes the element
+AT INDEX 2. To remove the *value* 2 from an `ArrayList<Integer>`, write
+`list.remove(Integer.valueOf(2))`. When a list holds \{10, 20, 30\},
+`remove(1)` leaves \{10, 30\} — it did not remove the value 1 (which was
+never there).
+
+**Index invalidation.** Every removal shifts all later elements left by
+one. `size()` changes the moment remove fires. The classic broken loop:
+
+```java
+for (int i = 0; i < list.size(); i++) {
+    if (list.get(i).equals(target)) {
+        list.remove(i);     // shifts left; next element is now at i
+    }
+}
+```
+
+With `{"a", "a", "b"}` and target "a": i=0 removes, list is `"a", "b"`;
+i=1 checks "b" — the SECOND "a" at index 1 was skipped entirely.
+Consecutive matches are the case that exposes this.
+
+**Forward-with-fix** (re-decrement i): correct but subtle.
+**Backward removal** — the exam's preferred clean solution:
+
+```java
+for (int i = list.size() - 1; i >= 0; i--) {
+    if (list.get(i).equals(target)) {
+        list.remove(i);
+    }
+}
+```
+
+Removing at i only shifts elements *after* i — and you have already
+visited all of them. Safe, no index gymnastics.

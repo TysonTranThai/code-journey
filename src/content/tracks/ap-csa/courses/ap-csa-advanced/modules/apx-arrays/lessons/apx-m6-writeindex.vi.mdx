@@ -1,0 +1,20 @@
+**Mẫu chỉ số ghi** (nén tại chỗ):
+
+```java
+int w = 0;                       // ô trống kế tiếp để ghi
+for (int i = 0; i < a.length; i++) {
+    if (keep(a[i])) { a[w] = a[i]; w++; }
+}
+// w = độ dài logic mới; các ô a[w..] là rác-nhưng-an toàn
+```
+
+Mẫu này giải dedup-trên-mảng-đã-sắp, xóa-khớp, dời-số-0 — mọi FRQ
+"nén mảng" đề thi từng viết. Kỷ luật của mẫu: `w` không bao giờ nhìn
+lại, `i` không bao giờ bỏ sót. Các lời giải W trong module này fail
+đúng một biên (phần tử cuối hoặc đầu) để bạn *thấy* được mã của mình
+quên biên nào.
+
+**Xoay mảng** k bước: sao chép ra mảng tạm với `tmp[(i + k) % n] =
+a[i]`, rồi sao chép ngược lại. Ứng viên lệch-một: bắt đầu modulo tại 1,
+hoặc xoay sai hướng. Kiểm tra với n=1 (không đổi) và k=n (không đổi) —
+cả hai phải là phép no-op.

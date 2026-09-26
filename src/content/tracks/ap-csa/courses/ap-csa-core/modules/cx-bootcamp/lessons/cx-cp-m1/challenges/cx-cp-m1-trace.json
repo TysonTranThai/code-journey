@@ -1,0 +1,16 @@
+{
+  "id": "cx-cp-m1-trace",
+  "title": "Checkpoint: trace, then predict",
+  "prompt": "Trace `mystery` by hand for n = 7 (a state table for `i` and `out` helps). The method is already correct — your job is to **predict** what `mystery(7)` returns and what `mystery(0)` returns, then encode exactly that behavior by implementing `mystery` yourself from the trace rules.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static String mystery(int n) {\n        String out = \"\";\n        for (int i = 1; i <= n; i++) {\n            if (i % 3 == 0) {\n                out += \"#\";\n            } else if (i % 2 == 0) {\n                out += \".\";\n            } else {\n                out += \"o\";\n            }\n        }\n        return out;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "pattern from trace",
+      "code": "\nCjTestBase.checkEq(Solution.mystery(7), \"o.#.o#o\", \"n = 7 trace\");\nCjTestBase.checkEq(Solution.mystery(6), \"o.#.o#\", \"n = 6 trace\");\nCjTestBase.checkEq(Solution.mystery(1), \"o\", \"n = 1\");\nCjTestBase.checkEq(Solution.mystery(0), \"\", \"empty loop, empty string\");\nCjTestBase.checkEq(Solution.mystery(3), \"o.#\", \"first three positions\");\n",
+      "hint": "i=1 o, i=2 ., i=3 #, i=4 ., i=5 o, i=6 #, i=7 o — the given loop already does this."
+    }
+  ],
+  "level": "independent"
+}

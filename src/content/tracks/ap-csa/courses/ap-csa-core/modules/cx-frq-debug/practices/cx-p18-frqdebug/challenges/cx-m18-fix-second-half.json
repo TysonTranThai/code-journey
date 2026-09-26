@@ -1,0 +1,16 @@
+{
+  "id": "cx-m18-fix-second-half",
+  "title": "Repair the copy bounds",
+  "prompt": "`secondHalf` throws on every input. Diagnose the bound error AND the size error (both off-by-one), fix both, verify {1,2,3} → {3} and {1,2,3,4} → {3,4}.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // CONTRACT: return a NEW array holding the SECOND half of arr\n    // (length >= 1); for odd lengths the extra element belongs to the\n    // FIRST half. BUG: off-by-one in the copy bounds.\n    public static int[] secondHalf(int[] arr) {\n        int half = arr.length / 2;\n        int[] out = new int[half];\n        for (int i = 0; i <= half; i++) {\n            out[i] = arr[half + i];\n        }\n        return out;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "half copied",
+      "code": "\nCjTestBase.checkEq(Solution.secondHalf(new int[]{1, 2, 3}), new int[]{2}, \"odd: extra element in first half\");\nCjTestBase.checkEq(Solution.secondHalf(new int[]{1, 2, 3, 4}), new int[]{3, 4}, \"even split\");\nCjTestBase.checkEq(Solution.secondHalf(new int[]{9}), new int[]{}, \"single -> empty half\");\n",
+      "hint": "half = arr.length / 2; out = new int[half]; copy i in 0..half-1 from arr[half + i]. E.g. {1,2,3} -> {2}."
+    }
+  ],
+  "level": "debugging"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "cx-m9-tollbooth",
+  "title": "State machine from a spec",
+  "prompt": "Complete `TollBooth`: constructor sets cars = 0, cash = startingCash. `carPasses()` adds one car and 2 cash, returning 2. Getters are given.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class TollBooth {\n        private int cars;\n        private int cash;\n\n        public TollBooth(int startingCash) {\n            // set cars = 0, cash = startingCash\n        }\n\n        // CONTRACT: one car pays 2. Returns the amount collected (2),\n        // or 0 if... cars never refuse to pay. Always collects.\n        public int carPasses() {\n            return 0; // replace\n        }\n\n        public int getCars() { return cars; }\n        public int getCash() { return cash; }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "toll collected",
+      "code": "\nSolution.TollBooth t = new Solution.TollBooth(100);\nCjTestBase.checkEq(t.getCars(), 0, \"starts empty\");\nt.carPasses();\nt.carPasses();\nCjTestBase.checkEq(t.getCars(), 2, \"two cars\");\nCjTestBase.checkEq(t.getCash(), 104, \"100 + 2 + 2\");\n",
+      "hint": "cars++; cash += 2; return 2; — constructor: this.cars = 0; this.cash = startingCash;"
+    }
+  ],
+  "level": "guided"
+}

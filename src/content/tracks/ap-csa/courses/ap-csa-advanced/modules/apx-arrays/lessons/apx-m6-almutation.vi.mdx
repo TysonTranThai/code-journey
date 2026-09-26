@@ -1,0 +1,18 @@
+**Kỷ luật biến đổi ArrayList.** Ba chiến lược hợp lệ, một chiến lược
+bị cấm:
+
+- **Vòng lặp chỉ số ngược** (`for (int i = list.size() - 1; i >= 0;
+  i--)`): phép xóa không thể ảnh hưởng các chỉ số chưa duyệt. Vòng
+  xóa-khớp an toàn nhất.
+- **Dựng danh sách mới**: đọc danh sách cũ, nối các phần tử sống sót.
+  Tốn bộ nhớ, không bao giờ sai chỉ số.
+- **Chỉ số ghi trên cùng danh sách** qua `set` — nâng cao, hiếm khi
+  cần ở đề thi.
+
+Bị cấm: xóa khỏi ArrayList bên trong vòng lặp *for-each* —
+ConcurrentModificationException. (Tập con AP *có* kiểm tra điều này
+dưới dạng trắc nghiệm "vì sao mã này sập".)
+
+**Trộn hai con trỏ** (xen kẽ): tiếp tục với đầu vào nào còn phần tử,
+xen kẽ nhau. Giai đoạn rút cạn — một danh sách đã hết — là biên mà
+các phương án nhiễu mã hóa: chúng làm rơi đuôi của danh sách dài hơn.

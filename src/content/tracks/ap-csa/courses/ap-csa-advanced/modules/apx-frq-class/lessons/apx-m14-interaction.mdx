@@ -1,0 +1,17 @@
+**Object interaction** is the FRQ2 finale: a class that HOLDS other
+objects and drives them. The two patterns:
+
+- **Delegation loop**: `Library.playAll()` calls `play()` on every
+  held Song. The Library stores no play counts itself — the truth
+  lives in the held objects, and the Library only *asks*.
+- **Aggregation query**: `likedCount()` asks each held object a
+  boolean and counts. One accumulator over a for-each.
+
+The design smell to avoid: duplicating a held object's state in the
+holder (a Library that also tracks play counts will drift). When
+the story says the holder "knows about" the songs, it means it
+holds references — not that it copies their fields.
+
+Constructors of holders start empty (`new ArrayList<>()`), and
+nothing else happens there — a constructor that *creates* data the
+caller should pass in is answering the wrong FRQ.

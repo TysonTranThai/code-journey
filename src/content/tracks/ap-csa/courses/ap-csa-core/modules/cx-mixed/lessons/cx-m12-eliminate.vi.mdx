@@ -1,0 +1,27 @@
+Đề thi đưa ra các **near-miss đáng tin**. Kỹ năng là loại trừ theo hợp
+đồng, không theo cảm tính. Bốn phép dò:
+
+1. **Phép dò rỗng.** Chuyện gì xảy ra với độ dài 0 / "" / danh sách
+   rỗng? Lời giải đọc phần tử 0 không chặn sẽ chết ở đây.
+2. **Phép dò đơn.** Một phần tử: lời giải seed-max hay quét liền kề xử
+   lý được không? Vòng liền kề chạy từ 1 hoặc đến length − 1 sẽ không
+   làm gì — đúng hay sai tùy hợp đồng.
+3. **Phép dò toàn-bằng.** Mọi giá trị giống hệt: phá-đồng-giá (nghiêm
+   ngặt hay không) quyết định.
+4. **Phép dò thứ tự.** Chạy truy vết trên đầu vào *đã sắp xếp* và *đảo
+   ngược*: các lỗi phụ-thuộc-thứ-tự (đầu vs cuối, min vs max) tự phơi ra
+   trong một trong hai.
+
+Áp dụng cho ứng viên sau cho *"chỉ số của giá trị nhỏ nhất, sớm nhất khi
+đồng giá"*:
+
+```java
+int best = 0;
+for (int i = 1; i < arr.length; i++) {
+    if (arr[i] <= arr[best]) { best = i; }   // phép dò 3: hỏng
+}
+```
+
+Phép dò toàn-bằng `{7, 7}`: i=1, `7 <= 7` đúng, best thành 1 — đồng giá
+CUỐI. Hợp đồng nói sớm nhất. Dấu `<=` phải là `<`. Một phép dò, một ký
+tự, một đáp án bị loại.

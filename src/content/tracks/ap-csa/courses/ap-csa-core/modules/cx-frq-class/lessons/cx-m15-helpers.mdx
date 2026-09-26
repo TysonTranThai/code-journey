@@ -1,0 +1,37 @@
+Q2 rewards **helper decomposition** — often explicitly ("a private
+helper may earn full credit if used correctly"). Two patterns:
+
+**The normalize helper.** A class storing minutes could store raw
+seconds internally and normalize on write:
+
+```java
+private int totalSeconds;
+private void normalize() {
+    minutes += seconds / 60;   // ...via fields
+    seconds = seconds % 60;
+}
+```
+
+The helper converts "carry" logic into one named place; mutators call
+it after every change. The exam rewards this when the spec says
+"invariant: seconds < 60 always".
+
+**The classify helper.** Part (b) usually needs part (a)'s decision:
+
+```java
+private boolean isPrime(int n) { ... }
+public int countPrimes() {
+    int c = 0;
+    for (int v : values) { if (isPrime(v)) c++; }
+    return c;
+}
+```
+
+Writing the classifier as a helper makes (b) a two-liner and makes
+YOUR trace easier (test the helper on small inputs first).
+
+**Object interaction in Q2** — "the method takes another object of
+the same class": `public void merge(Counter other)` reads other's
+getters and mutates this. The trap: mutating `other` instead of `this`
+(aliased-parameter confusion), or reading `this` where `other` was
+meant. Name the target of every assignment out loud while writing.

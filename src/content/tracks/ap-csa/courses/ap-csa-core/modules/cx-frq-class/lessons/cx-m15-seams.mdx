@@ -1,0 +1,18 @@
+A repair-flavored Q2 variant: given a *class that almost works*, the
+bugs live in the seams between rows of the spec table:
+
+- **The un-initialized field.** Constructor sets two of three fields;
+  the third rides Java's default (0/null). If the spec says it starts
+  at 1, every computation touching it is off — and the getter-only
+  test passes while behavior tests fail.
+- **The copied-not-called method.** A mutator recomputes a derived
+  value that another method ALSO recomputes differently — two sources
+  of truth. The spec's invariant ("count always equals list.size()")
+  is the referee: whichever method breaks it is the bug.
+- **The wrong-this mutation.** `void adopt(Other o) { o.x = x; }`
+  updates the parameter instead of the receiver. State flows the wrong
+  way; the rubric's "mutates this object" behavior silently fails.
+
+Repair discipline: write the spec table as a checklist, tick each row
+against the code, and fix only unticked rows. On the exam (typed) this
+takes ninety seconds and catches every seam bug above.

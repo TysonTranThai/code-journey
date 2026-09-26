@@ -1,0 +1,16 @@
+{
+  "id": "cx-cp-m17-relocate",
+  "title": "Checkpoint: relocation walk",
+  "prompt": "The hardest Q4 variant: minimum moves from (row, col) to the cell holding `target`, moving up/left/right/down, or -1 if unreachable. A BFS or a repeated-scan distance fill both work — small grids. This fuses navigation, guards, and a sentinel.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // FULL Q4 — relocation:\n    // From (row, col), walk through adjacent cells (up/left/right/down)\n    // to reach the cell whose value equals `target`, using the FEWEST\n    // moves. Return that minimum move count, or -1 when target is\n    // unreachable. (BFS or repeated-scan is fine; small grids.)\n    public static int relocate(int[][] grid, int row, int col, int target) {\n        return -1; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "moves minimized",
+      "code": "\nint[][] g = { {5, 3}, {4, 1} };\nCjTestBase.checkEq(Solution.relocate(g, 0, 0, 1), 2, \"5 -> 3 -> 1\");\nCjTestBase.checkEq(Solution.relocate(g, 0, 0, 5), 0, \"already there\");\nCjTestBase.checkEq(Solution.relocate(g, 0, 0, 9), -1, \"absent target\");\nint[][] h = { {5, 3}, {4, 5} };\nCjTestBase.checkEq(Solution.relocate(h, 0, 0, 5), 0, \"target is the start\");\n",
+      "hint": "BFS with a distance grid, or relax repeatedly: dist[r][c] = min neighbor dist + 1."
+    }
+  ],
+  "level": "real-world"
+}

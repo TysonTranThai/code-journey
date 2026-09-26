@@ -1,0 +1,16 @@
+{
+  "id": "cx-m1-fix-first-max",
+  "title": "Diagnose the planted bug",
+  "prompt": "The method must return the index of the **first** occurrence of the maximum. It compiles and often looks right. Trace it by hand on `{2, 9, 9}` and `{1, 3, 3, 3}` before touching the code, then fix it minimally.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int findMaxIndex(int[] arr) {\n        // CONTRACT: index of the FIRST occurrence of the maximum;\n        // arr.length >= 1. Currently returns the last occurrence.\n        int best = 0;\n        for (int i = 0; i < arr.length; i++) {\n            if (arr[i] >= arr[best]) {\n                best = i;\n            }\n        }\n        return best;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "first max index",
+      "code": "\nCjTestBase.checkEq(Solution.findMaxIndex(new int[]{2, 9, 9}), 1, \"first of the two 9s\");\nCjTestBase.checkEq(Solution.findMaxIndex(new int[]{1, 3, 3, 3}), 1, \"first of three 3s\");\nCjTestBase.checkEq(Solution.findMaxIndex(new int[]{7}), 0, \"single element\");\nCjTestBase.checkEq(Solution.findMaxIndex(new int[]{-2, -1, -2}), 1, \"works with negatives\");\n",
+      "hint": ">= lets later equal values overwrite the winner; strict > keeps the first."
+    }
+  ],
+  "level": "debugging"
+}

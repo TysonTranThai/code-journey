@@ -1,0 +1,33 @@
+Constructors are the exception to dispatch-on-object: **they run
+top-down** — superclass body first, then down the chain:
+
+```java
+public class Pet {
+    protected String name;
+    public Pet(String name) { this.name = name; }
+}
+
+public class Cat extends Pet {
+    private int lives;
+    public Cat(String name, int lives) {
+        super(name);            // MUST be first statement
+        this.lives = lives;
+    }
+}
+```
+
+Rules the exam tests:
+
+1. If the subclass constructor calls `super(...)`, it must be the
+   **first statement**.
+2. If it does not call super at all, Java inserts `super()` — the
+   parent's NO-ARG constructor. When the parent has only a
+   String-arg constructor, that insertion is a **compile error**:
+   "constructor Pet in class Pet cannot be applied to given types".
+3. `protected` fields are visible to subclasses (and the same package)
+   — `private` ones are not, which is why Cat goes through
+   `super(name)` instead of touching `name` directly.
+
+The chain order explains tracing questions: `new Cat("M", 9)` runs
+Pet's body (name = "M"), then Cat's body (lives = 9). State builds
+from the top of the hierarchy down.

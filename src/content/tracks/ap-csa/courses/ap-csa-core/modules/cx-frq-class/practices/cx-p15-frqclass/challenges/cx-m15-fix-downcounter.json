@@ -1,0 +1,16 @@
+{
+  "id": "cx-m15-fix-downcounter",
+  "title": "Repair via checklist",
+  "prompt": "`DownCounter` violates its spec in two places. Write the spec rows as a checklist, tick them against the code, and fix only the violations.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // Repair: this DownCounter almost matches its spec.\n    // SPEC: private int remaining (starts 5);\n    // boolean tick() — when remaining > 0: decrement and return true;\n    //   when remaining == 0: return false, NO change.\n    // int getRemaining().\n    // BUGS (find via the checklist): field never initialized to 5, and\n    // tick() counts below zero.\n    public static class DownCounter {\n        private int remaining;\n\n        public DownCounter() {\n        }\n\n        public boolean tick() {\n            remaining--;\n            return true;\n        }\n\n        public int getRemaining() { return remaining; }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "spec restored",
+      "code": "\nSolution.DownCounter d = new Solution.DownCounter();\nCjTestBase.checkEq(d.getRemaining(), 5, \"starts at 5\");\nCjTestBase.checkEq(d.tick(), true, \"ticks down\");\nCjTestBase.checkEq(d.getRemaining(), 4, \"4 left\");\nd.tick(); d.tick(); d.tick(); d.tick();\nCjTestBase.checkEq(d.tick(), false, \"empty: false\");\nCjTestBase.checkEq(d.getRemaining(), 0, \"never below zero\");\n",
+      "hint": "Constructor: remaining = 5. tick(): if (remaining > 0) { remaining--; return true; } return false;"
+    }
+  ],
+  "level": "debugging"
+}

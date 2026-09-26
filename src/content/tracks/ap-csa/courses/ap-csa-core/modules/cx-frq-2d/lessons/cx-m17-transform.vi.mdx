@@ -1,0 +1,31 @@
+**Biến đổi theo vị trí** — họ phức-tạp-nhất của Q4: ô mới phụ thuộc
+HÀNG XÓM, không chỉ chính nó.
+
+*"Thay mỗi ô bằng số hàng xóm trực giao mang cùng giá trị"* — mối nguy
+đọc/ghi: phép ghi không được đầu độc phép đọc. Tính các số đếm vào một
+lưới MỚI, rồi (nếu đặc tả yêu cầu tại chỗ) sao chép lại:
+
+```java
+int[][] counts = new int[grid.length][grid[0].length];
+for (int r = 0; r < grid.length; r++) {
+    for (int c = 0; c < grid[r].length; c++) {
+        int same = 0;
+        if (r > 0 && grid[r - 1][c] == grid[r][c]) { same++; }
+        if (r < grid.length - 1 && grid[r + 1][c] == grid[r][c]) { same++; }
+        if (c > 0 && grid[r][c - 1] == grid[r][c]) { same++; }
+        if (c < grid[r].length - 1 && grid[r][c + 1] == grid[r][c]) { same++; }
+        counts[r][c] = same;
+    }
+}
+// counts là đáp án (hoặc sao chép vào grid nếu đề nói tại chỗ)
+```
+
+Mẫu hai-lưới tốn một phép cấp phát và cứu cả một họ lỗi ghi-xong-đọc.
+Khi đặc tả nói "tại chỗ", thỏa hiệp an toàn là tính-xong-rồi-sao-chép
+— vẫn không có lỗi bí danh.
+
+**Cái bẫy chỉ-số-chuyển-vị:** `grid[c][r]` biên dịch ngon lành cứ mỗi
+lần `c` tình cờ nằm trong biên hàng... và đọc nhầm ô. Vũ khí duy nhất
+là nghi thức định hướng: đặt tên biến lặp là `r` và `c`, đánh chỉ số
+`grid[r][c]`, và không bao giờ "tiết kiệm gõ phím" bằng cách dùng lại
+một biến cho cả hai.

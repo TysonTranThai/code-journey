@@ -1,0 +1,29 @@
+A **state table** is the exam's native language. One row per step, one
+column per variable — never keep state in your head.
+
+```java
+int a = 2;
+int b = a * 3;
+a = a + b;
+b = a - b;
+```
+
+| step | statement      | a | b |
+| ---- | -------------- | - | - |
+| 1    | `a = 2`        | 2 | – |
+| 2    | `b = a * 3`    | 2 | 6 |
+| 3    | `a = a + b`    | 8 | 6 |
+| 4    | `b = a - b`    | 8 | 2 |
+
+Two discipline rules make tracing mechanical:
+
+1. **Right side first, then assign.** In step 3, `a + b` uses the *old*
+   values (2 and 6) — `a` becomes 8, not 12. Assignment never re-reads
+   its own left side.
+2. **New row per statement, even when nothing changes.** Gaps are where
+   mistakes hide. If a variable is untouched, copy its value down.
+
+Swap puzzles like the one above appear on every exam: after
+`a = a + b; b = a - b;`, `b` holds the old `a` (8 − 6 = 2), and a third
+statement `a = a - b;` would complete the swap. Tracing beats memorizing
+the trick — the table always tells you where you are.

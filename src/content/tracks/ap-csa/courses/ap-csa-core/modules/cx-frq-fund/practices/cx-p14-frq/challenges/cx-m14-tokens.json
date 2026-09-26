@@ -1,0 +1,16 @@
+{
+  "id": "cx-m14-tokens",
+  "title": "Q1 shape: state machine",
+  "prompt": "Implement `isBalanced` (running count, never negative, ends at zero) and `depth` (track the running level, record its max). Both are one-pass counters over characters — the workflow's decomposition step names them instantly.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // FRQ-style Q1b: token processing.\n    // (a) boolean isBalanced(String s): s contains only '(' and ')';\n    //     true when every prefix has at least as many '(' as ')' and\n    //     the total counts are equal. \"\" is balanced.\n    // (b) int depth(String s): the MAXIMUM nesting depth of the same\n    //     string; \"\" has depth 0. (Assume isBalanced(s) is true.)\n    public static boolean isBalanced(String s) {\n        return false; // replace\n    }\n\n    public static int depth(String s) {\n        return 0; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "balanced and deep",
+      "code": "\nCjTestBase.checkEq(Solution.isBalanced(\"\"), true, \"empty is balanced\");\nCjTestBase.checkEq(Solution.isBalanced(\"()\"), true, \"one pair\");\nCjTestBase.checkEq(Solution.isBalanced(\")(\"), false, \"prefix goes negative\");\nCjTestBase.checkEq(Solution.isBalanced(\"(()\"), false, \"ends non-zero\");\nCjTestBase.checkEq(Solution.depth(\"\"), 0, \"empty depth\");\nCjTestBase.checkEq(Solution.depth(\"()(())\"), 2, \"nesting peaks at 2\");\nCjTestBase.checkEq(Solution.depth(\"((()))\"), 3, \"three deep\");\n",
+      "hint": "isBalanced: open++ on '(', open-- on ')', return open == 0 AND never dipped; depth: max of running level."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,33 @@
+**Trạng thái đối tượng và static.** Trường instance thuộc về một đối
+tượng; trường static thuộc về lớp — một bản sao dùng chung cho mọi
+thực thể và mọi lời gọi. Truy vết sai khi hai sổ cái này trộn vào nhau:
+
+```java
+public class Counter {
+    private static int created = 0;
+    private int value;
+    public Counter(int v) { value = v; created++; }
+    public int bump() { value++; return value; }
+}
+```
+
+Sau `new Counter(5)`, `new Counter(7)`, và `c.bump()` trên đối tượng
+đầu: `value` theo từng đối tượng (5→6), `created` theo lớp (2). Câu
+hỏi "created bằng bao nhiêu sau các lời gọi" kiểm tra việc tách hai sổ.
+
+**Biến đổi ArrayList** có bẫy riêng: `remove(i)` đẩy mọi phần tử sau `i`
+sang trái. Vòng lặp vừa duyệt tăng dần vừa xóa sẽ *bỏ sót* phần tử trượt
+vào vị trí `i` — đáp án truy vết kinh điển là "một phần tử còn sót dù
+bạn tin nó đã bị xóa."
+
+**Truyền tham chiếu theo giá trị**: phương thức có thể biến đổi đối
+tượng mà tham số trỏ tới (caller thấy được) nhưng không bao giờ làm biến
+của caller trỏ chỗ khác. Truy vết chính xác:
+
+```java
+public static void scramble(int[] a, int[] b) {
+    a[0] = 100;      // caller thấy được
+    b = new int[9];  // chỉ gán lại cục bộ
+    b[0] = 7;        // mất
+}
+```

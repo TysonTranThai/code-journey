@@ -1,0 +1,16 @@
+{
+  "id": "apx-m8-scoreboard",
+  "title": "The scoreboard with fouls",
+  "prompt": "Implement the `Scoreboard` class: constructor stores both team names. `score(team, points)` adds points to that team (ignore unknown team names). `foul(team)` records a foul for that team; when a team reaches **5 fouls**, the opponent immediately gains 2 bonus points (the 6th foul does nothing extra). `leader()` returns the leading team's name, or the **home** team's name on a tie.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Scoreboard {\n        public Scoreboard(String home, String away) {\n        }\n\n        public void score(String team, int points) {\n        }\n\n        public void foul(String team) {\n        }\n\n        public String leader() {\n            return \"\";\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "score and foul transitions",
+      "code": "\nSolution.Scoreboard s = new Solution.Scoreboard(\"Hawks\", \"Owls\");\ns.score(\"Owls\", 3);\nfor (int i = 0; i < 5; i++) {\n    s.foul(\"Owls\");\n}\ns.score(\"Hawks\", 2);\nCjTestBase.checkTrue(s.leader().equals(\"Hawks\"), \"Hawks 4 vs Owls 3 (bonus went to the opponent)\");\ns.score(\"Referee\", 99);\nCjTestBase.checkTrue(s.leader().equals(\"Hawks\"), \"unknown team ignored\");\n",
+      "hint": "Owls foul 5 times → HAWKS gain exactly one +2 bonus (Hawks 2), then score 2 more (4) to lead 4-3. A bonus paid to the fouling team leaves Hawks at 2 and Owls ahead."
+    }
+  ],
+  "level": "real-world"
+}

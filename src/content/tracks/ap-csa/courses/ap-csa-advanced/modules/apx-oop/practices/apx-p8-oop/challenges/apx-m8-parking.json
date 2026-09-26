@@ -1,0 +1,16 @@
+{
+  "id": "apx-m8-parking",
+  "title": "The parking gate state machine",
+  "prompt": "Implement the `Parking` class: constructor takes the **capacity**. `arrive(plate)` adds the plate and returns true, unless the lot is **full** — then return false and change nothing. `depart(plate)` removes the plate and returns true, or returns false if the plate is not parked. `count()` returns the number of parked cars. Use an ArrayList<String>.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Parking {\n        public Parking(int capacity) {\n        }\n\n        public boolean arrive(String plate) {\n            return false;\n        }\n\n        public boolean depart(String plate) {\n            return false;\n        }\n\n        public int count() {\n            return 0;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "gate transitions",
+      "code": "\nSolution.Parking p = new Solution.Parking(2);\nCjTestBase.checkTrue(p.arrive(\"AA\"), \"first car fits\");\nCjTestBase.checkTrue(p.arrive(\"BB\"), \"second car fits\");\nCjTestBase.checkTrue(!p.arrive(\"CC\"), \"full lot rejects\");\nCjTestBase.checkEq(p.count(), 2, \"count unchanged after reject\");\nCjTestBase.checkTrue(p.depart(\"BB\"), \"parked car leaves\");\nCjTestBase.checkTrue(!p.depart(\"BB\"), \"departing again fails\");\nCjTestBase.checkEq(p.count(), 1, \"one car remains\");\n",
+      "hint": "arrive guards on size >= capacity; depart uses remove(plate) which already returns the boolean."
+    }
+  ],
+  "level": "independent"
+}

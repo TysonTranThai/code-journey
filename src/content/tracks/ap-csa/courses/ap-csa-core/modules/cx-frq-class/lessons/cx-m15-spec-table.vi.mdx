@@ -1,0 +1,28 @@
+Bảng đặc tả của Q2 là một hợp đồng điền-khuyết. Một bảng tiêu biểu —
+điểm kiểm tra của module này — đọc:
+
+```text
+Lớp: Signaler
+Trường:
+  - private int level        (bậc tín hiệu hiện tại, bắt đầu ở 1)
+  - private int streak       (số lần strengthen liên tiếp, bắt đầu ở 0)
+Constructor: Signaler() — cả hai trường ở giá trị khởi đầu.
+Phương thức:
+  void boost()      — level += streak; sau đó streak++
+  void reset()      — level về 1; streak về 0
+  int getLevel()    — reader
+```
+
+Quy trình là cơ học: dịch từng dòng, theo thứ tự. Hai dòng xứng đáng
+được tôn trọng đặc biệt:
+
+**"bắt đầu ở 0/1"** — đặt nó trong CONSTRUCTOR, không lười biếng. Người
+chấm kiểm tra trạng thái ban đầu bằng một lời gọi getter trước mọi
+phép biến đổi.
+
+**Thứ tự bên trong một phương thức quan trọng.** `boost()` cộng streak
+HIỆN TẠI vào level, SAU ĐÓ mới tăng streak. Hoán đổi hai dòng đó đổi
+mọi giá trị sau này — truy vết `boost; boost; boost`: các mức 1+0=1,
+1+1=2, 2+2=4 so với (nếu hoán đổi) 1+1=2, 2+2=4, 4+3=7. Cả hai đều là
+"bản hiện thực"; chỉ một khớp với bảng. Khi bảng cho một thứ tự, thứ tự
+đó chính là đặc tả.

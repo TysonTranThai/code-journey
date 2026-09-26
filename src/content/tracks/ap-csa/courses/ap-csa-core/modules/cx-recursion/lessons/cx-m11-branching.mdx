@@ -1,0 +1,39 @@
+Two-branch recursion is where AP questions top out:
+
+```java
+public static int ways(int n) {
+    if (n == 0) { return 1; }   // one way to stand still
+    if (n < 0) { return 0; }    // overshot: no way
+    return ways(n - 1) + ways(n - 2);
+}
+```
+
+Reading it as a decision tree: at each staircase you take 1 or 2 steps.
+`ways(3)`: ways(2) + ways(1) = 2 + 1 = 3. The tree fans out — every
+internal node spawns two children until a base case. The MCQ question
+is almost always **how many total calls**: count the nodes.
+
+| call tree for ways(3) |
+| --------------------- |
+| ways(3) → ways(2), ways(1) |
+| ways(2) → ways(1), ways(0) |
+| ways(1) → ways(0), ways(-1) |
+| ways(0) base (×3), ways(-1) base (×1) |
+
+Calls: ways(3), ways(2), ways(1), ways(0) ×3, ways(-1) = 7 total.
+
+The second classic: **recursive search** — "does target appear in
+arr[i..]?"
+
+```java
+public static boolean has(int[] arr, int i, int target) {
+    if (i >= arr.length) { return false; }   // ran off: absent
+    if (arr[i] == target) { return true; }   // found
+    return has(arr, i + 1, target);
+}
+```
+
+Three exits: exhausted (false), found (true), recurse. The ORDER of
+the first two checks matters — swap them and you read a dead index.
+This shape (advance the index, answer at the ends) is the template for
+every "recursive array scan" the exam writes.

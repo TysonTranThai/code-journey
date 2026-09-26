@@ -1,0 +1,37 @@
+A helper method is a named decision. Exam problems rarely say "write a
+helper" — they reward one anyway, because a well-named helper makes the
+main method read like the specification itself.
+
+*"Return true if the password is valid: at least 8 characters, and
+either contains a digit or starts with an uppercase letter."*
+
+```java
+public static boolean hasDigit(String s) {
+    for (int i = 0; i < s.length(); i++) {
+        if (Character.isDigit(s.charAt(i))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+public static boolean valid(String pw) {
+    return pw.length() >= 8 && (hasDigit(pw) || startsUpper(pw));
+}
+```
+
+The main method is now two lines and mirrors the English word-for-word.
+Each helper is independently testable — and on the exam, independently
+*traceable* when you must debug.
+
+Helper design rules:
+
+1. **One decision per helper.** If you cannot name it in one phrase, it
+   is two helpers.
+2. **Helpers return, they do not print.** Printing inside a helper makes
+   it useless as a building block.
+3. **The order you write them is the order you test them.** Write
+   `hasDigit`, test it on `""`, `"abc"`, `"a1"`. Only then write `valid`.
+
+The AP Java Quick Reference includes `Character.isDigit/isLetter` —
+helpers around single-character classification are expected knowledge.

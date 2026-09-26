@@ -1,0 +1,16 @@
+**super is a method lookup one level up, not "the parent object."**
+Two forms appear on the exam:
+
+- `super.pay()` inside an override: run the parent's version, often
+  then extending it (`return super.pay() + bonus;`). A W-answer
+  forgets the `super.` and recurses or drops the base behavior.
+- `super(args)` as the first constructor statement: parent
+  initializes parent state. If a subclass constructor omits it, the
+  compiler inserts `super()` — which fails to compile unless the
+  parent has a zero-argument constructor.
+
+**Abstract classes** add one rule: you cannot `new` them, but
+references of the abstract type still dispatch to concrete
+overrides. The pattern "one abstract parent, two subclasses, one
+ArrayList of the parent type" is the most reused FRQ2 structure of
+the last decade — this lab drills exactly that.

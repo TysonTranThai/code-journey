@@ -1,0 +1,16 @@
+{
+  "id": "apx-cp-m22-frq",
+  "title": "Exam FRQ: the recipe scaler",
+  "prompt": "45-minute FRQ section. Implement the `Recipe` class:\n\n- constructor takes the base servings (int) and base sugar (int grams)\n- `scaleTo(int servings)` returns the sugar needed for the requested servings: baseSugar * servings / baseServings (integer division)\n- `addServings(int extra)` increases the REMAINING planned servings (starts equal to baseServings; never below 0)\n- `remaining()` reports planned servings\n- `serve(int n)` reduces remaining by n, floored at 0, and returns true if there were enough servings planned, else false (changing nothing when false)\n\nImplement the class.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Recipe {\n        public Recipe(int baseServings, int baseSugar) {\n        }\n\n        public int scaleTo(int servings) {\n            return 0;\n        }\n\n        public void addServings(int extra) {\n        }\n\n        public int remaining() {\n            return 0;\n        }\n\n        public boolean serve(int n) {\n            return false;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "recipe scaler frq",
+      "code": "\nSolution.Recipe r = new Solution.Recipe(4, 200);\nCjTestBase.checkEq(r.scaleTo(6), 300, \"200 * 6 / 4\");\nCjTestBase.checkEq(r.remaining(), 4, \"starts at base\");\nr.serve(3);\nCjTestBase.checkEq(r.remaining(), 1, \"three served\");\nCjTestBase.checkTrue(!r.serve(2), \"not enough planned\");\nCjTestBase.checkEq(r.remaining(), 1, \"failed serve changed nothing\");\nr.addServings(4);\nCjTestBase.checkEq(r.remaining(), 5, \"servings added\");\n",
+      "hint": "scaleTo is proportion math with integer division; serve guards on n <= remaining before mutating."
+    }
+  ],
+  "level": "mini-build"
+}

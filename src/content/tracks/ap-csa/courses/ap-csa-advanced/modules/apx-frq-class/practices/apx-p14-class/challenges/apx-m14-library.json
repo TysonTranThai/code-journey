@@ -1,0 +1,16 @@
+{
+  "id": "apx-m14-library",
+  "title": "The library that drives its songs",
+  "prompt": "Implement `Song` (as before: five-play like rule with `isLiked()`) and `Library`: starts empty, `add(Song)` appends, `playAll()` plays every held song once, `likedCount()` returns how many held songs are currently liked. The Library must NOT duplicate play counts — it asks its songs.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Library {\n        public void add(Song s) {\n        }\n\n        public void playAll() {\n        }\n\n        public int likedCount() {\n            return 0;\n        }\n    }\n}\n\n\npublic class Solution {\n            public static class Song {\n            public Song(String title) {\n            }\n\n            public void play() {\n            }\n\n            public void unlike() {\n            }\n\n            public boolean isLiked() {\n                return false;\n            }\n        }\n}\n",
+  "tests": [
+    {
+      "name": "library aggregation",
+      "code": "\nSolution.Library lib = new Solution.Library();\nlib.add(new Solution.Song(\"A\"));\nlib.add(new Solution.Song(\"B\"));\nlib.add(new Solution.Song(\"C\"));\nlib.playAll();\nlib.playAll();\nlib.playAll();\nCjTestBase.checkEq(lib.likedCount(), 0, \"three plays each is not five\");\nlib.playAll();\nlib.playAll();\nCjTestBase.checkEq(lib.likedCount(), 3, \"every song hit five plays\");\n",
+      "hint": "playAll is a delegation loop; likedCount is an aggregation query over isLiked()."
+    }
+  ],
+  "level": "real-world"
+}

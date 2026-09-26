@@ -1,0 +1,16 @@
+{
+  "id": "apx-m14-candy",
+  "title": "The candy machine lifecycle",
+  "prompt": "Implement `CandyMachine`: constructor takes the starting candy count (coins start at 0). `buy()` dispenses one candy and takes one coin — returns false (changing nothing) when out of candy. `restock(n)` adds n candies, allowed at any time. `emptyCoins()` returns the collected coins and **resets the coin count to zero**.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class CandyMachine {\n        public CandyMachine(int candies) {\n        }\n\n        public boolean buy() {\n            return false;\n        }\n\n        public void restock(int n) {\n        }\n\n        public int emptyCoins() {\n            return 0;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "machine lifecycle",
+      "code": "\nSolution.CandyMachine m = new Solution.CandyMachine(2);\nCjTestBase.checkTrue(m.buy(), \"first sale\");\nCjTestBase.checkTrue(m.buy(), \"second sale\");\nCjTestBase.checkTrue(!m.buy(), \"sold out\");\nCjTestBase.checkEq(m.emptyCoins(), 2, \"two coins collected\");\nCjTestBase.checkEq(m.emptyCoins(), 0, \"reset happened\");\nm.restock(1);\nCjTestBase.checkTrue(m.buy(), \"restock revives sales\");\n",
+      "hint": "buy guards on candy count; emptyCoins reads-and-resets; restock has no guard."
+    }
+  ],
+  "level": "independent"
+}

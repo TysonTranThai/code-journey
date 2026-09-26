@@ -1,0 +1,28 @@
+Mảng 2 chiều là mảng của các hàng. `int[][] g = new int[3][4]` là 3 hàng,
+mỗi hàng 4 cột; `g.length` là 3 (số hàng), `g[0].length` là 4 (số cột).
+Sựfact đáng tin nhất của đề thi: **`g[r][c]` — hàng trước, luôn luôn.**
+
+**Duyệt hàng-chính** (thứ tự tự nhiên):
+```java
+for (int r = 0; r < g.length; r++) {
+    for (int c = 0; c < g[r].length; c++) {
+        // g[r][c]
+    }
+}
+```
+Biên trong `g[r].length` (không phải `g[0].length`) là dạng an toàn đề
+thi — hoạt động kể cả khi các hàng dài khác nhau.
+
+**Duyệt theo cột** — vòng ngoài qua các cột, vòng trong qua các hàng:
+```java
+for (int c = 0; c < g[0].length; c++) {
+    for (int r = 0; r < g.length; r++) {
+        // g[r][c] — đi XUỐNG một cột
+    }
+}
+```
+
+Từ vựng vị trí cho \{1,2,3\},\{4,5,6\}: g[0] là hàng ĐẦU (1,2,3);
+`g[1][0]` là hàng chỉ số 1, cột chỉ số 0 → giá trị 4. Hãy vẽ lưới kèm
+chỉ số trước khi trả lời bất cứ điều gì. Mọi câu MCQ "phần tử nào" sai
+đều đến từ việc tráo hàng/cột.

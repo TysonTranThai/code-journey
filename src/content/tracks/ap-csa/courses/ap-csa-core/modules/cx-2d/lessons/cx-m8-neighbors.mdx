@@ -1,0 +1,45 @@
+Two scanning shapes beyond the basics:
+
+**Find a position, return coordinates.** When the answer is a place,
+return the row (or a coded r/c pair) — and decide what happens when
+absent (−1 is conventional):
+
+```java
+public static int findRow(int[][] g, int target) {
+    for (int r = 0; r < g.length; r++) {
+        for (int c = 0; c < g[r].length; c++) {
+            if (g[r][c] == target) {
+                return r;
+            }
+        }
+    }
+    return -1;
+}
+```
+
+Note the **double early-exit**: the inner return leaves both loops at
+once. A `break` would only leave the inner loop — a classic MCQ
+distinction.
+
+**Neighbors of g[r][c]** — up to four orthogonal friends, but edges
+have fewer. Guard each direction independently:
+
+```java
+if (r > 0) { ... g[r - 1][c] ... }
+if (r < g.length - 1) { ... g[r + 1][c] ... }
+if (c > 0) { ... g[r][c - 1] ... }
+if (c < g[r].length - 1) { ... g[r][c + 1] ... }
+```
+
+Or count matching neighbors:
+
+```java
+int count = 0;
+if (r > 0 && g[r - 1][c] == v) { count++; }
+if (r < g.length - 1 && g[r + 1][c] == v) { count++; }
+if (c > 0 && g[r][c - 1] == v) { count++; }
+if (c < g[r].length - 1 && g[r][c + 1] == v) { count++; }
+```
+
+Never index `g[r-1]` before checking `r > 0` — the negative index
+throws before the value is even read.

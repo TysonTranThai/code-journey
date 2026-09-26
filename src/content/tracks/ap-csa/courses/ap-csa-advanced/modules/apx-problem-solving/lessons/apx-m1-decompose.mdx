@@ -1,0 +1,22 @@
+**Multi-concept decomposition.** The exam hides a simple computation
+inside an unfamiliar story. Example — "loyalty program":
+
+```java
+// A Gold member earns 3 points per dollar; Silver earns 2; everyone
+// earns double on Fridays. Given the member's tier and the weekday
+// number (1=Mon..7=Sun), return the multiplier.
+public static int multiplier(String tier, int day) {
+    int base = tier.equals("Gold") ? 3 : 2;
+    return day == 5 ? base * 2 : base;
+}
+```
+
+The story is noise; the computation is a table plus one special case.
+Practice extracting:
+
+- **What is actually stored or returned?** (a number? an object? a list?)
+- **Which words map to conditions?** ("double on Fridays" → `day == 5`)
+- **Which words are decoration?** (tier names, the loyalty backstory)
+
+Write the mapping on paper *before* coding. On the exam, thirty seconds
+of mapping saves five minutes of rewriting.

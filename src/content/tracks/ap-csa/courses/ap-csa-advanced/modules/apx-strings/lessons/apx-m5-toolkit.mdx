@@ -1,0 +1,19 @@
+You already know `charAt`, `substring`, `indexOf`, `equals`,
+`compareTo`. At exam level the differentiators are **index
+arithmetic** and **building results**:
+
+- The middle of a string of length n starts at `(n - 1) / 2` for the
+  two-center convention — one formula, both parities. Verify: n=4 →
+  index 1 ("co**de**"), n=5 → index 2 ("ab**c**de" pair starts at 2).
+- Comparing *adjacent* characters (`charAt(i)` vs `charAt(i - 1)`)
+  needs a loop from 1 — not 0 — and an empty-string guard.
+- Run-length problems track a run counter and flush it at the last
+  index. The flush after the loop is where most wrong answers live.
+- Building results: `StringBuilder` is legal but plain concatenation
+  is fine for exam sizes; what matters is appending in the right
+  *order* under a conditional.
+
+**Substring endpoints** remain the #1 source of lost points:
+`substring(a, b)` includes a, excludes b, and throws if b > length or
+a > b. Before you write one, say the included and excluded indexes out
+loud.

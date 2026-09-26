@@ -1,0 +1,16 @@
+{
+  "id": "apx-m19-fix-countdown",
+  "title": "Diagnose 5: the recursion without progress",
+  "prompt": "Classify the error, then repair `countDown` so it returns the count from n down to 0 inclusive (countDown(3) → 4).",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SYMPTOM: StackOverflowError on every input\n    public static int countDown(int n) {\n        if (n < 0) {\n            return 0;\n        }\n        return countDown(n);\n    }\n}\n",
+  "tests": [
+    {
+      "name": "repaired recursion",
+      "code": "\nCjTestBase.checkEq(Solution.countDown(3), 4, \"3,2,1,0\");\nCjTestBase.checkEq(Solution.countDown(0), 1, \"just zero\");\n",
+      "hint": "Class 12 (recursion, no progress): countDown(n) must call countDown(n - 1) and add 1."
+    }
+  ],
+  "level": "debugging"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "cx-m20-sim-mixed",
+  "title": "Simulation: mixed trace",
+  "prompt": "The MCQ-style section in one question: PREDICT m({4, 9, 2}) on paper with a state table BEFORE looking at the code below, then reproduce m yourself. Your table should show both passes.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SIMULATED MCQ-STYLE TRACE (the 42-question section compressed).\n    // Predict WITHOUT running, then reproduce exactly:\n    //   m({4, 9, 2}) -> ?   trace: evens halved in place, odds doubled+1,\n    //   return sum of final values minus count of changed cells.\n    public static int m(int[] nums) {\n        int changed = 0;\n        for (int i = 0; i < nums.length; i++) {\n            if (nums[i] % 2 == 0) {\n                nums[i] = nums[i] / 2;\n                changed++;\n            } else {\n                nums[i] = nums[i] * 2 + 1;\n            }\n        }\n        int total = 0;\n        for (int v : nums) {\n            total += v;\n        }\n        return total - changed;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "trace reproduced",
+      "code": "\nCjTestBase.checkEq(Solution.m(new int[]{4, 9, 2}), 20, \"sum 22 - changed 2\");\nCjTestBase.checkEq(Solution.m(new int[]{}), 0, \"empty\");\nCjTestBase.checkEq(Solution.m(new int[]{2}), 0, \"1 - 1\");\n",
+      "hint": "Pass 1: 4->2 (changed), 9->19, 2->1 (changed); sum 22, changed 2, return 20... hand-check against the tests."
+    }
+  ],
+  "level": "real-world"
+}

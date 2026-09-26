@@ -1,0 +1,19 @@
+**ArrayList mutation discipline.** Three legal strategies, one
+forbidden one:
+
+- **Reverse index loop** (`for (int i = list.size() - 1; i >= 0;
+  i--)`): removals cannot affect not-yet-visited indexes. The safest
+  remove-matches loop.
+- **Build a new list**: read the old, append survivors. Costs memory,
+  never misindexes.
+- **Write-index over the same list** via `set` — advanced, rarely
+  needed on the exam.
+
+Forbidden: removing from an ArrayList inside a *for-each* loop —
+ConcurrentModificationException. (The AP subset *does* test this as a
+"why does this crash" MCQ.)
+
+**Two-cursor merge** (interleave): advance whichever input still has
+elements, alternating. The drain phase — one list already exhausted —
+is the boundary the distractors encode: they drop the tail of the
+longer list.

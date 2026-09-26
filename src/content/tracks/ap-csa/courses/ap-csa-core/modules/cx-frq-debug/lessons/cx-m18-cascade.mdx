@@ -1,0 +1,29 @@
+**Cascading errors** — the reason a wrong early line ruins everything
+after: state flows forward. Trace `{2, 3, 4}` for a "running maximum
+then final minus count" style spec with a planted seed bug:
+
+```java
+// CONTRACT: return (max value) - (count of negatives)
+int max = 0;                 // BUG when all values < 0... or here:
+int negs = 0;
+for (int i = 0; i < arr.length; i++) {
+    if (arr[i] > max) { max = arr[i]; }
+    if (arr[i] < 0) { negs++; }   // second bug: counts AFTER max? no —
+}
+return max - negs;
+```
+
+with `{5, -2, 8}`: max walks 5→8 correctly, negs = 1, return 7. With
+`{-5, -2}`: max stays 0 (wrong — should be −2), negs = 2, return −2.
+The trace shows BOTH bugs but the exam asks for the FIRST divergence
+in the failing example. For `{-5, -2}`, the first divergence is the
+seed `max = 0` — the `negs` line runs correctly for its own contract.
+
+Two bugs can also *mask* each other: a doubled counter and a halved
+base can produce right answers on one test and wrong on the next.
+This is why the clinic always traces at least TWO examples before
+declaring the fix.
+
+**Minimal-repair ethics** (and exam scoring): rubrics are behavior
+lists; an untouched correct behavior keeps its points. Rewriting
+working sections risks moving errors into previously-earned behavior.

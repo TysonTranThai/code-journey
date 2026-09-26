@@ -1,0 +1,16 @@
+{
+  "id": "cx-m3-fix-alternating",
+  "title": "Fix the alternating sum",
+  "prompt": "`sumAlt` must compute arr[0] - arr[1] + arr[2] - ... but both branches add. Trace {5, 2, 7} against the contract, then repair the minimal line.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int sumAlt(int[] arr) {\n        // CONTRACT: arr[0] - arr[1] + arr[2] - arr[3] + ...\n        int total = 0;\n        for (int i = 0; i < arr.length; i++) {\n            if (i % 2 == 0) {\n                total += arr[i];\n            } else {\n                total += arr[i];\n            }\n        }\n        return total;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "alternating sum",
+      "code": "\nCjTestBase.checkEq(Solution.sumAlt(new int[]{5, 2, 7}), 10, \"5 - 2 + 7\");\nCjTestBase.checkEq(Solution.sumAlt(new int[]{1}), 1, \"single element stays positive\");\nCjTestBase.checkEq(Solution.sumAlt(new int[]{}), 0, \"empty sum\");\nCjTestBase.checkEq(Solution.sumAlt(new int[]{2, 2, 2, 2}), 0, \"2-2+2-2\");\n",
+      "hint": "The even-index branch adds; the odd-index branch must SUBTRACT."
+    }
+  ],
+  "level": "debugging"
+}

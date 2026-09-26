@@ -1,0 +1,16 @@
+{
+  "id": "apx-m15-fix-remove",
+  "title": "Fix: the removal skip",
+  "prompt": "The method should remove every score below 60, keep survivor order, and return the removal count. It silently skips some failing scores. Find and fix the bug.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SPEC: remove every failing score (< 60), keep order, return how many removed\n    public static int removeFailing(java.util.ArrayList<Integer> scores) {\n        int removed = 0;\n        for (int i = 0; i < scores.size(); i++) {\n            if (scores.get(i) < 60) {\n                scores.remove(i);\n                removed++;\n            }\n        }\n        return removed;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "corrected removal",
+      "code": "\njava.util.ArrayList<Integer> l = new java.util.ArrayList<>(java.util.List.of(70, 50, 55, 80, 40));\nCjTestBase.checkEq(Solution.removeFailing(l), 3, \"three removed\");\nCjTestBase.checkEq(l, new java.util.ArrayList<>(java.util.List.of(70, 80)), \"survivors in order\");\njava.util.ArrayList<Integer> none = new java.util.ArrayList<>(java.util.List.of(90));\nCjTestBase.checkEq(Solution.removeFailing(none), 0, \"nothing to remove\");\n",
+      "hint": "Forward removal skips the element sliding into the freed slot — iterate BACKWARD (i from size-1 down to 0)."
+    }
+  ],
+  "level": "debugging"
+}

@@ -1,0 +1,19 @@
+**Transformation pipelines.** Many string problems are two passes in
+disguise: classify first (letters/digits/positions), transform second
+(shift/mask/remove). Trying to fuse the passes usually creates index
+bugs; two clean passes beat one clever one.
+
+**Masking** (keep structure, hide content) and **run-length
+encoding** are the two shapes the exam reuses with new stories. For
+RLE the flush discipline:
+
+```java
+// after the loop, the final run is still unflushed:
+if (s.length() > 0) { out += s.charAt(s.length() - 1); out += run; }
+```
+
+Forgetting the final flush outputs a truncated encoding — a wrong
+answer that *looks* almost right. That is the point: advanced string
+problems hide their difficulty in the last iteration, the empty
+input, and the single-character input. Test all three before you
+submit anything.

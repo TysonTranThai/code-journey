@@ -1,0 +1,39 @@
+Cái bẫy chỉ là cỗ máy đội lốt. Mỗi cái dưới đây đều trượt một bài kiểm tra
+trông rất hợp lý:
+
+**Bẫy 1 — seed chạy trốn.**
+
+```java
+int max = 0;                    // sai khi mọi giá trị đều âm
+for (int v : arr) { if (v > max) { max = v; } }
+```
+
+Sửa: seed bằng `arr[0]` (cần `arr.length >= 1` — đề bài sẽ nêu là điều
+kiện tiên quyết).
+
+**Bẫy 2 — vòng lặp hàng rào (fencepost).** In `1 2 3` với gạch ngang
+*ở giữa*: dấu `-` phải in trước mọi phần tử trừ phần tử đầu.
+
+```java
+for (int i = 0; i < arr.length; i++) {
+    if (i > 0) { System.out.print("-"); }
+    System.out.print(arr[i]);
+}
+```
+
+Luật tổng quát: N phần tử cần N−1 dấu ngăn. Đếm cột, đếm rào.
+
+**Bẫy 3 — khoảng lệch một.** "Các phần tử ở *vị trí* lẻ" (vị trí 1, 3,
+5...) nghĩa là chỉ số 0, 2, 4 trong Java 0-based. "Mỗi phần tử thứ hai
+bắt đầu từ phần tử đầu" cũng là chỉ số 0, 2, 4. Hãy vẽ số chỉ số lên trên
+các phần tử trước khi viết biên vòng lặp.
+
+**Bẫy 4 — phép so sánh biên.** `<=` hay `<` trong `i < arr.length` quyết
+định phần tử cuối có tham gia không. Vòng lặp cần chạm mọi phần tử thì
+dùng `<` với `arr.length`; thêm `<=` là bước ra ngoài mảng với
+`ArrayIndexOutOfBoundsException`.
+
+**Bẫy 5 — quên thoát sớm.** Quét tìm một kết quả khớp mà không có
+`break`/`return` sẽ ghi đè kết quả (`findFirst` của Module 1). Hỏi mỗi
+vòng lặp tìm kiếm: "kết quả có thể đổi sau khi đã quyết định?" Nếu có,
+bạn cần một lối thoát.

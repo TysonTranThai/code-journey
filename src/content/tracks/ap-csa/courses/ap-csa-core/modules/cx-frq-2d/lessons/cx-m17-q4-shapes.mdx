@@ -1,0 +1,42 @@
+Q4: one method, one grid, nine points. The recurring shapes:
+
+**Find-and-report-position** — "return \{row, col\} of the largest
+value" as an int[]:
+
+```java
+public int[] findMax(int[][] grid) {
+    int[] at = new int[2];
+    for (int r = 0; r < grid.length; r++) {
+        for (int c = 0; c < grid[r].length; c++) {
+            if (grid[r][c] > grid[at[0]][at[1]]) {
+                at[0] = r;
+                at[1] = c;
+            }
+        }
+    }
+    return at;
+}
+```
+
+Seed from (0,0) — the precondition `grid.length >= 1` makes it legal —
+and keep a strict `>` for the earliest tie.
+
+**Conditional transform** — mutate cells matching a rule:
+
+```java
+for (int r = 0; r < grid.length; r++) {
+    for (int c = 0; c < grid[r].length; c++) {
+        if (grid[r][c] < 0) {
+            grid[r][c] = 0;
+        }
+    }
+}
+```
+
+**Count by neighborhood** — the guarded-neighbor pattern (Module 8)
+inside a full-grid loop.
+
+The Q4-specific discipline: when the answer is a POSITION, decide
+immediately how to encode it (int[2]? an int code like 10*r+c?
+a row-only?) — the prompt's return type forces one; misreading it is
+the classic zero.

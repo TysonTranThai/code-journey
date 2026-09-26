@@ -1,0 +1,16 @@
+{
+  "id": "cx-m16-customer-total",
+  "title": "Q3: filter and aggregate",
+  "prompt": "Implement `customerTotal`: total cents across the named customer's orders. One for-each, one filter, one accumulator — the Q3 playbook, page one.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "import java.util.ArrayList;\n\npublic class Solution {\n    public static class Order {\n        private String customer;\n        private int cents;\n        public Order(String customer, int cents) {\n            this.customer = customer;\n            this.cents = cents;\n        }\n        public String getCustomer() { return customer; }\n        public int getCents() { return cents; }\n    }\n\n    // CONTRACT: total cents across all orders of `name`.\n    public static int customerTotal(ArrayList<Order> orders, String name) {\n        return 0; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "customer total",
+      "code": "\nArrayList<Solution.Order> orders = new ArrayList<Solution.Order>();\norders.add(new Solution.Order(\"Ana\", 500));\norders.add(new Solution.Order(\"Bao\", 200));\norders.add(new Solution.Order(\"Ana\", 300));\nCjTestBase.checkEq(Solution.customerTotal(orders, \"Ana\"), 800, \"500 + 300\");\nCjTestBase.checkEq(Solution.customerTotal(orders, \"Bao\"), 200, \"single order\");\nCjTestBase.checkEq(Solution.customerTotal(orders, \"Chi\"), 0, \"no orders\");\nCjTestBase.checkEq(Solution.customerTotal(new ArrayList<Solution.Order>(), \"Ana\"), 0, \"empty list\");\n",
+      "hint": "for (Order o : orders) if (o.getCustomer().equals(name)) total += o.getCents();"
+    }
+  ],
+  "level": "guided"
+}

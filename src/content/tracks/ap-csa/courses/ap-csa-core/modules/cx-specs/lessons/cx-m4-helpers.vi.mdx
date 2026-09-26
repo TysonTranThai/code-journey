@@ -1,0 +1,37 @@
+Hàm trợ giúp là một quyết định được đặt tên. Đề thi hiếm khi nói "hãy viết
+hàm trợ giúp" — nhưng luôn thưởng cho người viết, vì một hàm trợ giúp đặt
+tên tốt khiến phương thức chính đọc như chính đặc tả.
+
+*"Trả về true nếu mật khẩu hợp lệ: ít nhất 8 ký tự, và hoặc chứa một chữ
+số hoặc bắt đầu bằng chữ hoa."*
+
+```java
+public static boolean hasDigit(String s) {
+    for (int i = 0; i < s.length(); i++) {
+        if (Character.isDigit(s.charAt(i))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+public static boolean valid(String pw) {
+    return pw.length() >= 8 && (hasDigit(pw) || startsUpper(pw));
+}
+```
+
+Phương thức chính giờ chỉ hai dòng và khớp với câu tiếng Anh từng chữ.
+Mỗi hàm trợ giúp được kiểm thử độc lập — và khi thi, được *truy vết độc
+lập* khi bạn phải gỡ lỗi.
+
+Luật thiết kế hàm trợ giúp:
+
+1. **Một quyết định mỗi hàm.** Nếu không gọi tên được trong một cụm từ,
+   đó là hai hàm.
+2. **Hàm trợ giúp trả về, không in.** In bên trong hàm trợ giúp khiến nó
+   vô dụng như một khối xây dựng.
+3. **Thứ tự viết là thứ tự kiểm thử.** Viết `hasDigit`, thử với `""`,
+   `"abc"`, `"a1"`. Chỉ sau đó mới viết `valid`.
+
+Bảng Java Quick Reference của AP có `Character.isDigit/isLetter` — các
+hàm phân loại ký tự đơn là kiến thức được kỳ vọng.

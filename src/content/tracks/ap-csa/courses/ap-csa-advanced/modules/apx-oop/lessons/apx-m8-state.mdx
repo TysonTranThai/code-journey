@@ -1,0 +1,18 @@
+An object is a **state machine**: fields are the state, methods are
+transitions, constructors set the start state. Exam FRQs hide a
+state machine behind a story (parking garage, scoreboard, vending
+machine), and the rubric cares about exactly three things:
+
+1. **The transition rule is the whole problem.** `arrive` returns
+   false when full — one comparison decides three test cases.
+2. **Order of checks** matters: is a duplicate plate rejected before
+   or after the capacity check? The spec's sentence order is the
+   check order.
+3. **Derived state** (`count()`, `isFull()`) must be computed from
+   the real state, never stored twice — a second copy of the truth
+   will drift.
+
+The classic FRQ2 shape: constructor stores parameters (with `this.`),
+one boolean-returning transition with a guard, one mutator that
+reaches a boundary (`depart` on empty → false), and one accessor.
+Every graded behavior is one of those four.

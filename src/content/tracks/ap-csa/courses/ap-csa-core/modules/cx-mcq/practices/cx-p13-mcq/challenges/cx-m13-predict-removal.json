@@ -1,0 +1,16 @@
+{
+  "id": "cx-m13-predict-removal",
+  "title": "Predict: mutation order",
+  "prompt": "Predict demo() by hand: which elements does the forward loop remove, what is the final list, and what does the arithmetic return? (It is NOT the 'obvious' 200 — the trap taxonomy's mutation-order family is live here.)",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "import java.util.ArrayList;\n\npublic class Solution {\n    // Predict WITHOUT running: what does demo() return?\n    public static int demo() {\n        ArrayList<Integer> list = new ArrayList<Integer>();\n        list.add(10);\n        list.add(20);\n        list.add(30);\n        for (int i = 0; i < list.size(); i++) {\n            if (list.get(i) == 20) {\n                list.remove(i);\n            }\n        }\n        return list.size() * 100 + list.get(1);\n    }\n}\n",
+  "tests": [
+    {
+      "name": "mutation traced",
+      "code": "\nCjTestBase.checkEq(Solution.demo(), 230, \"list ends [10, 30]; size 2, element 1 is 30\");\n",
+      "hint": "i=1 removes 20; i=2 now reads past... wait: after removal size is 2, so i=2 stops. List [10, 30]."
+    }
+  ],
+  "level": "independent"
+}

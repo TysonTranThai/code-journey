@@ -1,0 +1,47 @@
+Kết hợp các cỗ máy chính là nơi câu hỏi thi sinh ra. Công thức: **tách đề
+bài thành các cỗ máy có tên, rồi nối chúng trong một lượt duy nhất.**
+
+*"Trả về String dài nhất trong `words`; nếu nhiều chuỗi cùng dài nhất,
+trả về chuỗi sớm nhất. Mảng rỗng trả về null."*
+
+```java
+public static String longest(String[] words) {
+    if (words.length == 0) { return null; }
+    String best = words[0];
+    for (int i = 1; i < words.length; i++) {
+        if (words[i].length() > best.length()) {
+            best = words[i];
+        }
+    }
+    return best;
+}
+```
+
+Phân rã: chặn trường hợp chân không → seed từ phần tử 0 → quét với dấu
+**>` nghiêm ngặt** để đồng giá giữ người thắng sớm hơn (Bẫy 1 + phá đồng
+giá trong một). Đổi thành `>=` và đáp án lặng lẽ trở thành đồng giá
+*cuối* — khác nhau một ký tự mà đề thi mê mệt.
+
+Ví dụ kết hợp thứ hai — *"đếm xem bao nhiêu phần tử nằm giữa lần xuất
+hiện đầu và cuối của `key`"*:
+
+```java
+public static int between(int[] arr, int key) {
+    int first = -1, last = -1;
+    for (int i = 0; i < arr.length; i++) {
+        if (arr[i] == key) {
+            if (first == -1) { first = i; }
+            last = i;
+        }
+    }
+    if (first == -1) { return 0; }
+    return last - first - 1;
+}
+```
+
+Hai phép quét lính canh trong một vòng lặp (first giữ nguyên, last ghi
+đè), rồi một lớp chặn đồng thời loại trường hợp chỉ xuất hiện một lần
+(`last == first` nghĩa là "không có gì ở giữa"), rồi đại số chỉ số. Không
+vòng lặp lồng, không lượt
+chạy thứ hai. Khi gọi được tên các cỗ máy, bài "khó" lắp ráp từ những bộ
+phận bạn đã có sẵn.

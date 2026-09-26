@@ -1,0 +1,16 @@
+{
+  "id": "apx-m1-alias",
+  "title": "Trace the alias",
+  "prompt": "Two `Bag` references are created, then the sequence below runs. Implement `after()` to **return the final value of the first bag's field** — but by simulating the sequence in code, not hardcoding.\n\n```java\nBag a = new Bag(10);\nBag b = a;        // alias!\nb.value = b.value + 5;\nb = new Bag(99);\nb.value = b.value + 1;\na = b;            // now a follows b\n```\n\nFirst trace on paper what `a.value` is at the end, then encode that final value in `after()`.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Bag {\n        public int value;\n        public Bag(int v) { value = v; }\n    }\n\n    public static int after() {\n        return 0; // replace: final value of a.value after the sequence\n    }\n}\n",
+  "tests": [
+    {
+      "name": "final aliased value",
+      "code": "\nCjTestBase.checkEq(Solution.after(), 100, \"final a.value\");\n",
+      "hint": "a.value becomes 15 while aliased; after a = b, a.value reads the NEW bag (100)."
+    }
+  ],
+  "level": "combination"
+}

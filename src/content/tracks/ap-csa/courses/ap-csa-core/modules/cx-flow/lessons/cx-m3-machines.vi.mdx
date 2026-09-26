@@ -1,0 +1,60 @@
+Gần như mọi vòng lặp AP đều là một trong bốn cỗ máy. Gọi đúng tên cỗ máy,
+mã sẽ tự viết ra.
+
+**Cộng dồn (accumulator) — gộp cả bộ sưu tập thành một con số.**
+
+```java
+int total = 0;
+for (int i = 0; i < arr.length; i++) {
+    total += arr[i];
+}
+```
+
+Khởi tạo bằng phần tử trung hòa của phép toán: 0 cho tổng, 1 cho tích,
+`arr[0]` cho max/min, `""` khi dựng chuỗi.
+
+**Bộ đếm (counter) — đếm sự kiện, trả về số đếm.**
+
+```java
+int hits = 0;
+for (int v : arr) {
+    if (meets(v)) {
+        hits++;
+    }
+}
+```
+
+Bộ đếm *chính là* bộ cộng dồn với phép cộng `+ 1`. Cùng luật khởi tạo (0),
+cùng hình dạng.
+
+**Cờ (flag) — có bao giờ kích hoạt chưa?**
+
+```java
+boolean found = false;
+for (int v : arr) {
+    if (v == target) {
+        found = true;
+    }
+}
+return found;
+```
+
+Giá trị mặc định đến từ trường hợp chân không (không kích hoạt lần nào →
+false). Dạng thoát sớm — `return true;` bên trong, `return false;` sau —
+chỉ là cỗ máy đó với lối thoát dời chỗ.
+
+**Quét lính canh (sentinel) — tìm *ở đâu*, không chỉ *có hay không*.**
+
+```java
+int at = -1;
+for (int i = 0; i < arr.length && at == -1; i++) {
+    if (arr[i] == target) {
+        at = i;
+    }
+}
+return at;
+```
+
+-1 nghĩa là "vắng mặt" theo quy ước đề thi. Điều kiện `&& at == -1` dừng
+quét ngay lần trúng đầu — thiếu nó bạn trả về lần xuất hiện *cuối* (bug
+của Module 1, nay nâng cấp thành mẫu nhận diện).

@@ -1,0 +1,33 @@
+Polymorphic collections — the exam's synthesis shape:
+
+```java
+ArrayList<Animal> zoo = new ArrayList<Animal>();
+zoo.add(new Dog());          // Dog is-an Animal
+zoo.add(new Animal());
+zoo.add(new Dog());
+for (Animal a : zoo) {
+    System.out.println(a.speak());   // Woof, ..., Woof
+}
+```
+
+One loop, three objects, two behaviors — the reference type is Animal,
+the dispatch is per-object. Remove-by-content or count-by-behavior on
+such a list is the FRQ variant: "how many animals speak Woof?" is a
+for-each plus a dispatch trace.
+
+**The cast question.** `Animal a = new Dog(); Dog d = a;` does NOT
+compile — Animal is not known to be Dog. `Dog d = (Dog) a;` compiles
+and runs (a really holds a Dog). `(Cat) a` would compile but throw
+ClassCastException at runtime. The exam asks which of these three
+lines compiles/runs — the rule: **upcasts are free, downcasts need an
+explicit cast, wrong downcasts explode at runtime.**
+
+**The Object trap.** `equals` takes Object:
+
+```java
+public boolean equals(Dog other) { ... }   // OVERLOAD, not override!
+```
+
+The parameter type must be Object to truly override. In AP scope you
+just need to recognize the shape: same signature = override; changed
+signature = overload.

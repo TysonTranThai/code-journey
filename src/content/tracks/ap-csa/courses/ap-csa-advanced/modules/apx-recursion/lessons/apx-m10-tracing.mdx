@@ -1,0 +1,27 @@
+**Recursive tracing is bookkeeping, not magic.** For a single-branch
+call chain (`f(n) = f(n-1) + n`), unroll downward to the base, then
+roll back up, writing one value per level:
+
+```java
+public static int f(int n) {
+    if (n <= 0) { return 1; }
+    return f(n - 1) + n;
+}
+// f(4): f(3)+4 ... f(0)=1 → 1+1=2 → 2+2=4 → 4+3=7 → 7+4=11
+```
+
+The two errors students make: stopping the roll-up one level early
+(off-by-one from base to first addition), and misreading the base
+case's value (1 vs 0 changes everything — trace it, don't assume).
+
+**For two-branch recursion** (`mystery(n-1) + 2` vs `mystery(n-1) *
+2` chosen by parity), the chain is still linear here — only ONE
+branch runs per call — but the branch *switches* as n changes. Draw
+the chain with the branch decision at each level:
+
+```java
+// mystery(5): odd → mystery(4)*2; mystery(4): even → mystery(3)+2;
+// mystery(3): odd → mystery(2)*2; mystery(2): even → mystery(1)+2;
+// mystery(1): odd → mystery(0)*2; mystery(0) = 0
+// roll up: 0*2=0 → 0+2=2 → 2*2=4 → 4+2=6 → 6*2=12
+```

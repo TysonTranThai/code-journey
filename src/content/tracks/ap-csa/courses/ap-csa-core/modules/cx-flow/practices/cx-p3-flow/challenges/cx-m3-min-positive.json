@@ -1,0 +1,16 @@
+{
+  "id": "cx-m3-min-positive",
+  "title": "Min positive with absence",
+  "prompt": "Implement `int minPositive(int[] arr)`: the smallest value strictly greater than 0, or -1 when no positive value exists (empty arrays included). Two machines cooperate here: a sentinel for \"found yet?\" and an accumulator for the minimum.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static int minPositive(int[] arr) {\n        // CONTRACT: smallest value > 0; returns -1 when the array\n        // contains no positive number. arr may be empty.\n        int min = 0;\n        for (int i = 0; i < arr.length; i++) {\n            if (arr[i] > 0) {\n                min = arr[i];\n            }\n        }\n        return min;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "smallest positive",
+      "code": "\nCjTestBase.checkEq(Solution.minPositive(new int[]{-3, 8, 2, 5}), 2, \"2 is the smallest positive\");\nCjTestBase.checkEq(Solution.minPositive(new int[]{-1, -9}), -1, \"no positives\");\nCjTestBase.checkEq(Solution.minPositive(new int[]{}), -1, \"empty array\");\nCjTestBase.checkEq(Solution.minPositive(new int[]{6}), 6, \"single positive\");\n",
+      "hint": "Track found with -1 sentinel; update min only for values > 0 (and first positive wins the seed)."
+    }
+  ],
+  "level": "combination"
+}

@@ -1,0 +1,45 @@
+Đại số chỉ số là kỹ năng luyện trên giấy. Ba con ngựa thồ:
+
+**Min/max theo chỉ số.** Theo dõi vị trí, không phải giá trị, khi đáp án
+cần một địa điểm:
+
+```java
+int best = 0;
+for (int i = 1; i < arr.length; i++) {
+    if (arr[i] > arr[best]) { best = i; }
+}
+return best;   // chỉ số của max (đầu tiên khi đồng giá)
+```
+
+**Hàng xóm trái/phải.** "Mọi phần tử lớn hơn cả hai hàng xóm":
+
+```java
+for (int i = 1; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i - 1] && arr[i] > arr[i + 1]) { count++; }
+}
+```
+
+Biên lọai trừ chỉ số 0 và chỉ số cuối — chúng chỉ có một hàng xóm. Lệch
+một ở đây đổi đáp án một cách lặng lẽ.
+
+**Xoay mảng.** Dịch mọi thứ sang phải 1 bước, phần tử cuối quay về đầu:
+
+```java
+int[] out = new int[arr.length];
+for (int i = 0; i < arr.length; i++) {
+    out[(i + 1) % arr.length] = arr[i];
+}
+```
+
+Hoặc dạng sao chép tại chỗ mà đa số học sinh thấy dễ hiểu hơn:
+
+```java
+for (int i = 0; i < arr.length - 1; i++) {
+    out[i + 1] = arr[i];
+}
+out[0] = arr[arr.length - 1];
+```
+
+Mảng một phần tử và mảng rỗng là hai đầu vào phá vỡ các vòng xoay bất cẩn
+— hãy chạy chúng trong đầu trước. Chú ý `arr.length - 1` trong biên vòng
+lặp: dùng `arr.length` thì `out[i + 1]` bước ra khỏi mảng.

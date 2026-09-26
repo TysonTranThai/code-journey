@@ -1,0 +1,16 @@
+{
+  "id": "cx-m9-thermostat",
+  "title": "Clamped mutators",
+  "prompt": "Fix both mutators: `warm` never exceeds 30, `cool` never drops below 0. Trace warm(15) from 20 and cool(25) from 5 before coding.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Thermostat {\n        private int celsius;\n\n        public Thermostat() { celsius = 20; }\n\n        // CONTRACT: raise by d, but NEVER above 30 (clamp at 30).\n        public void warm(int d) {\n            celsius += d; // BUG: ignores the 30 cap\n        }\n\n        // CONTRACT: lower by d, but NEVER below 0 (clamp at 0).\n        public void cool(int d) {\n            celsius -= d; // BUG: ignores the 0 floor\n        }\n\n        public int get() { return celsius; }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "clamped",
+      "code": "\nSolution.Thermostat t = new Solution.Thermostat();\nCjTestBase.checkEq(t.get(), 20, \"default 20\");\nt.warm(15);\nCjTestBase.checkEq(t.get(), 30, \"capped at 30\");\nt.cool(25);\nCjTestBase.checkEq(t.get(), 5, \"30 - 25\");\nt.cool(25);\nCjTestBase.checkEq(t.get(), 0, \"floored at 0\");\n",
+      "hint": "warm: if (celsius + d > 30) celsius = 30; else celsius += d; — mirror for cool."
+    }
+  ],
+  "level": "debugging"
+}

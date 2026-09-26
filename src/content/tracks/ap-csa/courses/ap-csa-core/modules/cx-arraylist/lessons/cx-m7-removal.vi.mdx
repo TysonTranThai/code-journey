@@ -1,0 +1,38 @@
+ArrayList là nơi đề thi gặt điểm. Hai sự thật API tách học sinh bình tĩnh
+khỏi học sinh hoảng loạn:
+
+**remove(int) với remove(Integer).** `list.remove(2)` xóa phần tử TẠI
+CHỈ SỐ 2. Để xóa *giá trị* 2 khỏi một `ArrayList<Integer>`, hãy viết
+`list.remove(Integer.valueOf(2))`. Khi danh sách chứa \{10, 20, 30\},
+`remove(1)` còn lại \{10, 30\} — nó không hề xóa giá trị 1 (mà chưa từng có
+trong danh sách).
+
+**Vô hiệu hóa chỉ số.** Mỗi lần xóa dịch toàn bộ phần tử phía sau sang
+trái một bước. `size()` đổi ngay khi remove nổ ra. Vòng lặp gãy kinh
+điển:
+
+```java
+for (int i = 0; i < list.size(); i++) {
+    if (list.get(i).equals(target)) {
+        list.remove(i);     // dịch trái; phần tử kế giờ nằm ở i
+    }
+}
+```
+
+Với `{"a", "a", "b"}` và target "a": i=0 xóa, danh sách còn `"a", "b"`;
+i=1 kiểm tra "b" — chữ "a" THỨ HAI tại chỉ số 1 bị bỏ qua hoàn toàn. Các
+lần khớp liền kề chính là trường hợp phơi bày lỗi này.
+
+**Sửa-xuôi** (hạ i xuống lại): đúng nhưng tinh vi. **Xóa bằng vòng
+ngược** — lời giải sạch được đề thi ưa chuộng:
+
+```java
+for (int i = list.size() - 1; i >= 0; i--) {
+    if (list.get(i).equals(target)) {
+        list.remove(i);
+    }
+}
+```
+
+Xóa tại i chỉ dịch các phần tử *sau* i — và bạn đã ghé thăm hết chúng rồi.
+An toàn, không cần nhào lộn chỉ số.

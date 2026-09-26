@@ -1,0 +1,16 @@
+{
+  "id": "cx-m9-transfer",
+  "title": "Two objects, one method",
+  "prompt": "Complete `Account.transferTo`: on success both balances change; on failure NEITHER does. The failed branch leaving state untouched is the part being graded.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Account {\n        private int balance;\n        public Account(int b) { balance = b; }\n        public int getBalance() { return balance; }\n\n        // CONTRACT: move amount to other. When balance >= amount:\n        // balance -= amount; other gains it; return true.\n        // Otherwise: NOTHING changes; return false.\n        public boolean transferTo(Account other, int amount) {\n            return false; // replace\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "transfer semantics",
+      "code": "\nSolution.Account a = new Solution.Account(100);\nSolution.Account b = new Solution.Account(30);\nCjTestBase.checkEq(a.transferTo(b, 40), true, \"succeeds\");\nCjTestBase.checkEq(a.getBalance(), 60, \"debit\");\nCjTestBase.checkEq(b.getBalance(), 70, \"credit\");\nCjTestBase.checkEq(a.transferTo(b, 999), false, \"insufficient\");\nCjTestBase.checkEq(a.getBalance(), 60, \"unchanged on failure\");\nCjTestBase.checkEq(b.getBalance(), 70, \"unchanged on failure\");\n",
+      "hint": "if (balance >= amount) { balance -= amount; other.balance += amount; return true; } return false;"
+    }
+  ],
+  "level": "combination"
+}

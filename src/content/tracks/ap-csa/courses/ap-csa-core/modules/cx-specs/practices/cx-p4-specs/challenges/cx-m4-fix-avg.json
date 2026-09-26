@@ -1,0 +1,16 @@
+{
+  "id": "cx-m4-fix-avg",
+  "title": "Fix the integer division",
+  "prompt": "`longWords` compiles and runs but fails `{\"a\", \"b\", \"cdef\"}`: average is 2.0, only \"cdef\" is strictly longer, expected 1 — check what the current code returns and why. Repair the one marked line.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // CONTRACT: count of words STRICTLY longer than the average length.\n    // Precondition: words.length >= 1.\n    public static int longWords(String[] words) {\n        int sum = 0;\n        for (String w : words) {\n            sum += w.length();\n        }\n        double avg = sum / words.length;   // BUG: integer division\n        int count = 0;\n        for (String w : words) {\n            if (w.length() > avg) {\n                count++;\n            }\n        }\n        return count;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "strictly longer than average",
+      "code": "\nCjTestBase.checkEq(Solution.longWords(new String[]{\"a\", \"b\", \"cdef\"}), 1, \"avg 2.0, only cdef\");\nCjTestBase.checkEq(Solution.longWords(new String[]{\"ab\", \"cd\"}), 0, \"avg 2.0, nothing strictly longer\");\nCjTestBase.checkEq(Solution.longWords(new String[]{\"x\"}), 0, \"single word is never strictly longer than itself\");\n",
+      "hint": "(double) sum / words.length — cast BEFORE dividing."
+    }
+  ],
+  "level": "debugging"
+}

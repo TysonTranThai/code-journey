@@ -1,0 +1,15 @@
+**super là tra cứu phương thức lên một cấp, không phải "đối tượng
+cha".** Hai dạng xuất hiện trong đề thi:
+
+- `super.pay()` bên trong một bản ghi đè: chạy bản của lớp cha, thường
+  rồi mở rộng (`return super.pay() + bonus;`). Một đáp án W quên
+  `super.` và đệ quy hoặc làm rơi hành vi gốc.
+- `super(args)` là câu lệnh đầu tiên của constructor: lớp cha khởi tạo
+  trạng thái của lớp cha. Nếu constructor lớp con thiếu nó, trình biên
+  dịch chèn `super()` — và sẽ không biên dịch được nếu lớp cha không
+  có constructor không tham số.
+
+**Lớp trừu tượng** thêm một luật: không thể `new`, nhưng tham chiếu
+kiểu trừu tượng vẫn điều phối tới bản ghi đè cụ thể. Mẫu "một lớp cha
+trừu tượng, hai lớp con, một ArrayList kiểu cha" là cấu trúc FRQ2
+được tái sử dụng nhiều nhất thập kỷ qua — chính là bài lab này rèn.

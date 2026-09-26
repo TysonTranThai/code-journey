@@ -1,0 +1,16 @@
+{
+  "id": "apx-cp-m14-player",
+  "title": "Checkpoint: the player lifecycle",
+  "prompt": "Implement `Player`: constructor takes starting HP (position starts at 0). `move(steps)` advances position (works at any HP). `hit(dmg)` reduces HP but **never below 0**, and does nothing when HP is already 0. `heal(amount)` raises HP but does nothing when HP is 0 (the player is out). `getHp()` and `getX()` report state.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Player {\n        public Player(int hp) {\n        }\n\n        public void move(int steps) {\n        }\n\n        public void hit(int dmg) {\n        }\n\n        public void heal(int amount) {\n        }\n\n        public int getHp() {\n            return 0;\n        }\n\n        public int getX() {\n            return 0;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "player lifecycle",
+      "code": "\nSolution.Player p = new Solution.Player(10);\np.hit(4);\np.move(3);\nCjTestBase.checkEq(p.getX(), 3, \"moving works while alive\");\np.hit(6);\nCjTestBase.checkEq(p.getHp(), 0, \"floored at zero, not negative\");\np.heal(5);\nCjTestBase.checkEq(p.getHp(), 0, \"the fallen cannot heal\");\np.hit(3);\nCjTestBase.checkEq(p.getHp(), 0, \"the fallen cannot be hit\");\n",
+      "hint": "hit clamps at 0 and guards on hp > 0; heal guards on hp > 0; move has no guard."
+    }
+  ],
+  "level": "mini-build"
+}

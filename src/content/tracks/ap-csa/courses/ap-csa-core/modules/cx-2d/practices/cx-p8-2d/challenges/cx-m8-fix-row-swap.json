@@ -1,0 +1,16 @@
+{
+  "id": "cx-m8-fix-row-swap",
+  "title": "Fix the row swap",
+  "prompt": "`swapRows` overwrites row a with row b and leaves row b untouched — the original row a is destroyed. Trace {1,2},{3,4} with a=0, b=1, then repair using the one-row temporary from the lesson.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // CONTRACT: swap rows a and b of grid, in place.\n    // Precondition: 0 <= a, b < grid.length.\n    public static void swapRows(int[][] grid, int a, int b) {\n        for (int c = 0; c < grid[0].length; c++) {\n            grid[a][c] = grid[b][c];\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "rows exchanged",
+      "code": "\nint[][] g = { {1, 2}, {3, 4} };\nSolution.swapRows(g, 0, 1);\nCjTestBase.checkEq(g[0], new int[]{3, 4}, \"row 0 now holds old row 1\");\nCjTestBase.checkEq(g[1], new int[]{1, 2}, \"row 1 now holds old row 0\");\n",
+      "hint": "Save grid[a] in a temp reference BEFORE overwriting; swap references."
+    }
+  ],
+  "level": "debugging"
+}

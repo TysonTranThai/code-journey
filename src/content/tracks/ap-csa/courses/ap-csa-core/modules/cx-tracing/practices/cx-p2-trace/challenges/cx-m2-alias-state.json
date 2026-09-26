@@ -1,0 +1,16 @@
+{
+  "id": "cx-m2-alias-state",
+  "title": "Aliased object state",
+  "prompt": "In `demo`, `x` and `y` are two names for ONE P object. Trace the three bumps on the shared row, predict what `demo()` returns, and keep the implementation consistent with your trace (fix `demo` if your hand trace disagrees with it).",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class P {\n        private int v;\n        public P(int start) { v = start; }\n        public void bump() { v = v + 1; }\n        public int get() { return v; }\n    }\n    public static int demo() {\n        P x = new P(10);\n        P y = x;\n        y.bump();\n        x.bump();\n        y.bump();\n        return x.get() * 10 + y.get();\n    }\n}\n",
+  "tests": [
+    {
+      "name": "aliased bumps",
+      "code": "\nCjTestBase.checkEq(Solution.demo(), 143, \"one object bumped 3 times: v=13\");\n",
+      "hint": "10 + 3 bumps = 13 for BOTH names; return encodes 13 and 13."
+    }
+  ],
+  "level": "independent"
+}

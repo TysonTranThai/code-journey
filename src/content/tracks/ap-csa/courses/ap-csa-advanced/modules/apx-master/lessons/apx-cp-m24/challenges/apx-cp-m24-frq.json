@@ -1,0 +1,16 @@
+{
+  "id": "apx-cp-m24-frq",
+  "title": "Master FRQ: the clinic scheduler",
+  "prompt": "25-minute FRQ. Implement the `Clinic` class (four behaviors, no topic announced):\n\n- constructor takes the number of rooms\n- `arrive(String patient)` adds the patient to the waitlist unless already waiting (returns true on success, false on duplicate)\n- `room()` assigns the waitlisted patient at the FRONT to a free room if any exist (rooms are slots, like lockers; returns the 1-based room number or -1) — the patient leaves the waitlist\n- `waiting()` reports the waitlist size\n- `freeRooms()` reports unoccupied room count\n\nImplement the full class. Bank order: arrive, waiting/freeRooms, then room.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Clinic {\n        public Clinic(int rooms) {\n        }\n\n        public boolean arrive(String patient) {\n            return false;\n        }\n\n        public int room() {\n            return -1;\n        }\n\n        public int waiting() {\n            return 0;\n        }\n\n        public int freeRooms() {\n            return 0;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "clinic frq",
+      "code": "\nSolution.Clinic c = new Solution.Clinic(2);\nCjTestBase.checkTrue(c.arrive(\"Ann\"), \"first arrival\");\nCjTestBase.checkTrue(!c.arrive(\"Ann\"), \"no duplicates\");\nCjTestBase.checkTrue(c.arrive(\"Bob\"), \"second arrival\");\nCjTestBase.checkEq(c.waiting(), 2, \"two waiting\");\nCjTestBase.checkEq(c.room(), 1, \"front patient takes room 1\");\nCjTestBase.checkEq(c.waiting(), 1, \"Ann left the list\");\nCjTestBase.checkEq(c.freeRooms(), 1, \"one room taken\");\nCjTestBase.checkEq(c.room(), 2, \"Bob takes room 2\");\nCjTestBase.checkEq(c.room(), -1, \"no rooms left\");\n",
+      "hint": "Fuses three banked patterns: the no-duplicate insert (studio), the locker allocation (lowest free room), and a front-queue removal."
+    }
+  ],
+  "level": "mini-build"
+}

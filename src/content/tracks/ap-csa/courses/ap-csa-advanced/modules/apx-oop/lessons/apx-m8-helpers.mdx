@@ -1,0 +1,22 @@
+**Helpers are the rubric's favorite.** A private helper that
+normalizes, validates, or classifies turns a sprawling method into
+three clean calls — and the FRQ rubric *names* helper usage as a
+point. Design rule: if a piece of logic would be repeated in two
+methods, it becomes a helper.
+
+```java
+private boolean isValid(String code) {
+    return code.length() == 4 && code.charAt(0) == 'X';
+}
+```
+
+Watch the **constructor traps**: shadowing (`price = price`), a
+field initialized twice, or a constructor that forgets one field —
+leaving it at a silent default that poisons every later method call.
+Trace constructors like any other code: list every field and its
+value after the constructor returns.
+
+**Object interaction**: when one object holds another (a Register
+holding a Drawer), the outer object's method calls the inner one's —
+and null is always a state. "Nothing registered yet" usually means
+"a null inner object," and the first transition must guard it.

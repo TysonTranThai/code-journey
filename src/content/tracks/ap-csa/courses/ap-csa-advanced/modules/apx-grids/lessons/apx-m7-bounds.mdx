@@ -1,0 +1,19 @@
+**Complex traversals** (spirals, diagonals, borders) are boundary
+management problems. The spiral keeps four walls (top, bottom, left,
+right) and shrinks them after each side — with two re-checks
+(`if (top <= bottom)`, `if (left <= right)`) that exist only for
+single-row and single-column remainders. Drop a re-check and a 3×1
+grid double-counts.
+
+Rules for writing any complex traversal:
+
+1. Write the loop invariants in the margin: "top row fully filled",
+   "right column fully filled", etc.
+2. After each side, move the corresponding wall and *say why* the
+   next side's bounds are still valid.
+3. Test 1×n, n×1, and 1×1 before anything else. Rectangular
+   (non-square) inputs break symmetric-looking code.
+
+That last rule is the advanced habit: the bug is never in the middle
+of the grid. It is on the last column, the single row, or the
+already-shrunk wall.

@@ -1,0 +1,20 @@
+**From spec to skeleton.** A method that reads like the spec is
+fast to write and hard to get wrong. Worked example — "second
+smallest, -1 if it doesn't exist":
+
+```java
+// pass 1: find min
+// pass 2: find min among values strictly greater than min
+// if pass 2 finds nothing: -1
+```
+
+Two passes, each trivially correct, and the -1 falls out of pass 2
+naturally. The one-pass version (tracking first and second
+simultaneously) is twice the branches and the favorite source of
+off-by-one ties. **When the spec has a tie-break, prefer the
+two-pass form** — the tie-break becomes one comparison instead of
+three.
+
+For recursion tasks, write the two lines first: the base case and
+the recursive step with its progress. Then everything else is
+glue.

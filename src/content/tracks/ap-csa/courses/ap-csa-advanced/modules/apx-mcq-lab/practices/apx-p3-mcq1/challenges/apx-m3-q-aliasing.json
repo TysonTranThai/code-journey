@@ -1,0 +1,16 @@
+{
+  "id": "apx-m3-q-aliasing",
+  "title": "MCQ: What is printed?",
+  "prompt": "What is printed?\n\n```java\nint[] arr1 = {1, 2, 3};\nint[] b = arr1;\nb[0] = 9;\narr1 = new int[]{4, 5, 6};\nSystem.out.print(arr1[0] + \",\" + b[0]);\n```\n\nA. `9,9`\nB. `4,9`\nC. `9,4`\nD. `4,4`\n\nPrint your answer as: the option letter, then your explanation of why it is correct and why each other option is wrong. First line must start with the letter.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static void program() {\n        // Print your answer: the option letter, then a full explanation of\n        // WHY it is correct and why EACH other option is wrong.\n        // Example first line: B. <why B>\n    }\n}\n",
+  "tests": [
+    {
+      "name": "B B",
+      "code": "\nString out = CjTestBase.capture(() -> Solution.program());\nCjTestBase.checkTrue(out.startsWith(\"B\"), \"the chosen option's explanation (starts with the letter)\");\n",
+      "hint": "B. b aliased arr1, so b[0] = 9 mutated the {1,2,3} array; rebinding arr1 to the new {4,5,6} does not affect b, which still points at the mutated original. A forgets the rebind; C/D forget the mutation."
+    }
+  ],
+  "level": "independent"
+}

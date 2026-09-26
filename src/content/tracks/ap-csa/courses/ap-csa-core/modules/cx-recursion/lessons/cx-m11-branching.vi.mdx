@@ -1,0 +1,39 @@
+Đệ quy hai nhánh là đỉnh của các câu hỏi AP:
+
+```java
+public static int ways(int n) {
+    if (n == 0) { return 1; }   // một cách đứng yên
+    if (n < 0) { return 0; }    // vọt lách: không cách nào
+    return ways(n - 1) + ways(n - 2);
+}
+```
+
+Đọc như một cây quyết định: tại mỗi bậc thang bạn bước 1 hoặc 2 bước.
+`ways(3)`: ways(2) + ways(1) = 2 + 1 = 3. Cây tỏa ra — mỗi nút trong
+sinh hai con cho tới trường hợp cơ sở. Câu MCQ gần như luôn là **tổng
+số lần gọi**: đếm các nút.
+
+| cây gọi cho ways(3) |
+| ------------------- |
+| ways(3) → ways(2), ways(1) |
+| ways(2) → ways(1), ways(0) |
+| ways(1) → ways(0), ways(-1) |
+| ways(0) cơ sở (×3), ways(-1) cơ sở (×1) |
+
+Số lần gọi: ways(3), ways(2), ways(1), ways(0) ×3, ways(-1) = 7 lần.
+
+Kinh điển thứ hai: **tìm kiếm đệ quy** — "target có xuất hiện trong
+arr[i..]?"
+
+```java
+public static boolean has(int[] arr, int i, int target) {
+    if (i >= arr.length) { return false; }   // hết đường: vắng mặt
+    if (arr[i] == target) { return true; }   // thấy rồi
+    return has(arr, i + 1, target);
+}
+```
+
+Ba lối ra: cạn kiệt (false), tìm thấy (true), đệ quy tiếp. THỨ TỰ của
+hai phép kiểm tra đầu quan trọng — hoán đổi cho nhau và bạn đọc một chỉ
+số đã chết. Hình dạng này (tiến chỉ số, trả lời ở hai đầu) là bản mẫu
+cho mọi "quét mảng đệ quy" mà đề thi viết ra.

@@ -1,0 +1,37 @@
+Two multi-pass shapes complete the toolkit:
+
+**Count-then-act.** *"Move all zeros to the end, preserving order of
+the rest."* Pass 1 counts zeros; pass 2 writes non-zeros forward and
+fills the tail with zeros:
+
+```java
+int next = 0;
+for (int i = 0; i < arr.length; i++) {
+    if (arr[i] != 0) { arr[next] = arr[i]; next++; }
+}
+for (int i = next; i < arr.length; i++) { arr[i] = 0; }
+```
+
+Trace `{0, 3, 0, 1}`: next walks 0, 1, 1, 2 — after pass one,
+`{3, 1, 0, 1}` (the tail is garbage); pass two zeroes it: `{3, 1, 0, 0}`.
+Order preserved, no extra array.
+
+**Condition-based dedup** — "count elements NOT already seen". With no
+extra structures allowed, compare each element only to the previous
+*distinct run*, or accept O(n²) pairwise comparison:
+
+```java
+int distinct = 0;
+for (int i = 0; i < arr.length; i++) {
+    boolean seen = false;
+    for (int j = 0; j < i; j++) {
+        if (arr[j] == arr[i]) { seen = true; break; }
+    }
+    if (!seen) { distinct++; }
+}
+```
+
+`{5, 3, 5, 1}` → distinct = 3. The inner loop only looks *backward*
+(`j < i`), so the first occurrence claims each value. On the exam this
+pairwise form is acceptable — clarity beats cleverness, and the arrays
+are short.

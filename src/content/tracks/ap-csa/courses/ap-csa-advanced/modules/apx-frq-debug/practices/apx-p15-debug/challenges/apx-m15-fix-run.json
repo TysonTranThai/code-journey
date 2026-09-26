@@ -1,0 +1,16 @@
+{
+  "id": "apx-m15-fix-run",
+  "title": "Fix: longest run counter",
+  "prompt": "The method should return the length of the **longest run of equal adjacent values**. Example failure: `{1, 2, 2, 3, 3, 3, 1}` returns 3 (correct) but `{2, 2, 1, 1}` returns 3 (wrong — should be 2). Find and fix the bug.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SPEC: return the length of the longest run of equal adjacent values\n    public static int longestRun(int[] arr) {\n        if (arr.length == 0) {\n            return 0;\n        }\n        int best = 1;\n        int cur = 1;\n        for (int i = 1; i < arr.length; i++) {\n            if (arr[i] == arr[i - 1]) {\n                cur++;\n                if (cur > best) {\n                    best = cur;\n                }\n            }\n        }\n        return best;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "corrected runs",
+      "code": "\nCjTestBase.checkEq(Solution.longestRun(new int[]{1, 2, 2, 3, 3, 3, 1}), 3, \"triple run\");\nCjTestBase.checkEq(Solution.longestRun(new int[]{2, 2, 1, 1}), 2, \"two runs of two\");\nCjTestBase.checkEq(Solution.longestRun(new int[]{7}), 1, \"single element\");\nCjTestBase.checkEq(Solution.longestRun(new int[]{}), 0, \"empty\");\n",
+      "hint": "The counter never RESETS when the run breaks — add the else branch resetting cur to 1."
+    }
+  ],
+  "level": "debugging"
+}

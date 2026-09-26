@@ -1,0 +1,16 @@
+{
+  "id": "cx-m6-fix-last-index",
+  "title": "Fix the sentinel stop",
+  "prompt": "`lastIndexOf` must return the LAST occurrence's index but stops at the first. Trace {4, 7, 7} with key 7, then remove the guard that freezes the result.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // CONTRACT: index of the LAST occurrence of key, or -1.\n    public static int lastIndexOf(int[] arr, int key) {\n        // BUG: always reports the FIRST occurrence (or -1).\n        int at = -1;\n        for (int i = 0; i < arr.length; i++) {\n            if (arr[i] == key && at == -1) {\n                at = i;\n            }\n        }\n        return at;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "last occurrence index",
+      "code": "\nCjTestBase.checkEq(Solution.lastIndexOf(new int[]{4, 7, 7}, 7), 2, \"keeps overwriting\");\nCjTestBase.checkEq(Solution.lastIndexOf(new int[]{1, 2}, 5), -1, \"absent\");\nCjTestBase.checkEq(Solution.lastIndexOf(new int[]{9}, 9), 0, \"single hit\");\n",
+      "hint": "Drop the `&& at == -1` so later matches overwrite."
+    }
+  ],
+  "level": "debugging"
+}

@@ -1,0 +1,19 @@
+**Lỗi lan truyền là tự gây ra.** Chúng xảy ra khi mã của một phần
+*được dùng sai* bởi phần khác — phần (c) gọi phần (a) hỏng của bạn
+và thừa hưởng thất bại. Các kỹ thuật cô lập:
+
+- **Ưu tiên cài đặt tự chứa.** Khi một phần có thể viết bằng vòng
+  lặp riêng của nó trong sáu dòng, hãy làm thế thay vì dựng chuỗi
+  phụ thuộc mười dòng — tái sử dụng giữa các phần tiết kiệm thời
+  gian viết nhưng lan truyền thiệt hại.
+- **Nếu đặc tả BẮT BUỘC gọi phương thức phần trước** (một số FRQ
+  nói "bạn được phép gọi methodFromPartA"), hãy gọi đúng như quy
+  định — nhưng kiểm nó với một ví dụ tính tay trong đầu, vì bảng
+  điểm cho hành vi đúng của phương thức trước theo yêu cầu.
+- **Cách ly thất bại**: thiếu một kiểm tra null ở phần (a) không
+  được phép chạm tới phần (c). Chặn biên giữa các phần như thể chúng
+  là những đội không nhìn thấy lỗi của nhau.
+
+Các bài được chấm ở đây làm cho sự cô lập trở nên cụ thể: mỗi phần
+được kiểm độc lập, nên lỗi của phần này không thể đầu độc điểm của
+phần khác.

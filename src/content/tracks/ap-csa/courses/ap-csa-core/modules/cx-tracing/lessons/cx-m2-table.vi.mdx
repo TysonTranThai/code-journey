@@ -1,0 +1,29 @@
+**Bảng trạng thái** là ngôn ngữ mẹ đẻ của đề thi. Mỗi bước một hàng, mỗi
+biến một cột — đừng bao giờ giữ trạng thái trong đầu.
+
+```java
+int a = 2;
+int b = a * 3;
+a = a + b;
+b = a - b;
+```
+
+| bước | câu lệnh       | a | b |
+| ---- | -------------- | - | - |
+| 1    | `a = 2`        | 2 | – |
+| 2    | `b = a * 3`    | 2 | 6 |
+| 3    | `a = a + b`    | 8 | 6 |
+| 4    | `b = a - b`    | 8 | 2 |
+
+Hai luật kỷ luật khiến truy vết trở nên cơ học:
+
+1. **Tính vế phải trước, rồi gán.** Ở bước 3, `a + b` dùng giá trị *cũ*
+   (2 và 6) — `a` thành 8 chứ không phải 12. Phép gán không bao giờ đọc
+   lại vế trái của chính nó.
+2. **Mỗi câu lệnh một hàng mới, kể cả khi không gì đổi.** Khoảng trống là
+   nơi lỗi nấp mình. Biến không bị động đến thì sao chép giá trị xuống.
+
+Các câu đố hoán đổi như trên xuất hiện ở mọi kỳ thi: sau
+`a = a + b; b = a - b;`, `b` giữ `a` cũ (8 − 6 = 2), và câu thứ ba
+`a = a - b;` sẽ hoàn tất phép hoán đổi. Truy vết thắng việc học thuộc mẹo —
+bảng luôn cho biết bạn đang ở đâu.

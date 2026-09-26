@@ -1,0 +1,38 @@
+Q2 thưởng cho **phân rã hàm trợ giúp** — thường là tường minh ("một hàm
+trợ giúp private có thể được điểm đầy đủ nếu dùng đúng"). Hai mẫu:
+
+**Hàm chuẩn hóa.** Một lớp cất phút có thể cất giây thô bên trong và
+chuẩn hóa khi ghi:
+
+```java
+private int totalSeconds;
+private void normalize() {
+    minutes += seconds / 60;   // ...qua các trường
+    seconds = seconds % 60;
+}
+```
+
+Hàm trợ giúp biến logic "nhớ-t tentang" thành một nơi được đặt tên;
+các mutator gọi nó sau mỗi thay đổi. Đề thi thưởng cho điều này khi đặc
+tả nói "bất biến: seconds < 60 luôn luôn".
+
+**Hàm phân loại.** Phần (b) thường cần quyết định của phần (a):
+
+```java
+private boolean isPrime(int n) { ... }
+public int countPrimes() {
+    int c = 0;
+    for (int v : values) { if (isPrime(v)) c++; }
+    return c;
+}
+```
+
+Viết bộ phân loại thành hàm trợ giúp khiến (b) thành hai dòng và khiến
+phép truy vết của bạn dễ hơn (kiểm tra hàm trợ giúp với đầu vào nhỏ
+trước).
+
+**Tương tác đối tượng trong Q2** — "phương thức nhận một đối tượng khác
+cùng lớp": `public void merge(Counter other)` đọc getter của other và
+biến đổi this. Cái bẫy: biến đổi `other` thay vì `this` (nhầm lẫn
+tham-số-bí-danh), hoặc đọc `this` ở chỗ đáng lẽ là `other`. Gọi to tên
+đích của mọi phép gán khi viết.

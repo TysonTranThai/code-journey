@@ -1,0 +1,16 @@
+{
+  "id": "apx-cp-m23-frq",
+  "title": "Exam FRQ: the recording studio",
+  "prompt": "45-minute FRQ. Implement the `Studio` class (three mechanisms):\n\n- constructor takes the hourly rate (int cents)\n- `book(String band)` adds the band's name to the booking list if not already booked (returns true; false when already present — no duplicates)\n- `bill(String band, int hours)` returns rate * hours for a BOOKED band, or 0 for an unbooked one\n- `roster()` returns the number of booked bands (no duplicates counted)\n- `endMonth()` returns the total billed across all bill() calls and resets the billing total (bookings persist)\n\nImplement the class.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Studio {\n        public Studio(int rate) {\n        }\n\n        public boolean book(String band) {\n            return false;\n        }\n\n        public int bill(String band, int hours) {\n            return 0;\n        }\n\n        public int roster() {\n            return 0;\n        }\n\n        public int endMonth() {\n            return 0;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "studio frq",
+      "code": "\nSolution.Studio s = new Solution.Studio(1000);\nCjTestBase.checkTrue(s.book(\"Nova\"), \"first booking\");\nCjTestBase.checkTrue(!s.book(\"Nova\"), \"no duplicates\");\nCjTestBase.checkEq(s.bill(\"Nova\", 3), 3000, \"booked band billed\");\nCjTestBase.checkEq(s.bill(\"Ghost\", 5), 0, \"unbooked band bills nothing\");\nCjTestBase.checkEq(s.roster(), 1, \"one unique band\");\nCjTestBase.checkEq(s.endMonth(), 3000, \"month total\");\nCjTestBase.checkEq(s.bill(\"Nova\", 2), 2000, \"billing continues\");\n",
+      "hint": "Three mechanisms: a guarded list insert (contains check), a membership-gated charge, and a read-and-reset total."
+    }
+  ],
+  "level": "mini-build"
+}

@@ -1,0 +1,19 @@
+Một biến thể Q2 hướng-sửa-chữa: cho một lớp *gần đúng*, các lỗi nằm ở
+khe hở giữa các dòng của bảng đặc tả:
+
+- **Trường chưa khởi tạo.** Constructor đặt hai trong ba trường; cái
+  thứ ba trôi theo giá trị mặc định của Java (0/null). Nếu đặc tả nói
+  nó bắt đầu ở 1, mọi phép tính chạm vào nó đều lệch — và test chỉ-getter
+  vẫn pass trong khi test hành vi trượt.
+- **Phương thức sao-chép-mà-không-gọi.** Một mutator tự tính lại một
+  giá trị dẫn xuất mà phương thức khác CŨNG tính lại theo cách khác —
+  hai nguồn sự thật. Bất biến của đặc tả ("count luôn bằng
+  list.size()") là trọng tài: phương thức nào phá nó là phương thức có
+  lỗi.
+- **Biến đổi wrong-this.** `void adopt(Other o) { o.x = x; }` cập nhật
+  tham số thay vì đối tượng nhận lời gọi. Trạng thái chảy ngược chiều;
+  hành vi "biến đổi đối tượng này" trong bảng chấm lặng lẽ thất bại.
+
+Kỷ luật sửa chữa: viết bảng đặc tả thành một checklist, tick từng dòng
+đối chiếu mã, và chỉ sửa các dòng chưa tick. Trong phòng thi (gõ phím)
+nó mất chín mươi giây và bắt được mọi lỗi khe hở ở trên.

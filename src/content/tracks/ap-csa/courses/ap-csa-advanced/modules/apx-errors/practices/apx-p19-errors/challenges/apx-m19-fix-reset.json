@@ -1,0 +1,16 @@
+{
+  "id": "apx-m19-fix-reset",
+  "title": "Diagnose 3: the unreset counter",
+  "prompt": "Classify the error, then repair `longestRun` so it returns the longest run of equal adjacent values. (Hint: both branches increment — one of them should not.)",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SYMPTOM: overestimates the longest run on multi-run inputs\n    public static int longestRun(int[] arr) {\n        int best = 0;\n        int cur = 0;\n        for (int i = 0; i < arr.length; i++) {\n            if (i > 0 && arr[i] == arr[i - 1]) {\n                cur++;\n            } else {\n                cur++;\n            }\n            if (cur > best) {\n                best = cur;\n            }\n        }\n        return best;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "repaired run",
+      "code": "\nCjTestBase.checkEq(Solution.longestRun(new int[]{2, 2, 1, 1}), 2, \"two runs of two\");\nCjTestBase.checkEq(Solution.longestRun(new int[]{1, 2, 2, 3, 3, 3, 1}), 3, \"triple run\");\nCjTestBase.checkEq(Solution.longestRun(new int[]{}), 0, \"empty\");\n",
+      "hint": "Class 5 (unreset state): the else branch must reset cur to 1, not increment."
+    }
+  ],
+  "level": "debugging"
+}

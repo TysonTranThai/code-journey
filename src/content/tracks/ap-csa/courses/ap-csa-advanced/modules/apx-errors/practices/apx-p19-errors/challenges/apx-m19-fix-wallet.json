@@ -1,0 +1,16 @@
+{
+  "id": "apx-m19-fix-wallet",
+  "title": "Diagnose 4: the shadowed constructor",
+  "prompt": "Classify the error, then repair the `Wallet` class so a new Wallet(500) reports a balance of 500.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    public static class Wallet {\n        private int cents;\n\n        public Wallet(int cents) {\n            cents = cents;\n        }\n\n        public int balance() {\n            return cents;\n        }\n    }\n}\n",
+  "tests": [
+    {
+      "name": "repaired constructor",
+      "code": "\nSolution.Wallet w = new Solution.Wallet(500);\nCjTestBase.checkEq(w.balance(), 500, \"constructor stores\");\n",
+      "hint": "Class 9 (constructor error): cents = cents assigns the parameter to itself; this.cents = cents."
+    }
+  ],
+  "level": "debugging"
+}

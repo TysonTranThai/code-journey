@@ -1,0 +1,42 @@
+**Column aggregation** — the classic "compute per-column totals" task:
+
+```java
+public static int[] colSums(int[][] g) {
+    int[] sums = new int[g[0].length];
+    for (int c = 0; c < g[0].length; c++) {
+        for (int r = 0; r < g.length; r++) {
+            sums[c] += g[r][c];
+        }
+    }
+    return sums;
+}
+```
+
+The output array is sized by COLUMNS; the loops read column-major. Two
+orientations in one method — draw which loop walks which direction
+until it is automatic.
+
+**Transformations** that read and write the same array need care:
+swapping rows uses a temporary one-row array:
+
+```java
+int[] tmp = g[a];
+g[a] = g[b];
+g[b] = tmp;
+```
+
+That is O(1) — row references swap, no element copying. Compare with
+transposing (rows become columns), which needs element-by-element copy
+into a NEW array of swapped dimensions:
+
+```java
+int[][] t = new int[g[0].length][g.length];
+for (int r = 0; r < g.length; r++) {
+    for (int c = 0; c < g[r].length; c++) {
+        t[c][r] = g[r][c];
+    }
+}
+```
+
+Both directions appear on exams; the swap copies nothing, the transpose
+copies everything. Know which question you are answering.

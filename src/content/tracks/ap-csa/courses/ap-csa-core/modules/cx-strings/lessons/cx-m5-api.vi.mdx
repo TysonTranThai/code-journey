@@ -1,0 +1,23 @@
+Mọi thứ trong đề thi đều dùng tập con String trong Java Quick Reference:
+`length`, `substring` (1 và 2 tham số), `charAt`, `indexOf`, `equals`,
+`compareTo`. Làm chủ nghĩa là biết **hành vi biên** của chúng, không phải
+định nghĩa.
+
+**substring có mép cuối độc quyền.** `"abcdef".substring(2, 5)` là
+`"cde"` — các chỉ số 2, 3, 4. Độ dài của `substring(a, b)` đúng bằng
+`b - a`. Một sự thật duy nhất đó trả lời cả một họ câu hỏi thi.
+
+**Trường hợp rỗng.** `"".substring(0)` là `""`; `s.substring(s.length())`
+là `""` (hợp lệ!); nhưng `s.substring(s.length() + 1)` ném
+`StringIndexOutOfBoundsException`. Cái hợp-lệc-nhưng-bất-ngờ
+`s.substring(s.length())` trả về `""` là đáp án MCQ ưa thích.
+
+**indexOf trả về -1 khi vắng mặt, 0 khi là tiền tố.**
+`"abc".indexOf("bc")` là 1; `"abc".indexOf("d")` là -1;
+`"abc".indexOf("")` là 0. Và để tìm tiếp sau một lần trúng, cần dạng có
+chỉ số xuất phát — dạng 1 tham số luôn trả về lần *đầu*.
+
+**compareTo quyết định thứ tự.** Âm → `s` đứng trước; 0 → nội dung bằng
+nhau; dương → `s` đứng sau. Dùng cho thứ tự chữ cái ("chuỗi nào đứng
+trước?") — không bao giờ dùng cho đẳng giá trị (`==` so tham chiếu và là
+sai ngay cả khi đôi khi trông đúng).

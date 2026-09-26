@@ -1,0 +1,28 @@
+Đề thi không hỏi "mã này đúng chưa?" — nó hỏi "thay đổi nào làm nó
+đúng?" và chấm phần chẩn đoán. Vòng định vị:
+
+1. **Phát biểu lại hợp đồng** trong một câu.
+2. **Truy vết trường-hợp-gãy nhỏ nhất** — cái mà đề cho thấy là gãy
+   (các ví dụ của đề CHÍNH LÀ các test bị gãy).
+3. **Tìm câu lệnh ĐẦU TIÊN** nơi bảng trạng thái lệch khỏi điều hợp
+   đồng cần. Mọi thứ trước câu lệnh đó đều đúng — đừng chạm vào.
+4. **Bản sửa thường chỉ một token**: một toán tử so sánh, một giá trị
+   khởi tạo, một biên vòng lặp, một `this.` bị thiếu, một đối số nằm
+   sai khe. Nếu bản sửa của bạn viết lại nửa phương thức, bạn đã định
+   vị sai lỗi.
+
+Vì sao chữ "đầu tiên" quan trọng: một dòng sau trông-đúng-nhưng-hành-xử-sai
+thường là *nạn nhân* của lỗi trước đó, không phải bản thân lỗi. Sửa nạn
+nhân làm sinh thêm lỗi; sửa nguồn làm sập cả cơn đổ domino.
+
+Ví-dụ-vi-mô — hợp đồng: "tổng các phần tử chẵn":
+
+```java
+int total = 0;
+for (int i = 0; i <= arr.length; i++) {   // nạn nhân: ném ở bước cuối
+    if (arr[i] % 2 == 0) { total += arr[i]; }
+}
+```
+
+Ngoại lệ ở lần-lặp-CUỐI khiến bạn ttempt "sửa cái mảng". Điểm lệch đầu
+tiên là chính biên `<=`. Một token: `<`.

@@ -1,0 +1,37 @@
+**Q4 dẫn đường** — biến thể khó nhất: đi từ một ô theo một luật.
+
+*"Từ (row, col), liên tục chuyển sang ô kề có giá trị nhỏ nhất (đồng
+giá: lên, trái, phải, xuống); dừng khi không còn hàng xóm nhỏ hơn; trả
+về số bước đi."*
+
+```java
+public int descent(int[][] grid, int row, int col) {
+    int moves = 0;
+    int[][] dirs = { {-1, 0}, {0, -1}, {0, 1}, {1, 0} };
+    while (true) {
+        int best = grid[row][col];
+        int br = -1, bc = -1;
+        for (int[] d : dirs) {
+            int nr = row + d[0], nc = col + d[1];
+            if (nr >= 0 && nr < grid.length && nc >= 0 && nc < grid[0].length) {
+                if (grid[nr][nc] < best) {
+                    best = grid[nr][nc];
+                    br = nr;
+                    bc = nc;
+                }
+            }
+        }
+        if (br == -1) { return moves; }
+        row = br; col = bc; moves++;
+    }
+}
+```
+
+Đọc nó: thu-thập-ứng-viên (bốn lần đọc có chặn), một min có seed, và
+điểm dừng lính canh. Chú ý luật đồng-giá được mã hóa bởi THỨ TỰ
+HƯỚNG: quét lên→trái→phải→xuống với dấu `<` nghiêm ngặt giữ hướng
+được-ưu-tiên-đầu-tiên khi đồng giá — thứ tự quét là một phần của đặc tả.
+
+Các bước đi trên lưới cũng kiểm tra tính dừng: một luật di-chuyển có
+thể ghé lại ô cũ cần lớp chặn đã-thăm hoặc trần bước (mẫu đường-dẫn của
+CP8) — đọc đề xem nó muốn cái nào.

@@ -1,0 +1,16 @@
+{
+  "id": "apx-cp-m19-scan",
+  "title": "Checkpoint: diagnose and repair",
+  "prompt": "No class label. The method should remove every occurrence of `target` from an ArrayList<String>, preserving order, and return how many were removed. It returns wrong counts AND leaves some targets in the list. Classify, repair, verify.",
+  "difficulty": "advanced",
+  "language": "java",
+  "boilerplate": "public class Solution {\n    // SYMPTOM: wrong counts and survivors\n    public static int removeAll(java.util.ArrayList<String> list, String target) {\n        int removed = 0;\n        for (int i = 0; i < list.size(); i++) {\n            if (list.get(i).equals(target)) {\n                list.remove(i);\n            }\n        }\n        return removed;\n    }\n}\n",
+  "tests": [
+    {
+      "name": "repaired removal",
+      "code": "\njava.util.ArrayList<String> l = new java.util.ArrayList<>(java.util.List.of(\"a\", \"b\", \"a\", \"a\", \"c\"));\nCjTestBase.checkEq(Solution.removeAll(l, \"a\"), 3, \"three removed\");\nCjTestBase.checkEq(l, new java.util.ArrayList<>(java.util.List.of(\"b\", \"c\")), \"order kept\");\njava.util.ArrayList<String> none = new java.util.ArrayList<>(java.util.List.of(\"x\"));\nCjTestBase.checkEq(Solution.removeAll(none, \"a\"), 0, \"nothing matches\");\n",
+      "hint": "Two bug classes at once (7: mutation-scan skip, 4: uncounted removals) — backward loop plus removed++."
+    }
+  ],
+  "level": "debugging"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "cx-cp-m16-zone-tickets",
+  "title": "Checkpoint: two-part Q3",
+  "prompt": "The complete Q3: `zoneTotal` (filter + aggregate over objects) and `overtime` (composes zoneTotal with a comparison). Run the eight-step workflow; ship (a) even if (b) fights you.",
+  "difficulty": "intermediate",
+  "language": "java",
+  "boilerplate": "import java.util.ArrayList;\n\npublic class Solution {\n    public static class Ticket {\n        private String zone;\n        private int minutes;\n        public Ticket(String zone, int minutes) {\n            this.zone = zone;\n            this.minutes = minutes;\n        }\n        public String getZone() { return zone; }\n        public int getMinutes() { return minutes; }\n    }\n\n    // TWO-PART Q3:\n    // (a) int zoneTotal(ArrayList<Ticket> tickets, String zone):\n    //     total minutes of tickets in `zone`.\n    // (b) boolean overtime(ArrayList<Ticket> tickets, String zone,\n    //     int limit): true when zoneTotal(...) for that zone is\n    //     strictly greater than limit. Use part (a).\n    public static int zoneTotal(ArrayList<Ticket> tickets, String zone) {\n        return 0; // replace\n    }\n\n    public static boolean overtime(ArrayList<Ticket> tickets, String zone, int limit) {\n        return false; // replace\n    }\n}\n",
+  "tests": [
+    {
+      "name": "zones analyzed",
+      "code": "\nArrayList<Solution.Ticket> ts = new ArrayList<Solution.Ticket>();\nts.add(new Solution.Ticket(\"A\", 30));\nts.add(new Solution.Ticket(\"B\", 90));\nts.add(new Solution.Ticket(\"A\", 45));\nCjTestBase.checkEq(Solution.zoneTotal(ts, \"A\"), 75, \"30 + 45\");\nCjTestBase.checkEq(Solution.zoneTotal(ts, \"C\"), 0, \"absent zone\");\nCjTestBase.checkEq(Solution.overtime(ts, \"A\", 60), true, \"75 > 60\");\nCjTestBase.checkEq(Solution.overtime(ts, \"B\", 60), true, \"90 > 60\");\nCjTestBase.checkEq(Solution.overtime(ts, \"B\", 90), false, \"strictly greater only\");\nCjTestBase.checkEq(Solution.overtime(ts, \"C\", 0), false, \"0 > 0 is false\");\n",
+      "hint": "zoneTotal: for-each + zone filter + minute accumulator; overtime: zoneTotal > limit."
+    }
+  ],
+  "level": "real-world"
+}
